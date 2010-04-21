@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:xpdl="http://www.wfmc.org/2008/XPDL2.1"
+	targetNamespace="http://www.apromore.org/data_access/model_manager"
+	xmlns:tns="http://www.apromore.org/data_access/model_manager">
+
+	<element name="ReadProcessSummariesInputMsg" type="tns:ReadProcessSummariesInputMsgType" />
+	<element name="ReadProcessSummariesOutputMsg" type="tns:ReadProcessSummariesOutputMsgType" />
+	<element name="ReadDomainsInputMsg" type="tns:ReadDomainsInputMsgType" />
+    <element name="ReadDomainsOutputMsg" type="tns:ReadDomainsOutputMsgType" />
+	<element name="ReadFormatsInputMsg" type="tns:ReadFormatsInputMsgType" />
+	<element name="ReadFormatsOutputMsg" type="tns:ReadFormatsOutputMsgType" />
+	<element name="ReadUserInputMsg" type="tns:ReadUserInputMsgType" />
+	<element name="ReadUserOutputMsg" type="tns:ReadUserOutputMsgType" />
+	<element name="WriteUserInputMsg" type="tns:WriteUserInputMsgType" />
+	<element name="WriteUserOutputMsg" type="tns:WriteUserOutputMsgType" />
+
+	<complexType name="ReadProcessSummariesInputMsgType">
+		<attribute name="SearchExpression" type="string" />
+	</complexType>
+	
+	
+	<complexType name="ReadProcessSummariesOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+			<element name="ProcessSummaries"
+				type="tns:ProcessSummariesType" minOccurs="1" maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ProcessSummariesType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded"
+				name="ProcessSummary" type="tns:ProcessSummaryType" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ProcessSummaryType">
+		<sequence>
+			<element minOccurs="1" maxOccurs="unbounded"
+				name="VersionSummaries" type="tns:VersionSummaryType" />
+		</sequence>
+		<attribute name="original_native_type" type="string" />
+		<attribute name="name" type="string" />
+		<attribute name="id" type="int" />
+		<attribute name="domain" type="string" />
+		<attribute name="ranking" type="int" />
+		<attribute name="last_version" type="string" />
+	</complexType>
+
+	<complexType name="VersionSummaryType">
+		<attribute name="ranking" type="int" />
+		<attribute name="name" type="string" />
+		<attribute name="last_update" type="dateTime" />
+		<attribute name="creation_date" type="dateTime" />
+	</complexType>
+	
+ 	<complexType name="ReadDomainsInputMsgType">
+		<attribute name="Empty" type="string" use="optional"/>
+	</complexType>
+ 	
+    <complexType name="ReadDomainsOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+			<element name="Domains" type="tns:DomainsType" minOccurs="1"
+				maxOccurs="1" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="ReadFormatsInputMsgType">
+		<attribute name="Empty" type="string" use="optional"/>
+	</complexType>
+	
+	<complexType name="ReadFormatsOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+			<element name="Formats" type="tns:FormatsType" minOccurs="1"
+				maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<complexType name="FormatsType">
+		<sequence>
+			<element name="Format" minOccurs="0" maxOccurs="unbounded" 
+				type="string" />
+		</sequence>
+	</complexType>	
+
+	<complexType name="ResultType">
+		<attribute name="message" type="string" />
+		<attribute name="code" type="int" />
+	</complexType>
+
+	<complexType name="ReadUserInputMsgType">
+		<attribute name="username" type="string" />
+	</complexType>
+	
+	<complexType name="ReadUserOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType"
+				minOccurs="1" maxOccurs="1" />
+			<element name="User" type="tns:UserType" minOccurs="1"
+				maxOccurs="1" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="WriteUserInputMsgType">
+		<sequence>
+			<element name="User" type="tns:UserType"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="WriteUserOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType"
+				minOccurs="1" maxOccurs="1" />
+		</sequence>
+	</complexType>
+		
+	<complexType name="DomainsType">
+		<sequence>
+			<element name="Domain" type="string" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+
+	<complexType name="UserType">
+		<sequence>
+			<element name="SearchHistories" type="tns:SearchHistoriesType" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="id" type="int" />
+		<attribute name="firstname" type="string" />
+		<attribute name="lastname" type="string" />
+		<attribute name="email" type="string" />
+		<attribute name="username" type="string" />
+		<attribute name="passwd" type="string" />
+	</complexType>
+
+	<complexType name="SearchHistoriesType">
+		<attribute name="search" type="string" />
+		<attribute name="num" type="int" />
+	</complexType>
+
+
+</schema>
