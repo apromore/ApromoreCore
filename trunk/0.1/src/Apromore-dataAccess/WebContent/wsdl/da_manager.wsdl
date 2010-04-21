@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="http://www.apromore.org/data_access/service_manager" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tnsx="http://www.apromore.org/data_access/model_manager" xmlns:tns="http://www.apromore.org/data_access/service_manager" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+  <import namespace="http://www.apromore.org/data_access/model_manager" location="da_managerX.xsd">
+    </import>
+  <message name="ReadDomainsOutputMsg">
+    <part name="payload" element="tnsx:ReadDomainsOutputMsg">
+    </part>
+  </message>
+  <message name="ReadProcessSummariesOutputMsg">
+    <part name="payload" element="tnsx:ReadProcessSummariesOutputMsg">
+    </part>
+  </message>
+  <message name="ReadDomainsInputMsg">
+    <part name="payload" element="tnsx:ReadDomainsInputMsg">
+    </part>
+  </message>
+  <message name="ReadUserOutputMsg">
+    <part name="payload" element="tnsx:ReadUserOutputMsg">
+    </part>
+  </message>
+  <message name="WriteUserOutputMsg">
+    <part name="payload" element="tnsx:WriteUserOutputMsg">
+    </part>
+  </message>
+  <message name="ReadUserInputMsg">
+    <part name="payload" element="tnsx:ReadUserInputMsg">
+    </part>
+  </message>
+  <message name="WriteUserInputMsg">
+    <part name="payload" element="tnsx:WriteUserInputMsg">
+    </part>
+  </message>
+  <message name="ReadProcessSummariesInputMsg">
+    <part name="payload" element="tnsx:ReadProcessSummariesInputMsg">
+    </part>
+  </message>
+  <message name="ReadFormatsOutputMsg">
+    <part name="payload" element="tnsx:ReadFormatsOutputMsg">
+    </part>
+  </message>
+  <message name="ReadFormatsInputMsg">
+    <part name="payload" element="tnsx:ReadFormatsInputMsg">
+    </part>
+  </message>
+  <portType name="DAManagerPortType">
+    <operation name="ReadProcessSummaries">
+      <input name="ReadProcessSummariesRequest" message="tns:ReadProcessSummariesInputMsg">
+    </input>
+      <output name="ReadProcessSummariesResponse" message="tns:ReadProcessSummariesOutputMsg">
+    </output>
+    </operation>
+    <operation name="ReadDomains">
+      <input name="ReadDomainsRequest" message="tns:ReadDomainsInputMsg">
+    </input>
+      <output name="ReadDomainsResponse" message="tns:ReadDomainsOutputMsg">
+    </output>
+    </operation>
+    <operation name="ReadFormats">
+      <input name="ReadFormatsRequest" message="tns:ReadFormatsInputMsg">
+    </input>
+      <output name="ReadFormatsResponse" message="tns:ReadFormatsOutputMsg">
+    </output>
+    </operation>
+    <operation name="ReadUser">
+      <input name="ReadUserRequest" message="tns:ReadUserInputMsg">
+    </input>
+      <output name="ReadUserResponse" message="tns:ReadUserOutputMsg">
+    </output>
+    </operation>
+    <operation name="WriteUser">
+      <input name="WriteUserRequest" message="tns:WriteUserInputMsg">
+    </input>
+      <output name="WriteUserResponse" message="tns:WriteUserOutputMsg">
+    </output>
+    </operation>
+  </portType>
+  <binding name="DAManagerBinding" type="tns:DAManagerPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="ReadProcessSummaries">
+      <soap:operation style="document"/>
+      <input name="ReadProcessSummariesRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="ReadProcessSummariesResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="ReadDomains">
+      <soap:operation style="document"/>
+      <input name="ReadDomainsRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="ReadDomainsResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="ReadFormats">
+      <soap:operation style="document"/>
+      <input name="ReadFormatsRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="ReadFormatsResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="ReadUser">
+      <soap:operation style="document"/>
+      <input name="ReadUserRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="ReadUserResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="WriteUser">
+      <soap:operation style="document"/>
+      <input name="WriteUserRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="WriteUserResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="DAManagerService">
+    <port name="DAManager" binding="tns:DAManagerBinding">
+      <soap:address location="http://localhost:8080/Apromore-dataAccess/services/DAManager"/>
+    </port>
+  </service>
+</definitions>

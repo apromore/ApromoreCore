@@ -1,0 +1,11 @@
+<jxb:bindings version="2.0"
+              xmlns:jxb="http://java.sun.com/xml/ns/jaxb"
+              xmlns:xs="http://www.w3.org/2001/XMLSchema">
+  <jxb:bindings schemaLocation="da_managerX.xsd" node="/schema">
+    <jxb:bindings node="//attribute[@type='dateTime']">
+      <jxb:javaType name="java.util.Date" 
+                    parseMethod="org.apache.cxf.tools.common.DataTypeAdapter.parseDateTime" 
+                    printMethod="org.apache.cxf.tools.common.DataTypeAdapter.printDateTime"/>
+    </jxb:bindings>
+  </jxb:bindings>
+</jxb:bindings>
