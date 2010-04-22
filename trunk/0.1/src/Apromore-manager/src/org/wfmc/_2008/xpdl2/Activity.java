@@ -126,79 +126,79 @@ import org.wfmc._2002.xpdl1.StartMode;
     "content"
 })
 @XmlRootElement(name = "Activity")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class Activity {
 
     @XmlElementRefs({
-        @XmlElementRef(name = "Deadline", namespace = "http://www.wfmc.org/2002/XPDL1.0", type = org.wfmc._2002.xpdl1.Deadline.class),
-        @XmlElementRef(name = "Assignments", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Assignments.class),
-        @XmlElementRef(name = "BlockActivity", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = org.wfmc._2008.xpdl2.BlockActivity.class),
-        @XmlElementRef(name = "IORules", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = IORules.class),
-        @XmlElementRef(name = "SimulationInformation", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = SimulationInformation.class),
+        @XmlElementRef(name = "InputSets", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = InputSets.class),
+        @XmlElementRef(name = "ExtendedAttributes", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = ExtendedAttributes.class),
+        @XmlElementRef(name = "FinishMode", namespace = "http://www.wfmc.org/2002/XPDL1.0", type = FinishMode.class),
         @XmlElementRef(name = "Implementation", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Implementation.class),
         @XmlElementRef(name = "NodeGraphicsInfos", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = NodeGraphicsInfos.class),
-        @XmlElementRef(name = "ExtendedAttributes", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = ExtendedAttributes.class),
-        @XmlElementRef(name = "Object", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = org.wfmc._2008.xpdl2.Object.class),
-        @XmlElementRef(name = "Priority", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Priority.class),
+        @XmlElementRef(name = "Route", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Route.class),
+        @XmlElementRef(name = "Limit", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Limit.class),
+        @XmlElementRef(name = "Deadline", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = org.wfmc._2008.xpdl2.Deadline.class),
+        @XmlElementRef(name = "Deadline", namespace = "http://www.wfmc.org/2002/XPDL1.0", type = org.wfmc._2002.xpdl1.Deadline.class),
+        @XmlElementRef(name = "Performer", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Performer.class),
+        @XmlElementRef(name = "Event", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Event.class),
+        @XmlElementRef(name = "DataFields", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = DataFields.class),
+        @XmlElementRef(name = "Description", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Description.class),
+        @XmlElementRef(name = "Assignments", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Assignments.class),
         @XmlElementRef(name = "OutputSets", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = OutputSets.class),
-        @XmlElementRef(name = "Transaction", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Transaction.class),
+        @XmlElementRef(name = "IORules", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = IORules.class),
+        @XmlElementRef(name = "Priority", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Priority.class),
+        @XmlElementRef(name = "Object", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = org.wfmc._2008.xpdl2.Object.class),
+        @XmlElementRef(name = "Loop", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Loop.class),
+        @XmlElementRef(name = "SimulationInformation", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = SimulationInformation.class),
+        @XmlElementRef(name = "Icon", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Icon.class),
+        @XmlElementRef(name = "Documentation", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Documentation.class),
+        @XmlElementRef(name = "Extensions", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = JAXBElement.class),
+        @XmlElementRef(name = "StartMode", namespace = "http://www.wfmc.org/2002/XPDL1.0", type = StartMode.class),
+        @XmlElementRef(name = "BlockActivity", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = org.wfmc._2008.xpdl2.BlockActivity.class),
+        @XmlElementRef(name = "BlockActivity", namespace = "http://www.wfmc.org/2002/XPDL1.0", type = org.wfmc._2002.xpdl1.BlockActivity.class),
         @XmlElementRef(name = "TransitionRestrictions", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = TransitionRestrictions.class),
         @XmlElementRef(name = "Performers", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Performers.class),
-        @XmlElementRef(name = "Extensions", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = JAXBElement.class),
-        @XmlElementRef(name = "DataFields", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = DataFields.class),
-        @XmlElementRef(name = "Route", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Route.class),
-        @XmlElementRef(name = "Loop", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Loop.class),
-        @XmlElementRef(name = "Performer", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Performer.class),
-        @XmlElementRef(name = "Deadline", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = org.wfmc._2008.xpdl2.Deadline.class),
-        @XmlElementRef(name = "Description", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Description.class),
-        @XmlElementRef(name = "Limit", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Limit.class),
-        @XmlElementRef(name = "Icon", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Icon.class),
-        @XmlElementRef(name = "StartMode", namespace = "http://www.wfmc.org/2002/XPDL1.0", type = StartMode.class),
-        @XmlElementRef(name = "Documentation", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Documentation.class),
-        @XmlElementRef(name = "FinishMode", namespace = "http://www.wfmc.org/2002/XPDL1.0", type = FinishMode.class),
-        @XmlElementRef(name = "InputSets", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = InputSets.class),
-        @XmlElementRef(name = "BlockActivity", namespace = "http://www.wfmc.org/2002/XPDL1.0", type = org.wfmc._2002.xpdl1.BlockActivity.class),
-        @XmlElementRef(name = "Event", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Event.class)
+        @XmlElementRef(name = "Transaction", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = Transaction.class)
     })
     @XmlAnyElement(lax = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected List<java.lang.Object> content;
     @XmlAttribute(name = "Id", required = true)
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String id;
     @XmlAttribute(name = "IsForCompensation")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Boolean isForCompensation;
     @XmlAttribute(name = "Name")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String name;
     @XmlAttribute(name = "StartActivity")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Boolean startActivity;
     @XmlAttribute(name = "Status")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String status;
     @XmlAttribute(name = "StartMode")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String startMode;
     @XmlAttribute(name = "FinishMode")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String finishMode;
     @XmlAttribute(name = "StartQuantity")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigInteger startQuantity;
     @XmlAttribute(name = "CompletionQuantity")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigInteger completionQuantity;
     @XmlAttribute(name = "IsATransaction")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Boolean isATransaction;
     @XmlAnyAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     private Map<QName, String> otherAttributes = new HashMap<QName, String>();
 
     /**
@@ -229,41 +229,41 @@ public class Activity {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link org.wfmc._2002.xpdl1.Deadline }
-     * {@link Assignments }
-     * {@link org.wfmc._2008.xpdl2.BlockActivity }
-     * {@link IORules }
-     * {@link SimulationInformation }
+     * {@link InputSets }
+     * {@link ExtendedAttributes }
+     * {@link FinishMode }
      * {@link Implementation }
      * {@link NodeGraphicsInfos }
-     * {@link ExtendedAttributes }
-     * {@link org.wfmc._2008.xpdl2.Object }
-     * {@link Priority }
-     * {@link java.lang.Object }
-     * {@link OutputSets }
-     * {@link Transaction }
-     * {@link TransitionRestrictions }
-     * {@link Performers }
-     * {@link JAXBElement }{@code <}{@link java.lang.Object }{@code >}
-     * {@link DataFields }
      * {@link Route }
-     * {@link Loop }
-     * {@link Performer }
-     * {@link org.wfmc._2008.xpdl2.Deadline }
-     * {@link Description }
-     * {@link Limit }
-     * {@link Icon }
-     * {@link StartMode }
-     * {@link Documentation }
-     * {@link InputSets }
-     * {@link FinishMode }
-     * {@link org.wfmc._2002.xpdl1.BlockActivity }
      * {@link Element }
+     * {@link Limit }
+     * {@link org.wfmc._2008.xpdl2.Deadline }
+     * {@link org.wfmc._2002.xpdl1.Deadline }
+     * {@link Performer }
      * {@link Event }
+     * {@link DataFields }
+     * {@link Description }
+     * {@link Assignments }
+     * {@link OutputSets }
+     * {@link IORules }
+     * {@link Priority }
+     * {@link org.wfmc._2008.xpdl2.Object }
+     * {@link Loop }
+     * {@link SimulationInformation }
+     * {@link Icon }
+     * {@link Documentation }
+     * {@link JAXBElement }{@code <}{@link java.lang.Object }{@code >}
+     * {@link StartMode }
+     * {@link org.wfmc._2008.xpdl2.BlockActivity }
+     * {@link org.wfmc._2002.xpdl1.BlockActivity }
+     * {@link TransitionRestrictions }
+     * {@link Transaction }
+     * {@link Performers }
+     * {@link java.lang.Object }
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public List<java.lang.Object> getContent() {
         if (content == null) {
             content = new ArrayList<java.lang.Object>();
@@ -279,7 +279,7 @@ public class Activity {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getId() {
         return id;
     }
@@ -292,7 +292,7 @@ public class Activity {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setId(String value) {
         this.id = value;
     }
@@ -305,7 +305,7 @@ public class Activity {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public Boolean isIsForCompensation() {
         return isForCompensation;
     }
@@ -318,7 +318,7 @@ public class Activity {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setIsForCompensation(Boolean value) {
         this.isForCompensation = value;
     }
@@ -331,7 +331,7 @@ public class Activity {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getName() {
         return name;
     }
@@ -344,7 +344,7 @@ public class Activity {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setName(String value) {
         this.name = value;
     }
@@ -357,7 +357,7 @@ public class Activity {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public Boolean isStartActivity() {
         return startActivity;
     }
@@ -370,7 +370,7 @@ public class Activity {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setStartActivity(Boolean value) {
         this.startActivity = value;
     }
@@ -383,7 +383,7 @@ public class Activity {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getStatus() {
         if (status == null) {
             return "None";
@@ -400,7 +400,7 @@ public class Activity {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setStatus(String value) {
         this.status = value;
     }
@@ -413,7 +413,7 @@ public class Activity {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getStartMode() {
         return startMode;
     }
@@ -426,7 +426,7 @@ public class Activity {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setStartMode(String value) {
         this.startMode = value;
     }
@@ -439,7 +439,7 @@ public class Activity {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getFinishMode() {
         return finishMode;
     }
@@ -452,7 +452,7 @@ public class Activity {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setFinishMode(String value) {
         this.finishMode = value;
     }
@@ -465,7 +465,7 @@ public class Activity {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public BigInteger getStartQuantity() {
         if (startQuantity == null) {
             return new BigInteger("1");
@@ -482,7 +482,7 @@ public class Activity {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setStartQuantity(BigInteger value) {
         this.startQuantity = value;
     }
@@ -495,7 +495,7 @@ public class Activity {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public BigInteger getCompletionQuantity() {
         if (completionQuantity == null) {
             return new BigInteger("1");
@@ -512,7 +512,7 @@ public class Activity {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setCompletionQuantity(BigInteger value) {
         this.completionQuantity = value;
     }
@@ -525,7 +525,7 @@ public class Activity {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public boolean isIsATransaction() {
         if (isATransaction == null) {
             return false;
@@ -542,7 +542,7 @@ public class Activity {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setIsATransaction(Boolean value) {
         this.isATransaction = value;
     }
@@ -561,7 +561,7 @@ public class Activity {
      * @return
      *     always non-null
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public Map<QName, String> getOtherAttributes() {
         return otherAttributes;
     }

@@ -35,11 +35,11 @@ import javax.xml.bind.annotation.XmlType;
     "transitionRestriction"
 })
 @XmlRootElement(name = "TransitionRestrictions")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class TransitionRestrictions {
 
     @XmlElement(name = "TransitionRestriction")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected List<TransitionRestriction> transitionRestriction;
 
     /**
@@ -64,7 +64,7 @@ public class TransitionRestrictions {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public List<TransitionRestriction> getTransitionRestriction() {
         if (transitionRestriction == null) {
             transitionRestriction = new ArrayList<TransitionRestriction>();

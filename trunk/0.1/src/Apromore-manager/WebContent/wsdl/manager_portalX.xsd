@@ -1,10 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
-	xmlns:xpdl="http://www.wfmc.org/2008/XPDL2.1"
+	xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
 	targetNamespace="http://www.apromore.org/manager/model_portal"
 	xmlns:tns="http://www.apromore.org/manager/model_portal">
-
-	<import schemaLocation="bpmnxpdl_31_modified.xsd" namespace="http://www.wfmc.org/2008/XPDL2.1" />
 
 	<element name="ReadProcessSummariesInputMsg" type="tns:ReadProcessSummariesInputMsgType" />
 	<element name="ReadProcessSummariesOutputMsg" type="tns:ReadProcessSummariesOutputMsgType" />
@@ -129,11 +127,14 @@
 				minOccurs="1" maxOccurs="1" />
 		</sequence>
 	</complexType>
-	
-    <complexType name="ImportProcessInputMsgType">
-		<choice>
-			<element name="xpdl" type="xpdl:PackageType" />
-		</choice>
+
+	<complexType name="ImportProcessInputMsgType">
+		<sequence>
+			<element name="ProcessName" type="string" />
+			<element name="NativeType" type="string" />
+			<element name="ProcessDescription" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+		</sequence>
 	</complexType>
 	
 	<complexType name="ImportProcessOutputMsgType">
