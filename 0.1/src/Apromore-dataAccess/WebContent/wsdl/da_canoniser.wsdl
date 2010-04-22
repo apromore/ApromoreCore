@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="http://www.apromore.org/data_access/service_canoniser" 
+xmlns="http://schemas.xmlsoap.org/wsdl/" 
+xmlns:tnsx="http://www.apromore.org/data_access/model_canoniser" 
+xmlns:tns="http://www.apromore.org/data_access/service_canoniser" 
+xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+  <import namespace="http://www.apromore.org/data_access/model_canoniser" location="da_canoniserX.xsd">
+    </import>
+    
+  <message name="StoreNativeCpfInputMsg">
+    <part name="payload" element="tnsx:StoreNativeCpfInputMsg">
+    </part>
+  </message>
+  <message name="StoreNativeCpfOutputMsg">
+    <part name="payload" element="tnsx:StoreNativeCpfOutputMsg">
+    </part>
+  </message>
+  
+  <portType name="DACanoniserPortType">
+    <operation name="StoreNativeCpf">
+      <input name="StoreNativeCpfRequest" message="tns:StoreNativeCpfInputMsg">
+    </input>
+      <output name="StoreNativeCpfResponse" message="tns:StoreNativeCpfOutputMsg">
+    </output>
+    </operation>
+  </portType>
+  
+  <binding name="DACanoniserBinding" type="tns:DACanoniserPortType">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <operation name="StoreNativeCpf">
+      <soap:operation style="document"/>
+      <input name="StoreNativeCpfRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="StoreNativeCpfResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+  </binding>
+  <service name="DACanoniserService">
+    <port name="DACanoniser" binding="tns:DACanoniserBinding">
+      <soap:address location="http://localhost:8080/Apromore-dataAccess/services/DACanoniser"/>
+    </port>
+  </service>
+</definitions>
