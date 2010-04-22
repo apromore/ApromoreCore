@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema"
+	xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+	targetNamespace="http://www.apromore.org/data_access/model_canoniser"
+	xmlns:tns="http://www.apromore.org/data_access/model_canoniser">
+
+	<element name="StoreNativeCpfInputMsg" type="tns:StoreNativeCpfInputMsgType" />
+	<element name="StoreNativeCpfOutputMsg" type="tns:StoreNativeCpfOutputMsgType" />
+
+	<complexType name="ResultType">
+		<attribute name="message" type="string" />
+		<attribute name="code" type="int" />
+	</complexType>
+
+	<complexType name="StoreNativeCpfInputMsgType">
+		<sequence>
+			<element name="ProcessName" type="string" />
+			<element name="NativeType" type="string" />
+			<element name="Native" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+			<element name="Cpf" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+			<element name="Anf" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="StoreNativeCpfOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType"/>
+		</sequence>
+	</complexType>
+
+</schema>
