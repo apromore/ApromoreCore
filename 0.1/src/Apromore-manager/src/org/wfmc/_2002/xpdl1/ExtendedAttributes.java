@@ -35,11 +35,11 @@ import javax.xml.bind.annotation.XmlType;
     "extendedAttribute"
 })
 @XmlRootElement(name = "ExtendedAttributes")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ExtendedAttributes {
 
     @XmlElement(name = "ExtendedAttribute")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected List<ExtendedAttribute> extendedAttribute;
 
     /**
@@ -64,7 +64,7 @@ public class ExtendedAttributes {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T04:25:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-22T11:04:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public List<ExtendedAttribute> getExtendedAttribute() {
         if (extendedAttribute == null) {
             extendedAttribute = new ArrayList<ExtendedAttribute>();
