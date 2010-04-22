@@ -1,7 +1,7 @@
 <!-- Controller is HeaderController.java -->
 <window id="header" height="40px">
 
-		<label value="Welcome to AProMoRe (v0.2 22/3/2010)"/>
+		<label value="Welcome to AProMoRe (v0.2 22/4/2010)"/>
 			<separator orient="vertical" bar="true"/>
 			<toolbarbutton id="moreButton" label="More info.."/>
 		<div style="float:right">

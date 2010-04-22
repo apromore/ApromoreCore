@@ -1,6 +1,6 @@
 <!-- Controller is  MenuController-->
 <menubar id="operationMenu">
-			<menuitem id="fileImport" label="Import" upload="true" disabled="false"/>
+			<menuitem id="fileImport" label="Import" disabled="false"/>
 	<menu id="edit" label="Edit">
 		<menupopup>
 			<menuitem id="editCopy" label="Copy" disabled="true"/>

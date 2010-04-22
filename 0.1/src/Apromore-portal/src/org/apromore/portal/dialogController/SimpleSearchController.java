@@ -5,8 +5,8 @@ import java.io.UnsupportedEncodingException;
 
 import javax.xml.bind.JAXBException;
 
-import org.apromore.portal.da.RequestToManager;
 import org.apromore.portal.exception.ExceptionDao;
+import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_portal.ProcessSummariesType;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;

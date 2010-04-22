@@ -1,17 +1,24 @@
-package org.apromore.portal.da;
+package org.apromore.portal.manager;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.util.List;
 
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.util.ByteArrayDataSource;
 import javax.xml.namespace.QName;
 
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
+import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.exception.ExceptionProcess;
 import org.apromore.portal.exception.ExceptionUser;
 import org.apromore.portal.model_portal.DomainsType;
 import org.apromore.portal.model_portal.FormatsType;
+import org.apromore.portal.model_portal.ImportProcessInputMsgType;
+import org.apromore.portal.model_portal.ImportProcessOutputMsgType;
 import org.apromore.portal.model_portal.ProcessSummariesType;
 import org.apromore.portal.model_portal.ReadDomainsInputMsgType;
 import org.apromore.portal.model_portal.ReadDomainsOutputMsgType;
@@ -104,9 +111,17 @@ public class RequestToManager {
 		}
 	}
 
-	public ResultType ImportModel(InputStream nativeProcessFormat,
-			String string, UserType currentUser) {
-		// TODO Auto-generated method stub
-		return null;
+	public void ImportModel(String nativeType, String processName, InputStream process) throws IOException, ExceptionImport {
+		
+		ImportProcessInputMsgType payload = new ImportProcessInputMsgType();
+		DataSource source = new ByteArrayDataSource(process, "text/xml"); 
+		payload.setNativeType(nativeType);
+		payload.setProcessName(processName);
+		payload.setProcessDescription(new DataHandler(source));
+		ImportProcessOutputMsgType res = this.port.importProcess(payload);
+		ResultType result = res.getResult();
+		if (result.getCode() == -1) {
+			throw new ExceptionImport (result.getMessage()); 
+		}
 	}
 }
