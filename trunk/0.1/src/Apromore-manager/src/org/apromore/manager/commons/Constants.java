@@ -8,6 +8,11 @@ public final class Constants {
 	public static final String DA_MANAGER_URI = "http://www.apromore.org/data_access/service_manager";
 	public static final String DA_MANAGER_SERVICE = "DAManagerService";
 	
+	// Canoniser details
+	public static final String CANONISER_MANAGER_URI = "http://www.apromore.org/canoniser/service_manager" ;
+	public static final String CANONISER_MANAGER_SERVICE = "CanoniserManagerService";
+
+	
 	// JAXB
 	public static final String JAXB_xpdl2Canonical = "org.apromore.messages";
 	public static final String JAXB_RESULT = "org.apromore.common";
