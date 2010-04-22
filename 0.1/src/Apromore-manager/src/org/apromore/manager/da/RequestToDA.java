@@ -5,6 +5,12 @@ import java.util.List;
 
 import javax.xml.namespace.QName;
 
+import org.apromore.manager.commons.Constants;
+import org.apromore.manager.exception.ExceptionDomains;
+import org.apromore.manager.exception.ExceptionFormats;
+import org.apromore.manager.exception.ExceptionReadProcessSummaries;
+import org.apromore.manager.exception.ExceptionReadUser;
+import org.apromore.manager.exception.ExceptionWriteUser;
 import org.apromore.manager.model_manager.ReadDomainsInputMsgType;
 import org.apromore.manager.model_manager.ReadDomainsOutputMsgType;
 import org.apromore.manager.model_manager.ReadFormatsInputMsgType;
@@ -18,15 +24,7 @@ import org.apromore.manager.model_manager.WriteUserInputMsgType;
 import org.apromore.manager.model_manager.WriteUserOutputMsgType;
 import org.apromore.manager.model_portal.ProcessSummariesType;
 import org.apromore.manager.model_portal.ProcessSummaryType;
-import org.apromore.manager.model_portal.ReadUserOutputMsgType;
-import org.apromore.manager.model_portal.SearchExpressionType;
 import org.apromore.manager.model_portal.VersionSummaryType;
-import org.apromore.manager.commons.Constants;
-import org.apromore.manager.exception.ExceptionDomains;
-import org.apromore.manager.exception.ExceptionFormats;
-import org.apromore.manager.exception.ExceptionReadProcessSummaries;
-import org.apromore.manager.exception.ExceptionReadUser;
-import org.apromore.manager.exception.ExceptionWriteUser;
 
 public class RequestToDA {
 
