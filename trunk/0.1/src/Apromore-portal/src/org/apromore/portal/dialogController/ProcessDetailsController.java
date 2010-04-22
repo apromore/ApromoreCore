@@ -7,8 +7,8 @@ import java.util.Vector;
 
 import javax.xml.bind.JAXBException;
 
-import org.apromore.portal.da.RequestToManager;
 import org.apromore.portal.exception.ExceptionDao;
+import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_portal.FormatsType;
 import org.apromore.portal.model_portal.ProcessSummaryType;
 import org.apromore.portal.model_portal.VersionSummaryType;

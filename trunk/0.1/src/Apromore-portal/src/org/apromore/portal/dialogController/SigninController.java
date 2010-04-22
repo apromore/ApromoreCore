@@ -1,10 +1,11 @@
 package org.apromore.portal.dialogController;
 
 
-import org.apromore.portal.da.RequestToManager;
 import org.apromore.portal.exception.DialogException;
+import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_portal.UserType;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
@@ -27,7 +28,7 @@ public class SigninController extends Window {
 	private Textbox passwd;
 	private MainController mainC;
 	private UserType user;
-	
+
 	/**
 	 * controller of the view defined in signin.zul
 	 * 
@@ -36,49 +37,49 @@ public class SigninController extends Window {
 	 * @throws DialogException
 	 * 
 	 * TODO clean up exceptions
+	 * @throws InterruptedException 
+	 * @throws SuspendNotAllowedException 
 	 */
-	public SigninController(HeaderController headerController, MainController mainC) throws DialogException {
+	public SigninController(HeaderController headerController, MainController mainC) 
+	throws DialogException, SuspendNotAllowedException, InterruptedException {
 		this.mainC = mainC;
 		/**
 		 * get components
 		 */
 		this.headerC = headerController;
 		this.headerW = (Window) mainC.getFellow("headercomp").getFellow("header");
-		
-		try {
-			final Window win = (Window) Executions.createComponents(
-					"macros/signin.zul", null, null);
 
-			this.signinWindow = (Window) win.getFellow("signinWindow");
-			this.username = (Textbox) this.signinWindow.getFellow("username");
-			this.passwd = (Textbox) this.signinWindow.getFellow("passwd");
-			this.okWindowButton = (Button) this.signinWindow.getFellow("okWindowButton");
-			this.cancelWindowButton = (Button) this.signinWindow.getFellow("cancelWindowButton");
-			
-			okWindowButton.addEventListener("onClick",
-					new EventListener() {
-				public void onEvent(Event event) throws Exception {
-					signin();
-				}
-			});
-			this.signinWindow.addEventListener("onOK",
-					new EventListener() {
-				public void onEvent(Event event) throws Exception {
-					signin();
-				}
-			});
-			cancelWindowButton.addEventListener("onClick",
-					new EventListener() {
-				public void onEvent(Event event) throws Exception {
-					cancel();
-				}
-			});	
-			
-			win.doModal();
-			//this.headerW.appendChild(this.signinWindow);
-		} catch (Exception e) {
-			throw new DialogException("Error in signin controller: " + e.getMessage());
-		}
+
+		final Window win = (Window) Executions.createComponents(
+				"macros/signin.zul", null, null);
+
+		this.signinWindow = (Window) win.getFellow("signinWindow");
+		this.username = (Textbox) this.signinWindow.getFellow("username");
+		this.passwd = (Textbox) this.signinWindow.getFellow("passwd");
+		this.okWindowButton = (Button) this.signinWindow.getFellow("okWindowButton");
+		this.cancelWindowButton = (Button) this.signinWindow.getFellow("cancelWindowButton");
+
+		okWindowButton.addEventListener("onClick",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				signin();
+			}
+		});
+		this.signinWindow.addEventListener("onOK",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				signin();
+			}
+		});
+		cancelWindowButton.addEventListener("onClick",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				cancel();
+			}
+		});	
+
+		win.doModal();
+
 	}
 
 
@@ -88,12 +89,12 @@ public class SigninController extends Window {
 	private void cancel() {
 		this.signinWindow.detach();
 	}
-	
+
 	private void signin() throws InterruptedException {
 		try {			
 			String username = this.username.getValue();
 			String passwd = this.passwd.getValue();
-// TODO: check credentials
+			// TODO: check credentials
 			RequestToManager request = new RequestToManager();
 			UserType user = request.ReadUser(username);
 			this.user = user;
@@ -103,7 +104,7 @@ public class SigninController extends Window {
 			Messagebox.show("Repository not available ("+e.getMessage()+")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		} finally {
-			this.signinWindow.detach();
+			cancel();
 		}
 	}
 }

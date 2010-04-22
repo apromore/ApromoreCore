@@ -6,8 +6,8 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
-import org.apromore.portal.da.RequestToManager;
 import org.apromore.portal.exception.ExceptionDao;
+import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_portal.DomainsType;
 import org.apromore.portal.model_portal.FormatsType;
 import org.zkoss.zk.ui.Executions;

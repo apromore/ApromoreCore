@@ -2,7 +2,7 @@ package org.apromore.portal.dialogController;
 
 import java.util.Iterator;
 
-import org.apromore.portal.da.RequestToManager;
+import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_portal.ProcessSummariesType;
 import org.apromore.portal.model_portal.UserType;
 import org.zkoss.zk.ui.Component;
