@@ -12,13 +12,13 @@ drop view process_ranking;
 drop view keywords ;
 
 create table annotations (
-	uri varchar(80),
+	uri 		int 	auto_increment,
 	content text,
 	constraint pk_annotations primary key (uri)
 ) engine=innoDB;
 
 create table canonicals (
-	uri varchar(80),
+	uri		int 	auto_increment,
 	content text,
 	constraint pk_canonicals primary key (uri)
 ) engine=innoDB;
@@ -65,13 +65,15 @@ create table processes (
 ) engine=InnoDB;
 
 create table natives (
-	uri varchar(80),
+	uri		int 	auto_increment,
 	content text,
 	nat_type varchar(20),
-	canonical varchar(80),
+	canonical int,
+	annotation int,
 	constraint pk_natives primary key (uri),
 	constraint fk_natives foreign key (nat_type) references native_types(nat_type), 
-	constraint fk_natives2 foreign key (canonical) references canonicals(uri)
+	constraint fk_natives2 foreign key (canonical) references canonicals(uri),
+	constraint fk_natives3 foreign key (annotations) references annotations(uri)
 ) engine=innoDB;
 
 create table process_versions (
@@ -79,7 +81,7 @@ create table process_versions (
 	version_name varchar(40),
 	creation_date datetime,
 	last_update datetime,
-	canonical varchar(80),
+	canonical int,
 	ranking varchar(10),
 	constraint pk_versions primary key (processId,version_name),
 	constraint fk_versions1 foreign key (processId) references processes(processId)
