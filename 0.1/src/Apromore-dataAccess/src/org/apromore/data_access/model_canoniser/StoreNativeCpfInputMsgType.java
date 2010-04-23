@@ -45,27 +45,27 @@ import org.apromore.cpf.CanonicalProcessType;
     "cpf",
     "anf"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class StoreNativeCpfInputMsgType {
 
     @XmlElement(name = "ProcessName", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String processName;
     @XmlElement(name = "NativeType", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String nativeType;
     @XmlElement(name = "Username", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String username;
     @XmlElement(name = "Native", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected DataHandler _native;
     @XmlElement(name = "Cpf", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected CanonicalProcessType cpf;
     @XmlElement(name = "Anf", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected AnnotationsType anf;
 
     /**
@@ -76,7 +76,7 @@ public class StoreNativeCpfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getProcessName() {
         return processName;
     }
@@ -89,7 +89,7 @@ public class StoreNativeCpfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setProcessName(String value) {
         this.processName = value;
     }
@@ -102,7 +102,7 @@ public class StoreNativeCpfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getNativeType() {
         return nativeType;
     }
@@ -115,7 +115,7 @@ public class StoreNativeCpfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setNativeType(String value) {
         this.nativeType = value;
     }
@@ -128,7 +128,7 @@ public class StoreNativeCpfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getUsername() {
         return username;
     }
@@ -141,7 +141,7 @@ public class StoreNativeCpfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setUsername(String value) {
         this.username = value;
     }
@@ -154,7 +154,7 @@ public class StoreNativeCpfInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public DataHandler getNative() {
         return _native;
     }
@@ -167,7 +167,7 @@ public class StoreNativeCpfInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setNative(DataHandler value) {
         this._native = value;
     }
@@ -180,7 +180,7 @@ public class StoreNativeCpfInputMsgType {
      *     {@link CanonicalProcessType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public CanonicalProcessType getCpf() {
         return cpf;
     }
@@ -193,7 +193,7 @@ public class StoreNativeCpfInputMsgType {
      *     {@link CanonicalProcessType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setCpf(CanonicalProcessType value) {
         this.cpf = value;
     }
@@ -206,7 +206,7 @@ public class StoreNativeCpfInputMsgType {
      *     {@link AnnotationsType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public AnnotationsType getAnf() {
         return anf;
     }
@@ -219,7 +219,7 @@ public class StoreNativeCpfInputMsgType {
      *     {@link AnnotationsType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setAnf(AnnotationsType value) {
         this.anf = value;
     }
