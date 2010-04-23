@@ -47,19 +47,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ReadProcessSummariesInputMsgType }
+     * Create an instance of {@link FormatsType }
      * 
      */
-    public ReadProcessSummariesInputMsgType createReadProcessSummariesInputMsgType() {
-        return new ReadProcessSummariesInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ProcessSummaryType }
-     * 
-     */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
+    public FormatsType createFormatsType() {
+        return new FormatsType();
     }
 
     /**
@@ -71,19 +63,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ResultType }
+     * Create an instance of {@link SearchExpressionType }
      * 
      */
-    public ResultType createResultType() {
-        return new ResultType();
-    }
-
-    /**
-     * Create an instance of {@link ReadFormatsOutputMsgType }
-     * 
-     */
-    public ReadFormatsOutputMsgType createReadFormatsOutputMsgType() {
-        return new ReadFormatsOutputMsgType();
+    public SearchExpressionType createSearchExpressionType() {
+        return new SearchExpressionType();
     }
 
     /**
@@ -95,43 +79,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SearchExpressionType }
+     * Create an instance of {@link ReadUserOutputMsgType }
      * 
      */
-    public SearchExpressionType createSearchExpressionType() {
-        return new SearchExpressionType();
+    public ReadUserOutputMsgType createReadUserOutputMsgType() {
+        return new ReadUserOutputMsgType();
     }
 
     /**
-     * Create an instance of {@link ReadUserInputMsgType }
+     * Create an instance of {@link ReadDomainsOutputMsgType }
      * 
      */
-    public ReadUserInputMsgType createReadUserInputMsgType() {
-        return new ReadUserInputMsgType();
+    public ReadDomainsOutputMsgType createReadDomainsOutputMsgType() {
+        return new ReadDomainsOutputMsgType();
     }
 
     /**
-     * Create an instance of {@link ExportProcessOutputMsgType }
+     * Create an instance of {@link ExportProcessInputMsgType }
      * 
      */
-    public ExportProcessOutputMsgType createExportProcessOutputMsgType() {
-        return new ExportProcessOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link FormatsType }
-     * 
-     */
-    public FormatsType createFormatsType() {
-        return new FormatsType();
-    }
-
-    /**
-     * Create an instance of {@link WriteUserInputMsgType }
-     * 
-     */
-    public WriteUserInputMsgType createWriteUserInputMsgType() {
-        return new WriteUserInputMsgType();
+    public ExportProcessInputMsgType createExportProcessInputMsgType() {
+        return new ExportProcessInputMsgType();
     }
 
     /**
@@ -143,11 +111,59 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DomainsType }
+     * Create an instance of {@link ImportProcessInputMsgType }
      * 
      */
-    public DomainsType createDomainsType() {
-        return new DomainsType();
+    public ImportProcessInputMsgType createImportProcessInputMsgType() {
+        return new ImportProcessInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ReadUserInputMsgType }
+     * 
+     */
+    public ReadUserInputMsgType createReadUserInputMsgType() {
+        return new ReadUserInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ReadDomainsInputMsgType }
+     * 
+     */
+    public ReadDomainsInputMsgType createReadDomainsInputMsgType() {
+        return new ReadDomainsInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ExportProcessOutputMsgType }
+     * 
+     */
+    public ExportProcessOutputMsgType createExportProcessOutputMsgType() {
+        return new ExportProcessOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ReadFormatsOutputMsgType }
+     * 
+     */
+    public ReadFormatsOutputMsgType createReadFormatsOutputMsgType() {
+        return new ReadFormatsOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ReadProcessSummariesInputMsgType }
+     * 
+     */
+    public ReadProcessSummariesInputMsgType createReadProcessSummariesInputMsgType() {
+        return new ReadProcessSummariesInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link UserType }
+     * 
+     */
+    public UserType createUserType() {
+        return new UserType();
     }
 
     /**
@@ -167,35 +183,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ImportProcessInputMsgType }
+     * Create an instance of {@link WriteUserInputMsgType }
      * 
      */
-    public ImportProcessInputMsgType createImportProcessInputMsgType() {
-        return new ImportProcessInputMsgType();
+    public WriteUserInputMsgType createWriteUserInputMsgType() {
+        return new WriteUserInputMsgType();
     }
 
     /**
-     * Create an instance of {@link ExportProcessInputMsgType }
+     * Create an instance of {@link DomainsType }
      * 
      */
-    public ExportProcessInputMsgType createExportProcessInputMsgType() {
-        return new ExportProcessInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link UserType }
-     * 
-     */
-    public UserType createUserType() {
-        return new UserType();
-    }
-
-    /**
-     * Create an instance of {@link ReadDomainsOutputMsgType }
-     * 
-     */
-    public ReadDomainsOutputMsgType createReadDomainsOutputMsgType() {
-        return new ReadDomainsOutputMsgType();
+    public DomainsType createDomainsType() {
+        return new DomainsType();
     }
 
     /**
@@ -207,14 +207,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ReadUserOutputMsgType }
-     * 
-     */
-    public ReadUserOutputMsgType createReadUserOutputMsgType() {
-        return new ReadUserOutputMsgType();
-    }
-
-    /**
      * Create an instance of {@link ProcessSummariesType }
      * 
      */
@@ -223,11 +215,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ReadDomainsInputMsgType }
+     * Create an instance of {@link ResultType }
      * 
      */
-    public ReadDomainsInputMsgType createReadDomainsInputMsgType() {
-        return new ReadDomainsInputMsgType();
+    public ResultType createResultType() {
+        return new ResultType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessSummaryType }
+     * 
+     */
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
     }
 
     /**
