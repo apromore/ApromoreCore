@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema"
-	xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
 	targetNamespace="http://www.apromore.org/canoniser/model_manager"
 	xmlns:tns="http://www.apromore.org/canoniser/model_manager">
 
@@ -18,13 +17,33 @@
 			<element name="NativeType" type="string" />
 			<element name="ProcessDescription" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
-		</sequence>
-	</complexType>
-	
-	<complexType name="CanoniseProcessOutputMsgType">
-		<sequence>
-			<element name="Result" type="tns:ResultType"/>
+			<element name="Username" type="string" />
 		</sequence>
 	</complexType>
 
+	<complexType name="CanoniseProcessOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+			<element name="ProcessSummary" type="tns:ProcessSummaryType" />
+		</sequence>
+	</complexType>
+	<complexType name="ProcessSummaryType">
+		<sequence>
+			<element minOccurs="1" maxOccurs="unbounded" name="VersionSummaries"
+				type="tns:VersionSummaryType" />
+		</sequence>
+		<attribute name="original_native_type" type="string" />
+		<attribute name="name" type="string" />
+		<attribute name="id" type="int" />
+		<attribute name="domain" type="string" />
+		<attribute name="ranking" type="int" />
+		<attribute name="last_version" type="string" />
+	</complexType>
+
+	<complexType name="VersionSummaryType">
+		<attribute name="ranking" type="int" />
+		<attribute name="name" type="string" />
+		<attribute name="last_update" type="dateTime" />
+		<attribute name="creation_date" type="dateTime" />
+	</complexType>
 </schema>
