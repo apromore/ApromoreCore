@@ -35,19 +35,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CanoniseProcessOutputMsgType }
+     * Create an instance of {@link VersionSummaryType }
      * 
      */
-    public CanoniseProcessOutputMsgType createCanoniseProcessOutputMsgType() {
-        return new CanoniseProcessOutputMsgType();
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
     }
 
-    /**
+	/**
      * Create an instance of {@link ResultType }
      * 
      */
     public ResultType createResultType() {
         return new ResultType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessSummaryType }
+     * 
+     */
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
+    }
+
+	/**
+     * Create an instance of {@link CanoniseProcessOutputMsgType }
+     * 
+     */
+    public CanoniseProcessOutputMsgType createCanoniseProcessOutputMsgType() {
+        return new CanoniseProcessOutputMsgType();
     }
 
     /**
