@@ -1,21 +1,11 @@
 package org.apromore.portal.dialogController;
 
-import java.io.IOException;
-import java.io.InputStream;
-
-import javax.xml.bind.JAXBException;
-
 import org.apromore.portal.exception.DialogException;
-import org.apromore.portal.exception.ExceptionImport;
-import org.apromore.portal.manager.RequestToManager;
-import org.apromore.portal.model_portal.ResultType;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.event.UploadEvent;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menuitem;
-import org.zkoss.zul.Messagebox;
 
 
 public class MenuController extends Menubar {
