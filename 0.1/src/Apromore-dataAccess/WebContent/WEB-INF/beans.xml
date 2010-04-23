@@ -13,4 +13,13 @@
 			<bean class="org.apache.cxf.feature.LoggingFeature" />
 		</jaxws:features>
 	</jaxws:endpoint>
+	<jaxws:endpoint xmlns:tns="http://www.apromore.org/data_access/service_canoniser"
+		id="dacanoniserporttype"
+		implementor="org.apromore.data_access.service_canoniser.DACanoniserPortTypeImpl"
+		wsdlLocation="wsdl/da_canoniser.wsdl" endpointName="tns:DACanoniser"
+		serviceName="tns:DACanoniserService" address="/DACanoniser">
+		<jaxws:features>
+			<bean class="org.apache.cxf.feature.LoggingFeature" />
+		</jaxws:features>
+	</jaxws:endpoint>
 </beans>

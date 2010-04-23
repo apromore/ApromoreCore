@@ -22,7 +22,7 @@ public final class ConstantDB {
 	public static final String ATTR_URI = "uri";
 	public static final String ATTR_CONTENT = "content";
 	public static final String ATTR_NAT_TYPE = "nat_type";
-	public static final String ATTR_RELATION = "relation";
+	public static final String ATTR_ANNOTATION = "annotation";
 
 	public static final String TABLE_CANONICALS = "canonicals";
 
@@ -47,6 +47,7 @@ public final class ConstantDB {
 
 	public static final String VIEW_KEYWORDS = "keywords";
 	public static final String ATTR_WORD = "word";
+
 
 }
 

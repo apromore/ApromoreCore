@@ -1,9 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
 	xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+	xmlns:anf="http://www.apromore.org/ANF"
+	xmlns:cpf="http://www.apromore.org/CPF"
 	targetNamespace="http://www.apromore.org/data_access/model_canoniser"
 	xmlns:tns="http://www.apromore.org/data_access/model_canoniser">
 
+	<import schemaLocation="anf_0.1.xsd" namespace="http://www.apromore.org/ANF" />
+	<import schemaLocation="cpf.xsd" namespace="http://www.apromore.org/CPF" />
+	
 	<element name="StoreNativeCpfInputMsg" type="tns:StoreNativeCpfInputMsgType" />
 	<element name="StoreNativeCpfOutputMsg" type="tns:StoreNativeCpfOutputMsgType" />
 
@@ -16,19 +21,40 @@
 		<sequence>
 			<element name="ProcessName" type="string" />
 			<element name="NativeType" type="string" />
+			<element name="Username" type="string" />
 			<element name="Native" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
-			<element name="Cpf" type="base64Binary"
-				xmime:expectedContentTypes="application/octet-stream" />
-			<element name="Anf" type="base64Binary"
-				xmime:expectedContentTypes="application/octet-stream" />
+			<element name="Cpf" type="cpf:CanonicalProcessType" />
+			<element name="Anf" type="anf:AnnotationsType" />
 		</sequence>
 	</complexType>
 	
 	<complexType name="StoreNativeCpfOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType"/>
+			<element name="ProcessSummary" type="tns:ProcessSummaryType" />
 		</sequence>
 	</complexType>
+	
+		<complexType name="ProcessSummaryType">
+		<sequence>
+			<element minOccurs="1" maxOccurs="unbounded"
+				name="VersionSummaries" type="tns:VersionSummaryType" />
+		</sequence>
+		<attribute name="original_native_type" type="string" />
+		<attribute name="name" type="string" />
+		<attribute name="id" type="int" />
+		<attribute name="domain" type="string" />
+		<attribute name="ranking" type="int" />
+		<attribute name="last_version" type="string" />
+	</complexType>
+
+	<complexType name="VersionSummaryType">
+		<attribute name="ranking" type="int" />
+		<attribute name="name" type="string" />
+		<attribute name="last_update" type="dateTime" />
+		<attribute name="creation_date" type="dateTime" />
+	</complexType>
+	
 
 </schema>
