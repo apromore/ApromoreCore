@@ -7,7 +7,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apromore.portal.exception.ExceptionDao;
 import org.apromore.portal.manager.RequestToManager;
-import org.apromore.portal.model_portal.ProcessSummariesType;
+import org.apromore.portal.model_manager.ProcessSummariesType;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;

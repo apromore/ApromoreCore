@@ -9,9 +9,9 @@ import javax.xml.bind.JAXBException;
 
 import org.apromore.portal.exception.ExceptionDao;
 import org.apromore.portal.manager.RequestToManager;
-import org.apromore.portal.model_portal.FormatsType;
-import org.apromore.portal.model_portal.ProcessSummaryType;
-import org.apromore.portal.model_portal.VersionSummaryType;
+import org.apromore.portal.model_manager.FormatsType;
+import org.apromore.portal.model_manager.ProcessSummaryType;
+import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
