@@ -3,8 +3,8 @@ package org.apromore.portal.dialogController;
 import java.util.Iterator;
 
 import org.apromore.portal.manager.RequestToManager;
-import org.apromore.portal.model_portal.ProcessSummariesType;
-import org.apromore.portal.model_portal.UserType;
+import org.apromore.portal.model_manager.ProcessSummariesType;
+import org.apromore.portal.model_manager.UserType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;

@@ -96,20 +96,20 @@ public class ImportProcessController extends Window {
 	private void importProcess() throws InterruptedException {
 		RequestToManager request = new RequestToManager();
 		try {
-			request.ImportModel(this.nativeType, this.processName.getValue(), this.nativeProcess);
-			Messagebox.show("Process " + this.processName.getValue() + " canonised and stored.", "", Messagebox.OK,
+			request.ImportModel(this.mainC.getCurrentUser().getUsername(), this.nativeType, this.processName.getValue(), this.nativeProcess);
+			Messagebox.show("Import of " + this.processName.getValue() + " completed.", "", Messagebox.OK,
 					Messagebox.INFORMATION);
 		} catch (WrongValueException e) {
 			e.printStackTrace();
-			Messagebox.show("Canonisation failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
+			Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		} catch (ExceptionImport e) {
 			e.printStackTrace();
-			Messagebox.show("Canonisation failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
+			Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		} catch (IOException e) {
 			e.printStackTrace();
-			Messagebox.show("Canonisation failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
+			Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		} finally {
 			cancel();

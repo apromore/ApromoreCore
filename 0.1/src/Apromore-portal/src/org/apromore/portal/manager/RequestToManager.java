@@ -15,23 +15,24 @@ import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.exception.ExceptionProcess;
 import org.apromore.portal.exception.ExceptionUser;
-import org.apromore.portal.model_portal.DomainsType;
-import org.apromore.portal.model_portal.FormatsType;
-import org.apromore.portal.model_portal.ImportProcessInputMsgType;
-import org.apromore.portal.model_portal.ImportProcessOutputMsgType;
-import org.apromore.portal.model_portal.ProcessSummariesType;
-import org.apromore.portal.model_portal.ReadDomainsInputMsgType;
-import org.apromore.portal.model_portal.ReadDomainsOutputMsgType;
-import org.apromore.portal.model_portal.ReadFormatsInputMsgType;
-import org.apromore.portal.model_portal.ReadFormatsOutputMsgType;
-import org.apromore.portal.model_portal.ReadProcessSummariesInputMsgType;
-import org.apromore.portal.model_portal.ReadProcessSummariesOutputMsgType;
-import org.apromore.portal.model_portal.ReadUserInputMsgType;
-import org.apromore.portal.model_portal.ReadUserOutputMsgType;
-import org.apromore.portal.model_portal.ResultType;
-import org.apromore.portal.model_portal.UserType;
-import org.apromore.portal.model_portal.WriteUserInputMsgType;
-import org.apromore.portal.model_portal.WriteUserOutputMsgType;
+import org.apromore.portal.model_manager.DomainsType;
+import org.apromore.portal.model_manager.FormatsType;
+import org.apromore.portal.model_manager.ImportProcessInputMsgType;
+import org.apromore.portal.model_manager.ImportProcessOutputMsgType;
+import org.apromore.portal.model_manager.ProcessSummariesType;
+import org.apromore.portal.model_manager.ProcessSummaryType;
+import org.apromore.portal.model_manager.ReadDomainsInputMsgType;
+import org.apromore.portal.model_manager.ReadDomainsOutputMsgType;
+import org.apromore.portal.model_manager.ReadFormatsInputMsgType;
+import org.apromore.portal.model_manager.ReadFormatsOutputMsgType;
+import org.apromore.portal.model_manager.ReadProcessSummariesInputMsgType;
+import org.apromore.portal.model_manager.ReadProcessSummariesOutputMsgType;
+import org.apromore.portal.model_manager.ReadUserInputMsgType;
+import org.apromore.portal.model_manager.ReadUserOutputMsgType;
+import org.apromore.portal.model_manager.ResultType;
+import org.apromore.portal.model_manager.UserType;
+import org.apromore.portal.model_manager.WriteUserInputMsgType;
+import org.apromore.portal.model_manager.WriteUserOutputMsgType;
 
 public class RequestToManager {
 	private static final QName SERVICE_NAME = new QName("http://www.apromore.org/manager/service_portal", "ManagerPortalService");
@@ -111,10 +112,12 @@ public class RequestToManager {
 		}
 	}
 
-	public void ImportModel(String nativeType, String processName, InputStream process) throws IOException, ExceptionImport {
+	public ProcessSummaryType ImportModel(String username, String nativeType, String processName, InputStream process) 
+	throws IOException, ExceptionImport {
 		
 		ImportProcessInputMsgType payload = new ImportProcessInputMsgType();
 		DataSource source = new ByteArrayDataSource(process, "text/xml"); 
+		payload.setUsername(username);
 		payload.setNativeType(nativeType);
 		payload.setProcessName(processName);
 		payload.setProcessDescription(new DataHandler(source));
@@ -122,6 +125,9 @@ public class RequestToManager {
 		ResultType result = res.getResult();
 		if (result.getCode() == -1) {
 			throw new ExceptionImport (result.getMessage()); 
+		} else {
+			ProcessSummaryType processSummary = res.get
 		}
+		
 	}
 }
