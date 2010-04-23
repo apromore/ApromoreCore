@@ -35,30 +35,14 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link VersionSummaryType }
+     * Create an instance of {@link CanoniseProcessInputMsgType }
      * 
      */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
-    }
-
-	/**
-     * Create an instance of {@link ResultType }
-     * 
-     */
-    public ResultType createResultType() {
-        return new ResultType();
+    public CanoniseProcessInputMsgType createCanoniseProcessInputMsgType() {
+        return new CanoniseProcessInputMsgType();
     }
 
     /**
-     * Create an instance of {@link ProcessSummaryType }
-     * 
-     */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
-    }
-
-	/**
      * Create an instance of {@link CanoniseProcessOutputMsgType }
      * 
      */
@@ -67,11 +51,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CanoniseProcessInputMsgType }
+     * Create an instance of {@link ResultType }
      * 
      */
-    public CanoniseProcessInputMsgType createCanoniseProcessInputMsgType() {
-        return new CanoniseProcessInputMsgType();
+    public ResultType createResultType() {
+        return new ResultType();
     }
 
     /**

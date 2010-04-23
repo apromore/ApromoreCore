@@ -8,8 +8,8 @@
 	<jaxws:endpoint xmlns:tns="http://www.apromore.org/canoniser/service_manager"
 		id="canonisermanagerporttype"
 		implementor="org.apromore.canoniser.service_manager.CanoniserManagerPortTypeImpl"
-		wsdlLocation="canoniser_manager.wsdl" endpointName="tns:CanoniserManagerPortal"
-		serviceName="tns:CanoniserManagerService" address="/CanoniserManagerPortal">
+		wsdlLocation="canoniser_manager.wsdl" endpointName="tns:CanoniserManager"
+		serviceName="tns:CanoniserManagerService" address="/CanoniserManager">
 		<jaxws:features>
 			<bean class="org.apache.cxf.feature.LoggingFeature" />
 		</jaxws:features>
