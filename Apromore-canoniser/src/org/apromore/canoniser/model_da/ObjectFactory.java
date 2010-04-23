@@ -35,14 +35,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StoreNativeCpfOutputMsgType }
-     * 
-     */
-    public StoreNativeCpfOutputMsgType createStoreNativeCpfOutputMsgType() {
-        return new StoreNativeCpfOutputMsgType();
-    }
-
-    /**
      * Create an instance of {@link ResultType }
      * 
      */
@@ -51,14 +43,14 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ProcessSummaryType }
+     * Create an instance of {@link StoreNativeCpfOutputMsgType }
      * 
      */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
+    public StoreNativeCpfOutputMsgType createStoreNativeCpfOutputMsgType() {
+        return new StoreNativeCpfOutputMsgType();
     }
 
-	/**
+    /**
      * Create an instance of {@link StoreNativeCpfInputMsgType }
      * 
      */
@@ -67,14 +59,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link VersionSummaryType }
-     * 
-     */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
-    }
-
-	/**
      * Create an instance of {@link JAXBElement }{@code <}{@link StoreNativeCpfInputMsgType }{@code >}}
      * 
      */

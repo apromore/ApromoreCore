@@ -46,31 +46,31 @@ import javax.xml.bind.annotation.XmlType;
     "resourceType",
     "object"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class CanonicalProcessType {
 
     @XmlElement(name = "Net", required = true)
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected List<NetType> net;
     @XmlElement(name = "ResourceType")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected List<ResourceTypeType> resourceType;
     @XmlElement(name = "Object")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected List<ObjectType> object;
     @XmlAttribute(required = true)
     @XmlSchemaType(name = "anyURI")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String uri;
     @XmlAttribute(required = true)
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigDecimal version;
     @XmlAttribute(required = true)
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String name;
     @XmlAttribute(required = true)
     @XmlSchemaType(name = "positiveInteger")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigInteger rootId;
 
     /**
@@ -95,7 +95,7 @@ public class CanonicalProcessType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public List<NetType> getNet() {
         if (net == null) {
             net = new ArrayList<NetType>();
@@ -125,7 +125,7 @@ public class CanonicalProcessType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public List<ResourceTypeType> getResourceType() {
         if (resourceType == null) {
             resourceType = new ArrayList<ResourceTypeType>();
@@ -155,7 +155,7 @@ public class CanonicalProcessType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public List<ObjectType> getObject() {
         if (object == null) {
             object = new ArrayList<ObjectType>();
@@ -171,7 +171,7 @@ public class CanonicalProcessType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public String getUri() {
         return uri;
     }
@@ -184,7 +184,7 @@ public class CanonicalProcessType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setUri(String value) {
         this.uri = value;
     }
@@ -197,7 +197,7 @@ public class CanonicalProcessType {
      *     {@link BigDecimal }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public BigDecimal getVersion() {
         return version;
     }
@@ -210,7 +210,7 @@ public class CanonicalProcessType {
      *     {@link BigDecimal }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setVersion(BigDecimal value) {
         this.version = value;
     }
@@ -223,7 +223,7 @@ public class CanonicalProcessType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public String getName() {
         return name;
     }
@@ -236,7 +236,7 @@ public class CanonicalProcessType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setName(String value) {
         this.name = value;
     }
@@ -249,7 +249,7 @@ public class CanonicalProcessType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public BigInteger getRootId() {
         return rootId;
     }
@@ -262,7 +262,7 @@ public class CanonicalProcessType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setRootId(BigInteger value) {
         this.rootId = value;
     }

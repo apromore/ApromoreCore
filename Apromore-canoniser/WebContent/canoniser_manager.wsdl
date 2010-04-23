@@ -1,23 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions targetNamespace="http://www.apromore.org/canoniser/service_manager" 
-xmlns="http://schemas.xmlsoap.org/wsdl/" 
-xmlns:tnsx="http://www.apromore.org/canoniser/model_manager" 
-xmlns:tns="http://www.apromore.org/canoniser/service_manager" 
-xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
-xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
-
+<definitions targetNamespace="http://www.apromore.org/canoniser/service_manager" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tnsx="http://www.apromore.org/canoniser/model_manager" xmlns:tns="http://www.apromore.org/canoniser/service_manager" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
   <import namespace="http://www.apromore.org/canoniser/model_manager" location="canoniser_managerX.xsd">
     </import>
-    
-  <message name="CanoniseProcessInputMsg">
-    <part name="payload" element="tnsx:CanoniseProcessInputMsg">
-    </part>
-  </message>
   <message name="CanoniseProcessOutputMsg">
     <part name="payload" element="tnsx:CanoniseProcessOutputMsg">
     </part>
   </message>
-  
+  <message name="CanoniseProcessInputMsg">
+    <part name="payload" element="tnsx:CanoniseProcessInputMsg">
+    </part>
+  </message>
   <portType name="CanoniserManagerPortType">
     <operation name="CanoniseProcess">
       <input name="CanoniseProcessRequest" message="tns:CanoniseProcessInputMsg">
@@ -26,7 +18,6 @@ xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
     </output>
     </operation>
   </portType>
-  
   <binding name="CanoniserManagerBinding" type="tns:CanoniserManagerPortType">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="CanoniseProcess">

@@ -24,26 +24,6 @@
 	<complexType name="CanoniseProcessOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" />
-			<element name="ProcessSummary" type="tns:ProcessSummaryType" />
 		</sequence>
-	</complexType>
-	<complexType name="ProcessSummaryType">
-		<sequence>
-			<element minOccurs="1" maxOccurs="unbounded" name="VersionSummaries"
-				type="tns:VersionSummaryType" />
-		</sequence>
-		<attribute name="original_native_type" type="string" />
-		<attribute name="name" type="string" />
-		<attribute name="id" type="int" />
-		<attribute name="domain" type="string" />
-		<attribute name="ranking" type="int" />
-		<attribute name="last_version" type="string" />
-	</complexType>
-
-	<complexType name="VersionSummaryType">
-		<attribute name="ranking" type="int" />
-		<attribute name="name" type="string" />
-		<attribute name="last_update" type="dateTime" />
-		<attribute name="creation_date" type="dateTime" />
 	</complexType>
 </schema>
