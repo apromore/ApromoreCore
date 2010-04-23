@@ -20,7 +20,6 @@ import org.apromore.portal.model_manager.FormatsType;
 import org.apromore.portal.model_manager.ImportProcessInputMsgType;
 import org.apromore.portal.model_manager.ImportProcessOutputMsgType;
 import org.apromore.portal.model_manager.ProcessSummariesType;
-import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.ReadDomainsInputMsgType;
 import org.apromore.portal.model_manager.ReadDomainsOutputMsgType;
 import org.apromore.portal.model_manager.ReadFormatsInputMsgType;
@@ -112,7 +111,7 @@ public class RequestToManager {
 		}
 	}
 
-	public ProcessSummaryType ImportModel(String username, String nativeType, String processName, InputStream process) 
+	public void ImportModel(String username, String nativeType, String processName, InputStream process) 
 	throws IOException, ExceptionImport {
 		
 		ImportProcessInputMsgType payload = new ImportProcessInputMsgType();
@@ -125,9 +124,7 @@ public class RequestToManager {
 		ResultType result = res.getResult();
 		if (result.getCode() == -1) {
 			throw new ExceptionImport (result.getMessage()); 
-		} else {
-			ProcessSummaryType processSummary = res.get
-		}
+		} 
 		
 	}
 }
