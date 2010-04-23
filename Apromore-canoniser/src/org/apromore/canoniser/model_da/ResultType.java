@@ -1,7 +1,5 @@
 
-package org.apromore.anf;
-
-import java.math.BigDecimal;
+package org.apromore.canoniser.model_da;
 
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -11,16 +9,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for sizeType complex type.
+ * <p>Java class for ResultType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="sizeType">
+ * &lt;complexType name="ResultType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="width" type="{http://www.w3.org/2001/XMLSchema}decimal" />
- *       &lt;attribute name="height" type="{http://www.w3.org/2001/XMLSchema}decimal" />
+ *       &lt;attribute name="message" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="code" type="{http://www.w3.org/2001/XMLSchema}int" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -29,67 +27,67 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "sizeType")
+@XmlType(name = "ResultType")
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class SizeType {
+public class ResultType {
 
     @XmlAttribute
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected BigDecimal width;
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected String message;
     @XmlAttribute
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected BigDecimal height;
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected Integer code;
 
     /**
-     * Gets the value of the width property.
+     * Gets the value of the message property.
      * 
      * @return
      *     possible object is
-     *     {@link BigDecimal }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-	public BigDecimal getWidth() {
-        return width;
+    public String getMessage() {
+        return message;
     }
 
     /**
-     * Sets the value of the width property.
+     * Sets the value of the message property.
      * 
      * @param value
      *     allowed object is
-     *     {@link BigDecimal }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-	public void setWidth(BigDecimal value) {
-        this.width = value;
+    public void setMessage(String value) {
+        this.message = value;
     }
 
     /**
-     * Gets the value of the height property.
+     * Gets the value of the code property.
      * 
      * @return
      *     possible object is
-     *     {@link BigDecimal }
+     *     {@link Integer }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-	public BigDecimal getHeight() {
-        return height;
+    public Integer getCode() {
+        return code;
     }
 
     /**
-     * Sets the value of the height property.
+     * Sets the value of the code property.
      * 
      * @param value
      *     allowed object is
-     *     {@link BigDecimal }
+     *     {@link Integer }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-	public void setHeight(BigDecimal value) {
-        this.height = value;
+    public void setCode(Integer value) {
+        this.code = value;
     }
 
 }

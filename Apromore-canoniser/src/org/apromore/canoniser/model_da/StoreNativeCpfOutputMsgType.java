@@ -1,5 +1,5 @@
 
-package org.apromore.canoniser.model_manager;
+package org.apromore.canoniser.model_da;
 
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -9,17 +9,17 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for CanoniseProcessOutputMsgType complex type.
+ * <p>Java class for StoreNativeCpfOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="CanoniseProcessOutputMsgType">
+ * &lt;complexType name="StoreNativeCpfOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="Result" type="{http://www.apromore.org/canoniser/model_manager}ResultType"/>
- *         &lt;element name="ProcessSummary" type="{http://www.apromore.org/canoniser/model_manager}ProcessSummaryType"/>
+ *         &lt;element name="Result" type="{http://www.apromore.org/data_access/model_canoniser}ResultType"/>
+ *         &lt;element name="ProcessSummary" type="{http://www.apromore.org/data_access/model_canoniser}ProcessSummaryType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,19 +29,19 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CanoniseProcessOutputMsgType", propOrder = {
+@XmlType(name = "StoreNativeCpfOutputMsgType", propOrder = {
     "result",
     "processSummary"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:54:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class CanoniseProcessOutputMsgType {
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+public class StoreNativeCpfOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:54:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
 
     @XmlElement(name = "ProcessSummary", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:54:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ProcessSummaryType processSummary;
 
 	/**
@@ -52,7 +52,7 @@ public class CanoniseProcessOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:54:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ResultType getResult() {
         return result;
     }
@@ -65,7 +65,7 @@ public class CanoniseProcessOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:54:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -78,7 +78,7 @@ public class CanoniseProcessOutputMsgType {
      *     {@link ProcessSummaryType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:54:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ProcessSummaryType getProcessSummary() {
         return processSummary;
     }
@@ -91,7 +91,7 @@ public class CanoniseProcessOutputMsgType {
      *     {@link ProcessSummaryType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:54:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:49:24+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setProcessSummary(ProcessSummaryType value) {
         this.processSummary = value;
     }
