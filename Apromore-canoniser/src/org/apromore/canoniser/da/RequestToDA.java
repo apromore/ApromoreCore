@@ -11,7 +11,6 @@ import javax.xml.namespace.QName;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.exception.ExceptionStore;
-import org.apromore.canoniser.model_da.ProcessSummaryType;
 import org.apromore.canoniser.model_da.StoreNativeCpfInputMsgType;
 import org.apromore.canoniser.model_da.StoreNativeCpfOutputMsgType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -27,7 +26,7 @@ public class RequestToDA {
         this.port = ss.getDACanoniser(); 
 	}
 
-	public ProcessSummaryType StoreProcess(String username, String processName, String nativeType,
+	public void StoreProcess(String username, String processName, String nativeType,
 			InputStream process_xml, CanonicalProcessType cpf, AnnotationsType anf) throws IOException, ExceptionStore {
 		
 		StoreNativeCpfInputMsgType payload = new StoreNativeCpfInputMsgType();
@@ -40,8 +39,6 @@ public class RequestToDA {
 		StoreNativeCpfOutputMsgType res = this.port.storeNativeCpf(payload);
 		if (res.getResult().getCode() == -1) {
 			throw new ExceptionStore (res.getResult().getMessage());
-		} else {
-			return res.getProcessSummary();
 		}
 	}
 }
