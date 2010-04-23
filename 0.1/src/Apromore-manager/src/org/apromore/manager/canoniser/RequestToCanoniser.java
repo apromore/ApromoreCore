@@ -13,6 +13,7 @@ import org.apromore.manager.commons.Constants;
 import org.apromore.manager.da.DAManagerService;
 import org.apromore.manager.exception.ExceptionImport;
 import org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType;
+import org.apromore.manager.model_canoniser.ProcessSummaryType;
 
 public class RequestToCanoniser {
 
@@ -25,17 +26,21 @@ public class RequestToCanoniser {
 		this.port = ss.getCanoniserManager();
 	}
 
-	public void ImportProcess(String processName, String nativeType, InputStream process) throws IOException, ExceptionImport {
+	public ProcessSummaryType ImportProcess(String username, String processName, String nativeType, InputStream process) 
+	throws IOException, ExceptionImport {
 		org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType payload = new CanoniseProcessInputMsgType();
 		DataSource source = new ByteArrayDataSource(process, "text/xml"); 
+		payload.setUsername(username);
 		payload.setNativeType(nativeType);
 		payload.setProcessName(processName);
 		payload.setProcessDescription(new DataHandler(source));
 		org.apromore.manager.model_canoniser.CanoniseProcessOutputMsgType res = this.port.canoniseProcess(payload);
 		if (res.getResult().getCode() == -1) {
 			throw new ExceptionImport (res.getResult().getMessage());
+		} else {
+			ProcessSummaryType processSummaryC = res.getProcessSummary();
+			return processSummaryC;
 		}
-		
 		
 	}
 
