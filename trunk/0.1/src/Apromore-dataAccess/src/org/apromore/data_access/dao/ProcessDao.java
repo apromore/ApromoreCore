@@ -1,12 +1,22 @@
 package org.apromore.data_access.dao;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Vector;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Marshaller;
+
+import org.apromore.anf.AnnotationsType;
+import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.data_access.commons.ConstantDB;
 import org.apromore.data_access.exception.ExceptionDao;
 import org.apromore.data_access.model_manager.ProcessSummariesType;
@@ -320,90 +330,80 @@ public class ProcessDao extends BasicDao {
 		return res;
 	}
 
-	/**
-	 * store IncomingMessages information in the database
-	 * @param processName
-	 * @param domain
-	 * @param versionName
-	 * @param native_type
-	 * @param uri
-	 * @param cpf
-	 * @param npf
-	 * @param rlf
-	 * @param anf
-	 * @throws SQLException 
-	 */
-
-	/*public void recordProcess (String processName, String domain, String versionName, LoginType user,
-			String native_type, String uri, CanonicalProcessType cpf, 
-			InputStream npf, InputStream rlf, InputStream anf) throws SQLException {
+	public org.apromore.data_access.model_canoniser.ProcessSummaryType storeNativeCpf(String username, String processName,
+			String nativeType, InputStream process_xml,
+			CanonicalProcessType cpf, AnnotationsType anf) throws SQLException {
 
 		Connection conn = null;
 		Statement stmt0 = null;
 		PreparedStatement
-			stmt1 = null,
-			stmt2 = null,
-			stmt3 = null,
-			stmt4 = null,
-			stmt5 = null,
-			stmt6 = null;
+		stmt1 = null,
+		stmt2 = null,
+		stmt3 = null,
+		stmt4 = null,
+		stmt5 = null,
+		stmt6 = null;
 		ResultSet rs0 = null, rs1 = null;
 		try {
+
+			JAXBContext jcpf = JAXBContext.newInstance("org.apromore.cpf");
+			Marshaller m = jcpf.createMarshaller();
+			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+			JAXBElement<CanonicalProcessType> rootcpf = new org.apromore.cpf.ObjectFactory().createCanonicalProcess(cpf);
+			ByteArrayOutputStream cpf_xml = new ByteArrayOutputStream();
+			m.marshal(rootcpf, cpf_xml);
+			InputStream cpf_xml_is = new ByteArrayInputStream(cpf_xml.toByteArray());
+
+			JAXBContext janf = JAXBContext.newInstance("org.apromore.anf");
+			m = jcpf.createMarshaller();
+			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+			JAXBElement<AnnotationsType> rootanf = new org.apromore.anf.ObjectFactory().createAnnotations(anf);
+			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream();
+			m.marshal(rootcpf, anf_xml);
+			InputStream anf_xml_is = new ByteArrayInputStream(anf_xml.toByteArray());
+
 			conn = this.getConnection();
 
 			String query0 = " select " + ConstantDB.ATTR_USERID
-				+ " from " + ConstantDB.TABLE_USERS
-				+ " where " + ConstantDB.ATTR_USERNAME + " = '" + user.getUsername() + "'"
-				+            " and " 
-				+            ConstantDB.ATTR_PASSWD + " = '" + user.getPasswd() + "'";
+			+ " from " + ConstantDB.TABLE_USERS
+			+ " where " + ConstantDB.ATTR_USERNAME + " = '" + username + "'";
 			stmt0 = conn.createStatement();
 			rs0 = stmt0.executeQuery(query0);
 			if (!rs0.next()) {
-				throw new ExceptionDao ("Invalid user information");
+				throw new ExceptionDao ("User not found");
 			}
+
 			Integer userId = rs0.getInt(1);
 
-	 * TODO store all description of canonical
-
 			String query3 = " insert into " + ConstantDB.TABLE_CANONICALS
-			+ "(" + ConstantDB.ATTR_URI + ")"
-			+ " values (?) ";
+			+ "(" + ConstantDB.ATTR_CONTENT + ")"
+			+ " values (?, ?) ";
 			stmt3 = conn.prepareStatement(query3);
-			stmt3.setString(1, uri+".cpf");
+			stmt3.setAsciiStream(1, cpf_xml_is);
 			Integer rs3 = stmt3.executeUpdate();
-
-			String query4 = " insert into " + ConstantDB.TABLE_RELATIONS
-			+ "(" + ConstantDB.ATTR_URI + ","
-			+       ConstantDB.ATTR_CONTENT + ")"
-			+ " values (?,?) ";
-			stmt4 = conn.prepareStatement(query4);
-			stmt4.setString(1, uri+".rlf");
-			stmt4.setAsciiStream(2, rlf);
-			Integer rs4 = stmt4.executeUpdate();
+			Integer cpfId = stmt3.getGeneratedKeys().getInt(1);
 
 			String query5 = " insert into " + ConstantDB.TABLE_ANNOTATIONS
-			+ "(" + ConstantDB.ATTR_URI + ","
-			+       ConstantDB.ATTR_CONTENT + ")"
+			+ "(" + ConstantDB.ATTR_CONTENT + ")"
 			+ " values (?,?) ";
 			stmt5 = conn.prepareStatement(query5);
-			stmt5.setString(1, uri+".anf");
-			stmt5.setAsciiStream(2, anf);
+			stmt5.setAsciiStream(1, anf_xml_is);
 			Integer rs5 = stmt5.executeUpdate();
+			Integer anfId = stmt5.getGeneratedKeys().getInt(1);
 
 			String query6 = " insert into " + ConstantDB.TABLE_NATIVES
-			+ "(" + ConstantDB.ATTR_URI + ","
-			+       ConstantDB.ATTR_CONTENT + ","
+			+ "(" + ConstantDB.ATTR_CONTENT + ","
 			+       ConstantDB.ATTR_NAT_TYPE + ","
 			+       ConstantDB.ATTR_CANONICAL + ","
-			+       ConstantDB.ATTR_RELATION + ")"
-			+ " values (?,?,?,?,?) ";
+			+       ConstantDB.ATTR_ANNOTATION + ")"
+			+ " values (?,?,?,?) ";
 			stmt6 = conn.prepareStatement(query6);
-			stmt6.setString(1, uri+"."+native_type);
-			stmt6.setAsciiStream(2, npf);
-			stmt6.setString(3, native_type);
-			stmt6.setString(4, uri+".clf");
-			stmt6.setString(5, uri+".rlf");
+			stmt6.setAsciiStream(1, process_xml);
+			stmt6.setString(2, nativeType);
+			stmt6.setInt(3, cpfId);
+			stmt6.setInt(4, anfId);
 			Integer rs6 = stmt6.executeUpdate();
+			Integer natId = stmt6.getGeneratedKeys().getInt(1);
 
 			String query1 = " insert into " + ConstantDB.TABLE_PROCESSES
 			+ "(" + ConstantDB.ATTR_NAME + ","
@@ -413,7 +413,7 @@ public class ProcessDao extends BasicDao {
 
 			stmt1 = conn.prepareStatement(query1);
 			stmt1.setString(1, processName);
-			stmt1.setString(2, domain);
+			stmt1.setString(2, "to be defined");
 			stmt1.setInt(3, userId);
 
 			rs1 = stmt1.executeQuery(query1);
@@ -429,21 +429,97 @@ public class ProcessDao extends BasicDao {
 			+ " values (?, ?, now(), now(), ?) ";
 			stmt2 = conn.prepareStatement(query2);
 			stmt2.setInt(1, processId);
-			stmt2.setString(2, versionName);
-			stmt2.setString(5, uri+".cpf");
+			stmt2.setString(2, "0");
+			stmt2.setInt(5, cpfId);
 			Integer rs2 = stmt2.executeUpdate();
 
 			conn.commit();
+			return getProcessSummary (processId);
+			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 			conn.rollback();
+			return null;
 		} catch (Exception e) {
+			e.printStackTrace();
 			conn.rollback();
+			return null;
 		} finally {
 			Release(conn, stmt0, rs0);
 			stmt1.close(); stmt2.close(); stmt3.close(); stmt4.close(); stmt5.close(); stmt6.close();
 			rs1.close();
 		}
-	}*/
+	}
+
+	private org.apromore.data_access.model_canoniser.ProcessSummaryType getProcessSummary(Integer processId) throws Exception {
+		
+		org.apromore.data_access.model_canoniser.ProcessSummaryType processSummary = 
+			new org.apromore.data_access.model_canoniser.ProcessSummaryType();
+		Connection conn = null;
+		Statement stmtP = null;
+		ResultSet rsP = null;
+		String requeteP = null;
+		Statement stmtV = null;
+		ResultSet rsV = null;
+		String requeteV = null;
+
+		try {
+			conn = this.getConnection();
+			stmtP = conn.createStatement();
+
+			requeteP = "SELECT " + ConstantDB.ATTR_PROCESSID + "," 
+			+ ConstantDB.ATTR_NAME + ", "
+			+             ConstantDB.ATTR_DOMAIN + "," 
+			+ ConstantDB.ATTR_ORIGINAL_TYPE + ","
+			+     " R." + ConstantDB.ATTR_RANKING  + ","
+			+             ConstantDB.ATTR_VERSION_NAME
+			+     " FROM " + ConstantDB.TABLE_PROCESSES + " P "
+			+	"    join " + ConstantDB.TABLE_VERSIONS + " V using(" + ConstantDB.ATTR_PROCESSID + ") "
+			+       "  join " + ConstantDB.VIEW_PROCESS_RANKING + " R using (" + ConstantDB.ATTR_PROCESSID + ")" 
+			+   " where "
+			+          "  (" + ConstantDB.ATTR_PROCESSID + ", V." + ConstantDB.ATTR_CREATION_DATE + ")"
+			+				 "in (select " + ConstantDB.ATTR_PROCESSID + " , max(" + ConstantDB.ATTR_CREATION_DATE + ") "
+			+			 "        from " + ConstantDB.TABLE_VERSIONS
+			+			 "        group by " + ConstantDB.ATTR_PROCESSID + ") "
+			+             " and " + ConstantDB.ATTR_PROCESSID + " = " + processId;
+
+			rsP = stmtP.executeQuery(requeteP);
+			while (rsP.next()) {
+				processSummary.setId(processId);
+				processSummary.setName(rsP.getString(2));
+				processSummary.setDomain(rsP.getString(3));
+				processSummary.setOriginalNativeType(rsP.getString(4));
+				processSummary.setRanking(rsP.getInt(5));
+				processSummary.setLastVersion(rsP.getString(6));
+
+				stmtV = conn.createStatement();
+				requeteV = " select " + ConstantDB.ATTR_VERSION_NAME + ", "
+				+ ConstantDB.ATTR_CREATION_DATE + ",  "
+				+ ConstantDB.ATTR_LAST_UPDATE + ",  "
+				+ ConstantDB.ATTR_RANKING + " "
+				+ " from " + ConstantDB.TABLE_VERSIONS 
+				+ " where  " + ConstantDB.ATTR_PROCESSID + " = " + processId 
+				+ " order by  " + ConstantDB.ATTR_CREATION_DATE ;
+
+				rsV = stmtV.executeQuery(requeteV);
+				while (rsV.next()){
+					org.apromore.data_access.model_canoniser.VersionSummaryType version = 
+						new org.apromore.data_access.model_canoniser.VersionSummaryType();
+					version.setName(rsV.getString(1));
+					version.setCreationDate(rsV.getTimestamp(2));
+					version.setLastUpdate(rsV.getTimestamp(3));
+					version.setRanking(rsV.getInt(4));
+					processSummary.getVersionSummaries().add(version);
+				}
+				rsV.close(); stmtV.close();	
+			} 
+		}
+		catch (SQLException e) {
+			throw new Exception("Error: ProcessDao " + e.getMessage());
+		}
+		finally {
+			Release(conn, stmtP, rsP);
+		}
+		return processSummary;
+	}
 }
