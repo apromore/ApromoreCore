@@ -330,7 +330,7 @@ public class ProcessDao extends BasicDao {
 		return res;
 	}
 
-	public org.apromore.data_access.model_canoniser.ProcessSummaryType storeNativeCpf(String username, String processName,
+	public void storeNativeCpf(String username, String processName,
 			String nativeType, InputStream process_xml,
 			CanonicalProcessType cpf, AnnotationsType anf) throws SQLException {
 
@@ -434,16 +434,13 @@ public class ProcessDao extends BasicDao {
 			Integer rs2 = stmt2.executeUpdate();
 
 			conn.commit();
-			return getProcessSummary (processId);
 			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			conn.rollback();
-			return null;
 		} catch (Exception e) {
 			e.printStackTrace();
 			conn.rollback();
-			return null;
 		} finally {
 			Release(conn, stmt0, rs0);
 			stmt1.close(); stmt2.close(); stmt3.close(); stmt4.close(); stmt5.close(); stmt6.close();
@@ -451,75 +448,4 @@ public class ProcessDao extends BasicDao {
 		}
 	}
 
-	private org.apromore.data_access.model_canoniser.ProcessSummaryType getProcessSummary(Integer processId) throws Exception {
-		
-		org.apromore.data_access.model_canoniser.ProcessSummaryType processSummary = 
-			new org.apromore.data_access.model_canoniser.ProcessSummaryType();
-		Connection conn = null;
-		Statement stmtP = null;
-		ResultSet rsP = null;
-		String requeteP = null;
-		Statement stmtV = null;
-		ResultSet rsV = null;
-		String requeteV = null;
-
-		try {
-			conn = this.getConnection();
-			stmtP = conn.createStatement();
-
-			requeteP = "SELECT " + ConstantDB.ATTR_PROCESSID + "," 
-			+ ConstantDB.ATTR_NAME + ", "
-			+             ConstantDB.ATTR_DOMAIN + "," 
-			+ ConstantDB.ATTR_ORIGINAL_TYPE + ","
-			+     " R." + ConstantDB.ATTR_RANKING  + ","
-			+             ConstantDB.ATTR_VERSION_NAME
-			+     " FROM " + ConstantDB.TABLE_PROCESSES + " P "
-			+	"    join " + ConstantDB.TABLE_VERSIONS + " V using(" + ConstantDB.ATTR_PROCESSID + ") "
-			+       "  join " + ConstantDB.VIEW_PROCESS_RANKING + " R using (" + ConstantDB.ATTR_PROCESSID + ")" 
-			+   " where "
-			+          "  (" + ConstantDB.ATTR_PROCESSID + ", V." + ConstantDB.ATTR_CREATION_DATE + ")"
-			+				 "in (select " + ConstantDB.ATTR_PROCESSID + " , max(" + ConstantDB.ATTR_CREATION_DATE + ") "
-			+			 "        from " + ConstantDB.TABLE_VERSIONS
-			+			 "        group by " + ConstantDB.ATTR_PROCESSID + ") "
-			+             " and " + ConstantDB.ATTR_PROCESSID + " = " + processId;
-
-			rsP = stmtP.executeQuery(requeteP);
-			while (rsP.next()) {
-				processSummary.setId(processId);
-				processSummary.setName(rsP.getString(2));
-				processSummary.setDomain(rsP.getString(3));
-				processSummary.setOriginalNativeType(rsP.getString(4));
-				processSummary.setRanking(rsP.getInt(5));
-				processSummary.setLastVersion(rsP.getString(6));
-
-				stmtV = conn.createStatement();
-				requeteV = " select " + ConstantDB.ATTR_VERSION_NAME + ", "
-				+ ConstantDB.ATTR_CREATION_DATE + ",  "
-				+ ConstantDB.ATTR_LAST_UPDATE + ",  "
-				+ ConstantDB.ATTR_RANKING + " "
-				+ " from " + ConstantDB.TABLE_VERSIONS 
-				+ " where  " + ConstantDB.ATTR_PROCESSID + " = " + processId 
-				+ " order by  " + ConstantDB.ATTR_CREATION_DATE ;
-
-				rsV = stmtV.executeQuery(requeteV);
-				while (rsV.next()){
-					org.apromore.data_access.model_canoniser.VersionSummaryType version = 
-						new org.apromore.data_access.model_canoniser.VersionSummaryType();
-					version.setName(rsV.getString(1));
-					version.setCreationDate(rsV.getTimestamp(2));
-					version.setLastUpdate(rsV.getTimestamp(3));
-					version.setRanking(rsV.getInt(4));
-					processSummary.getVersionSummaries().add(version);
-				}
-				rsV.close(); stmtV.close();	
-			} 
-		}
-		catch (SQLException e) {
-			throw new Exception("Error: ProcessDao " + e.getMessage());
-		}
-		finally {
-			Release(conn, stmtP, rsP);
-		}
-		return processSummary;
-	}
 }

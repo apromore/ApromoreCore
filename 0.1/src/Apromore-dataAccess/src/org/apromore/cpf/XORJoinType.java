@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "XORJoinType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class XORJoinType
     extends JoinType
 {

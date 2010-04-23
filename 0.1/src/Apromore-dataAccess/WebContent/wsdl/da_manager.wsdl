@@ -6,12 +6,12 @@
     <part name="payload" element="tnsx:ReadDomainsOutputMsg">
     </part>
   </message>
-  <message name="ReadProcessSummariesOutputMsg">
-    <part name="payload" element="tnsx:ReadProcessSummariesOutputMsg">
-    </part>
-  </message>
   <message name="ReadDomainsInputMsg">
     <part name="payload" element="tnsx:ReadDomainsInputMsg">
+    </part>
+  </message>
+  <message name="ReadProcessSummariesOutputMsg">
+    <part name="payload" element="tnsx:ReadProcessSummariesOutputMsg">
     </part>
   </message>
   <message name="ReadUserOutputMsg">
@@ -26,12 +26,12 @@
     <part name="payload" element="tnsx:ReadUserInputMsg">
     </part>
   </message>
-  <message name="WriteUserInputMsg">
-    <part name="payload" element="tnsx:WriteUserInputMsg">
-    </part>
-  </message>
   <message name="ReadProcessSummariesInputMsg">
     <part name="payload" element="tnsx:ReadProcessSummariesInputMsg">
+    </part>
+  </message>
+  <message name="WriteUserInputMsg">
+    <part name="payload" element="tnsx:WriteUserInputMsg">
     </part>
   </message>
   <message name="ReadFormatsOutputMsg">

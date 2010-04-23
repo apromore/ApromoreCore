@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlType;
     ANDJoinType.class,
     XORJoinType.class
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T11:28:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class JoinType
     extends RoutingType
 {
