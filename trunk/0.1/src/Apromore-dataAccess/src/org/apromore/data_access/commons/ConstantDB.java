@@ -25,9 +25,7 @@ public final class ConstantDB {
 	public static final String ATTR_ANNOTATION = "annotation";
 
 	public static final String TABLE_CANONICALS = "canonicals";
-
-	public static final String TABLE_RELATIONS = "relations";
-	public static final String TABLE_ANNOTATIONS = "annotations";
+	public static final String TABLE_ANNOTATION = "annotation";
 	
 	public static final String TABLE_NATIVE_TYPES = "native_types";
 

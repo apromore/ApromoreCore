@@ -1,8 +1,10 @@
 package org.apromore.data_access.dao;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -330,9 +332,9 @@ public class ProcessDao extends BasicDao {
 		return res;
 	}
 
-	public void storeNativeCpf(String username, String processName,
-			String nativeType, InputStream process_xml,
-			CanonicalProcessType cpf, AnnotationsType anf) throws SQLException {
+	public void storeNativeCpf(String username, String processName, String domain, 
+			String nativeType, String version, InputStream process_xml,
+			CanonicalProcessType cpf, AnnotationsType anf) throws ExceptionDao, SQLException {
 
 		Connection conn = null;
 		Statement stmt0 = null;
@@ -340,12 +342,23 @@ public class ProcessDao extends BasicDao {
 		stmt1 = null,
 		stmt2 = null,
 		stmt3 = null,
-		stmt4 = null,
 		stmt5 = null,
 		stmt6 = null;
-		ResultSet rs0 = null, rs1 = null;
+		ResultSet rs0 = null;
 		try {
-
+			if (version == null || version.compareTo("")==0) {
+				version = "v0";
+			}
+			StringBuilder sb0 = new StringBuilder();
+			String process_string;
+			try {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(process_xml, "UTF-8"));
+				while ((process_string = reader.readLine()) != null) {
+					sb0.append(process_string).append("\n");
+				}
+			} finally {
+				process_xml.close();
+			}
 			JAXBContext jcpf = JAXBContext.newInstance("org.apromore.cpf");
 			Marshaller m = jcpf.createMarshaller();
 			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
@@ -354,6 +367,18 @@ public class ProcessDao extends BasicDao {
 			m.marshal(rootcpf, cpf_xml);
 			InputStream cpf_xml_is = new ByteArrayInputStream(cpf_xml.toByteArray());
 
+			StringBuilder sb = new StringBuilder();
+			String cpf_string;
+
+			try {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(cpf_xml_is, "UTF-8"));
+				while ((cpf_string = reader.readLine()) != null) {
+					sb.append(cpf_string).append("\n");
+				}
+			} finally {
+				cpf_xml_is.close();
+			}
+			
 			JAXBContext janf = JAXBContext.newInstance("org.apromore.anf");
 			m = jcpf.createMarshaller();
 			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
@@ -361,7 +386,18 @@ public class ProcessDao extends BasicDao {
 			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream();
 			m.marshal(rootcpf, anf_xml);
 			InputStream anf_xml_is = new ByteArrayInputStream(anf_xml.toByteArray());
+			
+			StringBuilder sb1 = new StringBuilder();
+			String anf_string;
 
+			try {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(anf_xml_is, "UTF-8"));
+				while ((anf_string = reader.readLine()) != null) {
+					sb.append(anf_string).append("\n");
+				}
+			} finally {
+				anf_xml_is.close();
+			}
 			conn = this.getConnection();
 
 			String query0 = " select " + ConstantDB.ATTR_USERID
@@ -372,24 +408,37 @@ public class ProcessDao extends BasicDao {
 			if (!rs0.next()) {
 				throw new ExceptionDao ("User not found");
 			}
-
 			Integer userId = rs0.getInt(1);
-
+			
 			String query3 = " insert into " + ConstantDB.TABLE_CANONICALS
 			+ "(" + ConstantDB.ATTR_CONTENT + ")"
-			+ " values (?, ?) ";
-			stmt3 = conn.prepareStatement(query3);
-			stmt3.setAsciiStream(1, cpf_xml_is);
-			Integer rs3 = stmt3.executeUpdate();
-			Integer cpfId = stmt3.getGeneratedKeys().getInt(1);
+			+ " values (?) ";
 
-			String query5 = " insert into " + ConstantDB.TABLE_ANNOTATIONS
+			stmt3 = conn.prepareStatement(query3, Statement.RETURN_GENERATED_KEYS);
+			//stmt3.setAsciiStream(1, cpf_xml_is);
+			stmt3.setString(1, cpf_string);
+
+			int rs3 = stmt3.executeUpdate();
+			ResultSet keys = stmt3.getGeneratedKeys() ;
+			if (!keys.next()) {
+				throw new ExceptionDao ("Error: cannot retrieve generated key.");
+			}
+			int cpfId = keys.getInt(1);
+			keys.close();
+			String query5 = " insert into " + ConstantDB.TABLE_ANNOTATION
 			+ "(" + ConstantDB.ATTR_CONTENT + ")"
-			+ " values (?,?) ";
-			stmt5 = conn.prepareStatement(query5);
-			stmt5.setAsciiStream(1, anf_xml_is);
+			+ " values (?) ";
+			stmt5 = conn.prepareStatement(query5, Statement.RETURN_GENERATED_KEYS);
+
+			//stmt5.setAsciiStream(1, anf_xml_is);
+			stmt5.setString (1, anf_string);
 			Integer rs5 = stmt5.executeUpdate();
-			Integer anfId = stmt5.getGeneratedKeys().getInt(1);
+			keys = stmt5.getGeneratedKeys() ;
+			if (!keys.next()) {
+				throw new ExceptionDao ("Error: cannot retrieve generated key.");
+			}
+			int anfId = keys.getInt(1);
+			keys.close();
 
 			String query6 = " insert into " + ConstantDB.TABLE_NATIVES
 			+ "(" + ConstantDB.ATTR_CONTENT + ","
@@ -397,28 +446,36 @@ public class ProcessDao extends BasicDao {
 			+       ConstantDB.ATTR_CANONICAL + ","
 			+       ConstantDB.ATTR_ANNOTATION + ")"
 			+ " values (?,?,?,?) ";
-			stmt6 = conn.prepareStatement(query6);
-			stmt6.setAsciiStream(1, process_xml);
+			stmt6 = conn.prepareStatement(query6, Statement.RETURN_GENERATED_KEYS);
+			//stmt6.setAsciiStream(1, process_xml);
+			stmt6.setString(1, process_string);
 			stmt6.setString(2, nativeType);
 			stmt6.setInt(3, cpfId);
 			stmt6.setInt(4, anfId);
 			Integer rs6 = stmt6.executeUpdate();
-			Integer natId = stmt6.getGeneratedKeys().getInt(1);
+			keys = stmt6.getGeneratedKeys() ;
+			if (!keys.next()) {
+				throw new ExceptionDao ("Error: cannot retrieve generated key.");
+			}
+			int natId = keys.getInt(1);
+			keys.close();
 
 			String query1 = " insert into " + ConstantDB.TABLE_PROCESSES
 			+ "(" + ConstantDB.ATTR_NAME + ","
 			+       ConstantDB.ATTR_DOMAIN + ","
 			+		ConstantDB.ATTR_OWNER + ")"
 			+ " values (?, ?, ?) ";
-
-			stmt1 = conn.prepareStatement(query1);
+			stmt1 = conn.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS);
 			stmt1.setString(1, processName);
-			stmt1.setString(2, "to be defined");
+			stmt1.setString(2, domain);
 			stmt1.setInt(3, userId);
-
-			rs1 = stmt1.executeQuery(query1);
-			rs1 = stmt1.getGeneratedKeys();
-			Integer processId = rs1.getInt(1);
+			int rs1 = stmt1.executeUpdate();
+			keys = stmt1.getGeneratedKeys() ;
+			if (!keys.next()) {
+				throw new ExceptionDao ("Error: cannot retrieve generated key.");
+			}
+			int processId = keys.getInt(1);
+			keys.close();
 
 			String query2 = " insert into " + ConstantDB.TABLE_VERSIONS
 			+ "(" + ConstantDB.ATTR_PROCESSID + ","
@@ -429,22 +486,22 @@ public class ProcessDao extends BasicDao {
 			+ " values (?, ?, now(), now(), ?) ";
 			stmt2 = conn.prepareStatement(query2);
 			stmt2.setInt(1, processId);
-			stmt2.setString(2, "0");
-			stmt2.setInt(5, cpfId);
+			stmt2.setString(2, version);
+			stmt2.setInt(3, cpfId);
 			Integer rs2 = stmt2.executeUpdate();
 
 			conn.commit();
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			conn.rollback();
+			throw new ExceptionDao ("SQL error ProcessDAO (storeNative): " + e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			conn.rollback();
+			throw new ExceptionDao ("Error ProcessDAO (storeNative): " + e.getMessage());
 		} finally {
 			Release(conn, stmt0, rs0);
-			stmt1.close(); stmt2.close(); stmt3.close(); stmt4.close(); stmt5.close(); stmt6.close();
-			rs1.close();
 		}
 	}
 

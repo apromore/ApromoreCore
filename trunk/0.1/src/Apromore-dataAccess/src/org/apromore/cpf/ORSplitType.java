@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ORSplitType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:18:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-24T05:21:05+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ORSplitType
     extends SplitType
 {
