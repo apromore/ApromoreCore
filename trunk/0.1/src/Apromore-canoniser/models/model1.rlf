@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:Relations xmlns:ns2="http://www.apromore.org/RLF">
+    <Relation cpfId="1" npfId="oryx_4ce9ebfc-9195-469a-a624-30a53d75bb7d" id="1"/>
+    <Relation cpfId="2" npfId="oryx_FE775337-5EE3-424B-8DA6-9296E112FFCB" id="2"/>
+    <Relation cpfId="3" npfId="oryx_6BB2DF9B-04C1-47B7-886F-CE20E0FC9B16" id="3"/>
+    <Relation cpfId="4" npfId="oryx_BB5F4CD7-B62E-42AE-9F08-612D57AB3C82" id="4"/>
+    <Relation cpfId="5" npfId="oryx_4A2FB57D-9013-4767-9C0F-9B67328F5BB9" id="5"/>
+    <Relation cpfId="6" npfId="oryx_BDD2BA15-9E61-4FBC-B9BA-FBCBF64589B5" id="6"/>
+    <Relation cpfId="7" npfId="oryx_280C4660-BB87-4D41-A5B9-E53730E410BC" id="7"/>
+    <Relation cpfId="8" npfId="oryx_9BC492F2-EA7B-4E10-A112-8807B41F37D8" id="8"/>
+    <Relation cpfId="9" npfId="oryx_6FD853AF-5570-42EB-9CAC-21B6303D2EEC" id="9"/>
+    <Relation cpfId="10" npfId="oryx_E7B4AAE5-ED32-437F-9160-9441F2C70D27" id="10"/>
+    <Relation cpfId="11" npfId="oryx_4A517CDD-2A0B-4B60-B5C1-B8BA3B328E2E" id="11"/>
+    <Relation cpfId="12" npfId="oryx_47F8DEDC-D0BA-49BA-B72C-9067A07EBD6E" id="12"/>
+    <Relation cpfId="13" npfId="oryx_6DD21F58-5385-428A-95E6-F859476C5FC2" id="13"/>
+    <Relation cpfId="14" npfId="oryx_7DB02C3B-7CB0-420D-B89A-4646676DC5FE" id="14"/>
+    <Relation cpfId="15" npfId="oryx_216E5980-81CE-4723-AE13-1573466A49CD" id="15"/>
+    <Relation cpfId="16" npfId="oryx_F12F1095-32AC-4504-8239-8BEED8B82781" id="16"/>
+    <Relation cpfId="17" npfId="oryx_16FF3237-173A-4AC7-AA2C-7D25E5266BD8" id="17"/>
+    <Relation cpfId="18" npfId="oryx_5C4A544D-E03D-4394-BB6E-16ACD1E2696C" id="18"/>
+    <Relation cpfId="19" npfId="oryx_10418198-F1DF-46C7-BAAE-6840FB81196C" id="19"/>
+    <Relation cpfId="20" npfId="oryx_ED90D255-4BB0-46A4-A62A-46C1B00C8893" id="20"/>
+    <Relation cpfId="21" npfId="oryx_BD85A480-4B67-4425-9CD3-B70153C43F95" id="21"/>
+    <Relation cpfId="22" npfId="oryx_D3AEDDBE-B88C-4793-8E90-40D4B2DE3109" id="22"/>
+    <Relation cpfId="23" npfId="oryx_D8ECA95C-AD29-4DBF-93A9-B091CA65018E" id="23"/>
+    <Relation cpfId="24" npfId="oryx_D7B67508-7D96-4E31-9BBA-8063F468FD62" id="24"/>
+    <Relation cpfId="25" npfId="oryx_F185F3BA-275F-464D-9BDF-0C24EB127CCC" id="25"/>
+    <Relation cpfId="26" npfId="oryx_9587BCB1-E14B-4F5A-99E3-D9AAC7C38124" id="26"/>
+    <Relation cpfId="27" npfId="oryx_44BD7C06-0C5E-4731-ABA6-0EE9CA89C1FE" id="27"/>
+    <Relation cpfId="28" npfId="oryx_9F5C4A04-5F8B-4A03-9671-A6DE2F2EF191" id="28"/>
+    <Relation cpfId="29" npfId="oryx_200CB054-04C2-4315-8908-D8C5FA6AFD4B" id="29"/>
+    <Relation cpfId="30" npfId="oryx_A949455D-C743-49D4-836B-AB0CD7C8F47B" id="30"/>
+    <Relation cpfId="31" npfId="oryx_5A7F6547-59D6-460A-B01D-29FBBE8A3119" id="31"/>
+    <Relation cpfId="32" npfId="oryx_8BD7A717-F0AE-47A2-B786-32D6CC2CF236" id="32"/>
+    <Relation cpfId="33" npfId="oryx_2C676B5F-634A-4F5D-8E8E-6AD9B7F85AE9" id="33"/>
+    <Relation cpfId="34" npfId="oryx_1C34477B-4817-407C-9960-F5E5B793726B" id="34"/>
+</ns2:Relations>
