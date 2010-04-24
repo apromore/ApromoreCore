@@ -33,14 +33,14 @@ import javax.xml.bind.annotation.XmlType;
     "result",
     "process"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:59:49+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-24T04:54:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ExportProcessOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:59:49+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-24T04:54:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
     @XmlElement(name = "Process")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:59:49+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-24T04:54:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ImportProcessInputMsgType process;
 
     /**
@@ -51,7 +51,7 @@ public class ExportProcessOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:59:49+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-24T04:54:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ResultType getResult() {
         return result;
     }
@@ -64,7 +64,7 @@ public class ExportProcessOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:59:49+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-24T04:54:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -77,7 +77,7 @@ public class ExportProcessOutputMsgType {
      *     {@link ImportProcessInputMsgType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:59:49+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-24T04:54:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ImportProcessInputMsgType getProcess() {
         return process;
     }
@@ -90,7 +90,7 @@ public class ExportProcessOutputMsgType {
      *     {@link ImportProcessInputMsgType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T04:59:49+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-24T04:54:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setProcess(ImportProcessInputMsgType value) {
         this.process = value;
     }
