@@ -1,0 +1,33 @@
+<!-- Controller is ProcessTableController -->
+<window id="processTableWindow" contentStyle="overflow:auto"
+	style="border:6px">
+	<hbox style="background:#DAF4FF" width="100%">
+		<paging id="pg" />
+		<box height="25px" width="400px">
+			<toolbarbutton id="table2graphic" visible="true" style="font-size:11px" label="Change view" />
+			<toolbarbutton id="graphic2table" visible="false" style="font-size:11px" label="Change view" />
+		</box>
+	</hbox>
+	<grid id="processSummariesGrid" mold="paging" paginal="${pg}"
+		vflex="1">
+		<columns sizable="true">
+			<column width="3.5%">
+				<button id="revertSelectionB"
+					image="img/flag-10x10.png" style="background:transparent;border:none"
+					tooltiptext="click here to revert selection" />
+			</column>
+			<column width="0">
+				<checkbox id="processSummaryCB" visible="false" />
+			</column>
+			<column id="columnId" label="Id" width="3%" />
+			<column id="columnName" label="Name" />
+			<column sort="auto" label="Original language" />
+			<column sort="auto" label="Domain" />
+			<column sort="auto" label="Ranking" />
+			<column sort="auto" label="Latest version" />
+		</columns>
+		<rows id="processSummariesRows">
+
+		</rows>
+	</grid>
+</window>

@@ -1,0 +1,8 @@
+<!-- Controller is SimpleSearchController -->
+<window id="simplesearchwindow">
+	<hbox id="previoussearcheshbox" pack="stretch" width="100%" height="24px">
+		<button id ="previoussearchesbutton" visible="false"
+		style="background: transparent; border:none" image="img/search.png" />
+			<!-- combobox implemented in SimpleSearchController -->
+	</hbox>
+</window>

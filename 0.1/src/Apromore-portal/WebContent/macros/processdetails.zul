@@ -1,0 +1,56 @@
+<window id="processdetails" contentStyle="overflow:auto"  style="border:40px" sizable="true">
+	<hbox  align="stretch"  spacing="0">
+			<grid fixedLayout="true"  hflex="1" >
+				<columns sizable="true">
+					<column label="Attribute" />
+					<column label="Value" />
+				</columns>
+				<rows>
+					<row>
+						<label value="Name" />
+						<textbox id="nameT" value="" disabled="true" />
+					</row>
+					<row>
+						<label value="Original language" />
+						<textbox id="originalLanguageT" value=""
+							disabled="true" />
+					</row>
+					<row>
+						<label value="Domain" />
+						<textbox id="domainT" value="" disabled="true" />
+					</row>
+					<row>
+						<label value="Version" />
+						<textbox id="versionT" value="" disabled="true" />
+					</row>
+					<row>
+						<label value="Ranking" />
+						<textbox id="rankingT" value="" disabled="true" />
+					</row>
+					<row>
+						<label value="Creation date" />
+						<datebox id="creationDateD" disabled="true"
+							format="dd/MM/yyyy hh:mm:ss" />
+					</row>
+					<row>
+						<label value="Last update" />
+						<datebox id="lastUpdateD" disabled="true"
+							format="dd/MM/yyyy  hh:mm:ss" />
+					</row>
+					<row>
+						<label value="Export" />
+						<listbox id="exportL" rows="1" mold="select"
+							disabled="true">
+							<listitem label="Choose format" />
+							<!-- list built from the database + pdf, svng, png, ... -->
+						</listbox>
+					</row>
+				</rows>
+			</grid>
+		
+			<window id="graphicW" closable="true" hflex="1" >
+				<image id="processImage" src="img/petRego.png" width="100%" visible="false"/>
+				<label id="pushToSign" visible="true"> To see more, please sign in. </label>
+			</window>
+		</hbox>
+</window>
