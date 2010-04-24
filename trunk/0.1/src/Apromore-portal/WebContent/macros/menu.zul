@@ -1,0 +1,58 @@
+<!-- Controller is  MenuController-->
+<menubar id="operationMenu">
+			<menuitem id="fileImport" label="Import" disabled="false"/>
+	<menu id="edit" label="Edit">
+		<menupopup>
+			<menuitem id="editCopy" label="Copy" disabled="true"/>
+			<menuseparator />
+			<menuitem id="editCut" label="Cut" disabled="true"/>
+			<menuseparator />
+			<menuitem id="editPaste" label="Paste" disabled="true"/>
+			<menuseparator />
+			<menuitem id="editDelete" label="Delete" disabled="true"/>
+			<menuseparator />
+		</menupopup>
+	</menu>
+	<menu id="evaluation" label="Evaluation">
+		<menupopup>
+			<menuitem id="evaluationQuality" label="Quality" disabled="true"/>
+			<menuseparator />
+			<menuitem id="evaluationCorrectness" label="Correctness" disabled="true"/>
+			<menuseparator />
+			<menuitem id="evaluationPerformance" label="Performance" disabled="true"/>
+		</menupopup>
+	</menu>
+	<menu id="comparison" label="Comparison">
+		<menupopup>
+			<menuitem id="comparisonSimilarity" label="Similarity search" disabled="true"/>
+			<menuseparator />
+			<menuitem id="comparisonComformance" label="Comformance analysis" disabled="true" />
+			<menuseparator />
+			<menuitem id="comparisonPattern" label="Pattern-based analysis" disabled="true"/>
+		</menupopup>
+	</menu>
+	<menu id="management" label="Management">
+		<menupopup>
+			<menuitem id="managementHarmonization" label="Harmonization-driven creation" disabled="true"/>
+			<menuseparator />
+			<menuitem id="managementPatternCr" label="Pattern-based creation" disabled="true"/>
+			<menuseparator />
+			<menuitem id="managementReference" label="Reference-based completion" disabled="true"/>
+			<menuseparator />
+			<menuitem id="managementPatternCo" label="Pattern-based completion" disabled="true"/>
+			<menuseparator />
+			<menuitem id="managementIndividualization" label="Individualization" disabled="true"/>
+			<menuseparator />
+			<menuitem id="managementExtension" label="Extension control" disabled="true"/>
+		</menupopup>
+	</menu>
+	<menu id="presentation" label="Presentation">
+		<menupopup>
+			<menuitem id="presentationAbstraction" label="Abstraction" disabled="true"/>
+			<menuseparator />
+			<menuitem id="presentationSecondary" label="Secondary notation" disabled="true"/>
+			<menuseparator />
+			<menuitem id="presentationReporting" label="Reporting" disabled="true"/>
+		</menupopup>
+	</menu>
+</menubar>

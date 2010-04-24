@@ -1,0 +1,116 @@
+<!-- Controller is ProcessTableController -->
+<window id="processTableWindow" sizable="true" height="500px">
+	Please open/close the +/- button, and the layout of this page shows
+	properly.
+	<tree id="tree" width="750px" rows="8" zclass="z-dottree">
+		<treecols sizable="true">
+			<treecol label="Name" />
+			<treecol label="Description1" />
+			<treecol label="Description2" />
+			<treecol label="Description3" />
+			<treecol label="Description4" />
+		</treecols>
+		<treechildren>
+			<treeitem>
+				<treerow>
+					<treecell label="Item 2" />
+					<treecell label="Item 2 description1" />
+					<treecell label="Item 2 description2" />
+					<treecell label="Item 2 description3" />
+					<treecell label="Item 2 description4" />
+				</treerow>
+				<treechildren>
+					<treeitem>
+						<treerow>
+							<treecell label="" />
+							<treecell label="title 1"  style="background: ;"/>
+							<treecell label="Item 2.1 description2"  style="background: "/>
+							<treecell label="Item 2.1 description3" />
+							<treecell label="Item 2.1 description4" />
+						</treerow>
+					</treeitem>
+					<treeitem>
+						<treerow>
+							<treecell label="Item 2.1" />
+							<treecell label="Item 2.1 description1" />
+							<treecell label="Item 2.1 description2" />
+							<treecell label="Item 2.1 description3" />
+							<treecell label="Item 2.1 description4" />
+						</treerow>
+					</treeitem>
+					<treeitem>
+						<treerow>
+							<treecell label="Item 2.2" />
+							<treecell label="Item 2.2 description1" />
+							<treecell label="Item 2.2 description2" />
+							<treecell label="Item 2.2 description3" />
+							<treecell label="Item 2.2 description4" zclass="z-dottree"/>
+						</treerow>
+					</treeitem>
+				</treechildren>
+			</treeitem>
+			
+			<treeitem>
+				<treerow>
+					<treecell label="Item 2" />
+					<treecell label="Item 2 description1" />
+					<treecell label="Item 2 description2" />
+					<treecell label="Item 2 description3" />
+					<treecell label="Item 2 description4" />
+				</treerow>
+				<treechildren>
+					<treeitem>
+						<treerow>
+							<treecell label="Item 2.1" />
+							<treecell label="Item 2.1 description1" />
+							<treecell label="Item 2.1 description2" />
+							<treecell label="Item 2.1 description3" />
+							<treecell label="Item 2.1 description4" />
+						</treerow>
+					</treeitem>
+					<treeitem>
+						<treerow>
+							<treecell label="Item 2.2" />
+							<treecell label="Item 2.2 description1" />
+							<treecell label="Item 2.2 description2" />
+							<treecell label="Item 2.2 description3" />
+							<treecell label="Item 2.2 description4" zclass="z-dottree"/>
+						</treerow>
+					</treeitem>
+				</treechildren>
+			</treeitem>
+			
+			<treeitem>
+				<treerow>
+					<treecell label="Item 2" />
+					<treecell label="Item 2 description1" />
+					<treecell label="Item 2 description2" />
+					<treecell label="Item 2 description3" />
+					<treecell label="Item 2 description4" />
+				</treerow>
+				<treechildren>
+					<treeitem>
+						<treerow>
+							<treecell label="Item 2.1" />
+							<treecell label="Item 2.1 description1" />
+							<treecell label="Item 2.1 description2" />
+							<treecell label="Item 2.1 description3" />
+							<treecell label="Item 2.1 description4" />
+						</treerow>
+					</treeitem>
+					<treeitem>
+						<treerow>
+							<treecell label="Item 2.2" />
+							<treecell label="Item 2.2 description1" />
+							<treecell label="Item 2.2 description2" />
+							<treecell label="Item 2.2 description3" />
+							<treecell label="Item 2.2 description4" zclass="z-dottree"/>
+						</treerow>
+					</treeitem>
+				</treechildren>
+			</treeitem>
+		</treechildren>
+	</tree>
+	
+	
+</window>
