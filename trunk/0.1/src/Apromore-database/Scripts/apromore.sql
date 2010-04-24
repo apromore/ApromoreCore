@@ -3,7 +3,7 @@ drop table if exists process_versions ;
 drop table if exists processes ;
 drop table if exists natives ;
 drop table if exists canonicals ;
-drop table if exists annotations ;
+drop table if exists annotation ;
 drop table if exists native_types;
 drop table if exists search_histories;
 drop table if exists users ;
@@ -11,10 +11,10 @@ drop table if exists users ;
 drop view process_ranking;
 drop view keywords ;
 
-create table annotations (
+create table annotation (
 	uri 		int 	auto_increment,
 	content text,
-	constraint pk_annotations primary key (uri)
+	constraint pk_annotation primary key (uri)
 ) engine=innoDB;
 
 create table canonicals (
@@ -73,7 +73,7 @@ create table natives (
 	constraint pk_natives primary key (uri),
 	constraint fk_natives foreign key (nat_type) references native_types(nat_type), 
 	constraint fk_natives2 foreign key (canonical) references canonicals(uri),
-	constraint fk_natives3 foreign key (annotations) references annotations(uri)
+	constraint fk_natives3 foreign key (annotation) references annotation(uri)
 ) engine=innoDB;
 
 create table process_versions (
