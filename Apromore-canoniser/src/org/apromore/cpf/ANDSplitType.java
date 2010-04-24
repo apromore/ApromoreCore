@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ANDSplitType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-23T03:57:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-24T05:20:07+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ANDSplitType
     extends SplitType
 {
