@@ -27,13 +27,14 @@ public class RequestToCanoniser {
         this.port = ss.getCanoniserManager();  
 	}
 
-	public void ImportProcess(String username, String processName, String nativeType, InputStream process) 
+	public void ImportProcess(String username, String processName, String nativeType, InputStream process, String domain) 
 	throws IOException, ExceptionImport {
 		org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType payload = new CanoniseProcessInputMsgType();
 		DataSource source = new ByteArrayDataSource(process, "text/xml"); 
 		payload.setUsername(username);
 		payload.setNativeType(nativeType);
 		payload.setProcessName(processName);
+		payload.setDomain(domain);
 		payload.setProcessDescription(new DataHandler(source));
 		org.apromore.manager.model_canoniser.CanoniseProcessOutputMsgType res = this.port.canoniseProcess(payload);
 		if (res.getResult().getCode() == -1) {

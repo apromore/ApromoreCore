@@ -131,6 +131,7 @@
 		<sequence>
 			<element name="ProcessName" type="string" />
 			<element name="NativeType" type="string" />
+			<element name="Domain" type="string" />
 			<element name="ProcessDescription" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
 			<element name="Username" type="string" />

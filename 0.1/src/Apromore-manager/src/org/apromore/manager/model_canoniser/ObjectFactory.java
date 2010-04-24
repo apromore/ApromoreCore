@@ -43,19 +43,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ResultType }
-     * 
-     */
-    public ResultType createResultType() {
-        return new ResultType();
-    }
-
-    /**
      * Create an instance of {@link CanoniseProcessInputMsgType }
      * 
      */
     public CanoniseProcessInputMsgType createCanoniseProcessInputMsgType() {
         return new CanoniseProcessInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ResultType }
+     * 
+     */
+    public ResultType createResultType() {
+        return new ResultType();
     }
 
     /**
