@@ -5,6 +5,7 @@
 package org.apromore.portal.dialogController;
 
 import java.text.ParseException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -83,6 +84,8 @@ public class ProcessTableController extends Window {
 	private Window processTableW;							// the window which the entry point
 	private HashMap<Checkbox,ProcessSummaryType> processHM;	// Hasmap of checkboxes: one entry for each process 
 	private HashMap<Checkbox,VersionSummaryType> processVersionsHM;// HashMap of checkboxes: one entry for each process version
+	private HashMap<Checkbox, List<Checkbox>> mapProcessVersions; // <p, listV> in mapProcessVersions: checkboxes in listV are
+															// associated with checkbox p
 	private Integer latestVersionPos ;						// position of label latest version in row of process summary
 	private Integer processTbPos;							// position of toolbarbuttons associated with process names in rows of process summary
 
@@ -118,10 +121,10 @@ public class ProcessTableController extends Window {
 		this.latestVersionPos = 7;
 		this.processTbPos = 3 ;
 
-		// initialize hashmaps and vectors
+		// initialize hashmaps
 		this.processHM = new HashMap<Checkbox,ProcessSummaryType>();
 		this.processVersionsHM = new HashMap<Checkbox,VersionSummaryType>();
-
+		this.mapProcessVersions = new HashMap<Checkbox, List<Checkbox>>();
 
 		/**
 		 * At creation of the controller, get summaries of all processes.
@@ -137,6 +140,7 @@ public class ProcessTableController extends Window {
 	public void emptyProcessSummaries () {
 		this.processHM.clear();
 		this.processVersionsHM.clear();
+		this.mapProcessVersions.clear();
 		this.revertSelectionB.removeEventListener("onClick", this.revertSelectionBlist);
 		while (this.processSummariesRows.getChildren().size()>0){
 			this.processSummariesRows.removeChild(this.processSummariesRows.getFirstChild());
@@ -163,7 +167,8 @@ public class ProcessTableController extends Window {
 
 			// update hashmaps
 			this.processHM.put(processCB, process);
-
+			List<Checkbox> listV = new ArrayList<Checkbox>();
+			this.mapProcessVersions.put(processCB, listV);
 			Toolbarbutton processName = new Toolbarbutton(process.getName());
 			processName.setStyle(Constants.TOOLBARBUTTON_STYLE);
 			
@@ -276,6 +281,7 @@ public class ProcessTableController extends Window {
 				versionR.setStyle(Constants.UNSELECTED_VERSION);
 				Checkbox versionCB = new Checkbox();
 				this.processVersionsHM.put(versionCB,version);
+				this.mapProcessVersions.get(processCB).add(versionCB);
 				versionCB.setVisible(false);
 				versionCB.setId(process.getId().toString() + "/" + version.getName());
 
@@ -615,5 +621,17 @@ public class ProcessTableController extends Window {
 		while (itV.hasNext()) {
 			((HtmlBasedComponent) itV.next()).setStyle("color:"+color);
 		}
+	}
+
+	public HashMap<Checkbox, VersionSummaryType> getProcessVersionsHM() {
+		return processVersionsHM;
+	}
+
+	public HashMap<Checkbox, ProcessSummaryType> getProcessHM() {
+		return processHM;
+	}
+
+	public HashMap<Checkbox, List<Checkbox>> getMapProcessVersions() {
+		return mapProcessVersions;
 	}
 }
