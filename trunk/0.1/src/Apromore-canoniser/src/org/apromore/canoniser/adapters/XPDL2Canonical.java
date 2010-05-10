@@ -1,4 +1,4 @@
-package pkg;
+package org.apromore.canoniser.adapters;
 
 import java.math.BigDecimal;
 import java.math.BigInteger;
