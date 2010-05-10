@@ -65,12 +65,12 @@ public class ImportProcessController extends Window {
 					cancel();
 				}
 			});	
-			importProcessWindow.addEventListener("onOK",
+			/*importProcessWindow.addEventListener("onOK",
 					new EventListener() {
 				public void onEvent(Event event) throws Exception {
 					importProcess();
 				}
-			});	
+			});	*/
 			win.doModal();
 		} catch (Exception e) {
 			throw new DialogException("Error in importProcess controller: " + e.getMessage());
