@@ -3,6 +3,7 @@ package org.apromore.data_access.dao;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
@@ -332,10 +333,12 @@ public class ProcessDao extends BasicDao {
 		return res;
 	}
 
-	public void storeNativeCpf(String username, String processName, String domain, 
+	public void storeNativeCpf (String username, String processName, String domain, 
 			String nativeType, String version, InputStream process_xml,
-			CanonicalProcessType cpf, AnnotationsType anf) throws ExceptionDao, SQLException {
+			CanonicalProcessType cpf, AnnotationsType anf) throws ExceptionDao, SQLException, IOException {
 
+		
+		
 		Connection conn = null;
 		Statement stmt0 = null;
 		PreparedStatement
@@ -350,15 +353,17 @@ public class ProcessDao extends BasicDao {
 				version = "v0";
 			}
 			StringBuilder sb0 = new StringBuilder();
-			String process_string;
+			String line ;
 			try {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(process_xml, "UTF-8"));
-				while ((process_string = reader.readLine()) != null) {
-					sb0.append(process_string).append("\n");
+				while ((line = reader.readLine()) != null) {
+					sb0.append(line).append("\n");
 				}
 			} finally {
 				process_xml.close();
 			}
+			String process_string = sb0.toString();
+			
 			JAXBContext jcpf = JAXBContext.newInstance("org.apromore.cpf");
 			Marshaller m = jcpf.createMarshaller();
 			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
@@ -368,16 +373,17 @@ public class ProcessDao extends BasicDao {
 			InputStream cpf_xml_is = new ByteArrayInputStream(cpf_xml.toByteArray());
 
 			StringBuilder sb = new StringBuilder();
-			String cpf_string;
 
 			try {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(cpf_xml_is, "UTF-8"));
-				while ((cpf_string = reader.readLine()) != null) {
-					sb.append(cpf_string).append("\n");
+				while ((line = reader.readLine()) != null) {
+					sb.append(line).append("\n");
 				}
 			} finally {
 				cpf_xml_is.close();
 			}
+
+			String cpf_string = sb.toString();
 			
 			JAXBContext janf = JAXBContext.newInstance("org.apromore.anf");
 			m = jcpf.createMarshaller();
@@ -388,16 +394,18 @@ public class ProcessDao extends BasicDao {
 			InputStream anf_xml_is = new ByteArrayInputStream(anf_xml.toByteArray());
 			
 			StringBuilder sb1 = new StringBuilder();
-			String anf_string;
 
 			try {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(anf_xml_is, "UTF-8"));
-				while ((anf_string = reader.readLine()) != null) {
-					sb.append(anf_string).append("\n");
+				while ((line = reader.readLine()) != null) {
+					sb.append(line).append("\n");
 				}
 			} finally {
 				anf_xml_is.close();
 			}
+
+			String anf_string = sb1.toString();
+			
 			conn = this.getConnection();
 
 			String query0 = " select " + ConstantDB.ATTR_USERID
@@ -463,12 +471,14 @@ public class ProcessDao extends BasicDao {
 			String query1 = " insert into " + ConstantDB.TABLE_PROCESSES
 			+ "(" + ConstantDB.ATTR_NAME + ","
 			+       ConstantDB.ATTR_DOMAIN + ","
-			+		ConstantDB.ATTR_OWNER + ")"
-			+ " values (?, ?, ?) ";
+			+		ConstantDB.ATTR_OWNER + ","
+			+		ConstantDB.ATTR_ORIGINAL_TYPE + ")"
+			+ " values (?, ?, ?, ?) ";
 			stmt1 = conn.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS);
 			stmt1.setString(1, processName);
 			stmt1.setString(2, domain);
 			stmt1.setInt(3, userId);
+			stmt1.setString(4,nativeType);
 			int rs1 = stmt1.executeUpdate();
 			keys = stmt1.getGeneratedKeys() ;
 			if (!keys.next()) {
