@@ -1,9 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
 	xmlns:xpdl="http://www.wfmc.org/2008/XPDL2.1"
+	xmlns:yawl="http://www.yawlfoundation.org/yawlschema"
+    xmlns:cpf="http://www.apromore.org/CPF"
 	targetNamespace="http://www.apromore.org/data_access/model_manager"
 	xmlns:tns="http://www.apromore.org/data_access/model_manager">
 
+	<import schemaLocation="bpmnxpdl_31_modified.xsd" namespace="http://www.wfmc.org/2008/XPDL2.1" />
+	<import schemaLocation="YAWL_Schema2.0.xsd" namespace="http://www.yawlfoundation.org/yawlschema" />
+	<import schemaLocation="cpf.xsd" namespace="http://www.apromore.org/CPF" />
+	
 	<element name="ReadProcessSummariesInputMsg" type="tns:ReadProcessSummariesInputMsgType" />
 	<element name="ReadProcessSummariesOutputMsg" type="tns:ReadProcessSummariesOutputMsgType" />
 	<element name="ReadDomainsInputMsg" type="tns:ReadDomainsInputMsgType" />
@@ -14,6 +20,40 @@
 	<element name="ReadUserOutputMsg" type="tns:ReadUserOutputMsgType" />
 	<element name="WriteUserInputMsg" type="tns:WriteUserInputMsgType" />
 	<element name="WriteUserOutputMsg" type="tns:WriteUserOutputMsgType" />
+	<element name="ReadNativeInputMsg" type="tns:ReadNativeInputMsgType" />
+	<element name="ReadNativeOutputMsg" type="tns:ReadNativeOutputMsgType" />
+	<element name="ReadCanonicalInputMsg" type="tns:ReadCanonicalInputMsgType" />
+	<element name="ReadCanonicalOutputMsg" type="tns:ReadCanonicalOutputMsgType" />
+	
+	<complexType name="ReadCanonicalInputMsgType">
+		<attribute name="processId" type="int" />
+		<attribute name="version" type="string" />
+	</complexType>
+	
+	<complexType name="ReadCanonicalOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+			<element name="cpf" type="cpf:CanonicalProcessType"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="ReadNativeInputMsgType">
+		<attribute name="processId" type="int" />
+		<attribute name="version" type="string" />
+		<attribute name="nativeType" type="string" />
+	</complexType>
+	
+	<complexType name="ReadNativeOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+			<choice>
+			<element name="xpdl" type="xpdl:PackageType"/>
+			<element name="yawl" type="yawl:SpecificationSetFactsType"/>
+			</choice>
+		</sequence>
+	</complexType>
 
 	<complexType name="ReadProcessSummariesInputMsgType">
 		<attribute name="SearchExpression" type="string" />

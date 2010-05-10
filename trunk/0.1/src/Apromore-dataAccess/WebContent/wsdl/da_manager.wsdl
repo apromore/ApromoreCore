@@ -42,7 +42,40 @@
     <part name="payload" element="tnsx:ReadFormatsInputMsg">
     </part>
   </message>
+
+	<message name="ReadNativeInputMsg">
+		<part name="payload" element="tnsx:ReadNativeInputMsg">
+		</part>
+	</message>
+	<message name="ReadNativeOutputMsg">
+		<part name="payload" element="tnsx:ReadNativeOutputMsg">
+		</part>
+	</message>
+
+	<message name="ReadCanonicalInputMsg">
+		<part name="payload" element="tnsx:ReadCanonicalInputMsg">
+		</part>
+	</message>
+	<message name="ReadCanonicalOutputMsg">
+		<part name="payload" element="tnsx:ReadCanonicalOutputMsg">
+		</part>
+	</message>
+	
   <portType name="DAManagerPortType">
+
+    <operation name="ReadNative">
+      <input name="ReadNativeRequest" message="tns:ReadNativeInputMsg">
+    </input>
+      <output name="ReadNativeResponse" message="tns:ReadNativeOutputMsg">
+    </output>
+    </operation>
+    <operation name="ReadCanonical">
+      <input name="ReadCanonicalRequest" message="tns:ReadCanonicalInputMsg">
+    </input>
+      <output name="ReadCanonicalResponse" message="tns:ReadCanonicalOutputMsg">
+    </output>
+    </operation>
+  
     <operation name="ReadProcessSummaries">
       <input name="ReadProcessSummariesRequest" message="tns:ReadProcessSummariesInputMsg">
     </input>
@@ -74,8 +107,29 @@
     </output>
     </operation>
   </portType>
+  
   <binding name="DAManagerBinding" type="tns:DAManagerPortType">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+       
+    <operation name="ReadCanonical">
+      <soap:operation style="document"/>
+      <input name="ReadCanonicalRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="ReadCanonicalResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    
+    <operation name="ReadNative">
+      <soap:operation style="document"/>
+      <input name="ReadNativeRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="ReadNativeResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
     <operation name="ReadProcessSummaries">
       <soap:operation style="document"/>
       <input name="ReadProcessSummariesRequest">
