@@ -1,6 +1,7 @@
 package org.apromore.portal.dialogController;
 
 import org.apromore.portal.exception.DialogException;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Menu;
@@ -14,9 +15,11 @@ public class MenuController extends Menubar {
 	private ImportProcessController importC;
 	private Menubar menuB;
 	
-	private Menuitem importMI;
 	
-	private Menu editM;
+	private Menu processM;
+	private Menuitem importMI;
+	private Menuitem exportMI;
+	private Menuitem editMI;
 	private Menuitem copyMI;
 	private Menuitem pasteMI;
 	private Menuitem deleteMI;
@@ -38,7 +41,8 @@ public class MenuController extends Menubar {
 		 */
 		this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
 		this.importMI = (Menuitem) this.menuB.getFellow("fileImport");
-		this.editM = (Menu) this.menuB.getFellow("edit");
+		this.exportMI = (Menuitem) this.menuB.getFellow("fileExport");
+		this.editMI = (Menuitem) this.menuB.getFellow("processEdit");
 		this.evaluationM = (Menu) this.menuB.getFellow("evaluation");
 		this.comparisonM = (Menu) this.menuB.getFellow("comparison");
 		this.managementM = (Menu) this.menuB.getFellow("management");
@@ -48,6 +52,13 @@ public class MenuController extends Menubar {
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
 				importModel ();
+			}
+		});	
+		
+		this.editMI.addEventListener("onClick",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				editModel ();
 			}
 		});	
 	}
@@ -60,6 +71,10 @@ public class MenuController extends Menubar {
 		}
 	}
 
+	protected void editModel() {
+		Executions.getCurrent().sendRedirect("http://bach2.imag.fr:8080/projetPCarre/CDExportProjetHtml?idSujet=508","_blank");
+	}
+	
 	public Menubar getMenuB() {
 		return menuB;
 	}
