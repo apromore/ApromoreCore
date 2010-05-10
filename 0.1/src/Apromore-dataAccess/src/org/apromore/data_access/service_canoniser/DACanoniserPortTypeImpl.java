@@ -62,7 +62,7 @@ import org.apromore.data_access.model_canoniser.StoreNativeCpfOutputMsgType;
 		try {
 			DataHandler handler = payload.getNative();
 			InputStream process_xml = handler.getInputStream();
-
+			System.out.println("Size of process native description (DA): " + process_xml.available());
 			ProcessDao.getInstance().storeNativeCpf(username, processName, domain, nativeType, version,
 					process_xml, cpf, anf);
 			result.setCode(0);
