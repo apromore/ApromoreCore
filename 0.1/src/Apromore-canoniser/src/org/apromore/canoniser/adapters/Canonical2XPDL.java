@@ -1,4 +1,4 @@
-package pkg;
+package org.apromore.canoniser.adapters;
 
 import java.io.InputStream;
 import java.io.OutputStream;

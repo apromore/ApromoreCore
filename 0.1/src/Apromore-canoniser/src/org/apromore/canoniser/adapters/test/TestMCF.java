@@ -1,4 +1,4 @@
-package pkg.test;
+package org.apromore.canoniser.adapters.test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -11,11 +11,11 @@ import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 
 import org.apromore.anf.AnnotationsType;
+import org.apromore.canoniser.adapters.XPDL2Canonical;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.rlf.RelationsType;
 import org.wfmc._2008.xpdl2.PackageType;
 
-import pkg.XPDL2Canonical;
 
 public class TestMCF {
 
