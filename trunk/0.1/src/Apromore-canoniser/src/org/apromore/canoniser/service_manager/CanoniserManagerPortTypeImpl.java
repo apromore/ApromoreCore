@@ -20,6 +20,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
 
+import org.apromore.canoniser.adapters.EPML2Canonical;
 import org.apromore.canoniser.adapters.XPDL2Canonical;
 import org.apromore.canoniser.common.Constants;
 import org.apromore.canoniser.da.RequestToDA;
@@ -27,6 +28,8 @@ import org.apromore.canoniser.model_manager.CanoniseProcessInputMsgType;
 import org.apromore.canoniser.model_manager.CanoniseProcessOutputMsgType;
 import org.apromore.canoniser.model_manager.ResultType;
 import org.wfmc._2008.xpdl2.PackageType;
+
+import de.epml.TypeEPML;
 
 
 /**
@@ -87,11 +90,25 @@ import org.wfmc._2008.xpdl2.PackageType;
 						xpdl2canonical.getAnf());
 				result.setCode(0);
 				result.setMessage("");
-			} else {
+			} else if(nativeType.compareTo("EPML 2.0")==0) {
+				JAXBContext jc1 = JAXBContext.newInstance("de.epml");
+				Unmarshaller u = jc1.createUnmarshaller();
+				JAXBElement<TypeEPML> rootElement = (JAXBElement<TypeEPML>) u.unmarshal(process_xml);
+				TypeEPML epml = rootElement.getValue();
+				String versionName = null ;
+				// set the version name
+
+				EPML2Canonical epml2canonical = new EPML2Canonical(epml);
+				RequestToDA request = new RequestToDA();
+				request.StoreProcess (username, processName, domain, nativeType, versionName, handler.getInputStream(), 
+						epml2canonical.getCPF(), 
+						epml2canonical.getANF());
+				result.setCode(0);
+				result.setMessage("");
+			}else {
 				result.setCode(-1);
 				result.setMessage("Native type not supported.");
 			}
-
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
