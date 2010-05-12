@@ -1,28 +1,30 @@
 
-package org.apromore.cpf;
+package org.apromore.data_access.model_canoniser;
 
-import java.math.BigInteger;
+import javax.activation.DataHandler;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for objectRefType complex type.
+ * <p>Java class for StoreNativeInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="objectRefType">
+ * &lt;complexType name="StoreNativeInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="objectId" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" />
- *       &lt;attribute name="type" type="{http://www.apromore.org/CPF}InputOutputType" />
- *       &lt;attribute name="optional" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
- *       &lt;attribute name="consumed" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
+ *       &lt;sequence>
+ *         &lt;element name="processId" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="version" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="NativeType" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Native" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -31,134 +33,122 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "objectRefType")
+@XmlType(name = "StoreNativeInputMsgType", propOrder = {
+    "processId",
+    "version",
+    "nativeType",
+    "_native"
+})
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ObjectRefType {
+public class StoreNativeInputMsgType {
 
-    @XmlAttribute
-    @XmlSchemaType(name = "positiveInteger")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected BigInteger objectId;
-    @XmlAttribute
+    protected int processId;
+    @XmlElement(required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected InputOutputType type;
-    @XmlAttribute
+    protected String version;
+    @XmlElement(name = "NativeType", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected Boolean optional;
-    @XmlAttribute
+    protected String nativeType;
+	@XmlElement(name = "Native", required = true)
+    @XmlMimeType("application/octet-stream")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected Boolean consumed;
+    protected DataHandler _native;
 
     /**
-     * Gets the value of the objectId property.
+     * Gets the value of the processId property.
+     * 
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public int getProcessId() {
+        return processId;
+    }
+
+    /**
+     * Sets the value of the processId property.
+     * 
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setProcessId(int value) {
+        this.processId = value;
+    }
+
+    /**
+     * Gets the value of the version property.
      * 
      * @return
      *     possible object is
-     *     {@link BigInteger }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public BigInteger getObjectId() {
-        return objectId;
+    public String getVersion() {
+        return version;
     }
 
     /**
-     * Sets the value of the objectId property.
+     * Sets the value of the version property.
      * 
      * @param value
      *     allowed object is
-     *     {@link BigInteger }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setObjectId(BigInteger value) {
-        this.objectId = value;
+    public void setVersion(String value) {
+        this.version = value;
     }
 
     /**
-     * Gets the value of the type property.
+     * Gets the value of the nativeType property.
      * 
      * @return
      *     possible object is
-     *     {@link InputOutputType }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public InputOutputType getType() {
-        return type;
+    public String getNativeType() {
+        return nativeType;
     }
 
-    /**
-     * Sets the value of the type property.
+	/**
+     * Sets the value of the nativeType property.
      * 
      * @param value
      *     allowed object is
-     *     {@link InputOutputType }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setType(InputOutputType value) {
-        this.type = value;
+    public void setNativeType(String value) {
+        this.nativeType = value;
     }
 
-    /**
-     * Gets the value of the optional property.
+	/**
+     * Gets the value of the native property.
      * 
      * @return
      *     possible object is
-     *     {@link Boolean }
+     *     {@link DataHandler }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public boolean isOptional() {
-        if (optional == null) {
-            return false;
-        } else {
-            return optional;
-        }
+    public DataHandler getNative() {
+        return _native;
     }
 
     /**
-     * Sets the value of the optional property.
+     * Sets the value of the native property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Boolean }
+     *     {@link DataHandler }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setOptional(Boolean value) {
-        this.optional = value;
-    }
-
-    /**
-     * Gets the value of the consumed property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public boolean isConsumed() {
-        if (consumed == null) {
-            return false;
-        } else {
-            return consumed;
-        }
-    }
-
-    /**
-     * Sets the value of the consumed property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setConsumed(Boolean value) {
-        this.consumed = value;
+    public void setNative(DataHandler value) {
+        this._native = value;
     }
 
 }

@@ -21,6 +21,7 @@ import javax.xml.bind.Marshaller;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.data_access.commons.ConstantDB;
+import org.apromore.data_access.commons.Constants;
 import org.apromore.data_access.exception.ExceptionDao;
 import org.apromore.data_access.model_manager.ProcessSummariesType;
 import org.apromore.data_access.model_manager.ProcessSummaryType;
@@ -337,8 +338,6 @@ public class ProcessDao extends BasicDao {
 			String nativeType, String version, InputStream process_xml,
 			CanonicalProcessType cpf, AnnotationsType anf) throws ExceptionDao, SQLException, IOException {
 
-		
-		
 		Connection conn = null;
 		Statement stmt0 = null;
 		PreparedStatement
@@ -350,7 +349,7 @@ public class ProcessDao extends BasicDao {
 		ResultSet rs0 = null;
 		try {
 			if (version == null || version.compareTo("")==0) {
-				version = "v0";
+				version = Constants.DEFAULT_VERSION_NAME;
 			}
 			StringBuilder sb0 = new StringBuilder();
 			String line ;
@@ -515,4 +514,131 @@ public class ProcessDao extends BasicDao {
 		}
 	}
 
+	public String getNative(Integer processId, String version, String nativeType) throws ExceptionDao {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		String query = null;
+		try {
+			conn = this.getConnection();
+			stmt = conn.createStatement();
+			query = " select " + ConstantDB.ATTR_CONTENT
+				+ " from " + ConstantDB.TABLE_NATIVES
+				+ " natural join "
+				+            ConstantDB.TABLE_VERSIONS
+				+ " where " + ConstantDB.ATTR_PROCESSID + " = " + processId.toString()
+				+   " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + version + "'"
+				+   " and " + ConstantDB.ATTR_NAT_TYPE  + " = '" + nativeType + "'";
+			rs = stmt.executeQuery(query);
+			if (rs.next()) {
+				return rs.getString(1);
+			} else {
+				throw new ExceptionDao ("SQL error ProcessDAO (getNative): native process not found.");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new ExceptionDao ("SQL error ProcessDAO (getNative): " + e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ExceptionDao ("Error ProcessDAO (getNative): " + e.getMessage());
+		} finally {
+			Release(conn, stmt, rs);
+		}
+	}
+	
+	public String getCanonical (Integer processId, String version) throws ExceptionDao {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		String query = null;
+		try {
+			conn = this.getConnection();
+			stmt = conn.createStatement();
+			query = " select " + ConstantDB.ATTR_CONTENT
+				+ " from " + ConstantDB.TABLE_CANONICALS
+				+ " join "
+				+            ConstantDB.TABLE_VERSIONS
+				+ " on (" + ConstantDB.ATTR_CANONICAL + "=" + ConstantDB.ATTR_URI + ")"
+				+ " where " + ConstantDB.ATTR_PROCESSID + " = " + processId.toString()
+				+   " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + version + "'";
+			rs = stmt.executeQuery(query);
+			if (rs.next()) {
+				return rs.getString(1);
+			} else {
+				throw new ExceptionDao ("SQL error ProcessDAO (getCanonical): native process not found.");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new ExceptionDao ("SQL error ProcessDAO (getCanonical): " + e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ExceptionDao ("Error ProcessDAO (getCanonical): " + e.getMessage());
+		} finally {
+			Release(conn, stmt, rs);
+		}
+	}
+
+	public void storeNative(String nativeType, int processId, String version,
+			InputStream native_xml) throws SQLException, ExceptionDao {
+		Connection conn = null;
+		Statement stmt1 = null;
+		PreparedStatement stmt2 = null;
+		ResultSet rs1 = null;
+		int canonical;
+		
+		try {
+			conn = this.getConnection();
+			stmt1 = conn.createStatement();
+			String query = " select " + ConstantDB.ATTR_CANONICAL
+				+ " from " + ConstantDB.TABLE_VERSIONS
+				+ " where " + ConstantDB.ATTR_PROCESSID + " = " + processId
+				+   " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + version + "'";
+			rs1 = stmt1.executeQuery(query);
+			if (rs1.next()) {
+				canonical = rs1.getInt(1);
+			} else {
+				throw new ExceptionDao ("SQL error ProcessDAO (storeNative): canonical process not found.");
+			}
+			
+			if (version == null || version.compareTo("")==0) {
+				version = Constants.DEFAULT_VERSION_NAME;
+			}
+			StringBuilder sb = new StringBuilder();
+			String line ;
+			try {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(native_xml, "UTF-8"));
+				while ((line = reader.readLine()) != null) {
+					sb.append(line).append("\n");
+				}
+			} finally {
+				native_xml.close();
+			}
+			String native_string = sb.toString();
+			query = " insert into " + ConstantDB.TABLE_NATIVES
+			+ "(" + ConstantDB.ATTR_CONTENT + ","
+			+       ConstantDB.ATTR_NAT_TYPE + ","
+			+       ConstantDB.ATTR_CANONICAL + ")"
+			+ " values (?,?,?) ";
+
+			stmt2 = conn.prepareStatement(query);
+			stmt2.setString(1, native_string);
+			stmt2.setString(2, nativeType);
+			stmt2.setInt(3, canonical);
+			stmt2.executeUpdate();
+			conn.commit();
+			
+		} catch (SQLException e) {
+			conn.rollback();
+			e.printStackTrace();
+			throw new ExceptionDao ("SQL error ProcessDAO (storeNative): " + e.getMessage());
+		} catch (Exception e) {
+			conn.rollback();
+			e.printStackTrace();
+			throw new ExceptionDao ("Error ProcessDAO (storeNative): " + e.getMessage());
+		} finally {
+			Release(conn, stmt1, rs1);
+			stmt2.close();
+		}
+		
+	}
 }

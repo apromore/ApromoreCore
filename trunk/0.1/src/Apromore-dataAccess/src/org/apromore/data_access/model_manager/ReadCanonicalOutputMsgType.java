@@ -1,25 +1,27 @@
 
 package org.apromore.data_access.model_manager;
 
+import javax.activation.DataHandler;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ReadProcessSummariesOutputMsgType complex type.
+ * <p>Java class for ReadCanonicalOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ReadProcessSummariesOutputMsgType">
+ * &lt;complexType name="ReadCanonicalOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="Result" type="{http://www.apromore.org/data_access/model_manager}ResultType"/>
- *         &lt;element name="ProcessSummaries" type="{http://www.apromore.org/data_access/model_manager}ProcessSummariesType"/>
+ *         &lt;element name="cpf" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,19 +31,20 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReadProcessSummariesOutputMsgType", propOrder = {
+@XmlType(name = "ReadCanonicalOutputMsgType", propOrder = {
     "result",
-    "processSummaries"
+    "cpf"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:31:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ReadProcessSummariesOutputMsgType {
+public class ReadCanonicalOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:31:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
-    @XmlElement(name = "ProcessSummaries", required = true)
+    @XmlElement(required = true)
+    @XmlMimeType("application/octet-stream")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:31:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected ProcessSummariesType processSummaries;
+    protected DataHandler cpf;
 
     /**
      * Gets the value of the result property.
@@ -70,29 +73,29 @@ public class ReadProcessSummariesOutputMsgType {
     }
 
     /**
-     * Gets the value of the processSummaries property.
+     * Gets the value of the cpf property.
      * 
      * @return
      *     possible object is
-     *     {@link ProcessSummariesType }
+     *     {@link DataHandler }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:31:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public ProcessSummariesType getProcessSummaries() {
-        return processSummaries;
+    public DataHandler getCpf() {
+        return cpf;
     }
 
     /**
-     * Sets the value of the processSummaries property.
+     * Sets the value of the cpf property.
      * 
      * @param value
      *     allowed object is
-     *     {@link ProcessSummariesType }
+     *     {@link DataHandler }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:31:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setProcessSummaries(ProcessSummariesType value) {
-        this.processSummaries = value;
+    public void setCpf(DataHandler value) {
+        this.cpf = value;
     }
 
 }
