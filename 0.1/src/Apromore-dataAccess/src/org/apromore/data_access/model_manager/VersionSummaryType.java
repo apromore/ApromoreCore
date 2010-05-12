@@ -9,7 +9,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
-import javax.xml.datatype.XMLGregorianCalendar;
 
 
 /**
@@ -109,11 +108,11 @@ public class VersionSummaryType {
      * 
      * @return
      *     possible object is
-     *     {@link XMLGregorianCalendar }
+     *     {@link Date }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:29:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public XMLGregorianCalendar getLastUpdate() {
+    public Date getLastUpdate() {
         return lastUpdate;
     }
 
@@ -124,11 +123,11 @@ public class VersionSummaryType {
      * 
      * @param value
      *     allowed object is
-     *     {@link XMLGregorianCalendar }
+     *     {@link Date }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:29:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setLastUpdate(XMLGregorianCalendar value) {
+    public void setLastUpdate(Date value) {
         this.lastUpdate = value;
     }
 
@@ -137,39 +136,15 @@ public class VersionSummaryType {
      * 
      * @return
      *     possible object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:29:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public XMLGregorianCalendar getCreationDate() {
-        return creationDate;
-    }
-
-	/**
-     * Sets the value of the creationDate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link XMLGregorianCalendar }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:29:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setCreationDate(XMLGregorianCalendar value) {
-        this.creationDate = value;
-    }
-
-	/**
-     * Sets the value of the lastUpdate property.
-     * 
-     * @param value
-     *     allowed object is
      *     {@link Date }
      *     
      */
-//    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T10:54:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setLastUpdate(Date value) {
-        this.lastUpdate = value;
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:29:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public Date getCreationDate() {
+        return creationDate;
     }
+
+
 
 	/**
      * Sets the value of the creationDate property.
