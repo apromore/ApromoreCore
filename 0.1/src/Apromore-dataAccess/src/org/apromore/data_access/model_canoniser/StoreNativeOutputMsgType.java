@@ -1,26 +1,26 @@
 
-package org.apromore.cpf;
+package org.apromore.data_access.model_canoniser;
 
-import java.math.BigInteger;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSchemaType;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for TaskType complex type.
+ * <p>Java class for StoreNativeOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="TaskType">
+ * &lt;complexType name="StoreNativeOutputMsgType">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.apromore.org/CPF}WorkType">
- *       &lt;attribute name="subnetId" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" />
- *     &lt;/extension>
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
+ *       &lt;sequence>
+ *         &lt;element name="Result" type="{http://www.apromore.org/data_access/model_canoniser}ResultType"/>
+ *       &lt;/sequence>
+ *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
@@ -28,41 +28,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "TaskType")
+@XmlType(name = "StoreNativeOutputMsgType", propOrder = {
+    "result"
+})
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class TaskType
-    extends WorkType
-{
+public class StoreNativeOutputMsgType {
 
-    @XmlAttribute
-    @XmlSchemaType(name = "positiveInteger")
+    @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected BigInteger subnetId;
+    protected ResultType result;
 
     /**
-     * Gets the value of the subnetId property.
+     * Gets the value of the result property.
      * 
      * @return
      *     possible object is
-     *     {@link BigInteger }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public BigInteger getSubnetId() {
-        return subnetId;
+    public ResultType getResult() {
+        return result;
     }
 
     /**
-     * Sets the value of the subnetId property.
+     * Sets the value of the result property.
      * 
      * @param value
      *     allowed object is
-     *     {@link BigInteger }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setSubnetId(BigInteger value) {
-        this.subnetId = value;
+    public void setResult(ResultType value) {
+        this.result = value;
     }
 
 }

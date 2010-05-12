@@ -9,16 +9,17 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for SearchHistoriesType complex type.
+ * <p>Java class for ReadNativeInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="SearchHistoriesType">
+ * &lt;complexType name="ReadNativeInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="search" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="num" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="processId" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="version" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="nativeType" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -27,45 +28,22 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SearchHistoriesType")
+@XmlType(name = "ReadNativeInputMsgType")
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:31:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class SearchHistoriesType {
+public class ReadNativeInputMsgType {
 
     @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:31:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String search;
+    protected Integer processId;
     @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:31:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected Integer num;
-
-    /**
-     * Gets the value of the search property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
+    protected String version;
+    @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:31:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getSearch() {
-        return search;
-    }
+    protected String nativeType;
 
     /**
-     * Sets the value of the search property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:31:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setSearch(String value) {
-        this.search = value;
-    }
-
-    /**
-     * Gets the value of the num property.
+     * Gets the value of the processId property.
      * 
      * @return
      *     possible object is
@@ -73,12 +51,12 @@ public class SearchHistoriesType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:31:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public Integer getNum() {
-        return num;
+    public Integer getProcessId() {
+        return processId;
     }
 
     /**
-     * Sets the value of the num property.
+     * Sets the value of the processId property.
      * 
      * @param value
      *     allowed object is
@@ -86,8 +64,60 @@ public class SearchHistoriesType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:31:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setNum(Integer value) {
-        this.num = value;
+    public void setProcessId(Integer value) {
+        this.processId = value;
+    }
+
+    /**
+     * Gets the value of the version property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:31:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public String getVersion() {
+        return version;
+    }
+
+    /**
+     * Sets the value of the version property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:31:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setVersion(String value) {
+        this.version = value;
+    }
+
+    /**
+     * Gets the value of the nativeType property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:31:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public String getNativeType() {
+        return nativeType;
+    }
+
+    /**
+     * Sets the value of the nativeType property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:31:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setNativeType(String value) {
+        this.nativeType = value;
     }
 
 }
