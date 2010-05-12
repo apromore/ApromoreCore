@@ -43,6 +43,7 @@
 		<sequence>
 			<element name="processId" type="int" />
 			<element name="version" type="string" />
+			<element name="NativeType" type="string" />
 			<element name="Native" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
