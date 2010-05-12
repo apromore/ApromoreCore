@@ -1,7 +1,8 @@
-<!-- choosenative window has chooseNativeController.java as a controller 
-	components id and listbox to choose native type implemented by the controller -->
+<!-- choosenative window has EditListNativesController.java as a controller 
+	TODO make a ChooseNativeController
+	listbox to choose native type implemented by the controller -->
 
-<window id="choosenativeW" title="Choose native type" width="500px" closable="false" 
+<window id="choosenativeW" title="Edit process: choose native type" width="500px" closable="false" 
 	position="center" mode="modal">
 	<vbox vflex="1">
 		<grid>
@@ -13,7 +14,7 @@
 				<row>
 					<label value="Available native types" />
 					<listbox id="choosenativeLB" width="100%" multiple="false" mold="select" rows="1">
-						<listitem id="emptynative" label=""/>
+						<listitem label=""/>
 						<!-- listbox implemented by controller -->
 					</listbox>
 				</row>

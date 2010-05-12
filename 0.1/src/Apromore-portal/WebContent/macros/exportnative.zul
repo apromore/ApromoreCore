@@ -1,8 +1,8 @@
 <!-- exportnative window has exportNativeController.java as a controller 
-	components id and combobox to choose native type implemented by the controller 
+	components id and listbox to choose native type implemented by the controller 
 	one controller per process version to export -->
 
-<window width="500px" closable="true" position="center">
+<window width="500px" closable="true" position="center" mode="overlapped">
 	<vbox vflex="1">
 		<grid>
 			<columns sizable="true">
@@ -21,9 +21,10 @@
 				</row>
 				<row>
 					<label value="Native type for export" />
-					<combobox width="100%">
-						<!-- combobox implemented in controller -->
-					</combobox>
+					<listbox width="100%" multiple="false" mold="select" rows="1">
+						<listitem label=""/>
+						<!-- listbox implemented in controller -->
+					</listbox>
 				</row>
 				<row spans="2">
 					<div align="center">

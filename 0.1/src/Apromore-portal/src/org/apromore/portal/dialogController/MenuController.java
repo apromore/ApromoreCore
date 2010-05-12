@@ -1,5 +1,6 @@
 package org.apromore.portal.dialogController;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -12,19 +13,14 @@ import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.FormatsType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Checkbox;
-import org.zkoss.zul.Listbox;
-import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Window;
 
 
 public class MenuController extends Menubar {
@@ -51,7 +47,6 @@ public class MenuController extends Menubar {
 	private Menuitem evalCorrectnessMI;
 	private Menuitem evalPerformanceMI;
 	private FormatsType nativeTypes;			// choice of native formats
-	private String chosenNativeType;
 
 	private Vector<ExportNativeController> exportNativeConts ;
 
@@ -108,11 +103,7 @@ public class MenuController extends Menubar {
 	}
 
 	protected void editNative() throws InterruptedException {
-		/* For the set of selected processes:
-		 * - choose a native format for edition
-		 * for each selected process version:
-		 * 		- generate a mapping code whose life-span matches the connected user's session
-		 * 		- open a new browser (get request sent to the editor)
+		/* Build a list of the selected process versions <p, v>
 		 */
 		HashMap<Checkbox, VersionSummaryType> processVersionHM = this.mainC.getProcesstable().getProcessVersionsHM();
 		HashMap<Checkbox, ProcessSummaryType> processHM = this.mainC.getProcesstable().getProcessHM();
@@ -123,41 +114,27 @@ public class MenuController extends Menubar {
 		// browse process checkboxes to find the first which is selected
 		Checkbox cbProc;
 		Checkbox cbVers;
-		String processName, versionName,
-		url, instruction = "";
 
-		try {
-			// Ask user to choose a native format
-			ChooseNativeController chooseNativeC = new ChooseNativeController (this, this.nativeTypes);
-			while (it.hasNext()) {
-				cbProc = (Checkbox) it.next();
-				if (cbProc.isChecked()){
-					List<Checkbox> listCbVers = mapProcessVersions.get(cbProc);
-					// if process selected, one version at least is selected too
-					for(int i=0; i<listCbVers.size();i++) {
-						cbVers = listCbVers.get(i);
-						if (cbVers.isChecked()) {
-							int processId = processHM.get(cbProc).getId();
-							processName = processHM.get(cbProc).getName();
-							versionName = processVersionHM.get(cbVers).getName();
-							System.out.println(processName + ".." + versionName);
-
-							url = "http://www.google.com/search?q="+processName;
-							instruction += "window.open('" + url + "','','top=100,left=200,height=600,width=800,scrollbars=1,resizable=1'); ";
-						}
+		HashMap<ProcessSummaryType,List<VersionSummaryType>> processVersions = 
+			new HashMap<ProcessSummaryType,List<VersionSummaryType>>();
+		while (it.hasNext()) {
+			cbProc = (Checkbox) it.next();
+			if (cbProc.isChecked()){
+				List<Checkbox> listCbVers = mapProcessVersions.get(cbProc);
+				List<VersionSummaryType> listVersion = new ArrayList<VersionSummaryType>();
+				// if process selected, one version at least is selected too
+				for(int i=0; i<listCbVers.size();i++) {
+					cbVers = listCbVers.get(i);
+					if (cbVers.isChecked()) {
+						listVersion.add(processVersionHM.get(cbVers));
 					}
 				}
+				processVersions.put(processHM.get(cbProc), listVersion);
 			}
-			if (instruction.compareTo("")!=0 && this.chosenNativeType!=null) {
-				//Clients.evalJavaScript(instruction);
-				System.out.println(instruction);
-			}
-		} catch (SuspendNotAllowedException e) {
-			Messagebox.show("Repository not available ("+e.getMessage()+")", "Attention", Messagebox.OK,
-					Messagebox.ERROR);
-		} catch (InterruptedException e) {
-			Messagebox.show("Repository not available ("+e.getMessage()+")", "Attention", Messagebox.OK,
-					Messagebox.ERROR);
+		}
+		if (processVersions.size()!=0) {
+			EditListNativesController editList = 
+				new EditListNativesController (this, this.nativeTypes,processVersions);
 		}
 	}
 
@@ -189,17 +166,9 @@ public class MenuController extends Menubar {
 						System.out.println(processName + ".." + versionName);
 
 						ExportNativeController exportNativeC;
-						try {
-							exportNativeC = new ExportNativeController(this, processId, processName, versionName);
+							exportNativeC = new ExportNativeController(this, processId, processName, 
+									versionName, this.nativeTypes);
 							this.exportNativeConts.add(exportNativeC);
-						} catch (SuspendNotAllowedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						} catch (InterruptedException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-
 					}
 				}
 			}
@@ -218,12 +187,5 @@ public class MenuController extends Menubar {
 		return nativeTypes;
 	}
 
-	public String getChosenNativeType() {
-		return chosenNativeType;
-	}
-
-	public void setChosenNativeType(String chosenNativeType) {
-		this.chosenNativeType = chosenNativeType;
-	}
 
 }
