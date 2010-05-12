@@ -15,8 +15,8 @@
 	<element name="WriteUserOutputMsg" type="tns:WriteUserOutputMsgType" />
 	<element name="ImportProcessInputMsg" type="tns:ImportProcessInputMsgType" />
 	<element name="ImportProcessOutputMsg" type="tns:ImportProcessOutputMsgType" />
-	<element name="ExportProcessInputMsg" type="tns:ExportProcessInputMsgType" />
-	<element name="ExportProcessOutputMsg" type="tns:ExportProcessOutputMsgType" />
+	<element name="ExportNativeInputMsg" type="tns:ExportNativeInputMsgType" />
+	<element name="ExportNativeOutputMsg" type="tns:ExportNativeOutputMsgType" />
 
 	<complexType name="ReadProcessSummariesInputMsgType">
 		<attribute name="SearchExpression" type="string" />
@@ -144,16 +144,18 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="ExportProcessInputMsgType">
+
+	<complexType name="ExportNativeInputMsgType">
+		<attribute name="NativeType" type="string" />
 		<attribute name="ProcessId" type="int" />
 		<attribute name="VersionName" type="int" />
 	</complexType>
 
-	<complexType name="ExportProcessOutputMsgType">
+	<complexType name="ExportNativeOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" />
-			<element name="Process" type="tns:ImportProcessInputMsgType"
-				minOccurs="0" maxOccurs="1" />
+			<element name="Native" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
 	</complexType>
 
