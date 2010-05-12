@@ -11,6 +11,8 @@
 	
 	<element name="StoreNativeCpfInputMsg" type="tns:StoreNativeCpfInputMsgType" />
 	<element name="StoreNativeCpfOutputMsg" type="tns:StoreNativeCpfOutputMsgType" />
+	<element name="StoreNativeInputMsg" type="tns:StoreNativeInputMsgType" />
+	<element name="StoreNativeOutputMsg" type="tns:StoreNativeOutputMsgType" />
 
 	<complexType name="ResultType">
 		<attribute name="message" type="string" />
@@ -37,5 +39,19 @@
 		</sequence>
 	</complexType>
 	
+		<complexType name="StoreNativeInputMsgType">
+		<sequence>
+			<element name="processId" type="int" />
+			<element name="version" type="string" />
+			<element name="Native" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="StoreNativeOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType"/>
+		</sequence>
+	</complexType>
 
 </schema>

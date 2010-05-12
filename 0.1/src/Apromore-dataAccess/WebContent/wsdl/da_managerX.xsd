@@ -1,14 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <schema xmlns="http://www.w3.org/2001/XMLSchema"
-	xmlns:xpdl="http://www.wfmc.org/2008/XPDL2.1"
-	xmlns:yawl="http://www.yawlfoundation.org/yawlschema"
-    xmlns:cpf="http://www.apromore.org/CPF"
+	xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
 	targetNamespace="http://www.apromore.org/data_access/model_manager"
 	xmlns:tns="http://www.apromore.org/data_access/model_manager">
-
-	<import schemaLocation="bpmnxpdl_31_modified.xsd" namespace="http://www.wfmc.org/2008/XPDL2.1" />
-	<import schemaLocation="YAWL_Schema2.0.xsd" namespace="http://www.yawlfoundation.org/yawlschema" />
-	<import schemaLocation="cpf.xsd" namespace="http://www.apromore.org/CPF" />
 	
 	<element name="ReadProcessSummariesInputMsg" type="tns:ReadProcessSummariesInputMsgType" />
 	<element name="ReadProcessSummariesOutputMsg" type="tns:ReadProcessSummariesOutputMsgType" />
@@ -34,7 +28,8 @@
 		<sequence>
 			<element name="Result" type="tns:ResultType" minOccurs="1"
 				maxOccurs="1" />
-			<element name="cpf" type="cpf:CanonicalProcessType"/>
+			<element name="cpf" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
 	</complexType>
 
@@ -48,10 +43,8 @@
 		<sequence>
 			<element name="Result" type="tns:ResultType" minOccurs="1"
 				maxOccurs="1" />
-			<choice>
-			<element name="xpdl" type="xpdl:PackageType"/>
-			<element name="yawl" type="yawl:SpecificationSetFactsType"/>
-			</choice>
+			<element name="Native" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />	
 		</sequence>
 	</complexType>
 
