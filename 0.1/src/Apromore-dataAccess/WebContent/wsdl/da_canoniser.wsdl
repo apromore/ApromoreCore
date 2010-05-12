@@ -2,6 +2,7 @@
 <definitions targetNamespace="http://www.apromore.org/data_access/service_canoniser" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tnsx="http://www.apromore.org/data_access/model_canoniser" xmlns:tns="http://www.apromore.org/data_access/service_canoniser" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
   <import namespace="http://www.apromore.org/data_access/model_canoniser" location="da_canoniserX.xsd">
     </import>
+    
   <message name="StoreNativeCpfOutputMsg">
     <part name="payload" element="tnsx:StoreNativeCpfOutputMsg">
     </part>
@@ -10,6 +11,17 @@
     <part name="payload" element="tnsx:StoreNativeCpfInputMsg">
     </part>
   </message>
+  
+    <message name="StoreNativeOutputMsg">
+    <part name="payload" element="tnsx:StoreNativeOutputMsg">
+    </part>
+  </message>
+  <message name="StoreNativeInputMsg">
+    <part name="payload" element="tnsx:StoreNativeInputMsg">
+    </part>
+  </message>
+  
+  
   <portType name="DACanoniserPortType">
     <operation name="StoreNativeCpf">
       <input name="StoreNativeCpfRequest" message="tns:StoreNativeCpfInputMsg">
@@ -17,7 +29,14 @@
       <output name="StoreNativeCpfResponse" message="tns:StoreNativeCpfOutputMsg">
     </output>
     </operation>
+    <operation name="StoreNative">
+      <input name="StoreNativeRequest" message="tns:StoreNativeInputMsg">
+    </input>
+      <output name="StoreNativeResponse" message="tns:StoreNativeOutputMsg">
+    </output>
+    </operation>
   </portType>
+  
   <binding name="DACanoniserBinding" type="tns:DACanoniserPortType">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="StoreNativeCpf">
@@ -26,6 +45,15 @@
         <soap:body use="literal"/>
       </input>
       <output name="StoreNativeCpfResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="StoreNative">
+      <soap:operation style="document"/>
+      <input name="StoreNativeRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="StoreNativeResponse">
         <soap:body use="literal"/>
       </output>
     </operation>
