@@ -50,6 +50,18 @@
     <part name="payload" element="tnsx:ImportProcessInputMsg">
     </part>
   </message>
+  
+  
+  <message name="ExportNativeOutputMsg">
+    <part name="payload" element="tnsx:ExportNativeOutputMsg">
+    </part>
+  </message>
+  <message name="ExportNativeInputMsg">
+    <part name="payload" element="tnsx:ExportNativeInputMsg">
+    </part>
+  </message>
+  
+  
   <portType name="ManagerPortalPortType">
     <operation name="ReadProcessSummaries">
       <input name="ReadProcessSummariesRequest" message="tns:ReadProcessSummariesInputMsg">
@@ -87,7 +99,17 @@
       <output name="ImportProcessResponse" message="tns:ImportProcessOutputMsg">
     </output>
     </operation>
+    
+    
+    <operation name="ExportNative">
+      <input name="ExportNativeRequest" message="tns:ExportNativeInputMsg">
+    </input>
+      <output name="ExportNativeResponse" message="tns:ExportNativeOutputMsg">
+    </output>
+    </operation>
+    
   </portType>
+  
   <binding name="ManagerPortalBinding" type="tns:ManagerPortalPortType">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="ReadProcessSummaries">
@@ -141,6 +163,15 @@
         <soap:body use="literal"/>
       </input>
       <output name="ImportProcessResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="ExportNative">
+      <soap:operation style="document"/>
+      <input name="ExportNativeRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="ExportNativeResponse">
         <soap:body use="literal"/>
       </output>
     </operation>
