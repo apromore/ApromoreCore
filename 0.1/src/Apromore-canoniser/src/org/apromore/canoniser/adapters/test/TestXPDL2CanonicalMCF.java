@@ -17,12 +17,13 @@ import org.apromore.rlf.RelationsType;
 import org.wfmc._2008.xpdl2.PackageType;
 
 
-public class TestMCF {
+public class TestXPDL2CanonicalMCF {
 
 	@SuppressWarnings("unchecked")
 	public void main() {
-		File file = new File("models/model1.xpdl");
-		ByteArrayOutputStream anf = new ByteArrayOutputStream(), 
+		File file = new File("/home/fauvet/models/model1.xpdl");
+		ByteArrayOutputStream 
+			anf = new ByteArrayOutputStream(), 
 			cpf = new ByteArrayOutputStream(), 
 			rlf = new ByteArrayOutputStream();
 		
