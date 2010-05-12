@@ -30,6 +30,8 @@
 				maxOccurs="1" />
 			<element name="cpf" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
+			<element name="anf" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
 	</complexType>
 
