@@ -93,7 +93,11 @@ public class ImportProcessController extends Window {
 				if (this.nativeType.compareTo("yawl")==0) {
 					this.nativeType = "YAWL 2.0";
 				} else {
-					this.nativeType = "not recognised";
+					if (this.nativeType.compareTo("epml")==0) {
+						this.nativeType = "EPML 2.0";
+					} else {
+						this.nativeType = "not recognised";
+					}
 				}
 			}
 			this.okButton.setDisabled(false);

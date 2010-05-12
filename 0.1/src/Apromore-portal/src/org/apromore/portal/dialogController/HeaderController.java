@@ -101,6 +101,7 @@ public class HeaderController extends Window {
 
 		try {
 			this.signinC = new SigninController(this, mainC);
+			
 		} catch (DialogException e) {
 			Messagebox.show("Error: incorrect user details",
 					"Cancel", Messagebox.OK, Messagebox.ERROR);
