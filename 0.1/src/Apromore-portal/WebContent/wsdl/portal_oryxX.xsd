@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+	targetNamespace="http://www.apromore.org/portal/model_oryx" xmlns:tns="http://www.apromore.org/portal/model_oryx">
+
+	<element name="ReadNativeInputMsg" type="tns:ReadNativeInputMsgType" />
+	<element name="ReadNativeOutputMsg" type="tns:ReadNativeOutputMsgType" />
+	<element name="WriteNewProcessInputMsg" type="tns:WriteNewProcessInputMsgType" />
+	<element name="WriteNewProcessOutputMsg" type="tns:WriteNewProcessOutputMsgType" />
+	<element name="WriteProcessInputMsg" type="tns:WriteProcessInputMsgType" />
+	<element name="WriteProcessOutputMsg" type="tns:WriteProcessOutputMsgType" />
+
+	<complexType name="ReadNativeInputMsgType">
+		<attribute name="NativeType" type="string" />
+		<attribute name="ProcessId" type="int" />
+		<attribute name="VersionName" type="int" />
+	</complexType>
+
+	<complexType name="ReadNativeOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+			<element name="Native" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+		</sequence>
+	</complexType>
+
+	<complexType name="WriteNewProcessInputMsgType">
+		<sequence>
+			<element name="Native" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+		</sequence>
+		<attribute name="NativeType" type="string" />
+		<attribute name="ProcessName" type="string" />
+		<attribute name="VersionName" type="int" />
+	</complexType>
+	
+	<complexType name="WriteNewProcessOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+		</sequence>
+	</complexType>
+
+	<complexType name="WriteProcessInputMsgType">
+		<sequence>
+			<element name="Native" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+		</sequence>
+		<attribute name="NativeType" type="string" />
+		<attribute name="ProcessId" type="int" />
+		<attribute name="VersionName" type="int" />
+	</complexType>
+	
+	<complexType name="WriteProcessOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="ResultType">
+		<attribute name="message" type="string" />
+		<attribute name="code" type="int" />
+	</complexType>
+
+</schema>
