@@ -5,6 +5,8 @@
 
 	<element name="CanoniseProcessInputMsg" type="tns:CanoniseProcessInputMsgType" />
 	<element name="CanoniseProcessOutputMsg" type="tns:CanoniseProcessOutputMsgType" />
+	<element name="DeCanoniseProcessInputMsg" type="tns:DeCanoniseProcessInputMsgType" />
+	<element name="DeCanoniseProcessOutputMsg" type="tns:DeCanoniseProcessOutputMsgType" />
 
 	<complexType name="ResultType">
 		<attribute name="message" type="string" />
@@ -27,4 +29,23 @@
 			<element name="Result" type="tns:ResultType" />
 		</sequence>
 	</complexType>
+	
+	
+	<complexType name="DeCanoniseProcessInputMsgType">
+		<sequence>
+			<element name="NativeType" type="string" />
+			<element name="Cpf" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+		</sequence>
+	</complexType>
+
+	<complexType name="DeCanoniseProcessOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+			<element name="NativeDescription" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+		</sequence>
+	</complexType>
+	
+	
 </schema>
