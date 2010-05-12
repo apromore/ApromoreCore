@@ -1,24 +1,28 @@
 
 package org.apromore.canoniser.model_manager;
 
+import javax.activation.DataHandler;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ResultType complex type.
+ * <p>Java class for DeCanoniseProcessInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ResultType">
+ * &lt;complexType name="DeCanoniseProcessInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="message" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="code" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;sequence>
+ *         &lt;element name="NativeType" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Cpf" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -27,19 +31,23 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ResultType")
+@XmlType(name = "DeCanoniseProcessInputMsgType", propOrder = {
+    "nativeType",
+    "cpf"
+})
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:01:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ResultType {
+public class DeCanoniseProcessInputMsgType {
 
-    @XmlAttribute
+    @XmlElement(name = "NativeType", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:01:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String message;
-    @XmlAttribute
+    protected String nativeType;
+    @XmlElement(name = "Cpf", required = true)
+    @XmlMimeType("application/octet-stream")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:01:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected Integer code;
+    protected DataHandler cpf;
 
     /**
-     * Gets the value of the message property.
+     * Gets the value of the nativeType property.
      * 
      * @return
      *     possible object is
@@ -47,12 +55,12 @@ public class ResultType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:01:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getMessage() {
-        return message;
+    public String getNativeType() {
+        return nativeType;
     }
 
     /**
-     * Sets the value of the message property.
+     * Sets the value of the nativeType property.
      * 
      * @param value
      *     allowed object is
@@ -60,34 +68,34 @@ public class ResultType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:01:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setMessage(String value) {
-        this.message = value;
+    public void setNativeType(String value) {
+        this.nativeType = value;
     }
 
     /**
-     * Gets the value of the code property.
+     * Gets the value of the cpf property.
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link DataHandler }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:01:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public Integer getCode() {
-        return code;
+    public DataHandler getCpf() {
+        return cpf;
     }
 
     /**
-     * Sets the value of the code property.
+     * Sets the value of the cpf property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link DataHandler }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:01:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setCode(Integer value) {
-        this.code = value;
+    public void setCpf(DataHandler value) {
+        this.cpf = value;
     }
 
 }
