@@ -1,12 +1,18 @@
 package org.apromore.canoniser.adapters;
 
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
@@ -55,7 +61,7 @@ import org.wfmc._2008.xpdl2.TransitionRestrictions;
 import org.wfmc._2008.xpdl2.Transitions;
 import org.wfmc._2008.xpdl2.WorkflowProcesses;
 
-public class Canonical2XPDL {
+public class CopyOfCanonical2XPDL {
 	Map<NodeType, Activity> canon2xpdl = new HashMap<NodeType, Activity>();
 	Map<EdgeType, Transition> edge2flow = new HashMap<EdgeType, Transition>();
 	Map<BigInteger, NodeType> nodeRefMap = new HashMap<BigInteger, NodeType>();
@@ -69,7 +75,6 @@ public class Canonical2XPDL {
 	Map<EventType, Event> events = new HashMap<EventType, Event>();
 	Map<RoutingType, TransitionRestrictions> gateways = new HashMap<RoutingType, TransitionRestrictions>();
 	
-	private PackageType xpdl; 
 	/**
 	 * de-canonize data (canonical) into xpdl using rlf and anf data
 	 * @param data
@@ -79,17 +84,37 @@ public class Canonical2XPDL {
 	 * @throws JAXBException
 	 */
 	@SuppressWarnings("unchecked")
-	public Canonical2XPDL(CanonicalProcessType cpf, RelationsType rlf, AnnotationsType anf) throws JAXBException {
+	public CopyOfCanonical2XPDL(InputStream data, OutputStream xpdl, InputStream rlf, InputStream anf) throws JAXBException {
 		
-		this.xpdl = new PackageType();
-		this.xpdl.setWorkflowProcesses(new WorkflowProcesses());
+		JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
+		Unmarshaller u = jc.createUnmarshaller();
+		JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u.unmarshal(data);
+		CanonicalProcessType cproc = rootElement.getValue();
 		
-		for (NetType net: cpf.getNet()) {
+		jc = JAXBContext.newInstance("org.apromore.rlf");
+		u = jc.createUnmarshaller();
+		JAXBElement<RelationsType> relsRootElement = (JAXBElement<RelationsType>) u.unmarshal(rlf);
+		RelationsType rels = relsRootElement.getValue();
+
+		jc = JAXBContext.newInstance("org.apromore.anf");
+		u = jc.createUnmarshaller();
+		JAXBElement<AnnotationsType> anfRootElement = (JAXBElement<AnnotationsType>) u.unmarshal(anf);
+		AnnotationsType annotations = anfRootElement.getValue();
+
+		PackageType pkg = new PackageType();
+		pkg.setWorkflowProcesses(new WorkflowProcesses());
+		
+		for (NetType net: cproc.getNet()) {
 			ProcessType bpmnproc = new ProcessType();
-			translateNet(bpmnproc, net, rlf, anf);
-			this.xpdl.getWorkflowProcesses().getWorkflowProcess().add(bpmnproc);
+			translateNet(bpmnproc, net, rels, annotations);
+			pkg.getWorkflowProcesses().getWorkflowProcess().add(bpmnproc);
 		}
 		
+		jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
+		Marshaller m = jc.createMarshaller();
+		m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+		JAXBElement<PackageType> cprocRootElem = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(pkg);
+		m.marshal(cprocRootElem, xpdl);
 	}
 
 	private void translateNet(ProcessType bpmnproc, NetType net, RelationsType rels, AnnotationsType annotations) {
@@ -378,10 +403,6 @@ public class Canonical2XPDL {
 		
 		events.put((EventType)node, event);
 		return act;
-	}
-
-	public PackageType getXpdl() {
-		return xpdl;
 	}
 
 }
