@@ -546,6 +546,43 @@ public class ProcessDao extends BasicDao {
 		}
 	}
 	
+
+
+	public String getAnnotation(Integer processId, String version) throws ExceptionDao {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		String query = null;
+		try {
+			conn = this.getConnection();
+			stmt = conn.createStatement();
+			query = " select " + ConstantDB.ATTR_CONTENT
+				+ " from " + ConstantDB.TABLE_ANNOTATION + " A "
+				+ " join "
+				+            ConstantDB.TABLE_NATIVES + " N "
+				+ " on (A." + ConstantDB.ATTR_URI + "= N." + ConstantDB.ATTR_ANNOTATION + ")"
+				+ " natural join "
+				            + ConstantDB.TABLE_VERSIONS
+				+ " where " + ConstantDB.ATTR_PROCESSID + " = " + processId.toString()
+				+   " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + version + "'";
+			rs = stmt.executeQuery(query);
+			if (rs.next()) {
+				return rs.getString(1);
+			} else {
+				throw new ExceptionDao ("SQL error ProcessDAO (getAnnotation): annotation not found.");
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new ExceptionDao ("SQL error ProcessDAO (getAnnotation): " + e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ExceptionDao ("Error ProcessDAO (getAnnotation): " + e.getMessage());
+		} finally {
+			Release(conn, stmt, rs);
+		}
+	
+	}
+	
 	public String getCanonical (Integer processId, String version) throws ExceptionDao {
 		Connection conn = null;
 		Statement stmt = null;
