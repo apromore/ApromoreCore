@@ -1,0 +1,41 @@
+<!-- exportnative window has exportNativeController.java as a controller 
+	components id and combobox to choose native type implemented by the controller 
+	one controller per process version to export -->
+
+<window width="500px" closable="true" position="center">
+	<vbox vflex="1">
+		<grid>
+			<columns sizable="true">
+				<column width="40%"></column>
+				<column width="60%"></column>
+			</columns>
+			<rows>
+				<row>
+					<label value="Process name (process id)"
+						width="100%" />
+					<label width="100%" />
+				</row>
+				<row>
+					<label value="Version name" width="100%" />
+					<label width="100%" />
+				</row>
+				<row>
+					<label value="Native type for export" />
+					<combobox width="100%">
+						<!-- combobox implemented in controller -->
+					</combobox>
+				</row>
+				<row spans="2">
+					<div align="center">
+						<button label="OK" image="img/ok.png"
+							disabled="true">
+						</button>
+						<button label="Cancel"
+							image="img/cancel2.png">
+						</button>
+					</div>
+				</row>
+			</rows>
+		</grid>
+	</vbox>
+</window>
