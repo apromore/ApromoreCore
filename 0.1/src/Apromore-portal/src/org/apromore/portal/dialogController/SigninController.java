@@ -50,7 +50,7 @@ public class SigninController extends Window {
 		this.headerW = (Window) mainC.getFellow("headercomp").getFellow("header");
 
 
-		final Window win = (Window) Executions.createComponents(
+		Window win = (Window) Executions.createComponents(
 				"macros/signin.zul", null, null);
 
 		this.signinWindow = (Window) win.getFellow("signinWindow");

@@ -1,0 +1,33 @@
+<!-- choosenative window has chooseNativeController.java as a controller 
+	components id and listbox to choose native type implemented by the controller -->
+
+<window id="choosenativeW" title="Choose native type" width="500px" closable="false" 
+	position="center" mode="modal">
+	<vbox vflex="1">
+		<grid>
+			<columns sizable="true">
+				<column width="40%"></column>
+				<column width="60%"></column>
+			</columns>
+			<rows>
+				<row>
+					<label value="Available native types" />
+					<listbox id="choosenativeLB" width="100%" multiple="false" mold="select" rows="1">
+						<listitem id="emptynative" label=""/>
+						<!-- listbox implemented by controller -->
+					</listbox>
+				</row>
+				<row spans="2">
+					<div align="center">
+						<button id="choosenativeOkB" label="OK" image="img/ok.png"
+							disabled="true">
+						</button>
+						<button id="choosenativeCancelB" label="Cancel"
+							image="img/cancel2.png">
+						</button>
+					</div>
+				</row>
+			</rows>
+		</grid>
+	</vbox>
+</window>

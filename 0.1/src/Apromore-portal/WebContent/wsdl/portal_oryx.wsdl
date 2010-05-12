@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="http://www.apromore.org/portal/service_oryx"
+	xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tnsx="http://www.apromore.org/portal/model_oryx"
+	xmlns:tns="http://www.apromore.org/portal/service_oryx" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+
+	<import namespace="http://www.apromore.org/portal/model_oryx"
+		location="portal_oryxX.xsd">
+	</import>
+
+	<message name="ReadNativeOutputMsg">
+		<part name="payload" element="tnsx:ReadNativeOutputMsg" />
+	</message>
+	<message name="ReadNativeInputMsg">
+		<part name="payload" element="tnsx:ReadNativeInputMsg" />
+	</message>
+
+	<message name="WriteNewProcessOutputMsg">
+		<part name="payload" element="tnsx:WriteNewProcessOutputMsg" />
+	</message>
+	<message name="WriteNewProcessInputMsg">
+		<part name="payload" element="tnsx:WriteNewProcessInputMsg" />
+	</message>
+
+	<message name="WriteProcessOutputMsg">
+		<part name="payload" element="tnsx:WriteProcessOutputMsg" />
+	</message>
+	<message name="WriteProcessInputMsg">
+		<part name="payload" element="tnsx:WriteProcessInputMsg" />
+	</message>
+
+	<portType name="PortalOryxPortType">
+		<operation name="ReadNative">
+			<input name="ReadNativeRequest" message="tns:ReadNativeInputMsg" />
+			<output name="ReadNativeResponse" message="tns:ReadNativeOutputMsg" />
+		</operation>
+		<operation name="WriteNewProcess">
+			<input name="WriteNewProcessRequest" message="tns:WriteNewProcessInputMsg" />
+			<output name="WriteNewProcessResponse" message="tns:WriteNewProcessOutputMsg" />
+		</operation>
+
+		<operation name="WriteProcess">
+			<input name="WriteProcessRequest" message="tns:WriteProcessInputMsg" />
+			<output name="WriteProcessResponse" message="tns:WriteProcessOutputMsg" />
+		</operation>
+	</portType>
+
+	<binding name="PortalOryxBinding" type="tns:PortalOryxPortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="ReadNative">
+			<soap:operation style="document" />
+			<input name="ReadNativeRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="ReadNativeResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+
+		<operation name="WriteNewProcess">
+			<soap:operation style="document" />
+			<input name="WriteNewProcessRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="WriteNewProcessResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+
+
+		<operation name="WriteProcess">
+			<soap:operation style="document" />
+			<input name="WriteProcessRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="WriteProcessResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+
+	<service name="PortalOryxService">
+		<port name="PortalOryx" binding="tns:PortalOryxBinding">
+			<soap:address
+				location="http://localhost:8080/Apromore-portal/services/PortalOryx" />
+		</port>
+	</service>
+</definitions>
