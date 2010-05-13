@@ -27,7 +27,10 @@ public class ObjectFactory {
     private final static QName _CanoniseProcessInputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "CanoniseProcessInputMsg");
     private final static QName _CanoniseProcessOutputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "CanoniseProcessOutputMsg");
 
-    /**
+    private final static QName _DeCanoniseProcessInputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "DeCanoniseProcessInputMsg");
+	private final static QName _DeCanoniseProcessOutputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "DeCanoniseProcessOutputMsg");
+
+	/**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.apromore.manager.model_canoniser
      * 
      */
@@ -59,6 +62,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link DeCanoniseProcessOutputMsgType }
+     * 
+     */
+    public DeCanoniseProcessOutputMsgType createDeCanoniseProcessOutputMsgType() {
+        return new DeCanoniseProcessOutputMsgType();
+    }
+
+	/**
+     * Create an instance of {@link DeCanoniseProcessInputMsgType }
+     * 
+     */
+    public DeCanoniseProcessInputMsgType createDeCanoniseProcessInputMsgType() {
+        return new DeCanoniseProcessInputMsgType();
+    }
+
+	/**
      * Create an instance of {@link JAXBElement }{@code <}{@link CanoniseProcessInputMsgType }{@code >}}
      * 
      */
@@ -74,6 +93,24 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://www.apromore.org/canoniser/model_manager", name = "CanoniseProcessOutputMsg")
     public JAXBElement<CanoniseProcessOutputMsgType> createCanoniseProcessOutputMsg(CanoniseProcessOutputMsgType value) {
         return new JAXBElement<CanoniseProcessOutputMsgType>(_CanoniseProcessOutputMsg_QNAME, CanoniseProcessOutputMsgType.class, null, value);
+    }
+
+	/**
+     * Create an instance of {@link JAXBElement }{@code <}{@link DeCanoniseProcessInputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/canoniser/model_manager", name = "DeCanoniseProcessInputMsg")
+    public JAXBElement<DeCanoniseProcessInputMsgType> createDeCanoniseProcessInputMsg(DeCanoniseProcessInputMsgType value) {
+        return new JAXBElement<DeCanoniseProcessInputMsgType>(_DeCanoniseProcessInputMsg_QNAME, DeCanoniseProcessInputMsgType.class, null, value);
+    }
+
+	/**
+     * Create an instance of {@link JAXBElement }{@code <}{@link DeCanoniseProcessOutputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/canoniser/model_manager", name = "DeCanoniseProcessOutputMsg")
+    public JAXBElement<DeCanoniseProcessOutputMsgType> createDeCanoniseProcessOutputMsg(DeCanoniseProcessOutputMsgType value) {
+        return new JAXBElement<DeCanoniseProcessOutputMsgType>(_DeCanoniseProcessOutputMsg_QNAME, DeCanoniseProcessOutputMsgType.class, null, value);
     }
 
 }

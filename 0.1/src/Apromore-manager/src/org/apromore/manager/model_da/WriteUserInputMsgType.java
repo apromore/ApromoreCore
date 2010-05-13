@@ -1,5 +1,5 @@
 
-package org.apromore.manager.model_manager;
+package org.apromore.manager.model_da;
 
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -31,11 +31,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "WriteUserInputMsgType", propOrder = {
     "user"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T03:29:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T05:20:22+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class WriteUserInputMsgType {
 
     @XmlElement(name = "User", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T03:29:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T05:20:22+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected UserType user;
 
     /**
@@ -46,7 +46,7 @@ public class WriteUserInputMsgType {
      *     {@link UserType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T03:29:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T05:20:22+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public UserType getUser() {
         return user;
     }
@@ -59,7 +59,7 @@ public class WriteUserInputMsgType {
      *     {@link UserType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T03:29:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T05:20:22+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setUser(UserType value) {
         this.user = value;
     }

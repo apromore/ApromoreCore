@@ -148,7 +148,7 @@
 	<complexType name="ExportNativeInputMsgType">
 		<attribute name="NativeType" type="string" />
 		<attribute name="ProcessId" type="int" />
-		<attribute name="VersionName" type="int" />
+		<attribute name="VersionName" type="string" />
 	</complexType>
 
 	<complexType name="ExportNativeOutputMsgType">
