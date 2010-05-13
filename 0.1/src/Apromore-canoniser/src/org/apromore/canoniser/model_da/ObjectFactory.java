@@ -24,6 +24,8 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
+    private final static QName _StoreNativeInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreNativeInputMsg");
+    private final static QName _StoreNativeOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreNativeOutputMsg");
     private final static QName _StoreNativeCpfInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreNativeCpfInputMsg");
     private final static QName _StoreNativeCpfOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreNativeCpfOutputMsg");
 
@@ -32,14 +34,6 @@ public class ObjectFactory {
      * 
      */
     public ObjectFactory() {
-    }
-
-    /**
-     * Create an instance of {@link ResultType }
-     * 
-     */
-    public ResultType createResultType() {
-        return new ResultType();
     }
 
     /**
@@ -56,6 +50,48 @@ public class ObjectFactory {
      */
     public StoreNativeCpfInputMsgType createStoreNativeCpfInputMsgType() {
         return new StoreNativeCpfInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link StoreNativeOutputMsgType }
+     * 
+     */
+    public StoreNativeOutputMsgType createStoreNativeOutputMsgType() {
+        return new StoreNativeOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link StoreNativeInputMsgType }
+     * 
+     */
+    public StoreNativeInputMsgType createStoreNativeInputMsgType() {
+        return new StoreNativeInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ResultType }
+     * 
+     */
+    public ResultType createResultType() {
+        return new ResultType();
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link StoreNativeInputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_canoniser", name = "StoreNativeInputMsg")
+    public JAXBElement<StoreNativeInputMsgType> createStoreNativeInputMsg(StoreNativeInputMsgType value) {
+        return new JAXBElement<StoreNativeInputMsgType>(_StoreNativeInputMsg_QNAME, StoreNativeInputMsgType.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link StoreNativeOutputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_canoniser", name = "StoreNativeOutputMsg")
+    public JAXBElement<StoreNativeOutputMsgType> createStoreNativeOutputMsg(StoreNativeOutputMsgType value) {
+        return new JAXBElement<StoreNativeOutputMsgType>(_StoreNativeOutputMsg_QNAME, StoreNativeOutputMsgType.class, null, value);
     }
 
     /**
