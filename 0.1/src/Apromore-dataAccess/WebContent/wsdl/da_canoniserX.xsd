@@ -28,8 +28,10 @@
 			<element name="versionName" type="string" />
 			<element name="Native" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
-			<element name="Cpf" type="cpf:CanonicalProcessType" />
-			<element name="Anf" type="anf:AnnotationsType" />
+			<element name="Cpf" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream"  />
+			<element name="Anf" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream"  />
 		</sequence>
 	</complexType>
 	
