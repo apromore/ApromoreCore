@@ -336,7 +336,7 @@ public class ProcessDao extends BasicDao {
 
 	public void storeNativeCpf (String username, String processName, String domain, 
 			String nativeType, String version, InputStream process_xml,
-			CanonicalProcessType cpf, AnnotationsType anf) throws ExceptionDao, SQLException, IOException {
+			InputStream cpf_xml, InputStream anf_xml) throws ExceptionDao, SQLException, IOException {
 
 		Connection conn = null;
 		Statement stmt0 = null;
@@ -363,44 +363,25 @@ public class ProcessDao extends BasicDao {
 			}
 			String process_string = sb0.toString();
 			
-			JAXBContext jcpf = JAXBContext.newInstance("org.apromore.cpf");
-			Marshaller m = jcpf.createMarshaller();
-			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-			JAXBElement<CanonicalProcessType> rootcpf = new org.apromore.cpf.ObjectFactory().createCanonicalProcess(cpf);
-			ByteArrayOutputStream cpf_xml = new ByteArrayOutputStream();
-			m.marshal(rootcpf, cpf_xml);
-			InputStream cpf_xml_is = new ByteArrayInputStream(cpf_xml.toByteArray());
-
 			StringBuilder sb = new StringBuilder();
-
 			try {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(cpf_xml_is, "UTF-8"));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(cpf_xml, "UTF-8"));
 				while ((line = reader.readLine()) != null) {
 					sb.append(line).append("\n");
 				}
 			} finally {
-				cpf_xml_is.close();
+				cpf_xml.close();
 			}
-
 			String cpf_string = sb.toString();
 			
-			JAXBContext janf = JAXBContext.newInstance("org.apromore.anf");
-			m = jcpf.createMarshaller();
-			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-			JAXBElement<AnnotationsType> rootanf = new org.apromore.anf.ObjectFactory().createAnnotations(anf);
-			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream();
-			m.marshal(rootcpf, anf_xml);
-			InputStream anf_xml_is = new ByteArrayInputStream(anf_xml.toByteArray());
-			
 			StringBuilder sb1 = new StringBuilder();
-
 			try {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(anf_xml_is, "UTF-8"));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(anf_xml, "UTF-8"));
 				while ((line = reader.readLine()) != null) {
 					sb.append(line).append("\n");
 				}
 			} finally {
-				anf_xml_is.close();
+				anf_xml.close();
 			}
 
 			String anf_string = sb1.toString();
@@ -547,8 +528,14 @@ public class ProcessDao extends BasicDao {
 	}
 	
 
-
-	public String getAnnotation(Integer processId, String version) throws ExceptionDao {
+/**
+ * Retrieve annotations (if exist) produced
+ * @param processId
+ * @param version
+ * @return
+ * @throws ExceptionDao
+ */
+	public String getAnnotation(Integer processId, String version, String nativeType) throws ExceptionDao {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -564,12 +551,13 @@ public class ProcessDao extends BasicDao {
 				+ " natural join "
 				            + ConstantDB.TABLE_VERSIONS
 				+ " where " + ConstantDB.ATTR_PROCESSID + " = " + processId.toString()
-				+   " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + version + "'";
+				+   " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + version + "'"
+				+   " and " + ConstantDB.ATTR_NAT_TYPE + " = '" + nativeType + "'";
 			rs = stmt.executeQuery(query);
 			if (rs.next()) {
 				return rs.getString(1);
 			} else {
-				throw new ExceptionDao ("SQL error ProcessDAO (getAnnotation): annotation not found.");
+				return null;
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -615,7 +603,7 @@ public class ProcessDao extends BasicDao {
 		}
 	}
 
-	public void storeNative(String nativeType, int processId, String version,
+	public void storeNative (String nativeType, int processId, String version,
 			InputStream native_xml) throws SQLException, ExceptionDao {
 		Connection conn = null;
 		Statement stmt1 = null;
