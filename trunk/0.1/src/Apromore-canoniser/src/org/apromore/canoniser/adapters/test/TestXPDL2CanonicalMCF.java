@@ -38,7 +38,8 @@ public class TestXPDL2CanonicalMCF {
 			jc = JAXBContext.newInstance("org.apromore.cpf");
 			Marshaller m = jc.createMarshaller();
 			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-			JAXBElement<CanonicalProcessType> cprocRootElem = new org.apromore.cpf.ObjectFactory().createCanonicalProcess(xpdl2canonical.getCpf());
+			JAXBElement<CanonicalProcessType> cprocRootElem = 
+				new org.apromore.cpf.ObjectFactory().createCanonicalProcess(xpdl2canonical.getCpf());
 			m.marshal(cprocRootElem, cpf);
 
 			jc = JAXBContext.newInstance("org.apromore.rlf");
