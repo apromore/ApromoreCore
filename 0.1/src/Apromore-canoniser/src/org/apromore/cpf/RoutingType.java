@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlType;
     JoinType.class,
     SplitType.class
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-24T05:20:07+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class RoutingType
     extends NodeType
 {

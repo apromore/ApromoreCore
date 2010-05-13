@@ -9,11 +9,11 @@ import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.namespace.QName;
 
-import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.exception.ExceptionStore;
 import org.apromore.canoniser.model_da.StoreNativeCpfInputMsgType;
 import org.apromore.canoniser.model_da.StoreNativeCpfOutputMsgType;
-import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.canoniser.model_da.StoreNativeInputMsgType;
+import org.apromore.canoniser.model_da.StoreNativeOutputMsgType;
 
 public class RequestToDA {
 
@@ -27,21 +27,39 @@ public class RequestToDA {
 	}
 
 	public void StoreProcess (String username, String processName, String domain, String nativeType, String versionName,
-			InputStream process_xml, CanonicalProcessType cpf, AnnotationsType anf) throws IOException, ExceptionStore {
+			InputStream process_xml, InputStream cpf_xml, InputStream anf_xml) throws IOException, ExceptionStore {
 
 		StoreNativeCpfInputMsgType payload = new StoreNativeCpfInputMsgType();
 		payload.setUsername(username);
-		payload.setAnf(anf);
-		payload.setCpf(cpf);
 		payload.setNativeType(nativeType);
 		payload.setProcessName(processName);
 		payload.setDomain(domain);
 		payload.setVersionName(versionName);
-		DataSource source = new ByteArrayDataSource(process_xml, "text/xml"); 
-		payload.setNative(new DataHandler(source));
+		DataSource source_proc = new ByteArrayDataSource(process_xml, "text/xml"); 
+		payload.setNative(new DataHandler(source_proc));
+		DataSource source_cpf = new ByteArrayDataSource(cpf_xml, "text/xml"); 
+		payload.setCpf(new DataHandler(source_cpf));
+		DataSource source_anf = new ByteArrayDataSource(anf_xml, "text/xml"); 
+		payload.setAnf(new DataHandler(source_anf));
 		StoreNativeCpfOutputMsgType res = this.port.storeNativeCpf(payload);
 		if (res.getResult().getCode() == -1) {
 			throw new ExceptionStore (res.getResult().getMessage());
 		}
+	}
+	
+	public void StoreNative (int processId, String version, String nativeType, InputStream process) 
+	throws IOException, ExceptionStore {
+		
+		StoreNativeInputMsgType payload = new StoreNativeInputMsgType();
+		payload.setProcessId(processId);
+		payload.setVersion(version);
+		payload.setNativeType(nativeType);
+		DataSource source_native = new ByteArrayDataSource(process, "text/xml");
+		payload.setNative(new DataHandler(source_native));
+		StoreNativeOutputMsgType res = this.port.storeNative(payload);
+		if (res.getResult().getCode() == -1) {
+			throw new ExceptionStore (res.getResult().getMessage());
+		}
+		
 	}
 }
