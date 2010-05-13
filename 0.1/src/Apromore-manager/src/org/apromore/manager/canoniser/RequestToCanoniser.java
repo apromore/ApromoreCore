@@ -13,6 +13,8 @@ import org.apromore.manager.commons.Constants;
 import org.apromore.manager.da.DAManagerService;
 import org.apromore.manager.exception.ExceptionImport;
 import org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType;
+import org.apromore.manager.model_canoniser.DeCanoniseProcessInputMsgType;
+import org.apromore.manager.model_da.ReadNativeInputMsgType;
 
 public class RequestToCanoniser {
 
@@ -40,6 +42,25 @@ public class RequestToCanoniser {
 		if (res.getResult().getCode() == -1) {
 			throw new ExceptionImport (res.getResult().getMessage());
 		} 		
+	}
+
+	public InputStream DeCanonise(int processId, String version, String nativeType, InputStream canonical_xml) 
+	throws IOException, ExceptionDeCanonise {
+		org.apromore.manager.model_canoniser.DeCanoniseProcessInputMsgType payload = new DeCanoniseProcessInputMsgType();
+		DataSource source = new ByteArrayDataSource(canonical_xml, "text/xml");
+		payload.setProcessId(processId);
+		payload.setVersion(version);
+		payload.setNativeType(nativeType);
+		payload.setCpf(new DataHandler(source));
+		org.apromore.manager.model_canoniser.DeCanoniseProcessOutputMsgType res =
+			this.port.deCanoniseProcess(payload);
+		if (res.getResult().getCode() == -1) {
+			throw new ExceptionDeCanonise (res.getResult().getMessage());
+		} else {
+			DataHandler handler = res.getNativeDescription();
+			InputStream is = handler.getInputStream();
+			return is;
+		}
 	}
 
 }

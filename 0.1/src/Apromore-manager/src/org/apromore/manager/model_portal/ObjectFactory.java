@@ -25,12 +25,12 @@ import javax.xml.namespace.QName;
 public class ObjectFactory {
 
     private final static QName _ImportProcessOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ImportProcessOutputMsg");
-    private final static QName _ExportProcessInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ExportProcessInputMsg");
+    private final static QName _ExportNativeInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ExportNativeInputMsg");
     private final static QName _ReadFormatsInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadFormatsInputMsg");
     private final static QName _WriteUserInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "WriteUserInputMsg");
     private final static QName _ReadProcessSummariesOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadProcessSummariesOutputMsg");
     private final static QName _ReadDomainsInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadDomainsInputMsg");
-    private final static QName _ExportProcessOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ExportProcessOutputMsg");
+    private final static QName _ExportNativeOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ExportNativeOutputMsg");
     private final static QName _ReadUserInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadUserInputMsg");
     private final static QName _ReadFormatsOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadFormatsOutputMsg");
     private final static QName _ReadProcessSummariesInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadProcessSummariesInputMsg");
@@ -47,19 +47,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link FormatsType }
+     * Create an instance of {@link ReadDomainsInputMsgType }
      * 
      */
-    public FormatsType createFormatsType() {
-        return new FormatsType();
-    }
-
-    /**
-     * Create an instance of {@link VersionSummaryType }
-     * 
-     */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
+    public ReadDomainsInputMsgType createReadDomainsInputMsgType() {
+        return new ReadDomainsInputMsgType();
     }
 
     /**
@@ -71,123 +63,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SearchHistoriesType }
-     * 
-     */
-    public SearchHistoriesType createSearchHistoriesType() {
-        return new SearchHistoriesType();
-    }
-
-    /**
-     * Create an instance of {@link ReadUserOutputMsgType }
-     * 
-     */
-    public ReadUserOutputMsgType createReadUserOutputMsgType() {
-        return new ReadUserOutputMsgType();
-    }
-
-    /**
      * Create an instance of {@link ReadDomainsOutputMsgType }
      * 
      */
     public ReadDomainsOutputMsgType createReadDomainsOutputMsgType() {
         return new ReadDomainsOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ExportProcessInputMsgType }
-     * 
-     */
-    public ExportProcessInputMsgType createExportProcessInputMsgType() {
-        return new ExportProcessInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ImportProcessOutputMsgType }
-     * 
-     */
-    public ImportProcessOutputMsgType createImportProcessOutputMsgType() {
-        return new ImportProcessOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ImportProcessInputMsgType }
-     * 
-     */
-    public ImportProcessInputMsgType createImportProcessInputMsgType() {
-        return new ImportProcessInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ReadUserInputMsgType }
-     * 
-     */
-    public ReadUserInputMsgType createReadUserInputMsgType() {
-        return new ReadUserInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ReadDomainsInputMsgType }
-     * 
-     */
-    public ReadDomainsInputMsgType createReadDomainsInputMsgType() {
-        return new ReadDomainsInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ExportProcessOutputMsgType }
-     * 
-     */
-    public ExportProcessOutputMsgType createExportProcessOutputMsgType() {
-        return new ExportProcessOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ReadFormatsOutputMsgType }
-     * 
-     */
-    public ReadFormatsOutputMsgType createReadFormatsOutputMsgType() {
-        return new ReadFormatsOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ReadProcessSummariesInputMsgType }
-     * 
-     */
-    public ReadProcessSummariesInputMsgType createReadProcessSummariesInputMsgType() {
-        return new ReadProcessSummariesInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link UserType }
-     * 
-     */
-    public UserType createUserType() {
-        return new UserType();
-    }
-
-    /**
-     * Create an instance of {@link ReadFormatsInputMsgType }
-     * 
-     */
-    public ReadFormatsInputMsgType createReadFormatsInputMsgType() {
-        return new ReadFormatsInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link WriteUserOutputMsgType }
-     * 
-     */
-    public WriteUserOutputMsgType createWriteUserOutputMsgType() {
-        return new WriteUserOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link WriteUserInputMsgType }
-     * 
-     */
-    public WriteUserInputMsgType createWriteUserInputMsgType() {
-        return new WriteUserInputMsgType();
     }
 
     /**
@@ -199,19 +79,67 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ReadProcessSummariesOutputMsgType }
+     * Create an instance of {@link ReadProcessSummariesInputMsgType }
      * 
      */
-    public ReadProcessSummariesOutputMsgType createReadProcessSummariesOutputMsgType() {
-        return new ReadProcessSummariesOutputMsgType();
+    public ReadProcessSummariesInputMsgType createReadProcessSummariesInputMsgType() {
+        return new ReadProcessSummariesInputMsgType();
     }
 
     /**
-     * Create an instance of {@link ProcessSummariesType }
+     * Create an instance of {@link ExportNativeOutputMsgType }
      * 
      */
-    public ProcessSummariesType createProcessSummariesType() {
-        return new ProcessSummariesType();
+    public ExportNativeOutputMsgType createExportNativeOutputMsgType() {
+        return new ExportNativeOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ReadUserOutputMsgType }
+     * 
+     */
+    public ReadUserOutputMsgType createReadUserOutputMsgType() {
+        return new ReadUserOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link FormatsType }
+     * 
+     */
+    public FormatsType createFormatsType() {
+        return new FormatsType();
+    }
+
+    /**
+     * Create an instance of {@link ReadFormatsInputMsgType }
+     * 
+     */
+    public ReadFormatsInputMsgType createReadFormatsInputMsgType() {
+        return new ReadFormatsInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessSummaryType }
+     * 
+     */
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link ImportProcessOutputMsgType }
+     * 
+     */
+    public ImportProcessOutputMsgType createImportProcessOutputMsgType() {
+        return new ImportProcessOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link WriteUserOutputMsgType }
+     * 
+     */
+    public WriteUserOutputMsgType createWriteUserOutputMsgType() {
+        return new WriteUserOutputMsgType();
     }
 
     /**
@@ -223,11 +151,83 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ProcessSummaryType }
+     * Create an instance of {@link ImportProcessInputMsgType }
      * 
      */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
+    public ImportProcessInputMsgType createImportProcessInputMsgType() {
+        return new ImportProcessInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link WriteUserInputMsgType }
+     * 
+     */
+    public WriteUserInputMsgType createWriteUserInputMsgType() {
+        return new WriteUserInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ReadFormatsOutputMsgType }
+     * 
+     */
+    public ReadFormatsOutputMsgType createReadFormatsOutputMsgType() {
+        return new ReadFormatsOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link VersionSummaryType }
+     * 
+     */
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link UserType }
+     * 
+     */
+    public UserType createUserType() {
+        return new UserType();
+    }
+
+    /**
+     * Create an instance of {@link ReadProcessSummariesOutputMsgType }
+     * 
+     */
+    public ReadProcessSummariesOutputMsgType createReadProcessSummariesOutputMsgType() {
+        return new ReadProcessSummariesOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ReadUserInputMsgType }
+     * 
+     */
+    public ReadUserInputMsgType createReadUserInputMsgType() {
+        return new ReadUserInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link SearchHistoriesType }
+     * 
+     */
+    public SearchHistoriesType createSearchHistoriesType() {
+        return new SearchHistoriesType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessSummariesType }
+     * 
+     */
+    public ProcessSummariesType createProcessSummariesType() {
+        return new ProcessSummariesType();
+    }
+
+    /**
+     * Create an instance of {@link ExportNativeInputMsgType }
+     * 
+     */
+    public ExportNativeInputMsgType createExportNativeInputMsgType() {
+        return new ExportNativeInputMsgType();
     }
 
     /**
@@ -240,12 +240,12 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link ExportProcessInputMsgType }{@code >}}
+     * Create an instance of {@link JAXBElement }{@code <}{@link ExportNativeInputMsgType }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.apromore.org/manager/model_portal", name = "ExportProcessInputMsg")
-    public JAXBElement<ExportProcessInputMsgType> createExportProcessInputMsg(ExportProcessInputMsgType value) {
-        return new JAXBElement<ExportProcessInputMsgType>(_ExportProcessInputMsg_QNAME, ExportProcessInputMsgType.class, null, value);
+    @XmlElementDecl(namespace = "http://www.apromore.org/manager/model_portal", name = "ExportNativeInputMsg")
+    public JAXBElement<ExportNativeInputMsgType> createExportNativeInputMsg(ExportNativeInputMsgType value) {
+        return new JAXBElement<ExportNativeInputMsgType>(_ExportNativeInputMsg_QNAME, ExportNativeInputMsgType.class, null, value);
     }
 
     /**
@@ -285,12 +285,12 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link ExportProcessOutputMsgType }{@code >}}
+     * Create an instance of {@link JAXBElement }{@code <}{@link ExportNativeOutputMsgType }{@code >}}
      * 
      */
-    @XmlElementDecl(namespace = "http://www.apromore.org/manager/model_portal", name = "ExportProcessOutputMsg")
-    public JAXBElement<ExportProcessOutputMsgType> createExportProcessOutputMsg(ExportProcessOutputMsgType value) {
-        return new JAXBElement<ExportProcessOutputMsgType>(_ExportProcessOutputMsg_QNAME, ExportProcessOutputMsgType.class, null, value);
+    @XmlElementDecl(namespace = "http://www.apromore.org/manager/model_portal", name = "ExportNativeOutputMsg")
+    public JAXBElement<ExportNativeOutputMsgType> createExportNativeOutputMsg(ExportNativeOutputMsgType value) {
+        return new JAXBElement<ExportNativeOutputMsgType>(_ExportNativeOutputMsg_QNAME, ExportNativeOutputMsgType.class, null, value);
     }
 
     /**
