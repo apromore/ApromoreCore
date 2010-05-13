@@ -39,27 +39,27 @@ import javax.xml.bind.annotation.XmlType;
     "nativeType",
     "_native"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class StoreNativeInputMsgType {
 
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected int processId;
     @XmlElement(required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String version;
     @XmlElement(name = "NativeType", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String nativeType;
-	@XmlElement(name = "Native", required = true)
+    @XmlElement(name = "Native", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected DataHandler _native;
 
     /**
      * Gets the value of the processId property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public int getProcessId() {
         return processId;
     }
@@ -68,7 +68,7 @@ public class StoreNativeInputMsgType {
      * Sets the value of the processId property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setProcessId(int value) {
         this.processId = value;
     }
@@ -81,7 +81,7 @@ public class StoreNativeInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getVersion() {
         return version;
     }
@@ -94,7 +94,7 @@ public class StoreNativeInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setVersion(String value) {
         this.version = value;
     }
@@ -107,12 +107,12 @@ public class StoreNativeInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getNativeType() {
         return nativeType;
     }
 
-	/**
+    /**
      * Sets the value of the nativeType property.
      * 
      * @param value
@@ -120,12 +120,12 @@ public class StoreNativeInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setNativeType(String value) {
         this.nativeType = value;
     }
 
-	/**
+    /**
      * Gets the value of the native property.
      * 
      * @return
@@ -133,7 +133,7 @@ public class StoreNativeInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public DataHandler getNative() {
         return _native;
     }
@@ -146,7 +146,7 @@ public class StoreNativeInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T04:33:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setNative(DataHandler value) {
         this._native = value;
     }
