@@ -1,5 +1,5 @@
 
-package org.apromore.manager.model_manager;
+package org.apromore.manager.model_da;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
@@ -10,7 +10,7 @@ import javax.xml.namespace.QName;
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
- * generated in the org.apromore.manager.model_manager package. 
+ * generated in the org.apromore.manager.model_da package. 
  * <p>An ObjectFactory allows you to programatically 
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
@@ -24,25 +24,37 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _ReadFormatsInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "ReadFormatsInputMsg");
+    private final static QName _ReadCanonicalOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "ReadCanonicalOutputMsg");
+	private final static QName _ReadFormatsInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "ReadFormatsInputMsg");
     private final static QName _ReadFormatsOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "ReadFormatsOutputMsg");
     private final static QName _ReadProcessSummariesInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "ReadProcessSummariesInputMsg");
     private final static QName _WriteUserInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "WriteUserInputMsg");
-    private final static QName _ReadUserInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "ReadUserInputMsg");
+    private final static QName _ReadNativeOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "ReadNativeOutputMsg");
+	private final static QName _ReadNativeInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "ReadNativeInputMsg");
+	private final static QName _ReadUserInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "ReadUserInputMsg");
     private final static QName _WriteUserOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "WriteUserOutputMsg");
     private final static QName _ReadUserOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "ReadUserOutputMsg");
-    private final static QName _ReadProcessSummariesOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "ReadProcessSummariesOutputMsg");
+    private final static QName _ReadCanonicalInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "ReadCanonicalInputMsg");
+	private final static QName _ReadProcessSummariesOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "ReadProcessSummariesOutputMsg");
     private final static QName _ReadDomainsInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "ReadDomainsInputMsg");
     private final static QName _ReadDomainsOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_manager", "ReadDomainsOutputMsg");
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.apromore.manager.model_manager
+     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.apromore.manager.model_da
      * 
      */
     public ObjectFactory() {
     }
 
     /**
+     * Create an instance of {@link ReadNativeOutputMsgType }
+     * 
+     */
+    public ReadNativeOutputMsgType createReadNativeOutputMsgType() {
+        return new ReadNativeOutputMsgType();
+    }
+
+	/**
      * Create an instance of {@link WriteUserOutputMsgType }
      * 
      */
@@ -67,6 +79,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ReadCanonicalInputMsgType }
+     * 
+     */
+    public ReadCanonicalInputMsgType createReadCanonicalInputMsgType() {
+        return new ReadCanonicalInputMsgType();
+    }
+
+	/**
+     * Create an instance of {@link ReadCanonicalOutputMsgType }
+     * 
+     */
+    public ReadCanonicalOutputMsgType createReadCanonicalOutputMsgType() {
+        return new ReadCanonicalOutputMsgType();
+    }
+
+	/**
      * Create an instance of {@link FormatsType }
      * 
      */
@@ -91,6 +119,23 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ReadNativeInputMsgType }
+     * 
+     */
+    public ReadNativeInputMsgType createReadNativeInputMsgType() {
+        return new ReadNativeInputMsgType();
+    }
+
+	/**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ReadCanonicalOutputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_manager", name = "ReadCanonicalOutputMsg")
+    public JAXBElement<ReadCanonicalOutputMsgType> createReadCanonicalOutputMsg(ReadCanonicalOutputMsgType value) {
+        return new JAXBElement<ReadCanonicalOutputMsgType>(_ReadCanonicalOutputMsg_QNAME, ReadCanonicalOutputMsgType.class, null, value);
+    }
+
+	/**
      * Create an instance of {@link ReadProcessSummariesOutputMsgType }
      * 
      */
@@ -223,6 +268,24 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ReadNativeOutputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_manager", name = "ReadNativeOutputMsg")
+    public JAXBElement<ReadNativeOutputMsgType> createReadNativeOutputMsg(ReadNativeOutputMsgType value) {
+        return new JAXBElement<ReadNativeOutputMsgType>(_ReadNativeOutputMsg_QNAME, ReadNativeOutputMsgType.class, null, value);
+    }
+
+	/**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ReadNativeInputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_manager", name = "ReadNativeInputMsg")
+    public JAXBElement<ReadNativeInputMsgType> createReadNativeInputMsg(ReadNativeInputMsgType value) {
+        return new JAXBElement<ReadNativeInputMsgType>(_ReadNativeInputMsg_QNAME, ReadNativeInputMsgType.class, null, value);
+    }
+
+	/**
      * Create an instance of {@link JAXBElement }{@code <}{@link ReadUserInputMsgType }{@code >}}
      * 
      */
@@ -250,6 +313,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ReadCanonicalInputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_manager", name = "ReadCanonicalInputMsg")
+    public JAXBElement<ReadCanonicalInputMsgType> createReadCanonicalInputMsg(ReadCanonicalInputMsgType value) {
+        return new JAXBElement<ReadCanonicalInputMsgType>(_ReadCanonicalInputMsg_QNAME, ReadCanonicalInputMsgType.class, null, value);
+    }
+
+	/**
      * Create an instance of {@link JAXBElement }{@code <}{@link ReadProcessSummariesOutputMsgType }{@code >}}
      * 
      */

@@ -1,5 +1,5 @@
 
-package org.apromore.manager.model_manager;
+package org.apromore.manager.model_da;
 
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -9,12 +9,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ReadDomainsInputMsgType complex type.
+ * <p>Java class for ReadFormatsInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ReadDomainsInputMsgType">
+ * &lt;complexType name="ReadFormatsInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;attribute name="Empty" type="{http://www.w3.org/2001/XMLSchema}string" />
@@ -26,12 +26,12 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReadDomainsInputMsgType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T03:29:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ReadDomainsInputMsgType {
+@XmlType(name = "ReadFormatsInputMsgType")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T05:20:22+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+public class ReadFormatsInputMsgType {
 
     @XmlAttribute(name = "Empty")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T03:29:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T05:20:22+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String empty;
 
     /**
@@ -42,7 +42,7 @@ public class ReadDomainsInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T03:29:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T05:20:22+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getEmpty() {
         return empty;
     }
@@ -55,7 +55,7 @@ public class ReadDomainsInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-04-21T03:29:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T05:20:22+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setEmpty(String value) {
         this.empty = value;
     }
