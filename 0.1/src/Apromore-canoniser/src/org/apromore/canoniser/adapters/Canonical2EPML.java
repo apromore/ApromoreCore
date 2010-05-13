@@ -68,35 +68,17 @@ public class Canonical2EPML {
 	Map<BigInteger, EdgeType> edgeRefMap = new HashMap<BigInteger, EdgeType>();
 	Map<BigInteger, Object> epcRefMap = new HashMap<BigInteger, Object>();
 	
-	private CanonicalProcessType cproc = null;
-	private JAXBContext jaxbContext = null;
-	private JAXBContext jaxbContext2 = null;
-	private Unmarshaller unmarshaller = null;
-	private Marshaller marshaller = null;
-	private TypeEPML pkg = new TypeEPML();
+	private TypeEPML epml = new TypeEPML();
 	private TypeDirectory dir = new TypeDirectory();
 	private long ids = 1;
-	FileInputStream fis;
 	//
+	public TypeEPML getEPML()
+	{
+		return epml;
+	}
 	
-	public Canonical2EPML(File file) throws JAXBException {
-		jaxbContext = JAXBContext.newInstance("org.apromore.cpf");
-		unmarshaller = jaxbContext.createUnmarshaller();
-		try {
-			fis = new FileInputStream(file);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		Object o = unmarshaller.unmarshal(fis);
-		cproc = (CanonicalProcessType) (((JAXBElement)o).getValue());
-
-		jaxbContext = JAXBContext.newInstance("org.apromore.anf");
-		unmarshaller = jaxbContext.createUnmarshaller();
-		JAXBElement<AnnotationsType> anfRootElement = (JAXBElement<AnnotationsType>) unmarshaller.unmarshal(new File(file.getPath().replaceAll(".cpf", ".anf")));
-		AnnotationsType annotations = anfRootElement.getValue();
-		
-		pkg.getDirectory().add(dir);
+	public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations) throws JAXBException {
+		epml.getDirectory().add(dir);
 	
 		for (NetType net: cproc.getNet()) {
 			// To do
@@ -104,7 +86,7 @@ public class Canonical2EPML {
 			translateNet(epc,net);
 			epc.setEpcId(BigInteger.valueOf(ids++));
 			epc.setName("EPC Name");
-			pkg.getDirectory().get(0).getEpcOrDirectory().add(epc);
+			epml.getDirectory().get(0).getEpcOrDirectory().add(epc);
 		}
 		
 		for (ObjectType obj: cproc.getObject()){
@@ -118,20 +100,29 @@ public class Canonical2EPML {
 		mapNodeAnnotations(annotations);
 		mapEdgeAnnotations(annotations);
 
-		jaxbContext2 = JAXBContext.newInstance("de.epml");
-		marshaller = jaxbContext2.createMarshaller();		
-		marshaller.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-		JAXBElement<TypeEPML> cprocRootElem2 = new de.epml.ObjectFactory().createEpml(pkg);
+	}
 
+	public Canonical2EPML(CanonicalProcessType cproc) throws JAXBException {
+		epml.getDirectory().add(dir);
+	
+		for (NetType net: cproc.getNet()) {
+			// To do
+			TypeEPC epc = new TypeEPC();
+			translateNet(epc,net);
+			epc.setEpcId(BigInteger.valueOf(ids++));
+			epc.setName("EPC Name");
+			epml.getDirectory().get(0).getEpcOrDirectory().add(epc);
+		}
 		
-		try {
-			marshaller.marshal(cprocRootElem2, new FileOutputStream(new File("models/example222.epml")));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		for (ObjectType obj: cproc.getObject()){
+			// to do
+		}
+		
+		for (ResourceTypeType resT: cproc.getResourceType()){
+			//TO DO 
 		}
 	}
-	
+
 	private void translateNet(TypeEPC epc, NetType net)
 	{
 		
