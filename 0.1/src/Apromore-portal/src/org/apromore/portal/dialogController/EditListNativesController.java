@@ -24,7 +24,7 @@ public class EditListNativesController extends Window {
 	private Button okB;
 	private Button cancelB;
 	private Listbox nativeTypesLB;
-	private Listitem emptynative;
+//	private Listitem emptynative;
 	private HashMap<ProcessSummaryType,List<VersionSummaryType>> processVersions;
 
 	public EditListNativesController (MenuController menuC, FormatsType formats, 
@@ -36,7 +36,7 @@ public class EditListNativesController extends Window {
 		this.okB = (Button) win.getFellow("choosenativeOkB");
 		this.cancelB = (Button) win.getFellow("choosenativeCancelB");
 		this.nativeTypesLB = (Listbox) win.getFellow("choosenativeLB");
-		this.emptynative = (Listitem) win.getFellow("emptynative");
+		//this.emptynative = (Listitem) win.getFellow("emptynative");
 		this.menuC = menuC;
 
 		this.processVersions = processVersions;
@@ -89,9 +89,12 @@ public class EditListNativesController extends Window {
 		
 		while (it.hasNext()) {
 			ProcessSummaryType process = (ProcessSummaryType) it.next();
-			for (int i=0; i<processVersions.get(process).size();i++) {
+			for (Integer i=0; i<processVersions.get(process).size();i++) {
 				VersionSummaryType version = processVersions.get(process).get(i);
 				offsetH-=100; offsetV-=100;
+				
+				
+			//	Clients.evalJavaScript("window.open('http://www.google.com','" + i.toString() + "')");
 				url = "http://www.google.com/search?q="+process.getId()+".."+process.getName()+ "..." +version.getName();
 				instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV 
 					+ ",height=600,width=800,scrollbars=1,resizable=1'); ";
