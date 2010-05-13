@@ -1,5 +1,5 @@
 
-package org.apromore.cpf;
+package org.apromore.canoniser.model_da;
 
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -9,18 +9,18 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for SoftType complex type.
+ * <p>Java class for StoreNativeOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="SoftType">
+ * &lt;complexType name="StoreNativeOutputMsgType">
  *   &lt;complexContent>
- *     &lt;extension base="{http://www.apromore.org/CPF}ObjectType">
+ *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="type" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Result" type="{http://www.apromore.org/data_access/model_canoniser}ResultType"/>
  *       &lt;/sequence>
- *     &lt;/extension>
+ *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
@@ -28,42 +28,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SoftType", propOrder = {
-    "type"
+@XmlType(name = "StoreNativeOutputMsgType", propOrder = {
+    "result"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class SoftType
-    extends ObjectType
-{
+public class StoreNativeOutputMsgType {
 
-    @XmlElement(required = true)
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String type;
+    @XmlElement(name = "Result", required = true)
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected ResultType result;
 
     /**
-     * Gets the value of the type property.
+     * Gets the value of the result property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-	public String getType() {
-        return type;
+    public ResultType getResult() {
+        return result;
     }
 
     /**
-     * Sets the value of the type property.
+     * Sets the value of the result property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-	public void setType(String value) {
-        this.type = value;
+    public void setResult(ResultType value) {
+        this.result = value;
     }
 
 }

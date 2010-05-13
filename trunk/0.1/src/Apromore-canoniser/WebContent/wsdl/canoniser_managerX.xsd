@@ -33,6 +33,8 @@
 	
 	<complexType name="DeCanoniseProcessInputMsgType">
 		<sequence>
+			<element name="processId" type="int" />
+			<element name="version" type="string" />
 			<element name="NativeType" type="string" />
 			<element name="Cpf" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
