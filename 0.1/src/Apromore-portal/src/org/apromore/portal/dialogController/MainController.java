@@ -2,6 +2,7 @@ package org.apromore.portal.dialogController;
 
 import java.util.Iterator;
 
+import org.apromore.portal.exception.ExceptionProcess;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummariesType;
 import org.apromore.portal.model_manager.UserType;
@@ -93,6 +94,12 @@ public class MainController extends Window {
 		}
 	}
 
+	public void refreshProcessSummaries () throws Exception  {
+		RequestToManager request = new RequestToManager();
+		ProcessSummariesType processSummaries = request.ReadProcessSummariesType("");
+		this.displayMessage(processSummaries.getProcessSummary().size() + " processes.");
+		this.displayProcessSummaries(processSummaries);
+	}
 	/**
 	 * reset displayed informations:
 	 * - short message
@@ -100,14 +107,12 @@ public class MainController extends Window {
 	 * - simple search
 	 * @throws Exception 
 	 */
-	public void resetDisplayedInformation() throws Exception {
+	public void resetUserInformation() throws Exception {
 		eraseMessage();
 		this.currentUser = null;
 		this.simplesearch.clearSearches();
-		RequestToManager request = new RequestToManager();
-		ProcessSummariesType processSummaries = request.ReadProcessSummariesType("");
-		this.displayMessage(processSummaries.getProcessSummary().size() + " processes.");
-		this.displayProcessSummaries(processSummaries);
+		
+		this.refreshProcessSummaries();
 	}
 	public void displayMessage (String mes) {
 		this.shortmessageC.displayMessage(mes);

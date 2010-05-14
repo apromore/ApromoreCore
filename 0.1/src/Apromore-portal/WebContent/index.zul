@@ -1,3 +1,5 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?page title="Apromore"?>
 <?component name="Header" macroURI="macros/header.zul" ?>
 <?component name="Menu" macroURI="macros/menu.zul" ?>
 <?component name="ProcessTable" macroURI="macros/processtable.zul" ?>

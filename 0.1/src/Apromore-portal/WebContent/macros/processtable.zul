@@ -8,8 +8,8 @@
 			<toolbarbutton id="graphic2table" visible="false" style="font-size:11px" label="Change view" />
 		</box>
 	</hbox>
-	<grid id="processSummariesGrid" mold="paging" paginal="${pg}"
-		vflex="1">
+	<grid id="processSummariesGrid" height="700px" mold="paging" paginal="${pg}"
+		vflex="1" >
 		<columns sizable="true">
 			<column width="3.5%">
 				<button id="revertSelectionB"
