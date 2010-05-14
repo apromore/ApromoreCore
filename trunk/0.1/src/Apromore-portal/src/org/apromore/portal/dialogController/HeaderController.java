@@ -90,7 +90,7 @@ public class HeaderController extends Window {
 		this.signoutButton.setVisible(false);
 		this.mainC.setCurrentUser(null);
 		this.mainC.updateActions();
-		this.mainC.resetDisplayedInformation();
+		this.mainC.resetUserInformation();
 	}
 	/**
 	 * Perform sign in 

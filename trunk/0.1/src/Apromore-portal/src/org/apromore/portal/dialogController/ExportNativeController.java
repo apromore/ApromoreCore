@@ -1,18 +1,25 @@
 package org.apromore.portal.dialogController;
 
+import java.io.IOException;
+import java.io.InputStream;
+
+import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.FormatsType;
 import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.api.Row;
+
+import exception.ExceptionExport;
 
 public class ExportNativeController extends Window {
 
@@ -24,14 +31,17 @@ public class ExportNativeController extends Window {
 	private Button okB;
 	private Button cancelB;
 	private Listbox nativeTypesLB;
+	private int processId;
+	private String versionName;
 	
 	public ExportNativeController (MenuController menuC, int processId, 
 				String processName, String versionName, FormatsType formats)   {
 
 		this.exportNativeW = (Window) Executions.createComponents("macros/exportnative.zul", null, null);
-		
+		this.processId = processId;
+		this.versionName = versionName;
 
-		String id = processId + " " + versionName;
+		String id = this.processId + " " + this.versionName;
 		this.exportNativeW.setId(id);
 		this.exportNativeW.setTitle("Export Native (" + processName + ", " + versionName +")");
 		this.exportNatG = (Grid) this.exportNativeW.getFirstChild().getFirstChild();
@@ -96,7 +106,43 @@ public class ExportNativeController extends Window {
 		
 	}
 	
-	private void export () {
-		
+	private void export () throws InterruptedException {
+
+		try {
+			if (this.nativeTypesLB.getSelectedItem().getLabel().compareTo("")==0) {
+				Messagebox.show("Please choose a target native type", "Attention", Messagebox.OK,
+						Messagebox.ERROR);
+			} else {
+				String nativeType = this.nativeTypesLB.getSelectedItem().getLabel();
+				String ext = "";
+				if (nativeType.compareTo("EPML 2.0")==0) {
+					ext = "epml";
+				} else if (nativeType.compareTo("XPDL 2.1")==0) {
+					ext = "xpdl";
+				} else {
+					throw new ExceptionExport ("Cannot derive extension for export file.");
+				}
+				String filename = this.processNameL.getValue()+ "." + this.versionName + "." + ext ;
+				RequestToManager request = new RequestToManager();
+				InputStream native_is =
+					request.ExportNative (this.processId, this.versionName, 
+					this.nativeTypesLB.getSelectedItem().getLabel());
+				Filedownload.save(native_is, "text.xml", filename);
+			}
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+			Messagebox.show("Export failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
+					Messagebox.ERROR);
+		} catch (ExceptionExport e) {
+			e.printStackTrace();
+			Messagebox.show("Export failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
+					Messagebox.ERROR);
+		} catch (IOException e) {
+			e.printStackTrace();
+			Messagebox.show("Export failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
+					Messagebox.ERROR);
+		} finally {
+			cancel();
+		}
 	}
 }
