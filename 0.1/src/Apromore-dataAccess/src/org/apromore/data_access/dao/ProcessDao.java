@@ -413,7 +413,7 @@ public class ProcessDao extends BasicDao {
 			}
 			int cpfId = keys.getInt(1);
 			keys.close();
-			String query5 = " insert into " + ConstantDB.TABLE_ANNOTATION
+			String query5 = " insert into " + ConstantDB.TABLE_ANNOTATIONS
 			+ "(" + ConstantDB.ATTR_CONTENT + ")"
 			+ " values (?) ";
 			stmt5 = conn.prepareStatement(query5, Statement.RETURN_GENERATED_KEYS);
@@ -514,14 +514,14 @@ public class ProcessDao extends BasicDao {
 			if (rs.next()) {
 				return rs.getString(1);
 			} else {
-				throw new ExceptionDao ("SQL error ProcessDAO (getNative): native process not found.");
+				throw new ExceptionDao ("ProcessDAO (getNative): native process not found.");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new ExceptionDao ("SQL error ProcessDAO (getNative): " + e.getMessage());
+			throw new ExceptionDao ("ProcessDAO (getNative): " + e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new ExceptionDao ("Error ProcessDAO (getNative): " + e.getMessage());
+			throw new ExceptionDao ("ProcessDAO (getNative): " + e.getMessage());
 		} finally {
 			Release(conn, stmt, rs);
 		}
@@ -544,7 +544,7 @@ public class ProcessDao extends BasicDao {
 			conn = this.getConnection();
 			stmt = conn.createStatement();
 			query = " select " + ConstantDB.ATTR_CONTENT
-				+ " from " + ConstantDB.TABLE_ANNOTATION + " A "
+				+ " from " + ConstantDB.TABLE_ANNOTATIONS + " A "
 				+ " join "
 				+            ConstantDB.TABLE_NATIVES + " N "
 				+ " on (A." + ConstantDB.ATTR_URI + "= N." + ConstantDB.ATTR_ANNOTATION + ")"
