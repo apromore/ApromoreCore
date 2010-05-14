@@ -16,6 +16,8 @@ import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.exception.ExceptionProcess;
 import org.apromore.portal.exception.ExceptionUser;
 import org.apromore.portal.model_manager.DomainsType;
+import org.apromore.portal.model_manager.ExportNativeInputMsgType;
+import org.apromore.portal.model_manager.ExportNativeOutputMsgType;
 import org.apromore.portal.model_manager.FormatsType;
 import org.apromore.portal.model_manager.ImportProcessInputMsgType;
 import org.apromore.portal.model_manager.ImportProcessOutputMsgType;
@@ -32,6 +34,9 @@ import org.apromore.portal.model_manager.ResultType;
 import org.apromore.portal.model_manager.UserType;
 import org.apromore.portal.model_manager.WriteUserInputMsgType;
 import org.apromore.portal.model_manager.WriteUserOutputMsgType;
+import org.zkoss.zul.Filedownload;
+
+import exception.ExceptionExport;
 
 public class RequestToManager {
 	private static final QName SERVICE_NAME = new QName("http://www.apromore.org/manager/service_portal", "ManagerPortalService");
@@ -127,5 +132,24 @@ public class RequestToManager {
 			throw new ExceptionImport (result.getMessage()); 
 		} 
 		
+	}
+
+	public InputStream ExportNative(int processId, String versionName, String nativeType) 
+	throws ExceptionExport, IOException {
+		
+		ExportNativeInputMsgType payload = new ExportNativeInputMsgType();
+		payload.setProcessId(processId);
+		payload.setVersionName(versionName);
+		payload.setNativeType(nativeType);
+		ExportNativeOutputMsgType res = this.port.exportNative(payload);
+		ResultType result = res.getResult();
+		
+		if (result.getCode() == -1) {
+			throw new ExceptionExport (result.getMessage()); 
+		} else {
+			DataHandler handler = res.getNative();
+			InputStream is = handler.getInputStream();
+			return is;
+		}
 	}
 }
