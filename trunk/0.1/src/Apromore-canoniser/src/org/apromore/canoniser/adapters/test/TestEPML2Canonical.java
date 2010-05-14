@@ -22,7 +22,7 @@ public class TestEPML2Canonical {
 	public static void main(String[] args) {
 
 
-		File file = new File("/tmp/model1_cpf_anf.epml");
+		File file = new File("/home/fauvet/models/model1_cpf.epml");
 		
 		try {
 			JAXBContext jc = JAXBContext.newInstance("de.epml");

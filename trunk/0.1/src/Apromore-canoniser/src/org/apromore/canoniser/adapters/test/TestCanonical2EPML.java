@@ -35,7 +35,7 @@ public class TestCanonical2EPML {
 			AnnotationsType anf = anfRootElement.getValue();
 
 			Canonical2EPML canonical2epml_1 = new Canonical2EPML(cpf);
-			Canonical2EPML canonical2epml_2 = new Canonical2EPML (cpf, anf);
+			//Canonical2EPML canonical2epml_2 = new Canonical2EPML (cpf, anf);
 			
 			jc = JAXBContext.newInstance("de.epml");
 			
@@ -43,14 +43,14 @@ public class TestCanonical2EPML {
 			m2.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<TypeEPML> cprocRootElem2 = 
 				new de.epml.ObjectFactory().createEpml(canonical2epml_1.getEPML());
-			m2.marshal(cprocRootElem2, new File("/tmp/model1_cpf.epml"));
+			m2.marshal(cprocRootElem2, new File("/home/fauvet/models/model1_cpf.epml"));
 			
-			Marshaller m1 = jc.createMarshaller();
+/*			Marshaller m1 = jc.createMarshaller();
 			m1.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<TypeEPML> cprocRootElem1 = 
 				new de.epml.ObjectFactory().createEpml(canonical2epml_2.getEPML());
 			m1.marshal(cprocRootElem1, new File("/tmp/model1_cpf_anf.epml"));
-			
+*/			
 			
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block

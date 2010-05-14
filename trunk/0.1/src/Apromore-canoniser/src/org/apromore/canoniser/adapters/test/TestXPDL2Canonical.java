@@ -37,7 +37,7 @@ public class TestXPDL2Canonical {
 			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<CanonicalProcessType> cprocRootElem = 
 				new org.apromore.cpf.ObjectFactory().createCanonicalProcess(xpdl2canonical.getCpf());
-			m.marshal(cprocRootElem, new File("/tmp/model1.cpf"));
+			m.marshal(cprocRootElem, new File("/home/fauvet/models/model1.cpf"));
 
 			
 			jc = JAXBContext.newInstance("org.apromore.rlf");

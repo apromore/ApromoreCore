@@ -12,6 +12,8 @@ import java.io.InputStream;
 import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
@@ -73,10 +75,13 @@ import de.epml.TypeEPML;
 			JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u.unmarshal(cpf_xml);
 			CanonicalProcessType cpf = rootElement.getValue();
 			
+			ByteArrayOutputStream native_xml = new ByteArrayOutputStream();
+            
         	/**
 			 * native type must be supported by apromore.
 			 * At the moment: XPDL 2.1 and EPML 2.0
 			 */
+			if (nativeType.compareTo("XPDL 2.1")==0 || nativeType.compareTo("EPML 2.0")==0){
 			if (nativeType.compareTo("XPDL 2.1")==0) {
 				
 				Canonical2XPDL canonical2xpdl = new Canonical2XPDL (cpf, null, null);
@@ -84,31 +89,24 @@ import de.epml.TypeEPML;
                 Marshaller m = jc.createMarshaller();
                 m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
                 JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl.getXpdl());
-                ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
-                m.marshal(rootxpdl, xpdl_xml);
-                InputStream xpdl_xml_is = new ByteArrayInputStream(xpdl_xml.toByteArray());
+                m.marshal(rootxpdl, native_xml);
 
-				
-				RequestToDA request = new RequestToDA();
-				request.StoreNative(processId, version, nativeType, xpdl_xml_is);
-				
-				result.setCode(0);
-				result.setMessage("");
-				
 			} else if (nativeType.compareTo("EPML 2.0")==0) {
-				
+                
 				Canonical2EPML canonical2epml= new Canonical2EPML (cpf);
 				jc = JAXBContext.newInstance("de.epml");
                 Marshaller m = jc.createMarshaller();
                 m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
                 JAXBElement<TypeEPML> rootepml = new de.epml.ObjectFactory().createEpml(canonical2epml.getEPML());
-                ByteArrayOutputStream epml_xml = new ByteArrayOutputStream();
-                m.marshal(rootepml, epml_xml);
-                InputStream epml_xml_is = new ByteArrayInputStream(epml_xml.toByteArray());
-
-				
+                m.marshal(rootepml, native_xml);
+			}
+			
+                InputStream native_xml_is = new ByteArrayInputStream(native_xml.toByteArray());
 				RequestToDA request = new RequestToDA();
-				request.StoreNative(processId, version, nativeType, epml_xml_is);
+				request.StoreNative(processId, version, nativeType, native_xml_is);
+				native_xml_is = new ByteArrayInputStream(native_xml.toByteArray());
+				DataSource native_ds = new ByteArrayDataSource(native_xml_is, "text/xml"); 
+				res.setNativeDescription(new DataHandler(native_ds));
 				
 				result.setCode(0);
 				result.setMessage("");
@@ -119,7 +117,8 @@ import de.epml.TypeEPML;
 			}
         } catch (Exception ex) {
             ex.printStackTrace();
-            throw new RuntimeException(ex);
+            result.setCode(-1);
+            result.setMessage (ex.getMessage());
         }
 		return res;
     }
