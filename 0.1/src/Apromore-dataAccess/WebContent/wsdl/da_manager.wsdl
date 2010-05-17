@@ -2,10 +2,6 @@
 <definitions targetNamespace="http://www.apromore.org/data_access/service_manager" xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tnsx="http://www.apromore.org/data_access/model_manager" xmlns:tns="http://www.apromore.org/data_access/service_manager" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
   <import namespace="http://www.apromore.org/data_access/model_manager" location="da_managerX.xsd">
     </import>
-  <message name="ReadDomainsOutputMsg">
-    <part name="payload" element="tnsx:ReadDomainsOutputMsg">
-    </part>
-  </message>
   <message name="ReadDomainsInputMsg">
     <part name="payload" element="tnsx:ReadDomainsInputMsg">
     </part>
@@ -14,8 +10,32 @@
     <part name="payload" element="tnsx:ReadProcessSummariesOutputMsg">
     </part>
   </message>
+  <message name="ReadNativeInputMsg">
+    <part name="payload" element="tnsx:ReadNativeInputMsg">
+    </part>
+  </message>
+  <message name="ReadNativeOutputMsg">
+    <part name="payload" element="tnsx:ReadNativeOutputMsg">
+    </part>
+  </message>
+  <message name="WriteUserInputMsg">
+    <part name="payload" element="tnsx:WriteUserInputMsg">
+    </part>
+  </message>
+  <message name="ReadFormatsInputMsg">
+    <part name="payload" element="tnsx:ReadFormatsInputMsg">
+    </part>
+  </message>
+  <message name="ReadDomainsOutputMsg">
+    <part name="payload" element="tnsx:ReadDomainsOutputMsg">
+    </part>
+  </message>
   <message name="ReadUserOutputMsg">
     <part name="payload" element="tnsx:ReadUserOutputMsg">
+    </part>
+  </message>
+  <message name="ReadCanonicalInputMsg">
+    <part name="payload" element="tnsx:ReadCanonicalInputMsg">
     </part>
   </message>
   <message name="WriteUserOutputMsg">
@@ -30,39 +50,41 @@
     <part name="payload" element="tnsx:ReadProcessSummariesInputMsg">
     </part>
   </message>
-  <message name="WriteUserInputMsg">
-    <part name="payload" element="tnsx:WriteUserInputMsg">
-    </part>
-  </message>
   <message name="ReadFormatsOutputMsg">
     <part name="payload" element="tnsx:ReadFormatsOutputMsg">
     </part>
   </message>
-  <message name="ReadFormatsInputMsg">
-    <part name="payload" element="tnsx:ReadFormatsInputMsg">
+  <message name="ReadCanonicalOutputMsg">
+    <part name="payload" element="tnsx:ReadCanonicalOutputMsg">
     </part>
   </message>
-
-	<message name="ReadNativeInputMsg">
-		<part name="payload" element="tnsx:ReadNativeInputMsg">
-		</part>
-	</message>
-	<message name="ReadNativeOutputMsg">
-		<part name="payload" element="tnsx:ReadNativeOutputMsg">
-		</part>
-	</message>
-
-	<message name="ReadCanonicalInputMsg">
-		<part name="payload" element="tnsx:ReadCanonicalInputMsg">
-		</part>
-	</message>
-	<message name="ReadCanonicalOutputMsg">
-		<part name="payload" element="tnsx:ReadCanonicalOutputMsg">
-		</part>
-	</message>
-	
+  
+    <message name="WriteEditSessionInputMsg">
+    <part name="payload" element="tnsx:WriteEditSessionInputMsg">
+    </part>
+  </message>
+  <message name="WriteEditSessionOutputMsg">
+    <part name="payload" element="tnsx:WriteEditSessionOutputMsg">
+    </part>
+  </message>
+    <message name="ReadEditSessionInputMsg">
+    <part name="payload" element="tnsx:ReadEditSessionInputMsg">
+    </part>
+  </message>
+  <message name="ReadEditSessionOutputMsg">
+    <part name="payload" element="tnsx:ReadEditSessionOutputMsg">
+    </part>
+  </message>
+    <message name="DeleteEditSessionInputMsg">
+    <part name="payload" element="tnsx:DeleteEditSessionInputMsg">
+    </part>
+  </message>
+  <message name="DeleteEditSessionOutputMsg">
+    <part name="payload" element="tnsx:DeleteEditSessionOutputMsg">
+    </part>
+  </message>
+  
   <portType name="DAManagerPortType">
-
     <operation name="ReadNative">
       <input name="ReadNativeRequest" message="tns:ReadNativeInputMsg">
     </input>
@@ -75,7 +97,6 @@
       <output name="ReadCanonicalResponse" message="tns:ReadCanonicalOutputMsg">
     </output>
     </operation>
-  
     <operation name="ReadProcessSummaries">
       <input name="ReadProcessSummariesRequest" message="tns:ReadProcessSummariesInputMsg">
     </input>
@@ -106,11 +127,29 @@
       <output name="WriteUserResponse" message="tns:WriteUserOutputMsg">
     </output>
     </operation>
+    
+    <operation name="WriteEditSession">
+      <input name="WriteEditSessionRequest" message="tns:WriteEditSessionInputMsg">
+    </input>
+      <output name="WriteEditSessionResponse" message="tns:WriteEditSessionOutputMsg">
+    </output>
+    </operation>    
+    <operation name="ReadEditSession">
+      <input name="ReadEditSessionRequest" message="tns:ReadEditSessionInputMsg">
+    </input>
+      <output name="ReadEditSessionResponse" message="tns:ReadEditSessionOutputMsg">
+    </output>
+    </operation>  
+    <operation name="DeleteEditSession">
+      <input name="DeleteEditSessionRequest" message="tns:DeleteEditSessionInputMsg">
+    </input>
+      <output name="DeleteEditSessionResponse" message="tns:DeleteEditSessionOutputMsg">
+    </output>
+    </operation>
+    
   </portType>
-  
   <binding name="DAManagerBinding" type="tns:DAManagerPortType">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-       
     <operation name="ReadCanonical">
       <soap:operation style="document"/>
       <input name="ReadCanonicalRequest">
@@ -120,7 +159,6 @@
         <soap:body use="literal"/>
       </output>
     </operation>
-    
     <operation name="ReadNative">
       <soap:operation style="document"/>
       <input name="ReadNativeRequest">
@@ -172,6 +210,33 @@
         <soap:body use="literal"/>
       </input>
       <output name="WriteUserResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+       <operation name="WriteEditSession">
+      <soap:operation style="document"/>
+      <input name="WriteEditSessionRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="WriteEditSessionResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="ReadEditSession">
+      <soap:operation style="document"/>
+      <input name="ReadEditSessionRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="ReadEditSessionResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="DeleteEditSession">
+      <soap:operation style="document"/>
+      <input name="DeleteEditSessionRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="DeleteEditSessionResponse">
         <soap:body use="literal"/>
       </output>
     </operation>

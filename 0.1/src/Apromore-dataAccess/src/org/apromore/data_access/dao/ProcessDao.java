@@ -388,16 +388,7 @@ public class ProcessDao extends BasicDao {
 			
 			conn = this.getConnection();
 
-			String query0 = " select " + ConstantDB.ATTR_USERID
-			+ " from " + ConstantDB.TABLE_USERS
-			+ " where " + ConstantDB.ATTR_USERNAME + " = '" + username + "'";
-			stmt0 = conn.createStatement();
-			rs0 = stmt0.executeQuery(query0);
-			if (!rs0.next()) {
-				throw new ExceptionDao ("User not found");
-			}
-			Integer userId = rs0.getInt(1);
-			
+	
 			String query3 = " insert into " + ConstantDB.TABLE_CANONICALS
 			+ "(" + ConstantDB.ATTR_CONTENT + ")"
 			+ " values (?) ";
@@ -457,7 +448,7 @@ public class ProcessDao extends BasicDao {
 			stmt1 = conn.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS);
 			stmt1.setString(1, processName);
 			stmt1.setString(2, domain);
-			stmt1.setInt(3, userId);
+			stmt1.setString(3, username);
 			stmt1.setString(4,nativeType);
 			int rs1 = stmt1.executeUpdate();
 			keys = stmt1.getGeneratedKeys() ;

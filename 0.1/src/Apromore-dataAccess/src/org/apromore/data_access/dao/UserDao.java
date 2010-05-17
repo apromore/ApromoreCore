@@ -58,8 +58,7 @@ public class UserDao extends BasicDao {
 			conn = this.getConnection();
 			stmt = conn.createStatement();
 
-			query = "SELECT " + ConstantDB.ATTR_USERID 
-			+ ", " + ConstantDB.ATTR_LASTNAME 
+			query = " SELECT " + ConstantDB.ATTR_LASTNAME 
 			+ ", " + ConstantDB.ATTR_FIRSTNAME 
 			+ ", " + ConstantDB.ATTR_USERNAME 
 			+ ", " + ConstantDB.ATTR_EMAIL 
@@ -72,17 +71,16 @@ public class UserDao extends BasicDao {
 
 			if (rs.next()) {
 				user = new UserType ();
-				user.setId(rs.getInt(1));
-				user.setLastname(rs.getString(2));
-				user.setFirstname(rs.getString(3));
-				user.setUsername(rs.getString(4));
-				user.setEmail(rs.getString(5));
-				user.setPasswd(rs.getString(6));
+				user.setLastname(rs.getString(1));
+				user.setFirstname(rs.getString(2));
+				user.setUsername(rs.getString(3));
+				user.setEmail(rs.getString(4));
+				user.setPasswd(rs.getString(5));
 				stmtS = conn.createStatement();
 
 				queryS = "select " + ConstantDB.ATTR_SEARCH + "," + ConstantDB.ATTR_NUM
 				+ " from " + ConstantDB.TABLE_SEARCH_HISTORIES
-				+ " where " + ConstantDB.ATTR_USERID + "= " + user.getId() 
+				+ " where " + ConstantDB.ATTR_USERNAME + "= '" + user.getUsername() + "'" 
 				+ " order by " + ConstantDB.ATTR_SEARCH;
 
 				rsS = stmtS.executeQuery(queryS);
@@ -106,52 +104,6 @@ public class UserDao extends BasicDao {
 		return user;
 	}
 
-	/**
-	 * returns the user whose id is id
-	 * @param int id
-	 * @return UserType
-	 * @throws Exception if no user has id 
-	 */
-	public UserType readUser(int id) throws Exception {
-		UserType user=null;
-
-		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rs = null;
-		String query = null;
-
-		try {
-			conn = this.getConnection();
-			stmt = conn.createStatement();
-
-			query = "SELECT " + ConstantDB.ATTR_USERID 
-			+ ", " + ConstantDB.ATTR_LASTNAME 
-			+ ", " + ConstantDB.ATTR_FIRSTNAME 
-			+ ", " + ConstantDB.ATTR_USERNAME 
-			+ ", " + ConstantDB.ATTR_EMAIL 
-			+ ", " + ConstantDB.ATTR_PASSWD
-			+ ", " + ConstantDB.ATTR_SEARCH
-			+ " FROM " + ConstantDB.TABLE_USERS + " natural join " + ConstantDB.TABLE_SEARCH_HISTORIES
-			+ " WHERE " + ConstantDB.ATTR_USERID + " = " + id ;
-
-			rs = stmt.executeQuery(query);
-
-			if (rs.next()) {
-				user = new UserType ();
-				user.setId(rs.getInt(1));
-				user.setLastname(rs.getString(2));
-				user.setFirstname(rs.getString(3));
-				user.setEmail(rs.getString(5));
-			} else {
-				throw new ExceptionUnknownUser("Error: user not found");
-			}
-		} catch (SQLException e) {
-			throw new Exception("Error: UserDao " + e.getMessage());
-		} finally {
-			Release(conn, stmt, rs);
-		}
-		return user;
-	}
 
 	/**
 	 * Update a user's search history: replace the previous one (in the db) 
@@ -166,8 +118,8 @@ public class UserDao extends BasicDao {
 		stmt2 = null;
 		try {
 			String query = "delete from " + ConstantDB.TABLE_SEARCH_HISTORIES
-			+ " where " + ConstantDB.ATTR_USERID 
-			+       " = " + user.getId() ;
+			+ " where " + ConstantDB.ATTR_USERNAME
+			+       " = '" + user.getUsername() + "'";
 			conn = this.getConnection();
 			stmt1 = conn.createStatement();
 			int res = stmt1.executeUpdate(query);
@@ -175,8 +127,8 @@ public class UserDao extends BasicDao {
 			while (itU.hasNext()){
 				String search = ((SearchHistoriesType) itU.next()).getSearch();		
 				query = "insert into " + ConstantDB.TABLE_SEARCH_HISTORIES
-				+ "(" + ConstantDB.ATTR_USERID + "," + ConstantDB.ATTR_SEARCH + ")"
-				+ " values ( " +  user.getId() + ", '" + search + "')";
+				+ "(" + ConstantDB.ATTR_USERNAME + "," + ConstantDB.ATTR_SEARCH + ")"
+				+ " values ( '" +  user.getUsername() + "', '" + search + "')";
 				stmt2 = conn.createStatement();
 				res = stmt2.executeUpdate(query);
 				stmt2.close();
