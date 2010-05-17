@@ -6,36 +6,16 @@
     <part name="payload" element="tnsx:ReadUserInputMsg">
     </part>
   </message>
-  <message name="ImportProcessOutputMsg">
-    <part name="payload" element="tnsx:ImportProcessOutputMsg">
-    </part>
-  </message>
   <message name="ReadProcessSummariesInputMsg">
     <part name="payload" element="tnsx:ReadProcessSummariesInputMsg">
-    </part>
-  </message>
-  <message name="WriteUserInputMsg">
-    <part name="payload" element="tnsx:WriteUserInputMsg">
     </part>
   </message>
   <message name="ReadFormatsOutputMsg">
     <part name="payload" element="tnsx:ReadFormatsOutputMsg">
     </part>
   </message>
-  <message name="ReadFormatsInputMsg">
-    <part name="payload" element="tnsx:ReadFormatsInputMsg">
-    </part>
-  </message>
   <message name="ReadDomainsOutputMsg">
     <part name="payload" element="tnsx:ReadDomainsOutputMsg">
-    </part>
-  </message>
-  <message name="ReadDomainsInputMsg">
-    <part name="payload" element="tnsx:ReadDomainsInputMsg">
-    </part>
-  </message>
-  <message name="ReadProcessSummariesOutputMsg">
-    <part name="payload" element="tnsx:ReadProcessSummariesOutputMsg">
     </part>
   </message>
   <message name="ReadUserOutputMsg">
@@ -50,17 +30,59 @@
     <part name="payload" element="tnsx:ImportProcessInputMsg">
     </part>
   </message>
-  
-  
-  <message name="ExportNativeOutputMsg">
-    <part name="payload" element="tnsx:ExportNativeOutputMsg">
-    </part>
-  </message>
   <message name="ExportNativeInputMsg">
     <part name="payload" element="tnsx:ExportNativeInputMsg">
     </part>
   </message>
+  <message name="ImportProcessOutputMsg">
+    <part name="payload" element="tnsx:ImportProcessOutputMsg">
+    </part>
+  </message>
+  <message name="WriteUserInputMsg">
+    <part name="payload" element="tnsx:WriteUserInputMsg">
+    </part>
+  </message>
+  <message name="ReadFormatsInputMsg">
+    <part name="payload" element="tnsx:ReadFormatsInputMsg">
+    </part>
+  </message>
+  <message name="ExportNativeOutputMsg">
+    <part name="payload" element="tnsx:ExportNativeOutputMsg">
+    </part>
+  </message>
+  <message name="ReadDomainsInputMsg">
+    <part name="payload" element="tnsx:ReadDomainsInputMsg">
+    </part>
+  </message>
+  <message name="ReadProcessSummariesOutputMsg">
+    <part name="payload" element="tnsx:ReadProcessSummariesOutputMsg">
+    </part>
+  </message>
   
+  <message name="WriteEditSessionInputMsg">
+    <part name="payload" element="tnsx:WriteEditSessionInputMsg">
+    </part>
+  </message>
+  <message name="WriteEditSessionOutputMsg">
+    <part name="payload" element="tnsx:WriteEditSessionOutputMsg">
+    </part>
+  </message>
+    <message name="ReadEditSessionInputMsg">
+    <part name="payload" element="tnsx:ReadEditSessionInputMsg">
+    </part>
+  </message>
+  <message name="ReadEditSessionOutputMsg">
+    <part name="payload" element="tnsx:ReadEditSessionOutputMsg">
+    </part>
+  </message>
+    <message name="DeleteEditSessionInputMsg">
+    <part name="payload" element="tnsx:DeleteEditSessionInputMsg">
+    </part>
+  </message>
+  <message name="DeleteEditSessionOutputMsg">
+    <part name="payload" element="tnsx:DeleteEditSessionOutputMsg">
+    </part>
+  </message>
   
   <portType name="ManagerPortalPortType">
     <operation name="ReadProcessSummaries">
@@ -99,17 +121,31 @@
       <output name="ImportProcessResponse" message="tns:ImportProcessOutputMsg">
     </output>
     </operation>
-    
-    
     <operation name="ExportNative">
       <input name="ExportNativeRequest" message="tns:ExportNativeInputMsg">
     </input>
       <output name="ExportNativeResponse" message="tns:ExportNativeOutputMsg">
     </output>
     </operation>
-    
+    <operation name="WriteEditSession">
+      <input name="WriteEditSessionRequest" message="tns:WriteEditSessionInputMsg">
+    </input>
+      <output name="WriteEditSessionResponse" message="tns:WriteEditSessionOutputMsg">
+    </output>
+    </operation>    
+    <operation name="ReadEditSession">
+      <input name="ReadEditSessionRequest" message="tns:ReadEditSessionInputMsg">
+    </input>
+      <output name="ReadEditSessionResponse" message="tns:ReadEditSessionOutputMsg">
+    </output>
+    </operation>  
+    <operation name="DeleteEditSession">
+      <input name="DeleteEditSessionRequest" message="tns:DeleteEditSessionInputMsg">
+    </input>
+      <output name="DeleteEditSessionResponse" message="tns:DeleteEditSessionOutputMsg">
+    </output>
+    </operation>
   </portType>
-  
   <binding name="ManagerPortalBinding" type="tns:ManagerPortalPortType">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
     <operation name="ReadProcessSummaries">
@@ -172,6 +208,33 @@
         <soap:body use="literal"/>
       </input>
       <output name="ExportNativeResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="WriteEditSession">
+      <soap:operation style="document"/>
+      <input name="WriteEditSessionRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="WriteEditSessionResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="ReadEditSession">
+      <soap:operation style="document"/>
+      <input name="ReadEditSessionRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="ReadEditSessionResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="DeleteEditSession">
+      <soap:operation style="document"/>
+      <input name="DeleteEditSessionRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="DeleteEditSessionResponse">
         <soap:body use="literal"/>
       </output>
     </operation>

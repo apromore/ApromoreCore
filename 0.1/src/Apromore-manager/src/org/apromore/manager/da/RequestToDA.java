@@ -85,7 +85,6 @@ public class RequestToDA {
 		userM.setEmail(userP.getEmail());
 		userM.setFirstname(userP.getFirstname());
 		userM.setLastname(userP.getLastname());
-		userM.setId(userP.getId());
 		userM.setPasswd(userP.getPasswd());
 		userM.setUsername(userP.getUsername());
 		for (int i=0;i<userP.getSearchHistories().size();i++) {
@@ -116,7 +115,6 @@ public class RequestToDA {
 			org.apromore.manager.model_portal.UserType user = new org.apromore.manager.model_portal.UserType();
 			user.setEmail(res.getUser().getEmail());
 			user.setFirstname(res.getUser().getFirstname());
-			user.setId(res.getUser().getId());
 			user.setLastname(res.getUser().getLastname());
 			user.setPasswd(res.getUser().getPasswd());
 			user.setUsername(res.getUser().getUsername());
