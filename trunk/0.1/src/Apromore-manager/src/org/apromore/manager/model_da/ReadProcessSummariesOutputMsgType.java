@@ -33,14 +33,14 @@ import javax.xml.bind.annotation.XmlType;
     "result",
     "processSummaries"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T05:20:22+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:47:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ReadProcessSummariesOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T05:20:22+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:47:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
     @XmlElement(name = "ProcessSummaries", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T05:20:22+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:47:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ProcessSummariesType processSummaries;
 
     /**
@@ -51,7 +51,7 @@ public class ReadProcessSummariesOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T05:20:22+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:47:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ResultType getResult() {
         return result;
     }
@@ -64,7 +64,7 @@ public class ReadProcessSummariesOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T05:20:22+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:47:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -77,7 +77,7 @@ public class ReadProcessSummariesOutputMsgType {
      *     {@link ProcessSummariesType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T05:20:22+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:47:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ProcessSummariesType getProcessSummaries() {
         return processSummaries;
     }
@@ -90,7 +90,7 @@ public class ReadProcessSummariesOutputMsgType {
      *     {@link ProcessSummariesType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T05:20:22+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:47:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setProcessSummaries(ProcessSummariesType value) {
         this.processSummaries = value;
     }
