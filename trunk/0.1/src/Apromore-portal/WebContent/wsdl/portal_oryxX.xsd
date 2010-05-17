@@ -10,9 +10,7 @@
 	<element name="WriteProcessOutputMsg" type="tns:WriteProcessOutputMsgType" />
 
 	<complexType name="ReadNativeInputMsgType">
-		<attribute name="NativeType" type="string" />
-		<attribute name="ProcessId" type="int" />
-		<attribute name="VersionName" type="int" />
+			<attribute name="EditSessionCode" type="int" />
 	</complexType>
 
 	<complexType name="ReadNativeOutputMsgType">
@@ -21,6 +19,9 @@
 			<element name="Native" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
+			<attribute name="NativeType" type="string" />
+			<attribute name="ProcessName" type="int" />
+			<attribute name="VersionName" type="int" />
 	</complexType>
 
 	<complexType name="WriteNewProcessInputMsgType">
@@ -32,7 +33,7 @@
 		<attribute name="ProcessName" type="string" />
 		<attribute name="VersionName" type="int" />
 	</complexType>
-	
+
 	<complexType name="WriteNewProcessOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" />
@@ -45,16 +46,16 @@
 				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
 		<attribute name="NativeType" type="string" />
-		<attribute name="ProcessId" type="int" />
+		<attribute name="ProcessName" type="int" />
 		<attribute name="VersionName" type="int" />
 	</complexType>
-	
+
 	<complexType name="WriteProcessOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" />
 		</sequence>
 	</complexType>
-	
+
 	<complexType name="ResultType">
 		<attribute name="message" type="string" />
 		<attribute name="code" type="int" />

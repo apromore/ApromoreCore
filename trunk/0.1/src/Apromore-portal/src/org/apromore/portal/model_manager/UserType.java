@@ -23,7 +23,6 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element name="SearchHistories" type="{http://www.apromore.org/manager/model_portal}SearchHistoriesType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
- *       &lt;attribute name="id" type="{http://www.w3.org/2001/XMLSchema}int" />
  *       &lt;attribute name="firstname" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="lastname" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="email" type="{http://www.w3.org/2001/XMLSchema}string" />
@@ -40,29 +39,26 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "UserType", propOrder = {
     "searchHistories"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class UserType {
 
     @XmlElement(name = "SearchHistories")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected List<SearchHistoriesType> searchHistories;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected Integer id;
-    @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String firstname;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String lastname;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String email;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String username;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String passwd;
 
     /**
@@ -87,38 +83,12 @@ public class UserType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public List<SearchHistoriesType> getSearchHistories() {
         if (searchHistories == null) {
             searchHistories = new ArrayList<SearchHistoriesType>();
         }
         return this.searchHistories;
-    }
-
-    /**
-     * Gets the value of the id property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public Integer getId() {
-        return id;
-    }
-
-    /**
-     * Sets the value of the id property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setId(Integer value) {
-        this.id = value;
     }
 
     /**
@@ -129,7 +99,7 @@ public class UserType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getFirstname() {
         return firstname;
     }
@@ -142,7 +112,7 @@ public class UserType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setFirstname(String value) {
         this.firstname = value;
     }
@@ -155,7 +125,7 @@ public class UserType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getLastname() {
         return lastname;
     }
@@ -168,7 +138,7 @@ public class UserType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setLastname(String value) {
         this.lastname = value;
     }
@@ -181,7 +151,7 @@ public class UserType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getEmail() {
         return email;
     }
@@ -194,7 +164,7 @@ public class UserType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setEmail(String value) {
         this.email = value;
     }
@@ -207,7 +177,7 @@ public class UserType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getUsername() {
         return username;
     }
@@ -220,7 +190,7 @@ public class UserType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setUsername(String value) {
         this.username = value;
     }
@@ -233,7 +203,7 @@ public class UserType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getPasswd() {
         return passwd;
     }
@@ -246,7 +216,7 @@ public class UserType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-14T02:32:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:55:08+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setPasswd(String value) {
         this.passwd = value;
     }

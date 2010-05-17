@@ -11,6 +11,7 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.xml.namespace.QName;
 
 import org.apromore.portal.exception.ExceptionDomains;
+import org.apromore.portal.exception.ExceptionExport;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.exception.ExceptionProcess;
@@ -36,7 +37,6 @@ import org.apromore.portal.model_manager.WriteUserInputMsgType;
 import org.apromore.portal.model_manager.WriteUserOutputMsgType;
 import org.zkoss.zul.Filedownload;
 
-import exception.ExceptionExport;
 
 public class RequestToManager {
 	private static final QName SERVICE_NAME = new QName("http://www.apromore.org/manager/service_portal", "ManagerPortalService");
