@@ -1,4 +1,4 @@
-package exception;
+package org.apromore.portal.exception;
 
 public class ExceptionExport extends Exception {
 

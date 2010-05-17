@@ -3,6 +3,7 @@ package org.apromore.portal.dialogController;
 import java.io.IOException;
 import java.io.InputStream;
 
+import org.apromore.portal.exception.ExceptionExport;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.FormatsType;
 import org.zkoss.zk.ui.Executions;
@@ -19,7 +20,6 @@ import org.zkoss.zul.Rows;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.api.Row;
 
-import exception.ExceptionExport;
 
 public class ExportNativeController extends Window {
 
