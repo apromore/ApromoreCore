@@ -22,7 +22,7 @@ public class TestXPDL2Canonical {
 	public static void main(String[] args) {
 
 
-		File file = new File("/home/fauvet/models/model1.xpdl");
+		File file = new File("/home/fauvet/models/xpdl_models/SIN7 International Departure Boarding.xpdl");
 		
 		try{
 			JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
