@@ -17,9 +17,7 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;complexType name="ReadNativeInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="NativeType" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="ProcessId" type="{http://www.w3.org/2001/XMLSchema}int" />
- *       &lt;attribute name="VersionName" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="EditSessionCode" type="{http://www.w3.org/2001/XMLSchema}int" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -29,95 +27,37 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ReadNativeInputMsgType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T10:32:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T04:55:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ReadNativeInputMsgType {
 
-    @XmlAttribute(name = "NativeType")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T10:32:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String nativeType;
-    @XmlAttribute(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T10:32:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected Integer processId;
-    @XmlAttribute(name = "VersionName")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T10:32:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected Integer versionName;
+    @XmlAttribute(name = "EditSessionCode")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T04:55:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected Integer editSessionCode;
 
     /**
-     * Gets the value of the nativeType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T10:32:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getNativeType() {
-        return nativeType;
-    }
-
-    /**
-     * Sets the value of the nativeType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T10:32:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setNativeType(String value) {
-        this.nativeType = value;
-    }
-
-    /**
-     * Gets the value of the processId property.
+     * Gets the value of the editSessionCode property.
      * 
      * @return
      *     possible object is
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T10:32:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public Integer getProcessId() {
-        return processId;
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T04:55:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public Integer getEditSessionCode() {
+        return editSessionCode;
     }
 
     /**
-     * Sets the value of the processId property.
+     * Sets the value of the editSessionCode property.
      * 
      * @param value
      *     allowed object is
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T10:32:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setProcessId(Integer value) {
-        this.processId = value;
-    }
-
-    /**
-     * Gets the value of the versionName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T10:32:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public Integer getVersionName() {
-        return versionName;
-    }
-
-    /**
-     * Sets the value of the versionName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T10:32:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setVersionName(Integer value) {
-        this.versionName = value;
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T04:55:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setEditSessionCode(Integer value) {
+        this.editSessionCode = value;
     }
 
 }
