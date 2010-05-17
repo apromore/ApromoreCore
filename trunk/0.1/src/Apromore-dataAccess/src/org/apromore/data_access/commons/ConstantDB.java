@@ -34,13 +34,15 @@ public final class ConstantDB {
 	public static final String ATTR_NUM = "num" ;
 
 	public static final String TABLE_USERS = "users";
-	public static final String ATTR_USERID = "userId" ;
 	public static final String ATTR_LASTNAME = "lastname" ;
 	public static final String ATTR_FIRSTNAME = "firstname" ;
 	public static final String ATTR_EMAIL = "email" ;
 	public static final String ATTR_USERNAME = "username" ;
 	public static final String ATTR_PASSWD = "passwd" ;	
 
+	public static final String TABLE_EDIT_SESSIONS = "edit_sessions_mappingd";
+	public static final String ATTR_CODE = "code";
+	
 	public static final String VIEW_PROCESS_RANKING = "process_ranking";
 
 	public static final String VIEW_KEYWORDS = "keywords";

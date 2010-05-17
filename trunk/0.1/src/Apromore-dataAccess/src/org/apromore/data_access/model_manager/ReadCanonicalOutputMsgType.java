@@ -22,7 +22,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element name="Result" type="{http://www.apromore.org/data_access/model_manager}ResultType"/>
  *         &lt;element name="cpf" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
- *         &lt;element name="anf" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
+ *         &lt;element name="anf" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -37,23 +37,21 @@ import javax.xml.bind.annotation.XmlType;
     "cpf",
     "anf"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:29:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T05:46:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ReadCanonicalOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:29:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T05:46:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
     @XmlElement(required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:29:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T05:46:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected DataHandler cpf;
-
-    @XmlElement(required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:29:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T05:46:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected DataHandler anf;
 
-	/**
+    /**
      * Gets the value of the result property.
      * 
      * @return
@@ -61,7 +59,7 @@ public class ReadCanonicalOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:29:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T05:46:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ResultType getResult() {
         return result;
     }
@@ -74,7 +72,7 @@ public class ReadCanonicalOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:29:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T05:46:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -87,7 +85,7 @@ public class ReadCanonicalOutputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:29:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T05:46:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public DataHandler getCpf() {
         return cpf;
     }
@@ -100,12 +98,12 @@ public class ReadCanonicalOutputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:29:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T05:46:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setCpf(DataHandler value) {
         this.cpf = value;
     }
 
-	/**
+    /**
      * Gets the value of the anf property.
      * 
      * @return
@@ -113,12 +111,12 @@ public class ReadCanonicalOutputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:29:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T05:46:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public DataHandler getAnf() {
         return anf;
     }
 
-	/**
+    /**
      * Sets the value of the anf property.
      * 
      * @param value
@@ -126,7 +124,7 @@ public class ReadCanonicalOutputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-12T05:29:20+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T05:46:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setAnf(DataHandler value) {
         this.anf = value;
     }
