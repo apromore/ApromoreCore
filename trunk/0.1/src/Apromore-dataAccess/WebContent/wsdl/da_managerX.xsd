@@ -192,6 +192,7 @@
 		<attribute name="processId" type="int" />
 		<attribute name="processName" type="string" />
 		<attribute name="versionName" type="string" />
+		<attribute name="domain" type="string" />
 	</complexType>
 	
 	<complexType name="WriteEditSessionInputMsgType">
