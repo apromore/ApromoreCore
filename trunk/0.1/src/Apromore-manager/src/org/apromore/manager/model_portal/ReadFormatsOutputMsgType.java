@@ -33,14 +33,14 @@ import javax.xml.bind.annotation.XmlType;
     "result",
     "formats"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:30:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:43:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ReadFormatsOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:30:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:43:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
     @XmlElement(name = "Formats", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:30:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:43:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected FormatsType formats;
 
     /**
@@ -51,7 +51,7 @@ public class ReadFormatsOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:30:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:43:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ResultType getResult() {
         return result;
     }
@@ -64,7 +64,7 @@ public class ReadFormatsOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:30:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:43:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -77,7 +77,7 @@ public class ReadFormatsOutputMsgType {
      *     {@link FormatsType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:30:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:43:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public FormatsType getFormats() {
         return formats;
     }
@@ -90,7 +90,7 @@ public class ReadFormatsOutputMsgType {
      *     {@link FormatsType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:30:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:43:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setFormats(FormatsType value) {
         this.formats = value;
     }
