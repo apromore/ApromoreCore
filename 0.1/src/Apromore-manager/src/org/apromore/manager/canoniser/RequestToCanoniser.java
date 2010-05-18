@@ -9,12 +9,12 @@ import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.namespace.QName;
 
-import org.apromore.manager.commons.Constants;
-import org.apromore.manager.da.DAManagerService;
+import org.apromore.manager.exception.ExceptionCanoniseVersion;
 import org.apromore.manager.exception.ExceptionImport;
 import org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType;
+import org.apromore.manager.model_canoniser.CanoniseVersionInputMsgType;
+import org.apromore.manager.model_canoniser.CanoniseVersionOutputMsgType;
 import org.apromore.manager.model_canoniser.DeCanoniseProcessInputMsgType;
-import org.apromore.manager.model_da.ReadNativeInputMsgType;
 
 public class RequestToCanoniser {
 
@@ -23,10 +23,10 @@ public class RequestToCanoniser {
 
 	public RequestToCanoniser() {
 
-        URL wsdlURL = CanoniserManagerService.WSDL_LOCATION;
+		URL wsdlURL = CanoniserManagerService.WSDL_LOCATION;
 
-        CanoniserManagerService ss = new CanoniserManagerService(wsdlURL, SERVICE_NAME);
-        this.port = ss.getCanoniserManager();  
+		CanoniserManagerService ss = new CanoniserManagerService(wsdlURL, SERVICE_NAME);
+		this.port = ss.getCanoniserManager();  
 	}
 
 	public void ImportProcess(String username, String processName, String versionName, 
@@ -63,6 +63,24 @@ public class RequestToCanoniser {
 			InputStream is = handler.getInputStream();
 			return is;
 		}
+	}
+
+	public void CanoniseVersion(Integer processId, String preVersion,
+			String newVersion, String nativeType, String domain, String username,
+			InputStream native_is) throws IOException, ExceptionCanoniseVersion {
+		CanoniseVersionInputMsgType payload = new CanoniseVersionInputMsgType();
+		DataSource source = new ByteArrayDataSource(native_is, "text/xml");
+		payload.setDomain(domain);
+		payload.setNative(new DataHandler(source));
+		payload.setNativeType(nativeType);
+		payload.setNewVersion(newVersion);
+		payload.setPreVersion(preVersion);
+		payload.setProcessId(processId);
+		payload.setUsername(username);
+		CanoniseVersionOutputMsgType res = this.port.canoniseVersion(payload);
+		if (res.getResult().getCode() == -1) {
+			throw new ExceptionCanoniseVersion (res.getResult().getMessage());
+		} 
 	}
 
 }

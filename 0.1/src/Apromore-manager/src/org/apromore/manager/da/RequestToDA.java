@@ -233,7 +233,7 @@ public class RequestToDA {
 		
 	}
 	
-	public void WriteEditSession (org.apromore.manager.model_da.EditSessionType editSession) throws ExceptionWriteEditSession {
+	public int WriteEditSession (org.apromore.manager.model_da.EditSessionType editSession) throws ExceptionWriteEditSession {
 		org.apromore.manager.model_da.WriteEditSessionInputMsgType payload =
 			new WriteEditSessionInputMsgType();
 		payload.setEditSession(editSession);
@@ -241,6 +241,8 @@ public class RequestToDA {
 		org.apromore.manager.model_da.ResultType result = res.getResult();
 		if (result.getCode() != 0) {
 			throw new ExceptionWriteEditSession(result.getMessage());
+		} else {
+			return res.getEditSessionCode();
 		}
 	}	
 	

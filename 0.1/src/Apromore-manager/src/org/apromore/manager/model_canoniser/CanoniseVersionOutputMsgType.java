@@ -9,12 +9,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for CanoniseProcessOutputMsgType complex type.
+ * <p>Java class for CanoniseVersionOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="CanoniseProcessOutputMsgType">
+ * &lt;complexType name="CanoniseVersionOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -28,11 +28,11 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CanoniseProcessOutputMsgType", propOrder = {
+@XmlType(name = "CanoniseVersionOutputMsgType", propOrder = {
     "result"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T06:15:50+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class CanoniseProcessOutputMsgType {
+public class CanoniseVersionOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T06:15:50+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")

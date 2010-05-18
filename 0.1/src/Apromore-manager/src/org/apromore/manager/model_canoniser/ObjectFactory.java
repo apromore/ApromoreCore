@@ -25,7 +25,9 @@ import javax.xml.namespace.QName;
 public class ObjectFactory {
 
     private final static QName _CanoniseProcessInputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "CanoniseProcessInputMsg");
+    private final static QName _CanoniseVersionOutputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "CanoniseVersionOutputMsg");
     private final static QName _CanoniseProcessOutputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "CanoniseProcessOutputMsg");
+    private final static QName _CanoniseVersionInputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "CanoniseVersionInputMsg");
     private final static QName _DeCanoniseProcessInputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "DeCanoniseProcessInputMsg");
     private final static QName _DeCanoniseProcessOutputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "DeCanoniseProcessOutputMsg");
 
@@ -37,11 +39,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ResultType }
+     * Create an instance of {@link CanoniseVersionInputMsgType }
      * 
      */
-    public ResultType createResultType() {
-        return new ResultType();
+    public CanoniseVersionInputMsgType createCanoniseVersionInputMsgType() {
+        return new CanoniseVersionInputMsgType();
     }
 
     /**
@@ -50,6 +52,14 @@ public class ObjectFactory {
      */
     public DeCanoniseProcessInputMsgType createDeCanoniseProcessInputMsgType() {
         return new DeCanoniseProcessInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ResultType }
+     * 
+     */
+    public ResultType createResultType() {
+        return new ResultType();
     }
 
     /**
@@ -66,6 +76,14 @@ public class ObjectFactory {
      */
     public CanoniseProcessInputMsgType createCanoniseProcessInputMsgType() {
         return new CanoniseProcessInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link CanoniseVersionOutputMsgType }
+     * 
+     */
+    public CanoniseVersionOutputMsgType createCanoniseVersionOutputMsgType() {
+        return new CanoniseVersionOutputMsgType();
     }
 
     /**
@@ -86,12 +104,30 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link CanoniseVersionOutputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/canoniser/model_manager", name = "CanoniseVersionOutputMsg")
+    public JAXBElement<CanoniseVersionOutputMsgType> createCanoniseVersionOutputMsg(CanoniseVersionOutputMsgType value) {
+        return new JAXBElement<CanoniseVersionOutputMsgType>(_CanoniseVersionOutputMsg_QNAME, CanoniseVersionOutputMsgType.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link CanoniseProcessOutputMsgType }{@code >}}
      * 
      */
     @XmlElementDecl(namespace = "http://www.apromore.org/canoniser/model_manager", name = "CanoniseProcessOutputMsg")
     public JAXBElement<CanoniseProcessOutputMsgType> createCanoniseProcessOutputMsg(CanoniseProcessOutputMsgType value) {
         return new JAXBElement<CanoniseProcessOutputMsgType>(_CanoniseProcessOutputMsg_QNAME, CanoniseProcessOutputMsgType.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link CanoniseVersionInputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/canoniser/model_manager", name = "CanoniseVersionInputMsg")
+    public JAXBElement<CanoniseVersionInputMsgType> createCanoniseVersionInputMsg(CanoniseVersionInputMsgType value) {
+        return new JAXBElement<CanoniseVersionInputMsgType>(_CanoniseVersionInputMsg_QNAME, CanoniseVersionInputMsgType.class, null, value);
     }
 
     /**
