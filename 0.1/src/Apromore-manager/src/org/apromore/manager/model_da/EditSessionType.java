@@ -9,17 +9,19 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ReadNativeInputMsgType complex type.
+ * <p>Java class for EditSessionType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ReadNativeInputMsgType">
+ * &lt;complexType name="EditSessionType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="processId" type="{http://www.w3.org/2001/XMLSchema}int" />
- *       &lt;attribute name="version" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="username" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="nativeType" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="processId" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="processName" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="versionName" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -28,19 +30,77 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReadNativeInputMsgType")
+@XmlType(name = "EditSessionType")
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ReadNativeInputMsgType {
+public class EditSessionType {
 
+    @XmlAttribute
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected String username;
+    @XmlAttribute
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected String nativeType;
     @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Integer processId;
     @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String version;
+    protected String processName;
     @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String nativeType;
+    protected String versionName;
+
+    /**
+     * Gets the value of the username property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * Sets the value of the username property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setUsername(String value) {
+        this.username = value;
+    }
+
+    /**
+     * Gets the value of the nativeType property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public String getNativeType() {
+        return nativeType;
+    }
+
+    /**
+     * Sets the value of the nativeType property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setNativeType(String value) {
+        this.nativeType = value;
+    }
 
     /**
      * Gets the value of the processId property.
@@ -69,7 +129,7 @@ public class ReadNativeInputMsgType {
     }
 
     /**
-     * Gets the value of the version property.
+     * Gets the value of the processName property.
      * 
      * @return
      *     possible object is
@@ -77,12 +137,12 @@ public class ReadNativeInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getVersion() {
-        return version;
+    public String getProcessName() {
+        return processName;
     }
 
     /**
-     * Sets the value of the version property.
+     * Sets the value of the processName property.
      * 
      * @param value
      *     allowed object is
@@ -90,12 +150,12 @@ public class ReadNativeInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setVersion(String value) {
-        this.version = value;
+    public void setProcessName(String value) {
+        this.processName = value;
     }
 
     /**
-     * Gets the value of the nativeType property.
+     * Gets the value of the versionName property.
      * 
      * @return
      *     possible object is
@@ -103,12 +163,12 @@ public class ReadNativeInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getNativeType() {
-        return nativeType;
+    public String getVersionName() {
+        return versionName;
     }
 
     /**
-     * Sets the value of the nativeType property.
+     * Sets the value of the versionName property.
      * 
      * @param value
      *     allowed object is
@@ -116,8 +176,8 @@ public class ReadNativeInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setNativeType(String value) {
-        this.nativeType = value;
+    public void setVersionName(String value) {
+        this.versionName = value;
     }
 
 }

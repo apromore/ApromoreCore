@@ -1,4 +1,4 @@
-package org.apromore.manager.da;
+package org.apromore.manager.exception;
 
 public class ExceptionReadCanonical extends Exception {
 
