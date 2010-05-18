@@ -9,15 +9,15 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ReadDomainsInputMsgType complex type.
+ * <p>Java class for ReadEditSessionInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ReadDomainsInputMsgType">
+ * &lt;complexType name="ReadEditSessionInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="Empty" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="EditSessionCode" type="{http://www.w3.org/2001/XMLSchema}int" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -26,38 +26,38 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReadDomainsInputMsgType")
+@XmlType(name = "ReadEditSessionInputMsgType")
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:40:34+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ReadDomainsInputMsgType {
+public class ReadEditSessionInputMsgType {
 
-    @XmlAttribute(name = "Empty")
+    @XmlAttribute(name = "EditSessionCode")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:40:34+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String empty;
+    protected Integer editSessionCode;
 
     /**
-     * Gets the value of the empty property.
+     * Gets the value of the editSessionCode property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Integer }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:40:34+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getEmpty() {
-        return empty;
+    public Integer getEditSessionCode() {
+        return editSessionCode;
     }
 
     /**
-     * Sets the value of the empty property.
+     * Sets the value of the editSessionCode property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Integer }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:40:34+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setEmpty(String value) {
-        this.empty = value;
+    public void setEditSessionCode(Integer value) {
+        this.editSessionCode = value;
     }
 
 }

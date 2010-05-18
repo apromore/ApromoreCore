@@ -10,13 +10,19 @@ import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.namespace.QName;
 
+import org.apromore.portal.exception.ExceptionDeleteEditSession;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionExport;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.exception.ExceptionProcess;
+import org.apromore.portal.exception.ExceptionReadEditSession;
 import org.apromore.portal.exception.ExceptionUser;
+import org.apromore.portal.exception.ExceptionWriteEditSession;
+import org.apromore.portal.model_manager.DeleteEditSessionInputMsgType;
+import org.apromore.portal.model_manager.DeleteEditSessionOutputMsgType;
 import org.apromore.portal.model_manager.DomainsType;
+import org.apromore.portal.model_manager.EditSessionType;
 import org.apromore.portal.model_manager.ExportNativeInputMsgType;
 import org.apromore.portal.model_manager.ExportNativeOutputMsgType;
 import org.apromore.portal.model_manager.FormatsType;
@@ -25,6 +31,8 @@ import org.apromore.portal.model_manager.ImportProcessOutputMsgType;
 import org.apromore.portal.model_manager.ProcessSummariesType;
 import org.apromore.portal.model_manager.ReadDomainsInputMsgType;
 import org.apromore.portal.model_manager.ReadDomainsOutputMsgType;
+import org.apromore.portal.model_manager.ReadEditSessionInputMsgType;
+import org.apromore.portal.model_manager.ReadEditSessionOutputMsgType;
 import org.apromore.portal.model_manager.ReadFormatsInputMsgType;
 import org.apromore.portal.model_manager.ReadFormatsOutputMsgType;
 import org.apromore.portal.model_manager.ReadProcessSummariesInputMsgType;
@@ -33,9 +41,10 @@ import org.apromore.portal.model_manager.ReadUserInputMsgType;
 import org.apromore.portal.model_manager.ReadUserOutputMsgType;
 import org.apromore.portal.model_manager.ResultType;
 import org.apromore.portal.model_manager.UserType;
+import org.apromore.portal.model_manager.WriteEditSessionInputMsgType;
+import org.apromore.portal.model_manager.WriteEditSessionOutputMsgType;
 import org.apromore.portal.model_manager.WriteUserInputMsgType;
 import org.apromore.portal.model_manager.WriteUserOutputMsgType;
-import org.zkoss.zul.Filedownload;
 
 
 public class RequestToManager {
@@ -116,7 +125,8 @@ public class RequestToManager {
 		}
 	}
 
-	public void ImportModel(String username, String nativeType, String processName, InputStream process, String domain) 
+	public void ImportModel(String username, String nativeType, String processName, 
+			String versionName, InputStream process, String domain) 
 	throws IOException, ExceptionImport {
 		
 		ImportProcessInputMsgType payload = new ImportProcessInputMsgType();
@@ -124,6 +134,7 @@ public class RequestToManager {
 		payload.setUsername(username);
 		payload.setNativeType(nativeType);
 		payload.setProcessName(processName);
+		payload.setVersionName(versionName);
 		payload.setProcessDescription(new DataHandler(source));
 		payload.setDomain(domain);
 		ImportProcessOutputMsgType res = this.port.importProcess(payload);
@@ -152,4 +163,44 @@ public class RequestToManager {
 			return is;
 		}
 	}
+	
+	public void WriteEditSession (EditSessionType editSession) throws ExceptionWriteEditSession {
+		WriteEditSessionInputMsgType payload = new WriteEditSessionInputMsgType();
+		payload.setEditSession(editSession);
+		WriteEditSessionOutputMsgType res = this.port.writeEditSession(payload);
+		ResultType result = res.getResult();
+		if (result.getCode() == -1) {
+			throw new ExceptionWriteEditSession (result.getMessage()); 
+		}
+	}
+	
+	public void DeleteEditionSession (int code) throws ExceptionDeleteEditSession {
+		DeleteEditSessionInputMsgType payload = new DeleteEditSessionInputMsgType();
+		payload.setEditSessionCode(code);
+		DeleteEditSessionOutputMsgType res = this.port.deleteEditSession(payload);
+		ResultType result = res.getResult();
+		if (result.getCode() == -1) {
+			throw new ExceptionDeleteEditSession (result.getMessage()); 
+		}
+	}
+	
+	public EditSessionType ReadEditSession (int code) throws ExceptionReadEditSession {
+		ReadEditSessionInputMsgType payload = new ReadEditSessionInputMsgType();
+		payload.setEditSessionCode(code);
+		ReadEditSessionOutputMsgType res = this.port.readEditSession(payload);
+		ResultType result = res.getResult();
+		if (result.getCode() == -1) {
+			throw new ExceptionReadEditSession (result.getMessage()); 
+		} else {
+			return res.getEditSession();
+		}
+	}
+
+	public void UpdateProcess(String username, String nativeType,
+			int processId, String versionName, String new_versionName,
+			InputStream native_is, String domain) {
+		// TODO Auto-generated method stub
+		
+	}
+	
 }

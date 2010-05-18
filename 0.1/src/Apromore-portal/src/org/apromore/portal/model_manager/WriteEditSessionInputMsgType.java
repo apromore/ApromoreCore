@@ -4,20 +4,22 @@ package org.apromore.portal.model_manager;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ReadDomainsInputMsgType complex type.
+ * <p>Java class for WriteEditSessionInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ReadDomainsInputMsgType">
+ * &lt;complexType name="WriteEditSessionInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="Empty" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;sequence>
+ *         &lt;element name="EditSession" type="{http://www.apromore.org/manager/model_portal}EditSessionType"/>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -26,38 +28,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReadDomainsInputMsgType")
+@XmlType(name = "WriteEditSessionInputMsgType", propOrder = {
+    "editSession"
+})
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:40:34+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ReadDomainsInputMsgType {
+public class WriteEditSessionInputMsgType {
 
-    @XmlAttribute(name = "Empty")
+    @XmlElement(name = "EditSession", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:40:34+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String empty;
+    protected EditSessionType editSession;
 
     /**
-     * Gets the value of the empty property.
+     * Gets the value of the editSession property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link EditSessionType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:40:34+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getEmpty() {
-        return empty;
+    public EditSessionType getEditSession() {
+        return editSession;
     }
 
     /**
-     * Sets the value of the empty property.
+     * Sets the value of the editSession property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link EditSessionType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:40:34+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setEmpty(String value) {
-        this.empty = value;
+    public void setEditSession(EditSessionType value) {
+        this.editSession = value;
     }
 
 }
