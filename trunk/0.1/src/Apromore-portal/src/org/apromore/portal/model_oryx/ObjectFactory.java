@@ -39,27 +39,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ResultType }
-     * 
-     */
-    public ResultType createResultType() {
-        return new ResultType();
-    }
-
-    /**
-     * Create an instance of {@link ReadNativeInputMsgType }
-     * 
-     */
-    public ReadNativeInputMsgType createReadNativeInputMsgType() {
-        return new ReadNativeInputMsgType();
-    }
-
-    /**
      * Create an instance of {@link ReadNativeOutputMsgType }
      * 
      */
     public ReadNativeOutputMsgType createReadNativeOutputMsgType() {
         return new ReadNativeOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link WriteProcessInputMsgType }
+     * 
+     */
+    public WriteProcessInputMsgType createWriteProcessInputMsgType() {
+        return new WriteProcessInputMsgType();
     }
 
     /**
@@ -79,19 +71,27 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ReadNativeInputMsgType }
+     * 
+     */
+    public ReadNativeInputMsgType createReadNativeInputMsgType() {
+        return new ReadNativeInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ResultType }
+     * 
+     */
+    public ResultType createResultType() {
+        return new ResultType();
+    }
+
+    /**
      * Create an instance of {@link WriteNewProcessInputMsgType }
      * 
      */
     public WriteNewProcessInputMsgType createWriteNewProcessInputMsgType() {
         return new WriteNewProcessInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link WriteProcessInputMsgType }
-     * 
-     */
-    public WriteProcessInputMsgType createWriteProcessInputMsgType() {
-        return new WriteProcessInputMsgType();
     }
 
     /**

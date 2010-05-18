@@ -132,7 +132,7 @@ public class MenuController extends Menubar {
 		}
 		if (processVersions.size()!=0) {
 			EditListNativesController editList = 
-				new EditListNativesController (this, this.nativeTypes,processVersions);
+				new EditListNativesController (this.mainC, this, this.nativeTypes,processVersions);
 		}
 	}
 
