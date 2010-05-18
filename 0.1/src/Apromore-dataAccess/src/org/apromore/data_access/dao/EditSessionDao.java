@@ -32,32 +32,31 @@ public class EditSessionDao extends BasicDao {
 
 	public void deleteEditSession (int code) throws Exception {
 		Connection conn = null;
-		Statement stmt = null;
-		ResultSet rs = null;
+		PreparedStatement stmt = null;
+		int rs = 0;
 		String query = null;
 		try {
 			query = " delete from " + ConstantDB.TABLE_EDIT_SESSIONS
 			+ " where " + ConstantDB.ATTR_CODE + " = " + code ;
 			conn = this.getConnection();
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(query);
+			stmt = conn.prepareStatement(query);
+			rs = stmt.executeUpdate();
 			conn.commit();
 		} catch (Exception e) {
 			conn.rollback();
 			throw new Exception("Error: EditSessionDao " + e.getMessage());
 		} finally {
-			Release(conn, stmt, rs);
+			Release(conn, stmt, null);
 		}
 	}
 
-	public Integer writeEditSession (EditSessionType editSession) {
+	public int writeEditSession (EditSessionType editSession) {
 
 		Connection conn = null;
 		PreparedStatement stmt = null;
 		String query = null;
-		int rs ;
-		Integer code = null;
-
+		ResultSet key = null;
+		int code = 0;
 		String username = editSession.getUsername();
 		int processId = editSession.getProcessId();
 		String versionName = editSession.getVersionName();
@@ -78,14 +77,18 @@ public class EditSessionDao extends BasicDao {
 			stmt.setString(3, versionName);
 			stmt.setString(4, nativeType);
 
-			rs = stmt.executeUpdate();
-			code = stmt.getGeneratedKeys().getInt(1) ;
+			int rs = stmt.executeUpdate();
+			key = stmt.getGeneratedKeys() ;
+			if (!key.next()) {
+				throw new ExceptionDao ("Error: cannot retrieve generated key.");
+			} 
+			code = key.getInt(1);
 			conn.commit();
 		} catch (Exception e) {
 			conn.rollback();
 			throw new Exception("Error: EditSessionDao " + e.getMessage());
 		} finally {
-			Release(conn, stmt, null);
+			Release(conn, stmt, key);
 			return code;
 		}
 	}
@@ -103,6 +106,7 @@ public class EditSessionDao extends BasicDao {
 			+ "," + ConstantDB.ATTR_NAME
 			+ "," + ConstantDB.ATTR_VERSION_NAME
 			+ "," + ConstantDB.ATTR_NAT_TYPE
+			+ "," + ConstantDB.ATTR_DOMAIN
 			+ " from " + ConstantDB.TABLE_EDIT_SESSIONS
 			+ " natural join " + ConstantDB.TABLE_PROCESSES
 			+ " where " + ConstantDB.ATTR_CODE + " = " + code ;
@@ -114,6 +118,7 @@ public class EditSessionDao extends BasicDao {
 				editSession.setProcessName(rs.getString(3));
 				editSession.setVersionName(rs.getString(4));
 				editSession.setNativeType(rs.getString(5));
+				editSession.setDomain(rs.getString(6));
 			} else {
 				throw new Exception("Error: EditSessionDao: EditSession not found. ");
 			}
