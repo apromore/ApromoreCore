@@ -33,11 +33,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "DomainsType", propOrder = {
     "domain"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:43:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T05:15:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class DomainsType {
 
     @XmlElement(name = "Domain")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:43:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T05:15:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected List<String> domain;
 
     /**
@@ -62,7 +62,7 @@ public class DomainsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T11:43:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T05:15:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public List<String> getDomain() {
         if (domain == null) {
             domain = new ArrayList<String>();

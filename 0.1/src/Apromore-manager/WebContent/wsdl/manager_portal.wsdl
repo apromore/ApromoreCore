@@ -83,6 +83,14 @@
     <part name="payload" element="tnsx:DeleteEditSessionOutputMsg">
     </part>
   </message>
+    <message name="UpdateProcessInputMsg">
+    <part name="payload" element="tnsx:UpdateProcessInputMsg">
+    </part>
+  </message>
+  <message name="UpdateProcessOutputMsg">
+    <part name="payload" element="tnsx:UpdateProcessOutputMsg">
+    </part>
+  </message>
   
   <portType name="ManagerPortalPortType">
     <operation name="ReadProcessSummaries">
@@ -143,6 +151,12 @@
       <input name="DeleteEditSessionRequest" message="tns:DeleteEditSessionInputMsg">
     </input>
       <output name="DeleteEditSessionResponse" message="tns:DeleteEditSessionOutputMsg">
+    </output>
+    </operation>
+    <operation name="UpdateProcess">
+      <input name="UpdateProcessRequest" message="tns:UpdateProcessInputMsg">
+    </input>
+      <output name="UpdateProcessResponse" message="tns:UpdateProcessOutputMsg">
     </output>
     </operation>
   </portType>
@@ -235,6 +249,15 @@
         <soap:body use="literal"/>
       </input>
       <output name="DeleteEditSessionResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="UpdateProcess">
+      <soap:operation style="document"/>
+      <input name="UpdateProcessRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="UpdateProcessResponse">
         <soap:body use="literal"/>
       </output>
     </operation>
