@@ -15,6 +15,14 @@
 		<part name="payload" element="tnsx:CanoniseProcessInputMsg">
 		</part>
 	</message>
+	<message name="CanoniseVersionOutputMsg">
+		<part name="payload" element="tnsx:CanoniseVersionOutputMsg">
+		</part>
+	</message>
+	<message name="CanoniseVersionInputMsg">
+		<part name="payload" element="tnsx:CanoniseVersionInputMsg">
+		</part>
+	</message>
 
 	<message name="DeCanoniseProcessOutputMsg">
 		<part name="payload" element="tnsx:DeCanoniseProcessOutputMsg">
@@ -30,6 +38,12 @@
 			<input name="CanoniseProcessRequest" message="tns:CanoniseProcessInputMsg">
 			</input>
 			<output name="CanoniseProcessResponse" message="tns:CanoniseProcessOutputMsg">
+			</output>
+		</operation>
+		<operation name="CanoniseVersion">
+			<input name="CanoniseVersionRequest" message="tns:CanoniseVersionInputMsg">
+			</input>
+			<output name="CanoniseVersionResponse" message="tns:CanoniseVersionOutputMsg">
 			</output>
 		</operation>
 
@@ -51,6 +65,15 @@
 				<soap:body use="literal" />
 			</input>
 			<output name="CanoniseProcessResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="CanoniseVersion">
+			<soap:operation style="document" />
+			<input name="CanoniseVersionRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="CanoniseVersionResponse">
 				<soap:body use="literal" />
 			</output>
 		</operation>
