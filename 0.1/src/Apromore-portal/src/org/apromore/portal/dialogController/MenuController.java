@@ -13,14 +13,12 @@ import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.FormatsType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
-import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menuitem;
-import org.zkoss.zul.Messagebox;
 
 
 public class MenuController extends Menubar {
