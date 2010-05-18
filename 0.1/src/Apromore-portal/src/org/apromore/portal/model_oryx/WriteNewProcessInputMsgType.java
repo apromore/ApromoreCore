@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="Native" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
  *       &lt;/sequence>
  *       &lt;attribute name="EditSessionCode" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="ProcessName" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="VersionName" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -36,18 +37,21 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "WriteNewProcessInputMsgType", propOrder = {
     "_native"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:53:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T04:46:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class WriteNewProcessInputMsgType {
 
     @XmlElement(name = "Native", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:53:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T04:46:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected DataHandler _native;
     @XmlAttribute(name = "EditSessionCode")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:53:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T04:46:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Integer editSessionCode;
+    @XmlAttribute(name = "ProcessName")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T04:46:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected String processName;
     @XmlAttribute(name = "VersionName")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:53:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T04:46:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String versionName;
 
     /**
@@ -58,7 +62,7 @@ public class WriteNewProcessInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:53:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T04:46:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public DataHandler getNative() {
         return _native;
     }
@@ -71,7 +75,7 @@ public class WriteNewProcessInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:53:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T04:46:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setNative(DataHandler value) {
         this._native = value;
     }
@@ -84,7 +88,7 @@ public class WriteNewProcessInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:53:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T04:46:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public Integer getEditSessionCode() {
         return editSessionCode;
     }
@@ -97,9 +101,35 @@ public class WriteNewProcessInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:53:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T04:46:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setEditSessionCode(Integer value) {
         this.editSessionCode = value;
+    }
+
+    /**
+     * Gets the value of the processName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T04:46:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public String getProcessName() {
+        return processName;
+    }
+
+    /**
+     * Sets the value of the processName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T04:46:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setProcessName(String value) {
+        this.processName = value;
     }
 
     /**
@@ -110,7 +140,7 @@ public class WriteNewProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:53:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T04:46:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getVersionName() {
         return versionName;
     }
@@ -123,7 +153,7 @@ public class WriteNewProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:53:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T04:46:04+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setVersionName(String value) {
         this.versionName = value;
     }
