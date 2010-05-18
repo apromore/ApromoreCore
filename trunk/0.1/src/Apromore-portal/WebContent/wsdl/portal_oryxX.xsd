@@ -19,9 +19,6 @@
 			<element name="Native" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
-			<attribute name="NativeType" type="string" />
-			<attribute name="ProcessName" type="int" />
-			<attribute name="VersionName" type="int" />
 	</complexType>
 
 	<complexType name="WriteNewProcessInputMsgType">
@@ -29,9 +26,9 @@
 			<element name="Native" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
-		<attribute name="NativeType" type="string" />
+		<attribute name="EditSessionCode" type="int" />
 		<attribute name="ProcessName" type="string" />
-		<attribute name="VersionName" type="int" />
+		<attribute name="VersionName" type="string" />
 	</complexType>
 
 	<complexType name="WriteNewProcessOutputMsgType">
@@ -45,9 +42,8 @@
 			<element name="Native" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
-		<attribute name="NativeType" type="string" />
-		<attribute name="ProcessName" type="int" />
-		<attribute name="VersionName" type="int" />
+		<attribute name="EditSessionCode" type="int" />
+		<attribute name="VersionName" type="string" />
 	</complexType>
 
 	<complexType name="WriteProcessOutputMsgType">
