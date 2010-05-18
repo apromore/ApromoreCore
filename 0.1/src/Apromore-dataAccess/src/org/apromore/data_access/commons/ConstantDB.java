@@ -40,7 +40,7 @@ public final class ConstantDB {
 	public static final String ATTR_USERNAME = "username" ;
 	public static final String ATTR_PASSWD = "passwd" ;	
 
-	public static final String TABLE_EDIT_SESSIONS = "edit_sessions_mappingd";
+	public static final String TABLE_EDIT_SESSIONS = "edit_session_mappings";
 	public static final String ATTR_CODE = "code";
 	
 	public static final String VIEW_PROCESS_RANKING = "process_ranking";
