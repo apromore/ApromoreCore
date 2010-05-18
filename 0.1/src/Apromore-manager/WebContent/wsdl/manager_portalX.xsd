@@ -136,6 +136,7 @@
 	<complexType name="ImportProcessInputMsgType">
 		<sequence>
 			<element name="ProcessName" type="string" />
+			<element name="VersionName" type="string" />
 			<element name="NativeType" type="string" />
 			<element name="Domain" type="string" />
 			<element name="ProcessDescription" type="base64Binary"
@@ -195,6 +196,7 @@
 		<attribute name="processId" type="int" />
 		<attribute name="processName" type="string" />
 		<attribute name="versionName" type="string" />
+		<attribute name="domain" type="string" />
 	</complexType>
 
 	<complexType name="WriteEditSessionInputMsgType">
