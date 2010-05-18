@@ -23,6 +23,8 @@
 	<element name="ReadEditSessionOutputMsg" type="tns:ReadEditSessionOutputMsgType" />
 	<element name="DeleteEditSessionInputMsg" type="tns:DeleteEditSessionInputMsgType" />
 	<element name="DeleteEditSessionOutputMsg" type="tns:DeleteEditSessionOutputMsgType" />
+	<element name="UpdateProcessInputMsg" type="tns:UpdateProcessInputMsgType" />
+	<element name="UpdateProcessOutputMsg" type="tns:UpdateProcessOutputMsgType" />
 
 	<complexType name="ReadProcessSummariesInputMsgType">
 		<attribute name="SearchExpression" type="string" />
@@ -234,4 +236,22 @@
 		</sequence>
 	</complexType>
 
+	<complexType name="UpdateProcessInputMsgType">
+		<sequence>
+			<element name="Native" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+		</sequence>
+		<attribute name="username" type="string" />
+		<attribute name="nativeType" type="string" />
+		<attribute name="processId" type="int" />
+		<attribute name="newVersion" type="string" />
+		<attribute name="preVersion" type="string" />
+		<attribute name="domain" type="string" />
+	</complexType>
+	
+	<complexType name="UpdateProcessOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+		</sequence>
+	</complexType>
 </schema>
