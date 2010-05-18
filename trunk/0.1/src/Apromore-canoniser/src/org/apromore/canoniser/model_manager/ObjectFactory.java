@@ -26,23 +26,14 @@ public class ObjectFactory {
 
     private final static QName _CanoniseProcessInputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "CanoniseProcessInputMsg");
     private final static QName _CanoniseProcessOutputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "CanoniseProcessOutputMsg");
-
     private final static QName _DeCanoniseProcessInputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "DeCanoniseProcessInputMsg");
-	private final static QName _DeCanoniseProcessOutputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "DeCanoniseProcessOutputMsg");
+    private final static QName _DeCanoniseProcessOutputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "DeCanoniseProcessOutputMsg");
 
-	/**
+    /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.apromore.canoniser.model_manager
      * 
      */
     public ObjectFactory() {
-    }
-
-    /**
-     * Create an instance of {@link CanoniseProcessInputMsgType }
-     * 
-     */
-    public CanoniseProcessInputMsgType createCanoniseProcessInputMsgType() {
-        return new CanoniseProcessInputMsgType();
     }
 
     /**
@@ -61,7 +52,7 @@ public class ObjectFactory {
         return new DeCanoniseProcessOutputMsgType();
     }
 
-	/**
+    /**
      * Create an instance of {@link ResultType }
      * 
      */
@@ -77,7 +68,15 @@ public class ObjectFactory {
         return new DeCanoniseProcessInputMsgType();
     }
 
-	/**
+    /**
+     * Create an instance of {@link CanoniseProcessInputMsgType }
+     * 
+     */
+    public CanoniseProcessInputMsgType createCanoniseProcessInputMsgType() {
+        return new CanoniseProcessInputMsgType();
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link CanoniseProcessInputMsgType }{@code >}}
      * 
      */
@@ -95,7 +94,7 @@ public class ObjectFactory {
         return new JAXBElement<CanoniseProcessOutputMsgType>(_CanoniseProcessOutputMsg_QNAME, CanoniseProcessOutputMsgType.class, null, value);
     }
 
-	/**
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link DeCanoniseProcessInputMsgType }{@code >}}
      * 
      */
@@ -104,7 +103,7 @@ public class ObjectFactory {
         return new JAXBElement<DeCanoniseProcessInputMsgType>(_DeCanoniseProcessInputMsg_QNAME, DeCanoniseProcessInputMsgType.class, null, value);
     }
 
-	/**
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link DeCanoniseProcessOutputMsgType }{@code >}}
      * 
      */
