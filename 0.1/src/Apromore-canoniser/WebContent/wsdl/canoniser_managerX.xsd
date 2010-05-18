@@ -5,6 +5,8 @@
 
 	<element name="CanoniseProcessInputMsg" type="tns:CanoniseProcessInputMsgType" />
 	<element name="CanoniseProcessOutputMsg" type="tns:CanoniseProcessOutputMsgType" />
+	<element name="CanoniseVersionInputMsg" type="tns:CanoniseVersionInputMsgType" />
+	<element name="CanoniseVersionOutputMsg" type="tns:CanoniseVersionOutputMsgType" />
 	<element name="DeCanoniseProcessInputMsg" type="tns:DeCanoniseProcessInputMsgType" />
 	<element name="DeCanoniseProcessOutputMsg" type="tns:DeCanoniseProcessOutputMsgType" />
 
@@ -50,5 +52,22 @@
 		</sequence>
 	</complexType>
 	
+	<complexType name="CanoniseVersionInputMsgType">
+			<sequence>
+			<element name="Native" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+		</sequence>
+		<attribute name="username" type="string" />
+		<attribute name="nativeType" type="string" />
+		<attribute name="processId" type="int" />
+		<attribute name="newVersion" type="string" />
+		<attribute name="preVersion" type="string" />
+		<attribute name="domain" type="string" />
+	</complexType>
 	
+	<complexType name="CanoniseVersionOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+		</sequence>
+	</complexType>
 </schema>

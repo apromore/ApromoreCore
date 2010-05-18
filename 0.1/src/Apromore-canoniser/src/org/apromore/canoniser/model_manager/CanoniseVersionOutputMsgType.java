@@ -1,20 +1,22 @@
 
 package org.apromore.canoniser.model_manager;
 
+import javax.activation.DataHandler;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for CanoniseProcessOutputMsgType complex type.
+ * <p>Java class for CanoniseVersionOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="CanoniseProcessOutputMsgType">
+ * &lt;complexType name="CanoniseVersionOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -28,17 +30,17 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CanoniseProcessOutputMsgType", propOrder = {
+@XmlType(name = "CanoniseVersionOutputMsgType", propOrder = {
     "result"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T05:44:02+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class CanoniseProcessOutputMsgType {
+public class CanoniseVersionOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T05:44:02+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
 
-    /**
+	/**
      * Gets the value of the result property.
      * 
      * @return
@@ -51,7 +53,7 @@ public class CanoniseProcessOutputMsgType {
         return result;
     }
 
-    /**
+	/**
      * Sets the value of the result property.
      * 
      * @param value
@@ -62,6 +64,37 @@ public class CanoniseProcessOutputMsgType {
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T05:44:02+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResult(ResultType value) {
         this.result = value;
+    }
+
+//	@XmlElement(name = "Native", required = true)
+//    @XmlMimeType("application/octet-stream")
+//    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T05:41:51+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected DataHandler _native;
+
+    /**
+     * Gets the value of the native property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link DataHandler }
+     *     
+     */
+//    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T05:41:51+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public DataHandler getNative() {
+        return _native;
+    }
+
+    /**
+     * Sets the value of the native property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link DataHandler }
+     *     
+     */
+//    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T05:41:51+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setNative(DataHandler value) {
+        this._native = value;
     }
 
 }

@@ -62,4 +62,13 @@ public class RequestToDA {
 		}
 		
 	}
+
+	public void StoreVersion(int processId, String preVersion,
+			String newVersion, String nativeType, String domain,
+			String username, InputStream inputStream, InputStream anf_xml_is,
+			InputStream cpf_xml_is) {
+		
+		
+		
+	}
 }
