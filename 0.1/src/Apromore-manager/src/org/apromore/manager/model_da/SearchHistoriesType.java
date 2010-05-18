@@ -28,14 +28,14 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SearchHistoriesType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:47:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class SearchHistoriesType {
 
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:47:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String search;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:47:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Integer num;
 
     /**
@@ -46,7 +46,7 @@ public class SearchHistoriesType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:47:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getSearch() {
         return search;
     }
@@ -59,7 +59,7 @@ public class SearchHistoriesType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:47:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setSearch(String value) {
         this.search = value;
     }
@@ -72,7 +72,7 @@ public class SearchHistoriesType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:47:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public Integer getNum() {
         return num;
     }
@@ -85,7 +85,7 @@ public class SearchHistoriesType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T02:47:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setNum(Integer value) {
         this.num = value;
     }

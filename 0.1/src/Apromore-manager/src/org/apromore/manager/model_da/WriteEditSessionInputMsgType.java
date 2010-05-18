@@ -9,16 +9,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for WriteUserInputMsgType complex type.
+ * <p>Java class for WriteEditSessionInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="WriteUserInputMsgType">
+ * &lt;complexType name="WriteEditSessionInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="User" type="{http://www.apromore.org/data_access/model_manager}UserType"/>
+ *         &lt;element name="EditSession" type="{http://www.apromore.org/data_access/model_manager}EditSessionType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -28,40 +28,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "WriteUserInputMsgType", propOrder = {
-    "user"
+@XmlType(name = "WriteEditSessionInputMsgType", propOrder = {
+    "editSession"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class WriteUserInputMsgType {
+public class WriteEditSessionInputMsgType {
 
-    @XmlElement(name = "User", required = true)
+    @XmlElement(name = "EditSession", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected UserType user;
+    protected EditSessionType editSession;
 
     /**
-     * Gets the value of the user property.
+     * Gets the value of the editSession property.
      * 
      * @return
      *     possible object is
-     *     {@link UserType }
+     *     {@link EditSessionType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public UserType getUser() {
-        return user;
+    public EditSessionType getEditSession() {
+        return editSession;
     }
 
     /**
-     * Sets the value of the user property.
+     * Sets the value of the editSession property.
      * 
      * @param value
      *     allowed object is
-     *     {@link UserType }
+     *     {@link EditSessionType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:24:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setUser(UserType value) {
-        this.user = value;
+    public void setEditSession(EditSessionType value) {
+        this.editSession = value;
     }
 
 }

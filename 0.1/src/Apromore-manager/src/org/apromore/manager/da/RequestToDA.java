@@ -9,14 +9,22 @@ import javax.activation.DataHandler;
 import javax.xml.namespace.QName;
 
 import org.apromore.manager.commons.Constants;
+import org.apromore.manager.exception.ExceptionDeleteEditSession;
 import org.apromore.manager.exception.ExceptionDomains;
 import org.apromore.manager.exception.ExceptionFormats;
+import org.apromore.manager.exception.ExceptionReadCanonical;
+import org.apromore.manager.exception.ExceptionReadEditSession;
+import org.apromore.manager.exception.ExceptionReadNative;
 import org.apromore.manager.exception.ExceptionReadProcessSummaries;
 import org.apromore.manager.exception.ExceptionReadUser;
+import org.apromore.manager.exception.ExceptionWriteEditSession;
 import org.apromore.manager.exception.ExceptionWriteUser;
+import org.apromore.manager.model_da.DeleteEditSessionInputMsgType;
 import org.apromore.manager.model_da.ReadCanonicalInputMsgType;
 import org.apromore.manager.model_da.ReadDomainsInputMsgType;
 import org.apromore.manager.model_da.ReadDomainsOutputMsgType;
+import org.apromore.manager.model_da.ReadEditSessionInputMsgType;
+import org.apromore.manager.model_da.ReadEditSessionOutputMsgType;
 import org.apromore.manager.model_da.ReadFormatsInputMsgType;
 import org.apromore.manager.model_da.ReadFormatsOutputMsgType;
 import org.apromore.manager.model_da.ReadNativeInputMsgType;
@@ -25,6 +33,7 @@ import org.apromore.manager.model_da.ReadUserInputMsgType;
 import org.apromore.manager.model_da.ResultType;
 import org.apromore.manager.model_da.SearchHistoriesType;
 import org.apromore.manager.model_da.UserType;
+import org.apromore.manager.model_da.WriteEditSessionInputMsgType;
 import org.apromore.manager.model_da.WriteUserInputMsgType;
 import org.apromore.manager.model_da.WriteUserOutputMsgType;
 import org.apromore.manager.model_portal.ProcessSummariesType;
@@ -181,7 +190,7 @@ public class RequestToDA {
 		org.apromore.manager.model_da.ReadNativeOutputMsgType res = this.port.readNative(payload0);
 		org.apromore.manager.model_da.ResultType result = res.getResult();
 		if (result.getCode() == 0) {
-			// if native found returned it
+			// if native found return it
 			DataHandler handler = res.getNative();
 			InputStream is = handler.getInputStream();
 			return is;
@@ -206,7 +215,47 @@ public class RequestToDA {
 		}
 		
 	}
+	
+	public org.apromore.manager.model_da.EditSessionType ReadEditSession (int code) throws ExceptionReadEditSession {
+		
+		org.apromore.manager.model_da.EditSessionType editSession;
+		org.apromore.manager.model_da.ReadEditSessionInputMsgType payload = 
+			new ReadEditSessionInputMsgType();
+		payload.setEditSessionCode(code);
+		org.apromore.manager.model_da.ReadEditSessionOutputMsgType res = this.port.readEditSession(payload);
+		org.apromore.manager.model_da.ResultType result = res.getResult();
+		if (result.getCode() == 0) {
+			editSession = res.getEditSession();
+			return editSession;
+		} else {
+			throw new ExceptionReadEditSession(result.getMessage());
+		}
+		
+	}
+	
+	public void WriteEditSession (org.apromore.manager.model_da.EditSessionType editSession) throws ExceptionWriteEditSession {
+		org.apromore.manager.model_da.WriteEditSessionInputMsgType payload =
+			new WriteEditSessionInputMsgType();
+		payload.setEditSession(editSession);
+		org.apromore.manager.model_da.WriteEditSessionOutputMsgType res = this.port.writeEditSession(payload);
+		org.apromore.manager.model_da.ResultType result = res.getResult();
+		if (result.getCode() != 0) {
+			throw new ExceptionWriteEditSession(result.getMessage());
+		}
+	}	
+	
+	public void DeleteEditSession (int code) throws ExceptionDeleteEditSession {
+		org.apromore.manager.model_da.DeleteEditSessionInputMsgType payload =
+			new DeleteEditSessionInputMsgType();
+		payload.setEditSessionCode(code);
+		org.apromore.manager.model_da.DeleteEditSessionOutputMsgType res = this.port.deleteEditSession(payload);
+		org.apromore.manager.model_da.ResultType result = res.getResult();
+		if (result.getCode() != 0) {
+			throw new ExceptionDeleteEditSession(result.getMessage());
+		}
+	}
 
+	
 }
 
 
