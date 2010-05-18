@@ -27,11 +27,11 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ReadEditSessionInputMsgType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T05:46:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:13:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ReadEditSessionInputMsgType {
 
     @XmlAttribute(name = "EditSessionCode")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T05:46:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:13:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Integer editSessionCode;
 
     /**
@@ -42,7 +42,7 @@ public class ReadEditSessionInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T05:46:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:13:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public Integer getEditSessionCode() {
         return editSessionCode;
     }
@@ -55,7 +55,7 @@ public class ReadEditSessionInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-17T05:46:40+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T10:13:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setEditSessionCode(Integer value) {
         this.editSessionCode = value;
     }
