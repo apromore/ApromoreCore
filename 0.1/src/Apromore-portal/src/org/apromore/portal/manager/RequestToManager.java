@@ -164,13 +164,15 @@ public class RequestToManager {
 		}
 	}
 	
-	public void WriteEditSession (EditSessionType editSession) throws ExceptionWriteEditSession {
+	public int WriteEditSession (EditSessionType editSession) throws ExceptionWriteEditSession {
 		WriteEditSessionInputMsgType payload = new WriteEditSessionInputMsgType();
 		payload.setEditSession(editSession);
 		WriteEditSessionOutputMsgType res = this.port.writeEditSession(payload);
 		ResultType result = res.getResult();
 		if (result.getCode() == -1) {
 			throw new ExceptionWriteEditSession (result.getMessage()); 
+		} else {
+			return res.getEditSessionCode();
 		}
 	}
 	

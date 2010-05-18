@@ -5,6 +5,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apromore.portal.exception.ExceptionWriteEditSession;
+import org.apromore.portal.manager.RequestToManager;
+import org.apromore.portal.model_manager.EditSessionType;
 import org.apromore.portal.model_manager.FormatsType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
@@ -15,10 +18,12 @@ import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
 public class EditListNativesController extends Window {
 
+	private MainController mainC ;
 	private MenuController menuC ;
 	private Window chooseNativeW;
 	private Button okB;
@@ -27,7 +32,7 @@ public class EditListNativesController extends Window {
 //	private Listitem emptynative;
 	private HashMap<ProcessSummaryType,List<VersionSummaryType>> processVersions;
 
-	public EditListNativesController (MenuController menuC, FormatsType formats, 
+	public EditListNativesController (MainController mainC, MenuController menuC, FormatsType formats, 
 			HashMap<ProcessSummaryType,List<VersionSummaryType>> processVersions) {
 
 		Window win = (Window) Executions.createComponents("macros/choosenative.zul", null, null);
@@ -38,7 +43,7 @@ public class EditListNativesController extends Window {
 		this.nativeTypesLB = (Listbox) win.getFellow("choosenativeLB");
 		//this.emptynative = (Listitem) win.getFellow("emptynative");
 		this.menuC = menuC;
-
+		this.mainC = mainC;
 		this.processVersions = processVersions;
 
 		for (int i=0; i<formats.getFormat().size(); i++) {
@@ -80,24 +85,38 @@ public class EditListNativesController extends Window {
 		//this.nativeTypesLB.removeChild(this.emptynative);
 	}
 
-	protected void choiceOk () {
+	protected void choiceOk () throws InterruptedException {
 		Listitem cbi = nativeTypesLB.getSelectedItem();
 		Set<ProcessSummaryType> keys = processVersions.keySet();
 		Iterator it = keys.iterator();
 		String instruction="", url; 
 		int offsetH = 100, offsetV=200;
-		
+
+		RequestToManager request = new  RequestToManager();
+		int editSessionCode ;
 		while (it.hasNext()) {
 			ProcessSummaryType process = (ProcessSummaryType) it.next();
 			for (Integer i=0; i<processVersions.get(process).size();i++) {
 				VersionSummaryType version = processVersions.get(process).get(i);
 				offsetH-=100; offsetV-=100;
-				
-				
-			//	Clients.evalJavaScript("window.open('http://www.google.com','" + i.toString() + "')");
-				url = "http://www.google.com/search?q="+process.getId()+".."+process.getName()+ "..." +version.getName();
-				instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV 
-					+ ",height=600,width=800,scrollbars=1,resizable=1'); ";
+				EditSessionType editSession = new EditSessionType();
+				editSession.setDomain(process.getDomain());
+				editSession.setNativeType(cbi.getLabel());
+				editSession.setProcessId(process.getId());
+				editSession.setProcessName(process.getName());
+				editSession.setUsername(this.mainC.getCurrentUser().getUsername());
+				editSession.setVersionName(version.getName());
+				try {
+					editSessionCode = request.WriteEditSession(editSession);
+//	Clients.evalJavaScript("window.open('http://www.google.com','" + i.toString() + "')");
+					url = "http://www.google.com/search?q="+process.getId()+".."+process.getName()+ "..." +version.getName();
+					instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV 
+						+ ",height=600,width=800,scrollbars=1,resizable=1'); ";
+				} catch (ExceptionWriteEditSession e) {
+					Messagebox.show("Cannot edit " + process.getName() + " (" 
+							+e.getMessage()+")", "Attention", Messagebox.OK,
+							Messagebox.ERROR);
+				}
 			}
 		}
 		Clients.evalJavaScript(instruction);
