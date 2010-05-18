@@ -186,11 +186,18 @@
 		<attribute name="num" type="int" />
 	</complexType>
 
-	<complexType name="WriteEditSessionInputMsgType">
+	<complexType name="EditSessionType">
 		<attribute name="username" type="string" />
 		<attribute name="nativeType" type="string" />
 		<attribute name="processId" type="int" />
+		<attribute name="processName" type="string" />
 		<attribute name="versionName" type="string" />
+	</complexType>
+	
+	<complexType name="WriteEditSessionInputMsgType">
+		<sequence>
+			<element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1" />
+		</sequence>
 	</complexType>
 
 	<complexType name="WriteEditSessionOutputMsgType">
@@ -209,11 +216,8 @@
 			<element name="Result" type="tns:ResultType" />
 			<element name="Native" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
+			<element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1" />
 		</sequence>
-		<attribute name="username" type="string" />
-		<attribute name="nativeType" type="string" />
-		<attribute name="processId" type="int" />
-		<attribute name="versionName" type="string" />
 	</complexType>
 
 	<complexType name="DeleteEditSessionInputMsgType">
