@@ -11,20 +11,21 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for StoreNativeCpfInputMsgType complex type.
+ * <p>Java class for StoreVersionInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="StoreNativeCpfInputMsgType">
+ * &lt;complexType name="StoreVersionInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="ProcessName" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Domain" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="ProcessId" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="PreVersion" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="NewVersion" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="NativeType" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="Username" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="versionName" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Domain" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="Native" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
  *         &lt;element name="Cpf" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
  *         &lt;element name="Anf" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
@@ -37,34 +38,38 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "StoreNativeCpfInputMsgType", propOrder = {
-    "processName",
-    "domain",
+@XmlType(name = "StoreVersionInputMsgType", propOrder = {
+    "processId",
+    "preVersion",
+    "newVersion",
     "nativeType",
     "username",
-    "versionName",
+    "domain",
     "_native",
     "cpf",
     "anf"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class StoreNativeCpfInputMsgType {
+public class StoreVersionInputMsgType {
 
-    @XmlElement(name = "ProcessName", required = true)
+    @XmlElement(name = "ProcessId")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String processName;
-    @XmlElement(name = "Domain", required = true)
+    protected int processId;
+    @XmlElement(name = "PreVersion", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String domain;
+    protected String preVersion;
+    @XmlElement(name = "NewVersion", required = true)
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected String newVersion;
     @XmlElement(name = "NativeType", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String nativeType;
     @XmlElement(name = "Username", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String username;
-    @XmlElement(required = true)
+    @XmlElement(name = "Domain", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String versionName;
+    protected String domain;
     @XmlElement(name = "Native", required = true)
     @XmlMimeType("application/octet-stream")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
@@ -79,7 +84,25 @@ public class StoreNativeCpfInputMsgType {
     protected DataHandler anf;
 
     /**
-     * Gets the value of the processName property.
+     * Gets the value of the processId property.
+     * 
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public int getProcessId() {
+        return processId;
+    }
+
+    /**
+     * Sets the value of the processId property.
+     * 
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setProcessId(int value) {
+        this.processId = value;
+    }
+
+    /**
+     * Gets the value of the preVersion property.
      * 
      * @return
      *     possible object is
@@ -87,12 +110,12 @@ public class StoreNativeCpfInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getProcessName() {
-        return processName;
+    public String getPreVersion() {
+        return preVersion;
     }
 
     /**
-     * Sets the value of the processName property.
+     * Sets the value of the preVersion property.
      * 
      * @param value
      *     allowed object is
@@ -100,12 +123,12 @@ public class StoreNativeCpfInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setProcessName(String value) {
-        this.processName = value;
+    public void setPreVersion(String value) {
+        this.preVersion = value;
     }
 
     /**
-     * Gets the value of the domain property.
+     * Gets the value of the newVersion property.
      * 
      * @return
      *     possible object is
@@ -113,12 +136,12 @@ public class StoreNativeCpfInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getDomain() {
-        return domain;
+    public String getNewVersion() {
+        return newVersion;
     }
 
     /**
-     * Sets the value of the domain property.
+     * Sets the value of the newVersion property.
      * 
      * @param value
      *     allowed object is
@@ -126,8 +149,8 @@ public class StoreNativeCpfInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setDomain(String value) {
-        this.domain = value;
+    public void setNewVersion(String value) {
+        this.newVersion = value;
     }
 
     /**
@@ -183,7 +206,7 @@ public class StoreNativeCpfInputMsgType {
     }
 
     /**
-     * Gets the value of the versionName property.
+     * Gets the value of the domain property.
      * 
      * @return
      *     possible object is
@@ -191,12 +214,12 @@ public class StoreNativeCpfInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getVersionName() {
-        return versionName;
+    public String getDomain() {
+        return domain;
     }
 
     /**
-     * Sets the value of the versionName property.
+     * Sets the value of the domain property.
      * 
      * @param value
      *     allowed object is
@@ -204,8 +227,8 @@ public class StoreNativeCpfInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setVersionName(String value) {
-        this.versionName = value;
+    public void setDomain(String value) {
+        this.domain = value;
     }
 
     /**
