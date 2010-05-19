@@ -42,20 +42,20 @@ import javax.xml.bind.annotation.XmlType;
     "line",
     "font"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class GraphicsType
     extends AnnotationType
 {
 
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	protected List<PositionType> position;
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	protected SizeType size;
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	protected FillType fill;
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	protected LineType line;
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	protected FontType font;
 
     /**
@@ -80,7 +80,7 @@ public class GraphicsType
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public List<PositionType> getPosition() {
         if (position == null) {
             position = new ArrayList<PositionType>();
@@ -96,7 +96,7 @@ public class GraphicsType
      *     {@link SizeType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public SizeType getSize() {
         return size;
     }
@@ -109,7 +109,7 @@ public class GraphicsType
      *     {@link SizeType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setSize(SizeType value) {
         this.size = value;
     }
@@ -122,7 +122,7 @@ public class GraphicsType
      *     {@link FillType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public FillType getFill() {
         return fill;
     }
@@ -135,7 +135,7 @@ public class GraphicsType
      *     {@link FillType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setFill(FillType value) {
         this.fill = value;
     }
@@ -148,7 +148,7 @@ public class GraphicsType
      *     {@link LineType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public LineType getLine() {
         return line;
     }
@@ -161,7 +161,7 @@ public class GraphicsType
      *     {@link LineType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setLine(LineType value) {
         this.line = value;
     }
@@ -174,7 +174,7 @@ public class GraphicsType
      *     {@link FontType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public FontType getFont() {
         return font;
     }
@@ -187,7 +187,7 @@ public class GraphicsType
      *     {@link FontType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T04:08:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setFont(FontType value) {
         this.font = value;
     }
