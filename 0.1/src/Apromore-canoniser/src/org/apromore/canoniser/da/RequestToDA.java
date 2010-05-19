@@ -14,6 +14,8 @@ import org.apromore.canoniser.model_da.StoreNativeCpfInputMsgType;
 import org.apromore.canoniser.model_da.StoreNativeCpfOutputMsgType;
 import org.apromore.canoniser.model_da.StoreNativeInputMsgType;
 import org.apromore.canoniser.model_da.StoreNativeOutputMsgType;
+import org.apromore.canoniser.model_da.StoreVersionInputMsgType;
+import org.apromore.canoniser.model_da.StoreVersionOutputMsgType;
 
 public class RequestToDA {
 
@@ -65,10 +67,25 @@ public class RequestToDA {
 
 	public void StoreVersion(int processId, String preVersion,
 			String newVersion, String nativeType, String domain,
-			String username, InputStream inputStream, InputStream anf_xml_is,
-			InputStream cpf_xml_is) {
+			String username, InputStream native_is, InputStream anf_xml_is,
+			InputStream cpf_xml_is) throws IOException, ExceptionStore {
 		
-		
-		
+		StoreVersionInputMsgType payload = new StoreVersionInputMsgType();
+		payload.setDomain(domain);
+		payload.setNativeType(nativeType);
+		payload.setNewVersion(newVersion);
+		payload.setPreVersion(preVersion);
+		payload.setProcessId(processId);
+
+		DataSource source_proc = new ByteArrayDataSource(native_is, "text/xml"); 
+		payload.setNative(new DataHandler(source_proc));
+		DataSource source_cpf = new ByteArrayDataSource(cpf_xml_is, "text/xml"); 
+		payload.setCpf(new DataHandler(source_cpf));
+		DataSource source_anf = new ByteArrayDataSource(anf_xml_is, "text/xml"); 
+		payload.setAnf(new DataHandler(source_anf));
+		StoreVersionOutputMsgType res = this.port.storeVersion(payload);
+		if (res.getResult().getCode() == -1) {
+			throw new ExceptionStore (res.getResult().getMessage());
+		}		
 	}
 }
