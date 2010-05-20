@@ -1,3 +1,4 @@
+drop table if exists derived_versions;
 drop table if exists edit_session_mappings;
 drop table if exists process_versions ;
 drop table if exists processes ;
@@ -93,6 +94,21 @@ create table process_versions (
     on delete cascade on update cascade,
     constraint fk_versions2 foreign key (canonical) references canonicals(uri)
     on delete cascade on update cascade
+) engine=InnoDB;
+show warnings ;
+
+create table derived_versions (
+    processId int,
+    version varchar(40),
+    derived_version varchar(40),
+    constraint pk_derived_version primary key (processId,version),
+    constraint un_derived_version  unique (processId,derived_version),
+    constraint fk_derived_version1 foreign key (processId,version)
+    	references process_versions(processId,version_name)
+    	on delete cascade on update cascade,
+    constraint fk_derived_version2 foreign key (processId,derived_version)
+    	references process_versions(processId,version_name)
+    	on delete cascade on update cascade
 ) engine=InnoDB;
 show warnings ;
 
