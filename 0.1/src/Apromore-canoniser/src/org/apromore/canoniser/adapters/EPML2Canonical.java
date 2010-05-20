@@ -16,6 +16,7 @@ import org.apromore.anf.GraphicsType;
 import org.apromore.anf.LineType;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SizeType;
+import org.apromore.canoniser.exception.ExceptionStore;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -83,7 +84,7 @@ public class EPML2Canonical{
 		return annotations;
 	}
 	
-	public EPML2Canonical(TypeEPML epml) throws JAXBException {
+	public EPML2Canonical(TypeEPML epml) throws ExceptionStore {
 
 	
 		if(epml.getDirectory() != null)

@@ -12,6 +12,7 @@ import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
+import org.apromore.canoniser.exception.ExceptionStore;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -79,7 +80,7 @@ public class Canonical2XPDL {
 	 * @throws JAXBException
 	 */
 	@SuppressWarnings("unchecked")
-	public Canonical2XPDL(CanonicalProcessType cpf, RelationsType rlf, AnnotationsType anf) throws JAXBException {
+	public Canonical2XPDL(CanonicalProcessType cpf, RelationsType rlf, AnnotationsType anf) throws ExceptionStore {
 		
 		this.xpdl = new PackageType();
 		this.xpdl.setWorkflowProcesses(new WorkflowProcesses());

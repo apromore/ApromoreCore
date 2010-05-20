@@ -17,6 +17,7 @@ import org.apromore.anf.FillType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SizeType;
+import org.apromore.canoniser.exception.ExceptionStore;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -88,7 +89,7 @@ public class XPDL2Canonical {
 		return anf;
 	}
 
-	public XPDL2Canonical(PackageType pkg) throws JAXBException {
+	public XPDL2Canonical(PackageType pkg) throws ExceptionStore {
 
 		this.cpf = new CanonicalProcessType();
 		this.rlf = new RelationsType();
