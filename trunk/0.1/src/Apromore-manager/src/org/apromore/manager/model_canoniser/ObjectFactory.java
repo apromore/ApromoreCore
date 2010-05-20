@@ -39,6 +39,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link CanoniseVersionOutputMsgType }
+     * 
+     */
+    public CanoniseVersionOutputMsgType createCanoniseVersionOutputMsgType() {
+        return new CanoniseVersionOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ResultType }
+     * 
+     */
+    public ResultType createResultType() {
+        return new ResultType();
+    }
+
+    /**
      * Create an instance of {@link CanoniseVersionInputMsgType }
      * 
      */
@@ -55,22 +71,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ResultType }
-     * 
-     */
-    public ResultType createResultType() {
-        return new ResultType();
-    }
-
-    /**
-     * Create an instance of {@link DeCanoniseProcessOutputMsgType }
-     * 
-     */
-    public DeCanoniseProcessOutputMsgType createDeCanoniseProcessOutputMsgType() {
-        return new DeCanoniseProcessOutputMsgType();
-    }
-
-    /**
      * Create an instance of {@link CanoniseProcessInputMsgType }
      * 
      */
@@ -79,11 +79,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CanoniseVersionOutputMsgType }
+     * Create an instance of {@link DeCanoniseProcessOutputMsgType }
      * 
      */
-    public CanoniseVersionOutputMsgType createCanoniseVersionOutputMsgType() {
-        return new CanoniseVersionOutputMsgType();
+    public DeCanoniseProcessOutputMsgType createDeCanoniseProcessOutputMsgType() {
+        return new DeCanoniseProcessOutputMsgType();
     }
 
     /**

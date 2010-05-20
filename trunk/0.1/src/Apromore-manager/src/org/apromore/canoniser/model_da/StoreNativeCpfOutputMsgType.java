@@ -1,5 +1,5 @@
 
-package org.apromore.manager.model_canoniser;
+package org.apromore.canoniser.model_da;
 
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -9,16 +9,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for CanoniseVersionOutputMsgType complex type.
+ * <p>Java class for StoreNativeCpfOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="CanoniseVersionOutputMsgType">
+ * &lt;complexType name="StoreNativeCpfOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="Result" type="{http://www.apromore.org/canoniser/model_manager}ResultType"/>
+ *         &lt;element name="Result" type="{http://www.apromore.org/data_access/model_canoniser}ResultType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -28,14 +28,14 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CanoniseVersionOutputMsgType", propOrder = {
+@XmlType(name = "StoreNativeCpfOutputMsgType", propOrder = {
     "result"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:57:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class CanoniseVersionOutputMsgType {
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:24:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+public class StoreNativeCpfOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:57:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:24:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
 
     /**
@@ -46,7 +46,7 @@ public class CanoniseVersionOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:57:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:24:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ResultType getResult() {
         return result;
     }
@@ -59,7 +59,7 @@ public class CanoniseVersionOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:57:57+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:24:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResult(ResultType value) {
         this.result = value;
     }
