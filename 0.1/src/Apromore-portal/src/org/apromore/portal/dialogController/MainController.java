@@ -1,8 +1,13 @@
 package org.apromore.portal.dialogController;
 
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Iterator;
+import java.util.Properties;
 
-import org.apromore.portal.exception.ExceptionProcess;
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummariesType;
 import org.apromore.portal.model_manager.UserType;
@@ -31,10 +36,11 @@ public class MainController extends Window {
 	private UserType currentUser ;				// the connected user, if any
 	private ShortMessageController shortmessageC;
 	private Window shortmessageW;
-	
+	private String OryxEndPoint_xpdl;
+	private String OryxEndPoint_epml;
 	/**
 	 * onCreate is executed after the main window has been created
-	 * it is responsible for instantiated all necessary controllers
+	 * it is responsible for instantiating all necessary controllers
 	 * (one for each window defined in the interface)
 	 * 
 	 * see description in index.zul
@@ -53,6 +59,14 @@ public class MainController extends Window {
 			this.navigation = new NavigationController (this);
 			this.simplesearch = new SimpleSearchController(this);
 			this.menu = new MenuController(this);
+            
+			// read Oryx access point in properties
+			InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);;  
+			Properties properties = new Properties();  
+			properties.load(inputStream);  
+			
+			this.OryxEndPoint_xpdl = "http://localhost:8080/oryx/editor;bpmn?stencilset=/stencilsets/bpmn1.1/bpmn1.1.json";
+			this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");  
 			
 			// Listens to event onSize on the main window. Readjusts accordingly the table view window size
 			this.mainW.addEventListener("onSize", new EventListener() {
@@ -195,4 +209,13 @@ public class MainController extends Window {
 	public void setShortmessageW(Window shortmessageW) {
 		this.shortmessageW = shortmessageW;
 	}
+
+	public String getOryxEndPoint_xpdl() {
+		return OryxEndPoint_xpdl;
+	}
+
+	public String getOryxEndPoint_epml() {
+		return OryxEndPoint_epml;
+	}
+	
 }
