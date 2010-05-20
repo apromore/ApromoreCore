@@ -10,6 +10,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.adapters.Canonical2XPDL;
+import org.apromore.canoniser.exception.ExceptionStore;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.rlf.RelationsType;
 import org.wfmc._2008.xpdl2.PackageType;
@@ -62,6 +63,8 @@ public class TestCanonical2XPDL {
 			
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExceptionStore e) {
 			e.printStackTrace();
 		}
 	}

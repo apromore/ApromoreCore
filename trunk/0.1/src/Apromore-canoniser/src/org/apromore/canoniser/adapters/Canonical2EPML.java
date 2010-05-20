@@ -12,6 +12,7 @@ import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
+import org.apromore.canoniser.exception.ExceptionStore;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -66,7 +67,7 @@ public class Canonical2EPML {
 		return epml;
 	}
 	
-	public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations) throws JAXBException {
+	public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations) throws ExceptionStore {
 		
 		epml.getDirectory().add(dir);
 	
@@ -91,7 +92,7 @@ public class Canonical2EPML {
 		mapEdgeAnnotations(annotations);
 	}
 	
-	public Canonical2EPML(CanonicalProcessType cproc) throws JAXBException {
+	public Canonical2EPML(CanonicalProcessType cproc) throws ExceptionStore {
 		epml.getDirectory().add(dir);
 	
 		for (NetType net: cproc.getNet()) {
