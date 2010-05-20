@@ -1,23 +1,12 @@
 package org.apromore.canoniser.adapters;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
 
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
@@ -32,14 +21,19 @@ import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
+import org.apromore.cpf.HumanType;
+import org.apromore.cpf.InputOutputType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ORJoinType;
 import org.apromore.cpf.ORSplitType;
+import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ObjectType;
+import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TaskType;
+import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 
@@ -61,6 +55,7 @@ import de.epml.TypeMove;
 import de.epml.TypeMove2;
 import de.epml.TypeOR;
 import de.epml.TypeObject;
+import de.epml.TypeRANGE;
 import de.epml.TypeRole;
 import de.epml.TypeXOR;
 
@@ -70,17 +65,12 @@ public class EPML2Canonical{
 	List<TypeAND> and_list = new LinkedList<TypeAND>();
 	List<TypeOR> or_list = new LinkedList<TypeOR>();
 	List<TypeXOR> xor_list = new LinkedList<TypeXOR>();
-	List<TypeRole> role_list = new LinkedList<TypeRole>();
-	List<TypeObject> object_list = new LinkedList<TypeObject>();
+	Map<BigInteger, BigInteger> def_ref = new HashMap<BigInteger, BigInteger>();
+	Map<BigInteger, TypeRole> role_ref = new HashMap<BigInteger, TypeRole>();
+	Map<BigInteger, TypeObject> obj_ref = new HashMap<BigInteger, TypeObject>();
 	private CanonicalProcessType cproc = new CanonicalProcessType();
 	private AnnotationsType annotations = new AnnotationsType();
-	private JAXBContext jaxbContext = null;
-	private JAXBContext jaxbContext2 = null;
-	private Unmarshaller unmarshaller = null;
-	private Marshaller marshaller = null;
-	private TypeEPML epml = null;
 	private long ids = 1;
-	FileInputStream fis;
 	//
 	
 	public CanonicalProcessType getCPF()
@@ -94,19 +84,31 @@ public class EPML2Canonical{
 	}
 	
 	public EPML2Canonical(TypeEPML epml) throws JAXBException {
+
 	
-		for (TExtensibleElements epc: epml.getDirectory().get(0).getEpcOrDirectory()) {
-			NetType net = new NetType();
-			translateEpc(net,(TypeEPC)epc);
-			net.setId(BigInteger.valueOf(ids++));
-			cproc.getNet().add(net);
+		if(epml.getDirectory() != null)
+		{
+			for(int i = 0; i < epml.getDirectory().size(); i++)
+			{
+				for (TExtensibleElements epc: epml.getDirectory().get(i).getEpcOrDirectory()) {
+					if(epc instanceof TypeEPC)
+					{
+						NetType net = new NetType();
+						translateEpc(net,(TypeEPC)epc);
+						net.setId(BigInteger.valueOf(ids++));
+						cproc.getNet().add(net);
+					}
+				}
+			}
+		} else {
+			// the epml element doesn't have any directory
 		}
+
 	}
-	
+
 	private void translateEpc(NetType net, TypeEPC epc)
 	{
 		for (Object obj: epc.getEventOrFunctionOrRole()) {
-			//System.out.println(obj.getClass());
 			if (obj instanceof TypeEvent) {
 				translateEvent(net, (TypeEvent) obj);
 				addNodeAnnotations(obj);
@@ -120,16 +122,21 @@ public class EPML2Canonical{
 			}
 			else if(obj instanceof TypeRole)
 			{
-				role_list.add((TypeRole) obj);
+				translateRole((TypeRole)obj);
+				addNodeAnnotations(obj);
 			}
 			else if(obj instanceof TypeObject)
 			{
-				object_list.add((TypeObject) obj);
+				translateObject((TypeObject)obj);
+				addNodeAnnotations(obj);
+			} 
+			else if(obj instanceof TypeRANGE)
+			{
+				translateRANGE((TypeRANGE)obj);
+				addNodeAnnotations(obj);
 			}
 		}
 		
-		translateRoles();
-		translateObjects();
 		
 		for (Object obj: epc.getEventOrFunctionOrRole()) {
 			if (obj instanceof TypeArc) {
@@ -340,6 +347,8 @@ public class EPML2Canonical{
 	
 	private void processUnrequiredEvents(NetType net, BigInteger id)
 	{
+		List<EdgeType> edge_remove_list = new LinkedList<EdgeType>();
+		List<NodeType> node_remove_list = new LinkedList<NodeType>();
 		BigInteger event_id;
 		for(EdgeType edge: net.getEdge())
 			if(edge.getSourceId().equals(id))
@@ -349,7 +358,8 @@ public class EPML2Canonical{
 					if(edge2.getSourceId().equals(edge.getTargetId()))
 					{
 						edge.setTargetId(edge2.getTargetId());
-						net.getEdge().remove(edge2);
+						edge_remove_list.add(edge2);
+						//net.getEdge().remove(edge2);
 					}
 				
 				// delete the unrequired event and set its name as a condition for the edge
@@ -357,9 +367,15 @@ public class EPML2Canonical{
 					if(node.getId().equals(event_id))
 					{
 						edge.setCondition(node.getName());
-						net.getNode().remove(node);
+						node_remove_list.add(node);
+						//net.getNode().remove(node);
 					}
 			}
+		
+		for(EdgeType edge: edge_remove_list)
+			net.getEdge().remove(edge);
+		for(NodeType node: node_remove_list)
+			net.getNode().remove(node);
 						
 	}
 	
@@ -393,49 +409,99 @@ public class EPML2Canonical{
 			net.getEdge().add(edge);
 			flow_source_id_list.add(edge.getSourceId());
 		}
+		else if(arc.getRelation() != null)
+		{
+			for(NodeType node: net.getNode())
+			{
+				if(node.getId().equals(id_map.get(arc.getRelation().getSource())))
+				{
+					ObjectRefType ref = new ObjectRefType();
+					ref.setObjectId(id_map.get(arc.getRelation().getTarget()));
+					ref.setType(InputOutputType.OUTPUT);
+					ref.setOptional(obj_ref.get(arc.getRelation().getTarget()).isOptional());
+					ref.setConsumed(obj_ref.get(arc.getRelation().getTarget()).isConsumed());
+					((WorkType)node).getObjectRef().add(ref);
+				} 
+				else if(node.getId().equals(id_map.get(arc.getRelation().getTarget()))){
+					if(arc.getRelation().getType().equals("role"))
+					{
+						ResourceTypeRefType ref = new ResourceTypeRefType();
+						ref.setResourceTypeId(id_map.get(arc.getRelation().getSource()));
+						ref.setOptional(role_ref.get(arc.getRelation().getSource()).isOptional());
+						ref.setQualifier(role_ref.get(arc.getRelation().getSource()).getDescription()); /// update
+						((WorkType)node).getResourceTypeRef().add(ref);
+					}
+					else
+					{
+						ObjectRefType ref = new ObjectRefType();
+						ref.setObjectId(id_map.get(arc.getRelation().getSource()));
+						ref.setType(InputOutputType.INPUT);
+						ref.setOptional(obj_ref.get(arc.getRelation().getSource()).isOptional());
+						ref.setConsumed(obj_ref.get(arc.getRelation().getSource()).isConsumed());
+						((WorkType)node).getObjectRef().add(ref);
+					}
+				}
+			}
+		}
 	}
 	
 	private void translateGateway(NetType net, Object object)
 	{
+		id_map.put(((TEpcElement) object).getId(), BigInteger.valueOf(ids));
+		((TEpcElement) object).setId(BigInteger.valueOf(ids++));
+	
 		if (object instanceof TypeAND) {
-			id_map.put(((TypeAND) object).getId(), BigInteger.valueOf(ids));
-			((TypeAND) object).setId(BigInteger.valueOf(ids++));
 			and_list.add((TypeAND) object);
 		} else if (object instanceof TypeOR) {
-			id_map.put(((TypeOR) object).getId(), BigInteger.valueOf(ids));
-			((TypeOR) object).setId(BigInteger.valueOf(ids++));
 			or_list.add((TypeOR) object);
 		} else if (object instanceof TypeXOR) {
-			id_map.put(((TypeXOR) object).getId(), BigInteger.valueOf(ids));
-			((TypeXOR) object).setId(BigInteger.valueOf(ids++));
 			xor_list.add((TypeXOR) object);
 		}
 	}
 	
-	private void translateObjects() {
-		for(TypeObject obj: object_list)
+	private void translateObject(TypeObject obj) {
+		if(obj.getDefRef() != null && def_ref.get(obj.getDefRef()) != null)
 		{
+			id_map.put(obj.getId(), def_ref.get(obj.getDefRef()));
+		}
+		else {	
 			ObjectType object = new ObjectType();
 			id_map.put(obj.getId(), BigInteger.valueOf(ids));
-			object.setId(BigInteger.valueOf(ids++));
+			object.setId(BigInteger.valueOf(ids));
 			object.setName(obj.getName());
-			object.setConfigurable(obj.isFinal());
-			addNodeAnnotations(obj);
+			//object.setConfigurable(!obj.getConfigurableObject().equals(null));
 			cproc.getObject().add(object);
+			def_ref.put(obj.getDefRef(),BigInteger.valueOf(ids++));
 		}
+		obj_ref.put(obj.getId(), obj);
 	}
 
-	private void translateRoles() {
-		for(TypeRole role: role_list)
+	private void translateRole(TypeRole role) {
+		if(role.getDefRef() != null && def_ref.get(role.getDefRef()) != null)
 		{
-			ResourceTypeType obj = new ResourceTypeType();
-			id_map.put(role.getId(), BigInteger.valueOf(ids));
-			obj.setId(BigInteger.valueOf(ids++));
-			obj.setName(role.getName());
-			addNodeAnnotations(role);
-			cproc.getResourceType().add(obj);
+			id_map.put(role.getId(), def_ref.get(role.getDefRef()));
 		}
+		else {		
+			HumanType obj = new HumanType();
+			id_map.put(role.getId(), BigInteger.valueOf(ids));
+			obj.setId(BigInteger.valueOf(ids));
+			obj.setName(role.getName());
+			cproc.getResourceType().add(obj);
+			def_ref.put(role.getDefRef(),BigInteger.valueOf(ids++));
+		}
+		role_ref.put(role.getId(), role);
 	}
 	
+	private void translateRANGE(TypeRANGE obj) {
+		ObjectType object = new ObjectType();
+		id_map.put(obj.getId(), BigInteger.valueOf(ids));
+		object.setId(BigInteger.valueOf(ids++));
+		object.setName(obj.getName());
+		cproc.getObject().add(object);
+		
+		// temporary to deal with range elements problem
+		TypeObject o = new TypeObject();
+		o.setOptional(obj.isOptional());
+		obj_ref.put(obj.getId(), o);
+	}
 }
-
