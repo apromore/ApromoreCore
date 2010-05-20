@@ -2,9 +2,7 @@ package org.apromore.portal.common;
 
 public final class Constants {
 	// repository manager details
-	public static final String REPOSITORY = "localhost:8080/Apromore-repositoryManager/";
-	public static final String PROTOCOLE = "http://";
-	
+	public static final String PROPERTY_FILE = "apromore.properties";
 	// resources exposed by repository manager
 	public static final String READFORMATS = "ReadFormats";
 	public static final String READUSER = "ReadUser";

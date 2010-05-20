@@ -8,7 +8,6 @@
 			<menuseparator />
 			<menuitem id="processEdit" label="Edit" disabled="true"/>
 			<menuseparator />
-			<menuseparator />
 			<menuitem id="processCopy" label="Copy" disabled="true"/>
 			<menuseparator />
 			<menuitem id="processCut" label="Cut" disabled="true"/>
