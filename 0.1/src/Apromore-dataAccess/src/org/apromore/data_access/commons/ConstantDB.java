@@ -42,7 +42,10 @@ public final class ConstantDB {
 
 	public static final String TABLE_EDIT_SESSIONS = "edit_session_mappings";
 	public static final String ATTR_CODE = "code";
-	
+
+	public static final String TABLE_DERIVED_VERSIONS = "derived_versions";
+	public static final String ATTR_DERIVED_VERSION = "derived_version";
+	public static final String ATTR_VERSION = "version";
 	public static final String VIEW_PROCESS_RANKING = "process_ranking";
 
 	public static final String VIEW_KEYWORDS = "keywords";

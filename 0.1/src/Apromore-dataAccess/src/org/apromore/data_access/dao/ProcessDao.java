@@ -43,7 +43,7 @@ public class ProcessDao extends BasicDao {
 				instance = new ProcessDao();
 			} catch (Exception e) {
 				throw new ExceptionDao(
-						"Error: not able to get instance for DAO: " + e.getMessage());
+						"Error: not able to get instance for DAO: " + e.getMessage() + "\n");
 			}
 		}
 		return instance;
@@ -115,7 +115,7 @@ public class ProcessDao extends BasicDao {
 			} 
 		}
 		catch (SQLException e) {
-			throw new Exception("Error: ProcessDao " + e.getMessage());
+			throw new Exception("Error: ProcessDao " + e.getMessage() + "\n");
 		}
 		finally {
 			Release(conn, stmtP, rsP);
@@ -221,7 +221,7 @@ public class ProcessDao extends BasicDao {
 			} 
 		}
 		catch (SQLException e) {
-			throw new Exception("Error: ProcessDao " + e.getMessage());
+			throw new Exception("Error: ProcessDao " + e.getMessage() + "\n");
 		}
 		finally {
 			Release(conn, stmtP, rsP);
@@ -476,11 +476,11 @@ public class ProcessDao extends BasicDao {
 		} catch (SQLException e) {
 			e.printStackTrace();
 			conn.rollback();
-			throw new ExceptionDao ("SQL error ProcessDAO (storeNative): " + e.getMessage());
+			throw new ExceptionDao ("SQL error ProcessDAO (storeNative): " + e.getMessage() + "\n");
 		} catch (Exception e) {
 			e.printStackTrace();
 			conn.rollback();
-			throw new ExceptionDao ("Error ProcessDAO (storeNative): " + e.getMessage());
+			throw new ExceptionDao ("Error ProcessDAO (storeNative): " + e.getMessage() + "\n");
 		} finally {
 			Release(conn, stmt0, rs0);
 		}
@@ -505,14 +505,14 @@ public class ProcessDao extends BasicDao {
 			if (rs.next()) {
 				return rs.getString(1);
 			} else {
-				throw new ExceptionDao ("ProcessDAO (getNative): native process not found.");
+				throw new ExceptionDao ("ProcessDAO (getNative): .");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new ExceptionDao ("ProcessDAO (getNative): " + e.getMessage());
+			throw new ExceptionDao ("ProcessDAO (getNative): " + e.getMessage() + "\n");
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new ExceptionDao ("ProcessDAO (getNative): " + e.getMessage());
+			throw new ExceptionDao ("ProcessDAO (getNative): " + e.getMessage() + "\n");
 		} finally {
 			Release(conn, stmt, rs);
 		}
@@ -552,10 +552,10 @@ public class ProcessDao extends BasicDao {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new ExceptionDao ("SQL error ProcessDAO (getAnnotation): " + e.getMessage());
+			throw new ExceptionDao ("SQL error ProcessDAO (getAnnotation): " + e.getMessage() + "\n");
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new ExceptionDao ("Error ProcessDAO (getAnnotation): " + e.getMessage());
+			throw new ExceptionDao ("Error ProcessDAO (getAnnotation): " + e.getMessage() + "\n");
 		} finally {
 			Release(conn, stmt, rs);
 		}
@@ -581,14 +581,14 @@ public class ProcessDao extends BasicDao {
 			if (rs.next()) {
 				return rs.getString(1);
 			} else {
-				throw new ExceptionDao ("SQL error ProcessDAO (getCanonical): native process not found.");
+				throw new ExceptionDao ("SQL error ProcessDAO (getCanonical): canonical not found.");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			throw new ExceptionDao ("SQL error ProcessDAO (getCanonical): " + e.getMessage());
+			throw new ExceptionDao ("SQL error ProcessDAO (getCanonical): " + e.getMessage() + "\n");
 		} catch (Exception e) {
 			e.printStackTrace();
-			throw new ExceptionDao ("Error ProcessDAO (getCanonical): " + e.getMessage());
+			throw new ExceptionDao ("Error ProcessDAO (getCanonical): " + e.getMessage() + "\n");
 		} finally {
 			Release(conn, stmt, rs);
 		}
@@ -646,15 +646,162 @@ public class ProcessDao extends BasicDao {
 		} catch (SQLException e) {
 			conn.rollback();
 			e.printStackTrace();
-			throw new ExceptionDao ("SQL error ProcessDAO (storeNative): " + e.getMessage());
+			throw new ExceptionDao ("SQL error ProcessDAO (storeNative): " + e.getMessage() + "\n");
 		} catch (Exception e) {
 			conn.rollback();
 			e.printStackTrace();
-			throw new ExceptionDao ("Error ProcessDAO (storeNative): " + e.getMessage());
+			throw new ExceptionDao ("Error ProcessDAO (storeNative): " + e.getMessage() + "\n");
 		} finally {
 			Release(conn, stmt1, rs1);
 			stmt2.close();
 		}
 		
+	}
+
+	public void storeVersion(int processId, String preVersion,
+			String newVersion, String username, String nativeType,
+			String domain, InputStream native_is, InputStream cpf_is,
+			InputStream anf_is) throws ExceptionDao, SQLException {
+		Connection conn = null;
+		Statement stmt0 = null;
+		PreparedStatement
+		stmt1 = null,
+		stmt2 = null,
+		stmt3 = null,
+		stmt5 = null,
+		stmt6 = null;
+		ResultSet rs0 = null;
+		try {
+			
+			StringBuilder sb0 = new StringBuilder();
+			String line ;
+			try {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(native_is, "UTF-8"));
+				while ((line = reader.readLine()) != null) {
+					sb0.append(line).append("\n");
+				}
+			} finally {
+				native_is.close();
+			}
+			String process_string = sb0.toString();
+			
+			StringBuilder sb = new StringBuilder();
+			try {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(cpf_is, "UTF-8"));
+				while ((line = reader.readLine()) != null) {
+					sb.append(line).append("\n");
+				}
+			} finally {
+				cpf_is.close();
+			}
+			String cpf_string = sb.toString();
+			
+			StringBuilder sb1 = new StringBuilder();
+			try {
+				BufferedReader reader = new BufferedReader(new InputStreamReader(anf_is, "UTF-8"));
+				while ((line = reader.readLine()) != null) {
+					sb.append(line).append("\n");
+				}
+			} finally {
+				anf_is.close();
+			}
+
+			String anf_string = sb1.toString();
+			
+			conn = this.getConnection();
+
+	
+			String query3 = " insert into " + ConstantDB.TABLE_CANONICALS
+			+ "(" + ConstantDB.ATTR_CONTENT + ")"
+			+ " values (?) ";
+
+			stmt3 = conn.prepareStatement(query3, Statement.RETURN_GENERATED_KEYS);
+			//stmt3.setAsciiStream(1, cpf_xml_is);
+			stmt3.setString(1, cpf_string);
+
+			int rs3 = stmt3.executeUpdate();
+			ResultSet keys = stmt3.getGeneratedKeys() ;
+			if (!keys.next()) {
+				throw new ExceptionDao ("Error: cannot retrieve generated key.");
+			}
+			int cpfId = keys.getInt(1);
+			keys.close();
+			String query5 = " insert into " + ConstantDB.TABLE_ANNOTATIONS
+			+ "(" + ConstantDB.ATTR_CONTENT + ")"
+			+ " values (?) ";
+			stmt5 = conn.prepareStatement(query5, Statement.RETURN_GENERATED_KEYS);
+
+			//stmt5.setAsciiStream(1, anf_xml_is);
+			stmt5.setString (1, anf_string);
+			Integer rs5 = stmt5.executeUpdate();
+			keys = stmt5.getGeneratedKeys() ;
+			if (!keys.next()) {
+				throw new ExceptionDao ("Error: cannot retrieve generated key.");
+			}
+			int anfId = keys.getInt(1);
+			keys.close();
+
+			String query6 = " insert into " + ConstantDB.TABLE_NATIVES
+			+ "(" + ConstantDB.ATTR_CONTENT + ","
+			+       ConstantDB.ATTR_NAT_TYPE + ","
+			+       ConstantDB.ATTR_CANONICAL + ","
+			+       ConstantDB.ATTR_ANNOTATION + ")"
+			+ " values (?,?,?,?) ";
+			stmt6 = conn.prepareStatement(query6, Statement.RETURN_GENERATED_KEYS);
+			//stmt6.setAsciiStream(1, process_xml);
+			stmt6.setString(1, process_string);
+			stmt6.setString(2, nativeType);
+			stmt6.setInt(3, cpfId);
+			stmt6.setInt(4, anfId);
+			Integer rs6 = stmt6.executeUpdate();
+			keys = stmt6.getGeneratedKeys() ;
+			if (!keys.next()) {
+				throw new ExceptionDao ("Error: cannot retrieve generated key.");
+			}
+			int natId = keys.getInt(1);
+			keys.close();
+
+			
+			// add a new version of the process identified by processId + newVersion
+			String query2 = " insert into " + ConstantDB.TABLE_VERSIONS
+			+ "(" + ConstantDB.ATTR_PROCESSID + ","
+			+     ConstantDB.ATTR_VERSION_NAME + ","
+			+     ConstantDB.ATTR_CREATION_DATE + ","
+			+     ConstantDB.ATTR_LAST_UPDATE + ","
+			+     ConstantDB.ATTR_CANONICAL + ")"
+			+ " values (?, ?, now(), now(), ?) ";
+			stmt2 = conn.prepareStatement(query2);
+			stmt2.setInt(1, processId);
+			stmt2.setString(2, newVersion);
+			stmt2.setInt(3, cpfId);
+			Integer rs2 = stmt2.executeUpdate();
+
+			// newVersion is derived from preVersion
+			query2 = " insert into " + ConstantDB.TABLE_DERIVED_VERSIONS
+			+ "(" + ConstantDB.ATTR_PROCESSID + ","
+			+     ConstantDB.ATTR_VERSION + ","
+			+     ConstantDB.ATTR_DERIVED_VERSION + ")"
+			+ " values (?,?,?)";
+
+			stmt2 = conn.prepareStatement(query2);
+			stmt2.setInt(1, processId);
+			stmt2.setString(2, newVersion);
+			stmt2.setString(3, preVersion);
+			
+			rs2 = stmt2.executeUpdate();
+			
+			conn.commit();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+			conn.rollback();
+			throw new ExceptionDao ("SQL error ProcessDAO (storeVersion): " + e.getMessage() + "\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
+			throw new ExceptionDao ("Error ProcessDAO (storeVersion): " + e.getMessage() + "\n");
+		} finally {
+			Release(conn, stmt0, rs0);
+		}
 	}
 }

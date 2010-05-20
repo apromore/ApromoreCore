@@ -40,24 +40,24 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "fillType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class FillType {
 
     @XmlAttribute
     @XmlSchemaType(name = "anyURI")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String image;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String color;
     @XmlAttribute(name = "gradient-color")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String gradientColor;
     @XmlAttribute(name = "gradient-rotation")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String gradientRotation;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Integer transparency;
 
     /**
@@ -68,7 +68,7 @@ public class FillType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getImage() {
         return image;
     }
@@ -81,7 +81,7 @@ public class FillType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setImage(String value) {
         this.image = value;
     }
@@ -94,7 +94,7 @@ public class FillType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getColor() {
         return color;
     }
@@ -107,7 +107,7 @@ public class FillType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setColor(String value) {
         this.color = value;
     }
@@ -120,7 +120,7 @@ public class FillType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getGradientColor() {
         return gradientColor;
     }
@@ -133,7 +133,7 @@ public class FillType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setGradientColor(String value) {
         this.gradientColor = value;
     }
@@ -146,7 +146,7 @@ public class FillType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getGradientRotation() {
         return gradientRotation;
     }
@@ -159,7 +159,7 @@ public class FillType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setGradientRotation(String value) {
         this.gradientRotation = value;
     }
@@ -172,7 +172,7 @@ public class FillType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public Integer getTransparency() {
         return transparency;
     }
@@ -185,7 +185,7 @@ public class FillType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-13T03:44:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setTransparency(Integer value) {
         this.transparency = value;
     }
