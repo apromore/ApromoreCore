@@ -1,23 +1,12 @@
 package org.apromore.canoniser.adapters;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
-import java.io.InputStream;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
 
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
@@ -71,13 +60,14 @@ public class Canonical2EPML {
 	private TypeEPML epml = new TypeEPML();
 	private TypeDirectory dir = new TypeDirectory();
 	private long ids = 1;
-	//
+	
 	public TypeEPML getEPML()
 	{
 		return epml;
 	}
 	
 	public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations) throws JAXBException {
+		
 		epml.getDirectory().add(dir);
 	
 		for (NetType net: cproc.getNet()) {
@@ -99,9 +89,8 @@ public class Canonical2EPML {
 		
 		mapNodeAnnotations(annotations);
 		mapEdgeAnnotations(annotations);
-
 	}
-
+	
 	public Canonical2EPML(CanonicalProcessType cproc) throws JAXBException {
 		epml.getDirectory().add(dir);
 	
@@ -122,7 +111,7 @@ public class Canonical2EPML {
 			//TO DO 
 		}
 	}
-
+	
 	private void translateNet(TypeEPC epc, NetType net)
 	{
 		
@@ -388,4 +377,3 @@ public class Canonical2EPML {
 	}
 	
 }
-
