@@ -10,6 +10,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.adapters.EPML2Canonical;
+import org.apromore.canoniser.exception.ExceptionStore;
 import org.apromore.cpf.CanonicalProcessType;
 
 import de.epml.TypeEPML;
@@ -50,6 +51,8 @@ public class TestEPML2Canonical {
 			
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (ExceptionStore e) {
 			e.printStackTrace();
 		}
 	}
