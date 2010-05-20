@@ -17,6 +17,7 @@ import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.exception.ExceptionProcess;
 import org.apromore.portal.exception.ExceptionReadEditSession;
+import org.apromore.portal.exception.ExceptionUpdateProcess;
 import org.apromore.portal.exception.ExceptionUser;
 import org.apromore.portal.exception.ExceptionWriteEditSession;
 import org.apromore.portal.model_manager.DeleteEditSessionInputMsgType;
@@ -40,6 +41,8 @@ import org.apromore.portal.model_manager.ReadProcessSummariesOutputMsgType;
 import org.apromore.portal.model_manager.ReadUserInputMsgType;
 import org.apromore.portal.model_manager.ReadUserOutputMsgType;
 import org.apromore.portal.model_manager.ResultType;
+import org.apromore.portal.model_manager.UpdateProcessInputMsgType;
+import org.apromore.portal.model_manager.UpdateProcessOutputMsgType;
 import org.apromore.portal.model_manager.UserType;
 import org.apromore.portal.model_manager.WriteEditSessionInputMsgType;
 import org.apromore.portal.model_manager.WriteEditSessionOutputMsgType;
@@ -200,8 +203,22 @@ public class RequestToManager {
 
 	public void UpdateProcess(String username, String nativeType,
 			int processId, String versionName, String new_versionName,
-			InputStream native_is, String domain) {
-		// TODO Auto-generated method stub
+			InputStream native_is, String domain) throws IOException, ExceptionUpdateProcess {
+		
+		UpdateProcessInputMsgType payload = new UpdateProcessInputMsgType();
+		payload.setDomain(domain);
+		payload.setNativeType(nativeType);
+		payload.setNewVersion(new_versionName);
+		payload.setPreVersion(versionName);
+		payload.setProcessId(processId);
+		payload.setUsername(username);
+		DataSource sourceNat = new ByteArrayDataSource(native_is, "text/xml"); 
+		payload.setNative(new DataHandler(sourceNat));
+		UpdateProcessOutputMsgType res = this.port.updateProcess(payload);
+		ResultType result = res.getResult();
+		if (result.getCode() == -1) {
+			throw new ExceptionUpdateProcess (result.getMessage()); 
+		}
 		
 	}
 	

@@ -29,7 +29,7 @@ public class EditListNativesController extends Window {
 	private Button okB;
 	private Button cancelB;
 	private Listbox nativeTypesLB;
-//	private Listitem emptynative;
+	//	private Listitem emptynative;
 	private HashMap<ProcessSummaryType,List<VersionSummaryType>> processVersions;
 
 	public EditListNativesController (MainController mainC, MenuController menuC, FormatsType formats, 
@@ -89,7 +89,7 @@ public class EditListNativesController extends Window {
 		Listitem cbi = nativeTypesLB.getSelectedItem();
 		Set<ProcessSummaryType> keys = processVersions.keySet();
 		Iterator it = keys.iterator();
-		String instruction="", url; 
+		String instruction="", url=""; 
 		int offsetH = 100, offsetV=200;
 
 		RequestToManager request = new  RequestToManager();
@@ -108,10 +108,17 @@ public class EditListNativesController extends Window {
 				editSession.setVersionName(version.getName());
 				try {
 					editSessionCode = request.WriteEditSession(editSession);
-//	Clients.evalJavaScript("window.open('http://www.google.com','" + i.toString() + "')");
-					url = "http://www.google.com/search?q="+process.getId()+".."+process.getName()+ "..." +version.getName();
+
+					if (cbi.getLabel().compareTo("XPDL 2.1")==0) {
+						url = this.mainC.getOryxEndPoint_xpdl()+"&sessionCode=";
+					} else if (cbi.getLabel().compareTo("EPML 2.0")==0) {
+						url = this.mainC.getOryxEndPoint_epml()+"&sessionCode=";
+					} else {
+						throw new ExceptionWriteEditSession("Native format not supported.");
+					}
+					url += editSessionCode;
 					instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV 
-						+ ",height=600,width=800,scrollbars=1,resizable=1'); ";
+					+ ",height=600,width=800,scrollbars=1,resizable=1'); ";
 				} catch (ExceptionWriteEditSession e) {
 					Messagebox.show("Cannot edit " + process.getName() + " (" 
 							+e.getMessage()+")", "Attention", Messagebox.OK,
