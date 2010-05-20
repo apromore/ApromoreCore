@@ -41,6 +41,8 @@
 			<element name="NativeType" type="string" />
 			<element name="Cpf" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
+			<element name="Anf" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" minOccurs="0"/>
 		</sequence>
 	</complexType>
 

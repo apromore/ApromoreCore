@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="version" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="NativeType" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="Cpf" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
+ *         &lt;element name="Anf" type="{http://www.w3.org/2001/XMLSchema}base64Binary" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -37,29 +38,34 @@ import javax.xml.bind.annotation.XmlType;
     "processId",
     "version",
     "nativeType",
-    "cpf"
+    "cpf",
+    "anf"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T10:59:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:45:10+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class DeCanoniseProcessInputMsgType {
 
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T10:59:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:45:10+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected int processId;
     @XmlElement(required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T10:59:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:45:10+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String version;
     @XmlElement(name = "NativeType", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T10:59:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:45:10+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String nativeType;
     @XmlElement(name = "Cpf", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T10:59:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:45:10+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected DataHandler cpf;
+    @XmlElement(name = "Anf")
+    @XmlMimeType("application/octet-stream")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:45:10+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected DataHandler anf;
 
     /**
      * Gets the value of the processId property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T10:59:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:45:10+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public int getProcessId() {
         return processId;
     }
@@ -68,7 +74,7 @@ public class DeCanoniseProcessInputMsgType {
      * Sets the value of the processId property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T10:59:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:45:10+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setProcessId(int value) {
         this.processId = value;
     }
@@ -81,7 +87,7 @@ public class DeCanoniseProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T10:59:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:45:10+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getVersion() {
         return version;
     }
@@ -94,7 +100,7 @@ public class DeCanoniseProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T10:59:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:45:10+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setVersion(String value) {
         this.version = value;
     }
@@ -107,7 +113,7 @@ public class DeCanoniseProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T10:59:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:45:10+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getNativeType() {
         return nativeType;
     }
@@ -120,7 +126,7 @@ public class DeCanoniseProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T10:59:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:45:10+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setNativeType(String value) {
         this.nativeType = value;
     }
@@ -133,7 +139,7 @@ public class DeCanoniseProcessInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T10:59:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:45:10+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public DataHandler getCpf() {
         return cpf;
     }
@@ -146,9 +152,35 @@ public class DeCanoniseProcessInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T10:59:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:45:10+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setCpf(DataHandler value) {
         this.cpf = value;
+    }
+
+    /**
+     * Gets the value of the anf property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link DataHandler }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:45:10+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public DataHandler getAnf() {
+        return anf;
+    }
+
+    /**
+     * Sets the value of the anf property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link DataHandler }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-20T11:45:10+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setAnf(DataHandler value) {
+        this.anf = value;
     }
 
 }
