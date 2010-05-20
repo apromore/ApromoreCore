@@ -46,6 +46,9 @@ public class RequestToDA {
 	private static final QName SERVICE_NAME = new QName(Constants.DA_MANAGER_URI, Constants.DA_MANAGER_SERVICE);
 	private DAManagerPortType port;
 
+	private InputStream cpf;
+	private InputStream anf;
+	
 	public RequestToDA() {
 		URL wsdlURL = DAManagerService.WSDL_LOCATION;
 		DAManagerService ss = new DAManagerService(wsdlURL, SERVICE_NAME);
@@ -176,9 +179,6 @@ public class RequestToDA {
 		}
 	}
 
-	public DAManagerPortType getPort() {
-		return port;
-	}
 
 	public InputStream ReadNative(int processId, String version,
 			String nativeType) throws ExceptionReadProcessSummaries, IOException, ExceptionReadNative {	
@@ -199,7 +199,7 @@ public class RequestToDA {
 		}
 	}
 
-	public InputStream ReadCanonical(int processId, String version) throws ExceptionReadCanonical, IOException {
+	public void ReadCanonical(int processId, String version) throws ExceptionReadCanonical, IOException {
 		org.apromore.manager.model_da.ReadCanonicalInputMsgType payload = new ReadCanonicalInputMsgType();
 		payload.setProcessId(processId);
 		payload.setVersion(version);
@@ -207,9 +207,12 @@ public class RequestToDA {
 		org.apromore.manager.model_da.ReadCanonicalOutputMsgType res = this.port.readCanonical(payload);
 		org.apromore.manager.model_da.ResultType result = res.getResult();
 		if (result.getCode() == 0) {
-			DataHandler handler = res.getCpf();
-			InputStream is = handler.getInputStream();
-			return is;
+			DataHandler handler_cpf = res.getCpf();
+			this.cpf = handler_cpf.getInputStream();
+			DataHandler handler_anf = res.getAnf();
+			if (handler_anf != null) {
+				this.anf = handler_anf.getInputStream();
+			}
 		} else {
 			throw new ExceptionReadCanonical(result.getMessage());
 		}
@@ -257,6 +260,18 @@ public class RequestToDA {
 		}
 	}
 
+
+	public DAManagerPortType getPort() {
+		return port;
+	}
+
+	public InputStream getCpf() {
+		return cpf;
+	}
+
+	public InputStream getAnf() {
+		return anf;
+	}
 	
 }
 

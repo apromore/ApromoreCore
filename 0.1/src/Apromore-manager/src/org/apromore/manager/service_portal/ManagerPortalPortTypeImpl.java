@@ -190,11 +190,12 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 			try {
 				// native not found, request canonical
 				RequestToDA request1 = new RequestToDA();
-				InputStream canonical_xml = request1.ReadCanonical (processId, version);
-
+				request1.ReadCanonical (processId, version);
+				InputStream cpf_is = request1.getCpf();
+				InputStream anf_is = request1.getAnf();
 				// request canonical_xml de-canonisation
 				RequestToCanoniser requestCa = new RequestToCanoniser();
-				InputStream native_xml = requestCa.DeCanonise (processId, version, nativeType, canonical_xml);
+				InputStream native_xml = requestCa.DeCanonise (processId, version, nativeType, cpf_is, anf_is);
 				
 				DataSource source = new ByteArrayDataSource(native_xml, "text/xml"); 
 				res.setNative(new DataHandler(source));	

@@ -46,14 +46,18 @@ public class RequestToCanoniser {
 		} 		
 	}
 
-	public InputStream DeCanonise(int processId, String version, String nativeType, InputStream canonical_xml) 
+	public InputStream DeCanonise(int processId, String version, String nativeType, InputStream cpf_is, InputStream anf_is) 
 	throws IOException, ExceptionDeCanonise {
 		org.apromore.manager.model_canoniser.DeCanoniseProcessInputMsgType payload = new DeCanoniseProcessInputMsgType();
-		DataSource source = new ByteArrayDataSource(canonical_xml, "text/xml");
+		DataSource source_cpf = new ByteArrayDataSource(cpf_is, "text/xml");
 		payload.setProcessId(processId);
 		payload.setVersion(version);
 		payload.setNativeType(nativeType);
-		payload.setCpf(new DataHandler(source));
+		payload.setCpf(new DataHandler(source_cpf));
+		if (anf_is != null) {
+			DataSource source_anf = new ByteArrayDataSource(anf_is, "text/xml");
+			payload.setAnf(new DataHandler(source_anf));
+		}
 		org.apromore.manager.model_canoniser.DeCanoniseProcessOutputMsgType res =
 			this.port.deCanoniseProcess(payload);
 		if (res.getResult().getCode() == -1) {
