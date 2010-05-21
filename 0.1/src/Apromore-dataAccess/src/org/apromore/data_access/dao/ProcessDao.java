@@ -362,7 +362,7 @@ public class ProcessDao extends BasicDao {
 				process_xml.close();
 			}
 			String process_string = sb0.toString();
-			
+			System.out.println("native size: " + process_string.length());
 			StringBuilder sb = new StringBuilder();
 			try {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(cpf_xml, "UTF-8"));
@@ -373,6 +373,7 @@ public class ProcessDao extends BasicDao {
 				cpf_xml.close();
 			}
 			String cpf_string = sb.toString();
+			System.out.println("cpf size: " + cpf_string.length());
 			
 			StringBuilder sb1 = new StringBuilder();
 			try {
@@ -385,7 +386,7 @@ public class ProcessDao extends BasicDao {
 			}
 
 			String anf_string = sb1.toString();
-			
+			System.out.println("anf size: " + anf_string.length());
 			conn = this.getConnection();
 
 	
