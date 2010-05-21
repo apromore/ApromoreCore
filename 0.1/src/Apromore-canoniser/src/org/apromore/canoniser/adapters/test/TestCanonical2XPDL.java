@@ -21,8 +21,8 @@ public class TestCanonical2XPDL {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		File cpf_file = new File("/home/fauvet/models/epml_models/SAP_1.cpf");
-		File anf_file = new File("/home/fauvet/models/epml_models/SAP_1.anf");
+		File cpf_file = new File("/home/fauvet/models/epml_models/Audio.cpf");
+		File anf_file = new File("/home/fauvet/models/epml_models/Audio.anf");
 	//	File rlf_file = new File("/home/fauvet/models/epml_models/SAP_1.rlf");
 		
 		try {

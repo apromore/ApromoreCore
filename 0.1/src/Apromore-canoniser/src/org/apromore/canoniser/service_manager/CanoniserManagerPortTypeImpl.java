@@ -11,12 +11,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
@@ -144,7 +138,7 @@ import de.epml.TypeEPML;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage (ex.getMessage());
+			result.setMessage ("De-canonisation failed.");
 		}
 		return res;
 	}
@@ -243,7 +237,7 @@ import de.epml.TypeEPML;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage(ex.getMessage());
+			result.setMessage("Canonisation failed.");
 		}
 		return res;
 	}
@@ -340,7 +334,7 @@ import de.epml.TypeEPML;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage(ex.getMessage());
+			result.setMessage("Canonisation failed.");
 		}
 		return res;
 	}

@@ -6,8 +6,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBException;
-
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
@@ -32,8 +30,6 @@ import org.apromore.cpf.XORSplitType;
 import de.epml.TEpcElement;
 import de.epml.TypeAND;
 import de.epml.TypeArc;
-import de.epml.TypeAttrTypes;
-import de.epml.TypeCFunction;
 import de.epml.TypeDirectory;
 import de.epml.TypeEPC;
 import de.epml.TypeEPML;
@@ -48,7 +44,6 @@ import de.epml.TypeMove;
 import de.epml.TypeMove2;
 import de.epml.TypeOR;
 import de.epml.TypePosition;
-import de.epml.TypeRole;
 import de.epml.TypeXOR;
 
 public class Canonical2EPML {

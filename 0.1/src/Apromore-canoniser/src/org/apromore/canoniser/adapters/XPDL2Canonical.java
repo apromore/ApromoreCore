@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import javax.xml.bind.JAXBException;
-
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.FillType;
 import org.apromore.anf.GraphicsType;
