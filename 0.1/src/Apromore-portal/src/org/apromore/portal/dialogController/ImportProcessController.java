@@ -113,6 +113,7 @@ public class ImportProcessController extends Window {
 					|| this.domain.getValue().compareTo("")==0) {
 				throw new ExceptionImport("Please enter a value for all fields.");
 			} else {
+				
 				request.ImportModel(this.mainC.getCurrentUser().getUsername(), this.nativeType, this.processName.getValue(), 
 						null, this.nativeProcess, this.domain.getValue());
 				Messagebox.show("Import of " + this.processName.getValue() + " completed.", "", Messagebox.OK,
