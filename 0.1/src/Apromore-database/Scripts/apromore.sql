@@ -14,14 +14,14 @@ drop view keywords ;
 
 create table annotations (
     uri         int     auto_increment,
-    content text,
+    content longtext,
     constraint pk_annotation primary key (uri)
 ) engine=innoDB;
 show warnings ;
 
 create table canonicals (
     uri        int     auto_increment,
-    content text,
+    content longtext,
     constraint pk_canonicals primary key (uri)
 ) engine=innoDB;
 show warnings ;
@@ -71,7 +71,7 @@ show warnings ;
 
 create table natives (
     uri        int     auto_increment,
-    content text,
+    content longtext,
     nat_type varchar(20),
     canonical int,
     annotation int,
