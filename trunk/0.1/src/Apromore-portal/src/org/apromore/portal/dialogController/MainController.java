@@ -65,7 +65,7 @@ public class MainController extends Window {
 			Properties properties = new Properties();  
 			properties.load(inputStream);  
 			
-			this.OryxEndPoint_xpdl = "http://localhost:8080/oryx/editor;bpmn?stencilset=/stencilsets/bpmn1.1/bpmn1.1.json";
+			this.OryxEndPoint_xpdl = properties.getProperty("OryxEndPoint_xpdl");  
 			this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");  
 			
 			// Listens to event onSize on the main window. Readjusts accordingly the table view window size
