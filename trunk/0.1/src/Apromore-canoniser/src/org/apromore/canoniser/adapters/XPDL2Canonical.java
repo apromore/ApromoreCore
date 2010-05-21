@@ -116,8 +116,9 @@ public class XPDL2Canonical {
 					for (NodeGraphicsInfo xGraphInfo: ((NodeGraphicsInfos)obj).getNodeGraphicsInfo()){
 						if (xGraphInfo.getFillColor() != null) {
 							FillType fill = new FillType();
-							StringTokenizer tokenizer = new StringTokenizer(xGraphInfo.getFillColor(), ",");
-							fill.setColor(String.format("R:%sG:%sB:%s", tokenizer.nextToken(), tokenizer.nextToken(), tokenizer.nextToken()));
+							//StringTokenizer tokenizer = new StringTokenizer(xGraphInfo.getFillColor(), ",");
+							//fill.setColor(String.format("R:%sG:%sB:%s", tokenizer.nextToken(), tokenizer.nextToken(), tokenizer.nextToken()));
+							fill.setColor(xGraphInfo.getFillColor());
 							cGraphInfo.setFill(fill);
 						}
 
