@@ -89,19 +89,17 @@ public class ImportProcessController extends Window {
 			this.nativeType = nativeType[1];
 			if (this.nativeType.compareTo("xpdl")==0) {
 				this.nativeType = "XPDL 2.1" ;
+			} else if (this.nativeType.compareTo("epml")==0) {
+				this.nativeType = "EPML 2.0";
 			} else {
-				if (this.nativeType.compareTo("yawl")==0) {
-					this.nativeType = "YAWL 2.0";
-				} else {
-					if (this.nativeType.compareTo("epml")==0) {
-						this.nativeType = "EPML 2.0";
-					} else {
-						this.nativeType = "not recognised";
-					}
-				}
+				throw new ExceptionImport("Native type not recognised.");
 			}
+
 			this.okButton.setDisabled(false);
 			this.filenameLabel.setValue(fileName + " (native type is " + this.nativeType + ")");
+		} catch (ExceptionImport e) {
+			Messagebox.show("Import failed (" + e.getMessage(), "Attention", Messagebox.OK,
+					Messagebox.ERROR);
 		} catch (Exception e) {
 			Messagebox.show("Repository not available ("+e.getMessage()+")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
@@ -111,9 +109,9 @@ public class ImportProcessController extends Window {
 	private void importProcess() throws InterruptedException {
 		RequestToManager request = new RequestToManager();
 		try {
-			if (this.processName.getValue().compareTo("")==0) {
-				Messagebox.show("Please enter a name for the process", "Attention", Messagebox.OK,
-						Messagebox.ERROR);
+			if (this.processName.getValue().compareTo("")==0
+					|| this.domain.getValue().compareTo("")==0) {
+				throw new ExceptionImport("Please enter a value for all fields.");
 			} else {
 				request.ImportModel(this.mainC.getCurrentUser().getUsername(), this.nativeType, this.processName.getValue(), 
 						null, this.nativeProcess, this.domain.getValue());
