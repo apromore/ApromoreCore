@@ -115,7 +115,7 @@ public class ImportProcessController extends Window {
 			} else {
 				request.ImportModel(this.mainC.getCurrentUser().getUsername(), this.nativeType, this.processName.getValue(), 
 						null, this.nativeProcess, this.domain.getValue());
-				this.mainC.displayNewProcess(processId, version);
+			//	this.mainC.displayNewProcess(processId, version);
 				
 				Messagebox.show("Import of " + this.processName.getValue() + " completed.", "", Messagebox.OK,
 						Messagebox.INFORMATION);
