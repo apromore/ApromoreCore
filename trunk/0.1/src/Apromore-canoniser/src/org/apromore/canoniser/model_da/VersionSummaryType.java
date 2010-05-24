@@ -1,30 +1,29 @@
 
 package org.apromore.canoniser.model_da;
 
-import javax.activation.DataHandler;
+import java.util.Date;
+
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlMimeType;
+import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for StoreNativeInputMsgType complex type.
+ * <p>Java class for VersionSummaryType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="StoreNativeInputMsgType">
+ * &lt;complexType name="VersionSummaryType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="processId" type="{http://www.w3.org/2001/XMLSchema}int"/>
- *         &lt;element name="version" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="NativeType" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Native" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
- *       &lt;/sequence>
+ *       &lt;attribute name="ranking" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="last_update" type="{http://www.w3.org/2001/XMLSchema}dateTime" />
+ *       &lt;attribute name="creation_date" type="{http://www.w3.org/2001/XMLSchema}dateTime" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -33,48 +32,53 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "StoreNativeInputMsgType", propOrder = {
-    "processId",
-    "version",
-    "nativeType",
-    "_native"
-})
+@XmlType(name = "VersionSummaryType")
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class StoreNativeInputMsgType {
+public class VersionSummaryType {
 
+    @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected int processId;
-    @XmlElement(required = true)
+    protected Integer ranking;
+    @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String version;
-    @XmlElement(name = "NativeType", required = true)
+    protected String name;
+    @XmlAttribute(name = "last_update")
+    @XmlSchemaType(name = "dateTime")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String nativeType;
-    @XmlElement(name = "Native", required = true)
-    @XmlMimeType("application/octet-stream")
+    protected Date lastUpdate;
+    @XmlAttribute(name = "creation_date")
+    @XmlSchemaType(name = "dateTime")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected DataHandler _native;
+    protected Date creationDate;
 
     /**
-     * Gets the value of the processId property.
+     * Gets the value of the ranking property.
      * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public int getProcessId() {
-        return processId;
+    public Integer getRanking() {
+        return ranking;
     }
 
     /**
-     * Sets the value of the processId property.
+     * Sets the value of the ranking property.
      * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setProcessId(int value) {
-        this.processId = value;
+    public void setRanking(Integer value) {
+        this.ranking = value;
     }
 
     /**
-     * Gets the value of the version property.
+     * Gets the value of the name property.
      * 
      * @return
      *     possible object is
@@ -82,12 +86,12 @@ public class StoreNativeInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getVersion() {
-        return version;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Sets the value of the version property.
+     * Sets the value of the name property.
      * 
      * @param value
      *     allowed object is
@@ -95,60 +99,60 @@ public class StoreNativeInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setVersion(String value) {
-        this.version = value;
+    public void setName(String value) {
+        this.name = value;
     }
 
     /**
-     * Gets the value of the nativeType property.
+     * Gets the value of the lastUpdate property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link Date }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getNativeType() {
-        return nativeType;
+    public Date getLastUpdate() {
+        return lastUpdate;
     }
 
     /**
-     * Sets the value of the nativeType property.
+     * Sets the value of the lastUpdate property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link Date }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setNativeType(String value) {
-        this.nativeType = value;
+    public void setLastUpdate(Date value) {
+        this.lastUpdate = value;
     }
 
     /**
-     * Gets the value of the native property.
+     * Gets the value of the creationDate property.
      * 
      * @return
      *     possible object is
-     *     {@link DataHandler }
+     *     {@link Date }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public DataHandler getNative() {
-        return _native;
+    public Date getCreationDate() {
+        return creationDate;
     }
 
     /**
-     * Sets the value of the native property.
+     * Sets the value of the creationDate property.
      * 
      * @param value
      *     allowed object is
-     *     {@link DataHandler }
+     *     {@link Date }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setNative(DataHandler value) {
-        this._native = value;
+    public void setCreationDate(Date value) {
+        this.creationDate = value;
     }
 
 }

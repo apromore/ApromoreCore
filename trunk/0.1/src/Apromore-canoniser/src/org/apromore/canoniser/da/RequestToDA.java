@@ -3,6 +3,7 @@ package org.apromore.canoniser.da;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Iterator;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -16,6 +17,8 @@ import org.apromore.canoniser.model_da.StoreNativeInputMsgType;
 import org.apromore.canoniser.model_da.StoreNativeOutputMsgType;
 import org.apromore.canoniser.model_da.StoreVersionInputMsgType;
 import org.apromore.canoniser.model_da.StoreVersionOutputMsgType;
+import org.apromore.canoniser.model_manager.ProcessSummaryType;
+import org.apromore.canoniser.model_manager.VersionSummaryType;
 
 public class RequestToDA {
 
@@ -28,9 +31,11 @@ public class RequestToDA {
 		this.port = ss.getDACanoniser(); 
 	}
 
-	public void StoreProcess (String username, String processName, String domain, String nativeType, String versionName,
+	public org.apromore.canoniser.model_manager.ProcessSummaryType StoreProcess (String username, String processName, String domain, String nativeType, String versionName,
 			InputStream process_xml, InputStream cpf_xml, InputStream anf_xml) throws IOException, ExceptionStore {
 
+		org.apromore.canoniser.model_manager.ProcessSummaryType processM =
+			new ProcessSummaryType();
 		StoreNativeCpfInputMsgType payload = new StoreNativeCpfInputMsgType();
 		payload.setUsername(username);
 		payload.setNativeType(nativeType);
@@ -46,12 +51,35 @@ public class RequestToDA {
 		StoreNativeCpfOutputMsgType res = this.port.storeNativeCpf(payload);
 		if (res.getResult().getCode() == -1) {
 			throw new ExceptionStore (res.getResult().getMessage());
+		} else {
+			
+			processM.setDomain(res.getProcessSummary().getDomain());
+			processM.setId(res.getProcessSummary().getId());
+			processM.setLastVersion(res.getProcessSummary().getLastVersion());
+			processM.setName(res.getProcessSummary().getName());
+			processM.setOriginalNativeType(res.getProcessSummary().getOriginalNativeType());
+			processM.setRanking(res.getProcessSummary().getRanking());
+			processM.getVersionSummaries().clear();
+			Iterator it = res.getProcessSummary().getVersionSummaries().iterator();
+			// normally, only one... consider many for future needs
+			while (it.hasNext()) {
+				org.apromore.canoniser.model_manager.VersionSummaryType first_versionM =
+					new VersionSummaryType();
+				org.apromore.canoniser.model_da.VersionSummaryType versionDa = 
+					(org.apromore.canoniser.model_da.VersionSummaryType) it.next();
+				first_versionM.setCreationDate(versionDa.getCreationDate());
+				first_versionM.setLastUpdate(versionDa.getLastUpdate());
+				first_versionM.setName(versionDa.getName());
+				first_versionM.setRanking(versionDa.getRanking());
+				processM.getVersionSummaries().add(first_versionM);
+			}
+			return processM;
 		}
 	}
-	
+
 	public void StoreNative (int processId, String version, String nativeType, InputStream process) 
 	throws IOException, ExceptionStore {
-		
+
 		StoreNativeInputMsgType payload = new StoreNativeInputMsgType();
 		payload.setProcessId(processId);
 		payload.setVersion(version);
@@ -62,14 +90,14 @@ public class RequestToDA {
 		if (res.getResult().getCode() == -1) {
 			throw new ExceptionStore (res.getResult().getMessage());
 		}
-		
+
 	}
 
 	public void StoreVersion(int processId, String preVersion,
 			String newVersion, String nativeType, String domain,
 			String username, InputStream native_is, InputStream anf_xml_is,
 			InputStream cpf_xml_is) throws IOException, ExceptionStore {
-		
+
 		StoreVersionInputMsgType payload = new StoreVersionInputMsgType();
 		payload.setDomain(domain);
 		payload.setNativeType(nativeType);
