@@ -150,6 +150,8 @@
 	<complexType name="ImportProcessOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" />
+			<element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="1"
+				maxOccurs="1" />
 		</sequence>
 	</complexType>
 
