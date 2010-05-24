@@ -39,11 +39,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StoreNativeInputMsgType }
+     * Create an instance of {@link VersionSummaryType }
      * 
      */
-    public StoreNativeInputMsgType createStoreNativeInputMsgType() {
-        return new StoreNativeInputMsgType();
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
     }
 
     /**
@@ -55,6 +55,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link StoreNativeCpfInputMsgType }
+     * 
+     */
+    public StoreNativeCpfInputMsgType createStoreNativeCpfInputMsgType() {
+        return new StoreNativeCpfInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link StoreNativeInputMsgType }
+     * 
+     */
+    public StoreNativeInputMsgType createStoreNativeInputMsgType() {
+        return new StoreNativeInputMsgType();
+    }
+
+    /**
      * Create an instance of {@link StoreNativeCpfOutputMsgType }
      * 
      */
@@ -63,11 +79,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StoreNativeCpfInputMsgType }
+     * Create an instance of {@link ProcessSummaryType }
      * 
      */
-    public StoreNativeCpfInputMsgType createStoreNativeCpfInputMsgType() {
-        return new StoreNativeCpfInputMsgType();
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
     }
 
     /**
@@ -79,19 +95,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StoreNativeOutputMsgType }
-     * 
-     */
-    public StoreNativeOutputMsgType createStoreNativeOutputMsgType() {
-        return new StoreNativeOutputMsgType();
-    }
-
-    /**
      * Create an instance of {@link ResultType }
      * 
      */
     public ResultType createResultType() {
         return new ResultType();
+    }
+
+    /**
+     * Create an instance of {@link StoreNativeOutputMsgType }
+     * 
+     */
+    public StoreNativeOutputMsgType createStoreNativeOutputMsgType() {
+        return new StoreNativeOutputMsgType();
     }
 
     /**
