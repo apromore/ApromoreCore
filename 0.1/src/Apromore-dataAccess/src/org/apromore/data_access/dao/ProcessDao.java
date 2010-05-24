@@ -1,8 +1,6 @@
 package org.apromore.data_access.dao;
 
 import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -12,14 +10,11 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.Vector;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Marshaller;
-
-import org.apromore.anf.AnnotationsType;
-import org.apromore.cpf.CanonicalProcessType;
+import org.apache.tomcat.util.buf.TimeStamp;
 import org.apromore.data_access.commons.ConstantDB;
 import org.apromore.data_access.commons.Constants;
 import org.apromore.data_access.exception.ExceptionDao;
@@ -334,7 +329,8 @@ public class ProcessDao extends BasicDao {
 		return res;
 	}
 
-	public void storeNativeCpf (String username, String processName, String domain, 
+	public org.apromore.data_access.model_canoniser.ProcessSummaryType storeNativeCpf 
+		(String username, String processName, String domain, 
 			String nativeType, String version, InputStream process_xml,
 			InputStream cpf_xml, InputStream anf_xml) throws ExceptionDao, SQLException, IOException {
 
@@ -347,6 +343,12 @@ public class ProcessDao extends BasicDao {
 		stmt5 = null,
 		stmt6 = null;
 		ResultSet rs0 = null;
+		org.apromore.data_access.model_canoniser.ProcessSummaryType process = 
+			new org.apromore.data_access.model_canoniser.ProcessSummaryType();
+		org.apromore.data_access.model_canoniser.VersionSummaryType first_version =
+			new org.apromore.data_access.model_canoniser.VersionSummaryType();
+		process.getVersionSummaries().clear();
+		process.getVersionSummaries().add(first_version);
 		try {
 			if (version == null || version.compareTo("")==0) {
 				version = Constants.DEFAULT_VERSION_NAME;
@@ -459,21 +461,41 @@ public class ProcessDao extends BasicDao {
 			int processId = keys.getInt(1);
 			keys.close();
 
-			String query2 = " insert into " + ConstantDB.TABLE_VERSIONS
+			String query2 = " select now() ";
+			stmt0 = conn.createStatement();
+			rs0 = stmt0.executeQuery(query2);
+			if (!rs0.next()) {
+				throw new ExceptionDao ("Error: cannot retrieve date of the day.");
+			}
+			Timestamp now = rs0.getTimestamp(1);
+			
+			query2 = " insert into " + ConstantDB.TABLE_VERSIONS
 			+ "(" + ConstantDB.ATTR_PROCESSID + ","
 			+     ConstantDB.ATTR_VERSION_NAME + ","
 			+     ConstantDB.ATTR_CREATION_DATE + ","
 			+     ConstantDB.ATTR_LAST_UPDATE + ","
 			+     ConstantDB.ATTR_CANONICAL + ")"
-			+ " values (?, ?, now(), now(), ?) ";
+			+ " values (?, ?, ?, ?, ?) ";
 			stmt2 = conn.prepareStatement(query2);
 			stmt2.setInt(1, processId);
 			stmt2.setString(2, version);
-			stmt2.setInt(3, cpfId);
+			stmt2.setTimestamp(3,now);
+			stmt2.setTimestamp(4,now);
+			stmt2.setInt(5, cpfId);
 			Integer rs2 = stmt2.executeUpdate();
 
 			conn.commit();
-
+			process.setDomain(domain);
+			process.setId(processId);
+			process.setLastVersion(version);
+			process.setName(processName);
+			process.setOriginalNativeType(nativeType);
+			process.setRanking(0);
+			first_version.setName(version);
+			first_version.setCreationDate(now);
+			first_version.setLastUpdate(now);
+			first_version.setRanking(0);
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			conn.rollback();
@@ -484,6 +506,7 @@ public class ProcessDao extends BasicDao {
 			throw new ExceptionDao ("Error ProcessDAO (storeNative): " + e.getMessage() + "\n");
 		} finally {
 			Release(conn, stmt0, rs0);
+			return process;
 		}
 	}
 
