@@ -1,55 +1,34 @@
 
-package org.apromore.anf;
+package org.apromore.data_access.model_canoniser;
 
-import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for lineType complex type.
+ * <p>Java class for ProcessSummaryType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="lineType">
+ * &lt;complexType name="ProcessSummaryType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="shape">
- *         &lt;simpleType>
- *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *             &lt;enumeration value="straight"/>
- *             &lt;enumeration value="orthogonal"/>
- *             &lt;enumeration value="spline"/>
- *             &lt;enumeration value="beziel"/>
- *           &lt;/restriction>
- *         &lt;/simpleType>
- *       &lt;/attribute>
- *       &lt;attribute name="color" type="{http://www.apromore.org/ANF}colorType" />
- *       &lt;attribute name="gradient-color" type="{http://www.apromore.org/ANF}colorType" />
- *       &lt;attribute name="gradient-rotation">
- *         &lt;simpleType>
- *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *             &lt;enumeration value="vertical"/>
- *             &lt;enumeration value="horizontal"/>
- *             &lt;enumeration value="diagonal"/>
- *           &lt;/restriction>
- *         &lt;/simpleType>
- *       &lt;/attribute>
- *       &lt;attribute name="transparency" type="{http://www.apromore.org/ANF}transparencyType" />
- *       &lt;attribute name="width" type="{http://www.w3.org/2001/XMLSchema}decimal" />
- *       &lt;attribute name="style">
- *         &lt;simpleType>
- *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *             &lt;enumeration value="solid"/>
- *             &lt;enumeration value="dash"/>
- *             &lt;enumeration value="dot"/>
- *           &lt;/restriction>
- *         &lt;/simpleType>
- *       &lt;/attribute>
+ *       &lt;sequence>
+ *         &lt;element name="VersionSummaries" type="{http://www.apromore.org/data_access/model_canoniser}VersionSummaryType" maxOccurs="unbounded"/>
+ *       &lt;/sequence>
+ *       &lt;attribute name="original_native_type" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="id" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="domain" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="ranking" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="last_version" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -58,34 +37,66 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "lineType")
+@XmlType(name = "ProcessSummaryType", propOrder = {
+    "versionSummaries"
+})
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class LineType {
+public class ProcessSummaryType {
 
+    @XmlElement(name = "VersionSummaries", required = true)
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected List<VersionSummaryType> versionSummaries;
+    @XmlAttribute(name = "original_native_type")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected String originalNativeType;
     @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String shape;
+    protected String name;
     @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String color;
-    @XmlAttribute(name = "gradient-color")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String gradientColor;
-    @XmlAttribute(name = "gradient-rotation")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String gradientRotation;
+    protected Integer id;
     @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected Integer transparency;
+    protected String domain;
     @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected BigDecimal width;
-    @XmlAttribute
+    protected Integer ranking;
+    @XmlAttribute(name = "last_version")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String style;
+    protected String lastVersion;
 
     /**
-     * Gets the value of the shape property.
+     * Gets the value of the versionSummaries property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the versionSummaries property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getVersionSummaries().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link VersionSummaryType }
+     * 
+     * 
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public List<VersionSummaryType> getVersionSummaries() {
+        if (versionSummaries == null) {
+            versionSummaries = new ArrayList<VersionSummaryType>();
+        }
+        return this.versionSummaries;
+    }
+
+    /**
+     * Gets the value of the originalNativeType property.
      * 
      * @return
      *     possible object is
@@ -93,12 +104,12 @@ public class LineType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getShape() {
-        return shape;
+    public String getOriginalNativeType() {
+        return originalNativeType;
     }
 
     /**
-     * Sets the value of the shape property.
+     * Sets the value of the originalNativeType property.
      * 
      * @param value
      *     allowed object is
@@ -106,12 +117,12 @@ public class LineType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setShape(String value) {
-        this.shape = value;
+    public void setOriginalNativeType(String value) {
+        this.originalNativeType = value;
     }
 
     /**
-     * Gets the value of the color property.
+     * Gets the value of the name property.
      * 
      * @return
      *     possible object is
@@ -119,12 +130,12 @@ public class LineType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getColor() {
-        return color;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Sets the value of the color property.
+     * Sets the value of the name property.
      * 
      * @param value
      *     allowed object is
@@ -132,64 +143,12 @@ public class LineType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setColor(String value) {
-        this.color = value;
+    public void setName(String value) {
+        this.name = value;
     }
 
     /**
-     * Gets the value of the gradientColor property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getGradientColor() {
-        return gradientColor;
-    }
-
-    /**
-     * Sets the value of the gradientColor property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setGradientColor(String value) {
-        this.gradientColor = value;
-    }
-
-    /**
-     * Gets the value of the gradientRotation property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getGradientRotation() {
-        return gradientRotation;
-    }
-
-    /**
-     * Sets the value of the gradientRotation property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setGradientRotation(String value) {
-        this.gradientRotation = value;
-    }
-
-    /**
-     * Gets the value of the transparency property.
+     * Gets the value of the id property.
      * 
      * @return
      *     possible object is
@@ -197,12 +156,12 @@ public class LineType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public Integer getTransparency() {
-        return transparency;
+    public Integer getId() {
+        return id;
     }
 
     /**
-     * Sets the value of the transparency property.
+     * Sets the value of the id property.
      * 
      * @param value
      *     allowed object is
@@ -210,38 +169,12 @@ public class LineType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setTransparency(Integer value) {
-        this.transparency = value;
+    public void setId(Integer value) {
+        this.id = value;
     }
 
     /**
-     * Gets the value of the width property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigDecimal }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public BigDecimal getWidth() {
-        return width;
-    }
-
-    /**
-     * Sets the value of the width property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigDecimal }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setWidth(BigDecimal value) {
-        this.width = value;
-    }
-
-    /**
-     * Gets the value of the style property.
+     * Gets the value of the domain property.
      * 
      * @return
      *     possible object is
@@ -249,12 +182,12 @@ public class LineType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getStyle() {
-        return style;
+    public String getDomain() {
+        return domain;
     }
 
     /**
-     * Sets the value of the style property.
+     * Sets the value of the domain property.
      * 
      * @param value
      *     allowed object is
@@ -262,8 +195,60 @@ public class LineType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setStyle(String value) {
-        this.style = value;
+    public void setDomain(String value) {
+        this.domain = value;
+    }
+
+    /**
+     * Gets the value of the ranking property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public Integer getRanking() {
+        return ranking;
+    }
+
+    /**
+     * Sets the value of the ranking property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setRanking(Integer value) {
+        this.ranking = value;
+    }
+
+    /**
+     * Gets the value of the lastVersion property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public String getLastVersion() {
+        return lastVersion;
+    }
+
+    /**
+     * Sets the value of the lastVersion property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setLastVersion(String value) {
+        this.lastVersion = value;
     }
 
 }

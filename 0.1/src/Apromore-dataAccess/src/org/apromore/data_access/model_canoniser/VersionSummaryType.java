@@ -1,31 +1,29 @@
 
-package org.apromore.cpf;
+package org.apromore.data_access.model_canoniser;
 
-import java.math.BigInteger;
+import java.util.Date;
+
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for NodeType complex type.
+ * <p>Java class for VersionSummaryType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="NodeType">
+ * &lt;complexType name="VersionSummaryType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="name" type="{http://www.w3.org/2001/XMLSchema}string" minOccurs="0"/>
- *         &lt;element name="configurable" type="{http://www.w3.org/2001/XMLSchema}boolean" minOccurs="0"/>
- *       &lt;/sequence>
- *       &lt;attribute name="id" use="required" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" />
+ *       &lt;attribute name="ranking" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="last_update" type="{http://www.w3.org/2001/XMLSchema}dateTime" />
+ *       &lt;attribute name="creation_date" type="{http://www.w3.org/2001/XMLSchema}dateTime" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -34,26 +32,50 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "NodeType", propOrder = {
-    "name",
-    "configurable"
-})
-@XmlSeeAlso({
-    RoutingType.class,
-    WorkType.class
-})
+@XmlType(name = "VersionSummaryType")
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class NodeType {
+public class VersionSummaryType {
 
+    @XmlAttribute
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected Integer ranking;
+    @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String name;
-    @XmlElement(defaultValue = "false")
+    @XmlAttribute(name = "last_update")
+    @XmlSchemaType(name = "dateTime")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected Boolean configurable;
-    @XmlAttribute(required = true)
-    @XmlSchemaType(name = "positiveInteger")
+    protected Date lastUpdate;
+    @XmlAttribute(name = "creation_date")
+    @XmlSchemaType(name = "dateTime")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected BigInteger id;
+    protected Date creationDate;
+
+    /**
+     * Gets the value of the ranking property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public Integer getRanking() {
+        return ranking;
+    }
+
+    /**
+     * Sets the value of the ranking property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setRanking(Integer value) {
+        this.ranking = value;
+    }
 
     /**
      * Gets the value of the name property.
@@ -82,55 +104,55 @@ public class NodeType {
     }
 
     /**
-     * Gets the value of the configurable property.
+     * Gets the value of the lastUpdate property.
      * 
      * @return
      *     possible object is
-     *     {@link Boolean }
+     *     {@link Date }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public Boolean isConfigurable() {
-        return configurable;
+    public Date getLastUpdate() {
+        return lastUpdate;
     }
 
     /**
-     * Sets the value of the configurable property.
+     * Sets the value of the lastUpdate property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Boolean }
+     *     {@link Date }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setConfigurable(Boolean value) {
-        this.configurable = value;
+    public void setLastUpdate(Date value) {
+        this.lastUpdate = value;
     }
 
     /**
-     * Gets the value of the id property.
+     * Gets the value of the creationDate property.
      * 
      * @return
      *     possible object is
-     *     {@link BigInteger }
+     *     {@link Date }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public BigInteger getId() {
-        return id;
+    public Date getCreationDate() {
+        return creationDate;
     }
 
     /**
-     * Sets the value of the id property.
+     * Sets the value of the creationDate property.
      * 
      * @param value
      *     allowed object is
-     *     {@link BigInteger }
+     *     {@link Date }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setId(BigInteger value) {
-        this.id = value;
+    public void setCreationDate(Date value) {
+        this.creationDate = value;
     }
 
 }

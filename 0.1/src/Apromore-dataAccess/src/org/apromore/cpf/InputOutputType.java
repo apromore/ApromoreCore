@@ -24,7 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlType(name = "InputOutputType")
 @XmlEnum
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-19T03:21:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:34:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public enum InputOutputType {
 
     @XmlEnumValue("input")
