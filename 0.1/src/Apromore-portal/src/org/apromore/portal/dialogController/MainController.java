@@ -10,6 +10,7 @@ import java.util.Properties;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummariesType;
+import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.UserType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
@@ -125,9 +126,19 @@ public class MainController extends Window {
 		eraseMessage();
 		this.currentUser = null;
 		this.simplesearch.clearSearches();
-		
-		this.refreshProcessSummaries();
 	}
+	
+	/**
+	 * Forward to the controller ProcessTableController the request to 
+	 * add the process to the table
+	 * @param returnedProcess
+	 */
+	public void displayNewProcess(ProcessSummaryType returnedProcess) {
+		this.processtable.displayNewProcess(returnedProcess);
+		this.displayMessage(this.processtable.getProcessHM().size() + " processes.");
+	}
+	
+	
 	public void displayMessage (String mes) {
 		this.shortmessageC.displayMessage(mes);
 	}
