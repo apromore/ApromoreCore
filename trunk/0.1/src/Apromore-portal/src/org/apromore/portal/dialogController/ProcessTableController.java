@@ -148,60 +148,12 @@ public class ProcessTableController extends Window {
 	}
 
 	public void displayProcessSummaries(ProcessSummariesType processSummaries) {
+		
 		for (int i=0;i<processSummaries.getProcessSummary().size();i++){
 			ProcessSummaryType process = processSummaries.getProcessSummary().get(i);
-
-			// one row for each process
-			Row processSummaryR = new Row();
-			Detail processSummaryD = new Detail();
-			processSummaryD.setId(process.getId().toString());
-			processSummaryD.setOpen(false);
-
-			this.processSummariesRows.appendChild(processSummaryR);
-
-			/** 
-			 * assign process summary values to labels
-			 */
-			Checkbox processCB = new Checkbox();
-			Label processId = new Label(process.getId().toString());
-
-			// update hashmaps
-			this.processHM.put(processCB, process);
-			List<Checkbox> listV = new ArrayList<Checkbox>();
-			this.mapProcessVersions.put(processCB, listV);
-			Toolbarbutton processName = new Toolbarbutton(process.getName());
-			processName.setStyle(Constants.TOOLBARBUTTON_STYLE);
-			
-			//	processName.setId(process.getId().toString());
-
-			Label processOriginalLanguage = new Label(process.getOriginalNativeType());
-			Label processDomain = new Label(process.getDomain());
-			Label processProcessRanking = new Label(process.getRanking().toString());
-			Label processLatestVersion = new Label(process.getLastVersion());
-
-			processSummaryR.appendChild(processSummaryD);
-			processSummaryR.appendChild(processCB);
-			processSummaryR.appendChild(processId);
-			processSummaryR.appendChild(processName);
-			processSummaryR.appendChild(processOriginalLanguage);
-			processSummaryR.appendChild(processDomain);
-			processSummaryR.appendChild(processProcessRanking);
-			processSummaryR.appendChild(processLatestVersion);
-
-			// click on process name to select it
-			processName.addEventListener("onClick", new EventListener() {
-				public void onEvent(Event event) throws Exception {
-					maintainSelectedProcesses (event);
-				}
-			});
-			// click on "+" to get process details
-			processSummaryD.addEventListener("onOpen", new EventListener() {
-				public void onEvent(Event event) throws Exception {
-					Detail processSummaryD = (Detail) event.getTarget();
-					displayVersionsSummaries (processSummaryD);
-				}
-			});
+			displayOneProcess (process);		
 		}
+		
 		this.revertSelectionBlist = new EventListener() {
 			public void onEvent(Event event) throws Exception {
 				revertSelection();				
@@ -212,6 +164,59 @@ public class ProcessTableController extends Window {
 	}
 
 
+	public void displayOneProcess (ProcessSummaryType process) {
+		// one row for each process
+		Row processSummaryR = new Row();
+		Detail processSummaryD = new Detail();
+		processSummaryD.setId(process.getId().toString());
+		processSummaryD.setOpen(false);
+
+		this.processSummariesRows.appendChild(processSummaryR);
+
+		/** 
+		 * assign process summary values to labels
+		 */
+		Checkbox processCB = new Checkbox();
+		Label processId = new Label(process.getId().toString());
+
+		// update hashmaps
+		this.processHM.put(processCB, process);
+		List<Checkbox> listV = new ArrayList<Checkbox>();
+		this.mapProcessVersions.put(processCB, listV);
+		Toolbarbutton processName = new Toolbarbutton(process.getName());
+		processName.setStyle(Constants.TOOLBARBUTTON_STYLE);
+		
+		//	processName.setId(process.getId().toString());
+
+		Label processOriginalLanguage = new Label(process.getOriginalNativeType());
+		Label processDomain = new Label(process.getDomain());
+		Label processProcessRanking = new Label(process.getRanking().toString());
+		Label processLatestVersion = new Label(process.getLastVersion());
+
+		processSummaryR.appendChild(processSummaryD);
+		processSummaryR.appendChild(processCB);
+		processSummaryR.appendChild(processId);
+		processSummaryR.appendChild(processName);
+		processSummaryR.appendChild(processOriginalLanguage);
+		processSummaryR.appendChild(processDomain);
+		processSummaryR.appendChild(processProcessRanking);
+		processSummaryR.appendChild(processLatestVersion);
+
+		// click on process name to select it
+		processName.addEventListener("onClick", new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				maintainSelectedProcesses (event);
+			}
+		});
+		// click on "+" to get process details
+		processSummaryD.addEventListener("onOpen", new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				Detail processSummaryD = (Detail) event.getTarget();
+				displayVersionsSummaries (processSummaryD);
+			}
+		});
+
+	}
 
 
 	/**
@@ -633,5 +638,13 @@ public class ProcessTableController extends Window {
 
 	public HashMap<Checkbox, List<Checkbox>> getMapProcessVersions() {
 		return mapProcessVersions;
+	}
+
+	/**
+	 * Add the process to the table
+	 * @param returnedProcess
+	 */
+	public void displayNewProcess(ProcessSummaryType process) {
+		this.displayOneProcess(process);
 	}
 }
