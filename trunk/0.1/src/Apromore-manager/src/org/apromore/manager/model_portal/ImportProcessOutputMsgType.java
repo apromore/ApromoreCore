@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="Result" type="{http://www.apromore.org/manager/model_portal}ResultType"/>
+ *         &lt;element name="ProcessSummary" type="{http://www.apromore.org/manager/model_portal}ProcessSummaryType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,14 +30,18 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ImportProcessOutputMsgType", propOrder = {
-    "result"
+    "result",
+    "processSummary"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T05:15:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ImportProcessOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T05:15:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
+    @XmlElement(name = "ProcessSummary", required = true)
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected ProcessSummaryType processSummary;
 
     /**
      * Gets the value of the result property.
@@ -46,7 +51,7 @@ public class ImportProcessOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T05:15:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ResultType getResult() {
         return result;
     }
@@ -59,9 +64,35 @@ public class ImportProcessOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-18T05:15:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResult(ResultType value) {
         this.result = value;
+    }
+
+    /**
+     * Gets the value of the processSummary property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ProcessSummaryType }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public ProcessSummaryType getProcessSummary() {
+        return processSummary;
+    }
+
+    /**
+     * Sets the value of the processSummary property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ProcessSummaryType }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setProcessSummary(ProcessSummaryType value) {
+        this.processSummary = value;
     }
 
 }
