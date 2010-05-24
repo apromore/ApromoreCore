@@ -30,6 +30,7 @@ import org.apromore.portal.model_manager.FormatsType;
 import org.apromore.portal.model_manager.ImportProcessInputMsgType;
 import org.apromore.portal.model_manager.ImportProcessOutputMsgType;
 import org.apromore.portal.model_manager.ProcessSummariesType;
+import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.ReadDomainsInputMsgType;
 import org.apromore.portal.model_manager.ReadDomainsOutputMsgType;
 import org.apromore.portal.model_manager.ReadEditSessionInputMsgType;
@@ -128,7 +129,7 @@ public class RequestToManager {
 		}
 	}
 
-	public void ImportModel(String username, String nativeType, String processName, 
+	public ProcessSummaryType ImportModel(String username, String nativeType, String processName, 
 			String versionName, InputStream process, String domain) 
 	throws IOException, ExceptionImport {
 		
@@ -144,7 +145,9 @@ public class RequestToManager {
 		ResultType result = res.getResult();
 		if (result.getCode() == -1) {
 			throw new ExceptionImport (result.getMessage()); 
-		} 
+		} else {
+			return res.getProcessSummary();
+		}
 		
 	}
 
