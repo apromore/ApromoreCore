@@ -3,6 +3,7 @@ package org.apromore.manager.canoniser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.Iterator;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -15,6 +16,7 @@ import org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType;
 import org.apromore.manager.model_canoniser.CanoniseVersionInputMsgType;
 import org.apromore.manager.model_canoniser.CanoniseVersionOutputMsgType;
 import org.apromore.manager.model_canoniser.DeCanoniseProcessInputMsgType;
+import org.apromore.manager.model_portal.VersionSummaryType;
 
 public class RequestToCanoniser {
 
@@ -29,11 +31,11 @@ public class RequestToCanoniser {
 		this.port = ss.getCanoniserManager();  
 	}
 
-	public void ImportProcess(String username, String processName, String versionName, 
-			String nativeType, InputStream process, String domain) 
+	public org.apromore.manager.model_portal.ProcessSummaryType CanoniseProcess(String username, String processName, String versionName, 
+			String nativeType, InputStream cpf, String domain) 
 	throws IOException, ExceptionImport {
 		org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType payload = new CanoniseProcessInputMsgType();
-		DataSource source = new ByteArrayDataSource(process, "text/xml"); 
+		DataSource source = new ByteArrayDataSource(cpf, "text/xml"); 
 		payload.setUsername(username);
 		payload.setNativeType(nativeType);
 		payload.setProcessName(processName);
@@ -43,7 +45,33 @@ public class RequestToCanoniser {
 		org.apromore.manager.model_canoniser.CanoniseProcessOutputMsgType res = this.port.canoniseProcess(payload);
 		if (res.getResult().getCode() == -1) {
 			throw new ExceptionImport (res.getResult().getMessage());
-		} 		
+		} else {
+			org.apromore.manager.model_portal.ProcessSummaryType processP =
+				new org.apromore.manager.model_portal.ProcessSummaryType();
+			
+			processP.setDomain(res.getProcessSummary().getDomain());
+			processP.setId(res.getProcessSummary().getId());
+			processP.setLastVersion(res.getProcessSummary().getLastVersion());
+			processP.setName(res.getProcessSummary().getName());
+			processP.setOriginalNativeType(res.getProcessSummary().getOriginalNativeType());
+			processP.setRanking(res.getProcessSummary().getRanking());
+			processP.getVersionSummaries().clear();
+			Iterator it = res.getProcessSummary().getVersionSummaries().iterator();
+			// normally, only one... consider many for future needs
+			while (it.hasNext()) {
+				org.apromore.manager.model_portal.VersionSummaryType first_versionP =
+					new VersionSummaryType();
+				org.apromore.manager.model_canoniser.VersionSummaryType versionC = 
+					(org.apromore.manager.model_canoniser.VersionSummaryType) it.next();
+				first_versionP.setCreationDate(versionC.getCreationDate());
+				first_versionP.setLastUpdate(versionC.getLastUpdate());
+				first_versionP.setName(versionC.getName());
+				first_versionP.setRanking(versionC.getRanking());
+				processP.getVersionSummaries().add(first_versionP);
+			}
+			return processP;
+			
+		}
 	}
 
 	public InputStream DeCanonise(int processId, String version, String nativeType, InputStream cpf_is, InputStream anf_is) 

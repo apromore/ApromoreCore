@@ -55,6 +55,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link VersionSummaryType }
+     * 
+     */
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
+    }
+
+	/**
      * Create an instance of {@link CanoniseVersionInputMsgType }
      * 
      */
@@ -71,6 +79,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ProcessSummaryType }
+     * 
+     */
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
+    }
+
+	/**
      * Create an instance of {@link CanoniseProcessInputMsgType }
      * 
      */
