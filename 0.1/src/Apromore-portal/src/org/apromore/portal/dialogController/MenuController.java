@@ -44,7 +44,6 @@ public class MenuController extends Menubar {
 	private Menuitem evalQualityMI;
 	private Menuitem evalCorrectnessMI;
 	private Menuitem evalPerformanceMI;
-	private FormatsType nativeTypes;			// choice of native formats
 
 	private Vector<ExportNativeController> exportNativeConts ;
 
@@ -59,16 +58,13 @@ public class MenuController extends Menubar {
 		this.importMI = (Menuitem) this.menuB.getFellow("fileImport");
 		this.exportMI = (Menuitem) this.menuB.getFellow("fileExport");
 		this.editMI = (Menuitem) this.menuB.getFellow("processEdit");
+		this.deleteMI = (Menuitem) this.menuB.getFellow("processDelete");
 		this.evaluationM = (Menu) this.menuB.getFellow("evaluation");
 		this.comparisonM = (Menu) this.menuB.getFellow("comparison");
 		this.managementM = (Menu) this.menuB.getFellow("management");
 		this.presentationM = (Menu) this.menuB.getFellow("presentation");
 
-		/**
-		 * get list of formats
-		 */
-		RequestToManager request = new RequestToManager();
-		this.nativeTypes = request.ReadFormats();
+
 
 		this.importMI.addEventListener("onClick",
 				new EventListener() {
@@ -90,8 +86,65 @@ public class MenuController extends Menubar {
 				exportNative ();
 			}
 		});	
+		this.deleteMI.addEventListener("onClick",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				deleteSelectedProcessVersions ();
+			}
+		});	
 	}
 
+	/**
+	 * Edit all selected process versions
+	 * @throws InterruptedException
+	 */
+	protected void editNative() throws InterruptedException {
+		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
+			getSelectedProcessVersions();
+		if (selectedProcessVersions.size()!=0) {
+			EditListNativesController editList = 
+				new EditListNativesController (this.mainC, this, this.mainC.getNativeTypes(),selectedProcessVersions);
+		}
+	}
+
+
+	/**
+	 * Delete all selected process versions.
+	 * @throws InterruptedException 
+	 */
+	protected void deleteSelectedProcessVersions() throws InterruptedException {
+		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
+			getSelectedProcessVersions();
+		if (selectedProcessVersions.size()!=0) {
+			this.mainC.deleteProcessVersions(selectedProcessVersions);
+		}
+	}
+
+
+	/**
+	 * Export all selected process versions, each of which in a native format to be chosen by the user
+	 */
+	protected void exportNative() {
+
+		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
+			getSelectedProcessVersions();
+		String processName, versionName;
+		int processId;
+		Set<ProcessSummaryType> keySet = selectedProcessVersions.keySet();
+		Iterator itP = keySet.iterator();
+		while (itP.hasNext()) {
+			ExportNativeController exportNativeC;
+			ProcessSummaryType process = (ProcessSummaryType) itP.next();
+			Iterator itV = process.getVersionSummaries().iterator();
+			while (itV.hasNext()){
+				VersionSummaryType version = (VersionSummaryType) itV.next();
+				exportNativeC = new ExportNativeController(this, process.getId(), process.getName(), 
+						version.getName(), this.mainC.getNativeTypes());
+				this.exportNativeConts.add(exportNativeC);
+			}
+		}
+	}
+	
 	protected void importModel (){
 		try {
 			this.importC = new ImportProcessController(this, mainC);
@@ -100,7 +153,14 @@ public class MenuController extends Menubar {
 		}
 	}
 
-	protected void editNative() throws InterruptedException {
+	/**
+	 * Return all selected process versions structured in an Hash map:
+	 * <p, l> belongs to the result <=> for the process whose id is p, all versions whose
+	 * name belong to l are selected.
+	 * 
+	 * @return HashMap<ProcessSummaryType,List<VersionSummaryType>>
+	 */
+	private HashMap<ProcessSummaryType,List<VersionSummaryType>> getSelectedProcessVersions() {
 		/* Build a list of the selected process versions <p, v>
 		 */
 		HashMap<Checkbox, VersionSummaryType> processVersionHM = this.mainC.getProcesstable().getProcessVersionsHM();
@@ -130,48 +190,9 @@ public class MenuController extends Menubar {
 				processVersions.put(processHM.get(cbProc), listVersion);
 			}
 		}
-		if (processVersions.size()!=0) {
-			EditListNativesController editList = 
-				new EditListNativesController (this.mainC, this, this.nativeTypes,processVersions);
-		}
+		return processVersions;
 	}
 
-
-	protected void exportNative() {
-		/* for each selected process version:
-		 * 			- open a window described in exportnative.zul
-		 * 			- ask the user to choose a native format
-		 */
-		HashMap<Checkbox, VersionSummaryType> processVersionHM = this.mainC.getProcesstable().getProcessVersionsHM();
-		HashMap<Checkbox, ProcessSummaryType> processHM = this.mainC.getProcesstable().getProcessHM();
-		HashMap<Checkbox, List<Checkbox>> mapProcessVersions = this.mainC.getProcesstable().getMapProcessVersions();
-		Set<Checkbox> keysCBproc = processHM.keySet(); // set of checkboxes for processes
-		Iterator it = keysCBproc.iterator();
-		Checkbox cbProc;
-		Checkbox cbVers;
-		String processName, versionName;
-		while (it.hasNext()) {
-			cbProc = (Checkbox) it.next();
-			if (cbProc.isChecked()){
-				List<Checkbox> listCbVers = mapProcessVersions.get(cbProc);
-				for(int i=0; i<listCbVers.size();i++) {
-					cbVers = listCbVers.get(i);
-					if (cbVers.isChecked()) {
-						int processId = processHM.get(cbProc).getId();
-						processName = processHM.get(cbProc).getName();
-						versionName = processVersionHM.get(cbVers).getName();
-
-						System.out.println(processName + ".." + versionName);
-
-						ExportNativeController exportNativeC;
-							exportNativeC = new ExportNativeController(this, processId, processName, 
-									versionName, this.nativeTypes);
-							this.exportNativeConts.add(exportNativeC);
-					}
-				}
-			}
-		}
-	}
 
 	public Menubar getMenuB() {
 		return menuB;
@@ -180,10 +201,5 @@ public class MenuController extends Menubar {
 	public void setMenuB(Menubar menuB) {
 		this.menuB = menuB;
 	}
-
-	public FormatsType getNativeTypes() {
-		return nativeTypes;
-	}
-
 
 }

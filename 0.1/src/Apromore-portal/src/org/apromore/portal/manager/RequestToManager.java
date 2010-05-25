@@ -3,7 +3,11 @@ package org.apromore.portal.manager;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -11,6 +15,7 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.xml.namespace.QName;
 
 import org.apromore.portal.exception.ExceptionDeleteEditSession;
+import org.apromore.portal.exception.ExceptionDeleteProcess;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionExport;
 import org.apromore.portal.exception.ExceptionFormats;
@@ -22,6 +27,8 @@ import org.apromore.portal.exception.ExceptionUser;
 import org.apromore.portal.exception.ExceptionWriteEditSession;
 import org.apromore.portal.model_manager.DeleteEditSessionInputMsgType;
 import org.apromore.portal.model_manager.DeleteEditSessionOutputMsgType;
+import org.apromore.portal.model_manager.DeleteProcessVersionsInputMsgType;
+import org.apromore.portal.model_manager.DeleteProcessVersionsOutputMsgType;
 import org.apromore.portal.model_manager.DomainsType;
 import org.apromore.portal.model_manager.EditSessionType;
 import org.apromore.portal.model_manager.ExportNativeInputMsgType;
@@ -31,6 +38,7 @@ import org.apromore.portal.model_manager.ImportProcessInputMsgType;
 import org.apromore.portal.model_manager.ImportProcessOutputMsgType;
 import org.apromore.portal.model_manager.ProcessSummariesType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
+import org.apromore.portal.model_manager.ProcessVersionIdentifierType;
 import org.apromore.portal.model_manager.ReadDomainsInputMsgType;
 import org.apromore.portal.model_manager.ReadDomainsOutputMsgType;
 import org.apromore.portal.model_manager.ReadEditSessionInputMsgType;
@@ -45,6 +53,7 @@ import org.apromore.portal.model_manager.ResultType;
 import org.apromore.portal.model_manager.UpdateProcessInputMsgType;
 import org.apromore.portal.model_manager.UpdateProcessOutputMsgType;
 import org.apromore.portal.model_manager.UserType;
+import org.apromore.portal.model_manager.VersionSummaryType;
 import org.apromore.portal.model_manager.WriteEditSessionInputMsgType;
 import org.apromore.portal.model_manager.WriteEditSessionOutputMsgType;
 import org.apromore.portal.model_manager.WriteUserInputMsgType;
@@ -223,6 +232,30 @@ public class RequestToManager {
 			throw new ExceptionUpdateProcess (result.getMessage()); 
 		}
 		
+	}
+
+	public void DeleteProcessVersions(
+			HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws ExceptionDeleteProcess {
+		
+		DeleteProcessVersionsInputMsgType payload = new DeleteProcessVersionsInputMsgType();
+		Set<ProcessSummaryType> keys = processVersions.keySet();
+		Iterator<ProcessSummaryType> it = keys.iterator();
+		while (it.hasNext()){
+			ProcessSummaryType processSummary = it.next();
+			List<VersionSummaryType> versionSummaries = processVersions.get(processSummary);
+			
+			ProcessVersionIdentifierType processVersionId = new ProcessVersionIdentifierType();
+			payload.getProcessVersionIdentifier().add(processVersionId);			
+			processVersionId.setProcessid(processSummary.getId());
+			for (int i=0;i<versionSummaries.size();i++){
+				processVersionId.getVersionName().add(versionSummaries.get(i).getName());
+			}
+		}
+		DeleteProcessVersionsOutputMsgType res = this.port.deleteProcessVersions(payload);
+		ResultType result = res.getResult();
+		if (result.getCode() == -1) {
+			throw new ExceptionDeleteProcess (result.getMessage()); 
+		}
 	}
 	
 }
