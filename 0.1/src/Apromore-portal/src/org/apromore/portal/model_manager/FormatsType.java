@@ -33,11 +33,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "FormatsType", propOrder = {
     "format"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:49:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:30:44+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class FormatsType {
 
     @XmlElement(name = "Format")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:49:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:30:44+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected List<String> format;
 
     /**
@@ -62,7 +62,7 @@ public class FormatsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:49:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:30:44+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public List<String> getFormat() {
         if (format == null) {
             format = new ArrayList<String>();
