@@ -6,30 +6,37 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.JAXBException;
+
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
-import org.apromore.canoniser.exception.ExceptionStore;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
+import org.apromore.cpf.InputOutputType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ORJoinType;
 import org.apromore.cpf.ORSplitType;
+import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ObjectType;
+import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TaskType;
+import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 
 import de.epml.TEpcElement;
 import de.epml.TypeAND;
 import de.epml.TypeArc;
+import de.epml.TypeAttrTypes;
+import de.epml.TypeCFunction;
 import de.epml.TypeDirectory;
 import de.epml.TypeEPC;
 import de.epml.TypeEPML;
@@ -43,7 +50,10 @@ import de.epml.TypeLine;
 import de.epml.TypeMove;
 import de.epml.TypeMove2;
 import de.epml.TypeOR;
+import de.epml.TypeObject;
 import de.epml.TypePosition;
+import de.epml.TypeRelation;
+import de.epml.TypeRole;
 import de.epml.TypeXOR;
 
 public class Canonical2EPML {
@@ -52,6 +62,7 @@ public class Canonical2EPML {
 	Map<BigInteger, NodeType> nodeRefMap = new HashMap<BigInteger, NodeType>();
 	Map<BigInteger, EdgeType> edgeRefMap = new HashMap<BigInteger, EdgeType>();
 	Map<BigInteger, Object> epcRefMap = new HashMap<BigInteger, Object>();
+	List<BigInteger> object_res_list = new LinkedList<BigInteger>();
 	
 	private TypeEPML epml = new TypeEPML();
 	private TypeDirectory dir = new TypeDirectory();
@@ -62,32 +73,18 @@ public class Canonical2EPML {
 		return epml;
 	}
 	
-	public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations) throws ExceptionStore {
-		
-		epml.getDirectory().add(dir);
-	
-		for (NetType net: cproc.getNet()) {
-			// To do
-			TypeEPC epc = new TypeEPC();
-			translateNet(epc,net);
-			epc.setEpcId(BigInteger.valueOf(ids++));
-			epc.setName("EPC Name");
-			epml.getDirectory().get(0).getEpcOrDirectory().add(epc);
-		}
-		
-		for (ObjectType obj: cproc.getObject()){
-			// to do
-		}
-		
-		for (ResourceTypeType resT: cproc.getResourceType()){
-			//TO DO 
-		}
-		
+	public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations) throws JAXBException {
+		main(cproc);
 		mapNodeAnnotations(annotations);
 		mapEdgeAnnotations(annotations);
 	}
 	
-	public Canonical2EPML(CanonicalProcessType cproc) throws ExceptionStore {
+	public Canonical2EPML(CanonicalProcessType cproc) throws JAXBException {
+		main(cproc);
+	}
+	
+	private void main(CanonicalProcessType cproc)
+	{
 		epml.getDirectory().add(dir);
 	
 		for (NetType net: cproc.getNet()) {
@@ -96,15 +93,16 @@ public class Canonical2EPML {
 			translateNet(epc,net);
 			epc.setEpcId(BigInteger.valueOf(ids++));
 			epc.setName("EPC Name");
+			for (ObjectType obj: cproc.getObject()){
+				if(object_res_list.contains(obj.getId()))
+					translateObject(obj,epc);
+			}
+			for (ResourceTypeType resT: cproc.getResourceType()){
+				if(object_res_list.contains(resT.getId()))
+					translateResource(resT,epc);
+			}
+			object_res_list.clear();
 			epml.getDirectory().get(0).getEpcOrDirectory().add(epc);
-		}
-		
-		for (ObjectType obj: cproc.getObject()){
-			// to do
-		}
-		
-		for (ResourceTypeType resT: cproc.getResourceType()){
-			//TO DO 
 		}
 	}
 	
@@ -112,10 +110,17 @@ public class Canonical2EPML {
 	{
 		
 		for (NodeType node: net.getNode()) {
-			if (node instanceof TaskType) {
-				translateTask(epc, node);
-			} else if (node instanceof EventType) {
-				translateEvent(epc, node);
+			if(node instanceof TaskType || node instanceof EventType)
+			{
+				if (node instanceof TaskType) {
+					translateTask(epc, node);
+				} else if (node instanceof EventType) {
+					translateEvent(epc, node);
+				}
+				for(ObjectRefType ref : ((WorkType)node).getObjectRef())
+					object_res_list.add(ref.getObjectId());
+				for(ResourceTypeRefType ref : ((WorkType)node).getResourceTypeRef())
+					object_res_list.add(ref.getResourceTypeId());
 			} else if (node instanceof RoutingType) {
 				translateGateway(epc, node);
 			} 
@@ -145,7 +150,46 @@ public class Canonical2EPML {
 				epcRefMap.put(arc.getId(), arc);
 			}
 		}
+		
+		createRelationArc(epc,net);
+	}
 	
+	private void createRelationArc(TypeEPC epc,  NetType net)
+	{
+		for(NodeType node: net.getNode())
+		{
+			if(node instanceof WorkType)
+			{
+				for(ObjectRefType ref:((WorkType)node).getObjectRef())
+				{
+					TypeArc arc = new TypeArc();
+					TypeRelation rel =  new TypeRelation();
+					arc.setId(BigInteger.valueOf(ids++));
+					if(ref.getType().equals(InputOutputType.OUTPUT)){
+						rel.setSource(id_map.get(node.getId()));
+						rel.setTarget(id_map.get(ref.getObjectId()));
+					}
+					else{
+						rel.setTarget(id_map.get(node.getId()));
+						rel.setSource(id_map.get(ref.getObjectId()));
+					}					
+					arc.setRelation(rel);
+					epc.getEventOrFunctionOrRole().add(arc);
+				}
+				
+				for(ResourceTypeRefType ref:((WorkType)node).getResourceTypeRef())
+				{
+					TypeArc arc = new TypeArc();
+					TypeRelation rel =  new TypeRelation();
+					arc.setId(BigInteger.valueOf(ids++));
+					rel.setSource(id_map.get(node.getId()));
+					rel.setTarget(id_map.get(ref.getResourceTypeId()));
+					rel.setType("role");
+					arc.setRelation(rel);
+					epc.getEventOrFunctionOrRole().add(arc);
+				}
+			}
+		}
 	}
 	
 	private void translateTask(TypeEPC epc, NodeType node)
@@ -166,6 +210,25 @@ public class Canonical2EPML {
 		event.setName(node.getName());
 		epc.getEventOrFunctionOrRole().add(event);	
 		epcRefMap.put(event.getId(), event);
+	}
+	
+	private void translateObject(ObjectType obj, TypeEPC epc)
+	{
+		TypeObject object = new TypeObject();
+		id_map.put(obj.getId(), BigInteger.valueOf(ids));
+		object.setId(BigInteger.valueOf(ids++));
+		object.setName(obj.getName());
+		object.setFinal(obj.isConfigurable());
+		epc.getEventOrFunctionOrRole().add(object);
+	}
+	
+	private void translateResource(ResourceTypeType resT, TypeEPC epc)
+	{
+		TypeRole role = new TypeRole();
+		id_map.put(resT.getId(), BigInteger.valueOf(ids));
+		role.setId(BigInteger.valueOf(ids++));
+		role.setName(resT.getName());
+		epc.getEventOrFunctionOrRole().add(role);
 	}
 	
 	private void translateGateway(TypeEPC epc, NodeType node)
