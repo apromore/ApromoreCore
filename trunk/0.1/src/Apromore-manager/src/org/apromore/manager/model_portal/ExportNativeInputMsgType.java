@@ -29,17 +29,17 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ExportNativeInputMsgType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:13:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ExportNativeInputMsgType {
 
     @XmlAttribute(name = "NativeType")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:13:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String nativeType;
     @XmlAttribute(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:13:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Integer processId;
     @XmlAttribute(name = "VersionName")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:13:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String versionName;
 
     /**
@@ -50,7 +50,7 @@ public class ExportNativeInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:13:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getNativeType() {
         return nativeType;
     }
@@ -63,7 +63,7 @@ public class ExportNativeInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:13:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setNativeType(String value) {
         this.nativeType = value;
     }
@@ -76,7 +76,7 @@ public class ExportNativeInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:13:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public Integer getProcessId() {
         return processId;
     }
@@ -89,7 +89,7 @@ public class ExportNativeInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:13:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setProcessId(Integer value) {
         this.processId = value;
     }
@@ -102,7 +102,7 @@ public class ExportNativeInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:13:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getVersionName() {
         return versionName;
     }
@@ -115,7 +115,7 @@ public class ExportNativeInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:27:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:13:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setVersionName(String value) {
         this.versionName = value;
     }

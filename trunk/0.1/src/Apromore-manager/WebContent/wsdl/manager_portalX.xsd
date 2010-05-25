@@ -25,6 +25,8 @@
 	<element name="DeleteEditSessionOutputMsg" type="tns:DeleteEditSessionOutputMsgType" />
 	<element name="UpdateProcessInputMsg" type="tns:UpdateProcessInputMsgType" />
 	<element name="UpdateProcessOutputMsg" type="tns:UpdateProcessOutputMsgType" />
+	<element name="DeleteProcessVersionsInputMsg" type="tns:DeleteProcessVersionsInputMsgType" />
+	<element name="DeleteProcessVersionsOutputMsg" type="tns:DeleteProcessVersionsOutputMsgType" />
 
 	<complexType name="ReadProcessSummariesInputMsgType">
 		<attribute name="SearchExpression" type="string" />
@@ -256,4 +258,24 @@
 			<element name="Result" type="tns:ResultType" />
 		</sequence>
 	</complexType>
+
+	<complexType name="DeleteProcessVersionsInputMsgType">
+		<sequence>
+			<element name="ProcessVersionIdentifier" type="tns:ProcessVersionIdentifierType" minOccurs="1" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="ProcessVersionIdentifierType">
+			<sequence>
+				<element name="VersionName" type="string"  minOccurs="1" maxOccurs="unbounded"/>
+			</sequence>
+			<attribute name="Processid" type="int"/>
+	</complexType>
+	
+	<complexType name="DeleteProcessVersionsOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+		</sequence>
+	</complexType>	
+	
 </schema>

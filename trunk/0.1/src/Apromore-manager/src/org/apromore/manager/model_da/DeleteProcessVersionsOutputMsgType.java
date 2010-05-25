@@ -4,20 +4,22 @@ package org.apromore.manager.model_da;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ReadUserInputMsgType complex type.
+ * <p>Java class for DeleteProcessVersionsOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ReadUserInputMsgType">
+ * &lt;complexType name="DeleteProcessVersionsOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="username" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;sequence>
+ *         &lt;element name="Result" type="{http://www.apromore.org/data_access/model_manager}ResultType"/>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -26,38 +28,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReadUserInputMsgType")
+@XmlType(name = "DeleteProcessVersionsOutputMsgType", propOrder = {
+    "result"
+})
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:00:17+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ReadUserInputMsgType {
+public class DeleteProcessVersionsOutputMsgType {
 
-    @XmlAttribute
+    @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:00:17+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String username;
+    protected ResultType result;
 
     /**
-     * Gets the value of the username property.
+     * Gets the value of the result property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:00:17+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getUsername() {
-        return username;
+    public ResultType getResult() {
+        return result;
     }
 
     /**
-     * Sets the value of the username property.
+     * Sets the value of the result property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:00:17+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setUsername(String value) {
-        this.username = value;
+    public void setResult(ResultType value) {
+        this.result = value;
     }
 
 }

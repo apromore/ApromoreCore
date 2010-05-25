@@ -9,12 +9,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for DeleteEditSessionOutputMsgType complex type.
+ * <p>Java class for DeleteProcessVersionsOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DeleteEditSessionOutputMsgType">
+ * &lt;complexType name="DeleteProcessVersionsOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -28,11 +28,11 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DeleteEditSessionOutputMsgType", propOrder = {
+@XmlType(name = "DeleteProcessVersionsOutputMsgType", propOrder = {
     "result"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:13:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class DeleteEditSessionOutputMsgType {
+public class DeleteProcessVersionsOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:13:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
