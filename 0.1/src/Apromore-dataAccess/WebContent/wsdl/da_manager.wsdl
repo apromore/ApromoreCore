@@ -14,8 +14,16 @@
     <part name="payload" element="tnsx:ReadNativeInputMsg">
     </part>
   </message>
+  <message name="ReadEditSessionInputMsg">
+    <part name="payload" element="tnsx:ReadEditSessionInputMsg">
+    </part>
+  </message>
   <message name="ReadNativeOutputMsg">
     <part name="payload" element="tnsx:ReadNativeOutputMsg">
+    </part>
+  </message>
+  <message name="WriteEditSessionInputMsg">
+    <part name="payload" element="tnsx:WriteEditSessionInputMsg">
     </part>
   </message>
   <message name="WriteUserInputMsg">
@@ -30,6 +38,10 @@
     <part name="payload" element="tnsx:ReadDomainsOutputMsg">
     </part>
   </message>
+  <message name="WriteEditSessionOutputMsg">
+    <part name="payload" element="tnsx:WriteEditSessionOutputMsg">
+    </part>
+  </message>
   <message name="ReadUserOutputMsg">
     <part name="payload" element="tnsx:ReadUserOutputMsg">
     </part>
@@ -38,52 +50,47 @@
     <part name="payload" element="tnsx:ReadCanonicalInputMsg">
     </part>
   </message>
+  <message name="ReadEditSessionOutputMsg">
+    <part name="payload" element="tnsx:ReadEditSessionOutputMsg">
+    </part>
+  </message>
   <message name="WriteUserOutputMsg">
     <part name="payload" element="tnsx:WriteUserOutputMsg">
+    </part>
+  </message>
+  <message name="DeleteEditSessionInputMsg">
+    <part name="payload" element="tnsx:DeleteEditSessionInputMsg">
     </part>
   </message>
   <message name="ReadUserInputMsg">
     <part name="payload" element="tnsx:ReadUserInputMsg">
     </part>
   </message>
-  <message name="ReadProcessSummariesInputMsg">
-    <part name="payload" element="tnsx:ReadProcessSummariesInputMsg">
+  <message name="DeleteEditSessionOutputMsg">
+    <part name="payload" element="tnsx:DeleteEditSessionOutputMsg">
     </part>
   </message>
-  <message name="ReadFormatsOutputMsg">
-    <part name="payload" element="tnsx:ReadFormatsOutputMsg">
+  <message name="ReadProcessSummariesInputMsg">
+    <part name="payload" element="tnsx:ReadProcessSummariesInputMsg">
     </part>
   </message>
   <message name="ReadCanonicalOutputMsg">
     <part name="payload" element="tnsx:ReadCanonicalOutputMsg">
     </part>
   </message>
-  
-    <message name="WriteEditSessionInputMsg">
-    <part name="payload" element="tnsx:WriteEditSessionInputMsg">
-    </part>
-  </message>
-  <message name="WriteEditSessionOutputMsg">
-    <part name="payload" element="tnsx:WriteEditSessionOutputMsg">
-    </part>
-  </message>
-    <message name="ReadEditSessionInputMsg">
-    <part name="payload" element="tnsx:ReadEditSessionInputMsg">
-    </part>
-  </message>
-  <message name="ReadEditSessionOutputMsg">
-    <part name="payload" element="tnsx:ReadEditSessionOutputMsg">
-    </part>
-  </message>
-    <message name="DeleteEditSessionInputMsg">
-    <part name="payload" element="tnsx:DeleteEditSessionInputMsg">
-    </part>
-  </message>
-  <message name="DeleteEditSessionOutputMsg">
-    <part name="payload" element="tnsx:DeleteEditSessionOutputMsg">
+  <message name="ReadFormatsOutputMsg">
+    <part name="payload" element="tnsx:ReadFormatsOutputMsg">
     </part>
   </message>
   
+  <message name="DeleteProcessVersionsInputMsg">
+    <part name="payload" element="tnsx:DeleteProcessVersionsInputMsg">
+    </part>
+  </message>
+  <message name="DeleteProcessVersionsOutputMsg">
+    <part name="payload" element="tnsx:DeleteProcessVersionsOutputMsg">
+    </part>
+  </message>
   <portType name="DAManagerPortType">
     <operation name="ReadNative">
       <input name="ReadNativeRequest" message="tns:ReadNativeInputMsg">
@@ -127,26 +134,30 @@
       <output name="WriteUserResponse" message="tns:WriteUserOutputMsg">
     </output>
     </operation>
-    
     <operation name="WriteEditSession">
       <input name="WriteEditSessionRequest" message="tns:WriteEditSessionInputMsg">
     </input>
       <output name="WriteEditSessionResponse" message="tns:WriteEditSessionOutputMsg">
     </output>
-    </operation>    
+    </operation>
     <operation name="ReadEditSession">
       <input name="ReadEditSessionRequest" message="tns:ReadEditSessionInputMsg">
     </input>
       <output name="ReadEditSessionResponse" message="tns:ReadEditSessionOutputMsg">
     </output>
-    </operation>  
+    </operation>
     <operation name="DeleteEditSession">
       <input name="DeleteEditSessionRequest" message="tns:DeleteEditSessionInputMsg">
     </input>
       <output name="DeleteEditSessionResponse" message="tns:DeleteEditSessionOutputMsg">
     </output>
     </operation>
-    
+    <operation name="DeleteProcessVersions">
+      <input name="DeleteProcessVersionsRequest" message="tns:DeleteProcessVersionsInputMsg">
+    </input>
+      <output name="DeleteProcessVersionsResponse" message="tns:DeleteProcessVersionsOutputMsg">
+    </output>
+    </operation>
   </portType>
   <binding name="DAManagerBinding" type="tns:DAManagerPortType">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
@@ -213,7 +224,7 @@
         <soap:body use="literal"/>
       </output>
     </operation>
-       <operation name="WriteEditSession">
+    <operation name="WriteEditSession">
       <soap:operation style="document"/>
       <input name="WriteEditSessionRequest">
         <soap:body use="literal"/>
@@ -237,6 +248,15 @@
         <soap:body use="literal"/>
       </input>
       <output name="DeleteEditSessionResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="DeleteProcessVersions">
+      <soap:operation style="document"/>
+      <input name="DeleteProcessVersionsRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="DeleteProcessVersionsResponse">
         <soap:body use="literal"/>
       </output>
     </operation>

@@ -9,17 +9,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ReadProcessSummariesOutputMsgType complex type.
+ * <p>Java class for DeleteProcessVersionsOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ReadProcessSummariesOutputMsgType">
+ * &lt;complexType name="DeleteProcessVersionsOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="Result" type="{http://www.apromore.org/data_access/model_manager}ResultType"/>
- *         &lt;element name="ProcessSummaries" type="{http://www.apromore.org/data_access/model_manager}ProcessSummariesType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,19 +28,15 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReadProcessSummariesOutputMsgType", propOrder = {
-    "result",
-    "processSummaries"
+@XmlType(name = "DeleteProcessVersionsOutputMsgType", propOrder = {
+    "result"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T02:08:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ReadProcessSummariesOutputMsgType {
+public class DeleteProcessVersionsOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T02:08:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
-    @XmlElement(name = "ProcessSummaries", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T02:08:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected ProcessSummariesType processSummaries;
 
     /**
      * Gets the value of the result property.
@@ -67,32 +62,6 @@ public class ReadProcessSummariesOutputMsgType {
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T02:08:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResult(ResultType value) {
         this.result = value;
-    }
-
-    /**
-     * Gets the value of the processSummaries property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ProcessSummariesType }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T02:08:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public ProcessSummariesType getProcessSummaries() {
-        return processSummaries;
-    }
-
-    /**
-     * Sets the value of the processSummaries property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ProcessSummariesType }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T02:08:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setProcessSummaries(ProcessSummariesType value) {
-        this.processSummaries = value;
     }
 
 }
