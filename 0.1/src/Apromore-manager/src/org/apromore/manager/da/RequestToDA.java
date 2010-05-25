@@ -10,6 +10,7 @@ import javax.xml.namespace.QName;
 
 import org.apromore.manager.commons.Constants;
 import org.apromore.manager.exception.ExceptionDeleteEditSession;
+import org.apromore.manager.exception.ExceptionDeleteProcessVersions;
 import org.apromore.manager.exception.ExceptionDomains;
 import org.apromore.manager.exception.ExceptionFormats;
 import org.apromore.manager.exception.ExceptionReadCanonical;
@@ -20,6 +21,8 @@ import org.apromore.manager.exception.ExceptionReadUser;
 import org.apromore.manager.exception.ExceptionWriteEditSession;
 import org.apromore.manager.exception.ExceptionWriteUser;
 import org.apromore.manager.model_da.DeleteEditSessionInputMsgType;
+import org.apromore.manager.model_da.DeleteProcessVersionsInputMsgType;
+import org.apromore.manager.model_da.ProcessVersionIdentifierType;
 import org.apromore.manager.model_da.ReadCanonicalInputMsgType;
 import org.apromore.manager.model_da.ReadDomainsInputMsgType;
 import org.apromore.manager.model_da.ReadDomainsOutputMsgType;
@@ -261,6 +264,19 @@ public class RequestToDA {
 	}
 
 
+	public void DeleteProcessVersion (List<ProcessVersionIdentifierType> processVersions) 
+	throws ExceptionDeleteProcessVersions {
+		org.apromore.manager.model_da.DeleteProcessVersionsInputMsgType payload =
+			new DeleteProcessVersionsInputMsgType();
+		payload.getProcessVersionIdentifier().clear();
+		payload.getProcessVersionIdentifier().addAll(processVersions);
+		org.apromore.manager.model_da.DeleteProcessVersionsOutputMsgType res =
+			this.port.deleteProcessVersions(payload);
+		org.apromore.manager.model_da.ResultType result = res.getResult();
+		if (result.getCode() != 0) {
+			throw new ExceptionDeleteProcessVersions(result.getMessage());
+		}
+	}
 	public DAManagerPortType getPort() {
 		return port;
 	}

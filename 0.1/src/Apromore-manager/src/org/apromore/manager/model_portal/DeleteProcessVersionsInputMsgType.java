@@ -11,16 +11,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for FormatsType complex type.
+ * <p>Java class for DeleteProcessVersionsInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="FormatsType">
+ * &lt;complexType name="DeleteProcessVersionsInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="Format" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="ProcessVersionIdentifier" type="{http://www.apromore.org/manager/model_portal}ProcessVersionIdentifierType" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -30,44 +30,44 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FormatsType", propOrder = {
-    "format"
+@XmlType(name = "DeleteProcessVersionsInputMsgType", propOrder = {
+    "processVersionIdentifier"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:13:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class FormatsType {
+public class DeleteProcessVersionsInputMsgType {
 
-    @XmlElement(name = "Format")
+    @XmlElement(name = "ProcessVersionIdentifier", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:13:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected List<String> format;
+    protected List<ProcessVersionIdentifierType> processVersionIdentifier;
 
     /**
-     * Gets the value of the format property.
+     * Gets the value of the processVersionIdentifier property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the format property.
+     * This is why there is not a <CODE>set</CODE> method for the processVersionIdentifier property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getFormat().add(newItem);
+     *    getProcessVersionIdentifier().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * {@link ProcessVersionIdentifierType }
      * 
      * 
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:13:18+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public List<String> getFormat() {
-        if (format == null) {
-            format = new ArrayList<String>();
+    public List<ProcessVersionIdentifierType> getProcessVersionIdentifier() {
+        if (processVersionIdentifier == null) {
+            processVersionIdentifier = new ArrayList<ProcessVersionIdentifierType>();
         }
-        return this.format;
+        return this.processVersionIdentifier;
     }
 
 }

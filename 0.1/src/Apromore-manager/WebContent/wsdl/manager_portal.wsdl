@@ -92,6 +92,15 @@
     </part>
   </message>
   
+  <message name="DeleteProcessVersionsInputMsg">
+    <part name="payload" element="tnsx:DeleteProcessVersionsInputMsg">
+    </part>
+  </message>
+  <message name="DeleteProcessVersionsOutputMsg">
+    <part name="payload" element="tnsx:DeleteProcessVersionsOutputMsg">
+    </part>
+  </message>
+  
   <portType name="ManagerPortalPortType">
     <operation name="ReadProcessSummaries">
       <input name="ReadProcessSummariesRequest" message="tns:ReadProcessSummariesInputMsg">
@@ -157,6 +166,12 @@
       <input name="UpdateProcessRequest" message="tns:UpdateProcessInputMsg">
     </input>
       <output name="UpdateProcessResponse" message="tns:UpdateProcessOutputMsg">
+    </output>
+    </operation>
+    <operation name="DeleteProcessVersions">
+      <input name="DeleteProcessVersionsRequest" message="tns:DeleteProcessVersionsInputMsg">
+    </input>
+      <output name="DeleteProcessVersionsResponse" message="tns:DeleteProcessVersionsOutputMsg">
     </output>
     </operation>
   </portType>
@@ -258,6 +273,15 @@
         <soap:body use="literal"/>
       </input>
       <output name="UpdateProcessResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="DeleteProcessVersions">
+      <soap:operation style="document"/>
+      <input name="DeleteProcessVersionsRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="DeleteProcessVersionsResponse">
         <soap:body use="literal"/>
       </output>
     </operation>

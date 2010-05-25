@@ -35,9 +35,11 @@ public class ObjectFactory {
     private final static QName _ExportNativeOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ExportNativeOutputMsg");
     private final static QName _ReadUserInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadUserInputMsg");
     private final static QName _UpdateProcessOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "UpdateProcessOutputMsg");
+    private final static QName _DeleteProcessVersionsInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "DeleteProcessVersionsInputMsg");
     private final static QName _ReadFormatsOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadFormatsOutputMsg");
     private final static QName _ReadProcessSummariesInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadProcessSummariesInputMsg");
     private final static QName _DeleteEditSessionOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "DeleteEditSessionOutputMsg");
+    private final static QName _DeleteProcessVersionsOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "DeleteProcessVersionsOutputMsg");
     private final static QName _WriteEditSessionOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "WriteEditSessionOutputMsg");
     private final static QName _ReadDomainsOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadDomainsOutputMsg");
     private final static QName _DeleteEditSessionInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "DeleteEditSessionInputMsg");
@@ -55,11 +57,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link UpdateProcessInputMsgType }
+     * Create an instance of {@link ReadUserOutputMsgType }
      * 
      */
-    public UpdateProcessInputMsgType createUpdateProcessInputMsgType() {
-        return new UpdateProcessInputMsgType();
+    public ReadUserOutputMsgType createReadUserOutputMsgType() {
+        return new ReadUserOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ReadProcessSummariesOutputMsgType }
+     * 
+     */
+    public ReadProcessSummariesOutputMsgType createReadProcessSummariesOutputMsgType() {
+        return new ReadProcessSummariesOutputMsgType();
     }
 
     /**
@@ -71,11 +81,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ReadEditSessionInputMsgType }
+     * Create an instance of {@link ReadDomainsOutputMsgType }
      * 
      */
-    public ReadEditSessionInputMsgType createReadEditSessionInputMsgType() {
-        return new ReadEditSessionInputMsgType();
+    public ReadDomainsOutputMsgType createReadDomainsOutputMsgType() {
+        return new ReadDomainsOutputMsgType();
     }
 
     /**
@@ -87,27 +97,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ImportProcessOutputMsgType }
+     * Create an instance of {@link DeleteProcessVersionsOutputMsgType }
      * 
      */
-    public ImportProcessOutputMsgType createImportProcessOutputMsgType() {
-        return new ImportProcessOutputMsgType();
+    public DeleteProcessVersionsOutputMsgType createDeleteProcessVersionsOutputMsgType() {
+        return new DeleteProcessVersionsOutputMsgType();
     }
 
     /**
-     * Create an instance of {@link ReadEditSessionOutputMsgType }
+     * Create an instance of {@link SearchHistoriesType }
      * 
      */
-    public ReadEditSessionOutputMsgType createReadEditSessionOutputMsgType() {
-        return new ReadEditSessionOutputMsgType();
+    public SearchHistoriesType createSearchHistoriesType() {
+        return new SearchHistoriesType();
     }
 
     /**
-     * Create an instance of {@link ReadUserOutputMsgType }
+     * Create an instance of {@link WriteUserOutputMsgType }
      * 
      */
-    public ReadUserOutputMsgType createReadUserOutputMsgType() {
-        return new ReadUserOutputMsgType();
+    public WriteUserOutputMsgType createWriteUserOutputMsgType() {
+        return new WriteUserOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link EditSessionType }
+     * 
+     */
+    public EditSessionType createEditSessionType() {
+        return new EditSessionType();
     }
 
     /**
@@ -127,35 +145,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ImportProcessInputMsgType }
-     * 
-     */
-    public ImportProcessInputMsgType createImportProcessInputMsgType() {
-        return new ImportProcessInputMsgType();
-    }
-
-    /**
      * Create an instance of {@link ResultType }
      * 
      */
     public ResultType createResultType() {
         return new ResultType();
-    }
-
-    /**
-     * Create an instance of {@link DeleteEditSessionInputMsgType }
-     * 
-     */
-    public DeleteEditSessionInputMsgType createDeleteEditSessionInputMsgType() {
-        return new DeleteEditSessionInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link FormatsType }
-     * 
-     */
-    public FormatsType createFormatsType() {
-        return new FormatsType();
     }
 
     /**
@@ -167,19 +161,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ReadFormatsInputMsgType }
+     * Create an instance of {@link UserType }
      * 
      */
-    public ReadFormatsInputMsgType createReadFormatsInputMsgType() {
-        return new ReadFormatsInputMsgType();
+    public UserType createUserType() {
+        return new UserType();
     }
 
     /**
-     * Create an instance of {@link WriteUserOutputMsgType }
+     * Create an instance of {@link DeleteEditSessionInputMsgType }
      * 
      */
-    public WriteUserOutputMsgType createWriteUserOutputMsgType() {
-        return new WriteUserOutputMsgType();
+    public DeleteEditSessionInputMsgType createDeleteEditSessionInputMsgType() {
+        return new DeleteEditSessionInputMsgType();
     }
 
     /**
@@ -191,27 +185,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DomainsType }
+     * Create an instance of {@link ProcessSummariesType }
      * 
      */
-    public DomainsType createDomainsType() {
-        return new DomainsType();
+    public ProcessSummariesType createProcessSummariesType() {
+        return new ProcessSummariesType();
     }
 
     /**
-     * Create an instance of {@link EditSessionType }
+     * Create an instance of {@link ReadEditSessionOutputMsgType }
      * 
      */
-    public EditSessionType createEditSessionType() {
-        return new EditSessionType();
+    public ReadEditSessionOutputMsgType createReadEditSessionOutputMsgType() {
+        return new ReadEditSessionOutputMsgType();
     }
 
     /**
-     * Create an instance of {@link SearchHistoriesType }
+     * Create an instance of {@link UpdateProcessOutputMsgType }
      * 
      */
-    public SearchHistoriesType createSearchHistoriesType() {
-        return new SearchHistoriesType();
+    public UpdateProcessOutputMsgType createUpdateProcessOutputMsgType() {
+        return new UpdateProcessOutputMsgType();
     }
 
     /**
@@ -223,19 +217,67 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ReadProcessSummariesOutputMsgType }
+     * Create an instance of {@link DomainsType }
      * 
      */
-    public ReadProcessSummariesOutputMsgType createReadProcessSummariesOutputMsgType() {
-        return new ReadProcessSummariesOutputMsgType();
+    public DomainsType createDomainsType() {
+        return new DomainsType();
     }
 
     /**
-     * Create an instance of {@link UserType }
+     * Create an instance of {@link ImportProcessInputMsgType }
      * 
      */
-    public UserType createUserType() {
-        return new UserType();
+    public ImportProcessInputMsgType createImportProcessInputMsgType() {
+        return new ImportProcessInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ImportProcessOutputMsgType }
+     * 
+     */
+    public ImportProcessOutputMsgType createImportProcessOutputMsgType() {
+        return new ImportProcessOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link DeleteEditSessionOutputMsgType }
+     * 
+     */
+    public DeleteEditSessionOutputMsgType createDeleteEditSessionOutputMsgType() {
+        return new DeleteEditSessionOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link WriteUserInputMsgType }
+     * 
+     */
+    public WriteUserInputMsgType createWriteUserInputMsgType() {
+        return new WriteUserInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link DeleteProcessVersionsInputMsgType }
+     * 
+     */
+    public DeleteProcessVersionsInputMsgType createDeleteProcessVersionsInputMsgType() {
+        return new DeleteProcessVersionsInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ReadFormatsInputMsgType }
+     * 
+     */
+    public ReadFormatsInputMsgType createReadFormatsInputMsgType() {
+        return new ReadFormatsInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link FormatsType }
+     * 
+     */
+    public FormatsType createFormatsType() {
+        return new FormatsType();
     }
 
     /**
@@ -255,19 +297,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link WriteUserInputMsgType }
-     * 
-     */
-    public WriteUserInputMsgType createWriteUserInputMsgType() {
-        return new WriteUserInputMsgType();
-    }
-
-    /**
      * Create an instance of {@link ReadUserInputMsgType }
      * 
      */
     public ReadUserInputMsgType createReadUserInputMsgType() {
         return new ReadUserInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ReadEditSessionInputMsgType }
+     * 
+     */
+    public ReadEditSessionInputMsgType createReadEditSessionInputMsgType() {
+        return new ReadEditSessionInputMsgType();
     }
 
     /**
@@ -279,35 +321,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ReadDomainsOutputMsgType }
+     * Create an instance of {@link ProcessVersionIdentifierType }
      * 
      */
-    public ReadDomainsOutputMsgType createReadDomainsOutputMsgType() {
-        return new ReadDomainsOutputMsgType();
+    public ProcessVersionIdentifierType createProcessVersionIdentifierType() {
+        return new ProcessVersionIdentifierType();
     }
 
     /**
-     * Create an instance of {@link DeleteEditSessionOutputMsgType }
+     * Create an instance of {@link UpdateProcessInputMsgType }
      * 
      */
-    public DeleteEditSessionOutputMsgType createDeleteEditSessionOutputMsgType() {
-        return new DeleteEditSessionOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ProcessSummariesType }
-     * 
-     */
-    public ProcessSummariesType createProcessSummariesType() {
-        return new ProcessSummariesType();
-    }
-
-    /**
-     * Create an instance of {@link UpdateProcessOutputMsgType }
-     * 
-     */
-    public UpdateProcessOutputMsgType createUpdateProcessOutputMsgType() {
-        return new UpdateProcessOutputMsgType();
+    public UpdateProcessInputMsgType createUpdateProcessInputMsgType() {
+        return new UpdateProcessInputMsgType();
     }
 
     /**
@@ -410,6 +436,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link DeleteProcessVersionsInputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/manager/model_portal", name = "DeleteProcessVersionsInputMsg")
+    public JAXBElement<DeleteProcessVersionsInputMsgType> createDeleteProcessVersionsInputMsg(DeleteProcessVersionsInputMsgType value) {
+        return new JAXBElement<DeleteProcessVersionsInputMsgType>(_DeleteProcessVersionsInputMsg_QNAME, DeleteProcessVersionsInputMsgType.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link ReadFormatsOutputMsgType }{@code >}}
      * 
      */
@@ -434,6 +469,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://www.apromore.org/manager/model_portal", name = "DeleteEditSessionOutputMsg")
     public JAXBElement<DeleteEditSessionOutputMsgType> createDeleteEditSessionOutputMsg(DeleteEditSessionOutputMsgType value) {
         return new JAXBElement<DeleteEditSessionOutputMsgType>(_DeleteEditSessionOutputMsg_QNAME, DeleteEditSessionOutputMsgType.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link DeleteProcessVersionsOutputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/manager/model_portal", name = "DeleteProcessVersionsOutputMsg")
+    public JAXBElement<DeleteProcessVersionsOutputMsgType> createDeleteProcessVersionsOutputMsg(DeleteProcessVersionsOutputMsgType value) {
+        return new JAXBElement<DeleteProcessVersionsOutputMsgType>(_DeleteProcessVersionsOutputMsg_QNAME, DeleteProcessVersionsOutputMsgType.class, null, value);
     }
 
     /**
