@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.bind.JAXBException;
+
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.FillType;
@@ -14,7 +16,6 @@ import org.apromore.anf.GraphicsType;
 import org.apromore.anf.LineType;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SizeType;
-import org.apromore.canoniser.exception.ExceptionStore;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -29,6 +30,8 @@ import org.apromore.cpf.ORSplitType;
 import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeRefType;
+import org.apromore.cpf.ResourceTypeType;
+import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
@@ -38,10 +41,17 @@ import de.epml.TEpcElement;
 import de.epml.TExtensibleElements;
 import de.epml.TypeAND;
 import de.epml.TypeArc;
+import de.epml.TypeAttrTypes;
+import de.epml.TypeCFunction;
+import de.epml.TypeDirectory;
 import de.epml.TypeEPC;
 import de.epml.TypeEPML;
 import de.epml.TypeEvent;
+import de.epml.TypeFlow;
+import de.epml.TypeFont;
 import de.epml.TypeFunction;
+import de.epml.TypeLine;
+import de.epml.TypeMove;
 import de.epml.TypeMove2;
 import de.epml.TypeOR;
 import de.epml.TypeObject;
@@ -73,7 +83,7 @@ public class EPML2Canonical{
 		return annotations;
 	}
 	
-	public EPML2Canonical(TypeEPML epml) throws ExceptionStore {
+	public EPML2Canonical(TypeEPML epml) throws JAXBException {
 
 	
 		if(epml.getDirectory() != null)
@@ -275,7 +285,6 @@ public class EPML2Canonical{
 	}
 
 	private void addNodeAnnotations(Object obj) {
-		AnnotationType annotation = new AnnotationType();
 		GraphicsType graphT = new GraphicsType();
 		LineType line = new LineType();
 		FillType fill = new FillType();
@@ -389,7 +398,7 @@ public class EPML2Canonical{
 	
 	private void translateArc(NetType net, TypeArc arc)
 	{
-		if(arc.getFlow() != null) // if it is null, that's mean the arc is relation , not processed yet
+		if(arc.getFlow() != null) // if it is null, that's mean the arc is relation
 		{
 			EdgeType edge = new EdgeType();
 			id_map.put(arc.getId(), BigInteger.valueOf(ids));
