@@ -6,6 +6,7 @@ import java.io.InputStream;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.manager.RequestToManager;
+import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
@@ -113,9 +114,10 @@ public class ImportProcessController extends Window {
 					|| this.domain.getValue().compareTo("")==0) {
 				throw new ExceptionImport("Please enter a value for all fields.");
 			} else {
-				request.ImportModel(this.mainC.getCurrentUser().getUsername(), this.nativeType, this.processName.getValue(), 
+				ProcessSummaryType res= 
+					request.ImportModel(this.mainC.getCurrentUser().getUsername(), this.nativeType, this.processName.getValue(), 
 						null, this.nativeProcess, this.domain.getValue());
-			//	this.mainC.displayNewProcess(processId, version);
+				this.mainC.displayNewProcess(res);
 				
 				Messagebox.show("Import of " + this.processName.getValue() + " completed.", "", Messagebox.OK,
 						Messagebox.INFORMATION);
