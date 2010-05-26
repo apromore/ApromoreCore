@@ -950,6 +950,12 @@ public class ProcessDao extends BasicDao {
 							}
 						}
 					}
+					query = " delete from " + ConstantDB.TABLE_VERSIONS 
+					+ " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString()
+					+ " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + v + "'";
+					stmtp = conn.prepareStatement(query);
+					int r = stmtp.executeUpdate();
+					stmtp.close();
 				}
 			}
 
