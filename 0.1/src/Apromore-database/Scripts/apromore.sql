@@ -90,6 +90,7 @@ create table process_versions (
     canonical int,
     ranking varchar(10),
     constraint pk_versions primary key (processId,version_name),
+    constraint un_versions unique (canonical),
     constraint fk_versions1 foreign key (processId) references processes(processId)
     on delete cascade on update cascade,
     constraint fk_versions2 foreign key (canonical) references canonicals(uri)
