@@ -110,13 +110,14 @@ public class MenuController extends Menubar {
 
 	/**
 	 * Delete all selected process versions.
-	 * @throws InterruptedException 
+	 * @throws Exception 
 	 */
-	protected void deleteSelectedProcessVersions() throws InterruptedException {
+	protected void deleteSelectedProcessVersions() throws Exception {
 		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
 		if (selectedProcessVersions.size()!=0) {
 			this.mainC.deleteProcessVersions(selectedProcessVersions);
+			this.mainC.refreshProcessSummaries();
 		}
 	}
 
