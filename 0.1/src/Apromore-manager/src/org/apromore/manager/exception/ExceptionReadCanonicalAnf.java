@@ -1,22 +1,22 @@
 package org.apromore.manager.exception;
 
-public class ExceptionReadCanonical extends Exception {
+public class ExceptionReadCanonicalAnf extends Exception {
 
-	public ExceptionReadCanonical() {
+	public ExceptionReadCanonicalAnf() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ExceptionReadCanonical(String message) {
+	public ExceptionReadCanonicalAnf(String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public ExceptionReadCanonical(Throwable cause) {
+	public ExceptionReadCanonicalAnf(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public ExceptionReadCanonical(String message, Throwable cause) {
+	public ExceptionReadCanonicalAnf(String message, Throwable cause) {
 		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}

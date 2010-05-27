@@ -13,7 +13,7 @@ import org.apromore.manager.exception.ExceptionDeleteEditSession;
 import org.apromore.manager.exception.ExceptionDeleteProcessVersions;
 import org.apromore.manager.exception.ExceptionDomains;
 import org.apromore.manager.exception.ExceptionFormats;
-import org.apromore.manager.exception.ExceptionReadCanonical;
+import org.apromore.manager.exception.ExceptionReadCanonicalAnf;
 import org.apromore.manager.exception.ExceptionReadEditSession;
 import org.apromore.manager.exception.ExceptionReadNative;
 import org.apromore.manager.exception.ExceptionReadProcessSummaries;
@@ -23,7 +23,7 @@ import org.apromore.manager.exception.ExceptionWriteUser;
 import org.apromore.manager.model_da.DeleteEditSessionInputMsgType;
 import org.apromore.manager.model_da.DeleteProcessVersionsInputMsgType;
 import org.apromore.manager.model_da.ProcessVersionIdentifierType;
-import org.apromore.manager.model_da.ReadCanonicalInputMsgType;
+import org.apromore.manager.model_da.ReadCanonicalAnfInputMsgType;
 import org.apromore.manager.model_da.ReadDomainsInputMsgType;
 import org.apromore.manager.model_da.ReadDomainsOutputMsgType;
 import org.apromore.manager.model_da.ReadEditSessionInputMsgType;
@@ -202,12 +202,12 @@ public class RequestToDA {
 		}
 	}
 
-	public void ReadCanonical(int processId, String version) throws ExceptionReadCanonical, IOException {
-		org.apromore.manager.model_da.ReadCanonicalInputMsgType payload = new ReadCanonicalInputMsgType();
+	public void ReadCanonicalAnf(int processId, String version) throws ExceptionReadCanonicalAnf, IOException {
+		org.apromore.manager.model_da.ReadCanonicalAnfInputMsgType payload = new ReadCanonicalAnfInputMsgType();
 		payload.setProcessId(processId);
 		payload.setVersion(version);
 		
-		org.apromore.manager.model_da.ReadCanonicalOutputMsgType res = this.port.readCanonical(payload);
+		org.apromore.manager.model_da.ReadCanonicalAnfOutputMsgType res = this.port.readCanonicalAnf(payload);
 		org.apromore.manager.model_da.ResultType result = res.getResult();
 		if (result.getCode() == 0) {
 			DataHandler handler_cpf = res.getCpf();
@@ -217,7 +217,7 @@ public class RequestToDA {
 				this.anf = handler_anf.getInputStream();
 			}
 		} else {
-			throw new ExceptionReadCanonical(result.getMessage());
+			throw new ExceptionReadCanonicalAnf(result.getMessage());
 		}
 		
 	}
