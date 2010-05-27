@@ -46,8 +46,8 @@
     <part name="payload" element="tnsx:ReadUserOutputMsg">
     </part>
   </message>
-  <message name="ReadCanonicalInputMsg">
-    <part name="payload" element="tnsx:ReadCanonicalInputMsg">
+  <message name="ReadCanonicalAnfInputMsg">
+    <part name="payload" element="tnsx:ReadCanonicalAnfInputMsg">
     </part>
   </message>
   <message name="ReadEditSessionOutputMsg">
@@ -74,8 +74,8 @@
     <part name="payload" element="tnsx:ReadProcessSummariesInputMsg">
     </part>
   </message>
-  <message name="ReadCanonicalOutputMsg">
-    <part name="payload" element="tnsx:ReadCanonicalOutputMsg">
+  <message name="ReadCanonicalAnfOutputMsg">
+    <part name="payload" element="tnsx:ReadCanonicalAnfOutputMsg">
     </part>
   </message>
   <message name="ReadFormatsOutputMsg">
@@ -98,10 +98,10 @@
       <output name="ReadNativeResponse" message="tns:ReadNativeOutputMsg">
     </output>
     </operation>
-    <operation name="ReadCanonical">
-      <input name="ReadCanonicalRequest" message="tns:ReadCanonicalInputMsg">
+    <operation name="ReadCanonicalAnf">
+      <input name="ReadCanonicalAnfRequest" message="tns:ReadCanonicalAnfInputMsg">
     </input>
-      <output name="ReadCanonicalResponse" message="tns:ReadCanonicalOutputMsg">
+      <output name="ReadCanonicalAnfResponse" message="tns:ReadCanonicalAnfOutputMsg">
     </output>
     </operation>
     <operation name="ReadProcessSummaries">
@@ -161,12 +161,12 @@
   </portType>
   <binding name="DAManagerBinding" type="tns:DAManagerPortType">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
-    <operation name="ReadCanonical">
+    <operation name="ReadCanonicalAnf">
       <soap:operation style="document"/>
-      <input name="ReadCanonicalRequest">
+      <input name="ReadCanonicalAnfRequest">
         <soap:body use="literal"/>
       </input>
-      <output name="ReadCanonicalResponse">
+      <output name="ReadCanonicalAnfResponse">
         <soap:body use="literal"/>
       </output>
     </operation>

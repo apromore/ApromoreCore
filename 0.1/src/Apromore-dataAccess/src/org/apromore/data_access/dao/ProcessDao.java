@@ -357,11 +357,7 @@ public class ProcessDao extends BasicDao {
 		Connection conn = null;
 		Statement stmt0 = null;
 		PreparedStatement
-		stmt1 = null,
-		stmt2 = null,
-		stmt3 = null,
-		stmt5 = null,
-		stmt6 = null;
+		stmtp = null;
 		ResultSet rs0 = null;
 		org.apromore.data_access.model_canoniser.ProcessSummaryType process = 
 			new org.apromore.data_access.model_canoniser.ProcessSummaryType();
@@ -416,65 +412,73 @@ public class ProcessDao extends BasicDao {
 			+ "(" + ConstantDB.ATTR_CONTENT + ")"
 			+ " values (?) ";
 
-			stmt3 = conn.prepareStatement(query3, Statement.RETURN_GENERATED_KEYS);
+			stmtp = conn.prepareStatement(query3, Statement.RETURN_GENERATED_KEYS);
 			//stmt3.setAsciiStream(1, cpf_xml_is);
-			stmt3.setString(1, cpf_string);
+			stmtp.setString(1, cpf_string);
 
-			int rs3 = stmt3.executeUpdate();
-			ResultSet keys = stmt3.getGeneratedKeys() ;
+			int rs3 = stmtp.executeUpdate();
+			ResultSet keys = stmtp.getGeneratedKeys() ;
 			if (!keys.next()) {
 				throw new ExceptionDao ("Error: cannot retrieve generated key.");
 			}
 			int cpfId = keys.getInt(1);
+			stmtp.close();
 			keys.close();
 			String query5 = " insert into " + ConstantDB.TABLE_ANNOTATIONS
 			+ "(" + ConstantDB.ATTR_CONTENT + ")"
 			+ " values (?) ";
-			stmt5 = conn.prepareStatement(query5, Statement.RETURN_GENERATED_KEYS);
+			stmtp = conn.prepareStatement(query5, Statement.RETURN_GENERATED_KEYS);
 
 			//stmt5.setAsciiStream(1, anf_xml_is);
-			stmt5.setString (1, anf_string);
-			Integer rs5 = stmt5.executeUpdate();
-			keys = stmt5.getGeneratedKeys() ;
+			stmtp.setString (1, anf_string);
+			Integer rs5 = stmtp.executeUpdate();
+			keys = stmtp.getGeneratedKeys() ;
 			if (!keys.next()) {
 				throw new ExceptionDao ("Error: cannot retrieve generated key.");
 			}
 			int anfId = keys.getInt(1);
 			keys.close();
+			stmtp.close();
 
 			String query6 = " insert into " + ConstantDB.TABLE_NATIVES
 			+ "(" + ConstantDB.ATTR_CONTENT + ","
 			+       ConstantDB.ATTR_NAT_TYPE + ","
-			+       ConstantDB.ATTR_CANONICAL + ","
-			+       ConstantDB.ATTR_ANNOTATION + ")"
-			+ " values (?,?,?,?) ";
-			stmt6 = conn.prepareStatement(query6, Statement.RETURN_GENERATED_KEYS);
-			//stmt6.setAsciiStream(1, process_xml);
-			stmt6.setString(1, process_string);
-			stmt6.setString(2, nativeType);
-			stmt6.setInt(3, cpfId);
-			stmt6.setInt(4, anfId);
-			Integer rs6 = stmt6.executeUpdate();
-			keys = stmt6.getGeneratedKeys() ;
+			+       ConstantDB.ATTR_CANONICAL + ")"
+			+ " values (?,?,?) ";
+			stmtp = conn.prepareStatement(query6, Statement.RETURN_GENERATED_KEYS);
+			stmtp.setString(1, process_string);
+			stmtp.setString(2, nativeType);
+			stmtp.setInt(3, cpfId);
+			Integer rs6 = stmtp.executeUpdate();
+			keys = stmtp.getGeneratedKeys() ;
 			if (!keys.next()) {
 				throw new ExceptionDao ("Error: cannot retrieve generated key.");
 			}
 			int natId = keys.getInt(1);
 			keys.close();
+			stmtp.close();
 
-			String query1 = " insert into " + ConstantDB.TABLE_PROCESSES
+			query6 = " insert into " + ConstantDB.TABLE_ANFOFCPF
+			+ " values (?,?)";
+			stmtp = conn.prepareStatement(query6);
+			stmtp.setInt(1,cpfId);
+			stmtp.setInt(2,anfId);
+			stmtp.executeUpdate();
+			stmtp.close();
+			
+			query6 = " insert into " + ConstantDB.TABLE_PROCESSES
 			+ "(" + ConstantDB.ATTR_NAME + ","
 			+       ConstantDB.ATTR_DOMAIN + ","
 			+		ConstantDB.ATTR_OWNER + ","
 			+		ConstantDB.ATTR_ORIGINAL_TYPE + ")"
 			+ " values (?, ?, ?, ?) ";
-			stmt1 = conn.prepareStatement(query1, Statement.RETURN_GENERATED_KEYS);
-			stmt1.setString(1, processName);
-			stmt1.setString(2, domain);
-			stmt1.setString(3, username);
-			stmt1.setString(4,nativeType);
-			int rs1 = stmt1.executeUpdate();
-			keys = stmt1.getGeneratedKeys() ;
+			stmtp = conn.prepareStatement(query6, Statement.RETURN_GENERATED_KEYS);
+			stmtp.setString(1, processName);
+			stmtp.setString(2, domain);
+			stmtp.setString(3, username);
+			stmtp.setString(4,nativeType);
+			int rs1 = stmtp.executeUpdate();
+			keys = stmtp.getGeneratedKeys() ;
 			if (!keys.next()) {
 				throw new ExceptionDao ("Error: cannot retrieve generated key.");
 			}
@@ -496,13 +500,13 @@ public class ProcessDao extends BasicDao {
 			+     ConstantDB.ATTR_LAST_UPDATE + ","
 			+     ConstantDB.ATTR_CANONICAL + ")"
 			+ " values (?, ?, ?, ?, ?) ";
-			stmt2 = conn.prepareStatement(query2);
-			stmt2.setInt(1, processId);
-			stmt2.setString(2, version);
-			stmt2.setTimestamp(3,now);
-			stmt2.setTimestamp(4,now);
-			stmt2.setInt(5, cpfId);
-			Integer rs2 = stmt2.executeUpdate();
+			stmtp = conn.prepareStatement(query2);
+			stmtp.setInt(1, processId);
+			stmtp.setString(2, version);
+			stmtp.setTimestamp(3,now);
+			stmtp.setTimestamp(4,now);
+			stmtp.setInt(5, cpfId);
+			Integer rs2 = stmtp.executeUpdate();
 
 
 			process.setDomain(domain);
@@ -572,7 +576,7 @@ public class ProcessDao extends BasicDao {
 	 * @return
 	 * @throws ExceptionDao
 	 */
-	public String getAnnotation(Integer processId, String version, String nativeType) throws ExceptionDao {
+	public String getAnnotation(Integer processId, String version) throws ExceptionDao {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -581,20 +585,18 @@ public class ProcessDao extends BasicDao {
 			conn = this.getConnection();
 			stmt = conn.createStatement();
 			query = " select " + ConstantDB.ATTR_CONTENT
-			+ " from " + ConstantDB.TABLE_ANNOTATIONS + " A "
-			+ " join "
-			+            ConstantDB.TABLE_NATIVES + " N "
-			+ " on (A." + ConstantDB.ATTR_URI + "= N." + ConstantDB.ATTR_ANNOTATION + ")"
-			+ " natural join "
-			+ ConstantDB.TABLE_VERSIONS
+			+ " from " + ConstantDB.TABLE_VERSIONS
+			+ " left outer join " + ConstantDB.TABLE_ANFOFCPF
+			+           " on (" + ConstantDB.ATTR_CPF + " = " + ConstantDB.ATTR_CANONICAL + ")"
+			+ " left outer join " + ConstantDB.TABLE_ANNOTATIONS
+			+         " on (" + ConstantDB.ATTR_ANF + " = " + ConstantDB.ATTR_URI + ")"
 			+ " where " + ConstantDB.ATTR_PROCESSID + " = " + processId.toString()
-			+   " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + version + "'"
-			+   " and " + ConstantDB.ATTR_NAT_TYPE + " = '" + nativeType + "'";
+			+   " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + version + "'";
 			rs = stmt.executeQuery(query);
 			if (rs.next()) {
 				return rs.getString(1);
 			} else {
-				return null;
+				return "";
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -710,12 +712,7 @@ public class ProcessDao extends BasicDao {
 			InputStream anf_is) throws ExceptionDao, SQLException {
 		Connection conn = null;
 		Statement stmt0 = null;
-		PreparedStatement
-		stmt1 = null,
-		stmt2 = null,
-		stmt3 = null,
-		stmt5 = null,
-		stmt6 = null;
+		PreparedStatement stmtp = null;
 		ResultSet rs0 = null;
 		try {
 
@@ -761,53 +758,56 @@ public class ProcessDao extends BasicDao {
 			+ "(" + ConstantDB.ATTR_CONTENT + ")"
 			+ " values (?) ";
 
-			stmt3 = conn.prepareStatement(query3, Statement.RETURN_GENERATED_KEYS);
-			//stmt3.setAsciiStream(1, cpf_xml_is);
-			stmt3.setString(1, cpf_string);
+			stmtp = conn.prepareStatement(query3, Statement.RETURN_GENERATED_KEYS);
+			stmtp.setString(1, cpf_string);
 
-			int rs3 = stmt3.executeUpdate();
-			ResultSet keys = stmt3.getGeneratedKeys() ;
+			int rs3 = stmtp.executeUpdate();
+			ResultSet keys = stmtp.getGeneratedKeys() ;
 			if (!keys.next()) {
 				throw new ExceptionDao ("Error: cannot retrieve generated key.");
 			}
 			int cpfId = keys.getInt(1);
-			keys.close();
+			keys.close(); stmtp.close();
 			String query5 = " insert into " + ConstantDB.TABLE_ANNOTATIONS
 			+ "(" + ConstantDB.ATTR_CONTENT + ")"
 			+ " values (?) ";
-			stmt5 = conn.prepareStatement(query5, Statement.RETURN_GENERATED_KEYS);
+			stmtp = conn.prepareStatement(query5, Statement.RETURN_GENERATED_KEYS);
 
-			//stmt5.setAsciiStream(1, anf_xml_is);
-			stmt5.setString (1, anf_string);
-			Integer rs5 = stmt5.executeUpdate();
-			keys = stmt5.getGeneratedKeys() ;
+			stmtp.setString (1, anf_string);
+			Integer rs5 = stmtp.executeUpdate();
+			keys = stmtp.getGeneratedKeys() ;
 			if (!keys.next()) {
 				throw new ExceptionDao ("Error: cannot retrieve generated key.");
 			}
 			int anfId = keys.getInt(1);
-			keys.close();
+			keys.close(); stmtp.close();
 
 			String query6 = " insert into " + ConstantDB.TABLE_NATIVES
 			+ "(" + ConstantDB.ATTR_CONTENT + ","
 			+       ConstantDB.ATTR_NAT_TYPE + ","
-			+       ConstantDB.ATTR_CANONICAL + ","
-			+       ConstantDB.ATTR_ANNOTATION + ")"
-			+ " values (?,?,?,?) ";
-			stmt6 = conn.prepareStatement(query6, Statement.RETURN_GENERATED_KEYS);
+			+       ConstantDB.ATTR_CANONICAL + ")"
+			+ " values (?,?,?) ";
+			stmtp = conn.prepareStatement(query6, Statement.RETURN_GENERATED_KEYS);
 			//stmt6.setAsciiStream(1, process_xml);
-			stmt6.setString(1, process_string);
-			stmt6.setString(2, nativeType);
-			stmt6.setInt(3, cpfId);
-			stmt6.setInt(4, anfId);
-			Integer rs6 = stmt6.executeUpdate();
-			keys = stmt6.getGeneratedKeys() ;
+			stmtp.setString(1, process_string);
+			stmtp.setString(2, nativeType);
+			stmtp.setInt(3, cpfId);
+			Integer rs6 = stmtp.executeUpdate();
+			keys = stmtp.getGeneratedKeys() ;
+			
 			if (!keys.next()) {
 				throw new ExceptionDao ("Error: cannot retrieve generated key.");
 			}
 			int natId = keys.getInt(1);
-			keys.close();
+			keys.close(); stmtp.close();
 
-
+			query6 = " insert into " + ConstantDB.TABLE_ANFOFCPF
+			+ "values (?,?)";
+			stmtp.setInt(1, cpfId);
+			stmtp.setInt(2,anfId);
+			rs6 = stmtp.executeUpdate();
+			stmtp.close();
+			
 			// add a new version of the process identified by processId + newVersion
 			String query2 = " insert into " + ConstantDB.TABLE_VERSIONS
 			+ "(" + ConstantDB.ATTR_PROCESSID + ","
@@ -816,11 +816,11 @@ public class ProcessDao extends BasicDao {
 			+     ConstantDB.ATTR_LAST_UPDATE + ","
 			+     ConstantDB.ATTR_CANONICAL + ")"
 			+ " values (?, ?, now(), now(), ?) ";
-			stmt2 = conn.prepareStatement(query2);
-			stmt2.setInt(1, processId);
-			stmt2.setString(2, newVersion);
-			stmt2.setInt(3, cpfId);
-			Integer rs2 = stmt2.executeUpdate();
+			stmtp = conn.prepareStatement(query2);
+			stmtp.setInt(1, processId);
+			stmtp.setString(2, newVersion);
+			stmtp.setInt(3, cpfId);
+			Integer rs2 = stmtp.executeUpdate();
 
 			// newVersion is derived from preVersion
 			query2 = " insert into " + ConstantDB.TABLE_DERIVED_VERSIONS
@@ -829,13 +829,13 @@ public class ProcessDao extends BasicDao {
 			+     ConstantDB.ATTR_DERIVED_VERSION + ")"
 			+ " values (?,?,?)";
 
-			stmt2 = conn.prepareStatement(query2);
-			stmt2.setInt(1, processId);
-			stmt2.setString(2, newVersion);
-			stmt2.setString(3, preVersion);
+			stmtp = conn.prepareStatement(query2);
+			stmtp.setInt(1, processId);
+			stmtp.setString(2, newVersion);
+			stmtp.setString(3, preVersion);
 
-			rs2 = stmt2.executeUpdate();
-
+			rs2 = stmtp.executeUpdate();
+			stmtp.close();
 			conn.commit();
 
 		} catch (SQLException e) {
