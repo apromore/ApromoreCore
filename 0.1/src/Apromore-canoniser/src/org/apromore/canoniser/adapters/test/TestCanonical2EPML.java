@@ -57,9 +57,6 @@ public class TestCanonical2EPML {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		catch (ExceptionStore e) {
-			e.printStackTrace();
-		}
 	}
 
 }

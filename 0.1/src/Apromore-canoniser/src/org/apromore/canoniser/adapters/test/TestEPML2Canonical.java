@@ -52,8 +52,6 @@ public class TestEPML2Canonical {
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		} catch (ExceptionStore e) {
-			e.printStackTrace();
 		}
 	}
 
