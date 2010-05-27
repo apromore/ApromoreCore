@@ -20,7 +20,7 @@ import javax.mail.util.ByteArrayDataSource;
 import org.apromore.manager.canoniser.RequestToCanoniser;
 import org.apromore.manager.da.RequestToDA;
 import org.apromore.manager.exception.ExceptionDeCanonise;
-import org.apromore.manager.exception.ExceptionReadCanonical;
+import org.apromore.manager.exception.ExceptionReadCanonicalAnf;
 import org.apromore.manager.exception.ExceptionReadNative;
 import org.apromore.manager.model_portal.DeleteProcessVersionsOutputMsgType;
 import org.apromore.manager.model_portal.DomainsType;
@@ -234,7 +234,7 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 			try {
 				// native not found, request canonical
 				RequestToDA request1 = new RequestToDA();
-				request1.ReadCanonical (processId, version);
+				request1.ReadCanonicalAnf (processId, version);
 				InputStream cpf_is = request1.getCpf();
 				InputStream anf_is = request1.getAnf();
 				// request canonical_xml de-canonisation
@@ -250,7 +250,7 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 				e.printStackTrace();
 				result.setCode(-1);
 				result.setMessage(e.getMessage());
-			} catch (ExceptionReadCanonical e) {
+			} catch (ExceptionReadCanonicalAnf e) {
 				e.printStackTrace();
 				result.setCode(-1);
 				result.setMessage(e.getMessage());
