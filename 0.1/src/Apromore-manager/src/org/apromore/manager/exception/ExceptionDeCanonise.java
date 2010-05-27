@@ -1,4 +1,4 @@
-package org.apromore.manager.canoniser;
+package org.apromore.manager.exception;
 
 public class ExceptionDeCanonise extends Exception {
 

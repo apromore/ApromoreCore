@@ -6,6 +6,7 @@
 
 package org.apromore.manager.service_portal;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,6 +19,8 @@ import javax.mail.util.ByteArrayDataSource;
 
 import org.apromore.manager.canoniser.RequestToCanoniser;
 import org.apromore.manager.da.RequestToDA;
+import org.apromore.manager.exception.ExceptionDeCanonise;
+import org.apromore.manager.exception.ExceptionReadCanonical;
 import org.apromore.manager.exception.ExceptionReadNative;
 import org.apromore.manager.model_portal.DeleteProcessVersionsOutputMsgType;
 import org.apromore.manager.model_portal.DomainsType;
@@ -243,10 +246,18 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 				
 				result.setCode(0);
 				result.setMessage("");
-			} catch (Exception e) {
-				ex.printStackTrace();
+			} catch (ExceptionDeCanonise e) {
+				e.printStackTrace();
 				result.setCode(-1);
-				result.setMessage("ManagerPortalPortTypeImpl(exportNative): " + ex.getMessage());
+				result.setMessage(e.getMessage());
+			} catch (ExceptionReadCanonical e) {
+				e.printStackTrace();
+				result.setCode(-1);
+				result.setMessage(e.getMessage());
+			} catch (IOException e) {
+				e.printStackTrace();
+				result.setCode(-1);
+				result.setMessage(e.getMessage());
 			} 
 		} catch (Exception e) {	
 			e.printStackTrace();
