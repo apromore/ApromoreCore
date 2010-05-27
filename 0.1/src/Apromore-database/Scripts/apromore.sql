@@ -1,3 +1,4 @@
+drop table if exists anfOfCpf;
 drop table if exists derived_versions;
 drop table if exists edit_session_mappings;
 drop table if exists process_versions ;
@@ -23,6 +24,17 @@ create table canonicals (
     uri        int     auto_increment,
     content longtext,
     constraint pk_canonicals primary key (uri)
+) engine=innoDB;
+show warnings ;
+
+create table anfOfCpf (
+	cpf int,
+	anf int,
+	constraint pk_anfOfCpf primary key (cpf, anf),
+	constraint fk_anfOfCpf1 foreign key (cpf) references canonicals(uri)
+	on update cascade on delete cascade,
+	constraint fk_anfOfCpf2 foreign key (anf) references annotations(uri)
+	on update cascade on delete cascade
 ) engine=innoDB;
 show warnings ;
 
@@ -74,11 +86,9 @@ create table natives (
     content longtext,
     nat_type varchar(20),
     canonical int,
-    annotation int,
     constraint pk_natives primary key (uri),
     constraint fk_natives foreign key (nat_type) references native_types(nat_type), 
-    constraint fk_natives2 foreign key (canonical) references canonicals(uri),
-    constraint fk_natives3 foreign key (annotation) references annotations(uri)
+    constraint fk_natives3 foreign key (canonical) references canonicals(uri)
 ) engine=innoDB;
 show warnings ;
 
