@@ -15,8 +15,8 @@
 	<element name="WriteUserOutputMsg" type="tns:WriteUserOutputMsgType" />
 	<element name="ReadNativeInputMsg" type="tns:ReadNativeInputMsgType" />
 	<element name="ReadNativeOutputMsg" type="tns:ReadNativeOutputMsgType" />
-	<element name="ReadCanonicalInputMsg" type="tns:ReadCanonicalInputMsgType" />
-	<element name="ReadCanonicalOutputMsg" type="tns:ReadCanonicalOutputMsgType" />
+	<element name="ReadCanonicalAnfInputMsg" type="tns:ReadCanonicalAnfInputMsgType" />
+	<element name="ReadCanonicalAnfOutputMsg" type="tns:ReadCanonicalAnfOutputMsgType" />
 	<element name="WriteEditSessionInputMsg" type="tns:WriteEditSessionInputMsgType" />
 	<element name="WriteEditSessionOutputMsg" type="tns:WriteEditSessionOutputMsgType" />
 	<element name="ReadEditSessionInputMsg" type="tns:ReadEditSessionInputMsgType" />
@@ -26,12 +26,12 @@
 	<element name="DeleteProcessVersionsInputMsg" type="tns:DeleteProcessVersionsInputMsgType" />
 	<element name="DeleteProcessVersionsOutputMsg" type="tns:DeleteProcessVersionsOutputMsgType" />
 
-	<complexType name="ReadCanonicalInputMsgType">
+	<complexType name="ReadCanonicalAnfInputMsgType">
 		<attribute name="processId" type="int" />
 		<attribute name="version" type="string" />
 	</complexType>
 
-	<complexType name="ReadCanonicalOutputMsgType">
+	<complexType name="ReadCanonicalAnfOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" minOccurs="1"
 				maxOccurs="1" />
