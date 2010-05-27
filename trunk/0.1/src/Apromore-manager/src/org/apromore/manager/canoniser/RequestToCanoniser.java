@@ -11,6 +11,7 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.xml.namespace.QName;
 
 import org.apromore.manager.exception.ExceptionCanoniseVersion;
+import org.apromore.manager.exception.ExceptionDeCanonise;
 import org.apromore.manager.exception.ExceptionImport;
 import org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType;
 import org.apromore.manager.model_canoniser.CanoniseVersionInputMsgType;
