@@ -62,13 +62,13 @@ public class EditListNativesController extends Window {
 		this.okB.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
-				choiceOk();
+				EditListNatives();
 			}
 		});
 		this.chooseNativeW.addEventListener("onOK",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
-				choiceOk();
+				EditListNatives();
 			}
 		});
 		this.cancelB.addEventListener("onClick",
@@ -85,7 +85,7 @@ public class EditListNativesController extends Window {
 		//this.nativeTypesLB.removeChild(this.emptynative);
 	}
 
-	protected void choiceOk () throws InterruptedException {
+	protected void EditListNatives () throws InterruptedException {
 		Listitem cbi = nativeTypesLB.getSelectedItem();
 		Set<ProcessSummaryType> keys = processVersions.keySet();
 		Iterator it = keys.iterator();

@@ -159,13 +159,20 @@ public class MainController extends Window {
 		RequestToManager request = new RequestToManager();
 		try {
 			request.DeleteProcessVersions (processVersions);
-			int nb = 0;
+			
+			int nb = 0; // to count how many process version(s) deleted
 			Set<ProcessSummaryType> keySet = processVersions.keySet();
 			Iterator it = keySet.iterator();
 			while (it.hasNext()){
 				nb += processVersions.get(it.next()).size();
 			}
-			Messagebox.show(nb + " process versions delete.", "", Messagebox.OK,
+			String message;
+			if (nb > 1) {
+				message = " process versions delete.";
+			} else {
+				message = " process version delete.";
+			}
+			Messagebox.show(nb + message, "", Messagebox.OK,
 					Messagebox.INFORMATION);
 		} catch (ExceptionDeleteProcess e) {
 			e.printStackTrace();
