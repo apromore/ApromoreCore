@@ -381,29 +381,29 @@ public class ProcessDao extends BasicDao {
 			}
 			String process_string = sb0.toString();
 			System.out.println("native size: " + process_string.length());
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb1 = new StringBuilder();
 			try {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(cpf_xml, "UTF-8"));
 				while ((line = reader.readLine()) != null) {
-					sb.append(line).append("\n");
+					sb1.append(line).append("\n");
 				}
 			} finally {
 				cpf_xml.close();
 			}
-			String cpf_string = sb.toString();
+			String cpf_string = sb1.toString();
 			System.out.println("cpf size: " + cpf_string.length());
 
-			StringBuilder sb1 = new StringBuilder();
+			StringBuilder sb2 = new StringBuilder();
 			try {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(anf_xml, "UTF-8"));
 				while ((line = reader.readLine()) != null) {
-					sb.append(line).append("\n");
+					sb2.append(line).append("\n");
 				}
 			} finally {
 				anf_xml.close();
 			}
 
-			String anf_string = sb1.toString();
+			String anf_string = sb2.toString();
 			System.out.println("anf size: " + anf_string.length());
 			conn = this.getConnection();
 
@@ -728,28 +728,28 @@ public class ProcessDao extends BasicDao {
 			}
 			String process_string = sb0.toString();
 
-			StringBuilder sb = new StringBuilder();
+			StringBuilder sb1 = new StringBuilder();
 			try {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(cpf_is, "UTF-8"));
 				while ((line = reader.readLine()) != null) {
-					sb.append(line).append("\n");
+					sb1.append(line).append("\n");
 				}
 			} finally {
 				cpf_is.close();
 			}
-			String cpf_string = sb.toString();
+			String cpf_string = sb1.toString();
 
-			StringBuilder sb1 = new StringBuilder();
+			StringBuilder sb2 = new StringBuilder();
 			try {
 				BufferedReader reader = new BufferedReader(new InputStreamReader(anf_is, "UTF-8"));
 				while ((line = reader.readLine()) != null) {
-					sb.append(line).append("\n");
+					sb2.append(line).append("\n");
 				}
 			} finally {
 				anf_is.close();
 			}
 
-			String anf_string = sb1.toString();
+			String anf_string = sb2.toString();
 
 			conn = this.getConnection();
 
