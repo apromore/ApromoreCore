@@ -64,6 +64,7 @@ import org.apromore.data_access.model_canoniser.StoreVersionOutputMsgType;
 			
 			DataHandler handlercpf = payload.getCpf();
 			InputStream cpf_is = handlercpf.getInputStream();
+			
 			DataHandler handleranf = payload.getAnf();
 			InputStream anf_is = handleranf.getInputStream();
 			ProcessDao.getInstance().storeVersion (processId, preVersion, newVersion, username, nativeType,
