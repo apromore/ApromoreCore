@@ -12,7 +12,6 @@ import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
-import org.apromore.canoniser.exception.ExceptionStore;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -28,8 +27,6 @@ import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TimerType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
-import org.apromore.rlf.RelationType;
-import org.apromore.rlf.RelationsType;
 import org.wfmc._2008.xpdl2.Activities;
 import org.wfmc._2008.xpdl2.Activity;
 import org.wfmc._2008.xpdl2.ConnectorGraphicsInfo;
@@ -72,28 +69,69 @@ public class Canonical2XPDL {
 	
 	private PackageType xpdl; 
 	/**
-	 * de-canonize data (canonical) into xpdl using rlf and anf data
+	 * de-canonize data (canonical) into xpdl
 	 * @param data
 	 * @param xpdl
-	 * @param rlf
-	 * @param anf
 	 * @throws JAXBException
 	 */
 	@SuppressWarnings("unchecked")
-	public Canonical2XPDL(CanonicalProcessType cpf, RelationsType rlf, AnnotationsType anf) throws ExceptionStore {
+	public Canonical2XPDL(CanonicalProcessType cpf) throws JAXBException {
 		
 		this.xpdl = new PackageType();
 		this.xpdl.setWorkflowProcesses(new WorkflowProcesses());
 		
 		for (NetType net: cpf.getNet()) {
 			ProcessType bpmnproc = new ProcessType();
-			translateNet(bpmnproc, net, rlf, anf);
+			translateNet(bpmnproc, net);
+			this.xpdl.getWorkflowProcesses().getWorkflowProcess().add(bpmnproc);
+		}
+		
+	}
+	
+	/**
+	 * de-canonize data (canonical) into xpdl using anf data
+	 * @param data
+	 * @param xpdl
+	 * @param anf
+	 * @throws JAXBException
+	 */
+	@SuppressWarnings("unchecked")
+	public Canonical2XPDL(CanonicalProcessType cpf, AnnotationsType anf) throws JAXBException {
+		
+		this.xpdl = new PackageType();
+		this.xpdl.setWorkflowProcesses(new WorkflowProcesses());
+		
+		for (NetType net: cpf.getNet()) {
+			ProcessType bpmnproc = new ProcessType();
+			translateNet(bpmnproc, net, anf);
 			this.xpdl.getWorkflowProcesses().getWorkflowProcess().add(bpmnproc);
 		}
 		
 	}
 
-	private void translateNet(ProcessType bpmnproc, NetType net, RelationsType rels, AnnotationsType annotations) {
+	private void translateNet(ProcessType bpmnproc, NetType net) {
+		Activities acts = new Activities();
+		Transitions trans = new Transitions();
+		
+		bpmnproc.getContent().add(acts);
+		bpmnproc.getContent().add(trans);
+		
+		for (NodeType node: net.getNode()) {
+			Activity act = translateNode(bpmnproc, node);
+			acts.getActivity().add(act);
+		}
+		setActivitiesId(bpmnproc);
+		
+		for (EdgeType edge: net.getEdge()) {
+			Transition flow = translateEdge(bpmnproc, edge);
+			trans.getTransition().add(flow);
+		}
+		setTransitionsId(bpmnproc);
+		
+		completeMapping(bpmnproc, net);
+	}
+	
+	private void translateNet(ProcessType bpmnproc, NetType net,  AnnotationsType annotations) {
 		Activities acts = new Activities();
 		Transitions trans = new Transitions();
 		
@@ -105,7 +143,7 @@ public class Canonical2XPDL {
 			acts.getActivity().add(act);
 		}
 		
-		mapNodeRelations(bpmnproc, net, rels);
+		setActivitiesId(bpmnproc);
 		mapNodeAnnotations(bpmnproc, annotations);
 		
 		for (EdgeType edge: net.getEdge()) {
@@ -113,14 +151,13 @@ public class Canonical2XPDL {
 			trans.getTransition().add(flow);
 		}
 		
-		mapEdgeRelations(bpmnproc, rels);
+		setTransitionsId(bpmnproc);
 		mapEdgeAnnotations(bpmnproc, annotations);
 		
-		completeMapping(bpmnproc, net, rels, annotations);
+		completeMapping(bpmnproc, net);
 	}
 
-	private void completeMapping(ProcessType bpmnproc, NetType net, RelationsType rels,
-			AnnotationsType annotations) {
+	private void completeMapping(ProcessType bpmnproc, NetType net) {
 		for (EventType event: events.keySet()) {
 			Activity act = canon2xpdl.get(event);
 			Event xevent = events.get(event);
@@ -227,34 +264,25 @@ public class Canonical2XPDL {
 			}			
 		}
 	}
-
-	private void mapNodeRelations(ProcessType bpmnproc, NetType net, RelationsType rels) {
-		for (RelationType rel: rels.getRelation()) {
-			if (nodeRefMap.containsKey(rel.getCpfId().get(0))) {
-				// TODO: Handle 1-N mappings
-				BigInteger cid = rel.getCpfId().get(0);
-				String xid = rel.getNpfId();
-				NodeType node = nodeRefMap.get(cid);
-				Activity act = canon2xpdl.get(node);
-				act.setId(xid);
-				xpdlRefMap.put(xid, act);
-				
-				cid2xid.put(cid, xid);
-			} else if (rel.getCpfId().get(0).equals(net.getId()))
-				bpmnproc.setId(rel.getNpfId());
+	
+	private void setActivitiesId(ProcessType bpmnproc)
+	{
+		for(NodeType node: nodeRefMap.values())
+		{
+			Activity act = canon2xpdl.get(node);
+			act.setId(node.getId().toString());
+			xpdlRefMap.put(node.getId().toString(), act);
+			cid2xid.put(node.getId(), act.getId());
 		}
 	}
 
-	private void mapEdgeRelations(ProcessType bpmnproc, RelationsType rels) {
-		for (RelationType rel: rels.getRelation()) {
-			if (edgeRefMap.containsKey(rel.getCpfId().get(0))) {
-				BigInteger cid = rel.getCpfId().get(0);
-				String xid = rel.getNpfId();
-				EdgeType edge = edgeRefMap.get(cid);
-				Transition flow = edge2flow.get(edge);
-				flow.setId(xid);				
-				cid2xid.put(cid, xid);				
-			}
+	private void setTransitionsId(ProcessType bpmnproc)
+	{
+		for(EdgeType edge: edgeRefMap.values())
+		{
+			Transition flow = edge2flow.get(edge);
+			flow.setId(edge.getId().toString());
+			cid2xid.put(edge.getId(), flow.getId());
 		}
 	}
 	
