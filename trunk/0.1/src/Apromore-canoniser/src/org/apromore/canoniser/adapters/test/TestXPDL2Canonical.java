@@ -12,7 +12,6 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.adapters.XPDL2Canonical;
 import org.apromore.canoniser.exception.ExceptionStore;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.rlf.RelationsType;
 import org.wfmc._2008.xpdl2.PackageType;
 
 public class TestXPDL2Canonical {
@@ -40,13 +39,6 @@ public class TestXPDL2Canonical {
 				new org.apromore.cpf.ObjectFactory().createCanonicalProcess(xpdl2canonical.getCpf());
 			//m.marshal(cprocRootElem, new File("/home/fauvet/Diagram1.cpf"));
 			m.marshal(cprocRootElem, new File("/home/fauvet/models/model1.cpf"));
-
-			
-			jc = JAXBContext.newInstance("org.apromore.rlf");
-			m = jc.createMarshaller();
-			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-			JAXBElement<RelationsType> relsRootElem = new org.apromore.rlf.ObjectFactory().createRelations(xpdl2canonical.getRlf());
-			m.marshal(relsRootElem, new File ("/home/fauvet/model_m.rlf"));		
 
 			jc = JAXBContext.newInstance("org.apromore.anf");
 			m = jc.createMarshaller();
