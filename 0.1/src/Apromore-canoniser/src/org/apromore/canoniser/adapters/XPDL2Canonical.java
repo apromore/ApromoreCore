@@ -31,8 +31,6 @@ import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TimerType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
-import org.apromore.rlf.RelationType;
-import org.apromore.rlf.RelationsType;
 import org.wfmc._2008.xpdl2.Activities;
 import org.wfmc._2008.xpdl2.Activity;
 import org.wfmc._2008.xpdl2.Condition;
@@ -68,19 +66,13 @@ public class XPDL2Canonical {
 	Set<NodeType> linked = new HashSet<NodeType>();
 
 	long cpfId = 1;
-	long rlfId = 1;
 	long anfId = 1;
 
 	CanonicalProcessType cpf;
-	RelationsType rlf;
 	AnnotationsType anf;
 
 	public CanonicalProcessType getCpf() {
 		return cpf;
-	}
-
-	public RelationsType getRlf() {
-		return rlf;
 	}
 
 	public AnnotationsType getAnf() {
@@ -90,7 +82,6 @@ public class XPDL2Canonical {
 	public XPDL2Canonical(PackageType pkg) throws ExceptionStore {
 
 		this.cpf = new CanonicalProcessType();
-		this.rlf = new RelationsType();
 		this.anf = new AnnotationsType();
 
 		this.cpf.setName(pkg.getName());
@@ -99,7 +90,6 @@ public class XPDL2Canonical {
 			NetType net = new NetType();
 			net.setId(BigInteger.valueOf(cpfId++));
 			translateProcess(net, bpmnproc);
-			recordRelations(bpmnproc, net, this.rlf);
 			recordAnnotations(bpmnproc, this.anf);
 			this.cpf.getNet().add(net);
 		}
@@ -153,36 +143,6 @@ public class XPDL2Canonical {
 				}
 			}
 			annotations.getAnnotation().add(cGraphInfo);
-		}
-	}
-
-	private void recordRelations(ProcessType bpmnproc, NetType net, RelationsType rels) {
-		RelationType rel0 = new RelationType();
-		rel0.setId(BigInteger.valueOf(rlfId++));
-		rel0.setNpfId(bpmnproc.getId());
-		rel0.getCpfId().add(net.getId());
-		rels.getRelation().add(rel0);
-
-		for (Activity act: activities) {
-			RelationType rel = new RelationType();
-			rel.setId(BigInteger.valueOf(rlfId++));
-			rel.setNpfId(act.getId());
-			rel.getCpfId().add(xpdl2canon.get(act).getId());
-			if (implicitANDSplit.containsKey(act))
-				rel.getCpfId().add(implicitANDSplit.get(act).getId());
-			if (implicitORSplit.containsKey(act))
-				rel.getCpfId().add(implicitORSplit.get(act).getId());
-			if (implicitJoin.containsKey(act))
-				rel.getCpfId().add(implicitJoin.get(act).getId());
-			rels.getRelation().add(rel);
-		}
-
-		for (Transition flow: transitions) {
-			RelationType rel = new RelationType();
-			rel.setId(BigInteger.valueOf(rlfId++));
-			rel.setNpfId(flow.getId());
-			rel.getCpfId().add(edgeMap.get(flow).getId());
-			rels.getRelation().add(rel);			
 		}
 	}
 
