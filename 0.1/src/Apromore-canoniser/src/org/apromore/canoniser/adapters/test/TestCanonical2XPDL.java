@@ -23,18 +23,12 @@ public class TestCanonical2XPDL {
 	public static void main(String[] args) {
 		File cpf_file = new File("/home/fauvet/models/epml_models/SAP_1.cpf");
 		File anf_file = new File("/home/fauvet/models/epml_models/SAP_1.anf");
-		File rlf_file = new File("/home/fauvet/models/epml_models/SAP_1.rlf");
 		
 		try {
 			JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
 			Unmarshaller u = jc.createUnmarshaller();
 			JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u.unmarshal(cpf_file);
 			CanonicalProcessType cpf = rootElement.getValue();
-			
-			jc = JAXBContext.newInstance("org.apromore.rlf");
-			u = jc.createUnmarshaller();
-			JAXBElement<RelationsType> relsRootElement = (JAXBElement<RelationsType>) u.unmarshal(rlf_file);
-			RelationsType rlf = relsRootElement.getValue();
 
 			jc = JAXBContext.newInstance("org.apromore.anf");
 			u = jc.createUnmarshaller();
@@ -52,7 +46,7 @@ public class TestCanonical2XPDL {
 			m2.marshal(cprocRootElem2, new File("/tmp/model1_2.xpdl"));
 	*/		
 			
-			Canonical2XPDL canonical2xpdl_1 = new Canonical2XPDL (cpf, rlf, anf);
+			Canonical2XPDL canonical2xpdl_1 = new Canonical2XPDL (cpf, anf);
 			
 			Marshaller m1 = jc.createMarshaller();
 			m1.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
@@ -62,8 +56,6 @@ public class TestCanonical2XPDL {
 			
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExceptionStore e) {
 			e.printStackTrace();
 		}
 	}
