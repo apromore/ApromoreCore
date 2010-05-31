@@ -248,39 +248,45 @@ public class EPML2Canonical{
 		if(arc.getGraphics() != null)
 		{
 			graph.setCpfId(arc.getId());
-			if(arc.getGraphics().get(0) != null)
-			{
-				if(arc.getGraphics().get(0).getFont() != null)
+			try {
+				if(arc.getGraphics().get(0) != null)
 				{
-					font.setColor(arc.getGraphics().get(0).getFont().getColor());
-					font.setDecoration(arc.getGraphics().get(0).getFont().getDecoration());
-					font.setFamily(arc.getGraphics().get(0).getFont().getFamily());
-					font.setHorizontalAlign(arc.getGraphics().get(0).getFont().getHorizontalAlign());
-					font.setRotation(arc.getGraphics().get(0).getFont().getRotation());
-					font.setSize(arc.getGraphics().get(0).getFont().getSize());
-					font.setStyle(arc.getGraphics().get(0).getFont().getStyle());
-					font.setVerticalAlign(arc.getGraphics().get(0).getFont().getVerticalAlign());
-					font.setWeight(arc.getGraphics().get(0).getFont().getWeight());
-					graph.setFont(font);
+					if(arc.getGraphics().get(0).getFont() != null)
+					{
+						font.setColor(arc.getGraphics().get(0).getFont().getColor());
+						font.setDecoration(arc.getGraphics().get(0).getFont().getDecoration());
+						font.setFamily(arc.getGraphics().get(0).getFont().getFamily());
+						font.setHorizontalAlign(arc.getGraphics().get(0).getFont().getHorizontalAlign());
+						font.setRotation(arc.getGraphics().get(0).getFont().getRotation());
+						font.setSize(arc.getGraphics().get(0).getFont().getSize());
+						font.setStyle(arc.getGraphics().get(0).getFont().getStyle());
+						font.setVerticalAlign(arc.getGraphics().get(0).getFont().getVerticalAlign());
+						font.setWeight(arc.getGraphics().get(0).getFont().getWeight());
+						graph.setFont(font);
+					}
+					if(arc.getGraphics().get(0).getLine() != null)
+					{
+						line.setColor(arc.getGraphics().get(0).getLine().getColor());
+						line.setShape(arc.getGraphics().get(0).getLine().getShape());
+						line.setStyle(arc.getGraphics().get(0).getLine().getStyle());
+						line.setWidth(arc.getGraphics().get(0).getLine().getWidth());
+						graph.setLine(line);
+					}
+					
+					for(TypeMove2 mov2: arc.getGraphics().get(0).getPosition())
+					{
+						PositionType pos = new PositionType();
+						pos.setX(mov2.getX());
+						pos.setY(mov2.getY());
+						graph.getPosition().add(pos);
+					}
+					annotations.getAnnotation().add(graph);
 				}
-				if(arc.getGraphics().get(0).getLine() != null)
-				{
-					line.setColor(arc.getGraphics().get(0).getLine().getColor());
-					line.setShape(arc.getGraphics().get(0).getLine().getShape());
-					line.setStyle(arc.getGraphics().get(0).getLine().getStyle());
-					line.setWidth(arc.getGraphics().get(0).getLine().getWidth());
-					graph.setLine(line);
-				}
-				
-				for(TypeMove2 mov2: arc.getGraphics().get(0).getPosition())
-				{
-					PositionType pos = new PositionType();
-					pos.setX(mov2.getX());
-					pos.setY(mov2.getY());
-					graph.getPosition().add(pos);
-				}
+			} catch (IndexOutOfBoundsException e) {
+				// TODO Auto-generated catch block
+				//e.printStackTrace();
+				//System.out.println("Index out");
 			}
-			annotations.getAnnotation().add(graph);
 		}
 	}
 
@@ -298,48 +304,51 @@ public class EPML2Canonical{
 		TEpcElement element = (TEpcElement)obj;
 		cpfId = id_map.get(element.getId());
 		
-		if(element.getGraphics().getFill() != null) {
-			fill.setColor(element.getGraphics().getFill().getColor());
-			fill.setGradientColor(element.getGraphics().getFill().getGradientColor());
-			fill.setGradientRotation(element.getGraphics().getFill().getGradientRotation());
-			fill.setImage(element.getGraphics().getFill().getImage());
-			graphT.setFill(fill);
-
-		} 
-		
-		if(element.getGraphics().getPosition() != null) {
-			size.setHeight(element.getGraphics().getPosition().getHeight());
-			size.setWidth(element.getGraphics().getPosition().getWidth());
-			graphT.setSize(size);
+		if(element.getGraphics() != null)
+		{
+			if(element.getGraphics().getFill() != null) {
+				fill.setColor(element.getGraphics().getFill().getColor());
+				fill.setGradientColor(element.getGraphics().getFill().getGradientColor());
+				fill.setGradientRotation(element.getGraphics().getFill().getGradientRotation());
+				fill.setImage(element.getGraphics().getFill().getImage());
+				graphT.setFill(fill);
+	
+			} 
 			
-			pos.setX(element.getGraphics().getPosition().getX());
-			pos.setY(element.getGraphics().getPosition().getY());
-			graphT.getPosition().add(pos);
-		} 
-		
-		if(element.getGraphics().getLine() != null) {
-			line.setColor(element.getGraphics().getLine().getColor());
-			line.setShape(element.getGraphics().getLine().getShape());
-			line.setStyle(element.getGraphics().getLine().getStyle());
-			line.setWidth(element.getGraphics().getLine().getWidth());
-			graphT.setLine(line);
-		} 
-		
-		if(element.getGraphics().getFont() != null) {
-			font.setColor(element.getGraphics().getFont().getColor());
-			font.setDecoration(element.getGraphics().getFont().getDecoration());
-			font.setFamily(element.getGraphics().getFont().getFamily());
-			font.setHorizontalAlign(element.getGraphics().getFont().getHorizontalAlign());
-			font.setRotation(element.getGraphics().getFont().getRotation());
-			font.setSize(element.getGraphics().getFont().getSize());
-			font.setStyle(element.getGraphics().getFont().getStyle());
-			font.setVerticalAlign(element.getGraphics().getFont().getVerticalAlign());
-			font.setWeight(element.getGraphics().getFont().getWeight());
-			graphT.setFont(font);
-		}
+			if(element.getGraphics().getPosition() != null) {
+				size.setHeight(element.getGraphics().getPosition().getHeight());
+				size.setWidth(element.getGraphics().getPosition().getWidth());
+				graphT.setSize(size);
+				
+				pos.setX(element.getGraphics().getPosition().getX());
+				pos.setY(element.getGraphics().getPosition().getY());
+				graphT.getPosition().add(pos);
+			} 
+			
+			if(element.getGraphics().getLine() != null) {
+				line.setColor(element.getGraphics().getLine().getColor());
+				line.setShape(element.getGraphics().getLine().getShape());
+				line.setStyle(element.getGraphics().getLine().getStyle());
+				line.setWidth(element.getGraphics().getLine().getWidth());
+				graphT.setLine(line);
+			} 
+			
+			if(element.getGraphics().getFont() != null) {
+				font.setColor(element.getGraphics().getFont().getColor());
+				font.setDecoration(element.getGraphics().getFont().getDecoration());
+				font.setFamily(element.getGraphics().getFont().getFamily());
+				font.setHorizontalAlign(element.getGraphics().getFont().getHorizontalAlign());
+				font.setRotation(element.getGraphics().getFont().getRotation());
+				font.setSize(element.getGraphics().getFont().getSize());
+				font.setStyle(element.getGraphics().getFont().getStyle());
+				font.setVerticalAlign(element.getGraphics().getFont().getVerticalAlign());
+				font.setWeight(element.getGraphics().getFont().getWeight());
+				graphT.setFont(font);
+			}
 
-		graphT.setCpfId(cpfId);
-		annotations.getAnnotation().add(graphT);
+			graphT.setCpfId(cpfId);
+			annotations.getAnnotation().add(graphT);
+		}
 	}
 
 	// should be in the end
