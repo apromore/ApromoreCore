@@ -22,12 +22,12 @@ import org.apromore.manager.exception.ExceptionWriteEditSession;
 import org.apromore.manager.exception.ExceptionWriteUser;
 import org.apromore.manager.model_da.DeleteEditSessionInputMsgType;
 import org.apromore.manager.model_da.DeleteProcessVersionsInputMsgType;
+import org.apromore.manager.model_da.FormatType;
 import org.apromore.manager.model_da.ProcessVersionIdentifierType;
 import org.apromore.manager.model_da.ReadCanonicalAnfInputMsgType;
 import org.apromore.manager.model_da.ReadDomainsInputMsgType;
 import org.apromore.manager.model_da.ReadDomainsOutputMsgType;
 import org.apromore.manager.model_da.ReadEditSessionInputMsgType;
-import org.apromore.manager.model_da.ReadEditSessionOutputMsgType;
 import org.apromore.manager.model_da.ReadFormatsInputMsgType;
 import org.apromore.manager.model_da.ReadFormatsOutputMsgType;
 import org.apromore.manager.model_da.ReadNativeInputMsgType;
@@ -68,10 +68,17 @@ public class RequestToDA {
 		if (result.getCode() == -1) {
 			throw new ExceptionFormats (result.getMessage()); 
 		} else {
-			List<String> formats = res.getFormats().getFormat();
-			org.apromore.manager.model_portal.FormatsType resFormats = new org.apromore.manager.model_portal.FormatsType();
-			resFormats.getFormat().addAll(formats);
-			return resFormats;
+			List<FormatType> formats_da = res.getFormats().getFormat();
+			org.apromore.manager.model_portal.FormatsType resFormats_p = 
+				new org.apromore.manager.model_portal.FormatsType();
+			for (int i=0;i<formats_da.size();i++){
+				org.apromore.manager.model_portal.FormatType format_p = 
+				new org.apromore.manager.model_portal.FormatType();
+				format_p.setFormat(formats_da.get(i).getFormat());
+				format_p.setExtension(formats_da.get(i).getExtension());
+				resFormats_p.getFormat().add(format_p);
+			}
+			return resFormats_p;
 		}
 	}
 

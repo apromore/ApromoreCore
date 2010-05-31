@@ -4,23 +4,21 @@ package org.apromore.manager.model_portal;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ImportProcessOutputMsgType complex type.
+ * <p>Java class for FormatType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ImportProcessOutputMsgType">
+ * &lt;complexType name="FormatType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="Result" type="{http://www.apromore.org/manager/model_portal}ResultType"/>
- *         &lt;element name="ProcessSummary" type="{http://www.apromore.org/manager/model_portal}ProcessSummaryType"/>
- *       &lt;/sequence>
+ *       &lt;attribute name="format" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="extension" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -29,70 +27,67 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ImportProcessOutputMsgType", propOrder = {
-    "result",
-    "processSummary"
-})
+@XmlType(name = "FormatType")
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:42:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ImportProcessOutputMsgType {
+public class FormatType {
 
-    @XmlElement(name = "Result", required = true)
+    @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:42:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected ResultType result;
-    @XmlElement(name = "ProcessSummary", required = true)
+    protected String format;
+    @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:42:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected ProcessSummaryType processSummary;
+    protected String extension;
 
     /**
-     * Gets the value of the result property.
+     * Gets the value of the format property.
      * 
      * @return
      *     possible object is
-     *     {@link ResultType }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:42:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public ResultType getResult() {
-        return result;
+    public String getFormat() {
+        return format;
     }
 
     /**
-     * Sets the value of the result property.
+     * Sets the value of the format property.
      * 
      * @param value
      *     allowed object is
-     *     {@link ResultType }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:42:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setResult(ResultType value) {
-        this.result = value;
+    public void setFormat(String value) {
+        this.format = value;
     }
 
     /**
-     * Gets the value of the processSummary property.
+     * Gets the value of the extension property.
      * 
      * @return
      *     possible object is
-     *     {@link ProcessSummaryType }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:42:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public ProcessSummaryType getProcessSummary() {
-        return processSummary;
+    public String getExtension() {
+        return extension;
     }
 
     /**
-     * Sets the value of the processSummary property.
+     * Sets the value of the extension property.
      * 
      * @param value
      *     allowed object is
-     *     {@link ProcessSummaryType }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:42:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setProcessSummary(ProcessSummaryType value) {
-        this.processSummary = value;
+    public void setExtension(String value) {
+        this.extension = value;
     }
 
 }
