@@ -33,6 +33,7 @@ import org.apromore.portal.model_manager.DomainsType;
 import org.apromore.portal.model_manager.EditSessionType;
 import org.apromore.portal.model_manager.ExportNativeInputMsgType;
 import org.apromore.portal.model_manager.ExportNativeOutputMsgType;
+import org.apromore.portal.model_manager.FormatType;
 import org.apromore.portal.model_manager.FormatsType;
 import org.apromore.portal.model_manager.ImportProcessInputMsgType;
 import org.apromore.portal.model_manager.ImportProcessOutputMsgType;
@@ -96,7 +97,7 @@ public class RequestToManager {
 		if (result.getCode() == -1) {
 			throw new ExceptionFormats (result.getMessage()); 
 		} else {
-			List<String> formats = res.getFormats().getFormat();
+			List<FormatType> formats = res.getFormats().getFormat();
 			FormatsType resFormats = new FormatsType();
 			resFormats.getFormat().addAll(formats);
 			return resFormats;

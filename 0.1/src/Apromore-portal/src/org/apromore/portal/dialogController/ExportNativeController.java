@@ -2,6 +2,8 @@ package org.apromore.portal.dialogController;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.net.URLEncoder;
+import java.util.HashMap;
 
 import org.apromore.portal.exception.ExceptionExport;
 import org.apromore.portal.manager.RequestToManager;
@@ -33,6 +35,7 @@ public class ExportNativeController extends Window {
 	private Listbox nativeTypesLB;
 	private int processId;
 	private String versionName;
+	private HashMap<String,String> formats_ext;
 	
 	public ExportNativeController (MenuController menuC, int processId, 
 				String processName, String versionName, FormatsType formats)   {
@@ -59,11 +62,12 @@ public class ExportNativeController extends Window {
 		this.okB = (Button) buttonsR.getFirstChild().getFirstChild();
 		this.cancelB = (Button) buttonsR.getFirstChild().getFirstChild().getNextSibling();
 		
-		
+		this.formats_ext = new HashMap<String, String>();
 		for (int i=0; i<formats.getFormat().size(); i++) {
 			Listitem cbi = new Listitem();
 			this.nativeTypesLB.appendChild(cbi);
-			cbi.setLabel(formats.getFormat().get(i));
+			this.formats_ext.put(formats.getFormat().get(i).getFormat(), formats.getFormat().get(i).getExtension());
+			cbi.setLabel(formats.getFormat().get(i).getFormat());
 		}
 
 		this.nativeTypesLB.addEventListener("onSelect",
@@ -114,15 +118,13 @@ public class ExportNativeController extends Window {
 						Messagebox.ERROR);
 			} else {
 				String nativeType = this.nativeTypesLB.getSelectedItem().getLabel();
-				String ext = "";
-				if (nativeType.compareTo("EPML 2.0")==0) {
-					ext = "epml";
-				} else if (nativeType.compareTo("XPDL 2.1")==0) {
-					ext = "xpdl";
-				} else {
-					throw new ExceptionExport ("Cannot derive extension for export file.");
+				String ext = this.formats_ext.get(nativeType);
+				if (ext==null) {
+					throw new ExceptionExport ("ExportNativeController: Native type " + nativeType
+							+ " not supported. \n");
 				}
-				String filename = this.processNameL.getValue()+ "." + this.versionName + "." + ext ;
+				String filename = URLEncoder.encode(this.processNameL.getValue()+ "." 
+						+ this.versionName + "." + ext,"UTF-8") ;
 				RequestToManager request = new RequestToManager();
 				InputStream native_is =
 					request.ExportNative (this.processId, this.versionName, 
