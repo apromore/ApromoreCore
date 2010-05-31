@@ -129,10 +129,15 @@
 	<complexType name="FormatsType">
 		<sequence>
 			<element name="Format" minOccurs="0" maxOccurs="unbounded"
-				type="string" />
+				type="tns:FormatType" />
 		</sequence>
 	</complexType>
-
+	
+	<complexType name="FormatType">
+		<attribute name="format" type="string" />
+		<attribute name="extension" type="string" />
+	</complexType>
+	
 	<complexType name="ResultType">
 		<attribute name="message" type="string" />
 		<attribute name="code" type="int" />
