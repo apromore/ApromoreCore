@@ -23,8 +23,9 @@ public class TestEPML2Canonical {
 	public static void main(String[] args) {
 
 
-		File file = new File("/home/fauvet/models/epml_models/Audio.epml");
-		
+		//File file = new File("/home/fauvet/models/epml_models/Audio.epml");
+		File file = new File("/home/fauvet/models/SAP_1.epml");
+		//File file = new File("/home/fauvet/models/model11.epml");
 		try {
 			JAXBContext jc = JAXBContext.newInstance("de.epml");
 			Unmarshaller u = jc.createUnmarshaller();
@@ -38,14 +39,14 @@ public class TestEPML2Canonical {
 			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<CanonicalProcessType> cprocRootElem = 
 				new org.apromore.cpf.ObjectFactory().createCanonicalProcess(epml2canonical.getCPF());
-			m.marshal(cprocRootElem, new File ("/home/fauvet/models/epml_models/Audio.cpf"));
+			m.marshal(cprocRootElem, new File ("/home/fauvet/models/SAP_1.cpf"));
 
 			jc = JAXBContext.newInstance("org.apromore.anf");
 			m = jc.createMarshaller();
 			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<AnnotationsType> annsRootElem = 
 				new org.apromore.anf.ObjectFactory().createAnnotations(epml2canonical.getANF());
-			m.marshal(annsRootElem, new File ("/home/fauvet/models/epml_models/Audio.anf"));
+			m.marshal(annsRootElem, new File ("/home/fauvet/models/SAP_1.anf"));
 			
 			
 			

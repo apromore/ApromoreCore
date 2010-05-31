@@ -21,8 +21,10 @@ public class TestCanonical2EPML {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		File cpf_file = new File("/home/fauvet/models/epml_models/SAP_1.cpf");
-		File anf_file = new File("/home/fauvet/models/epml_models/SAP_1.anf");
+		//File cpf_file = new File("/home/fauvet/models/epml_models/SAP_1.cpf");
+		//File anf_file = new File("/home/fauvet/models/epml_models/SAP_1.anf");
+		File cpf_file = new File("/home/fauvet/models/model2.cpf");
+		File anf_file = new File("/home/fauvet/models/model2.anf");
 		
 		try {
 			JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
@@ -36,7 +38,6 @@ public class TestCanonical2EPML {
 			AnnotationsType anf = anfRootElement.getValue();
 
 			Canonical2EPML canonical2epml_1 = new Canonical2EPML(cpf);
-			//Canonical2EPML canonical2epml_2 = new Canonical2EPML (cpf, anf);
 			
 			jc = JAXBContext.newInstance("de.epml");
 			
@@ -44,14 +45,16 @@ public class TestCanonical2EPML {
 			m2.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<TypeEPML> cprocRootElem2 = 
 				new de.epml.ObjectFactory().createEpml(canonical2epml_1.getEPML());
-			m2.marshal(cprocRootElem2, new File("/home/fauvet/models/epml_models/SAP_1_epml.epml"));
+			m2.marshal(cprocRootElem2, new File("/home/fauvet/models/model21.epml"));
 			
-/*			Marshaller m1 = jc.createMarshaller();
+			Canonical2EPML canonical2epml_2 = new Canonical2EPML (cpf, anf);
+			
+			Marshaller m1 = jc.createMarshaller();
 			m1.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<TypeEPML> cprocRootElem1 = 
 				new de.epml.ObjectFactory().createEpml(canonical2epml_2.getEPML());
-			m1.marshal(cprocRootElem1, new File("/tmp/model1_cpf_anf.epml"));
-*/			
+			m1.marshal(cprocRootElem1, new File("/home/fauvet/models/model22.epml"));
+			
 			
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
