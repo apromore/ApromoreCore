@@ -21,9 +21,10 @@ public class TestCanonical2XPDL {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		File cpf_file = new File("/home/fauvet/models/epml_models/SAP_1.cpf");
-		File anf_file = new File("/home/fauvet/models/epml_models/SAP_1.anf");
-		
+		File cpf_file = new File("/home/fauvet/models/SAP_1.cpf");
+		File anf_file = new File("/home/fauvet/models/SAP_1.anf");
+		//File cpf_file = new File("/home/fauvet/models/model1.cpf");
+		//File anf_file = new File("/home/fauvet/models/model1.anf");
 		try {
 			JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
 			Unmarshaller u = jc.createUnmarshaller();
@@ -34,25 +35,19 @@ public class TestCanonical2XPDL {
 			u = jc.createUnmarshaller();
 			JAXBElement<AnnotationsType> anfRootElement = (JAXBElement<AnnotationsType>) u.unmarshal(anf_file);
 			AnnotationsType anf = anfRootElement.getValue();
-
-/*			Canonical2XPDL canonical2xpdl_2 = new Canonical2XPDL (cpf, rlf, anf);
+			
+			Canonical2XPDL canonical2xpdl_with_anf = new Canonical2XPDL (cpf, anf);
+			Canonical2XPDL canonical2xpdl_no_anf = new Canonical2XPDL(cpf);
 			
 			jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
-			
-			Marshaller m2 = jc.createMarshaller();
-			m2.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-			JAXBElement<PackageType> cprocRootElem2 = 
-				new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl_2.getXpdl());
-			m2.marshal(cprocRootElem2, new File("/tmp/model1_2.xpdl"));
-	*/		
-			
-			Canonical2XPDL canonical2xpdl_1 = new Canonical2XPDL (cpf, anf);
-			
 			Marshaller m1 = jc.createMarshaller();
 			m1.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<PackageType> cprocRootElem1 = 
-				new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl_1.getXpdl());
-			m1.marshal(cprocRootElem1, new File("/home/fauvet/models/epml_models/SAP_1.xpdl"));
+				new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl_with_anf.getXpdl());
+			m1.marshal(cprocRootElem1, new File("/home/fauvet/models/SAP_11.xpdl"));
+			cprocRootElem1 = 
+				new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl_no_anf.getXpdl());
+			m1.marshal(cprocRootElem1, new File("/home/fauvet/models/SAP_12.xpdl"));
 			
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
