@@ -863,6 +863,7 @@ public class ProcessDao extends BasicDao {
 		Statement stmt = null;
 		ResultSet rs = null;
 		String query = null;
+		
 		try {
 			conn = this.getConnection();
 
@@ -876,6 +877,23 @@ public class ProcessDao extends BasicDao {
 				while (itV.hasNext()) {
 					// for each selected version(s) of the current process
 					String v = (String) itV.next();
+					// retrieve cpf associated with (pId, v)
+					Integer cpf_uri ;
+					query = " select " + ConstantDB.ATTR_CANONICAL
+					+ " from " + ConstantDB.TABLE_VERSIONS
+					+ " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString()
+					+ " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + v + "'";
+					stmt = conn.createStatement();
+					rs = stmt.executeQuery(query);
+					if (rs.next()) {
+						cpf_uri = rs.getInt(1);
+						stmt.close(); rs.close();
+					} else {
+						stmt.close(); rs.close();
+						throw new ExceptionDao ("DeleteProcessVersions: error, version " + v 
+								+ "for process " + pId.toString() + " not found. \n");
+					}
+					
 					/* delete process version identified by <p, v>
 					 * retrieve r in derived_versions such as r[processId]=p
 					 */
@@ -950,12 +968,35 @@ public class ProcessDao extends BasicDao {
 							}
 						}
 					}
+					// delete the process version
 					query = " delete from " + ConstantDB.TABLE_VERSIONS 
 					+ " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString()
 					+ " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + v + "'";
 					stmtp = conn.prepareStatement(query);
 					int r = stmtp.executeUpdate();
 					stmtp.close();
+					
+					// delete associated annotation, canonical and native
+					query = " delete from " + ConstantDB.TABLE_ANNOTATIONS 
+					+ " where " + ConstantDB.ATTR_URI + " in (select " + ConstantDB.ATTR_ANF
+					+              " from " + ConstantDB.TABLE_ANFOFCPF 
+					+              " where " + ConstantDB.ATTR_CPF + " = " + cpf_uri.toString() + ")";
+					stmtp = conn.prepareStatement(query);
+					r = stmtp.executeUpdate();
+					stmtp.close();
+					
+					query = " delete from " + ConstantDB.TABLE_NATIVES 
+					+ " where " + ConstantDB.ATTR_CANONICAL + " = " + cpf_uri.toString();
+					stmtp = conn.prepareStatement(query);
+					r = stmtp.executeUpdate();
+					stmtp.close();
+					
+					query = " delete from " + ConstantDB.TABLE_CANONICALS 
+					+ " where " + ConstantDB.ATTR_URI + " = " + cpf_uri.toString();
+					stmtp = conn.prepareStatement(query);
+					r = stmtp.executeUpdate();
+					stmtp.close();
+					
 				}
 			}
 
