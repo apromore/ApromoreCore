@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="Format" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="Format" type="{http://www.apromore.org/manager/model_portal}FormatType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -33,12 +33,12 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "FormatsType", propOrder = {
     "format"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:30:44+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:51:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class FormatsType {
 
     @XmlElement(name = "Format")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:30:44+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected List<String> format;
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:51:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected List<FormatType> format;
 
     /**
      * Gets the value of the format property.
@@ -58,14 +58,14 @@ public class FormatsType {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * {@link FormatType }
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-25T03:30:44+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public List<String> getFormat() {
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:51:53+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public List<FormatType> getFormat() {
         if (format == null) {
-            format = new ArrayList<String>();
+            format = new ArrayList<FormatType>();
         }
         return this.format;
     }

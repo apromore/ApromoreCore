@@ -49,7 +49,7 @@ public class EditListNativesController extends Window {
 		for (int i=0; i<formats.getFormat().size(); i++) {
 			Listitem cbi = new Listitem();
 			this.nativeTypesLB.appendChild(cbi);
-			cbi.setLabel(formats.getFormat().get(i));
+			cbi.setLabel(formats.getFormat().get(i).getFormat());
 		}
 
 		this.nativeTypesLB.addEventListener("onSelect",
