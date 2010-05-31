@@ -9,16 +9,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ResultType complex type.
+ * <p>Java class for FormatType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ResultType">
+ * &lt;complexType name="FormatType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="message" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="code" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="format" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="extension" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -27,19 +27,19 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ResultType")
+@XmlType(name = "FormatType")
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:36:16+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ResultType {
+public class FormatType {
 
     @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:36:16+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String message;
+    protected String format;
     @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:36:16+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected Integer code;
+    protected String extension;
 
     /**
-     * Gets the value of the message property.
+     * Gets the value of the format property.
      * 
      * @return
      *     possible object is
@@ -47,12 +47,12 @@ public class ResultType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:36:16+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getMessage() {
-        return message;
+    public String getFormat() {
+        return format;
     }
 
     /**
-     * Sets the value of the message property.
+     * Sets the value of the format property.
      * 
      * @param value
      *     allowed object is
@@ -60,34 +60,34 @@ public class ResultType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:36:16+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setMessage(String value) {
-        this.message = value;
+    public void setFormat(String value) {
+        this.format = value;
     }
 
     /**
-     * Gets the value of the code property.
+     * Gets the value of the extension property.
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:36:16+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public Integer getCode() {
-        return code;
+    public String getExtension() {
+        return extension;
     }
 
     /**
-     * Sets the value of the code property.
+     * Sets the value of the extension property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:36:16+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setCode(Integer value) {
-        this.code = value;
+    public void setExtension(String value) {
+        this.extension = value;
     }
 
 }
