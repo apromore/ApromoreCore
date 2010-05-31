@@ -40,6 +40,7 @@ show warnings ;
 
 create table native_types (
     nat_type varchar(20),
+    extension varchar(10),
     constraint pk_native_types primary key (nat_type)
 ) engine=innoDB;
 show warnings ;
