@@ -6,6 +6,7 @@ import java.io.InputStream;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.manager.RequestToManager;
+import org.apromore.portal.model_manager.FormatsType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.WrongValueException;
@@ -84,22 +85,26 @@ public class ImportProcessController extends Window {
 
 	private void uploadProcess (UploadEvent event) throws InterruptedException {
 		try {
+			FormatsType formats = this.mainC.getNativeTypes();
 			this.nativeProcess = event.getMedia().getStreamData();
 			String fileName = event.getMedia().getName();
-			String[] nativeType = fileName.split("\\.");
-			this.nativeType = nativeType[1];
-			if (this.nativeType.compareTo("xpdl")==0) {
-				this.nativeType = "XPDL 2.1" ;
-			} else if (this.nativeType.compareTo("epml")==0) {
-				this.nativeType = "EPML 2.0";
-			} else {
+			String[] list_extensions = fileName.split("\\.");
+			String extension = list_extensions[list_extensions.length-1];
+			int i = 0;
+			while (i < formats.getFormat().size() 
+					&& formats.getFormat().get(i).getExtension().compareTo(extension)!=0) {
+						i++;
+					}
+			if (i == formats.getFormat().size()) {
 				throw new ExceptionImport("Native type not recognised.");
+			} else {
+				this.nativeType = formats.getFormat().get(i).getFormat();
 			}
 
 			this.okButton.setDisabled(false);
 			this.filenameLabel.setValue(fileName + " (native type is " + this.nativeType + ")");
 		} catch (ExceptionImport e) {
-			Messagebox.show("Import failed (" + e.getMessage(), "Attention", Messagebox.OK,
+			Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		} catch (Exception e) {
 			Messagebox.show("Repository not available ("+e.getMessage()+")", "Attention", Messagebox.OK,

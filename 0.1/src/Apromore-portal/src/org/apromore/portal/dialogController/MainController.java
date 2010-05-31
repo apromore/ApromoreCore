@@ -168,9 +168,9 @@ public class MainController extends Window {
 			}
 			String message;
 			if (nb > 1) {
-				message = " process versions delete.";
+				message = " process versions deleted.";
 			} else {
-				message = " process version delete.";
+				message = " process version deleted.";
 			}
 			Messagebox.show(nb + message, "", Messagebox.OK,
 					Messagebox.INFORMATION);

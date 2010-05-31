@@ -70,7 +70,7 @@ public class FileController extends Window {
 			
 			for (int i=0;i<formats.getFormat().size();i++) {
 				Listitem format = new Listitem();
-				format.setLabel(formats.getFormat().get(i));
+				format.setLabel(formats.getFormat().get(i).getFormat());
 				this.modelNativeL.appendChild(format);
 			}
 

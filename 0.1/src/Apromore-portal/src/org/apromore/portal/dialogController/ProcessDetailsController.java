@@ -109,7 +109,7 @@ public class ProcessDetailsController extends Window {
 		FormatsType formats = request.ReadFormats();
 		for (int i=0;i<formats.getFormat().size();i++) {
 			Listitem format = new Listitem();
-			format.setLabel(formats.getFormat().get(i));
+			format.setLabel(formats.getFormat().get(i).getFormat());
 			this.exportL.appendChild(format);
 		}
 
