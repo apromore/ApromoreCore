@@ -96,9 +96,12 @@ import de.epml.TypeEPML;
 			 */
 			if (nativeType.compareTo("XPDL 2.1")==0 || nativeType.compareTo("EPML 2.0")==0){
 				if (nativeType.compareTo("XPDL 2.1")==0) {
-
-					Canonical2XPDL canonical2xpdl = new Canonical2XPDL (cpf, null, null);
-					
+					Canonical2XPDL canonical2xpdl ;
+					if (anf==null) {
+						canonical2xpdl = new Canonical2XPDL(cpf);
+					} else {
+						canonical2xpdl = new Canonical2XPDL(cpf, anf);
+					}
 					jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
 					Marshaller m = jc.createMarshaller();
 					m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
@@ -108,9 +111,9 @@ import de.epml.TypeEPML;
 				} else if (nativeType.compareTo("EPML 2.0")==0) {
 					Canonical2EPML canonical2epml ;
 					if (anf==null) {
-						canonical2epml= new Canonical2EPML (cpf);
+						canonical2epml = new Canonical2EPML (cpf);
 					} else {
-						canonical2epml= new Canonical2EPML(cpf, anf);
+						canonical2epml = new Canonical2EPML(cpf, anf);
 					}
 					jc = JAXBContext.newInstance("de.epml");
 					Marshaller m = jc.createMarshaller();
