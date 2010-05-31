@@ -7,5 +7,5 @@ insert into users (lastname,firstname,email,username,passwd) values ("Dijkman","
 insert into users (lastname,firstname,email,username,passwd) values ("Alshareef","Abdul","aah.shareef@gmail.com","abdul", "");
 insert into users (lastname,firstname,email,username,passwd) values ("Ekanayake","Mehrad","aah.shareef@gmail.com","mehrad", "");
 
-insert into native_types values ("EPML 2.0");
-insert into native_types values ("XPDL 2.1");
+insert into native_types values ("EPML 2.0","epml");
+insert into native_types values ("XPDL 2.1","xpdl");
