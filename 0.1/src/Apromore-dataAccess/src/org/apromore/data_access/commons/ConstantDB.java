@@ -32,7 +32,8 @@ public final class ConstantDB {
 	public static final String ATTR_CPF = "cpf";
 	
 	public static final String TABLE_NATIVE_TYPES = "native_types";
-
+	public static final String ATTR_EXTENSION = "extension";
+	
 	public static final String TABLE_SEARCH_HISTORIES = "search_histories";
 	public static final String ATTR_SEARCH = "search";
 	public static final String ATTR_NUM = "num" ;

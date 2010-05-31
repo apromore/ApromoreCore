@@ -4,23 +4,21 @@ package org.apromore.data_access.model_manager;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ReadFormatsOutputMsgType complex type.
+ * <p>Java class for FormatType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ReadFormatsOutputMsgType">
+ * &lt;complexType name="FormatType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="Result" type="{http://www.apromore.org/data_access/model_manager}ResultType"/>
- *         &lt;element name="Formats" type="{http://www.apromore.org/data_access/model_manager}FormatsType"/>
- *       &lt;/sequence>
+ *       &lt;attribute name="format" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="extension" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -29,70 +27,67 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReadFormatsOutputMsgType", propOrder = {
-    "result",
-    "formats"
-})
+@XmlType(name = "FormatType")
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:32:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ReadFormatsOutputMsgType {
+public class FormatType {
 
-    @XmlElement(name = "Result", required = true)
+    @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:32:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected ResultType result;
-    @XmlElement(name = "Formats", required = true)
+    protected String format;
+    @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:32:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected FormatsType formats;
+    protected String extension;
 
     /**
-     * Gets the value of the result property.
+     * Gets the value of the format property.
      * 
      * @return
      *     possible object is
-     *     {@link ResultType }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:32:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public ResultType getResult() {
-        return result;
+    public String getFormat() {
+        return format;
     }
 
     /**
-     * Sets the value of the result property.
+     * Sets the value of the format property.
      * 
      * @param value
      *     allowed object is
-     *     {@link ResultType }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:32:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setResult(ResultType value) {
-        this.result = value;
+    public void setFormat(String value) {
+        this.format = value;
     }
 
     /**
-     * Gets the value of the formats property.
+     * Gets the value of the extension property.
      * 
      * @return
      *     possible object is
-     *     {@link FormatsType }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:32:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public FormatsType getFormats() {
-        return formats;
+    public String getExtension() {
+        return extension;
     }
 
     /**
-     * Sets the value of the formats property.
+     * Sets the value of the extension property.
      * 
      * @param value
      *     allowed object is
-     *     {@link FormatsType }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:32:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setFormats(FormatsType value) {
-        this.formats = value;
+    public void setExtension(String value) {
+        this.extension = value;
     }
 
 }
