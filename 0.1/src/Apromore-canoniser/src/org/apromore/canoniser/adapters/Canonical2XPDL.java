@@ -189,14 +189,18 @@ public class Canonical2XPDL {
 		for (RoutingType croute: gateways.keySet()) {
 			Activity act = canon2xpdl.get(croute);
 			TransitionRestrictions trests = gateways.get(croute);
-			if (outgoingFlows.get(act.getId()).size() > 1) {
-				for (TransitionRestriction trest: trests.getTransitionRestriction()) {
-					Split split = trest.getSplit();
-					TransitionRefs refs = split.getTransitionRefs();
-					for (Transition trans: outgoingFlows.get(act.getId())) {
-						TransitionRef ref = new TransitionRef();
-						ref.setId(trans.getId());
-						refs.getTransitionRef().add(ref);
+			
+			if (outgoingFlows.get(act.getId()) != null) {
+				if (outgoingFlows.get(act.getId()).size() > 1) {
+					for (TransitionRestriction trest : trests
+							.getTransitionRestriction()) {
+						Split split = trest.getSplit();
+						TransitionRefs refs = split.getTransitionRefs();
+						for (Transition trans : outgoingFlows.get(act.getId())) {
+							TransitionRef ref = new TransitionRef();
+							ref.setId(trans.getId());
+							refs.getTransitionRef().add(ref);
+						}
 					}
 				}
 			}
@@ -221,13 +225,22 @@ public class Canonical2XPDL {
 						// TODO: Parse color format
 						info.setFillColor(cGraphInfo.getFill().getColor());
 					
-					info.setHeight(cGraphInfo.getSize().getHeight().doubleValue());
-					info.setWidth(cGraphInfo.getSize().getWidth().doubleValue());
-					
+					if(cGraphInfo.getSize() != null) {
+						info.setHeight(cGraphInfo.getSize().getHeight().doubleValue());
+						info.setWidth(cGraphInfo.getSize().getWidth().doubleValue());
+					}
 					Coordinates coords = new Coordinates();
-					coords.setXCoordinate(cGraphInfo.getPosition().get(0).getX().doubleValue());
-					coords.setYCoordinate(cGraphInfo.getPosition().get(0).getY().doubleValue());
-					info.setCoordinates(coords);
+					if(cGraphInfo.getPosition() != null)
+					{
+						try {
+							coords.setXCoordinate(cGraphInfo.getPosition().get(0).getX().doubleValue());
+							coords.setYCoordinate(cGraphInfo.getPosition().get(0).getY().doubleValue());
+							info.setCoordinates(coords);
+						} catch (IndexOutOfBoundsException e) {
+							// TODO Auto-generated catch block
+							//e.printStackTrace();
+						}
+					}
 					
 					infos.getNodeGraphicsInfo().add(info);
 					act.getContent().add(infos);
