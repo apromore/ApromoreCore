@@ -24,7 +24,7 @@ import org.zkoss.zul.Menuitem;
 public class MenuController extends Menubar {
 
 	private MainController mainC;
-	private ImportProcessController importC;
+	private ImportProcessesController importC;
 	private Menubar menuB;
 
 
@@ -148,7 +148,7 @@ public class MenuController extends Menubar {
 	
 	protected void importModel (){
 		try {
-			this.importC = new ImportProcessController(this, mainC);
+			this.importC = new ImportProcessesController(this, mainC);
 		} catch (DialogException e) {
 			e.printStackTrace();
 		}

@@ -1,0 +1,35 @@
+<!-- importOneProcessWindow window has ImportOneProcessController as a controller -->
+<window id="importOneProcessWindow" position="center" title="Process model details"
+	visible="true" sizable="true" width="550px">
+	<vbox vflex="1">
+		<grid >
+		<columns sizable="true">
+		<column width="25%"></column>
+		<column width="15%"></column>
+		<column width="60%"></column>
+		</columns>
+			<rows>
+				<row spans="1,2">
+					<label value="Domain" width="100%"  tooltiptext="optional"/>
+					<listbox width="100%" multiple="false" mold="select" rows="1">
+						<listitem label=""/>
+						<!-- listbox implemented in controller -->
+					</listbox>
+				</row>
+				<row spans="1,2">
+					<label value="Process name" width="100%" tooltiptext="mandatory"/>
+					<textbox id="processName" width="100%"/>
+				</row>
+				<row spans="3">
+					<div align="center">
+						<button id="okButtonOneProcess" label="OK"  image="img/ok.png" disabled="true">
+						</button>
+						<button id="cancelButtonOneProcess" label="Cancel"
+							image="img/cancel2.png">
+						</button>
+					</div>
+				</row>
+			</rows>
+		</grid>
+	</vbox>
+</window>
