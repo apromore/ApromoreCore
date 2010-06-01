@@ -380,7 +380,8 @@ public class Canonical2EPML {
 					graphics.setPosition(pos);
 					
 					Object obj = epcRefMap.get(id_map.get(cid));
-					((TEpcElement)obj).setGraphics(graphics);
+					if(obj != null)
+						((TEpcElement)obj).setGraphics(graphics);
 				}
 			}			
 		}
