@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Properties;
 import java.util.Set;
+import java.util.logging.Logger;
 
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionDeleteProcess;
@@ -42,8 +43,9 @@ public class MainController extends Window {
 	private Window shortmessageW;
 	private String OryxEndPoint_xpdl;
 	private String OryxEndPoint_epml;
+	private String tmpPath;
 	private FormatsType nativeTypes;			// choice of native formats
-	
+	private Logger LOG;
 	/**
 	 * onCreate is executed after the main window has been created
 	 * it is responsible for instantiating all necessary controllers
@@ -54,6 +56,7 @@ public class MainController extends Window {
 	 */
 	public void onCreate() throws InterruptedException {		
 		try {
+			this.LOG = Logger.getLogger(MainController.class.getName());
 			/**
 			 * to get data
 			 */
@@ -73,7 +76,7 @@ public class MainController extends Window {
 			
 			this.OryxEndPoint_xpdl = properties.getProperty("OryxEndPoint_xpdl");  
 			this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");  
-			
+			this.tmpPath = properties.getProperty("tmpPath");
 			/**
 			 * get list of formats
 			 */
@@ -274,6 +277,14 @@ public class MainController extends Window {
 
 	public FormatsType getNativeTypes() {
 		return nativeTypes;
+	}
+
+	public String getTmpPath() {
+		return tmpPath;
+	}
+
+	public Logger getLOG() {
+		return LOG;
 	}
 
 }
