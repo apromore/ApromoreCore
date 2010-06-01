@@ -27,11 +27,11 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ReadFormatsInputMsgType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:36:16+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-01T10:35:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ReadFormatsInputMsgType {
 
     @XmlAttribute(name = "Empty")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:36:16+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-01T10:35:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String empty;
 
     /**
@@ -42,7 +42,7 @@ public class ReadFormatsInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:36:16+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-01T10:35:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getEmpty() {
         return empty;
     }
@@ -55,7 +55,7 @@ public class ReadFormatsInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:36:16+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-01T10:35:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setEmpty(String value) {
         this.empty = value;
     }
