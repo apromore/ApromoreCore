@@ -2,11 +2,13 @@ package org.apromore.portal.dialogController;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.List;
 
 import javax.servlet.http.HttpSession;
 
@@ -34,15 +36,19 @@ public class ImportProcessesController extends Window {
 	private Label supportedExtL;
 	private String extension;
 	private String filename;
+	private String nativeType;
 	private File fileUploaded;
 	private String tmpPath;
-
+	private String sessionId;
+	
 	public ImportProcessesController (MenuController menuC, MainController mainC) throws DialogException{
 
 		this.mainC = mainC;
 		this.menuC = menuC;
 		this.tmpPath = this.mainC.getTmpPath();
-
+		HttpSession session = (HttpSession)(Executions.getCurrent()).getDesktop().getSession().getNativeSession();
+		this.sessionId = session.getId().toString();
+		
 		try {
 			final Window win = (Window) Executions.createComponents("macros/importProcesses.zul", null, null);
 			this.importProcessesWindow = (Window) win.getFellow("importProcessesWindow");
@@ -85,23 +91,14 @@ public class ImportProcessesController extends Window {
 	private void cancel() throws IOException {
 		this.importProcessesWindow.detach();
 
-		// delete the file, if exists
-		if (this.filename != null) {
-			Process p = Runtime.getRuntime().exec("rm " + this.tmpPath + this.filename);
-			String s = null;
-			BufferedReader stdInput = new BufferedReader(new
-					InputStreamReader(p.getInputStream()));
-			BufferedReader stdError = new BufferedReader(new
-					InputStreamReader(p.getErrorStream()));
-
-			// log the result of the command
-			this.mainC.getLOG().info("File deleted: " + this.tmpPath + this.filename);
-			while ((s = stdInput.readLine()) != null) {
-				this.mainC.getLOG().info(s);
-			}		
-			while ((s = stdError.readLine()) != null) {
-				this.mainC.getLOG().info(s);
-			}							
+		// delete folder associated with the session, if exists
+		File folder = new File (this.tmpPath + this.sessionId);
+		if (folder.exists()) {
+			File[] content = folder.listFiles();
+			for (int i=0; i<content.length;i++){
+				content[i].delete();
+			}
+			folder.delete();
 		}
 	}
 
@@ -112,6 +109,24 @@ public class ImportProcessesController extends Window {
 	 */
 	private void uploadProcess (UploadEvent event) throws InterruptedException {
 		try {
+			
+			/*
+			 * Create a folder for the session.
+			 * if folder already exists for current session: empty and delete it first.
+			 */
+			File folder = new File (this.tmpPath + this.sessionId);
+			if (folder.exists()) {
+				File[] content = folder.listFiles();
+				for (int i=0; i<content.length;i++){
+					content[i].delete();
+				}
+				folder.delete();
+			}
+			Boolean ok= folder.mkdir();
+			if (!ok) {
+				throw new ExceptionImport ("Couldn't extract archive.");
+			}
+			
 			String fileType;
 			FormatsType formats = this.mainC.getNativeTypes();
 			this.filename = event.getMedia().getName();
@@ -131,12 +146,13 @@ public class ImportProcessesController extends Window {
 					throw new ExceptionImport("Extension not recognised.");
 				} else {
 					fileType = formats.getFormat().get(i).getFormat();
+					this.nativeType = fileType;
 				}
 			}
 			this.okButton.setDisabled(false);
 			this.filenameLabel.setValue(this.filename + " (file type is " + fileType + ")");
 
-			this.fileUploaded = new File(this.tmpPath + this.filename);
+			this.fileUploaded = new File(this.tmpPath + this.sessionId, this.filename);
 			InputStream is = event.getMedia().getStreamData();
 
 			//write is to the file
@@ -151,7 +167,6 @@ public class ImportProcessesController extends Window {
 			is.close();
 			out.flush();
 			out.close();	
-
 
 		} catch (ExceptionImport e) {
 			Messagebox.show("Upload failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
@@ -170,41 +185,56 @@ public class ImportProcessesController extends Window {
 	 * @throws InterruptedException 
 	 * @throws IOException 
 	 */
-	private void readFile() throws InterruptedException {
+	private void readFile() throws InterruptedException, IOException {
 		String command = null;
 		try {
-			HttpSession session = (HttpSession)(Executions.getCurrent()).getDesktop().getSession().getNativeSession();
-			System.out.println( "Wrote to session:" + session.getId() ) ;
-			
-			/*
 			if (this.extension.compareTo("zip")==0 || this.extension.compareTo("tar")==0) {
-				if (this.extension.compareTo("zip")==0) {
+				/*
+				 *  Case of an archive: for each file in the session folder, check whether 
+				 *  they all have the same extension. If yes, import each of which. If no, 
+				 *  raise an exception.
+				 */
+				
+				command = " cd " + this.sessionId;
+				if(this.extension.compareTo("zip")==0) {
 					command = " unzip ";
-				} else if (this.extension.compareTo("tar")==0) {
-					command = " tar xvf ";
-				} 
-				Process p = Runtime.getRuntime().exec(command + this.tmpPath + this.filename);
+				} else {
+					command = " tar xf ";
+				}
+				command += this.filename;
+				System.out.println (command + "\n");
+				
+				
+				//Process p = Runtime.getRuntime().exec(command + this.tmpPath + this.filename);
+				Process p = Runtime.getRuntime().exec("pwd");
 				String s = null;
 				BufferedReader stdInput = new BufferedReader(new
 						InputStreamReader(p.getInputStream()));
 				BufferedReader stdError = new BufferedReader(new
 						InputStreamReader(p.getErrorStream()));
 
-				// log the result of the command
-				this.mainC.getLOG().info("File deleted: " + this.tmpPath + this.filename);
+				// log what happened
 				while ((s = stdInput.readLine()) != null) {
 					this.mainC.getLOG().info(s);
 				}		
 				while ((s = stdError.readLine()) != null) {
 					this.mainC.getLOG().info(s);
-				}		
+				}
+				
+				// Get names of all files in folder
+				
 			} else {
-
+				// Case of an single file: import it.
+				File xml_file = new File (this.tmpPath + this.sessionId, this.filename);
+				FileInputStream xml_process = new FileInputStream(xml_file);
+				ImportOneProcess importProcess = new ImportOneProcess (this.mainC, this, xml_process, this.nativeType);
 			}
-			*/
+			
 		} catch (Exception e) {
 			Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
+		} finally {
+			cancel();	
 		}
 	}
 }
