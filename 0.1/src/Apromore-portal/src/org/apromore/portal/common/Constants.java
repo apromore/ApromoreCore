@@ -31,11 +31,11 @@ public final class Constants {
 	// colors and style used in the table view
 	// #E5E5E5 light gray
 	// #598DCA blue
-	
-	public static final String UNSELECTED_VERSION = "background-color:#E5E5E5";
-	public static final String SELECTED_VERSION = "background-color:#598DCA";
-	public static final String SELECTED_PROCESS = "background-color:#598DCA" ;
-	public static final String UNSELECTED_EVEN = "background-color:#FFFFFF";
-	public static final String UNSELECTED_ODD = "background-color:#F0FAFF";
+
 	public static final String TOOLBARBUTTON_STYLE = "font-size:12px";
+	public static final String UNSELECTED_VERSION = "background-color:#E5E5E5" + ";" + TOOLBARBUTTON_STYLE;
+	public static final String SELECTED_VERSION = "background-color:#598DCA" + ";" + TOOLBARBUTTON_STYLE;
+	public static final String SELECTED_PROCESS = "background-color:#598DCA" + ";" + TOOLBARBUTTON_STYLE ;
+	public static final String UNSELECTED_EVEN = "background-color:#FFFFFF" + ";" + TOOLBARBUTTON_STYLE;
+	public static final String UNSELECTED_ODD = "background-color:#F0FAFF" + ";" + TOOLBARBUTTON_STYLE;
 }

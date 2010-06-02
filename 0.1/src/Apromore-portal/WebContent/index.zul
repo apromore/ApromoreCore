@@ -10,6 +10,11 @@
 <?component name="RefinedSearch" macroURI="macros/refinedsearch.zul" ?>
 
 <zk>
+
+<style dynamic="true">
+.z-label	{font-size: ${fontSizeMS}}
+</style>
+
 	<window id="mainW" border="none" width="100%"
 		contentStyle="overflow:auto" vflex="1"
 		use="org.apromore.portal.dialogController.MainController">
