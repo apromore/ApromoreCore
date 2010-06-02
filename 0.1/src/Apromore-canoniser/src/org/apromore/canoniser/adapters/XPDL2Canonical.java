@@ -350,12 +350,13 @@ public class XPDL2Canonical {
 		boolean isSplit = false;
 		boolean isJoin = false;
 
-		for (TransitionRestriction trest: trests.getTransitionRestriction()) {
-			if (trest.getSplit() != null)
-				isSplit = true;
-			if (trest.getJoin() != null)
-				isJoin = true;
-		}
+		if(trests != null)
+			for (TransitionRestriction trest: trests.getTransitionRestriction()) {
+				if (trest.getSplit() != null)
+					isSplit = true;
+				if (trest.getJoin() != null)
+					isJoin = true;
+			}
 
 		NodeType node = null;
 
