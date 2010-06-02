@@ -50,7 +50,7 @@ public class ProcessTableController extends Window {
 	 * 		column
 	 * 			checkbox					processSummaryCB
 	 * 	rows								processSummariesRow
-	 * --> on row for each process
+	 * --> one row for each process
 	 * 		row
 	 * 			detail
 	 * 				grid
@@ -65,7 +65,7 @@ public class ProcessTableController extends Window {
 	 * 							....
 	 * 					/rows
 	 * 				/grid
-	 * 			detail
+	 * 			/detail
 	 * 			label
 	 * 			label 						<processId>
 	 * 			toolbarbutton				<processId
@@ -419,6 +419,8 @@ public class ProcessTableController extends Window {
 		String unselectedOdd = Constants.UNSELECTED_ODD;
 		Integer index = processR.getParent().getChildren().indexOf(processR);
 		Detail processD = (Detail) processR.getFirstChild();
+		// the toolbarbutton is the 4th children of row processR
+		Toolbarbutton processName = (Toolbarbutton) processR.getFirstChild().getNextSibling().getNextSibling().getNextSibling();
 		if (highlighted) {
 			processR.setStyle(selected);
 			processD.setStyle(selected);
@@ -435,6 +437,7 @@ public class ProcessTableController extends Window {
 			}
 			ColorFont (processR, "#000000");
 		}
+		//processName.setStyle(Constants.TOOLBARBUTTON_STYLE);
 	}
 
 	/** 
@@ -460,7 +463,7 @@ public class ProcessTableController extends Window {
 		 * is between the last in the list and the one previously selected (if any)
 		 */
 		MouseEvent e = (MouseEvent) event;
-		Toolbarbutton tb = (Toolbarbutton) e.getTarget(); 	// toolbarbutton whose lable is a processName
+		Toolbarbutton tb = (Toolbarbutton) e.getTarget(); 	// toolbarbutton whose label is a processName
 		Row processSummaryR = (Row) tb.getParent(); 		// row associated with a process process
 		Rows processSummariesR = (Rows) processSummaryR.getParent();	
 		Integer index = processSummariesR.getChildren().indexOf(processSummaryR);	// index of the selected row
@@ -624,7 +627,7 @@ public class ProcessTableController extends Window {
 	private void ColorFont(HtmlBasedComponent v, String color) {
 		Iterator<HtmlBasedComponent> itV = v.getChildren().iterator();
 		while (itV.hasNext()) {
-			((HtmlBasedComponent) itV.next()).setStyle("color:"+color);
+			((HtmlBasedComponent) itV.next()).setStyle("color:"+color + ";" + Constants.TOOLBARBUTTON_STYLE);
 		}
 	}
 
