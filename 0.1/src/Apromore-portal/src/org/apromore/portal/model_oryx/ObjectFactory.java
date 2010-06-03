@@ -24,34 +24,20 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
+    private final static QName _CloseSessionInputMsg_QNAME = new QName("http://www.apromore.org/portal/model_oryx", "CloseSessionInputMsg");
     private final static QName _WriteProcessOutputMsg_QNAME = new QName("http://www.apromore.org/portal/model_oryx", "WriteProcessOutputMsg");
     private final static QName _ReadNativeOutputMsg_QNAME = new QName("http://www.apromore.org/portal/model_oryx", "ReadNativeOutputMsg");
     private final static QName _ReadNativeInputMsg_QNAME = new QName("http://www.apromore.org/portal/model_oryx", "ReadNativeInputMsg");
     private final static QName _WriteNewProcessInputMsg_QNAME = new QName("http://www.apromore.org/portal/model_oryx", "WriteNewProcessInputMsg");
     private final static QName _WriteNewProcessOutputMsg_QNAME = new QName("http://www.apromore.org/portal/model_oryx", "WriteNewProcessOutputMsg");
     private final static QName _WriteProcessInputMsg_QNAME = new QName("http://www.apromore.org/portal/model_oryx", "WriteProcessInputMsg");
+    private final static QName _CloseSessionOutputMsg_QNAME = new QName("http://www.apromore.org/portal/model_oryx", "CloseSessionOutputMsg");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.apromore.portal.model_oryx
      * 
      */
     public ObjectFactory() {
-    }
-
-    /**
-     * Create an instance of {@link ReadNativeOutputMsgType }
-     * 
-     */
-    public ReadNativeOutputMsgType createReadNativeOutputMsgType() {
-        return new ReadNativeOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link WriteProcessInputMsgType }
-     * 
-     */
-    public WriteProcessInputMsgType createWriteProcessInputMsgType() {
-        return new WriteProcessInputMsgType();
     }
 
     /**
@@ -63,11 +49,51 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link WriteProcessInputMsgType }
+     * 
+     */
+    public WriteProcessInputMsgType createWriteProcessInputMsgType() {
+        return new WriteProcessInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link CloseSessionInputMsgType }
+     * 
+     */
+    public CloseSessionInputMsgType createCloseSessionInputMsgType() {
+        return new CloseSessionInputMsgType();
+    }
+
+    /**
      * Create an instance of {@link WriteProcessOutputMsgType }
      * 
      */
     public WriteProcessOutputMsgType createWriteProcessOutputMsgType() {
         return new WriteProcessOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link CloseSessionOutputMsgType }
+     * 
+     */
+    public CloseSessionOutputMsgType createCloseSessionOutputMsgType() {
+        return new CloseSessionOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ReadNativeOutputMsgType }
+     * 
+     */
+    public ReadNativeOutputMsgType createReadNativeOutputMsgType() {
+        return new ReadNativeOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link WriteNewProcessInputMsgType }
+     * 
+     */
+    public WriteNewProcessInputMsgType createWriteNewProcessInputMsgType() {
+        return new WriteNewProcessInputMsgType();
     }
 
     /**
@@ -87,11 +113,12 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link WriteNewProcessInputMsgType }
+     * Create an instance of {@link JAXBElement }{@code <}{@link CloseSessionInputMsgType }{@code >}}
      * 
      */
-    public WriteNewProcessInputMsgType createWriteNewProcessInputMsgType() {
-        return new WriteNewProcessInputMsgType();
+    @XmlElementDecl(namespace = "http://www.apromore.org/portal/model_oryx", name = "CloseSessionInputMsg")
+    public JAXBElement<CloseSessionInputMsgType> createCloseSessionInputMsg(CloseSessionInputMsgType value) {
+        return new JAXBElement<CloseSessionInputMsgType>(_CloseSessionInputMsg_QNAME, CloseSessionInputMsgType.class, null, value);
     }
 
     /**
@@ -146,6 +173,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://www.apromore.org/portal/model_oryx", name = "WriteProcessInputMsg")
     public JAXBElement<WriteProcessInputMsgType> createWriteProcessInputMsg(WriteProcessInputMsgType value) {
         return new JAXBElement<WriteProcessInputMsgType>(_WriteProcessInputMsg_QNAME, WriteProcessInputMsgType.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link CloseSessionOutputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/portal/model_oryx", name = "CloseSessionOutputMsg")
+    public JAXBElement<CloseSessionOutputMsgType> createCloseSessionOutputMsg(CloseSessionOutputMsgType value) {
+        return new JAXBElement<CloseSessionOutputMsgType>(_CloseSessionOutputMsg_QNAME, CloseSessionOutputMsgType.class, null, value);
     }
 
 }

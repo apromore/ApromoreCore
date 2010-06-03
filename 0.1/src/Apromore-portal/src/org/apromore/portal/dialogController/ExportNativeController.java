@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.apromore.portal.exception.ExceptionExport;
 import org.apromore.portal.manager.RequestToManager;
@@ -35,15 +37,16 @@ public class ExportNativeController extends Window {
 	private Listbox nativeTypesLB;
 	private int processId;
 	private String versionName;
-	private HashMap<String,String> formats_ext;
+	private HashMap<String, String> formats_ext;
 	
 	public ExportNativeController (MenuController menuC, int processId, 
-				String processName, String versionName, FormatsType formats)   {
+				String processName, String versionName, HashMap<String, String> formats_ext)   {
 
 		this.exportNativeW = (Window) Executions.createComponents("macros/exportnative.zul", null, null);
 		this.processId = processId;
 		this.versionName = versionName;
-
+		this.formats_ext = formats_ext;
+		
 		String id = this.processId + " " + this.versionName;
 		this.exportNativeW.setId(id);
 		this.exportNativeW.setTitle("Export Native (" + processName + ", " + versionName +")");
@@ -62,12 +65,12 @@ public class ExportNativeController extends Window {
 		this.okB = (Button) buttonsR.getFirstChild().getFirstChild();
 		this.cancelB = (Button) buttonsR.getFirstChild().getFirstChild().getNextSibling();
 		
-		this.formats_ext = new HashMap<String, String>();
-		for (int i=0; i<formats.getFormat().size(); i++) {
+		Set<String> extensions = formats_ext.keySet();
+		Iterator<String> it = extensions.iterator();
+		while (it.hasNext()){
 			Listitem cbi = new Listitem();
 			this.nativeTypesLB.appendChild(cbi);
-			this.formats_ext.put(formats.getFormat().get(i).getFormat(), formats.getFormat().get(i).getExtension());
-			cbi.setLabel(formats.getFormat().get(i).getFormat());
+			cbi.setLabel(it.next());
 		}
 
 		this.nativeTypesLB.addEventListener("onSelect",

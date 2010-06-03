@@ -32,7 +32,7 @@ public class EditListNativesController extends Window {
 	//	private Listitem emptynative;
 	private HashMap<ProcessSummaryType,List<VersionSummaryType>> processVersions;
 
-	public EditListNativesController (MainController mainC, MenuController menuC, FormatsType formats, 
+	public EditListNativesController (MainController mainC, MenuController menuC, HashMap<String,String> formats, 
 			HashMap<ProcessSummaryType,List<VersionSummaryType>> processVersions) {
 
 		Window win = (Window) Executions.createComponents("macros/choosenative.zul", null, null);
@@ -46,11 +46,14 @@ public class EditListNativesController extends Window {
 		this.mainC = mainC;
 		this.processVersions = processVersions;
 
-		for (int i=0; i<formats.getFormat().size(); i++) {
+		Set<String> extensions = formats.keySet();
+		Iterator<String> it = extensions.iterator();
+		while (it.hasNext()){
 			Listitem cbi = new Listitem();
 			this.nativeTypesLB.appendChild(cbi);
-			cbi.setLabel(formats.getFormat().get(i).getFormat());
+			cbi.setLabel(it.next());
 		}
+		
 
 		this.nativeTypesLB.addEventListener("onSelect",
 				new EventListener() {

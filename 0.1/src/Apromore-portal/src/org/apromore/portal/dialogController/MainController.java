@@ -19,6 +19,7 @@ import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
@@ -35,17 +36,20 @@ public class MainController extends Window {
 	private HeaderController header;
 	private MenuController menu;
 	private ProcessTableController processtable;
-	private NavigationController navigation;
 	private SimpleSearchController simplesearch;
-	private RefinedSearchController refinedsearch;
 	private UserType currentUser ;				// the connected user, if any
 	private ShortMessageController shortmessageC;
 	private Window shortmessageW;
 	private String OryxEndPoint_xpdl;
 	private String OryxEndPoint_epml;
 	private String tmpPath;
-	private FormatsType nativeTypes;			// choice of native formats
+	private HashMap<String,String> nativeTypes; // choice of native formats
 	private Logger LOG;
+	
+	// uncomment when ready
+	//private NavigationController navigation;
+	//private RefinedSearchController refinedsearch;
+	
 	/**
 	 * onCreate is executed after the main window has been created
 	 * it is responsible for instantiating all necessary controllers
@@ -57,6 +61,7 @@ public class MainController extends Window {
 	public void onCreate() throws InterruptedException {		
 		try {
 			this.LOG = Logger.getLogger(MainController.class.getName());
+
 			/**
 			 * to get data
 			 */
@@ -65,15 +70,17 @@ public class MainController extends Window {
 			this.shortmessageC = new ShortMessageController(shortmessageW);
 			this.processtable = new ProcessTableController(this);
 			this.header = new HeaderController (this);
-			this.navigation = new NavigationController (this);
 			this.simplesearch = new SimpleSearchController(this);
 			this.menu = new MenuController(this);
-            
+
+			//this.navigation = new NavigationController (this);
+			
+			this.currentUser = null;
 			// read Oryx access point in properties
 			InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);;  
 			Properties properties = new Properties();  
 			properties.load(inputStream);  
-			
+
 			this.OryxEndPoint_xpdl = properties.getProperty("OryxEndPoint_xpdl");  
 			this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");  
 			this.tmpPath = properties.getProperty("tmpPath");
@@ -81,25 +88,30 @@ public class MainController extends Window {
 			 * get list of formats
 			 */
 			RequestToManager request = new RequestToManager();
-			this.nativeTypes = request.ReadFormats();
-			
-			// Listens to event onSize on the main window. Readjusts accordingly the table view window size
-			this.mainW.addEventListener("onSize", new EventListener() {
-				public void onEvent(Event event) throws Exception {
-					watchesSize();
-				}
-			});
-			
+			FormatsType nativeTypesDB = request.ReadFormats();
+			this.nativeTypes = new HashMap<String, String>();
+			for (int i=0; i<nativeTypesDB.getFormat().size();i++){
+				this.nativeTypes.put(nativeTypesDB.getFormat().get(i).getExtension(),
+						nativeTypesDB.getFormat().get(i).getFormat());
+			}
+
 		} catch (Exception e) {
 			Messagebox.show("Repository not available ("+e.getMessage()+")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		}
 	}
 
-	protected void watchesSize() {
+	/**
+	 * register an event listener for the clientInfo event (to prevent user to close the browser window)
+	 */
+	public void onClientInfo () {
+		Clients.confirmClose("You are about to leave Apromore. If you were logged in you might loose some data.");
+	}
+
+	public void onSize() {
 
 		System.out.println("Current size is: " + this.mainW.getAttribute("size"));
-		
+
 	}
 
 	public void displayProcessSummaries(ProcessSummariesType processSummaries) throws Exception {
@@ -141,7 +153,7 @@ public class MainController extends Window {
 		this.currentUser = null;
 		this.simplesearch.clearSearches();
 	}
-	
+
 	/**
 	 * Forward to the controller ProcessTableController the request to 
 	 * add the process to the table
@@ -162,7 +174,7 @@ public class MainController extends Window {
 		RequestToManager request = new RequestToManager();
 		try {
 			request.DeleteProcessVersions (processVersions);
-			
+
 			int nb = 0; // to count how many process version(s) deleted
 			Set<ProcessSummaryType> keySet = processVersions.keySet();
 			Iterator it = keySet.iterator();
@@ -184,7 +196,7 @@ public class MainController extends Window {
 		}
 	}
 
-	
+
 	public void displayMessage (String mes) {
 		this.shortmessageC.displayMessage(mes);
 	}
@@ -192,7 +204,7 @@ public class MainController extends Window {
 	public void eraseMessage () {
 		this.shortmessageC.eraseMessage();
 	}
-	
+
 
 	public HeaderController getHeader() {
 		return header;
@@ -218,29 +230,12 @@ public class MainController extends Window {
 		this.processtable = processtable;
 	}
 
-
-	public NavigationController getNavigation() {
-		return navigation;
-	}
-
-	public void setNavigation(NavigationController navigation) {
-		this.navigation = navigation;
-	}
-
 	public SimpleSearchController getSimplesearch() {
 		return simplesearch;
 	}
 
 	public void setSimplesearch(SimpleSearchController simplesearch) {
 		this.simplesearch = simplesearch;
-	}
-
-	public RefinedSearchController getRefinedsearch() {
-		return refinedsearch;
-	}
-
-	public void setRefinedsearch(RefinedSearchController refinedsearch) {
-		this.refinedsearch = refinedsearch;
 	}
 
 	public UserType getCurrentUser() {
@@ -275,7 +270,7 @@ public class MainController extends Window {
 		return OryxEndPoint_epml;
 	}
 
-	public FormatsType getNativeTypes() {
+	public HashMap<String,String> getNativeTypes() {
 		return nativeTypes;
 	}
 

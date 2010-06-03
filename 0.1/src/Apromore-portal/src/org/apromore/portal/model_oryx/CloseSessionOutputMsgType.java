@@ -9,12 +9,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for WriteNewProcessOutputMsgType complex type.
+ * <p>Java class for CloseSessionOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="WriteNewProcessOutputMsgType">
+ * &lt;complexType name="CloseSessionOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -28,11 +28,11 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "WriteNewProcessOutputMsgType", propOrder = {
+@XmlType(name = "CloseSessionOutputMsgType", propOrder = {
     "result"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-03T09:26:30+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class WriteNewProcessOutputMsgType {
+public class CloseSessionOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-03T09:26:30+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
