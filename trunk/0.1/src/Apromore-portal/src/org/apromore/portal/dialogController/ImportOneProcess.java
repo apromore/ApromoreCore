@@ -30,7 +30,8 @@ public class ImportOneProcess extends Window {
 	private Button okButton;
 	private Button cancelButton;
 	
-	public ImportOneProcess (MainController mainC, ImportProcessesController importProcessesC, InputStream xml_process, String nativeType) 
+	public ImportOneProcess (MainController mainC, ImportProcessesController importProcessesC, InputStream xml_process, 
+			String processName, String nativeType, String fileName) 
 	throws SuspendNotAllowedException, InterruptedException {
 		
 		this.importProcessesC = importProcessesC;
@@ -39,11 +40,20 @@ public class ImportOneProcess extends Window {
 		this.nativeType = nativeType;
 		final Window win = (Window) Executions.createComponents("macros/importOneProcess.zul", null, null);
 		this.importOneProcessWindow = (Window) win.getFellow("importOneProcessWindow");
+		this.importOneProcessWindow.setId(this.importOneProcessWindow.getId()+fileName);
 		this.processName = (Textbox) this.importOneProcessWindow.getFellow("processName");
+		this.processName.setId(this.processName.getId()+fileName);
 		this.versionName = (Textbox) this.importOneProcessWindow.getFellow("versionName");
+		this.versionName.setId(this.versionName.getId()+fileName);
 		this.domain = (Textbox) this.importOneProcessWindow.getFellow("domain");
+		this.domain.setId(this.domain.getId()+fileName);
 		this.okButton = (Button) this.importOneProcessWindow.getFellow("okButtonOneProcess");
+		this.okButton.setId(this.okButton.getId()+fileName);
 		this.cancelButton = (Button) this.importOneProcessWindow.getFellow("cancelButtonOneProcess");
+		this.cancelButton.setId(this.cancelButton.getId()+fileName);
+		
+		this.processName.setValue(processName);
+		
 		this.okButton.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
