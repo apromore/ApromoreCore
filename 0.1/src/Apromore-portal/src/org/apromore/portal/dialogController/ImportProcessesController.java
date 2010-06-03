@@ -8,7 +8,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
-import java.util.List;
+import java.util.Iterator;
+import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
@@ -35,12 +36,12 @@ public class ImportProcessesController extends Window {
 	private Label filenameLabel;
 	private Label supportedExtL;
 	private String extension;
-	private String filename;
+	private String fileOrArchive;
 	private String nativeType;
 	private File fileUploaded;
 	private String tmpPath;
 	private String sessionId;
-	
+
 	public ImportProcessesController (MenuController menuC, MainController mainC) throws DialogException{
 
 		this.mainC = mainC;
@@ -48,7 +49,7 @@ public class ImportProcessesController extends Window {
 		this.tmpPath = this.mainC.getTmpPath();
 		HttpSession session = (HttpSession)(Executions.getCurrent()).getDesktop().getSession().getNativeSession();
 		this.sessionId = session.getId().toString();
-		
+
 		try {
 			final Window win = (Window) Executions.createComponents("macros/importProcesses.zul", null, null);
 			this.importProcessesWindow = (Window) win.getFellow("importProcessesWindow");
@@ -58,9 +59,12 @@ public class ImportProcessesController extends Window {
 			this.filenameLabel = (Label) this.importProcessesWindow.getFellow("filenameLabel");
 			this.uploadButton.setAttribute("onUpload", "importModel(event)");
 			this.supportedExtL = (Label) this.importProcessesWindow.getFellow("supportedExt");
+			// build the list of supported extensions to display
 			String supportedExtS = "zip, tar";
-			for (int i=0; i<this.mainC.getNativeTypes().getFormat().size(); i++) {
-				supportedExtS += ", " + this.mainC.getNativeTypes().getFormat().get(i).getExtension();
+			Set<String> supportedExt = this.mainC.getNativeTypes().keySet();
+			Iterator<String> it = supportedExt.iterator();
+			while (it.hasNext()) {
+				supportedExtS += ", " + it.next();
 			}
 			this.supportedExtL.setValue(supportedExtS);
 			// event listeners
@@ -73,7 +77,7 @@ public class ImportProcessesController extends Window {
 			okButton.addEventListener("onClick",
 					new EventListener() {
 				public void onEvent(Event event) throws Exception {
-					readFile();
+					readArchiveOrFile();
 				}
 			});	
 			cancelButton.addEventListener("onClick",
@@ -93,15 +97,18 @@ public class ImportProcessesController extends Window {
 
 		// delete folder associated with the session, if exists
 		File folder = new File (this.tmpPath + this.sessionId);
-		if (folder.exists()) {
-			File[] content = folder.listFiles();
-			for (int i=0; i<content.length;i++){
-				content[i].delete();
-			}
-			folder.delete();
-		}
+		recursiveDelete(folder);
 	}
 
+	private void recursiveDelete (File f) {
+		if (f.isDirectory()) {
+			File[] list = f.listFiles();
+			for (int i=0;i<list.length;i++){
+				recursiveDelete(list[i]);
+			}
+		}
+		f.delete();
+	}
 	/**
 	 * Upload a file file: an archive or an xml file with the description of the model
 	 * @param event
@@ -109,7 +116,7 @@ public class ImportProcessesController extends Window {
 	 */
 	private void uploadProcess (UploadEvent event) throws InterruptedException {
 		try {
-			
+
 			/*
 			 * Create a folder for the session.
 			 * if folder already exists for current session: empty and delete it first.
@@ -126,33 +133,30 @@ public class ImportProcessesController extends Window {
 			if (!ok) {
 				throw new ExceptionImport ("Couldn't extract archive.");
 			}
-			
+
+			// derive file type from its extension
 			String fileType;
-			FormatsType formats = this.mainC.getNativeTypes();
-			this.filename = event.getMedia().getName();
-			String[] list_extensions = filename.split("\\.");
+			this.fileOrArchive = event.getMedia().getName();
+			String[] list_extensions = fileOrArchive.split("\\.");
 			this.extension = list_extensions[list_extensions.length-1];
 			if (this.extension.compareTo("zip")==0) {
 				fileType = "zip archive";
 			} else if (this.extension.compareTo("tar")==0) {
 				fileType = "tar archive";
 			} else {
-				int i = 0;
-				while (i < formats.getFormat().size() 
-						&& formats.getFormat().get(i).getExtension().compareTo(this.extension)!=0) {
-					i++;
+				fileType = this.mainC.getNativeTypes().get(this.extension);
+				if (fileType==null) {
+					throw new ExceptionImport ("Unsupported extension.");
 				}
-				if (i == formats.getFormat().size()) {
-					throw new ExceptionImport("Extension not recognised.");
-				} else {
-					fileType = formats.getFormat().get(i).getFormat();
-					this.nativeType = fileType;
-				}
+				this.nativeType = fileType;
 			}
+			
+			// now the file is uploaded, Ok button could be enabled
+			
 			this.okButton.setDisabled(false);
-			this.filenameLabel.setValue(this.filename + " (file type is " + fileType + ")");
+			this.filenameLabel.setValue(this.fileOrArchive + " (file type is " + fileType + ")");
 
-			this.fileUploaded = new File(this.tmpPath + this.sessionId, this.filename);
+			this.fileUploaded = new File(this.tmpPath + this.sessionId, this.fileOrArchive);
 			InputStream is = event.getMedia().getStreamData();
 
 			//write is to the file
@@ -185,28 +189,35 @@ public class ImportProcessesController extends Window {
 	 * @throws InterruptedException 
 	 * @throws IOException 
 	 */
-	private void readFile() throws InterruptedException, IOException {
+	private void readArchiveOrFile() throws InterruptedException, IOException {
 		String command = null;
 		try {
 			if (this.extension.compareTo("zip")==0 || this.extension.compareTo("tar")==0) {
 				/*
-				 *  Case of an archive: for each file in the session folder, check whether 
+				 *  Case of an archive: extract files in session folder, 
+				 *  for each file in the folder, check whether 
 				 *  they all have the same extension. If yes, import each of which. If no, 
 				 *  raise an exception.
 				 */
-				
-				command = " cd " + this.sessionId;
+
+				File archive = new File (this.tmpPath + this.sessionId, this.fileOrArchive);
+				String separator = archive.separator;
+
 				if(this.extension.compareTo("zip")==0) {
-					command = " unzip ";
+					command = " unzip -o " + this.tmpPath + this.sessionId + separator + this.fileOrArchive 
+					+ " -d " + this.tmpPath + this.sessionId;
 				} else {
-					command = " tar xf ";
+					command = " tar -xf " + this.tmpPath + this.sessionId + separator + this.fileOrArchive 
+					+ " -C " + this.tmpPath + this.sessionId;
 				}
-				command += this.filename;
+
 				System.out.println (command + "\n");
-				
-				
-				//Process p = Runtime.getRuntime().exec(command + this.tmpPath + this.filename);
-				Process p = Runtime.getRuntime().exec("pwd");
+
+
+				Process p = Runtime.getRuntime().exec(command);
+				// delete archive
+				archive.delete();
+
 				String s = null;
 				BufferedReader stdInput = new BufferedReader(new
 						InputStreamReader(p.getInputStream()));
@@ -220,21 +231,43 @@ public class ImportProcessesController extends Window {
 				while ((s = stdError.readLine()) != null) {
 					this.mainC.getLOG().info(s);
 				}
-				
+
 				// Get names of all files in folder
-				
+				File folder = new File (this.tmpPath, this.sessionId);
+				File[] folderFiles = folder.listFiles();
+				if (folderFiles.length==0) {
+					throw new ExceptionImport("Empty archive");
+				}
+				String ignoredFiles = "";
+				String filename ;
+				for (int j=0; j< folderFiles.length; j++){
+					File xml_file = new File(folderFiles[j].getAbsolutePath());
+					FileInputStream xml_process = new FileInputStream(xml_file);
+					filename = folderFiles[j].getName();
+					String processName = filename.split("\\.")[0];
+					String nativeType = this.mainC.getNativeTypes().get(filename.split("\\.")[filename.split("\\.").length-1]);
+					if (nativeType==null) {
+						ignoredFiles += filename + ", ";
+					} else {
+						ImportOneProcess importProcess = 
+							new ImportOneProcess (this.mainC, this, xml_process, processName, nativeType, filename);
+					}
+				}
+
 			} else {
-				// Case of an single file: import it.
-				File xml_file = new File (this.tmpPath + this.sessionId, this.filename);
+				// Case of a single file: import it.
+				File xml_file = new File (this.tmpPath + this.sessionId, this.fileOrArchive);
+				String processName = this.fileOrArchive.split("\\.")[0];
 				FileInputStream xml_process = new FileInputStream(xml_file);
-				ImportOneProcess importProcess = new ImportOneProcess (this.mainC, this, xml_process, this.nativeType);
+				ImportOneProcess importProcess =
+					new ImportOneProcess (this.mainC, this, xml_process, processName, this.nativeType, fileOrArchive);
 			}
-			
+			// clean folder and close window
+			cancel();
+
 		} catch (Exception e) {
 			Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
-		} finally {
-			cancel();	
-		}
+		} 
 	}
 }

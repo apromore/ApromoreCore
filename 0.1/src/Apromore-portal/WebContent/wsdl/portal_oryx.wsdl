@@ -29,6 +29,13 @@
 		<part name="payload" element="tnsx:WriteProcessInputMsg" />
 	</message>
 
+	<message name="CloseSessionOutputMsg">
+		<part name="payload" element="tnsx:CloseSessionOutputMsg" />
+	</message>
+	<message name="CloseSessionInputMsg">
+		<part name="payload" element="tnsx:CloseSessionInputMsg" />
+	</message>
+
 	<portType name="PortalOryxPortType">
 		<operation name="ReadNative">
 			<input name="ReadNativeRequest" message="tns:ReadNativeInputMsg" />
@@ -42,6 +49,10 @@
 		<operation name="WriteProcess">
 			<input name="WriteProcessRequest" message="tns:WriteProcessInputMsg" />
 			<output name="WriteProcessResponse" message="tns:WriteProcessOutputMsg" />
+		</operation>
+		<operation name="CloseSession">
+			<input name="CloseSessionRequest" message="tns:CloseSessionInputMsg" />
+			<output name="CloseSessionResponse" message="tns:CloseSessionOutputMsg" />
 		</operation>
 	</portType>
 
@@ -75,6 +86,16 @@
 				<soap:body use="literal" />
 			</input>
 			<output name="WriteProcessResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+
+		<operation name="CloseSession">
+			<soap:operation style="document" />
+			<input name="CloseSessionRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="CloseSessionResponse">
 				<soap:body use="literal" />
 			</output>
 		</operation>
