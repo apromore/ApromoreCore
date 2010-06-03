@@ -139,15 +139,22 @@ public class Canonical2EPML {
 			edgeRefMap.put(edge.getId(), edge);			
 			if(flag)
 			{
-				TypeArc arc = new TypeArc();
-				TypeFlow flow = new TypeFlow();
-				id_map.put(edge.getId(), BigInteger.valueOf(ids));
-				arc.setId(BigInteger.valueOf(ids++));
-				flow.setSource(id_map.get(edge.getSourceId()));
-				flow.setTarget(id_map.get(edge.getTargetId()));
-				arc.setFlow(flow);
-				epc.getEventOrFunctionOrRole().add(arc);
-				epcRefMap.put(arc.getId(), arc);
+				{		
+				if(id_map.get(edge.getTargetId())!= null) {
+					TypeArc arc = new TypeArc();
+					TypeFlow flow = new TypeFlow();
+					id_map.put(edge.getId(), BigInteger.valueOf(ids));
+					arc.setId(BigInteger.valueOf(ids++));
+					flow.setSource(id_map.get(edge.getSourceId()));
+					flow.setTarget(id_map.get(edge.getTargetId()));
+					arc.setFlow(flow);
+					epc.getEventOrFunctionOrRole().add(arc);
+					epcRefMap.put(arc.getId(), arc);
+					}
+				else {
+					id_map.put(edge.getTargetId(),id_map.get(edge.getSourceId()));
+					}
+				}
 			}
 		}
 		
