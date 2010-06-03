@@ -16,7 +16,7 @@
 </style>
 
 	<window id="mainW" border="none" width="100%"
-		contentStyle="overflow:auto" vflex="1"
+		vflex="1"
 		use="org.apromore.portal.dialogController.MainController">
 		<Header id="headercomp" />
 
