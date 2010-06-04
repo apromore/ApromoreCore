@@ -51,7 +51,7 @@ public class EditListNativesController extends Window {
 		while (it.hasNext()){
 			Listitem cbi = new Listitem();
 			this.nativeTypesLB.appendChild(cbi);
-			cbi.setLabel(it.next());
+			cbi.setLabel(formats.get(it.next()));
 		}
 		
 

@@ -129,14 +129,13 @@ public class MenuController extends Menubar {
 
 		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
-		String processName, versionName;
-		int processId;
+		
 		Set<ProcessSummaryType> keySet = selectedProcessVersions.keySet();
-		Iterator itP = keySet.iterator();
+		Iterator <ProcessSummaryType>itP = keySet.iterator();
 		while (itP.hasNext()) {
 			ExportNativeController exportNativeC;
 			ProcessSummaryType process = (ProcessSummaryType) itP.next();
-			Iterator itV = process.getVersionSummaries().iterator();
+			Iterator<VersionSummaryType> itV = selectedProcessVersions.get(process).iterator();
 			while (itV.hasNext()){
 				VersionSummaryType version = (VersionSummaryType) itV.next();
 				exportNativeC = new ExportNativeController(this, process.getId(), process.getName(), 

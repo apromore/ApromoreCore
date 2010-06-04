@@ -31,6 +31,7 @@ import org.zkoss.zul.Columns;
 import org.zkoss.zul.Detail;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Toolbarbutton;
@@ -82,6 +83,7 @@ public class ProcessTableController extends Window {
 	private Grid processSummariesGrid; 						// the grid for process summaries
 	private Rows processSummariesRows; 						// the rows for process summaries
 	private Window processTableW;							// the window which the entry point
+	private Paging pg;										// the comment which manages paging
 	private HashMap<Checkbox,ProcessSummaryType> processHM;	// Hasmap of checkboxes: one entry for each process 
 	private HashMap<Checkbox,VersionSummaryType> processVersionsHM;// HashMap of checkboxes: one entry for each process version
 	private HashMap<Checkbox, List<Checkbox>> mapProcessVersions; // <p, listV> in mapProcessVersions: checkboxes in listV are
@@ -104,7 +106,7 @@ public class ProcessTableController extends Window {
 		this.processSummariesGrid = (Grid) this.processTableW.getFellow("processSummariesGrid");
 		this.processSummariesRows = (Rows) this.processSummariesGrid.getFellow("processSummariesRows");
 		this.revertSelectionB = (Button) this.processSummariesGrid.getFellow("revertSelectionB");
-
+		this.pg = (Paging) this.processTableW.getFellow("pg");
 		this.columnId = (Column) this.processSummariesGrid.getFellow("columnId");
 		this.columnName = (Column) this.processSummariesGrid.getFellow("columnName");
 
@@ -650,4 +652,17 @@ public class ProcessTableController extends Window {
 	public void displayNewProcess(ProcessSummaryType process) {
 		this.displayOneProcess(process);
 	}
+
+	public Paging getPg() {
+		return pg;
+	}
+
+	public Grid getProcessSummariesGrid() {
+		return processSummariesGrid;
+	}
+
+	public Window getProcessTableW() {
+		return processTableW;
+	}
+	
 }
