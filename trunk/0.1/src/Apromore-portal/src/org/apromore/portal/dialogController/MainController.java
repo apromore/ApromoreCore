@@ -17,8 +17,7 @@ import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.UserType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.ClientInfoEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
@@ -38,18 +37,20 @@ public class MainController extends Window {
 	private ProcessTableController processtable;
 	private SimpleSearchController simplesearch;
 	private UserType currentUser ;				// the connected user, if any
+	private String confirmCloseMsg;
 	private ShortMessageController shortmessageC;
 	private Window shortmessageW;
 	private String OryxEndPoint_xpdl;
 	private String OryxEndPoint_epml;
 	private String tmpPath;
-	private HashMap<String,String> nativeTypes; // choice of native formats
+	private HashMap<String,String> nativeTypes; // <k, v> belongs to nativeTypes: the file extension k
+	// is associated with the native type v (<xpdl,XPDL 1.2>)
 	private Logger LOG;
-	
+
 	// uncomment when ready
 	//private NavigationController navigation;
 	//private RefinedSearchController refinedsearch;
-	
+
 	/**
 	 * onCreate is executed after the main window has been created
 	 * it is responsible for instantiating all necessary controllers
@@ -74,8 +75,9 @@ public class MainController extends Window {
 			this.menu = new MenuController(this);
 
 			//this.navigation = new NavigationController (this);
-			
+
 			this.currentUser = null;
+			this.confirmCloseMsg ="You are about to leave Apromore. You might loose unsaved data.";
 			// read Oryx access point in properties
 			InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);;  
 			Properties properties = new Properties();  
@@ -104,14 +106,17 @@ public class MainController extends Window {
 	/**
 	 * register an event listener for the clientInfo event (to prevent user to close the browser window)
 	 */
-	public void onClientInfo () {
-		Clients.confirmClose("You are about to leave Apromore. If you were logged in you might loose some data.");
-	}
+	public void onClientInfo (ClientInfoEvent event) {
 
-	public void onSize() {
-
-		System.out.println("Current size is: " + this.mainW.getAttribute("size"));
-
+		Clients.confirmClose(this.confirmCloseMsg);
+		
+		Integer desktopHeight = event.getDesktopHeight() ;
+		//System.out.println ("Desktop height: " + desktopHeight);
+		Integer page = desktopHeight ;
+		//this.processtable.getProcessTableW().setHeight(page.toString());
+		//System.out.println ("Table height " + this.processtable.getProcessTableW().getHeight());
+		Integer rows = (desktopHeight - 127) / 30;
+		this.processtable.getPg().setPageSize(rows);
 	}
 
 	public void displayProcessSummaries(ProcessSummariesType processSummaries) throws Exception {
@@ -256,6 +261,14 @@ public class MainController extends Window {
 
 	public Window getShortmessageW() {
 		return shortmessageW;
+	}
+
+	public String getConfirmCloseMsg() {
+		return confirmCloseMsg;
+	}
+
+	public void setConfirmCloseMsg(String confirmCloseMsg) {
+		this.confirmCloseMsg = confirmCloseMsg;
 	}
 
 	public void setShortmessageW(Window shortmessageW) {

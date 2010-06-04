@@ -29,6 +29,7 @@ public class ImportOneProcess extends Window {
 	private String nativeType;
 	private Button okButton;
 	private Button cancelButton;
+	private Button cancelAllButton;
 	
 	public ImportOneProcess (MainController mainC, ImportProcessesController importProcessesC, InputStream xml_process, 
 			String processName, String nativeType, String fileName) 
@@ -51,6 +52,8 @@ public class ImportOneProcess extends Window {
 		this.okButton.setId(this.okButton.getId()+fileName);
 		this.cancelButton = (Button) this.importOneProcessWindow.getFellow("cancelButtonOneProcess");
 		this.cancelButton.setId(this.cancelButton.getId()+fileName);
+		this.cancelAllButton = (Button) this.importOneProcessWindow.getFellow("cancelAllButtonOneProcess");
+		this.cancelAllButton.setId(this.cancelAllButton.getId()+fileName);
 		
 		this.processName.setValue(processName);
 		
@@ -72,6 +75,12 @@ public class ImportOneProcess extends Window {
 				cancel();
 			}
 		});	
+		this.cancelAllButton.addEventListener("onClick",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				cancelAll();
+			}
+		});	
 		win.doModal();
 	}
 	
@@ -79,6 +88,9 @@ public class ImportOneProcess extends Window {
 		this.importOneProcessWindow.detach();
 	}
 	
+	private void cancelAll() {
+		this.importProcessesC.cancelAll();
+	}
 	private void importProcess() throws InterruptedException {
 		RequestToManager request = new RequestToManager();
 		try {
@@ -110,4 +122,9 @@ public class ImportOneProcess extends Window {
 			cancel();
 		}
 	}
+
+	public Window getImportOneProcessWindow() {
+		return importOneProcessWindow;
+	}
+	
 }

@@ -2,16 +2,14 @@
 <zk>
 
 <window id="processTableWindow" contentStyle="overflow:auto"
-	style="border:6px" vflex="1">
+	style="border:6px">
 	<hbox style="background:#DAF4FF" width="100%">
-		<paging id="pg" pageSize="15"/>
 		<box height="25px" width="400px">
 			<toolbarbutton id="table2graphic" visible="true" label="Change view" />
 			<toolbarbutton id="graphic2table" visible="false" label="Change view" />
 		</box>
 	</hbox>
-	<grid id="processSummariesGrid" mold="paging" paginal="${pg}"
-		vflex="1" >
+	<grid id="processSummariesGrid" mold="paging" vflex="1" pageSize="15">
 		<columns sizable="true">
 			<column width="3.5%">
 				<button id="revertSelectionB"
@@ -32,5 +30,5 @@
 
 		</rows>
 	</grid>
-</window>
+	</window>
 </zk>

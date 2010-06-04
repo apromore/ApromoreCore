@@ -8,14 +8,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
 
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionImport;
-import org.apromore.portal.model_manager.FormatsType;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -39,8 +40,10 @@ public class ImportProcessesController extends Window {
 	private String fileOrArchive;
 	private String nativeType;
 	private File fileUploaded;
+	private File folder;
 	private String tmpPath;
 	private String sessionId;
+	private List<ImportOneProcess> importOneProcess;
 
 	public ImportProcessesController (MenuController menuC, MainController mainC) throws DialogException{
 
@@ -49,6 +52,7 @@ public class ImportProcessesController extends Window {
 		this.tmpPath = this.mainC.getTmpPath();
 		HttpSession session = (HttpSession)(Executions.getCurrent()).getDesktop().getSession().getNativeSession();
 		this.sessionId = session.getId().toString();
+		this.importOneProcess = new ArrayList<ImportOneProcess>();
 
 		try {
 			final Window win = (Window) Executions.createComponents("macros/importProcesses.zul", null, null);
@@ -70,14 +74,14 @@ public class ImportProcessesController extends Window {
 			// event listeners
 			uploadButton.addEventListener("onUpload", new EventListener() {
 				public void onEvent(Event event) throws Exception {
-					uploadProcess ((UploadEvent) event);	
+					uploadFile ((UploadEvent) event);	
 				}
 			});
 
 			okButton.addEventListener("onClick",
 					new EventListener() {
 				public void onEvent(Event event) throws Exception {
-					readArchiveOrFile();
+					extractArchiveOrFile();
 				}
 			});	
 			cancelButton.addEventListener("onClick",
@@ -110,26 +114,26 @@ public class ImportProcessesController extends Window {
 		f.delete();
 	}
 	/**
-	 * Upload a file file: an archive or an xml file with the description of the model
+	 * Upload a file file: an archive or an xml file 
 	 * @param event
 	 * @throws InterruptedException
 	 */
-	private void uploadProcess (UploadEvent event) throws InterruptedException {
+	private void uploadFile (UploadEvent event) throws InterruptedException {
 		try {
 
 			/*
 			 * Create a folder for the session.
 			 * if folder already exists for current session: empty and delete it first.
 			 */
-			File folder = new File (this.tmpPath + this.sessionId);
-			if (folder.exists()) {
-				File[] content = folder.listFiles();
+			this.folder = new File (this.tmpPath + this.sessionId);
+			if (this.folder.exists()) {
+				File[] content = this.folder.listFiles();
 				for (int i=0; i<content.length;i++){
 					content[i].delete();
 				}
-				folder.delete();
+				this.folder.delete();
 			}
-			Boolean ok= folder.mkdir();
+			Boolean ok= this.folder.mkdir();
 			if (!ok) {
 				throw new ExceptionImport ("Couldn't extract archive.");
 			}
@@ -150,9 +154,9 @@ public class ImportProcessesController extends Window {
 				}
 				this.nativeType = fileType;
 			}
-			
+
 			// now the file is uploaded, Ok button could be enabled
-			
+
 			this.okButton.setDisabled(false);
 			this.filenameLabel.setValue(this.fileOrArchive + " (file type is " + fileType + ")");
 
@@ -189,7 +193,7 @@ public class ImportProcessesController extends Window {
 	 * @throws InterruptedException 
 	 * @throws IOException 
 	 */
-	private void readArchiveOrFile() throws InterruptedException, IOException {
+	private void extractArchiveOrFile() throws InterruptedException, IOException {
 		String command = null;
 		try {
 			if (this.extension.compareTo("zip")==0 || this.extension.compareTo("tar")==0) {
@@ -215,8 +219,6 @@ public class ImportProcessesController extends Window {
 
 
 				Process p = Runtime.getRuntime().exec(command);
-				// delete archive
-				archive.delete();
 
 				String s = null;
 				BufferedReader stdInput = new BufferedReader(new
@@ -233,24 +235,31 @@ public class ImportProcessesController extends Window {
 				}
 
 				// Get names of all files in folder
-				File folder = new File (this.tmpPath, this.sessionId);
-				File[] folderFiles = folder.listFiles();
+				File[] folderFiles = this.folder.listFiles();
 				if (folderFiles.length==0) {
 					throw new ExceptionImport("Empty archive");
 				}
 				String ignoredFiles = "";
 				String filename ;
 				for (int j=0; j< folderFiles.length; j++){
-					File xml_file = new File(folderFiles[j].getAbsolutePath());
-					FileInputStream xml_process = new FileInputStream(xml_file);
-					filename = folderFiles[j].getName();
-					String processName = filename.split("\\.")[0];
-					String nativeType = this.mainC.getNativeTypes().get(filename.split("\\.")[filename.split("\\.").length-1]);
-					if (nativeType==null) {
-						ignoredFiles += filename + ", ";
+					File current_file = new File(folderFiles[j].getAbsolutePath());
+					// ignore folders
+					if (current_file.isFile()) {
+						// ignore the archive itself
+						if (current_file.getName().compareTo(archive.getName())!=0) {
+							FileInputStream xml_process = new FileInputStream(current_file);
+							filename = folderFiles[j].getName();
+							String processName = filename.split("\\.")[0];
+							String nativeType = this.mainC.getNativeTypes().get(filename.split("\\.")[filename.split("\\.").length-1]);
+							if (nativeType==null) {
+								ignoredFiles += filename + ", ";
+							} else {
+								this.importOneProcess.add(
+										new ImportOneProcess (this.mainC, this, xml_process, processName, nativeType, filename));
+							}
+						}
 					} else {
-						ImportOneProcess importProcess = 
-							new ImportOneProcess (this.mainC, this, xml_process, processName, nativeType, filename);
+						ignoredFiles += current_file.getName() + ", ";
 					}
 				}
 
@@ -269,5 +278,16 @@ public class ImportProcessesController extends Window {
 			Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		} 
+	}
+
+	/*
+	 * cancel all remaining imports
+	 */
+	public void cancelAll() {
+		for (int i=0;i<this.importOneProcess.size();i++) {
+			if (this.importOneProcess.get(i).getImportOneProcessWindow()!=null){
+				this.importOneProcess.get(i).getImportOneProcessWindow().detach();
+			}
+		}
 	}
 }
