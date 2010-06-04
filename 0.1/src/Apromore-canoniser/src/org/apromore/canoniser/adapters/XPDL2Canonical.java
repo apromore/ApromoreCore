@@ -10,12 +10,13 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
+import javax.xml.bind.JAXBException;
+
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.FillType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SizeType;
-import org.apromore.canoniser.exception.ExceptionStore;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -26,6 +27,7 @@ import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ORJoinType;
 import org.apromore.cpf.ORSplitType;
+import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.StateType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TimerType;
@@ -44,6 +46,7 @@ import org.wfmc._2008.xpdl2.IntermediateEvent;
 import org.wfmc._2008.xpdl2.NodeGraphicsInfo;
 import org.wfmc._2008.xpdl2.NodeGraphicsInfos;
 import org.wfmc._2008.xpdl2.PackageType;
+import org.wfmc._2008.xpdl2.Pool;
 import org.wfmc._2008.xpdl2.ProcessType;
 import org.wfmc._2008.xpdl2.Route;
 import org.wfmc._2008.xpdl2.StartEvent;
@@ -79,7 +82,7 @@ public class XPDL2Canonical {
 		return anf;
 	}
 
-	public XPDL2Canonical(PackageType pkg) throws ExceptionStore {
+	public XPDL2Canonical(PackageType pkg) throws JAXBException {
 
 		this.cpf = new CanonicalProcessType();
 		this.anf = new AnnotationsType();
@@ -92,6 +95,11 @@ public class XPDL2Canonical {
 			translateProcess(net, bpmnproc);
 			recordAnnotations(bpmnproc, this.anf);
 			this.cpf.getNet().add(net);
+		}
+		
+		for(Pool pool: pkg.getPools().getPool()){
+			ResourceTypeType res = new ResourceTypeType();
+			
 		}
 	}
 
@@ -169,12 +177,16 @@ public class XPDL2Canonical {
 			NodeType andSplit = implicitANDSplit.get(act);
 			NodeType orSplit = implicitORSplit.get(act);
 
-			if (outgoings.get(andSplit) != null && outgoings.get(andSplit).size() > 0)
-				addEdge(net, andSplit, orSplit);
-			else {
-				EdgeType edge = outgoings.get(act).get(0);
-				edge.setTargetId(orSplit.getId());
-				net.getNode().remove(andSplit);
+			try {
+				if (outgoings.get(andSplit) != null && outgoings.get(andSplit).size() > 0)
+					addEdge(net, andSplit, orSplit);
+				else {
+					EdgeType edge = outgoings.get(act).get(0);
+					edge.setTargetId(orSplit.getId());
+					net.getNode().remove(andSplit);
+				}
+			} catch (NullPointerException e) {
+				// TODO Auto-generated catch block
 			}
 		}
 	}
@@ -350,13 +362,14 @@ public class XPDL2Canonical {
 		boolean isSplit = false;
 		boolean isJoin = false;
 
-		if(trests != null)
+		if(trests != null){
 			for (TransitionRestriction trest: trests.getTransitionRestriction()) {
 				if (trest.getSplit() != null)
 					isSplit = true;
 				if (trest.getJoin() != null)
 					isJoin = true;
 			}
+		}
 
 		NodeType node = null;
 
