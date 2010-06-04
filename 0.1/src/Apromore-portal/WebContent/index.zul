@@ -15,7 +15,7 @@
 .z-label	{font-size: ${fontSizeMS}}
 </style>
 
-	<window id="mainW" border="none" width="100%"
+	<window id="mainW" border="none" width="100%" 
 		vflex="1"
 		use="org.apromore.portal.dialogController.MainController">
 		<Header id="headercomp" />

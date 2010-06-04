@@ -28,6 +28,9 @@
 						<button id="cancelButtonOneProcess" label="Cancel"
 							image="img/cancel2.png">
 						</button>
+						<button id="cancelAllButtonOneProcess" label="Cancel all"
+							image="img/cancel2.png">
+						</button>
 					</div>
 				</row>
 			</rows>

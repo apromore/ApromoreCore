@@ -11,7 +11,7 @@
 			</columns>
 			<rows>
 				<row>
-					<label value="Process name (process id)"
+					<label value="Process name"
 						width="100%" />
 					<label width="100%" />
 				</row>

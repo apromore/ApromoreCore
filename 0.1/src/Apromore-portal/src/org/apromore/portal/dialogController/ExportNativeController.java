@@ -37,7 +37,8 @@ public class ExportNativeController extends Window {
 	private Listbox nativeTypesLB;
 	private int processId;
 	private String versionName;
-	private HashMap<String, String> formats_ext;
+	private HashMap<String, String> formats_ext; // <k, v> belongs to nativeTypes: the file extension k
+												// is associated with the native type v (<xpdl,XPDL 1.2>)
 	
 	public ExportNativeController (MenuController menuC, int processId, 
 				String processName, String versionName, HashMap<String, String> formats_ext)   {
@@ -58,19 +59,19 @@ public class ExportNativeController extends Window {
 		Row buttonsR = (Row) nativeTypeR.getNextSibling();
 
 		this.processNameL = (Label) processNameR.getFirstChild().getNextSibling();
-		this.processNameL.setValue(processName + " (" + processId + ")");
+		this.processNameL.setValue(processName);
 		this.versionNameL = (Label) versionNameR.getFirstChild().getNextSibling();
 		this.versionNameL.setValue(versionName);
 		this.nativeTypesLB = (Listbox) nativeTypeR.getFirstChild().getNextSibling();
 		this.okB = (Button) buttonsR.getFirstChild().getFirstChild();
 		this.cancelB = (Button) buttonsR.getFirstChild().getFirstChild().getNextSibling();
 		
-		Set<String> extensions = formats_ext.keySet();
+		Set<String> extensions = this.formats_ext.keySet();
 		Iterator<String> it = extensions.iterator();
 		while (it.hasNext()){
 			Listitem cbi = new Listitem();
 			this.nativeTypesLB.appendChild(cbi);
-			cbi.setLabel(it.next());
+			cbi.setLabel(this.formats_ext.get(it.next()));
 		}
 
 		this.nativeTypesLB.addEventListener("onSelect",
@@ -121,17 +122,25 @@ public class ExportNativeController extends Window {
 						Messagebox.ERROR);
 			} else {
 				String nativeType = this.nativeTypesLB.getSelectedItem().getLabel();
-				String ext = this.formats_ext.get(nativeType);
+				String ext = null ;
+				Set<String> keys = this.formats_ext.keySet();
+				Iterator<String> it = keys.iterator();
+				while (it.hasNext()) {
+					String k = it.next();
+					if (this.formats_ext.get(k).compareTo(nativeType)==0) {
+						ext = k;
+						break;
+					}
+				}
 				if (ext==null) {
 					throw new ExceptionExport ("ExportNativeController: Native type " + nativeType
 							+ " not supported. \n");
 				}
-				String filename = URLEncoder.encode(this.processNameL.getValue()+ "." 
-						+ this.versionName + "." + ext,"UTF-8") ;
+				String processname = this.processNameL.getValue().replaceAll(" ", "_");
+				String filename = processname + "." + ext;
 				RequestToManager request = new RequestToManager();
 				InputStream native_is =
-					request.ExportNative (this.processId, this.versionName, 
-					this.nativeTypesLB.getSelectedItem().getLabel());
+					request.ExportNative (this.processId, this.versionName, nativeType);
 				Filedownload.save(native_is, "text.xml", filename);
 			}
 		} catch (InterruptedException e) {

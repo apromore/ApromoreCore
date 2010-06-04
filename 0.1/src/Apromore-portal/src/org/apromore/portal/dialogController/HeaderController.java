@@ -117,7 +117,7 @@ public class HeaderController extends Window {
 
 		
 		this.mainC.setCurrentUser(user);
-		this.consultAccountButton.setLabel(this.mainC.getCurrentUser().getFirstname() + " connected ");
+		this.consultAccountButton.setLabel(this.mainC.getCurrentUser().getFirstname() + " connected. ");
 		this.consultAccountButton.setVisible(true);
 		this.signinButton.setVisible(false);
 		this.signoutButton.setVisible(true);
