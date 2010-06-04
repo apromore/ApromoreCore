@@ -555,7 +555,7 @@ public class ProcessDao extends BasicDao {
 			if (rs.next()) {
 				return rs.getString(1);
 			} else {
-				throw new ExceptionDao ("ProcessDAO (getNative): .");
+				throw new ExceptionDao ("ProcessDAO (getNative): couldn't access to native format.");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
