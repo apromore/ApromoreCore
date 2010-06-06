@@ -1,6 +1,8 @@
 package org.apromore.canoniser.adapters.test;
 
 import java.io.File;
+import java.io.FileFilter;
+import java.io.FilenameFilter;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -21,39 +23,53 @@ public class TestXPDL2Canonical {
 	 */
 	public static void main(String[] args) {
 
+		File folder = new File("/home/fauvet/models/xpdl_models");
+		FileFilter fileFilter = new FileFilter() { 
+			public boolean accept(File file) { 
+				return file.isFile(); 
+			} 
+		}; 
+		File[] folderContent = folder.listFiles (fileFilter);
+		int n =0;
+		for (int i=0;i<folderContent.length;i++) {
+			File file = folderContent[i];
+			String filename = file.getName();
+			String extension = filename.split("\\.")[filename.split("\\.").length-1];
+			if (extension.compareTo("xpdl")==0) {
+				System.out.println ("Analysing " + filename);
+				n++;
+				try{
+					JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
+					Unmarshaller u = jc.createUnmarshaller();
+					JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(file);
+					PackageType pkg = rootElement.getValue();
 
-		///File file = new File("/home/fauvet/Diagram1.xpdl");
-		File file = new File("/home/fauvet/models/xpdl_models/Brisbane-Deposit unaccompanied baggage.xpdl");
-		
-		try{
-			JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
-			Unmarshaller u = jc.createUnmarshaller();
-			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(file);
-			PackageType pkg = rootElement.getValue();
+					XPDL2Canonical xpdl2canonical = new XPDL2Canonical(pkg);
 
-			XPDL2Canonical xpdl2canonical = new XPDL2Canonical(pkg);
+					jc = JAXBContext.newInstance("org.apromore.cpf");
+					Marshaller m = jc.createMarshaller();
+					m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+					JAXBElement<CanonicalProcessType> cprocRootElem = 
+						new org.apromore.cpf.ObjectFactory().createCanonicalProcess(xpdl2canonical.getCpf());
+					m.marshal(cprocRootElem, new File(filename + ".cpf"));
 
-			jc = JAXBContext.newInstance("org.apromore.cpf");
-			Marshaller m = jc.createMarshaller();
-			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-			JAXBElement<CanonicalProcessType> cprocRootElem = 
-				new org.apromore.cpf.ObjectFactory().createCanonicalProcess(xpdl2canonical.getCpf());
-			//m.marshal(cprocRootElem, new File("/home/fauvet/Diagram1.cpf"));
-			m.marshal(cprocRootElem, new File("/home/fauvet/models/xpdl_models/Brisbane-Deposit unaccompanied baggage.cpf"));
+					jc = JAXBContext.newInstance("org.apromore.anf");
+					m = jc.createMarshaller();
+					m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+					JAXBElement<AnnotationsType> annsRootElem = new org.apromore.anf.ObjectFactory().createAnnotations(xpdl2canonical.getAnf());
+					m.marshal(annsRootElem, new File (filename + ".anf"));
 
-			jc = JAXBContext.newInstance("org.apromore.anf");
-			m = jc.createMarshaller();
-			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-			JAXBElement<AnnotationsType> annsRootElem = new org.apromore.anf.ObjectFactory().createAnnotations(xpdl2canonical.getAnf());
-			//m.marshal(annsRootElem, new File ("/home/fauvet/Diagram1.anf"));
-			m.marshal(annsRootElem, new File ("/home/fauvet/models/xpdl_models/Brisbane-Deposit unaccompanied baggage.anf"));
-
-		} catch (JAXBException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (ExceptionStore e) {
-			e.printStackTrace();
+				} catch (JAXBException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+				
+			} else {
+				System.out.println ("Skipping " + filename);
+			}	
 		}
-	}
-
+		System.out.println ("Analysed " + n + " files.");
+	} 
 }
