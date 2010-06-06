@@ -51,13 +51,13 @@ public class TestXPDL2Canonical {
 					m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 					JAXBElement<CanonicalProcessType> cprocRootElem = 
 						new org.apromore.cpf.ObjectFactory().createCanonicalProcess(xpdl2canonical.getCpf());
-					m.marshal(cprocRootElem, new File(filename + ".cpf"));
+					m.marshal(cprocRootElem, new File(folder,filename + ".cpf"));
 
 					jc = JAXBContext.newInstance("org.apromore.anf");
 					m = jc.createMarshaller();
 					m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 					JAXBElement<AnnotationsType> annsRootElem = new org.apromore.anf.ObjectFactory().createAnnotations(xpdl2canonical.getAnf());
-					m.marshal(annsRootElem, new File (filename + ".anf"));
+					m.marshal(annsRootElem, new File (folder,filename + ".anf"));
 
 				} catch (JAXBException e) {
 					// TODO Auto-generated catch block
