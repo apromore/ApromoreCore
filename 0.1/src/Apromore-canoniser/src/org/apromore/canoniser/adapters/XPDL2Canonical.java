@@ -17,6 +17,7 @@ import org.apromore.anf.FillType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SizeType;
+import org.apromore.canoniser.exception.ExceptionAdapters;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -82,7 +83,7 @@ public class XPDL2Canonical {
 		return anf;
 	}
 
-	public XPDL2Canonical(PackageType pkg) throws JAXBException {
+	public XPDL2Canonical(PackageType pkg) throws JAXBException, ExceptionAdapters {
 
 		this.cpf = new CanonicalProcessType();
 		this.anf = new AnnotationsType();
@@ -154,8 +155,8 @@ public class XPDL2Canonical {
 		}
 	}
 
-	private void translateProcess(NetType net, ProcessType bpmnproc) {
-		System.out.println(bpmnproc.getName());
+	private void translateProcess(NetType net, ProcessType bpmnproc) throws ExceptionAdapters {
+		////System.out.println(bpmnproc.getName());
 		for (Object obj: bpmnproc.getContent()) {
 			if (obj instanceof Activities)
 				activities = ((Activities)obj).getActivity();
@@ -172,7 +173,7 @@ public class XPDL2Canonical {
 		linkImplicitOrSplits(net);		
 	}
 
-	private void linkImplicitOrSplits(NetType net) {
+	private void linkImplicitOrSplits(NetType net) throws ExceptionAdapters {
 		for (NodeType act: implicitORSplit.keySet()) {
 			NodeType andSplit = implicitANDSplit.get(act);
 			NodeType orSplit = implicitORSplit.get(act);
@@ -186,7 +187,7 @@ public class XPDL2Canonical {
 					net.getNode().remove(andSplit);
 				}
 			} catch (NullPointerException e) {
-				// TODO Auto-generated catch block
+				throw new ExceptionAdapters ("XPDL2Canonical: " + e.getMessage());
 			}
 		}
 	}
@@ -200,7 +201,7 @@ public class XPDL2Canonical {
 
 		if (csrc instanceof TaskType && flow.getCondition() != null) {
 			Condition cond = flow.getCondition();
-			System.out.println("Condition type: " + cond.getType());
+			//System.out.println("Condition type: " + cond.getType());
 
 			NodeType split = implicitORSplit.get(csrc);
 			if (split == null) {
@@ -250,7 +251,7 @@ public class XPDL2Canonical {
 		return edge;
 	}
 
-	private void translateActivity(NetType net, Activity act) {
+	private void translateActivity(NetType net, Activity act) throws ExceptionAdapters {
 		NodeType node = new NodeType();
 		Route route = null;
 		Event event = null;
@@ -267,14 +268,14 @@ public class XPDL2Canonical {
 				trests = (TransitionRestrictions) obj;
 		if (route != null ){
 			node = translateGateway(net, act, route, trests);
-			System.out.println("Gateway: " + route.getGatewayType());
+			//System.out.println("Gateway: " + route.getGatewayType());
 		} else if (event != null) {
 			node = translateEvent(net, act, event);
-			System.out.println("Event: " + act.getName());
+			//System.out.println("Event: " + act.getName());
 		} else {
 			// TODO: Subprocesses ...
 			node = translateTask(net, act);
-			System.out.println("Activity: " + act.getName());
+			//System.out.println("Activity: " + act.getName());
 		}
 
 		node.setId(BigInteger.valueOf(cpfId++));
@@ -302,20 +303,20 @@ public class XPDL2Canonical {
 			NodeType split = new ANDSplitType();
 			split.setId(BigInteger.valueOf(cpfId++));
 			net.getNode().add(split);
-			System.out.println("Implicit split");
+			//System.out.println("Implicit split");
 		}
 
 		if (isJoin){
 			NodeType join = new XORJoinType();
 			join.setId(BigInteger.valueOf(cpfId++));
 			net.getNode().add(join);			
-			System.out.println("Implicit join");
+			//System.out.println("Implicit join");
 		}
 		node.setName(act.getName());
 		return node;
 	}
 
-	private NodeType translateEvent(NetType net, Activity act, Event event) {
+	private NodeType translateEvent(NetType net, Activity act, Event event) throws ExceptionAdapters {
 		NodeType node = null;
 
 		if (event.getStartEvent() != null) {
@@ -328,8 +329,7 @@ public class XPDL2Canonical {
 			else if (startEvent.getTrigger().equals("Timer"))
 				node = new TimerType();
 			else {
-				System.err.println("Event type not supported: " + startEvent.getTrigger());
-				System.exit(-1);
+				throw new ExceptionAdapters ("XPDL2Canonical: event type not supported: " + startEvent.getTrigger());
 			}
 		} else if (event.getEndEvent() != null) {
 			EndEvent endEvent = event.getEndEvent();
@@ -338,8 +338,7 @@ public class XPDL2Canonical {
 			else if (endEvent.getResult().equals("Message"))
 				node = new MessageType();
 			else {
-				System.err.println("Event type not supported: " + endEvent.getResult());
-				System.exit(-1);
+				throw new ExceptionAdapters ("XPDL2Canonical: event type not supported: " + endEvent.getResult());
 			}
 		} else {
 			IntermediateEvent interEvent = event.getIntermediateEvent();
@@ -350,15 +349,14 @@ public class XPDL2Canonical {
 			else if (interEvent.getTrigger().equals("Timer"))
 				node = new TimerType();
 			else {
-				System.err.println("Event type not supported: " + interEvent.getTrigger());
-				System.exit(-1);
+				throw new ExceptionAdapters ("XPDL2Canonical: event type not supported: " + interEvent.getTrigger());
 			}
 		}
 		node.setName(act.getName());
 		return node;
 	}
 
-	private NodeType translateGateway(NetType net, Activity act, Route route, TransitionRestrictions trests) {
+	private NodeType translateGateway(NetType net, Activity act, Route route, TransitionRestrictions trests) throws ExceptionAdapters {
 		boolean isSplit = false;
 		boolean isJoin = false;
 
@@ -392,8 +390,7 @@ public class XPDL2Canonical {
 			else
 				node = new ORJoinType();
 		} else {
-			System.err.println("Gateway type not supported:[DEPRECATED] " + route.getGatewayType());
-			System.exit(-1);
+			throw new ExceptionAdapters ("XPDL2Canonical: gateway type not supported:[DEPRECATED] " + route.getGatewayType());
 		}
 
 		return node;
