@@ -1,17 +1,14 @@
 <!-- Controller is ProcessTableController -->
 <zk>
-
-<window id="processTableWindow" contentStyle="overflow:auto"
-	style="border:6px" vflex="1">
 	<hbox style="background:#DAF4FF" width="100%">
-		<paging id="pg" pageSize="15"/>
+		<paging id="pg" pageSize="22"/>
 		<box height="25px" width="400px">
 			<toolbarbutton id="table2graphic" visible="true" label="Change view" />
 			<toolbarbutton id="graphic2table" visible="false" label="Change view" />
 		</box>
 	</hbox>
 	<grid id="processSummariesGrid" mold="paging" paginal="${pg}"
-		vflex="1" >
+		vflex="true" height="660px">
 		<columns sizable="true">
 			<column width="3.5%">
 				<button id="revertSelectionB"
@@ -22,15 +19,15 @@
 				<checkbox id="processSummaryCB" visible="false" />
 			</column>
 			<column id="columnId" label="Id" width="3%" />
-			<column id="columnName" label="Name" />
-			<column sort="auto" label="Original language" />
-			<column sort="auto" label="Domain" />
-			<column sort="auto" label="Ranking" />
-			<column sort="auto" label="Latest version" />
+			<column id="columnName" label="Name" width="15%" />
+			<column sort="auto" label="Original language" width="15%" />
+			<column sort="auto" label="Domain" width="15%" />
+			<column sort="auto" label="Ranking" width="15%" />
+			<column sort="auto" label="Latest version" width="10%" />
+			<column sort="auto" label="Owner" width="10%" />
 		</columns>
 		<rows id="processSummariesRows">
 
 		</rows>
 	</grid>
-</window>
 </zk>

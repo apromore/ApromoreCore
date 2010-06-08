@@ -108,15 +108,8 @@ public class MainController extends Window {
 	 */
 	public void onClientInfo (ClientInfoEvent event) {
 
-		Clients.confirmClose(this.confirmCloseMsg);
-		
-		Integer desktopHeight = event.getDesktopHeight() ;
-		//System.out.println ("Desktop height: " + desktopHeight);
-		Integer page = desktopHeight ;
-		//this.processtable.getProcessTableW().setHeight(page.toString());
-		//System.out.println ("Table height " + this.processtable.getProcessTableW().getHeight());
-		Integer rows = (desktopHeight - 127) / 30;
-		this.processtable.getPg().setPageSize(rows);
+		// prevent use from closing apromore window, of clicking browser back button
+		Clients.confirmClose(this.confirmCloseMsg);	
 	}
 
 	public void displayProcessSummaries(ProcessSummariesType processSummaries) throws Exception {
@@ -146,6 +139,7 @@ public class MainController extends Window {
 		this.displayMessage(processSummaries.getProcessSummary().size() + " processes.");
 		this.displayProcessSummaries(processSummaries);
 	}
+	
 	/**
 	 * reset displayed informations:
 	 * - short message

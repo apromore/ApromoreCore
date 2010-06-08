@@ -37,18 +37,18 @@ import javax.xml.bind.annotation.XmlType;
     "_native",
     "editSession"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-01T10:37:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:36:50+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ReadEditSessionOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-01T10:37:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:36:50+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
     @XmlElement(name = "Native", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-01T10:37:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:36:50+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected DataHandler _native;
     @XmlElement(name = "EditSession", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-01T10:37:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:36:50+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected EditSessionType editSession;
 
     /**
@@ -59,7 +59,7 @@ public class ReadEditSessionOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-01T10:37:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:36:50+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ResultType getResult() {
         return result;
     }
@@ -72,7 +72,7 @@ public class ReadEditSessionOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-01T10:37:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:36:50+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -85,7 +85,7 @@ public class ReadEditSessionOutputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-01T10:37:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:36:50+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public DataHandler getNative() {
         return _native;
     }
@@ -98,7 +98,7 @@ public class ReadEditSessionOutputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-01T10:37:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:36:50+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setNative(DataHandler value) {
         this._native = value;
     }
@@ -111,7 +111,7 @@ public class ReadEditSessionOutputMsgType {
      *     {@link EditSessionType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-01T10:37:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:36:50+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public EditSessionType getEditSession() {
         return editSession;
     }
@@ -124,7 +124,7 @@ public class ReadEditSessionOutputMsgType {
      *     {@link EditSessionType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-01T10:37:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:36:50+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setEditSession(EditSessionType value) {
         this.editSession = value;
     }
