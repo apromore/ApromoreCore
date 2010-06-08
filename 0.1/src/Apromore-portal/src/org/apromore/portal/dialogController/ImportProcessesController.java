@@ -14,10 +14,16 @@ import java.util.List;
 import java.util.Set;
 
 import javax.servlet.http.HttpSession;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionImport;
+import org.wfmc._2008.xpdl2.PackageType;
 import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.UploadEvent;
@@ -43,7 +49,7 @@ public class ImportProcessesController extends Window {
 	private File folder;
 	private String tmpPath;
 	private String sessionId;
-	private List<ImportOneProcess> importOneProcess;
+	private List<ImportOneProcess> listOfImports;
 
 	public ImportProcessesController (MenuController menuC, MainController mainC) throws DialogException{
 
@@ -52,7 +58,7 @@ public class ImportProcessesController extends Window {
 		this.tmpPath = this.mainC.getTmpPath();
 		HttpSession session = (HttpSession)(Executions.getCurrent()).getDesktop().getSession().getNativeSession();
 		this.sessionId = session.getId().toString();
-		this.importOneProcess = new ArrayList<ImportOneProcess>();
+		this.listOfImports = new ArrayList<ImportOneProcess>();
 
 		try {
 			final Window win = (Window) Executions.createComponents("macros/importProcesses.zul", null, null);
@@ -254,8 +260,7 @@ public class ImportProcessesController extends Window {
 							if (nativeType==null) {
 								ignoredFiles += filename + ", ";
 							} else {
-								this.importOneProcess.add(
-										new ImportOneProcess (this.mainC, this, xml_process, processName, nativeType, filename));
+								importProcess (this.mainC, this, xml_process, processName, nativeType, filename);
 							}
 						}
 					} else {
@@ -268,25 +273,58 @@ public class ImportProcessesController extends Window {
 				File xml_file = new File (this.tmpPath + this.sessionId, this.fileOrArchive);
 				String processName = this.fileOrArchive.split("\\.")[0];
 				FileInputStream xml_process = new FileInputStream(xml_file);
-				ImportOneProcess importProcess =
-					new ImportOneProcess (this.mainC, this, xml_process, processName, this.nativeType, fileOrArchive);
+				importProcess (this.mainC, this, xml_process, processName, this.nativeType, fileOrArchive);
 			}
+			Messagebox.show("Import of " + this.listOfImports.size() + " processes completed.", "", Messagebox.OK,
+					Messagebox.INFORMATION);
 			// clean folder and close window
 			cancel();
 
+		} catch (JAXBException e) {
+			Messagebox.show("Import failed (File doesn't conform Xschema specification: " 
+					+ e.getMessage() + ")", "Attention", Messagebox.OK,
+					Messagebox.ERROR);
 		} catch (Exception e) {
 			Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		} 
 	}
 
+	private void importProcess (MainController mainC, ImportProcessesController importC, InputStream xml_process,  
+			String processName, String nativeType, String filename) 
+	throws SuspendNotAllowedException, InterruptedException, JAXBException {
+
+		String readVersionName = "0.1"; // default value for versionName if not found
+		String readProcessName = processName ; // default value if not found
+		
+		// check properties in xml_process: version, documentation, created, modificationDate
+		// if native format is xpdl, extract information from xml file
+		if (nativeType.compareTo("XPDL 2.1")==0) {
+			JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
+			Unmarshaller u = jc.createUnmarshaller();
+			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(xml_process);
+			PackageType pkg = rootElement.getValue();
+
+			if (pkg.getName()!=null) {
+				readProcessName = pkg.getName();
+			}
+			if (pkg.getRedefinableHeader().getVersion().getValue()!=null) {
+				readVersionName = pkg.getRedefinableHeader().getVersion().getValue();
+			}
+		}
+		ImportOneProcess oneImport = new ImportOneProcess (mainC, importC, xml_process, readProcessName, 
+				readVersionName, nativeType, filename);
+		this.listOfImports.add (oneImport);
+
+
+	}
 	/*
 	 * cancel all remaining imports
 	 */
 	public void cancelAll() {
-		for (int i=0;i<this.importOneProcess.size();i++) {
-			if (this.importOneProcess.get(i).getImportOneProcessWindow()!=null){
-				this.importOneProcess.get(i).getImportOneProcessWindow().detach();
+		for (int i=0;i<this.listOfImports.size();i++) {
+			if (this.listOfImports.get(i).getImportOneProcessWindow()!=null){
+				this.listOfImports.get(i).getImportOneProcessWindow().detach();
 			}
 		}
 	}
