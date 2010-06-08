@@ -174,6 +174,7 @@ public class RequestToDA {
 				processP.setName(processM.getName());
 				processP.setOriginalNativeType(processM.getOriginalNativeType());
 				processP.setRanking(processM.getRanking());
+				processP.setOwner(processM.getOwner());
 
 				for (int j=0;j<processM.getVersionSummaries().size();j++){
 					org.apromore.manager.model_da.VersionSummaryType versionM = processM.getVersionSummaries().get(j);
