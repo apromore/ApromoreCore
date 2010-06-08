@@ -8,7 +8,6 @@ import java.util.Set;
 import org.apromore.portal.exception.ExceptionWriteEditSession;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.EditSessionType;
-import org.apromore.portal.model_manager.FormatsType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.Executions;
@@ -88,7 +87,7 @@ public class EditListNativesController extends Window {
 		//this.nativeTypesLB.removeChild(this.emptynative);
 	}
 
-	protected void EditListNatives () throws InterruptedException {
+	protected void EditListNatives () throws Exception {
 		Listitem cbi = nativeTypesLB.getSelectedItem();
 		Set<ProcessSummaryType> keys = processVersions.keySet();
 		Iterator it = keys.iterator();
@@ -130,6 +129,9 @@ public class EditListNativesController extends Window {
 			}
 		}
 		Clients.evalJavaScript(instruction);
+		// as the controller cannot know if processes have been added in the repository
+		// refresh the table...
+		this.mainC.refreshProcessSummaries();
 		cancel();
 	}
 

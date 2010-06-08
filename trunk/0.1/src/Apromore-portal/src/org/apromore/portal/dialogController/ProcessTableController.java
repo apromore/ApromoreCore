@@ -39,7 +39,7 @@ import org.zkoss.zul.Window;
 
 
 
-public class ProcessTableController extends Window {
+public class ProcessTableController {
 
 
 	/**
@@ -82,12 +82,12 @@ public class ProcessTableController extends Window {
 	private MainController mainC; 							// the main controller
 	private Grid processSummariesGrid; 						// the grid for process summaries
 	private Rows processSummariesRows; 						// the rows for process summaries
-	private Window processTableW;							// the window which the entry point
+	//	private Window processTableW;							// the window which the entry point
 	private Paging pg;										// the comment which manages paging
 	private HashMap<Checkbox,ProcessSummaryType> processHM;	// Hasmap of checkboxes: one entry for each process 
 	private HashMap<Checkbox,VersionSummaryType> processVersionsHM;// HashMap of checkboxes: one entry for each process version
 	private HashMap<Checkbox, List<Checkbox>> mapProcessVersions; // <p, listV> in mapProcessVersions: checkboxes in listV are
-															// associated with checkbox p
+	// associated with checkbox p
 	private Integer latestVersionPos ;						// position of label latest version in row of process summary
 	private Integer processTbPos;							// position of toolbarbuttons associated with process names in rows of process summary
 
@@ -95,30 +95,30 @@ public class ProcessTableController extends Window {
 	private EventListener revertSelectionBlist;				// event listener associated with the revertSelectionB
 	private Column columnId ;								// column to display processId
 	private Column columnName;								// column to display process name
-															
+
 	public ProcessTableController(MainController mainController) throws Exception {
 
 		/**
 		 * get components of the process version table part 
 		 */
 		this.mainC = mainController;
-		this.processTableW = (Window) this.mainC.getFellow("processtablecomp").getFellow("processTableWindow");
-		this.processSummariesGrid = (Grid) this.processTableW.getFellow("processSummariesGrid");
+		//this.processTableW = (Window) this.mainC.getFellow("processtablecomp").getFellow("processTableWindow");
+		this.processSummariesGrid = (Grid) this.mainC.getFellow("processtablecomp").getFellow("processSummariesGrid");
 		this.processSummariesRows = (Rows) this.processSummariesGrid.getFellow("processSummariesRows");
 		this.revertSelectionB = (Button) this.processSummariesGrid.getFellow("revertSelectionB");
-		this.pg = (Paging) this.processTableW.getFellow("pg");
+		this.pg = (Paging) this.mainC.getFellow("processtablecomp").getFellow("pg");
 		this.columnId = (Column) this.processSummariesGrid.getFellow("columnId");
 		this.columnName = (Column) this.processSummariesGrid.getFellow("columnName");
 
 		ProcessNameColComparator asc1 = new ProcessNameColComparator(true),
-				dsc1 = new ProcessNameColComparator(false);
+		dsc1 = new ProcessNameColComparator(false);
 		this.columnName.setSortAscending(asc1);
 		this.columnName.setSortDescending(dsc1);
 		ProcessIdColComparator asc2 = new ProcessIdColComparator(true),
-				dsc2 = new ProcessIdColComparator(false);
+		dsc2 = new ProcessIdColComparator(false);
 		this.columnId.setSortAscending(asc2);
 		this.columnId.setSortDescending(dsc2);
-		
+
 		// if change grid layouts modify value accordingly
 		this.latestVersionPos = 7;
 		this.processTbPos = 3 ;
@@ -150,12 +150,12 @@ public class ProcessTableController extends Window {
 	}
 
 	public void displayProcessSummaries(ProcessSummariesType processSummaries) {
-		
+
 		for (int i=0;i<processSummaries.getProcessSummary().size();i++){
 			ProcessSummaryType process = processSummaries.getProcessSummary().get(i);
 			displayOneProcess (process);		
 		}
-		
+
 		this.revertSelectionBlist = new EventListener() {
 			public void onEvent(Event event) throws Exception {
 				revertSelection();				
@@ -187,14 +187,14 @@ public class ProcessTableController extends Window {
 		this.mapProcessVersions.put(processCB, listV);
 		Toolbarbutton processName = new Toolbarbutton(process.getName());
 		processName.setStyle(Constants.TOOLBARBUTTON_STYLE);
-		
+
 		//	processName.setId(process.getId().toString());
 
 		Label processOriginalLanguage = new Label(process.getOriginalNativeType());
 		Label processDomain = new Label(process.getDomain());
 		Label processProcessRanking = new Label(process.getRanking().toString());
 		Label processLatestVersion = new Label(process.getLastVersion());
-
+		Label processOwner = new Label(process.getOwner());
 		processSummaryR.appendChild(processSummaryD);
 		processSummaryR.appendChild(processCB);
 		processSummaryR.appendChild(processId);
@@ -203,6 +203,7 @@ public class ProcessTableController extends Window {
 		processSummaryR.appendChild(processDomain);
 		processSummaryR.appendChild(processProcessRanking);
 		processSummaryR.appendChild(processLatestVersion);
+		processSummaryR.appendChild(processOwner);
 
 		// click on process name to select it
 		processName.addEventListener("onClick", new EventListener() {
@@ -217,7 +218,6 @@ public class ProcessTableController extends Window {
 				displayVersionsSummaries (processSummaryD);
 			}
 		});
-
 	}
 
 
@@ -260,13 +260,13 @@ public class ProcessTableController extends Window {
 			headDocumentation.setSort("auto");
 			Column headRanking  = new Column("Ranking");
 			headRanking.setSort("auto");
-			
+
 			headVersionName.setWidth("15%");
 			headCreationDate.setWidth("25%");
 			headLastUpdate.setWidth("25%");
 			headDocumentation.setWidth("30%");
 			headRanking.setWidth("15%");
-			
+
 			processVersionG.appendChild(versionHeads);
 			versionHeads.appendChild(checkboxes);
 			versionHeads.appendChild(headVersionName);
@@ -298,7 +298,7 @@ public class ProcessTableController extends Window {
 				Label versionLastUpdate = new Label (version.getLastUpdate().toString());
 				Label versionRanking = new Label (version.getRanking().toString());
 				Label versionDocumentation = new Label ("to be completed");
-				
+
 				processVersionsR.appendChild(versionR);
 
 				versionR.appendChild(versionCB);
@@ -342,7 +342,7 @@ public class ProcessTableController extends Window {
 	 */
 	protected void revertProcessVersion(Event event) 
 	throws InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException, 
-			ExceptionDao, JAXBException, NumberFormatException, ParseException {
+	ExceptionDao, JAXBException, NumberFormatException, ParseException {
 
 		// click on a version might have selected/unselected the corresponding process too
 		/* for the process:
@@ -538,7 +538,7 @@ public class ProcessTableController extends Window {
 	 */
 	protected void revertSelection () 
 	throws NumberFormatException, InterruptedException, ExceptionDao, JAXBException, ClassNotFoundException, 
-		InstantiationException, IllegalAccessException, ParseException {
+	InstantiationException, IllegalAccessException, ParseException {
 		Iterator<Row> itRow = this.processSummariesRows.getChildren().iterator();
 		int curIndex = 0;
 		while (itRow.hasNext()) {
@@ -661,8 +661,4 @@ public class ProcessTableController extends Window {
 		return processSummariesGrid;
 	}
 
-	public Window getProcessTableW() {
-		return processTableW;
-	}
-	
 }
