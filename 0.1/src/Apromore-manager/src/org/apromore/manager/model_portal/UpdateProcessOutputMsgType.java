@@ -31,11 +31,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "UpdateProcessOutputMsgType", propOrder = {
     "result"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:42:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class UpdateProcessOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:42:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
 
     /**
@@ -46,7 +46,7 @@ public class UpdateProcessOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:42:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ResultType getResult() {
         return result;
     }
@@ -59,7 +59,7 @@ public class UpdateProcessOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-31T12:42:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResult(ResultType value) {
         this.result = value;
     }
