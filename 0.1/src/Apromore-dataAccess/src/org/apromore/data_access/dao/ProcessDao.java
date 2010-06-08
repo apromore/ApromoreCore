@@ -71,6 +71,7 @@ public class ProcessDao extends BasicDao {
 			+            "P." + ConstantDB.ATTR_DOMAIN + ", P." + ConstantDB.ATTR_ORIGINAL_TYPE 
 			+           ", R." + ConstantDB.ATTR_RANKING
 			+          ", V." + ConstantDB.ATTR_VERSION_NAME
+			+          ", P." + ConstantDB.ATTR_USERNAME
 			+ " FROM " + ConstantDB.TABLE_PROCESSES + " natural join " + ConstantDB.VIEW_PROCESS_RANKING + " R "
 			+ "      join " + ConstantDB.TABLE_VERSIONS + " V using(" + ConstantDB.ATTR_PROCESSID + ") "
 			+ " where (" + ConstantDB.ATTR_PROCESSID + ", V." + ConstantDB.ATTR_CREATION_DATE + ")"
@@ -90,6 +91,7 @@ public class ProcessDao extends BasicDao {
 				processSummary.setOriginalNativeType(rsP.getString(4));
 				processSummary.setRanking(rsP.getInt(5));
 				processSummary.setLastVersion(rsP.getString(6));
+				processSummary.setOwner(rsP.getString(7));
 
 				stmtV = conn.createStatement();
 				requeteV = " select " + ConstantDB.ATTR_VERSION_NAME + ", "
@@ -168,11 +170,12 @@ public class ProcessDao extends BasicDao {
 			stmtP = conn.createStatement();
 
 			requeteP = "SELECT " + ConstantDB.ATTR_PROCESSID + "," 
-			+ ConstantDB.ATTR_NAME + ", "
+			+             ConstantDB.ATTR_NAME + ", "
 			+             ConstantDB.ATTR_DOMAIN + "," 
-			+ ConstantDB.ATTR_ORIGINAL_TYPE + ","
+			+             ConstantDB.ATTR_ORIGINAL_TYPE + ","
 			+     " R." + ConstantDB.ATTR_RANKING  + ","
-			+             ConstantDB.ATTR_VERSION_NAME
+			+             ConstantDB.ATTR_VERSION_NAME + ","
+			+             ConstantDB.ATTR_OWNER
 			+     " FROM " + ConstantDB.TABLE_PROCESSES + " P "
 			+	"    join " + ConstantDB.TABLE_VERSIONS + " V using(" + ConstantDB.ATTR_PROCESSID + ") "
 			+       "  join " + ConstantDB.VIEW_PROCESS_RANKING + " R using (" + ConstantDB.ATTR_PROCESSID + ")" 
@@ -195,6 +198,7 @@ public class ProcessDao extends BasicDao {
 				processSummary.setOriginalNativeType(rsP.getString(4));
 				processSummary.setRanking(rsP.getInt(5));
 				processSummary.setLastVersion(rsP.getString(6));
+				processSummary.setOwner(rsP.getString(7));
 
 				stmtV = conn.createStatement();
 				requeteV = " select " + ConstantDB.ATTR_VERSION_NAME + ", "
