@@ -32,7 +32,7 @@ public class ImportOneProcess extends Window {
 	private Button cancelAllButton;
 	
 	public ImportOneProcess (MainController mainC, ImportProcessesController importProcessesC, InputStream xml_process, 
-			String processName, String nativeType, String fileName) 
+			String processName, String versionName, String nativeType, String fileName) 
 	throws SuspendNotAllowedException, InterruptedException {
 		
 		this.importProcessesC = importProcessesC;
@@ -56,6 +56,7 @@ public class ImportOneProcess extends Window {
 		this.cancelAllButton.setId(this.cancelAllButton.getId()+fileName);
 		
 		this.processName.setValue(processName);
+		this.versionName.setValue(versionName);
 		
 		this.okButton.addEventListener("onClick",
 				new EventListener() {
@@ -88,10 +89,22 @@ public class ImportOneProcess extends Window {
 		this.importOneProcessWindow.detach();
 	}
 	
+	/*
+	 * the user has clicked on cancel all button
+	 * cancelAll hosted by the DC which controls multiple file to import (importProcesses)
+	 */
 	private void cancelAll() {
 		this.importProcessesC.cancelAll();
 	}
-	private void importProcess() throws InterruptedException {
+	
+	/**
+	 * @throws InterruptedException 
+	 * Import process whose details are given in the class variable:
+	 * username, nativeType, processName, versionName, domain and xml process
+	 * @return name of imported process
+	 * @exception
+	 **/
+	private void  importProcess() throws InterruptedException {
 		RequestToManager request = new RequestToManager();
 		try {
 			if (this.processName.getValue().compareTo("")==0
@@ -102,9 +115,6 @@ public class ImportOneProcess extends Window {
 					request.ImportModel(this.mainC.getCurrentUser().getUsername(), this.nativeType, this.processName.getValue(), 
 							this.versionName.getValue(), this.nativeProcess, this.domain.getValue());
 				this.mainC.displayNewProcess(res);
-
-				Messagebox.show("Import of " + this.processName.getValue() + " completed.", "", Messagebox.OK,
-						Messagebox.INFORMATION);
 			}
 		} catch (WrongValueException e) {
 			e.printStackTrace();
