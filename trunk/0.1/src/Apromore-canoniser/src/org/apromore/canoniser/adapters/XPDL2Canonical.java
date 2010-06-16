@@ -342,7 +342,7 @@ public class XPDL2Canonical {
 			}
 		} else {
 			IntermediateEvent interEvent = event.getIntermediateEvent();
-			if (interEvent.getTrigger().equals("None"))
+			if (interEvent.getTrigger().equals("None") || interEvent.getTrigger().equals("Link"))
 				node = new EventType();
 			else if (interEvent.getTrigger().equals("Message"))
 				node = new MessageType();
