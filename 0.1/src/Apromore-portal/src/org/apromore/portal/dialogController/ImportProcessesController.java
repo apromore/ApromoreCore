@@ -3,6 +3,7 @@ package org.apromore.portal.dialogController;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -21,6 +22,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionImport;
+import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.wfmc._2008.xpdl2.PackageType;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -49,7 +51,8 @@ public class ImportProcessesController extends Window {
 	private File folder;
 	private String tmpPath;
 	private String sessionId;
-	private List<ImportOneProcess> listOfImports;
+	private List<ImportOneProcess> toImportList; // List of import to be done
+	private List<ImportOneProcess> importedList; // List of imports successfully completed
 
 	public ImportProcessesController (MenuController menuC, MainController mainC) throws DialogException{
 
@@ -58,7 +61,8 @@ public class ImportProcessesController extends Window {
 		this.tmpPath = this.mainC.getTmpPath();
 		HttpSession session = (HttpSession)(Executions.getCurrent()).getDesktop().getSession().getNativeSession();
 		this.sessionId = session.getId().toString();
-		this.listOfImports = new ArrayList<ImportOneProcess>();
+		this.toImportList = new ArrayList<ImportOneProcess>();
+		this.importedList = new ArrayList<ImportOneProcess>();
 
 		try {
 			final Window win = (Window) Executions.createComponents("macros/importProcesses.zul", null, null);
@@ -120,7 +124,7 @@ public class ImportProcessesController extends Window {
 		f.delete();
 	}
 	/**
-	 * Upload a file file: an archive or an xml file 
+	 * Upload file: an archive or an xml file 
 	 * @param event
 	 * @throws InterruptedException
 	 */
@@ -161,26 +165,24 @@ public class ImportProcessesController extends Window {
 				this.nativeType = fileType;
 			}
 
-			// now the file is uploaded, Ok button could be enabled
-
-			this.okButton.setDisabled(false);
-			this.filenameLabel.setValue(this.fileOrArchive + " (file type is " + fileType + ")");
 
 			this.fileUploaded = new File(this.tmpPath + this.sessionId, this.fileOrArchive);
 			InputStream is = event.getMedia().getStreamData();
 
 			//write is to the file
 			OutputStream out = new FileOutputStream(this.fileUploaded);
-
 			int read=0;
 			byte[] bytes = new byte[1024];
-
 			while((read = is.read(bytes))!= -1){
 				out.write(bytes, 0, read);
 			}
 			is.close();
 			out.flush();
 			out.close();	
+	
+			// now the file is uploaded, Ok button could be enabled
+			this.okButton.setDisabled(false);
+			this.filenameLabel.setValue(this.fileOrArchive + " (model type is " + fileType + ")");
 
 		} catch (ExceptionImport e) {
 			Messagebox.show("Upload failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
@@ -199,7 +201,7 @@ public class ImportProcessesController extends Window {
 	 * @throws InterruptedException 
 	 * @throws IOException 
 	 */
-	private void extractArchiveOrFile() throws InterruptedException, IOException {
+	private void extractArchiveOrFile() throws InterruptedException {
 		String command = null;
 		try {
 			if (this.extension.compareTo("zip")==0 || this.extension.compareTo("tar")==0) {
@@ -253,14 +255,13 @@ public class ImportProcessesController extends Window {
 					if (current_file.isFile()) {
 						// ignore the archive itself
 						if (current_file.getName().compareTo(archive.getName())!=0) {
-							FileInputStream xml_process = new FileInputStream(current_file);
 							filename = folderFiles[j].getName();
 							String processName = filename.split("\\.")[0];
 							String nativeType = this.mainC.getNativeTypes().get(filename.split("\\.")[filename.split("\\.").length-1]);
 							if (nativeType==null) {
 								ignoredFiles += filename + ", ";
 							} else {
-								importProcess (this.mainC, this, xml_process, processName, nativeType, filename);
+								importProcess (this.mainC, this, current_file, processName, nativeType, filename);
 							}
 						}
 					} else {
@@ -272,13 +273,8 @@ public class ImportProcessesController extends Window {
 				// Case of a single file: import it.
 				File xml_file = new File (this.tmpPath + this.sessionId, this.fileOrArchive);
 				String processName = this.fileOrArchive.split("\\.")[0];
-				FileInputStream xml_process = new FileInputStream(xml_file);
-				importProcess (this.mainC, this, xml_process, processName, this.nativeType, fileOrArchive);
+				importProcess (this.mainC, this, xml_file, processName, this.nativeType, fileOrArchive);
 			}
-			Messagebox.show("Import of " + this.listOfImports.size() + " processes completed.", "", Messagebox.OK,
-					Messagebox.INFORMATION);
-			// clean folder and close window
-			cancel();
 
 		} catch (JAXBException e) {
 			Messagebox.show("Import failed (File doesn't conform Xschema specification: " 
@@ -290,42 +286,42 @@ public class ImportProcessesController extends Window {
 		} 
 	}
 
-	private void importProcess (MainController mainC, ImportProcessesController importC, InputStream xml_process,  
+	private void importProcess (MainController mainC, ImportProcessesController importC, File xml_file,  
 			String processName, String nativeType, String filename) 
-	throws SuspendNotAllowedException, InterruptedException, JAXBException {
+	throws SuspendNotAllowedException, InterruptedException, JAXBException, FileNotFoundException {
 
-		String readVersionName = "0.1"; // default value for versionName if not found
-		String readProcessName = processName ; // default value if not found
-		
-		// check properties in xml_process: version, documentation, created, modificationDate
-		// if native format is xpdl, extract information from xml file
-		if (nativeType.compareTo("XPDL 2.1")==0) {
-			JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
-			Unmarshaller u = jc.createUnmarshaller();
-			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(xml_process);
-			PackageType pkg = rootElement.getValue();
-
-			if (pkg.getName()!=null) {
-				readProcessName = pkg.getName();
-			}
-			if (pkg.getRedefinableHeader().getVersion().getValue()!=null) {
-				readVersionName = pkg.getRedefinableHeader().getVersion().getValue();
-			}
-		}
-		ImportOneProcess oneImport = new ImportOneProcess (mainC, importC, xml_process, readProcessName, 
-				readVersionName, nativeType, filename);
-		this.listOfImports.add (oneImport);
-
-
+		ImportOneProcess oneImport = new ImportOneProcess (mainC, importC, xml_file, processName, 
+				nativeType, filename);
+		this.toImportList.add(oneImport);
 	}
 	/*
 	 * cancel all remaining imports
 	 */
 	public void cancelAll() {
-		for (int i=0;i<this.listOfImports.size();i++) {
-			if (this.listOfImports.get(i).getImportOneProcessWindow()!=null){
-				this.listOfImports.get(i).getImportOneProcessWindow().detach();
+		for (int i=0;i<this.toImportList.size();i++) {
+			if (this.toImportList.get(i).getImportOneProcessWindow()!=null){
+				this.toImportList.get(i).getImportOneProcessWindow().detach();
 			}
 		}
 	}
+
+	public List<ImportOneProcess> getImportedList() {
+		if (importedList == null) {
+			importedList = new ArrayList<ImportOneProcess>();
+        }
+        return this.importedList;
+	}
+
+	// remove from the list of processes to be imported
+	// if the list exhausted, display a message and terminate import
+	public void deleteFromToBeImported(ImportOneProcess importOneProcess) throws InterruptedException, IOException {
+		this.toImportList.remove(importOneProcess);
+		if (this.toImportList.size()==0) {
+			Messagebox.show("Import of " + this.toImportList.size() + " processes completed.", "", Messagebox.OK,
+					Messagebox.INFORMATION);
+			// clean folder and close window
+			cancel();
+		}
+	}
+	
 }
