@@ -355,12 +355,15 @@ public class XPDL2Canonical {
 			}
 		} else {
 			IntermediateEvent interEvent = event.getIntermediateEvent();
-			if (interEvent.getTrigger().equals("None") || interEvent.getTrigger().equals("Link"))
+			if (interEvent.getTrigger().equals("None"))
 				node = new EventType();
 			else if (interEvent.getTrigger().equals("Message"))
 				node = new MessageType();
 			else if (interEvent.getTrigger().equals("Timer"))
 				node = new TimerType();
+			else if(interEvent.getTrigger().equals("Link"))
+				node = new EventType(); 
+				//TODO : remove the link event and reconnect the element Then inform the user
 			else {
 				throw new ExceptionAdapters ("XPDL2Canonical: event type not supported: " + interEvent.getTrigger());
 			}
