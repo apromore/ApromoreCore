@@ -1,11 +1,20 @@
 package org.apromore.portal.dialogController;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
 
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummaryType;
+import org.wfmc._2008.xpdl2.PackageType;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
@@ -25,19 +34,20 @@ public class ImportOneProcess extends Window {
 	private Textbox processName;
 	private Textbox versionName;
 	private Textbox domain;
-	private InputStream nativeProcess; // the uploaded file
+	private File xml_file; 			   // the actual file
+	private InputStream nativeProcess; // the input stream read from uploaded file
 	private String nativeType;
 	private Button okButton;
 	private Button cancelButton;
 	private Button cancelAllButton;
 	
-	public ImportOneProcess (MainController mainC, ImportProcessesController importProcessesC, InputStream xml_process, 
-			String processName, String versionName, String nativeType, String fileName) 
-	throws SuspendNotAllowedException, InterruptedException {
+	public ImportOneProcess (MainController mainC, ImportProcessesController importProcessesC, File xml_file, 
+			String processName, String nativeType, String fileName) 
+	throws SuspendNotAllowedException, InterruptedException, FileNotFoundException, JAXBException {
 		
 		this.importProcessesC = importProcessesC;
 		this.mainC = mainC;
-		this.nativeProcess = xml_process;
+		this.nativeProcess = new FileInputStream(xml_file);
 		this.nativeType = nativeType;
 		final Window win = (Window) Executions.createComponents("macros/importOneProcess.zul", null, null);
 		this.importOneProcessWindow = (Window) win.getFellow("importOneProcessWindow");
@@ -55,8 +65,26 @@ public class ImportOneProcess extends Window {
 		this.cancelAllButton = (Button) this.importOneProcessWindow.getFellow("cancelAllButtonOneProcess");
 		this.cancelAllButton.setId(this.cancelAllButton.getId()+fileName);
 		
-		this.processName.setValue(processName);
-		this.versionName.setValue(versionName);
+		String readVersionName = "0.1"; // default value for versionName if not found
+		String readProcessName = processName ; // default value if not found
+
+		// check properties in xml_process: version, documentation, created, modificationDate
+		// if native format is xpdl, extract information from xml file
+		if (nativeType.compareTo("XPDL 2.1")==0) {
+			JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
+			Unmarshaller u = jc.createUnmarshaller();
+			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(this.nativeProcess);
+			PackageType pkg = rootElement.getValue();
+
+			if (pkg.getName().compareTo("")!=0) {
+				readProcessName = pkg.getName();
+			}
+			if (pkg.getRedefinableHeader().getVersion().getValue().compareTo("")!=0) {
+				readVersionName = pkg.getRedefinableHeader().getVersion().getValue();
+			}
+		}
+		this.processName.setValue(readProcessName);
+		this.versionName.setValue(readVersionName);
 		
 		this.okButton.addEventListener("onClick",
 				new EventListener() {
@@ -98,6 +126,7 @@ public class ImportOneProcess extends Window {
 	}
 	
 	/**
+	 * @throws JAXBException 
 	 * @throws InterruptedException 
 	 * Import process whose details are given in the class variable:
 	 * username, nativeType, processName, versionName, domain and xml process
@@ -113,7 +142,11 @@ public class ImportOneProcess extends Window {
 			} else {
 				ProcessSummaryType res= 
 					request.ImportModel(this.mainC.getCurrentUser().getUsername(), this.nativeType, this.processName.getValue(), 
-							this.versionName.getValue(), this.nativeProcess, this.domain.getValue());
+							this.versionName.getValue(), this.xml_file, this.domain.getValue());
+				// process successfully imported
+				this.importProcessesC.getImportedList().add(this);
+				// delete it from the list of processes still to be imported
+				this.importProcessesC.deleteFromToBeImported(this);
 				this.mainC.displayNewProcess(res);
 			}
 		} catch (WrongValueException e) {

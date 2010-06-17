@@ -1,5 +1,7 @@
 package org.apromore.portal.manager;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -140,9 +142,10 @@ public class RequestToManager {
 	}
 
 	public ProcessSummaryType ImportModel(String username, String nativeType, String processName, 
-			String versionName, InputStream process, String domain) 
+			String versionName, File xml_file, String domain) 
 	throws IOException, ExceptionImport {
 		
+		InputStream process = new FileInputStream(xml_file);
 		ImportProcessInputMsgType payload = new ImportProcessInputMsgType();
 		DataSource source = new ByteArrayDataSource(process, "text/xml"); 
 		payload.setUsername(username);
