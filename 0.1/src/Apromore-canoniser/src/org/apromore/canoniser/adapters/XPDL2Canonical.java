@@ -28,6 +28,7 @@ import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ORJoinType;
 import org.apromore.cpf.ORSplitType;
+import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.StateType;
 import org.apromore.cpf.TaskType;
@@ -68,7 +69,8 @@ public class XPDL2Canonical {
 	Map<NodeType, NodeType> implicitJoin = new HashMap<NodeType, NodeType>();
 	Map<NodeType, List<EdgeType>> outgoings = new HashMap<NodeType, List<EdgeType>>();
 	Set<NodeType> linked = new HashSet<NodeType>();
-
+	Map<String, ResourceTypeType> pool_resource_map = new HashMap<String, ResourceTypeType>();
+	
 	long cpfId = 1;
 	long anfId = 1;
 
@@ -90,18 +92,27 @@ public class XPDL2Canonical {
 
 		this.cpf.setName(pkg.getName());
 
+		for(Pool pool: pkg.getPools().getPool()){
+			ResourceTypeType res = new ResourceTypeType();
+			res.setId(BigInteger.valueOf(cpfId++));
+			res.setName(pool.getName());
+			pool_resource_map.put(pool.getProcess(), res);
+			this.cpf.getResourceType().add(res);
+		}
+		
 		for (ProcessType bpmnproc: pkg.getWorkflowProcesses().getWorkflowProcess()) {
 			NetType net = new NetType();
 			net.setId(BigInteger.valueOf(cpfId++));
-			translateProcess(net, bpmnproc);
+			ResourceTypeType res;
+			res = pool_resource_map.get(bpmnproc.getId());
+			ResourceTypeRefType ref = new ResourceTypeRefType();
+			ref.setResourceTypeId(res.getId());
+		
+			translateProcess(net, bpmnproc, ref);
 			recordAnnotations(bpmnproc, this.anf);
 			this.cpf.getNet().add(net);
 		}
 		
-		for(Pool pool: pkg.getPools().getPool()){
-			ResourceTypeType res = new ResourceTypeType();
-			
-		}
 	}
 
 	private void recordAnnotations(ProcessType bpmnproc,
@@ -155,7 +166,7 @@ public class XPDL2Canonical {
 		}
 	}
 
-	private void translateProcess(NetType net, ProcessType bpmnproc) throws ExceptionAdapters {
+	private void translateProcess(NetType net, ProcessType bpmnproc, ResourceTypeRefType ref) throws ExceptionAdapters {
 		////System.out.println(bpmnproc.getName());
 		for (Object obj: bpmnproc.getContent()) {
 			if (obj instanceof Activities)
@@ -165,7 +176,7 @@ public class XPDL2Canonical {
 		}
 
 		for (Activity act: activities)
-			translateActivity(net, act);
+			translateActivity(net, act, ref);
 
 		for (Transition flow: transitions)
 			translateSequenceFlow(net, flow);
@@ -251,7 +262,7 @@ public class XPDL2Canonical {
 		return edge;
 	}
 
-	private void translateActivity(NetType net, Activity act) throws ExceptionAdapters {
+	private void translateActivity(NetType net, Activity act, ResourceTypeRefType ref) throws ExceptionAdapters {
 		NodeType node = new NodeType();
 		Route route = null;
 		Event event = null;
@@ -271,10 +282,12 @@ public class XPDL2Canonical {
 			//System.out.println("Gateway: " + route.getGatewayType());
 		} else if (event != null) {
 			node = translateEvent(net, act, event);
+			((EventType)node).getResourceTypeRef().add(ref);
 			//System.out.println("Event: " + act.getName());
 		} else {
 			// TODO: Subprocesses ...
 			node = translateTask(net, act);
+			((TaskType)node).getResourceTypeRef().add(ref);
 			//System.out.println("Activity: " + act.getName());
 		}
 
