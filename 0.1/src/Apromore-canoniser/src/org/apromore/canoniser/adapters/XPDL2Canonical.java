@@ -28,6 +28,7 @@ import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ORJoinType;
 import org.apromore.cpf.ORSplitType;
+import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.StateType;
@@ -37,6 +38,7 @@ import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 import org.wfmc._2008.xpdl2.Activities;
 import org.wfmc._2008.xpdl2.Activity;
+import org.wfmc._2008.xpdl2.Artifact;
 import org.wfmc._2008.xpdl2.Condition;
 import org.wfmc._2008.xpdl2.ConnectorGraphicsInfo;
 import org.wfmc._2008.xpdl2.ConnectorGraphicsInfos;
@@ -70,6 +72,7 @@ public class XPDL2Canonical {
 	Map<NodeType, List<EdgeType>> outgoings = new HashMap<NodeType, List<EdgeType>>();
 	Set<NodeType> linked = new HashSet<NodeType>();
 	Map<String, ResourceTypeType> pool_resource_map = new HashMap<String, ResourceTypeType>();
+	Map<String, BigInteger> object_map = new HashMap<String, BigInteger>();
 	
 	long cpfId = 1;
 	long anfId = 1;
@@ -98,6 +101,21 @@ public class XPDL2Canonical {
 			res.setName(pool.getName());
 			pool_resource_map.put(pool.getProcess(), res);
 			this.cpf.getResourceType().add(res);
+		}
+		
+		for(Object obj:pkg.getArtifacts().getArtifactAndAny()){
+			if(obj instanceof Artifact)
+			{
+				Artifact arti = (Artifact)obj;
+				if(arti.getArtifactType().equals("DataObject") && arti.getDataObject() != null)
+				{
+					ObjectType ot = new ObjectType();
+					ot.setName(arti.getDataObject().getName());
+					ot.setId(BigInteger.valueOf(cpfId++));
+					object_map.put(arti.getDataObject().getId(), ot.getId());
+					this.cpf.getObject().add(ot);
+				}
+			}
 		}
 		
 		for (ProcessType bpmnproc: pkg.getWorkflowProcesses().getWorkflowProcess()) {
