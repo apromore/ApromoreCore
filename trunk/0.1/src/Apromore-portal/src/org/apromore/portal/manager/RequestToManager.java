@@ -142,12 +142,11 @@ public class RequestToManager {
 	}
 
 	public ProcessSummaryType ImportModel(String username, String nativeType, String processName, 
-			String versionName, File xml_file, String domain) 
+			String versionName, InputStream xml_process, String domain) 
 	throws IOException, ExceptionImport {
 		
-		InputStream process = new FileInputStream(xml_file);
 		ImportProcessInputMsgType payload = new ImportProcessInputMsgType();
-		DataSource source = new ByteArrayDataSource(process, "text/xml"); 
+		DataSource source = new ByteArrayDataSource(xml_process, "text/xml"); 
 		payload.setUsername(username);
 		payload.setNativeType(nativeType);
 		payload.setProcessName(processName);
