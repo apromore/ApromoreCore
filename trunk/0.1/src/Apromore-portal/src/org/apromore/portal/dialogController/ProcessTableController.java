@@ -83,7 +83,7 @@ public class ProcessTableController {
 	private Grid processSummariesGrid; 						// the grid for process summaries
 	private Rows processSummariesRows; 						// the rows for process summaries
 	//	private Window processTableW;							// the window which the entry point
-	private Paging pg;										// the comment which manages paging
+	//private Paging pg;										// the comment which manages paging
 	private HashMap<Checkbox,ProcessSummaryType> processHM;	// Hasmap of checkboxes: one entry for each process 
 	private HashMap<Checkbox,VersionSummaryType> processVersionsHM;// HashMap of checkboxes: one entry for each process version
 	private HashMap<Checkbox, List<Checkbox>> mapProcessVersions; // <p, listV> in mapProcessVersions: checkboxes in listV are
@@ -106,7 +106,7 @@ public class ProcessTableController {
 		this.processSummariesGrid = (Grid) this.mainC.getFellow("processtablecomp").getFellow("processSummariesGrid");
 		this.processSummariesRows = (Rows) this.processSummariesGrid.getFellow("processSummariesRows");
 		this.revertSelectionB = (Button) this.processSummariesGrid.getFellow("revertSelectionB");
-		this.pg = (Paging) this.mainC.getFellow("processtablecomp").getFellow("pg");
+		//this.pg = (Paging) this.mainC.getFellow("processtablecomp").getFellow("pg");
 		this.columnId = (Column) this.processSummariesGrid.getFellow("columnId");
 		this.columnName = (Column) this.processSummariesGrid.getFellow("columnName");
 
@@ -653,10 +653,10 @@ public class ProcessTableController {
 		this.displayOneProcess(process);
 	}
 
-	public Paging getPg() {
+/*	public Paging getPg() {
 		return pg;
 	}
-
+*/
 	public Grid getProcessSummariesGrid() {
 		return processSummariesGrid;
 	}
