@@ -57,6 +57,7 @@ public class RequestToCanoniser {
 			processP.setOriginalNativeType(res.getProcessSummary().getOriginalNativeType());
 			processP.setRanking(res.getProcessSummary().getRanking());
 			processP.getVersionSummaries().clear();
+			processP.setOwner(res.getProcessSummary().getOwner());
 			Iterator it = res.getProcessSummary().getVersionSummaries().iterator();
 			// normally, only one... consider many for future needs
 			while (it.hasNext()) {
