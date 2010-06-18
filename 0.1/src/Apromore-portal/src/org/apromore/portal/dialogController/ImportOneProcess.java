@@ -47,7 +47,8 @@ public class ImportOneProcess extends Window {
 		
 		this.importProcessesC = importProcessesC;
 		this.mainC = mainC;
-		this.nativeProcess = new FileInputStream(xml_file);
+		this.xml_file= xml_file;
+		this.nativeProcess = new FileInputStream(this.xml_file);
 		this.nativeType = nativeType;
 		final Window win = (Window) Executions.createComponents("macros/importOneProcess.zul", null, null);
 		this.importOneProcessWindow = (Window) win.getFellow("importOneProcessWindow");
@@ -73,14 +74,22 @@ public class ImportOneProcess extends Window {
 		if (nativeType.compareTo("XPDL 2.1")==0) {
 			JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
 			Unmarshaller u = jc.createUnmarshaller();
-			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(this.nativeProcess);
+			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(new FileInputStream(this.xml_file));
 			PackageType pkg = rootElement.getValue();
 
-			if (pkg.getName().compareTo("")!=0) {
-				readProcessName = pkg.getName();
+			try {
+				if (pkg.getName().compareTo("")!=0) {
+					readProcessName = pkg.getName();
+				}
+			} catch (NullPointerException e) {
+				// default value
 			}
-			if (pkg.getRedefinableHeader().getVersion().getValue().compareTo("")!=0) {
-				readVersionName = pkg.getRedefinableHeader().getVersion().getValue();
+			try {
+				if (pkg.getRedefinableHeader().getVersion().getValue().compareTo("")!=0) {
+					readVersionName = pkg.getRedefinableHeader().getVersion().getValue();
+				}
+			} catch (NullPointerException e) {
+				// default value
 			}
 		}
 		this.processName.setValue(readProcessName);
@@ -113,7 +122,13 @@ public class ImportOneProcess extends Window {
 		win.doModal();
 	}
 	
-	private void cancel() {
+	private void cancel() throws InterruptedException, IOException{
+		// delete process from the list of processes still to be imported
+		this.importProcessesC.deleteFromToBeImported(this);
+		closePopup();
+	}
+	
+	private void closePopup() {
 		this.importOneProcessWindow.detach();
 	}
 	
@@ -121,11 +136,12 @@ public class ImportOneProcess extends Window {
 	 * the user has clicked on cancel all button
 	 * cancelAll hosted by the DC which controls multiple file to import (importProcesses)
 	 */
-	private void cancelAll() {
+	private void cancelAll() throws InterruptedException, IOException {
 		this.importProcessesC.cancelAll();
 	}
 	
 	/**
+	 * @throws IOException 
 	 * @throws JAXBException 
 	 * @throws InterruptedException 
 	 * Import process whose details are given in the class variable:
@@ -133,7 +149,7 @@ public class ImportOneProcess extends Window {
 	 * @return name of imported process
 	 * @exception
 	 **/
-	private void  importProcess() throws InterruptedException {
+	private void  importProcess() throws InterruptedException, IOException {
 		RequestToManager request = new RequestToManager();
 		try {
 			if (this.processName.getValue().compareTo("")==0
@@ -142,11 +158,9 @@ public class ImportOneProcess extends Window {
 			} else {
 				ProcessSummaryType res= 
 					request.ImportModel(this.mainC.getCurrentUser().getUsername(), this.nativeType, this.processName.getValue(), 
-							this.versionName.getValue(), this.xml_file, this.domain.getValue());
+							this.versionName.getValue(), this.nativeProcess, this.domain.getValue());
 				// process successfully imported
 				this.importProcessesC.getImportedList().add(this);
-				// delete it from the list of processes still to be imported
-				this.importProcessesC.deleteFromToBeImported(this);
 				this.mainC.displayNewProcess(res);
 			}
 		} catch (WrongValueException e) {
@@ -162,7 +176,9 @@ public class ImportOneProcess extends Window {
 			Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		} finally {
-			cancel();
+			// delete process from the list of processes still to be imported
+			this.importProcessesC.deleteFromToBeImported(this);
+			closePopup();
 		}
 	}
 
