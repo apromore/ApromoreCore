@@ -519,6 +519,7 @@ public class ProcessDao extends BasicDao {
 			process.setName(processName);
 			process.setOriginalNativeType(nativeType);
 			process.setRanking(0);
+			process.setOwner(username);
 			first_version.setName(version);
 			first_version.setCreationDate(now);
 			first_version.setLastUpdate(now);
