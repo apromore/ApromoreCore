@@ -76,45 +76,45 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "fontType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class FontType {
 
     @XmlAttribute
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String family;
     @XmlAttribute
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String style;
     @XmlAttribute
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String weight;
     @XmlAttribute
     @XmlSchemaType(name = "positiveInteger")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigInteger size;
     @XmlAttribute
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String decoration;
     @XmlAttribute
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String color;
     @XmlAttribute
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Integer transparency;
     @XmlAttribute(name = "x_position")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigDecimal xPosition;
     @XmlAttribute(name = "y_position")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigDecimal yPosition;
     @XmlAttribute
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String verticalAlign;
     @XmlAttribute
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String horizontalAlign;
     @XmlAttribute
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigDecimal rotation;
 
     /**
@@ -125,7 +125,7 @@ public class FontType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public String getFamily() {
         return family;
     }
@@ -138,7 +138,7 @@ public class FontType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setFamily(String value) {
         this.family = value;
     }
@@ -151,7 +151,7 @@ public class FontType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public String getStyle() {
         return style;
     }
@@ -164,7 +164,7 @@ public class FontType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setStyle(String value) {
         this.style = value;
     }
@@ -177,7 +177,7 @@ public class FontType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public String getWeight() {
         return weight;
     }
@@ -190,7 +190,7 @@ public class FontType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setWeight(String value) {
         this.weight = value;
     }
@@ -203,7 +203,7 @@ public class FontType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public BigInteger getSize() {
         return size;
     }
@@ -216,7 +216,7 @@ public class FontType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setSize(BigInteger value) {
         this.size = value;
     }
@@ -229,7 +229,7 @@ public class FontType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public String getDecoration() {
         return decoration;
     }
@@ -242,7 +242,7 @@ public class FontType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setDecoration(String value) {
         this.decoration = value;
     }
@@ -255,7 +255,7 @@ public class FontType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public String getColor() {
         return color;
     }
@@ -268,7 +268,7 @@ public class FontType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setColor(String value) {
         this.color = value;
     }
@@ -281,7 +281,7 @@ public class FontType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public Integer getTransparency() {
         return transparency;
     }
@@ -294,7 +294,7 @@ public class FontType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setTransparency(Integer value) {
         this.transparency = value;
     }
@@ -307,7 +307,7 @@ public class FontType {
      *     {@link BigDecimal }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public BigDecimal getXPosition() {
         return xPosition;
     }
@@ -320,7 +320,7 @@ public class FontType {
      *     {@link BigDecimal }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setXPosition(BigDecimal value) {
         this.xPosition = value;
     }
@@ -333,7 +333,7 @@ public class FontType {
      *     {@link BigDecimal }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public BigDecimal getYPosition() {
         return yPosition;
     }
@@ -346,7 +346,7 @@ public class FontType {
      *     {@link BigDecimal }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setYPosition(BigDecimal value) {
         this.yPosition = value;
     }
@@ -359,7 +359,7 @@ public class FontType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public String getVerticalAlign() {
         return verticalAlign;
     }
@@ -372,7 +372,7 @@ public class FontType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setVerticalAlign(String value) {
         this.verticalAlign = value;
     }
@@ -385,7 +385,7 @@ public class FontType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public String getHorizontalAlign() {
         return horizontalAlign;
     }
@@ -398,7 +398,7 @@ public class FontType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setHorizontalAlign(String value) {
         this.horizontalAlign = value;
     }
@@ -411,7 +411,7 @@ public class FontType {
      *     {@link BigDecimal }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public BigDecimal getRotation() {
         return rotation;
     }
@@ -424,7 +424,7 @@ public class FontType {
      *     {@link BigDecimal }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setRotation(BigDecimal value) {
         this.rotation = value;
     }

@@ -47,11 +47,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StoreVersionOutputMsgType }
+     * Create an instance of {@link StoreVersionInputMsgType }
      * 
      */
-    public StoreVersionOutputMsgType createStoreVersionOutputMsgType() {
-        return new StoreVersionOutputMsgType();
+    public StoreVersionInputMsgType createStoreVersionInputMsgType() {
+        return new StoreVersionInputMsgType();
     }
 
     /**
@@ -63,19 +63,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StoreNativeInputMsgType }
+     * Create an instance of {@link StoreVersionOutputMsgType }
      * 
      */
-    public StoreNativeInputMsgType createStoreNativeInputMsgType() {
-        return new StoreNativeInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ResultType }
-     * 
-     */
-    public ResultType createResultType() {
-        return new ResultType();
+    public StoreVersionOutputMsgType createStoreVersionOutputMsgType() {
+        return new StoreVersionOutputMsgType();
     }
 
     /**
@@ -87,11 +79,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StoreVersionInputMsgType }
+     * Create an instance of {@link ResultType }
      * 
      */
-    public StoreVersionInputMsgType createStoreVersionInputMsgType() {
-        return new StoreVersionInputMsgType();
+    public ResultType createResultType() {
+        return new ResultType();
     }
 
     /**
@@ -100,6 +92,14 @@ public class ObjectFactory {
      */
     public StoreNativeCpfOutputMsgType createStoreNativeCpfOutputMsgType() {
         return new StoreNativeCpfOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link StoreNativeInputMsgType }
+     * 
+     */
+    public StoreNativeInputMsgType createStoreNativeInputMsgType() {
+        return new StoreNativeInputMsgType();
     }
 
     /**

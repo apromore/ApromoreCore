@@ -43,17 +43,17 @@ import javax.xml.bind.annotation.XmlType;
     RoutingType.class,
     WorkType.class
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class NodeType {
 
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	protected String name;
     @XmlElement(defaultValue = "false")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Boolean configurable;
     @XmlAttribute(required = true)
     @XmlSchemaType(name = "positiveInteger")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigInteger id;
 
     /**
@@ -64,7 +64,7 @@ public class NodeType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public String getName() {
         return name;
     }
@@ -77,7 +77,7 @@ public class NodeType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setName(String value) {
         this.name = value;
     }
@@ -90,7 +90,7 @@ public class NodeType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public Boolean isConfigurable() {
         return configurable;
     }
@@ -103,7 +103,7 @@ public class NodeType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setConfigurable(Boolean value) {
         this.configurable = value;
     }
@@ -116,7 +116,7 @@ public class NodeType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public BigInteger getId() {
         return id;
     }
@@ -129,7 +129,7 @@ public class NodeType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T02:52:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T09:51:14+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setId(BigInteger value) {
         this.id = value;
     }

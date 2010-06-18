@@ -52,13 +52,13 @@ public class RequestToDA {
 		if (res.getResult().getCode() == -1) {
 			throw new ExceptionStore (res.getResult().getMessage());
 		} else {
-			
 			processM.setDomain(res.getProcessSummary().getDomain());
 			processM.setId(res.getProcessSummary().getId());
 			processM.setLastVersion(res.getProcessSummary().getLastVersion());
 			processM.setName(res.getProcessSummary().getName());
 			processM.setOriginalNativeType(res.getProcessSummary().getOriginalNativeType());
 			processM.setRanking(res.getProcessSummary().getRanking());
+			processM.setOwner(res.getProcessSummary().getOwner());
 			processM.getVersionSummaries().clear();
 			Iterator it = res.getProcessSummary().getVersionSummaries().iterator();
 			// normally, only one... consider many for future needs

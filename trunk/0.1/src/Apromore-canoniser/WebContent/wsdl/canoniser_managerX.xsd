@@ -47,6 +47,7 @@
 		<attribute name="domain" type="string" />
 		<attribute name="ranking" type="int" />
 		<attribute name="last_version" type="string" />
+		<attribute name="owner" type="string" />
 	</complexType>
 
 	<complexType name="VersionSummaryType">
