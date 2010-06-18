@@ -37,7 +37,7 @@
 				</borderlayout>
 			</west>
 			<center flex="true">
-				<div>
+				<div vflex="true">
 					<Menu id="menucomp" />
 					<ProcessTable id="processtablecomp" />
 				</div>

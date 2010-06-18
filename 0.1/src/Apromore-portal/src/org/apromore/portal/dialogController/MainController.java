@@ -18,6 +18,8 @@ import org.apromore.portal.model_manager.UserType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
+import org.zkoss.zk.ui.event.Event;
+import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
@@ -63,6 +65,7 @@ public class MainController extends Window {
 		try {
 			this.LOG = Logger.getLogger(MainController.class.getName());
 
+
 			/**
 			 * to get data
 			 */
@@ -96,7 +99,6 @@ public class MainController extends Window {
 				this.nativeTypes.put(nativeTypesDB.getFormat().get(i).getExtension(),
 						nativeTypesDB.getFormat().get(i).getFormat());
 			}
-
 		} catch (Exception e) {
 			Messagebox.show("Repository not available ("+e.getMessage()+")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
@@ -107,9 +109,7 @@ public class MainController extends Window {
 	 * register an event listener for the clientInfo event (to prevent user to close the browser window)
 	 */
 	public void onClientInfo (ClientInfoEvent event) {
-
-		// prevent use from closing apromore window, of clicking browser back button
-		Clients.confirmClose(this.confirmCloseMsg);	
+			Clients.confirmClose(this.confirmCloseMsg);
 	}
 
 	public void displayProcessSummaries(ProcessSummariesType processSummaries) throws Exception {
@@ -139,7 +139,7 @@ public class MainController extends Window {
 		this.displayMessage(processSummaries.getProcessSummary().size() + " processes.");
 		this.displayProcessSummaries(processSummaries);
 	}
-	
+
 	/**
 	 * reset displayed informations:
 	 * - short message
