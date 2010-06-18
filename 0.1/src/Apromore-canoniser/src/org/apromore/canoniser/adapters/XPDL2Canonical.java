@@ -71,6 +71,8 @@ public class XPDL2Canonical {
 	Map<NodeType, NodeType> implicitJoin = new HashMap<NodeType, NodeType>();
 	Map<NodeType, List<EdgeType>> outgoings = new HashMap<NodeType, List<EdgeType>>();
 	Set<NodeType> linked = new HashSet<NodeType>();
+	List<BigInteger> unrequired_event_list = new LinkedList<BigInteger>();
+	List<NodeType> node_remove_list = new LinkedList<NodeType>();
 	Map<String, ResourceTypeType> pool_resource_map = new HashMap<String, ResourceTypeType>();
 	Map<String, BigInteger> object_map = new HashMap<String, BigInteger>();
 	
@@ -127,10 +129,50 @@ public class XPDL2Canonical {
 			ref.setResourceTypeId(res.getId());
 		
 			translateProcess(net, bpmnproc, ref);
+			process_unrequired_events(net);
 			recordAnnotations(bpmnproc, this.anf);
 			this.cpf.getNet().add(net);
 		}
 		
+	}
+
+	private void process_unrequired_events(NetType net) {
+		List<EdgeType> edge_remove_list = new LinkedList<EdgeType>();
+		BigInteger source_id;
+		try {
+			for(BigInteger id: unrequired_event_list)
+			{
+				source_id = null;
+				for(EdgeType edge: net.getEdge())
+				{
+					if(edge.getTargetId().equals(id)){
+						source_id = edge.getSourceId();
+						edge_remove_list.add(edge);
+						break;
+					}
+				}
+				for(EdgeType edge: net.getEdge())
+				{
+					if(edge.getSourceId().equals(id))
+						if(source_id == null)
+							edge_remove_list.add(edge);
+						else
+							edge.setSourceId(source_id);
+				}
+				//net.getNode().remove(id);
+			}
+			
+			for(EdgeType edge: edge_remove_list)
+				net.getEdge().remove(edge);
+			edge_remove_list.clear();
+			for(NodeType node: node_remove_list)
+				net.getNode().remove(node);
+			node_remove_list.clear();
+			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			//e.printStackTrace();
+		}
 	}
 
 	private void recordAnnotations(ProcessType bpmnproc,
@@ -376,9 +418,12 @@ public class XPDL2Canonical {
 				node = new MessageType();
 			else if (interEvent.getTrigger().equals("Timer"))
 				node = new TimerType();
-			else if(interEvent.getTrigger().equals("Link"))
-				node = new EventType(); 
+			else if(interEvent.getTrigger().equals("Link")) {
+				node = new EventType();
+				unrequired_event_list.add(BigInteger.valueOf(cpfId));
+				node_remove_list.add(node);
 				//TODO : remove the link event and reconnect the element Then inform the user
+			}
 			else {
 				throw new ExceptionAdapters ("XPDL2Canonical: event type not supported: " + interEvent.getTrigger());
 			}
