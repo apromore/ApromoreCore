@@ -33,18 +33,17 @@ import javax.xml.bind.annotation.XmlType;
     "result",
     "processSummary"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:20:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T10:01:39+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class CanoniseProcessOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:20:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T10:01:39+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
-
     @XmlElement(name = "ProcessSummary", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:20:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T10:01:39+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ProcessSummaryType processSummary;
 
-	/**
+    /**
      * Gets the value of the result property.
      * 
      * @return
@@ -52,7 +51,7 @@ public class CanoniseProcessOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:20:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T10:01:39+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ResultType getResult() {
         return result;
     }
@@ -65,12 +64,12 @@ public class CanoniseProcessOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:20:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T10:01:39+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResult(ResultType value) {
         this.result = value;
     }
 
-	/**
+    /**
      * Gets the value of the processSummary property.
      * 
      * @return
@@ -78,12 +77,12 @@ public class CanoniseProcessOutputMsgType {
      *     {@link ProcessSummaryType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:20:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T10:01:39+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ProcessSummaryType getProcessSummary() {
         return processSummary;
     }
 
-	/**
+    /**
      * Sets the value of the processSummary property.
      * 
      * @param value
@@ -91,7 +90,7 @@ public class CanoniseProcessOutputMsgType {
      *     {@link ProcessSummaryType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-05-24T03:20:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-18T10:01:39+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setProcessSummary(ProcessSummaryType value) {
         this.processSummary = value;
     }
