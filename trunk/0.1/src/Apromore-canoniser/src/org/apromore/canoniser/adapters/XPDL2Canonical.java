@@ -207,17 +207,14 @@ public class XPDL2Canonical {
 			NodeType andSplit = implicitANDSplit.get(act);
 			NodeType orSplit = implicitORSplit.get(act);
 
-			try {
-				if (outgoings.get(andSplit) != null && outgoings.get(andSplit).size() > 0)
-					addEdge(net, andSplit, orSplit);
-				else {
-					EdgeType edge = outgoings.get(act).get(0);
-					edge.setTargetId(orSplit.getId());
-					net.getNode().remove(andSplit);
-				}
-			} catch (NullPointerException e) {
-				throw new ExceptionAdapters ("XPDL2Canonical: " + e.getMessage());
+			if (outgoings.get(andSplit) != null && outgoings.get(andSplit).size() > 0)
+				addEdge(net, andSplit, orSplit);
+			else if (outgoings.get(act) != null && orSplit != null){
+				EdgeType edge = outgoings.get(act).get(0);
+				edge.setTargetId(orSplit.getId());
+				net.getNode().remove(andSplit);
 			}
+
 		}
 	}
 
@@ -405,12 +402,12 @@ public class XPDL2Canonical {
 
 		NodeType node = null;
 
-		if (route.getGatewayType().equals("Parallel")) {
+		if (route.getGatewayType().equals("Parallel") || route.getGatewayType().equals("AND")) {
 			if (isSplit)
 				node = new ANDSplitType();
 			else
 				node = new ANDJoinType();
-		} else if (route.getGatewayType().equals("Exclusive")) {
+		} else if (route.getGatewayType().equals("Exclusive") || route.getGatewayType().equals("XOR")) {
 			if (route.getExclusiveType().equals("Data")) {
 				if (isSplit)
 					node = new XORSplitType();
@@ -418,7 +415,7 @@ public class XPDL2Canonical {
 					node = new XORJoinType();
 			} else
 				node = new StateType();
-		} else if (route.getGatewayType().equals("Inclusive")) { 
+		} else if (route.getGatewayType().equals("Inclusive") || route.getGatewayType().equals("OR")) { 
 			if (isSplit)
 				node = new ORSplitType();
 			else
