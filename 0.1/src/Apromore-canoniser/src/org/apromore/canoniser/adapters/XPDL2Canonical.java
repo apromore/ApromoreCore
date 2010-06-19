@@ -159,7 +159,6 @@ public class XPDL2Canonical {
 						else
 							edge.setSourceId(source_id);
 				}
-				//net.getNode().remove(id);
 			}
 			
 			for(EdgeType edge: edge_remove_list)
@@ -399,7 +398,7 @@ public class XPDL2Canonical {
 			else if (startEvent.getTrigger().equals("Timer"))
 				node = new TimerType();
 			else {
-				throw new ExceptionAdapters ("XPDL2Canonical: event type not supported: " + startEvent.getTrigger());
+				throw new ExceptionAdapters ("XPDL2Canonical: event type not supported (Start event): " + startEvent.getTrigger());
 			}
 		} else if (event.getEndEvent() != null) {
 			EndEvent endEvent = event.getEndEvent();
@@ -407,8 +406,13 @@ public class XPDL2Canonical {
 				node = new EventType();
 			else if (endEvent.getResult().equals("Message"))
 				node = new MessageType();
+			else if (endEvent.getResult().equals("Cancel"))
+			{
+				node = new EventType();
+				node.setName("Cancel");
+			}
 			else {
-				throw new ExceptionAdapters ("XPDL2Canonical: event type not supported: " + endEvent.getResult());
+				throw new ExceptionAdapters ("XPDL2Canonical: event type not supported (End Event): " + endEvent.getResult());
 			}
 		} else {
 			IntermediateEvent interEvent = event.getIntermediateEvent();
@@ -422,10 +426,10 @@ public class XPDL2Canonical {
 				node = new EventType();
 				unrequired_event_list.add(BigInteger.valueOf(cpfId));
 				node_remove_list.add(node);
-				//TODO : remove the link event and reconnect the element Then inform the user
+				//TODO : Inform the user that the element has been removed during the process
 			}
 			else {
-				throw new ExceptionAdapters ("XPDL2Canonical: event type not supported: " + interEvent.getTrigger());
+				throw new ExceptionAdapters ("XPDL2Canonical: event type not supported: (Intermediate event)" + interEvent.getTrigger());
 			}
 		}
 		node.setName(act.getName());
@@ -465,7 +469,10 @@ public class XPDL2Canonical {
 				node = new ORSplitType();
 			else
 				node = new ORJoinType();
-		} else {
+		} else if(route.getGatewayType().equals("EventBasedXOR")) {
+			node = new StateType();
+		}
+		else {
 			throw new ExceptionAdapters ("XPDL2Canonical: gateway type not supported:[DEPRECATED] " + route.getGatewayType());
 		}
 
