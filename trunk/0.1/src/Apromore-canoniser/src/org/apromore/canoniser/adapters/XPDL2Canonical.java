@@ -47,6 +47,7 @@ import org.wfmc._2008.xpdl2.EndEvent;
 import org.wfmc._2008.xpdl2.Event;
 import org.wfmc._2008.xpdl2.Implementation;
 import org.wfmc._2008.xpdl2.IntermediateEvent;
+import org.wfmc._2008.xpdl2.Lane;
 import org.wfmc._2008.xpdl2.NodeGraphicsInfo;
 import org.wfmc._2008.xpdl2.NodeGraphicsInfos;
 import org.wfmc._2008.xpdl2.PackageType;
@@ -102,6 +103,14 @@ public class XPDL2Canonical {
 			res.setId(BigInteger.valueOf(cpfId++));
 			res.setName(pool.getName());
 			pool_resource_map.put(pool.getProcess(), res);
+			for(Lane lane: pool.getLanes().getLane())
+			{
+				ResourceTypeType r = new ResourceTypeType();
+				r.setId(BigInteger.valueOf(cpfId++));
+				r.setName(lane.getName());
+				res.getSpecializationIds().add(BigInteger.valueOf(cpfId));
+				this.cpf.getResourceType().add(r);
+			}
 			this.cpf.getResourceType().add(res);
 		}
 		
@@ -422,7 +431,7 @@ public class XPDL2Canonical {
 				node = new MessageType();
 			else if (interEvent.getTrigger().equals("Timer"))
 				node = new TimerType();
-			else if(interEvent.getTrigger().equals("Link")) {
+			else if(interEvent.getTrigger().equals("Link") || interEvent.getTrigger().equals("Rule")) {
 				node = new EventType();
 				unrequired_event_list.add(BigInteger.valueOf(cpfId));
 				node_remove_list.add(node);
