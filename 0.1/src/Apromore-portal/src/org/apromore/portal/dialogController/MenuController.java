@@ -9,8 +9,6 @@ import java.util.Vector;
 
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionFormats;
-import org.apromore.portal.manager.RequestToManager;
-import org.apromore.portal.model_manager.FormatsType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.event.Event;
