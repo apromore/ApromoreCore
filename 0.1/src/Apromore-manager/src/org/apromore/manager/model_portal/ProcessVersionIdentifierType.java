@@ -35,14 +35,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ProcessVersionIdentifierType", propOrder = {
     "versionName"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:37:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ProcessVersionIdentifierType {
 
     @XmlElement(name = "VersionName", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:37:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected List<String> versionName;
     @XmlAttribute(name = "Processid")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:37:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Integer processid;
 
     /**
@@ -67,7 +67,7 @@ public class ProcessVersionIdentifierType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:37:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public List<String> getVersionName() {
         if (versionName == null) {
             versionName = new ArrayList<String>();
@@ -83,7 +83,7 @@ public class ProcessVersionIdentifierType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:37:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public Integer getProcessid() {
         return processid;
     }
@@ -96,7 +96,7 @@ public class ProcessVersionIdentifierType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:37:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setProcessid(Integer value) {
         this.processid = value;
     }
