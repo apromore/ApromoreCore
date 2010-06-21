@@ -17,29 +17,32 @@
 
 	<complexType name="CanoniseProcessInputMsgType">
 		<sequence>
-			<element name="ProcessName" type="string" />
-			<element name="VersionName" type="string" />
-			<element name="NativeType" type="string" />
-			<element name="Domain" type="string" />
 			<element name="ProcessDescription" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
-			<element name="Username" type="string" />
 		</sequence>
+		<attribute name="ProcessName" type="string" />
+		<attribute name="VersionName" type="string" />
+		<attribute name="NativeType" type="string" />
+		<attribute name="Domain" type="string" />
+		<attribute name="Username" type="string" />
+		<attribute name="Documentation" type="string" />
+		<attribute name="last_update" type="dateTime" />
+		<attribute name="creation_date" type="dateTime" />
 	</complexType>
 
 	<complexType name="CanoniseProcessOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" />
-			<element name="ProcessSummary"
-				type="tns:ProcessSummaryType" minOccurs="1" maxOccurs="1" />
+			<element name="ProcessSummary" type="tns:ProcessSummaryType"
+				minOccurs="1" maxOccurs="1" />
 		</sequence>
 	</complexType>
-	
-	
+
+
 	<complexType name="ProcessSummaryType">
 		<sequence>
-			<element minOccurs="1" maxOccurs="unbounded"
-				name="VersionSummaries" type="tns:VersionSummaryType" />
+			<element minOccurs="1" maxOccurs="unbounded" name="VersionSummaries"
+				type="tns:VersionSummaryType" />
 		</sequence>
 		<attribute name="original_native_type" type="string" />
 		<attribute name="name" type="string" />
@@ -55,8 +58,9 @@
 		<attribute name="name" type="string" />
 		<attribute name="last_update" type="dateTime" />
 		<attribute name="creation_date" type="dateTime" />
+		<attribute name="documentation" type="string" />
 	</complexType>
-	
+
 	<complexType name="DeCanoniseProcessInputMsgType">
 		<sequence>
 			<element name="processId" type="int" />
@@ -65,7 +69,7 @@
 			<element name="Cpf" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
 			<element name="Anf" type="base64Binary"
-				xmime:expectedContentTypes="application/octet-stream" minOccurs="0"/>
+				xmime:expectedContentTypes="application/octet-stream" minOccurs="0" />
 		</sequence>
 	</complexType>
 
@@ -76,9 +80,9 @@
 				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
 	</complexType>
-	
+
 	<complexType name="CanoniseVersionInputMsgType">
-			<sequence>
+		<sequence>
 			<element name="Native" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
@@ -88,8 +92,11 @@
 		<attribute name="newVersion" type="string" />
 		<attribute name="preVersion" type="string" />
 		<attribute name="domain" type="string" />
+		<attribute name="last_update" type="dateTime" />
+		<attribute name="creation_date" type="dateTime" />
+		<attribute name="documentation" type="string" />
 	</complexType>
-	
+
 	<complexType name="CanoniseVersionOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" />
