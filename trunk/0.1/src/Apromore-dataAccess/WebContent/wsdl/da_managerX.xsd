@@ -97,6 +97,7 @@
 	<complexType name="VersionSummaryType">
 		<attribute name="ranking" type="int" />
 		<attribute name="name" type="string" />
+		<attribute name="documentation" type="string" />
 		<attribute name="last_update" type="dateTime" />
 		<attribute name="creation_date" type="dateTime" />
 	</complexType>
