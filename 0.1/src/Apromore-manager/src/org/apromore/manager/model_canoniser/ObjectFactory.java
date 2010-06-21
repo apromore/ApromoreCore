@@ -55,19 +55,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CanoniseProcessInputMsgType }
+     * Create an instance of {@link VersionSummaryType }
      * 
      */
-    public CanoniseProcessInputMsgType createCanoniseProcessInputMsgType() {
-        return new CanoniseProcessInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link DeCanoniseProcessOutputMsgType }
-     * 
-     */
-    public DeCanoniseProcessOutputMsgType createDeCanoniseProcessOutputMsgType() {
-        return new DeCanoniseProcessOutputMsgType();
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
     }
 
     /**
@@ -79,11 +71,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CanoniseProcessOutputMsgType }
+     * Create an instance of {@link ProcessSummaryType }
      * 
      */
-    public CanoniseProcessOutputMsgType createCanoniseProcessOutputMsgType() {
-        return new CanoniseProcessOutputMsgType();
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
     }
 
     /**
@@ -95,19 +87,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ProcessSummaryType }
+     * Create an instance of {@link CanoniseProcessInputMsgType }
      * 
      */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
+    public CanoniseProcessInputMsgType createCanoniseProcessInputMsgType() {
+        return new CanoniseProcessInputMsgType();
     }
 
     /**
-     * Create an instance of {@link VersionSummaryType }
+     * Create an instance of {@link CanoniseProcessOutputMsgType }
      * 
      */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
+    public CanoniseProcessOutputMsgType createCanoniseProcessOutputMsgType() {
+        return new CanoniseProcessOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link DeCanoniseProcessOutputMsgType }
+     * 
+     */
+    public DeCanoniseProcessOutputMsgType createDeCanoniseProcessOutputMsgType() {
+        return new DeCanoniseProcessOutputMsgType();
     }
 
     /**

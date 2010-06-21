@@ -72,6 +72,7 @@
 		<attribute name="name" type="string" />
 		<attribute name="last_update" type="dateTime" />
 		<attribute name="creation_date" type="dateTime" />
+		<attribute name="documentation" type="string" />
 	</complexType>
 
 	<complexType name="ReadDomainsInputMsgType">
@@ -106,7 +107,7 @@
 				type="tns:FormatType" />
 		</sequence>
 	</complexType>
-	
+
 	<complexType name="FormatType">
 		<attribute name="format" type="string" />
 		<attribute name="extension" type="string" />
@@ -145,21 +146,24 @@
 
 	<complexType name="ImportProcessInputMsgType">
 		<sequence>
-			<element name="ProcessName" type="string" />
-			<element name="VersionName" type="string" />
-			<element name="NativeType" type="string" />
-			<element name="Domain" type="string" />
 			<element name="ProcessDescription" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
-			<element name="Username" type="string" />
 		</sequence>
+		<attribute name="ProcessName" type="string" />
+		<attribute name="VersionName" type="string" />
+		<attribute name="NativeType" type="string" />
+		<attribute name="Domain" type="string" />
+		<attribute name="Username" type="string" />
+		<attribute name="last_update" type="dateTime" />
+		<attribute name="creation_date" type="dateTime" />
+		<attribute name="documentation" type="string" />
 	</complexType>
 
 	<complexType name="ImportProcessOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" />
-			<element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="1"
-				maxOccurs="1" />
+			<element name="ProcessSummary" type="tns:ProcessSummaryType"
+				minOccurs="1" maxOccurs="1" />
 		</sequence>
 	</complexType>
 
@@ -209,11 +213,15 @@
 		<attribute name="processName" type="string" />
 		<attribute name="versionName" type="string" />
 		<attribute name="domain" type="string" />
+		<attribute name="last_update" type="dateTime" />
+		<attribute name="creation_date" type="dateTime" />
+		<attribute name="documentation" type="string" />
 	</complexType>
 
 	<complexType name="WriteEditSessionInputMsgType">
 		<sequence>
-			<element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1" />
+			<element name="EditSession" type="tns:EditSessionType"
+				minOccurs="1" maxOccurs="1" />
 		</sequence>
 	</complexType>
 
@@ -233,7 +241,8 @@
 			<element name="Result" type="tns:ResultType" />
 			<element name="Native" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
-			<element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1" />
+			<element name="EditSession" type="tns:EditSessionType"
+				minOccurs="1" maxOccurs="1" />
 		</sequence>
 	</complexType>
 
@@ -257,8 +266,11 @@
 		<attribute name="newVersion" type="string" />
 		<attribute name="preVersion" type="string" />
 		<attribute name="domain" type="string" />
+		<attribute name="last_update" type="dateTime" />
+		<attribute name="creation_date" type="dateTime" />
+		<attribute name="documentation" type="string" />
 	</complexType>
-	
+
 	<complexType name="UpdateProcessOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" />
@@ -267,21 +279,23 @@
 
 	<complexType name="DeleteProcessVersionsInputMsgType">
 		<sequence>
-			<element name="ProcessVersionIdentifier" type="tns:ProcessVersionIdentifierType" minOccurs="1" maxOccurs="unbounded"/>
+			<element name="ProcessVersionIdentifier" type="tns:ProcessVersionIdentifierType"
+				minOccurs="1" maxOccurs="unbounded" />
 		</sequence>
 	</complexType>
-	
+
 	<complexType name="ProcessVersionIdentifierType">
-			<sequence>
-				<element name="VersionName" type="string"  minOccurs="1" maxOccurs="unbounded"/>
-			</sequence>
-			<attribute name="Processid" type="int"/>
+		<sequence>
+			<element name="VersionName" type="string" minOccurs="1"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="Processid" type="int" />
 	</complexType>
-	
+
 	<complexType name="DeleteProcessVersionsOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" />
 		</sequence>
-	</complexType>	
-	
+	</complexType>
+
 </schema>
