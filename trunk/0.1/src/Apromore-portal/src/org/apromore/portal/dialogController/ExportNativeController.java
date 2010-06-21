@@ -114,7 +114,7 @@ public class ExportNativeController extends Window {
 		
 	}
 	
-	private void export () throws InterruptedException {
+	private void export() throws InterruptedException {
 
 		try {
 			if (this.nativeTypesLB.getSelectedItem().getLabel().compareTo("")==0) {

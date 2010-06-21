@@ -2,8 +2,6 @@
 <?page title="Apromore"?>
 <?component name="Header" macroURI="macros/header.zul" ?>
 <?component name="Menu" macroURI="macros/menu.zul" ?>
-<?component name="ProcessTable" macroURI="macros/processtable.zul" ?>
-<?component name="ProcessDetails" macroURI="macros/processdetails.zul" ?>
 <?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
 <?component name="Navigation" macroURI="macros/navigation.zul" ?>
 <?component name="SimpleSearch" macroURI="macros/simplesearch.zul" ?>
@@ -11,12 +9,9 @@
 
 <zk>
 
-<style dynamic="true">
-.z-label	{font-size: ${fontSizeMS}}
-</style>
+	<style dynamic="true">.z-label {font-size: ${fontSizeMS}}</style>
 
-	<window id="mainW" border="none" width="100%" 
-		vflex="1"
+	<window id="mainW" border="none" width="100%" vflex="1"
 		use="org.apromore.portal.dialogController.MainController">
 		<Header id="headercomp" />
 
@@ -39,7 +34,47 @@
 			<center flex="true">
 				<div vflex="true">
 					<Menu id="menucomp" />
-					<ProcessTable id="processtablecomp" />
+					<hbox style="background:#DAF4FF" width="100%">
+						<box height="25px" width="400px">
+							<toolbarbutton id="table2graphic"
+								visible="true" label="Change view" />
+							<toolbarbutton id="graphic2table"
+								visible="false" label="Change view" />
+						</box>
+					</hbox>
+					<!-- the grid controller is ProcessTableController
+					This results from a work around to deal with vertical flexibility -->
+					<grid id="processSummariesGrid" 
+						vflex="true" autopaging="true" mold="paging">
+						<columns sizable="true">
+							<column width="3.5%">
+								<button id="revertSelectionB"
+									image="img/flag-10x10.png"
+									style="background:transparent;border:none"
+									tooltiptext="click here to revert selection" />
+							</column>
+							<column width="0">
+								<checkbox id="processSummaryCB"
+									visible="false" />
+							</column>
+							<column id="columnId" label="Id" width="3%" />
+							<column id="columnName" label="Name"
+								width="15%" />
+							<column sort="auto"
+								label="Original language" width="15%" />
+							<column sort="auto" label="Domain"
+								width="15%" />
+							<column sort="auto" label="Ranking"
+								width="15%" />
+							<column sort="auto" label="Latest version"
+								width="10%" />
+							<column sort="auto" label="Owner"
+								width="10%" />
+						</columns>
+						<rows id="processSummariesRows">
+
+						</rows>
+					</grid>
 				</div>
 			</center>
 		</borderlayout>

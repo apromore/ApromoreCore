@@ -25,10 +25,10 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class ImportOneProcess extends Window {
+public class ImportOneProcessController extends Window {
 
 	private MainController mainC;
-	private ImportProcessesController importProcessesC;
+	private ImportListProcessesController importProcessesC;
 	private Window importOneProcessWindow;
 
 	private Textbox processName;
@@ -41,7 +41,7 @@ public class ImportOneProcess extends Window {
 	private Button cancelButton;
 	private Button cancelAllButton;
 	
-	public ImportOneProcess (MainController mainC, ImportProcessesController importProcessesC, File xml_file, 
+	public ImportOneProcessController (MainController mainC, ImportListProcessesController importProcessesC, File xml_file, 
 			String processName, String nativeType, String fileName) 
 	throws SuspendNotAllowedException, InterruptedException, FileNotFoundException, JAXBException {
 		
