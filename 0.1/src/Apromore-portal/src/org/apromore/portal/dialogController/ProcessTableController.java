@@ -103,7 +103,7 @@ public class ProcessTableController {
 		 */
 		this.mainC = mainController;
 		//this.processTableW = (Window) this.mainC.getFellow("processtablecomp").getFellow("processTableWindow");
-		this.processSummariesGrid = (Grid) this.mainC.getFellow("processtablecomp").getFellow("processSummariesGrid");
+		this.processSummariesGrid = (Grid) this.mainC.getFellow("processSummariesGrid");
 		this.processSummariesRows = (Rows) this.processSummariesGrid.getFellow("processSummariesRows");
 		this.revertSelectionB = (Button) this.processSummariesGrid.getFellow("revertSelectionB");
 		//this.pg = (Paging) this.mainC.getFellow("processtablecomp").getFellow("pg");
@@ -170,6 +170,7 @@ public class ProcessTableController {
 		// one row for each process
 		Row processSummaryR = new Row();
 		Detail processSummaryD = new Detail();
+		
 		processSummaryD.setId(process.getId().toString());
 		processSummaryD.setOpen(false);
 
@@ -244,12 +245,14 @@ public class ProcessTableController {
 
 			// the grid for process versions
 			Grid processVersionG = new Grid();
+			processVersionG.setVflex(true);
 
-			Column checkboxes = new Column();
-			checkboxes.setWidth("0px");		
 
 			Columns versionHeads = new Columns();
 			versionHeads.setSizable(true);
+
+			Column checkboxes = new Column();
+			checkboxes.setWidth("0px");		
 			Column headVersionName = new Column("Version name");
 			headVersionName.setSort("auto");
 			Column headCreationDate = new Column("Creation date");

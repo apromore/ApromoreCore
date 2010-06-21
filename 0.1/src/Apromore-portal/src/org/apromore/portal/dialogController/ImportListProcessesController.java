@@ -34,7 +34,7 @@ import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
 
-public class ImportProcessesController extends Window {
+public class ImportListProcessesController extends Window {
 
 	private MenuController menuC;
 	private MainController mainC;
@@ -51,18 +51,18 @@ public class ImportProcessesController extends Window {
 	private File folder;
 	private String tmpPath;
 	private String sessionId;
-	private List<ImportOneProcess> toImportList; // List of import to be done
-	private List<ImportOneProcess> importedList; // List of imports successfully completed
+	private List<ImportOneProcessController> toImportList; // List of imports to be done
+	private List<ImportOneProcessController> importedList; // List of imports successfully completed
 
-	public ImportProcessesController (MenuController menuC, MainController mainC) throws DialogException{
+	public ImportListProcessesController (MenuController menuC, MainController mainC) throws DialogException{
 
 		this.mainC = mainC;
 		this.menuC = menuC;
 		this.tmpPath = this.mainC.getTmpPath();
 		HttpSession session = (HttpSession)(Executions.getCurrent()).getDesktop().getSession().getNativeSession();
 		this.sessionId = session.getId().toString();
-		this.toImportList = new ArrayList<ImportOneProcess>();
-		this.importedList = new ArrayList<ImportOneProcess>();
+		this.toImportList = new ArrayList<ImportOneProcessController>();
+		this.importedList = new ArrayList<ImportOneProcessController>();
 
 		try {
 			final Window win = (Window) Executions.createComponents("macros/importProcesses.zul", null, null);
@@ -277,11 +277,11 @@ public class ImportProcessesController extends Window {
 		} 
 	}
 
-	private void importProcess (MainController mainC, ImportProcessesController importC, File xml_file,  
+	private void importProcess (MainController mainC, ImportListProcessesController importC, File xml_file,  
 			String processName, String nativeType, String filename) 
 	throws SuspendNotAllowedException, FileNotFoundException, InterruptedException, JAXBException {
 
-		ImportOneProcess oneImport = new ImportOneProcess (mainC, importC, xml_file, processName, 
+		ImportOneProcessController oneImport = new ImportOneProcessController (mainC, importC, xml_file, processName, 
 				nativeType, filename);
 		this.toImportList.add(oneImport);
 	}
@@ -299,16 +299,16 @@ public class ImportProcessesController extends Window {
 		cancel();
 	}
 
-	public List<ImportOneProcess> getImportedList() {
+	public List<ImportOneProcessController> getImportedList() {
 		if (importedList == null) {
-			importedList = new ArrayList<ImportOneProcess>();
+			importedList = new ArrayList<ImportOneProcessController>();
 		}
 		return this.importedList;
 	}
 
 	// remove from the list of processes to be imported
 	// if the list exhausted, display a message and terminate import
-	public void deleteFromToBeImported(ImportOneProcess importOneProcess) throws IOException, InterruptedException {
+	public void deleteFromToBeImported(ImportOneProcessController importOneProcess) throws IOException, InterruptedException {
 		this.toImportList.remove(importOneProcess);
 		if (this.toImportList.size()==0) {
 			reportImport();

@@ -24,7 +24,7 @@ import org.zkoss.zul.Menuitem;
 public class MenuController extends Menubar {
 
 	private MainController mainC;
-	private ImportProcessesController importC;
+	private ImportListProcessesController importC;
 	private Menubar menuB;
 
 
@@ -102,8 +102,8 @@ public class MenuController extends Menubar {
 		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
 		if (selectedProcessVersions.size()!=0) {
-			EditListNativesController editList = 
-				new EditListNativesController (this.mainC, this, this.mainC.getNativeTypes(),selectedProcessVersions);
+			EditListProcessesController editList = 
+				new EditListProcessesController (this.mainC, this,selectedProcessVersions);
 		}
 	}
 
@@ -147,7 +147,7 @@ public class MenuController extends Menubar {
 	
 	protected void importModel (){
 		try {
-			this.importC = new ImportProcessesController(this, mainC);
+			this.importC = new ImportListProcessesController(this, mainC);
 		} catch (DialogException e) {
 			e.printStackTrace();
 		}
