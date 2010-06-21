@@ -11,6 +11,7 @@ public final class ConstantDB {
 	public static final String ATTR_LAST_UPDATE = "last_update";
 	public static final String ATTR_CANONICAL = "canonical";
 	public static final String ATTR_RANKING = "ranking";
+	public static final String ATTR_DOCUMENTATION = "documentation";
 
 	public static final String TABLE_PROCESSES = "processes";
 	public static final String ATTR_NAME = "name";
