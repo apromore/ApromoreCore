@@ -184,6 +184,7 @@ public class RequestToDA {
 					versionP.setLastUpdate(versionM.getLastUpdate());
 					versionP.setName(versionM.getName());
 					versionP.setRanking(versionM.getRanking());					
+					versionP.setDocumentation(versionM.getDocumentation());
 				}
 			}
 			return processesP;

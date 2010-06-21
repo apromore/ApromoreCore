@@ -28,14 +28,14 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "FormatType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:37:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class FormatType {
 
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:37:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String format;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:37:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String extension;
 
     /**
@@ -46,7 +46,7 @@ public class FormatType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:37:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getFormat() {
         return format;
     }
@@ -59,7 +59,7 @@ public class FormatType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:37:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setFormat(String value) {
         this.format = value;
     }
@@ -72,7 +72,7 @@ public class FormatType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:37:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getExtension() {
         return extension;
     }
@@ -85,7 +85,7 @@ public class FormatType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-07T12:33:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:37:48+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setExtension(String value) {
         this.extension = value;
     }
