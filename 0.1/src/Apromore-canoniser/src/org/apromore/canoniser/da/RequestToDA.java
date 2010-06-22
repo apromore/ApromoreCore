@@ -31,7 +31,8 @@ public class RequestToDA {
 		this.port = ss.getDACanoniser(); 
 	}
 
-	public org.apromore.canoniser.model_manager.ProcessSummaryType StoreProcess (String username, String processName, String domain, String nativeType, String versionName,
+	public org.apromore.canoniser.model_manager.ProcessSummaryType StoreProcess (String username, String processName, 
+			String domain, String nativeType, String versionName, String documentation, String created, String lastupdate,
 			InputStream process_xml, InputStream cpf_xml, InputStream anf_xml) throws IOException, ExceptionStore {
 
 		org.apromore.canoniser.model_manager.ProcessSummaryType processM =
@@ -42,6 +43,9 @@ public class RequestToDA {
 		payload.setProcessName(processName);
 		payload.setDomain(domain);
 		payload.setVersionName(versionName);
+		payload.setDocumentation(documentation);
+		payload.setCreationDate(created);
+		payload.setLastUpdate(lastupdate);
 		DataSource source_proc = new ByteArrayDataSource(process_xml, "text/xml"); 
 		payload.setNative(new DataHandler(source_proc));
 		DataSource source_cpf = new ByteArrayDataSource(cpf_xml, "text/xml"); 
@@ -71,6 +75,9 @@ public class RequestToDA {
 				first_versionM.setLastUpdate(versionDa.getLastUpdate());
 				first_versionM.setName(versionDa.getName());
 				first_versionM.setRanking(versionDa.getRanking());
+				first_versionM.setDocumentation(versionDa.getDocumentation());
+				first_versionM.setCreationDate(versionDa.getCreationDate());
+				first_versionM.setLastUpdate(versionDa.getLastUpdate());
 				processM.getVersionSummaries().add(first_versionM);
 			}
 			return processM;
@@ -94,8 +101,8 @@ public class RequestToDA {
 	}
 
 	public void StoreVersion(int processId, String preVersion,
-			String newVersion, String nativeType, String domain,
-			String username, InputStream native_is, InputStream anf_xml_is,
+			String newVersion, String nativeType, String domain, String created, String lastupdate,
+			String documentation, String username, InputStream native_is, InputStream anf_xml_is,
 			InputStream cpf_xml_is) throws IOException, ExceptionStore {
 
 		StoreVersionInputMsgType payload = new StoreVersionInputMsgType();
@@ -104,6 +111,9 @@ public class RequestToDA {
 		payload.setNewVersion(newVersion);
 		payload.setPreVersion(preVersion);
 		payload.setProcessId(processId);
+		payload.setDocumentation(documentation);
+		payload.setCreationDate(created);
+		payload.setLastUpdate(lastupdate);
 
 		DataSource source_proc = new ByteArrayDataSource(native_is, "text/xml"); 
 		payload.setNative(new DataHandler(source_proc));
