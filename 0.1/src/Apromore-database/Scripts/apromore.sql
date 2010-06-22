@@ -69,10 +69,10 @@ show warnings ;
 
 create table processes (
     processId     int auto_increment,
-    name        varchar(40),
+    name        varchar(100),
     domain        varchar(40),
     owner        varchar(10),
-    original_type varchar(80),
+    original_type varchar(20),
     index(processId),
     constraint pk_processes primary key(processId),
     constraint fk_processes1 foreign key(owner) references users(username)
@@ -100,6 +100,7 @@ create table process_versions (
     last_update datetime,
     canonical int,
     ranking varchar(10),
+    documentation text,
     constraint pk_versions primary key (processId,version_name),
     constraint un_versions unique (canonical),
     constraint fk_versions1 foreign key (processId) references processes(processId)
