@@ -34,8 +34,8 @@
 		<attribute name="Username" type="string" />
 		<attribute name="versionName" type="string" />
 		<attribute name="documentation" type="string" />
-		<attribute name="last_update" type="dateTime" />
-		<attribute name="creation_date" type="dateTime" />
+		<attribute name="last_update" type="string" />
+		<attribute name="creation_date" type="string" />
 	</complexType>
 
 	<complexType name="StoreNativeCpfOutputMsgType">
@@ -66,8 +66,8 @@
 		<attribute name="ranking" type="int" />
 		<attribute name="name" type="string" />
 		<attribute name="documentation" type="string" />
-		<attribute name="last_update" type="dateTime" />
-		<attribute name="creation_date" type="dateTime" />
+		<attribute name="last_update" type="string" />
+		<attribute name="creation_date" type="string" />
 	</complexType>
 
 	<complexType name="StoreNativeInputMsgType">
@@ -102,8 +102,8 @@
 		<attribute name="Username" type="string" />
 		<attribute name="Domain" type="string" />
 		<attribute name="documentation" type="string" />
-		<attribute name="last_update" type="dateTime" />
-		<attribute name="creation_date" type="dateTime" />
+		<attribute name="last_update" type="string" />
+		<attribute name="creation_date" type="string" />
 	</complexType>
 	<complexType name="StoreVersionOutputMsgType">
 		<sequence>
