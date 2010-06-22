@@ -5,6 +5,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -141,8 +142,8 @@ public class RequestToManager {
 		}
 	}
 
-	public ProcessSummaryType ImportModel(String username, String nativeType, String processName, 
-			String versionName, InputStream xml_process, String domain) 
+	public ProcessSummaryType importProcess (String username, String nativeType, String processName, 
+			String versionName, InputStream xml_process, String domain, String documentation, String created, String lastUpdate) 
 	throws IOException, ExceptionImport {
 		
 		ImportProcessInputMsgType payload = new ImportProcessInputMsgType();
@@ -153,6 +154,9 @@ public class RequestToManager {
 		payload.setVersionName(versionName);
 		payload.setProcessDescription(new DataHandler(source));
 		payload.setDomain(domain);
+		payload.setDocumentation(documentation);
+		payload.setCreationDate(created);
+		payload.setLastUpdate(lastUpdate);
 		ImportProcessOutputMsgType res = this.port.importProcess(payload);
 		ResultType result = res.getResult();
 		if (result.getCode() == -1) {

@@ -157,8 +157,8 @@ public class ProcessDetailsController extends Window {
 		String language = process.getOriginalNativeType();
 		String domain = process.getDomain();
 		String ranking = version.getRanking().toString();
-		Date creationDate = version.getCreationDate();
-		Date lastUpdate = version.getLastUpdate();
+		String creationDate = version.getCreationDate();
+		String lastUpdate = version.getLastUpdate();
 		String versionName = version.getName();
 		/*
 		 * for each grid attribute is associated an history whose elements are of the

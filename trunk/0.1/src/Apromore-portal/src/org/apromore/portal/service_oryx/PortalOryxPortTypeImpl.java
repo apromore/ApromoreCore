@@ -131,7 +131,7 @@ import org.apromore.portal.model_oryx.WriteProcessOutputMsgType;
 			String new_processName = payload.getProcessName();
 			String new_versionName = payload.getVersionName();
 			// import native for corresponding process version
-			request.ImportModel(username, nativeType, new_processName, new_versionName, native_is, domain);
+			request.importProcess(username, nativeType, new_processName, new_versionName, native_is, domain);
 			// delete edit session
 			request.DeleteEditionSession(code);
 			result.setCode(0);
