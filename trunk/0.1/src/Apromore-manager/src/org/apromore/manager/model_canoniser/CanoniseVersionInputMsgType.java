@@ -1,8 +1,6 @@
 
 package org.apromore.manager.model_canoniser;
 
-import java.sql.Date;
-
 import javax.activation.DataHandler;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -10,7 +8,6 @@ import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlMimeType;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -32,8 +29,8 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;attribute name="newVersion" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="preVersion" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="domain" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="last_update" type="{http://www.w3.org/2001/XMLSchema}dateTime" />
- *       &lt;attribute name="creation_date" type="{http://www.w3.org/2001/XMLSchema}dateTime" />
+ *       &lt;attribute name="last_update" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="creation_date" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="documentation" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -46,41 +43,39 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "CanoniseVersionInputMsgType", propOrder = {
     "_native"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class CanoniseVersionInputMsgType {
 
     @XmlElement(name = "Native", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected DataHandler _native;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String username;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String nativeType;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Integer processId;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String newVersion;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String preVersion;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String domain;
     @XmlAttribute(name = "last_update")
-    @XmlSchemaType(name = "dateTime")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected Date lastUpdate;
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected String lastUpdate;
     @XmlAttribute(name = "creation_date")
-    @XmlSchemaType(name = "dateTime")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected Date creationDate;
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected String creationDate;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String documentation;
 
     /**
@@ -91,7 +86,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public DataHandler getNative() {
         return _native;
     }
@@ -104,7 +99,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setNative(DataHandler value) {
         this._native = value;
     }
@@ -117,7 +112,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getUsername() {
         return username;
     }
@@ -130,7 +125,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setUsername(String value) {
         this.username = value;
     }
@@ -143,7 +138,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getNativeType() {
         return nativeType;
     }
@@ -156,7 +151,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setNativeType(String value) {
         this.nativeType = value;
     }
@@ -169,7 +164,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public Integer getProcessId() {
         return processId;
     }
@@ -182,7 +177,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setProcessId(Integer value) {
         this.processId = value;
     }
@@ -195,7 +190,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getNewVersion() {
         return newVersion;
     }
@@ -208,7 +203,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setNewVersion(String value) {
         this.newVersion = value;
     }
@@ -221,7 +216,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getPreVersion() {
         return preVersion;
     }
@@ -234,7 +229,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setPreVersion(String value) {
         this.preVersion = value;
     }
@@ -247,7 +242,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getDomain() {
         return domain;
     }
@@ -260,7 +255,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setDomain(String value) {
         this.domain = value;
     }
@@ -270,11 +265,11 @@ public class CanoniseVersionInputMsgType {
      * 
      * @return
      *     possible object is
-     *     {@link Date }
+     *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public Date getLastUpdate() {
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public String getLastUpdate() {
         return lastUpdate;
     }
 
@@ -283,11 +278,11 @@ public class CanoniseVersionInputMsgType {
      * 
      * @param value
      *     allowed object is
-     *     {@link Date }
+     *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setLastUpdate(Date value) {
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setLastUpdate(String value) {
         this.lastUpdate = value;
     }
 
@@ -296,11 +291,11 @@ public class CanoniseVersionInputMsgType {
      * 
      * @return
      *     possible object is
-     *     {@link Date }
+     *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public Date getCreationDate() {
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public String getCreationDate() {
         return creationDate;
     }
 
@@ -309,11 +304,11 @@ public class CanoniseVersionInputMsgType {
      * 
      * @param value
      *     allowed object is
-     *     {@link Date }
+     *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setCreationDate(Date value) {
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setCreationDate(String value) {
         this.creationDate = value;
     }
 
@@ -325,7 +320,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getDocumentation() {
         return documentation;
     }
@@ -338,7 +333,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:58:25+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:37:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setDocumentation(String value) {
         this.documentation = value;
     }

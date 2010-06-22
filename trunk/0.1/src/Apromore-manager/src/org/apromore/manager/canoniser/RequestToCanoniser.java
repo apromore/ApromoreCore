@@ -3,6 +3,7 @@ package org.apromore.manager.canoniser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.sql.Date;
 import java.util.Iterator;
 
 import javax.activation.DataHandler;
@@ -33,7 +34,7 @@ public class RequestToCanoniser {
 	}
 
 	public org.apromore.manager.model_portal.ProcessSummaryType CanoniseProcess(String username, String processName, String versionName, 
-			String nativeType, InputStream cpf, String domain) 
+			String nativeType, InputStream cpf, String domain, String documentation, String created, String lastupdate) 
 	throws IOException, ExceptionImport {
 		org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType payload = new CanoniseProcessInputMsgType();
 		DataSource source = new ByteArrayDataSource(cpf, "text/xml"); 
@@ -42,6 +43,9 @@ public class RequestToCanoniser {
 		payload.setProcessName(processName);
 		payload.setVersionName(versionName);
 		payload.setDomain(domain);
+		payload.setDocumentation(documentation);
+		payload.setCreationDate(created);
+		payload.setLastUpdate(lastupdate);
 		payload.setProcessDescription(new DataHandler(source));
 		org.apromore.manager.model_canoniser.CanoniseProcessOutputMsgType res = this.port.canoniseProcess(payload);
 		if (res.getResult().getCode() == -1) {
@@ -69,6 +73,9 @@ public class RequestToCanoniser {
 				first_versionP.setLastUpdate(versionC.getLastUpdate());
 				first_versionP.setName(versionC.getName());
 				first_versionP.setRanking(versionC.getRanking());
+				first_versionP.setDocumentation(versionC.getDocumentation());
+				first_versionP.setCreationDate(versionC.getCreationDate());
+				first_versionP.setLastUpdate(versionC.getLastUpdate());
 				processP.getVersionSummaries().add(first_versionP);
 			}
 			return processP;
@@ -101,7 +108,8 @@ public class RequestToCanoniser {
 
 	public void CanoniseVersion(Integer processId, String preVersion,
 			String newVersion, String nativeType, String domain, String username,
-			InputStream native_is) throws IOException, ExceptionCanoniseVersion {
+			InputStream native_is, String documentation, String created, String lastupdate) 
+	throws IOException, ExceptionCanoniseVersion {
 		CanoniseVersionInputMsgType payload = new CanoniseVersionInputMsgType();
 		DataSource source = new ByteArrayDataSource(native_is, "text/xml");
 		payload.setDomain(domain);
@@ -111,6 +119,9 @@ public class RequestToCanoniser {
 		payload.setPreVersion(preVersion);
 		payload.setProcessId(processId);
 		payload.setUsername(username);
+		payload.setDocumentation(documentation);
+		payload.setCreationDate(created);
+		payload.setLastUpdate(lastupdate);
 		CanoniseVersionOutputMsgType res = this.port.canoniseVersion(payload);
 		if (res.getResult().getCode() == -1) {
 			throw new ExceptionCanoniseVersion (res.getResult().getMessage());
