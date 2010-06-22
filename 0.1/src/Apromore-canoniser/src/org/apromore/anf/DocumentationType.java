@@ -35,13 +35,13 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "DocumentationType", propOrder = {
     "documentation"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class DocumentationType
     extends AnnotationType
 {
 
     @XmlElement(required = true)
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected List<Object> documentation;
 
     /**
@@ -66,7 +66,7 @@ public class DocumentationType
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public List<Object> getDocumentation() {
         if (documentation == null) {
             documentation = new ArrayList<Object>();
