@@ -300,7 +300,7 @@ public class ProcessTableController {
 				Label versionCreationDate = new Label (version.getCreationDate().toString());
 				Label versionLastUpdate = new Label (version.getLastUpdate().toString());
 				Label versionRanking = new Label (version.getRanking().toString());
-				Label versionDocumentation = new Label ("to be completed");
+				Label versionDocumentation = new Label (version.getDocumentation());
 
 				processVersionsR.appendChild(versionR);
 
