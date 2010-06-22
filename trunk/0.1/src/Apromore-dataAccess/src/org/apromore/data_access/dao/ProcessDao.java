@@ -95,8 +95,8 @@ public class ProcessDao extends BasicDao {
 
 				stmtV = conn.createStatement();
 				requeteV = " select " + ConstantDB.ATTR_VERSION_NAME + ", "
-				+ ConstantDB.ATTR_CREATION_DATE + ",  "
-				+ ConstantDB.ATTR_LAST_UPDATE + ",  "
+				+ "date_format(" + ConstantDB.ATTR_CREATION_DATE + ", '%d/%c/%Y %k:%i:%S')" + ",  "
+				+ "date_format(" + ConstantDB.ATTR_LAST_UPDATE + ", '%d/%c/%Y %k:%i:%S')" + ",  "
 				+ ConstantDB.ATTR_DOCUMENTATION + ",  "
 				+ ConstantDB.ATTR_RANKING + " "
 				+ " from " + ConstantDB.TABLE_VERSIONS 
@@ -106,8 +106,8 @@ public class ProcessDao extends BasicDao {
 				while (rsV.next()){
 					VersionSummaryType version = new VersionSummaryType();
 					version.setName(rsV.getString(1));
-					version.setCreationDate(rsV.getDate(2));
-					version.setLastUpdate(rsV.getDate(3));
+					version.setCreationDate(rsV.getString(2));
+					version.setLastUpdate(rsV.getString(3));
 					version.setDocumentation(rsV.getString(4));
 					version.setRanking(rsV.getInt(5));
 					processSummary.getVersionSummaries().add(version);
@@ -204,8 +204,8 @@ public class ProcessDao extends BasicDao {
 
 				stmtV = conn.createStatement();
 				requeteV = " select " + ConstantDB.ATTR_VERSION_NAME + ", "
-				+ ConstantDB.ATTR_CREATION_DATE + ",  "
-				+ ConstantDB.ATTR_LAST_UPDATE + ",  "
+				+ "date_format(" + ConstantDB.ATTR_CREATION_DATE + ", '%d/%c/%Y %k:%i:%f')" + ",  "
+				+ "date_format(" + ConstantDB.ATTR_LAST_UPDATE  + ", '%d/%c/%Y %k:%i:%f')" + ",  "
 				+ ConstantDB.ATTR_RANKING + ", "
 				+ ConstantDB.ATTR_DOCUMENTATION
 				+ " from " + ConstantDB.TABLE_VERSIONS 
@@ -216,8 +216,8 @@ public class ProcessDao extends BasicDao {
 				while (rsV.next()){
 					VersionSummaryType version = new VersionSummaryType();
 					version.setName(rsV.getString(1));
-					version.setCreationDate(rsV.getDate(2));
-					version.setLastUpdate(rsV.getDate(3));
+					version.setCreationDate(rsV.getString(2));
+					version.setLastUpdate(rsV.getString(3));
 					version.setRanking(rsV.getInt(4));
 					version.setDocumentation(rsV.getString(5));
 					processSummary.getVersionSummaries().add(version);
@@ -359,7 +359,7 @@ public class ProcessDao extends BasicDao {
 	 */
 	public org.apromore.data_access.model_canoniser.ProcessSummaryType storeNativeCpf 
 	(String username, String processName, String domain, String documentation,
-			String nativeType, String version, Date creationDate, Date lastUpdate, InputStream process_xml,
+			String nativeType, String version, String creationDate, String lastUpdate, InputStream process_xml,
 			InputStream cpf_xml, InputStream anf_xml) throws ExceptionDao, SQLException, IOException {
 
 		Connection conn = null;
@@ -500,12 +500,12 @@ public class ProcessDao extends BasicDao {
 			+     ConstantDB.ATTR_LAST_UPDATE + ","
 			+     ConstantDB.ATTR_CANONICAL + ","
 			+	  ConstantDB.ATTR_DOCUMENTATION + ")"
-			+ " values (?, ?, ?, ?, ?) ";
+			+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%f'), str_to_date(?,'%Y-%c-%d %k:%i:%f'), ?, ?) ";
 			stmtp = conn.prepareStatement(query2);
 			stmtp.setInt(1, processId);
 			stmtp.setString(2, version);
-			stmtp.setDate(3,creationDate);
-			stmtp.setDate(4,lastUpdate);
+			stmtp.setString(3,creationDate);
+			stmtp.setString(4,lastUpdate);
 			stmtp.setInt(5, cpfId);
 			stmtp.setString(6, documentation);
 			Integer rs2 = stmtp.executeUpdate();
@@ -712,7 +712,7 @@ public class ProcessDao extends BasicDao {
 
 	public void storeVersion(int processId, String preVersion,
 			String newVersion, String username, String nativeType,
-			String domain, String documentation, Date creationDate, Date lastUpdate,
+			String domain, String documentation, String creationDate, String lastUpdate,
 			InputStream native_is, InputStream cpf_is,
 			InputStream anf_is) throws ExceptionDao, SQLException {
 		Connection conn = null;
@@ -821,12 +821,12 @@ public class ProcessDao extends BasicDao {
 			+     ConstantDB.ATTR_LAST_UPDATE + ","
 			+     ConstantDB.ATTR_CANONICAL + ","
 			+     ConstantDB.ATTR_DOCUMENTATION + ")"
-			+ " values (?, ?, ?, ?, ?, ?) ";
+			+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%f'), str_to_date(?,'%Y-%c-%d %k:%i:%f'), ?, ?) ";
 			stmtp = conn.prepareStatement(query2);
 			stmtp.setInt(1, processId);
 			stmtp.setString(2, newVersion);
-			stmtp.setDate(3, creationDate);
-			stmtp.setDate(4, lastUpdate);
+			stmtp.setString(3, creationDate);
+			stmtp.setString(4, lastUpdate);
 			stmtp.setInt(5, cpfId);
 			stmtp.setString(6, documentation);
 			Integer rs2 = stmtp.executeUpdate();

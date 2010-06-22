@@ -98,8 +98,8 @@
 		<attribute name="ranking" type="int" />
 		<attribute name="name" type="string" />
 		<attribute name="documentation" type="string" />
-		<attribute name="last_update" type="dateTime" />
-		<attribute name="creation_date" type="dateTime" />
+		<attribute name="last_update" type="string" />
+		<attribute name="creation_date" type="string" />
 	</complexType>
 
 	<complexType name="ReadDomainsInputMsgType">
