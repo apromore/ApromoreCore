@@ -5,12 +5,14 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
+import java.sql.Date;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.apromore.portal.common.Utils;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummaryType;
@@ -31,6 +33,9 @@ public class ImportOneProcessController extends Window {
 	private ImportListProcessesController importProcessesC;
 	private Window importOneProcessWindow;
 
+	private String documentation;
+	private String lastUpdate;
+	private String created;
 	private Textbox processName;
 	private Textbox versionName;
 	private Textbox domain;
@@ -68,7 +73,9 @@ public class ImportOneProcessController extends Window {
 		
 		String readVersionName = "0.1"; // default value for versionName if not found
 		String readProcessName = processName ; // default value if not found
-
+		String readDocumentation = "" ; 
+		String readCreated = "";
+		String readLastupdate = "";
 		// check properties in xml_process: version, documentation, created, modificationDate
 		// if native format is xpdl, extract information from xml file
 		if (nativeType.compareTo("XPDL 2.1")==0) {
@@ -77,16 +84,39 @@ public class ImportOneProcessController extends Window {
 			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(new FileInputStream(this.xml_file));
 			PackageType pkg = rootElement.getValue();
 
-			try {
+			try {// get process name if defined
 				if (pkg.getName().compareTo("")!=0) {
 					readProcessName = pkg.getName();
 				}
 			} catch (NullPointerException e) {
 				// default value
 			}
-			try {
+			try {//get version name if defined
 				if (pkg.getRedefinableHeader().getVersion().getValue().compareTo("")!=0) {
 					readVersionName = pkg.getRedefinableHeader().getVersion().getValue();
+				}
+			} catch (NullPointerException e) {
+				// default value
+			}
+			try {//get documentation if defined
+				if (pkg.getPackageHeader().getDocumentation().getValue().compareTo("")!=0) {
+					readDocumentation = pkg.getPackageHeader().getDocumentation().getValue();
+				}
+			} catch (NullPointerException e) {
+				// default value
+			}
+			try {//get creation date if defined
+				if (pkg.getPackageHeader().getCreated().getValue().compareTo("")!=0) {
+					readCreated = pkg.getPackageHeader().getCreated().getValue();
+					readCreated = Utils.xpdlDate2standardDate(readCreated);
+				}
+			} catch (NullPointerException e) {
+				// default value
+			}
+			try {//get lastupdate date if defined
+				if (pkg.getPackageHeader().getModificationDate().getValue().compareTo("")!=0) {
+					readLastupdate = pkg.getPackageHeader().getModificationDate().getValue();
+					readLastupdate = Utils.xpdlDate2standardDate(readLastupdate);
 				}
 			} catch (NullPointerException e) {
 				// default value
@@ -94,6 +124,9 @@ public class ImportOneProcessController extends Window {
 		}
 		this.processName.setValue(readProcessName);
 		this.versionName.setValue(readVersionName);
+		this.documentation = readDocumentation;
+		this.created = readCreated ;
+		this.lastUpdate = readLastupdate;
 		
 		this.okButton.addEventListener("onClick",
 				new EventListener() {
@@ -157,8 +190,9 @@ public class ImportOneProcessController extends Window {
 				throw new ExceptionImport("Please enter a value for each field.");
 			} else {
 				ProcessSummaryType res= 
-					request.ImportModel(this.mainC.getCurrentUser().getUsername(), this.nativeType, this.processName.getValue(), 
-							this.versionName.getValue(), this.nativeProcess, this.domain.getValue());
+					request.importProcess(this.mainC.getCurrentUser().getUsername(), this.nativeType, this.processName.getValue(), 
+							this.versionName.getValue(), this.nativeProcess, this.domain.getValue(),
+							this.documentation, this.created, this.lastUpdate);
 				// process successfully imported
 				this.importProcessesC.getImportedList().add(this);
 				this.mainC.displayNewProcess(res);
