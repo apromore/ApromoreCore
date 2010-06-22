@@ -34,26 +34,26 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "EdgeType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class EdgeType {
 
     @XmlAttribute(required = true)
     @XmlSchemaType(name = "positiveInteger")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigInteger id;
     @XmlAttribute
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String condition;
     @XmlAttribute(name = "default")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Boolean _default;
     @XmlAttribute(required = true)
     @XmlSchemaType(name = "positiveInteger")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigInteger sourceId;
     @XmlAttribute(required = true)
     @XmlSchemaType(name = "positiveInteger")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigInteger targetId;
 
     /**
@@ -64,7 +64,7 @@ public class EdgeType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public BigInteger getId() {
         return id;
     }
@@ -77,7 +77,7 @@ public class EdgeType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setId(BigInteger value) {
         this.id = value;
     }
@@ -90,7 +90,7 @@ public class EdgeType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public String getCondition() {
         return condition;
     }
@@ -103,7 +103,7 @@ public class EdgeType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setCondition(String value) {
         this.condition = value;
     }
@@ -116,7 +116,7 @@ public class EdgeType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public boolean isDefault() {
         if (_default == null) {
             return true;
@@ -133,7 +133,7 @@ public class EdgeType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setDefault(Boolean value) {
         this._default = value;
     }
@@ -146,7 +146,7 @@ public class EdgeType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public BigInteger getSourceId() {
         return sourceId;
     }
@@ -159,7 +159,7 @@ public class EdgeType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setSourceId(BigInteger value) {
         this.sourceId = value;
     }
@@ -172,7 +172,7 @@ public class EdgeType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public BigInteger getTargetId() {
         return targetId;
     }
@@ -185,7 +185,7 @@ public class EdgeType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-21T05:19:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setTargetId(BigInteger value) {
         this.targetId = value;
     }

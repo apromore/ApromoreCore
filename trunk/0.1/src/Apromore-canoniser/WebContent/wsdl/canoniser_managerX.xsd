@@ -26,8 +26,8 @@
 		<attribute name="Domain" type="string" />
 		<attribute name="Username" type="string" />
 		<attribute name="Documentation" type="string" />
-		<attribute name="last_update" type="dateTime" />
-		<attribute name="creation_date" type="dateTime" />
+		<attribute name="last_update" type="string" />
+		<attribute name="creation_date" type="string" />
 	</complexType>
 
 	<complexType name="CanoniseProcessOutputMsgType">
@@ -56,8 +56,8 @@
 	<complexType name="VersionSummaryType">
 		<attribute name="ranking" type="int" />
 		<attribute name="name" type="string" />
-		<attribute name="last_update" type="dateTime" />
-		<attribute name="creation_date" type="dateTime" />
+		<attribute name="last_update" type="string" />
+		<attribute name="creation_date" type="string" />
 		<attribute name="documentation" type="string" />
 	</complexType>
 
@@ -92,8 +92,8 @@
 		<attribute name="newVersion" type="string" />
 		<attribute name="preVersion" type="string" />
 		<attribute name="domain" type="string" />
-		<attribute name="last_update" type="dateTime" />
-		<attribute name="creation_date" type="dateTime" />
+		<attribute name="last_update" type="string" />
+		<attribute name="creation_date" type="string" />
 		<attribute name="documentation" type="string" />
 	</complexType>
 
