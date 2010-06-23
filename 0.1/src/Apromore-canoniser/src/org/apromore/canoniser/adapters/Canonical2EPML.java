@@ -52,8 +52,10 @@ import de.epml.TypeMove2;
 import de.epml.TypeOR;
 import de.epml.TypeObject;
 import de.epml.TypePosition;
+import de.epml.TypeProcessInterface;
 import de.epml.TypeRelation;
 import de.epml.TypeRole;
+import de.epml.TypeToProcess;
 import de.epml.TypeXOR;
 
 public class Canonical2EPML {
@@ -63,6 +65,8 @@ public class Canonical2EPML {
 	Map<BigInteger, EdgeType> edgeRefMap = new HashMap<BigInteger, EdgeType>();
 	Map<BigInteger, Object> epcRefMap = new HashMap<BigInteger, Object>();
 	List<BigInteger> object_res_list = new LinkedList<BigInteger>();
+	List<TypeFunction> subnet_list = new LinkedList<TypeFunction>();
+	List<TypeProcessInterface> pi_list = new LinkedList<TypeProcessInterface>();
 	
 	private TypeEPML epml = new TypeEPML();
 	private TypeDirectory dir = new TypeDirectory();
@@ -104,6 +108,11 @@ public class Canonical2EPML {
 			object_res_list.clear();
 			epml.getDirectory().get(0).getEpcOrDirectory().add(epc);
 		}
+		
+		for(TypeFunction func: subnet_list)
+			func.getToProcess().setLinkToEpcId(id_map.get(func.getToProcess().getLinkToEpcId()));
+		for(TypeProcessInterface pi: pi_list)
+			pi.getToProcess().setLinkToEpcId(id_map.get(pi.getToProcess().getLinkToEpcId()));
 	}
 	
 	private void translateNet(TypeEPC epc, NetType net)
@@ -113,7 +122,7 @@ public class Canonical2EPML {
 			if(node instanceof TaskType || node instanceof EventType)
 			{
 				if (node instanceof TaskType) {
-					translateTask(epc, node);
+					translateTask(epc, (TaskType) node);
 				} else if (node instanceof EventType) {
 					translateEvent(epc, node);
 				}
@@ -199,14 +208,28 @@ public class Canonical2EPML {
 		}
 	}
 	
-	private void translateTask(TypeEPC epc, NodeType node)
+	private void translateTask(TypeEPC epc, TaskType task)
 	{
-		TypeFunction func = new TypeFunction();
-		id_map.put(node.getId(), BigInteger.valueOf(ids));
-		func.setId(BigInteger.valueOf(ids++));
-		func.setName(node.getName());
-		epc.getEventOrFunctionOrRole().add(func);	
-		epcRefMap.put(func.getId(), func);
+		if(task.getName() == null && task.getSubnetId() != null)
+		{
+			TypeProcessInterface pi = new TypeProcessInterface();
+			pi.setToProcess(new TypeToProcess());
+			pi.getToProcess().setLinkToEpcId(task.getSubnetId());
+			pi_list.add(pi);
+		}
+		else {
+			TypeFunction func = new TypeFunction();
+			id_map.put(task.getId(), BigInteger.valueOf(ids));
+			func.setId(BigInteger.valueOf(ids++));
+			func.setName(task.getName());
+			if(task.getSubnetId() != null)
+			{
+				func.getToProcess().setLinkToEpcId(task.getSubnetId());
+				subnet_list.add(func);
+			}
+			epc.getEventOrFunctionOrRole().add(func);	
+			epcRefMap.put(func.getId(), func);
+		}
 	}
 	
 	private void translateEvent(TypeEPC epc, NodeType node)
