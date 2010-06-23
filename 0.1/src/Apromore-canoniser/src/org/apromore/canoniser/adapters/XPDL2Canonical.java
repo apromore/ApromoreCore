@@ -109,8 +109,7 @@ public class XPDL2Canonical {
 						ResourceTypeType r = new ResourceTypeType();
 						r.setId(BigInteger.valueOf(cpfId++));
 						r.setName(lane.getName());
-						res.getSpecializationIds().add(
-								BigInteger.valueOf(cpfId));
+						res.getSpecializationIds().add(BigInteger.valueOf(cpfId-1));
 						this.cpf.getResourceType().add(r);
 					}
 				}
@@ -142,8 +141,9 @@ public class XPDL2Canonical {
 				ResourceTypeType res;
 				res = pool_resource_map.get(bpmnproc.getId());
 				ResourceTypeRefType ref = new ResourceTypeRefType();
-				ref.setResourceTypeId(res.getId());
-
+				if (res != null) {
+					ref.setResourceTypeId(res.getId());
+				}
 				translateProcess(net, bpmnproc, ref);
 				process_unrequired_events(net);
 				recordAnnotations(bpmnproc, this.anf);

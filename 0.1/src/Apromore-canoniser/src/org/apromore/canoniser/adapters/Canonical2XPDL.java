@@ -22,6 +22,8 @@ import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ORJoinType;
 import org.apromore.cpf.ORSplitType;
+import org.apromore.cpf.ResourceTypeRefType;
+import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TimerType;
@@ -37,9 +39,13 @@ import org.wfmc._2008.xpdl2.Event;
 import org.wfmc._2008.xpdl2.Implementation;
 import org.wfmc._2008.xpdl2.IntermediateEvent;
 import org.wfmc._2008.xpdl2.Join;
+import org.wfmc._2008.xpdl2.Lane;
+import org.wfmc._2008.xpdl2.Lanes;
 import org.wfmc._2008.xpdl2.NodeGraphicsInfo;
 import org.wfmc._2008.xpdl2.NodeGraphicsInfos;
 import org.wfmc._2008.xpdl2.PackageType;
+import org.wfmc._2008.xpdl2.Pool;
+import org.wfmc._2008.xpdl2.Pools;
 import org.wfmc._2008.xpdl2.ProcessType;
 import org.wfmc._2008.xpdl2.Route;
 import org.wfmc._2008.xpdl2.Split;
@@ -66,6 +72,7 @@ public class Canonical2XPDL {
 	
 	Map<EventType, Event> events = new HashMap<EventType, Event>();
 	Map<RoutingType, TransitionRestrictions> gateways = new HashMap<RoutingType, TransitionRestrictions>();
+	List<BigInteger> resource_ref_list = new LinkedList<BigInteger>();
 	
 	private PackageType xpdl; 
 	/**
@@ -79,10 +86,13 @@ public class Canonical2XPDL {
 		
 		this.xpdl = new PackageType();
 		this.xpdl.setWorkflowProcesses(new WorkflowProcesses());
+		this.xpdl.setPools(new Pools());
 		
 		for (NetType net: cpf.getNet()) {
 			ProcessType bpmnproc = new ProcessType();
+			bpmnproc.setId(net.getId().toString());
 			translateNet(bpmnproc, net);
+			translateResources(bpmnproc, cpf);
 			this.xpdl.getWorkflowProcesses().getWorkflowProcess().add(bpmnproc);
 		}
 		
@@ -100,15 +110,52 @@ public class Canonical2XPDL {
 		
 		this.xpdl = new PackageType();
 		this.xpdl.setWorkflowProcesses(new WorkflowProcesses());
+		this.xpdl.setPools(new Pools());
 		
 		for (NetType net: cpf.getNet()) {
 			ProcessType bpmnproc = new ProcessType();
+			bpmnproc.setId(net.getId().toString());
 			translateNet(bpmnproc, net, anf);
+			translateResources(bpmnproc, cpf);
 			this.xpdl.getWorkflowProcesses().getWorkflowProcess().add(bpmnproc);
 		}
 		
 	}
 
+	private void translateResources(ProcessType bpmnproc, CanonicalProcessType cpf)
+	{
+		if(resource_ref_list.size() == 1)
+		{
+			Pool p = new Pool();
+			//p.setName(value);
+			p.setId(resource_ref_list.get(0).toString());
+			p.setProcess(bpmnproc.getId());
+			this.xpdl.getPools().getPool().add(p);
+		}
+		else if (resource_ref_list.size() > 1) {
+			for(ResourceTypeType res: cpf.getResourceType())
+			{
+				if(resource_ref_list.contains(res.getId()) && res.getSpecializationIds().size() > 0)
+				{
+					Pool p = new Pool();
+					p.setName(res.getName());
+					p.setId(res.getId().toString());
+					p.setProcess(bpmnproc.getId());
+					p.setLanes(new Lanes());
+					for(BigInteger id : res.getSpecializationIds())
+					{
+						Lane lane = new Lane();
+						lane.setId(id.toString());
+						//lane.setName(value);
+						p.getLanes().getLane().add(lane);
+					}
+				}
+					
+			}
+		}
+		
+		resource_ref_list.clear();
+	}
 	private void translateNet(ProcessType bpmnproc, NetType net) {
 		Activities acts = new Activities();
 		Transitions trans = new Transitions();
@@ -330,6 +377,11 @@ public class Canonical2XPDL {
 		Activity act = null;
 		if (node instanceof TaskType) {
 			act = translateTask(bpmnproc, node);
+			for(ResourceTypeRefType ref: ((TaskType)node).getResourceTypeRef())
+			{
+				if(!resource_ref_list.contains(ref.getResourceTypeId()))
+					resource_ref_list.add(ref.getResourceTypeId());
+			}
 		} else if (node instanceof RoutingType) {
 			act = translateGateway(bpmnproc, node);
 		} else if (node instanceof EventType)
