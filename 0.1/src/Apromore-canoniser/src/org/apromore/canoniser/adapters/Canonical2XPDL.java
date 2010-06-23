@@ -195,11 +195,14 @@ public class Canonical2XPDL {
 					for (TransitionRestriction trest : trests
 							.getTransitionRestriction()) {
 						Split split = trest.getSplit();
-						TransitionRefs refs = split.getTransitionRefs();
-						for (Transition trans : outgoingFlows.get(act.getId())) {
-							TransitionRef ref = new TransitionRef();
-							ref.setId(trans.getId());
-							refs.getTransitionRef().add(ref);
+						if (split != null) {
+							TransitionRefs refs = split.getTransitionRefs();
+							for (Transition trans : outgoingFlows.get(act
+									.getId())) {
+								TransitionRef ref = new TransitionRef();
+								ref.setId(trans.getId());
+								refs.getTransitionRef().add(ref);
+							}
 						}
 					}
 				}
