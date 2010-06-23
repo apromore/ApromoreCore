@@ -27,11 +27,11 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SearchExpressionType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:45:17+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:54:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class SearchExpressionType {
 
     @XmlAttribute(name = "SearchExpression")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:45:17+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:54:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String searchExpression;
 
     /**
@@ -42,7 +42,7 @@ public class SearchExpressionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:45:17+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:54:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getSearchExpression() {
         return searchExpression;
     }
@@ -55,7 +55,7 @@ public class SearchExpressionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:45:17+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:54:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setSearchExpression(String value) {
         this.searchExpression = value;
     }

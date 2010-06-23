@@ -14,6 +14,7 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
@@ -32,20 +33,24 @@ public class ExportNativeController extends Window {
 	private Rows exportNatRs;
 	private Label processNameL;
 	private Label versionNameL;
+	private Row annotationsR;
+	private Checkbox annotationsCB;
 	private Button okB;
 	private Button cancelB;
 	private Listbox nativeTypesLB;
 	private int processId;
 	private String versionName;
+	private String originalType;
 	private HashMap<String, String> formats_ext; // <k, v> belongs to nativeTypes: the file extension k
 												// is associated with the native type v (<xpdl,XPDL 1.2>)
 	
 	public ExportNativeController (MenuController menuC, int processId, 
-				String processName, String versionName, HashMap<String, String> formats_ext)   {
+				String processName, String originalType, String versionName, HashMap<String, String> formats_ext)   {
 
 		this.exportNativeW = (Window) Executions.createComponents("macros/exportnative.zul", null, null);
 		this.processId = processId;
 		this.versionName = versionName;
+		this.originalType = originalType;
 		this.formats_ext = formats_ext;
 		
 		String id = this.processId + " " + this.versionName;
@@ -56,12 +61,13 @@ public class ExportNativeController extends Window {
 		Row processNameR = (Row) exportNatRs.getFirstChild();
 		Row versionNameR = (Row) processNameR.getNextSibling();
 		Row nativeTypeR = (Row) versionNameR.getNextSibling();
-		Row buttonsR = (Row) nativeTypeR.getNextSibling();
-
+		this.annotationsR = (Row) nativeTypeR.getNextSibling();
+		Row buttonsR = (Row) this.annotationsR.getNextSibling();
 		this.processNameL = (Label) processNameR.getFirstChild().getNextSibling();
 		this.processNameL.setValue(processName);
 		this.versionNameL = (Label) versionNameR.getFirstChild().getNextSibling();
 		this.versionNameL.setValue(versionName);
+		this.annotationsCB = (Checkbox) this.annotationsR.getFirstChild().getNextSibling();
 		this.nativeTypesLB = (Listbox) nativeTypeR.getFirstChild().getNextSibling();
 		this.okB = (Button) buttonsR.getFirstChild().getFirstChild();
 		this.cancelB = (Button) buttonsR.getFirstChild().getFirstChild().getNextSibling();
@@ -136,11 +142,14 @@ public class ExportNativeController extends Window {
 					throw new ExceptionExport ("ExportNativeController: Native type " + nativeType
 							+ " not supported. \n");
 				}
+				if (nativeType.compareTo(this.originalType)==0) {
+					this.annotationsR.setVisible(true);
+				}
 				String processname = this.processNameL.getValue().replaceAll(" ", "_");
 				String filename = processname + "." + ext;
 				RequestToManager request = new RequestToManager();
 				InputStream native_is =
-					request.ExportNative (this.processId, this.versionName, nativeType);
+					request.ExportNative (this.processId, this.versionName, nativeType, this.annotationsCB.isChecked());
 				Filedownload.save(native_is, "text.xml", filename);
 			}
 		} catch (InterruptedException e) {
