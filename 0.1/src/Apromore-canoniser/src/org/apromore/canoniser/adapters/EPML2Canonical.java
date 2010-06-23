@@ -55,6 +55,7 @@ import de.epml.TypeMove;
 import de.epml.TypeMove2;
 import de.epml.TypeOR;
 import de.epml.TypeObject;
+import de.epml.TypeProcessInterface;
 import de.epml.TypeRANGE;
 import de.epml.TypeRole;
 import de.epml.TypeXOR;
@@ -68,6 +69,8 @@ public class EPML2Canonical{
 	Map<BigInteger, BigInteger> def_ref = new HashMap<BigInteger, BigInteger>();
 	Map<BigInteger, TypeRole> role_ref = new HashMap<BigInteger, TypeRole>();
 	Map<BigInteger, TypeObject> obj_ref = new HashMap<BigInteger, TypeObject>();
+	List<TaskType> subnet_list = new LinkedList<TaskType>();
+	
 	private CanonicalProcessType cproc = new CanonicalProcessType();
 	private AnnotationsType annotations = new AnnotationsType();
 	private long ids = 1;
@@ -95,10 +98,13 @@ public class EPML2Canonical{
 					{
 						NetType net = new NetType();
 						translateEpc(net,(TypeEPC)epc);
+						id_map.put(((TypeEPC) epc).getEpcId(), BigInteger.valueOf(ids));
 						net.setId(BigInteger.valueOf(ids++));
 						cproc.getNet().add(net);
 					}
 				}
+				for(TaskType task: subnet_list)
+					task.setSubnetId(id_map.get(task.getSubnetId()));
 			}
 		} else {
 			// the epml element doesn't have any directory
@@ -133,6 +139,11 @@ public class EPML2Canonical{
 			else if(obj instanceof TypeRANGE)
 			{
 				translateRANGE((TypeRANGE)obj);
+				addNodeAnnotations(obj);
+			}
+			else if(obj instanceof TypeProcessInterface)
+			{
+				translatePI(net, (TypeProcessInterface)obj);
 				addNodeAnnotations(obj);
 			}
 		}
@@ -238,6 +249,7 @@ public class EPML2Canonical{
 
 		
 	}
+
 
 	private void addEdgeAnnotation(TypeArc arc) {
 		
@@ -402,7 +414,21 @@ public class EPML2Canonical{
 		id_map.put(func.getId(), BigInteger.valueOf(ids));
 		task.setId(BigInteger.valueOf(ids++));
 		task.setName(func.getName());
+		if(func.getToProcess().getLinkToEpcId() != null)
+		{
+			task.setSubnetId(func.getToProcess().getLinkToEpcId());
+			subnet_list.add(task);
+		}
 		net.getNode().add(task);	
+	}
+	
+	private void translatePI(NetType net, TypeProcessInterface pi) {
+		TaskType task = new TaskType();
+		id_map.put(pi.getId(), BigInteger.valueOf(ids));
+		task.setId(BigInteger.valueOf(ids++));
+		task.setSubnetId(pi.getToProcess().getLinkToEpcId()); // Will be modified later to the ID for Net
+		subnet_list.add(task);
+		net.getNode().add(task);
 	}
 	
 	private void translateArc(NetType net, TypeArc arc)
