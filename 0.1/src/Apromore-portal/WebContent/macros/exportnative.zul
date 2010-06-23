@@ -26,6 +26,10 @@
 						<!-- listbox implemented in controller -->
 					</listbox>
 				</row>
+				<row visible="true">
+					<label value="Use annotations" />
+					<checkbox />
+				</row>
 				<row spans="2">
 					<div align="center">
 						<button label="OK" image="img/ok.png"
