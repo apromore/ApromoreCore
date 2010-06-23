@@ -172,6 +172,7 @@
 		<attribute name="NativeType" type="string" />
 		<attribute name="ProcessId" type="int" />
 		<attribute name="VersionName" type="string" />
+		<attribute name="withAnnotations" type="boolean" />
 	</complexType>
 
 	<complexType name="ExportNativeOutputMsgType">
