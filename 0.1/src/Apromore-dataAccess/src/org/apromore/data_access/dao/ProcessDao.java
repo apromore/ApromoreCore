@@ -473,7 +473,7 @@ public class ProcessDao extends BasicDao {
 			stmtp.setInt(2,anfId);
 			stmtp.executeUpdate();
 			stmtp.close();
-			
+
 			query6 = " insert into " + ConstantDB.TABLE_PROCESSES
 			+ "(" + ConstantDB.ATTR_NAME + ","
 			+       ConstantDB.ATTR_DOMAIN + ","
@@ -652,6 +652,7 @@ public class ProcessDao extends BasicDao {
 		Statement stmt1 = null;
 		PreparedStatement stmt2 = null;
 		ResultSet rs1 = null;
+		int rs2;
 		int canonical;
 
 		try {
@@ -667,7 +668,7 @@ public class ProcessDao extends BasicDao {
 			} else {
 				throw new ExceptionDao ("SQL error ProcessDAO (storeNative): canonical process not found.");
 			}
-
+			stmt1.close();rs1.close();
 			if (version == null || version.compareTo("")==0) {
 				version = Constants.DEFAULT_VERSION_NAME;
 			}
@@ -682,17 +683,37 @@ public class ProcessDao extends BasicDao {
 				native_xml.close();
 			}
 			String native_string = sb.toString();
-			query = " insert into " + ConstantDB.TABLE_NATIVES
-			+ "(" + ConstantDB.ATTR_CONTENT + ","
-			+       ConstantDB.ATTR_NAT_TYPE + ","
-			+       ConstantDB.ATTR_CANONICAL + ")"
-			+ " values (?,?,?) ";
 
-			stmt2 = conn.prepareStatement(query);
-			stmt2.setString(1, native_string);
-			stmt2.setString(2, nativeType);
-			stmt2.setInt(3, canonical);
-			stmt2.executeUpdate();
+			query = " select " + ConstantDB.ATTR_URI 
+			+ " from " + ConstantDB.TABLE_NATIVES
+			+ " natural join " + ConstantDB.TABLE_VERSIONS
+			+ " where " + ConstantDB.ATTR_PROCESSID + " = " + processId
+			+   " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + version + "'"
+			+   " and " + ConstantDB.ATTR_NAT_TYPE + " = '" + nativeType + "'";
+			stmt1 = conn.createStatement();
+			rs1 = stmt1.executeQuery(query);
+			if (rs1.next()) {
+				// if native already present, overwrite it
+				query = " update " + ConstantDB.TABLE_NATIVES
+				+ " set " + ConstantDB.ATTR_CONTENT + " = ? "
+				+ " where " + ConstantDB.ATTR_URI + " = ? ";
+				stmt2 = conn.prepareStatement(query);
+				stmt2.setString(1, native_string);
+				stmt2.setInt(2, rs1.getInt(1));
+				rs2 = stmt2.executeUpdate();
+			} else {
+				// native absent
+				query = " insert into " + ConstantDB.TABLE_NATIVES
+				+ "(" + ConstantDB.ATTR_CONTENT + ","
+				+       ConstantDB.ATTR_NAT_TYPE + ","
+				+       ConstantDB.ATTR_CANONICAL + ")"
+				+ " values (?,?,?) ";
+				stmt2 = conn.prepareStatement(query);
+				stmt2.setString(1, native_string);
+				stmt2.setString(2, nativeType);
+				stmt2.setInt(3, canonical);
+				rs2 = stmt2.executeUpdate();
+			}
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -799,7 +820,7 @@ public class ProcessDao extends BasicDao {
 			stmtp.setInt(3, cpfId);
 			Integer rs6 = stmtp.executeUpdate();
 			keys = stmtp.getGeneratedKeys() ;
-			
+
 			if (!keys.next()) {
 				throw new ExceptionDao ("Error: cannot retrieve generated key.");
 			}
@@ -812,7 +833,7 @@ public class ProcessDao extends BasicDao {
 			stmtp.setInt(2,anfId);
 			rs6 = stmtp.executeUpdate();
 			stmtp.close();
-			
+
 			// add a new version of the process identified by processId + newVersion
 			String query2 = " insert into " + ConstantDB.TABLE_VERSIONS
 			+ "(" + ConstantDB.ATTR_PROCESSID + ","
@@ -872,7 +893,7 @@ public class ProcessDao extends BasicDao {
 		Statement stmt = null;
 		ResultSet rs = null;
 		String query = null;
-		
+
 		try {
 			conn = this.getConnection();
 
@@ -902,7 +923,7 @@ public class ProcessDao extends BasicDao {
 						throw new ExceptionDao ("DeleteProcessVersions: error, version " + v 
 								+ "for process " + pId.toString() + " not found. \n");
 					}
-					
+
 					/* delete process version identified by <p, v>
 					 * retrieve r in derived_versions such as r[processId]=p
 					 */
@@ -956,7 +977,7 @@ public class ProcessDao extends BasicDao {
 								stmtp = conn.prepareStatement(query);
 								int r = stmtp.executeUpdate();
 								stmtp.close();
-								
+
 								// Update r1 
 								query = " update " + ConstantDB.TABLE_DERIVED_VERSIONS 
 								+ " set " + ConstantDB.ATTR_DERIVED_VERSION + " = '" + rs.getString(1) + "'"
@@ -965,7 +986,7 @@ public class ProcessDao extends BasicDao {
 								stmtp = conn.prepareStatement(query);
 								r = stmtp.executeUpdate();
 								stmtp.close();
-								
+
 							} else {
 								// Delete r1
 								query = " delete from " + ConstantDB.TABLE_DERIVED_VERSIONS
@@ -984,7 +1005,7 @@ public class ProcessDao extends BasicDao {
 					stmtp = conn.prepareStatement(query);
 					int r = stmtp.executeUpdate();
 					stmtp.close();
-					
+
 					// delete associated annotation, canonical and native
 					query = " delete from " + ConstantDB.TABLE_ANNOTATIONS 
 					+ " where " + ConstantDB.ATTR_URI + " in (select " + ConstantDB.ATTR_ANF
@@ -993,19 +1014,19 @@ public class ProcessDao extends BasicDao {
 					stmtp = conn.prepareStatement(query);
 					r = stmtp.executeUpdate();
 					stmtp.close();
-					
+
 					query = " delete from " + ConstantDB.TABLE_NATIVES 
 					+ " where " + ConstantDB.ATTR_CANONICAL + " = " + cpf_uri.toString();
 					stmtp = conn.prepareStatement(query);
 					r = stmtp.executeUpdate();
 					stmtp.close();
-					
+
 					query = " delete from " + ConstantDB.TABLE_CANONICALS 
 					+ " where " + ConstantDB.ATTR_URI + " = " + cpf_uri.toString();
 					stmtp = conn.prepareStatement(query);
 					r = stmtp.executeUpdate();
 					stmtp.close();
-					
+
 				}
 			}
 
