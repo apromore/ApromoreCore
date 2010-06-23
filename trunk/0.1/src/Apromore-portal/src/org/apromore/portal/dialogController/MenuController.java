@@ -136,7 +136,7 @@ public class MenuController extends Menubar {
 			Iterator<VersionSummaryType> itV = selectedProcessVersions.get(process).iterator();
 			while (itV.hasNext()){
 				VersionSummaryType version = (VersionSummaryType) itV.next();
-				exportNativeC = new ExportNativeController(this, process.getId(), process.getName(), 
+				exportNativeC = new ExportNativeController(this, process.getId(), process.getName(), process.getOriginalNativeType(),
 						version.getName(), this.mainC.getNativeTypes());
 				this.exportNativeConts.add(exportNativeC);
 			}

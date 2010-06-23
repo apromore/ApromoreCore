@@ -33,11 +33,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ProcessSummariesType", propOrder = {
     "processSummary"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:45:17+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:54:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ProcessSummariesType {
 
     @XmlElement(name = "ProcessSummary")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:45:17+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:54:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected List<ProcessSummaryType> processSummary;
 
     /**
@@ -62,7 +62,7 @@ public class ProcessSummariesType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T01:45:17+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:54:06+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public List<ProcessSummaryType> getProcessSummary() {
         if (processSummary == null) {
             processSummary = new ArrayList<ProcessSummaryType>();
