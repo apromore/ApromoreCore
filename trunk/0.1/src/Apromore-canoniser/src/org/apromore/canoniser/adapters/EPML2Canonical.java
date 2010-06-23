@@ -70,6 +70,7 @@ public class EPML2Canonical{
 	Map<BigInteger, TypeRole> role_ref = new HashMap<BigInteger, TypeRole>();
 	Map<BigInteger, TypeObject> obj_ref = new HashMap<BigInteger, TypeObject>();
 	List<TaskType> subnet_list = new LinkedList<TaskType>();
+	List<BigInteger> range_ids = new LinkedList<BigInteger>();
 	
 	private CanonicalProcessType cproc = new CanonicalProcessType();
 	private AnnotationsType annotations = new AnnotationsType();
@@ -138,8 +139,9 @@ public class EPML2Canonical{
 			} 
 			else if(obj instanceof TypeRANGE)
 			{
-				translateRANGE((TypeRANGE)obj);
-				addNodeAnnotations(obj);
+				range_ids.add(((TypeRANGE)obj).getId());
+				//translateRANGE((TypeRANGE)obj);
+				//addNodeAnnotations(obj);
 			}
 			else if(obj instanceof TypeProcessInterface)
 			{
@@ -151,8 +153,21 @@ public class EPML2Canonical{
 		
 		for (Object obj: epc.getEventOrFunctionOrRole()) {
 			if (obj instanceof TypeArc) {
-				translateArc(net, (TypeArc) obj);
-				addEdgeAnnotation((TypeArc)obj);
+				TypeArc arc = (TypeArc) obj;
+				if(arc.getFlow() != null) {
+					if(range_ids.contains(arc.getFlow().getSource()) || range_ids.contains(arc.getFlow().getTarget()) )
+						System.out.println();
+					else
+						translateArc(net, arc);
+						addEdgeAnnotation(arc);
+				}
+				else if(arc.getRelation() != null) {
+					if(range_ids.contains(arc.getRelation().getSource()) || range_ids.contains(arc.getRelation().getTarget()) )
+						System.out.println();
+					else
+						translateArc(net, arc);
+						addEdgeAnnotation(arc);
+				}
 			}
 		}
 		
@@ -394,8 +409,10 @@ public class EPML2Canonical{
 		
 		for(EdgeType edge: edge_remove_list)
 			net.getEdge().remove(edge);
+		edge_remove_list.clear();
 		for(NodeType node: node_remove_list)
 			net.getNode().remove(node);
+		node_remove_list.clear();
 						
 	}
 	
@@ -453,8 +470,10 @@ public class EPML2Canonical{
 					ObjectRefType ref = new ObjectRefType();
 					ref.setObjectId(id_map.get(arc.getRelation().getTarget()));
 					ref.setType(InputOutputType.OUTPUT);
-					ref.setOptional(obj_ref.get(arc.getRelation().getTarget()).isOptional());
-					ref.setConsumed(obj_ref.get(arc.getRelation().getTarget()).isConsumed());
+					if (obj_ref.get(arc.getRelation().getTarget()) != null) {
+						ref.setOptional(obj_ref.get(arc.getRelation().getTarget()).isOptional());
+						ref.setConsumed(obj_ref.get(arc.getRelation().getTarget()).isConsumed());
+					}
 					((WorkType)node).getObjectRef().add(ref);
 				} 
 				else if(node.getId().equals(id_map.get(arc.getRelation().getTarget()))){
@@ -462,8 +481,10 @@ public class EPML2Canonical{
 					{
 						ResourceTypeRefType ref = new ResourceTypeRefType();
 						ref.setResourceTypeId(id_map.get(arc.getRelation().getSource()));
-						ref.setOptional(role_ref.get(arc.getRelation().getSource()).isOptional());
-						ref.setQualifier(role_ref.get(arc.getRelation().getSource()).getDescription()); /// update
+						if (role_ref.get(arc.getRelation().getSource()) != null) {
+							ref.setOptional(role_ref.get(arc.getRelation().getSource()).isOptional());
+							ref.setQualifier(role_ref.get(arc.getRelation().getSource()).getDescription()); /// update
+						}
 						((WorkType)node).getResourceTypeRef().add(ref);
 					}
 					else
