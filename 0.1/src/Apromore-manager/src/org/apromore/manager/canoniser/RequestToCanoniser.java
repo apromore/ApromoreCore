@@ -92,6 +92,7 @@ public class RequestToCanoniser {
 		payload.setNativeType(nativeType);
 		payload.setCpf(new DataHandler(source_cpf));
 		if (anf_is != null) {
+			// annotations not to be used
 			DataSource source_anf = new ByteArrayDataSource(anf_is, "text/xml");
 			payload.setAnf(new DataHandler(source_anf));
 		}
