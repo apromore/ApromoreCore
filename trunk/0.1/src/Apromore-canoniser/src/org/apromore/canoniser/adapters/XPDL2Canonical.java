@@ -98,49 +98,57 @@ public class XPDL2Canonical {
 
 		this.cpf.setName(pkg.getName());
 
-		for(Pool pool: pkg.getPools().getPool()){
-			ResourceTypeType res = new ResourceTypeType();
-			res.setId(BigInteger.valueOf(cpfId++));
-			res.setName(pool.getName());
-			pool_resource_map.put(pool.getProcess(), res);
-			for(Lane lane: pool.getLanes().getLane())
-			{
-				ResourceTypeType r = new ResourceTypeType();
-				r.setId(BigInteger.valueOf(cpfId++));
-				r.setName(lane.getName());
-				res.getSpecializationIds().add(BigInteger.valueOf(cpfId));
-				this.cpf.getResourceType().add(r);
+		if (pkg.getPools() != null) {
+			for (Pool pool : pkg.getPools().getPool()) {
+				ResourceTypeType res = new ResourceTypeType();
+				res.setId(BigInteger.valueOf(cpfId++));
+				res.setName(pool.getName());
+				pool_resource_map.put(pool.getProcess(), res);
+				if (pool.getLanes() != null) {
+					for (Lane lane : pool.getLanes().getLane()) {
+						ResourceTypeType r = new ResourceTypeType();
+						r.setId(BigInteger.valueOf(cpfId++));
+						r.setName(lane.getName());
+						res.getSpecializationIds().add(
+								BigInteger.valueOf(cpfId));
+						this.cpf.getResourceType().add(r);
+					}
+				}
+				this.cpf.getResourceType().add(res);
 			}
-			this.cpf.getResourceType().add(res);
 		}
 		
-		for(Object obj:pkg.getArtifacts().getArtifactAndAny()){
-			if(obj instanceof Artifact)
-			{
-				Artifact arti = (Artifact)obj;
-				if(arti.getArtifactType().equals("DataObject") && arti.getDataObject() != null)
-				{
-					ObjectType ot = new ObjectType();
-					ot.setName(arti.getDataObject().getName());
-					ot.setId(BigInteger.valueOf(cpfId++));
-					object_map.put(arti.getDataObject().getId(), ot.getId());
-					this.cpf.getObject().add(ot);
+		if (pkg.getArtifacts() != null) {
+			for (Object obj : pkg.getArtifacts().getArtifactAndAny()) {
+				if (obj instanceof Artifact) {
+					Artifact arti = (Artifact) obj;
+					if (arti.getArtifactType().equals("DataObject")
+							&& arti.getDataObject() != null) {
+						ObjectType ot = new ObjectType();
+						ot.setName(arti.getDataObject().getName());
+						ot.setId(BigInteger.valueOf(cpfId++));
+						object_map
+								.put(arti.getDataObject().getId(), ot.getId());
+						this.cpf.getObject().add(ot);
+					}
 				}
 			}
 		}
 		
-		for (ProcessType bpmnproc: pkg.getWorkflowProcesses().getWorkflowProcess()) {
-			NetType net = new NetType();
-			net.setId(BigInteger.valueOf(cpfId++));
-			ResourceTypeType res;
-			res = pool_resource_map.get(bpmnproc.getId());
-			ResourceTypeRefType ref = new ResourceTypeRefType();
-			ref.setResourceTypeId(res.getId());
-		
-			translateProcess(net, bpmnproc, ref);
-			process_unrequired_events(net);
-			recordAnnotations(bpmnproc, this.anf);
-			this.cpf.getNet().add(net);
+		if (pkg.getWorkflowProcesses() != null) {
+			for (ProcessType bpmnproc : pkg.getWorkflowProcesses().getWorkflowProcess()) {
+				NetType net = new NetType();
+				net.setId(BigInteger.valueOf(cpfId++));
+				ResourceTypeType res;
+				res = pool_resource_map.get(bpmnproc.getId());
+				ResourceTypeRefType ref = new ResourceTypeRefType();
+				ref.setResourceTypeId(res.getId());
+
+				translateProcess(net, bpmnproc, ref);
+				process_unrequired_events(net);
+				recordAnnotations(bpmnproc, this.anf);
+				this.cpf.getNet().add(net);
+			}
 		}
 		
 	}
