@@ -414,10 +414,11 @@ public class EPML2Canonical{
 		id_map.put(func.getId(), BigInteger.valueOf(ids));
 		task.setId(BigInteger.valueOf(ids++));
 		task.setName(func.getName());
-		if(func.getToProcess().getLinkToEpcId() != null)
-		{
-			task.setSubnetId(func.getToProcess().getLinkToEpcId());
-			subnet_list.add(task);
+		if (func.getToProcess() != null) {
+			if (func.getToProcess().getLinkToEpcId() != null) {
+				task.setSubnetId(func.getToProcess().getLinkToEpcId());
+				subnet_list.add(task);
+			}
 		}
 		net.getNode().add(task);	
 	}
