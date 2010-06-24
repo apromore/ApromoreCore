@@ -21,8 +21,8 @@ public class TestCanonical2XPDL {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		File cpf_file = new File("/home/fauvet/models/xpdl_models/Brisbane-Deposit unaccompanied baggage.xpdl.cpf");
-		File anf_file = new File("/home/fauvet/models/xpdl_models/Brisbane-Deposit unaccompanied baggage.xpdl.anf");
+		File cpf_file = new File("/home/fauvet/models/test/HKG4 International Depature Departure Check-in.xpdl.cpf");
+		File anf_file = new File("/home/fauvet/models/test/HKG4 International Depature Departure Check-in.xpdl.anf");
 		//File cpf_file = new File("/home/fauvet/models/model1.cpf");
 		//File anf_file = new File("/home/fauvet/models/model1.anf");
 		try {
@@ -45,11 +45,11 @@ public class TestCanonical2XPDL {
 			
 			JAXBElement<PackageType> cprocRootElem1 = 
 				new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl_with_anf.getXpdl());
-			m1.marshal(cprocRootElem1, new File("/home/fauvet/models/truc_with.xpdl"));
+			m1.marshal(cprocRootElem1, new File("/home/fauvet/models/test/truc_with.xpdl"));
 			
 			JAXBElement<PackageType> cprocRootElem2 = 
 				new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl_no_anf.getXpdl());
-			m1.marshal(cprocRootElem2, new File("/home/fauvet/models/truc_without.xpdl"));
+			m1.marshal(cprocRootElem2, new File("/home/fauvet/models/test/truc_without.xpdl"));
 			
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block

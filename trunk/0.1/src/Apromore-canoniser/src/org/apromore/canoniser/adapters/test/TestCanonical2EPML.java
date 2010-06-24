@@ -23,8 +23,8 @@ public class TestCanonical2EPML {
 	public static void main(String[] args) {
 		//File cpf_file = new File("/home/fauvet/models/epml_models/SAP_1.cpf");
 		//File anf_file = new File("/home/fauvet/models/epml_models/SAP_1.anf");
-		File cpf_file = new File("/home/fauvet/models/xpdl_models/Brisbane-Deposit unaccompanied baggage.xpdl.cpf");
-		File anf_file = new File("/home/fauvet/models/xpdl_models/Brisbane-Deposit unaccompanied baggage.xpdl.anf");		
+		File cpf_file = new File("/home/fauvet/models/test/HKG4 International Depature Departure Check-in.xpdl.cpf");
+		File anf_file = new File("/home/fauvet/models/test/HKG4 International Depature Departure Check-in.xpdl.anf");		
 		try {
 			JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
 			Unmarshaller u = jc.createUnmarshaller();
@@ -44,7 +44,7 @@ public class TestCanonical2EPML {
 			m2.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<TypeEPML> cprocRootElem2 = 
 				new de.epml.ObjectFactory().createEpml(canonical2epml_1.getEPML());
-			m2.marshal(cprocRootElem2, new File("/home/fauvet/models/truc_without.epml"));
+			m2.marshal(cprocRootElem2, new File("/home/fauvet/models/test/truc_without.epml"));
 			
 			Canonical2EPML canonical2epml_2 = new Canonical2EPML (cpf, anf);
 			
@@ -52,7 +52,7 @@ public class TestCanonical2EPML {
 			m1.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<TypeEPML> cprocRootElem1 = 
 				new de.epml.ObjectFactory().createEpml(canonical2epml_2.getEPML());
-			m1.marshal(cprocRootElem1, new File("/home/fauvet/models/truc_with.epml"));
+			m1.marshal(cprocRootElem1, new File("/home/fauvet/models/test/truc_with.epml"));
 			
 			
 		} catch (JAXBException e) {
