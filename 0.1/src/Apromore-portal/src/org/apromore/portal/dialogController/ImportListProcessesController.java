@@ -108,16 +108,16 @@ public class ImportListProcessesController extends Window {
 
 	private void cancel() throws IOException {
 		this.importProcessesWindow.detach();
-
 		// delete folder associated with the session, if exists
-		File folder = new File (this.tmpPath + this.sessionId);
-		recursiveDelete(folder);
+		recursiveDelete(this.folder);
 	}
 
 	private void recursiveDelete (File f) {
+		System.out.println("In recursive delete...");
 		if (f.isDirectory()) {
 			File[] list = f.listFiles();
 			for (int i=0;i<list.length;i++){
+				System.out.println("deleting: " + list[i].getName());
 				recursiveDelete(list[i]);
 			}
 		}
@@ -129,20 +129,20 @@ public class ImportListProcessesController extends Window {
 	 * @throws InterruptedException
 	 */
 	private void uploadFile (UploadEvent event) throws InterruptedException {
+		
+		InputStream is=null;
+		OutputStream out=null;
 		try {
 
 			/*
 			 * Create a folder for the session.
 			 * if folder already exists for current session: empty and delete it first.
 			 */
+			//this.folder = new File (this.tmpPath + this.sessionId);
 			this.folder = new File (this.tmpPath + this.sessionId);
-			if (this.folder.exists()) {
-				File[] content = this.folder.listFiles();
-				for (int i=0; i<content.length;i++){
-					content[i].delete();
-				}
-				this.folder.delete();
-			}
+			removeDirectory(this.folder);
+			
+			this.folder=new File(this.tmpPath + this.sessionId);
 			Boolean ok= this.folder.mkdir();
 			if (!ok) {
 				throw new ExceptionImport ("Couldn't extract archive.");
@@ -167,22 +167,20 @@ public class ImportListProcessesController extends Window {
 
 
 			this.fileUploaded = new File(this.tmpPath + this.sessionId, this.fileOrArchive);
-			InputStream is = event.getMedia().getStreamData();
+			is = event.getMedia().getStreamData();
 
 			//write is to the file
-			OutputStream out = new FileOutputStream(this.fileUploaded);
+			out = new FileOutputStream(this.fileUploaded);
 			int read=0;
 			byte[] bytes = new byte[1024];
 			while((read = is.read(bytes))!= -1){
 				out.write(bytes, 0, read);
 			}
-			is.close();
-			out.flush();
-			out.close();	
 
+			
 			// now the file is uploaded, Ok button could be enabled
 			this.okButton.setDisabled(false);
-			this.filenameLabel.setValue(this.fileOrArchive + " (model type is " + fileType + ")");
+			this.filenameLabel.setValue(this.fileOrArchive + " (file/model type is " + fileType + ")");
 
 		} catch (ExceptionImport e) {
 			Messagebox.show("Upload failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
@@ -191,6 +189,29 @@ public class ImportListProcessesController extends Window {
 			Messagebox.show("Repository not available ("+e.getMessage()+")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		} 
+		finally
+		{
+			try {
+				is.close();
+				out.flush();
+				out.close();
+			} catch (IOException e) {
+				throw new UnsupportedOperationException("catched finaly");
+			}
+		}
+	}
+
+	private void removeDirectory(File folder) throws IOException{
+		if (folder.exists()) {
+			File[] content = this.folder.listFiles();
+			for (int i=0; i<content.length;i++){
+				if(content[i].isDirectory())
+					removeDirectory(content[i]);
+				else
+					content[i].delete();
+			}
+			this.folder.delete();
+		}
 	}
 
 	/**
@@ -225,6 +246,7 @@ public class ImportListProcessesController extends Window {
 				String s = null;
 				BufferedReader stdInput = new BufferedReader(new InputStreamReader(p.getInputStream()));
 				BufferedReader stdError = new BufferedReader(new InputStreamReader(p.getErrorStream()));
+				p.destroy();
 
 				// log what happened
 				while ((s = stdInput.readLine()) != null) {

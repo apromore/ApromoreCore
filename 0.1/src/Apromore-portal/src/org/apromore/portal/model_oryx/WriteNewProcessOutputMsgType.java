@@ -4,6 +4,7 @@ package org.apromore.portal.model_oryx;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -20,6 +21,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element name="Result" type="{http://www.apromore.org/portal/model_oryx}ResultType"/>
  *       &lt;/sequence>
+ *       &lt;attribute name="EditSessionCode" type="{http://www.w3.org/2001/XMLSchema}int" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -31,12 +33,15 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "WriteNewProcessOutputMsgType", propOrder = {
     "result"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-03T09:26:30+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-24T03:41:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class WriteNewProcessOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-03T09:26:30+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-24T03:41:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
+    @XmlAttribute(name = "EditSessionCode")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-24T03:41:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected Integer editSessionCode;
 
     /**
      * Gets the value of the result property.
@@ -46,7 +51,7 @@ public class WriteNewProcessOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-03T09:26:30+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-24T03:41:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ResultType getResult() {
         return result;
     }
@@ -59,9 +64,35 @@ public class WriteNewProcessOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-03T09:26:30+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-24T03:41:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResult(ResultType value) {
         this.result = value;
+    }
+
+    /**
+     * Gets the value of the editSessionCode property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Integer }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-24T03:41:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public Integer getEditSessionCode() {
+        return editSessionCode;
+    }
+
+    /**
+     * Sets the value of the editSessionCode property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Integer }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-24T03:41:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setEditSessionCode(Integer value) {
+        this.editSessionCode = value;
     }
 
 }
