@@ -126,8 +126,7 @@ public class XPDL2Canonical {
 						ObjectType ot = new ObjectType();
 						ot.setName(arti.getDataObject().getName());
 						ot.setId(BigInteger.valueOf(cpfId++));
-						object_map
-								.put(arti.getDataObject().getId(), ot.getId());
+						object_map.put(arti.getDataObject().getId(), ot.getId());
 						this.cpf.getObject().add(ot);
 					}
 				}
