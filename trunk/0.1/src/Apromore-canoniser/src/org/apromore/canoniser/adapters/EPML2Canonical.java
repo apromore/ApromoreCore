@@ -115,6 +115,7 @@ public class EPML2Canonical{
 
 	private void translateEpc(NetType net, TypeEPC epc)
 	{
+		System.out.println(epc.getName());
 		for (Object obj: epc.getEventOrFunctionOrRole()) {
 			if (obj instanceof TypeEvent) {
 				translateEvent(net, (TypeEvent) obj);
