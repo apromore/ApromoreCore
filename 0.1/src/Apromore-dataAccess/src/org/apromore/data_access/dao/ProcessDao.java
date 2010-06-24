@@ -500,14 +500,15 @@ public class ProcessDao extends BasicDao {
 			+     ConstantDB.ATTR_LAST_UPDATE + ","
 			+     ConstantDB.ATTR_CANONICAL + ","
 			+	  ConstantDB.ATTR_DOCUMENTATION + ")"
-			+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%f'), str_to_date(?,'%Y-%c-%d %k:%i:%f'), ?, ?) ";
+			+ " values (?, ?, now(), now(), ?, ?) ";
+			//+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%f'), str_to_date(?,'%Y-%c-%d %k:%i:%f'), ?, ?) ";
 			stmtp = conn.prepareStatement(query2);
 			stmtp.setInt(1, processId);
 			stmtp.setString(2, version);
-			stmtp.setString(3,creationDate);
-			stmtp.setString(4,lastUpdate);
-			stmtp.setInt(5, cpfId);
-			stmtp.setString(6, documentation);
+			//stmtp.setString(3,creationDate);
+			//stmtp.setString(4,lastUpdate);
+			stmtp.setInt(3, cpfId);
+			stmtp.setString(4, documentation);
 			Integer rs2 = stmtp.executeUpdate();
 
 
@@ -842,14 +843,15 @@ public class ProcessDao extends BasicDao {
 			+     ConstantDB.ATTR_LAST_UPDATE + ","
 			+     ConstantDB.ATTR_CANONICAL + ","
 			+     ConstantDB.ATTR_DOCUMENTATION + ")"
-			+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%f'), str_to_date(?,'%Y-%c-%d %k:%i:%f'), ?, ?) ";
+			+ " values (?, ?, now(), now(), ?, ?) ";
+			//+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%f'), str_to_date(?,'%Y-%c-%d %k:%i:%f'), ?, ?) ";
 			stmtp = conn.prepareStatement(query2);
 			stmtp.setInt(1, processId);
 			stmtp.setString(2, newVersion);
-			stmtp.setString(3, creationDate);
-			stmtp.setString(4, lastUpdate);
-			stmtp.setInt(5, cpfId);
-			stmtp.setString(6, documentation);
+			//stmtp.setString(3, creationDate);
+			//stmtp.setString(4, lastUpdate);
+			stmtp.setInt(3, cpfId);
+			stmtp.setString(4, documentation);
 			Integer rs2 = stmtp.executeUpdate();
 
 			// newVersion is derived from preVersion
