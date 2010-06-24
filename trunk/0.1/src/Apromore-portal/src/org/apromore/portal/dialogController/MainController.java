@@ -42,6 +42,7 @@ public class MainController extends Window {
 	private String confirmCloseMsg;
 	private ShortMessageController shortmessageC;
 	private Window shortmessageW;
+	private String host;
 	private String OryxEndPoint_xpdl;
 	private String OryxEndPoint_epml;
 	private String tmpPath;
@@ -85,7 +86,7 @@ public class MainController extends Window {
 			InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);;  
 			Properties properties = new Properties();  
 			properties.load(inputStream);  
-
+			this.host = properties.getProperty("Host"); 
 			this.OryxEndPoint_xpdl = properties.getProperty("OryxEndPoint_xpdl");  
 			this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");  
 			this.tmpPath = properties.getProperty("tmpPath");
@@ -289,4 +290,7 @@ public class MainController extends Window {
 		return LOG;
 	}
 
+	public String getHost() {
+		return host;
+	}
 }

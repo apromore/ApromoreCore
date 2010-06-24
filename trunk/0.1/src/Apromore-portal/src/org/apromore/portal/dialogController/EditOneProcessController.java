@@ -119,7 +119,7 @@ public class EditOneProcessController extends Window {
 
 	protected void editProcess() throws InterruptedException {
 
-		String instruction="", url=""; 
+		String instruction="", url=this.mainC.getHost();
 		int offsetH = 100, offsetV=200;
 		int editSessionCode ;
 
@@ -136,9 +136,9 @@ public class EditOneProcessController extends Window {
 			RequestToManager request = new  RequestToManager();
 			editSessionCode = request.WriteEditSession(editSession);
 			if (cbi.getLabel().compareTo("XPDL 2.1")==0) {
-				url = this.mainC.getOryxEndPoint_xpdl()+"&sessionCode=";
+				url += this.mainC.getOryxEndPoint_xpdl()+"sessionCode=";
 			} else if (cbi.getLabel().compareTo("EPML 2.0")==0) {
-				url = this.mainC.getOryxEndPoint_epml()+"&sessionCode=";
+				url += this.mainC.getOryxEndPoint_epml()+"sessionCode=";
 			} else {
 				throw new ExceptionWriteEditSession("Native format not supported.");
 			}
