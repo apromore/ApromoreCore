@@ -78,7 +78,8 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 
 
 
-	public org.apromore.manager.model_portal.DeleteEditSessionOutputMsgType deleteEditSession(org.apromore.manager.model_portal.DeleteEditSessionInputMsgType payload) { 
+	public org.apromore.manager.model_portal.DeleteEditSessionOutputMsgType 
+	deleteEditSession(org.apromore.manager.model_portal.DeleteEditSessionInputMsgType payload) { 
 		LOG.info("Executing operation deleteEditSession");
 		System.out.println(payload);
 		org.apromore.manager.model_portal.DeleteEditSessionOutputMsgType res = 
@@ -135,10 +136,6 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 		}
 		return res;
 	}
-
-
-
-
 
 	public UpdateProcessOutputMsgType updateProcess(UpdateProcessInputMsgType payload) { 
 		LOG.info("Executing operation updateProcess");
@@ -242,15 +239,15 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 		Boolean withAnnotations = payload.isWithAnnotations();
 
 		try {
-			/*RequestToDA request = new RequestToDA();
+			RequestToDA request = new RequestToDA();
 			InputStream native_xml = request.ReadNative (processId, version, nativeType);
 
 			DataSource source = new ByteArrayDataSource(native_xml, "text/xml"); 
 			res.setNative(new DataHandler(source));	
 
 			result.setCode(0);
-			result.setMessage("");*/
-			throw new ExceptionReadNative("temporary...");
+			result.setMessage("");
+			//throw new ExceptionReadNative("temporary...");
 		} catch (ExceptionReadNative ex) {
 			try {
 				// native not found, request canonical

@@ -123,6 +123,7 @@ public class RequestToCanoniser {
 		payload.setDocumentation(documentation);
 		payload.setCreationDate(created);
 		payload.setLastUpdate(lastupdate);
+		// send request to canoniser
 		CanoniseVersionOutputMsgType res = this.port.canoniseVersion(payload);
 		if (res.getResult().getCode() == -1) {
 			throw new ExceptionCanoniseVersion (res.getResult().getMessage());
