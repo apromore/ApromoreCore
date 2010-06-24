@@ -234,6 +234,7 @@ public class RequestToManager {
 		payload.setUsername(username);
 		DataSource sourceNat = new ByteArrayDataSource(native_is, "text/xml"); 
 		payload.setNative(new DataHandler(sourceNat));
+		// send request to manager
 		UpdateProcessOutputMsgType res = this.port.updateProcess(payload);
 		ResultType result = res.getResult();
 		if (result.getCode() == -1) {
