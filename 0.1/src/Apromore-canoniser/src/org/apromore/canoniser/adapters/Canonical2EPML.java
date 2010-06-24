@@ -96,7 +96,6 @@ public class Canonical2EPML {
 			TypeEPC epc = new TypeEPC();
 			translateNet(epc,net);
 			epc.setEpcId(BigInteger.valueOf(ids++));
-			epc.setName("EPC Name");
 			for (ObjectType obj: cproc.getObject()){
 				if(object_res_list.contains(obj.getId()))
 					translateObject(obj,epc);
