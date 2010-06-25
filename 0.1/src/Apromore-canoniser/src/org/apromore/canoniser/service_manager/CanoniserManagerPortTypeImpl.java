@@ -358,7 +358,7 @@ import de.epml.TypeEPML;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("Canonisation failed.");
+			result.setMessage("Canonisation failed: " + ex.getMessage());
 		}
 		return res;
 	}
