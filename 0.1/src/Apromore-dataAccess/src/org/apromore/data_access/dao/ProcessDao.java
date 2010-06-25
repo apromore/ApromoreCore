@@ -95,8 +95,10 @@ public class ProcessDao extends BasicDao {
 
 				stmtV = conn.createStatement();
 				requeteV = " select " + ConstantDB.ATTR_VERSION_NAME + ", "
-				+ "date_format(" + ConstantDB.ATTR_CREATION_DATE + ", '%d/%c/%Y %k:%i:%S')" + ",  "
-				+ "date_format(" + ConstantDB.ATTR_LAST_UPDATE + ", '%d/%c/%Y %k:%i:%S')" + ",  "
+				//+ "date_format(" + ConstantDB.ATTR_CREATION_DATE + ", '%d/%c/%Y %k:%i:%S')" + ",  "
+				//+ "date_format(" + ConstantDB.ATTR_LAST_UPDATE + ", '%d/%c/%Y %k:%i:%S')" + ",  "
+				+ ConstantDB.ATTR_CREATION_DATE + ", "
+				+ ConstantDB.ATTR_LAST_UPDATE + ", "
 				+ ConstantDB.ATTR_DOCUMENTATION + ",  "
 				+ ConstantDB.ATTR_RANKING + " "
 				+ " from " + ConstantDB.TABLE_VERSIONS 
@@ -116,7 +118,7 @@ public class ProcessDao extends BasicDao {
 			} 
 		}
 		catch (SQLException e) {
-			throw new Exception("Error: ProcessDao " + e.getMessage() + "\n");
+			throw new ExceptionDao("Error: ProcessDao " + e.getMessage() + "\n");
 		}
 		finally {
 			Release(conn, stmtP, rsP);
@@ -204,8 +206,10 @@ public class ProcessDao extends BasicDao {
 
 				stmtV = conn.createStatement();
 				requeteV = " select " + ConstantDB.ATTR_VERSION_NAME + ", "
-				+ "date_format(" + ConstantDB.ATTR_CREATION_DATE + ", '%d/%c/%Y %k:%i:%f')" + ",  "
-				+ "date_format(" + ConstantDB.ATTR_LAST_UPDATE  + ", '%d/%c/%Y %k:%i:%f')" + ",  "
+				//+ "date_format(" + ConstantDB.ATTR_CREATION_DATE + ", '%d/%c/%Y %k:%i:%f')" + ",  "
+				//+ "date_format(" + ConstantDB.ATTR_LAST_UPDATE  + ", '%d/%c/%Y %k:%i:%f')" + ",  "
+				+ ConstantDB.ATTR_CREATION_DATE + ", "
+				+ ConstantDB.ATTR_LAST_UPDATE + ", "
 				+ ConstantDB.ATTR_RANKING + ", "
 				+ ConstantDB.ATTR_DOCUMENTATION
 				+ " from " + ConstantDB.TABLE_VERSIONS 
@@ -226,7 +230,7 @@ public class ProcessDao extends BasicDao {
 			} 
 		}
 		catch (SQLException e) {
-			throw new Exception("Error: ProcessDao " + e.getMessage() + "\n");
+			throw new ExceptionDao("Error: ProcessDao " + e.getMessage() + "\n");
 		}
 		finally {
 			Release(conn, stmtP, rsP);
@@ -357,7 +361,8 @@ public class ProcessDao extends BasicDao {
 	 * @throws SQLException
 	 * @throws IOException
 	 */
-	public org.apromore.data_access.model_canoniser.ProcessSummaryType storeNativeCpf 
+	public org.apromore.data_access.model_canoniser.ProcessSummaryType 
+	storeNativeCpf 
 	(String username, String processName, String domain, String documentation,
 			String nativeType, String version, String creationDate, String lastUpdate, InputStream process_xml,
 			InputStream cpf_xml, InputStream anf_xml) throws ExceptionDao, SQLException, IOException {
@@ -500,15 +505,15 @@ public class ProcessDao extends BasicDao {
 			+     ConstantDB.ATTR_LAST_UPDATE + ","
 			+     ConstantDB.ATTR_CANONICAL + ","
 			+	  ConstantDB.ATTR_DOCUMENTATION + ")"
-			+ " values (?, ?, now(), now(), ?, ?) ";
+			+ " values (?, ?, ?, ?, ?, ?) ";
 			//+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%f'), str_to_date(?,'%Y-%c-%d %k:%i:%f'), ?, ?) ";
 			stmtp = conn.prepareStatement(query2);
 			stmtp.setInt(1, processId);
 			stmtp.setString(2, version);
-			//stmtp.setString(3,creationDate);
-			//stmtp.setString(4,lastUpdate);
-			stmtp.setInt(3, cpfId);
-			stmtp.setString(4, documentation);
+			stmtp.setString(3,creationDate);
+			stmtp.setString(4,lastUpdate);
+			stmtp.setInt(5, cpfId);
+			stmtp.setString(6, documentation);
 			Integer rs2 = stmtp.executeUpdate();
 
 
@@ -829,7 +834,8 @@ public class ProcessDao extends BasicDao {
 			keys.close(); stmtp.close();
 
 			query6 = " insert into " + ConstantDB.TABLE_ANFOFCPF
-			+ "values (?,?)";
+			+ " values (?,?)";
+			stmtp = conn.prepareStatement(query6);
 			stmtp.setInt(1, cpfId);
 			stmtp.setInt(2,anfId);
 			rs6 = stmtp.executeUpdate();
@@ -843,18 +849,19 @@ public class ProcessDao extends BasicDao {
 			+     ConstantDB.ATTR_LAST_UPDATE + ","
 			+     ConstantDB.ATTR_CANONICAL + ","
 			+     ConstantDB.ATTR_DOCUMENTATION + ")"
-			+ " values (?, ?, now(), now(), ?, ?) ";
+			+ " values (?, ?, ?, ?, ?, ?) ";
 			//+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%f'), str_to_date(?,'%Y-%c-%d %k:%i:%f'), ?, ?) ";
 			stmtp = conn.prepareStatement(query2);
 			stmtp.setInt(1, processId);
 			stmtp.setString(2, newVersion);
-			//stmtp.setString(3, creationDate);
-			//stmtp.setString(4, lastUpdate);
-			stmtp.setInt(3, cpfId);
-			stmtp.setString(4, documentation);
+			stmtp.setString(3, creationDate);
+			stmtp.setString(4, lastUpdate);
+			stmtp.setInt(5, cpfId);
+			stmtp.setString(6, documentation);
 			Integer rs2 = stmtp.executeUpdate();
 
 			// newVersion is derived from preVersion
+			/* TODO information about previous version incorrect. To be fixed. see deleteProcessVersion
 			query2 = " insert into " + ConstantDB.TABLE_DERIVED_VERSIONS
 			+ "(" + ConstantDB.ATTR_PROCESSID + ","
 			+     ConstantDB.ATTR_VERSION + ","
@@ -865,9 +872,9 @@ public class ProcessDao extends BasicDao {
 			stmtp.setInt(1, processId);
 			stmtp.setString(2, newVersion);
 			stmtp.setString(3, preVersion);
-
 			rs2 = stmtp.executeUpdate();
 			stmtp.close();
+			*/
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -929,77 +936,80 @@ public class ProcessDao extends BasicDao {
 					/* delete process version identified by <p, v>
 					 * retrieve r in derived_versions such as r[processId]=p
 					 */
-					query = " select " + ConstantDB.ATTR_PROCESSID 
-					+ " from " + ConstantDB.TABLE_DERIVED_VERSIONS
-					+ " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
-					stmt = conn.createStatement();
-					rs = stmt.executeQuery(query);
-					if (!rs.next()) {
-						/* r doesn't exist: v is the only version that exists for p,
-						 * delete p from processes (thanks to FKs, related tuple in 
-						 * process_versions will be deleted too) 
-						 */
-						query = " delete from " + ConstantDB.TABLE_PROCESSES
-						+ " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
-						stmtp = conn.prepareStatement(query);
-						int r = stmtp.executeUpdate();
-						stmtp.close();
-						rs.close();
-						stmt.close();
-					} else {
-						/* r exists: at least two versions exist for p. Derivation list
-						 * needs to be updated.
-						 * Retrieve r1 in derived_versions such as r1[derived_version]=v
-						 */
-						rs.close();
-						stmt.close();
-						query = " select " + ConstantDB.ATTR_PROCESSID 
-						+ " from " + ConstantDB.TABLE_DERIVED_VERSIONS
-						+ " where " + ConstantDB.ATTR_DERIVED_VERSION + " = '" + v + "'"
-						+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
-						stmt = conn.createStatement();
-						rs = stmt.executeQuery(query);
-						if (rs.next()) {
-							/* r1 exists:
-							 * Retrieve r2 in derived_versions such as r2[version] = v
-							 */
-							rs.close();
-							stmt.close();
-							query = " select " +  ConstantDB.ATTR_DERIVED_VERSION 
-							+ " from " + ConstantDB.TABLE_DERIVED_VERSIONS
-							+ " where " + ConstantDB.ATTR_VERSION + " = '" +  v + "'"
-							+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
-							stmt = conn.createStatement();
-							rs = stmt.executeQuery(query);
-							if (rs.next()) {
-								// Delete r2
-								query = " delete from " + ConstantDB.TABLE_DERIVED_VERSIONS
-								+ " where " + ConstantDB.ATTR_VERSION + " = '" +  v + "'"
-								+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
-								stmtp = conn.prepareStatement(query);
-								int r = stmtp.executeUpdate();
-								stmtp.close();
-
-								// Update r1 
-								query = " update " + ConstantDB.TABLE_DERIVED_VERSIONS 
-								+ " set " + ConstantDB.ATTR_DERIVED_VERSION + " = '" + rs.getString(1) + "'"
-								+ " where " + ConstantDB.ATTR_DERIVED_VERSION + " = '" + v + "'"
-								+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
-								stmtp = conn.prepareStatement(query);
-								r = stmtp.executeUpdate();
-								stmtp.close();
-
-							} else {
-								// Delete r1
-								query = " delete from " + ConstantDB.TABLE_DERIVED_VERSIONS
-								+ " where " + ConstantDB.ATTR_DERIVED_VERSION + " = '" +  v + "'"
-								+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
-								stmtp = conn.prepareStatement(query);
-								int r = stmtp.executeUpdate();
-								stmtp.close();
-							}
-						}
-					}
+					
+					/* TODO derivation not represented... to be fixed. */
+//					query = " select " + ConstantDB.ATTR_PROCESSID 
+//					+ " from " + ConstantDB.TABLE_DERIVED_VERSIONS
+//					+ " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+//					stmt = conn.createStatement();
+//					rs = stmt.executeQuery(query);
+//					if (!rs.next()) {
+//						/* r doesn't exist: v is the only version that exists for p,
+//						 * delete p from processes (thanks to FKs, related tuple in 
+//						 * process_versions will be deleted too) 
+//						 */
+//						query = " delete from " + ConstantDB.TABLE_PROCESSES
+//						+ " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+//						stmtp = conn.prepareStatement(query);
+//						int r = stmtp.executeUpdate();
+//						stmtp.close();
+//						rs.close();
+//						stmt.close();
+//					} else {
+//						/* r exists: at least two versions exist for p. Derivation list
+//						 * needs to be updated.
+//						 * Retrieve r1 in derived_versions such as r1[derived_version]=v
+//						 */
+//						rs.close();
+//						stmt.close();
+//						query = " select " + ConstantDB.ATTR_PROCESSID 
+//						+ " from " + ConstantDB.TABLE_DERIVED_VERSIONS
+//						+ " where " + ConstantDB.ATTR_DERIVED_VERSION + " = '" + v + "'"
+//						+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+//						stmt = conn.createStatement();
+//						rs = stmt.executeQuery(query);
+//						if (rs.next()) {
+//							/* r1 exists:
+//							 * Retrieve r2 in derived_versions such as r2[version] = v
+//							 */
+//							rs.close();
+//							stmt.close();
+//							query = " select " +  ConstantDB.ATTR_DERIVED_VERSION 
+//							+ " from " + ConstantDB.TABLE_DERIVED_VERSIONS
+//							+ " where " + ConstantDB.ATTR_VERSION + " = '" +  v + "'"
+//							+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+//							stmt = conn.createStatement();
+//							rs = stmt.executeQuery(query);
+//							if (rs.next()) {
+//								// Delete r2
+//								query = " delete from " + ConstantDB.TABLE_DERIVED_VERSIONS
+//								+ " where " + ConstantDB.ATTR_VERSION + " = '" +  v + "'"
+//								+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+//								stmtp = conn.prepareStatement(query);
+//								int r = stmtp.executeUpdate();
+//								stmtp.close();
+//
+//								// Update r1 
+//								query = " update " + ConstantDB.TABLE_DERIVED_VERSIONS 
+//								+ " set " + ConstantDB.ATTR_DERIVED_VERSION + " = '" + rs.getString(1) + "'"
+//								+ " where " + ConstantDB.ATTR_DERIVED_VERSION + " = '" + v + "'"
+//								+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+//								stmtp = conn.prepareStatement(query);
+//								r = stmtp.executeUpdate();
+//								stmtp.close();
+//
+//							} else {
+//								// Delete r1
+//								query = " delete from " + ConstantDB.TABLE_DERIVED_VERSIONS
+//								+ " where " + ConstantDB.ATTR_DERIVED_VERSION + " = '" +  v + "'"
+//								+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+//								stmtp = conn.prepareStatement(query);
+//								int r = stmtp.executeUpdate();
+//								stmtp.close();
+//							}
+//						}
+//					}
+					
 					// delete the process version
 					query = " delete from " + ConstantDB.TABLE_VERSIONS 
 					+ " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString()
