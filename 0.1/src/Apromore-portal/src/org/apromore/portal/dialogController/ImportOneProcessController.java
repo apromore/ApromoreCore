@@ -76,7 +76,7 @@ public class ImportOneProcessController extends Window {
 		String readDocumentation = "" ; 
 		String readCreated = "";
 		String readLastupdate = "";
-		// check properties in xml_process: version, documentation, created, modificationDate
+		// check properties in xml_process: process name, version name, documentation, creation date, last update
 		// if native format is xpdl, extract information from xml file
 		if (nativeType.compareTo("XPDL 2.1")==0) {
 			JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
