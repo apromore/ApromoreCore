@@ -52,7 +52,7 @@ public class ProcessDao extends BasicDao {
 	 * @return ProcessSummariesType
 	 * @throws Exception
 	 */
-	public ProcessSummariesType getProcessSummaries() throws Exception {
+	public ProcessSummariesType getProcessSummaries() throws Exception{
 
 		ProcessSummariesType processSummaries = new ProcessSummariesType();
 		Connection conn = null;
@@ -365,12 +365,11 @@ public class ProcessDao extends BasicDao {
 	storeNativeCpf 
 	(String username, String processName, String domain, String documentation,
 			String nativeType, String version, String creationDate, String lastUpdate, InputStream process_xml,
-			InputStream cpf_xml, InputStream anf_xml) throws ExceptionDao, SQLException, IOException {
+			InputStream cpf_xml, InputStream anf_xml) throws SQLException, ExceptionDao {
 
 		Connection conn = null;
 		Statement stmt0 = null;
-		PreparedStatement
-		stmtp = null;
+		PreparedStatement stmtp = null;
 		ResultSet rs0 = null;
 		org.apromore.data_access.model_canoniser.ProcessSummaryType process = 
 			new org.apromore.data_access.model_canoniser.ProcessSummaryType();
@@ -418,6 +417,7 @@ public class ProcessDao extends BasicDao {
 
 			String anf_string = sb2.toString();
 			System.out.println("anf size: " + anf_string.length());
+			
 			conn = this.getConnection();
 
 
@@ -531,19 +531,19 @@ public class ProcessDao extends BasicDao {
 			first_version.setDocumentation(documentation);			
 
 			conn.commit();
-
+			
 		} catch (SQLException e) {
 			e.printStackTrace();
 			conn.rollback();
-			throw new ExceptionDao ("SQL error ProcessDAO (storeNative): " + e.getMessage() + "\n");
+			throw new ExceptionDao ("SQL error ProcessDAO (storeNativeCpf): " + e.getMessage() + "\n");
 		} catch (Exception e) {
 			e.printStackTrace();
 			conn.rollback();
-			throw new ExceptionDao ("Error ProcessDAO (storeNative): " + e.getMessage() + "\n");
+			throw new ExceptionDao ("Error ProcessDAO (storeNativeCpf): " + e.getMessage() + "\n");
 		} finally {
 			Release(conn, stmt0, rs0);
-			return process;
 		}
+		return process;
 	}
 
 	public String getNative(Integer processId, String version, String nativeType) throws ExceptionDao {
