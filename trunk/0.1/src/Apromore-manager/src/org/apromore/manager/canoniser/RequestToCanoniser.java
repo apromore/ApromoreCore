@@ -33,7 +33,8 @@ public class RequestToCanoniser {
 		this.port = ss.getCanoniserManager();  
 	}
 
-	public org.apromore.manager.model_portal.ProcessSummaryType CanoniseProcess(String username, String processName, String versionName, 
+	public org.apromore.manager.model_portal.ProcessSummaryType 
+	CanoniseProcess(String username, String processName, String versionName, 
 			String nativeType, InputStream cpf, String domain, String documentation, String created, String lastupdate) 
 	throws IOException, ExceptionImport {
 		org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType payload = new CanoniseProcessInputMsgType();
@@ -83,7 +84,8 @@ public class RequestToCanoniser {
 		}
 	}
 
-	public InputStream DeCanonise(int processId, String version, String nativeType, InputStream cpf_is, InputStream anf_is) 
+	public InputStream 
+	DeCanonise(int processId, String version, String nativeType, InputStream cpf_is, InputStream anf_is) 
 	throws IOException, ExceptionDeCanonise {
 		org.apromore.manager.model_canoniser.DeCanoniseProcessInputMsgType payload = new DeCanoniseProcessInputMsgType();
 		DataSource source_cpf = new ByteArrayDataSource(cpf_is, "text/xml");
@@ -107,7 +109,8 @@ public class RequestToCanoniser {
 		}
 	}
 
-	public void CanoniseVersion(Integer processId, String preVersion,
+	public void 
+	CanoniseVersion(Integer processId, String preVersion,
 			String newVersion, String nativeType, String domain, String username,
 			InputStream native_is, String documentation, String created, String lastupdate) 
 	throws IOException, ExceptionCanoniseVersion {
