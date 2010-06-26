@@ -147,7 +147,7 @@ import de.epml.TypeEPML;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage ("De-canonisation failed.");
+			result.setMessage ("De-canonisation failed: " + ex.getMessage());
 		}
 		return res;
 	}
@@ -210,7 +210,7 @@ import de.epml.TypeEPML;
 
 				RequestToDA request = new RequestToDA();
 				ProcessSummaryType process =
-					request.StoreProcess (username, processName, domain, nativeType, versionName, 
+					request.storeNativeCpf (username, processName, domain, nativeType, versionName, 
 							documentation, created, lastupdate, handler.getInputStream(), 
 						cpf_xml_is, anf_xml_is);
 				res.setProcessSummary(process);
@@ -243,7 +243,7 @@ import de.epml.TypeEPML;
 
 				RequestToDA request = new RequestToDA();
 				ProcessSummaryType process =
-					request.StoreProcess (username, processName, domain, nativeType, versionName, 
+					request.storeNativeCpf (username, processName, domain, nativeType, versionName, 
 							documentation, created, lastupdate, handler.getInputStream(), 
 						cpf_xml_is, anf_xml_is);
 				res.setProcessSummary(process);
@@ -256,7 +256,7 @@ import de.epml.TypeEPML;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("Canonisation failed.");
+			result.setMessage("Canonisation failed: " + ex.getMessage());
 		}
 		return res;
 	}
