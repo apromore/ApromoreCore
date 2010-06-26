@@ -109,20 +109,10 @@ public class ImportListProcessesController extends Window {
 	private void cancel() throws IOException {
 		this.importProcessesWindow.detach();
 		// delete folder associated with the session, if exists
-		recursiveDelete(this.folder);
+		if (this.folder!=null)
+			removeDirectory(this.folder);
 	}
 
-	private void recursiveDelete (File f) {
-		System.out.println("In recursive delete...");
-		if (f.isDirectory()) {
-			File[] list = f.listFiles();
-			for (int i=0;i<list.length;i++){
-				System.out.println("deleting: " + list[i].getName());
-				recursiveDelete(list[i]);
-			}
-		}
-		f.delete();
-	}
 	/**
 	 * Upload file: an archive or an xml file 
 	 * @param event
