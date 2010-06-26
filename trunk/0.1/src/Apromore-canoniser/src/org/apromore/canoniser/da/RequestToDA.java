@@ -31,7 +31,8 @@ public class RequestToDA {
 		this.port = ss.getDACanoniser(); 
 	}
 
-	public org.apromore.canoniser.model_manager.ProcessSummaryType StoreProcess (String username, String processName, 
+	public org.apromore.canoniser.model_manager.ProcessSummaryType 
+	storeNativeCpf (String username, String processName, 
 			String domain, String nativeType, String versionName, String documentation, String created, String lastupdate,
 			InputStream process_xml, InputStream cpf_xml, InputStream anf_xml) throws IOException, ExceptionStore {
 
