@@ -213,6 +213,7 @@ public class ImportListProcessesController extends Window {
 	public void cancelAll() throws InterruptedException, IOException {
 		for (int i=0;i<this.toImportList.size();i++) {
 			if (this.toImportList.get(i).getImportOneProcessWindow()!=null){
+				this.ignoredFiles += ", " + this.toImportList.get(i).getFileName();
 				this.toImportList.get(i).getImportOneProcessWindow().detach();
 			}
 		}
@@ -241,12 +242,15 @@ public class ImportListProcessesController extends Window {
 
 	public void reportImport() throws InterruptedException {
 		String report = "Import of " + this.importedList.size();
+		if (this.importedList.size()==0) {
+			report += "process.";
+		}
 		if (this.importedList.size()==1) {
 			report +=  " process completed.";
 		} else if (this.importedList.size()>1) {
 			report +=  " processes completed.";
 		}
-		report += "\n (" + this.ignoredFiles + " ignored).";
+		if (this.ignoredFiles.compareTo("")!=0) report += "\n (" + this.ignoredFiles + " ignored).";
 		Messagebox.show(report, "", Messagebox.OK, Messagebox.INFORMATION);
 	}
 }
