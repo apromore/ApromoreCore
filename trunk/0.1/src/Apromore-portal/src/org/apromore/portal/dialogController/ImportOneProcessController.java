@@ -32,7 +32,7 @@ public class ImportOneProcessController extends Window {
 	private MainController mainC;
 	private ImportListProcessesController importProcessesC;
 	private Window importOneProcessWindow;
-
+	private String fileName;
 	private String documentation;
 	private String lastUpdate;
 	private String created;
@@ -44,19 +44,20 @@ public class ImportOneProcessController extends Window {
 	private Button okButton;
 	private Button cancelButton;
 	private Button cancelAllButton;
-	
+
 	public ImportOneProcessController (MainController mainC, ImportListProcessesController importProcessesC, InputStream xml_is, 
 			String processName, String nativeType, String fileName) 
 	throws SuspendNotAllowedException, InterruptedException, JAXBException, IOException {
-		
+
 		this.importProcessesC = importProcessesC;
 		this.mainC = mainC;
+		this.fileName = fileName;
 		this.nativeProcess = xml_is;
 		this.nativeType = nativeType;
 		final Window win = (Window) Executions.createComponents("macros/importOneProcess.zul", null, null);
 		this.importOneProcessWindow = (Window) win.getFellow("importOneProcessWindow");
 		this.importOneProcessWindow.setId(this.importOneProcessWindow.getId()+fileName);
-		this.importOneProcessWindow.setTitle(this.importOneProcessWindow.getTitle() + " (file: " + fileName + ")");
+		this.importOneProcessWindow.setTitle(this.importOneProcessWindow.getTitle() + " (file: " + this.fileName + ")");
 		this.processName = (Textbox) this.importOneProcessWindow.getFellow("processName");
 		this.processName.setId(this.processName.getId()+fileName);
 		this.versionName = (Textbox) this.importOneProcessWindow.getFellow("versionName");
@@ -69,7 +70,7 @@ public class ImportOneProcessController extends Window {
 		this.cancelButton.setId(this.cancelButton.getId()+fileName);
 		this.cancelAllButton = (Button) this.importOneProcessWindow.getFellow("cancelAllButtonOneProcess");
 		this.cancelAllButton.setId(this.cancelAllButton.getId()+fileName);
-		
+
 		String readVersionName = "0.1"; // default value for versionName if not found
 		String readProcessName = processName ; // default value if not found
 		String readDocumentation = "" ; 
@@ -78,7 +79,7 @@ public class ImportOneProcessController extends Window {
 		// check properties in xml_process: process name, version name, documentation, creation date, last update
 		// if native format is xpdl, extract information from xml file
 		if (nativeType.compareTo("XPDL 2.1")==0) {
-			
+
 			JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
 			Unmarshaller u = jc.createUnmarshaller();
 			this.nativeProcess.mark(0);
@@ -86,7 +87,7 @@ public class ImportOneProcessController extends Window {
 			PackageType pkg = rootElement.getValue();
 
 			this.nativeProcess.reset();
-			
+
 			try {// get process name if defined
 				if (pkg.getName().compareTo("")!=0) {
 					readProcessName = pkg.getName();
@@ -130,7 +131,7 @@ public class ImportOneProcessController extends Window {
 		this.documentation = readDocumentation;
 		this.created = readCreated ;
 		this.lastUpdate = readLastupdate;
-		
+
 		this.okButton.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -157,17 +158,17 @@ public class ImportOneProcessController extends Window {
 		});	
 		win.doModal();
 	}
-	
+
 	private void cancel() throws InterruptedException, IOException{
 		// delete process from the list of processes still to be imported
 		this.importProcessesC.deleteFromToBeImported(this);
 		closePopup();
 	}
-	
+
 	private void closePopup() {
 		this.importOneProcessWindow.detach();
 	}
-	
+
 	/*
 	 * the user has clicked on cancel all button
 	 * cancelAll hosted by the DC which controls multiple file to import (importProcesses)
@@ -175,7 +176,7 @@ public class ImportOneProcessController extends Window {
 	private void cancelAll() throws InterruptedException, IOException {
 		this.importProcessesC.cancelAll();
 	}
-	
+
 	/**
 	 * @throws IOException 
 	 * @throws JAXBException 
@@ -222,5 +223,9 @@ public class ImportOneProcessController extends Window {
 	public Window getImportOneProcessWindow() {
 		return importOneProcessWindow;
 	}
-	
+
+	public String getFileName() {
+		return fileName;
+	}
+
 }
