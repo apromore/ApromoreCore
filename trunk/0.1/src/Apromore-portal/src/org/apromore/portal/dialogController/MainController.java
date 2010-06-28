@@ -45,7 +45,6 @@ public class MainController extends Window {
 	private String host;
 	private String OryxEndPoint_xpdl;
 	private String OryxEndPoint_epml;
-	private String tmpPath;
 	private HashMap<String,String> nativeTypes; // <k, v> belongs to nativeTypes: the file extension k
 	// is associated with the native type v (<xpdl,XPDL 1.2>)
 	private Logger LOG;
@@ -89,7 +88,6 @@ public class MainController extends Window {
 			this.host = properties.getProperty("Host"); 
 			this.OryxEndPoint_xpdl = properties.getProperty("OryxEndPoint_xpdl");  
 			this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");  
-			this.tmpPath = properties.getProperty("tmpPath");
 			/**
 			 * get list of formats
 			 */
@@ -280,10 +278,6 @@ public class MainController extends Window {
 
 	public HashMap<String,String> getNativeTypes() {
 		return nativeTypes;
-	}
-
-	public String getTmpPath() {
-		return tmpPath;
 	}
 
 	public Logger getLOG() {
