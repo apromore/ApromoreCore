@@ -30,17 +30,17 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "CloseSessionInputMsgType", propOrder = {
     "code"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-24T03:41:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:29:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class CloseSessionInputMsgType {
 
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-24T03:41:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:29:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected int code;
 
     /**
      * Gets the value of the code property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-24T03:41:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:29:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public int getCode() {
         return code;
     }
@@ -49,7 +49,7 @@ public class CloseSessionInputMsgType {
      * Sets the value of the code property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-24T03:41:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:29:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setCode(int value) {
         this.code = value;
     }

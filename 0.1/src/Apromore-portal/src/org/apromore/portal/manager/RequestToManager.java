@@ -222,14 +222,11 @@ public class RequestToManager {
 	}
 
 	public void UpdateProcess(String username, String nativeType,
-			int processId, String versionName, String new_versionName,
-			InputStream native_is, String domain) throws IOException, ExceptionUpdateProcess {
+			int processId, InputStream native_is, String domain) throws IOException, ExceptionUpdateProcess {
 		
 		UpdateProcessInputMsgType payload = new UpdateProcessInputMsgType();
 		payload.setDomain(domain);
 		payload.setNativeType(nativeType);
-		payload.setNewVersion(new_versionName);
-		payload.setPreVersion(versionName);
 		payload.setProcessId(processId);
 		payload.setUsername(username);
 		DataSource sourceNat = new ByteArrayDataSource(native_is, "text/xml"); 

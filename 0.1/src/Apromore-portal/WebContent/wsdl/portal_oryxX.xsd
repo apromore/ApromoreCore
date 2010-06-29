@@ -46,7 +46,6 @@
 				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
 		<attribute name="EditSessionCode" type="int" />
-		<attribute name="VersionName" type="string" />
 	</complexType>
 
 	<complexType name="WriteProcessOutputMsgType">
