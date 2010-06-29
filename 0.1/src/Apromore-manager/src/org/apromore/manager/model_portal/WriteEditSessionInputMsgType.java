@@ -31,11 +31,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "WriteEditSessionInputMsgType", propOrder = {
     "editSession"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class WriteEditSessionInputMsgType {
 
     @XmlElement(name = "EditSession", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected EditSessionType editSession;
 
     /**
@@ -46,7 +46,7 @@ public class WriteEditSessionInputMsgType {
      *     {@link EditSessionType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public EditSessionType getEditSession() {
         return editSession;
     }
@@ -59,7 +59,7 @@ public class WriteEditSessionInputMsgType {
      *     {@link EditSessionType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setEditSession(EditSessionType value) {
         this.editSession = value;
     }

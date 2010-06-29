@@ -28,14 +28,14 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ReadCanonicalAnfInputMsgType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T12:00:34+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:56:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ReadCanonicalAnfInputMsgType {
 
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T12:00:34+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:56:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Integer processId;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T12:00:34+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:56:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String version;
 
     /**
@@ -46,7 +46,7 @@ public class ReadCanonicalAnfInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T12:00:34+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:56:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public Integer getProcessId() {
         return processId;
     }
@@ -59,7 +59,7 @@ public class ReadCanonicalAnfInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T12:00:34+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:56:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setProcessId(Integer value) {
         this.processId = value;
     }
@@ -72,7 +72,7 @@ public class ReadCanonicalAnfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T12:00:34+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:56:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getVersion() {
         return version;
     }
@@ -85,7 +85,7 @@ public class ReadCanonicalAnfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T12:00:34+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:56:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setVersion(String value) {
         this.version = value;
     }
