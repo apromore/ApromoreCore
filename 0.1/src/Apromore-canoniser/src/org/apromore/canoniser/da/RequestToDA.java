@@ -101,20 +101,14 @@ public class RequestToDA {
 
 	}
 
-	public void StoreVersion(int processId, String preVersion,
-			String newVersion, String nativeType, String domain, String created, String lastupdate,
-			String documentation, String username, InputStream native_is, InputStream anf_xml_is,
+	public void StoreVersion(int processId, String nativeType, String domain, 
+			InputStream native_is, InputStream anf_xml_is,
 			InputStream cpf_xml_is) throws IOException, ExceptionStore {
 
 		StoreVersionInputMsgType payload = new StoreVersionInputMsgType();
 		payload.setDomain(domain);
 		payload.setNativeType(nativeType);
-		payload.setNewVersion(newVersion);
-		payload.setPreVersion(preVersion);
 		payload.setProcessId(processId);
-		payload.setDocumentation(documentation);
-		payload.setCreationDate(created);
-		payload.setLastUpdate(lastupdate);
 
 		DataSource source_proc = new ByteArrayDataSource(native_is, "text/xml"); 
 		payload.setNative(new DataHandler(source_proc));
