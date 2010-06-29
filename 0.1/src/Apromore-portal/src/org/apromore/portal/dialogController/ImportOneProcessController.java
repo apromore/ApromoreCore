@@ -82,10 +82,13 @@ public class ImportOneProcessController extends Window {
 
 			JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
 			Unmarshaller u = jc.createUnmarshaller();
+			// as the InputStream nativeProcess needs to be read multiple times, place a
+			// mark for future reset
 			this.nativeProcess.mark(0);
 			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(this.nativeProcess);
 			PackageType pkg = rootElement.getValue();
 
+			// reset InputStream to previous mark
 			this.nativeProcess.reset();
 
 			try {// get process name if defined
@@ -112,7 +115,7 @@ public class ImportOneProcessController extends Window {
 			try {//get creation date if defined
 				if (pkg.getPackageHeader().getCreated().getValue().compareTo("")!=0) {
 					readCreated = pkg.getPackageHeader().getCreated().getValue();
-					readCreated = Utils.xpdlDate2standardDate(readCreated);
+					//readCreated = Utils.xpdlDate2standardDate(readCreated);
 				}
 			} catch (NullPointerException e) {
 				// default value
@@ -120,7 +123,7 @@ public class ImportOneProcessController extends Window {
 			try {//get lastupdate date if defined
 				if (pkg.getPackageHeader().getModificationDate().getValue().compareTo("")!=0) {
 					readLastupdate = pkg.getPackageHeader().getModificationDate().getValue();
-					readLastupdate = Utils.xpdlDate2standardDate(readLastupdate);
+					//readLastupdate = Utils.xpdlDate2standardDate(readLastupdate);
 				}
 			} catch (NullPointerException e) {
 				// default value
