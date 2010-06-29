@@ -92,42 +92,44 @@ public class ImportOneProcessController extends Window {
 			this.nativeProcess.reset();
 
 			try {// get process name if defined
-				if (pkg.getName().compareTo("")!=0) {
-					readProcessName = pkg.getName();
+				if (pkg.getName().trim().compareTo("")!=0) {
+					readProcessName = pkg.getName().trim();
 				}
 			} catch (NullPointerException e) {
 				// default value
 			}
 			try {//get version name if defined
-				if (pkg.getRedefinableHeader().getVersion().getValue().compareTo("")!=0) {
-					readVersionName = pkg.getRedefinableHeader().getVersion().getValue();
+				if (pkg.getRedefinableHeader().getVersion().getValue().trim().compareTo("")!=0) {
+					readVersionName = pkg.getRedefinableHeader().getVersion().getValue().trim();
 				}
 			} catch (NullPointerException e) {
 				// default value
 			}
 			try {//get documentation if defined
-				if (pkg.getPackageHeader().getDocumentation().getValue().compareTo("")!=0) {
-					readDocumentation = pkg.getPackageHeader().getDocumentation().getValue();
+				if (pkg.getPackageHeader().getDocumentation().getValue().trim().compareTo("")!=0) {
+					readDocumentation = pkg.getPackageHeader().getDocumentation().getValue().trim();
 				}
 			} catch (NullPointerException e) {
 				// default value
 			}
 			try {//get creation date if defined
-				if (pkg.getPackageHeader().getCreated().getValue().compareTo("")!=0) {
-					readCreated = pkg.getPackageHeader().getCreated().getValue();
+				if (pkg.getPackageHeader().getCreated().getValue().trim().compareTo("")!=0) {
+					readCreated = pkg.getPackageHeader().getCreated().getValue().trim();
 					//readCreated = Utils.xpdlDate2standardDate(readCreated);
 				}
 			} catch (NullPointerException e) {
 				// default value
 			}
 			try {//get lastupdate date if defined
-				if (pkg.getPackageHeader().getModificationDate().getValue().compareTo("")!=0) {
-					readLastupdate = pkg.getPackageHeader().getModificationDate().getValue();
+				if (pkg.getPackageHeader().getModificationDate().getValue().trim().compareTo("")!=0) {
+					readLastupdate = pkg.getPackageHeader().getModificationDate().getValue().trim();
 					//readLastupdate = Utils.xpdlDate2standardDate(readLastupdate);
 				}
 			} catch (NullPointerException e) {
 				// default value
 			}
+		} else if (nativeType.compareTo("EPML 2.0")==0) {
+			
 		}
 		this.processName.setValue(readProcessName);
 		this.versionName.setValue(readVersionName);
