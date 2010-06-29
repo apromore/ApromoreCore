@@ -1,12 +1,13 @@
 package org.apromore.data_access.dao;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -17,12 +18,26 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+
 import org.apromore.data_access.commons.ConstantDB;
-import org.apromore.data_access.commons.Constants;
 import org.apromore.data_access.exception.ExceptionDao;
 import org.apromore.data_access.model_manager.ProcessSummariesType;
 import org.apromore.data_access.model_manager.ProcessSummaryType;
 import org.apromore.data_access.model_manager.VersionSummaryType;
+import org.wfmc._2008.xpdl2.Author;
+import org.wfmc._2008.xpdl2.Created;
+import org.wfmc._2008.xpdl2.ModificationDate;
+import org.wfmc._2008.xpdl2.PackageHeader;
+import org.wfmc._2008.xpdl2.PackageType;
+import org.wfmc._2008.xpdl2.RedefinableHeader;
+import org.wfmc._2008.xpdl2.Version;
+
+import de.epml.TypeEPML;
 
 
 public class ProcessDao extends BasicDao {
@@ -370,7 +385,8 @@ public class ProcessDao extends BasicDao {
 		Connection conn = null;
 		Statement stmt0 = null;
 		PreparedStatement stmtp = null;
-		ResultSet rs0 = null;
+		ResultSet rs0 = null, keys = null;
+		String query = null;
 		org.apromore.data_access.model_canoniser.ProcessSummaryType process = 
 			new org.apromore.data_access.model_canoniser.ProcessSummaryType();
 		org.apromore.data_access.model_canoniser.VersionSummaryType first_version =
@@ -378,13 +394,51 @@ public class ProcessDao extends BasicDao {
 		process.getVersionSummaries().clear();
 		process.getVersionSummaries().add(first_version);
 		try {
-			if (version == null || version.compareTo("")==0) {
-				version = Constants.DEFAULT_VERSION_NAME;
+
+			conn = this.getConnection();
+			
+			// store process details to get processId.
+			query = " insert into " + ConstantDB.TABLE_PROCESSES
+			+ "(" + ConstantDB.ATTR_NAME + ","
+			+       ConstantDB.ATTR_DOMAIN + ","
+			+		ConstantDB.ATTR_OWNER + ","
+			+		ConstantDB.ATTR_ORIGINAL_TYPE + ")"
+			+ " values (?, ?, ?, ?) ";
+			stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			stmtp.setString(1, processName);
+			stmtp.setString(2, domain);
+			stmtp.setString(3, username);
+			stmtp.setString(4,nativeType);
+			int rs1 = stmtp.executeUpdate();
+			keys = stmtp.getGeneratedKeys() ;
+			if (!keys.next()) {
+				throw new ExceptionDao ("Error: cannot retrieve generated key.");
 			}
+			int processId = keys.getInt(1);
+			keys.close();
+
+			// Store informations given as parameters in NPF
+			// creationDate and/or lastUpdate, might be empty. 
+			if (creationDate.compareTo("")==0 || lastUpdate.compareTo("")==0) {
+				query = " select date_format(now(), '%Y-%c-%d %k:%i:%s') ";
+				stmt0 = conn.createStatement();
+				rs0 = stmt0.executeQuery(query);
+				if (!rs0.next()) {
+					throw new ExceptionDao ("Error: cannot retrieve date.");
+				}
+				if (creationDate.compareTo("")==0) {
+					creationDate = rs0.getString(1);
+					lastUpdate = rs0.getString(1);
+				} else {
+					lastUpdate = rs0.getNString(1);
+				}
+			}
+			InputStream sync_npf = synchronisedNpf(process_xml, nativeType, processId, processName, version,
+					username, creationDate, lastUpdate);
 			StringBuilder sb0 = new StringBuilder();
 			String line ;
 			try {
-				BufferedReader reader = new BufferedReader(new InputStreamReader(process_xml, "UTF-8"));
+				BufferedReader reader = new BufferedReader(new InputStreamReader(sync_npf, "UTF-8"));
 				while ((line = reader.readLine()) != null) {
 					sb0.append(line).append("\n");
 				}
@@ -417,20 +471,19 @@ public class ProcessDao extends BasicDao {
 
 			String anf_string = sb2.toString();
 			System.out.println("anf size: " + anf_string.length());
-			
-			conn = this.getConnection();
 
 
-			String query3 = " insert into " + ConstantDB.TABLE_CANONICALS
+
+			query = " insert into " + ConstantDB.TABLE_CANONICALS
 			+ "(" + ConstantDB.ATTR_CONTENT + ")"
 			+ " values (?) ";
 
-			stmtp = conn.prepareStatement(query3, Statement.RETURN_GENERATED_KEYS);
+			stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			//stmt3.setAsciiStream(1, cpf_xml_is);
 			stmtp.setString(1, cpf_string);
 
 			int rs3 = stmtp.executeUpdate();
-			ResultSet keys = stmtp.getGeneratedKeys() ;
+			keys = stmtp.getGeneratedKeys() ;
 			if (!keys.next()) {
 				throw new ExceptionDao ("Error: cannot retrieve generated key.");
 			}
@@ -453,52 +506,33 @@ public class ProcessDao extends BasicDao {
 			keys.close();
 			stmtp.close();
 
-			String query6 = " insert into " + ConstantDB.TABLE_NATIVES
+			query = " insert into " + ConstantDB.TABLE_NATIVES
 			+ "(" + ConstantDB.ATTR_CONTENT + ","
 			+       ConstantDB.ATTR_NAT_TYPE + ","
 			+       ConstantDB.ATTR_CANONICAL + ")"
 			+ " values (?,?,?) ";
-			stmtp = conn.prepareStatement(query6, Statement.RETURN_GENERATED_KEYS);
+			stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmtp.setString(1, process_string);
 			stmtp.setString(2, nativeType);
 			stmtp.setInt(3, cpfId);
 			Integer rs6 = stmtp.executeUpdate();
 			keys = stmtp.getGeneratedKeys() ;
 			if (!keys.next()) {
-				throw new ExceptionDao ("Error: cannot retrieve generated key.");
+				throw new ExceptionDao ("Error (ProcessDao): cannot retrieve generated key.");
 			}
 			int natId = keys.getInt(1);
 			keys.close();
 			stmtp.close();
 
-			query6 = " insert into " + ConstantDB.TABLE_ANFOFCPF
+			query = " insert into " + ConstantDB.TABLE_ANFOFCPF
 			+ " values (?,?)";
-			stmtp = conn.prepareStatement(query6);
+			stmtp = conn.prepareStatement(query);
 			stmtp.setInt(1,cpfId);
 			stmtp.setInt(2,anfId);
 			stmtp.executeUpdate();
 			stmtp.close();
 
-			query6 = " insert into " + ConstantDB.TABLE_PROCESSES
-			+ "(" + ConstantDB.ATTR_NAME + ","
-			+       ConstantDB.ATTR_DOMAIN + ","
-			+		ConstantDB.ATTR_OWNER + ","
-			+		ConstantDB.ATTR_ORIGINAL_TYPE + ")"
-			+ " values (?, ?, ?, ?) ";
-			stmtp = conn.prepareStatement(query6, Statement.RETURN_GENERATED_KEYS);
-			stmtp.setString(1, processName);
-			stmtp.setString(2, domain);
-			stmtp.setString(3, username);
-			stmtp.setString(4,nativeType);
-			int rs1 = stmtp.executeUpdate();
-			keys = stmtp.getGeneratedKeys() ;
-			if (!keys.next()) {
-				throw new ExceptionDao ("Error: cannot retrieve generated key.");
-			}
-			int processId = keys.getInt(1);
-			keys.close();
-
-			String query2 = " insert into " + ConstantDB.TABLE_VERSIONS
+			query = " insert into " + ConstantDB.TABLE_VERSIONS
 			+ "(" + ConstantDB.ATTR_PROCESSID + ","
 			+     ConstantDB.ATTR_VERSION_NAME + ","
 			+     ConstantDB.ATTR_CREATION_DATE + ","
@@ -506,8 +540,8 @@ public class ProcessDao extends BasicDao {
 			+     ConstantDB.ATTR_CANONICAL + ","
 			+	  ConstantDB.ATTR_DOCUMENTATION + ")"
 			+ " values (?, ?, ?, ?, ?, ?) ";
-			//+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%f'), str_to_date(?,'%Y-%c-%d %k:%i:%f'), ?, ?) ";
-			stmtp = conn.prepareStatement(query2);
+			//+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%s'), str_to_date(?,), ?, ?) ";
+			stmtp = conn.prepareStatement(query);
 			stmtp.setInt(1, processId);
 			stmtp.setString(2, version);
 			stmtp.setString(3,creationDate);
@@ -515,7 +549,6 @@ public class ProcessDao extends BasicDao {
 			stmtp.setInt(5, cpfId);
 			stmtp.setString(6, documentation);
 			Integer rs2 = stmtp.executeUpdate();
-
 
 			process.setDomain(domain);
 			process.setId(processId);
@@ -531,7 +564,7 @@ public class ProcessDao extends BasicDao {
 			first_version.setDocumentation(documentation);			
 
 			conn.commit();
-			
+
 		} catch (SQLException e) {
 			e.printStackTrace();
 			conn.rollback();
@@ -544,6 +577,95 @@ public class ProcessDao extends BasicDao {
 			Release(conn, stmt0, rs0);
 		}
 		return process;
+	}
+
+	/**
+	 * Generate a new npf which is the result of writing parameters in process_xml.
+	 * @param process_xml the given npf to be synchronised
+	 * @param nativeType npf native type
+	 * @param processId id generated by database
+	 * @param processName
+	 * @param version
+	 * @param username
+	 * @param creationDate
+	 * @param lastUpdate
+	 * @return
+	 * @throws JAXBException 
+	 */
+	private InputStream synchronisedNpf(InputStream process_xml,
+			String nativeType, Integer processId, String processName,
+			String version, String username, String creationDate,
+			String lastUpdate) throws JAXBException {
+
+		InputStream res = null;
+		if (nativeType.compareTo("XPDL 2.1")==0) {
+			JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
+			Unmarshaller u = jc.createUnmarshaller();
+			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
+			PackageType pkg = rootElement.getValue();
+			pkg.setName(processName);
+			pkg.setId(processId.toString());
+			if (pkg.getRedefinableHeader()==null) {
+				RedefinableHeader header = new RedefinableHeader();
+				pkg.setRedefinableHeader(header);
+				Version v = new Version();
+				header.setVersion(v);
+				Author a = new Author();
+				header.setAuthor(a);
+			} else {
+				if (pkg.getRedefinableHeader().getVersion()==null) {
+					Version v = new Version();
+					pkg.getRedefinableHeader().setVersion(v);
+				}
+				if (pkg.getRedefinableHeader().getAuthor()==null) {
+					Author a = new Author();
+					pkg.getRedefinableHeader().setAuthor(a);
+				}
+			}
+			pkg.getRedefinableHeader().getVersion().setValue(version);
+			pkg.getRedefinableHeader().getAuthor().setValue(username);
+			if (pkg.getPackageHeader()==null) {
+				PackageHeader pkgHeader = new PackageHeader();
+				pkg.setPackageHeader(pkgHeader);
+				Created created = new Created();
+				pkgHeader.setCreated(created);
+				ModificationDate modifDate = new ModificationDate();
+				pkgHeader.setModificationDate(modifDate);
+			} else {
+				if (pkg.getPackageHeader().getCreated()==null) {
+					Created created = new Created();
+					pkg.getPackageHeader().setCreated(created);
+				}
+				if (pkg.getPackageHeader().getModificationDate()==null) {
+					ModificationDate modifDate = new ModificationDate();
+					pkg.getPackageHeader().setModificationDate(modifDate);
+				}
+			}
+			pkg.getPackageHeader().getCreated().setValue(creationDate);
+			pkg.getPackageHeader().getModificationDate().setValue(lastUpdate);
+
+			Marshaller m = jc.createMarshaller();
+			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+			ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
+            m.marshal(rootElement, xpdl_xml);
+            res = new ByteArrayInputStream(xpdl_xml.toByteArray());
+
+		} else if (nativeType.compareTo("EPML 2.0")==0) {
+			JAXBContext jc = JAXBContext.newInstance("de.epml");
+			Unmarshaller u = jc.createUnmarshaller();
+			JAXBElement<TypeEPML> rootElement = (JAXBElement<TypeEPML>) u.unmarshal(process_xml);
+			TypeEPML epml = rootElement.getValue();
+			
+			// TODO
+			
+			Marshaller m = jc.createMarshaller();
+			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+			ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
+            m.marshal(rootElement, xpdl_xml);
+            res = new ByteArrayInputStream(xpdl_xml.toByteArray());
+			
+		}
+		return res;
 	}
 
 	public String getNative(Integer processId, String version, String nativeType) throws ExceptionDao {
@@ -675,9 +797,6 @@ public class ProcessDao extends BasicDao {
 				throw new ExceptionDao ("SQL error ProcessDAO (storeNative): canonical process not found.");
 			}
 			stmt1.close();rs1.close();
-			if (version == null || version.compareTo("")==0) {
-				version = Constants.DEFAULT_VERSION_NAME;
-			}
 			StringBuilder sb = new StringBuilder();
 			String line ;
 			try {
@@ -850,7 +969,7 @@ public class ProcessDao extends BasicDao {
 			+     ConstantDB.ATTR_CANONICAL + ","
 			+     ConstantDB.ATTR_DOCUMENTATION + ")"
 			+ " values (?, ?, ?, ?, ?, ?) ";
-			//+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%f'), str_to_date(?,'%Y-%c-%d %k:%i:%f'), ?, ?) ";
+			//+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%s'), str_to_date(?,'%Y-%c-%d %k:%i:%s'), ?, ?) ";
 			stmtp = conn.prepareStatement(query2);
 			stmtp.setInt(1, processId);
 			stmtp.setString(2, newVersion);
@@ -874,7 +993,7 @@ public class ProcessDao extends BasicDao {
 			stmtp.setString(3, preVersion);
 			rs2 = stmtp.executeUpdate();
 			stmtp.close();
-			*/
+			 */
 			conn.commit();
 
 		} catch (SQLException e) {
@@ -936,80 +1055,80 @@ public class ProcessDao extends BasicDao {
 					/* delete process version identified by <p, v>
 					 * retrieve r in derived_versions such as r[processId]=p
 					 */
-					
+
 					/* TODO derivation not represented... to be fixed. */
-//					query = " select " + ConstantDB.ATTR_PROCESSID 
-//					+ " from " + ConstantDB.TABLE_DERIVED_VERSIONS
-//					+ " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
-//					stmt = conn.createStatement();
-//					rs = stmt.executeQuery(query);
-//					if (!rs.next()) {
-//						/* r doesn't exist: v is the only version that exists for p,
-//						 * delete p from processes (thanks to FKs, related tuple in 
-//						 * process_versions will be deleted too) 
-//						 */
-//						query = " delete from " + ConstantDB.TABLE_PROCESSES
-//						+ " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
-//						stmtp = conn.prepareStatement(query);
-//						int r = stmtp.executeUpdate();
-//						stmtp.close();
-//						rs.close();
-//						stmt.close();
-//					} else {
-//						/* r exists: at least two versions exist for p. Derivation list
-//						 * needs to be updated.
-//						 * Retrieve r1 in derived_versions such as r1[derived_version]=v
-//						 */
-//						rs.close();
-//						stmt.close();
-//						query = " select " + ConstantDB.ATTR_PROCESSID 
-//						+ " from " + ConstantDB.TABLE_DERIVED_VERSIONS
-//						+ " where " + ConstantDB.ATTR_DERIVED_VERSION + " = '" + v + "'"
-//						+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
-//						stmt = conn.createStatement();
-//						rs = stmt.executeQuery(query);
-//						if (rs.next()) {
-//							/* r1 exists:
-//							 * Retrieve r2 in derived_versions such as r2[version] = v
-//							 */
-//							rs.close();
-//							stmt.close();
-//							query = " select " +  ConstantDB.ATTR_DERIVED_VERSION 
-//							+ " from " + ConstantDB.TABLE_DERIVED_VERSIONS
-//							+ " where " + ConstantDB.ATTR_VERSION + " = '" +  v + "'"
-//							+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
-//							stmt = conn.createStatement();
-//							rs = stmt.executeQuery(query);
-//							if (rs.next()) {
-//								// Delete r2
-//								query = " delete from " + ConstantDB.TABLE_DERIVED_VERSIONS
-//								+ " where " + ConstantDB.ATTR_VERSION + " = '" +  v + "'"
-//								+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
-//								stmtp = conn.prepareStatement(query);
-//								int r = stmtp.executeUpdate();
-//								stmtp.close();
-//
-//								// Update r1 
-//								query = " update " + ConstantDB.TABLE_DERIVED_VERSIONS 
-//								+ " set " + ConstantDB.ATTR_DERIVED_VERSION + " = '" + rs.getString(1) + "'"
-//								+ " where " + ConstantDB.ATTR_DERIVED_VERSION + " = '" + v + "'"
-//								+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
-//								stmtp = conn.prepareStatement(query);
-//								r = stmtp.executeUpdate();
-//								stmtp.close();
-//
-//							} else {
-//								// Delete r1
-//								query = " delete from " + ConstantDB.TABLE_DERIVED_VERSIONS
-//								+ " where " + ConstantDB.ATTR_DERIVED_VERSION + " = '" +  v + "'"
-//								+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
-//								stmtp = conn.prepareStatement(query);
-//								int r = stmtp.executeUpdate();
-//								stmtp.close();
-//							}
-//						}
-//					}
-					
+					//					query = " select " + ConstantDB.ATTR_PROCESSID 
+					//					+ " from " + ConstantDB.TABLE_DERIVED_VERSIONS
+					//					+ " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+					//					stmt = conn.createStatement();
+					//					rs = stmt.executeQuery(query);
+					//					if (!rs.next()) {
+					//						/* r doesn't exist: v is the only version that exists for p,
+					//						 * delete p from processes (thanks to FKs, related tuple in 
+					//						 * process_versions will be deleted too) 
+					//						 */
+					//						query = " delete from " + ConstantDB.TABLE_PROCESSES
+					//						+ " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+					//						stmtp = conn.prepareStatement(query);
+					//						int r = stmtp.executeUpdate();
+					//						stmtp.close();
+					//						rs.close();
+					//						stmt.close();
+					//					} else {
+					//						/* r exists: at least two versions exist for p. Derivation list
+					//						 * needs to be updated.
+					//						 * Retrieve r1 in derived_versions such as r1[derived_version]=v
+					//						 */
+					//						rs.close();
+					//						stmt.close();
+					//						query = " select " + ConstantDB.ATTR_PROCESSID 
+					//						+ " from " + ConstantDB.TABLE_DERIVED_VERSIONS
+					//						+ " where " + ConstantDB.ATTR_DERIVED_VERSION + " = '" + v + "'"
+					//						+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+					//						stmt = conn.createStatement();
+					//						rs = stmt.executeQuery(query);
+					//						if (rs.next()) {
+					//							/* r1 exists:
+					//							 * Retrieve r2 in derived_versions such as r2[version] = v
+					//							 */
+					//							rs.close();
+					//							stmt.close();
+					//							query = " select " +  ConstantDB.ATTR_DERIVED_VERSION 
+					//							+ " from " + ConstantDB.TABLE_DERIVED_VERSIONS
+					//							+ " where " + ConstantDB.ATTR_VERSION + " = '" +  v + "'"
+					//							+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+					//							stmt = conn.createStatement();
+					//							rs = stmt.executeQuery(query);
+					//							if (rs.next()) {
+					//								// Delete r2
+					//								query = " delete from " + ConstantDB.TABLE_DERIVED_VERSIONS
+					//								+ " where " + ConstantDB.ATTR_VERSION + " = '" +  v + "'"
+					//								+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+					//								stmtp = conn.prepareStatement(query);
+					//								int r = stmtp.executeUpdate();
+					//								stmtp.close();
+					//
+					//								// Update r1 
+					//								query = " update " + ConstantDB.TABLE_DERIVED_VERSIONS 
+					//								+ " set " + ConstantDB.ATTR_DERIVED_VERSION + " = '" + rs.getString(1) + "'"
+					//								+ " where " + ConstantDB.ATTR_DERIVED_VERSION + " = '" + v + "'"
+					//								+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+					//								stmtp = conn.prepareStatement(query);
+					//								r = stmtp.executeUpdate();
+					//								stmtp.close();
+					//
+					//							} else {
+					//								// Delete r1
+					//								query = " delete from " + ConstantDB.TABLE_DERIVED_VERSIONS
+					//								+ " where " + ConstantDB.ATTR_DERIVED_VERSION + " = '" +  v + "'"
+					//								+ " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+					//								stmtp = conn.prepareStatement(query);
+					//								int r = stmtp.executeUpdate();
+					//								stmtp.close();
+					//							}
+					//						}
+					//					}
+
 					// delete the process version
 					query = " delete from " + ConstantDB.TABLE_VERSIONS 
 					+ " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString()
