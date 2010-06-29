@@ -56,6 +56,8 @@ public final class ConstantDB {
 
 	public static final String VIEW_KEYWORDS = "keywords";
 	public static final String ATTR_WORD = "word";
+	
+	public static final String VIEW_HEAD_VERSIONS = "head_versions";
 
 
 }

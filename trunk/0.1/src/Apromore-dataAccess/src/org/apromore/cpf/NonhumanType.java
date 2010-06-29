@@ -25,7 +25,7 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "NonhumanType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:54:58+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:24:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class NonhumanType
     extends ResourceTypeType
 {
