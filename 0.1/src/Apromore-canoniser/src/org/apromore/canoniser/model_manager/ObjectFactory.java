@@ -39,35 +39,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CanoniseProcessOutputMsgType }
-     * 
-     */
-    public CanoniseProcessOutputMsgType createCanoniseProcessOutputMsgType() {
-        return new CanoniseProcessOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link DeCanoniseProcessOutputMsgType }
-     * 
-     */
-    public DeCanoniseProcessOutputMsgType createDeCanoniseProcessOutputMsgType() {
-        return new DeCanoniseProcessOutputMsgType();
-    }
-
-    /**
      * Create an instance of {@link DeCanoniseProcessInputMsgType }
      * 
      */
     public DeCanoniseProcessInputMsgType createDeCanoniseProcessInputMsgType() {
         return new DeCanoniseProcessInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ProcessSummaryType }
-     * 
-     */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
     }
 
     /**
@@ -87,19 +63,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ResultType }
+     * Create an instance of {@link DeCanoniseProcessOutputMsgType }
      * 
      */
-    public ResultType createResultType() {
-        return new ResultType();
-    }
-
-    /**
-     * Create an instance of {@link VersionSummaryType }
-     * 
-     */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
+    public DeCanoniseProcessOutputMsgType createDeCanoniseProcessOutputMsgType() {
+        return new DeCanoniseProcessOutputMsgType();
     }
 
     /**
@@ -108,6 +76,38 @@ public class ObjectFactory {
      */
     public CanoniseVersionOutputMsgType createCanoniseVersionOutputMsgType() {
         return new CanoniseVersionOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link CanoniseProcessOutputMsgType }
+     * 
+     */
+    public CanoniseProcessOutputMsgType createCanoniseProcessOutputMsgType() {
+        return new CanoniseProcessOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ResultType }
+     * 
+     */
+    public ResultType createResultType() {
+        return new ResultType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessSummaryType }
+     * 
+     */
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link VersionSummaryType }
+     * 
+     */
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
     }
 
     /**
