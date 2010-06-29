@@ -12,6 +12,8 @@ drop table if exists users ;
 
 drop view process_ranking;
 drop view keywords ;
+drop view head_versions0;
+drop view head_versions;
 
 create table annotations (
     uri         int     auto_increment,
@@ -96,8 +98,8 @@ show warnings ;
 create table process_versions (
     processId int,
     version_name varchar(40),
-    creation_date datetime,
-    last_update datetime,
+    creation_date varchar(30),
+    last_update varchar(30),
     canonical int,
     ranking varchar(10),
     documentation text,
@@ -161,3 +163,17 @@ create view keywords (processId, word) as
     select processId, version_name
     from process_versions
     ;
+
+    create view head_versions0 (processid, version) as
+    select processId, derived_version
+    from derived_versions
+    where (processId, derived_version) not in 
+    	(select processId, version
+    	from derived_versions);
+    
+    create view head_versions (processId, version) as
+    select processId, version from head_versions0
+    union
+    select processId, version_name from process_versions
+    where processId not in (select processId from derived_versions);
+    
