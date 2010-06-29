@@ -28,6 +28,4 @@ public class Constants {
 		public static final String JAXB_CONTEXT_CPF = "dataAccessServices.facades.cpf02";
 		public static final String JAXB_CONTEXT_RLF = "dataAccessServices.facades.rlf01";
 
-		// version: default name
-		public static final String DEFAULT_VERSION_NAME = "0.1";
 	}
