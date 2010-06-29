@@ -51,22 +51,22 @@ import org.w3c.dom.Element;
     DocumentationType.class,
     GraphicsType.class
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T02:48:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class AnnotationType {
 
     @XmlAnyElement(lax = true)
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T02:48:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected List<Object> any;
     @XmlAttribute(required = true)
     @XmlSchemaType(name = "positiveInteger")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T02:48:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigInteger id;
     @XmlAttribute
     @XmlSchemaType(name = "positiveInteger")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T02:48:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigInteger cpfId;
     @XmlAnyAttribute
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T02:48:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     private Map<QName, String> otherAttributes = new HashMap<QName, String>();
 
     /**
@@ -87,12 +87,12 @@ public class AnnotationType {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link Element }
      * {@link Object }
+     * {@link Element }
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T02:48:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public List<Object> getAny() {
         if (any == null) {
             any = new ArrayList<Object>();
@@ -108,7 +108,7 @@ public class AnnotationType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T02:48:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public BigInteger getId() {
         return id;
     }
@@ -121,7 +121,7 @@ public class AnnotationType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T02:48:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setId(BigInteger value) {
         this.id = value;
     }
@@ -134,7 +134,7 @@ public class AnnotationType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T02:48:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public BigInteger getCpfId() {
         return cpfId;
     }
@@ -147,7 +147,7 @@ public class AnnotationType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T02:48:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public void setCpfId(BigInteger value) {
         this.cpfId = value;
     }
@@ -166,7 +166,7 @@ public class AnnotationType {
      * @return
      *     always non-null
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-22T11:58:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T02:48:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 	public Map<QName, String> getOtherAttributes() {
         return otherAttributes;
     }

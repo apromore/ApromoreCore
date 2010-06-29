@@ -39,11 +39,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link VersionSummaryType }
+     * Create an instance of {@link CanoniseProcessOutputMsgType }
      * 
      */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
+    public CanoniseProcessOutputMsgType createCanoniseProcessOutputMsgType() {
+        return new CanoniseProcessOutputMsgType();
     }
 
     /**
@@ -63,19 +63,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CanoniseProcessOutputMsgType }
+     * Create an instance of {@link ProcessSummaryType }
      * 
      */
-    public CanoniseProcessOutputMsgType createCanoniseProcessOutputMsgType() {
-        return new CanoniseProcessOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link CanoniseVersionOutputMsgType }
-     * 
-     */
-    public CanoniseVersionOutputMsgType createCanoniseVersionOutputMsgType() {
-        return new CanoniseVersionOutputMsgType();
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
     }
 
     /**
@@ -87,11 +79,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ProcessSummaryType }
+     * Create an instance of {@link CanoniseProcessInputMsgType }
      * 
      */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
+    public CanoniseProcessInputMsgType createCanoniseProcessInputMsgType() {
+        return new CanoniseProcessInputMsgType();
     }
 
     /**
@@ -103,11 +95,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CanoniseProcessInputMsgType }
+     * Create an instance of {@link VersionSummaryType }
      * 
      */
-    public CanoniseProcessInputMsgType createCanoniseProcessInputMsgType() {
-        return new CanoniseProcessInputMsgType();
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link CanoniseVersionOutputMsgType }
+     * 
+     */
+    public CanoniseVersionOutputMsgType createCanoniseVersionOutputMsgType() {
+        return new CanoniseVersionOutputMsgType();
     }
 
     /**
