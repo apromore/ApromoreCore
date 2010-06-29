@@ -39,11 +39,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StoreNativeOutputMsgType }
+     * Create an instance of {@link StoreVersionOutputMsgType }
      * 
      */
-    public StoreNativeOutputMsgType createStoreNativeOutputMsgType() {
-        return new StoreNativeOutputMsgType();
+    public StoreVersionOutputMsgType createStoreVersionOutputMsgType() {
+        return new StoreVersionOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link StoreNativeInputMsgType }
+     * 
+     */
+    public StoreNativeInputMsgType createStoreNativeInputMsgType() {
+        return new StoreNativeInputMsgType();
     }
 
     /**
@@ -55,11 +63,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ResultType }
+     * Create an instance of {@link StoreVersionInputMsgType }
      * 
      */
-    public ResultType createResultType() {
-        return new ResultType();
+    public StoreVersionInputMsgType createStoreVersionInputMsgType() {
+        return new StoreVersionInputMsgType();
     }
 
     /**
@@ -71,19 +79,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StoreVersionOutputMsgType }
-     * 
-     */
-    public StoreVersionOutputMsgType createStoreVersionOutputMsgType() {
-        return new StoreVersionOutputMsgType();
-    }
-
-    /**
      * Create an instance of {@link ProcessSummaryType }
      * 
      */
     public ProcessSummaryType createProcessSummaryType() {
         return new ProcessSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link ResultType }
+     * 
+     */
+    public ResultType createResultType() {
+        return new ResultType();
     }
 
     /**
@@ -95,19 +103,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StoreVersionInputMsgType }
+     * Create an instance of {@link StoreNativeOutputMsgType }
      * 
      */
-    public StoreVersionInputMsgType createStoreVersionInputMsgType() {
-        return new StoreVersionInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link StoreNativeInputMsgType }
-     * 
-     */
-    public StoreNativeInputMsgType createStoreNativeInputMsgType() {
-        return new StoreNativeInputMsgType();
+    public StoreNativeOutputMsgType createStoreNativeOutputMsgType() {
+        return new StoreNativeOutputMsgType();
     }
 
     /**
