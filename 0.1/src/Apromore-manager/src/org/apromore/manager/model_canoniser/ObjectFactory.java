@@ -39,30 +39,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CanoniseVersionInputMsgType }
-     * 
-     */
-    public CanoniseVersionInputMsgType createCanoniseVersionInputMsgType() {
-        return new CanoniseVersionInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link DeCanoniseProcessOutputMsgType }
-     * 
-     */
-    public DeCanoniseProcessOutputMsgType createDeCanoniseProcessOutputMsgType() {
-        return new DeCanoniseProcessOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link CanoniseProcessOutputMsgType }
-     * 
-     */
-    public CanoniseProcessOutputMsgType createCanoniseProcessOutputMsgType() {
-        return new CanoniseProcessOutputMsgType();
-    }
-
-    /**
      * Create an instance of {@link ResultType }
      * 
      */
@@ -79,11 +55,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ProcessSummaryType }
+     * Create an instance of {@link DeCanoniseProcessOutputMsgType }
      * 
      */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
+    public DeCanoniseProcessOutputMsgType createDeCanoniseProcessOutputMsgType() {
+        return new DeCanoniseProcessOutputMsgType();
     }
 
     /**
@@ -95,11 +71,35 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ProcessSummaryType }
+     * 
+     */
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link CanoniseProcessOutputMsgType }
+     * 
+     */
+    public CanoniseProcessOutputMsgType createCanoniseProcessOutputMsgType() {
+        return new CanoniseProcessOutputMsgType();
+    }
+
+    /**
      * Create an instance of {@link VersionSummaryType }
      * 
      */
     public VersionSummaryType createVersionSummaryType() {
         return new VersionSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link CanoniseVersionInputMsgType }
+     * 
+     */
+    public CanoniseVersionInputMsgType createCanoniseVersionInputMsgType() {
+        return new CanoniseVersionInputMsgType();
     }
 
     /**

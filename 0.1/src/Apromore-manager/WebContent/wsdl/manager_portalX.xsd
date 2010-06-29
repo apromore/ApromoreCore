@@ -261,12 +261,7 @@
 		<attribute name="username" type="string" />
 		<attribute name="nativeType" type="string" />
 		<attribute name="processId" type="int" />
-		<attribute name="newVersion" type="string" />
-		<attribute name="preVersion" type="string" />
 		<attribute name="domain" type="string" />
-		<attribute name="last_update" type="string" />
-		<attribute name="creation_date" type="string" />
-		<attribute name="documentation" type="string" />
 	</complexType>
 
 	<complexType name="UpdateProcessOutputMsgType">

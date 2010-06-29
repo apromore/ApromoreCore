@@ -30,24 +30,23 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ExportNativeInputMsgType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ExportNativeInputMsgType {
 
     @XmlAttribute(name = "NativeType")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String nativeType;
     @XmlAttribute(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Integer processId;
     @XmlAttribute(name = "VersionName")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String versionName;
-
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Boolean withAnnotations;
 
-	/**
+    /**
      * Gets the value of the nativeType property.
      * 
      * @return
@@ -55,7 +54,7 @@ public class ExportNativeInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getNativeType() {
         return nativeType;
     }
@@ -68,7 +67,7 @@ public class ExportNativeInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setNativeType(String value) {
         this.nativeType = value;
     }
@@ -81,7 +80,7 @@ public class ExportNativeInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public Integer getProcessId() {
         return processId;
     }
@@ -94,7 +93,7 @@ public class ExportNativeInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setProcessId(Integer value) {
         this.processId = value;
     }
@@ -107,7 +106,7 @@ public class ExportNativeInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getVersionName() {
         return versionName;
     }
@@ -120,12 +119,12 @@ public class ExportNativeInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setVersionName(String value) {
         this.versionName = value;
     }
 
-	/**
+    /**
      * Gets the value of the withAnnotations property.
      * 
      * @return
@@ -133,12 +132,12 @@ public class ExportNativeInputMsgType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public Boolean isWithAnnotations() {
         return withAnnotations;
     }
 
-	/**
+    /**
      * Sets the value of the withAnnotations property.
      * 
      * @param value
@@ -146,7 +145,7 @@ public class ExportNativeInputMsgType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-23T09:57:23+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T04:07:36+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setWithAnnotations(Boolean value) {
         this.withAnnotations = value;
     }
