@@ -110,22 +110,15 @@ public class RequestToCanoniser {
 	}
 
 	public void 
-	CanoniseVersion(Integer processId, String preVersion,
-			String newVersion, String nativeType, String domain, String username,
-			InputStream native_is, String documentation, String created, String lastupdate) 
+	CanoniseVersion(Integer processId, String nativeType, String domain, 
+			InputStream native_is) 
 	throws IOException, ExceptionCanoniseVersion {
 		CanoniseVersionInputMsgType payload = new CanoniseVersionInputMsgType();
 		DataSource source = new ByteArrayDataSource(native_is, "text/xml");
 		payload.setDomain(domain);
 		payload.setNative(new DataHandler(source));
 		payload.setNativeType(nativeType);
-		payload.setNewVersion(newVersion);
-		payload.setPreVersion(preVersion);
 		payload.setProcessId(processId);
-		payload.setUsername(username);
-		payload.setDocumentation(documentation);
-		payload.setCreationDate(created);
-		payload.setLastUpdate(lastupdate);
 		// send request to canoniser
 		CanoniseVersionOutputMsgType res = this.port.canoniseVersion(payload);
 		if (res.getResult().getCode() == -1) {

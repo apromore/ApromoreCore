@@ -6,6 +6,14 @@
     <part name="payload" element="tnsx:ReadUserInputMsg">
     </part>
   </message>
+  <message name="DeleteProcessVersionsOutputMsg">
+    <part name="payload" element="tnsx:DeleteProcessVersionsOutputMsg">
+    </part>
+  </message>
+  <message name="DeleteEditSessionOutputMsg">
+    <part name="payload" element="tnsx:DeleteEditSessionOutputMsg">
+    </part>
+  </message>
   <message name="ReadProcessSummariesInputMsg">
     <part name="payload" element="tnsx:ReadProcessSummariesInputMsg">
     </part>
@@ -14,20 +22,48 @@
     <part name="payload" element="tnsx:ReadFormatsOutputMsg">
     </part>
   </message>
+  <message name="DeleteProcessVersionsInputMsg">
+    <part name="payload" element="tnsx:DeleteProcessVersionsInputMsg">
+    </part>
+  </message>
+  <message name="UpdateProcessOutputMsg">
+    <part name="payload" element="tnsx:UpdateProcessOutputMsg">
+    </part>
+  </message>
   <message name="ReadDomainsOutputMsg">
     <part name="payload" element="tnsx:ReadDomainsOutputMsg">
+    </part>
+  </message>
+  <message name="WriteEditSessionOutputMsg">
+    <part name="payload" element="tnsx:WriteEditSessionOutputMsg">
     </part>
   </message>
   <message name="ReadUserOutputMsg">
     <part name="payload" element="tnsx:ReadUserOutputMsg">
     </part>
   </message>
+  <message name="ReadEditSessionOutputMsg">
+    <part name="payload" element="tnsx:ReadEditSessionOutputMsg">
+    </part>
+  </message>
   <message name="WriteUserOutputMsg">
     <part name="payload" element="tnsx:WriteUserOutputMsg">
     </part>
   </message>
+  <message name="UpdateProcessInputMsg">
+    <part name="payload" element="tnsx:UpdateProcessInputMsg">
+    </part>
+  </message>
   <message name="ImportProcessInputMsg">
     <part name="payload" element="tnsx:ImportProcessInputMsg">
+    </part>
+  </message>
+  <message name="DeleteEditSessionInputMsg">
+    <part name="payload" element="tnsx:DeleteEditSessionInputMsg">
+    </part>
+  </message>
+  <message name="ReadEditSessionInputMsg">
+    <part name="payload" element="tnsx:ReadEditSessionInputMsg">
     </part>
   </message>
   <message name="ExportNativeInputMsg">
@@ -36,6 +72,10 @@
   </message>
   <message name="ImportProcessOutputMsg">
     <part name="payload" element="tnsx:ImportProcessOutputMsg">
+    </part>
+  </message>
+  <message name="WriteEditSessionInputMsg">
+    <part name="payload" element="tnsx:WriteEditSessionInputMsg">
     </part>
   </message>
   <message name="WriteUserInputMsg">
@@ -50,57 +90,14 @@
     <part name="payload" element="tnsx:ExportNativeOutputMsg">
     </part>
   </message>
-  <message name="ReadDomainsInputMsg">
-    <part name="payload" element="tnsx:ReadDomainsInputMsg">
-    </part>
-  </message>
   <message name="ReadProcessSummariesOutputMsg">
     <part name="payload" element="tnsx:ReadProcessSummariesOutputMsg">
     </part>
   </message>
-  
-  <message name="WriteEditSessionInputMsg">
-    <part name="payload" element="tnsx:WriteEditSessionInputMsg">
+  <message name="ReadDomainsInputMsg">
+    <part name="payload" element="tnsx:ReadDomainsInputMsg">
     </part>
   </message>
-  <message name="WriteEditSessionOutputMsg">
-    <part name="payload" element="tnsx:WriteEditSessionOutputMsg">
-    </part>
-  </message>
-    <message name="ReadEditSessionInputMsg">
-    <part name="payload" element="tnsx:ReadEditSessionInputMsg">
-    </part>
-  </message>
-  <message name="ReadEditSessionOutputMsg">
-    <part name="payload" element="tnsx:ReadEditSessionOutputMsg">
-    </part>
-  </message>
-    <message name="DeleteEditSessionInputMsg">
-    <part name="payload" element="tnsx:DeleteEditSessionInputMsg">
-    </part>
-  </message>
-  <message name="DeleteEditSessionOutputMsg">
-    <part name="payload" element="tnsx:DeleteEditSessionOutputMsg">
-    </part>
-  </message>
-    <message name="UpdateProcessInputMsg">
-    <part name="payload" element="tnsx:UpdateProcessInputMsg">
-    </part>
-  </message>
-  <message name="UpdateProcessOutputMsg">
-    <part name="payload" element="tnsx:UpdateProcessOutputMsg">
-    </part>
-  </message>
-  
-  <message name="DeleteProcessVersionsInputMsg">
-    <part name="payload" element="tnsx:DeleteProcessVersionsInputMsg">
-    </part>
-  </message>
-  <message name="DeleteProcessVersionsOutputMsg">
-    <part name="payload" element="tnsx:DeleteProcessVersionsOutputMsg">
-    </part>
-  </message>
-  
   <portType name="ManagerPortalPortType">
     <operation name="ReadProcessSummaries">
       <input name="ReadProcessSummariesRequest" message="tns:ReadProcessSummariesInputMsg">
@@ -149,13 +146,13 @@
     </input>
       <output name="WriteEditSessionResponse" message="tns:WriteEditSessionOutputMsg">
     </output>
-    </operation>    
+    </operation>
     <operation name="ReadEditSession">
       <input name="ReadEditSessionRequest" message="tns:ReadEditSessionInputMsg">
     </input>
       <output name="ReadEditSessionResponse" message="tns:ReadEditSessionOutputMsg">
     </output>
-    </operation>  
+    </operation>
     <operation name="DeleteEditSession">
       <input name="DeleteEditSessionRequest" message="tns:DeleteEditSessionInputMsg">
     </input>
