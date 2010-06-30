@@ -6,8 +6,8 @@ insert into users (lastname,firstname,email,username,passwd) values ("Garcia-Ban
 insert into users (lastname,firstname,email,username,passwd) values ("Dijkman","Remco","R.M.Dijkman@tue.nl","remco", "");
 insert into users (lastname,firstname,email,username,passwd) values ("Alshareef","Abdul","aah.shareef@gmail.com","abdul", "");
 insert into users (lastname,firstname,email,username,passwd) values ("Ekanayake","Mehrad","aah.shareef@gmail.com","mehrad", "");
-insert into users  (firstname, username, passwd) values ("hajo", "hajo", "");
-insert into users  (firstname, username, passwd) values ("barbara", "barbara", "");
-insert into users  (firstname, username, passwd) values ("anne", "anne", "");
+insert into users  (firstname, username, passwd) values ("Hajo", "hajo", "");
+insert into users  (firstname, username, passwd) values ("Barbara", "barbara", "");
+insert into users  (firstname, username, passwd) values ("Anne", "anne", "");
 insert into native_types values ("EPML 2.0","epml");
 insert into native_types values ("XPDL 2.1","xpdl");

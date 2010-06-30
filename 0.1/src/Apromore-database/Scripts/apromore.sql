@@ -1,4 +1,4 @@
-drop table if exists anfOfCpf;
+cd modedrop table if exists anfOfCpf;
 drop table if exists derived_versions;
 drop table if exists edit_session_mappings;
 drop table if exists process_versions ;
@@ -98,8 +98,8 @@ show warnings ;
 create table process_versions (
     processId int,
     version_name varchar(40),
-    creation_date varchar(30),
-    last_update varchar(30),
+    creation_date varchar(35),
+    last_update varchar(35),
     canonical int,
     ranking varchar(10),
     documentation text,
