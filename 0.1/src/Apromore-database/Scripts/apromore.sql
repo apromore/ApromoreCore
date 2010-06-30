@@ -1,4 +1,4 @@
-cd modedrop table if exists anfOfCpf;
+drop table if exists anfOfCpf;
 drop table if exists derived_versions;
 drop table if exists edit_session_mappings;
 drop table if exists process_versions ;
