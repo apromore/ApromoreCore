@@ -46,38 +46,38 @@ import org.wfmc._2008.xpdl2.PackageType;
  */
 
 @javax.jws.WebService(
-                      serviceName = "PortalOryxService",
-                      portName = "PortalOryx",
-                      targetNamespace = "http://www.apromore.org/portal/service_oryx",
-                      wsdlLocation = "http://localhost:8080/Apromore-portal/services/PortalOryx?wsdl",
-                      endpointInterface = "org.apromore.portal.service_oryx.PortalOryxPortType")
+		serviceName = "PortalOryxService",
+		portName = "PortalOryx",
+		targetNamespace = "http://www.apromore.org/portal/service_oryx",
+		wsdlLocation = "http://localhost:8080/Apromore-portal/services/PortalOryx?wsdl",
+		endpointInterface = "org.apromore.portal.service_oryx.PortalOryxPortType")
 
 		public class PortalOryxPortTypeImpl implements PortalOryxPortType {
 
 	private static final Logger LOG = Logger.getLogger(PortalOryxPortTypeImpl.class.getName());
 
 	public CloseSessionOutputMsgType closeSession(CloseSessionInputMsgType payload) { 
-        LOG.info("Executing operation closeSession");
-        System.out.println(payload);
-        CloseSessionOutputMsgType res = new CloseSessionOutputMsgType();
+		LOG.info("Executing operation closeSession");
+		System.out.println(payload);
+		CloseSessionOutputMsgType res = new CloseSessionOutputMsgType();
 
 		ResultType result = new ResultType();
 		res.setResult(result);
 		int code = payload.getCode();
-        try {
+		try {
 			// delete edit session
 			RequestToManager request = new RequestToManager();
 			request.DeleteEditionSession(code);
 			result.setCode(0);
 			result.setMessage("");
-			
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
 			result.setMessage(ex.getMessage());
 		}
 		return res;
-    }
+	}
 
 	/* (non-Javadoc)
 	 * @see org.apromore.portal.service_oryx.PortalOryxPortType#writeProcess(org.apromore.portal.model_oryx.WriteProcessInputMsgType  payload )*
@@ -103,7 +103,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			request.UpdateProcess (username, nativeType, processId, native_is, domain);
 			result.setCode(0);
 			result.setMessage("");
-			
+
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
@@ -122,7 +122,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 		ResultType result = new ResultType();
 		res.setResult(result);
 		int code = payload.getEditSessionCode();
-		
+
 		try {
 			DataHandler handler = payload.getNative();
 			InputStream native_is = handler.getInputStream();
@@ -132,32 +132,41 @@ import org.wfmc._2008.xpdl2.PackageType;
 			 */
 			EditSessionType editSession = request.ReadEditSession(code);
 			String username = editSession.getUsername();
-		    String nativeType = editSession.getNativeType();
+			String nativeType = editSession.getNativeType();
 			/* process name, version name, creation date, last update and documentation
 			 * must be read read native_is
 			 */
-		    String new_processName = null;
-		    String new_versionName = null;
-		    String documentation = null;
-		    String created = null;
-		    String lastupdate = null;
-		    String domain = null;
-		    if (nativeType.compareTo("XPDL 2.1")==0) {
+			String new_processName = null;
+			String new_versionName = null;
+			String documentation = null;
+			String created = null;
+			String lastupdate = null;
+			String domain = null;
+			if (nativeType.compareTo("XPDL 2.1")==0) {
 				JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
 				Unmarshaller u = jc.createUnmarshaller();
 				JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(native_is);
 				PackageType pkg = rootElement.getValue();
-			    new_processName = pkg.getName();
-				new_versionName = pkg.getRedefinableHeader().getVersion().getValue();
-				documentation = pkg.getPackageHeader().getDocumentation().getValue();
-				created = pkg.getPackageHeader().getCreated().getValue();
-				lastupdate = pkg.getPackageHeader().getModificationDate().getValue();
-				domain = ""; // domain undefined in xpdl
-		    } else {
-		    	throw new ExceptionImport("WriteNewProcess: native format not supported");
-		    }
+				try {
+					new_processName = pkg.getName().trim();
+					new_versionName = pkg.getRedefinableHeader().getVersion().getValue().trim();
+					if (pkg.getPackageHeader().getDocumentation()!=null) {
+						documentation = pkg.getPackageHeader().getDocumentation().getValue().trim();
+					} else {
+						documentation = "";
+					}
+					created = pkg.getPackageHeader().getCreated().getValue().trim();
+					lastupdate = created;
+					//pkg.getPackageHeader().getModificationDate().getValue().trim();
+					domain = ""; // domain undefined in xpdl
+				} catch (NullPointerException e) {
+					throw new ExceptionImport("Missing information in NPF.");
+				}
+			} else {
+				throw new ExceptionImport("WriteNewProcess: native format not supported");
+			}
 			// import native for corresponding process version
-		    native_is = handler.getInputStream();
+			native_is = handler.getInputStream();
 			ProcessSummaryType newProcess = request.importProcess(username, nativeType, new_processName, new_versionName, native_is, 
 					domain, documentation, created, lastupdate);
 			// delete edit session
@@ -172,7 +181,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			newEditSession.setVersionName(newProcess.getLastVersion());
 			int newEditSessionCode = request.WriteEditSession(editSession);
 			res.setEditSessionCode(newEditSessionCode);
-			
+
 			result.setCode(0);
 			result.setMessage("");
 		} catch (Exception ex) {
@@ -193,7 +202,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 		ResultType result = new ResultType();
 		res.setResult(result);
 		int code = payload.getEditSessionCode();
-		
+
 		try {
 			// request the edit session identified by code
 			RequestToManager request = new RequestToManager();
@@ -207,7 +216,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 				request.ExportNative(processId, version, nativeType, true);
 			DataSource sourceNative = new ByteArrayDataSource(native_is, "text/xml"); 
 			res.setNative(new DataHandler(sourceNative));	
-			
+
 			result.setCode(0);
 			result.setMessage("");
 		} catch (Exception ex) {
