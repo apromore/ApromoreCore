@@ -640,6 +640,7 @@ public class ProcessDao extends BasicDao {
 	 * @param version
 	 * @return
 	 * @throws ExceptionDao
+	 * TODO needs to be modified because of annotations
 	 */
 	public String getAnnotation(Integer processId, String version) throws ExceptionDao {
 		Connection conn = null;
@@ -916,7 +917,8 @@ public class ProcessDao extends BasicDao {
 				stmtp.executeUpdate();
 				stmtp.close();
 				// update annotations
-				// TODO will need to be fixed when annotations properly captured
+				// TODO will need to be fixed when annotations properly captured: how many tuples
+				// will be returned?
 				// retrieve anf_id
 				query = " select " + ConstantDB.ATTR_ANF
 				+       " from " + ConstantDB.TABLE_ANFOFCPF
