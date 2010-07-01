@@ -78,8 +78,6 @@ public class ProcessDao extends BasicDao {
 			// map search expression into a list of terms
 			// example: (yawl;protos),invoicing => [(,yawl,or,protos,),and,invoicing]
 			Vector<String> expression = mapQuery(keywordssearch) ;
-
-			condition = "and ( ";
 			for (int i = 0; i<expression.size();i++){
 				String current = expression.elementAt(i);
 				if (current.compareTo(" and ")==0 || current.compareTo(" or ")==0 ||
@@ -91,7 +89,6 @@ public class ProcessDao extends BasicDao {
 					+    " where " + ConstantDB.ATTR_WORD + " like '%" + current + "%' )";
 				}
 			}
-			condition += " )";
 		} 
 
 		// if keywordssearch empty thus condition = ""
