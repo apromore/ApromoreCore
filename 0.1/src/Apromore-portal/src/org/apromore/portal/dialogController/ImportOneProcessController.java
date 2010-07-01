@@ -1,18 +1,13 @@
 package org.apromore.portal.dialogController;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.sql.Date;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
-import org.apromore.portal.common.Utils;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummaryType;
@@ -24,6 +19,7 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -38,7 +34,8 @@ public class ImportOneProcessController extends Window {
 	private String created;
 	private Textbox processName;
 	private Textbox versionName;
-	private Textbox domain;
+	private Row domainR;
+	private SelectDynamicListController domainCB;
 	private InputStream nativeProcess; // the input stream read from uploaded file
 	private String nativeType;
 	private Button okButton;
@@ -62,8 +59,6 @@ public class ImportOneProcessController extends Window {
 		this.processName.setId(this.processName.getId()+fileName);
 		this.versionName = (Textbox) this.importOneProcessWindow.getFellow("versionName");
 		this.versionName.setId(this.versionName.getId()+fileName);
-		this.domain = (Textbox) this.importOneProcessWindow.getFellow("domain");
-		this.domain.setId(this.domain.getId()+fileName);
 		this.okButton = (Button) this.importOneProcessWindow.getFellow("okButtonOneProcess");
 		this.okButton.setId(this.okButton.getId()+fileName);
 		this.cancelButton = (Button) this.importOneProcessWindow.getFellow("cancelButtonOneProcess");
@@ -71,6 +66,16 @@ public class ImportOneProcessController extends Window {
 		this.cancelAllButton = (Button) this.importOneProcessWindow.getFellow("cancelAllButtonOneProcess");
 		this.cancelAllButton.setId(this.cancelAllButton.getId()+fileName);
 
+		this.domainR = (Row) this.importOneProcessWindow.getFellow("domainRow");
+		this.domainCB = new SelectDynamicListController(this.mainC.getDomains());
+		this.domainCB.setDomains(this.mainC.getDomains());
+		this.domainCB.setId(fileName);
+		this.domainCB.setAutodrop(true);
+		this.domainCB.setWidth("85%");
+		this.domainCB.setHeight("100%");
+		this.domainCB.setAttribute("hflex", "1");
+		this.domainR.appendChild(domainCB);
+		
 		String readVersionName = "0.1"; // default value for versionName if not found
 		String readProcessName = processName ; // default value if not found
 		String readDocumentation = "" ; 
@@ -198,13 +203,16 @@ public class ImportOneProcessController extends Window {
 					|| this.versionName.getValue().compareTo("")==0) {
 				throw new ExceptionImport("Please enter a value for each field.");
 			} else {
+				String domain = this.domainCB.getValue();
 				ProcessSummaryType res= 
 					request.importProcess(this.mainC.getCurrentUser().getUsername(), this.nativeType, this.processName.getValue(), 
-							this.versionName.getValue(), this.nativeProcess, this.domain.getValue(),
+							this.versionName.getValue(), this.nativeProcess, domain,
 							this.documentation, this.created, this.lastUpdate);
 				// process successfully imported
 				this.importProcessesC.getImportedList().add(this);
 				this.mainC.displayNewProcess(res);
+				/* keep list of domains update */
+				this.domainCB.addItem(domain);
 			}
 		} catch (WrongValueException e) {
 			e.printStackTrace();
