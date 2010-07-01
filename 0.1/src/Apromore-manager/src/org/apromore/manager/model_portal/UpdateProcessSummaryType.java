@@ -1,32 +1,32 @@
 
 package org.apromore.manager.model_portal;
 
-import javax.activation.DataHandler;
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for UpdateProcessInputMsgType complex type.
+ * <p>Java class for UpdateProcessSummaryType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="UpdateProcessInputMsgType">
+ * &lt;complexType name="UpdateProcessSummaryType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="Native" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
+ *         &lt;element name="UpdateVersionSummaries" type="{http://www.apromore.org/manager/model_portal}UpdateVersionSummaryType" maxOccurs="unbounded"/>
  *       &lt;/sequence>
- *       &lt;attribute name="username" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="nativeType" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="processId" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="id" type="{http://www.w3.org/2001/XMLSchema}int" />
  *       &lt;attribute name="domain" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="owner" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -35,83 +35,60 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "UpdateProcessInputMsgType", propOrder = {
-    "_native"
+@XmlType(name = "UpdateProcessSummaryType", propOrder = {
+    "updateVersionSummaries"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class UpdateProcessInputMsgType {
+public class UpdateProcessSummaryType {
 
-    @XmlElement(name = "Native", required = true)
-    @XmlMimeType("application/octet-stream")
+    @XmlElement(name = "UpdateVersionSummaries", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected DataHandler _native;
+    protected List<UpdateVersionSummaryType> updateVersionSummaries;
     @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String username;
+    protected String name;
     @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String nativeType;
-    @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected Integer processId;
+    protected Integer id;
     @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String domain;
+    @XmlAttribute
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected String owner;
 
     /**
-     * Gets the value of the native property.
+     * Gets the value of the updateVersionSummaries property.
      * 
-     * @return
-     *     possible object is
-     *     {@link DataHandler }
-     *     
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the updateVersionSummaries property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getUpdateVersionSummaries().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link UpdateVersionSummaryType }
+     * 
+     * 
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public DataHandler getNative() {
-        return _native;
+    public List<UpdateVersionSummaryType> getUpdateVersionSummaries() {
+        if (updateVersionSummaries == null) {
+            updateVersionSummaries = new ArrayList<UpdateVersionSummaryType>();
+        }
+        return this.updateVersionSummaries;
     }
 
     /**
-     * Sets the value of the native property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link DataHandler }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setNative(DataHandler value) {
-        this._native = value;
-    }
-
-    /**
-     * Gets the value of the username property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getUsername() {
-        return username;
-    }
-
-    /**
-     * Sets the value of the username property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setUsername(String value) {
-        this.username = value;
-    }
-
-    /**
-     * Gets the value of the nativeType property.
+     * Gets the value of the name property.
      * 
      * @return
      *     possible object is
@@ -119,12 +96,12 @@ public class UpdateProcessInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getNativeType() {
-        return nativeType;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Sets the value of the nativeType property.
+     * Sets the value of the name property.
      * 
      * @param value
      *     allowed object is
@@ -132,12 +109,12 @@ public class UpdateProcessInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setNativeType(String value) {
-        this.nativeType = value;
+    public void setName(String value) {
+        this.name = value;
     }
 
     /**
-     * Gets the value of the processId property.
+     * Gets the value of the id property.
      * 
      * @return
      *     possible object is
@@ -145,12 +122,12 @@ public class UpdateProcessInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public Integer getProcessId() {
-        return processId;
+    public Integer getId() {
+        return id;
     }
 
     /**
-     * Sets the value of the processId property.
+     * Sets the value of the id property.
      * 
      * @param value
      *     allowed object is
@@ -158,8 +135,8 @@ public class UpdateProcessInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setProcessId(Integer value) {
-        this.processId = value;
+    public void setId(Integer value) {
+        this.id = value;
     }
 
     /**
@@ -186,6 +163,32 @@ public class UpdateProcessInputMsgType {
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setDomain(String value) {
         this.domain = value;
+    }
+
+    /**
+     * Gets the value of the owner property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public String getOwner() {
+        return owner;
+    }
+
+    /**
+     * Sets the value of the owner property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setOwner(String value) {
+        this.owner = value;
     }
 
 }

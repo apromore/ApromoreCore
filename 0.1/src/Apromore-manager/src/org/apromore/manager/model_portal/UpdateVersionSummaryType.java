@@ -9,16 +9,17 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for SearchHistoriesType complex type.
+ * <p>Java class for UpdateVersionSummaryType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="SearchHistoriesType">
+ * &lt;complexType name="UpdateVersionSummaryType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="search" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="num" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="ranking" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="preName" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -27,45 +28,22 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SearchHistoriesType")
+@XmlType(name = "UpdateVersionSummaryType")
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class SearchHistoriesType {
+public class UpdateVersionSummaryType {
 
     @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String search;
+    protected Integer ranking;
     @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected Integer num;
-
-    /**
-     * Gets the value of the search property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
+    protected String name;
+    @XmlAttribute
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getSearch() {
-        return search;
-    }
+    protected String preName;
 
     /**
-     * Sets the value of the search property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setSearch(String value) {
-        this.search = value;
-    }
-
-    /**
-     * Gets the value of the num property.
+     * Gets the value of the ranking property.
      * 
      * @return
      *     possible object is
@@ -73,12 +51,12 @@ public class SearchHistoriesType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public Integer getNum() {
-        return num;
+    public Integer getRanking() {
+        return ranking;
     }
 
     /**
-     * Sets the value of the num property.
+     * Sets the value of the ranking property.
      * 
      * @param value
      *     allowed object is
@@ -86,8 +64,60 @@ public class SearchHistoriesType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setNum(Integer value) {
-        this.num = value;
+    public void setRanking(Integer value) {
+        this.ranking = value;
+    }
+
+    /**
+     * Gets the value of the name property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Sets the value of the name property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setName(String value) {
+        this.name = value;
+    }
+
+    /**
+     * Gets the value of the preName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public String getPreName() {
+        return preName;
+    }
+
+    /**
+     * Sets the value of the preName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setPreName(String value) {
+        this.preName = value;
     }
 
 }
