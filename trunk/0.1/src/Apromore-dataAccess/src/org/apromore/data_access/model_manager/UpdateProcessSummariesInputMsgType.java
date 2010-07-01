@@ -9,16 +9,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for WriteEditSessionInputMsgType complex type.
+ * <p>Java class for UpdateProcessSummariesInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="WriteEditSessionInputMsgType">
+ * &lt;complexType name="UpdateProcessSummariesInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="EditSession" type="{http://www.apromore.org/data_access/model_manager}EditSessionType"/>
+ *         &lt;element name="UpdateProcessSummaries" type="{http://www.apromore.org/data_access/model_manager}UpdateProcessSummariesType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -28,40 +28,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "WriteEditSessionInputMsgType", propOrder = {
-    "editSession"
+@XmlType(name = "UpdateProcessSummariesInputMsgType", propOrder = {
+    "updateProcessSummaries"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T05:18:17+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class WriteEditSessionInputMsgType {
+public class UpdateProcessSummariesInputMsgType {
 
-    @XmlElement(name = "EditSession", required = true)
+    @XmlElement(name = "UpdateProcessSummaries", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T05:18:17+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected EditSessionType editSession;
+    protected UpdateProcessSummariesType updateProcessSummaries;
 
     /**
-     * Gets the value of the editSession property.
+     * Gets the value of the updateProcessSummaries property.
      * 
      * @return
      *     possible object is
-     *     {@link EditSessionType }
+     *     {@link UpdateProcessSummariesType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T05:18:17+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public EditSessionType getEditSession() {
-        return editSession;
+    public UpdateProcessSummariesType getUpdateProcessSummaries() {
+        return updateProcessSummaries;
     }
 
     /**
-     * Sets the value of the editSession property.
+     * Sets the value of the updateProcessSummaries property.
      * 
      * @param value
      *     allowed object is
-     *     {@link EditSessionType }
+     *     {@link UpdateProcessSummariesType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T05:18:17+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setEditSession(EditSessionType value) {
-        this.editSession = value;
+    public void setUpdateProcessSummaries(UpdateProcessSummariesType value) {
+        this.updateProcessSummaries = value;
     }
 
 }
