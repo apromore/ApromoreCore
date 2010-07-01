@@ -65,7 +65,7 @@ public class ImportListProcessesController extends Window {
 			this.uploadButton.setAttribute("onUpload", "importModel(event)");
 			this.supportedExtL = (Label) this.importProcessesWindow.getFellow("supportedExt");
 			// build the list of supported extensions to display
-			String supportedExtS = "zip, ";
+			String supportedExtS = "zip";
 			Set<String> supportedExt = this.mainC.getNativeTypes().keySet();
 			Iterator<String> it = supportedExt.iterator();
 			while (it.hasNext()) {
@@ -243,7 +243,7 @@ public class ImportListProcessesController extends Window {
 	public void reportImport() throws InterruptedException {
 		String report = "Import of " + this.importedList.size();
 		if (this.importedList.size()==0) {
-			report += "process.";
+			report += " process.";
 		}
 		if (this.importedList.size()==1) {
 			report +=  " process completed.";

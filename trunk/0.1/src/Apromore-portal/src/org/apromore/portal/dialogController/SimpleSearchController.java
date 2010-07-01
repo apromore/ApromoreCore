@@ -29,13 +29,9 @@ public class SimpleSearchController extends Window {
 	public SimpleSearchController(MainController mainController) 
 	throws UnsupportedEncodingException, ExceptionDao, JAXBException {
 
-		/**
-		 * get components
-		 */
 		/*
 		 * <hbox>
-			<combobox id="previoussearchescombobox"
-				use="apromore.common.AutoComplete" autodrop="true"
+			<combobox id="previoussearchescombobox" autodrop="true"
 				tooltiptext="list of keywords separated by ',' (and semantic) or/and by ';' (or semantic). Brackets allowed." />
 
 			<button id="simplesearchesbutton" height="22px"
@@ -76,7 +72,7 @@ public class SimpleSearchController extends Window {
 	}
 
 	/**
-	 * process search specified previous searche combobox: display processes satisfying the query
+	 * process search specified previous search combobox: display processes satisfying the query
 	 * and as a short message the number of those processes.
 	 * @throws Exception
 	 */
