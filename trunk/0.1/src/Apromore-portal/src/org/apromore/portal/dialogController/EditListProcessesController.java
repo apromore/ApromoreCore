@@ -40,7 +40,6 @@ public class EditListProcessesController extends Window {
 				EditOneProcessController editOneProcess = new EditOneProcessController(this.mainC, this, process, version);
 				this.toEditList.add(editOneProcess);
 			}
-
 		}
 	}
 	
