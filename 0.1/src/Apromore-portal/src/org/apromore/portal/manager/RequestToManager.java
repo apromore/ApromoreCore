@@ -263,5 +263,19 @@ public class RequestToManager {
 			throw new ExceptionDeleteProcess (result.getMessage()); 
 		}
 	}
+
+	/**
+	 * Write the modified processes which are in processVersions. For each of which,
+	 * preNewVersion gives the mapping between its previous and new names.
+	 * @param processVersions
+	 * @param preNewVersionMap
+	 */
+	public void WriteProcess(
+			HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions,
+			HashMap<ProcessSummaryType, List<String>> preNewVersionMap) {
+		
+		
+		
+	}
 	
 }

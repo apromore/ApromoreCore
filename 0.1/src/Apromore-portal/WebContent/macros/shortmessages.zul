@@ -7,7 +7,7 @@
 		</columns>
 		<rows>
 			<row style="background-color:#CDE6F5">
-				<image id="image" src="img/alert.png" visible="false" />
+				<image id="image" src="img/info.png" visible="false" />
 				<label id="message" value="no messages" />
 			</row>
 		</rows>
