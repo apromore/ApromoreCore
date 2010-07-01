@@ -4,20 +4,22 @@ package org.apromore.manager.model_da;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ReadEditSessionInputMsgType complex type.
+ * <p>Java class for UpdateProcessSummariesInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ReadEditSessionInputMsgType">
+ * &lt;complexType name="UpdateProcessSummariesInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="EditSessionCode" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;sequence>
+ *         &lt;element name="UpdateProcessSummaries" type="{http://www.apromore.org/data_access/model_manager}UpdateProcessSummariesType"/>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -26,38 +28,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReadEditSessionInputMsgType")
+@XmlType(name = "UpdateProcessSummariesInputMsgType", propOrder = {
+    "updateProcessSummaries"
+})
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T05:58:09+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ReadEditSessionInputMsgType {
+public class UpdateProcessSummariesInputMsgType {
 
-    @XmlAttribute(name = "EditSessionCode")
+    @XmlElement(name = "UpdateProcessSummaries", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T05:58:09+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected Integer editSessionCode;
+    protected UpdateProcessSummariesType updateProcessSummaries;
 
     /**
-     * Gets the value of the editSessionCode property.
+     * Gets the value of the updateProcessSummaries property.
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link UpdateProcessSummariesType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T05:58:09+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public Integer getEditSessionCode() {
-        return editSessionCode;
+    public UpdateProcessSummariesType getUpdateProcessSummaries() {
+        return updateProcessSummaries;
     }
 
     /**
-     * Sets the value of the editSessionCode property.
+     * Sets the value of the updateProcessSummaries property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link UpdateProcessSummariesType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T05:58:09+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setEditSessionCode(Integer value) {
-        this.editSessionCode = value;
+    public void setUpdateProcessSummaries(UpdateProcessSummariesType value) {
+        this.updateProcessSummaries = value;
     }
 
 }

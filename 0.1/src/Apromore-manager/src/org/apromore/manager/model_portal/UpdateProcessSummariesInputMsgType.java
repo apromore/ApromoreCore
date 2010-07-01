@@ -4,20 +4,22 @@ package org.apromore.manager.model_portal;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for SearchExpressionType complex type.
+ * <p>Java class for UpdateProcessSummariesInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="SearchExpressionType">
+ * &lt;complexType name="UpdateProcessSummariesInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="SearchExpression" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;sequence>
+ *         &lt;element name="UpdateProcessSummaries" type="{http://www.apromore.org/manager/model_portal}UpdateProcessSummariesType"/>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -26,38 +28,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SearchExpressionType")
+@XmlType(name = "UpdateProcessSummariesInputMsgType", propOrder = {
+    "updateProcessSummaries"
+})
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class SearchExpressionType {
+public class UpdateProcessSummariesInputMsgType {
 
-    @XmlAttribute(name = "SearchExpression")
+    @XmlElement(name = "UpdateProcessSummaries", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String searchExpression;
+    protected UpdateProcessSummariesType updateProcessSummaries;
 
     /**
-     * Gets the value of the searchExpression property.
+     * Gets the value of the updateProcessSummaries property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link UpdateProcessSummariesType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getSearchExpression() {
-        return searchExpression;
+    public UpdateProcessSummariesType getUpdateProcessSummaries() {
+        return updateProcessSummaries;
     }
 
     /**
-     * Sets the value of the searchExpression property.
+     * Sets the value of the updateProcessSummaries property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link UpdateProcessSummariesType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setSearchExpression(String value) {
-        this.searchExpression = value;
+    public void setUpdateProcessSummaries(UpdateProcessSummariesType value) {
+        this.updateProcessSummaries = value;
     }
 
 }

@@ -11,16 +11,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for DomainsType complex type.
+ * <p>Java class for UpdateProcessSummariesType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DomainsType">
+ * &lt;complexType name="UpdateProcessSummariesType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="Domain" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="UpdateProcessSummary" type="{http://www.apromore.org/manager/model_portal}UpdateProcessSummaryType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -30,44 +30,44 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DomainsType", propOrder = {
-    "domain"
+@XmlType(name = "UpdateProcessSummariesType", propOrder = {
+    "updateProcessSummary"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class DomainsType {
+public class UpdateProcessSummariesType {
 
-    @XmlElement(name = "Domain")
+    @XmlElement(name = "UpdateProcessSummary")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected List<String> domain;
+    protected List<UpdateProcessSummaryType> updateProcessSummary;
 
     /**
-     * Gets the value of the domain property.
+     * Gets the value of the updateProcessSummary property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the domain property.
+     * This is why there is not a <CODE>set</CODE> method for the updateProcessSummary property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getDomain().add(newItem);
+     *    getUpdateProcessSummary().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * {@link UpdateProcessSummaryType }
      * 
      * 
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-01T06:04:37+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public List<String> getDomain() {
-        if (domain == null) {
-            domain = new ArrayList<String>();
+    public List<UpdateProcessSummaryType> getUpdateProcessSummary() {
+        if (updateProcessSummary == null) {
+            updateProcessSummary = new ArrayList<UpdateProcessSummaryType>();
         }
-        return this.domain;
+        return this.updateProcessSummary;
     }
 
 }
