@@ -5,6 +5,8 @@
 
 	<element name="ReadProcessSummariesInputMsg" type="tns:ReadProcessSummariesInputMsgType" />
 	<element name="ReadProcessSummariesOutputMsg" type="tns:ReadProcessSummariesOutputMsgType" />
+	<element name="UpdateProcessSummariesInputMsg" type="tns:UpdateProcessSummariesInputMsgType" />
+	<element name="UpdateProcessSummariesOutputMsg" type="tns:UpdateProcessSummariesOutputMsgType" />
 	<element name="ReadDomainsInputMsg" type="tns:ReadDomainsInputMsgType" />
 	<element name="ReadDomainsOutputMsg" type="tns:ReadDomainsOutputMsgType" />
 	<element name="ReadFormatsInputMsg" type="tns:ReadFormatsInputMsgType" />
@@ -35,7 +37,6 @@
 	<complexType name="SearchExpressionType">
 		<attribute name="SearchExpression" type="string" />
 	</complexType>
-
 
 	<complexType name="ReadProcessSummariesOutputMsgType">
 		<sequence>
@@ -75,6 +76,44 @@
 		<attribute name="documentation" type="string" />
 	</complexType>
 
+	<complexType name="UpdateProcessSummariesOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<complexType name="UpdateProcessSummariesInputMsgType">
+		<sequence>
+			<element name="UpdateProcessSummaries" type="tns:UpdateProcessSummariesType"
+				minOccurs="1" maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<complexType name="UpdateProcessSummariesType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="UpdateProcessSummary"
+				type="tns:UpdateProcessSummaryType" />
+		</sequence>
+	</complexType>
+
+	<complexType name="UpdateProcessSummaryType">
+		<sequence>
+			<element minOccurs="1" maxOccurs="unbounded" name="UpdateVersionSummaries"
+				type="tns:UpdateVersionSummaryType" />
+		</sequence>
+		<attribute name="name" type="string" />
+		<attribute name="id" type="int" />
+		<attribute name="domain" type="string" />
+		<attribute name="owner" type="string" />
+	</complexType>
+
+	<complexType name="UpdateVersionSummaryType">
+		<attribute name="ranking" type="int" />
+		<attribute name="name" type="string" />
+		<attribute name="preName" type="string" />
+	</complexType>
+	
 	<complexType name="ReadDomainsInputMsgType">
 		<attribute name="Empty" type="string" use="optional" />
 	</complexType>

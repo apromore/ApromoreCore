@@ -41,6 +41,7 @@ import org.apromore.manager.model_da.WriteUserInputMsgType;
 import org.apromore.manager.model_da.WriteUserOutputMsgType;
 import org.apromore.manager.model_portal.ProcessSummariesType;
 import org.apromore.manager.model_portal.ProcessSummaryType;
+import org.apromore.manager.model_portal.UpdateProcessSummariesType;
 import org.apromore.manager.model_portal.VersionSummaryType;
 
 public class RequestToDA {
@@ -296,6 +297,11 @@ public class RequestToDA {
 
 	public InputStream getAnf() {
 		return anf;
+	}
+
+	public void UpdateProcesses(UpdateProcessSummariesType processes) {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }
