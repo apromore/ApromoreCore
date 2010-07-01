@@ -17,9 +17,9 @@
 					<label value="Initial version name" width="100%" tooltiptext="mandatory"/>
 					<textbox id="versionName" width="100%" />
 				</row>
-				<row spans="1,2">
-					<label value="Domain" width="100%"  tooltiptext="optional"/>
-					<textbox id="domain" width="100%" />
+				<row spans="1,2" id="domainRow">
+					<label value="Domain" width="100%"  tooltiptext="optional" />
+					<!-- combobox implemented in SelectDomainController -->
 				</row>
 				<row spans="3">
 					<div align="center">

@@ -11,6 +11,7 @@ import java.util.logging.Logger;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionDeleteProcess;
 import org.apromore.portal.manager.RequestToManager;
+import org.apromore.portal.model_manager.DomainsType;
 import org.apromore.portal.model_manager.FormatsType;
 import org.apromore.portal.model_manager.ProcessSummariesType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
@@ -18,8 +19,6 @@ import org.apromore.portal.model_manager.UserType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
-import org.zkoss.zk.ui.event.Event;
-import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
@@ -47,6 +46,7 @@ public class MainController extends Window {
 	private String OryxEndPoint_epml;
 	private HashMap<String,String> nativeTypes; // <k, v> belongs to nativeTypes: the file extension k
 	// is associated with the native type v (<xpdl,XPDL 1.2>)
+	private List<String> domains;
 	private Logger LOG;
 
 	// uncomment when ready
@@ -88,6 +88,7 @@ public class MainController extends Window {
 			this.host = properties.getProperty("Host"); 
 			this.OryxEndPoint_xpdl = properties.getProperty("OryxEndPoint_xpdl");  
 			this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");  
+			
 			/**
 			 * get list of formats
 			 */
@@ -98,6 +99,14 @@ public class MainController extends Window {
 				this.nativeTypes.put(nativeTypesDB.getFormat().get(i).getExtension(),
 						nativeTypesDB.getFormat().get(i).getFormat());
 			}
+
+			/**
+			 * get list of domains
+			 */
+			request = new RequestToManager();
+			DomainsType domainsType = request.ReadDomains();
+			this.domains = domainsType.getDomain();
+			
 		} catch (Exception e) {
 			Messagebox.show("Repository not available ("+e.getMessage()+")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
@@ -287,4 +296,9 @@ public class MainController extends Window {
 	public String getHost() {
 		return host;
 	}
+
+	public List<String> getDomains() {
+		return domains;
+	}
+
 }

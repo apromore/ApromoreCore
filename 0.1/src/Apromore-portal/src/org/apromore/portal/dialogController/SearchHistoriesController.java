@@ -53,11 +53,11 @@ public class SearchHistoriesController extends Combobox {
 			while (j < this.previousSearches.size() 
 					&& this.previousSearches.get(j).getSearch().compareTo(val)<0) j++;
 			
-			Iterator it = getItems().iterator();
+			Iterator<Comboitem> it = getItems().iterator();
 			for (int cnt = 10; --cnt >= 0 && j < this.previousSearches.size() 
 			&& this.previousSearches.get(j).getSearch().startsWith(val); ++j) {
 				if (it != null && it.hasNext()) {
-					((Comboitem)it.next()).setLabel(this.previousSearches.get(j).getSearch());
+					it.next().setLabel(this.previousSearches.get(j).getSearch());
 				} else {
 					it = null;
 					new Comboitem(this.previousSearches.get(j).getSearch()).setParent(this);
@@ -78,7 +78,7 @@ public class SearchHistoriesController extends Combobox {
 	 */
 	public void addSearchHist(String query) {
 
-		List searchHist = this.mainC.getCurrentUser().getSearchHistories();
+		List<SearchHistoriesType> searchHist = this.mainC.getCurrentUser().getSearchHistories();
 		// if maxSearches reached, remove the oldest search
 		if (searchHist.size() == Constants.maxSearches) {
 			// find the oldest search to remove: the one whose num is the smallest
@@ -86,7 +86,7 @@ public class SearchHistoriesController extends Combobox {
 			int min = -1,
 				indMin = 0;
 			for (int i=0;i<searchHist.size();i++){
-				SearchHistoriesType hist = (SearchHistoriesType) searchHist.get(i);
+				SearchHistoriesType hist = searchHist.get(i);
 				if (min == -1 || hist.getNum() != -1 && hist.getNum() < min) {
 					min = hist.getNum();
 					indMin = i;
@@ -97,7 +97,7 @@ public class SearchHistoriesController extends Combobox {
 		
 		// insert the search query. Keep the list ordered, with elements pairwise distinct
 		int i = 0;
-		while (i < searchHist.size() && ((SearchHistoriesType) searchHist.get(i)).getSearch().compareTo(query) < 0) i++;
+		while (i < searchHist.size() && searchHist.get(i).getSearch().compareTo(query) < 0) i++;
 		if (i == searchHist.size()) {
 			// query is the greatest
 			SearchHistoriesType h = new SearchHistoriesType();
@@ -105,7 +105,7 @@ public class SearchHistoriesController extends Combobox {
 			h.setNum(-1);
 			searchHist.add(h);
 		} else {
-			if (((SearchHistoriesType) searchHist.get(i)).getSearch().compareTo(query) > 0) {
+			if (searchHist.get(i).getSearch().compareTo(query) > 0) {
 				// not found. Smaller than this.searchHist.get(i)
 				SearchHistoriesType h = new SearchHistoriesType();
 				h.setSearch(query);
