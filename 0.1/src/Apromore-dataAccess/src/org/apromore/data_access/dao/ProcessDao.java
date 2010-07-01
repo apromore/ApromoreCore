@@ -28,7 +28,10 @@ import org.apromore.data_access.commons.ConstantDB;
 import org.apromore.data_access.exception.ExceptionDao;
 import org.apromore.data_access.model_manager.ProcessSummariesType;
 import org.apromore.data_access.model_manager.ProcessSummaryType;
+import org.apromore.data_access.model_manager.UpdateProcessSummaryType;
+import org.apromore.data_access.model_manager.UpdateVersionSummaryType;
 import org.apromore.data_access.model_manager.VersionSummaryType;
+import org.w3c.dom.Attr;
 import org.wfmc._2008.xpdl2.Author;
 import org.wfmc._2008.xpdl2.Created;
 import org.wfmc._2008.xpdl2.Documentation;
@@ -1226,6 +1229,77 @@ public class ProcessDao extends BasicDao {
 			throw new ExceptionDao ("Error ProcessDAO (deleteProcessVersions): " + e.getMessage() + "\n");
 		} finally {
 			Release(conn, null, null);
+		}
+	}
+
+	/**
+	 * Record in the database the new values for the process meta data detailed in
+	 * parameter
+	 * @param updateProcessSummaryType
+	 * @throws SQLException 
+	 * @throws ExceptionDao 
+	 */
+	public void updateProcess(UpdateProcessSummaryType updateProcessSummaryType) throws SQLException, ExceptionDao {
+		
+		Connection conn = null;
+		PreparedStatement stmtp = null;
+		String query = null;
+		Integer processId = updateProcessSummaryType.getId();
+		String processName = updateProcessSummaryType.getName();
+		String domain = updateProcessSummaryType.getDomain();
+		String username = updateProcessSummaryType.getOwner();
+		List<UpdateVersionSummaryType> versions = updateProcessSummaryType.getUpdateVersionSummaries();
+		
+		try {
+			conn = this.getConnection();
+			
+			// update meta data associated with the process			
+			query = " update " + ConstantDB.TABLE_PROCESSES
+			+ " set " + ConstantDB.ATTR_NAME + " = ? , "
+			+ ConstantDB.ATTR_DOMAIN + " = ? , "
+			+ ConstantDB.ATTR_USERNAME + " = ?"
+			+ " where " + ConstantDB.ATTR_PROCESSID + " = ? ";
+			stmtp = conn.prepareStatement(query);
+			stmtp.setString(1, processName);
+			stmtp.setString(2, domain);
+			stmtp.setString(3, username);
+			stmtp.setInt(4, processId);
+			stmtp.executeUpdate();
+			stmtp.close();
+			
+			// for each modified version, update its data
+			for (int i=0; i<versions.size(); i++) {
+				UpdateVersionSummaryType version = versions.get(i);
+				String preVersion = version.getPreName();
+				String newVersion = version.getName();
+				Integer ranking = version.getRanking();
+				
+				query = " update " + ConstantDB.TABLE_VERSIONS
+				+ " set " + ConstantDB.ATTR_VERSION_NAME + " = ? , "
+				+ ConstantDB.ATTR_RANKING + " = ? "
+				+ ConstantDB.ATTR_LAST_UPDATE + " = date_format(now(), '%Y-%c-%d %k:%i:%s') "
+				+ " where " + ConstantDB.ATTR_PROCESSID + " = ? "
+				+ " and " + ConstantDB.ATTR_VERSION_NAME + " = ? ";
+				stmtp = conn.prepareStatement(query);
+				stmtp.setString(1, newVersion);
+				stmtp.setInt(2, ranking);
+				stmtp.setInt(3, processId);
+				stmtp.setString(4, preVersion);
+				stmtp.executeUpdate();
+				
+				conn.commit();
+			}
+			
+		} catch (SQLException e) {
+			e.printStackTrace();
+			conn.rollback();
+			throw new ExceptionDao ("SQL error ProcessDAO (updateProcess): " + e.getMessage() + "\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
+			throw new ExceptionDao ("Error ProcessDAO (updateProcess): " + e.getMessage() + "\n");
+		} finally {
+			Release(conn, stmtp, null);
 		}
 	}
 }
