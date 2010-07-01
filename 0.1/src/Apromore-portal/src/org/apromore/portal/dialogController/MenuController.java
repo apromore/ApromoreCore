@@ -11,6 +11,7 @@ import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
+import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Checkbox;
@@ -29,7 +30,8 @@ public class MenuController extends Menubar {
 	private Menu processM;
 	private Menuitem importMI;
 	private Menuitem exportMI;
-	private Menuitem editMI;
+	private Menuitem editModelMI;
+	private Menuitem editDataMI;
 	private Menuitem copyMI;
 	private Menuitem pasteMI;
 	private Menuitem deleteMI;
@@ -55,7 +57,8 @@ public class MenuController extends Menubar {
 		this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
 		this.importMI = (Menuitem) this.menuB.getFellow("fileImport");
 		this.exportMI = (Menuitem) this.menuB.getFellow("fileExport");
-		this.editMI = (Menuitem) this.menuB.getFellow("processEdit");
+		this.editModelMI = (Menuitem) this.menuB.getFellow("processEdit");
+		this.editDataMI = (Menuitem) this.menuB.getFellow("dataEdit");
 		this.deleteMI = (Menuitem) this.menuB.getFellow("processDelete");
 		this.evaluationM = (Menu) this.menuB.getFellow("evaluation");
 		this.comparisonM = (Menu) this.menuB.getFellow("comparison");
@@ -71,10 +74,17 @@ public class MenuController extends Menubar {
 			}
 		});	
 
-		this.editMI.addEventListener("onClick",
+		this.editModelMI.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
 				editNative ();
+			}
+		});	
+
+		this.editDataMI.addEventListener("onClick",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				editData ();
 			}
 		});	
 
@@ -101,7 +111,9 @@ public class MenuController extends Menubar {
 			getSelectedProcessVersions();
 		if (selectedProcessVersions.size()!=0) {
 			EditListProcessesController editList = 
-				new EditListProcessesController (this.mainC, this,selectedProcessVersions);
+				new EditListProcessesController (this.mainC, this, selectedProcessVersions);
+		} else {
+			this.mainC.displayMessage("No process version selected.");
 		}
 	}
 
@@ -116,6 +128,8 @@ public class MenuController extends Menubar {
 		if (selectedProcessVersions.size()!=0) {
 			this.mainC.deleteProcessVersions(selectedProcessVersions);
 			this.mainC.refreshProcessSummaries();
+		} else {
+			this.mainC.displayMessage("No process version selected.");
 		}
 	}
 
@@ -127,22 +141,26 @@ public class MenuController extends Menubar {
 
 		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
-		
-		Set<ProcessSummaryType> keySet = selectedProcessVersions.keySet();
-		Iterator <ProcessSummaryType>itP = keySet.iterator();
-		while (itP.hasNext()) {
-			ExportNativeController exportNativeC;
-			ProcessSummaryType process = (ProcessSummaryType) itP.next();
-			Iterator<VersionSummaryType> itV = selectedProcessVersions.get(process).iterator();
-			while (itV.hasNext()){
-				VersionSummaryType version = (VersionSummaryType) itV.next();
-				exportNativeC = new ExportNativeController(this, process.getId(), process.getName(), process.getOriginalNativeType(),
-						version.getName(), this.mainC.getNativeTypes());
-				this.exportNativeConts.add(exportNativeC);
-			}
+
+		if (selectedProcessVersions.size()!=0) {
+			Set<ProcessSummaryType> keySet = selectedProcessVersions.keySet();
+			Iterator <ProcessSummaryType>itP = keySet.iterator();
+			while (itP.hasNext()) {
+				ExportNativeController exportNativeC;
+				ProcessSummaryType process = (ProcessSummaryType) itP.next();
+				Iterator<VersionSummaryType> itV = selectedProcessVersions.get(process).iterator();
+				while (itV.hasNext()){
+					VersionSummaryType version = (VersionSummaryType) itV.next();
+					exportNativeC = new ExportNativeController(this, process.getId(), process.getName(), process.getOriginalNativeType(),
+							version.getName(), this.mainC.getNativeTypes());
+					this.exportNativeConts.add(exportNativeC);
+				}
+			} 
+		} else {
+			this.mainC.displayMessage("No process version selected.");
 		}
 	}
-	
+
 	protected void importModel (){
 		try {
 			this.importC = new ImportListProcessesController(this, mainC);
@@ -191,6 +209,26 @@ public class MenuController extends Menubar {
 		return processVersions;
 	}
 
+	/**
+	 * Edit meta data of selected process versions:
+	 * 	- Process name (will be propagated to all versions of the process)
+	 *  - Version name
+	 * 	- Domain (will be propagated to all versions of the process)
+	 *  - Ranking
+	 * @throws InterruptedException 
+	 * @throws SuspendNotAllowedException 
+	 */
+	private void editData() throws SuspendNotAllowedException, InterruptedException {
+		HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions =
+			getSelectedProcessVersions();
+
+		if (selectedProcessVersions.size()!=0) {
+			EditDataListProcessesController editList = 
+				new EditDataListProcessesController (this.mainC, this, selectedProcessVersions);
+		} else {
+			this.mainC.displayMessage("No process version selected.");
+		}
+	}
 
 	public Menubar getMenuB() {
 		return menuB;

@@ -6,7 +6,9 @@
 			<menuseparator />
 			<menuitem id="fileExport" label="Export" disabled="true"/>
 			<menuseparator />
-			<menuitem id="processEdit" label="Edit" disabled="true"/>
+			<menuitem id="processEdit" label="Edit model" disabled="true"/>
+			<menuseparator />
+			<menuitem id="dataEdit" label="Edit meta data" disabled="true"/>
 			<menuseparator />
 			<menuitem id="processCopy" label="Copy" disabled="true"/>
 			<menuseparator />
