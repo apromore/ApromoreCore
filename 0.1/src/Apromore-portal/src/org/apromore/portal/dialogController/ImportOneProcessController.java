@@ -68,7 +68,7 @@ public class ImportOneProcessController extends Window {
 
 		this.domainR = (Row) this.importOneProcessWindow.getFellow("domainRow");
 		this.domainCB = new SelectDynamicListController(this.mainC.getDomains());
-		this.domainCB.setDomains(this.mainC.getDomains());
+		this.domainCB.setReference(this.mainC.getDomains());
 		this.domainCB.setId(fileName);
 		this.domainCB.setAutodrop(true);
 		this.domainCB.setWidth("85%");

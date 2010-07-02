@@ -55,27 +55,14 @@ public class EditDataListProcessesController {
 		return this.editedList;
 	}
 
-	public void deleteFromToBeEdited(EditDataOneProcessController editOneProcess) throws InterruptedException {
+	public void deleteFromToBeEdited(EditDataOneProcessController editOneProcess) throws Exception {
 		this.toEditList.remove(editOneProcess);
 		if (this.toEditList.size()==0) {
-			// For each modified process, build for each of its modified version
-			// the mapping between the previous and the new version name
-			HashMap <ProcessSummaryType, List<String>> preNewVersionMap = new HashMap<ProcessSummaryType, List<String>>();
-			for (int i=0; i<this.editedList.size(); i++){
-				ProcessSummaryType process = this.editedList.get(i).getProcess();
-				if (!preNewVersionMap.containsKey(process)) {
-					preNewVersionMap.put(process, new ArrayList<String>());
-				}
-				preNewVersionMap.get(process).add(this.editedList.get(i).getPreVersion().getName());
-				preNewVersionMap.get(process).add(this.editedList.get(i).getNewVersion().getName());
-			}
-			RequestToManager request = new RequestToManager();
-			request.WriteProcess (this.processVersions, preNewVersionMap);
 			reportEditData();
 		}
 	}
 
-	private void reportEditData() throws InterruptedException {
+	private void reportEditData() throws Exception {
 		String report = "Modification of " + this.editedList.size();
 		if (this.editedList.size()==0) {
 			report += " process.";
@@ -86,6 +73,7 @@ public class EditDataListProcessesController {
 			report +=  " processes completed.";
 		};
 		Messagebox.show(report, "", Messagebox.OK, Messagebox.INFORMATION);
+		this.mainC.refreshProcessSummaries();
 	}
 
 	public void cancelAll() {

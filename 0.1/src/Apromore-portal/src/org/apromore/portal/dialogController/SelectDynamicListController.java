@@ -71,28 +71,28 @@ public class SelectDynamicListController extends Combobox {
 
 	}
 
-	public List<String> getDomains() {
+	public List<String> getReferences() {
 		if (this.references == null) {
 			this.references = new ArrayList<String>();
 		}
 		return this.references;
 	}
 
-	public void setDomains(List<String> domains) {
-		this.references = domains;
+	public void setReference(List<String> ref) {
+		this.references = ref;
 	}
 
-	public void addItem(String domain) {
+	public void addItem(String item) {
 		// insert the domain. Keep the list ordered, with elements pairwise distinct
 		int i = 0;
-		while (i < this.references.size() && this.references.get(i).compareTo(domain) < 0) i++;
+		while (i < this.references.size() && this.references.get(i).compareTo(item) < 0) i++;
 		if (i == this.references.size()) {
 			// query is the greatest
-			this.references.add(domain);
+			this.references.add(item);
 		} else {
-			if (this.references.get(i).compareTo(domain) > 0) {
+			if (this.references.get(i).compareTo(item) > 0) {
 				// not found. Smaller than this.searchHist.get(i)
-				this.references.add(i, domain);
+				this.references.add(i, item);
 			}
 		}
 
