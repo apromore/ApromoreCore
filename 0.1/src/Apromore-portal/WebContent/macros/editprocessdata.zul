@@ -22,6 +22,10 @@
 					<label value="Domain*" />
 					<!-- combobox implemented in SelectDynamicListController -->
 				</row>
+				<row id="owner">
+					<label value="Owner*" />
+					<!-- combobox implemented in SelectDynamicListController -->
+				</row>
 				<row>
 					<label value="Ranking" />
 					<radiogroup id="ranking">
@@ -36,7 +40,7 @@
 				</row>
 				<row spans="2">
 					<label
-						value="*Process name and domain modifications will be propagated to all process versions." />
+						value="*Process name, domain and owner modifications will be propagated to all process versions." />
 				</row>
 				<row spans="3">
 					<div align="center">

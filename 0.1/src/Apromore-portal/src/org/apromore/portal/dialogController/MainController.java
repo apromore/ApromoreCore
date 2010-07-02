@@ -1,6 +1,7 @@
 package org.apromore.portal.dialogController;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -10,6 +11,7 @@ import java.util.logging.Logger;
 
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionDeleteProcess;
+import org.apromore.portal.exception.ExceptionProcess;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.DomainsType;
 import org.apromore.portal.model_manager.FormatsType;
@@ -47,6 +49,7 @@ public class MainController extends Window {
 	private HashMap<String,String> nativeTypes; // <k, v> belongs to nativeTypes: the file extension k
 	// is associated with the native type v (<xpdl,XPDL 1.2>)
 	private List<String> domains;
+	private List<String> users;
 	private Logger LOG;
 
 	// uncomment when ready
@@ -107,6 +110,11 @@ public class MainController extends Window {
 			DomainsType domainsType = request.ReadDomains();
 			this.domains = domainsType.getDomain();
 			
+			/**
+			 * get list of users
+			 */
+			this.users = new ArrayList<String>();
+			
 		} catch (Exception e) {
 			Messagebox.show("Repository not available ("+e.getMessage()+")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
@@ -141,7 +149,7 @@ public class MainController extends Window {
 		}
 	}
 
-	public void refreshProcessSummaries () throws Exception  {
+	public void refreshProcessSummaries () throws Exception {
 		RequestToManager request = new RequestToManager();
 		ProcessSummariesType processSummaries = request.ReadProcessSummariesType("");
 		this.displayMessage(processSummaries.getProcessSummary().size() + " processes.");
@@ -299,6 +307,11 @@ public class MainController extends Window {
 
 	public List<String> getDomains() {
 		return domains;
+	}
+
+	public List<String> getUsers() {
+		// TODO Auto-generated method stub
+		return users;
 	}
 
 }

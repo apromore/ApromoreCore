@@ -4,20 +4,22 @@ package org.apromore.portal.model_manager;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for SearchExpressionType complex type.
+ * <p>Java class for EditDataProcessOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="SearchExpressionType">
+ * &lt;complexType name="EditDataProcessOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="SearchExpression" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;sequence>
+ *         &lt;element name="Result" type="{http://www.apromore.org/manager/model_portal}ResultType"/>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -26,38 +28,40 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SearchExpressionType")
+@XmlType(name = "EditDataProcessOutputMsgType", propOrder = {
+    "result"
+})
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-02T11:35:44+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class SearchExpressionType {
+public class EditDataProcessOutputMsgType {
 
-    @XmlAttribute(name = "SearchExpression")
+    @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-02T11:35:44+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String searchExpression;
+    protected ResultType result;
 
     /**
-     * Gets the value of the searchExpression property.
+     * Gets the value of the result property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-02T11:35:44+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getSearchExpression() {
-        return searchExpression;
+    public ResultType getResult() {
+        return result;
     }
 
     /**
-     * Sets the value of the searchExpression property.
+     * Sets the value of the result property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-02T11:35:44+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setSearchExpression(String value) {
-        this.searchExpression = value;
+    public void setResult(ResultType value) {
+        this.result = value;
     }
 
 }
