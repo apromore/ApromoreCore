@@ -24,14 +24,12 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.data_access.commons.ConstantDB;
 import org.apromore.data_access.exception.ExceptionDao;
 import org.apromore.data_access.model_manager.ProcessSummariesType;
 import org.apromore.data_access.model_manager.ProcessSummaryType;
-import org.apromore.data_access.model_manager.UpdateProcessSummaryType;
-import org.apromore.data_access.model_manager.UpdateVersionSummaryType;
 import org.apromore.data_access.model_manager.VersionSummaryType;
-import org.w3c.dom.Attr;
 import org.wfmc._2008.xpdl2.Author;
 import org.wfmc._2008.xpdl2.Created;
 import org.wfmc._2008.xpdl2.Documentation;
@@ -530,53 +528,8 @@ public class ProcessDao extends BasicDao {
 			Unmarshaller u = jc.createUnmarshaller();
 			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
 			PackageType pkg = rootElement.getValue();
-			pkg.setName(processName);
-			pkg.setId(processId.toString());
-			if (pkg.getRedefinableHeader()==null) {
-				RedefinableHeader header = new RedefinableHeader();
-				pkg.setRedefinableHeader(header);
-				Version v = new Version();
-				header.setVersion(v);
-				Author a = new Author();
-				header.setAuthor(a);
-			} else {
-				if (pkg.getRedefinableHeader().getVersion()==null) {
-					Version v = new Version();
-					pkg.getRedefinableHeader().setVersion(v);
-				}
-				if (pkg.getRedefinableHeader().getAuthor()==null) {
-					Author a = new Author();
-					pkg.getRedefinableHeader().setAuthor(a);
-				}
-			}
-			pkg.getRedefinableHeader().getVersion().setValue(version);
-			pkg.getRedefinableHeader().getAuthor().setValue(username);
-			if (pkg.getPackageHeader()==null) {
-				PackageHeader pkgHeader = new PackageHeader();
-				pkg.setPackageHeader(pkgHeader);
-				Created created = new Created();
-				pkgHeader.setCreated(created);
-				ModificationDate modifDate = new ModificationDate();
-				pkgHeader.setModificationDate(modifDate);
-				Documentation doc = new Documentation();
-				pkgHeader.setDocumentation(doc);
-			} else {
-				if (pkg.getPackageHeader().getCreated()==null) {
-					Created created = new Created();
-					pkg.getPackageHeader().setCreated(created);
-				}
-				if (pkg.getPackageHeader().getModificationDate()==null) {
-					ModificationDate modifDate = new ModificationDate();
-					pkg.getPackageHeader().setModificationDate(modifDate);
-				}
-				if (pkg.getPackageHeader().getDocumentation()==null) {
-					Documentation doc = new Documentation();
-					pkg.getPackageHeader().setDocumentation(doc);
-				}
-			}
-			pkg.getPackageHeader().getCreated().setValue(creationDate);
-			pkg.getPackageHeader().getModificationDate().setValue(lastUpdate);
-			pkg.getPackageHeader().getDocumentation().setValue(documentation);
+			pkg = copyParam2xpdl (pkg, processId, processName, version, username, creationDate, lastUpdate, documentation);
+
 			Marshaller m = jc.createMarshaller();
 			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
@@ -599,6 +552,72 @@ public class ProcessDao extends BasicDao {
 
 		}
 		return res;
+	}
+
+	/**
+	 * Modify pkg (npf of type xpdl) with parameters values if not null.
+	 * @param pkg
+	 * @param processId
+	 * @param processName
+	 * @param version
+	 * @param username
+	 * @param creationDate
+	 * @param lastUpdate
+	 * @param documentation
+	 * @return
+	 */
+	private PackageType copyParam2xpdl(PackageType pkg, Integer processId,
+			String processName, String version, String username,
+			String creationDate, String lastUpdate, String documentation) {
+
+		if (pkg.getRedefinableHeader()==null) {
+			RedefinableHeader header = new RedefinableHeader();
+			pkg.setRedefinableHeader(header);
+			Version v = new Version();
+			header.setVersion(v);
+			Author a = new Author();
+			header.setAuthor(a);
+		} else {
+			if (pkg.getRedefinableHeader().getVersion()==null) {
+				Version v = new Version();
+				pkg.getRedefinableHeader().setVersion(v);
+			}
+			if (pkg.getRedefinableHeader().getAuthor()==null) {
+				Author a = new Author();
+				pkg.getRedefinableHeader().setAuthor(a);
+			}
+		}
+		if (pkg.getPackageHeader()==null) {
+			PackageHeader pkgHeader = new PackageHeader();
+			pkg.setPackageHeader(pkgHeader);
+			Created created = new Created();
+			pkgHeader.setCreated(created);
+			ModificationDate modifDate = new ModificationDate();
+			pkgHeader.setModificationDate(modifDate);
+			Documentation doc = new Documentation();
+			pkgHeader.setDocumentation(doc);
+		} else {
+			if (pkg.getPackageHeader().getCreated()==null) {
+				Created created = new Created();
+				pkg.getPackageHeader().setCreated(created);
+			}
+			if (pkg.getPackageHeader().getModificationDate()==null) {
+				ModificationDate modifDate = new ModificationDate();
+				pkg.getPackageHeader().setModificationDate(modifDate);
+			}
+			if (pkg.getPackageHeader().getDocumentation()==null) {
+				Documentation doc = new Documentation();
+				pkg.getPackageHeader().setDocumentation(doc);
+			}
+		}
+		if (processName!=null) pkg.setName(processName);
+		if (processId!=null) pkg.setId(processId.toString());
+		if (version!=null) pkg.getRedefinableHeader().getVersion().setValue(version);
+		if (username!=null) pkg.getRedefinableHeader().getAuthor().setValue(username);
+		if (creationDate!=null)	pkg.getPackageHeader().getCreated().setValue(creationDate);
+		if (lastUpdate!=null)pkg.getPackageHeader().getModificationDate().setValue(lastUpdate);
+		if (documentation!=null)pkg.getPackageHeader().getDocumentation().setValue(documentation);
+		return pkg;
 	}
 
 	public String getNative(Integer processId, String version, String nativeType) throws ExceptionDao {
@@ -907,7 +926,7 @@ public class ProcessDao extends BasicDao {
 				stmtp.setString(1, cpf_string);
 				stmtp.executeUpdate();
 				stmtp.close();
-				
+
 				// update natives
 				query = " update " + ConstantDB.TABLE_NATIVES
 				+ " set " + ConstantDB.ATTR_CONTENT + " = ? "
@@ -1035,7 +1054,7 @@ public class ProcessDao extends BasicDao {
 				if (!rs1.next()){
 					throw new ExceptionDao("Couldn't retrieve head version.");
 				}
-				
+
 				query2 = " insert into " + ConstantDB.TABLE_DERIVED_VERSIONS
 				+ "(" + ConstantDB.ATTR_PROCESSID + ","
 				+     ConstantDB.ATTR_VERSION + ","
@@ -1234,30 +1253,28 @@ public class ProcessDao extends BasicDao {
 
 	/**
 	 * Record in the database the new values for the process meta data detailed in
-	 * parameter
-	 * @param updateProcessSummaryType
+	 * parameter.
+	 * Synchronise the new data with those present in npf descriptions associated
+	 * with the process versions.
+	 * Sync with cpf not done. To be done? TODO
+	 * @param process
 	 * @throws SQLException 
 	 * @throws ExceptionDao 
 	 */
-	public void updateProcess(UpdateProcessSummaryType updateProcessSummaryType) throws SQLException, ExceptionDao {
-		
+	public void editDataProcesses(Integer processId, String processName, String domain, String username,
+			String preVersion, String newVersion, Integer ranking) throws SQLException, ExceptionDao {
+
 		Connection conn = null;
 		PreparedStatement stmtp = null;
-		String query = null;
-		Integer processId = updateProcessSummaryType.getId();
-		String processName = updateProcessSummaryType.getName();
-		String domain = updateProcessSummaryType.getDomain();
-		String username = updateProcessSummaryType.getOwner();
-		List<UpdateVersionSummaryType> versions = updateProcessSummaryType.getUpdateVersionSummaries();
-		
+		String query = null;	
 		try {
 			conn = this.getConnection();
-			
+
 			// update meta data associated with the process			
 			query = " update " + ConstantDB.TABLE_PROCESSES
 			+ " set " + ConstantDB.ATTR_NAME + " = ? , "
 			+ ConstantDB.ATTR_DOMAIN + " = ? , "
-			+ ConstantDB.ATTR_USERNAME + " = ?"
+			+ ConstantDB.ATTR_OWNER + " = ?"
 			+ " where " + ConstantDB.ATTR_PROCESSID + " = ? ";
 			stmtp = conn.prepareStatement(query);
 			stmtp.setString(1, processName);
@@ -1266,38 +1283,105 @@ public class ProcessDao extends BasicDao {
 			stmtp.setInt(4, processId);
 			stmtp.executeUpdate();
 			stmtp.close();
-			
-			// for each modified version, update its data
-			for (int i=0; i<versions.size(); i++) {
-				UpdateVersionSummaryType version = versions.get(i);
-				String preVersion = version.getPreName();
-				String newVersion = version.getName();
-				Integer ranking = version.getRanking();
-				
-				query = " update " + ConstantDB.TABLE_VERSIONS
-				+ " set " + ConstantDB.ATTR_VERSION_NAME + " = ? , "
-				+ ConstantDB.ATTR_RANKING + " = ? "
-				+ ConstantDB.ATTR_LAST_UPDATE + " = date_format(now(), '%Y-%c-%d %k:%i:%s') "
-				+ " where " + ConstantDB.ATTR_PROCESSID + " = ? "
-				+ " and " + ConstantDB.ATTR_VERSION_NAME + " = ? ";
-				stmtp = conn.prepareStatement(query);
-				stmtp.setString(1, newVersion);
-				stmtp.setInt(2, ranking);
-				stmtp.setInt(3, processId);
-				stmtp.setString(4, preVersion);
-				stmtp.executeUpdate();
-				
-				conn.commit();
+
+			// update process_versions
+			query = " update " + ConstantDB.TABLE_VERSIONS
+			+ " set " + ConstantDB.ATTR_VERSION_NAME + " = ? , "
+			+ ConstantDB.ATTR_RANKING + " = ? , "
+			+ ConstantDB.ATTR_LAST_UPDATE + " = date_format(now(), '%Y-%c-%d %k:%i:%s') "
+			+ " where " + ConstantDB.ATTR_PROCESSID + " = ? "
+			+ " and " + ConstantDB.ATTR_VERSION_NAME + " = ? ";
+			stmtp = conn.prepareStatement(query);
+			stmtp.setString(1, newVersion);
+			stmtp.setInt(2, ranking);
+			stmtp.setInt(3, processId);
+			stmtp.setString(4, preVersion);
+			stmtp.executeUpdate();
+			stmtp.close();
+
+			// update derived_versions
+			query = " update " + ConstantDB.TABLE_DERIVED_VERSIONS
+			+ " set " + ConstantDB.ATTR_VERSION + " = ? "
+			+ " where " + ConstantDB.ATTR_VERSION + " = ? ";
+			stmtp = conn.prepareStatement(query);
+			stmtp.setString(1, newVersion);
+			stmtp.setString(2, preVersion);
+			stmtp.executeUpdate();
+			stmtp.close();
+			query = " update " + ConstantDB.TABLE_DERIVED_VERSIONS
+			+ " set " + ConstantDB.ATTR_DERIVED_VERSION + " = ? "
+			+ " where " + ConstantDB.ATTR_DERIVED_VERSION + " = ? ";
+			stmtp = conn.prepareStatement(query);
+			stmtp.setString(1, newVersion);
+			stmtp.setString(2, preVersion);
+			stmtp.executeUpdate();
+
+			// synchronise with npf
+			query = " select " + ConstantDB.ATTR_CONTENT + "," + ConstantDB.ATTR_URI
+			+ " , " + ConstantDB.ATTR_NAT_TYPE
+			+ " , " + ConstantDB.ATTR_LAST_UPDATE
+			+ " from " + ConstantDB.TABLE_NATIVES
+			+ " join " + ConstantDB.TABLE_VERSIONS
+			+ " using (" + ConstantDB.ATTR_CANONICAL + ")"
+			+ " where " + ConstantDB.ATTR_PROCESSID + " = " + processId
+			+ " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + newVersion + "'";
+			Statement stmt = conn.createStatement();
+			ResultSet rs = stmt.executeQuery(query);
+			if (!rs.next()) {
+				throw new Exception("Error ProcessDAO (editDataProcesses): cannot retrieve CPF.");
+			} else {
+				do {
+					InputStream npf = rs.getAsciiStream(1);
+					Integer uri = rs.getInt(2);
+					String nativeType = rs.getString(3);
+					String lastUpdate = rs.getString(4);
+					ByteArrayOutputStream npf_xml = new ByteArrayOutputStream();
+					JAXBContext jc;
+					Unmarshaller u;
+					Marshaller m;
+					if (nativeType.compareTo("XPDL 2.1")==0) {
+						jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
+						u = jc.createUnmarshaller();
+						JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(npf);
+						PackageType npf_o = rootElement.getValue();
+
+						npf_o = copyParam2xpdl(npf_o, processId, processName, newVersion, username, null, lastUpdate, null);
+
+						m = jc.createMarshaller();
+						m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+						JAXBElement<PackageType> rootnpf = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(npf_o);
+						m.marshal(rootnpf, npf_xml);
+					} else if (nativeType.compareTo("EPML 2.0")==0) {
+						jc = JAXBContext.newInstance("de.epml");
+						u = jc.createUnmarshaller();
+						JAXBElement<TypeEPML> rootElement = (JAXBElement<TypeEPML>) u.unmarshal(npf);
+						TypeEPML npf_o = rootElement.getValue();
+
+						m = jc.createMarshaller();
+						m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+						JAXBElement<TypeEPML> rootnpf = new de.epml.ObjectFactory().createEpml(npf_o);
+						m.marshal(rootnpf, npf_xml);
+					}
+					query = " update " + ConstantDB.TABLE_NATIVES
+					+ " set " + ConstantDB.ATTR_CONTENT + " = ? "
+					+ " where " + ConstantDB.ATTR_URI + " = ? ";
+					stmtp = conn.prepareStatement(query);
+					stmtp.setString(1, npf_xml.toString());
+					stmtp.setInt(2, uri);
+					stmtp.executeUpdate();
+					stmtp.close();
+				} while (rs.next());
+				stmt.close(); rs.close();
 			}
-			
+			conn.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
 			conn.rollback();
-			throw new ExceptionDao ("SQL error ProcessDAO (updateProcess): " + e.getMessage() + "\n");
+			throw new ExceptionDao ("SQL error ProcessDAO (editDataProcesses): " + e.getMessage() + "\n");
 		} catch (Exception e) {
 			e.printStackTrace();
 			conn.rollback();
-			throw new ExceptionDao ("Error ProcessDAO (updateProcess): " + e.getMessage() + "\n");
+			throw new ExceptionDao ("Error ProcessDAO (editDataProcesses): " + e.getMessage() + "\n");
 		} finally {
 			Release(conn, stmtp, null);
 		}
