@@ -18,10 +18,12 @@ import org.apromore.manager.exception.ExceptionReadEditSession;
 import org.apromore.manager.exception.ExceptionReadNative;
 import org.apromore.manager.exception.ExceptionReadProcessSummaries;
 import org.apromore.manager.exception.ExceptionReadUser;
+import org.apromore.manager.exception.ExceptionUpdateProcess;
 import org.apromore.manager.exception.ExceptionWriteEditSession;
 import org.apromore.manager.exception.ExceptionWriteUser;
 import org.apromore.manager.model_da.DeleteEditSessionInputMsgType;
 import org.apromore.manager.model_da.DeleteProcessVersionsInputMsgType;
+import org.apromore.manager.model_da.EditDataProcessInputMsgType;
 import org.apromore.manager.model_da.FormatType;
 import org.apromore.manager.model_da.ProcessVersionIdentifierType;
 import org.apromore.manager.model_da.ReadCanonicalAnfInputMsgType;
@@ -41,7 +43,6 @@ import org.apromore.manager.model_da.WriteUserInputMsgType;
 import org.apromore.manager.model_da.WriteUserOutputMsgType;
 import org.apromore.manager.model_portal.ProcessSummariesType;
 import org.apromore.manager.model_portal.ProcessSummaryType;
-import org.apromore.manager.model_portal.UpdateProcessSummariesType;
 import org.apromore.manager.model_portal.VersionSummaryType;
 
 public class RequestToDA {
@@ -52,11 +53,39 @@ public class RequestToDA {
 
 	private InputStream cpf;
 	private InputStream anf;
-	
+
 	public RequestToDA() {
 		URL wsdlURL = DAManagerService.WSDL_LOCATION;
 		DAManagerService ss = new DAManagerService(wsdlURL, SERVICE_NAME);
 		this.port = ss.getDAManager();
+	}
+
+
+	/**
+	 * Build the payload for the request UpdateProcesses to be sent to the DA. For each
+	 * process summary in processes (according to model_portal) match its counter part
+	 * according to model_da. 
+	 * @param process
+	 * @throws ExceptionUpdateProcess
+	 */
+	public void EditDataProcess (Integer processId, String processName, String domain, String username,
+			String preVersion, String newVersion, Integer ranking) throws ExceptionUpdateProcess {
+
+		org.apromore.manager.model_da.EditDataProcessInputMsgType payload =
+			new EditDataProcessInputMsgType();
+
+		payload.setDomain(domain);
+		payload.setProcessName(processName);
+		payload.setOwner(username);
+		payload.setId(processId);
+		payload.setNewName(newVersion);
+		payload.setPreName(preVersion);
+		payload.setRanking(ranking);
+		org.apromore.manager.model_da.EditDataProcessOutputMsgType res = this.port.editDataProcess(payload);
+		ResultType result = res.getResult();
+		if (result.getCode() == -1) {
+			throw new ExceptionUpdateProcess (result.getMessage()); 
+		}
 	}
 
 	public org.apromore.manager.model_portal.FormatsType ReadFormats() throws ExceptionFormats {
@@ -74,7 +103,7 @@ public class RequestToDA {
 				new org.apromore.manager.model_portal.FormatsType();
 			for (int i=0;i<formats_da.size();i++){
 				org.apromore.manager.model_portal.FormatType format_p = 
-				new org.apromore.manager.model_portal.FormatType();
+					new org.apromore.manager.model_portal.FormatType();
 				format_p.setFormat(formats_da.get(i).getFormat());
 				format_p.setExtension(formats_da.get(i).getExtension());
 				resFormats_p.getFormat().add(format_p);
@@ -153,7 +182,8 @@ public class RequestToDA {
 	}
 
 
-	public org.apromore.manager.model_portal.ProcessSummariesType ReadProcessSummaries(String searchExpression) 
+	public org.apromore.manager.model_portal.ProcessSummariesType 
+	ReadProcessSummaries(String searchExpression) 
 	throws ExceptionReadProcessSummaries {
 		org.apromore.manager.model_da.ReadProcessSummariesInputMsgType payload = new ReadProcessSummariesInputMsgType();
 		payload.setSearchExpression(searchExpression);
@@ -216,7 +246,7 @@ public class RequestToDA {
 		org.apromore.manager.model_da.ReadCanonicalAnfInputMsgType payload = new ReadCanonicalAnfInputMsgType();
 		payload.setProcessId(processId);
 		payload.setVersion(version);
-		
+
 		org.apromore.manager.model_da.ReadCanonicalAnfOutputMsgType res = this.port.readCanonicalAnf(payload);
 		org.apromore.manager.model_da.ResultType result = res.getResult();
 		if (result.getCode() == 0) {
@@ -229,11 +259,12 @@ public class RequestToDA {
 		} else {
 			throw new ExceptionReadCanonicalAnf(result.getMessage());
 		}
-		
+
 	}
-	
-	public org.apromore.manager.model_da.EditSessionType ReadEditSession (int code) throws ExceptionReadEditSession {
-		
+
+	public org.apromore.manager.model_da.EditSessionType 
+	ReadEditSession (int code) throws ExceptionReadEditSession {
+
 		org.apromore.manager.model_da.EditSessionType editSession;
 		org.apromore.manager.model_da.ReadEditSessionInputMsgType payload = 
 			new ReadEditSessionInputMsgType();
@@ -246,9 +277,9 @@ public class RequestToDA {
 		} else {
 			throw new ExceptionReadEditSession(result.getMessage());
 		}
-		
+
 	}
-	
+
 	public int WriteEditSession (org.apromore.manager.model_da.EditSessionType editSession) throws ExceptionWriteEditSession {
 		org.apromore.manager.model_da.WriteEditSessionInputMsgType payload =
 			new WriteEditSessionInputMsgType();
@@ -261,7 +292,7 @@ public class RequestToDA {
 			return res.getEditSessionCode();
 		}
 	}	
-	
+
 	public void DeleteEditSession (int code) throws ExceptionDeleteEditSession {
 		org.apromore.manager.model_da.DeleteEditSessionInputMsgType payload =
 			new DeleteEditSessionInputMsgType();
@@ -299,11 +330,6 @@ public class RequestToDA {
 		return anf;
 	}
 
-	public void UpdateProcesses(UpdateProcessSummariesType processes) {
-		// TODO Auto-generated method stub
-		
-	}
-	
 }
 
 
