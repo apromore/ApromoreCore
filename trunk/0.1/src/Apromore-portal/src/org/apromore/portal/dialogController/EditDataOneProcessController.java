@@ -1,5 +1,10 @@
 package org.apromore.portal.dialogController;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+
+import org.apromore.portal.exception.ExceptionEditDataProcess;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
@@ -32,12 +37,13 @@ public class EditDataOneProcessController {
 	private Radio r5;
 	private ProcessSummaryType process;
 	private VersionSummaryType preVersion;
-	private VersionSummaryType newVersion;
 	private Textbox processNameT;
 	private Textbox versionNameT;
 	private Radiogroup rankingRG;
 	private Row domainR;
+	private Row ownerR;
 
+	private SelectDynamicListController ownerCB;
 	private SelectDynamicListController domainCB;
 
 	public EditDataOneProcessController(MainController mainC,
@@ -49,7 +55,7 @@ public class EditDataOneProcessController {
 		this.preVersion = version;
 
 		Window win = (Window) Executions.createComponents("macros/editprocessdata.zul", null, null);
-		
+
 		this.editDataWindow = (Window) win.getFellow("editprocessdataW");
 		this.editDataWindow.setId(this.editDataWindow.getId()+process.getId()+version.getName());
 		this.editDataWindow.setTitle("Edit data process " + process.getName() + ", " + version.getName());
@@ -76,22 +82,46 @@ public class EditDataOneProcessController {
 		this.domainR = (Row) win.getFellow("domain");
 		this.domainR.setId(this.domainR.getId() + process.getId() + version.getName());
 		this.domainCB = new SelectDynamicListController(this.mainC.getDomains());
-		this.domainCB.setDomains(this.mainC.getDomains());
-		this.domainCB.setId(process.getId() + version.getName());
+		this.domainCB.setReference(this.mainC.getDomains());
+		this.domainCB.setId(this.domainR.getId() + "domain");
 		this.domainCB.setAutodrop(true);
 		this.domainCB.setWidth("85%");
 		this.domainCB.setHeight("100%");
 		this.domainCB.setAttribute("hflex", "1");
 		this.domainR.appendChild(domainCB);
+		this.ownerR = (Row) win.getFellow("owner");
+		this.ownerR.setId(this.ownerR.getId() + process.getId() + version.getName());
+		this.ownerCB = new SelectDynamicListController(this.mainC.getUsers());
+		this.ownerCB.setReference(this.mainC.getUsers());
+		this.ownerCB.setId(this.ownerR.getId() + "owner");
+		this.ownerCB.setAutodrop(true);
+		this.ownerCB.setWidth("85%");
+		this.ownerCB.setHeight("100%");
+		this.ownerCB.setAttribute("hflex", "1");
+		this.ownerR.appendChild(ownerCB);
 
-		reset();
+		// allow change owner only for admin
+		this.ownerCB.setDisabled(true);
+		this.domainCB.setDisabled((process.getOwner().compareTo(this.mainC.getCurrentUser().getUsername())!=0));
+		this.processNameT.setDisabled((process.getOwner().compareTo(this.mainC.getCurrentUser().getUsername())!=0));
+		this.versionNameT.setDisabled((process.getOwner().compareTo(this.mainC.getCurrentUser().getUsername())!=0));
 		
+		reset();
+
 		this.okB.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
 				editDataProcess();
 			}
 		});
+
+		this.editDataWindow.addEventListener("onOK",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				editDataProcess();
+			}
+		});
+
 		this.cancelB.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -113,20 +143,27 @@ public class EditDataOneProcessController {
 		win.doModal();
 	}
 
-	protected void editDataProcess() throws InterruptedException {
-		this.newVersion = new VersionSummaryType();
-		this.process.setName(this.processNameT.getValue());
-		this.newVersion.setName(this.versionNameT.getValue());
-		this.process.setDomain(this.domainCB.getValue());
+	protected void editDataProcess() throws Exception {
+		Integer processId = this.process.getId();
+		String processName = this.processNameT.getValue();
+		String domain = this.domainCB.getValue();
+		// TODO username should updatable by admin
+		String username = this.process.getOwner();
+		String preVersion = this.preVersion.getName();
+		String newVersion = this.versionNameT.getValue();
 		String rankingS = this.rankingRG.getSelectedItem().getLabel();
 		Integer ranking = Integer.valueOf(rankingS);
-		this.newVersion.setRanking(ranking);
+
+		RequestToManager request = new RequestToManager();
+		request.EditDataProcesses(processId, processName, domain, username, preVersion, newVersion, ranking);
+
+
 		this.editDataListProcessesC.getEditedList().add(this);
 		this.editDataListProcessesC.deleteFromToBeEdited(this);
 		closePopup();
 	}
 
-	protected void cancel() throws InterruptedException {
+	protected void cancel() throws Exception {
 		// delete process from the list of processes still to be edited
 		this.editDataListProcessesC.deleteFromToBeEdited(this);
 		closePopup();
@@ -139,7 +176,7 @@ public class EditDataOneProcessController {
 	protected void cancelAll() {
 		this.editDataListProcessesC.cancelAll();
 	}	
-	
+
 	protected void reset() {
 		this.processNameT.setValue(this.process.getName());
 		this.versionNameT.setValue(this.preVersion.getName());
@@ -161,10 +198,6 @@ public class EditDataOneProcessController {
 
 	public VersionSummaryType getPreVersion() {
 		return preVersion;
-	}
-
-	public VersionSummaryType getNewVersion() {
-		return newVersion;
 	}
 
 }

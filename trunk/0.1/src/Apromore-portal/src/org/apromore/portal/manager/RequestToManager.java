@@ -1,12 +1,8 @@
 package org.apromore.portal.manager;
 
-import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.sql.Date;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -20,6 +16,7 @@ import javax.xml.namespace.QName;
 import org.apromore.portal.exception.ExceptionDeleteEditSession;
 import org.apromore.portal.exception.ExceptionDeleteProcess;
 import org.apromore.portal.exception.ExceptionDomains;
+import org.apromore.portal.exception.ExceptionEditDataProcess;
 import org.apromore.portal.exception.ExceptionExport;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.exception.ExceptionImport;
@@ -33,6 +30,8 @@ import org.apromore.portal.model_manager.DeleteEditSessionOutputMsgType;
 import org.apromore.portal.model_manager.DeleteProcessVersionsInputMsgType;
 import org.apromore.portal.model_manager.DeleteProcessVersionsOutputMsgType;
 import org.apromore.portal.model_manager.DomainsType;
+import org.apromore.portal.model_manager.EditDataProcessInputMsgType;
+import org.apromore.portal.model_manager.EditDataProcessOutputMsgType;
 import org.apromore.portal.model_manager.EditSessionType;
 import org.apromore.portal.model_manager.ExportNativeInputMsgType;
 import org.apromore.portal.model_manager.ExportNativeOutputMsgType;
@@ -68,13 +67,13 @@ public class RequestToManager {
 	private static final QName SERVICE_NAME = new QName("http://www.apromore.org/manager/service_portal", "ManagerPortalService");
 
 	private ManagerPortalPortType port;
-	
+
 	public RequestToManager() {
-        URL wsdlURL = ManagerPortalService.WSDL_LOCATION;
-        ManagerPortalService ss = new ManagerPortalService(wsdlURL, SERVICE_NAME);
-        this.port = ss.getManagerPortal();  
+		URL wsdlURL = ManagerPortalService.WSDL_LOCATION;
+		ManagerPortalService ss = new ManagerPortalService(wsdlURL, SERVICE_NAME);
+		this.port = ss.getManagerPortal();  
 	}
-	
+
 	public DomainsType ReadDomains() throws ExceptionDomains {
 		// payload empty
 		ReadDomainsInputMsgType payload = new ReadDomainsInputMsgType();
@@ -90,7 +89,7 @@ public class RequestToManager {
 			return resDomains;
 		}
 	}
-	
+
 	public FormatsType ReadFormats() throws ExceptionFormats {
 		// payload empty
 		ReadFormatsInputMsgType payload = new ReadFormatsInputMsgType();
@@ -106,7 +105,7 @@ public class RequestToManager {
 			return resFormats;
 		}
 	}
-	
+
 	public UserType ReadUser(String username) throws ExceptionUser{
 		ReadUserInputMsgType payload = new ReadUserInputMsgType();
 		payload.setUsername(username);
@@ -118,7 +117,7 @@ public class RequestToManager {
 			return res.getUser();
 		}
 	}
-	
+
 	public void WriteUser(UserType user) throws ExceptionUser{
 		WriteUserInputMsgType payload = new WriteUserInputMsgType();
 		payload.setUser(user);
@@ -128,7 +127,7 @@ public class RequestToManager {
 			throw new ExceptionUser (result.getMessage()); 
 		}
 	}
-	
+
 	public ProcessSummariesType ReadProcessSummariesType (String searchExpr) throws ExceptionProcess {
 		ReadProcessSummariesInputMsgType payload = new ReadProcessSummariesInputMsgType();
 		payload.setSearchExpression(searchExpr);
@@ -145,7 +144,7 @@ public class RequestToManager {
 	public ProcessSummaryType importProcess (String username, String nativeType, String processName, 
 			String versionName, InputStream xml_process, String domain, String documentation, String created, String lastUpdate) 
 	throws IOException, ExceptionImport {
-		
+
 		ImportProcessInputMsgType payload = new ImportProcessInputMsgType();
 		DataSource source = new ByteArrayDataSource(xml_process, "text/xml"); 
 		payload.setUsername(username);
@@ -164,12 +163,12 @@ public class RequestToManager {
 		} else {
 			return res.getProcessSummary();
 		}
-		
+
 	}
 
 	public InputStream ExportNative(int processId, String versionName, String nativeType, Boolean withAnnotations) 
 	throws ExceptionExport, IOException {
-		
+
 		ExportNativeInputMsgType payload = new ExportNativeInputMsgType();
 		payload.setProcessId(processId);
 		payload.setVersionName(versionName);
@@ -177,7 +176,7 @@ public class RequestToManager {
 		payload.setWithAnnotations(withAnnotations);
 		ExportNativeOutputMsgType res = this.port.exportNative(payload);
 		ResultType result = res.getResult();
-		
+
 		if (result.getCode() == -1) {
 			throw new ExceptionExport (result.getMessage()); 
 		} else {
@@ -186,7 +185,7 @@ public class RequestToManager {
 			return is;
 		}
 	}
-	
+
 	public int WriteEditSession (EditSessionType editSession) throws ExceptionWriteEditSession {
 		WriteEditSessionInputMsgType payload = new WriteEditSessionInputMsgType();
 		payload.setEditSession(editSession);
@@ -198,7 +197,7 @@ public class RequestToManager {
 			return res.getEditSessionCode();
 		}
 	}
-	
+
 	public void DeleteEditionSession (int code) throws ExceptionDeleteEditSession {
 		DeleteEditSessionInputMsgType payload = new DeleteEditSessionInputMsgType();
 		payload.setEditSessionCode(code);
@@ -208,7 +207,7 @@ public class RequestToManager {
 			throw new ExceptionDeleteEditSession (result.getMessage()); 
 		}
 	}
-	
+
 	public EditSessionType ReadEditSession (int code) throws ExceptionReadEditSession {
 		ReadEditSessionInputMsgType payload = new ReadEditSessionInputMsgType();
 		payload.setEditSessionCode(code);
@@ -223,7 +222,7 @@ public class RequestToManager {
 
 	public void UpdateProcess(String username, String nativeType,
 			int processId, InputStream native_is, String domain) throws IOException, ExceptionUpdateProcess {
-		
+
 		UpdateProcessInputMsgType payload = new UpdateProcessInputMsgType();
 		payload.setDomain(domain);
 		payload.setNativeType(nativeType);
@@ -237,19 +236,19 @@ public class RequestToManager {
 		if (result.getCode() == -1) {
 			throw new ExceptionUpdateProcess (result.getMessage()); 
 		}
-		
+
 	}
 
 	public void DeleteProcessVersions(
 			HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws ExceptionDeleteProcess {
-		
+
 		DeleteProcessVersionsInputMsgType payload = new DeleteProcessVersionsInputMsgType();
 		Set<ProcessSummaryType> keys = processVersions.keySet();
 		Iterator<ProcessSummaryType> it = keys.iterator();
 		while (it.hasNext()){
 			ProcessSummaryType processSummary = it.next();
 			List<VersionSummaryType> versionSummaries = processVersions.get(processSummary);
-			
+
 			ProcessVersionIdentifierType processVersionId = new ProcessVersionIdentifierType();
 			payload.getProcessVersionIdentifier().add(processVersionId);			
 			processVersionId.setProcessid(processSummary.getId());
@@ -269,13 +268,24 @@ public class RequestToManager {
 	 * preNewVersion gives the mapping between its previous and new names.
 	 * @param processVersions
 	 * @param preNewVersionMap
+	 * @throws ExceptionEditDataProcess 
+	 * @throws ExceptionUpdateProcessSummaries 
 	 */
-	public void WriteProcess(
-			HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions,
-			HashMap<ProcessSummaryType, List<String>> preNewVersionMap) {
-		
-		
-		
+	public void EditDataProcesses (Integer processId, String processName, String domain, String username,
+			String preVersion, String newVersion, Integer ranking) throws ExceptionEditDataProcess {
+		EditDataProcessInputMsgType payload = new EditDataProcessInputMsgType();
+		payload.setDomain(domain);
+		payload.setProcessName(processName);
+		payload.setOwner(username);
+		payload.setId(processId);
+		payload.setNewName(newVersion);
+		payload.setPreName(preVersion);
+		payload.setRanking(ranking);
+		EditDataProcessOutputMsgType res = this.port.editDataProcess(payload);
+		ResultType result = res.getResult();
+		if (result.getCode() == -1) {
+			throw new ExceptionEditDataProcess (result.getMessage()); 
+		}
 	}
-	
+
 }
