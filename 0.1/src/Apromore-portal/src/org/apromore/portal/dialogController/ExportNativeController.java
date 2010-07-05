@@ -2,14 +2,12 @@ package org.apromore.portal.dialogController;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
 import org.apromore.portal.exception.ExceptionExport;
 import org.apromore.portal.manager.RequestToManager;
-import org.apromore.portal.model_manager.FormatsType;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;

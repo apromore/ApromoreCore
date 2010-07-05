@@ -6,16 +6,9 @@
 
 package org.apromore.portal.service_oryx;
 
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
@@ -179,7 +172,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			newEditSession.setProcessName(newProcess.getName());
 			newEditSession.setUsername(newProcess.getOwner());
 			newEditSession.setVersionName(newProcess.getLastVersion());
-			int newEditSessionCode = request.WriteEditSession(editSession);
+			int newEditSessionCode = request.WriteEditSession(newEditSession);
 			res.setEditSessionCode(newEditSessionCode);
 
 			result.setCode(0);
