@@ -3,6 +3,7 @@ package org.apromore.portal.model_manager;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;

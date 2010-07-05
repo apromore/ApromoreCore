@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionDeleteProcess;
-import org.apromore.portal.exception.ExceptionProcess;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.DomainsType;
 import org.apromore.portal.model_manager.FormatsType;

@@ -18,16 +18,19 @@ import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Messagebox;
 
 
 public class MenuController extends Menubar {
 
 	private MainController mainC;
 	private ImportListProcessesController importC;
+	private CreateProcessController createC;
 	private Menubar menuB;
 
 
 	private Menu processM;
+	private Menuitem createMI;
 	private Menuitem importMI;
 	private Menuitem exportMI;
 	private Menuitem editModelMI;
@@ -55,6 +58,7 @@ public class MenuController extends Menubar {
 		 * get components
 		 */
 		this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
+		this.createMI = (Menuitem) this.menuB.getFellow("createProcess");
 		this.importMI = (Menuitem) this.menuB.getFellow("fileImport");
 		this.exportMI = (Menuitem) this.menuB.getFellow("fileExport");
 		this.editModelMI = (Menuitem) this.menuB.getFellow("processEdit");
@@ -66,7 +70,13 @@ public class MenuController extends Menubar {
 		this.presentationM = (Menu) this.menuB.getFellow("presentation");
 
 
-
+		this.createMI.addEventListener("onClick",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				createModel ();
+			}
+		});	 
+		
 		this.importMI.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -100,6 +110,19 @@ public class MenuController extends Menubar {
 				deleteSelectedProcessVersions ();
 			}
 		});	
+	}
+
+	protected void createModel() throws InterruptedException {
+		try {
+			this.createC = new CreateProcessController (this.mainC, this.mainC.getNativeTypes());
+		} catch (SuspendNotAllowedException e) {
+			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK,
+					Messagebox.ERROR);
+		} catch (InterruptedException e) {
+			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK,
+					Messagebox.ERROR);
+		}
+		
 	}
 
 	/**
@@ -161,11 +184,12 @@ public class MenuController extends Menubar {
 		}
 	}
 
-	protected void importModel (){
+	protected void importModel () throws InterruptedException{
 		try {
 			this.importC = new ImportListProcessesController(this, mainC);
 		} catch (DialogException e) {
-			e.printStackTrace();
+			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK,
+					Messagebox.ERROR);
 		}
 	}
 

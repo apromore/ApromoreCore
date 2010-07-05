@@ -4,7 +4,6 @@ import java.util.Comparator;
 
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Row;
-import org.zkoss.zul.Toolbarbutton;
 
 public class ProcessIdColComparator implements Comparator {
 	private boolean _asc;
