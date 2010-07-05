@@ -370,7 +370,7 @@ public class ProcessDao extends BasicDao {
 			} finally {
 				process_xml.close();
 			}
-			String process_string = sb0.toString();
+			String process_string = sb0.toString().trim();
 			System.out.println("native size: " + process_string.length());
 			StringBuilder sb1 = new StringBuilder();
 			try {
@@ -381,7 +381,7 @@ public class ProcessDao extends BasicDao {
 			} finally {
 				cpf_xml.close();
 			}
-			String cpf_string = sb1.toString();
+			String cpf_string = sb1.toString().trim();
 			System.out.println("cpf size: " + cpf_string.length());
 
 			StringBuilder sb2 = new StringBuilder();
@@ -394,7 +394,7 @@ public class ProcessDao extends BasicDao {
 				anf_xml.close();
 			}
 
-			String anf_string = sb2.toString();
+			String anf_string = sb2.toString().trim();
 			System.out.println("anf size: " + anf_string.length());
 
 
@@ -760,7 +760,7 @@ public class ProcessDao extends BasicDao {
 			} finally {
 				native_xml.close();
 			}
-			String native_string = sb.toString();
+			String native_string = sb.toString().trim();
 
 			query = " select " + ConstantDB.ATTR_URI 
 			+ " from " + ConstantDB.TABLE_NATIVES
@@ -879,7 +879,7 @@ public class ProcessDao extends BasicDao {
 			} finally {
 				npf_is.close();
 			}
-			String npf_string = sb0.toString();
+			String npf_string = sb0.toString().trim();
 
 			StringBuilder sb1 = new StringBuilder();
 			try {
@@ -890,7 +890,7 @@ public class ProcessDao extends BasicDao {
 			} finally {
 				cpf_is.close();
 			}
-			String cpf_string = sb1.toString();
+			String cpf_string = sb1.toString().trim();
 
 			StringBuilder sb2 = new StringBuilder();
 			try {
@@ -902,7 +902,7 @@ public class ProcessDao extends BasicDao {
 				anf_is.close();
 			}
 
-			String anf_string = sb2.toString();
+			String anf_string = sb2.toString().trim();
 
 			conn = this.getConnection();
 
