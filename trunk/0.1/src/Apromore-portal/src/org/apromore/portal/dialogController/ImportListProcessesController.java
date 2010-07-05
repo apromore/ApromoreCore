@@ -2,8 +2,6 @@ package org.apromore.portal.dialogController;
 
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -13,7 +11,6 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-import javax.servlet.http.HttpSession;
 import javax.xml.bind.JAXBException;
 
 import org.apromore.portal.exception.DialogException;

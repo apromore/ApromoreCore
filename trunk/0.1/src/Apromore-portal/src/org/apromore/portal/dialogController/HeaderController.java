@@ -1,12 +1,9 @@
 package org.apromore.portal.dialogController;
 
 
-import javax.servlet.http.HttpSession;
-
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.UserType;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Messagebox;

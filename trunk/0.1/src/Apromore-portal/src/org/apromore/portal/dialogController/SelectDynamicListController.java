@@ -4,8 +4,6 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 
-import org.apromore.portal.common.Constants;
-import org.apromore.portal.model_manager.SearchHistoriesType;
 import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;

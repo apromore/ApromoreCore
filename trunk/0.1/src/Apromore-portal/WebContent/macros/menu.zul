@@ -2,6 +2,8 @@
 <menubar id="operationMenu">
 	<menu id="process" label="Process">
 		<menupopup>
+			<menuitem id="createProcess" label="Create model" disabled="true"/>
+			<menuseparator />
 			<menuitem id="fileImport" label="Import" disabled="true"/>
 			<menuseparator />
 			<menuitem id="fileExport" label="Export" disabled="true"/>

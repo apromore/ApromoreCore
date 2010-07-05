@@ -1,10 +1,5 @@
 package org.apromore.portal.dialogController;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-
-import org.apromore.portal.exception.ExceptionEditDataProcess;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
