@@ -47,7 +47,7 @@ public class ProcessTableController {
 	 * grid									processSummariesGrid
 	 * 	columns
 	 * 		column
-	 * 			button 						revertSelectionB
+	 * 			empty
 	 * 		column
 	 * 			checkbox					processSummaryCB
 	 * 	rows								processSummariesRow
@@ -92,7 +92,9 @@ public class ProcessTableController {
 	private Integer processTbPos;							// position of toolbarbuttons associated with process names in rows of process summary
 
 	private Button revertSelectionB ;						// button which reverts the process selections
-	private EventListener revertSelectionBlist;				// event listener associated with the revertSelectionB
+	private Button selectAllB;
+	private Button unselectAllB;
+	private Button refreshB;
 	private Column columnId ;								// column to display processId
 	private Column columnName;								// column to display process name
 
@@ -106,6 +108,9 @@ public class ProcessTableController {
 		this.processSummariesGrid = (Grid) this.mainC.getFellow("processSummariesGrid");
 		this.processSummariesRows = (Rows) this.processSummariesGrid.getFellow("processSummariesRows");
 		this.revertSelectionB = (Button) this.processSummariesGrid.getFellow("revertSelectionB");
+		this.unselectAllB = (Button) this.processSummariesGrid.getFellow("unselectAllB");
+		this.selectAllB = (Button) this.processSummariesGrid.getFellow("selectAllB");
+		this.refreshB = (Button) this.processSummariesGrid.getFellow("refreshB");
 		//this.pg = (Paging) this.mainC.getFellow("processtablecomp").getFellow("pg");
 		this.columnId = (Column) this.processSummariesGrid.getFellow("columnId");
 		this.columnName = (Column) this.processSummariesGrid.getFellow("columnName");
@@ -128,6 +133,33 @@ public class ProcessTableController {
 		this.processVersionsHM = new HashMap<Checkbox,VersionSummaryType>();
 		this.mapProcessVersions = new HashMap<Checkbox, List<Checkbox>>();
 
+		this.revertSelectionB.addEventListener("onClick",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				revertSelection ();
+			}
+		});	
+		
+		this.selectAllB.addEventListener("onClick",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				selectAll ();
+			}
+		});	
+		
+		this.unselectAllB.addEventListener("onClick",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				unselectAll ();
+			}
+		});	
+		
+		this.refreshB.addEventListener("onClick",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				refresh ();
+			}
+		});	
 		/**
 		 * At creation of the controller, get summaries of all processes.
 		 * for each process: a row in the main grid with detail (grid inside)
@@ -139,11 +171,30 @@ public class ProcessTableController {
 		displayProcessSummaries (processSummaries);
 	}
 
+	protected void refresh() throws Exception {
+		this.mainC.refreshProcessSummaries();		
+	}
+
+	protected void unselectAll() throws Exception {
+		this.mainC.refreshProcessSummaries();	
+	}
+
+	protected void selectAll() throws NumberFormatException, InterruptedException, ExceptionDao, 
+	JAXBException, ClassNotFoundException, InstantiationException, IllegalAccessException, ParseException {
+		List<Row> processSummariesRs = this.processSummariesRows.getChildren();
+		for (int i=0; i<processSummariesRs.size();i++){
+			Row processSummaryR = processSummariesRs.get(i);
+			Checkbox processSummaryCB = (Checkbox) processSummaryR.getFirstChild().getNextSibling();
+			if (!processSummaryCB.isChecked()) {
+				reverseProcessSelection(i);
+			}
+		}
+	}
+
 	public void emptyProcessSummaries () {
 		this.processHM.clear();
 		this.processVersionsHM.clear();
 		this.mapProcessVersions.clear();
-		this.revertSelectionB.removeEventListener("onClick", this.revertSelectionBlist);
 		while (this.processSummariesRows.getChildren().size()>0){
 			this.processSummariesRows.removeChild(this.processSummariesRows.getFirstChild());
 		}
@@ -155,14 +206,6 @@ public class ProcessTableController {
 			ProcessSummaryType process = processSummaries.getProcessSummary().get(i);
 			displayOneProcess (process);		
 		}
-
-		this.revertSelectionBlist = new EventListener() {
-			public void onEvent(Event event) throws Exception {
-				revertSelection();				
-			}
-		};
-		// click on revert selection button
-		this.revertSelectionB.addEventListener("onClick", this.revertSelectionBlist);
 	}
 
 
@@ -170,7 +213,7 @@ public class ProcessTableController {
 		// one row for each process
 		Row processSummaryR = new Row();
 		Detail processSummaryD = new Detail();
-		
+
 		processSummaryD.setId(process.getId().toString());
 		processSummaryD.setOpen(false);
 
@@ -460,7 +503,8 @@ public class ProcessTableController {
 	 * @throws NumberFormatException 
 	 */
 	protected void maintainSelectedProcesses(Event event) 
-	throws InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException, ExceptionDao, JAXBException, NumberFormatException, ParseException {
+	throws InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException, 
+		ExceptionDao, JAXBException, NumberFormatException, ParseException {
 		/*
 		 * selectedProcess contains selected processes (ordered by id)
 		 * 1 - click on a process: reverts selection of it
@@ -568,9 +612,8 @@ public class ProcessTableController {
 	 * @throws ClassNotFoundException 
 	 * @throws ParseException 
 	 */
-	protected void reverseProcessSelection (Integer index) 
-	throws NumberFormatException, InterruptedException, ExceptionDao, JAXBException, 
-	ClassNotFoundException, InstantiationException, IllegalAccessException, ParseException {	
+	protected void reverseProcessSelection (Integer index) throws ClassNotFoundException, InstantiationException, 
+		IllegalAccessException, ExceptionDao, JAXBException {	
 
 		Row processSummaryR = (Row) this.processSummariesRows.getChildren().get(index); // row for process
 		Label latestVersionL = (Label) processSummaryR.getChildren().get(this.latestVersionPos); // process latest version
@@ -656,10 +699,10 @@ public class ProcessTableController {
 		this.displayOneProcess(process);
 	}
 
-/*	public Paging getPg() {
+	/*	public Paging getPg() {
 		return pg;
 	}
-*/
+	 */
 	public Grid getProcessSummariesGrid() {
 		return processSummariesGrid;
 	}
