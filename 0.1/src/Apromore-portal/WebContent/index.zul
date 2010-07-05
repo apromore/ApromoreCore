@@ -32,17 +32,28 @@
 				</borderlayout>
 			</west>
 			<center flex="true">
+				<!-- the controller is ProcessTableController -->
 				<div vflex="true">
 					<Menu id="menucomp" />
 					<hbox style="background:#DAF4FF" width="100%">
 					<paging id="pg" />
-					
-						<box height="25px" width="400px">
-							<toolbarbutton id="table2graphic"
-								visible="true" label="Change view" />
-							<toolbarbutton id="graphic2table"
-								visible="false" label="Change view" />
-						</box>
+					<button id="revertSelectionB" label=""
+						image="img/revertSelection.png" style="background: transparent; border:none"
+						tooltiptext="revert selection" />
+					<button id="selectAllB" label="" style="background: transparent; border:none"
+						image="img/selectAll.png" tooltiptext="select all" />
+					<button id="unselectAllB" label="" style="background: transparent; border:none"
+						image="img/unselectAll.png"
+						tooltiptext="unselect all" />
+					<button id="refreshB" label="" style="background: transparent; border:none"
+						image="img/reload.png" tooltiptext="refresh view" />
+					<div style="float:right" height="25px"
+						width="400px">
+						<toolbarbutton id="table2graphic" visible="true"
+							label="Change view" />
+						<toolbarbutton id="graphic2table"
+							visible="false" label="Change view" />
+					</div>
 					</hbox>
 					<!-- the grid controller is ProcessTableController
 					This results from a work around to deal with vertical flexibility -->
@@ -50,10 +61,6 @@
 						vflex="true" autopaging="true" mold="paging" paginal="${pg}">
 						<columns sizable="true">
 							<column width="3.5%">
-								<button id="revertSelectionB"
-									image="img/flag-10x10.png"
-									style="background:transparent;border:none"
-									tooltiptext="click here to revert selection" />
 							</column>
 							<column width="0">
 								<checkbox id="processSummaryCB"
