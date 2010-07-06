@@ -50,10 +50,28 @@ public class EditListProcessesController extends Window {
 		return this.editedList;
 	}
 	
-	public void deleteFromToBeEdited(EditOneProcessController editOneProcess) {
+	public void deleteFromToBeEdited(EditOneProcessController editOneProcess) throws Exception {
 		this.toEditList.remove(editOneProcess);
+		if (this.toEditList.size()==0){
+			reportEditProcess();
+		}
 	}
 	
+	private void reportEditProcess() throws Exception {
+		String report = "Modification of " + this.editedList.size();
+		if (this.editedList.size()==0) {
+			report += " process.";
+		} else {
+			if (this.editedList.size()==1) {
+				report +=  " process completed.";
+			} else if (this.editedList.size()>1) {
+				report +=  " processes completed.";
+			};
+			this.mainC.refreshProcessSummaries();
+		}
+		this.mainC.displayMessage(report);
+	}
+
 	public void cancelAll() {
 		for (int i=0;i<this.toEditList.size();i++) {
 			if (this.toEditList.get(i).getEditOneProcessWindow()!=null){

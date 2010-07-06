@@ -69,7 +69,6 @@ public class MenuController extends Menubar {
 		this.managementM = (Menu) this.menuB.getFellow("management");
 		this.presentationM = (Menu) this.menuB.getFellow("presentation");
 
-
 		this.createMI.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {

@@ -24,13 +24,16 @@ import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.MouseEvent;
+import org.zkoss.zul.Box;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
 import org.zkoss.zul.Columns;
 import org.zkoss.zul.Detail;
 import org.zkoss.zul.Grid;
+import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Toolbarbutton;
@@ -81,7 +84,6 @@ public class ProcessTableController {
 	private Grid processSummariesGrid; 						// the grid for process summaries
 	private Rows processSummariesRows; 						// the rows for process summaries
 	//	private Window processTableW;							// the window which the entry point
-	//private Paging pg;										// the comment which manages paging
 	private HashMap<Checkbox,ProcessSummaryType> processHM;	// Hasmap of checkboxes: one entry for each process 
 	private HashMap<Checkbox,VersionSummaryType> processVersionsHM;// HashMap of checkboxes: one entry for each process version
 	private HashMap<Checkbox, List<Checkbox>> mapProcessVersions; // <p, listV> in mapProcessVersions: checkboxes in listV are
@@ -89,6 +91,8 @@ public class ProcessTableController {
 	private Integer latestVersionPos ;						// position of label latest version in row of process summary
 	private Integer processTbPos;							// position of toolbarbuttons associated with process names in rows of process summary
 
+	private Hbox pagingAndButtons;							// honx which contains paging ang button components
+	private Hbox buttons;
 	private Button revertSelectionB ;						// button which reverts the process selections
 	private Button selectAllB;
 	private Button unselectAllB;
@@ -105,11 +109,12 @@ public class ProcessTableController {
 		//this.processTableW = (Window) this.mainC.getFellow("processtablecomp").getFellow("processTableWindow");
 		this.processSummariesGrid = (Grid) this.mainC.getFellow("processSummariesGrid");
 		this.processSummariesRows = (Rows) this.processSummariesGrid.getFellow("processSummariesRows");
+		this.pagingAndButtons = (Hbox) this.processSummariesGrid.getFellow("pagingandbuttons");
+		this.buttons = (Hbox) this.processSummariesGrid.getFellow("buttons");
 		this.revertSelectionB = (Button) this.processSummariesGrid.getFellow("revertSelectionB");
 		this.unselectAllB = (Button) this.processSummariesGrid.getFellow("unselectAllB");
 		this.selectAllB = (Button) this.processSummariesGrid.getFellow("selectAllB");
 		this.refreshB = (Button) this.processSummariesGrid.getFellow("refreshB");
-		//this.pg = (Paging) this.mainC.getFellow("processtablecomp").getFellow("pg");
 		this.columnId = (Column) this.processSummariesGrid.getFellow("columnId");
 		this.columnName = (Column) this.processSummariesGrid.getFellow("columnName");
 
@@ -137,21 +142,21 @@ public class ProcessTableController {
 				revertSelection ();
 			}
 		});	
-		
+
 		this.selectAllB.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
 				selectAll ();
 			}
 		});	
-		
+
 		this.unselectAllB.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
 				unselectAll ();
 			}
 		});	
-		
+
 		this.refreshB.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -193,11 +198,26 @@ public class ProcessTableController {
 		this.processHM.clear();
 		this.processVersionsHM.clear();
 		this.mapProcessVersions.clear();
+
 		while (this.processSummariesRows.getChildren().size()>0){
 			this.processSummariesRows.removeChild(this.processSummariesRows.getFirstChild());
 		}
 	}
 
+	// when refreshing the table, the associated paging is deleted
+	/* recreate paging associated with the table
+	 */
+	public void newPaging() {
+		Hbox hbox = this.pagingAndButtons;
+		while(hbox.getChildren().size()>0) {
+			hbox.removeChild(hbox.getFirstChild());
+		}
+		Paging pg = new Paging();
+		this.processSummariesGrid.setPaginal(pg);
+		this.pagingAndButtons.appendChild(pg);
+		this.pagingAndButtons.appendChild(this.buttons);
+		
+	}
 	public void displayProcessSummaries(ProcessSummariesType processSummaries) {
 
 		for (int i=0;i<processSummaries.getProcessSummary().size();i++){
@@ -502,7 +522,7 @@ public class ProcessTableController {
 	 */
 	protected void maintainSelectedProcesses(Event event) 
 	throws InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException, 
-		ExceptionDao, JAXBException, NumberFormatException, ParseException {
+	ExceptionDao, JAXBException, NumberFormatException, ParseException {
 		/*
 		 * selectedProcess contains selected processes (ordered by id)
 		 * 1 - click on a process: reverts selection of it
@@ -611,7 +631,7 @@ public class ProcessTableController {
 	 * @throws ParseException 
 	 */
 	protected void reverseProcessSelection (Integer index) throws ClassNotFoundException, InstantiationException, 
-		IllegalAccessException, ExceptionDao, JAXBException {	
+	IllegalAccessException, ExceptionDao, JAXBException {	
 
 		Row processSummaryR = (Row) this.processSummariesRows.getChildren().get(index); // row for process
 		Label latestVersionL = (Label) processSummaryR.getChildren().get(this.latestVersionPos); // process latest version
@@ -697,10 +717,7 @@ public class ProcessTableController {
 		this.displayOneProcess(process);
 	}
 
-	/*	public Paging getPg() {
-		return pg;
-	}
-	 */
+
 	public Grid getProcessSummariesGrid() {
 		return processSummariesGrid;
 	}
