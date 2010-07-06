@@ -35,8 +35,7 @@ public class NavigationController extends Window {
 		/**
 		 * process of domains associated with opened branches are selected
 		 */
-		this.mainC.displayProcessSummaries (this.processSummaries);
-
+		
 		System.out.println (this.tree.getSelectedItem().getLabel());
 		
 	}

@@ -129,6 +129,7 @@ public class MainController extends Window {
 
 	public void displayProcessSummaries(ProcessSummariesType processSummaries) throws Exception {
 		this.processtable.emptyProcessSummaries();
+		this.processtable.newPaging();
 		this.processtable.displayProcessSummaries(processSummaries);
 	}
 
@@ -144,6 +145,7 @@ public class MainController extends Window {
 			Component C = itC.next();
 			if (C.getClass().getName().compareTo("org.zkoss.zul.Menuitem")==0) {
 				((Menuitem) C).setDisabled(!connected);
+				((Menuitem) C).setDisabled(C.getId().compareTo("createMI")==0);
 			}
 		}
 	}
