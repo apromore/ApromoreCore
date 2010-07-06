@@ -40,7 +40,7 @@ public class EditOneProcessController extends Window {
 		this.process = process;
 		this.version = version;
 
-		if (this.process.getOwner().compareTo(this.mainC.getCurrentUser().getUsername())==0) {
+		//if (this.process.getOwner().compareTo(this.mainC.getCurrentUser().getUsername())==0) {
 			Window win = (Window) Executions.createComponents("macros/choosenative.zul", null, null);
 
 			this.chooseNativeW = (Window) win.getFellow("choosenativeW");
@@ -96,10 +96,10 @@ public class EditOneProcessController extends Window {
 				}
 			});	
 			win.doModal();
-		} else {
-			Messagebox.show("Not owner", "Attention", Messagebox.OK,
-					Messagebox.ERROR);
-		}
+//		} else {
+//			Messagebox.show("Not owner", "Attention", Messagebox.OK,
+//					Messagebox.ERROR);
+//		}
 	}
 
 	protected void activateOkButton() {
@@ -107,7 +107,7 @@ public class EditOneProcessController extends Window {
 		//this.nativeTypesLB.removeChild(this.emptynative);
 	}
 
-	protected void cancel() {
+	protected void cancel() throws Exception {
 		// delete process from the list of processes still to be edited
 		this.editListProcessesC.deleteFromToBeEdited(this);
 		closePopup();
@@ -121,7 +121,7 @@ public class EditOneProcessController extends Window {
 		this.editListProcessesC.cancelAll();
 	}	
 
-	protected void editProcess() throws InterruptedException {
+	protected void editProcess() throws Exception {
 
 		String instruction="", url=this.mainC.getHost();
 		int offsetH = 100, offsetV=200;

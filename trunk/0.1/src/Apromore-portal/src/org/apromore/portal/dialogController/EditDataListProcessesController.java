@@ -64,14 +64,15 @@ public class EditDataListProcessesController {
 		String report = "Modification of " + this.editedList.size();
 		if (this.editedList.size()==0) {
 			report += " process.";
+		} else {
+			if (this.editedList.size()==1) {
+				report +=  " process completed.";
+			} else if (this.editedList.size()>1) {
+				report +=  " processes completed.";
+			};
+			this.mainC.refreshProcessSummaries();
 		}
-		if (this.editedList.size()==1) {
-			report +=  " process completed.";
-		} else if (this.editedList.size()>1) {
-			report +=  " processes completed.";
-		};
-		Messagebox.show(report, "", Messagebox.OK, Messagebox.INFORMATION);
-		this.mainC.refreshProcessSummaries();
+		this.mainC.displayMessage(report);
 	}
 
 	public void cancelAll() {

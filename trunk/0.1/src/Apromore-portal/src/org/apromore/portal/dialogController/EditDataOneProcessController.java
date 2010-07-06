@@ -95,12 +95,13 @@ public class EditDataOneProcessController {
 		this.ownerCB.setAttribute("hflex", "1");
 		this.ownerR.appendChild(ownerCB);
 
-		// allow change owner only for admin
+		// TODO: manage rights...
+		/*
 		this.ownerCB.setDisabled(true);
 		this.domainCB.setDisabled((process.getOwner().compareTo(this.mainC.getCurrentUser().getUsername())!=0));
 		this.processNameT.setDisabled((process.getOwner().compareTo(this.mainC.getCurrentUser().getUsername())!=0));
 		this.versionNameT.setDisabled((process.getOwner().compareTo(this.mainC.getCurrentUser().getUsername())!=0));
-		
+		*/
 		reset();
 
 		this.okB.addEventListener("onClick",
