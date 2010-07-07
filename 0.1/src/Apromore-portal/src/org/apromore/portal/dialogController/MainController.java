@@ -93,7 +93,7 @@ public class MainController extends Window {
 			this.host = properties.getProperty("Host"); 
 			this.OryxEndPoint_xpdl = properties.getProperty("OryxEndPoint_xpdl");  
 			this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");  
-			
+
 			/**
 			 * get list of formats
 			 */
@@ -111,12 +111,12 @@ public class MainController extends Window {
 			request = new RequestToManager();
 			DomainsType domainsType = request.ReadDomains();
 			this.domains = domainsType.getDomain();
-			
+
 			/**
 			 * get list of users
 			 */
 			this.users = new ArrayList<String>();
-			
+
 		} catch (Exception e) {
 			Messagebox.show("Repository not available ("+e.getMessage()+")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
@@ -127,13 +127,20 @@ public class MainController extends Window {
 	 * register an event listener for the clientInfo event (to prevent user to close the browser window)
 	 */
 	public void onClientInfo (ClientInfoEvent event) {
-			Clients.confirmClose(this.confirmCloseMsg);
+		Clients.confirmClose(this.confirmCloseMsg);
 	}
 
 	public void displayProcessSummaries(ProcessSummariesType processSummaries) throws Exception {
+		int activePage = this.processtable.getPg().getActivePage();
 		this.processtable.emptyProcessSummaries();
 		this.processtable.newPaging();
 		this.processtable.displayProcessSummaries(processSummaries);
+		int lastPage = this.processtable.getPg().getPageCount()-1;
+		if (lastPage<activePage) {
+			this.processtable.getPg().setActivePage(lastPage);
+		} else {
+			this.processtable.getPg().setActivePage(activePage);
+		}
 	}
 
 	public void updateActions (){
