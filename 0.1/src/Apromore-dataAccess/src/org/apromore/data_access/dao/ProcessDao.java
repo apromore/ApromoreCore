@@ -340,22 +340,19 @@ public class ProcessDao extends BasicDao {
 			keys.close(); stmtp.close();
 
 			// Store informations given as parameters in NPF
-			// creationDate and/or lastUpdate, might be empty. 
-			if (creationDate.compareTo("")==0 || lastUpdate.compareTo("")==0) {
+			// creationDate might be null or empty. 
+			if (creationDate==null || "".compareTo(creationDate)==0) {
 				query = " select date_format(now(), '%Y-%c-%d %k:%i:%s') ";
 				stmt0 = conn.createStatement();
 				rs0 = stmt0.executeQuery(query);
 				if (!rs0.next()) {
 					throw new ExceptionDao ("Error: cannot retrieve date.");
 				}
-				if (creationDate.compareTo("")==0) {
-					creationDate = rs0.getString(1);
-					lastUpdate = rs0.getString(1);
-				} else {
-					lastUpdate = rs0.getString(1);
-				}
+				creationDate = rs0.getString(1);
 				stmt0.close();rs0.close();
 			}
+			if (lastUpdate==null) lastUpdate="";
+			if (documentation==null) documentation="";
 
 			// copy parameters values in npf 
 			InputStream sync_npf = copyParam2NPF(process_xml, nativeType, processId, processName, version,
