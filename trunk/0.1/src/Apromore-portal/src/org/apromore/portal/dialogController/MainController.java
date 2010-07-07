@@ -11,8 +11,10 @@ import java.util.logging.Logger;
 
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionDeleteProcess;
+import org.apromore.portal.exception.ExceptionWriteEditSession;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.DomainsType;
+import org.apromore.portal.model_manager.EditSessionType;
 import org.apromore.portal.model_manager.FormatsType;
 import org.apromore.portal.model_manager.ProcessSummariesType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
@@ -21,6 +23,7 @@ import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
 import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
@@ -145,7 +148,6 @@ public class MainController extends Window {
 			Component C = itC.next();
 			if (C.getClass().getName().compareTo("org.zkoss.zul.Menuitem")==0) {
 				((Menuitem) C).setDisabled(!connected);
-				((Menuitem) C).setDisabled(C.getId().compareTo("createMI")==0);
 			}
 		}
 	}
@@ -203,8 +205,7 @@ public class MainController extends Window {
 			} else {
 				message = " process version deleted.";
 			}
-			Messagebox.show(nb + message, "", Messagebox.OK,
-					Messagebox.INFORMATION);
+			displayMessage(message);
 		} catch (ExceptionDeleteProcess e) {
 			e.printStackTrace();
 			Messagebox.show("Deletion failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
@@ -212,7 +213,40 @@ public class MainController extends Window {
 		}
 	}
 
+	public void editProcess(Integer processId, String processName, String version, 
+			String nativeType, String domain) throws Exception {
 
+		String instruction="", url=getHost();
+		int offsetH = 100, offsetV=200;
+		int editSessionCode;
+		EditSessionType editSession = new EditSessionType();
+		editSession.setDomain(domain);
+		editSession.setNativeType(nativeType);
+		editSession.setProcessId(processId);
+		editSession.setProcessName(processName);
+		editSession.setUsername(this.getCurrentUser().getUsername());
+		editSession.setVersionName(version);
+
+		try {
+			RequestToManager request = new  RequestToManager();
+			editSessionCode = request.WriteEditSession(editSession);
+			if ("XPDL 2.1".compareTo(nativeType)==0) {
+				url += getOryxEndPoint_xpdl()+"sessionCode=";
+			} else if ("EPML 2.0".compareTo(nativeType)==0) {
+				url += getOryxEndPoint_epml()+"sessionCode=";
+			} else {
+				throw new ExceptionWriteEditSession("Native format not supported.");
+			}
+			url += editSessionCode;
+			instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV 
+			+ ",height=600,width=800,scrollbars=1,resizable=1'); ";
+			Clients.evalJavaScript(instruction);
+		} catch (ExceptionWriteEditSession e) {
+			Messagebox.show("Cannot edit " + processName + " (" 
+					+e.getMessage()+")", "Attention", Messagebox.OK,
+					Messagebox.ERROR);
+		}
+	}
 	public void displayMessage (String mes) {
 		this.shortmessageC.displayMessage(mes);
 	}

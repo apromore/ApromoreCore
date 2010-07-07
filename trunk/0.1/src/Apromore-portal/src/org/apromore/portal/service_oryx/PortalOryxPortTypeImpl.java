@@ -126,6 +126,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			EditSessionType editSession = request.ReadEditSession(code);
 			String username = editSession.getUsername();
 			String nativeType = editSession.getNativeType();
+			String domain = editSession.getDomain();
 			/* process name, version name, creation date, last update and documentation
 			 * must be read read native_is
 			 */
@@ -134,7 +135,6 @@ import org.wfmc._2008.xpdl2.PackageType;
 			String documentation = null;
 			String created = null;
 			String lastupdate = null;
-			String domain = null;
 			if (nativeType.compareTo("XPDL 2.1")==0) {
 				JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
 				Unmarshaller u = jc.createUnmarshaller();
@@ -151,7 +151,6 @@ import org.wfmc._2008.xpdl2.PackageType;
 					created = pkg.getPackageHeader().getCreated().getValue().trim();
 					lastupdate = created;
 					//pkg.getPackageHeader().getModificationDate().getValue().trim();
-					domain = ""; // domain undefined in xpdl
 				} catch (NullPointerException e) {
 					throw new ExceptionImport("Missing information in NPF.");
 				}
