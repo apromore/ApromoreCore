@@ -2,7 +2,7 @@
 -->
 
 <window id="createprocessW" width="500px" closable="false"
-	position="center">
+	position="center" title="Create a new process model">
 	<vbox vflex="1">
 		<grid>
 			<columns sizable="true">

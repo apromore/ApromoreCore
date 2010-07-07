@@ -122,40 +122,15 @@ public class EditOneProcessController extends Window {
 	}	
 
 	protected void editProcess() throws Exception {
-
-		String instruction="", url=this.mainC.getHost();
-		int offsetH = 100, offsetV=200;
-		int editSessionCode ;
-
-		Listitem cbi = nativeTypesLB.getSelectedItem();
-		EditSessionType editSession = new EditSessionType();
-		editSession.setDomain(process.getDomain());
-		editSession.setNativeType(cbi.getLabel());
-		editSession.setProcessId(process.getId());
-		editSession.setProcessName(process.getName());
-		editSession.setUsername(this.mainC.getCurrentUser().getUsername());
-		editSession.setVersionName(version.getName());
-
-		try {
-			RequestToManager request = new  RequestToManager();
-			editSessionCode = request.WriteEditSession(editSession);
-			if (cbi.getLabel().compareTo("XPDL 2.1")==0) {
-				url += this.mainC.getOryxEndPoint_xpdl()+"sessionCode=";
-			} else if (cbi.getLabel().compareTo("EPML 2.0")==0) {
-				url += this.mainC.getOryxEndPoint_epml()+"sessionCode=";
-			} else {
-				throw new ExceptionWriteEditSession("Native format not supported.");
-			}
-			url += editSessionCode;
-			instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV 
-			+ ",height=600,width=800,scrollbars=1,resizable=1'); ";
-			Clients.evalJavaScript(instruction);	
-			cancel();
-		} catch (ExceptionWriteEditSession e) {
-			Messagebox.show("Cannot edit " + process.getName() + " (" 
-					+e.getMessage()+")", "Attention", Messagebox.OK,
-					Messagebox.ERROR);
-		}
+		Listitem cbi = this.nativeTypesLB.getSelectedItem();		
+		Integer processId = this.process.getId();
+		String processName = this.process.getName();
+		// normally, only one version...
+		String version = this.version.getName();
+		String nativeType = cbi.getLabel();
+		String domain = this.process.getDomain();
+		this.mainC.editProcess(processId, processName, version, nativeType, domain);
+		cancel();
 	}
 
 

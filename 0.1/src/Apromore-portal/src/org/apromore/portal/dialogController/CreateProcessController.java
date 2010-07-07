@@ -106,6 +106,11 @@ public class CreateProcessController {
 		this.ownerR.appendChild(ownerCB);
 		this.nativeTypesLB = (Listbox) win.getFellow("nativetypes");
 
+
+		// default values
+		this.ownerCB.setValue(this.mainC.getCurrentUser().getUsername());
+		this.versionNameT.setValue("0.1");
+		
 		Set<String> extensions = this.formats_ext.keySet();
 		Iterator<String> it = extensions.iterator();
 		while (it.hasNext()){
@@ -113,11 +118,7 @@ public class CreateProcessController {
 			this.nativeTypesLB.appendChild(cbi);
 			cbi.setLabel(this.formats_ext.get(it.next()));
 		}
-
-		// manage grants... TODO
-		this.ownerCB.setValue(this.mainC.getCurrentUser().getUsername());
-		this.ownerCB.setDisabled(true);
-		
+		// empty fields
 		reset();
 
 		this.okB.addEventListener("onClick",
@@ -157,18 +158,22 @@ public class CreateProcessController {
 				throw new ExceptionImport("Please enter a value for each field.");
 			} else {
 				String domain = this.domainCB.getValue();
+				String processName = this.processNameT.getValue();
+				String owner = this.mainC.getCurrentUser().getUsername();
+				String nativeType = this.nativeTypesLB.getSelectedItem().getLabel();
+				String versionName = this.versionNameT.getValue();
 				// create an empty model corresponding to the native type
 				InputStream nativeProcess = null;
-				if (((String) this.nativeTypesLB.getSelectedItem().getValue()).compareTo("XPDL 2.1")==0) {
+				if ("XPDL 2.1".compareTo(nativeType)==0) {
 					PackageType pkg = new PackageType();
-					pkg.setName(this.processNameT.getValue());
+					pkg.setName(processName);
 					PackageHeader hder = new PackageHeader();
 					pkg.setPackageHeader(hder);
 					RedefinableHeader rhder = new RedefinableHeader();
 					pkg.setRedefinableHeader(rhder);
 					Version version = new Version();
 					rhder.setVersion(version);
-					version.setValue(this.versionNameT.getValue());
+					version.setValue(versionName);
 					JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
 	                Marshaller m = jc.createMarshaller();
 	                m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
@@ -177,7 +182,7 @@ public class CreateProcessController {
 	                m.marshal(rootxpdl, xpdl_xml);
 	                nativeProcess = new ByteArrayInputStream(xpdl_xml.toByteArray());
 
-				} else if (((String) this.nativeTypesLB.getSelectedItem().getValue()).compareTo("EPML 2.0")==0) {
+				} else if ("EPML 2.0".compareTo(nativeType)==0) {
 					TypeEPML epml = new TypeEPML();
 					JAXBContext jc = JAXBContext.newInstance("de.epml");
 	                Marshaller m = jc.createMarshaller();
@@ -188,10 +193,8 @@ public class CreateProcessController {
 	                nativeProcess = new ByteArrayInputStream(epml_xml.toByteArray());
 				}
 				ProcessSummaryType process = 
-					request.importProcess(this.mainC.getCurrentUser().getUsername(), 
-							(String) this.nativeTypesLB.getSelectedItem().getValue(), (String)  this.processNameT.getValue(), 
-							(String)  this.versionNameT.getValue(), nativeProcess, (String) this.domainCB.getSelectedItem().getValue(),
-							null, null, null);
+					request.importProcess(owner, nativeType, processName, versionName, 
+							nativeProcess, domain, null, null, null);
 
 				this.mainC.displayNewProcess(process);
 				/* keep list of domains update */
@@ -219,40 +222,15 @@ public class CreateProcessController {
 	}
 
 	protected void editProcess(ProcessSummaryType process) throws Exception {
-
-		String instruction="", url=this.mainC.getHost();
-		int offsetH = 100, offsetV=200;
-		int editSessionCode ;
-
 		Listitem cbi = this.nativeTypesLB.getSelectedItem();
-		EditSessionType editSession = new EditSessionType();
-		editSession.setDomain(process.getDomain());
-		editSession.setNativeType(cbi.getLabel());
-		editSession.setProcessId(process.getId());
-		editSession.setProcessName(process.getName());
-		editSession.setUsername(this.mainC.getCurrentUser().getUsername());
-		VersionSummaryType version = process.getVersionSummaries().get(0); // only one version...
-
-		try {
-			RequestToManager request = new  RequestToManager();
-			editSessionCode = request.WriteEditSession(editSession);
-			if (cbi.getLabel().compareTo("XPDL 2.1")==0) {
-				url += this.mainC.getOryxEndPoint_xpdl()+"sessionCode=";
-			} else if (cbi.getLabel().compareTo("EPML 2.0")==0) {
-				url += this.mainC.getOryxEndPoint_epml()+"sessionCode=";
-			} else {
-				throw new ExceptionWriteEditSession("Native format not supported.");
-			}
-			url += editSessionCode;
-			instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV 
-			+ ",height=600,width=800,scrollbars=1,resizable=1'); ";
-			Clients.evalJavaScript(instruction);	
-			cancel();
-		} catch (ExceptionWriteEditSession e) {
-			Messagebox.show("Cannot edit " + process.getName() + " (" 
-					+e.getMessage()+")", "Attention", Messagebox.OK,
-					Messagebox.ERROR);
-		}
+		Integer processId = process.getId();
+		String processName = process.getName();
+		// normally, only one version...
+		String version = process.getVersionSummaries().get(0).getName();
+		String nativeType = cbi.getLabel();
+		String domain = process.getDomain();
+		this.mainC.editProcess(processId, processName, version, nativeType, domain);
+		cancel();
 	}
 	protected void cancel() throws Exception {
 		closePopup();
