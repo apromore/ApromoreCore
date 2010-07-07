@@ -33,6 +33,21 @@ public class RequestToCanoniser {
 		this.port = ss.getCanoniserManager();  
 	}
 
+	/**
+	 * 
+	 * @param username
+	 * @param processName
+	 * @param versionName
+	 * @param nativeType
+	 * @param cpf
+	 * @param domain
+	 * @param documentation
+	 * @param created
+	 * @param lastupdate
+	 * @return
+	 * @throws IOException
+	 * @throws ExceptionImport
+	 */
 	public org.apromore.manager.model_portal.ProcessSummaryType 
 	CanoniseProcess(String username, String processName, String versionName, 
 			String nativeType, InputStream cpf, String domain, String documentation, String created, String lastupdate) 
