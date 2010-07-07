@@ -91,8 +91,9 @@ public class ProcessTableController {
 	private Integer latestVersionPos ;						// position of label latest version in row of process summary
 	private Integer processTbPos;							// position of toolbarbuttons associated with process names in rows of process summary
 
-	private Hbox pagingAndButtons;							// honx which contains paging ang button components
+	private Hbox pagingAndButtons;							// hbox which contains paging ang button components
 	private Hbox buttons;
+	private Paging pg;
 	private Button revertSelectionB ;						// button which reverts the process selections
 	private Button selectAllB;
 	private Button unselectAllB;
@@ -110,6 +111,7 @@ public class ProcessTableController {
 		this.processSummariesGrid = (Grid) this.mainC.getFellow("processSummariesGrid");
 		this.processSummariesRows = (Rows) this.processSummariesGrid.getFellow("processSummariesRows");
 		this.pagingAndButtons = (Hbox) this.processSummariesGrid.getFellow("pagingandbuttons");
+		this.pg = (Paging) this.processSummariesGrid.getFellow("pg");
 		this.buttons = (Hbox) this.processSummariesGrid.getFellow("buttons");
 		this.revertSelectionB = (Button) this.processSummariesGrid.getFellow("revertSelectionB");
 		this.unselectAllB = (Button) this.processSummariesGrid.getFellow("unselectAllB");
@@ -212,9 +214,10 @@ public class ProcessTableController {
 		while(hbox.getChildren().size()>0) {
 			hbox.removeChild(hbox.getFirstChild());
 		}
-		Paging pg = new Paging();
-		this.processSummariesGrid.setPaginal(pg);
-		this.pagingAndButtons.appendChild(pg);
+		Paging newPg = new Paging();
+		this.pg = newPg;
+		this.processSummariesGrid.setPaginal(newPg);
+		this.pagingAndButtons.appendChild(newPg);
 		this.pagingAndButtons.appendChild(this.buttons);
 		
 	}
@@ -722,4 +725,13 @@ public class ProcessTableController {
 		return processSummariesGrid;
 	}
 
+	public Paging getPg() {
+		return pg;
+	}
+
+	public void setPg(Paging pg) {
+		this.pg = pg;
+	}
+
+	
 }
