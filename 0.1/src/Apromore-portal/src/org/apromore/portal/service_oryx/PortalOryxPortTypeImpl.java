@@ -148,9 +148,16 @@ import org.wfmc._2008.xpdl2.PackageType;
 					} else {
 						documentation = "";
 					}
-					created = pkg.getPackageHeader().getCreated().getValue().trim();
-					lastupdate = created;
-					//pkg.getPackageHeader().getModificationDate().getValue().trim();
+					if (pkg.getPackageHeader()!=null && pkg.getPackageHeader().getCreated()!=null) {
+						created = pkg.getPackageHeader().getCreated().getValue().trim();
+					} else {
+						created = "";
+					}
+					if (pkg.getPackageHeader()!=null && pkg.getPackageHeader().getModificationDate()!=null) {
+						pkg.getPackageHeader().getModificationDate().getValue().trim();
+					} else {
+						lastupdate = "";
+					}
 				} catch (NullPointerException e) {
 					throw new ExceptionImport("Missing information in NPF.");
 				}

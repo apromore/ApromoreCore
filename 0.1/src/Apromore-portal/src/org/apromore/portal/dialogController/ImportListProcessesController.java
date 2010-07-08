@@ -248,6 +248,6 @@ public class ImportListProcessesController extends Window {
 			report +=  " processes completed.";
 		}
 		if (this.ignoredFiles.compareTo("")!=0) report += "\n (" + this.ignoredFiles + " ignored).";
-		Messagebox.show(report, "", Messagebox.OK, Messagebox.INFORMATION);
+		this.mainC.displayMessage(report);
 	}
 }

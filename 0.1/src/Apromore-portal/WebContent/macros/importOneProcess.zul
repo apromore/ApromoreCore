@@ -10,16 +10,19 @@
 		</columns>
 			<rows>
 				<row spans="1,2">
-					<label value="Process name" width="100%" tooltiptext="mandatory"/>
+					<label value="Process name*" width="100%" />
 					<textbox id="processName" width="100%"/>
 				</row>
 				<row spans="1,2">
-					<label value="Initial version name" width="100%" tooltiptext="mandatory"/>
+					<label value="Initial version name*" width="100%"/>
 					<textbox id="versionName" width="100%" />
 				</row>
 				<row spans="1,2" id="domainRow">
 					<label value="Domain" width="100%"  tooltiptext="optional" />
 					<!-- combobox implemented in SelectDynamicListController -->
+				</row>
+				<row spans="3">
+					<label value="*: mandatory fields."/>
 				</row>
 				<row spans="3">
 					<div align="center">

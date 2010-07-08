@@ -8,6 +8,7 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
@@ -52,6 +53,7 @@ public class EditDataOneProcessController {
 		Window win = (Window) Executions.createComponents("macros/editprocessdata.zul", null, null);
 
 		this.editDataWindow = (Window) win.getFellow("editprocessdataW");
+		this.editDataWindow.setId("modifyprocessdataW");
 		this.editDataWindow.setId(this.editDataWindow.getId()+process.getId()+version.getName());
 		this.editDataWindow.setTitle("Edit data process " + process.getName() + ", " + version.getName());
 		this.okB = (Button) win.getFellow("editprocessdataOkB");
@@ -60,6 +62,7 @@ public class EditDataOneProcessController {
 		this.cancelB.setId(this.cancelB.getId()+process.getId()+version.getName());
 		this.cancelAllB = (Button) win.getFellow("editprocessdataCancelAllB");
 		this.cancelAllB.setId(this.cancelAllB.getId()+process.getId()+version.getName());
+		this.cancelAllB.setVisible(true);
 		this.resetB = (Button) win.getFellow("editprocessdataResetB");
 		this.resetB.setId(this.resetB.getId()+process.getId()+version.getName());
 		this.processNameT = (Textbox) win.getFellow("processname");
@@ -95,13 +98,7 @@ public class EditDataOneProcessController {
 		this.ownerCB.setAttribute("hflex", "1");
 		this.ownerR.appendChild(ownerCB);
 
-		// TODO: manage rights...
-		/*
-		this.ownerCB.setDisabled(true);
-		this.domainCB.setDisabled((process.getOwner().compareTo(this.mainC.getCurrentUser().getUsername())!=0));
-		this.processNameT.setDisabled((process.getOwner().compareTo(this.mainC.getCurrentUser().getUsername())!=0));
-		this.versionNameT.setDisabled((process.getOwner().compareTo(this.mainC.getCurrentUser().getUsername())!=0));
-		*/
+		// set values to those of the process version
 		reset();
 
 		this.okB.addEventListener("onClick",
@@ -143,20 +140,25 @@ public class EditDataOneProcessController {
 		Integer processId = this.process.getId();
 		String processName = this.processNameT.getValue();
 		String domain = this.domainCB.getValue();
-		// TODO username should updatable by admin
 		String username = this.process.getOwner();
 		String preVersion = this.preVersion.getName();
 		String newVersion = this.versionNameT.getValue();
 		String rankingS = this.rankingRG.getSelectedItem().getLabel();
 		Integer ranking = Integer.valueOf(rankingS);
 
-		RequestToManager request = new RequestToManager();
-		request.EditDataProcesses(processId, processName, domain, username, preVersion, newVersion, ranking);
+		if (this.processNameT.getValue().compareTo("")==0
+				|| this.versionNameT.getValue().compareTo("")==0) {
+			Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK,
+					Messagebox.ERROR);
+		} else {
+			RequestToManager request = new RequestToManager();
+			request.EditDataProcesses(processId, processName, domain, username, preVersion, newVersion, ranking);
 
 
-		this.editDataListProcessesC.getEditedList().add(this);
-		this.editDataListProcessesC.deleteFromToBeEdited(this);
-		closePopup();
+			this.editDataListProcessesC.getEditedList().add(this);
+			this.editDataListProcessesC.deleteFromToBeEdited(this);
+			closePopup();
+		}
 	}
 
 	protected void cancel() throws Exception {
@@ -169,7 +171,7 @@ public class EditDataOneProcessController {
 		this.editDataWindow.detach();
 	}
 
-	protected void cancelAll() {
+	protected void cancelAll() throws Exception {
 		this.editDataListProcessesC.cancelAll();
 	}	
 
