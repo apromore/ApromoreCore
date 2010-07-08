@@ -65,15 +65,14 @@ public class RequestToDA {
 			processM.setRanking(res.getProcessSummary().getRanking());
 			processM.setOwner(res.getProcessSummary().getOwner());
 			processM.getVersionSummaries().clear();
-			Iterator it = res.getProcessSummary().getVersionSummaries().iterator();
+			Iterator<org.apromore.canoniser.model_da.VersionSummaryType> it = 
+				res.getProcessSummary().getVersionSummaries().iterator();
 			// normally, only one... consider many for future needs
 			while (it.hasNext()) {
 				org.apromore.canoniser.model_manager.VersionSummaryType first_versionM =
 					new VersionSummaryType();
 				org.apromore.canoniser.model_da.VersionSummaryType versionDa = 
 					(org.apromore.canoniser.model_da.VersionSummaryType) it.next();
-				first_versionM.setCreationDate(versionDa.getCreationDate());
-				first_versionM.setLastUpdate(versionDa.getLastUpdate());
 				first_versionM.setName(versionDa.getName());
 				first_versionM.setRanking(versionDa.getRanking());
 				first_versionM.setDocumentation(versionDa.getDocumentation());
