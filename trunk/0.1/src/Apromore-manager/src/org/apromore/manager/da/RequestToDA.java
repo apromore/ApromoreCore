@@ -88,7 +88,8 @@ public class RequestToDA {
 		}
 	}
 
-	public org.apromore.manager.model_portal.FormatsType ReadFormats() throws ExceptionFormats {
+	public org.apromore.manager.model_portal.FormatsType 
+	ReadFormats() throws ExceptionFormats {
 
 		// payload empty
 		ReadFormatsInputMsgType payload = new ReadFormatsInputMsgType();
@@ -112,7 +113,8 @@ public class RequestToDA {
 		}
 	}
 
-	public org.apromore.manager.model_portal.DomainsType ReadDomains() throws ExceptionDomains{
+	public org.apromore.manager.model_portal.DomainsType 
+	ReadDomains() throws ExceptionDomains{
 
 		// payload empty
 		ReadDomainsInputMsgType payload = new ReadDomainsInputMsgType();
@@ -154,7 +156,8 @@ public class RequestToDA {
 		}
 	}
 
-	public org.apromore.manager.model_portal.UserType ReadUser(String username) throws ExceptionReadUser {
+	public org.apromore.manager.model_portal.UserType 
+	ReadUser(String username) throws ExceptionReadUser {
 
 		org.apromore.manager.model_da.ReadUserInputMsgType payload = new ReadUserInputMsgType();
 		payload.setUsername(username);
