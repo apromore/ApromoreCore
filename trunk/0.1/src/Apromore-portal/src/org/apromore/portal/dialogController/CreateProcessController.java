@@ -59,6 +59,7 @@ public class CreateProcessController {
 	private Radiogroup rankingRG;
 	private Row domainR;
 	private Row ownerR;
+	private Row nativeTypeR;
 	private Listbox nativeTypesLB;
 	private HashMap<String, String> formats_ext; // <k, v> belongs to nativeTypes: the file extension k
 	// is associated with the native type v (<xpdl,XPDL 1.2>)
@@ -71,12 +72,14 @@ public class CreateProcessController {
 		this.mainC = mainC;
 		this.formats_ext = formats_ext;
 
-		Window win = (Window) Executions.createComponents("macros/createprocess.zul", null, null);
+		Window win = (Window) Executions.createComponents("macros/editprocessdata.zul", null, null);
 
-		this.createProcessW = (Window) win.getFellow("createprocessW");
-		this.okB = (Button) win.getFellow("createprocessOkB");
-		this.cancelB = (Button) win.getFellow("createprocessCancelB");
-		this.resetB = (Button) win.getFellow("createprocessResetB");
+		this.createProcessW = (Window) win.getFellow("editprocessdataW");
+		this.createProcessW.setId("createprocessdataW");
+		this.createProcessW.setTitle("Create new process ");
+		this.okB = (Button) win.getFellow("editprocessdataOkB");
+		this.cancelB = (Button) win.getFellow("editprocessdataCancelB");
+		this.resetB = (Button) win.getFellow("editprocessdataResetB");
 		this.processNameT = (Textbox) win.getFellow("processname");
 		this.versionNameT = (Textbox) win.getFellow("versionname");
 		this.rankingRG = (Radiogroup) win.getFellow("ranking");
@@ -104,12 +107,13 @@ public class CreateProcessController {
 		this.ownerCB.setHeight("100%");
 		this.ownerCB.setAttribute("hflex", "1");
 		this.ownerR.appendChild(ownerCB);
+		this.nativeTypeR = (Row) win.getFellow("nativetype");
 		this.nativeTypesLB = (Listbox) win.getFellow("nativetypes");
 
-
+		// this row is set to false at creation time
+		this.nativeTypeR.setVisible(true);
 		// default values
 		this.ownerCB.setValue(this.mainC.getCurrentUser().getUsername());
-		this.versionNameT.setValue("0.1");
 		
 		Set<String> extensions = this.formats_ext.keySet();
 		Iterator<String> it = extensions.iterator();
@@ -154,8 +158,12 @@ public class CreateProcessController {
 		RequestToManager request = new RequestToManager();
 		try {
 			if (this.processNameT.getValue().compareTo("")==0
-					|| this.versionNameT.getValue().compareTo("")==0) {
-				throw new ExceptionImport("Please enter a value for each field.");
+					|| this.versionNameT.getValue().compareTo("")==0
+					|| this.nativeTypesLB.getSelectedItem() == null
+					|| this.nativeTypesLB.getSelectedItem() != null 
+					   && this.nativeTypesLB.getSelectedItem().getLabel().compareTo("")==0) {
+				Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK,
+						Messagebox.ERROR);
 			} else {
 				String domain = this.domainCB.getValue();
 				String processName = this.processNameT.getValue();
@@ -202,6 +210,7 @@ public class CreateProcessController {
 
 				/* call editor */
 				editProcess(process);
+				closePopup();
 			}
 		} catch (WrongValueException e) {
 			e.printStackTrace();
@@ -215,10 +224,7 @@ public class CreateProcessController {
 			e.printStackTrace();
 			Messagebox.show("Creation failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
-		} finally {
-			closePopup();
 		}
-		closePopup();
 	}
 
 	protected void editProcess(ProcessSummaryType process) throws Exception {
@@ -245,6 +251,7 @@ public class CreateProcessController {
 		this.processNameT.setValue(empty);
 		this.versionNameT.setValue(empty);
 		this.domainCB.setValue(empty);
+		this.nativeTypesLB.setSelectedItem(null);
 		r0.setChecked(true);
 		r1.setChecked(false);
 		r2.setChecked(false);

@@ -13,13 +13,16 @@ import org.zkoss.zul.Messagebox;
 
 public class EditDataListProcessesController {
 
-	private MainController mainC ;
-	private MenuController menuC ;
+	private MainController mainC ;	// the main controller 
+	private MenuController menuC ; 	// the menu controller which called edit feature
 	private HashMap<ProcessSummaryType,List<VersionSummaryType>> processVersions;
+									// the selected process versions to be edited
 
-	private List<EditDataOneProcessController> toEditList; // list of edits to do
-	private List<EditDataOneProcessController> editedList; //list of edits to be done
-
+	// list of controllers associated with editions still to be done
+	private List<EditDataOneProcessController> toEditList; 
+	//list of controllers associated with editions 
+	private List<EditDataOneProcessController> editedList; 
+		
 
 	public EditDataListProcessesController(
 			MainController mainC,
@@ -33,10 +36,11 @@ public class EditDataListProcessesController {
 		this.toEditList = new ArrayList<EditDataOneProcessController>();
 		this.editedList = new ArrayList<EditDataOneProcessController>();
 
+		// process versions are edited one by one
 		Set<ProcessSummaryType> keys = this.processVersions.keySet();
-		Iterator it = keys.iterator();
+		Iterator<ProcessSummaryType> it = keys.iterator();
 		while (it.hasNext()) {
-			ProcessSummaryType process = (ProcessSummaryType) it.next();
+			ProcessSummaryType process = it.next();
 			for (Integer i=0; i<this.processVersions.get(process).size();i++) {
 				VersionSummaryType version = this.processVersions.get(process).get(i);
 				EditDataOneProcessController editDataOneProcess = 
@@ -46,6 +50,10 @@ public class EditDataListProcessesController {
 		}
 	}
 
+	/**
+	 * Return list of controllers associated with process versions already edited
+	 * @return List<EditDataOneProcessController>
+	 */
 	public List<EditDataOneProcessController> getEditedList() {
 		if (editedList == null) {
 			editedList = new ArrayList<EditDataOneProcessController>();
@@ -53,6 +61,12 @@ public class EditDataListProcessesController {
 		return this.editedList;
 	}
 
+	/**
+	 * Remove editOneProcess from list of controllers associated with process 
+	 * versions still to be edited
+	 * @param editOneProcess
+	 * @throws Exception
+	 */
 	public void deleteFromToBeEdited(EditDataOneProcessController editOneProcess) throws Exception {
 		this.toEditList.remove(editOneProcess);
 		if (this.toEditList.size()==0) {
@@ -60,6 +74,12 @@ public class EditDataListProcessesController {
 		}
 	}
 
+	/**
+	 * Return a message which summarises edition work.
+	 * If necessary, send request to main controller to refresh
+	 * the table of process version summaries
+	 * @throws Exception
+	 */
 	private void reportEditData() throws Exception {
 		String report = "Modification of " + this.editedList.size();
 		if (this.editedList.size()==0) {
@@ -75,12 +95,18 @@ public class EditDataListProcessesController {
 		this.mainC.displayMessage(report);
 	}
 
-	public void cancelAll() {
+	/**
+	 * Cancel edition of remining process versions: empty the list of
+	 * controllers associated to process versions still to be edited.
+	 * @throws Exception
+	 */
+	public void cancelAll() throws Exception {
 		for (int i=0;i<this.toEditList.size();i++) {
 			if (this.toEditList.get(i).getEditDataOneProcessWindow()!=null){
 				this.toEditList.get(i).getEditDataOneProcessWindow().detach();
 			}
 		}
 		this.toEditList.clear();
+		reportEditData();
 	}
 }

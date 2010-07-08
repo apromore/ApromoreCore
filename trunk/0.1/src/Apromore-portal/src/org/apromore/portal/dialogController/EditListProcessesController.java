@@ -13,9 +13,9 @@ import org.zkoss.zul.Window;
 
 public class EditListProcessesController extends Window {
 
-	private MainController mainC ;
-	private MenuController menuC ;
-	//	private Listitem emptynative;
+	private MainController mainC ;		// the main controller
+	private MenuController menuC ;		// the menu controller which made the call
+	// the 
 	private HashMap<ProcessSummaryType,List<VersionSummaryType>> processVersions;
 	private List<EditOneProcessController> toEditList; // list of edits to do
 	private List<EditOneProcessController> editedList; //list of edits sent to editor
@@ -31,10 +31,9 @@ public class EditListProcessesController extends Window {
 		this.toEditList = new ArrayList<EditOneProcessController>();
 		this.editedList = new ArrayList<EditOneProcessController>();
 		Set<ProcessSummaryType> keys = processVersions.keySet();
-		Iterator it = keys.iterator();
-
+		Iterator<ProcessSummaryType> it = keys.iterator();
 		while (it.hasNext()) {
-			ProcessSummaryType process = (ProcessSummaryType) it.next();
+			ProcessSummaryType process = it.next();
 			for (Integer i=0; i<processVersions.get(process).size();i++) {
 				VersionSummaryType version = processVersions.get(process).get(i);
 				EditOneProcessController editOneProcess = new EditOneProcessController(this.mainC, this, process, version);

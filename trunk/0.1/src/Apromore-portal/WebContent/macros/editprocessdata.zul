@@ -1,4 +1,6 @@
 <!-- editprocessdata window has EditDataOneProcess.java as a controller 
+for editing purpose and CreateProcessController.java for creating 
+process purpose.
 -->
 
 <window id="editprocessdataW" width="500px" closable="false"
@@ -11,20 +13,27 @@
 			</columns>
 			<rows>
 				<row>
-					<label value="Process name*" />
-					<textbox id="processname"/>
+					<label value="Process name*" width="100%"/>
+					<textbox id="processname" width="100%"/>
 				</row>
 				<row>
-					<label value="Version name" />
-					<textbox id="versionname"/>
+					<label value="Version name*" width="100%"/>
+					<textbox id="versionname" width="100%" />
 				</row>
-				<row id="domain">
-					<label value="Domain*" />
+				<row id="domain" width="100%">
+					<label value="Domain" />
 					<!-- combobox implemented in SelectDynamicListController -->
 				</row>
-				<row id="owner">
+				<row id="owner" width="100%">
 					<label value="Owner*" />
 					<!-- combobox implemented in SelectDynamicListController -->
+				</row>
+				<row id="nativetype" visible="false">
+					<label value="Native type*" />
+					<listbox id="nativetypes" width="100%" multiple="false" mold="select" rows="1">
+						<listitem label=""/>
+						<!-- listbox implemented in controller -->
+					</listbox>
 				</row>
 				<row>
 					<label value="Ranking" />
@@ -38,9 +47,9 @@
 					</radiogroup>
 
 				</row>
-				<row spans="2">
+				<row spans="3">
 					<label
-						value="*Process name, domain and owner modifications will be propagated to all process versions." />
+						value="*: mandatory fields" />
 				</row>
 				<row spans="3">
 					<div align="center">
@@ -51,7 +60,7 @@
 							image="img/cancel2.png">
 						</button>
 						<button id="editprocessdataCancelAllB"
-							label="Cancel all" image="img/cancel2.png">
+							label="Cancel all" image="img/cancel2.png" visible="false">
 						</button>
 						<button id="editprocessdataResetB"
 							label="Reset" image="img/reset.png">
