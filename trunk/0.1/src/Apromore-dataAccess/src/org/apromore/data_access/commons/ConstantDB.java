@@ -59,6 +59,9 @@ public final class ConstantDB {
 	
 	public static final String VIEW_HEAD_VERSIONS = "head_versions";
 
+	public static final String TABLE_TEMP_VERSIONS = "temp_versions";
+	public static final String ATTR_RECORD_TIME = "recordTime";
+
 
 }
 
