@@ -28,8 +28,8 @@ public final class ConstantDB {
 	public static final String TABLE_CANONICALS = "canonicals";
 	public static final String TABLE_ANNOTATIONS = "annotations";
 	
-	public static final String TABLE_ANFOFCPF = "anfOfCpf";
-	public static final String ATTR_ANF = "anf";
+	public static final String TABLE_APFOFCPF = "apfOfCpf";
+	public static final String ATTR_APF = "apf";
 	public static final String ATTR_CPF = "cpf";
 	
 	public static final String TABLE_NATIVE_TYPES = "native_types";
@@ -61,7 +61,7 @@ public final class ConstantDB {
 
 	public static final String TABLE_TEMP_VERSIONS = "temp_versions";
 	public static final String ATTR_RECORD_TIME = "recordTime";
-
+	public static final String ATTR_NPF = "npf";
 
 }
 
