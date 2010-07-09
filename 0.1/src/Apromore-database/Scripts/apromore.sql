@@ -1,4 +1,4 @@
-drop table if exists anfOfCpf;
+drop table if exists apfOfCpf;
 drop table if exists derived_versions;
 drop table if exists edit_session_mappings;
 drop table if exists process_versions ;
@@ -9,7 +9,7 @@ drop table if exists annotations ;
 drop table if exists native_types;
 drop table if exists search_histories;
 drop table if exists users ;
-
+drop table if exists temp_versions;
 drop view process_ranking;
 drop view keywords ;
 drop view head_versions0;
@@ -29,14 +29,14 @@ create table canonicals (
 ) engine=innoDB;
 show warnings ;
 
-create table anfOfCpf (
-	cpf int,
-	anf int,
-	constraint pk_anfOfCpf primary key (cpf, anf),
-	constraint fk_anfOfCpf1 foreign key (cpf) references canonicals(uri)
-	on update cascade on delete cascade,
-	constraint fk_anfOfCpf2 foreign key (anf) references annotations(uri)
-	on update cascade on delete cascade
+create table apfOfCpf (
+cpf int,
+apf int,
+constraint pk_apfOfCpf primary key (cpf, apf),
+constraint fk_apfOfCpf1 foreign key (cpf) references canonicals(uri)
+on update cascade on delete cascade,
+constraint fk_apfOfCpf2 foreign key (apf) references annotations(uri)
+on update cascade on delete cascade
 ) engine=innoDB;
 show warnings ;
 
@@ -139,6 +139,22 @@ create table edit_session_mappings (
 	constraint fk__edit_session_mappings2 foreign key (processId,version_name)
 	references process_versions(processId,version_name)
 	on delete cascade on update cascade
+) engine=InnoDB;
+show warnings ;
+
+create table temp_versions (
+code int,
+recordTime datetime,
+processId int,
+version_name varchar(40),
+creation_date varchar(35),
+last_update varchar(35),
+ranking varchar(10),
+documentation text,
+cpf longtext,
+apf longtext,
+npf longtext,
+constraint pk_temp_versions primary key (code, processId, version_name)
 ) engine=InnoDB;
 show warnings ;
 
