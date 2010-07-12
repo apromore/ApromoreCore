@@ -22,13 +22,14 @@
 				<row>
 					<label value="Native type for export" />
 					<listbox width="100%" multiple="false" mold="select" rows="1">
-						<listitem label=""/>
 						<!-- listbox implemented in controller -->
 					</listbox>
 				</row>
-				<row visible="true">
-					<label value="Use annotations" />
-					<checkbox />
+				<row>
+					<label value="Available annotations" />
+					<listbox width="100%" multiple="false" mold="select" rows="1">
+						<!-- listbox implemented in controller -->
+					</listbox>
 				</row>
 				<row spans="2">
 					<div align="center">
