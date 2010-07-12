@@ -9,7 +9,6 @@ import java.util.Set;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
-import org.zkoss.zul.Messagebox;
 
 public class EditDataListProcessesController {
 
