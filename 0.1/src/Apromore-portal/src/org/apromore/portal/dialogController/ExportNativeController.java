@@ -4,15 +4,17 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionExport;
 import org.apromore.portal.manager.RequestToManager;
+import org.apromore.portal.model_manager.AnnotationsType;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
@@ -32,28 +34,33 @@ public class ExportNativeController extends Window {
 	private Label processNameL;
 	private Label versionNameL;
 	private Row annotationsR;
-	private Checkbox annotationsCB;
+	private Listbox annotationsLB;
 	private Button okB;
 	private Button cancelB;
 	private Listbox nativeTypesLB;
 	private int processId;
 	private String versionName;
 	private String originalType;
+	private List<AnnotationsType> annotations;
+	// <t, L> belongs to annotationNames (L is a non empty list of annotation names: 
+	// the process version to export has an npf of
+	// type t, and for this type has annotation files whose names are in L
 	private HashMap<String, String> formats_ext; // <k, v> belongs to nativeTypes: the file extension k
-												// is associated with the native type v (<xpdl,XPDL 1.2>)
-	
+	// is associated with the native type v (<xpdl,XPDL 1.2>)
+
 	public ExportNativeController (MenuController menuC, int processId, 
-				String processName, String originalType, String versionName, HashMap<String, String> formats_ext)   {
+			String processName, String originalType, String versionName, 
+			List<AnnotationsType> annotations, HashMap<String, String> formats_ext)   {
 
 		this.exportNativeW = (Window) Executions.createComponents("macros/exportnative.zul", null, null);
 		this.processId = processId;
 		this.versionName = versionName;
 		this.originalType = originalType;
 		this.formats_ext = formats_ext;
-		
+		this.annotations = annotations;
 		String id = this.processId + " " + this.versionName;
 		this.exportNativeW.setId(id);
-		this.exportNativeW.setTitle("Export Native (" + processName + ", " + versionName +")");
+		this.exportNativeW.setTitle("Export process model ");
 		this.exportNatG = (Grid) this.exportNativeW.getFirstChild().getFirstChild();
 		this.exportNatRs = (Rows) exportNatG.getFirstChild().getNextSibling();
 		Row processNameR = (Row) exportNatRs.getFirstChild();
@@ -65,11 +72,11 @@ public class ExportNativeController extends Window {
 		this.processNameL.setValue(processName);
 		this.versionNameL = (Label) versionNameR.getFirstChild().getNextSibling();
 		this.versionNameL.setValue(versionName);
-		this.annotationsCB = (Checkbox) this.annotationsR.getFirstChild().getNextSibling();
+		this.annotationsLB = (Listbox) this.annotationsR.getFirstChild().getNextSibling();
 		this.nativeTypesLB = (Listbox) nativeTypeR.getFirstChild().getNextSibling();
 		this.okB = (Button) buttonsR.getFirstChild().getFirstChild();
 		this.cancelB = (Button) buttonsR.getFirstChild().getFirstChild().getNextSibling();
-		
+
 		Set<String> extensions = this.formats_ext.keySet();
 		Iterator<String> it = extensions.iterator();
 		while (it.hasNext()){
@@ -84,7 +91,14 @@ public class ExportNativeController extends Window {
 				activateOkButton();
 			}
 		});
-		
+
+		this.nativeTypesLB.addEventListener("onChange",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				doAnnotationListbox();
+			}
+		});
+
 		this.okB.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -103,21 +117,37 @@ public class ExportNativeController extends Window {
 				cancel();
 			}
 		});	
-		
-		//this.exportNativeW.doOverlapped();
 	}
-	
+
+	protected void doAnnotationListbox() {		
+		String nat_type = this.nativeTypesLB.getSelectedItem().getLabel();
+		List<AnnotationsType> listAnn = this.annotations;
+		Listitem cb = new Listitem();
+		this.annotationsLB.appendChild(cb);
+		cb.setLabel(Constants.NO_ANNOTATIONS);
+		int j = 0 ;
+		while (j<listAnn.size() && listAnn.get(j).getNativeType().compareTo(nat_type)!=0) j++;
+		if (j<listAnn.size()) {
+			List<String> names = this.annotations.get(j).getAnnotationNames();
+			for (int i=0; i<names.size(); i++){
+				Listitem cbi = new Listitem();
+				this.annotationsLB.appendChild(cbi);
+				cbi.setLabel(names.get(i));
+			}
+		}
+	}
+
 	protected void activateOkButton() {
 		this.okB.setDisabled(false);
 		//this.nativeTypesLB.removeChild(this.emptynative);
 	}
-	
+
 	private void cancel() {
 		this.exportNativeW.detach();
 		//inform the menuC
-		
+
 	}
-	
+
 	private void export() throws InterruptedException {
 
 		try {
@@ -137,7 +167,7 @@ public class ExportNativeController extends Window {
 					}
 				}
 				if (ext==null) {
-					throw new ExceptionExport ("ExportNativeController: Native type " + nativeType
+					throw new ExceptionExport ("Native type " + nativeType
 							+ " not supported. \n");
 				}
 				if (nativeType.compareTo(this.originalType)==0) {
@@ -145,9 +175,11 @@ public class ExportNativeController extends Window {
 				}
 				String processname = this.processNameL.getValue().replaceAll(" ", "_");
 				String filename = processname + "." + ext;
+				String annotation = this.annotationsLB.getSelectedItem().getLabel();
+				Boolean withAnnotation = (this.annotationsLB.getSelectedItem().getLabel().compareTo(Constants.NO_ANNOTATIONS)==0);
 				RequestToManager request = new RequestToManager();
 				InputStream native_is =
-					request.ExportNative (this.processId, this.versionName, nativeType, this.annotationsCB.isChecked());
+					request.ExportNative (this.processId, this.versionName, nativeType, annotation, withAnnotation);
 				Filedownload.save(native_is, "text.xml", filename);
 			}
 		} catch (InterruptedException e) {

@@ -15,6 +15,8 @@ import javax.xml.bind.JAXBException;
 
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionImport;
+import org.apromore.portal.manager.RequestToManager;
+import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.zkoss.util.media.Media;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -249,5 +251,39 @@ public class ImportListProcessesController extends Window {
 		}
 		if (this.ignoredFiles.compareTo("")!=0) report += "\n (" + this.ignoredFiles + " ignored).";
 		this.mainC.displayMessage(report);
+	}
+
+	/*
+	 * Apply default values to all file still to be imported:
+	 * - file name as process name
+	 * - version name
+	 * - domain
+	 */
+	public void importAllProcess(String processName, String version, String domain) throws InterruptedException, IOException {
+		RequestToManager request = new RequestToManager();
+		List<ImportOneProcessController> importAll = this.toImportList;
+		for (int i=0; i<importAll.size();i++) {
+			ImportOneProcessController importOneProcess = importAll.get(i);
+			ProcessSummaryType res = null;
+			try {
+				res = request.importProcess(this.mainC.getCurrentUser().getUsername(), importOneProcess.getNativeType(), processName, 
+						version, importOneProcess.getNativeProcess(), domain,
+						importOneProcess.getDocumentation(), importOneProcess.getCreated(), importOneProcess.getLastUpdate());
+				// process successfully imported
+				this.mainC.displayNewProcess(res);
+				this.getImportedList().add(importOneProcess);
+				this.deleteFromToBeImported(importOneProcess);
+				importOneProcess.detach();
+			} catch (ExceptionImport e) {
+				e.printStackTrace();
+				Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
+						Messagebox.ERROR);
+			} catch (IOException e) {
+				e.printStackTrace();
+				Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
+						Messagebox.ERROR);
+			}
+		}
+		this.cancelAll();
 	}
 }
