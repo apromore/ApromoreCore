@@ -28,6 +28,8 @@
 					<div align="center">
 						<button id="okButtonOneProcess" label="OK"  image="img/ok.png">
 						</button>
+						<button id="okForAllButtonOneProcess" label="OK for all"  image="img/ok.png">
+						</button>
 						<button id="cancelButtonOneProcess" label="Cancel"
 							image="img/cancel2.png">
 						</button>
