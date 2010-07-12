@@ -174,7 +174,7 @@ public class MenuController extends Menubar {
 				while (itV.hasNext()){
 					VersionSummaryType version = (VersionSummaryType) itV.next();
 					exportNativeC = new ExportNativeController(this, process.getId(), process.getName(), process.getOriginalNativeType(),
-							version.getName(), this.mainC.getNativeTypes());
+							version.getName(), version.getAnnotations(), this.mainC.getNativeTypes());
 					this.exportNativeConts.add(exportNativeC);
 				}
 			} 

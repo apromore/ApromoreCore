@@ -39,6 +39,7 @@ public class ImportOneProcessController extends Window {
 	private InputStream nativeProcess; // the input stream read from uploaded file
 	private String nativeType;
 	private Button okButton;
+	private Button okForAllButton;
 	private Button cancelButton;
 	private Button cancelAllButton;
 
@@ -61,6 +62,8 @@ public class ImportOneProcessController extends Window {
 		this.versionName.setId(this.versionName.getId()+fileName);
 		this.okButton = (Button) this.importOneProcessWindow.getFellow("okButtonOneProcess");
 		this.okButton.setId(this.okButton.getId()+fileName);
+		this.okForAllButton = (Button) this.importOneProcessWindow.getFellow("okForAllButtonOneProcess");
+		this.okForAllButton.setId(this.okForAllButton.getId()+fileName);
 		this.cancelButton = (Button) this.importOneProcessWindow.getFellow("cancelButtonOneProcess");
 		this.cancelButton.setId(this.cancelButton.getId()+fileName);
 		this.cancelAllButton = (Button) this.importOneProcessWindow.getFellow("cancelAllButtonOneProcess");
@@ -75,7 +78,7 @@ public class ImportOneProcessController extends Window {
 		this.domainCB.setHeight("100%");
 		this.domainCB.setAttribute("hflex", "1");
 		this.domainR.appendChild(domainCB);
-		
+
 		String readVersionName = "0.1"; // default value for versionName if not found
 		String readProcessName = processName ; // default value if not found
 		String readDocumentation = "" ; 
@@ -134,7 +137,7 @@ public class ImportOneProcessController extends Window {
 				// default value
 			}
 		} else if (nativeType.compareTo("EPML 2.0")==0) {
-			
+
 		}
 		this.processName.setValue(readProcessName);
 		this.versionName.setValue(readVersionName);
@@ -147,7 +150,15 @@ public class ImportOneProcessController extends Window {
 			public void onEvent(Event event) throws Exception {
 				importProcess();
 			}
+		});			
+
+		this.okForAllButton.addEventListener("onClick",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				importAllProcess();
+			}
 		});	
+
 		this.importOneProcessWindow.addEventListener("onOK",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -233,6 +244,23 @@ public class ImportOneProcessController extends Window {
 		}
 	}
 
+	/**
+	 * The user clicked "OK for all": the default values apply for all
+	 * process models still to import.
+	 * @throws ExceptionImport 
+	 * @throws IOException 
+	 * @throws InterruptedException 
+	 * @throws WrongValueException 
+	 */
+	protected void importAllProcess() throws ExceptionImport, WrongValueException, InterruptedException, IOException {
+		if (this.processName.getValue().compareTo("")==0
+				|| this.versionName.getValue().compareTo("")==0) {
+			throw new ExceptionImport("Please enter a value for each field.");
+		} else {
+			this.importProcessesC.importAllProcess(this.processName.getValue(),
+					this.versionName.getValue(), this.domainCB.getSelectedItem().getLabel());
+		}
+	}
 	public Window getImportOneProcessWindow() {
 		return importOneProcessWindow;
 	}
@@ -241,4 +269,25 @@ public class ImportOneProcessController extends Window {
 		return fileName;
 	}
 
+	public String getDocumentation() {
+		return documentation;
+	}
+
+	public String getNativeType() {
+		return nativeType;
+	}
+
+	public String getLastUpdate() {
+		return lastUpdate;
+	}
+
+	public String getCreated() {
+		return created;
+	}
+
+	public InputStream getNativeProcess() {
+		return nativeProcess;
+	}
+
+	
 }

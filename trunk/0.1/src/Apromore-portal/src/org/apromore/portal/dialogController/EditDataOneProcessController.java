@@ -55,7 +55,7 @@ public class EditDataOneProcessController {
 		this.editDataWindow = (Window) win.getFellow("editprocessdataW");
 		this.editDataWindow.setId("modifyprocessdataW");
 		this.editDataWindow.setId(this.editDataWindow.getId()+process.getId()+version.getName());
-		this.editDataWindow.setTitle("Edit data process " + process.getName() + ", " + version.getName());
+		this.editDataWindow.setTitle("Edit process model meta-data");
 		this.okB = (Button) win.getFellow("editprocessdataOkB");
 		this.okB.setId(this.okB.getId()+process.getId()+version.getName());
 		this.cancelB = (Button) win.getFellow("editprocessdataCancelB");
