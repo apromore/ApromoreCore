@@ -122,8 +122,6 @@ import org.apromore.data_access.model_canoniser.StoreVersionOutputMsgType;
 		try {
 			DataHandler handler = payload.getNative();
 			InputStream process_xml = handler.getInputStream();
-			System.out.println("Size of process native description (DA): " + process_xml.available());
-			
 			DataHandler handlercpf = payload.getCpf();
 			InputStream cpf_xml = handlercpf.getInputStream();
 			DataHandler handleranf = payload.getAnf();
