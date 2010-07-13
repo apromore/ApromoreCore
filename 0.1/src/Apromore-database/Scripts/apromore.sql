@@ -1,44 +1,18 @@
-drop table if exists apfOfCpf;
-drop table if exists derived_versions;
+drop table if exists temp_versions;
 drop table if exists edit_session_mappings;
-drop table if exists process_versions ;
-drop table if exists processes ;
+drop table if exists derived_versions;
+drop table if exists annotations ;
 drop table if exists natives ;
 drop table if exists canonicals ;
-drop table if exists annotations ;
-drop table if exists native_types;
+drop table if exists process_versions ;
+drop table if exists processes ;
 drop table if exists search_histories;
 drop table if exists users ;
-drop table if exists temp_versions;
+drop table if exists native_types;
 drop view process_ranking;
 drop view keywords ;
 drop view head_versions0;
 drop view head_versions;
-
-create table annotations (
-    uri         int     auto_increment,
-    content longtext,
-    constraint pk_annotation primary key (uri)
-) engine=innoDB;
-show warnings ;
-
-create table canonicals (
-    uri        int     auto_increment,
-    content longtext,
-    constraint pk_canonicals primary key (uri)
-) engine=innoDB;
-show warnings ;
-
-create table apfOfCpf (
-cpf int,
-apf int,
-constraint pk_apfOfCpf primary key (cpf, apf),
-constraint fk_apfOfCpf1 foreign key (cpf) references canonicals(uri)
-on update cascade on delete cascade,
-constraint fk_apfOfCpf2 foreign key (apf) references annotations(uri)
-on update cascade on delete cascade
-) engine=innoDB;
-show warnings ;
 
 create table native_types (
     nat_type varchar(20),
@@ -78,10 +52,37 @@ create table processes (
     index(processId),
     constraint pk_processes primary key(processId),
     constraint fk_processes1 foreign key(owner) references users(username)
-        on delete cascade on update cascade, 
+        on update cascade, 
     constraint fk_processes2 foreign key (original_type) references native_types(nat_type)
     on update cascade
 ) engine=InnoDB;
+show warnings ;
+
+
+create table process_versions (
+    processId int,
+    version_name varchar(40),
+    creation_date varchar(35),
+    last_update varchar(35),
+    ranking varchar(10),
+    documentation text,
+    constraint pk_versions primary key (processId,version_name),
+    constraint fk_versions1 foreign key (processId) references processes(processId)
+    on delete cascade on update cascade
+) engine=InnoDB;
+show warnings ;
+
+create table canonicals (
+    uri        int     auto_increment,
+    processId int,
+    version_name varchar(40),
+    content longtext,
+    constraint pk_canonicals primary key (uri),
+    constraint un_canonicals unique (processId, version_name),
+    constraint fk_canonicals foreign key (processId, version_name) 
+    	references process_versions(processId, version_name)
+   		on update cascade on delete cascade
+) engine=innoDB;
 show warnings ;
 
 create table natives (
@@ -90,34 +91,31 @@ create table natives (
     nat_type varchar(20),
     canonical int,
     constraint pk_natives primary key (uri),
+    constraint un_natives unique (canonical,nat_type),
     constraint fk_natives foreign key (nat_type) references native_types(nat_type), 
     constraint fk_natives3 foreign key (canonical) references canonicals(uri)
+   		on update cascade on delete cascade
 ) engine=innoDB;
 show warnings ;
 
-create table process_versions (
-    processId int,
-    version_name varchar(40),
-    creation_date varchar(35),
-    last_update varchar(35),
+create table annotations (
+    uri         int     auto_increment,
+    native      int,
     canonical int,
-    ranking varchar(10),
-    documentation text,
-    constraint pk_versions primary key (processId,version_name),
-    constraint un_versions unique (canonical),
-    constraint fk_versions1 foreign key (processId) references processes(processId)
-    on delete cascade on update cascade,
-    constraint fk_versions2 foreign key (canonical) references canonicals(uri)
-    on delete cascade on update cascade
-) engine=InnoDB;
+    name 		varchar(40),
+    content longtext,
+    constraint pk_annotation primary key (uri),
+    constraint un_annotation unique (canonical,name),
+    constraint fk_annotation foreign key (native) references natives (uri)
+		on update cascade on delete cascade
+) engine=innoDB;
 show warnings ;
 
 create table derived_versions (
     processId int,
     version varchar(40),
     derived_version varchar(40),
-    constraint pk_derived_version primary key (processId,version),
-    constraint un_derived_version  unique (processId,derived_version),
+    constraint pk_derived_version primary key (processId,version,derived_version),
     constraint fk_derived_version1 foreign key (processId,version)
     	references process_versions(processId,version_name)
     	on delete cascade on update cascade,
@@ -129,6 +127,7 @@ show warnings ;
 
 create table edit_session_mappings (
 	code int auto_increment,
+	recordTime datetime,
 	username varchar(10),
 	processId int,
 	version_name varchar(40),
@@ -143,18 +142,20 @@ create table edit_session_mappings (
 show warnings ;
 
 create table temp_versions (
-code int,
-recordTime datetime,
-processId int,
-version_name varchar(40),
-creation_date varchar(35),
-last_update varchar(35),
-ranking varchar(10),
-documentation text,
-cpf longtext,
-apf longtext,
-npf longtext,
-constraint pk_temp_versions primary key (code, processId, version_name)
+	code int,
+	recordTime datetime,
+	processId int,
+	pre_version varchar(40),
+	new_version varchar(40),
+    nat_type varchar(20),
+	creation_date varchar(35),
+	last_update varchar(35),
+	ranking varchar(10),
+	documentation text,
+	cpf longtext,
+	apf longtext,
+	npf longtext,
+	constraint pk_temp_versions primary key (code, processId, new_version)
 ) engine=InnoDB;
 show warnings ;
 
