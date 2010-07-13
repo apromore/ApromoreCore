@@ -200,6 +200,8 @@ public class ImportOneProcessController extends Window {
 
 	/**
 	 * @throws IOException 
+	 * @throws InterruptedException 
+	 * @throws IOException 
 	 * @throws JAXBException 
 	 * @throws InterruptedException 
 	 * Import process whose details are given in the class variable:
@@ -207,12 +209,13 @@ public class ImportOneProcessController extends Window {
 	 * @return name of imported process
 	 * @exception
 	 **/
-	private void  importProcess() throws InterruptedException, IOException {
+	private void  importProcess() throws InterruptedException, IOException  {
 		RequestToManager request = new RequestToManager();
 		try {
 			if (this.processName.getValue().compareTo("")==0
 					|| this.versionName.getValue().compareTo("")==0) {
-				throw new ExceptionImport("Please enter a value for each field.");
+				Messagebox.show("Please enter a value for each field.", "Attention", Messagebox.OK,
+						Messagebox.EXCLAMATION);
 			} else {
 				String domain = this.domainCB.getValue();
 				ProcessSummaryType res= 
@@ -224,6 +227,8 @@ public class ImportOneProcessController extends Window {
 				this.mainC.displayNewProcess(res);
 				/* keep list of domains update */
 				this.domainCB.addItem(domain);
+				// delete process from the list of processes still to be imported
+				this.importProcessesC.deleteFromToBeImported(this);
 			}
 		} catch (WrongValueException e) {
 			e.printStackTrace();
@@ -238,8 +243,6 @@ public class ImportOneProcessController extends Window {
 			Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		} finally {
-			// delete process from the list of processes still to be imported
-			this.importProcessesC.deleteFromToBeImported(this);
 			closePopup();
 		}
 	}
@@ -255,10 +258,10 @@ public class ImportOneProcessController extends Window {
 	protected void importAllProcess() throws ExceptionImport, WrongValueException, InterruptedException, IOException {
 		if (this.processName.getValue().compareTo("")==0
 				|| this.versionName.getValue().compareTo("")==0) {
-			throw new ExceptionImport("Please enter a value for each field.");
+			Messagebox.show("Please enter a value for each field.", "Attention", Messagebox.OK,
+					Messagebox.EXCLAMATION);
 		} else {
-			this.importProcessesC.importAllProcess(this.processName.getValue(),
-					this.versionName.getValue(), this.domainCB.getSelectedItem().getLabel());
+			this.importProcessesC.importAllProcess(this.versionName.getValue(), this.domainCB.getValue());
 		}
 	}
 	public Window getImportOneProcessWindow() {

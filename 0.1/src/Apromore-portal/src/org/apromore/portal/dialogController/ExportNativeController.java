@@ -10,7 +10,6 @@ import java.util.Set;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionExport;
 import org.apromore.portal.manager.RequestToManager;
-import org.apromore.portal.model_manager.AnnotationsType;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -41,16 +40,13 @@ public class ExportNativeController extends Window {
 	private int processId;
 	private String versionName;
 	private String originalType;
-	private List<AnnotationsType> annotations;
-	// <t, L> belongs to annotationNames (L is a non empty list of annotation names: 
-	// the process version to export has an npf of
-	// type t, and for this type has annotation files whose names are in L
+	private List<String> annotations;	// list of available annotations for this process version
 	private HashMap<String, String> formats_ext; // <k, v> belongs to nativeTypes: the file extension k
 	// is associated with the native type v (<xpdl,XPDL 1.2>)
 
 	public ExportNativeController (MenuController menuC, int processId, 
 			String processName, String originalType, String versionName, 
-			List<AnnotationsType> annotations, HashMap<String, String> formats_ext)   {
+			List<String> annotations, HashMap<String, String> formats_ext)   {
 
 		this.exportNativeW = (Window) Executions.createComponents("macros/exportnative.zul", null, null);
 		this.processId = processId;
@@ -85,17 +81,18 @@ public class ExportNativeController extends Window {
 			cbi.setLabel(this.formats_ext.get(it.next()));
 		}
 
+		Listitem cb = new Listitem();
+		this.annotationsLB.appendChild(cb);
+		cb.setLabel(Constants.NO_ANNOTATIONS);
+		for (int i=0; i<this.annotations.size(); i++){
+			Listitem cbi = new Listitem();
+			this.annotationsLB.appendChild(cbi);
+			cbi.setLabel(this.annotations.get(i));
+		}
 		this.nativeTypesLB.addEventListener("onSelect",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
 				activateOkButton();
-			}
-		});
-
-		this.nativeTypesLB.addEventListener("onChange",
-				new EventListener() {
-			public void onEvent(Event event) throws Exception {
-				doAnnotationListbox();
 			}
 		});
 
@@ -119,23 +116,6 @@ public class ExportNativeController extends Window {
 		});	
 	}
 
-	protected void doAnnotationListbox() {		
-		String nat_type = this.nativeTypesLB.getSelectedItem().getLabel();
-		List<AnnotationsType> listAnn = this.annotations;
-		Listitem cb = new Listitem();
-		this.annotationsLB.appendChild(cb);
-		cb.setLabel(Constants.NO_ANNOTATIONS);
-		int j = 0 ;
-		while (j<listAnn.size() && listAnn.get(j).getNativeType().compareTo(nat_type)!=0) j++;
-		if (j<listAnn.size()) {
-			List<String> names = this.annotations.get(j).getAnnotationNames();
-			for (int i=0; i<names.size(); i++){
-				Listitem cbi = new Listitem();
-				this.annotationsLB.appendChild(cbi);
-				cbi.setLabel(names.get(i));
-			}
-		}
-	}
 
 	protected void activateOkButton() {
 		this.okB.setDisabled(false);

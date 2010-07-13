@@ -10,7 +10,7 @@ import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 
-public class EditDataListProcessesController {
+public class EditDataListProcController {
 
 	private MainController mainC ;	// the main controller 
 	private MenuController menuC ; 	// the menu controller which called edit feature
@@ -23,7 +23,7 @@ public class EditDataListProcessesController {
 	private List<EditDataOneProcessController> editedList; 
 		
 
-	public EditDataListProcessesController(
+	public EditDataListProcController(
 			MainController mainC,
 			MenuController menuController,
 			HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) 

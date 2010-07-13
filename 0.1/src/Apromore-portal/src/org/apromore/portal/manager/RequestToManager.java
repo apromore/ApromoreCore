@@ -166,13 +166,15 @@ public class RequestToManager {
 
 	}
 
-	public InputStream ExportNative(int processId, String versionName, String nativeType, Boolean withAnnotations) 
+	public InputStream ExportNative(int processId, String versionName, String nativeType, String annotationName,
+			Boolean withAnnotations) 
 	throws ExceptionExport, IOException {
 
 		ExportNativeInputMsgType payload = new ExportNativeInputMsgType();
 		payload.setProcessId(processId);
 		payload.setVersionName(versionName);
 		payload.setNativeType(nativeType);
+		payload.setAnnotationName(annotationName);
 		payload.setWithAnnotations(withAnnotations);
 		ExportNativeOutputMsgType res = this.port.exportNative(payload);
 		ResultType result = res.getResult();
