@@ -31,6 +31,8 @@
 	<complexType name="ReadCanonicalAnfInputMsgType">
 		<attribute name="processId" type="int" />
 		<attribute name="version" type="string" />
+		<attribute name="withAnnotation" type="boolean" />		
+		<attribute name="annotationName" type="string" />
 	</complexType>
 
 	<complexType name="ReadCanonicalAnfOutputMsgType">
@@ -113,13 +115,17 @@
 	</complexType>
 
 	<complexType name="VersionSummaryType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="Annotations"
+				type="string" />
+		</sequence>
 		<attribute name="ranking" type="int" />
 		<attribute name="name" type="string" />
 		<attribute name="documentation" type="string" />
 		<attribute name="last_update" type="string" />
 		<attribute name="creation_date" type="string" />
 	</complexType>
-
+	
 	<complexType name="ReadDomainsInputMsgType">
 		<attribute name="Empty" type="string" use="optional" />
 	</complexType>
