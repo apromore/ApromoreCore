@@ -1,5 +1,6 @@
 package org.apromore.portal.dialogController;
 
+import org.apromore.portal.dialogController.EditDataListProcController;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
@@ -15,12 +16,13 @@ import org.zkoss.zul.Row;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
+
 public class EditDataOneProcessController {
 
 	private Window editDataWindow;
 
 	private MainController mainC ;
-	private EditDataListProcessesController editDataListProcessesC;
+	private EditDataListProcController editDataListProcessesC;
 	private Button okB;
 	private Button cancelB;
 	private Button cancelAllB;
@@ -43,10 +45,10 @@ public class EditDataOneProcessController {
 	private SelectDynamicListController domainCB;
 
 	public EditDataOneProcessController(MainController mainC,
-			EditDataListProcessesController editDataListProcessesController,
+			EditDataListProcController editDataListProcController,
 			ProcessSummaryType process, VersionSummaryType version) throws SuspendNotAllowedException, InterruptedException {
 		this.mainC = mainC;
-		this.editDataListProcessesC = editDataListProcessesController;
+		this.editDataListProcessesC = editDataListProcController;
 		this.process = process;
 		this.preVersion = version;
 

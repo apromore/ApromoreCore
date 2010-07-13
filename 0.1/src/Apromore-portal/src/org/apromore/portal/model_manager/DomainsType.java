@@ -3,7 +3,6 @@ package org.apromore.portal.model_manager;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -34,11 +33,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "DomainsType", propOrder = {
     "domain"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-02T11:35:44+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-13T04:14:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class DomainsType {
 
     @XmlElement(name = "Domain")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-02T11:35:44+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-13T04:14:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected List<String> domain;
 
     /**
@@ -63,7 +62,7 @@ public class DomainsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-02T11:35:44+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-13T04:14:32+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public List<String> getDomain() {
         if (domain == null) {
             domain = new ArrayList<String>();

@@ -212,7 +212,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			String processName = editSession.getProcessName();
 			// request native 
 			InputStream native_is = 
-				request.ExportNative(processId, version, nativeType, true);
+				request.ExportNative(processId, version, nativeType, null, false);
 			DataSource sourceNative = new ByteArrayDataSource(native_is, "text/xml"); 
 			res.setNative(new DataHandler(sourceNative));	
 

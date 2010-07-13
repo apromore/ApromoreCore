@@ -246,8 +246,8 @@ public class MenuController extends Menubar {
 			getSelectedProcessVersions();
 
 		if (selectedProcessVersions.size()!=0) {
-			EditDataListProcessesController editList = 
-				new EditDataListProcessesController (this.mainC, this, selectedProcessVersions);
+			EditDataListProcController editList = 
+				new EditDataListProcController (this.mainC, this, selectedProcessVersions);
 		} else {
 			this.mainC.displayMessage("No process version selected.");
 		}
