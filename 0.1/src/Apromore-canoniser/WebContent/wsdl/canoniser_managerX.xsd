@@ -86,9 +86,9 @@
 			<element name="Native" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
-		<attribute name="nativeType" type="string" />
-		<attribute name="processId" type="int" />
-		<attribute name="domain" type="string" />
+		<attribute name="NativeType" type="string" />
+		<attribute name="ProcessId" type="int" />
+		<attribute name="Domain" type="string" />
 	</complexType>
 
 	<complexType name="CanoniseVersionOutputMsgType">
