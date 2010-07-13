@@ -134,9 +134,9 @@ import de.epml.TypeEPML;
 				}
 
 				InputStream native_xml_is = new ByteArrayInputStream(native_xml.toByteArray());
-				RequestToDA request = new RequestToDA();
-				request.StoreNative(processId, version, nativeType, native_xml_is);
-				native_xml_is = new ByteArrayInputStream(native_xml.toByteArray());
+				//RequestToDA request = new RequestToDA();
+				//request.StoreNative(processId, version, nativeType, native_xml_is);
+				//native_xml_is = new ByteArrayInputStream(native_xml.toByteArray());
 				DataSource native_ds = new ByteArrayDataSource(native_xml_is, "text/xml"); 
 				res.setNativeDescription(new DataHandler(native_ds));
 
