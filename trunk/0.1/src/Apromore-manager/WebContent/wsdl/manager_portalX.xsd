@@ -34,10 +34,6 @@
 		<attribute name="SearchExpression" type="string" />
 	</complexType>
 
-	<complexType name="SearchExpressionType">
-		<attribute name="SearchExpression" type="string" />
-	</complexType>
-
 	<complexType name="ReadProcessSummariesOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" minOccurs="1"
@@ -69,6 +65,10 @@
 	</complexType>
 
 	<complexType name="VersionSummaryType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="Annotations"
+				type="string" />
+		</sequence>
 		<attribute name="ranking" type="int" />
 		<attribute name="name" type="string" />
 		<attribute name="last_update" type="string" />
@@ -92,7 +92,7 @@
 		<attribute name="newName" type="string" />
 		<attribute name="preName" type="string" />
 	</complexType>
-	
+
 	<complexType name="ReadDomainsInputMsgType">
 		<attribute name="Empty" type="string" use="optional" />
 	</complexType>
@@ -172,9 +172,9 @@
 		<attribute name="NativeType" type="string" />
 		<attribute name="Domain" type="string" />
 		<attribute name="Username" type="string" />
-		<attribute name="last_update" type="string" />
-		<attribute name="creation_date" type="string" />
-		<attribute name="documentation" type="string" />
+		<attribute name="Last_update" type="string" />
+		<attribute name="Creation_date" type="string" />
+		<attribute name="Documentation" type="string" />
 	</complexType>
 
 	<complexType name="ImportProcessOutputMsgType">
@@ -190,6 +190,7 @@
 		<attribute name="NativeType" type="string" />
 		<attribute name="ProcessId" type="int" />
 		<attribute name="VersionName" type="string" />
+		<attribute name="AnnotationName" type="string" />
 		<attribute name="withAnnotations" type="boolean" />
 	</complexType>
 

@@ -219,6 +219,7 @@ public class RequestToDA {
 					versionP.setName(versionM.getName());
 					versionP.setRanking(versionM.getRanking());					
 					versionP.setDocumentation(versionM.getDocumentation());
+					versionP.getAnnotations().addAll(versionM.getAnnotations());
 				}
 			}
 			return processesP;
@@ -245,11 +246,13 @@ public class RequestToDA {
 		}
 	}
 
-	public void ReadCanonicalAnf(int processId, String version) throws ExceptionReadCanonicalAnf, IOException {
+	public void ReadCanonicalAnf(int processId, String version, boolean withAnnotation, String annotationName) 
+	throws ExceptionReadCanonicalAnf, IOException {
 		org.apromore.manager.model_da.ReadCanonicalAnfInputMsgType payload = new ReadCanonicalAnfInputMsgType();
 		payload.setProcessId(processId);
 		payload.setVersion(version);
-
+		payload.setAnnotationName(annotationName);
+		payload.setWithAnnotation(withAnnotation);
 		org.apromore.manager.model_da.ReadCanonicalAnfOutputMsgType res = this.port.readCanonicalAnf(payload);
 		org.apromore.manager.model_da.ResultType result = res.getResult();
 		if (result.getCode() == 0) {
