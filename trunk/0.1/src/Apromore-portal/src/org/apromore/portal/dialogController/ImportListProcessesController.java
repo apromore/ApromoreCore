@@ -259,13 +259,15 @@ public class ImportListProcessesController extends Window {
 	 * - version name
 	 * - domain
 	 */
-	public void importAllProcess(String processName, String version, String domain) throws InterruptedException, IOException {
+	public void importAllProcess(String version, String domain) throws InterruptedException, IOException {
 		RequestToManager request = new RequestToManager();
-		List<ImportOneProcessController> importAll = this.toImportList;
+		List<ImportOneProcessController> importAll = new ArrayList<ImportOneProcessController>();
+		importAll.addAll(this.toImportList);
 		for (int i=0; i<importAll.size();i++) {
 			ImportOneProcessController importOneProcess = importAll.get(i);
 			ProcessSummaryType res = null;
 			try {
+				String processName = importOneProcess.getFileName().split("\\.")[0];
 				res = request.importProcess(this.mainC.getCurrentUser().getUsername(), importOneProcess.getNativeType(), processName, 
 						version, importOneProcess.getNativeProcess(), domain,
 						importOneProcess.getDocumentation(), importOneProcess.getCreated(), importOneProcess.getLastUpdate());
@@ -273,7 +275,7 @@ public class ImportListProcessesController extends Window {
 				this.mainC.displayNewProcess(res);
 				this.getImportedList().add(importOneProcess);
 				this.deleteFromToBeImported(importOneProcess);
-				importOneProcess.detach();
+				importOneProcess.getImportOneProcessWindow().detach();
 			} catch (ExceptionImport e) {
 				e.printStackTrace();
 				Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
