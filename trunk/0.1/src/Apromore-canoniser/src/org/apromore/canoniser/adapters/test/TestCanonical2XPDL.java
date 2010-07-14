@@ -21,8 +21,8 @@ public class TestCanonical2XPDL {
 	 * @param args
 	 */
 	public static void main(String[] args) {
-		File cpf_file = new File("/home/fauvet/models/test/HKG4 International Depature Departure Check-in.xpdl.cpf");
-		File anf_file = new File("/home/fauvet/models/test/HKG4 International Depature Departure Check-in.xpdl.anf");
+		File cpf_file = new File("/home/fauvet/models/test/Oryx-Editor_-_Oryx.xpdl.cpf");
+		File anf_file = new File("/home/fauvet/models/test/Oryx-Editor_-_Oryx.xpdl.anf");
 		//File cpf_file = new File("/home/fauvet/models/model1.cpf");
 		//File anf_file = new File("/home/fauvet/models/model1.anf");
 		try {
