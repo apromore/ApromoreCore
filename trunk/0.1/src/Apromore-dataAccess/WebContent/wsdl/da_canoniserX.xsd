@@ -63,6 +63,10 @@
 
 
 	<complexType name="VersionSummaryType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="Annotations"
+				type="string" />
+		</sequence>
 		<attribute name="ranking" type="int" />
 		<attribute name="name" type="string" />
 		<attribute name="documentation" type="string" />
@@ -95,10 +99,12 @@
 			<element name="Anf" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
+		<attribute name="EditSessionCode" type="int" />
 		<attribute name="ProcessId" type="int" />
 		<attribute name="PreVersion" type="string" />
 		<attribute name="NativeType" type="string" />
 		<attribute name="Domain" type="string" />
+		<attribute name="AnnotationName" type="string" />
 	</complexType>
 	<complexType name="StoreVersionOutputMsgType">
 		<sequence>
