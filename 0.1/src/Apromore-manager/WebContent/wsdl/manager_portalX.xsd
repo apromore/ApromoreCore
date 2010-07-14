@@ -277,10 +277,13 @@
 			<element name="Native" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
-		<attribute name="username" type="string" />
-		<attribute name="nativeType" type="string" />
-		<attribute name="processId" type="int" />
-		<attribute name="domain" type="string" />
+		<attribute name="EditSessionCode" type="int" />
+		<attribute name="Username" type="string" />
+		<attribute name="NativeType" type="string" />
+		<attribute name="ProcessId" type="int" />
+		<attribute name="Domain" type="string" />
+		<attribute name="PreVersion" type="string" />
+		<attribute name="AnnotationName" type="string" />
 	</complexType>
 
 	<complexType name="UpdateProcessOutputMsgType">

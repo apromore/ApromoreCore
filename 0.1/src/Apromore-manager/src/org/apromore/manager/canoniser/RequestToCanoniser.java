@@ -92,6 +92,7 @@ public class RequestToCanoniser {
 				first_versionP.setDocumentation(versionC.getDocumentation());
 				first_versionP.setCreationDate(versionC.getCreationDate());
 				first_versionP.setLastUpdate(versionC.getLastUpdate());
+				first_versionP.getAnnotations().addAll(versionC.getAnnotations());
 				processP.getVersionSummaries().add(first_versionP);
 			}
 			return processP;
@@ -109,7 +110,7 @@ public class RequestToCanoniser {
 		payload.setNativeType(nativeType);
 		payload.setCpf(new DataHandler(source_cpf));
 		if (anf_is != null) {
-			// annotations not to be used
+			// given annotation must be used
 			DataSource source_anf = new ByteArrayDataSource(anf_is, "text/xml");
 			payload.setAnf(new DataHandler(source_anf));
 		}
@@ -125,15 +126,18 @@ public class RequestToCanoniser {
 	}
 
 	public void 
-	CanoniseVersion(Integer processId, String nativeType, String domain, 
-			InputStream native_is) 
+	CanoniseVersion(Integer editSessionCode, Integer processId, String preVersion, String nativeType, String domain, 
+			InputStream native_is, String annotationName) 
 	throws IOException, ExceptionCanoniseVersion {
 		CanoniseVersionInputMsgType payload = new CanoniseVersionInputMsgType();
 		DataSource source = new ByteArrayDataSource(native_is, "text/xml");
+		payload.setEditSessionCode(editSessionCode);
 		payload.setDomain(domain);
 		payload.setNative(new DataHandler(source));
 		payload.setNativeType(nativeType);
 		payload.setProcessId(processId);
+		payload.setAnnotationName(annotationName);
+		payload.setPreVersion(preVersion);
 		// send request to canoniser
 		CanoniseVersionOutputMsgType res = this.port.canoniseVersion(payload);
 		if (res.getResult().getCode() == -1) {
