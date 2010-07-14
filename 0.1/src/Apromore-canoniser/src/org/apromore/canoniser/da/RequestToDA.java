@@ -78,6 +78,7 @@ public class RequestToDA {
 				first_versionM.setDocumentation(versionDa.getDocumentation());
 				first_versionM.setCreationDate(versionDa.getCreationDate());
 				first_versionM.setLastUpdate(versionDa.getLastUpdate());
+				first_versionM.getAnnotations().addAll(versionDa.getAnnotations());
 				processM.getVersionSummaries().add(first_versionM);
 			}
 			return processM;
@@ -100,7 +101,7 @@ public class RequestToDA {
 
 	}
 
-	public void StoreVersion(int processId, String nativeType, String domain, 
+	public void StoreVersion(int editSessionCode, int processId, String preVersion, String nativeType, String domain, String annotation,
 			InputStream native_is, InputStream anf_xml_is,
 			InputStream cpf_xml_is) throws IOException, ExceptionStore {
 
@@ -108,7 +109,9 @@ public class RequestToDA {
 		payload.setDomain(domain);
 		payload.setNativeType(nativeType);
 		payload.setProcessId(processId);
-
+		payload.setAnnotationName(annotation);
+		payload.setPreVersion(preVersion);
+		payload.setEditSessionCode(editSessionCode);
 		DataSource source_proc = new ByteArrayDataSource(native_is, "text/xml"); 
 		payload.setNative(new DataHandler(source_proc));
 		DataSource source_cpf = new ByteArrayDataSource(cpf_xml_is, "text/xml"); 
