@@ -24,6 +24,8 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="Native" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
  *       &lt;/sequence>
  *       &lt;attribute name="EditSessionCode" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="PreVersion" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="AnnotationName" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -35,16 +37,22 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "WriteProcessInputMsgType", propOrder = {
     "_native"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:29:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T04:52:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class WriteProcessInputMsgType {
 
     @XmlElement(name = "Native", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:29:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T04:52:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected DataHandler _native;
     @XmlAttribute(name = "EditSessionCode")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:29:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T04:52:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Integer editSessionCode;
+    @XmlAttribute(name = "PreVersion")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T04:52:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected String preVersion;
+    @XmlAttribute(name = "AnnotationName")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T04:52:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected String annotationName;
 
     /**
      * Gets the value of the native property.
@@ -54,7 +62,7 @@ public class WriteProcessInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:29:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T04:52:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public DataHandler getNative() {
         return _native;
     }
@@ -67,7 +75,7 @@ public class WriteProcessInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:29:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T04:52:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setNative(DataHandler value) {
         this._native = value;
     }
@@ -80,7 +88,7 @@ public class WriteProcessInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:29:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T04:52:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public Integer getEditSessionCode() {
         return editSessionCode;
     }
@@ -93,9 +101,61 @@ public class WriteProcessInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-06-29T03:29:12+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T04:52:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setEditSessionCode(Integer value) {
         this.editSessionCode = value;
+    }
+
+    /**
+     * Gets the value of the preVersion property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T04:52:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public String getPreVersion() {
+        return preVersion;
+    }
+
+    /**
+     * Sets the value of the preVersion property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T04:52:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setPreVersion(String value) {
+        this.preVersion = value;
+    }
+
+    /**
+     * Gets the value of the annotationName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T04:52:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public String getAnnotationName() {
+        return annotationName;
+    }
+
+    /**
+     * Sets the value of the annotationName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T04:52:03+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setAnnotationName(String value) {
+        this.annotationName = value;
     }
 
 }

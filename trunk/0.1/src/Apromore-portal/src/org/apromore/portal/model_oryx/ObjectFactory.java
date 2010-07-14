@@ -41,14 +41,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CloseSessionInputMsgType }
-     * 
-     */
-    public CloseSessionInputMsgType createCloseSessionInputMsgType() {
-        return new CloseSessionInputMsgType();
-    }
-
-    /**
      * Create an instance of {@link WriteNewProcessInputMsgType }
      * 
      */
@@ -65,11 +57,35 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ReadNativeInputMsgType }
+     * 
+     */
+    public ReadNativeInputMsgType createReadNativeInputMsgType() {
+        return new ReadNativeInputMsgType();
+    }
+
+    /**
      * Create an instance of {@link CloseSessionOutputMsgType }
      * 
      */
     public CloseSessionOutputMsgType createCloseSessionOutputMsgType() {
         return new CloseSessionOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link WriteNewProcessOutputMsgType }
+     * 
+     */
+    public WriteNewProcessOutputMsgType createWriteNewProcessOutputMsgType() {
+        return new WriteNewProcessOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link CloseSessionInputMsgType }
+     * 
+     */
+    public CloseSessionInputMsgType createCloseSessionInputMsgType() {
+        return new CloseSessionInputMsgType();
     }
 
     /**
@@ -94,22 +110,6 @@ public class ObjectFactory {
      */
     public WriteProcessOutputMsgType createWriteProcessOutputMsgType() {
         return new WriteProcessOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link WriteNewProcessOutputMsgType }
-     * 
-     */
-    public WriteNewProcessOutputMsgType createWriteNewProcessOutputMsgType() {
-        return new WriteNewProcessOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ReadNativeInputMsgType }
-     * 
-     */
-    public ReadNativeInputMsgType createReadNativeInputMsgType() {
-        return new ReadNativeInputMsgType();
     }
 
     /**

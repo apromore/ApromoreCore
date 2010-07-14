@@ -18,6 +18,7 @@ import org.zkoss.zul.Filedownload;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listcell;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Rows;
@@ -80,15 +81,18 @@ public class ExportNativeController extends Window {
 			this.nativeTypesLB.appendChild(cbi);
 			cbi.setLabel(this.formats_ext.get(it.next()));
 		}
+		this.nativeTypesLB.setSelectedItem((Listitem) this.nativeTypesLB.getFirstChild());
 
 		Listitem cb = new Listitem();
-		this.annotationsLB.appendChild(cb);
 		cb.setLabel(Constants.NO_ANNOTATIONS);
+		this.annotationsLB.appendChild(cb);
 		for (int i=0; i<this.annotations.size(); i++){
 			Listitem cbi = new Listitem();
 			this.annotationsLB.appendChild(cbi);
 			cbi.setLabel(this.annotations.get(i));
 		}
+		this.annotationsLB.setSelectedItem((Listitem) this.annotationsLB.getFirstChild());
+		
 		this.nativeTypesLB.addEventListener("onSelect",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -124,12 +128,9 @@ public class ExportNativeController extends Window {
 
 	private void cancel() {
 		this.exportNativeW.detach();
-		//inform the menuC
-
 	}
 
 	private void export() throws InterruptedException {
-
 		try {
 			if (this.nativeTypesLB.getSelectedItem().getLabel().compareTo("")==0) {
 				Messagebox.show("Please choose a target native type", "Attention", Messagebox.OK,
@@ -156,7 +157,7 @@ public class ExportNativeController extends Window {
 				String processname = this.processNameL.getValue().replaceAll(" ", "_");
 				String filename = processname + "." + ext;
 				String annotation = this.annotationsLB.getSelectedItem().getLabel();
-				Boolean withAnnotation = (this.annotationsLB.getSelectedItem().getLabel().compareTo(Constants.NO_ANNOTATIONS)==0);
+				Boolean withAnnotation = (this.annotationsLB.getSelectedItem().getLabel().compareTo(Constants.NO_ANNOTATIONS)!=0);
 				RequestToManager request = new RequestToManager();
 				InputStream native_is =
 					request.ExportNative (this.processId, this.versionName, nativeType, annotation, withAnnotation);
