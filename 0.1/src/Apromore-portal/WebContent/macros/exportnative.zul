@@ -33,8 +33,7 @@
 				</row>
 				<row spans="2">
 					<div align="center">
-						<button label="OK" image="img/ok.png"
-							disabled="true">
+						<button label="OK" image="img/ok.png">
 						</button>
 						<button label="Cancel"
 							image="img/cancel2.png">

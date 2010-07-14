@@ -38,5 +38,7 @@ public final class Constants {
 	public static final String SELECTED_PROCESS = "background-color:#598DCA" + ";" + TOOLBARBUTTON_STYLE ;
 	public static final String UNSELECTED_EVEN = "background-color:#FFFFFF" + ";" + TOOLBARBUTTON_STYLE;
 	public static final String UNSELECTED_ODD = "background-color:#F0FAFF" + ";" + TOOLBARBUTTON_STYLE;
-	public static final String NO_ANNOTATIONS = "No annotations";
+	
+	public static final String NO_ANNOTATIONS = "-- no annotations --";
+	public static final String INITIAL_ANNOTATION = "Initial";
 }
