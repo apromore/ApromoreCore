@@ -152,6 +152,7 @@ create table temp_versions (
 	last_update varchar(35),
 	ranking varchar(10),
 	documentation text,
+    name 		varchar(40),
 	cpf longtext,
 	apf longtext,
 	npf longtext,
