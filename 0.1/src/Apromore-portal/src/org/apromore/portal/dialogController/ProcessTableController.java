@@ -24,7 +24,6 @@ import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.MouseEvent;
-import org.zkoss.zul.Box;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Column;
@@ -32,8 +31,10 @@ import org.zkoss.zul.Columns;
 import org.zkoss.zul.Detail;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
+import org.zkoss.zul.Html;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Paging;
+import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Toolbarbutton;
@@ -219,7 +220,7 @@ public class ProcessTableController {
 		this.processSummariesGrid.setPaginal(newPg);
 		this.pagingAndButtons.appendChild(newPg);
 		this.pagingAndButtons.appendChild(this.buttons);
-		
+
 	}
 	public void displayProcessSummaries(ProcessSummariesType processSummaries) {
 
@@ -364,8 +365,18 @@ public class ProcessTableController {
 				Label versionCreationDate = new Label (version.getCreationDate().toString());
 				Label versionLastUpdate = new Label (version.getLastUpdate().toString());
 				Label versionRanking = new Label (version.getRanking().toString());
-				Label versionDocumentation = new Label (version.getDocumentation());
-
+				Label versionDocumentation = new Label ();
+				if ("".compareTo(version.getDocumentation())!=0) {
+					String docBeginning = version.getDocumentation().split(" ")[0]
+					+ " more...";
+					versionDocumentation.setValue(docBeginning);
+					Popup docPopup = new Popup();
+					Html docHtml = new Html(version.getDocumentation());
+					docPopup.appendChild(docHtml);					
+					versionDocumentation.setPopup(docPopup);
+				} else {
+					versionDocumentation.setValue("");
+				}
 				processVersionsR.appendChild(versionR);
 
 				versionR.appendChild(versionCB);
@@ -733,5 +744,5 @@ public class ProcessTableController {
 		this.pg = pg;
 	}
 
-	
+
 }
