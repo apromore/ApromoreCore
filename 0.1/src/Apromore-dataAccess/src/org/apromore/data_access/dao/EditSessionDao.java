@@ -65,11 +65,12 @@ public class EditSessionDao extends BasicDao {
 		try {
 			conn = this.getConnection();
 			query = " insert into " + ConstantDB.TABLE_EDIT_SESSIONS 
-			+ "(" + ConstantDB.ATTR_USERNAME
+			+ "(" + ConstantDB.ATTR_RECORD_TIME
+			+ "," + ConstantDB.ATTR_USERNAME
 			+ "," + ConstantDB.ATTR_PROCESSID
 			+ "," + ConstantDB.ATTR_VERSION_NAME
 			+ "," + ConstantDB.ATTR_NAT_TYPE + ")"
-			+ "values (?, ?, ?, ?) ";
+			+ "values (now(),?, ?, ?, ?) ";
 
 			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, username);
