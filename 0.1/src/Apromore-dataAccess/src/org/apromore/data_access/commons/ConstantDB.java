@@ -64,6 +64,8 @@ public final class ConstantDB {
 	public static final String ATTR_PRE_VERSION_NAME = "pre_version";
 	public static final String ATTR_NEW_VERSION_NAME = "new_version";
 
+	public static final String TABLE_HEAD_VERSIONS = "head_versions";
+
 }
 
 

@@ -66,11 +66,11 @@ import org.apromore.data_access.model_manager.WriteUserOutputMsgType;
  */
 
 @javax.jws.WebService(
-                      serviceName = "DAManagerService",
-                      portName = "DAManager",
-                      targetNamespace = "http://www.apromore.org/data_access/service_manager",
-                      wsdlLocation = "http://localhost:8080/Apromore-dataAccess/services/DAManager?wsdl",
-                      endpointInterface = "org.apromore.data_access.service_manager.DAManagerPortType")
+		serviceName = "DAManagerService",
+		portName = "DAManager",
+		targetNamespace = "http://www.apromore.org/data_access/service_manager",
+		wsdlLocation = "http://localhost:8080/Apromore-dataAccess/services/DAManager?wsdl",
+		endpointInterface = "org.apromore.data_access.service_manager.DAManagerPortType")
 
 
 		public class DAManagerPortTypeImpl implements DAManagerPortType {
@@ -205,9 +205,9 @@ import org.apromore.data_access.model_manager.WriteUserOutputMsgType;
 			if (withAnnotation) {
 				anf = ProcessDao.getInstance().getAnnotation(payload.getProcessId(), 
 						payload.getVersion(), payload.getAnnotationName());
-			} 
-			DataSource sourceAnf = new ByteArrayDataSource(anf, "text/xml");
-			res.setAnf(new DataHandler(sourceAnf));
+				DataSource sourceAnf = new ByteArrayDataSource(anf, "text/xml");
+				res.setAnf(new DataHandler(sourceAnf));
+			}
 			result.setCode(0);
 			result.setMessage("");
 		} catch (Exception ex) {
