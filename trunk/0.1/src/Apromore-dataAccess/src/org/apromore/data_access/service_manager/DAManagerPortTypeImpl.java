@@ -225,8 +225,10 @@ import org.apromore.data_access.model_manager.WriteUserOutputMsgType;
 		ResultType result = new ResultType();
 		res.setResult(result);
 		try {
-			String natives = ProcessDao.getInstance().getNative(payload.getProcessId(), 
-					payload.getVersion(), payload.getNativeType());
+			Integer processId = payload.getProcessId();
+			String version = payload.getVersion();
+			String nativeType = payload.getNativeType();
+			String natives = ProcessDao.getInstance().getNative(processId, version, nativeType);
 			DataSource source = new ByteArrayDataSource(natives, "text/xml"); 
 			res.setNative(new DataHandler(source));
 			result.setCode(0);
