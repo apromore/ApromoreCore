@@ -4,16 +4,12 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-import org.apromore.portal.exception.ExceptionWriteEditSession;
-import org.apromore.portal.manager.RequestToManager;
-import org.apromore.portal.model_manager.EditSessionType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
@@ -135,6 +131,7 @@ public class EditOneProcessController extends Window {
 			String version = this.version.getName();
 			String nativeType = cbi.getLabel();
 			String domain = this.process.getDomain();
+			// editProcess is hosted by main controller as it is called by others.
 			this.mainC.editProcess(processId, processName, version, nativeType, domain);
 			cancel();
 		}

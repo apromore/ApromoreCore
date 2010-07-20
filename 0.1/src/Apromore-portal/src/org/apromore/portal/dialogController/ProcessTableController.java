@@ -368,7 +368,7 @@ public class ProcessTableController {
 				Label versionDocumentation = new Label ();
 				if ("".compareTo(version.getDocumentation())!=0) {
 					String docBeginning = version.getDocumentation().split(" ")[0]
-					+ " more...";
+					+ "... Click here to read more...";
 					versionDocumentation.setValue(docBeginning);
 					Popup docPopup = new Popup();
 					Html docHtml = new Html(version.getDocumentation());

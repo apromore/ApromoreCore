@@ -218,7 +218,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			String version = editSession.getVersionName();
 			String nativeType = editSession.getNativeType();
 			String processName = editSession.getProcessName();
-			// request native 
+			// request native to be exported in format nativeType
 			InputStream native_is = 
 				request.ExportNative(processId, version, nativeType, Constants.INITIAL_ANNOTATION, true);
 			DataSource sourceNative = new ByteArrayDataSource(native_is, "text/xml"); 
