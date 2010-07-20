@@ -23,7 +23,7 @@ public class TestXPDL2Canonical {
 	 */
 	public static void main(String[] args) {
 
-		File folder = new File("/home/fauvet/models/test/");
+		File folder = new File("/home/fauvet/models/casetests/");
 		FileFilter fileFilter = new FileFilter() { 
 			public boolean accept(File file) { 
 				return file.isFile(); 
