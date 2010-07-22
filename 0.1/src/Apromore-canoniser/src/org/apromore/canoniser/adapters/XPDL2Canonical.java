@@ -229,12 +229,14 @@ public class XPDL2Canonical {
 			cGraphInfo.setId(BigInteger.valueOf(anfId++));
 			cGraphInfo.setCpfId(edgeMap.get(trans).getId());
 			ConnectorGraphicsInfos infos = trans.getConnectorGraphicsInfos();
-			for (ConnectorGraphicsInfo xGraphInfo: infos.getConnectorGraphicsInfo()) {
-				for (Coordinates coord: xGraphInfo.getCoordinates()) {
-					PositionType pos = new PositionType();
-					pos.setX(BigDecimal.valueOf(coord.getXCoordinate()));
-					pos.setY(BigDecimal.valueOf(coord.getYCoordinate()));
-					cGraphInfo.getPosition().add(pos);
+			if(infos != null) {
+				for (ConnectorGraphicsInfo xGraphInfo: infos.getConnectorGraphicsInfo()) {
+					for (Coordinates coord: xGraphInfo.getCoordinates()) {
+						PositionType pos = new PositionType();
+						pos.setX(BigDecimal.valueOf(coord.getXCoordinate()));
+						pos.setY(BigDecimal.valueOf(coord.getYCoordinate()));
+						cGraphInfo.getPosition().add(pos);
+					}
 				}
 			}
 			annotations.getAnnotation().add(cGraphInfo);
@@ -282,13 +284,15 @@ public class XPDL2Canonical {
 		NodeType csrc = xpdl2canon.get(xsrc);
 		NodeType ctgt = xpdl2canon.get(xtgt);
 
-		if (csrc instanceof TaskType && flow.getCondition() != null) {
-			Condition cond = flow.getCondition();
+		Condition cond = flow.getCondition();
+		//Expression condE = cond.getContent();
+		if (csrc instanceof TaskType && cond != null && !cond.getContent().isEmpty()) {
 			//System.out.println("Condition type: " + cond.getType());
 
 			NodeType split = implicitORSplit.get(csrc);
 			if (split == null) {
 				split = new ORSplitType();
+				//System.out.println("OR SPLIT GENERATED");
 				split.setId(BigInteger.valueOf(cpfId++));
 				implicitORSplit.put(csrc, split);
 				net.getNode().add(split);
@@ -315,6 +319,8 @@ public class XPDL2Canonical {
 		}
 
 		EdgeType edge = addEdge(net, csrc, ctgt);
+		//if(cond != null && !cond.getContent().isEmpty())
+			//edge.setCondition(""+cond.getContent().get(1));
 
 		edgeMap.put(flow, edge);
 	}

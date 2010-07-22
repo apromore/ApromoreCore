@@ -65,6 +65,7 @@ public class Canonical2EPML {
 	Map<BigInteger, EdgeType> edgeRefMap = new HashMap<BigInteger, EdgeType>();
 	Map<BigInteger, Object> epcRefMap = new HashMap<BigInteger, Object>();
 	List<BigInteger> object_res_list = new LinkedList<BigInteger>();
+	Map<BigInteger, List<BigInteger>> role_map = new HashMap<BigInteger, List<BigInteger>>();
 	List<TypeFunction> subnet_list = new LinkedList<TypeFunction>();
 	List<TypeProcessInterface> pi_list = new LinkedList<TypeProcessInterface>();
 	
@@ -126,9 +127,17 @@ public class Canonical2EPML {
 					translateEvent(epc, node);
 				}
 				for(ObjectRefType ref : ((WorkType)node).getObjectRef())
+				{
 					object_res_list.add(ref.getObjectId());
+				}
+				List<BigInteger> ll = null;
 				for(ResourceTypeRefType ref : ((WorkType)node).getResourceTypeRef())
+				{
 					object_res_list.add(ref.getResourceTypeId());
+					ll.add(ref.getResourceTypeId());
+				}
+				role_map.put(BigInteger.valueOf(ids-1),ll);
+				
 			} else if (node instanceof RoutingType) {
 				translateGateway(epc, node);
 			} 
@@ -258,6 +267,38 @@ public class Canonical2EPML {
 		role.setId(BigInteger.valueOf(ids++));
 		role.setName(resT.getName());
 		epc.getEventOrFunctionOrRole().add(role);
+		
+		// Linking the related element
+		
+		for(Object obj: epc.getEventOrFunctionOrRole())
+		{
+			List<BigInteger> ll = role_map.get(((TEpcElement)obj).getId());
+			
+			if(obj instanceof TypeFunction)
+			{
+				if(ll.contains(resT.getId()))
+				{
+					TypeArc arc = new TypeArc();
+					TypeRelation rel = new TypeRelation();
+					rel.setSource(BigInteger.valueOf(ids-1));
+					rel.setTarget(((TypeFunction)obj).getId());
+					arc.setRelation(rel);
+					epc.getEventOrFunctionOrRole().add(arc);
+				}
+			}
+			else if(obj instanceof TypeEvent)
+			{
+				if(ll.contains(resT.getId()))
+				{
+					TypeArc arc = new TypeArc();
+					TypeRelation rel = new TypeRelation();
+					rel.setSource(BigInteger.valueOf(ids-1));
+					rel.setTarget(((TypeEvent)obj).getId());
+					arc.setRelation(rel);
+					epc.getEventOrFunctionOrRole().add(arc);
+				}
+			}
+		}
 	}
 	
 	private void translateGateway(TypeEPC epc, NodeType node)
