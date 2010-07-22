@@ -64,7 +64,6 @@ public class EditDataOneProcessController {
 		this.cancelB.setId(this.cancelB.getId()+process.getId()+version.getName());
 		this.cancelAllB = (Button) win.getFellow("editprocessdataCancelAllB");
 		this.cancelAllB.setId(this.cancelAllB.getId()+process.getId()+version.getName());
-		this.cancelAllB.setVisible(true);
 		this.resetB = (Button) win.getFellow("editprocessdataResetB");
 		this.resetB.setId(this.resetB.getId()+process.getId()+version.getName());
 		this.processNameT = (Textbox) win.getFellow("processname");
@@ -100,6 +99,12 @@ public class EditDataOneProcessController {
 		this.ownerCB.setAttribute("hflex", "1");
 		this.ownerR.appendChild(ownerCB);
 
+		// enable cancelAll button if at least 1 process versions left.
+		if(this.editDataListProcessesC.getToEditList().size()>0) {
+			this.cancelAllB.setVisible(true);
+		} else {
+			this.cancelAllB.setVisible(false);
+		}
 		// set values to those of the process version
 		reset();
 

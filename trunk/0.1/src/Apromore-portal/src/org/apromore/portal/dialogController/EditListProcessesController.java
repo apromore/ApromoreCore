@@ -49,6 +49,14 @@ public class EditListProcessesController extends Window {
 		return this.editedList;
 	}
 	
+	
+	public List<EditOneProcessController> getToEditList() {
+		if (toEditList == null) {
+			toEditList = new ArrayList<EditOneProcessController>();
+		}
+		return toEditList;
+	}
+
 	public void deleteFromToBeEdited(EditOneProcessController editOneProcess) throws Exception {
 		this.toEditList.remove(editOneProcess);
 		if (this.toEditList.size()==0){

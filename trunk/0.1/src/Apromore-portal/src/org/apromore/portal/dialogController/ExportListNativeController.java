@@ -46,6 +46,13 @@ public class ExportListNativeController {
 		return this.exportedList;
 	}
 	
+	public List<ExportOneNativeController> getToExportList() {
+		if (toExportList == null) {
+			toExportList = new ArrayList<ExportOneNativeController>();
+		}
+		return this.toExportList;
+	}
+	
 	public void deleteFromToBeEdited(ExportOneNativeController exportNative) throws Exception {
 		this.toExportList.remove(exportNative);
 		if (this.toExportList.size()==0){
