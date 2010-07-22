@@ -99,7 +99,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			int processId = editSession.getProcessId();
 			String nativeType = editSession.getNativeType();
 			String domain = editSession.getDomain();
-			String annotationName = "Subsequent" ; // TODO Oryx has to put annotationName in payload
+			String annotationName = "Initial" ; // TODO Oryx has to put annotationName in payload
 			String preVersion = null; // TODO Oryx has to put preVersion in payload
 			// update process: create new version whose name is in native_is, derived from head version
 			request.UpdateProcess (code, username, nativeType, processId, preVersion, native_is, domain, annotationName);
