@@ -61,6 +61,17 @@ public class EditDataListProcController {
 	}
 
 	/**
+	 * Return list of controllers associated with process versions still to be edited
+	 * @return
+	 */
+	public List<EditDataOneProcessController> getToEditList() {
+		if (toEditList == null) {
+			toEditList = new ArrayList<EditDataOneProcessController>();
+		}
+		return toEditList;
+	}
+
+	/**
 	 * Remove editOneProcess from list of controllers associated with process 
 	 * versions still to be edited
 	 * @param editOneProcess
