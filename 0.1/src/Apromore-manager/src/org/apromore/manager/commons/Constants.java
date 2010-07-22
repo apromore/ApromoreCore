@@ -18,4 +18,7 @@ public final class Constants {
 	public static final String JAXB_RESULT = "org.apromore.common";
 	public static final String JAXB_READUSER = "org.apromore.readuser";
 	public static final String INITIAL_ANNOTATIONS = "Initial";
+
+	public static final String ANNOTATIONS = "Annotations";
+	public static final String CANONICAL = "Canonical";
 }
