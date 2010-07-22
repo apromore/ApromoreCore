@@ -254,7 +254,10 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 		return res;
 	}
 
-
+/* this operation should be called exportFormat TODO
+ * (non-Javadoc)
+ * @see org.apromore.manager.service_portal.ManagerPortalPortType#exportNative(org.apromore.manager.model_portal.ExportNativeInputMsgType)
+ */
 	public ExportNativeOutputMsgType exportNative(ExportNativeInputMsgType payload) { 
 		LOG.info("Executing operation exportNative");
 		System.out.println(payload);
@@ -264,13 +267,16 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 		int processId = payload.getProcessId();
 		String version = payload.getVersionName();
 		String annotationName = payload.getAnnotationName();
-		String nativeType = payload.getNativeType();
+		String format = payload.getNativeType();
 		Boolean withAnnotations = payload.isWithAnnotations();
 		try {
 			// Get native from the database, only if initial annotations are to be used
-			if (withAnnotations && annotationName.compareTo(Constants.INITIAL_ANNOTATIONS)==0) {
+			// or if format is Constants.CANONICAL or Constants.ANNOTATION
+			if ((withAnnotations && annotationName.compareTo(Constants.INITIAL_ANNOTATIONS)==0)
+					|| Constants.CANONICAL.compareTo(format)==0 
+					|| format.startsWith(Constants.ANNOTATIONS)) {
 				RequestToDA request = new RequestToDA();
-				InputStream native_xml = request.ReadNative (processId, version, nativeType);
+				InputStream native_xml = request.ReadNative (processId, version, format);
 				DataSource source = new ByteArrayDataSource(native_xml, "text/xml"); 
 				res.setNative(new DataHandler(source));	
 				result.setCode(0);
@@ -293,9 +299,9 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 				// TODO: annotations might be unavailable!
 				InputStream native_xml;
 				if (withAnnotations) {
-					native_xml = requestCa.DeCanonise (processId, version, nativeType, cpf_is, anf_is);
+					native_xml = requestCa.DeCanonise (processId, version, format, cpf_is, anf_is);
 				} else {
-					native_xml = requestCa.DeCanonise (processId, version, nativeType, cpf_is, null);
+					native_xml = requestCa.DeCanonise (processId, version, format, cpf_is, null);
 				}
 				DataSource source = new ByteArrayDataSource(native_xml, "text/xml"); 
 				res.setNative(new DataHandler(source));	
