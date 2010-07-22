@@ -11,16 +11,11 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 
+import org.apromore.data_access.commons.Constants;
 import org.apromore.data_access.dao.DomainDao;
 import org.apromore.data_access.dao.EditSessionDao;
 import org.apromore.data_access.dao.FormatDao;
@@ -213,7 +208,7 @@ import org.apromore.data_access.model_manager.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("DAManagerPortImplem(ReadCanonical): " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
@@ -227,16 +222,26 @@ import org.apromore.data_access.model_manager.WriteUserOutputMsgType;
 		try {
 			Integer processId = payload.getProcessId();
 			String version = payload.getVersion();
-			String nativeType = payload.getNativeType();
-			String natives = ProcessDao.getInstance().getNative(processId, version, nativeType);
-			DataSource source = new ByteArrayDataSource(natives, "text/xml"); 
+			String read = null;
+			String format = payload.getNativeType();
+			
+			if (Constants.CANONICAL.compareTo(format)==0) {
+				read = ProcessDao.getInstance().getCanonical (processId, version);
+			} else if (format.startsWith(Constants.ANNOTATIONS)) {
+				// format starts with Constants.ANNOTATIONS + " - "
+				format = format.substring(Constants.ANNOTATIONS.length()+3, format.length());
+				read = ProcessDao.getInstance().getAnnotation (processId, version, format);
+			} else {
+				read = ProcessDao.getInstance().getNative(processId, version, format);
+			}
+			DataSource source = new ByteArrayDataSource(read, "text/xml"); 
 			res.setNative(new DataHandler(source));
 			result.setCode(0);
 			result.setMessage("");
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("DAManagerPortImplem(ReadNative): " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
@@ -263,7 +268,7 @@ import org.apromore.data_access.model_manager.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("DAManagerPortImplem(ReadFormats): " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
@@ -286,7 +291,7 @@ import org.apromore.data_access.model_manager.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("DAManagerPortImplem(WriteUser): " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
@@ -311,7 +316,7 @@ import org.apromore.data_access.model_manager.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("DAManagerPortImplem(ReadSummaries): " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
@@ -335,7 +340,7 @@ import org.apromore.data_access.model_manager.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("DAManagerPortImplem(ReadDomains): " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
