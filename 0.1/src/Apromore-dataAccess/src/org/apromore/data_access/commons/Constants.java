@@ -28,5 +28,7 @@ public class Constants {
 		public static final String JAXB_CONTEXT_CPF = "dataAccessServices.facades.cpf02";
 		public static final String JAXB_CONTEXT_RLF = "dataAccessServices.facades.rlf01";
 		public static final String INITIAL_ANNOTATION = "Initial";
+		public static final String ANNOTATIONS = "Annotations";
+		public static final String CANONICAL = "Canonical";
 
 	}
