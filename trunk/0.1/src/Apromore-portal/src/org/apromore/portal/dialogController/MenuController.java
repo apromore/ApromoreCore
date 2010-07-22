@@ -48,12 +48,9 @@ public class MenuController extends Menubar {
 	private Menuitem evalCorrectnessMI;
 	private Menuitem evalPerformanceMI;
 
-	private Vector<ExportNativeController> exportNativeConts ;
-
 	public MenuController(MainController mainController) throws ExceptionFormats {
 
 		this.mainC = mainController;
-		this.exportNativeConts = new Vector<ExportNativeController>();
 		/**
 		 * get components
 		 */
@@ -158,26 +155,17 @@ public class MenuController extends Menubar {
 
 	/**
 	 * Export all selected process versions, each of which in a native format to be chosen by the user
+	 * @throws InterruptedException 
+	 * @throws SuspendNotAllowedException 
 	 */
-	protected void exportNative() {
+	protected void exportNative() throws SuspendNotAllowedException, InterruptedException {
 
 		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
 
 		if (selectedProcessVersions.size()!=0) {
-			Set<ProcessSummaryType> keySet = selectedProcessVersions.keySet();
-			Iterator <ProcessSummaryType>itP = keySet.iterator();
-			while (itP.hasNext()) {
-				ExportNativeController exportNativeC;
-				ProcessSummaryType process = (ProcessSummaryType) itP.next();
-				Iterator<VersionSummaryType> itV = selectedProcessVersions.get(process).iterator();
-				while (itV.hasNext()){
-					VersionSummaryType version = (VersionSummaryType) itV.next();
-					exportNativeC = new ExportNativeController(this, process.getId(), process.getName(), process.getOriginalNativeType(),
-							version.getName(), version.getAnnotations(), this.mainC.getNativeTypes());
-					this.exportNativeConts.add(exportNativeC);
-				}
-			} 
+			ExportListNativeController exportList =
+				new ExportListNativeController (this.mainC, this, selectedProcessVersions);
 		} else {
 			this.mainC.displayMessage("No process version selected.");
 		}

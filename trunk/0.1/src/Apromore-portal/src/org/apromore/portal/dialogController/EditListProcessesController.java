@@ -42,7 +42,7 @@ public class EditListProcessesController extends Window {
 		}
 	}
 	
-	public List<EditOneProcessController> getEditedLis() {
+	public List<EditOneProcessController> getEditedList() {
 		if (editedList == null) {
 			editedList = new ArrayList<EditOneProcessController>();
 		}

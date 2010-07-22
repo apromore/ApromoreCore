@@ -75,7 +75,7 @@
 					<label value="1" />
 					<label value="Claim" />
 					<label value="EPML" />
-					<label value="Insurance" />
+					<label value="long text... more..." popup="popup"/>
 					<label value="1" />
 					<label value="0.3" />
 					<label value="larosa" />
@@ -812,6 +812,7 @@
 			</rows>
 		</grid>
 
+					<popup id="popup"> <html><![CDATA[ to be completed   ]]></html></popup>
 	</window>
 
 </zk>
