@@ -3,8 +3,7 @@ for editing purpose and CreateProcessController.java for creating
 process purpose.
 -->
 
-<window id="editprocessdataW" width="500px" closable="false"
-	position="center">
+<window width="500px" closable="false" position="center">
 	<vbox vflex="1">
 		<grid>
 			<columns sizable="true">
@@ -14,56 +13,52 @@ process purpose.
 			<rows>
 				<row>
 					<label value="Process name*" width="100%"/>
-					<textbox id="processname" width="100%"/>
+					<textbox width="100%"/>
 				</row>
 				<row>
 					<label value="Version name*" width="100%"/>
-					<textbox id="versionname" width="100%" />
+					<textbox width="100%" />
 				</row>
-				<row id="domain" width="100%">
+				<row width="100%">
 					<label value="Domain" />
 					<!-- combobox implemented in SelectDynamicListController -->
 				</row>
-				<row id="owner" width="100%">
+				<row width="100%">
 					<label value="Owner*" />
 					<!-- combobox implemented in SelectDynamicListController -->
 				</row>
-				<row id="nativetype" visible="false">
+				<row visible="false">
 					<label value="Native type*" />
-					<listbox id="nativetypes" width="100%" multiple="false" mold="select" rows="1">
+					<listbox width="100%" multiple="false" mold="select" rows="1">
 						<listitem label=""/>
 						<!-- listbox implemented in controller -->
 					</listbox>
 				</row>
 				<row>
 					<label value="Ranking" />
-					<radiogroup id="ranking">
-						<radio id="r0" label="0" />
-						<radio id="r1" label="1" />
-						<radio id="r2" label="2" />
-						<radio id="r3" label="3" />
-						<radio id="r4" label="4" />
-						<radio id="r5" label="5" />
+					<radiogroup >
+						<radio label="0" />
+						<radio label="1" />
+						<radio label="2" />
+						<radio label="3" />
+						<radio label="4" />
+						<radio label="5" />
 					</radiogroup>
-
 				</row>
 				<row spans="3">
-					<label
-						value="*: mandatory fields" />
+					<label value="*: mandatory fields" />
 				</row>
 				<row spans="3">
 					<div align="center">
-						<button id="editprocessdataOkB" label="OK"
-							image="img/ok.png" >
+						<button label="OK" image="img/ok.png" >
 						</button>
-						<button id="editprocessdataCancelB" label="Cancel"
-							image="img/cancel2.png">
+						<button label="Cancel" image="img/cancel2.png">
 						</button>
-						<button id="editprocessdataCancelAllB"
-							label="Cancel all" image="img/cancel2.png" visible="false">
+						<button label="Cancel all" image="img/cancel2.png" visible="false"
+							tooltiptext="Cancel edit of all remaining process models.">
 						</button>
-						<button id="editprocessdataResetB"
-							label="Reset" image="img/reset.png">
+						<button label="Reset" image="img/reset.png"
+							tooltiptext="Restore initial values.">
 						</button>
 					</div>
 				</row>

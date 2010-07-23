@@ -29,12 +29,14 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -59,7 +61,7 @@ public class CreateProcessController {
 	private Radiogroup rankingRG;
 	private Row domainR;
 	private Row ownerR;
-	private Row nativeTypeR;
+	private Row nativeTypesR;
 	private Listbox nativeTypesLB;
 	private HashMap<String, String> formats_ext; // <k, v> belongs to nativeTypes: the file extension k
 	// is associated with the native type v (<xpdl,XPDL 1.2>)
@@ -72,46 +74,47 @@ public class CreateProcessController {
 		this.mainC = mainC;
 		this.formats_ext = formats_ext;
 
-		Window win = (Window) Executions.createComponents("macros/editprocessdata.zul", null, null);
-
-		this.createProcessW = (Window) win.getFellow("editprocessdataW");
-		this.createProcessW.setId("createprocessdataW");
+		this.createProcessW = (Window) Executions.createComponents("macros/editprocessdata.zul", null, null);
 		this.createProcessW.setTitle("Create new process ");
-		this.okB = (Button) win.getFellow("editprocessdataOkB");
-		this.cancelB = (Button) win.getFellow("editprocessdataCancelB");
-		this.resetB = (Button) win.getFellow("editprocessdataResetB");
-		this.processNameT = (Textbox) win.getFellow("processname");
-		this.versionNameT = (Textbox) win.getFellow("versionname");
-		this.rankingRG = (Radiogroup) win.getFellow("ranking");
-		this.r0 = (Radio) this.rankingRG.getFellow("r0");
-		this.r1 = (Radio) this.rankingRG.getFellow("r1");
-		this.r2 = (Radio) this.rankingRG.getFellow("r2");
-		this.r3 = (Radio) this.rankingRG.getFellow("r3");
-		this.r4 = (Radio) this.rankingRG.getFellow("r4");
-		this.r5 = (Radio) this.rankingRG.getFellow("r5");
-		this.domainR = (Row) win.getFellow("domain");
+		Rows rows = (Rows) this.createProcessW.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
+		Row processNameR = (Row) rows.getFirstChild();
+		this.processNameT = (Textbox) processNameR.getFirstChild().getNextSibling();
+		Row versionNameR = (Row) processNameR.getNextSibling();
+		this.versionNameT = (Textbox) versionNameR.getFirstChild().getNextSibling();
+		this.domainR = (Row) versionNameR.getNextSibling();
+		this.ownerR = (Row) this.domainR.getNextSibling();
+		this.nativeTypesR = (Row) this.ownerR.getNextSibling();
+		this.nativeTypesLB = (Listbox) this.nativeTypesR.getFirstChild().getNextSibling();
+		Row rankingR = (Row) this.nativeTypesR.getNextSibling();
+		this.rankingRG = (Radiogroup) rankingR.getFirstChild().getNextSibling();
+		this.r0 = (Radio) this.rankingRG.getFirstChild();
+		this.r1 = (Radio) this.r0.getNextSibling();
+		this.r2 = (Radio) this.r1.getNextSibling();
+		this.r3 = (Radio) this.r2.getNextSibling();
+		this.r4 = (Radio) this.r3.getNextSibling();
+		this.r5 = (Radio) this.r4.getNextSibling();
+		Row buttonsR = (Row) rankingR.getNextSibling().getNextSibling();
+		Div buttonsD = (Div) buttonsR.getFirstChild();
+		this.okB = (Button) buttonsD.getFirstChild();
+		this.cancelB = (Button) this.okB.getNextSibling();
+		this.resetB = (Button) this.cancelB.getNextSibling();
 		this.domainCB = new SelectDynamicListController(this.mainC.getDomains());
 		this.domainCB.setReference(this.mainC.getDomains());
-		this.domainCB.setId(this.domainR.getId() + "domain");
 		this.domainCB.setAutodrop(true);
 		this.domainCB.setWidth("85%");
 		this.domainCB.setHeight("100%");
 		this.domainCB.setAttribute("hflex", "1");
 		this.domainR.appendChild(domainCB);
-		this.ownerR = (Row) win.getFellow("owner");
 		this.ownerCB = new SelectDynamicListController(this.mainC.getUsers());
 		this.ownerCB.setReference(this.mainC.getUsers());
-		this.ownerCB.setId(this.ownerR.getId() + "owner");
 		this.ownerCB.setAutodrop(true);
 		this.ownerCB.setWidth("85%");
 		this.ownerCB.setHeight("100%");
 		this.ownerCB.setAttribute("hflex", "1");
 		this.ownerR.appendChild(ownerCB);
-		this.nativeTypeR = (Row) win.getFellow("nativetype");
-		this.nativeTypesLB = (Listbox) win.getFellow("nativetypes");
 
 		// this row is set to false at creation time
-		this.nativeTypeR.setVisible(true);
+		this.nativeTypesR.setVisible(true);
 		// default values
 		this.ownerCB.setValue(this.mainC.getCurrentUser().getUsername());
 		
@@ -151,7 +154,7 @@ public class CreateProcessController {
 				reset();
 			}
 		});	
-		win.doModal();
+		this.createProcessW.doModal();
 	}
 
 	protected void createProcess() throws Exception  {
