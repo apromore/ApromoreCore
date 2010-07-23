@@ -1,15 +1,20 @@
 <!-- Controller is HeaderController.java -->
 <window id="header" height="40px">
 
-		<label value="Welcome to AProMoRe (v1.0 23/07/2010)"/>
-			<separator orient="vertical" bar="true"/>
-			<toolbarbutton id="moreButton" label="More info.."/>
-		<div style="float:right">
-			<toolbarbutton id="consultAccountButton" label="" visible="false" tooltiptext="Click here to access your account"/>
-			<separator id="consultAccountButtonSep" orient="vertical" bar="true"/>
-			<toolbarbutton id="signinButton" label="Sign in" visible="true"/>
-			<toolbarbutton id="signoutButton" label="Sign out" visible="false"/>
-			<separator orient="vertical" bar="true"/>
-			<toolbarbutton id="createAccountButton" label="Create new account" visible="true" tooltiptext="Click here to create an account"/>
-		</div>
+	<toolbarbutton id="releaseNotes" label="Welcome to AProMoRe (v1.0 23/07/2010)" />
+	<separator orient="vertical" bar="true" />
+	<toolbarbutton id="moreButton" label="More info.." />
+	<div style="float:right">
+		<toolbarbutton id="consultAccountButton" label=""
+			visible="false" tooltiptext="Click here to access your account" />
+		<separator id="consultAccountButtonSep" orient="vertical"
+			bar="true" />
+		<toolbarbutton id="signinButton" label="Sign in" visible="true" />
+		<toolbarbutton id="signoutButton" label="Sign out"
+			visible="false" />
+		<separator orient="vertical" bar="true" />
+		<toolbarbutton id="createAccountButton"
+			label="Create new account" visible="true"
+			tooltiptext="Click here to create an account" />
+	</div>
 </window>

@@ -1,11 +1,13 @@
 package org.apromore.portal.dialogController;
 
 
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.UserType;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Toolbarbutton;
 import org.zkoss.zul.Window;
@@ -25,7 +27,7 @@ public class HeaderController extends Window {
 	 */
 	private Window headerW;
 	private Toolbarbutton moreButton;
-
+	private Toolbarbutton releaseNotes;
 	private Toolbarbutton signinButton;
 	private Toolbarbutton signoutButton;
 	private Toolbarbutton createAccountButton;
@@ -43,6 +45,7 @@ public class HeaderController extends Window {
 		 * gets components of header
 		 */
 		this.headerW = (Window) mainC.getFellow("headercomp").getFellow("header");
+		this.releaseNotes = (Toolbarbutton) this.headerW.getFellow("releaseNotes");
 		this.signinButton = (Toolbarbutton) this.headerW.getFellow("signinButton");
 		this.signoutButton = (Toolbarbutton) this.headerW.getFellow("signoutButton");
 		this.consultAccountButton = (Toolbarbutton) this.headerW.getFellow("consultAccountButton");
@@ -67,6 +70,21 @@ public class HeaderController extends Window {
 				createAccount();
 			}
 		});
+		
+		this.releaseNotes.addEventListener("onClick", 
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				displayReleaseNotes();
+			}
+		});
+	}
+
+	protected void displayReleaseNotes() {
+		String instruction ;		
+		int offsetH = 100, offsetV=200;
+		instruction = "window.open('" + Constants.RELEASE_NOTES + "','','top=" + offsetH + ",left=" + offsetV 
+		+ ",height=600,width=800,scrollbars=1,resizable=1'); ";
+		Clients.evalJavaScript(instruction);
 	}
 
 	/**
