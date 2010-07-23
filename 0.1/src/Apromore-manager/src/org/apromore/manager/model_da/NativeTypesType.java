@@ -11,16 +11,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ProcessSummariesType complex type.
+ * <p>Java class for NativeTypesType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ProcessSummariesType">
+ * &lt;complexType name="NativeTypesType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="ProcessSummary" type="{http://www.apromore.org/data_access/model_manager}ProcessSummaryType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="NativeType" type="{http://www.apromore.org/data_access/model_manager}FormatTypeType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -30,44 +30,44 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ProcessSummariesType", propOrder = {
-    "processSummary"
+@XmlType(name = "NativeTypesType", propOrder = {
+    "nativeType"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ProcessSummariesType {
+public class NativeTypesType {
 
-    @XmlElement(name = "ProcessSummary")
+    @XmlElement(name = "NativeType")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected List<ProcessSummaryType> processSummary;
+    protected List<FormatTypeType> nativeType;
 
     /**
-     * Gets the value of the processSummary property.
+     * Gets the value of the nativeType property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the processSummary property.
+     * This is why there is not a <CODE>set</CODE> method for the nativeType property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getProcessSummary().add(newItem);
+     *    getNativeType().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link ProcessSummaryType }
+     * {@link FormatTypeType }
      * 
      * 
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public List<ProcessSummaryType> getProcessSummary() {
-        if (processSummary == null) {
-            processSummary = new ArrayList<ProcessSummaryType>();
+    public List<FormatTypeType> getNativeType() {
+        if (nativeType == null) {
+            nativeType = new ArrayList<FormatTypeType>();
         }
-        return this.processSummary;
+        return this.nativeType;
     }
 
 }
