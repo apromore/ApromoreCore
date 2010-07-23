@@ -11,16 +11,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for FormatsType complex type.
+ * <p>Java class for NativeTypesType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="FormatsType">
+ * &lt;complexType name="NativeTypesType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="Format" type="{http://www.apromore.org/manager/model_portal}FormatType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="NativeType" type="{http://www.apromore.org/manager/model_portal}FormatType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -30,29 +30,29 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FormatsType", propOrder = {
-    "format"
+@XmlType(name = "NativeTypesType", propOrder = {
+    "nativeType"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:29:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class FormatsType {
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:32:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+public class NativeTypesType {
 
-    @XmlElement(name = "Format")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:29:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected List<FormatType> format;
+    @XmlElement(name = "NativeType")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:32:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected List<FormatType> nativeType;
 
     /**
-     * Gets the value of the format property.
+     * Gets the value of the nativeType property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the format property.
+     * This is why there is not a <CODE>set</CODE> method for the nativeType property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getFormat().add(newItem);
+     *    getNativeType().add(newItem);
      * </pre>
      * 
      * 
@@ -62,12 +62,12 @@ public class FormatsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:29:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public List<FormatType> getFormat() {
-        if (format == null) {
-            format = new ArrayList<FormatType>();
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:32:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public List<FormatType> getNativeType() {
+        if (nativeType == null) {
+            nativeType = new ArrayList<FormatType>();
         }
-        return this.format;
+        return this.nativeType;
     }
 
 }

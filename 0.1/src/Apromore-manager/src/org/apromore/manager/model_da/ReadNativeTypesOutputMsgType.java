@@ -9,16 +9,17 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for DeleteEditSessionOutputMsgType complex type.
+ * <p>Java class for ReadNativeTypesOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DeleteEditSessionOutputMsgType">
+ * &lt;complexType name="ReadNativeTypesOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="Result" type="{http://www.apromore.org/data_access/model_manager}ResultType"/>
+ *         &lt;element name="NativeTypes" type="{http://www.apromore.org/data_access/model_manager}NativeTypesType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -28,15 +29,19 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DeleteEditSessionOutputMsgType", propOrder = {
-    "result"
+@XmlType(name = "ReadNativeTypesOutputMsgType", propOrder = {
+    "result",
+    "nativeTypes"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class DeleteEditSessionOutputMsgType {
+public class ReadNativeTypesOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
+    @XmlElement(name = "NativeTypes", required = true)
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected NativeTypesType nativeTypes;
 
     /**
      * Gets the value of the result property.
@@ -62,6 +67,32 @@ public class DeleteEditSessionOutputMsgType {
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResult(ResultType value) {
         this.result = value;
+    }
+
+    /**
+     * Gets the value of the nativeTypes property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link NativeTypesType }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public NativeTypesType getNativeTypes() {
+        return nativeTypes;
+    }
+
+    /**
+     * Sets the value of the nativeTypes property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link NativeTypesType }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public void setNativeTypes(NativeTypesType value) {
+        this.nativeTypes = value;
     }
 
 }
