@@ -7,7 +7,7 @@ import java.util.List;
 import org.apromore.portal.exception.ExceptionDao;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.DomainsType;
-import org.apromore.portal.model_manager.FormatsType;
+import org.apromore.portal.model_manager.NativeTypesType;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -66,11 +66,11 @@ public class FileController extends Window {
 
 			// build list of native languages to choose in
 			RequestToManager request = new RequestToManager();
-			FormatsType formats = request.ReadFormats();
+			NativeTypesType formats = request.ReadNativeTypes();
 			
-			for (int i=0;i<formats.getFormat().size();i++) {
+			for (int i=0;i<formats.getNativeType().size();i++) {
 				Listitem format = new Listitem();
-				format.setLabel(formats.getFormat().get(i).getFormat());
+				format.setLabel(formats.getNativeType().get(i).getFormat());
 				this.modelNativeL.appendChild(format);
 			}
 

@@ -9,12 +9,6 @@ package org.apromore.portal.service_oryx;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
@@ -220,7 +214,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			String processName = editSession.getProcessName();
 			// request native to be exported in format nativeType
 			InputStream native_is = 
-				request.ExportNative(processId, version, nativeType, Constants.INITIAL_ANNOTATION, true);
+				request.ExportFormat(processId, version, nativeType, Constants.INITIAL_ANNOTATION, true);
 			DataSource sourceNative = new ByteArrayDataSource(native_is, "text/xml"); 
 			res.setNative(new DataHandler(sourceNative));	
 
