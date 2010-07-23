@@ -101,7 +101,7 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("ManagerPortalPortTypeImpl(editDataProcess): " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
@@ -127,7 +127,7 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("ManagerPortalPortTypeImpl(deleteEditSession): " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
@@ -163,7 +163,7 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("ManagerPortalPortTypeImpl(deleteProcessVersions): " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
@@ -221,7 +221,7 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("ManagerPortalPortTypeImpl(readEditSession): " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
@@ -249,7 +249,7 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("ManagerPortalPortTypeImpl(writeEditSession): " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
@@ -324,7 +324,7 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 		} catch (Exception e) {	
 			e.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("ManagerPortalPortTypeImpl(exportNative): " + e.getMessage());
+			result.setMessage(e.getMessage());
 		}
 		return res;
 	}
@@ -358,7 +358,7 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("ManagerPortalPortTypeImpl(importProcess): " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
@@ -383,7 +383,7 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(0);
-			result.setMessage("ManagerPortalPortTypeImpl(writeUser): " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
@@ -406,7 +406,7 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("ManagerPortalPortTypeImpl(ReadFormats) " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
@@ -430,7 +430,7 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("ManagerPortalPortTypeImpl(ReadDomains) " + ex.getMessage());   
+			result.setMessage(ex.getMessage());   
 		}
 		return res;
 	}
@@ -455,7 +455,7 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("ManagerPortalPortTypeImpl(ReadUser) " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
@@ -480,7 +480,7 @@ import org.apromore.manager.model_portal.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("ManagerPortalPortTypeImpl(ReadProcessSummaries) " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
