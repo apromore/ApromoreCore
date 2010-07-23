@@ -23,8 +23,8 @@ public class TestCanonical2EPML {
 	public static void main(String[] args) {
 		//File cpf_file = new File("/home/fauvet/models/epml_models/SAP_1.cpf");
 		//File anf_file = new File("/home/fauvet/models/epml_models/SAP_1.anf");
-		File cpf_file = new File("/home/fauvet/models/test/HKG4 International Depature Departure Check-in.xpdl.cpf");
-		File anf_file = new File("/home/fauvet/models/test/HKG4 International Depature Departure Check-in.xpdl.anf");		
+		File cpf_file = new File("/home/fauvet/models/test/Oryx-Editor_-_Oryx.xpdl.cpf");
+		File anf_file = new File("/home/fauvet/models/test/Oryx-Editor_-_Oryx.xpdl.anf");		
 		try {
 			JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
 			Unmarshaller u = jc.createUnmarshaller();
