@@ -9,12 +9,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ReadFormatsInputMsgType complex type.
+ * <p>Java class for ReadNativeTypesInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ReadFormatsInputMsgType">
+ * &lt;complexType name="ReadNativeTypesInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;attribute name="Empty" type="{http://www.w3.org/2001/XMLSchema}string" />
@@ -26,12 +26,12 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReadFormatsInputMsgType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:29:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ReadFormatsInputMsgType {
+@XmlType(name = "ReadNativeTypesInputMsgType")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:32:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+public class ReadNativeTypesInputMsgType {
 
     @XmlAttribute(name = "Empty")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:29:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:32:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String empty;
 
     /**
@@ -42,7 +42,7 @@ public class ReadFormatsInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:29:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:32:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getEmpty() {
         return empty;
     }
@@ -55,7 +55,7 @@ public class ReadFormatsInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:29:38+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:32:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setEmpty(String value) {
         this.empty = value;
     }

@@ -9,16 +9,16 @@
 	<element name="EditDataProcessOutputMsg" type="tns:EditDataProcessOutputMsgType" />
 	<element name="ReadDomainsInputMsg" type="tns:ReadDomainsInputMsgType" />
 	<element name="ReadDomainsOutputMsg" type="tns:ReadDomainsOutputMsgType" />
-	<element name="ReadFormatsInputMsg" type="tns:ReadFormatsInputMsgType" />
-	<element name="ReadFormatsOutputMsg" type="tns:ReadFormatsOutputMsgType" />
+	<element name="ReadNativeTypesInputMsg" type="tns:ReadNativeTypesInputMsgType" />
+	<element name="ReadNativeTypesOutputMsg" type="tns:ReadNativeTypesOutputMsgType" />
 	<element name="ReadUserInputMsg" type="tns:ReadUserInputMsgType" />
 	<element name="ReadUserOutputMsg" type="tns:ReadUserOutputMsgType" />
 	<element name="WriteUserInputMsg" type="tns:WriteUserInputMsgType" />
 	<element name="WriteUserOutputMsg" type="tns:WriteUserOutputMsgType" />
 	<element name="ImportProcessInputMsg" type="tns:ImportProcessInputMsgType" />
 	<element name="ImportProcessOutputMsg" type="tns:ImportProcessOutputMsgType" />
-	<element name="ExportNativeInputMsg" type="tns:ExportNativeInputMsgType" />
-	<element name="ExportNativeOutputMsg" type="tns:ExportNativeOutputMsgType" />
+	<element name="ExportFormatInputMsg" type="tns:ExportFormatInputMsgType" />
+	<element name="ExportFormatOutputMsg" type="tns:ExportFormatOutputMsgType" />
 	<element name="WriteEditSessionInputMsg" type="tns:WriteEditSessionInputMsgType" />
 	<element name="WriteEditSessionOutputMsg" type="tns:WriteEditSessionOutputMsgType" />
 	<element name="ReadEditSessionInputMsg" type="tns:ReadEditSessionInputMsgType" />
@@ -106,22 +106,22 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="ReadFormatsInputMsgType">
+	<complexType name="ReadNativeTypesInputMsgType">
 		<attribute name="Empty" type="string" use="optional" />
 	</complexType>
 
-	<complexType name="ReadFormatsOutputMsgType">
+	<complexType name="ReadNativeTypesOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" minOccurs="1"
 				maxOccurs="1" />
-			<element name="Formats" type="tns:FormatsType" minOccurs="1"
+			<element name="NativeTypes" type="tns:NativeTypesType" minOccurs="1"
 				maxOccurs="1" />
 		</sequence>
 	</complexType>
 
-	<complexType name="FormatsType">
+	<complexType name="NativeTypesType">
 		<sequence>
-			<element name="Format" minOccurs="0" maxOccurs="unbounded"
+			<element name="NativeType" minOccurs="0" maxOccurs="unbounded"
 				type="tns:FormatType" />
 		</sequence>
 	</complexType>
@@ -186,7 +186,7 @@
 	</complexType>
 
 
-	<complexType name="ExportNativeInputMsgType">
+	<complexType name="ExportFormatInputMsgType">
 		<attribute name="NativeType" type="string" />
 		<attribute name="ProcessId" type="int" />
 		<attribute name="VersionName" type="string" />
@@ -194,7 +194,7 @@
 		<attribute name="withAnnotations" type="boolean" />
 	</complexType>
 
-	<complexType name="ExportNativeOutputMsgType">
+	<complexType name="ExportFormatOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" />
 			<element name="Native" type="base64Binary"

@@ -26,8 +26,8 @@
     <part name="payload" element="tnsx:ReadProcessSummariesInputMsg">
     </part>
   </message>
-  <message name="ReadFormatsOutputMsg">
-    <part name="payload" element="tnsx:ReadFormatsOutputMsg">
+  <message name="ReadNativeTypesOutputMsg">
+    <part name="payload" element="tnsx:ReadNativeTypesOutputMsg">
     </part>
   </message>
   <message name="DeleteProcessVersionsInputMsg">
@@ -74,8 +74,8 @@
     <part name="payload" element="tnsx:ReadEditSessionInputMsg">
     </part>
   </message>
-  <message name="ExportNativeInputMsg">
-    <part name="payload" element="tnsx:ExportNativeInputMsg">
+  <message name="ExportFormatInputMsg">
+    <part name="payload" element="tnsx:ExportFormatInputMsg">
     </part>
   </message>
   <message name="ImportProcessOutputMsg">
@@ -90,12 +90,12 @@
     <part name="payload" element="tnsx:WriteUserInputMsg">
     </part>
   </message>
-  <message name="ReadFormatsInputMsg">
-    <part name="payload" element="tnsx:ReadFormatsInputMsg">
+  <message name="ReadNativeTypesInputMsg">
+    <part name="payload" element="tnsx:ReadNativeTypesInputMsg">
     </part>
   </message>
-  <message name="ExportNativeOutputMsg">
-    <part name="payload" element="tnsx:ExportNativeOutputMsg">
+  <message name="ExportFormatOutputMsg">
+    <part name="payload" element="tnsx:ExportFormatOutputMsg">
     </part>
   </message>
   <message name="ReadProcessSummariesOutputMsg">
@@ -119,10 +119,10 @@
       <output name="ReadDomainsResponse" message="tns:ReadDomainsOutputMsg">
     </output>
     </operation>
-    <operation name="ReadFormats">
-      <input name="ReadFormatsRequest" message="tns:ReadFormatsInputMsg">
+    <operation name="ReadNativeTypes">
+      <input name="ReadNativeTypesRequest" message="tns:ReadNativeTypesInputMsg">
     </input>
-      <output name="ReadFormatsResponse" message="tns:ReadFormatsOutputMsg">
+      <output name="ReadNativeTypesResponse" message="tns:ReadNativeTypesOutputMsg">
     </output>
     </operation>
     <operation name="ReadUser">
@@ -143,10 +143,10 @@
       <output name="ImportProcessResponse" message="tns:ImportProcessOutputMsg">
     </output>
     </operation>
-    <operation name="ExportNative">
-      <input name="ExportNativeRequest" message="tns:ExportNativeInputMsg">
+    <operation name="ExportFormat">
+      <input name="ExportFormatRequest" message="tns:ExportFormatInputMsg">
     </input>
-      <output name="ExportNativeResponse" message="tns:ExportNativeOutputMsg">
+      <output name="ExportFormatResponse" message="tns:ExportFormatOutputMsg">
     </output>
     </operation>
     <operation name="WriteEditSession">
@@ -215,12 +215,12 @@
         <soap:body use="literal"/>
       </output>
     </operation>
-    <operation name="ReadFormats">
+    <operation name="ReadNativeTypes">
       <soap:operation style="document"/>
-      <input name="ReadFormatsRequest">
+      <input name="ReadNativeTypesRequest">
         <soap:body use="literal"/>
       </input>
-      <output name="ReadFormatsResponse">
+      <output name="ReadNativeTypesResponse">
         <soap:body use="literal"/>
       </output>
     </operation>
@@ -251,12 +251,12 @@
         <soap:body use="literal"/>
       </output>
     </operation>
-    <operation name="ExportNative">
+    <operation name="ExportFormat">
       <soap:operation style="document"/>
-      <input name="ExportNativeRequest">
+      <input name="ExportFormatRequest">
         <soap:body use="literal"/>
       </input>
-      <output name="ExportNativeResponse">
+      <output name="ExportFormatResponse">
         <soap:body use="literal"/>
       </output>
     </operation>

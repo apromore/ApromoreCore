@@ -11,12 +11,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ReadNativeOutputMsgType complex type.
+ * <p>Java class for ReadFormatOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ReadNativeOutputMsgType">
+ * &lt;complexType name="ReadFormatOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -31,19 +31,19 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReadNativeOutputMsgType", propOrder = {
+@XmlType(name = "ReadFormatOutputMsgType", propOrder = {
     "result",
     "_native"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-13T05:53:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ReadNativeOutputMsgType {
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+public class ReadFormatOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-13T05:53:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
     @XmlElement(name = "Native", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-13T05:53:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected DataHandler _native;
 
     /**
@@ -54,7 +54,7 @@ public class ReadNativeOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-13T05:53:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ResultType getResult() {
         return result;
     }
@@ -67,7 +67,7 @@ public class ReadNativeOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-13T05:53:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -80,7 +80,7 @@ public class ReadNativeOutputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-13T05:53:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public DataHandler getNative() {
         return _native;
     }
@@ -93,7 +93,7 @@ public class ReadNativeOutputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-13T05:53:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setNative(DataHandler value) {
         this._native = value;
     }

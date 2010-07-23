@@ -24,15 +24,15 @@ import org.apromore.manager.exception.ExceptionWriteUser;
 import org.apromore.manager.model_da.DeleteEditSessionInputMsgType;
 import org.apromore.manager.model_da.DeleteProcessVersionsInputMsgType;
 import org.apromore.manager.model_da.EditDataProcessInputMsgType;
-import org.apromore.manager.model_da.FormatType;
+import org.apromore.manager.model_da.FormatTypeType;
 import org.apromore.manager.model_da.ProcessVersionIdentifierType;
 import org.apromore.manager.model_da.ReadCanonicalAnfInputMsgType;
 import org.apromore.manager.model_da.ReadDomainsInputMsgType;
 import org.apromore.manager.model_da.ReadDomainsOutputMsgType;
 import org.apromore.manager.model_da.ReadEditSessionInputMsgType;
-import org.apromore.manager.model_da.ReadFormatsInputMsgType;
-import org.apromore.manager.model_da.ReadFormatsOutputMsgType;
-import org.apromore.manager.model_da.ReadNativeInputMsgType;
+import org.apromore.manager.model_da.ReadFormatInputMsgType;
+import org.apromore.manager.model_da.ReadNativeTypesInputMsgType;
+import org.apromore.manager.model_da.ReadNativeTypesOutputMsgType;
 import org.apromore.manager.model_da.ReadProcessSummariesInputMsgType;
 import org.apromore.manager.model_da.ReadUserInputMsgType;
 import org.apromore.manager.model_da.ResultType;
@@ -41,6 +41,8 @@ import org.apromore.manager.model_da.UserType;
 import org.apromore.manager.model_da.WriteEditSessionInputMsgType;
 import org.apromore.manager.model_da.WriteUserInputMsgType;
 import org.apromore.manager.model_da.WriteUserOutputMsgType;
+import org.apromore.manager.model_portal.FormatType;
+import org.apromore.manager.model_portal.NativeTypesType;
 import org.apromore.manager.model_portal.ProcessSummariesType;
 import org.apromore.manager.model_portal.ProcessSummaryType;
 import org.apromore.manager.model_portal.VersionSummaryType;
@@ -88,26 +90,24 @@ public class RequestToDA {
 		}
 	}
 
-	public org.apromore.manager.model_portal.FormatsType 
-	ReadFormats() throws ExceptionFormats {
-
+	public org.apromore.manager.model_portal.NativeTypesType
+	ReadNativeTypes() throws ExceptionFormats {
 		// payload empty
-		ReadFormatsInputMsgType payload = new ReadFormatsInputMsgType();
-		ReadFormatsOutputMsgType res = this.port.readFormats(payload);
-
+		ReadNativeTypesInputMsgType payload = new ReadNativeTypesInputMsgType();
+		ReadNativeTypesOutputMsgType res = this.port.readNativeTypes(payload);
 		ResultType result = res.getResult();
 		if (result.getCode() == -1) {
 			throw new ExceptionFormats (result.getMessage()); 
 		} else {
-			List<FormatType> formats_da = res.getFormats().getFormat();
-			org.apromore.manager.model_portal.FormatsType resFormats_p = 
-				new org.apromore.manager.model_portal.FormatsType();
+			List<FormatTypeType> formats_da = res.getNativeTypes().getNativeType();
+			org.apromore.manager.model_portal.NativeTypesType resFormats_p = 
+				new org.apromore.manager.model_portal.NativeTypesType();
 			for (int i=0;i<formats_da.size();i++){
 				org.apromore.manager.model_portal.FormatType format_p = 
 					new org.apromore.manager.model_portal.FormatType();
 				format_p.setFormat(formats_da.get(i).getFormat());
 				format_p.setExtension(formats_da.get(i).getExtension());
-				resFormats_p.getFormat().add(format_p);
+				resFormats_p.getNativeType().add(format_p);
 			}
 			return resFormats_p;
 		}
@@ -227,14 +227,14 @@ public class RequestToDA {
 	}
 
 
-	public InputStream ReadNative(int processId, String version,
+	public InputStream ReadFormat(int processId, String version,
 			String nativeType) throws ExceptionReadProcessSummaries, IOException, ExceptionReadNative {	
-		org.apromore.manager.model_da.ReadNativeInputMsgType payload0 = new ReadNativeInputMsgType();
+		org.apromore.manager.model_da.ReadFormatInputMsgType payload0 = new ReadFormatInputMsgType();
 		payload0.setProcessId(processId);
 		payload0.setVersion(version);
-		payload0.setNativeType(nativeType);
+		payload0.setFormat(nativeType);
 
-		org.apromore.manager.model_da.ReadNativeOutputMsgType res = this.port.readNative(payload0);
+		org.apromore.manager.model_da.ReadFormatOutputMsgType res = this.port.readFormat(payload0);
 		org.apromore.manager.model_da.ResultType result = res.getResult();
 		if (result.getCode() == 0) {
 			// if native found return it
