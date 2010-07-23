@@ -366,7 +366,7 @@ import org.apromore.data_access.model_manager.WriteUserOutputMsgType;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage("DAManagerPortImplem(ReadUser): " + ex.getMessage());
+			result.setMessage(ex.getMessage());
 		}
 		return res;
 	}
