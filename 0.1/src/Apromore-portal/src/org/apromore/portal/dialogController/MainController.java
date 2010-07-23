@@ -15,7 +15,7 @@ import org.apromore.portal.exception.ExceptionWriteEditSession;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.DomainsType;
 import org.apromore.portal.model_manager.EditSessionType;
-import org.apromore.portal.model_manager.FormatsType;
+import org.apromore.portal.model_manager.NativeTypesType;
 import org.apromore.portal.model_manager.ProcessSummariesType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.UserType;
@@ -23,7 +23,6 @@ import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
 import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Window;
@@ -98,11 +97,11 @@ public class MainController extends Window {
 			 * get list of formats
 			 */
 			RequestToManager request = new RequestToManager();
-			FormatsType nativeTypesDB = request.ReadFormats();
+			NativeTypesType nativeTypesDB = request.ReadNativeTypes();
 			this.nativeTypes = new HashMap<String, String>();
-			for (int i=0; i<nativeTypesDB.getFormat().size();i++){
-				this.nativeTypes.put(nativeTypesDB.getFormat().get(i).getExtension(),
-						nativeTypesDB.getFormat().get(i).getFormat());
+			for (int i=0; i<nativeTypesDB.getNativeType().size();i++){
+				this.nativeTypes.put(nativeTypesDB.getNativeType().get(i).getExtension(),
+						nativeTypesDB.getNativeType().get(i).getFormat());
 			}
 
 			/**

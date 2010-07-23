@@ -9,7 +9,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apromore.portal.exception.ExceptionDao;
 import org.apromore.portal.manager.RequestToManager;
-import org.apromore.portal.model_manager.FormatsType;
+import org.apromore.portal.model_manager.NativeTypesType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zul.Datebox;
@@ -106,10 +106,10 @@ public class ProcessDetailsController extends Window {
 		 * get list of formats to built export option list
 		 */
 		RequestToManager request = new RequestToManager();
-		FormatsType formats = request.ReadFormats();
-		for (int i=0;i<formats.getFormat().size();i++) {
+		NativeTypesType formats = request.ReadNativeTypes();
+		for (int i=0;i<formats.getNativeType().size();i++) {
 			Listitem format = new Listitem();
-			format.setLabel(formats.getFormat().get(i).getFormat());
+			format.setLabel(formats.getNativeType().get(i).getFormat());
 			this.exportL.appendChild(format);
 		}
 

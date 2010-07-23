@@ -33,12 +33,12 @@ import org.apromore.portal.model_manager.DomainsType;
 import org.apromore.portal.model_manager.EditDataProcessInputMsgType;
 import org.apromore.portal.model_manager.EditDataProcessOutputMsgType;
 import org.apromore.portal.model_manager.EditSessionType;
-import org.apromore.portal.model_manager.ExportNativeInputMsgType;
-import org.apromore.portal.model_manager.ExportNativeOutputMsgType;
+import org.apromore.portal.model_manager.ExportFormatInputMsgType;
+import org.apromore.portal.model_manager.ExportFormatOutputMsgType;
 import org.apromore.portal.model_manager.FormatType;
-import org.apromore.portal.model_manager.FormatsType;
 import org.apromore.portal.model_manager.ImportProcessInputMsgType;
 import org.apromore.portal.model_manager.ImportProcessOutputMsgType;
+import org.apromore.portal.model_manager.NativeTypesType;
 import org.apromore.portal.model_manager.ProcessSummariesType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.ProcessVersionIdentifierType;
@@ -46,8 +46,8 @@ import org.apromore.portal.model_manager.ReadDomainsInputMsgType;
 import org.apromore.portal.model_manager.ReadDomainsOutputMsgType;
 import org.apromore.portal.model_manager.ReadEditSessionInputMsgType;
 import org.apromore.portal.model_manager.ReadEditSessionOutputMsgType;
-import org.apromore.portal.model_manager.ReadFormatsInputMsgType;
-import org.apromore.portal.model_manager.ReadFormatsOutputMsgType;
+import org.apromore.portal.model_manager.ReadNativeTypesInputMsgType;
+import org.apromore.portal.model_manager.ReadNativeTypesOutputMsgType;
 import org.apromore.portal.model_manager.ReadProcessSummariesInputMsgType;
 import org.apromore.portal.model_manager.ReadProcessSummariesOutputMsgType;
 import org.apromore.portal.model_manager.ReadUserInputMsgType;
@@ -90,18 +90,18 @@ public class RequestToManager {
 		}
 	}
 
-	public FormatsType ReadFormats() throws ExceptionFormats {
+	public NativeTypesType ReadNativeTypes() throws ExceptionFormats {
 		// payload empty
-		ReadFormatsInputMsgType payload = new ReadFormatsInputMsgType();
-		ReadFormatsOutputMsgType res = this.port.readFormats(payload);
+		ReadNativeTypesInputMsgType payload = new ReadNativeTypesInputMsgType();
+		ReadNativeTypesOutputMsgType res = this.port.readNativeTypes(payload);
 
 		ResultType result = res.getResult();
 		if (result.getCode() == -1) {
 			throw new ExceptionFormats (result.getMessage()); 
 		} else {
-			List<FormatType> formats = res.getFormats().getFormat();
-			FormatsType resFormats = new FormatsType();
-			resFormats.getFormat().addAll(formats);
+			List<FormatType> formats = res.getNativeTypes().getNativeType();
+			NativeTypesType resFormats = new NativeTypesType();
+			resFormats.getNativeType().addAll(formats);
 			return resFormats;
 		}
 	}
@@ -166,17 +166,17 @@ public class RequestToManager {
 
 	}
 
-	public InputStream ExportNative(int processId, String versionName, String nativeType, String annotationName,
+	public InputStream ExportFormat(int processId, String versionName, String nativeType, String annotationName,
 			Boolean withAnnotations) 
 	throws ExceptionExport, IOException {
 
-		ExportNativeInputMsgType payload = new ExportNativeInputMsgType();
+		ExportFormatInputMsgType payload = new ExportFormatInputMsgType();
 		payload.setProcessId(processId);
 		payload.setVersionName(versionName);
 		payload.setNativeType(nativeType);
 		payload.setAnnotationName(annotationName);
 		payload.setWithAnnotations(withAnnotations);
-		ExportNativeOutputMsgType res = this.port.exportNative(payload);
+		ExportFormatOutputMsgType res = this.port.exportFormat(payload);
 		ResultType result = res.getResult();
 
 		if (result.getCode() == -1) {

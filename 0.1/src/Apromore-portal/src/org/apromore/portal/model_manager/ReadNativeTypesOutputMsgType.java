@@ -4,21 +4,23 @@ package org.apromore.portal.model_manager;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for FormatType complex type.
+ * <p>Java class for ReadNativeTypesOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="FormatType">
+ * &lt;complexType name="ReadNativeTypesOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="format" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="extension" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;sequence>
+ *         &lt;element name="Result" type="{http://www.apromore.org/manager/model_portal}ResultType"/>
+ *         &lt;element name="NativeTypes" type="{http://www.apromore.org/manager/model_portal}NativeTypesType"/>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -27,67 +29,70 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FormatType")
+@XmlType(name = "ReadNativeTypesOutputMsgType", propOrder = {
+    "result",
+    "nativeTypes"
+})
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:33:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class FormatType {
+public class ReadNativeTypesOutputMsgType {
 
-    @XmlAttribute
+    @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:33:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String format;
-    @XmlAttribute
+    protected ResultType result;
+    @XmlElement(name = "NativeTypes", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:33:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String extension;
+    protected NativeTypesType nativeTypes;
 
     /**
-     * Gets the value of the format property.
+     * Gets the value of the result property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:33:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getFormat() {
-        return format;
+    public ResultType getResult() {
+        return result;
     }
 
     /**
-     * Sets the value of the format property.
+     * Sets the value of the result property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:33:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setFormat(String value) {
-        this.format = value;
+    public void setResult(ResultType value) {
+        this.result = value;
     }
 
     /**
-     * Gets the value of the extension property.
+     * Gets the value of the nativeTypes property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link NativeTypesType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:33:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getExtension() {
-        return extension;
+    public NativeTypesType getNativeTypes() {
+        return nativeTypes;
     }
 
     /**
-     * Sets the value of the extension property.
+     * Sets the value of the nativeTypes property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link NativeTypesType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:33:43+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setExtension(String value) {
-        this.extension = value;
+    public void setNativeTypes(NativeTypesType value) {
+        this.nativeTypes = value;
     }
 
 }

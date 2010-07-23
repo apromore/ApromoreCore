@@ -210,7 +210,7 @@ public class ExportOneNativeController extends Window {
 				Boolean withAnnotation = (this.annotationsLB.getSelectedItem().getLabel().compareTo(Constants.NO_ANNOTATIONS)!=0);
 				RequestToManager request = new RequestToManager();
 				InputStream native_is =
-					request.ExportNative (this.processId, this.versionName, format, annotation, withAnnotation);
+					request.ExportFormat (this.processId, this.versionName, format, annotation, withAnnotation);
 				Filedownload.save(native_is, "text.xml", filename);
 			}
 		} catch (InterruptedException e) {
