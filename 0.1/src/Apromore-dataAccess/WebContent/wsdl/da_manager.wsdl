@@ -10,16 +10,16 @@
     <part name="payload" element="tnsx:ReadProcessSummariesOutputMsg">
     </part>
   </message>
-  <message name="ReadNativeInputMsg">
-    <part name="payload" element="tnsx:ReadNativeInputMsg">
+  <message name="ReadFormatInputMsg">
+    <part name="payload" element="tnsx:ReadFormatInputMsg">
     </part>
   </message>
   <message name="ReadEditSessionInputMsg">
     <part name="payload" element="tnsx:ReadEditSessionInputMsg">
     </part>
   </message>
-  <message name="ReadNativeOutputMsg">
-    <part name="payload" element="tnsx:ReadNativeOutputMsg">
+  <message name="ReadFormatOutputMsg">
+    <part name="payload" element="tnsx:ReadFormatOutputMsg">
     </part>
   </message>
   <message name="EditDataProcessInputMsg">
@@ -42,8 +42,8 @@
     <part name="payload" element="tnsx:WriteUserInputMsg">
     </part>
   </message>
-  <message name="ReadFormatsInputMsg">
-    <part name="payload" element="tnsx:ReadFormatsInputMsg">
+  <message name="ReadNativeTypesInputMsg">
+    <part name="payload" element="tnsx:ReadNativeTypesInputMsg">
     </part>
   </message>
   <message name="ReadDomainsOutputMsg">
@@ -86,8 +86,8 @@
     <part name="payload" element="tnsx:DeleteProcessVersionsOutputMsg">
     </part>
   </message>
-  <message name="ReadFormatsOutputMsg">
-    <part name="payload" element="tnsx:ReadFormatsOutputMsg">
+  <message name="ReadNativeTypesOutputMsg">
+    <part name="payload" element="tnsx:ReadNativeTypesOutputMsg">
     </part>
   </message>
   <message name="DeleteProcessVersionsInputMsg">
@@ -99,10 +99,10 @@
     </part>
   </message>
   <portType name="DAManagerPortType">
-    <operation name="ReadNative">
-      <input name="ReadNativeRequest" message="tns:ReadNativeInputMsg">
+    <operation name="ReadFormat">
+      <input name="ReadFormatRequest" message="tns:ReadFormatInputMsg">
     </input>
-      <output name="ReadNativeResponse" message="tns:ReadNativeOutputMsg">
+      <output name="ReadFormatResponse" message="tns:ReadFormatOutputMsg">
     </output>
     </operation>
     <operation name="ReadCanonicalAnf">
@@ -129,10 +129,10 @@
       <output name="ReadDomainsResponse" message="tns:ReadDomainsOutputMsg">
     </output>
     </operation>
-    <operation name="ReadFormats">
-      <input name="ReadFormatsRequest" message="tns:ReadFormatsInputMsg">
+    <operation name="ReadNativeTypes">
+      <input name="ReadNativeTypesRequest" message="tns:ReadNativeTypesInputMsg">
     </input>
-      <output name="ReadFormatsResponse" message="tns:ReadFormatsOutputMsg">
+      <output name="ReadNativeTypesResponse" message="tns:ReadNativeTypesOutputMsg">
     </output>
     </operation>
     <operation name="ReadUser">
@@ -183,12 +183,12 @@
         <soap:body use="literal"/>
       </output>
     </operation>
-    <operation name="ReadNative">
+    <operation name="ReadFormat">
       <soap:operation style="document"/>
-      <input name="ReadNativeRequest">
+      <input name="ReadFormatRequest">
         <soap:body use="literal"/>
       </input>
-      <output name="ReadNativeResponse">
+      <output name="ReadFormatResponse">
         <soap:body use="literal"/>
       </output>
     </operation>
@@ -219,12 +219,12 @@
         <soap:body use="literal"/>
       </output>
     </operation>
-    <operation name="ReadFormats">
+    <operation name="ReadNativeTypes">
       <soap:operation style="document"/>
-      <input name="ReadFormatsRequest">
+      <input name="ReadNativeTypesRequest">
         <soap:body use="literal"/>
       </input>
-      <output name="ReadFormatsResponse">
+      <output name="ReadNativeTypesResponse">
         <soap:body use="literal"/>
       </output>
     </operation>
