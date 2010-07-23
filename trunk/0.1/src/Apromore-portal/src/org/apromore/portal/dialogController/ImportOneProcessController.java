@@ -18,8 +18,10 @@ import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -52,24 +54,21 @@ public class ImportOneProcessController extends Window {
 		this.fileName = fileName;
 		this.nativeProcess = xml_is;
 		this.nativeType = nativeType;
-		final Window win = (Window) Executions.createComponents("macros/importOneProcess.zul", null, null);
-		this.importOneProcessWindow = (Window) win.getFellow("importOneProcessWindow");
-		this.importOneProcessWindow.setId(this.importOneProcessWindow.getId()+fileName);
+		this.importOneProcessWindow = (Window) Executions.createComponents("macros/importOneProcess.zul", null, null);
 		this.importOneProcessWindow.setTitle(this.importOneProcessWindow.getTitle() + " (file: " + this.fileName + ")");
-		this.processName = (Textbox) this.importOneProcessWindow.getFellow("processName");
-		this.processName.setId(this.processName.getId()+fileName);
-		this.versionName = (Textbox) this.importOneProcessWindow.getFellow("versionName");
-		this.versionName.setId(this.versionName.getId()+fileName);
-		this.okButton = (Button) this.importOneProcessWindow.getFellow("okButtonOneProcess");
-		this.okButton.setId(this.okButton.getId()+fileName);
-		this.okForAllButton = (Button) this.importOneProcessWindow.getFellow("okForAllButtonOneProcess");
-		this.okForAllButton.setId(this.okForAllButton.getId()+fileName);
-		this.cancelButton = (Button) this.importOneProcessWindow.getFellow("cancelButtonOneProcess");
-		this.cancelButton.setId(this.cancelButton.getId()+fileName);
-		this.cancelAllButton = (Button) this.importOneProcessWindow.getFellow("cancelAllButtonOneProcess");
-		this.cancelAllButton.setId(this.cancelAllButton.getId()+fileName);
+		Rows rows = (Rows) this.importOneProcessWindow.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
+		Row processNameR = (Row) rows.getFirstChild();
+		Row versionNameR = (Row) processNameR.getNextSibling();
+		this.domainR = (Row) versionNameR.getNextSibling();
+		Div buttonsD = (Div) this.domainR.getNextSibling().getNextSibling().getFirstChild();
+		this.processName = (Textbox) processNameR.getFirstChild().getNextSibling();
+		this.versionName = (Textbox) versionNameR.getFirstChild().getNextSibling();
+		
+		this.okButton = (Button) buttonsD.getFirstChild();
+		this.okForAllButton = (Button) buttonsD.getFirstChild().getNextSibling();
+		this.cancelButton = (Button) buttonsD.getFirstChild().getNextSibling().getNextSibling();
+		this.cancelAllButton = (Button) buttonsD.getFirstChild().getNextSibling().getNextSibling().getNextSibling();
 
-		this.domainR = (Row) this.importOneProcessWindow.getFellow("domainRow");
 		this.domainCB = new SelectDynamicListController(this.mainC.getDomains());
 		this.domainCB.setReference(this.mainC.getDomains());
 		this.domainCB.setId(fileName);
@@ -79,6 +78,8 @@ public class ImportOneProcessController extends Window {
 		this.domainCB.setAttribute("hflex", "1");
 		this.domainR.appendChild(domainCB);
 
+		this.cancelAllButton.setVisible(this.importProcessesC.getToImportList().size()>0);
+		this.okForAllButton.setVisible(this.importProcessesC.getToImportList().size()>0);
 		String readVersionName = "0.1"; // default value for versionName if not found
 		String readProcessName = processName ; // default value if not found
 		String readDocumentation = "" ; 
@@ -177,7 +178,7 @@ public class ImportOneProcessController extends Window {
 				cancelAll();
 			}
 		});	
-		win.doModal();
+		this.importOneProcessWindow.doModal();
 	}
 
 	private void cancel() throws InterruptedException, IOException{
@@ -292,5 +293,5 @@ public class ImportOneProcessController extends Window {
 		return nativeProcess;
 	}
 
-	
+
 }

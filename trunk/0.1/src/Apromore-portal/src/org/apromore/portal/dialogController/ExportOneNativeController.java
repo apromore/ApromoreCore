@@ -80,15 +80,11 @@ public class ExportOneNativeController extends Window {
 		this.okB = (Button) buttonsR.getFirstChild().getFirstChild();
 		this.cancelB = (Button) this.okB.getNextSibling();
 		this.cancelAllB = (Button) this.cancelB.getNextSibling();
-		
+
 
 		// enable cancelAll button if at least 1 process versions left.
-		if(this.exportListControllerC.getToExportList().size()>0) {
-			this.cancelAllB.setVisible(true);
-		} else {
-			this.cancelAllB.setVisible(false);
-		}
-		
+		this.cancelAllB.setVisible(this.exportListControllerC.getToExportList().size()>0);
+
 		// Build list of available formats for export.
 		// - Canononical format
 		Listitem cbi = new Listitem();

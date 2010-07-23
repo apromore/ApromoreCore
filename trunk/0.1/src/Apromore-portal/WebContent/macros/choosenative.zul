@@ -27,7 +27,8 @@
 							image="img/cancel2.png">
 						</button>
 						<button id="choosenativeCancelAllB" label="Cancel all"
-							image="img/cancel2.png">
+							image="img/cancel2.png"
+							tooltiptext="Cancel edit of all remaining process models.">
 						</button>
 					</div>
 				</row>

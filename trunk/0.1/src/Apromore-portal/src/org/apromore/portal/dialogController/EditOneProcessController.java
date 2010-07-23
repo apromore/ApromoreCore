@@ -52,12 +52,8 @@ public class EditOneProcessController extends Window {
 		this.nativeTypesLB.setId(this.nativeTypesLB.getId()+process.getId()+version.getName());
 
 		// enable cancelAll button if at least 1 process versions left.
-		if(this.editListProcessesC.getToEditList().size()>0) {
-			this.cancelAllB.setVisible(true);
-		} else {
-			this.cancelAllB.setVisible(false);
-		}
-		
+		this.cancelAllB.setVisible(this.editListProcessesC.getToEditList().size()>0);
+
 		HashMap<String,String> formats = this.mainC.getNativeTypes();
 		Set<String> extensions = formats.keySet();
 		Iterator<String> it = extensions.iterator();
