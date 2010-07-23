@@ -22,4 +22,6 @@ public final class Constants {
 	public static final String INITIAL_ANNOTATION = "Initial";
 	public static final String ANNOTATIONS = "Annotations";
 	public static final String CANONICAL = "Canonical";
+	
+	public static final String RELEASE_NOTES = "http://code.google.com/p/apromore/wiki/ReleaseNotes";
 }
