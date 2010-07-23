@@ -1,6 +1,5 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.portal.dialogController.EditDataListProcController;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
@@ -9,10 +8,12 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
@@ -40,7 +41,7 @@ public class EditDataOneProcessController {
 	private Radiogroup rankingRG;
 	private Row domainR;
 	private Row ownerR;
-
+	private Row nativeTypesR;
 	private SelectDynamicListController ownerCB;
 	private SelectDynamicListController domainCB;
 
@@ -52,47 +53,39 @@ public class EditDataOneProcessController {
 		this.process = process;
 		this.preVersion = version;
 
-		Window win = (Window) Executions.createComponents("macros/editprocessdata.zul", null, null);
-
-		this.editDataWindow = (Window) win.getFellow("editprocessdataW");
-		this.editDataWindow.setId("modifyprocessdataW");
-		this.editDataWindow.setId(this.editDataWindow.getId()+process.getId()+version.getName());
+		this.editDataWindow = (Window) Executions.createComponents("macros/editprocessdata.zul", null, null);
 		this.editDataWindow.setTitle("Edit process model meta-data");
-		this.okB = (Button) win.getFellow("editprocessdataOkB");
-		this.okB.setId(this.okB.getId()+process.getId()+version.getName());
-		this.cancelB = (Button) win.getFellow("editprocessdataCancelB");
-		this.cancelB.setId(this.cancelB.getId()+process.getId()+version.getName());
-		this.cancelAllB = (Button) win.getFellow("editprocessdataCancelAllB");
-		this.cancelAllB.setId(this.cancelAllB.getId()+process.getId()+version.getName());
-		this.resetB = (Button) win.getFellow("editprocessdataResetB");
-		this.resetB.setId(this.resetB.getId()+process.getId()+version.getName());
-		this.processNameT = (Textbox) win.getFellow("processname");
-		this.processNameT.setId(this.processNameT.getId() +process.getId() + version.getName());
-		this.versionNameT = (Textbox) win.getFellow("versionname");
-		this.versionNameT.setId(this.versionNameT.getId() + process.getId() + version.getName());
-		this.rankingRG = (Radiogroup) win.getFellow("ranking");
-		this.rankingRG.setId(this.rankingRG.getId() + process.getId() + version.getName());
-		this.r0 = (Radio) this.rankingRG.getFellow("r0");
-		this.r1 = (Radio) this.rankingRG.getFellow("r1");
-		this.r2 = (Radio) this.rankingRG.getFellow("r2");
-		this.r3 = (Radio) this.rankingRG.getFellow("r3");
-		this.r4 = (Radio) this.rankingRG.getFellow("r4");
-		this.r5 = (Radio) this.rankingRG.getFellow("r5");
-		this.domainR = (Row) win.getFellow("domain");
-		this.domainR.setId(this.domainR.getId() + process.getId() + version.getName());
+		Rows rows = (Rows) this.editDataWindow.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
+		Row processNameR = (Row) rows.getFirstChild();
+		this.processNameT = (Textbox) processNameR.getFirstChild().getNextSibling();
+		Row versionNameR = (Row) processNameR.getNextSibling();
+		this.versionNameT = (Textbox) versionNameR.getFirstChild().getNextSibling();
+		this.domainR = (Row) versionNameR.getNextSibling();
+		this.ownerR = (Row) this.domainR.getNextSibling();
+		this.nativeTypesR = (Row) this.ownerR.getNextSibling();
+		Row rankingR = (Row) this.nativeTypesR.getNextSibling();
+		this.rankingRG = (Radiogroup) rankingR.getFirstChild().getNextSibling();
+		this.r0 = (Radio) this.rankingRG.getFirstChild();
+		this.r1 = (Radio) this.r0.getNextSibling();
+		this.r2 = (Radio) this.r1.getNextSibling();
+		this.r3 = (Radio) this.r2.getNextSibling();
+		this.r4 = (Radio) this.r3.getNextSibling();
+		this.r5 = (Radio) this.r4.getNextSibling();
+		Row buttonsR = (Row) rankingR.getNextSibling().getNextSibling();
+		Div buttonsD = (Div) buttonsR.getFirstChild();
+		this.okB = (Button) buttonsD.getFirstChild();
+		this.cancelB = (Button) this.okB.getNextSibling();
+		this.cancelAllB = (Button) this.cancelB.getNextSibling();
+		this.resetB = (Button) this.cancelAllB.getNextSibling();
 		this.domainCB = new SelectDynamicListController(this.mainC.getDomains());
 		this.domainCB.setReference(this.mainC.getDomains());
-		this.domainCB.setId(this.domainR.getId() + "domain");
 		this.domainCB.setAutodrop(true);
 		this.domainCB.setWidth("85%");
 		this.domainCB.setHeight("100%");
 		this.domainCB.setAttribute("hflex", "1");
 		this.domainR.appendChild(domainCB);
-		this.ownerR = (Row) win.getFellow("owner");
-		this.ownerR.setId(this.ownerR.getId() + process.getId() + version.getName());
 		this.ownerCB = new SelectDynamicListController(this.mainC.getUsers());
 		this.ownerCB.setReference(this.mainC.getUsers());
-		this.ownerCB.setId(this.ownerR.getId() + "owner");
 		this.ownerCB.setAutodrop(true);
 		this.ownerCB.setWidth("85%");
 		this.ownerCB.setHeight("100%");
@@ -100,11 +93,7 @@ public class EditDataOneProcessController {
 		this.ownerR.appendChild(ownerCB);
 
 		// enable cancelAll button if at least 1 process versions left.
-		if(this.editDataListProcessesC.getToEditList().size()>0) {
-			this.cancelAllB.setVisible(true);
-		} else {
-			this.cancelAllB.setVisible(false);
-		}
+		this.cancelAllB.setVisible(this.editDataListProcessesC.getToEditList().size()>0);
 		// set values to those of the process version
 		reset();
 
@@ -140,7 +129,7 @@ public class EditDataOneProcessController {
 				reset();
 			}
 		});	
-		win.doModal();
+		this.editDataWindow.doModal();
 	}
 
 	protected void editDataProcess() throws Exception {

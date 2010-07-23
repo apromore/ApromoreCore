@@ -20,14 +20,14 @@
 					<label width="100%" />
 				</row>
 				<row>
-					<label value="Format of the export" />
+					<label value="Export format" />
 					<listbox width="100%" multiple="false" mold="select"
 						rows="1">
 						<!-- listbox implemented in controller -->
 					</listbox>
 				</row>
 				<row visible="false">
-					<label value="Available annotations" />
+					<label value="Annotation" />
 					<listbox width="100%" multiple="false" mold="select"
 						rows="1">
 						<!-- listbox implemented in controller -->
@@ -40,7 +40,8 @@
 							image="img/cancel2.png">
 						</button>
 						<button label="Cancel all"
-							image="img/cancel2.png">
+							image="img/cancel2.png"
+							tooltiptext="Cancel export of all remaining process models.">
 						</button>
 					</div>
 				</row>

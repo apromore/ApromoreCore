@@ -100,7 +100,7 @@ public class SigninController extends Window {
 			this.headerC.userConnected(user);
 			this.mainC.updateActions();
 		} catch (Exception e) {
-			Messagebox.show("Repository not available ("+e.getMessage()+")", "Attention", Messagebox.OK,
+			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		} finally {
 			cancel();

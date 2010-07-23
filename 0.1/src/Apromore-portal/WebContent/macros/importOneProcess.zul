@@ -1,40 +1,43 @@
 <!-- importOneProcessWindow window has ImportOneProcessController as a controller -->
-<window id="importOneProcessWindow" position="center" title="Process model details"
-	visible="true" sizable="true" width="550px">
+<window position="center" title="Process model details" visible="true"
+	sizable="true" width="550px">
 	<vbox vflex="1">
-		<grid >
-		<columns sizable="true">
-		<column width="25%"></column>
-		<column width="15%"></column>
-		<column width="60%"></column>
-		</columns>
+		<grid>
+			<columns sizable="true">
+				<column width="25%"></column>
+				<column width="15%"></column>
+				<column width="60%"></column>
+			</columns>
 			<rows>
 				<row spans="1,2">
 					<label value="Process name*" width="100%" />
-					<textbox id="processName" width="100%"/>
+					<textbox width="100%" />
 				</row>
 				<row spans="1,2">
-					<label value="Initial version name*" width="100%"/>
-					<textbox id="versionName" width="100%" />
+					<label value="Initial version name*" width="100%" />
+					<textbox width="100%" />
 				</row>
-				<row spans="1,2" id="domainRow">
-					<label value="Domain" width="100%"  tooltiptext="optional" />
+				<row spans="1,2">
+					<label value="Domain" width="100%"
+						tooltiptext="optional" />
 					<!-- combobox implemented in SelectDynamicListController -->
 				</row>
 				<row spans="3">
-					<label value="*: mandatory fields."/>
+					<label value="*: mandatory fields." />
 				</row>
 				<row spans="3">
 					<div align="center">
-						<button id="okButtonOneProcess" label="OK"  image="img/ok.png">
+						<button label="OK" image="img/ok.png"></button>
+						<button label="OK for all" image="img/ok.png"
+							tooltiptext="Default values for process and version name, and given value for domain will apply for all
+						remaining process models to import.">
 						</button>
-						<button id="okForAllButtonOneProcess" label="OK for all"  image="img/ok.png">
-						</button>
-						<button id="cancelButtonOneProcess" label="Cancel"
+						<button label="Cancel"
 							image="img/cancel2.png">
 						</button>
-						<button id="cancelAllButtonOneProcess" label="Cancel all"
-							image="img/cancel2.png">
+						<button label="Cancel all"
+							image="img/cancel2.png"
+							tooltiptext="Cancel import of all remaining process models.">
 						</button>
 					</div>
 				</row>

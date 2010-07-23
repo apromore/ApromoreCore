@@ -228,10 +228,17 @@ public class ImportListProcessesController extends Window {
 		return this.importedList;
 	}
 
+	public List<ImportOneProcessController> getToImportList() {
+		if (toImportList == null) {
+			toImportList = new ArrayList<ImportOneProcessController>();
+		}
+		return this.toImportList;
+	}
 	// remove from the list of processes to be imported
 	// if the list exhausted, display a message and terminate import
 	public void deleteFromToBeImported(ImportOneProcessController importOneProcess) throws IOException, InterruptedException {
 		this.toImportList.remove(importOneProcess);
+		
 		if (this.toImportList.size()==0) {
 			reportImport();
 			// clean folder and close window
