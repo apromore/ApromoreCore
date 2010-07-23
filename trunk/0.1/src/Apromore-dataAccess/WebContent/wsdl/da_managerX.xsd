@@ -9,14 +9,14 @@
 	<element name="EditDataProcessOutputMsg" type="tns:EditDataProcessOutputMsgType" />
 	<element name="ReadDomainsInputMsg" type="tns:ReadDomainsInputMsgType" />
 	<element name="ReadDomainsOutputMsg" type="tns:ReadDomainsOutputMsgType" />
-	<element name="ReadFormatsInputMsg" type="tns:ReadFormatsInputMsgType" />
-	<element name="ReadFormatsOutputMsg" type="tns:ReadFormatsOutputMsgType" />
+	<element name="ReadNativeTypesInputMsg" type="tns:ReadNativeTypesInputMsgType" />
+	<element name="ReadNativeTypesOutputMsg" type="tns:ReadNativeTypesOutputMsgType" />
 	<element name="ReadUserInputMsg" type="tns:ReadUserInputMsgType" />
 	<element name="ReadUserOutputMsg" type="tns:ReadUserOutputMsgType" />
 	<element name="WriteUserInputMsg" type="tns:WriteUserInputMsgType" />
 	<element name="WriteUserOutputMsg" type="tns:WriteUserOutputMsgType" />
-	<element name="ReadNativeInputMsg" type="tns:ReadNativeInputMsgType" />
-	<element name="ReadNativeOutputMsg" type="tns:ReadNativeOutputMsgType" />
+	<element name="ReadFormatInputMsg" type="tns:ReadFormatInputMsgType" />
+	<element name="ReadFormatOutputMsg" type="tns:ReadFormatOutputMsgType" />
 	<element name="ReadCanonicalAnfInputMsg" type="tns:ReadCanonicalAnfInputMsgType" />
 	<element name="ReadCanonicalAnfOutputMsg" type="tns:ReadCanonicalAnfOutputMsgType" />
 	<element name="WriteEditSessionInputMsg" type="tns:WriteEditSessionInputMsgType" />
@@ -48,13 +48,13 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="ReadNativeInputMsgType">
+	<complexType name="ReadFormatInputMsgType">
 		<attribute name="processId" type="int" />
 		<attribute name="version" type="string" />
-		<attribute name="nativeType" type="string" />
+		<attribute name="format" type="string" />
 	</complexType>
 
-	<complexType name="ReadNativeOutputMsgType">
+	<complexType name="ReadFormatOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" minOccurs="1"
 				maxOccurs="1" />
@@ -139,22 +139,22 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="ReadFormatsInputMsgType">
+	<complexType name="ReadNativeTypesInputMsgType">
 		<attribute name="Empty" type="string" use="optional" />
 	</complexType>
 
-	<complexType name="ReadFormatsOutputMsgType">
+	<complexType name="ReadNativeTypesOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" minOccurs="1"
 				maxOccurs="1" />
-			<element name="Formats" type="tns:FormatsType" minOccurs="1"
+			<element name="NativeTypes" type="tns:NativeTypesType" minOccurs="1"
 				maxOccurs="1" />
 		</sequence>
 	</complexType>
 
-	<complexType name="FormatsType">
+	<complexType name="NativeTypesType">
 		<sequence>
-			<element name="Format" minOccurs="0" maxOccurs="unbounded"
+			<element name="NativeType" minOccurs="0" maxOccurs="unbounded"
 				type="tns:FormatType" />
 		</sequence>
 	</complexType>
