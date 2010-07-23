@@ -9,17 +9,17 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ReadProcessSummariesOutputMsgType complex type.
+ * <p>Java class for ReadNativeTypesOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ReadProcessSummariesOutputMsgType">
+ * &lt;complexType name="ReadNativeTypesOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="Result" type="{http://www.apromore.org/data_access/model_manager}ResultType"/>
- *         &lt;element name="ProcessSummaries" type="{http://www.apromore.org/data_access/model_manager}ProcessSummariesType"/>
+ *         &lt;element name="NativeTypes" type="{http://www.apromore.org/data_access/model_manager}NativeTypesType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -29,19 +29,19 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReadProcessSummariesOutputMsgType", propOrder = {
+@XmlType(name = "ReadNativeTypesOutputMsgType", propOrder = {
     "result",
-    "processSummaries"
+    "nativeTypes"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:10:02+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class ReadProcessSummariesOutputMsgType {
+public class ReadNativeTypesOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:10:02+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
-    @XmlElement(name = "ProcessSummaries", required = true)
+    @XmlElement(name = "NativeTypes", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:10:02+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected ProcessSummariesType processSummaries;
+    protected NativeTypesType nativeTypes;
 
     /**
      * Gets the value of the result property.
@@ -70,29 +70,29 @@ public class ReadProcessSummariesOutputMsgType {
     }
 
     /**
-     * Gets the value of the processSummaries property.
+     * Gets the value of the nativeTypes property.
      * 
      * @return
      *     possible object is
-     *     {@link ProcessSummariesType }
+     *     {@link NativeTypesType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:10:02+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public ProcessSummariesType getProcessSummaries() {
-        return processSummaries;
+    public NativeTypesType getNativeTypes() {
+        return nativeTypes;
     }
 
     /**
-     * Sets the value of the processSummaries property.
+     * Sets the value of the nativeTypes property.
      * 
      * @param value
      *     allowed object is
-     *     {@link ProcessSummariesType }
+     *     {@link NativeTypesType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:10:02+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setProcessSummaries(ProcessSummariesType value) {
-        this.processSummaries = value;
+    public void setNativeTypes(NativeTypesType value) {
+        this.nativeTypes = value;
     }
 
 }
