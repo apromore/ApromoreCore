@@ -71,6 +71,8 @@ public class EPML2Canonical{
 	Map<BigInteger, TypeObject> obj_ref = new HashMap<BigInteger, TypeObject>();
 	List<TaskType> subnet_list = new LinkedList<TaskType>();
 	List<BigInteger> range_ids = new LinkedList<BigInteger>();
+	List<TypeArc> range_flow = new LinkedList<TypeArc>();
+	List<TypeArc> range_relation = new LinkedList<TypeArc>();
 	
 	private CanonicalProcessType cproc = new CanonicalProcessType();
 	private AnnotationsType annotations = new AnnotationsType();
@@ -157,17 +159,55 @@ public class EPML2Canonical{
 				TypeArc arc = (TypeArc) obj;
 				if(arc.getFlow() != null) {
 					if(range_ids.contains(arc.getFlow().getSource()) || range_ids.contains(arc.getFlow().getTarget()) )
+					{
 						System.out.println();
+						range_flow.add(arc);
+					}
 					else
 						translateArc(net, arc);
 						addEdgeAnnotation(arc);
 				}
 				else if(arc.getRelation() != null) {
 					if(range_ids.contains(arc.getRelation().getSource()) || range_ids.contains(arc.getRelation().getTarget()) )
+					{	
 						System.out.println();
+						range_relation.add(arc);
+					}
 					else
 						translateArc(net, arc);
 						addEdgeAnnotation(arc);
+				}
+			}
+		}
+		
+		for(TypeArc arc: range_flow)
+		{
+			if(range_ids.contains(arc.getFlow().getSource()))
+			{
+				for(TypeArc arc2 : range_flow)
+				{
+					if(range_ids.contains(arc2.getFlow().getTarget()))
+					{
+						arc.getFlow().setSource(arc2.getFlow().getSource());
+						translateArc(net,arc);
+						addEdgeAnnotation(arc);
+					}
+				}
+			}
+		}
+		
+		for(TypeArc arc: range_relation)
+		{
+			if(range_ids.contains(arc.getRelation().getSource()))
+			{
+				for(TypeArc arc2 : range_relation)
+				{
+					if(range_ids.contains(arc2.getRelation().getTarget()))
+					{
+						arc.getRelation().setSource(arc2.getRelation().getSource());
+						translateArc(net,arc);
+						addEdgeAnnotation(arc);
+					}
 				}
 			}
 		}
