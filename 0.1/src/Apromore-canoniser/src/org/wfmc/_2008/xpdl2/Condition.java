@@ -17,6 +17,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAnyAttribute;
+import javax.xml.bind.annotation.XmlAnyElement;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElementRef;
 import javax.xml.bind.annotation.XmlElementRefs;
@@ -63,13 +64,15 @@ import org.wfmc._2002.xpdl1.Xpression;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
-    "content"
+    "content",
+    "expression",
+    "Expression"
 })
 @XmlRootElement(name = "Condition")
 public class Condition {
 
     @XmlElementRefs({
-        @XmlElementRef(name = "Expression", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = JAXBElement.class),
+        //@XmlElementRef(name = "Expression", namespace = "http://www.wfmc.org/2008/XPDL2.1", type = JAXBElement.class),
         @XmlElementRef(name = "Xpression", namespace = "http://www.wfmc.org/2002/XPDL1.0", type = Xpression.class)
     })
     @XmlMixed
@@ -79,6 +82,37 @@ public class Condition {
     protected String type;
     @XmlAnyAttribute
     private Map<QName, String> otherAttributes = new HashMap<QName, String>();
+    
+    // modify
+    private String Expression;
+    @XmlAttribute(name = "Expression")
+    
+    /**
+     * Sets the value of the Expression property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    public void setExpression(String exp)
+    {
+    	this.Expression = exp;
+    }
+    
+    /**
+     * Gets the value of the Expression property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    public String getExpression()
+    {
+    	return this.Expression;
+    }
+    // end
 
     /**
      * Gets the value of the content property.
