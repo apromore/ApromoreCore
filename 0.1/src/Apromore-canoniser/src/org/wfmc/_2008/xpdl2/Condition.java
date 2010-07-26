@@ -65,7 +65,6 @@ import org.wfmc._2002.xpdl1.Xpression;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "", propOrder = {
     "content",
-    "expression",
     "Expression"
 })
 @XmlRootElement(name = "Condition")
