@@ -284,45 +284,52 @@ public class XPDL2Canonical {
 		NodeType csrc = xpdl2canon.get(xsrc);
 		NodeType ctgt = xpdl2canon.get(xtgt);
 
+		if( csrc != null && ctgt != null)
+		{
+			
+		
 		Condition cond = flow.getCondition();
 		//Expression condE = cond.getContent();
 		if (csrc instanceof TaskType && cond != null && !cond.getContent().isEmpty()) {
 			//System.out.println("Condition type: " + cond.getType());
-
-			NodeType split = implicitORSplit.get(csrc);
-			if (split == null) {
-				split = new ORSplitType();
-				//System.out.println("OR SPLIT GENERATED");
-				split.setId(BigInteger.valueOf(cpfId++));
-				implicitORSplit.put(csrc, split);
-				net.getNode().add(split);
-			}
-			csrc = split;
-		} else {			
-			if (implicitANDSplit.containsKey(csrc)) {
-				NodeType split = implicitANDSplit.get(csrc);
-				if (!linked.contains(split)) {
-					addEdge(net, csrc, split);
-					linked.add(split);
+	
+				NodeType split = implicitORSplit.get(csrc);
+				if (split == null) {
+					split = new ORSplitType();
+					//System.out.println("OR SPLIT GENERATED");
+					split.setId(BigInteger.valueOf(cpfId++));
+					implicitORSplit.put(csrc, split);
+					net.getNode().add(split);
 				}
 				csrc = split;
-			}
-
-			if (implicitJoin.containsKey(ctgt)) {
-				NodeType join = implicitJoin.get(ctgt);
-				if (!linked.contains(join)) {
-					addEdge(net, join, ctgt);
-					linked.add(join);
+			} else {			
+				if (implicitANDSplit.containsKey(csrc)) {
+					NodeType split = implicitANDSplit.get(csrc);
+					if (!linked.contains(split)) {
+						addEdge(net, csrc, split);
+						linked.add(split);
+					}
+					csrc = split;
 				}
-				ctgt = join;
+	
+				if (implicitJoin.containsKey(ctgt)) {
+					NodeType join = implicitJoin.get(ctgt);
+					if (!linked.contains(join)) {
+						addEdge(net, join, ctgt);
+						linked.add(join);
+					}
+					ctgt = join;
+				}
 			}
+	
+			EdgeType edge = addEdge(net, csrc, ctgt);
+			if(cond != null && cond.getExpression() != null)
+				//System.out.println(cond.getExpression());
+				edge.setCondition(cond.getExpression());
+	
+			edgeMap.put(flow, edge);
+		
 		}
-
-		EdgeType edge = addEdge(net, csrc, ctgt);
-		//if(cond != null && !cond.getContent().isEmpty())
-			//edge.setCondition(""+cond.getContent().get(1));
-
-		edgeMap.put(flow, edge);
 	}
 
 	private EdgeType addEdge(NetType net, NodeType src, NodeType tgt) {
