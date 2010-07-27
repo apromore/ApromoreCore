@@ -913,7 +913,6 @@ public class ProcessDao extends BasicDao {
 			+       "   and " + ConstantDB.ATTR_VERSION_NAME + " = '" + newVersion + "'";
 			stmt0 = conn.createStatement();
 			rs0 = stmt0.executeQuery(query);
-
 			if (rs0.next()) {
 				// store the data in a temporary table
 				query = " insert into " + ConstantDB.TABLE_TEMP_VERSIONS 
