@@ -13,6 +13,8 @@
 	<element name="ReadNativeTypesOutputMsg" type="tns:ReadNativeTypesOutputMsgType" />
 	<element name="ReadUserInputMsg" type="tns:ReadUserInputMsgType" />
 	<element name="ReadUserOutputMsg" type="tns:ReadUserOutputMsgType" />
+	<element name="ReadAllUsersInputMsg" type="tns:ReadAllUsersInputMsgType" />
+	<element name="ReadAllUsersOutputMsg" type="tns:ReadAllUsersOutputMsgType" />
 	<element name="WriteUserInputMsg" type="tns:WriteUserInputMsgType" />
 	<element name="WriteUserOutputMsg" type="tns:WriteUserOutputMsgType" />
 	<element name="ReadFormatInputMsg" type="tns:ReadFormatInputMsgType" />
@@ -88,7 +90,7 @@
 		<attribute name="id" type="int" />
 		<attribute name="domain" type="string" />
 		<attribute name="owner" type="string" />
-		<attribute name="ranking" type="int" />
+		<attribute name="ranking" type="string" />
 		<attribute name="newName" type="string" />
 		<attribute name="preName" type="string" />
 	</complexType>
@@ -109,7 +111,7 @@
 		<attribute name="name" type="string" />
 		<attribute name="id" type="int" />
 		<attribute name="domain" type="string" />
-		<attribute name="ranking" type="int" />
+		<attribute name="ranking" type="string" />
 		<attribute name="last_version" type="string" />
 		<attribute name="owner" type="string" />
 	</complexType>
@@ -119,7 +121,7 @@
 			<element minOccurs="0" maxOccurs="unbounded" name="Annotations"
 				type="string" />
 		</sequence>
-		<attribute name="ranking" type="int" />
+		<attribute name="ranking" type="string" />
 		<attribute name="name" type="string" />
 		<attribute name="documentation" type="string" />
 		<attribute name="last_update" type="string" />
@@ -168,7 +170,27 @@
 		<attribute name="message" type="string" />
 		<attribute name="code" type="int" />
 	</complexType>
+	
+	<complexType name="ReadAllUsersInputMsgType">
+		<attribute name="Empty" type="string" use="optional" />
+	</complexType>
 
+	<complexType name="ReadAllUsersOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+			<element name="Usernames" type="tns:UsernamesType" minOccurs="1"
+				maxOccurs="1" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="UsernamesType">
+		<sequence>
+			<element name="Username" type="string" minOccurs="1"
+				maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+	
 	<complexType name="ReadUserInputMsgType">
 		<attribute name="username" type="string" />
 	</complexType>
@@ -226,6 +248,8 @@
 		<attribute name="processName" type="string" />
 		<attribute name="versionName" type="string" />
 		<attribute name="domain" type="string" />
+		<attribute name="WithAnnotation" type="boolean" />
+		<attribute name="Annotation" type="string" />
 	</complexType>
 
 	<complexType name="WriteEditSessionInputMsgType">

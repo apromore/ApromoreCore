@@ -11,6 +11,7 @@ import org.apromore.data_access.exception.ExceptionDao;
 import org.apromore.data_access.exception.ExceptionUnknownUser;
 import org.apromore.data_access.model_manager.SearchHistoriesType;
 import org.apromore.data_access.model_manager.UserType;
+import org.apromore.data_access.model_manager.UsernamesType;
 
 
 public class UserDao extends BasicDao {
@@ -104,6 +105,41 @@ public class UserDao extends BasicDao {
 		return user;
 	}
 
+	/**
+	 * Return the list of all registered users.
+	 * @return
+	 * @throws ExceptionDao
+	 */
+	public UsernamesType getAllUsers() throws ExceptionDao {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		String query = null;
+		UsernamesType allUsers = new UsernamesType();
+		try {
+			conn = this.getConnection();
+			query = " select "  + ConstantDB.ATTR_LASTNAME 
+			+ ", " + ConstantDB.ATTR_FIRSTNAME 
+			+ ", " + ConstantDB.ATTR_USERNAME 
+			+ ", " + ConstantDB.ATTR_EMAIL 
+			+ ", " + ConstantDB.ATTR_PASSWD
+			+ " FROM " + ConstantDB.TABLE_USERS
+			+ " order by " + ConstantDB.ATTR_USERNAME;
+			
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
+			while (rs.next()) {
+				allUsers.getUsername().add(rs.getString(3));
+			}
+			return allUsers;
+		}catch (SQLException e) {
+			e.printStackTrace();
+			throw new ExceptionDao ("SQL error: " + e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ExceptionDao ("SQL error: " + e.getMessage());
+		}
+	}
 
 	/**
 	 * Update a user's search history: replace the previous one (in the db) 

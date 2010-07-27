@@ -29,14 +29,14 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaskType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class TaskType
     extends WorkType
 {
 
     @XmlAttribute
     @XmlSchemaType(name = "positiveInteger")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigInteger subnetId;
 
     /**
@@ -47,7 +47,7 @@ public class TaskType
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public BigInteger getSubnetId() {
         return subnetId;
     }
@@ -60,7 +60,7 @@ public class TaskType
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setSubnetId(BigInteger value) {
         this.subnetId = value;
     }

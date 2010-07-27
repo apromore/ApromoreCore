@@ -62,6 +62,8 @@ public class EditSessionDao extends BasicDao {
 		String versionName = editSession.getVersionName();
 		String nativeType = editSession.getNativeType();
 		String processName = editSession.getProcessName();
+		Boolean withAnnotation = editSession.isWithAnnotation();
+		String annotation = editSession.getAnnotation();
 		try {
 			conn = this.getConnection();
 			query = " insert into " + ConstantDB.TABLE_EDIT_SESSIONS 
@@ -69,15 +71,21 @@ public class EditSessionDao extends BasicDao {
 			+ "," + ConstantDB.ATTR_USERNAME
 			+ "," + ConstantDB.ATTR_PROCESSID
 			+ "," + ConstantDB.ATTR_VERSION_NAME
-			+ "," + ConstantDB.ATTR_NAT_TYPE + ")"
-			+ "values (now(),?, ?, ?, ?) ";
+			+ "," + ConstantDB.ATTR_NAT_TYPE 
+			+ "," + ConstantDB.ATTR_ANNOTATION
+			+ ")"
+			+ "values (now(), ?, ?, ?, ?, ?) ";
 
 			stmt = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmt.setString(1, username);
 			stmt.setInt(2, processId);
 			stmt.setString(3, versionName);
 			stmt.setString(4, nativeType);
-
+			if (withAnnotation) {
+				stmt.setString(5, annotation);	
+			} else {
+				stmt.setNull(5,java.sql.Types.VARCHAR);
+			}
 			int rs = stmt.executeUpdate();
 			key = stmt.getGeneratedKeys() ;
 			if (!key.next()) {
@@ -108,6 +116,7 @@ public class EditSessionDao extends BasicDao {
 			+ "," + ConstantDB.ATTR_VERSION_NAME
 			+ "," + ConstantDB.ATTR_NAT_TYPE
 			+ "," + ConstantDB.ATTR_DOMAIN
+			+ ", coalesce(" + ConstantDB.ATTR_ANNOTATION + ",'')"
 			+ " from " + ConstantDB.TABLE_EDIT_SESSIONS
 			+ " natural join " + ConstantDB.TABLE_PROCESSES
 			+ " where " + ConstantDB.ATTR_CODE + " = " + code ;
@@ -120,6 +129,13 @@ public class EditSessionDao extends BasicDao {
 				editSession.setVersionName(rs.getString(4));
 				editSession.setNativeType(rs.getString(5));
 				editSession.setDomain(rs.getString(6));
+				if (rs.getString(7).compareTo("")==0) {
+					editSession.setWithAnnotation(false);
+				} else {
+					editSession.setWithAnnotation(true);
+					editSession.setAnnotation(rs.getString(7));
+				}
+					
 			} else {
 				throw new Exception("Error: EditSessionDao: EditSession not found. ");
 			}
