@@ -48,7 +48,7 @@
 		<attribute name="name" type="string" />
 		<attribute name="id" type="int" />
 		<attribute name="domain" type="string" />
-		<attribute name="ranking" type="int" />
+		<attribute name="ranking" type="string" />
 		<attribute name="last_version" type="string" />
 		<attribute name="owner" type="string" />
 	</complexType>
@@ -58,7 +58,7 @@
 			<element minOccurs="0" maxOccurs="unbounded" name="Annotations"
 				type="string" />
 		</sequence>
-		<attribute name="ranking" type="int" />
+		<attribute name="ranking" type="string" />
 		<attribute name="name" type="string" />
 		<attribute name="last_update" type="string" />
 		<attribute name="creation_date" type="string" />
