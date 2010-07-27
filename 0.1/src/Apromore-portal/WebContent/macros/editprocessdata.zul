@@ -43,6 +43,7 @@ process purpose.
 						<radio label="3" />
 						<radio label="4" />
 						<radio label="5" />
+						<radio label="uncheck all"/>
 					</radiogroup>
 				</row>
 				<row spans="3">

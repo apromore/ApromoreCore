@@ -4,6 +4,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
+import org.apromore.portal.common.Constants;
+import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.Executions;
@@ -14,6 +16,8 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Row;
+import org.zkoss.zul.Rows;
 import org.zkoss.zul.Window;
 
 public class EditOneProcessController extends Window {
@@ -23,56 +27,65 @@ public class EditOneProcessController extends Window {
 	private Button cancelB;
 	private Button cancelAllB;
 	private Listbox nativeTypesLB;
+	private Listbox annotationsLB;
 	private MainController mainC ;
 	private EditListProcessesController editListProcessesC;
 	private ProcessSummaryType process;
 	private VersionSummaryType version;
 
 	public EditOneProcessController (MainController mainC, EditListProcessesController editListProcessesC,
-			ProcessSummaryType process, VersionSummaryType version) throws SuspendNotAllowedException, InterruptedException {
+			ProcessSummaryType process, VersionSummaryType version) 
+	throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
 
 		this.mainC = mainC;
 		this.editListProcessesC = editListProcessesC;
 		this.process = process;
 		this.version = version;
 
-		//if (this.process.getOwner().compareTo(this.mainC.getCurrentUser().getUsername())==0) {
-		Window win = (Window) Executions.createComponents("macros/choosenative.zul", null, null);
 
-		this.chooseNativeW = (Window) win.getFellow("choosenativeW");
-		this.chooseNativeW.setId(this.chooseNativeW.getId()+process.getId()+version.getName());
+		this.chooseNativeW = (Window) Executions.createComponents("macros/choosenative.zul", null, null);
 		this.chooseNativeW.setTitle("Edit process " + process.getName() + ", " + version.getName() + ", choose a native type.");
-		this.okB = (Button) win.getFellow("choosenativeOkB");
-		this.okB.setId(this.okB.getId()+process.getId()+version.getName());
-		this.cancelB = (Button) win.getFellow("choosenativeCancelB");
-		this.cancelB.setId(this.cancelB.getId()+process.getId()+version.getName());
-		this.cancelAllB = (Button) win.getFellow("choosenativeCancelAllB");
-		this.cancelAllB.setId(this.cancelAllB.getId()+process.getId()+version.getName());
-		this.nativeTypesLB = (Listbox) win.getFellow("choosenativeLB");
-		this.nativeTypesLB.setId(this.nativeTypesLB.getId()+process.getId()+version.getName());
-
+		Rows rows = (Rows) this.chooseNativeW.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
+		Row nativeTypesR = (Row) rows.getFirstChild();
+		Row annotationR = (Row) nativeTypesR.getNextSibling();
+		Row buttonsR = (Row) annotationR.getNextSibling();
+		this.nativeTypesLB = (Listbox) nativeTypesR.getFirstChild().getNextSibling();
+		this.annotationsLB = (Listbox) annotationR.getFirstChild().getNextSibling();
+		this.okB = (Button) buttonsR.getFirstChild().getFirstChild();
+		this.cancelB = (Button) this.okB.getNextSibling();
+		this.cancelAllB = (Button) this.cancelB.getNextSibling();
+		
 		// enable cancelAll button if at least 1 process versions left.
 		this.cancelAllB.setVisible(this.editListProcessesC.getToEditList().size()>0);
 
+		// build native format listbox
 		HashMap<String,String> formats = this.mainC.getNativeTypes();
 		Set<String> extensions = formats.keySet();
 		Iterator<String> it = extensions.iterator();
+		Listitem cbi;
 		while (it.hasNext()){
-			Listitem cbi = new Listitem();
+			cbi = new Listitem();
 			this.nativeTypesLB.appendChild(cbi);
 			cbi.setLabel(formats.get(it.next()));
 			// TODO temporary so the user cannot choose to edit in epml format
 			if ("EPML 2.0".compareTo(cbi.getLabel())==0) {
 				cbi.setDisabled(true);
 			}
-		}
-
-		this.nativeTypesLB.addEventListener("onSelect",
-				new EventListener() {
-			public void onEvent(Event event) throws Exception {
-				activateOkButton();
+			if ("XPDL 2.1".compareTo(cbi.getLabel())==0) {
+				cbi.setSelected(true);
 			}
-		});
+		}
+		
+		// Build list of annotations associated with the process version
+		cbi = new Listitem();
+		cbi.setLabel(Constants.NO_ANNOTATIONS);
+		this.annotationsLB.appendChild(cbi);
+		for (int i=0; i<this.version.getAnnotations().size(); i++){
+			cbi = new Listitem();
+			this.annotationsLB.appendChild(cbi);
+			cbi.setLabel(this.version.getAnnotations().get(i));
+		}
+		this.annotationsLB.setSelectedItem((Listitem) this.annotationsLB.getFirstChild());
 
 		this.okB.addEventListener("onClick",
 				new EventListener() {
@@ -98,18 +111,13 @@ public class EditOneProcessController extends Window {
 				cancelAll();
 			}
 		});	
-		win.doModal();
+		this.chooseNativeW.doModal();
 		//		} else {
 		//			Messagebox.show("Not owner", "Attention", Messagebox.OK,
 		//					Messagebox.ERROR);
 		//		}
 	}
-
-	protected void activateOkButton() {
-		this.okB.setDisabled(false);
-		//this.nativeTypesLB.removeChild(this.emptynative);
-	}
-
+	
 	protected void cancel() throws Exception {
 		// delete process from the list of processes still to be edited
 		this.editListProcessesC.deleteFromToBeEdited(this);
@@ -138,8 +146,13 @@ public class EditOneProcessController extends Window {
 			String version = this.version.getName();
 			String nativeType = cbi.getLabel();
 			String domain = this.process.getDomain();
+			String annotation = null;
+			if (this.annotationsLB.getSelectedItem() != null
+					&& Constants.NO_ANNOTATIONS.compareTo(this.annotationsLB.getSelectedItem().getLabel())!=0) {
+				annotation = this.annotationsLB.getSelectedItem().getLabel();
+			}
 			// editProcess is hosted by main controller as it is called by others.
-			this.mainC.editProcess(processId, processName, version, nativeType, domain);
+			this.mainC.editProcess(processId, processName, version, nativeType, domain, annotation);
 			cancel();
 		}
 	}

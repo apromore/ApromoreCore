@@ -6,6 +6,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apromore.portal.exception.ExceptionAllUsers;
+import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -27,7 +29,7 @@ public class EditDataListProcController {
 			MainController mainC,
 			MenuController menuController,
 			HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) 
-	throws SuspendNotAllowedException, InterruptedException {	
+	throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {	
 
 		this.menuC = menuController;
 		this.mainC = mainC;
