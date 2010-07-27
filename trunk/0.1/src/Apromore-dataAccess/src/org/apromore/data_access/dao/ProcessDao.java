@@ -1,6 +1,5 @@
 package org.apromore.data_access.dao;
 
-import java.io.BufferedInputStream;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -30,6 +29,7 @@ import org.apromore.data_access.commons.ConstantDB;
 import org.apromore.data_access.commons.Constants;
 import org.apromore.data_access.exception.ExceptionDao;
 import org.apromore.data_access.exception.ExceptionStoreVersion;
+import org.apromore.data_access.exception.ExceptionSyncNPF;
 import org.apromore.data_access.model_manager.ProcessSummariesType;
 import org.apromore.data_access.model_manager.ProcessSummaryType;
 import org.apromore.data_access.model_manager.VersionSummaryType;
@@ -109,24 +109,23 @@ public class ProcessDao extends BasicDao {
 			stmtP = conn.createStatement();
 			/* query returns, for each process version which satisfies the search condition, 
 			 * the process Id, process name, domain, original type, ranking, owner and
-			 * latest version name.
+			 * latest version name (the latest version is the one associated by the more
+			 * recent creation date.
 			 */
 			query = "SELECT " + ConstantDB.ATTR_PROCESSID + "," 
 			+             ConstantDB.ATTR_NAME + ", "
 			+             ConstantDB.ATTR_DOMAIN + "," 
 			+             ConstantDB.ATTR_ORIGINAL_TYPE + ","
-			+     " R." + ConstantDB.ATTR_RANKING  + ","
-			+             ConstantDB.ATTR_VERSION + ","
+			+     " coalesce(R." + ConstantDB.ATTR_RANKING  + ",''),"
 			+             ConstantDB.ATTR_OWNER
 			+     " FROM " + ConstantDB.TABLE_PROCESSES + " P "
-			+     "    join " + ConstantDB.VIEW_PROCESS_RANKING + " R using (" + ConstantDB.ATTR_PROCESSID + ")" 
-			+     "    join " + ConstantDB.VIEW_HEAD_VERSIONS + " H using (" + ConstantDB.ATTR_PROCESSID + ")" ;
+			+     "    join " + ConstantDB.VIEW_PROCESS_RANKING + " R using (" + ConstantDB.ATTR_PROCESSID + ")" ;
 
 			if (condition.compareTo("")!=0) {
 				query += " where " + condition;
 			} 
 			query += " order by " + ConstantDB.ATTR_PROCESSID ;
-
+			String ranking = null;
 			rsP = stmtP.executeQuery(query);
 			while (rsP.next()) {
 				int processId = rsP.getInt(1);
@@ -136,9 +135,8 @@ public class ProcessDao extends BasicDao {
 				processSummary.setName(rsP.getString(2));
 				processSummary.setDomain(rsP.getString(3));
 				processSummary.setOriginalNativeType(rsP.getString(4));
-				processSummary.setRanking(rsP.getInt(5));
-				processSummary.setLastVersion(rsP.getString(6));
-				processSummary.setOwner(rsP.getString(7));
+				processSummary.setRanking(rsP.getString(5));
+				processSummary.setOwner(rsP.getString(6));
 
 				stmtV = conn.createStatement();
 				requeteV = " select " + ConstantDB.ATTR_VERSION_NAME + ", "
@@ -146,13 +144,13 @@ public class ProcessDao extends BasicDao {
 				//+ "date_format(" + ConstantDB.ATTR_LAST_UPDATE  + ", '%d/%c/%Y %k:%i:%f')" + ",  "
 				+ ConstantDB.ATTR_CREATION_DATE + ", "
 				+ ConstantDB.ATTR_LAST_UPDATE + ", "
-				+ ConstantDB.ATTR_RANKING + ", "
+				+ " coalesce(" + ConstantDB.ATTR_RANKING + ",''),"
 				+ ConstantDB.ATTR_DOCUMENTATION
 				+ " from " + ConstantDB.TABLE_VERSIONS 
 				+ " where  " + ConstantDB.ATTR_PROCESSID + " = " + processId 
 				+ " order by  " + ConstantDB.ATTR_CREATION_DATE ;
 				rsV = stmtV.executeQuery(requeteV);
-
+				String lastVersion="";
 				while (rsV.next()){
 					query = " select " + ConstantDB.ATTR_NAME
 					+ " from " + ConstantDB.TABLE_ANNOTATIONS + " A "
@@ -168,13 +166,15 @@ public class ProcessDao extends BasicDao {
 					}
 					VersionSummaryType version = new VersionSummaryType();
 					version.setName(rsV.getString(1));
+					lastVersion = version.getName();
 					version.setCreationDate(rsV.getString(2));
 					version.setLastUpdate(rsV.getString(3));
-					version.setRanking(rsV.getInt(4));
+					version.setRanking(rsV.getString(4));
 					version.setDocumentation(rsV.getString(5));
 					version.getAnnotations().addAll(listAnnotations);
 					processSummary.getVersionSummaries().add(version);
 				}
+				processSummary.setLastVersion(lastVersion);
 				rsV.close(); stmtV.close();	
 			} 
 		}
@@ -353,11 +353,10 @@ public class ProcessDao extends BasicDao {
 			int processId = keys.getInt(1);
 			keys.close(); stmtp.close();
 
-
 			// Store informations given as parameters in NPF
 			// creationDate might be null or empty. 
 			if (creationDate==null || "".compareTo(creationDate)==0) {
-				query = " select date_format(now(), '%Y-%c-%d %k:%i:%s') ";
+				query = " select date_format(now(), '%Y-%m-%dT%k-%i-%s') ";
 				stmt0 = conn.createStatement();
 				rs0 = stmt0.executeQuery(query);
 				if (!rs0.next()) {
@@ -445,12 +444,12 @@ public class ProcessDao extends BasicDao {
 			process.setLastVersion(version);
 			process.setName(processName);
 			process.setOriginalNativeType(nativeType);
-			process.setRanking(0);
+			process.setRanking("");
 			process.setOwner(username);
 			first_version.setName(version);
 			first_version.setCreationDate(creationDate);
 			first_version.setLastUpdate(lastUpdate);
-			first_version.setRanking(0);
+			first_version.setRanking("");
 			first_version.setDocumentation(documentation);
 			first_version.getAnnotations().add(Constants.INITIAL_ANNOTATION);
 			conn.commit();
@@ -838,10 +837,12 @@ public class ProcessDao extends BasicDao {
 	 * @param apf_is
 	 * @throws ExceptionDao
 	 * @throws SQLException
+	 * @throws ExceptionStoreVersion 
+	 * @throws ExceptionSyncNPF 
 	 */
 	public void storeVersion (int editSessionCode, int processId, String preVersion, String nativeType, String annotation,
 			InputStream npf_is, InputStream cpf_is,
-			InputStream apf_is) throws ExceptionDao, SQLException {
+			InputStream apf_is) throws ExceptionDao, SQLException, ExceptionStoreVersion, ExceptionSyncNPF {
 		Connection conn = null;
 		Statement stmt0 = null, stmt1 = null;
 		PreparedStatement stmtp = null;
@@ -862,14 +863,18 @@ public class ProcessDao extends BasicDao {
 				try {
 					newVersion = pkg.getRedefinableHeader().getVersion().getValue().trim();
 					creationDate = pkg.getPackageHeader().getCreated().getValue().trim();
-					lastUpdate = pkg.getPackageHeader().getModificationDate().getValue().trim();
+					if (pkg.getPackageHeader().getModificationDate()!=null) {
+						lastUpdate = pkg.getPackageHeader().getModificationDate().getValue().trim();
+					} else {
+						lastUpdate = "";
+					}
 					if (pkg.getPackageHeader().getDocumentation()!=null) {
 						documentation = pkg.getPackageHeader().getDocumentation().getValue().trim();
 					} else {
 						documentation = "";
 					}
 				} catch (NullPointerException e) {
-					throw new ExceptionDao ("Missing information in NPF.");
+					throw new ExceptionSyncNPF ("Missing information in NPF.");
 				}
 
 			} else if (nativeType.compareTo("EPML 2.0")==0) {
@@ -880,7 +885,7 @@ public class ProcessDao extends BasicDao {
 				// TODO: to be completed with EPML
 
 			} else {
-				throw new ExceptionDao("Couldn't read information in NPF.");
+				throw new ExceptionSyncNPF("Couldn't read information in NPF.");
 			}
 			// as npf_is has been read, needs to be reset.
 			npf_is.reset();
@@ -978,7 +983,7 @@ public class ProcessDao extends BasicDao {
 				}
 				int cpfId = keys.getInt(1);
 				keys.close(); stmtp.close();
-				
+
 				String query5 = " insert into " + ConstantDB.TABLE_NATIVES
 				+ "(" + ConstantDB.ATTR_CONTENT + ","
 				+       ConstantDB.ATTR_NAT_TYPE + ","
@@ -1012,13 +1017,12 @@ public class ProcessDao extends BasicDao {
 				Integer rs5 = stmtp.executeUpdate();
 				stmtp.close();
 
-				
+
 				query2 = " insert into " + ConstantDB.TABLE_DERIVED_VERSIONS
 				+ "(" + ConstantDB.ATTR_PROCESSID + ","
 				+     ConstantDB.ATTR_VERSION + ","
 				+     ConstantDB.ATTR_DERIVED_VERSION + ")"
 				+ " values (?,?,?)";
-
 				stmtp = conn.prepareStatement(query2);
 				stmtp.setInt(1, processId);
 				stmtp.setString(2, preVersion);
@@ -1028,13 +1032,23 @@ public class ProcessDao extends BasicDao {
 			}
 			conn.commit();
 		} catch (SQLException e) {
-			e.printStackTrace();
 			conn.rollback();
-			throw new ExceptionDao ("SQL error: " + e.getMessage() + "\n");
+			throw new ExceptionDao ("SQL error: " + e.getMessage());
+		} catch (ExceptionSyncNPF e) {
+			throw new ExceptionSyncNPF (e.getMessage());
+		} catch (ExceptionStoreVersion e) {
+			throw new ExceptionStoreVersion (e.getMessage());
+		} catch (ExceptionDao e) {
+			conn.rollback();
+			throw new ExceptionDao ("SQL error: " + e.getMessage());
+		} catch (JAXBException e) {
+			conn.rollback();
+			throw new ExceptionDao ("SQL error: " + e.getMessage());
+		} catch (IOException e) {
+			conn.rollback();
+			throw new ExceptionDao ("SQL error: " + e.getMessage());
 		} catch (Exception e) {
-			e.printStackTrace();
-			conn.rollback();
-			throw new ExceptionDao ("Error: " + e.getMessage() + "\n");
+			throw new ExceptionDao ("SQL error: " + e.getMessage());
 		} finally {
 			Release(conn, stmt0, rs0);
 			Release(null, stmt1, rs1);
@@ -1253,7 +1267,7 @@ public class ProcessDao extends BasicDao {
 	 * @throws ExceptionDao 
 	 */
 	public void editDataProcesses(Integer processId, String processName, String domain, String username,
-			String preVersion, String newVersion, Integer ranking) throws SQLException, ExceptionDao {
+			String preVersion, String newVersion, String ranking) throws SQLException, ExceptionDao {
 
 		Connection conn = null;
 		PreparedStatement stmtp = null;
@@ -1284,7 +1298,11 @@ public class ProcessDao extends BasicDao {
 			+ " and " + ConstantDB.ATTR_VERSION_NAME + " = ? ";
 			stmtp = conn.prepareStatement(query);
 			stmtp.setString(1, newVersion);
-			stmtp.setInt(2, ranking);
+			if (ranking==null) {
+				stmtp.setNull(2, java.sql.Types.INTEGER);
+			} else {
+				stmtp.setInt(2, Integer.parseInt(ranking));
+			}
 			stmtp.setInt(3, processId);
 			stmtp.setString(4, preVersion);
 			stmtp.executeUpdate();

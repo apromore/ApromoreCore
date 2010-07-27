@@ -32,21 +32,21 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "objectRefType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ObjectRefType {
 
     @XmlAttribute
     @XmlSchemaType(name = "positiveInteger")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigInteger objectId;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected InputOutputType type;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Boolean optional;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Boolean consumed;
 
     /**
@@ -57,7 +57,7 @@ public class ObjectRefType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public BigInteger getObjectId() {
         return objectId;
     }
@@ -70,7 +70,7 @@ public class ObjectRefType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setObjectId(BigInteger value) {
         this.objectId = value;
     }
@@ -83,7 +83,7 @@ public class ObjectRefType {
      *     {@link InputOutputType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public InputOutputType getType() {
         return type;
     }
@@ -96,7 +96,7 @@ public class ObjectRefType {
      *     {@link InputOutputType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setType(InputOutputType value) {
         this.type = value;
     }
@@ -109,7 +109,7 @@ public class ObjectRefType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public boolean isOptional() {
         if (optional == null) {
             return false;
@@ -126,7 +126,7 @@ public class ObjectRefType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setOptional(Boolean value) {
         this.optional = value;
     }
@@ -139,7 +139,7 @@ public class ObjectRefType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public boolean isConsumed() {
         if (consumed == null) {
             return false;
@@ -156,7 +156,7 @@ public class ObjectRefType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setConsumed(Boolean value) {
         this.consumed = value;
     }
