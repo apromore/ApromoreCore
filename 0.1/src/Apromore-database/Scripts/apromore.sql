@@ -132,6 +132,7 @@ create table edit_session_mappings (
 	processId int,
 	version_name varchar(40),
 	nat_type  varchar(20),
+	annotation varchar(40),
 	constraint pk_edit_session_mappings primary key (code),
 	constraint fk__edit_session_mappings1 foreign key (username) references users(username)
 	on delete cascade on update cascade,
