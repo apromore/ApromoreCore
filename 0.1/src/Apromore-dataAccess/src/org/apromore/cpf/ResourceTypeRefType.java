@@ -31,18 +31,18 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "resourceTypeRefType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class ResourceTypeRefType {
 
     @XmlAttribute
     @XmlSchemaType(name = "positiveInteger")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected BigInteger resourceTypeId;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected Boolean optional;
     @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected String qualifier;
 
     /**
@@ -53,7 +53,7 @@ public class ResourceTypeRefType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public BigInteger getResourceTypeId() {
         return resourceTypeId;
     }
@@ -66,7 +66,7 @@ public class ResourceTypeRefType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResourceTypeId(BigInteger value) {
         this.resourceTypeId = value;
     }
@@ -79,7 +79,7 @@ public class ResourceTypeRefType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public boolean isOptional() {
         if (optional == null) {
             return false;
@@ -96,7 +96,7 @@ public class ResourceTypeRefType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setOptional(Boolean value) {
         this.optional = value;
     }
@@ -109,7 +109,7 @@ public class ResourceTypeRefType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public String getQualifier() {
         return qualifier;
     }
@@ -122,7 +122,7 @@ public class ResourceTypeRefType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setQualifier(String value) {
         this.qualifier = value;
     }

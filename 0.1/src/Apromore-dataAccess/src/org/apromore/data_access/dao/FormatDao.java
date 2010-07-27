@@ -6,7 +6,7 @@ import java.sql.Statement;
 
 import org.apromore.data_access.commons.ConstantDB;
 import org.apromore.data_access.exception.ExceptionDao;
-import org.apromore.data_access.model_manager.FormatTypeType;
+import org.apromore.data_access.model_manager.FormatType;
 import org.apromore.data_access.model_manager.NativeTypesType;
 
 
@@ -46,7 +46,7 @@ public class FormatDao extends BasicDao {
 			+ " from " + ConstantDB.TABLE_NATIVE_TYPES;
 			rs = stmt.executeQuery(requete);
 			while (rs.next()) {
-				FormatTypeType format = new FormatTypeType();
+				FormatType format = new FormatType();
 				format.setFormat(rs.getString(ConstantDB.ATTR_NAT_TYPE));
 				format.setExtension(rs.getString(ConstantDB.ATTR_EXTENSION));
 				result.getNativeType().add(format);

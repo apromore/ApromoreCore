@@ -11,16 +11,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for NativeTypesType complex type.
+ * <p>Java class for UsernamesType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="NativeTypesType">
+ * &lt;complexType name="UsernamesType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="NativeType" type="{http://www.apromore.org/data_access/model_manager}FormatType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="Username" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -30,44 +30,44 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "NativeTypesType", propOrder = {
-    "nativeType"
+@XmlType(name = "UsernamesType", propOrder = {
+    "username"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T10:24:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class NativeTypesType {
+public class UsernamesType {
 
-    @XmlElement(name = "NativeType")
+    @XmlElement(name = "Username", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T10:24:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected List<FormatType> nativeType;
+    protected List<String> username;
 
     /**
-     * Gets the value of the nativeType property.
+     * Gets the value of the username property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the nativeType property.
+     * This is why there is not a <CODE>set</CODE> method for the username property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getNativeType().add(newItem);
+     *    getUsername().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link FormatType }
+     * {@link String }
      * 
      * 
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T10:24:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public List<FormatType> getNativeType() {
-        if (nativeType == null) {
-            nativeType = new ArrayList<FormatType>();
+    public List<String> getUsername() {
+        if (username == null) {
+            username = new ArrayList<String>();
         }
-        return this.nativeType;
+        return this.username;
     }
 
 }

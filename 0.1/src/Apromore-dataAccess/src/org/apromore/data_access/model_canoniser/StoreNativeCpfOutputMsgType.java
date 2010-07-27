@@ -33,14 +33,14 @@ import javax.xml.bind.annotation.XmlType;
     "result",
     "processSummary"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class StoreNativeCpfOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ResultType result;
     @XmlElement(name = "ProcessSummary")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     protected ProcessSummaryType processSummary;
 
     /**
@@ -51,7 +51,7 @@ public class StoreNativeCpfOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ResultType getResult() {
         return result;
     }
@@ -64,7 +64,7 @@ public class StoreNativeCpfOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -77,7 +77,7 @@ public class StoreNativeCpfOutputMsgType {
      *     {@link ProcessSummaryType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public ProcessSummaryType getProcessSummary() {
         return processSummary;
     }
@@ -90,7 +90,7 @@ public class StoreNativeCpfOutputMsgType {
      *     {@link ProcessSummaryType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:42:41+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
     public void setProcessSummary(ProcessSummaryType value) {
         this.processSummary = value;
     }
