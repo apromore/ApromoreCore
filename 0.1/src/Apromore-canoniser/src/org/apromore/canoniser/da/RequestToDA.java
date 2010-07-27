@@ -11,6 +11,7 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.xml.namespace.QName;
 
 import org.apromore.canoniser.exception.ExceptionStore;
+import org.apromore.canoniser.exception.ExceptionVersion;
 import org.apromore.canoniser.model_da.StoreNativeCpfInputMsgType;
 import org.apromore.canoniser.model_da.StoreNativeCpfOutputMsgType;
 import org.apromore.canoniser.model_da.StoreNativeInputMsgType;
@@ -98,12 +99,11 @@ public class RequestToDA {
 		if (res.getResult().getCode() == -1) {
 			throw new ExceptionStore (res.getResult().getMessage());
 		}
-
 	}
 
 	public void StoreVersion(int editSessionCode, int processId, String preVersion, String nativeType, String domain, String annotation,
 			InputStream native_is, InputStream anf_xml_is,
-			InputStream cpf_xml_is) throws IOException, ExceptionStore {
+			InputStream cpf_xml_is) throws IOException, ExceptionStore, ExceptionVersion {
 
 		StoreVersionInputMsgType payload = new StoreVersionInputMsgType();
 		payload.setDomain(domain);
@@ -121,6 +121,8 @@ public class RequestToDA {
 		StoreVersionOutputMsgType res = this.port.storeVersion(payload);
 		if (res.getResult().getCode() == -1) {
 			throw new ExceptionStore (res.getResult().getMessage());
-		}		
+		} else if (res.getResult().getCode() == -3) {
+			throw new ExceptionVersion (res.getResult().getMessage());
+		}
 	}
 }

@@ -31,7 +31,7 @@ import javax.xml.bind.annotation.XmlType;
     XORSplitType.class,
     ORSplitType.class
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-14T05:25:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:43:35+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class SplitType
     extends RoutingType
 {
