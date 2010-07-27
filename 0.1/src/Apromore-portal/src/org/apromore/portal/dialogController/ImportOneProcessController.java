@@ -2,12 +2,14 @@ package org.apromore.portal.dialogController;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummaryType;
@@ -47,7 +49,7 @@ public class ImportOneProcessController extends Window {
 
 	public ImportOneProcessController (MainController mainC, ImportListProcessesController importProcessesC, InputStream xml_is, 
 			String processName, String nativeType, String fileName) 
-	throws SuspendNotAllowedException, InterruptedException, JAXBException, IOException {
+	throws SuspendNotAllowedException, InterruptedException, JAXBException, IOException, ExceptionDomains {
 
 		this.importProcessesC = importProcessesC;
 		this.mainC = mainC;
@@ -69,8 +71,9 @@ public class ImportOneProcessController extends Window {
 		this.cancelButton = (Button) buttonsD.getFirstChild().getNextSibling().getNextSibling();
 		this.cancelAllButton = (Button) buttonsD.getFirstChild().getNextSibling().getNextSibling().getNextSibling();
 
-		this.domainCB = new SelectDynamicListController(this.mainC.getDomains());
-		this.domainCB.setReference(this.mainC.getDomains());
+		List<String> domains = this.mainC.getDomains();
+		this.domainCB = new SelectDynamicListController(domains);
+		this.domainCB.setReference(domains);
 		this.domainCB.setId(fileName);
 		this.domainCB.setAutodrop(true);
 		this.domainCB.setWidth("85%");

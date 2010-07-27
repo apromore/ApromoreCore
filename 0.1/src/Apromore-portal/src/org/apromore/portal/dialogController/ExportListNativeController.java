@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -19,7 +20,7 @@ public class ExportListNativeController {
 	
 	public ExportListNativeController (MainController mainC, MenuController menuC, 
 			HashMap<ProcessSummaryType,List<VersionSummaryType>> processVersions) 
-	throws SuspendNotAllowedException, InterruptedException {
+	throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
 		this.mainC = mainC;
 		this.menuC = menuC;
 		this.processVersions = processVersions;
@@ -32,7 +33,8 @@ public class ExportListNativeController {
 			Iterator<VersionSummaryType> itV = processVersions.get(process).iterator();
 			while (itV.hasNext()){
 				VersionSummaryType version = itV.next();
-				ExportOneNativeController exportNativeC = new ExportOneNativeController(this, process.getId(), process.getName(), process.getOriginalNativeType(),
+				ExportOneNativeController exportNativeC = 
+					new ExportOneNativeController(this, this.mainC, process.getId(), process.getName(), process.getOriginalNativeType(),
 						version.getName(), version.getAnnotations(), this.mainC.getNativeTypes());
 				this.toExportList.add(exportNativeC);
 			}

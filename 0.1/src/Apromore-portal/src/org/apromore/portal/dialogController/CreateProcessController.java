@@ -6,18 +6,18 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 
+import org.apromore.portal.exception.ExceptionAllUsers;
+import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
-import org.apromore.portal.exception.ExceptionWriteEditSession;
 import org.apromore.portal.manager.RequestToManager;
-import org.apromore.portal.model_manager.EditSessionType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
-import org.apromore.portal.model_manager.VersionSummaryType;
 import org.wfmc._2008.xpdl2.PackageHeader;
 import org.wfmc._2008.xpdl2.PackageType;
 import org.wfmc._2008.xpdl2.RedefinableHeader;
@@ -27,7 +27,6 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
-import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Listbox;
@@ -70,7 +69,7 @@ public class CreateProcessController {
 	private SelectDynamicListController domainCB;
 
 	public CreateProcessController(MainController mainC, HashMap<String, String> formats_ext) 
-	throws SuspendNotAllowedException, InterruptedException {
+	throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
 		this.mainC = mainC;
 		this.formats_ext = formats_ext;
 
@@ -98,15 +97,17 @@ public class CreateProcessController {
 		this.okB = (Button) buttonsD.getFirstChild();
 		this.cancelB = (Button) this.okB.getNextSibling();
 		this.resetB = (Button) this.cancelB.getNextSibling();
-		this.domainCB = new SelectDynamicListController(this.mainC.getDomains());
-		this.domainCB.setReference(this.mainC.getDomains());
+		List<String> domains = this.mainC.getDomains();
+		this.domainCB = new SelectDynamicListController(domains);
+		this.domainCB.setReference(domains);
 		this.domainCB.setAutodrop(true);
 		this.domainCB.setWidth("85%");
 		this.domainCB.setHeight("100%");
 		this.domainCB.setAttribute("hflex", "1");
 		this.domainR.appendChild(domainCB);
-		this.ownerCB = new SelectDynamicListController(this.mainC.getUsers());
-		this.ownerCB.setReference(this.mainC.getUsers());
+		List<String> usernames = this.mainC.getUsers();
+		this.ownerCB = new SelectDynamicListController(usernames);
+		this.ownerCB.setReference(usernames);
 		this.ownerCB.setAutodrop(true);
 		this.ownerCB.setWidth("85%");
 		this.ownerCB.setHeight("100%");
@@ -124,6 +125,13 @@ public class CreateProcessController {
 			Listitem cbi = new Listitem();
 			this.nativeTypesLB.appendChild(cbi);
 			cbi.setLabel(this.formats_ext.get(it.next()));
+			// TODO temporary so the user cannot choose to edit in epml format
+			if ("EPML 2.0".compareTo(cbi.getLabel())==0) {
+				cbi.setDisabled(true);
+			}
+			if ("XPDL 2.1".compareTo(cbi.getLabel())==0) {
+				cbi.setSelected(true);
+			}
 		}
 		// empty fields
 		reset();
@@ -238,7 +246,7 @@ public class CreateProcessController {
 		String version = process.getVersionSummaries().get(0).getName();
 		String nativeType = cbi.getLabel();
 		String domain = process.getDomain();
-		this.mainC.editProcess(processId, processName, version, nativeType, domain);
+		this.mainC.editProcess(processId, processName, version, nativeType, domain, null);
 		cancel();
 	}
 	protected void cancel() throws Exception {

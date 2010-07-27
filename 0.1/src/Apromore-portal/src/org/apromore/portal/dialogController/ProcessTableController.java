@@ -235,8 +235,8 @@ public class ProcessTableController {
 		// one row for each process
 		Row processSummaryR = new Row();
 		Detail processSummaryD = new Detail();
-
-		processSummaryD.setId(process.getId().toString());
+		String processIdS = process.getId().toString();
+		processSummaryD.setId(processIdS);
 		processSummaryD.setOpen(false);
 
 		this.processSummariesRows.appendChild(processSummaryR);
@@ -364,7 +364,10 @@ public class ProcessTableController {
 				versionName.setStyle(Constants.TOOLBARBUTTON_STYLE);
 				Label versionCreationDate = new Label (version.getCreationDate().toString());
 				Label versionLastUpdate = new Label (version.getLastUpdate().toString());
-				Label versionRanking = new Label (version.getRanking().toString());
+				Label versionRanking = new Label ();
+				if (version.getRanking()!=null) {
+					versionRanking.setValue(version.getRanking());
+				} 
 				Label versionDocumentation = new Label ();
 				if ("".compareTo(version.getDocumentation())!=0) {
 					String docBeginning = version.getDocumentation().split(" ")[0]

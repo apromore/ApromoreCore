@@ -6,6 +6,7 @@
 
 package org.apromore.portal.service_oryx;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.logging.Logger;
 
@@ -18,6 +19,9 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionImport;
+import org.apromore.portal.exception.ExceptionReadEditSession;
+import org.apromore.portal.exception.ExceptionUpdateProcess;
+import org.apromore.portal.exception.ExceptionVersion;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.EditSessionType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
@@ -99,8 +103,16 @@ import org.wfmc._2008.xpdl2.PackageType;
 			request.UpdateProcess (code, username, nativeType, processId, preVersion, native_is, domain, annotationName);
 			result.setCode(0);
 			result.setMessage("");
-		} catch (Exception ex) {
-			ex.printStackTrace();
+		} catch (ExceptionVersion ex) {
+			result.setCode(-3);
+			result.setMessage(ex.getMessage());
+		} catch (IOException ex) {
+			result.setCode(-1);
+			result.setMessage(ex.getMessage());
+		} catch (ExceptionUpdateProcess ex) {
+			result.setCode(-1);
+			result.setMessage(ex.getMessage());
+		} catch (ExceptionReadEditSession ex) {
 			result.setCode(-1);
 			result.setMessage(ex.getMessage());
 		}
@@ -180,6 +192,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			newEditSession.setProcessName(newProcess.getName());
 			newEditSession.setUsername(newProcess.getOwner());
 			newEditSession.setVersionName(newProcess.getLastVersion());
+			newEditSession.setWithAnnotation(false);
 			int newEditSessionCode = request.WriteEditSession(newEditSession);
 			res.setEditSessionCode(newEditSessionCode);
 
@@ -212,9 +225,12 @@ import org.wfmc._2008.xpdl2.PackageType;
 			String version = editSession.getVersionName();
 			String nativeType = editSession.getNativeType();
 			String processName = editSession.getProcessName();
+			Boolean withAnnotation = editSession.isWithAnnotation();
+			String annotation = editSession.getAnnotation();
+			String owner = editSession.getUsername();
 			// request native to be exported in format nativeType
 			InputStream native_is = 
-				request.ExportFormat(processId, version, nativeType, Constants.INITIAL_ANNOTATION, true);
+				request.ExportFormat(processId, processName, version, nativeType, annotation, withAnnotation, owner);
 			DataSource sourceNative = new ByteArrayDataSource(native_is, "text/xml"); 
 			res.setNative(new DataHandler(sourceNative));	
 

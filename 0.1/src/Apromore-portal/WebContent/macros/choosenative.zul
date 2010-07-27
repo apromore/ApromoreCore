@@ -2,8 +2,7 @@
 	TODO make a ChooseNativeController
 	listbox to choose native type implemented by the controller -->
 
-<window id="choosenativeW" width="500px" closable="false" 
-	position="center">
+<window width="500px" closable="false" position="center">
 	<vbox vflex="1">
 		<grid>
 			<columns sizable="true">
@@ -13,20 +12,25 @@
 			<rows>
 				<row>
 					<label value="Available native types" />
-					<listbox id="choosenativeLB" width="100%" multiple="false" mold="select" rows="1">
-						<listitem label=""/>
+					<listbox width="100%" multiple="false" mold="select" rows="1">
 						<!-- listbox implemented by controller -->
+					</listbox>
+				</row>
+				<row >
+					<label value="Annotation" />
+					<listbox width="100%" multiple="false" mold="select"
+						rows="1">
+						<!-- listbox implemented in controller -->
 					</listbox>
 				</row>
 				<row spans="3">
 					<div align="center">
-						<button id="choosenativeOkB" label="OK" image="img/ok.png"
-							disabled="true">
+						<button label="OK" image="img/ok.png" >
 						</button>
-						<button id="choosenativeCancelB" label="Cancel"
+						<button label="Cancel"
 							image="img/cancel2.png">
 						</button>
-						<button id="choosenativeCancelAllB" label="Cancel all"
+						<button label="Cancel all"
 							image="img/cancel2.png"
 							tooltiptext="Cancel edit of all remaining process models.">
 						</button>

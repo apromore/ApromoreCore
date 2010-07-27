@@ -8,6 +8,8 @@ import java.util.Set;
 import java.util.Vector;
 
 import org.apromore.portal.exception.DialogException;
+import org.apromore.portal.exception.ExceptionAllUsers;
+import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
@@ -117,6 +119,33 @@ public class MenuController extends Menubar {
 		} catch (InterruptedException e) {
 			Messagebox.show(e.getMessage(), "Attention", Messagebox.OK,
 					Messagebox.ERROR);
+		} catch (ExceptionDomains e) {
+			String message ;
+			if (e.getMessage()==null) {
+				message = "Couldn't retrieve domains reference list.";
+			} else {
+				message = e.getMessage();
+			}
+			Messagebox.show(message, "Attention", Messagebox.OK,
+					Messagebox.ERROR);
+		} catch (ExceptionFormats e) {
+			String message ;
+			if (e.getMessage()==null) {
+				message = "Couldn't retrieve formats reference list.";
+			} else {
+				message = e.getMessage();
+			}
+			Messagebox.show(message, "Attention", Messagebox.OK,
+					Messagebox.ERROR);
+		} catch (ExceptionAllUsers e) {
+			String message ;
+			if (e.getMessage()==null) {
+				message = "Couldn't retrieve users reference list.";
+			} else {
+				message = e.getMessage();
+			}
+			Messagebox.show(message, "Attention", Messagebox.OK,
+					Messagebox.ERROR);
 		}
 		
 	}
@@ -124,8 +153,10 @@ public class MenuController extends Menubar {
 	/**
 	 * Edit all selected process versions
 	 * @throws InterruptedException
+	 * @throws ExceptionFormats 
+	 * @throws SuspendNotAllowedException 
 	 */
-	protected void editNative() throws InterruptedException {
+	protected void editNative() throws InterruptedException, SuspendNotAllowedException, ExceptionFormats {
 		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
 		if (selectedProcessVersions.size()!=0) {
@@ -157,8 +188,9 @@ public class MenuController extends Menubar {
 	 * Export all selected process versions, each of which in a native format to be chosen by the user
 	 * @throws InterruptedException 
 	 * @throws SuspendNotAllowedException 
+	 * @throws ExceptionFormats 
 	 */
-	protected void exportNative() throws SuspendNotAllowedException, InterruptedException {
+	protected void exportNative() throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
 
 		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
@@ -228,8 +260,10 @@ public class MenuController extends Menubar {
 	 *  - Ranking
 	 * @throws InterruptedException 
 	 * @throws SuspendNotAllowedException 
+	 * @throws ExceptionAllUsers 
+	 * @throws ExceptionDomains 
 	 */
-	private void editData() throws SuspendNotAllowedException, InterruptedException {
+	private void editData() throws SuspendNotAllowedException, InterruptedException, ExceptionDomains, ExceptionAllUsers {
 		HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
 
