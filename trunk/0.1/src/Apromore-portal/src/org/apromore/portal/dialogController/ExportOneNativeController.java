@@ -49,7 +49,8 @@ public class ExportOneNativeController extends Window {
 	private HashMap<String, String> formats_ext; // <k, v> belongs to nativeTypes: the file extension k
 	// is associated with the native type v (<xpdl,XPDL 1.2>)
 
-	public ExportOneNativeController (ExportListNativeController exportListControllerC, int processId, 
+	public ExportOneNativeController (ExportListNativeController exportListControllerC, 
+			MainController mainC, int processId, 
 			String processName, String originalType, String versionName, 
 			List<String> annotations, HashMap<String, String> formats_ext) throws SuspendNotAllowedException, InterruptedException   {
 
@@ -210,7 +211,8 @@ public class ExportOneNativeController extends Window {
 				Boolean withAnnotation = (this.annotationsLB.getSelectedItem().getLabel().compareTo(Constants.NO_ANNOTATIONS)!=0);
 				RequestToManager request = new RequestToManager();
 				InputStream native_is =
-					request.ExportFormat (this.processId, this.versionName, format, annotation, withAnnotation);
+					request.ExportFormat (this.processId, processname, this.versionName, format, annotation, withAnnotation, 
+							this.mainC.getCurrentUser().getUsername());
 				Filedownload.save(native_is, "text.xml", filename);
 			}
 		} catch (InterruptedException e) {

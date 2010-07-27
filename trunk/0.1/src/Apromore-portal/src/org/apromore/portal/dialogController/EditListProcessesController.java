@@ -6,6 +6,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -22,7 +23,7 @@ public class EditListProcessesController extends Window {
 	
 	public EditListProcessesController (MainController mainC, MenuController menuC, 
 			HashMap<ProcessSummaryType,List<VersionSummaryType>> processVersions) 
-	throws SuspendNotAllowedException, InterruptedException {
+	throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
 
 		//this.emptynative = (Listitem) win.getFellow("emptynative");
 		this.menuC = menuC;
@@ -36,7 +37,8 @@ public class EditListProcessesController extends Window {
 			ProcessSummaryType process = it.next();
 			for (Integer i=0; i<processVersions.get(process).size();i++) {
 				VersionSummaryType version = processVersions.get(process).get(i);
-				EditOneProcessController editOneProcess = new EditOneProcessController(this.mainC, this, process, version);
+				EditOneProcessController editOneProcess = 
+					new EditOneProcessController(this.mainC, this, process, version);
 				this.toEditList.add(editOneProcess);
 			}
 		}

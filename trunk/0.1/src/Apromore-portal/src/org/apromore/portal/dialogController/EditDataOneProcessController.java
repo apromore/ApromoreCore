@@ -1,5 +1,9 @@
 package org.apromore.portal.dialogController;
 
+import java.util.List;
+
+import org.apromore.portal.exception.ExceptionAllUsers;
+import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
@@ -47,7 +51,8 @@ public class EditDataOneProcessController {
 
 	public EditDataOneProcessController(MainController mainC,
 			EditDataListProcController editDataListProcController,
-			ProcessSummaryType process, VersionSummaryType version) throws SuspendNotAllowedException, InterruptedException {
+			ProcessSummaryType process, VersionSummaryType version) 
+	throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
 		this.mainC = mainC;
 		this.editDataListProcessesC = editDataListProcController;
 		this.process = process;
@@ -77,15 +82,18 @@ public class EditDataOneProcessController {
 		this.cancelB = (Button) this.okB.getNextSibling();
 		this.cancelAllB = (Button) this.cancelB.getNextSibling();
 		this.resetB = (Button) this.cancelAllB.getNextSibling();
-		this.domainCB = new SelectDynamicListController(this.mainC.getDomains());
-		this.domainCB.setReference(this.mainC.getDomains());
+		List<String> domains = this.mainC.getDomains();
+		this.domainCB = new SelectDynamicListController(domains);
+		this.domainCB.setReference(domains);
 		this.domainCB.setAutodrop(true);
 		this.domainCB.setWidth("85%");
 		this.domainCB.setHeight("100%");
 		this.domainCB.setAttribute("hflex", "1");
 		this.domainR.appendChild(domainCB);
-		this.ownerCB = new SelectDynamicListController(this.mainC.getUsers());
-		this.ownerCB.setReference(this.mainC.getUsers());
+		List<String> usernames = this.mainC.getUsers();
+		this.ownerCB = new SelectDynamicListController(usernames);
+		this.ownerCB.setReference(usernames);
+		this.ownerCB.setValue(this.mainC.getCurrentUser().getUsername());
 		this.ownerCB.setAutodrop(true);
 		this.ownerCB.setWidth("85%");
 		this.ownerCB.setHeight("100%");
@@ -136,12 +144,14 @@ public class EditDataOneProcessController {
 		Integer processId = this.process.getId();
 		String processName = this.processNameT.getValue();
 		String domain = this.domainCB.getValue();
-		String username = this.process.getOwner();
+		String username = this.ownerCB.getValue();
 		String preVersion = this.preVersion.getName();
 		String newVersion = this.versionNameT.getValue();
-		String rankingS = this.rankingRG.getSelectedItem().getLabel();
-		Integer ranking = Integer.valueOf(rankingS);
-
+		String ranking = null;
+		if (this.rankingRG.getSelectedItem()!=null 
+				&& "uncheck all".compareTo(this.rankingRG.getSelectedItem().getLabel())!=0) {
+			ranking = this.rankingRG.getSelectedItem().getLabel();
+		}
 		if (this.processNameT.getValue().compareTo("")==0
 				|| this.versionNameT.getValue().compareTo("")==0) {
 			Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK,
@@ -149,8 +159,6 @@ public class EditDataOneProcessController {
 		} else {
 			RequestToManager request = new RequestToManager();
 			request.EditDataProcesses(processId, processName, domain, username, preVersion, newVersion, ranking);
-
-
 			this.editDataListProcessesC.getEditedList().add(this);
 			this.editDataListProcessesC.deleteFromToBeEdited(this);
 			closePopup();
@@ -175,12 +183,22 @@ public class EditDataOneProcessController {
 		this.processNameT.setValue(this.process.getName());
 		this.versionNameT.setValue(this.preVersion.getName());
 		this.domainCB.setValue(this.process.getDomain());
-		r0.setChecked(this.preVersion.getRanking()==0);
-		r1.setChecked(this.preVersion.getRanking()==1);
-		r2.setChecked(this.preVersion.getRanking()==2);
-		r3.setChecked(this.preVersion.getRanking()==3);
-		r4.setChecked(this.preVersion.getRanking()==4);
-		r5.setChecked(this.preVersion.getRanking()==5);
+		this.ownerCB.setValue(this.mainC.getCurrentUser().getUsername());
+		if (this.preVersion.getRanking()!=null) {
+			r0.setChecked("0".compareTo(this.preVersion.getRanking())==0);
+			r1.setChecked("1".compareTo(this.preVersion.getRanking())==0);
+			r2.setChecked("2".compareTo(this.preVersion.getRanking())==0);
+			r3.setChecked("3".compareTo(this.preVersion.getRanking())==0);
+			r4.setChecked("4".compareTo(this.preVersion.getRanking())==0);
+			r5.setChecked("5".compareTo(this.preVersion.getRanking())==0);
+		} else {
+			r0.setChecked(false);
+			r1.setChecked(false);
+			r2.setChecked(false);
+			r3.setChecked(false);
+			r4.setChecked(false);
+			r5.setChecked(false);
+		}
 	}
 	public Window getEditDataOneProcessWindow() {
 		return editDataWindow;

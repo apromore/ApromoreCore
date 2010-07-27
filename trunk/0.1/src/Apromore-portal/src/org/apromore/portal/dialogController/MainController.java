@@ -10,7 +10,10 @@ import java.util.Set;
 import java.util.logging.Logger;
 
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDeleteProcess;
+import org.apromore.portal.exception.ExceptionDomains;
+import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.exception.ExceptionWriteEditSession;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.DomainsType;
@@ -19,6 +22,7 @@ import org.apromore.portal.model_manager.NativeTypesType;
 import org.apromore.portal.model_manager.ProcessSummariesType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.UserType;
+import org.apromore.portal.model_manager.UsernamesType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
@@ -47,10 +51,6 @@ public class MainController extends Window {
 	private String host;
 	private String OryxEndPoint_xpdl;
 	private String OryxEndPoint_epml;
-	private HashMap<String,String> nativeTypes; // <k, v> belongs to nativeTypes: the file extension k
-	// is associated with the native type v (<xpdl,XPDL 1.2>)
-	private List<String> domains;
-	private List<String> users;
 	private Logger LOG;
 
 	// uncomment when ready
@@ -68,8 +68,6 @@ public class MainController extends Window {
 	public void onCreate() throws InterruptedException {		
 		try {
 			this.LOG = Logger.getLogger(MainController.class.getName());
-
-
 			/**
 			 * to get data
 			 */
@@ -91,31 +89,7 @@ public class MainController extends Window {
 			properties.load(inputStream);  
 			this.host = properties.getProperty("Host"); 
 			this.OryxEndPoint_xpdl = properties.getProperty("OryxEndPoint_xpdl");  
-			this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");  
-
-			/**
-			 * get list of formats
-			 */
-			RequestToManager request = new RequestToManager();
-			NativeTypesType nativeTypesDB = request.ReadNativeTypes();
-			this.nativeTypes = new HashMap<String, String>();
-			for (int i=0; i<nativeTypesDB.getNativeType().size();i++){
-				this.nativeTypes.put(nativeTypesDB.getNativeType().get(i).getExtension(),
-						nativeTypesDB.getNativeType().get(i).getFormat());
-			}
-
-			/**
-			 * get list of domains
-			 */
-			request = new RequestToManager();
-			DomainsType domainsType = request.ReadDomains();
-			this.domains = domainsType.getDomain();
-
-			/**
-			 * get list of users
-			 */
-			this.users = new ArrayList<String>();
-
+			this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");  	
 		} catch (Exception e) {
 			Messagebox.show("Repository not available ("+e.getMessage()+")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
@@ -220,7 +194,7 @@ public class MainController extends Window {
 	}
 
 	public void editProcess(Integer processId, String processName, String version, 
-			String nativeType, String domain) throws Exception {
+			String nativeType, String domain, String annotation) throws Exception {
 
 		String instruction="", url=getHost();
 		int offsetH = 100, offsetV=200;
@@ -232,7 +206,12 @@ public class MainController extends Window {
 		editSession.setProcessName(processName);
 		editSession.setUsername(this.getCurrentUser().getUsername());
 		editSession.setVersionName(version);
-
+		if (annotation==null) {
+			editSession.setWithAnnotation(false);
+		} else {
+			editSession.setWithAnnotation(true);
+			editSession.setAnnotation(annotation);
+		}
 		try {
 			RequestToManager request = new  RequestToManager();
 			editSessionCode = request.WriteEditSession(editSession);
@@ -334,10 +313,6 @@ public class MainController extends Window {
 		return OryxEndPoint_epml;
 	}
 
-	public HashMap<String,String> getNativeTypes() {
-		return nativeTypes;
-	}
-
 	public Logger getLOG() {
 		return LOG;
 	}
@@ -346,13 +321,38 @@ public class MainController extends Window {
 		return host;
 	}
 
-	public List<String> getDomains() {
-		return domains;
+	/**
+	 * get list of domains
+	 */
+	public List<String> getDomains() throws ExceptionDomains {			
+		RequestToManager request = new RequestToManager();
+		DomainsType domainsType;
+		domainsType = request.ReadDomains();
+		return domainsType.getDomain();
 	}
-
-	public List<String> getUsers() {
-		// TODO Auto-generated method stub
-		return users;
+	/**
+	 * get list of users' names
+	 * @return
+	 * @throws ExceptionAllUsers
+	 */
+	public List<String> getUsers() throws ExceptionAllUsers {
+		RequestToManager request = new RequestToManager();
+		UsernamesType usernames = request.ReadAllUsers();
+		return usernames.getUsername();
 	}
-
+	/**
+	 * get list of formats: <k, v> belongs to getNativeTypes() <=> the file extension k 
+	 * is associated with the native type v (<xpdl,XPDL 1.2>)
+	 * @throws ExceptionFormats 
+	 */
+	public HashMap<String,String> getNativeTypes() throws ExceptionFormats {
+		HashMap<String,String> formats = new HashMap<String, String>();
+		RequestToManager request = new RequestToManager();
+		NativeTypesType nativeTypesDB = request.ReadNativeTypes();
+		for (int i=0; i<nativeTypesDB.getNativeType().size();i++){
+			formats.put(nativeTypesDB.getNativeType().get(i).getExtension(),
+					nativeTypesDB.getNativeType().get(i).getFormat());
+		}
+		return formats;
+	}
 }
