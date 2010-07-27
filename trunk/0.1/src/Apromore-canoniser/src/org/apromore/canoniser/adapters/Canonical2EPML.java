@@ -69,6 +69,8 @@ public class Canonical2EPML {
 	List<TypeFunction> subnet_list = new LinkedList<TypeFunction>();
 	List<TypeProcessInterface> pi_list = new LinkedList<TypeProcessInterface>();
 	
+	List<TypeFlow> flow_list = new LinkedList<TypeFlow>();
+	
 	private TypeEPML epml = new TypeEPML();
 	private TypeDirectory dir = new TypeDirectory();
 	private long ids = 1;
@@ -106,6 +108,8 @@ public class Canonical2EPML {
 					translateResource(resT,epc);
 			}
 			object_res_list.clear();
+			validate_event_sequence(epc);
+			validate_function_sequence(epc);
 			epml.getDirectory().get(0).getEpcOrDirectory().add(epc);
 		}
 		
@@ -130,7 +134,7 @@ public class Canonical2EPML {
 				{
 					object_res_list.add(ref.getObjectId());
 				}
-				List<BigInteger> ll = null;
+				List<BigInteger> ll = new LinkedList<BigInteger>();
 				for(ResourceTypeRefType ref : ((WorkType)node).getResourceTypeRef())
 				{
 					object_res_list.add(ref.getResourceTypeId());
@@ -164,6 +168,7 @@ public class Canonical2EPML {
 					arc.setId(BigInteger.valueOf(ids++));
 					flow.setSource(id_map.get(edge.getSourceId()));
 					flow.setTarget(id_map.get(edge.getTargetId()));
+					flow_list.add(flow);
 					arc.setFlow(flow);
 					epc.getEventOrFunctionOrRole().add(arc);
 					epcRefMap.put(arc.getId(), arc);
@@ -269,36 +274,49 @@ public class Canonical2EPML {
 		epc.getEventOrFunctionOrRole().add(role);
 		
 		// Linking the related element
+		TypeArc arc1 = new TypeArc();
+		TypeArc arc2 = new TypeArc();
 		
 		for(Object obj: epc.getEventOrFunctionOrRole())
 		{
-			List<BigInteger> ll = role_map.get(((TEpcElement)obj).getId());
+			List<BigInteger> ll = new LinkedList<BigInteger>();
+			if(obj instanceof TypeArc)
+				ll = role_map.get(((TypeArc)obj).getId());
+			else
+				ll = role_map.get(((TEpcElement)obj).getId());
 			
-			if(obj instanceof TypeFunction)
+			if(ll != null)
 			{
-				if(ll.contains(resT.getId()))
+				
+				if(obj instanceof TypeFunction)
 				{
-					TypeArc arc = new TypeArc();
-					TypeRelation rel = new TypeRelation();
-					rel.setSource(BigInteger.valueOf(ids-1));
-					rel.setTarget(((TypeFunction)obj).getId());
-					arc.setRelation(rel);
-					epc.getEventOrFunctionOrRole().add(arc);
+					if(ll.contains(resT.getId()))
+					{
+						
+						TypeRelation rel = new TypeRelation();
+						rel.setSource(BigInteger.valueOf(ids-1));
+						rel.setTarget(((TypeFunction)obj).getId());
+						arc1.setRelation(rel);
+						
+					}
 				}
-			}
-			else if(obj instanceof TypeEvent)
-			{
-				if(ll.contains(resT.getId()))
+				else if(obj instanceof TypeEvent)
 				{
-					TypeArc arc = new TypeArc();
-					TypeRelation rel = new TypeRelation();
-					rel.setSource(BigInteger.valueOf(ids-1));
-					rel.setTarget(((TypeEvent)obj).getId());
-					arc.setRelation(rel);
-					epc.getEventOrFunctionOrRole().add(arc);
+					if(ll.contains(resT.getId()))
+					{
+						
+						TypeRelation rel = new TypeRelation();
+						rel.setSource(BigInteger.valueOf(ids-1));
+						rel.setTarget(((TypeEvent)obj).getId());
+						arc2.setRelation(rel);
+						
+					}
 				}
 			}
 		}
+		
+		epc.getEventOrFunctionOrRole().add(arc1);
+		epc.getEventOrFunctionOrRole().add(arc2);
 	}
 	
 	private void translateGateway(TypeEPC epc, NodeType node)
@@ -372,6 +390,7 @@ public class Canonical2EPML {
 					arc.setId(BigInteger.valueOf(ids++));
 					flow.setSource(n);
 					flow.setTarget(id_map.get(edge.getTargetId()));
+					flow_list.add(flow);
 					arc.setFlow(flow);
 					
 					TypeArc arc2 = new TypeArc();
@@ -379,6 +398,7 @@ public class Canonical2EPML {
 					arc2.setId(BigInteger.valueOf(ids++));
 					flow2.setSource(id_map.get(edge.getSourceId()));
 					flow2.setTarget(n);
+					flow_list.add(flow2);
 					arc2.setFlow(flow2);
 					
 					edge.setCondition("EPMLEPML");
@@ -506,4 +526,128 @@ public class Canonical2EPML {
 		}
 	}
 	
+	private void validate_event_sequence(TypeEPC epc)
+	{
+		for(Object obj : epc.getEventOrFunctionOrRole())
+		{
+			if(obj instanceof TypeEvent)
+			{
+				if(event_validate((TEpcElement) obj))
+				{
+					TypeFunction func = new TypeFunction();
+					func.setName("");
+					func.setId(BigInteger.valueOf(ids++));
+					TypeArc arc = new TypeArc();
+					TypeFlow flow = new TypeFlow();
+					arc.setFlow(flow);
+					flow.setSource(BigInteger.valueOf(ids-1));
+					arc.setId(BigInteger.valueOf(ids++));
+					
+					for(TypeFlow f: flow_list)
+					{
+						if(f.getSource() == ((TypeEvent)obj).getId())
+						{
+							flow.setTarget(f.getTarget());
+							f.setTarget(flow.getSource());
+						}
+					}
+					
+					epcRefMap.put(func.getId(), func);
+					flow_list.add(flow);
+				}
+			}
+		}
+	}
+	
+	private boolean event_validate(TEpcElement obj)
+	{
+		boolean flag = true;
+		List<BigInteger> target_list = new LinkedList<BigInteger>();
+		
+		for(TypeFlow flow : flow_list)
+		{
+			if(flow.getSource() == obj.getId())
+			{
+				flag = false;
+				target_list.add(flow.getTarget());
+			}
+		}
+		
+		if(flag)
+			return false;
+		else if(obj instanceof TypeFunction)
+			return false;
+		else if(obj instanceof TypeEvent)
+			return true;
+		else
+		{
+			for(BigInteger id: target_list)
+				return event_validate((TEpcElement) epcRefMap.get(id));
+		}
+		
+		return false;
+	}
+	
+	// validating functions sequence
+	private void validate_function_sequence(TypeEPC epc)
+	{
+		for(Object obj : epc.getEventOrFunctionOrRole())
+		{
+			if(obj instanceof TypeFunction)
+			{
+				if(function_validate((TEpcElement) obj))
+				{
+					TypeEvent event = new TypeEvent();
+					event.setName("");
+					event.setId(BigInteger.valueOf(ids++));
+					TypeArc arc = new TypeArc();
+					TypeFlow flow = new TypeFlow();
+					arc.setFlow(flow);
+					flow.setSource(BigInteger.valueOf(ids-1));
+					arc.setId(BigInteger.valueOf(ids++));
+					
+					for(TypeFlow f: flow_list)
+					{
+						if(f.getSource() == ((TypeFunction)obj).getId())
+						{
+							flow.setTarget(f.getTarget());
+							f.setTarget(flow.getSource());
+						}
+					}
+					
+					epcRefMap.put(event.getId(), event);
+					flow_list.add(flow);
+				}
+			}
+		}
+	}
+	
+	private boolean function_validate(TEpcElement obj)
+	{
+		boolean flag = true;
+		List<BigInteger> target_list = new LinkedList<BigInteger>();
+		
+		for(TypeFlow flow : flow_list)
+		{
+			if(flow.getSource() == obj.getId())
+			{
+				flag = false;
+				target_list.add(flow.getTarget());
+			}
+		}
+		
+		if(flag)
+			return false;
+		else if(obj instanceof TypeFunction)
+			return true;
+		else if(obj instanceof TypeEvent)
+			return false;
+		else
+		{
+			for(BigInteger id: target_list)
+				return function_validate((TEpcElement) epcRefMap.get(id));
+		}
+		
+		return false;
+	}
 }
