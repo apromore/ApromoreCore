@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="NativeType" type="{http://www.apromore.org/data_access/model_manager}FormatTypeType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="NativeType" type="{http://www.apromore.org/data_access/model_manager}FormatType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -33,12 +33,12 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "NativeTypesType", propOrder = {
     "nativeType"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T10:25:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
 public class NativeTypesType {
 
     @XmlElement(name = "NativeType")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected List<FormatTypeType> nativeType;
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T10:25:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    protected List<FormatType> nativeType;
 
     /**
      * Gets the value of the nativeType property.
@@ -58,14 +58,14 @@ public class NativeTypesType {
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link FormatTypeType }
+     * {@link FormatType }
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-23T05:11:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public List<FormatTypeType> getNativeType() {
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T10:25:31+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    public List<FormatType> getNativeType() {
         if (nativeType == null) {
-            nativeType = new ArrayList<FormatTypeType>();
+            nativeType = new ArrayList<FormatType>();
         }
         return this.nativeType;
     }

@@ -14,6 +14,7 @@ import javax.xml.namespace.QName;
 import org.apromore.manager.exception.ExceptionCanoniseVersion;
 import org.apromore.manager.exception.ExceptionDeCanonise;
 import org.apromore.manager.exception.ExceptionImport;
+import org.apromore.manager.exception.ExceptionVersion;
 import org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType;
 import org.apromore.manager.model_canoniser.CanoniseVersionInputMsgType;
 import org.apromore.manager.model_canoniser.CanoniseVersionOutputMsgType;
@@ -128,7 +129,7 @@ public class RequestToCanoniser {
 	public void 
 	CanoniseVersion(Integer editSessionCode, Integer processId, String preVersion, String nativeType, String domain, 
 			InputStream native_is, String annotationName) 
-	throws IOException, ExceptionCanoniseVersion {
+	throws IOException, ExceptionCanoniseVersion, ExceptionVersion {
 		CanoniseVersionInputMsgType payload = new CanoniseVersionInputMsgType();
 		DataSource source = new ByteArrayDataSource(native_is, "text/xml");
 		payload.setEditSessionCode(editSessionCode);
@@ -142,7 +143,9 @@ public class RequestToCanoniser {
 		CanoniseVersionOutputMsgType res = this.port.canoniseVersion(payload);
 		if (res.getResult().getCode() == -1) {
 			throw new ExceptionCanoniseVersion (res.getResult().getMessage());
-		} 
+		} else if (res.getResult().getCode() == -3) {
+			throw new ExceptionVersion(res.getResult().getMessage());
+		}
 	}
 
 }

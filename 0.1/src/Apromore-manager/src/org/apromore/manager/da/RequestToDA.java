@@ -9,6 +9,7 @@ import javax.activation.DataHandler;
 import javax.xml.namespace.QName;
 
 import org.apromore.manager.commons.Constants;
+import org.apromore.manager.exception.ExceptionAllUsers;
 import org.apromore.manager.exception.ExceptionDeleteEditSession;
 import org.apromore.manager.exception.ExceptionDeleteProcessVersions;
 import org.apromore.manager.exception.ExceptionDomains;
@@ -24,8 +25,8 @@ import org.apromore.manager.exception.ExceptionWriteUser;
 import org.apromore.manager.model_da.DeleteEditSessionInputMsgType;
 import org.apromore.manager.model_da.DeleteProcessVersionsInputMsgType;
 import org.apromore.manager.model_da.EditDataProcessInputMsgType;
-import org.apromore.manager.model_da.FormatTypeType;
 import org.apromore.manager.model_da.ProcessVersionIdentifierType;
+import org.apromore.manager.model_da.ReadAllUsersInputMsgType;
 import org.apromore.manager.model_da.ReadCanonicalAnfInputMsgType;
 import org.apromore.manager.model_da.ReadDomainsInputMsgType;
 import org.apromore.manager.model_da.ReadDomainsOutputMsgType;
@@ -41,10 +42,9 @@ import org.apromore.manager.model_da.UserType;
 import org.apromore.manager.model_da.WriteEditSessionInputMsgType;
 import org.apromore.manager.model_da.WriteUserInputMsgType;
 import org.apromore.manager.model_da.WriteUserOutputMsgType;
-import org.apromore.manager.model_portal.FormatType;
-import org.apromore.manager.model_portal.NativeTypesType;
 import org.apromore.manager.model_portal.ProcessSummariesType;
 import org.apromore.manager.model_portal.ProcessSummaryType;
+import org.apromore.manager.model_portal.UsernamesType;
 import org.apromore.manager.model_portal.VersionSummaryType;
 
 public class RequestToDA {
@@ -71,7 +71,7 @@ public class RequestToDA {
 	 * @throws ExceptionUpdateProcess
 	 */
 	public void EditDataProcess (Integer processId, String processName, String domain, String username,
-			String preVersion, String newVersion, Integer ranking) throws ExceptionUpdateProcess {
+			String preVersion, String newVersion, String ranking) throws ExceptionUpdateProcess {
 
 		org.apromore.manager.model_da.EditDataProcessInputMsgType payload =
 			new EditDataProcessInputMsgType();
@@ -99,7 +99,7 @@ public class RequestToDA {
 		if (result.getCode() == -1) {
 			throw new ExceptionFormats (result.getMessage()); 
 		} else {
-			List<FormatTypeType> formats_da = res.getNativeTypes().getNativeType();
+			List<org.apromore.manager.model_da.FormatType> formats_da = res.getNativeTypes().getNativeType();
 			org.apromore.manager.model_portal.NativeTypesType resFormats_p = 
 				new org.apromore.manager.model_portal.NativeTypesType();
 			for (int i=0;i<formats_da.size();i++){
@@ -115,11 +115,9 @@ public class RequestToDA {
 
 	public org.apromore.manager.model_portal.DomainsType 
 	ReadDomains() throws ExceptionDomains{
-
 		// payload empty
 		ReadDomainsInputMsgType payload = new ReadDomainsInputMsgType();
 		ReadDomainsOutputMsgType res = this.port.readDomains(payload);
-
 		ResultType result = res.getResult();
 		if (result.getCode() == -1) {
 			throw new ExceptionDomains (result.getMessage()); 
@@ -132,6 +130,22 @@ public class RequestToDA {
 
 	}
 
+	public org.apromore.manager.model_portal.UsernamesType ReadAllUsers() throws ExceptionAllUsers {
+		org.apromore.manager.model_da.ReadAllUsersInputMsgType payload =
+			new ReadAllUsersInputMsgType();
+		org.apromore.manager.model_da.ReadAllUsersOutputMsgType res = this.port.readAllUsers(payload);
+		ResultType result = res.getResult();
+		if (result.getCode() == -1) {
+			throw new ExceptionAllUsers (result.getMessage()); 
+		} else {
+			org.apromore.manager.model_da.UsernamesType allUsersDA = res.getUsernames();
+			org.apromore.manager.model_portal.UsernamesType allUsersP = new UsernamesType();
+			allUsersP.getUsername().addAll(allUsersDA.getUsername());
+			return allUsersP;
+		}
+	}
+
+	
 	public void WriteUser(org.apromore.manager.model_portal.UserType userP) throws ExceptionWriteUser {
 
 		WriteUserInputMsgType payload = new WriteUserInputMsgType();
@@ -335,7 +349,6 @@ public class RequestToDA {
 	public InputStream getAnf() {
 		return anf;
 	}
-
 }
 
 
