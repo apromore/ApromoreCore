@@ -853,6 +853,8 @@ public class ProcessDao extends BasicDao {
 			String creationDate = null;
 			String lastUpdate = null;
 			String documentation = null;
+			conn = this.getConnection();
+			
 			// read the 4 data above from native_is
 			npf_is.mark(0);
 			if (nativeType.compareTo("XPDL 2.1")==0) {
@@ -893,7 +895,6 @@ public class ProcessDao extends BasicDao {
 			String cpf_string = inputStream2String(cpf_is);
 			String apf_string = inputStream2String(apf_is);
 
-			conn = this.getConnection();
 
 			// retrieve head_version to instantiate preVersion
 			// normally should come from oryx... TODO
@@ -914,6 +915,8 @@ public class ProcessDao extends BasicDao {
 			stmt0 = conn.createStatement();
 			rs0 = stmt0.executeQuery(query);
 			if (rs0.next()) {
+
+				Connection conn1 = this.getConnection();
 				// store the data in a temporary table
 				query = " insert into " + ConstantDB.TABLE_TEMP_VERSIONS 
 				+ "(" + ConstantDB.ATTR_CODE
@@ -929,7 +932,7 @@ public class ProcessDao extends BasicDao {
 				+ "," + ConstantDB.ATTR_APF
 				+ "," + ConstantDB.ATTR_NPF + ")"
 				+ " values (?, now(), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-				stmtp = conn.prepareStatement(query);
+				stmtp = conn1.prepareStatement(query);
 				stmtp.setInt(1, editSessionCode);
 				stmtp.setInt(2, processId);
 				stmtp.setString(3, preVersion);
@@ -943,7 +946,7 @@ public class ProcessDao extends BasicDao {
 				stmtp.setString(11, npf_string);
 				Integer rs2 = stmtp.executeUpdate();
 				stmtp.close();
-				conn.commit();
+				conn1.commit();
 				throw new ExceptionStoreVersion("Version " + newVersion + " already exists.");
 			} else {
 				// newVersion does not exist. Derive a new version.
@@ -1031,22 +1034,32 @@ public class ProcessDao extends BasicDao {
 			}
 			conn.commit();
 		} catch (SQLException e) {
+			e.printStackTrace();
 			conn.rollback();
 			throw new ExceptionDao ("SQL error: " + e.getMessage());
 		} catch (ExceptionSyncNPF e) {
+			e.printStackTrace();
+			conn.rollback();
 			throw new ExceptionSyncNPF (e.getMessage());
 		} catch (ExceptionStoreVersion e) {
+			e.printStackTrace();
+			conn.rollback();
 			throw new ExceptionStoreVersion (e.getMessage());
 		} catch (ExceptionDao e) {
+			e.printStackTrace();
 			conn.rollback();
 			throw new ExceptionDao ("SQL error: " + e.getMessage());
 		} catch (JAXBException e) {
+			e.printStackTrace();
 			conn.rollback();
 			throw new ExceptionDao ("SQL error: " + e.getMessage());
 		} catch (IOException e) {
+			e.printStackTrace();
 			conn.rollback();
 			throw new ExceptionDao ("SQL error: " + e.getMessage());
 		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
 			throw new ExceptionDao ("SQL error: " + e.getMessage());
 		} finally {
 			Release(conn, stmt0, rs0);
@@ -1164,8 +1177,8 @@ public class ProcessDao extends BasicDao {
 						stmt.close(); rs.close();
 					} else {
 						stmt.close(); rs.close();
-						throw new ExceptionDao ("Error, version " + v 
-								+ "for process " + pId.toString() + " not found. \n");
+						throw new ExceptionDao ("Version " + v 
+								+ " for process " + pId.toString() + " not found. \n");
 					}
 
 					/* delete process version identified by <p, v>
