@@ -87,8 +87,9 @@ public class ExportOneNativeController extends Window {
 		this.cancelAllB.setVisible(this.exportListControllerC.getToExportList().size()>0);
 
 		// Build list of available formats for export.
-		// - Canononical format
-		Listitem cbi = new Listitem();
+		Listitem cbi ;
+		// - Canonical format
+		cbi = new Listitem();
 		this.formatsLB.appendChild(cbi);
 		cbi.setLabel(Constants.CANONICAL);
 		// - Annotations associated with the process version
@@ -115,8 +116,10 @@ public class ExportOneNativeController extends Window {
 			cbi = new Listitem();
 			this.annotationsLB.appendChild(cbi);
 			cbi.setLabel(this.annotations.get(i));
+			if (Constants.INITIAL_ANNOTATION.compareTo(cbi.getLabel())==0) {
+				cbi.setSelected(true);
+			}
 		}
-		this.annotationsLB.setSelectedItem((Listitem) this.annotationsLB.getFirstChild());
 
 		this.formatsLB.addEventListener("onSelect",
 				new EventListener() {

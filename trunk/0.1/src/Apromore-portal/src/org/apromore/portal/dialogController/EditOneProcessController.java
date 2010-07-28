@@ -75,17 +75,18 @@ public class EditOneProcessController extends Window {
 				cbi.setSelected(true);
 			}
 		}
-		
 		// Build list of annotations associated with the process version
-		cbi = new Listitem();
-		cbi.setLabel(Constants.NO_ANNOTATIONS);
-		this.annotationsLB.appendChild(cbi);
 		for (int i=0; i<this.version.getAnnotations().size(); i++){
 			cbi = new Listitem();
 			this.annotationsLB.appendChild(cbi);
 			cbi.setLabel(this.version.getAnnotations().get(i));
+			if (Constants.INITIAL_ANNOTATION.compareTo(cbi.getLabel())==0) {
+				cbi.setSelected(true);
+			}
 		}
-		this.annotationsLB.setSelectedItem((Listitem) this.annotationsLB.getFirstChild());
+		cbi = new Listitem();
+		cbi.setLabel(Constants.NO_ANNOTATIONS);
+		this.annotationsLB.appendChild(cbi);
 
 		this.okB.addEventListener("onClick",
 				new EventListener() {
