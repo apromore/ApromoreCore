@@ -518,7 +518,7 @@ public class EPML2Canonical{
 					((WorkType)node).getObjectRef().add(ref);
 				} 
 				else if(node.getId().equals(id_map.get(arc.getRelation().getTarget()))){
-					if(arc.getRelation().getType().equals("role"))
+					if(arc.getRelation().getType() != null && arc.getRelation().getType().equals("role"))
 					{
 						ResourceTypeRefType ref = new ResourceTypeRefType();
 						ref.setResourceTypeId(id_map.get(arc.getRelation().getSource()));
