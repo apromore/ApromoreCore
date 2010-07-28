@@ -4,6 +4,9 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -18,6 +21,7 @@ import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummaryType;
+import org.wfmc._2008.xpdl2.Created;
 import org.wfmc._2008.xpdl2.PackageHeader;
 import org.wfmc._2008.xpdl2.PackageType;
 import org.wfmc._2008.xpdl2.RedefinableHeader;
@@ -121,15 +125,15 @@ public class CreateProcessController {
 		
 		Set<String> extensions = this.formats_ext.keySet();
 		Iterator<String> it = extensions.iterator();
+		Listitem cbi;
 		while (it.hasNext()){
-			Listitem cbi = new Listitem();
+			cbi = new Listitem();
 			this.nativeTypesLB.appendChild(cbi);
 			cbi.setLabel(this.formats_ext.get(it.next()));
 			// TODO temporary so the user cannot choose to edit in epml format
 			if ("EPML 2.0".compareTo(cbi.getLabel())==0) {
 				cbi.setDisabled(true);
-			}
-			if ("XPDL 2.1".compareTo(cbi.getLabel())==0) {
+			} else if ("XPDL 2.1".compareTo(cbi.getLabel())==0) {
 				cbi.setSelected(true);
 			}
 		}
@@ -181,6 +185,9 @@ public class CreateProcessController {
 				String owner = this.mainC.getCurrentUser().getUsername();
 				String nativeType = this.nativeTypesLB.getSelectedItem().getLabel();
 				String versionName = this.versionNameT.getValue();
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
+		        Date date = new Date();
+		        String creationDate = dateFormat.format(date);
 				// create an empty model corresponding to the native type
 				InputStream nativeProcess = null;
 				if ("XPDL 2.1".compareTo(nativeType)==0) {
@@ -193,6 +200,9 @@ public class CreateProcessController {
 					Version version = new Version();
 					rhder.setVersion(version);
 					version.setValue(versionName);
+					Created created = new Created();
+					hder.setCreated(created);
+			        created.setValue(creationDate);
 					JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
 	                Marshaller m = jc.createMarshaller();
 	                m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
@@ -213,7 +223,7 @@ public class CreateProcessController {
 				}
 				ProcessSummaryType process = 
 					request.importProcess(owner, nativeType, processName, versionName, 
-							nativeProcess, domain, null, null, null);
+							nativeProcess, domain, null, creationDate, null);
 
 				this.mainC.displayNewProcess(process);
 				/* keep list of domains update */
@@ -262,7 +272,6 @@ public class CreateProcessController {
 		this.processNameT.setValue(empty);
 		this.versionNameT.setValue(empty);
 		this.domainCB.setValue(empty);
-		this.nativeTypesLB.setSelectedItem(null);
 		r0.setChecked(true);
 		r1.setChecked(false);
 		r2.setChecked(false);

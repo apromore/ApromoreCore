@@ -30,7 +30,6 @@ process purpose.
 				<row visible="false">
 					<label value="Native type*" />
 					<listbox width="100%" multiple="false" mold="select" rows="1">
-						<listitem label=""/>
 						<!-- listbox implemented in controller -->
 					</listbox>
 				</row>
