@@ -356,14 +356,7 @@ public class ProcessDao extends BasicDao {
 			// Store informations given as parameters in NPF
 			// creationDate might be null or empty. 
 			if (creationDate==null || "".compareTo(creationDate)==0) {
-				query = " select date_format(now(), '%Y-%m-%dT%k-%i-%s') ";
-				stmt0 = conn.createStatement();
-				rs0 = stmt0.executeQuery(query);
-				if (!rs0.next()) {
-					throw new ExceptionDao ("Error: cannot retrieve date.");
-				}
-				creationDate = rs0.getString(1);
-				stmt0.close();rs0.close();
+				creationDate = now();
 			}
 			if (lastUpdate==null) lastUpdate="";
 			if (documentation==null) documentation="";
@@ -466,6 +459,30 @@ public class ProcessDao extends BasicDao {
 			Release(conn, stmt0, rs0);
 		}
 		return process;
+	}
+
+	private String now() throws ExceptionDao {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		String query = null;
+		String today = null;
+		try {
+			conn = this.getConnection();
+			query = " select date_format(now(), '%Y-%m-%dT%k-%i-%s') ";
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
+			if (!rs.next()) {
+				throw new ExceptionDao ("Error: cannot retrieve date.");
+			}
+			today = rs.getString(1);
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ExceptionDao ("Error: " + e.getMessage() + "\n");
+		} finally {
+			Release(conn, stmt, rs);
+		}
+		return today;
 	}
 
 	/**
@@ -840,21 +857,22 @@ public class ProcessDao extends BasicDao {
 	 * @throws ExceptionStoreVersion 
 	 * @throws ExceptionSyncNPF 
 	 */
-	public void storeVersion (int editSessionCode, int processId, String preVersion, String nativeType, String annotation,
+	public void storeVersion (int editSessionCode, Integer processId, String preVersion, String nativeType, String annotation,
 			InputStream npf_is, InputStream cpf_is,
 			InputStream apf_is) throws ExceptionDao, SQLException, ExceptionStoreVersion, ExceptionSyncNPF {
 		Connection conn = null;
-		Statement stmt0 = null, stmt1 = null;
-		PreparedStatement stmtp = null;
-		ResultSet rs0 = null, rs1 = null ;
+		Statement stmt0 = null;
+		ResultSet rs0 = null;
 		String query = null;
 		try {
 			String newVersion = null;
 			String creationDate = null;
 			String lastUpdate = null;
 			String documentation = null;
+			String username = null;
+			String processName = null;
 			conn = this.getConnection();
-			
+
 			// read the 4 data above from native_is
 			npf_is.mark(0);
 			if (nativeType.compareTo("XPDL 2.1")==0) {
@@ -863,6 +881,8 @@ public class ProcessDao extends BasicDao {
 				JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(npf_is);
 				PackageType pkg = rootElement.getValue();
 				try {
+					username = pkg.getRedefinableHeader().getAuthor().getValue();
+					processName = pkg.getName();
 					newVersion = pkg.getRedefinableHeader().getVersion().getValue().trim();
 					creationDate = pkg.getPackageHeader().getCreated().getValue().trim();
 					if (pkg.getPackageHeader().getModificationDate()!=null) {
@@ -895,18 +915,221 @@ public class ProcessDao extends BasicDao {
 			String cpf_string = inputStream2String(cpf_is);
 			String apf_string = inputStream2String(apf_is);
 
+			if (newVersion.compareTo(preVersion)!=0) {
+				// if preVersion != newVersion: try to derive newVersion from preVersion
+				creationDate = now();
+				deriveVersion (processId, preVersion, newVersion, nativeType, npf_string, cpf_string, apf_string,
+						editSessionCode, creationDate, lastUpdate, annotation, documentation);
+				npf_is.reset();
+				copyParam2NPF(npf_is, nativeType, processId, processName, newVersion, username, creationDate, lastUpdate, documentation);
+			} else {
+				// if preVersion = newVersion
+				// check whether preVersion is leaf in the derivation tree
+				// if yes, override its previous values, otherwise raise an exception
+				query = " select * from " + ConstantDB.TABLE_DERIVED_VERSIONS
+				+ " where " + ConstantDB.ATTR_PROCESSID + " = " + processId
+				+ " and " + ConstantDB.ATTR_VERSION + " = '" + preVersion + "'";
+				stmt0 = conn.createStatement();
+				rs0 = stmt0.executeQuery(query);
+				if (rs0.next()) {
+					throw new ExceptionStoreVersion ("Version " + preVersion + " cannot be overridden.");
+				} else {
+					overrideVersion (processId, preVersion, nativeType, npf_string, cpf_string, apf_string,
+							creationDate, lastUpdate, annotation, documentation);
+					npf_is.reset();
+					copyParam2NPF(npf_is, nativeType, processId, processName, preVersion, username, creationDate, lastUpdate, documentation);
+				}
+			}
+			conn.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			conn.rollback();
+			throw new ExceptionDao ("SQL error: " + e.getMessage());
+		} catch (ExceptionSyncNPF e) {
+			e.printStackTrace();
+			conn.rollback();
+			throw new ExceptionSyncNPF (e.getMessage());
+		} catch (ExceptionStoreVersion e) {
+			e.printStackTrace();
+			conn.rollback();
+			throw new ExceptionStoreVersion (e.getMessage());
+		} catch (ExceptionDao e) {
+			e.printStackTrace();
+			conn.rollback();
+			throw new ExceptionDao ("SQL error: " + e.getMessage());
+		} catch (JAXBException e) {
+			e.printStackTrace();
+			conn.rollback();
+			throw new ExceptionDao ("SQL error: " + e.getMessage());
+		} catch (IOException e) {
+			e.printStackTrace();
+			conn.rollback();
+			throw new ExceptionDao ("SQL error: " + e.getMessage());
+		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
+			throw new ExceptionDao ("SQL error: " + e.getMessage());
+		} finally {
+			Release(conn, stmt0, rs0);
+		}
+	}
 
-			// retrieve head_version to instantiate preVersion
-			// normally should come from oryx... TODO
-			query = " select " + ConstantDB.ATTR_VERSION
-			+ " from " + ConstantDB.TABLE_HEAD_VERSIONS
-			+ " where " + ConstantDB.ATTR_PROCESSID + " = " + processId ;
-			stmt0 = conn.createStatement();
-			rs0 = stmt0.executeQuery(query);
-			if (!rs0.next()) throw new ExceptionDao ("Cannot retrieve head version.");
-			preVersion = rs0.getString(1);
-			stmt0.close(); rs0.close();
+	/**
+	 * Override the existing version versionName of process whose id is processId with the
+	 * values nativeType, npf_string, cpf_string, anf_string, creationDate, lastUpdate, 
+	 * annotation and documentation.
+	 * @param processId
+	 * @param versionName
+	 * @param nativeType
+	 * @param npf_string
+	 * @param cpf_string
+	 * @param apf_string
+	 * @param creationDate
+	 * @param lastUpdate
+	 * @param annotation
+	 * @param documentation
+	 * @throws ExceptionDao 
+	 * @throws SQLException 
+	 */
+	private void overrideVersion(int processId, String versionName,
+			String nativeType, String npf_string, String cpf_string,
+			String apf_string, String creationDate,
+			String lastUpdate, String annotation, String documentation) throws ExceptionDao, SQLException {
 
+		Connection conn = null;
+		Statement stmt = null;
+		PreparedStatement stmtp = null;
+		ResultSet rs = null;
+		String query = null;
+		try {
+			conn = this.getConnection();
+			// update data in table process_versions
+			query = " update " + ConstantDB.TABLE_VERSIONS
+			+ " set " + ConstantDB.ATTR_LAST_UPDATE + " = ? "
+			+ " , "   + ConstantDB.ATTR_DOCUMENTATION  + " = ? "
+			+ " where " + ConstantDB.ATTR_PROCESSID  + " = ? "
+			+    " and " + ConstantDB.ATTR_VERSION_NAME  + " = ? ";
+			stmtp = conn.prepareStatement(query);
+			stmtp.setString(1, lastUpdate);
+			stmtp.setString(2,documentation);
+			stmtp.setInt(3,processId);
+			stmtp.setString(4,versionName);
+			int rs1 = stmtp.executeUpdate();
+			stmtp.close();
+			// update cpf content
+			query = " update " + ConstantDB.TABLE_CANONICALS
+			+ " set " + ConstantDB.ATTR_CONTENT + "= ? "
+			+ " where " + ConstantDB.ATTR_PROCESSID + " = ? "
+			+ " and "   + ConstantDB.ATTR_VERSION_NAME + " = ? ";
+			stmtp = conn.prepareStatement(query);
+			stmtp.setString(1,cpf_string);
+			stmtp.setInt(2,processId);
+			stmtp.setString(3, versionName);
+			rs1 = stmtp.executeUpdate();
+			stmtp.close();
+			// update anf and npf
+			// need cpf uri
+			query = " select " + ConstantDB.ATTR_URI
+			+ " from " + ConstantDB.TABLE_CANONICALS
+			+ " where " + ConstantDB.ATTR_PROCESSID + " = ? "
+			+ " and "   + ConstantDB.ATTR_VERSION_NAME + " = ? ";
+			stmtp = conn.prepareStatement(query);
+			stmtp.setInt(1,processId);
+			stmtp.setString(2, versionName);
+			rs = stmtp.executeQuery();
+			if (!rs.next()) throw new ExceptionDao ("Cannot access canonical.");
+			int cpf_uri = rs.getInt(1);
+			stmtp.close();
+			// delete all natives associated with process version
+			query = " delete from " + ConstantDB.TABLE_NATIVES
+			+ " where " + ConstantDB.ATTR_CANONICAL + " = ? ";
+			stmtp = conn.prepareStatement(query);
+			stmtp.setInt(1,cpf_uri);
+			rs1 = stmtp.executeUpdate();
+			stmtp.close();			
+			// delete all annotations associated with process version
+			/* query = " delete from " + ConstantDB.TABLE_ANNOTATIONS
+			+ " where " + ConstantDB.ATTR_CANONICAL + " = ? ";
+			stmtp = conn.prepareStatement(query);
+			stmtp.setInt(1,cpf_uri);
+			rs1 = stmtp.executeUpdate();
+			stmtp.close();*/
+			// record new native			
+			query = " insert into " + ConstantDB.TABLE_NATIVES
+			+ "(" + ConstantDB.ATTR_CONTENT + ","
+			+       ConstantDB.ATTR_NAT_TYPE + ","
+			+       ConstantDB.ATTR_CANONICAL + ")"
+			+ " values (?,?,?) ";
+			stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			stmtp.setString(1, npf_string);
+			stmtp.setString(2, nativeType);
+			stmtp.setInt(3, cpf_uri);
+			Integer rs6 = stmtp.executeUpdate();
+			ResultSet keys = stmtp.getGeneratedKeys() ;
+			if (!keys.next()) {
+				throw new ExceptionDao ("Error: cannot retrieve NPF id.");
+			}
+			int nat_uri = keys.getInt(1);
+			keys.close(); stmtp.close();
+
+			query = " insert into " + ConstantDB.TABLE_ANNOTATIONS
+			+ "(" + ConstantDB.ATTR_NATIVE  + ","
+			+ ConstantDB.ATTR_CANONICAL + ","
+			+ ConstantDB.ATTR_NAME + ","
+			+ ConstantDB.ATTR_CONTENT + ")"
+			+ " values (?,?,?,?) ";
+			stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			stmtp.setInt(1, nat_uri);
+			stmtp.setInt(2, cpf_uri);
+			stmtp.setString (3, annotation);
+			stmtp.setString (4, apf_string);
+			stmtp.executeUpdate();
+			stmtp.close();
+
+			conn.commit();			
+		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
+			throw new ExceptionDao (e.getMessage());
+		} finally {
+			Release(conn, stmt, rs);
+		}
+	}
+
+	/**
+	 * Derive a new version name newVersion from preVersion for process identified by processId.
+	 * preVersion != newVersion 
+	 * If newVersion is not a valid name (i.e. it already exists), then all informations are 
+	 * temporary stored.
+	 * id newVersion is valid, the derived version is created and the version name in the edit 
+	 * session structure is set to newVersion.
+	 * @param processId
+	 * @param preVersion
+	 * @param newVersion
+	 * @param nativeType
+	 * @param npf_string
+	 * @param cpf_string
+	 * @param apf_string
+	 * @param editSessionCode
+	 * @param creationDate
+	 * @param lastUpdate
+	 * @param annotation
+	 * @param documentation
+	 * @throws ExceptionDao
+	 * @throws SQLException
+	 * @throws ExceptionStoreVersion
+	 */
+	private void deriveVersion(int processId, String preVersion,
+			String newVersion, String nativeType, String npf_string, String cpf_string,
+			String apf_string, int editSessionCode, String creationDate,
+			String lastUpdate, String annotation, String documentation) throws ExceptionDao, SQLException, ExceptionStoreVersion {
+		Connection conn = null, conn1 = null;
+		Statement stmt0 = null, stmt1 = null;
+		PreparedStatement stmtp = null;
+		ResultSet rs0 = null, rs1 = null ;
+		String query = null;
+		try {
+			conn = this.getConnection();
 			// does newVersion already exist?
 			query = " select " + ConstantDB.ATTR_URI
 			+       " from " + ConstantDB.TABLE_CANONICALS
@@ -915,8 +1138,7 @@ public class ProcessDao extends BasicDao {
 			stmt0 = conn.createStatement();
 			rs0 = stmt0.executeQuery(query);
 			if (rs0.next()) {
-
-				Connection conn1 = this.getConnection();
+				conn1 = this.getConnection();
 				// store the data in a temporary table
 				query = " insert into " + ConstantDB.TABLE_TEMP_VERSIONS 
 				+ "(" + ConstantDB.ATTR_CODE
@@ -955,16 +1177,14 @@ public class ProcessDao extends BasicDao {
 				+ "(" + ConstantDB.ATTR_PROCESSID + ","
 				+     ConstantDB.ATTR_VERSION_NAME + ","
 				+     ConstantDB.ATTR_CREATION_DATE + ","
-				+     ConstantDB.ATTR_LAST_UPDATE + ","
 				+     ConstantDB.ATTR_DOCUMENTATION + ")"
-				+ " values (?, ?, ?, ?, ?) ";
+				+ " values (?, ?, ?, ?) ";
 				//+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%s'), str_to_date(?,'%Y-%c-%d %k:%i:%s'), ?, ?) ";
 				stmtp = conn.prepareStatement(query2);
 				stmtp.setInt(1, processId);
 				stmtp.setString(2, newVersion);
 				stmtp.setString(3, creationDate);
-				stmtp.setString(4, lastUpdate);
-				stmtp.setString(5, documentation);
+				stmtp.setString(4, documentation);
 				Integer rs2 = stmtp.executeUpdate();
 				stmtp.close();
 
@@ -1019,7 +1239,6 @@ public class ProcessDao extends BasicDao {
 				Integer rs5 = stmtp.executeUpdate();
 				stmtp.close();
 
-
 				query2 = " insert into " + ConstantDB.TABLE_DERIVED_VERSIONS
 				+ "(" + ConstantDB.ATTR_PROCESSID + ","
 				+     ConstantDB.ATTR_VERSION + ","
@@ -1031,39 +1250,33 @@ public class ProcessDao extends BasicDao {
 				stmtp.setString(3, newVersion);
 				rs2 = stmtp.executeUpdate();
 				stmtp.close();
+
+				// modify version name in edit session
+				query = "update " + ConstantDB.TABLE_EDIT_SESSIONS 
+				+ " set " + ConstantDB.ATTR_VERSION_NAME	+ " = ? "
+				+ " where " + ConstantDB.ATTR_CODE + " = ? ";
+				stmtp = conn.prepareStatement(query);
+				stmtp.setString(1, newVersion);
+				stmtp.setInt(2, editSessionCode);
+				rs2 = stmtp.executeUpdate();
+				stmtp.close();
+				conn.commit();
 			}
-			conn.commit();
-		} catch (SQLException e) {
+		} catch (ExceptionDao e) {
 			e.printStackTrace();
 			conn.rollback();
-			throw new ExceptionDao ("SQL error: " + e.getMessage());
-		} catch (ExceptionSyncNPF e) {
-			e.printStackTrace();
-			conn.rollback();
-			throw new ExceptionSyncNPF (e.getMessage());
+			throw new ExceptionDao (e.getMessage());
 		} catch (ExceptionStoreVersion e) {
 			e.printStackTrace();
 			conn.rollback();
 			throw new ExceptionStoreVersion (e.getMessage());
-		} catch (ExceptionDao e) {
-			e.printStackTrace();
-			conn.rollback();
-			throw new ExceptionDao ("SQL error: " + e.getMessage());
-		} catch (JAXBException e) {
-			e.printStackTrace();
-			conn.rollback();
-			throw new ExceptionDao ("SQL error: " + e.getMessage());
-		} catch (IOException e) {
-			e.printStackTrace();
-			conn.rollback();
-			throw new ExceptionDao ("SQL error: " + e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
 			conn.rollback();
 			throw new ExceptionDao ("SQL error: " + e.getMessage());
 		} finally {
 			Release(conn, stmt0, rs0);
-			Release(null, stmt1, rs1);
+			Release(conn1, stmt1, rs1);
 		}
 	}
 
