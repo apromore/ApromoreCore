@@ -215,8 +215,13 @@ public class XPDL2Canonical {
 						}
 
 						SizeType size = new SizeType();
-						size.setHeight(BigDecimal.valueOf(xGraphInfo.getHeight()));
-						size.setWidth(BigDecimal.valueOf(xGraphInfo.getWidth()));
+						try{
+							size.setHeight(BigDecimal.valueOf(xGraphInfo.getHeight()));
+							size.setWidth(BigDecimal.valueOf(xGraphInfo.getWidth()));
+						}
+						catch(NullPointerException e)
+						{}
+						
 						cGraphInfo.setSize(size);
 					}
 				}
