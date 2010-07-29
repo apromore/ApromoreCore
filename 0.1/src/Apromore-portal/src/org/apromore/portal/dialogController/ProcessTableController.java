@@ -362,8 +362,14 @@ public class ProcessTableController {
 
 				Toolbarbutton versionName = new Toolbarbutton (version.getName());
 				versionName.setStyle(Constants.TOOLBARBUTTON_STYLE);
-				Label versionCreationDate = new Label (version.getCreationDate().toString());
-				Label versionLastUpdate = new Label (version.getLastUpdate().toString());
+				Label versionCreationDate = new Label();
+				if (version.getCreationDate()!= null) {
+					versionCreationDate.setValue(version.getCreationDate().toString());
+				}
+				Label versionLastUpdate = new Label();
+				if (version.getLastUpdate()!= null) {
+					versionLastUpdate.setValue(version.getLastUpdate().toString());
+				}
 				Label versionRanking = new Label ();
 				if (version.getRanking()!=null) {
 					versionRanking.setValue(version.getRanking());

@@ -1,4 +1,4 @@
-<!-- exportnative window has exportNativeController.java as a controller 
+<!-- exportnative window has exportOneNativeController.java as a controller 
 	components id and listbox to choose native type implemented by the controller 
 	one controller per process version to export -->
 
