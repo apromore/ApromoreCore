@@ -220,7 +220,6 @@ import de.epml.TypeEPML;
 		UpdateProcessOutputMsgType res = new UpdateProcessOutputMsgType();
 		ResultType result = new ResultType();
 		res.setResult(result);
-
 		try {
 			DataHandler handler = payload.getNative();
 			InputStream native_is = handler.getInputStream();
