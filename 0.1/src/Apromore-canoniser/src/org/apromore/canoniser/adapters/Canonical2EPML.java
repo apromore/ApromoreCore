@@ -274,8 +274,8 @@ public class Canonical2EPML {
 		epc.getEventOrFunctionOrRole().add(role);
 		
 		// Linking the related element
-		TypeArc arc1 = new TypeArc();
-		TypeArc arc2 = new TypeArc();
+		
+		List<TypeArc> arcs_list = new LinkedList<TypeArc>();
 		
 		for(Object obj: epc.getEventOrFunctionOrRole())
 		{
@@ -292,31 +292,32 @@ public class Canonical2EPML {
 				{
 					if(ll.contains(resT.getId()))
 					{
-						
+						TypeArc arc1 = new TypeArc();
 						TypeRelation rel = new TypeRelation();
 						rel.setSource(BigInteger.valueOf(ids-1));
 						rel.setTarget(((TypeFunction)obj).getId());
 						arc1.setRelation(rel);
-						
+						arcs_list.add(arc1);
 					}
 				}
 				else if(obj instanceof TypeEvent)
 				{
 					if(ll.contains(resT.getId()))
 					{
-						
+						TypeArc arc2 = new TypeArc();
 						TypeRelation rel = new TypeRelation();
 						rel.setSource(BigInteger.valueOf(ids-1));
 						rel.setTarget(((TypeEvent)obj).getId());
 						arc2.setRelation(rel);
-						
+						arcs_list.add(arc2);
 					}
 				}
 			}
 		}
 		
-		epc.getEventOrFunctionOrRole().add(arc1);
-		epc.getEventOrFunctionOrRole().add(arc2);
+		for(TypeArc arc: arcs_list)
+			epc.getEventOrFunctionOrRole().add(arc);
+		
 	}
 	
 	private void translateGateway(TypeEPC epc, NodeType node)
@@ -462,7 +463,7 @@ public class Canonical2EPML {
 						pos.setHeight(cGraphInfo.getSize().getHeight());
 						pos.setWidth(cGraphInfo.getSize().getWidth());
 					}
-					if(cGraphInfo.getPosition().get(0) != null)
+					if(cGraphInfo.getPosition() != null && cGraphInfo.getPosition().size() > 0)
 					{
 						pos.setX(cGraphInfo.getPosition().get(0).getX());
 						pos.setY(cGraphInfo.getPosition().get(0).getY());
