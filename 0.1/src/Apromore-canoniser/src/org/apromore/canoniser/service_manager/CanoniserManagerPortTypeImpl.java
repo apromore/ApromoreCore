@@ -191,7 +191,6 @@ import de.epml.TypeEPML;
 					new org.apromore.anf.ObjectFactory().createAnnotations(xpdl2canonical.getAnf());
 				ByteArrayOutputStream anf_xml = new ByteArrayOutputStream();
 				m_anf.marshal(cproc_anf, anf_xml);
-				System.out.println("Canoniser, anf size : " + anf_xml.size());
 				InputStream anf_xml_is = new ByteArrayInputStream(anf_xml.toByteArray());
 
 				jc1 = JAXBContext.newInstance(Constants.JAXB_CONTEXT_CPF);
@@ -201,7 +200,6 @@ import de.epml.TypeEPML;
 					new org.apromore.cpf.ObjectFactory().createCanonicalProcess(xpdl2canonical.getCpf());
 				ByteArrayOutputStream cpf_xml = new ByteArrayOutputStream();
 				m_cpf.marshal(cproc_cpf, cpf_xml);
-				System.out.println("Canoniser, cpf size : " + cpf_xml.size());
 				InputStream cpf_xml_is = new ByteArrayInputStream(cpf_xml.toByteArray());
 
 				RequestToDA request = new RequestToDA();
@@ -360,6 +358,9 @@ import de.epml.TypeEPML;
 			result.setMessage("Error Adapter: " + ex.getMessage());
 		} catch (ExceptionVersion ex) {
 			result.setCode(-3);
+			result.setMessage(ex.getMessage());
+		} catch (Exception ex) {
+			result.setCode(-1);
 			result.setMessage(ex.getMessage());
 		} 
 		return res;
