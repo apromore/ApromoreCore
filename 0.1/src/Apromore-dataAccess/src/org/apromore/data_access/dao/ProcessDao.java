@@ -509,7 +509,7 @@ public class ProcessDao extends BasicDao {
 			Unmarshaller u = jc.createUnmarshaller();
 			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
 			PackageType pkg = rootElement.getValue();
-			pkg = copyParam2xpdl (pkg, processId, processName, version, username, creationDate, lastUpdate, documentation);
+			copyParam2xpdl (pkg, processId, processName, version, username, creationDate, lastUpdate, documentation);
 
 			Marshaller m = jc.createMarshaller();
 			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
@@ -547,7 +547,7 @@ public class ProcessDao extends BasicDao {
 	 * @param documentation
 	 * @return
 	 */
-	private PackageType copyParam2xpdl(PackageType pkg, Integer processId,
+	private void copyParam2xpdl(PackageType pkg, Integer processId,
 			String processName, String version, String username,
 			String creationDate, String lastUpdate, String documentation) {
 
@@ -598,7 +598,6 @@ public class ProcessDao extends BasicDao {
 		if (creationDate!=null)	pkg.getPackageHeader().getCreated().setValue(creationDate);
 		if (lastUpdate!=null)pkg.getPackageHeader().getModificationDate().setValue(lastUpdate);
 		if (documentation!=null)pkg.getPackageHeader().getDocumentation().setValue(documentation);
-		return pkg;
 	}
 
 	/**
@@ -1576,9 +1575,7 @@ public class ProcessDao extends BasicDao {
 					u = jc.createUnmarshaller();
 					JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(npf);
 					PackageType npf_o = rootElement.getValue();
-
-					npf_o = copyParam2xpdl(npf_o, processId, processName, newVersion, username, null, lastUpdate, null);
-
+					copyParam2xpdl(npf_o, processId, processName, newVersion, username, null, lastUpdate, null);
 					m = jc.createMarshaller();
 					m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 					JAXBElement<PackageType> rootnpf = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(npf_o);
