@@ -1,9 +1,11 @@
 package org.apromore.portal.dialogController;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -16,12 +18,15 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummaryType;
+import org.wfmc._2008.xpdl2.Author;
 import org.wfmc._2008.xpdl2.Created;
+import org.wfmc._2008.xpdl2.ModificationDate;
 import org.wfmc._2008.xpdl2.PackageHeader;
 import org.wfmc._2008.xpdl2.PackageType;
 import org.wfmc._2008.xpdl2.RedefinableHeader;
@@ -189,6 +194,7 @@ public class CreateProcessController {
 		        Date date = new Date();
 		        String creationDate = dateFormat.format(date);
 				// create an empty model corresponding to the native type
+		        // must have at least creation date, author, process name, version name
 				InputStream nativeProcess = null;
 				if ("XPDL 2.1".compareTo(nativeType)==0) {
 					PackageType pkg = new PackageType();
@@ -197,6 +203,9 @@ public class CreateProcessController {
 					pkg.setPackageHeader(hder);
 					RedefinableHeader rhder = new RedefinableHeader();
 					pkg.setRedefinableHeader(rhder);
+					Author author = new Author();
+					rhder.setAuthor(author);
+					author.setValue(owner);
 					Version version = new Version();
 					rhder.setVersion(version);
 					version.setValue(versionName);
@@ -220,7 +229,7 @@ public class CreateProcessController {
 	                ByteArrayOutputStream epml_xml = new ByteArrayOutputStream();
 	                m.marshal(rootepml, epml_xml);
 	                nativeProcess = new ByteArrayInputStream(epml_xml.toByteArray());
-				}
+				}				
 				ProcessSummaryType process = 
 					request.importProcess(owner, nativeType, processName, versionName, 
 							nativeProcess, domain, null, creationDate, null);
@@ -256,7 +265,8 @@ public class CreateProcessController {
 		String version = process.getVersionSummaries().get(0).getName();
 		String nativeType = cbi.getLabel();
 		String domain = process.getDomain();
-		this.mainC.editProcess(processId, processName, version, nativeType, domain, null);
+		String annotation = Constants.INITIAL_ANNOTATION;
+		this.mainC.editProcess(processId, processName, version, nativeType, domain, annotation);
 		cancel();
 	}
 	protected void cancel() throws Exception {

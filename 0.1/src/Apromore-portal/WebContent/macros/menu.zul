@@ -12,23 +12,10 @@
 			<menuseparator />
 			<menuitem id="dataEdit" label="Edit meta data" disabled="true"/>
 			<menuseparator />
-			<menuitem id="processCopy" label="Copy" disabled="true"/>
-			<menuseparator />
-			<menuitem id="processCut" label="Cut" disabled="true"/>
-			<menuseparator />
-			<menuitem id="processPaste" label="Paste" disabled="true"/>
-			<menuseparator />
 			<menuitem id="processDelete" label="Delete" disabled="true"/>
 			<menuseparator />
-		</menupopup>
-	</menu>
-	<menu id="evaluation" label="Evaluation">
-		<menupopup>
-			<menuitem id="evaluationQuality" label="Quality" disabled="true"/>
+			<menuitem id="processMerge" label="Merge" disabled="true"/>
 			<menuseparator />
-			<menuitem id="evaluationCorrectness" label="Correctness" disabled="true"/>
-			<menuseparator />
-			<menuitem id="evaluationPerformance" label="Performance" disabled="true"/>
 		</menupopup>
 	</menu>
 	<menu id="comparison" label="Comparison">
@@ -38,6 +25,15 @@
 			<menuitem id="comparisonComformance" label="Comformance analysis" disabled="true" />
 			<menuseparator />
 			<menuitem id="comparisonPattern" label="Pattern-based analysis" disabled="true"/>
+		</menupopup>
+	</menu>
+	<menu id="evaluation" label="Evaluation">
+		<menupopup>
+			<menuitem id="evaluationQuality" label="Quality" disabled="true"/>
+			<menuseparator />
+			<menuitem id="evaluationCorrectness" label="Correctness" disabled="true"/>
+			<menuseparator />
+			<menuitem id="evaluationPerformance" label="Performance" disabled="true"/>
 		</menupopup>
 	</menu>
 	<menu id="management" label="Management">
