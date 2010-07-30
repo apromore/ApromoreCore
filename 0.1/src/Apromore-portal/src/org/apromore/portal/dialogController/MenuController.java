@@ -37,10 +37,8 @@ public class MenuController extends Menubar {
 	private Menuitem exportMI;
 	private Menuitem editModelMI;
 	private Menuitem editDataMI;
-	private Menuitem copyMI;
-	private Menuitem pasteMI;
 	private Menuitem deleteMI;
-	private Menuitem cutMI;
+	private Menuitem mergeMI;
 
 	private Menu evaluationM;
 	private Menu comparisonM;
@@ -63,6 +61,7 @@ public class MenuController extends Menubar {
 		this.editModelMI = (Menuitem) this.menuB.getFellow("processEdit");
 		this.editDataMI = (Menuitem) this.menuB.getFellow("dataEdit");
 		this.deleteMI = (Menuitem) this.menuB.getFellow("processDelete");
+		this.mergeMI = (Menuitem) this.menuB.getFellow("processMerge");
 		this.evaluationM = (Menu) this.menuB.getFellow("evaluation");
 		this.comparisonM = (Menu) this.menuB.getFellow("comparison");
 		this.managementM = (Menu) this.menuB.getFellow("management");
@@ -108,6 +107,18 @@ public class MenuController extends Menubar {
 				deleteSelectedProcessVersions ();
 			}
 		});	
+		this.mergeMI.addEventListener("onClick",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				mergeSelectedProcessVersions ();
+			}
+		});	
+	}
+
+	protected void mergeSelectedProcessVersions() throws InterruptedException {
+		// TODO Auto-generated method stub
+		Messagebox.show("Merge under construction...", "Attention", Messagebox.OK,
+				Messagebox.INFORMATION);
 	}
 
 	protected void createModel() throws InterruptedException {
