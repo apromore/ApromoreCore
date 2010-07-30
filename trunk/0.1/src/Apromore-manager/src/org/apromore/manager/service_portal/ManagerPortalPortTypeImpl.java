@@ -10,7 +10,10 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.logging.Logger;
@@ -308,7 +311,7 @@ import de.epml.TypeEPML;
 	}
 
 	public ExportFormatOutputMsgType exportFormat(ExportFormatInputMsgType payload) { 
-		LOG.info("Executing operation exportNative");
+		LOG.info("Executing operation exportFormat");
 		System.out.println(payload);
 		ExportFormatOutputMsgType res = new ExportFormatOutputMsgType();
 		ResultType result = new ResultType();
@@ -354,9 +357,12 @@ import de.epml.TypeEPML;
 				} else {
 					native_xml = requestCa.DeCanonise (processId, version, format, cpf_is, null);
 				}
-				// record meta data in native_xml: processId, process and version names, creation date, last update
+				// record meta data in native_xml: processId, process and version names, creation date
+				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
+		        Date date = new Date();
+		        String creationDate = dateFormat.format(date);
 				InputStream native_xml_sync = 
-					copyParam2NPF(native_xml, format, processId, processname, version, owner, null, null, null);
+					copyParam2NPF(native_xml, format, processId, processname, version, owner, creationDate, null, null);
 				DataSource source = new ByteArrayDataSource(native_xml_sync, "text/xml"); 
 				res.setNative(new DataHandler(source));	
 				result.setCode(0);
@@ -407,7 +413,7 @@ import de.epml.TypeEPML;
 			RequestToCanoniser request = new RequestToCanoniser();
 			org.apromore.manager.model_portal.ProcessSummaryType process =
 				request.CanoniseProcess(username, processName, versionName, 
-						nativeType,is, domain, documentation, created, lastupdate);
+						nativeType, is, domain, documentation, created, lastupdate);
 			res.setProcessSummary(process);
 			result.setCode(0);
 			result.setMessage("");
