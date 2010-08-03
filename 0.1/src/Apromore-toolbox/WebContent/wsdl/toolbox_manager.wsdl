@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:tns="http://www.example.org/toolbox_manager/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" name="toolbox_manager" targetNamespace="http://www.example.org/toolbox_manager/">
+  <wsdl:types>
+    <xsd:schema targetNamespace="http://www.example.org/toolbox_manager/">
+      <xsd:element name="NewOperation">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="in" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="NewOperationResponse">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="out" type="xsd:string"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:schema>
+  </wsdl:types>
+  <wsdl:message name="NewOperationRequest">
+    <wsdl:part element="tns:NewOperation" name="parameters"/>
+  </wsdl:message>
+  <wsdl:message name="NewOperationResponse">
+    <wsdl:part element="tns:NewOperationResponse" name="parameters"/>
+  </wsdl:message>
+  <wsdl:portType name="toolbox_manager">
+    <wsdl:operation name="NewOperation">
+      <wsdl:input message="tns:NewOperationRequest"/>
+      <wsdl:output message="tns:NewOperationResponse"/>
+    </wsdl:operation>
+  </wsdl:portType>
+  <wsdl:binding name="toolbox_managerSOAP" type="tns:toolbox_manager">
+    <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+    <wsdl:operation name="NewOperation">
+      <soap:operation soapAction="http://www.example.org/toolbox_manager/NewOperation"/>
+      <wsdl:input>
+        <soap:body use="literal"/>
+      </wsdl:input>
+      <wsdl:output>
+        <soap:body use="literal"/>
+      </wsdl:output>
+    </wsdl:operation>
+  </wsdl:binding>
+  <wsdl:service name="toolbox_manager">
+    <wsdl:port binding="tns:toolbox_managerSOAP" name="toolbox_managerSOAP">
+      <soap:address location="http://www.example.org/"/>
+    </wsdl:port>
+  </wsdl:service>
+</wsdl:definitions>
