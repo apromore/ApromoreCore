@@ -81,7 +81,13 @@ public class SimpleSearchController extends Window {
 		RequestToManager request = new RequestToManager();
 		ProcessSummariesType processSummaries = request.ReadProcessSummariesType(query);
 		int nbAnswers = processSummaries.getProcessSummary().size();
-		this.mainC.displayMessage("Search returned " + nbAnswers + " processes.");
+		String message = "Search returned " + nbAnswers ;
+		if (nbAnswers > 1) {
+			message += " processes.";
+		} else {
+			message += " process.";
+		}
+		this.mainC.displayMessage(message);
 		this.mainC.displayProcessSummaries (processSummaries);
 		/**
 		 *Keeps search history up to date

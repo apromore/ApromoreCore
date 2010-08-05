@@ -32,12 +32,11 @@ import org.apromore.portal.model_manager.DeleteEditSessionOutputMsgType;
 import org.apromore.portal.model_manager.DeleteProcessVersionsInputMsgType;
 import org.apromore.portal.model_manager.DeleteProcessVersionsOutputMsgType;
 import org.apromore.portal.model_manager.DomainsType;
-import org.apromore.portal.model_manager.EditDataProcessInputMsgType;
-import org.apromore.portal.model_manager.EditDataProcessOutputMsgType;
+import org.apromore.portal.model_manager.EditProcessDataInputMsgType;
+import org.apromore.portal.model_manager.EditProcessDataOutputMsgType;
 import org.apromore.portal.model_manager.EditSessionType;
 import org.apromore.portal.model_manager.ExportFormatInputMsgType;
 import org.apromore.portal.model_manager.ExportFormatOutputMsgType;
-import org.apromore.portal.model_manager.FormatType;
 import org.apromore.portal.model_manager.ImportProcessInputMsgType;
 import org.apromore.portal.model_manager.ImportProcessOutputMsgType;
 import org.apromore.portal.model_manager.NativeTypesType;
@@ -183,7 +182,7 @@ public class RequestToManager {
 		ExportFormatInputMsgType payload = new ExportFormatInputMsgType();
 		payload.setProcessId(processId);
 		payload.setVersionName(versionName);
-		payload.setNativeType(nativeType);
+		payload.setFormat(nativeType);
 		payload.setAnnotationName(annotationName);
 		payload.setWithAnnotations(withAnnotations);
 		payload.setProcessName(processName);
@@ -233,17 +232,15 @@ public class RequestToManager {
 		}
 	}
 
-	public void UpdateProcess(int sessionCode, String username, String nativeType,
-			int processId, String preVersion, InputStream native_is, String domain, String annotationName) 
+	public void UpdateProcess(int sessionCode, String username, String format,
+			int processId, String preVersion, InputStream native_is) 
 	throws IOException, ExceptionUpdateProcess, ExceptionVersion {
 
 		UpdateProcessInputMsgType payload = new UpdateProcessInputMsgType();
 		payload.setEditSessionCode(sessionCode);
-		payload.setDomain(domain);
-		payload.setNativeType(nativeType);
+		payload.setNativeType(format);
 		payload.setProcessId(processId);
 		payload.setUsername(username);
-		payload.setAnnotationName(annotationName);
 		payload.setPreVersion(preVersion);
 		DataSource sourceNat = new ByteArrayDataSource(native_is, "text/xml"); 
 		payload.setNative(new DataHandler(sourceNat));
@@ -290,9 +287,9 @@ public class RequestToManager {
 	 * @throws ExceptionEditDataProcess 
 	 * @throws ExceptionUpdateProcessSummaries 
 	 */
-	public void EditDataProcesses (Integer processId, String processName, String domain, String username,
+	public void EditProcessesData (Integer processId, String processName, String domain, String username,
 			String preVersion, String newVersion, String ranking) throws ExceptionEditDataProcess {
-		EditDataProcessInputMsgType payload = new EditDataProcessInputMsgType();
+		EditProcessDataInputMsgType payload = new EditProcessDataInputMsgType();
 		payload.setDomain(domain);
 		payload.setProcessName(processName);
 		payload.setOwner(username);
@@ -300,7 +297,7 @@ public class RequestToManager {
 		payload.setNewName(newVersion);
 		payload.setPreName(preVersion);
 		payload.setRanking(ranking);
-		EditDataProcessOutputMsgType res = this.port.editDataProcess(payload);
+		EditProcessDataOutputMsgType res = this.port.editProcessData(payload);
 		ResultType result = res.getResult();
 		if (result.getCode() == -1) {
 			throw new ExceptionEditDataProcess (result.getMessage()); 

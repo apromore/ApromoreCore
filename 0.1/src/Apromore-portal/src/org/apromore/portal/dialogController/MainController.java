@@ -135,7 +135,13 @@ public class MainController extends Window {
 	public void refreshProcessSummaries () throws Exception {
 		RequestToManager request = new RequestToManager();
 		ProcessSummariesType processSummaries = request.ReadProcessSummariesType("");
-		this.displayMessage(processSummaries.getProcessSummary().size() + " processes.");
+		String message = null;
+		if (processSummaries.getProcessSummary().size()>1) {
+			message = " processes.";
+		} else {
+			message = " process.";
+		}
+		this.displayMessage(processSummaries.getProcessSummary().size() + message);
 		this.displayProcessSummaries(processSummaries);
 	}
 
@@ -172,7 +178,7 @@ public class MainController extends Window {
 		RequestToManager request = new RequestToManager();
 		try {
 			request.DeleteProcessVersions (processVersions);
-
+			this.processtable.unDisplay(processVersions);
 			int nb = 0; // to count how many process version(s) deleted
 			Set<ProcessSummaryType> keySet = processVersions.keySet();
 			Iterator it = keySet.iterator();

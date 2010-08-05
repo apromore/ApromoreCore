@@ -9,9 +9,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
+import org.apache.cxf.version.Version;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.ProcessIdColComparator;
 import org.apromore.portal.common.ProcessNameColComparator;
@@ -85,7 +87,7 @@ public class ProcessTableController {
 	private Grid processSummariesGrid; 						// the grid for process summaries
 	private Rows processSummariesRows; 						// the rows for process summaries
 	//	private Window processTableW;							// the window which the entry point
-	private HashMap<Checkbox,ProcessSummaryType> processHM;	// Hasmap of checkboxes: one entry for each process 
+	private HashMap<Checkbox,ProcessSummaryType> processHM;	// HashMap of checkboxes: one entry for each process 
 	private HashMap<Checkbox,VersionSummaryType> processVersionsHM;// HashMap of checkboxes: one entry for each process version
 	private HashMap<Checkbox, List<Checkbox>> mapProcessVersions; // <p, listV> in mapProcessVersions: checkboxes in listV are
 	// associated with checkbox p
@@ -182,7 +184,14 @@ public class ProcessTableController {
 	}
 
 	protected void unselectAll() throws Exception {
-		this.mainC.refreshProcessSummaries();	
+		List<Row> processSummariesRs = this.processSummariesRows.getChildren();
+		for (int i=0; i<processSummariesRs.size();i++){
+			Row processSummaryR = processSummariesRs.get(i);
+			Checkbox processSummaryCB = (Checkbox) processSummaryR.getFirstChild().getNextSibling();
+			if (processSummaryCB.isChecked()) {
+				reverseProcessSelection(i);
+			}
+		}
 	}
 
 	protected void selectAll() throws NumberFormatException, InterruptedException, ExceptionDao, 
@@ -222,8 +231,8 @@ public class ProcessTableController {
 		this.pagingAndButtons.appendChild(this.buttons);
 
 	}
-	public void displayProcessSummaries(ProcessSummariesType processSummaries) {
 
+	public void displayProcessSummaries(ProcessSummariesType processSummaries) {
 		for (int i=0;i<processSummaries.getProcessSummary().size();i++){
 			ProcessSummaryType process = processSummaries.getProcessSummary().get(i);
 			displayOneProcess (process);		
@@ -377,7 +386,7 @@ public class ProcessTableController {
 				Label versionDocumentation = new Label ();
 				if ("".compareTo(version.getDocumentation())!=0) {
 					String docBeginning = version.getDocumentation().split(" ")[0]
-					+ "... Click here to read more...";
+					                                                            + "... Click here to read more...";
 					versionDocumentation.setValue(docBeginning);
 					Popup docPopup = new Popup();
 					Html docHtml = new Html(version.getDocumentation());
@@ -416,6 +425,58 @@ public class ProcessTableController {
 	}
 
 	/**
+	 * remove from the table displayed the process versions processVersions
+	 * @param processVersions
+	 */
+	public void unDisplay(HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) {
+		// Update the table
+		Set<ProcessSummaryType> keySet = processVersions.keySet();
+		Iterator<ProcessSummaryType> it = keySet.iterator();
+		while (it.hasNext()){
+			ProcessSummaryType process = it.next();
+			List<VersionSummaryType> versions = process.getVersionSummaries();
+			// retrieve the process Detail in this.processSummariesRows
+			Detail processD = (Detail) this.processSummariesRows.getFellow(process.getId().toString(), true);
+			Checkbox processCB = (Checkbox) processD.getNextSibling();
+			Row processR = (Row) processD.getParent();
+			processCB.setChecked(false);
+			highlightP (processR, false);
+			Grid processG = (Grid) processD.getFirstChild();
+			Rows versionsR = (Rows) processG.getFirstChild().getNextSibling();
+			for (int i=0; i<versions.size();i++) {
+				//remove from the Detail grid, the row corresponding to version, if checked:
+				// its checkbox has id=processid+"/"+versionName
+				VersionSummaryType version = versions.get(i);
+				String idToCheck = process.getId().toString() + "/" + version.getName();
+				Checkbox versionCB = (Checkbox) processD.getFellow(idToCheck, true);
+				Row versionR = (Row) versionCB.getParent();
+				if (versionCB.isChecked()){
+					versionsR.removeChild(versionR);
+					versions.remove(i);
+					// Update the data structures
+					// processVersionHM, mapProcessVersions
+					this.processVersionsHM.remove(versionCB);
+					this.mapProcessVersions.get(processCB).remove((this.mapProcessVersions.get(processCB).indexOf(versionCB)));
+				}
+			}
+			// if no row left, remove the process row
+			if (versionsR.getChildren().size()==0){
+				this.processSummariesRows.removeChild(processR);
+				//Update the data structure processHM
+				this.processHM.remove(processCB);
+			} else {
+				// update the label of the latest version
+				Label latest = (Label) processR.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getNextSibling()
+				.getNextSibling().getNextSibling().getNextSibling();
+				Row lastVersionR = (Row) versionsR.getLastChild();
+				Checkbox lastVersionCB = (Checkbox) lastVersionR.getFirstChild();
+				latest.setValue(this.processVersionsHM.get(lastVersionCB).getName());
+			}
+		}
+
+	}
+
+	/**
 	 * revert selection of version corresponding to event
 	 * @param Event event
 	 * @throws InterruptedException 
@@ -449,8 +510,6 @@ public class ProcessTableController {
 		Checkbox versionCB = (Checkbox) versionNameB.getPreviousSibling();	// checkbox associated with the version
 		Checkbox processCB = (Checkbox) processR.getChildren().get(1);		// checkbox associated with the process
 
-		VersionSummaryType version = this.processVersionsHM.get(versionCB);
-		ProcessSummaryType process = this.processHM.get(processCB);
 		/*
 		 * Was the version selected? 
 		 * if no, select it and its process
@@ -752,6 +811,4 @@ public class ProcessTableController {
 	public void setPg(Paging pg) {
 		this.pg = pg;
 	}
-
-
 }
