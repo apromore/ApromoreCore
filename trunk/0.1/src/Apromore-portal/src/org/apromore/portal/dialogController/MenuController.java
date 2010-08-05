@@ -188,7 +188,6 @@ public class MenuController extends Menubar {
 			getSelectedProcessVersions();
 		if (selectedProcessVersions.size()!=0) {
 			this.mainC.deleteProcessVersions(selectedProcessVersions);
-			this.mainC.refreshProcessSummaries();
 		} else {
 			this.mainC.displayMessage("No process version selected.");
 		}
@@ -279,8 +278,8 @@ public class MenuController extends Menubar {
 			getSelectedProcessVersions();
 
 		if (selectedProcessVersions.size()!=0) {
-			EditDataListProcController editList = 
-				new EditDataListProcController (this.mainC, this, selectedProcessVersions);
+			EditListProcDataController editList = 
+				new EditListProcDataController (this.mainC, this, selectedProcessVersions);
 		} else {
 			this.mainC.displayMessage("No process version selected.");
 		}

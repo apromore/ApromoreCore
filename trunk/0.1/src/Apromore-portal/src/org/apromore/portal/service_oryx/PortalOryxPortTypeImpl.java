@@ -6,10 +6,8 @@
 
 package org.apromore.portal.service_oryx;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
@@ -97,12 +95,10 @@ import org.wfmc._2008.xpdl2.PackageType;
 			EditSessionType editSession = request.ReadEditSession(code);
 			String username = editSession.getUsername();
 			int processId = editSession.getProcessId();
-			String nativeType = editSession.getNativeType();
-			String domain = editSession.getDomain();
+			String format = editSession.getNativeType();
 			String preVersion = editSession.getVersionName(); 
-			String annotationName = "Initial" ; // TODO Oryx has to put annotationName in payload
 			// update process: create new version whose name is in native_is, derived from head version
-			request.UpdateProcess (code, username, nativeType, processId, preVersion, native_is, domain, annotationName);
+			request.UpdateProcess (code, username, format, processId, preVersion, native_is);
 			result.setCode(0);
 			result.setMessage("");
 		} catch (ExceptionVersion ex) {
@@ -194,7 +190,8 @@ import org.wfmc._2008.xpdl2.PackageType;
 			newEditSession.setProcessName(newProcess.getName());
 			newEditSession.setUsername(newProcess.getOwner());
 			newEditSession.setVersionName(newProcess.getLastVersion());
-			newEditSession.setWithAnnotation(false);
+			newEditSession.setWithAnnotation(true);
+			newEditSession.setAnnotation(Constants.INITIAL_ANNOTATION);
 			int newEditSessionCode = request.WriteEditSession(newEditSession);
 			res.setEditSessionCode(newEditSessionCode);
 
