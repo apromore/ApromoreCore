@@ -22,12 +22,12 @@
     <part name="payload" element="tnsx:DeleteEditSessionOutputMsg">
     </part>
   </message>
-  <message name="EditDataProcessInputMsg">
-    <part name="payload" element="tnsx:EditDataProcessInputMsg">
+  <message name="EditProcessDataInputMsg">
+    <part name="payload" element="tnsx:EditProcessDataInputMsg">
     </part>
   </message>
-  <message name="EditDataProcessOutputMsg">
-    <part name="payload" element="tnsx:EditDataProcessOutputMsg">
+  <message name="EditProcessDataOutputMsg">
+    <part name="payload" element="tnsx:EditProcessDataOutputMsg">
     </part>
   </message>
   <message name="ReadProcessSummariesInputMsg">
@@ -193,10 +193,10 @@
       <output name="DeleteProcessVersionsResponse" message="tns:DeleteProcessVersionsOutputMsg">
     </output>
     </operation>
-    <operation name="EditDataProcess">
-      <input name="EditDataProcessRequest" message="tns:EditDataProcessInputMsg">
+    <operation name="EditProcessData">
+      <input name="EditProcessDataRequest" message="tns:EditProcessDataInputMsg">
     </input>
-      <output name="EditDataProcessResponse" message="tns:EditDataProcessOutputMsg">
+      <output name="EditProcessDataResponse" message="tns:EditProcessDataOutputMsg">
     </output>
     </operation>
   </portType>
@@ -211,12 +211,12 @@
         <soap:body use="literal"/>
       </output>
     </operation>
-    <operation name="EditDataProcess">
+    <operation name="EditProcessData">
       <soap:operation style="document"/>
-      <input name="EditDataProcessRequest">
+      <input name="EditProcessDataRequest">
         <soap:body use="literal"/>
       </input>
-      <output name="EditDataProcessResponse">
+      <output name="EditProcessDataResponse">
         <soap:body use="literal"/>
       </output>
     </operation>
