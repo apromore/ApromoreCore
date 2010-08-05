@@ -6,15 +6,17 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import org.apache.cxf.jaxb.JAXBToStringBuilder;
+import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for EditDataProcessInputMsgType complex type.
+ * <p>Java class for EditProcessDataInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="EditDataProcessInputMsgType">
+ * &lt;complexType name="EditProcessDataInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;attribute name="processName" type="{http://www.w3.org/2001/XMLSchema}string" />
@@ -32,30 +34,30 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "EditDataProcessInputMsgType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-public class EditDataProcessInputMsgType {
+@XmlType(name = "EditProcessDataInputMsgType")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+public class EditProcessDataInputMsgType {
 
-    @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @XmlAttribute(name = "processName")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String processName;
-    @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @XmlAttribute(name = "id")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Integer id;
-    @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @XmlAttribute(name = "domain")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String domain;
-    @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @XmlAttribute(name = "owner")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String owner;
-    @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @XmlAttribute(name = "ranking")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String ranking;
-    @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @XmlAttribute(name = "newName")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String newName;
-    @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @XmlAttribute(name = "preName")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String preName;
 
     /**
@@ -66,7 +68,7 @@ public class EditDataProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getProcessName() {
         return processName;
     }
@@ -79,7 +81,7 @@ public class EditDataProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessName(String value) {
         this.processName = value;
     }
@@ -92,7 +94,7 @@ public class EditDataProcessInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Integer getId() {
         return id;
     }
@@ -105,7 +107,7 @@ public class EditDataProcessInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setId(Integer value) {
         this.id = value;
     }
@@ -118,7 +120,7 @@ public class EditDataProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getDomain() {
         return domain;
     }
@@ -131,7 +133,7 @@ public class EditDataProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setDomain(String value) {
         this.domain = value;
     }
@@ -144,7 +146,7 @@ public class EditDataProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getOwner() {
         return owner;
     }
@@ -157,7 +159,7 @@ public class EditDataProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setOwner(String value) {
         this.owner = value;
     }
@@ -170,7 +172,7 @@ public class EditDataProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getRanking() {
         return ranking;
     }
@@ -183,7 +185,7 @@ public class EditDataProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setRanking(String value) {
         this.ranking = value;
     }
@@ -196,7 +198,7 @@ public class EditDataProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getNewName() {
         return newName;
     }
@@ -209,7 +211,7 @@ public class EditDataProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setNewName(String value) {
         this.newName = value;
     }
@@ -222,7 +224,7 @@ public class EditDataProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getPreName() {
         return preName;
     }
@@ -235,9 +237,20 @@ public class EditDataProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-27T12:08:11+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setPreName(String value) {
         this.preName = value;
+    }
+
+    /**
+     * Generates a String representation of the contents of this type.
+     * This is an extension method, produced by the 'ts' xjc plugin
+     * 
+     */
+    @Override
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:45:29+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public String toString() {
+        return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
 
 }

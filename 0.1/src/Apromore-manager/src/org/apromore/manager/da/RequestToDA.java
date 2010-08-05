@@ -24,7 +24,7 @@ import org.apromore.manager.exception.ExceptionWriteEditSession;
 import org.apromore.manager.exception.ExceptionWriteUser;
 import org.apromore.manager.model_da.DeleteEditSessionInputMsgType;
 import org.apromore.manager.model_da.DeleteProcessVersionsInputMsgType;
-import org.apromore.manager.model_da.EditDataProcessInputMsgType;
+import org.apromore.manager.model_da.EditProcessDataInputMsgType;
 import org.apromore.manager.model_da.ProcessVersionIdentifierType;
 import org.apromore.manager.model_da.ReadAllUsersInputMsgType;
 import org.apromore.manager.model_da.ReadCanonicalAnfInputMsgType;
@@ -70,11 +70,11 @@ public class RequestToDA {
 	 * @param process
 	 * @throws ExceptionUpdateProcess
 	 */
-	public void EditDataProcess (Integer processId, String processName, String domain, String username,
+	public void EditProcessData (Integer processId, String processName, String domain, String username,
 			String preVersion, String newVersion, String ranking) throws ExceptionUpdateProcess {
 
-		org.apromore.manager.model_da.EditDataProcessInputMsgType payload =
-			new EditDataProcessInputMsgType();
+		org.apromore.manager.model_da.EditProcessDataInputMsgType payload =
+			new EditProcessDataInputMsgType();
 
 		payload.setDomain(domain);
 		payload.setProcessName(processName);
@@ -83,7 +83,7 @@ public class RequestToDA {
 		payload.setNewName(newVersion);
 		payload.setPreName(preVersion);
 		payload.setRanking(ranking);
-		org.apromore.manager.model_da.EditDataProcessOutputMsgType res = this.port.editDataProcess(payload);
+		org.apromore.manager.model_da.EditProcessDataOutputMsgType res = this.port.editProcessData(payload);
 		ResultType result = res.getResult();
 		if (result.getCode() == -1) {
 			throw new ExceptionUpdateProcess (result.getMessage()); 
