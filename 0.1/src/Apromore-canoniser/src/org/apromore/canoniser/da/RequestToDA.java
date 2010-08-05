@@ -101,15 +101,13 @@ public class RequestToDA {
 		}
 	}
 
-	public void StoreVersion(int editSessionCode, int processId, String preVersion, String nativeType, String domain, String annotation,
+	public void StoreVersion(int editSessionCode, int processId, String preVersion, String nativeType, 
 			InputStream native_is, InputStream anf_xml_is,
 			InputStream cpf_xml_is) throws IOException, ExceptionStore, ExceptionVersion {
 
 		StoreVersionInputMsgType payload = new StoreVersionInputMsgType();
-		payload.setDomain(domain);
 		payload.setNativeType(nativeType);
 		payload.setProcessId(processId);
-		payload.setAnnotationName(annotation);
 		payload.setPreVersion(preVersion);
 		payload.setEditSessionCode(editSessionCode);
 		DataSource source_proc = new ByteArrayDataSource(native_is, "text/xml"); 

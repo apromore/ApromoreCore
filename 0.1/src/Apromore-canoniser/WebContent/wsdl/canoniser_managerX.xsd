@@ -93,8 +93,6 @@
 		<attribute name="EditSessionCode" type="int" />
 		<attribute name="NativeType" type="string" />
 		<attribute name="ProcessId" type="int" />
-		<attribute name="Domain" type="string" />
-		<attribute name="AnnotationName" type="string" />
 		<attribute name="PreVersion" type="string" />
 	</complexType>
 
