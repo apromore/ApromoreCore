@@ -11,7 +11,7 @@ process purpose.
 				<column width="70%"></column>
 			</columns>
 			<rows>
-				<row>
+				<row tooltiptext="Process name modification will be applied on all process versions.">
 					<label value="Process name*" width="100%"/>
 					<textbox width="100%"/>
 				</row>
@@ -19,11 +19,11 @@ process purpose.
 					<label value="Version name*" width="100%"/>
 					<textbox width="100%" />
 				</row>
-				<row width="100%">
+				<row width="100%"  tooltiptext="Process domain modification will be applied on all process versions.">
 					<label value="Domain" />
 					<!-- combobox implemented in SelectDynamicListController -->
 				</row>
-				<row width="100%">
+				<row width="100%"  tooltiptext="Process owner modification will be applied on all process versions.">
 					<label value="Owner*" />
 					<!-- combobox implemented in SelectDynamicListController -->
 				</row>

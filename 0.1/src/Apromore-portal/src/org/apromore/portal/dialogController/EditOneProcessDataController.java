@@ -22,12 +22,12 @@ import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
 
-public class EditDataOneProcessController {
+public class EditOneProcessDataController {
 
 	private Window editDataWindow;
 
 	private MainController mainC ;
-	private EditDataListProcController editDataListProcessesC;
+	private EditListProcDataController editDataListProcessesC;
 	private Button okB;
 	private Button cancelB;
 	private Button cancelAllB;
@@ -49,12 +49,12 @@ public class EditDataOneProcessController {
 	private SelectDynamicListController ownerCB;
 	private SelectDynamicListController domainCB;
 
-	public EditDataOneProcessController(MainController mainC,
-			EditDataListProcController editDataListProcController,
+	public EditOneProcessDataController(MainController mainC,
+			EditListProcDataController editListProcDataController,
 			ProcessSummaryType process, VersionSummaryType version) 
 	throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
 		this.mainC = mainC;
-		this.editDataListProcessesC = editDataListProcController;
+		this.editDataListProcessesC = editListProcDataController;
 		this.process = process;
 		this.preVersion = version;
 
@@ -158,7 +158,7 @@ public class EditDataOneProcessController {
 					Messagebox.ERROR);
 		} else {
 			RequestToManager request = new RequestToManager();
-			request.EditDataProcesses(processId, processName, domain, username, preVersion, newVersion, ranking);
+			request.EditProcessesData(processId, processName, domain, username, preVersion, newVersion, ranking);
 			this.editDataListProcessesC.getEditedList().add(this);
 			this.editDataListProcessesC.deleteFromToBeEdited(this);
 			closePopup();

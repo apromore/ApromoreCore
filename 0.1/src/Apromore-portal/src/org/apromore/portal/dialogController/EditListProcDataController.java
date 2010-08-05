@@ -12,7 +12,7 @@ import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 
-public class EditDataListProcController {
+public class EditListProcDataController {
 
 	private MainController mainC ;	// the main controller 
 	private MenuController menuC ; 	// the menu controller which called edit feature
@@ -20,12 +20,12 @@ public class EditDataListProcController {
 									// the selected process versions to be edited
 
 	// list of controllers associated with editions still to be done
-	private List<EditDataOneProcessController> toEditList; 
+	private List<EditOneProcessDataController> toEditList; 
 	//list of controllers associated with editions 
-	private List<EditDataOneProcessController> editedList; 
+	private List<EditOneProcessDataController> editedList; 
 		
 
-	public EditDataListProcController(
+	public EditListProcDataController(
 			MainController mainC,
 			MenuController menuController,
 			HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) 
@@ -34,8 +34,8 @@ public class EditDataListProcController {
 		this.menuC = menuController;
 		this.mainC = mainC;
 		this.processVersions = selectedProcessVersions;
-		this.toEditList = new ArrayList<EditDataOneProcessController>();
-		this.editedList = new ArrayList<EditDataOneProcessController>();
+		this.toEditList = new ArrayList<EditOneProcessDataController>();
+		this.editedList = new ArrayList<EditOneProcessDataController>();
 
 		// process versions are edited one by one
 		Set<ProcessSummaryType> keys = this.processVersions.keySet();
@@ -44,8 +44,8 @@ public class EditDataListProcController {
 			ProcessSummaryType process = it.next();
 			for (Integer i=0; i<this.processVersions.get(process).size();i++) {
 				VersionSummaryType version = this.processVersions.get(process).get(i);
-				EditDataOneProcessController editDataOneProcess = 
-					new EditDataOneProcessController(this.mainC, this, process, version);
+				EditOneProcessDataController editDataOneProcess = 
+					new EditOneProcessDataController(this.mainC, this, process, version);
 				this.toEditList.add(editDataOneProcess);
 			}
 		}
@@ -53,11 +53,11 @@ public class EditDataListProcController {
 
 	/**
 	 * Return list of controllers associated with process versions already edited
-	 * @return List<EditDataOneProcessController>
+	 * @return List<EditOneProcessDataController>
 	 */
-	public List<EditDataOneProcessController> getEditedList() {
+	public List<EditOneProcessDataController> getEditedList() {
 		if (editedList == null) {
-			editedList = new ArrayList<EditDataOneProcessController>();
+			editedList = new ArrayList<EditOneProcessDataController>();
 		}
 		return this.editedList;
 	}
@@ -66,9 +66,9 @@ public class EditDataListProcController {
 	 * Return list of controllers associated with process versions still to be edited
 	 * @return
 	 */
-	public List<EditDataOneProcessController> getToEditList() {
+	public List<EditOneProcessDataController> getToEditList() {
 		if (toEditList == null) {
-			toEditList = new ArrayList<EditDataOneProcessController>();
+			toEditList = new ArrayList<EditOneProcessDataController>();
 		}
 		return toEditList;
 	}
@@ -79,7 +79,7 @@ public class EditDataListProcController {
 	 * @param editOneProcess
 	 * @throws Exception
 	 */
-	public void deleteFromToBeEdited(EditDataOneProcessController editOneProcess) throws Exception {
+	public void deleteFromToBeEdited(EditOneProcessDataController editOneProcess) throws Exception {
 		this.toEditList.remove(editOneProcess);
 		if (this.toEditList.size()==0) {
 			reportEditData();
