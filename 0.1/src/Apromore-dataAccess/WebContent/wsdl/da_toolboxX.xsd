@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+	targetNamespace="http://www.apromore.org/data_access/model_toolbox"
+	xmlns:tns="http://www.apromore.org/data_access/model_toolbox">
+
+	<element name="ReadCanonicalsInputMsg" type="tns:ReadCanonicalsInputMsgType" />
+	<element name="ReadCanonicalsOutputMsg" type="tns:ReadCanonicalsOutputMsgType" />
+	<element name="StoreCpfInputMsg" type="tns:StoreCpfInputMsgType" />
+	<element name="StoreCpfOutputMsg" type="tns:StoreCpfOutputMsgType" />
+
+	<complexType name="ResultType">
+		<attribute name="message" type="string" />
+		<attribute name="code" type="int" />
+	</complexType>
+
+	<complexType name="ReadCanonicalsInputMsgType">
+		<sequence>
+			<element name="Cpf_ids" type="tns:Cpf_idsType" />
+		</sequence>
+	</complexType>
+
+	<complexType name="Cpf_idsType">
+		<sequence>
+			<element minOccurs="1" maxOccurs="unbounded" name="Cpf_id"
+				type="tns:Cpf_idType" />
+		</sequence>
+	</complexType>
+
+	<complexType name="Cpf_idType">
+		<attribute name="ProcessId" type="int" />
+		<attribute name="VersionName" type="string" />
+	</complexType>
+
+	<complexType name="ReadCanonicalsOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+			<element name="Canonicals" type="tns:CanonicalsType" />
+		</sequence>
+	</complexType>
+
+	<complexType name="CanonicalsType">
+		<sequence>
+			<element name="Canonical" type="tns:CanonicalType" minOccurs="1" maxOccurs="unbounded"/>
+		</sequence>
+	</complexType>
+	
+	<complexType name="CanonicalType">
+		<sequence>
+			<element name="ProcessId" type="int" />
+			<element name="VersionName" type="string" />
+			<element name="Cpf" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+		</sequence>
+	</complexType>
+
+	<complexType name="StoreCpfInputMsgType">
+		<sequence>
+			<element name="processName" type="string" />
+			<element name="version" type="string" />
+			<element name="username" type="string" />
+			<element name="Cpf" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+		</sequence>
+	</complexType>
+
+	<complexType name="StoreCpfOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+			<element name="ProcessSummary" type="tns:ProcessSummaryType"
+				minOccurs="0" maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+
+	<complexType name="ProcessSummaryType">
+		<sequence>
+			<element minOccurs="1" maxOccurs="unbounded" name="VersionSummaries"
+				type="tns:VersionSummaryType" />
+		</sequence>
+		<attribute name="original_native_type" type="string" />
+		<attribute name="name" type="string" />
+		<attribute name="id" type="int" />
+		<attribute name="domain" type="string" />
+		<attribute name="ranking" type="string" />
+		<attribute name="last_version" type="string" />
+		<attribute name="owner" type="string" />
+	</complexType>
+
+	<complexType name="VersionSummaryType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="Annotations"
+				type="string" />
+		</sequence>
+		<attribute name="ranking" type="string" />
+		<attribute name="name" type="string" />
+		<attribute name="documentation" type="string" />
+		<attribute name="last_update" type="string" />
+		<attribute name="creation_date" type="string" />
+	</complexType>
+
+</schema>

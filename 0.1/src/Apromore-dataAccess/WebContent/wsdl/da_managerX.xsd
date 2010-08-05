@@ -5,8 +5,8 @@
 
 	<element name="ReadProcessSummariesInputMsg" type="tns:ReadProcessSummariesInputMsgType" />
 	<element name="ReadProcessSummariesOutputMsg" type="tns:ReadProcessSummariesOutputMsgType" />
-	<element name="EditDataProcessInputMsg" type="tns:EditDataProcessInputMsgType" />
-	<element name="EditDataProcessOutputMsg" type="tns:EditDataProcessOutputMsgType" />
+	<element name="EditProcessDataInputMsg" type="tns:EditProcessDataInputMsgType" />
+	<element name="EditProcessDataOutputMsg" type="tns:EditProcessDataOutputMsgType" />
 	<element name="ReadDomainsInputMsg" type="tns:ReadDomainsInputMsgType" />
 	<element name="ReadDomainsOutputMsg" type="tns:ReadDomainsOutputMsgType" />
 	<element name="ReadNativeTypesInputMsg" type="tns:ReadNativeTypesInputMsgType" />
@@ -78,14 +78,14 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="EditDataProcessOutputMsgType">
+	<complexType name="EditProcessDataOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" minOccurs="1"
 				maxOccurs="1" />
 		</sequence>
 	</complexType>
 
-	<complexType name="EditDataProcessInputMsgType">
+	<complexType name="EditProcessDataInputMsgType">
 		<attribute name="processName" type="string" />
 		<attribute name="id" type="int" />
 		<attribute name="domain" type="string" />
