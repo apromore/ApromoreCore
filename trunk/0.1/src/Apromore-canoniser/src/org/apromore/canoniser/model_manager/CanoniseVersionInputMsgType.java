@@ -9,6 +9,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlType;
+import org.apache.cxf.jaxb.JAXBToStringBuilder;
+import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
@@ -26,8 +28,6 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;attribute name="EditSessionCode" type="{http://www.w3.org/2001/XMLSchema}int" />
  *       &lt;attribute name="NativeType" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="ProcessId" type="{http://www.w3.org/2001/XMLSchema}int" />
- *       &lt;attribute name="Domain" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="AnnotationName" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="PreVersion" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -40,30 +40,24 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "CanoniseVersionInputMsgType", propOrder = {
     "_native"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class CanoniseVersionInputMsgType {
 
     @XmlElement(name = "Native", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected DataHandler _native;
     @XmlAttribute(name = "EditSessionCode")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Integer editSessionCode;
     @XmlAttribute(name = "NativeType")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String nativeType;
     @XmlAttribute(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Integer processId;
-    @XmlAttribute(name = "Domain")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String domain;
-    @XmlAttribute(name = "AnnotationName")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    protected String annotationName;
     @XmlAttribute(name = "PreVersion")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String preVersion;
 
     /**
@@ -74,7 +68,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public DataHandler getNative() {
         return _native;
     }
@@ -87,7 +81,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setNative(DataHandler value) {
         this._native = value;
     }
@@ -100,7 +94,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Integer getEditSessionCode() {
         return editSessionCode;
     }
@@ -113,7 +107,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setEditSessionCode(Integer value) {
         this.editSessionCode = value;
     }
@@ -126,7 +120,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getNativeType() {
         return nativeType;
     }
@@ -139,7 +133,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setNativeType(String value) {
         this.nativeType = value;
     }
@@ -152,7 +146,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Integer getProcessId() {
         return processId;
     }
@@ -165,61 +159,9 @@ public class CanoniseVersionInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessId(Integer value) {
         this.processId = value;
-    }
-
-    /**
-     * Gets the value of the domain property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getDomain() {
-        return domain;
-    }
-
-    /**
-     * Sets the value of the domain property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setDomain(String value) {
-        this.domain = value;
-    }
-
-    /**
-     * Gets the value of the annotationName property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public String getAnnotationName() {
-        return annotationName;
-    }
-
-    /**
-     * Sets the value of the annotationName property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
-    public void setAnnotationName(String value) {
-        this.annotationName = value;
     }
 
     /**
@@ -230,7 +172,7 @@ public class CanoniseVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getPreVersion() {
         return preVersion;
     }
@@ -243,9 +185,20 @@ public class CanoniseVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:22:19+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setPreVersion(String value) {
         this.preVersion = value;
+    }
+
+    /**
+     * Generates a String representation of the contents of this type.
+     * This is an extension method, produced by the 'ts' xjc plugin
+     * 
+     */
+    @Override
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public String toString() {
+        return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
 
 }

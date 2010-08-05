@@ -6,6 +6,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import org.apache.cxf.jaxb.JAXBToStringBuilder;
+import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
@@ -28,14 +30,14 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ResultType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:43:35+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T06:06:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ResultType {
 
-    @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:43:35+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @XmlAttribute(name = "message")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T06:06:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String message;
-    @XmlAttribute
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:43:35+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @XmlAttribute(name = "code")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T06:06:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Integer code;
 
     /**
@@ -46,7 +48,7 @@ public class ResultType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:43:35+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T06:06:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getMessage() {
         return message;
     }
@@ -59,7 +61,7 @@ public class ResultType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:43:35+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T06:06:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setMessage(String value) {
         this.message = value;
     }
@@ -72,7 +74,7 @@ public class ResultType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:43:35+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T06:06:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Integer getCode() {
         return code;
     }
@@ -85,9 +87,20 @@ public class ResultType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-07-26T02:43:35+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-833")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T06:06:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setCode(Integer value) {
         this.code = value;
+    }
+
+    /**
+     * Generates a String representation of the contents of this type.
+     * This is an extension method, produced by the 'ts' xjc plugin
+     * 
+     */
+    @Override
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T06:06:52+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public String toString() {
+        return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
 
 }
