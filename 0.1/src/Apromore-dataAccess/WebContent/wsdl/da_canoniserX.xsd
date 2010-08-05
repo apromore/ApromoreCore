@@ -61,7 +61,6 @@
 		<attribute name="owner" type="string" />
 	</complexType>
 
-
 	<complexType name="VersionSummaryType">
 		<sequence>
 			<element minOccurs="0" maxOccurs="unbounded" name="Annotations"
@@ -103,8 +102,6 @@
 		<attribute name="ProcessId" type="int" />
 		<attribute name="PreVersion" type="string" />
 		<attribute name="NativeType" type="string" />
-		<attribute name="Domain" type="string" />
-		<attribute name="AnnotationName" type="string" />
 	</complexType>
 	<complexType name="StoreVersionOutputMsgType">
 		<sequence>

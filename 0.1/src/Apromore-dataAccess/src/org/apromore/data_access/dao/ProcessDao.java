@@ -592,7 +592,7 @@ public class ProcessDao extends BasicDao {
 			}
 		}
 		if (processName!=null) pkg.setName(processName);
-		if (processId!=null) pkg.setId(processId.toString());
+		if (processId!=null) pkg.setId(processId.toString() + "-" + version);
 		if (version!=null) pkg.getRedefinableHeader().getVersion().setValue(version);
 		if (username!=null) pkg.getRedefinableHeader().getAuthor().setValue(username);
 		if (creationDate!=null)	pkg.getPackageHeader().getCreated().setValue(creationDate);
@@ -709,7 +709,7 @@ public class ProcessDao extends BasicDao {
 			if (rs.next()) {
 				return rs.getString(1);
 			} else {
-				throw new ExceptionDao ("SQL error:: canonical not found.");
+				throw new ExceptionDao ("Canonical not found.");
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
@@ -856,7 +856,7 @@ public class ProcessDao extends BasicDao {
 	 * @throws ExceptionStoreVersion 
 	 * @throws ExceptionSyncNPF 
 	 */
-	public void storeVersion (int editSessionCode, Integer processId, String preVersion, String nativeType, String annotation,
+	public void storeVersion (int editSessionCode, Integer processId, String preVersion, String nativeType, 
 			InputStream npf_is, InputStream cpf_is,
 			InputStream apf_is) throws ExceptionDao, SQLException, ExceptionStoreVersion, ExceptionSyncNPF {
 		Connection conn = null;
@@ -918,7 +918,7 @@ public class ProcessDao extends BasicDao {
 				// if preVersion != newVersion: try to derive newVersion from preVersion
 				creationDate = now();
 				deriveVersion (processId, preVersion, newVersion, nativeType, npf_string, cpf_string, apf_string,
-						editSessionCode, creationDate, lastUpdate, annotation, documentation);
+						editSessionCode, creationDate, lastUpdate, documentation);
 				npf_is.reset();
 				copyParam2NPF(npf_is, nativeType, processId, processName, newVersion, username, creationDate, lastUpdate, documentation);
 			} else {
@@ -934,7 +934,7 @@ public class ProcessDao extends BasicDao {
 					throw new ExceptionStoreVersion ("Version " + preVersion + " cannot be overridden.");
 				} else {
 					overrideVersion (processId, preVersion, nativeType, npf_string, cpf_string, apf_string,
-							creationDate, lastUpdate, annotation, documentation);
+							creationDate, lastUpdate, documentation);
 					npf_is.reset();
 					copyParam2NPF(npf_is, nativeType, processId, processName, preVersion, username, creationDate, lastUpdate, documentation);
 				}
@@ -993,7 +993,7 @@ public class ProcessDao extends BasicDao {
 	private void overrideVersion(int processId, String versionName,
 			String nativeType, String npf_string, String cpf_string,
 			String apf_string, String creationDate,
-			String lastUpdate, String annotation, String documentation) throws ExceptionDao, SQLException {
+			String lastUpdate, String documentation) throws ExceptionDao, SQLException {
 
 		Connection conn = null;
 		Statement stmt = null;
@@ -1080,7 +1080,7 @@ public class ProcessDao extends BasicDao {
 			stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmtp.setInt(1, nat_uri);
 			stmtp.setInt(2, cpf_uri);
-			stmtp.setString (3, annotation);
+			stmtp.setString (3, Constants.INITIAL_ANNOTATION);
 			stmtp.setString (4, apf_string);
 			stmtp.executeUpdate();
 			stmtp.close();
@@ -1121,12 +1121,13 @@ public class ProcessDao extends BasicDao {
 	private void deriveVersion(int processId, String preVersion,
 			String newVersion, String nativeType, String npf_string, String cpf_string,
 			String apf_string, int editSessionCode, String creationDate,
-			String lastUpdate, String annotation, String documentation) throws ExceptionDao, SQLException, ExceptionStoreVersion {
+			String lastUpdate, String documentation) throws ExceptionDao, SQLException, ExceptionStoreVersion {
 		Connection conn = null, conn1 = null;
 		Statement stmt0 = null, stmt1 = null;
 		PreparedStatement stmtp = null;
 		ResultSet rs0 = null, rs1 = null ;
 		String query = null;
+		String annotation = Constants.INITIAL_ANNOTATION;
 		try {
 			conn = this.getConnection();
 			// does newVersion already exist?
@@ -1339,7 +1340,7 @@ public class ProcessDao extends BasicDao {
 				ByteArrayInputStream cpf_is = new ByteArrayInputStream(cpf.getBytes());
 				ByteArrayInputStream apf_is = new ByteArrayInputStream(apf.getBytes());
 				ByteArrayInputStream npf_is = new ByteArrayInputStream(npf.getBytes());
-				storeVersion(editSessionCode, processId, newVersion, nativeType, annotation, npf_is, cpf_is, apf_is);
+				storeVersion(editSessionCode, processId, newVersion, nativeType, npf_is, cpf_is, apf_is);
 			} 
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1613,6 +1614,18 @@ public class ProcessDao extends BasicDao {
 		} finally {
 			Release(conn, stmtp, null);
 		}
+	}
+
+	/**
+	 * 
+	 * @param processName
+	 * @param versionName
+	 * @param username
+	 * @param cpf_is
+	 */
+	public void storeCpf(String processName, String versionName,
+			String username, InputStream cpf_is) {
+		// TODO
 	}
 }
 
