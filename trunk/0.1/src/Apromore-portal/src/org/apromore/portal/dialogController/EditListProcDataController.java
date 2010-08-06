@@ -102,7 +102,7 @@ public class EditListProcDataController {
 			} else if (this.editedList.size()>1) {
 				report +=  " processes completed.";
 			};
-			this.mainC.refreshProcessSummaries();
+			this.mainC.reloadProcessSummaries();
 		}
 		this.mainC.displayMessage(report);
 	}
