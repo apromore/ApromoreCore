@@ -9,8 +9,11 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import javax.xml.bind.JAXBException;
+
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionAllUsers;
+import org.apromore.portal.exception.ExceptionDao;
 import org.apromore.portal.exception.ExceptionDeleteProcess;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
@@ -132,7 +135,7 @@ public class MainController extends Window {
 		}
 	}
 
-	public void refreshProcessSummaries () throws Exception {
+	public void reloadProcessSummaries () throws Exception {
 		RequestToManager request = new RequestToManager();
 		ProcessSummariesType processSummaries = request.ReadProcessSummariesType("");
 		String message = null;
@@ -172,9 +175,14 @@ public class MainController extends Window {
 	 * Send request to Manager: deleted process versions given as parameter
 	 * @param processVersions
 	 * @throws InterruptedException 
+	 * @throws JAXBException 
+	 * @throws ExceptionDao 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
 	 */
 	public void deleteProcessVersions(
-			HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws InterruptedException {
+			HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException, ExceptionDao, JAXBException {
 		RequestToManager request = new RequestToManager();
 		try {
 			request.DeleteProcessVersions (processVersions);

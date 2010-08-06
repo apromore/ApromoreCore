@@ -109,7 +109,7 @@ public class HeaderController extends Window {
 		this.mainC.setCurrentUser(null);
 		this.mainC.updateActions();
 		this.mainC.resetUserInformation();
-		this.mainC.refreshProcessSummaries();
+		this.mainC.reloadProcessSummaries();
 		
 	}
 	/**

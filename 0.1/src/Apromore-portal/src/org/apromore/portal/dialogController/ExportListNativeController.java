@@ -72,7 +72,7 @@ public class ExportListNativeController {
 			} else if (this.exportedList.size()>1) {
 				report +=  " processes completed.";
 			};
-			this.mainC.refreshProcessSummaries();
+			this.mainC.reloadProcessSummaries();
 		}
 		this.mainC.displayMessage(report);
 	}

@@ -165,7 +165,14 @@ public class ProcessTableController {
 		this.refreshB.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
-				refresh ();
+				reloadData ();
+			}
+		});	
+
+		this.processSummariesGrid.addEventListener("onSort",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				refresh();
 			}
 		});	
 		/**
@@ -179,11 +186,12 @@ public class ProcessTableController {
 		displayProcessSummaries (processSummaries);
 	}
 
-	protected void refresh() throws Exception {
-		this.mainC.refreshProcessSummaries();		
+	protected void reloadData() throws Exception {
+		this.mainC.reloadProcessSummaries();		
 	}
 
-	protected void unselectAll() throws Exception {
+
+	protected void unselectAll() throws ClassNotFoundException, InstantiationException, IllegalAccessException, ExceptionDao, JAXBException {
 		List<Row> processSummariesRs = this.processSummariesRows.getChildren();
 		for (int i=0; i<processSummariesRs.size();i++){
 			Row processSummaryR = processSummariesRs.get(i);
@@ -194,8 +202,7 @@ public class ProcessTableController {
 		}
 	}
 
-	protected void selectAll() throws NumberFormatException, InterruptedException, ExceptionDao, 
-	JAXBException, ClassNotFoundException, InstantiationException, IllegalAccessException, ParseException {
+	protected void selectAll() throws ClassNotFoundException, InstantiationException, IllegalAccessException, ExceptionDao, JAXBException {
 		List<Row> processSummariesRs = this.processSummariesRows.getChildren();
 		for (int i=0; i<processSummariesRs.size();i++){
 			Row processSummaryR = processSummariesRs.get(i);
@@ -427,8 +434,13 @@ public class ProcessTableController {
 	/**
 	 * remove from the table displayed the process versions processVersions
 	 * @param processVersions
+	 * @throws JAXBException 
+	 * @throws ExceptionDao 
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
 	 */
-	public void unDisplay(HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) {
+	public void unDisplay(HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws ClassNotFoundException, InstantiationException, IllegalAccessException, ExceptionDao, JAXBException {
 		// Update the table
 		Set<ProcessSummaryType> keySet = processVersions.keySet();
 		Iterator<ProcessSummaryType> it = keySet.iterator();
@@ -473,7 +485,7 @@ public class ProcessTableController {
 				latest.setValue(this.processVersionsHM.get(lastVersionCB).getName());
 			}
 		}
-
+		refresh();
 	}
 
 	/**
@@ -714,15 +726,11 @@ public class ProcessTableController {
 	 */
 	protected void reverseProcessSelection (Integer index) throws ClassNotFoundException, InstantiationException, 
 	IllegalAccessException, ExceptionDao, JAXBException {	
-
 		Row processSummaryR = (Row) this.processSummariesRows.getChildren().get(index); // row for process
 		Label latestVersionL = (Label) processSummaryR.getChildren().get(this.latestVersionPos); // process latest version
 		String latestVersion = latestVersionL.getValue();
 		Detail processSummaryD = (Detail) processSummaryR.getFirstChild();	// detail for process
-
 		Checkbox cbP = (Checkbox) processSummaryR.getChildren().get(1); // checkbox for process
-		ProcessSummaryType processSummaryT = this.processHM.get(cbP);
-
 		if (cbP.isChecked()) {
 			// process was selected
 			// unselect all selected version(s)
@@ -734,13 +742,10 @@ public class ProcessTableController {
 			for (int i=0;i<versionR.size();i++) {
 				Checkbox cbV = (Checkbox) versionR.get(i).getFirstChild();
 				cbV.setChecked(false);
-				highlightV(versionR.get(i), false);	
-				VersionSummaryType versionSummaryT = this.processVersionsHM.get(cbV);
+				highlightV(versionR.get(i), false);
 			}
-
 		} else {
 			// process was not selected
-
 			if (processSummaryD.getChildren().size() == 0){
 				// detail needs to be built
 				displayVersionsSummaries (processSummaryD);
@@ -763,15 +768,39 @@ public class ProcessTableController {
 				// must be true!
 				Checkbox cbV = (Checkbox) versionR.get(i).getFirstChild();
 				cbV.setChecked(true);
-				highlightV(versionR.get(i), true);	
-				VersionSummaryType versionSummaryT = this.processVersionsHM.get(cbV);
+				highlightV(versionR.get(i), true);
 			}
-
 		}
 		cbP.setChecked(!cbP.isChecked());
 		highlightP (processSummaryR,cbP.isChecked());
 	}
 
+	/**
+	 * refresh the display without reloading the data. Keeps selection if any.
+	 * @throws ClassNotFoundException
+	 * @throws InstantiationException
+	 * @throws IllegalAccessException
+	 * @throws ExceptionDao
+	 * @throws JAXBException
+	 */
+	protected void refresh() throws ClassNotFoundException, InstantiationException, IllegalAccessException, ExceptionDao, JAXBException {
+		List<Row> processSummariesRs = this.processSummariesRows.getChildren();
+		for (int i=0; i<processSummariesRs.size();i++){
+			Row processSummaryR = processSummariesRs.get(i);
+			Checkbox cbP = (Checkbox) processSummaryR.getChildren().get(1); // checkbox for process
+			Detail processSummaryD = (Detail) processSummaryR.getFirstChild();	// detail for process
+			Grid versionsG = (Grid) processSummaryD.getFirstChild(); // grid for process versions, might not exist!
+			if (versionsG!=null){
+				Rows versionsR = (Rows) versionsG.getChildren().get(1); // rows for process versions
+				List<Row> versionR = versionsR.getChildren();
+				for (int j=0;j<versionR.size();j++) {
+					Checkbox cbV = (Checkbox) versionR.get(j).getFirstChild();
+					highlightV(versionR.get(j), cbV.isChecked());
+				}
+			}
+			highlightP (processSummaryR,cbP.isChecked());
+		}
+	}
 	private void ColorFont(HtmlBasedComponent v, String color) {
 		Iterator<HtmlBasedComponent> itV = v.getChildren().iterator();
 		while (itV.hasNext()) {

@@ -76,7 +76,7 @@ public class EditListProcessesController extends Window {
 			} else if (this.editedList.size()>1) {
 				report +=  " processes completed.";
 			};
-			this.mainC.refreshProcessSummaries();
+			this.mainC.reloadProcessSummaries();
 		}
 		this.mainC.displayMessage(report);
 	}
