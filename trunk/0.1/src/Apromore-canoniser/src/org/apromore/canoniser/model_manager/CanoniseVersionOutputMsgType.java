@@ -33,11 +33,11 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 @XmlType(name = "CanoniseVersionOutputMsgType", propOrder = {
     "result"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-06T10:33:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class CanoniseVersionOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-06T10:33:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ResultType result;
 
     /**
@@ -48,7 +48,7 @@ public class CanoniseVersionOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-06T10:33:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ResultType getResult() {
         return result;
     }
@@ -61,7 +61,7 @@ public class CanoniseVersionOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-06T10:33:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -72,7 +72,7 @@ public class CanoniseVersionOutputMsgType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:52:45+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-06T10:33:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
