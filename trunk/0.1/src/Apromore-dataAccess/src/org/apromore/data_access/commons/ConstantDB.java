@@ -4,7 +4,9 @@ package org.apromore.data_access.commons;
 public final class ConstantDB {
 	public static final String CONTEXT = "java:comp/env/jdbc/ApromoreDB";
 
-	public static final String TABLE_VERSIONS = "process_versions";
+	public static final String TABLE_CANONICALS = "canonicals";
+	public static final String TABLE_ANNOTATIONS = "annotations";
+	public static final String ATTR_NATIVE = "native";
 	public static final String ATTR_PROCESSID = "processId";
 	public static final String ATTR_VERSION_NAME = "version_name";
 	public static final String ATTR_CREATION_DATE = "creation_date";
@@ -25,9 +27,6 @@ public final class ConstantDB {
 	public static final String ATTR_NAT_TYPE = "nat_type";
 	public static final String ATTR_ANNOTATION = "annotation";
 
-	public static final String TABLE_CANONICALS = "canonicals";
-	public static final String TABLE_ANNOTATIONS = "annotations";
-	public static final String ATTR_NATIVE = "native";
 	
 	public static final String TABLE_NATIVE_TYPES = "native_types";
 	public static final String ATTR_EXTENSION = "extension";

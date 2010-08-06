@@ -12,7 +12,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -112,13 +115,14 @@ public class ProcessDao extends BasicDao {
 			 * latest version name (the latest version is the one associated by the more
 			 * recent creation date.
 			 */
-			query = "SELECT " + ConstantDB.ATTR_PROCESSID + "," 
+			query = "SELECT distinct " + ConstantDB.ATTR_PROCESSID + "," 
 			+             ConstantDB.ATTR_NAME + ", "
 			+             ConstantDB.ATTR_DOMAIN + "," 
 			+             ConstantDB.ATTR_ORIGINAL_TYPE + ","
 			+     " coalesce(R." + ConstantDB.ATTR_RANKING  + ",''),"
 			+             ConstantDB.ATTR_OWNER
-			+     " FROM " + ConstantDB.TABLE_PROCESSES + " P "
+			+     " FROM " + ConstantDB.TABLE_PROCESSES
+			+     " natural join " + ConstantDB.TABLE_CANONICALS + " C "
 			+     "    join " + ConstantDB.VIEW_PROCESS_RANKING + " R using (" + ConstantDB.ATTR_PROCESSID + ")" ;
 
 			if (condition.compareTo("")!=0) {
@@ -146,7 +150,7 @@ public class ProcessDao extends BasicDao {
 				+ ConstantDB.ATTR_LAST_UPDATE + ", "
 				+ " coalesce(" + ConstantDB.ATTR_RANKING + ",''),"
 				+ ConstantDB.ATTR_DOCUMENTATION
-				+ " from " + ConstantDB.TABLE_VERSIONS 
+				+ " from " + ConstantDB.TABLE_CANONICALS
 				+ " where  " + ConstantDB.ATTR_PROCESSID + " = " + processId 
 				+ " order by  " + ConstantDB.ATTR_CREATION_DATE ;
 				rsV = stmtV.executeQuery(requeteV);
@@ -350,7 +354,7 @@ public class ProcessDao extends BasicDao {
 			if (!keys.next()) {
 				throw new ExceptionDao ("Error: cannot retrieve generated key.");
 			}
-			int processId = keys.getInt(1);
+			Integer processId = keys.getInt(1);
 			keys.close(); stmtp.close();
 
 			// Store informations given as parameters in NPF
@@ -360,46 +364,37 @@ public class ProcessDao extends BasicDao {
 			}
 			if (lastUpdate==null) lastUpdate="";
 			if (documentation==null) documentation="";
-
+			// generate an uri for the process version
+			DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmS");
+	        Date date = new Date();
+			String time = dateFormat.format(date);
+			String cpf_uri = processId.toString() + version.replaceAll("\\.", "") + time;
 			// copy parameters values in npf 
-			InputStream sync_npf = copyParam2NPF(process_xml, nativeType, processId, processName, version,
+			InputStream sync_npf = copyParam2NPF(process_xml, nativeType, cpf_uri, processName, version,
 					username, creationDate, lastUpdate, documentation);
 			String process_string = inputStream2String(sync_npf).trim();
 			String cpf_string = inputStream2String(cpf_xml).trim();
 			String anf_string = inputStream2String(anf_xml).trim();
-
-			query = " insert into " + ConstantDB.TABLE_VERSIONS
-			+ "(" + ConstantDB.ATTR_PROCESSID + ","
+			query = " insert into " + ConstantDB.TABLE_CANONICALS
+			+ "(" + ConstantDB.ATTR_URI + ","
+			+     ConstantDB.ATTR_PROCESSID + ","
 			+     ConstantDB.ATTR_VERSION_NAME + ","
 			+     ConstantDB.ATTR_CREATION_DATE + ","
 			+     ConstantDB.ATTR_LAST_UPDATE + ","
+			+     ConstantDB.ATTR_CONTENT + "," 
 			+	  ConstantDB.ATTR_DOCUMENTATION + ")"
-			+ " values (?, ?, ?, ?, ?) ";
+			+ " values (?, ?, ?, ?, ?, ?, ?) ";
 			//+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%s'), str_to_date(?,), ?, ?) ";
 			stmtp = conn.prepareStatement(query);
-			stmtp.setInt(1, processId);
-			stmtp.setString(2, version);
-			stmtp.setString(3,creationDate);
-			stmtp.setString(4,lastUpdate);
-			stmtp.setString(5, documentation);
+			stmtp.setString(1, cpf_uri);
+			stmtp.setInt(2, processId);
+			stmtp.setString(3, version);
+			stmtp.setString(4,creationDate);
+			stmtp.setString(5,lastUpdate);
+			stmtp.setString(6, cpf_string);
+			stmtp.setString(7, documentation);
 			Integer rs2 = stmtp.executeUpdate();
 
-			query = " insert into " + ConstantDB.TABLE_CANONICALS
-			+ "(" + ConstantDB.ATTR_PROCESSID + "," 
-			+ ConstantDB.ATTR_VERSION_NAME + "," 
-			+ ConstantDB.ATTR_CONTENT + ")"
-			+ " values (?,?,?) ";
-			stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-			stmtp.setInt(1, processId);
-			stmtp.setString(2, version);
-			stmtp.setString(3, cpf_string);
-			int rs3 = stmtp.executeUpdate();
-			keys = stmtp.getGeneratedKeys() ;
-			if (!keys.next()) {
-				throw new ExceptionDao ("Error: cannot retrieve CPF id.");
-			}
-			int cpfId = keys.getInt(1);
-			stmtp.close(); keys.close();
 
 			query = " insert into " + ConstantDB.TABLE_NATIVES
 			+ "(" + ConstantDB.ATTR_CONTENT + ","
@@ -409,7 +404,7 @@ public class ProcessDao extends BasicDao {
 			stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmtp.setString(1, process_string);
 			stmtp.setString(2, nativeType);
-			stmtp.setInt(3, cpfId);
+			stmtp.setString(3, cpf_uri);
 			Integer rs6 = stmtp.executeUpdate();
 			keys = stmtp.getGeneratedKeys() ;
 			if (!keys.next()) {
@@ -426,7 +421,7 @@ public class ProcessDao extends BasicDao {
 			+ " values (?,?,?,?) ";
 			stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmtp.setInt(1, natId);
-			stmtp.setInt(2, cpfId);
+			stmtp.setString(2, cpf_uri);
 			stmtp.setString (3, annotationName);
 			stmtp.setString (4, anf_string);
 			stmtp.executeUpdate();
@@ -499,7 +494,7 @@ public class ProcessDao extends BasicDao {
 	 * @throws JAXBException 
 	 */
 	private InputStream copyParam2NPF(InputStream process_xml,
-			String nativeType, Integer processId, String processName,
+			String nativeType, String cpf_uri, String processName,
 			String version, String username, String creationDate,
 			String lastUpdate, String documentation) throws JAXBException {
 
@@ -509,7 +504,7 @@ public class ProcessDao extends BasicDao {
 			Unmarshaller u = jc.createUnmarshaller();
 			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
 			PackageType pkg = rootElement.getValue();
-			copyParam2xpdl (pkg, processId, processName, version, username, creationDate, lastUpdate, documentation);
+			copyParam2xpdl (pkg, cpf_uri, processName, version, username, creationDate, lastUpdate, documentation);
 
 			Marshaller m = jc.createMarshaller();
 			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
@@ -547,7 +542,7 @@ public class ProcessDao extends BasicDao {
 	 * @param documentation
 	 * @return
 	 */
-	private void copyParam2xpdl(PackageType pkg, Integer processId,
+	private void copyParam2xpdl(PackageType pkg, String cpf_uri,
 			String processName, String version, String username,
 			String creationDate, String lastUpdate, String documentation) {
 
@@ -592,7 +587,7 @@ public class ProcessDao extends BasicDao {
 			}
 		}
 		if (processName!=null) pkg.setName(processName);
-		if (processId!=null) pkg.setId(processId.toString() + "-" + version);
+		if (cpf_uri!=null) pkg.setId(cpf_uri);
 		if (version!=null) pkg.getRedefinableHeader().getVersion().setValue(version);
 		if (username!=null) pkg.getRedefinableHeader().getAuthor().setValue(username);
 		if (creationDate!=null)	pkg.getPackageHeader().getCreated().setValue(creationDate);
@@ -870,6 +865,7 @@ public class ProcessDao extends BasicDao {
 			String documentation = null;
 			String username = null;
 			String processName = null;
+			String cpf_uri = null;
 			conn = this.getConnection();
 
 			// read the 4 data above from native_is
@@ -884,6 +880,7 @@ public class ProcessDao extends BasicDao {
 					processName = pkg.getName();
 					newVersion = pkg.getRedefinableHeader().getVersion().getValue().trim();
 					creationDate = pkg.getPackageHeader().getCreated().getValue().trim();
+					cpf_uri = pkg.getId();
 					if (pkg.getPackageHeader().getModificationDate()!=null) {
 						lastUpdate = pkg.getPackageHeader().getModificationDate().getValue().trim();
 					} else {
@@ -920,7 +917,7 @@ public class ProcessDao extends BasicDao {
 				deriveVersion (processId, preVersion, newVersion, nativeType, npf_string, cpf_string, apf_string,
 						editSessionCode, creationDate, lastUpdate, documentation);
 				npf_is.reset();
-				copyParam2NPF(npf_is, nativeType, processId, processName, newVersion, username, creationDate, lastUpdate, documentation);
+				copyParam2NPF(npf_is, nativeType, cpf_uri, processName, newVersion, username, creationDate, lastUpdate, documentation);
 			} else {
 				// if preVersion = newVersion
 				// check whether preVersion is leaf in the derivation tree
@@ -936,7 +933,7 @@ public class ProcessDao extends BasicDao {
 					overrideVersion (processId, preVersion, nativeType, npf_string, cpf_string, apf_string,
 							creationDate, lastUpdate, documentation);
 					npf_is.reset();
-					copyParam2NPF(npf_is, nativeType, processId, processName, preVersion, username, creationDate, lastUpdate, documentation);
+					copyParam2NPF(npf_is, nativeType, cpf_uri, processName, preVersion, username, creationDate, lastUpdate, documentation);
 				}
 			}
 			conn.commit();
@@ -1003,28 +1000,19 @@ public class ProcessDao extends BasicDao {
 		try {
 			conn = this.getConnection();
 			// update data in table process_versions
-			query = " update " + ConstantDB.TABLE_VERSIONS
+			query = " update " + ConstantDB.TABLE_CANONICALS
 			+ " set " + ConstantDB.ATTR_LAST_UPDATE + " = ? "
 			+ " , "   + ConstantDB.ATTR_DOCUMENTATION  + " = ? "
+			+ " , "   + ConstantDB.ATTR_CONTENT + "= ? "
 			+ " where " + ConstantDB.ATTR_PROCESSID  + " = ? "
 			+    " and " + ConstantDB.ATTR_VERSION_NAME  + " = ? ";
 			stmtp = conn.prepareStatement(query);
 			stmtp.setString(1, lastUpdate);
 			stmtp.setString(2,documentation);
-			stmtp.setInt(3,processId);
-			stmtp.setString(4,versionName);
+			stmtp.setString(3, cpf_string);
+			stmtp.setInt(4,processId);
+			stmtp.setString(5,versionName);
 			int rs1 = stmtp.executeUpdate();
-			stmtp.close();
-			// update cpf content
-			query = " update " + ConstantDB.TABLE_CANONICALS
-			+ " set " + ConstantDB.ATTR_CONTENT + "= ? "
-			+ " where " + ConstantDB.ATTR_PROCESSID + " = ? "
-			+ " and "   + ConstantDB.ATTR_VERSION_NAME + " = ? ";
-			stmtp = conn.prepareStatement(query);
-			stmtp.setString(1,cpf_string);
-			stmtp.setInt(2,processId);
-			stmtp.setString(3, versionName);
-			rs1 = stmtp.executeUpdate();
 			stmtp.close();
 			// update anf and npf
 			// need cpf uri
@@ -1037,13 +1025,13 @@ public class ProcessDao extends BasicDao {
 			stmtp.setString(2, versionName);
 			rs = stmtp.executeQuery();
 			if (!rs.next()) throw new ExceptionDao ("Cannot access canonical.");
-			int cpf_uri = rs.getInt(1);
+			String cpf_uri = rs.getString(1);
 			stmtp.close();
 			// delete all natives associated with process version
 			query = " delete from " + ConstantDB.TABLE_NATIVES
 			+ " where " + ConstantDB.ATTR_CANONICAL + " = ? ";
 			stmtp = conn.prepareStatement(query);
-			stmtp.setInt(1,cpf_uri);
+			stmtp.setString(1,cpf_uri);
 			rs1 = stmtp.executeUpdate();
 			stmtp.close();			
 			// delete all annotations associated with process version
@@ -1062,7 +1050,7 @@ public class ProcessDao extends BasicDao {
 			stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmtp.setString(1, npf_string);
 			stmtp.setString(2, nativeType);
-			stmtp.setInt(3, cpf_uri);
+			stmtp.setString(3, cpf_uri);
 			Integer rs6 = stmtp.executeUpdate();
 			ResultSet keys = stmtp.getGeneratedKeys() ;
 			if (!keys.next()) {
@@ -1079,7 +1067,7 @@ public class ProcessDao extends BasicDao {
 			+ " values (?,?,?,?) ";
 			stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmtp.setInt(1, nat_uri);
-			stmtp.setInt(2, cpf_uri);
+			stmtp.setString(2, cpf_uri);
 			stmtp.setString (3, Constants.INITIAL_ANNOTATION);
 			stmtp.setString (4, apf_string);
 			stmtp.executeUpdate();
@@ -1118,7 +1106,7 @@ public class ProcessDao extends BasicDao {
 	 * @throws SQLException
 	 * @throws ExceptionStoreVersion
 	 */
-	private void deriveVersion(int processId, String preVersion,
+	private void deriveVersion(Integer processId, String preVersion,
 			String newVersion, String nativeType, String npf_string, String cpf_string,
 			String apf_string, int editSessionCode, String creationDate,
 			String lastUpdate, String documentation) throws ExceptionDao, SQLException, ExceptionStoreVersion {
@@ -1173,38 +1161,29 @@ public class ProcessDao extends BasicDao {
 			} else {
 				// newVersion does not exist. Derive a new version.
 				// add a new version of the process identified by processId + newVersion
-				String query2 = " insert into " + ConstantDB.TABLE_VERSIONS
-				+ "(" + ConstantDB.ATTR_PROCESSID + ","
+
+				DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmS");
+		        Date date = new Date();
+				String time = dateFormat.format(date);
+				String cpf_uri = processId.toString() + newVersion.replaceAll("\\.", "") + time;
+				String query2 = " insert into " + ConstantDB.TABLE_CANONICALS
+				+ "(" + ConstantDB.ATTR_URI + ","
+				+     ConstantDB.ATTR_PROCESSID + ","
 				+     ConstantDB.ATTR_VERSION_NAME + ","
 				+     ConstantDB.ATTR_CREATION_DATE + ","
-				+     ConstantDB.ATTR_DOCUMENTATION + ")"
-				+ " values (?, ?, ?, ?) ";
+				+     ConstantDB.ATTR_DOCUMENTATION + ","
+				+     ConstantDB.ATTR_CONTENT + ")"
+				+ " values (?, ?, ?, ?, ?, ?) ";
 				//+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%s'), str_to_date(?,'%Y-%c-%d %k:%i:%s'), ?, ?) ";
 				stmtp = conn.prepareStatement(query2);
-				stmtp.setInt(1, processId);
-				stmtp.setString(2, newVersion);
-				stmtp.setString(3, creationDate);
-				stmtp.setString(4, documentation);
+				stmtp.setString(1, cpf_uri);
+				stmtp.setInt(2, processId);
+				stmtp.setString(3, newVersion);
+				stmtp.setString(4, creationDate);
+				stmtp.setString(5, documentation);
+				stmtp.setString(6, cpf_string);
 				Integer rs2 = stmtp.executeUpdate();
 				stmtp.close();
-
-				String query3 = " insert into " + ConstantDB.TABLE_CANONICALS
-				+ "(" + ConstantDB.ATTR_PROCESSID
-				+ "," + ConstantDB.ATTR_VERSION_NAME
-				+ "," + ConstantDB.ATTR_CONTENT + ")"
-				+ " values (?, ?, ?) ";
-
-				stmtp = conn.prepareStatement(query3, Statement.RETURN_GENERATED_KEYS);
-				stmtp.setInt(1, processId);
-				stmtp.setString(2,newVersion);
-				stmtp.setString(3, cpf_string);
-				int rs3 = stmtp.executeUpdate();
-				ResultSet keys = stmtp.getGeneratedKeys() ;
-				if (!keys.next()) {
-					throw new ExceptionDao ("Error: cannot retrieve generated key.");
-				}
-				int cpfId = keys.getInt(1);
-				keys.close(); stmtp.close();
 
 				String query5 = " insert into " + ConstantDB.TABLE_NATIVES
 				+ "(" + ConstantDB.ATTR_CONTENT + ","
@@ -1215,9 +1194,9 @@ public class ProcessDao extends BasicDao {
 				//stmt6.setAsciiStream(1, process_xml);
 				stmtp.setString(1, npf_string);
 				stmtp.setString(2, nativeType);
-				stmtp.setInt(3, cpfId);
+				stmtp.setString(3, cpf_uri);
 				Integer rs6 = stmtp.executeUpdate();
-				keys = stmtp.getGeneratedKeys() ;
+				ResultSet keys = stmtp.getGeneratedKeys() ;
 				if (!keys.next()) {
 					throw new ExceptionDao ("Error: cannot retrieve generated key.");
 				}
@@ -1233,7 +1212,7 @@ public class ProcessDao extends BasicDao {
 				+ " values (?,?,?,?) ";
 				stmtp = conn.prepareStatement(query5);
 				stmtp.setInt (1, npfId);
-				stmtp.setInt (2, cpfId);
+				stmtp.setString (2, cpf_uri);
 				stmtp.setString (3, annotation);
 				stmtp.setString (4, apf_string);
 				Integer rs5 = stmtp.executeUpdate();
@@ -1378,7 +1357,7 @@ public class ProcessDao extends BasicDao {
 					// for each selected version(s) of the current process
 					String v = (String) itV.next();
 					// retrieve cpf associated with (pId, v)
-					Integer cpf_uri ;
+					String cpf_uri ;
 					query = " select " + ConstantDB.ATTR_URI
 					+ " from " + ConstantDB.TABLE_CANONICALS
 					+ " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString()
@@ -1386,7 +1365,7 @@ public class ProcessDao extends BasicDao {
 					stmt = conn.createStatement();
 					rs = stmt.executeQuery(query);
 					if (rs.next()) {
-						cpf_uri = rs.getInt(1);
+						cpf_uri = rs.getString(1);
 						stmt.close(); rs.close();
 					} else {
 						stmt.close(); rs.close();
@@ -1458,7 +1437,7 @@ public class ProcessDao extends BasicDao {
 						/* delete the process version. Thanks to foreign keys, canonical,
 						 * natives and annotations will be deleted on cascade
 						 */
-						query = " delete from " + ConstantDB.TABLE_VERSIONS 
+						query = " delete from " + ConstantDB.TABLE_CANONICALS
 						+ " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString()
 						+ " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + v + "'";
 						stmtp = conn.prepareStatement(query);
@@ -1515,7 +1494,7 @@ public class ProcessDao extends BasicDao {
 			stmtp.close();
 
 			// update process_versions
-			query = " update " + ConstantDB.TABLE_VERSIONS
+			query = " update " + ConstantDB.TABLE_CANONICALS
 			+ " set " + ConstantDB.ATTR_VERSION_NAME + " = ? , "
 			+ ConstantDB.ATTR_RANKING + " = ? , "
 			+ ConstantDB.ATTR_LAST_UPDATE + " = date_format(now(), '%Y-%c-%d %k:%i:%s') "
@@ -1554,10 +1533,10 @@ public class ProcessDao extends BasicDao {
 			query = " select " + "N." + ConstantDB.ATTR_CONTENT + "," + "N." + ConstantDB.ATTR_URI
 			+ " , " + ConstantDB.ATTR_NAT_TYPE
 			+ " , " + ConstantDB.ATTR_LAST_UPDATE
+			+ " , C." + ConstantDB.ATTR_URI
 			+ " from " + ConstantDB.TABLE_NATIVES + " N "
 			+ " join " + ConstantDB.TABLE_CANONICALS + " C "
 			+ " on (" + "N." + ConstantDB.ATTR_CANONICAL + " = " + "C." + ConstantDB.ATTR_URI + ")"
-			+ " natural join " + ConstantDB.TABLE_VERSIONS
 			+ " where " + ConstantDB.ATTR_PROCESSID + " = " + processId
 			+ " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + newVersion + "'";
 			Statement stmt = conn.createStatement();
@@ -1567,6 +1546,7 @@ public class ProcessDao extends BasicDao {
 				Integer uri = rs.getInt(2);
 				String nativeType = rs.getString(3);
 				String lastUpdate = rs.getString(4);
+				String cpf_uri = rs.getString(5);
 				ByteArrayOutputStream npf_xml = new ByteArrayOutputStream();
 				JAXBContext jc;
 				Unmarshaller u;
@@ -1576,7 +1556,7 @@ public class ProcessDao extends BasicDao {
 					u = jc.createUnmarshaller();
 					JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(npf);
 					PackageType npf_o = rootElement.getValue();
-					copyParam2xpdl(npf_o, processId, processName, newVersion, username, null, lastUpdate, null);
+					copyParam2xpdl(npf_o, cpf_uri, processName, newVersion, username, null, lastUpdate, null);
 					m = jc.createMarshaller();
 					m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 					JAXBElement<PackageType> rootnpf = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(npf_o);
