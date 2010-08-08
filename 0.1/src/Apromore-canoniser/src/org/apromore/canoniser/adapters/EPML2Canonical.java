@@ -76,7 +76,7 @@ public class EPML2Canonical{
 	
 	private CanonicalProcessType cproc = new CanonicalProcessType();
 	private AnnotationsType annotations = new AnnotationsType();
-	private long ids = 1;
+	private long ids = System.currentTimeMillis();;
 	//
 	
 	public CanonicalProcessType getCPF()
