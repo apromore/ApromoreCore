@@ -77,7 +77,7 @@ public class XPDL2Canonical {
 	Map<String, ResourceTypeType> pool_resource_map = new HashMap<String, ResourceTypeType>();
 	Map<String, BigInteger> object_map = new HashMap<String, BigInteger>();
 	
-	long cpfId = 1;
+	long cpfId = System.currentTimeMillis();;
 	long anfId = 1;
 
 	CanonicalProcessType cpf;

@@ -76,7 +76,7 @@ public class Canonical2EPML {
 	
 	private TypeEPML epml = new TypeEPML();
 	private TypeDirectory dir = new TypeDirectory();
-	private long ids = 1;
+	private long ids = System.currentTimeMillis();;
 	private long defIds = 1;
 	
 	public TypeEPML getEPML()
