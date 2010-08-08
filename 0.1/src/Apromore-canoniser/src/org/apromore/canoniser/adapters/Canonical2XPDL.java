@@ -275,7 +275,7 @@ public class Canonical2XPDL {
 						// TODO: Parse color format
 						info.setFillColor(cGraphInfo.getFill().getColor());
 					
-					if(cGraphInfo.getSize() != null) {
+					if(cGraphInfo.getSize() != null && cGraphInfo.getSize().getHeight() != null && cGraphInfo.getSize().getWidth() != null) {
 						info.setHeight(cGraphInfo.getSize().getHeight().doubleValue());
 						info.setWidth(cGraphInfo.getSize().getWidth().doubleValue());
 					}
@@ -289,6 +289,8 @@ public class Canonical2XPDL {
 						} catch (IndexOutOfBoundsException e) {
 							// TODO Auto-generated catch block
 							//e.printStackTrace();
+						} catch (NullPointerException e) {
+							
 						}
 					}
 					

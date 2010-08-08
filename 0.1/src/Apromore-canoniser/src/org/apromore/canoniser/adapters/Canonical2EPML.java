@@ -33,10 +33,13 @@ import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 
 import de.epml.TEpcElement;
+import de.epml.TExtensibleElements;
 import de.epml.TypeAND;
 import de.epml.TypeArc;
 import de.epml.TypeAttrTypes;
 import de.epml.TypeCFunction;
+import de.epml.TypeDefinition;
+import de.epml.TypeDefinitions;
 import de.epml.TypeDirectory;
 import de.epml.TypeEPC;
 import de.epml.TypeEPML;
@@ -74,6 +77,7 @@ public class Canonical2EPML {
 	private TypeEPML epml = new TypeEPML();
 	private TypeDirectory dir = new TypeDirectory();
 	private long ids = 1;
+	private long defIds = 1;
 	
 	public TypeEPML getEPML()
 	{
@@ -93,12 +97,13 @@ public class Canonical2EPML {
 	private void main(CanonicalProcessType cproc)
 	{
 		epml.getDirectory().add(dir);
+		epml.setDefinitions(new TypeDefinitions());
 	
 		for (NetType net: cproc.getNet()) {
 			// To do
 			TypeEPC epc = new TypeEPC();
-			translateNet(epc,net);
 			epc.setEpcId(BigInteger.valueOf(ids++));
+			translateNet(epc,net);
 			for (ObjectType obj: cproc.getObject()){
 				if(object_res_list.contains(obj.getId()))
 					translateObject(obj,epc);
@@ -107,6 +112,7 @@ public class Canonical2EPML {
 				if(object_res_list.contains(resT.getId()))
 					translateResource(resT,epc);
 			}
+			createRelationArc(epc,net);
 			object_res_list.clear();
 			validate_event_sequence(epc);
 			validate_function_sequence(epc);
@@ -140,7 +146,7 @@ public class Canonical2EPML {
 					object_res_list.add(ref.getResourceTypeId());
 					ll.add(ref.getResourceTypeId());
 				}
-				role_map.put(BigInteger.valueOf(ids-1),ll);
+				role_map.put(epc.getEpcId(),ll);
 				
 			} else if (node instanceof RoutingType) {
 				translateGateway(epc, node);
@@ -180,7 +186,7 @@ public class Canonical2EPML {
 			}
 		}
 		
-		createRelationArc(epc,net);
+		
 	}
 	
 	private void createRelationArc(TypeEPC epc,  NetType net)
@@ -191,31 +197,37 @@ public class Canonical2EPML {
 			{
 				for(ObjectRefType ref:((WorkType)node).getObjectRef())
 				{
-					TypeArc arc = new TypeArc();
-					TypeRelation rel =  new TypeRelation();
-					arc.setId(BigInteger.valueOf(ids++));
-					if(ref.getType().equals(InputOutputType.OUTPUT)){
-						rel.setSource(id_map.get(node.getId()));
-						rel.setTarget(id_map.get(ref.getObjectId()));
+					if(ref.getObjectId() != null)
+					{
+						TypeArc arc = new TypeArc();
+						TypeRelation rel =  new TypeRelation();
+						arc.setId(BigInteger.valueOf(ids++));
+						if(ref.getType().equals(InputOutputType.OUTPUT)){
+							rel.setSource(id_map.get(node.getId()));
+							rel.setTarget(id_map.get(ref.getObjectId()));
+						}
+						else{
+							rel.setTarget(id_map.get(node.getId()));
+							rel.setSource(id_map.get(ref.getObjectId()));
+						}					
+						arc.setRelation(rel);
+						epc.getEventOrFunctionOrRole().add(arc);
 					}
-					else{
-						rel.setTarget(id_map.get(node.getId()));
-						rel.setSource(id_map.get(ref.getObjectId()));
-					}					
-					arc.setRelation(rel);
-					epc.getEventOrFunctionOrRole().add(arc);
 				}
 				
 				for(ResourceTypeRefType ref:((WorkType)node).getResourceTypeRef())
 				{
-					TypeArc arc = new TypeArc();
-					TypeRelation rel =  new TypeRelation();
-					arc.setId(BigInteger.valueOf(ids++));
-					rel.setSource(id_map.get(node.getId()));
-					rel.setTarget(id_map.get(ref.getResourceTypeId()));
-					rel.setType("role");
-					arc.setRelation(rel);
-					epc.getEventOrFunctionOrRole().add(arc);
+					if(ref.getResourceTypeId() != null)
+					{
+						TypeArc arc = new TypeArc();
+						TypeRelation rel =  new TypeRelation();
+						arc.setId(BigInteger.valueOf(ids++));
+						rel.setSource(id_map.get(node.getId()));
+						rel.setTarget(id_map.get(ref.getResourceTypeId()));
+						rel.setType("role");
+						arc.setRelation(rel);
+						epc.getEventOrFunctionOrRole().add(arc);
+					}
 				}
 			}
 		}
@@ -235,6 +247,7 @@ public class Canonical2EPML {
 			id_map.put(task.getId(), BigInteger.valueOf(ids));
 			func.setId(BigInteger.valueOf(ids++));
 			func.setName(task.getName());
+			func.setDefRef(find_def_id("function",func.getName()));
 			if(task.getSubnetId() != null)
 			{
 				func.getToProcess().setLinkToEpcId(task.getSubnetId());
@@ -251,8 +264,10 @@ public class Canonical2EPML {
 		id_map.put(node.getId(), BigInteger.valueOf(ids));
 		event.setId(BigInteger.valueOf(ids++));
 		event.setName(node.getName());
+		event.setDefRef(find_def_id("event",event.getName()));
 		epc.getEventOrFunctionOrRole().add(event);	
 		epcRefMap.put(event.getId(), event);
+		
 	}
 	
 	private void translateObject(ObjectType obj, TypeEPC epc)
@@ -261,6 +276,7 @@ public class Canonical2EPML {
 		id_map.put(obj.getId(), BigInteger.valueOf(ids));
 		object.setId(BigInteger.valueOf(ids++));
 		object.setName(obj.getName());
+		object.setDefRef(find_def_id("object",object.getName()));
 		object.setFinal(obj.isConfigurable());
 		epc.getEventOrFunctionOrRole().add(object);
 	}
@@ -271,6 +287,7 @@ public class Canonical2EPML {
 		id_map.put(resT.getId(), BigInteger.valueOf(ids));
 		role.setId(BigInteger.valueOf(ids++));
 		role.setName(resT.getName());
+		role.setDefRef(find_def_id("role",role.getName()));
 		epc.getEventOrFunctionOrRole().add(role);
 		
 		// Linking the related element
@@ -294,7 +311,7 @@ public class Canonical2EPML {
 					{
 						TypeArc arc1 = new TypeArc();
 						TypeRelation rel = new TypeRelation();
-						rel.setSource(BigInteger.valueOf(ids-1));
+						rel.setSource(role.getId());
 						rel.setTarget(((TypeFunction)obj).getId());
 						arc1.setRelation(rel);
 						arcs_list.add(arc1);
@@ -306,7 +323,7 @@ public class Canonical2EPML {
 					{
 						TypeArc arc2 = new TypeArc();
 						TypeRelation rel = new TypeRelation();
-						rel.setSource(BigInteger.valueOf(ids-1));
+						rel.setSource(role.getId());
 						rel.setTarget(((TypeEvent)obj).getId());
 						arc2.setRelation(rel);
 						arcs_list.add(arc2);
@@ -329,7 +346,6 @@ public class Canonical2EPML {
 			and.setName(node.getName());
 			epc.getEventOrFunctionOrRole().add(and);
 			epcRefMap.put(and.getId(), and);
-			//event_list.add(node.getId());
 		} else if (node instanceof ANDJoinType) {
 			TypeAND and = new TypeAND();
 			id_map.put(node.getId(), BigInteger.valueOf(ids));
@@ -412,6 +428,8 @@ public class Canonical2EPML {
 					epcRefMap.put(event.getId(), event);
 				}
 			}
+		
+		event_list.clear();
 	}
 	
 	/// translate the annotations 
@@ -541,7 +559,7 @@ public class Canonical2EPML {
 					TypeArc arc = new TypeArc();
 					TypeFlow flow = new TypeFlow();
 					arc.setFlow(flow);
-					flow.setSource(BigInteger.valueOf(ids-1));
+					flow.setSource(func.getId());
 					arc.setId(BigInteger.valueOf(ids++));
 					
 					for(TypeFlow f: flow_list)
@@ -604,7 +622,7 @@ public class Canonical2EPML {
 					TypeArc arc = new TypeArc();
 					TypeFlow flow = new TypeFlow();
 					arc.setFlow(flow);
-					flow.setSource(BigInteger.valueOf(ids-1));
+					flow.setSource(event.getId());
 					arc.setId(BigInteger.valueOf(ids++));
 					
 					for(TypeFlow f: flow_list)
@@ -650,5 +668,29 @@ public class Canonical2EPML {
 		}
 		
 		return false;
+	}
+	
+	private BigInteger find_def_id(String type, String name)
+	{
+		
+		for(TExtensibleElements def: epml.getDefinitions().getDefinitionOrSpecialization())
+		{
+			if(def instanceof TypeDefinition)
+			{
+				if(((TypeDefinition) def).getType() == type && ((TypeDefinition) def).getName() == name)
+				{
+					return ((TypeDefinition) def).getDefId();
+				}
+			}
+		}
+			
+		TypeDefinition def = new TypeDefinition();
+		def.setDefId(BigInteger.valueOf(defIds++));
+		def.setType(type);
+		def.setName(name);
+		epml.getDefinitions().getDefinitionOrSpecialization().add(def);
+		
+		return def.getDefId();
+		
 	}
 }

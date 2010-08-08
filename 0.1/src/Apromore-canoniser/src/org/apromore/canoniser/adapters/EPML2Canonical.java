@@ -533,6 +533,7 @@ public class EPML2Canonical{
 						ObjectRefType ref = new ObjectRefType();
 						ref.setObjectId(id_map.get(arc.getRelation().getSource()));
 						ref.setType(InputOutputType.INPUT);
+						// TODO fixing the null cause , missing sources an targets
 						//ref.setOptional(obj_ref.get(arc.getRelation().getSource()).isOptional());
 						//ref.setConsumed(obj_ref.get(arc.getRelation().getSource()).isConsumed());
 						((WorkType)node).getObjectRef().add(ref);
