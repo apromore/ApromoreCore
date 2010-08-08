@@ -230,21 +230,27 @@ public class XPDL2Canonical {
 		}	
 
 		for (Transition trans: transitions) {
-			GraphicsType cGraphInfo = new GraphicsType();
-			cGraphInfo.setId(BigInteger.valueOf(anfId++));
-			cGraphInfo.setCpfId(edgeMap.get(trans).getId());
-			ConnectorGraphicsInfos infos = trans.getConnectorGraphicsInfos();
-			if(infos != null) {
-				for (ConnectorGraphicsInfo xGraphInfo: infos.getConnectorGraphicsInfo()) {
-					for (Coordinates coord: xGraphInfo.getCoordinates()) {
-						PositionType pos = new PositionType();
-						pos.setX(BigDecimal.valueOf(coord.getXCoordinate()));
-						pos.setY(BigDecimal.valueOf(coord.getYCoordinate()));
-						cGraphInfo.getPosition().add(pos);
+			try{
+				GraphicsType cGraphInfo = new GraphicsType();
+				cGraphInfo.setId(BigInteger.valueOf(anfId++));
+				cGraphInfo.setCpfId(edgeMap.get(trans).getId());
+				ConnectorGraphicsInfos infos = trans.getConnectorGraphicsInfos();
+				if(infos != null) {
+					for (ConnectorGraphicsInfo xGraphInfo: infos.getConnectorGraphicsInfo()) {
+						for (Coordinates coord: xGraphInfo.getCoordinates()) {
+							PositionType pos = new PositionType();
+							pos.setX(BigDecimal.valueOf(coord.getXCoordinate()));
+							pos.setY(BigDecimal.valueOf(coord.getYCoordinate()));
+							cGraphInfo.getPosition().add(pos);
+						}
 					}
 				}
+				annotations.getAnnotation().add(cGraphInfo);
+				
+			} catch (NullPointerException e){
+				
 			}
-			annotations.getAnnotation().add(cGraphInfo);
+			
 		}
 	}
 
