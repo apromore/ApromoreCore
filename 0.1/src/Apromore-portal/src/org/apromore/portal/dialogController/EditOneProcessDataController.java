@@ -27,7 +27,7 @@ public class EditOneProcessDataController {
 	private Window editDataWindow;
 
 	private MainController mainC ;
-	private EditListProcDataController editDataListProcessesC;
+	private EditListProcessDataController editDataListProcessesC;
 	private Button okB;
 	private Button cancelB;
 	private Button cancelAllB;
@@ -38,6 +38,7 @@ public class EditOneProcessDataController {
 	private Radio r3;
 	private Radio r4;
 	private Radio r5;
+	private Radio r6; // uncheck all
 	private ProcessSummaryType process;
 	private VersionSummaryType preVersion;
 	private Textbox processNameT;
@@ -50,11 +51,11 @@ public class EditOneProcessDataController {
 	private SelectDynamicListController domainCB;
 
 	public EditOneProcessDataController(MainController mainC,
-			EditListProcDataController editListProcDataController,
+			EditListProcessDataController editListProcessDataController,
 			ProcessSummaryType process, VersionSummaryType version) 
 	throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
 		this.mainC = mainC;
-		this.editDataListProcessesC = editListProcDataController;
+		this.editDataListProcessesC = editListProcessDataController;
 		this.process = process;
 		this.preVersion = version;
 
@@ -76,6 +77,7 @@ public class EditOneProcessDataController {
 		this.r3 = (Radio) this.r2.getNextSibling();
 		this.r4 = (Radio) this.r3.getNextSibling();
 		this.r5 = (Radio) this.r4.getNextSibling();
+		this.r6 = (Radio) this.r5.getNextSibling();
 		Row buttonsR = (Row) rankingR.getNextSibling().getNextSibling();
 		Div buttonsD = (Div) buttonsR.getFirstChild();
 		this.okB = (Button) buttonsD.getFirstChild();
@@ -102,6 +104,8 @@ public class EditOneProcessDataController {
 
 		// enable cancelAll button if at least 1 process versions left.
 		this.cancelAllB.setVisible(this.editDataListProcessesC.getToEditList().size()>0);
+		//set default values
+		this.r6.setChecked(true);
 		// set values to those of the process version
 		reset();
 
