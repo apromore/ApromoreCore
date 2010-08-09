@@ -427,26 +427,34 @@ public class EPML2Canonical{
 		List<NodeType> node_remove_list = new LinkedList<NodeType>();
 		BigInteger event_id;
 		for(EdgeType edge: net.getEdge())
-			if(edge.getSourceId().equals(id))
-			{
-				event_id = edge.getTargetId();
-				for(EdgeType edge2: net.getEdge())
-					if(edge2.getSourceId().equals(edge.getTargetId()))
-					{
-						edge.setTargetId(edge2.getTargetId());
-						edge_remove_list.add(edge2);
-						//net.getEdge().remove(edge2);
-					}
-				
-				// delete the unrequired event and set its name as a condition for the edge
-				for(NodeType node: net.getNode())
-					if(node.getId().equals(event_id))
-					{
-						edge.setCondition(node.getName());
-						node_remove_list.add(node);
-						//net.getNode().remove(node);
-					}
+		{
+			try {
+				if(edge.getSourceId().equals(id))
+				{
+					event_id = edge.getTargetId();
+					for(EdgeType edge2: net.getEdge())
+						if(edge2.getSourceId().equals(edge.getTargetId()))
+						{
+							edge.setTargetId(edge2.getTargetId());
+							edge_remove_list.add(edge2);
+							//net.getEdge().remove(edge2);
+						}
+					
+					// delete the unrequired event and set its name as a condition for the edge
+					for(NodeType node: net.getNode())
+						if(node.getId().equals(event_id))
+						{
+							edge.setCondition(node.getName());
+							node_remove_list.add(node);
+							//net.getNode().remove(node);
+						}
+				}
 			}
+			catch (NullPointerException e)
+			{
+				
+			}
+		}
 		
 		for(EdgeType edge: edge_remove_list)
 			net.getEdge().remove(edge);
