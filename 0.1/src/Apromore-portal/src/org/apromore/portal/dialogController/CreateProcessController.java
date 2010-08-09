@@ -58,12 +58,6 @@ public class CreateProcessController {
 	private Button okB;
 	private Button cancelB;
 	private Button resetB;
-	private Radio r0;
-	private Radio r1;
-	private Radio r2;
-	private Radio r3;
-	private Radio r4;
-	private Radio r5;
 	private Textbox processNameT;
 	private Textbox versionNameT;
 	private Radiogroup rankingRG;
@@ -95,12 +89,7 @@ public class CreateProcessController {
 		this.nativeTypesLB = (Listbox) this.nativeTypesR.getFirstChild().getNextSibling();
 		Row rankingR = (Row) this.nativeTypesR.getNextSibling();
 		this.rankingRG = (Radiogroup) rankingR.getFirstChild().getNextSibling();
-		this.r0 = (Radio) this.rankingRG.getFirstChild();
-		this.r1 = (Radio) this.r0.getNextSibling();
-		this.r2 = (Radio) this.r1.getNextSibling();
-		this.r3 = (Radio) this.r2.getNextSibling();
-		this.r4 = (Radio) this.r3.getNextSibling();
-		this.r5 = (Radio) this.r4.getNextSibling();
+		rankingR.setVisible(false);
 		Row buttonsR = (Row) rankingR.getNextSibling().getNextSibling();
 		Div buttonsD = (Div) buttonsR.getFirstChild();
 		this.okB = (Button) buttonsD.getFirstChild();
@@ -282,11 +271,5 @@ public class CreateProcessController {
 		this.processNameT.setValue(empty);
 		this.versionNameT.setValue(empty);
 		this.domainCB.setValue(empty);
-		r0.setChecked(true);
-		r1.setChecked(false);
-		r2.setChecked(false);
-		r3.setChecked(false);
-		r4.setChecked(false);
-		r5.setChecked(false);
 	}	
 }

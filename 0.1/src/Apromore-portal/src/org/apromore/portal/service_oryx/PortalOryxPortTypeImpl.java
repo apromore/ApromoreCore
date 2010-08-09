@@ -6,8 +6,10 @@
 
 package org.apromore.portal.service_oryx;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
@@ -97,6 +99,16 @@ import org.wfmc._2008.xpdl2.PackageType;
 			int processId = editSession.getProcessId();
 			String format = editSession.getNativeType();
 			String preVersion = editSession.getVersionName(); 
+			
+			String line = null;
+			StringBuilder sb0 = new StringBuilder();
+			BufferedReader reader = new BufferedReader(new InputStreamReader(native_is, "UTF-8"));
+			while ((line = reader.readLine()) != null) {
+				sb0.append(line).append("\n");
+			}
+			System.out.println("Portal-oryx: ");
+			System.out.println(sb0.toString());
+			native_is.reset();
 			// update process: create new version whose name is in native_is, derived from head version
 			request.UpdateProcess (code, username, format, processId, preVersion, native_is);
 			result.setCode(0);
