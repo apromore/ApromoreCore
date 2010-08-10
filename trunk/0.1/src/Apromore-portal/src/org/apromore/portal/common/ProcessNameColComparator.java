@@ -15,8 +15,8 @@ public class ProcessNameColComparator implements Comparator {
 		//o1 and o2 are rows to be compared according to their 2nd children (toolbarbutton)
 		Row r1 = (Row) o1, 
 		    r2 = (Row) o2;
-		Toolbarbutton tb1 = (Toolbarbutton) r1.getChildren().get(3),
-		              tb2 = (Toolbarbutton) r2.getChildren().get(3);
+		Toolbarbutton tb1 = (Toolbarbutton) r1.getChildren().get(2),
+		              tb2 = (Toolbarbutton) r2.getChildren().get(2);
 		
 		String s1 = tb1.getLabel(),
 		       s2 = tb2.getLabel();
