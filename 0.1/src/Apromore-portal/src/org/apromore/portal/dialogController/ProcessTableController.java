@@ -101,7 +101,6 @@ public class ProcessTableController {
 	private Button selectAllB;
 	private Button unselectAllB;
 	private Button refreshB;
-	private Column columnId ;								// column to display processId
 	private Column columnName;								// column to display process name
 
 	public ProcessTableController(MainController mainController) throws Exception {
@@ -120,21 +119,16 @@ public class ProcessTableController {
 		this.unselectAllB = (Button) this.processSummariesGrid.getFellow("unselectAllB");
 		this.selectAllB = (Button) this.processSummariesGrid.getFellow("selectAllB");
 		this.refreshB = (Button) this.processSummariesGrid.getFellow("refreshB");
-		this.columnId = (Column) this.processSummariesGrid.getFellow("columnId");
 		this.columnName = (Column) this.processSummariesGrid.getFellow("columnName");
 
 		ProcessNameColComparator asc1 = new ProcessNameColComparator(true),
 		dsc1 = new ProcessNameColComparator(false);
 		this.columnName.setSortAscending(asc1);
 		this.columnName.setSortDescending(dsc1);
-		ProcessIdColComparator asc2 = new ProcessIdColComparator(true),
-		dsc2 = new ProcessIdColComparator(false);
-		this.columnId.setSortAscending(asc2);
-		this.columnId.setSortDescending(dsc2);
 
 		// if change grid layouts modify value accordingly
-		this.latestVersionPos = 7;
-		this.processTbPos = 3 ;
+		this.latestVersionPos = 6;
+		this.processTbPos = 2 ;
 
 		// initialize hashmaps
 		this.processHM = new HashMap<Checkbox,ProcessSummaryType>();
@@ -261,7 +255,6 @@ public class ProcessTableController {
 		 * assign process summary values to labels
 		 */
 		Checkbox processCB = new Checkbox();
-		Label processId = new Label(process.getId().toString());
 
 		// update hashmaps
 		this.processHM.put(processCB, process);
@@ -269,9 +262,6 @@ public class ProcessTableController {
 		this.mapProcessVersions.put(processCB, listV);
 		Toolbarbutton processName = new Toolbarbutton(process.getName());
 		processName.setStyle(Constants.TOOLBARBUTTON_STYLE);
-
-		//	processName.setId(process.getId().toString());
-
 		Label processOriginalLanguage = new Label(process.getOriginalNativeType());
 		Label processDomain = new Label(process.getDomain());
 		Label processProcessRanking = new Label(process.getRanking().toString());
@@ -279,7 +269,6 @@ public class ProcessTableController {
 		Label processOwner = new Label(process.getOwner());
 		processSummaryR.appendChild(processSummaryD);
 		processSummaryR.appendChild(processCB);
-		processSummaryR.appendChild(processId);
 		processSummaryR.appendChild(processName);
 		processSummaryR.appendChild(processOriginalLanguage);
 		processSummaryR.appendChild(processDomain);
@@ -321,17 +310,12 @@ public class ProcessTableController {
 		 */
 		if (processSummaryD.getChildren().size()==0) {
 			Checkbox processCB = (Checkbox) processSummaryD.getNextSibling();
-
 			ProcessSummaryType process = this.processHM.get(processCB);
-
 			// the grid for process versions
 			Grid processVersionG = new Grid();
 			processVersionG.setVflex(true);
-
-
 			Columns versionHeads = new Columns();
 			versionHeads.setSizable(true);
-
 			Column checkboxes = new Column();
 			checkboxes.setWidth("0px");		
 			Column headVersionName = new Column("Version name");
@@ -390,15 +374,15 @@ public class ProcessTableController {
 				if (version.getRanking()!=null) {
 					versionRanking.setValue(version.getRanking());
 				} 
-				Label versionDocumentation = new Label ();
+				Label versionDocumentation = new Label();
 				if ("".compareTo(version.getDocumentation())!=0) {
-					String docBeginning = version.getDocumentation().split(" ")[0]
-					                                                            + "... Click here to read more...";
+					String docBeginning = version.getDocumentation().split(" ")[0];
 					versionDocumentation.setValue(docBeginning);
 					Popup docPopup = new Popup();
 					Html docHtml = new Html(version.getDocumentation());
 					docPopup.appendChild(docHtml);					
 					versionDocumentation.setPopup(docPopup);
+					this.mainC.appendChild(docPopup);
 				} else {
 					versionDocumentation.setValue("");
 				}
@@ -585,8 +569,6 @@ public class ProcessTableController {
 		String unselectedOdd = Constants.UNSELECTED_ODD;
 		Integer index = processR.getParent().getChildren().indexOf(processR);
 		Detail processD = (Detail) processR.getFirstChild();
-		// the toolbarbutton is the 4th children of row processR
-		Toolbarbutton processName = (Toolbarbutton) processR.getFirstChild().getNextSibling().getNextSibling().getNextSibling();
 		if (highlighted) {
 			processR.setStyle(selected);
 			processD.setStyle(selected);
@@ -603,7 +585,6 @@ public class ProcessTableController {
 			}
 			ColorFont (processR, "#000000");
 		}
-		//processName.setStyle(Constants.TOOLBARBUTTON_STYLE);
 	}
 
 	/** 
