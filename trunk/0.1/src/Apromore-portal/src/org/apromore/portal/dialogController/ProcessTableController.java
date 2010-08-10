@@ -446,6 +446,7 @@ public class ProcessTableController {
 		Iterator<ProcessSummaryType> it = keySet.iterator();
 		while (it.hasNext()){
 			ProcessSummaryType process = it.next();
+			// versions contains all versions of the process (either selected or not)
 			List<VersionSummaryType> versions = process.getVersionSummaries();
 			// retrieve the process Detail in this.processSummariesRows
 			Detail processD = (Detail) this.processSummariesRows.getFellow(process.getId().toString(), true);
@@ -455,21 +456,26 @@ public class ProcessTableController {
 			highlightP (processR, false);
 			Grid processG = (Grid) processD.getFirstChild();
 			Rows versionsR = (Rows) processG.getFirstChild().getNextSibling();
-			for (int i=0; i<versions.size();i++) {
+			Iterator<VersionSummaryType> itV = versions.iterator();
+			List<VersionSummaryType> toBeDeleted = new ArrayList<VersionSummaryType>();
+			while (itV.hasNext()) {
 				//remove from the Detail grid, the row corresponding to version, if checked:
 				// its checkbox has id=processid+"/"+versionName
-				VersionSummaryType version = versions.get(i);
+				VersionSummaryType version = itV.next();
 				String idToCheck = process.getId().toString() + "/" + version.getName();
 				Checkbox versionCB = (Checkbox) processD.getFellow(idToCheck, true);
 				Row versionR = (Row) versionCB.getParent();
 				if (versionCB.isChecked()){
 					versionsR.removeChild(versionR);
-					versions.remove(i);
+					toBeDeleted.add(version);
 					// Update the data structures
 					// processVersionHM, mapProcessVersions
 					this.processVersionsHM.remove(versionCB);
 					this.mapProcessVersions.get(processCB).remove((this.mapProcessVersions.get(processCB).indexOf(versionCB)));
 				}
+			}
+			for (int i=0;i<toBeDeleted.size();i++){
+				versions.remove(toBeDeleted.get(i));
 			}
 			// if no row left, remove the process row
 			if (versionsR.getChildren().size()==0){
