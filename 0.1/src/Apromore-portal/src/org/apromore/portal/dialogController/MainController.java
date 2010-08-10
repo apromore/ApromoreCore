@@ -145,6 +145,7 @@ public class MainController extends Window {
 			message = " process.";
 		}
 		this.displayMessage(processSummaries.getProcessSummary().size() + message);
+		this.simplesearch.clearSearches();
 		this.displayProcessSummaries(processSummaries);
 	}
 

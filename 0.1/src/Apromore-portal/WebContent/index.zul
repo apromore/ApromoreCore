@@ -74,7 +74,6 @@
 								<checkbox id="processSummaryCB"
 									visible="false" />
 							</column>
-							<column id="columnId" label="Id" width="3%" />
 							<column id="columnName" label="Name"
 								width="15%" />
 							<column sort="auto"
