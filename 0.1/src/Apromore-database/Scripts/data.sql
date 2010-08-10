@@ -10,5 +10,6 @@ insert into users  (firstname, username, passwd) values ("Hajo", "hajo", "");
 insert into users  (firstname, username, passwd) values ("Barbara", "barbara", "");
 insert into users  (firstname, username, passwd) values ("Anne", "anne", "");
 insert into users  (firstname, username, passwd) values ("icsoc 2010", "icsoc", "");
+insert into users  (firstname, username, passwd) values ("Reina", "reina", "");
 insert into native_types values ("EPML 2.0","epml");
 insert into native_types values ("XPDL 2.1","xpdl");
