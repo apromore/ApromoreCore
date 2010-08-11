@@ -1,7 +1,6 @@
 package org.apromore.portal.dialogController;
 
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;

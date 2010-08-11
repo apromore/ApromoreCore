@@ -32,26 +32,27 @@ public class HeaderController extends Window {
 	private Toolbarbutton signoutButton;
 	private Toolbarbutton createAccountButton;
 	private Toolbarbutton consultAccountButton;
-	
-
 	/*
 	 * called by MainController.java
 	 */
 	public HeaderController(MainController mainController) throws Exception {
-		
 		this.mainC = mainController;
-		
 		/**
 		 * gets components of header
 		 */
 		this.headerW = (Window) mainC.getFellow("headercomp").getFellow("header");
+		this.moreButton =  (Toolbarbutton) this.headerW.getFellow("moreButton");
 		this.releaseNotes = (Toolbarbutton) this.headerW.getFellow("releaseNotes");
 		this.signinButton = (Toolbarbutton) this.headerW.getFellow("signinButton");
 		this.signoutButton = (Toolbarbutton) this.headerW.getFellow("signoutButton");
 		this.consultAccountButton = (Toolbarbutton) this.headerW.getFellow("consultAccountButton");
 		this.createAccountButton = (Toolbarbutton) this.headerW.getFellow("createAccountButton");
-		
-		
+		moreButton.addEventListener("onClick",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				moreInfo();
+			}
+		});			
 		signinButton.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -79,6 +80,15 @@ public class HeaderController extends Window {
 		});
 	}
 
+	protected void moreInfo() {
+		String instruction ;		
+		int offsetH = 100, offsetV=200;
+		instruction = "window.open('" + Constants.MORE_INFO + "','','top=" + offsetH + ",left=" + offsetV 
+		+ ",height=600,width=800,scrollbars=1,resizable=1'); ";
+		Clients.evalJavaScript(instruction);
+		
+	}
+
 	protected void displayReleaseNotes() {
 		String instruction ;		
 		int offsetH = 100, offsetV=200;
@@ -89,10 +99,11 @@ public class HeaderController extends Window {
 
 	/**
 	 * Create an account
+	 * @throws InterruptedException 
 	 */
-	protected void createAccount() {
-		// TODO Auto-generated method stub
-		
+	protected void createAccount() throws InterruptedException {
+		Messagebox.show("Not yet available...", "Attention", Messagebox.OK,
+				Messagebox.INFORMATION);
 	}
 
 	private void signout() throws Exception {
