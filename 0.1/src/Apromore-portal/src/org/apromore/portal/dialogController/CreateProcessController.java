@@ -89,7 +89,6 @@ public class CreateProcessController {
 		this.nativeTypesLB = (Listbox) this.nativeTypesR.getFirstChild().getNextSibling();
 		Row rankingR = (Row) this.nativeTypesR.getNextSibling();
 		this.rankingRG = (Radiogroup) rankingR.getFirstChild().getNextSibling();
-		rankingR.setVisible(false);
 		Row buttonsR = (Row) rankingR.getNextSibling().getNextSibling();
 		Div buttonsD = (Div) buttonsR.getFirstChild();
 		this.okB = (Button) buttonsD.getFirstChild();
@@ -112,8 +111,11 @@ public class CreateProcessController {
 		this.ownerCB.setAttribute("hflex", "1");
 		this.ownerR.appendChild(ownerCB);
 
-		// this row is set to false at creation time
+		// set row visibility at creation time
 		this.nativeTypesR.setVisible(true);
+		versionNameR.setVisible(false);
+		rankingR.setVisible(false);
+		
 		// default values
 		this.ownerCB.setValue(this.mainC.getCurrentUser().getUsername());
 		
@@ -167,7 +169,6 @@ public class CreateProcessController {
 		RequestToManager request = new RequestToManager();
 		try {
 			if (this.processNameT.getValue().compareTo("")==0
-					|| this.versionNameT.getValue().compareTo("")==0
 					|| this.nativeTypesLB.getSelectedItem() == null
 					|| this.nativeTypesLB.getSelectedItem() != null 
 					   && this.nativeTypesLB.getSelectedItem().getLabel().compareTo("")==0) {
@@ -178,7 +179,7 @@ public class CreateProcessController {
 				String processName = this.processNameT.getValue();
 				String owner = this.mainC.getCurrentUser().getUsername();
 				String nativeType = this.nativeTypesLB.getSelectedItem().getLabel();
-				String versionName = this.versionNameT.getValue();
+				String versionName = "0.0";
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
 		        Date date = new Date();
 		        String creationDate = dateFormat.format(date);
