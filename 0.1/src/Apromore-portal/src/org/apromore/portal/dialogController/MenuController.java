@@ -37,11 +37,17 @@ public class MenuController extends Menubar {
 	private Menuitem editModelMI;
 	private Menuitem editDataMI;
 	private Menuitem deleteMI;
-	private Menuitem mergeMI;
-
+	private Menuitem copyMI;
+	private Menuitem pasteMI;
+	
 	private Menu evaluationM;
 	private Menu filteringM;
-	private Menu managementM;
+	private Menuitem similaritySearchMI;
+	private Menuitem exactMatchingMI;
+	
+	private Menu designM;
+	private Menuitem mergeMI;
+	
 	private Menu presentationM;
 	private Menuitem evalQualityMI;
 	private Menuitem evalCorrectnessMI;
@@ -60,10 +66,17 @@ public class MenuController extends Menubar {
 		this.editModelMI = (Menuitem) this.menuB.getFellow("processEdit");
 		this.editDataMI = (Menuitem) this.menuB.getFellow("dataEdit");
 		this.deleteMI = (Menuitem) this.menuB.getFellow("processDelete");
-		this.mergeMI = (Menuitem) this.menuB.getFellow("processMerge");
+		this.copyMI = (Menuitem) this.menuB.getFellow("processCopy");
+		this.pasteMI = (Menuitem) this.menuB.getFellow("processPaste");
+		
 		this.evaluationM = (Menu) this.menuB.getFellow("evaluation");
+		
 		this.filteringM = (Menu) this.menuB.getFellow("filtering");
-		this.managementM = (Menu) this.menuB.getFellow("management");
+		this.similaritySearchMI = (Menuitem) this.menuB.getFellow("similaritySearch");
+		this.exactMatchingMI = (Menuitem) this.menuB.getFellow("exactMatching");
+		
+		this.designM = (Menu) this.menuB.getFellow("design");
+		this.mergeMI = (Menuitem) this.menuB.getFellow("designMerging");
 		this.presentationM = (Menu) this.menuB.getFellow("presentation");
 
 		this.createMI.addEventListener("onClick",
