@@ -1583,7 +1583,7 @@ public class ProcessDao extends BasicDao {
 			query = " update " + ConstantDB.TABLE_CANONICALS
 			+ " set " + ConstantDB.ATTR_VERSION_NAME + " = ? , "
 			+ ConstantDB.ATTR_RANKING + " = ? , "
-			+ ConstantDB.ATTR_LAST_UPDATE + " = date_format(now(), '%Y-%c-%d %k:%i:%s') "
+			+ ConstantDB.ATTR_LAST_UPDATE + " = date_format(now(), '%Y-%c-%dT%k:%i:%s') "
 			+ " where " + ConstantDB.ATTR_PROCESSID + " = ? "
 			+ " and " + ConstantDB.ATTR_VERSION_NAME + " = ? ";
 			stmtp = conn.prepareStatement(query);
