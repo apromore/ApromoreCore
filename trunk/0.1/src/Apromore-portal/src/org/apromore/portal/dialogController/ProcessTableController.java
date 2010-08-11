@@ -378,25 +378,23 @@ public class ProcessTableController {
 				} 
 				Label versionDocumentation = new Label();
 				if ("".compareTo(version.getDocumentation())!=0) {
-					String docBeginning = version.getDocumentation().split(" ")[0];
+					String docBeginning = "Click here to read more...";
 					versionDocumentation.setValue(docBeginning);
 					Popup docPopup = new Popup();
 					Html docHtml = new Html(version.getDocumentation());
-					docPopup.appendChild(docHtml);					
+					docPopup.appendChild(docHtml);
 					versionDocumentation.setPopup(docPopup);
 					this.mainC.appendChild(docPopup);
 				} else {
 					versionDocumentation.setValue("");
 				}
 				processVersionsR.appendChild(versionR);
-
 				versionR.appendChild(versionCB);
 				versionR.appendChild(versionName);
 				versionR.appendChild(versionCreationDate);
 				versionR.appendChild(versionLastUpdate);
 				versionR.appendChild(versionDocumentation);
 				versionR.appendChild(versionRanking);
-
 				/* the process might has been already selected, thus its latest version has to be marked as 
 				 * selected too.
 				 */
