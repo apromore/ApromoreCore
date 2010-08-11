@@ -24,4 +24,5 @@ public final class Constants {
 	public static final String CANONICAL = "Canonical";
 	
 	public static final String RELEASE_NOTES = "http://code.google.com/p/apromore/wiki/ReleaseNotes";
+	public static final String MORE_INFO = "http://code.google.com/p/apromore";
 }
