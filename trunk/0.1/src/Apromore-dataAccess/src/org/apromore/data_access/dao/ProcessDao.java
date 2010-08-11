@@ -896,7 +896,9 @@ public class ProcessDao extends BasicDao {
 				} catch (NullPointerException e) {
 					throw new ExceptionSyncNPF ("Missing information in NPF.");
 				}
-				if (newVersion.compareTo(preVersion)!=0) {
+				if (preVersion.compareTo("0.0")!=0 && newVersion.compareTo(preVersion)!=0) {
+					// version "0.0" is the one created at process creation time. 
+					// Should be overridden by the next one.
 					// if preVersion != newVersion: try to derive newVersion from preVersion
 					String newCpf_uri = newCpf(processId, newVersion);
 					copyParam2xpdl (pkg, newCpf_uri, processName, newVersion, username, creationDate, lastUpdate, documentation);
@@ -935,15 +937,29 @@ public class ProcessDao extends BasicDao {
 							throw new ExceptionStoreVersion ("Version " + preVersion + " cannot be overridden.");
 						} else {
 							cpf_uri = rs.getString(1);
-							copyParam2xpdl (pkg, cpf_uri, processName, preVersion, username, creationDate, lastUpdate, documentation);
-							Marshaller m = jc.createMarshaller();
-							m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-							JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(pkg);
-							ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
-							m.marshal(rootxpdl, xpdl_xml);
-							InputStream newNpf_is = new ByteArrayInputStream(xpdl_xml.toByteArray());
-							overrideVersion (processId, preVersion, nativeType, newNpf_is, cpf_is, apf_is,
-									creationDate, lastUpdate, documentation);
+							if (preVersion.compareTo("0.0")==0) {
+								// version "0.0" is the one created at process creation time. 
+								// Should be overridden by the next one.
+								copyParam2xpdl (pkg, cpf_uri, processName, newVersion, username, creationDate, lastUpdate, documentation);
+								Marshaller m = jc.createMarshaller();
+								m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+								JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(pkg);
+								ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
+								m.marshal(rootxpdl, xpdl_xml);
+								InputStream newNpf_is = new ByteArrayInputStream(xpdl_xml.toByteArray());
+								overrideVersion (processId, preVersion, nativeType, newNpf_is, cpf_is, apf_is,
+										creationDate, lastUpdate, documentation, newVersion);
+							} else {
+								copyParam2xpdl (pkg, cpf_uri, processName, preVersion, username, creationDate, lastUpdate, documentation);
+								Marshaller m = jc.createMarshaller();
+								m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+								JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(pkg);
+								ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
+								m.marshal(rootxpdl, xpdl_xml);
+								InputStream newNpf_is = new ByteArrayInputStream(xpdl_xml.toByteArray());
+								overrideVersion (processId, preVersion, nativeType, newNpf_is, cpf_is, apf_is,
+										creationDate, lastUpdate, documentation, null);
+							}
 						}
 					}
 					conn.commit();
@@ -955,7 +971,7 @@ public class ProcessDao extends BasicDao {
 				TypeEPML epml = rootElement.getValue();
 				// TODO: to be completed with EPML
 
-				if (newVersion.compareTo(preVersion)!=0) {
+				if (preVersion.compareTo("0.0")!=0 && newVersion.compareTo(preVersion)!=0) {
 					// if preVersion != newVersion: try to derive newVersion from preVersion
 					String newCpf_uri = newCpf(processId, preVersion);
 					deriveVersion (newCpf_uri, processId, preVersion, newVersion, nativeType, npf_is, cpf_is, apf_is,
@@ -974,9 +990,17 @@ public class ProcessDao extends BasicDao {
 					if (rs.next()) {
 						throw new ExceptionStoreVersion ("Version " + preVersion + " cannot be overridden.");
 					} else {
-						overrideVersion (processId, preVersion, nativeType, npf_is, cpf_is, apf_is,
-								creationDate, lastUpdate, documentation);
-						// TODO: synchronise data with npf.
+						if (preVersion.compareTo("0.0")==0) {
+							// version "0.0" is the one created at process creation time. 
+							// Should be overridden by the next one.
+							overrideVersion (processId, preVersion, nativeType, npf_is, cpf_is, apf_is,
+									creationDate, lastUpdate, documentation, newVersion);
+							// TODO: synchronise data with npf.
+						} else {
+
+							overrideVersion (processId, preVersion, nativeType, npf_is, cpf_is, apf_is,
+									creationDate, lastUpdate, documentation, null);
+						}
 					}
 					conn.commit();
 				}
@@ -1020,6 +1044,8 @@ public class ProcessDao extends BasicDao {
 	 * Override the existing version versionName of process whose id is processId with the
 	 * values nativeType, npf_string, cpf_string, anf_string, creationDate, lastUpdate, 
 	 * annotation and documentation.
+	 * If initialVersion has a value, then versionName was created at creation time and
+	 * should be renamed with initialVersion
 	 * @param processId
 	 * @param versionName
 	 * @param nativeType
@@ -1030,13 +1056,14 @@ public class ProcessDao extends BasicDao {
 	 * @param lastUpdate
 	 * @param annotation
 	 * @param documentation
+	 * @param initialVersion
 	 * @throws ExceptionDao 
 	 * @throws SQLException 
 	 */
 	private void overrideVersion(int processId, String versionName,
 			String nativeType, InputStream npf_is, InputStream cpf_is,
 			InputStream apf_is, String creationDate,
-			String lastUpdate, String documentation) throws ExceptionDao, SQLException {
+			String lastUpdate, String documentation, String initialVersion) throws ExceptionDao, SQLException {
 
 		Connection conn = null;
 		Statement stmt = null;
@@ -1122,7 +1149,20 @@ public class ProcessDao extends BasicDao {
 			stmtp.setString (4, apf_string);
 			stmtp.executeUpdate();
 			stmtp.close();
-
+			if (initialVersion != null){
+				// rename versionName into initialVersion
+				query = " update " + ConstantDB.TABLE_CANONICALS
+				+ " set " + ConstantDB.ATTR_VERSION_NAME + " = ? "
+				+ " , " + ConstantDB.ATTR_LAST_UPDATE + " = null "
+				+ " where " + ConstantDB.ATTR_PROCESSID + " = ? "
+				+   " and " + ConstantDB.ATTR_VERSION_NAME + " = ? ";
+				stmtp = conn.prepareStatement(query);
+				stmtp.setString(1,initialVersion);
+				stmtp.setInt(2,processId);
+				stmtp.setString(3, versionName);
+				stmtp.executeUpdate();
+				stmtp.close();
+			}
 			conn.commit();			
 		} catch (Exception e) {
 			e.printStackTrace();
