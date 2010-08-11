@@ -227,17 +227,6 @@ import de.epml.TypeEPML;
 			int processId = payload.getProcessId();
 			String nativeType = payload.getNativeType();
 			String preVersion = payload.getPreVersion();
-
-			String line = null;
-			StringBuilder sb0 = new StringBuilder();
-			BufferedReader reader = new BufferedReader(new InputStreamReader(native_is, "UTF-8"));
-			while ((line = reader.readLine()) != null) {
-				sb0.append(line).append("\n");
-			}
-			System.out.println("Manager-portal: ");
-			System.out.println(sb0.toString());
-			native_is.reset();
-			
 			RequestToCanoniser request = new RequestToCanoniser();
 			request.CanoniseVersion (editSessionCode, processId, preVersion, nativeType, native_is);
 			result.setCode(0);
