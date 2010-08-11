@@ -154,7 +154,9 @@ public class EditOneProcessController extends Window {
 			}
 			// editProcess is hosted by main controller as it is called by others.
 			this.mainC.editProcess(processId, processName, version, nativeType, domain, annotation);
-			cancel();
+			// delete process from the list of processes still to be edited
+			this.editListProcessesC.deleteFromToBeEdited(this);
+			closePopup();
 		}
 	}
 

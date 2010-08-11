@@ -130,7 +130,9 @@ public class MainController extends Window {
 		while (itC.hasNext()) {
 			Component C = itC.next();
 			if (C.getClass().getName().compareTo("org.zkoss.zul.Menuitem")==0) {
-				((Menuitem) C).setDisabled(!connected);
+				if (C.getId().compareTo("processMerge")!=0) {
+					((Menuitem) C).setDisabled(!connected);
+				}
 			}
 		}
 	}

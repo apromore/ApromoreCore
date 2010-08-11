@@ -20,7 +20,7 @@
 		<Header id="headercomp" />
 
 		<borderlayout vflex="1">
-			<west title="Filter" size="20%" collapsible="true"
+			<west title="Key word filter" size="20%" collapsible="true"
 				flex="true" splittable="true">
 				<borderlayout>
 					<north flex="true">
