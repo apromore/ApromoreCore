@@ -62,7 +62,7 @@
 				<label value="Claim" />
 				<label value="EPML" />
 				<label value="Insurance" />
-				<label value="1" />
+				<hbox> <image src="/img/selectAll-12.png"/> <image src="/img/unselectAll-12.png"/></hbox>
 				<label value="0.3" />
 				<label value="larosa" />
 			</row>

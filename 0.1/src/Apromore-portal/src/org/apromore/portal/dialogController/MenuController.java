@@ -41,7 +41,7 @@ public class MenuController extends Menubar {
 	private Menuitem mergeMI;
 
 	private Menu evaluationM;
-	private Menu comparisonM;
+	private Menu filteringM;
 	private Menu managementM;
 	private Menu presentationM;
 	private Menuitem evalQualityMI;
@@ -63,7 +63,7 @@ public class MenuController extends Menubar {
 		this.deleteMI = (Menuitem) this.menuB.getFellow("processDelete");
 		this.mergeMI = (Menuitem) this.menuB.getFellow("processMerge");
 		this.evaluationM = (Menu) this.menuB.getFellow("evaluation");
-		this.comparisonM = (Menu) this.menuB.getFellow("comparison");
+		this.filteringM = (Menu) this.menuB.getFellow("filtering");
 		this.managementM = (Menu) this.menuB.getFellow("management");
 		this.presentationM = (Menu) this.menuB.getFellow("presentation");
 
@@ -291,6 +291,10 @@ public class MenuController extends Menubar {
 
 	public void setMenuB(Menubar menuB) {
 		this.menuB = menuB;
+	}
+
+	public Menuitem getMergeMI() {
+		return mergeMI;
 	}
 
 }

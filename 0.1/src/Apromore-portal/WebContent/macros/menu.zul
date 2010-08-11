@@ -18,13 +18,11 @@
 			<menuseparator />
 		</menupopup>
 	</menu>
-	<menu id="comparison" label="Comparison">
+	<menu id="filtering" label="Advanced filtering">
 		<menupopup>
-			<menuitem id="comparisonSimilarity" label="Similarity search" disabled="true"/>
+			<menuitem id="similaritySearch" label="Similarity search" disabled="true"/>
 			<menuseparator />
-			<menuitem id="comparisonComformance" label="Comformance analysis" disabled="true" />
-			<menuseparator />
-			<menuitem id="comparisonPattern" label="Pattern-based analysis" disabled="true"/>
+			<menuitem id="exactQuerying" label="Query" disabled="true" />
 		</menupopup>
 	</menu>
 	<menu id="evaluation" label="Evaluation">

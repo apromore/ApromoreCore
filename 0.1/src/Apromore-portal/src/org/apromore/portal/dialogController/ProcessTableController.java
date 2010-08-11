@@ -13,9 +13,7 @@ import java.util.Set;
 
 import javax.xml.bind.JAXBException;
 
-import org.apache.cxf.version.Version;
 import org.apromore.portal.common.Constants;
-import org.apromore.portal.common.ProcessIdColComparator;
 import org.apromore.portal.common.ProcessNameColComparator;
 import org.apromore.portal.exception.ExceptionDao;
 import org.apromore.portal.manager.RequestToManager;
@@ -34,6 +32,7 @@ import org.zkoss.zul.Detail;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Html;
+import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Popup;
@@ -264,7 +263,10 @@ public class ProcessTableController {
 		processName.setStyle(Constants.TOOLBARBUTTON_STYLE);
 		Label processOriginalLanguage = new Label(process.getOriginalNativeType());
 		Label processDomain = new Label(process.getDomain());
-		Label processProcessRanking = new Label(process.getRanking().toString());
+		Hbox processProcessRanking = new Hbox();
+		if (process.getRanking()!=null && process.getRanking().toString().compareTo("")!=0) {
+			displayRanking(processProcessRanking, process.getRanking());
+		}
 		Label processLatestVersion = new Label(process.getLastVersion());
 		Label processOwner = new Label(process.getOwner());
 		processSummaryR.appendChild(processSummaryD);
@@ -370,9 +372,9 @@ public class ProcessTableController {
 				if (version.getLastUpdate()!= null) {
 					versionLastUpdate.setValue(version.getLastUpdate().toString());
 				}
-				Label versionRanking = new Label ();
-				if (version.getRanking()!=null) {
-					versionRanking.setValue(version.getRanking());
+				Hbox versionRanking = new Hbox ();
+				if (version.getRanking()!=null && version.getRanking().toString().compareTo("")!=0) {
+					displayRanking(versionRanking, version.getRanking());
 				} 
 				Label versionDocumentation = new Label();
 				if ("".compareTo(version.getDocumentation())!=0) {
@@ -411,6 +413,42 @@ public class ProcessTableController {
 						revertProcessVersion (event);
 					}
 				});
+			}
+		}
+	}
+
+	/**
+	 * Display in hbox versionRanking, 5 stars according to ranking (0...5).
+	 * Pre-condition: ranking is a non empty string.
+	 * TODO: allow users to rank a process version directly by interacting with 
+	 * the stars displayed.
+	 * @param versionRanking
+	 * @param ranking
+	 */
+	private void displayRanking(Hbox rankingHb, String ranking) {
+		String imgFull = "/img/selectAll-12.png";
+		String imgMid = "/img/revertSelection-12.png";
+		String imgBlank = "/img/unselectAll-12.png";
+		Image star;
+		Float rankingF = Float.parseFloat(ranking);
+		int fullStars = rankingF.intValue();
+		int i;
+		for (i=1;i<=fullStars;i++){
+			star = new Image();
+			rankingHb.appendChild(star);
+			star.setSrc(imgFull);
+		}
+		if (i<=5) {
+			if (Math.floor(rankingF)!=rankingF) {
+				star = new Image();
+				star.setSrc(imgMid);
+				rankingHb.appendChild(star);
+				i = i+1;
+			}
+			for (int j=i;j<=5;j++){
+				star = new Image();
+				star.setSrc(imgBlank);
+				rankingHb.appendChild(star);
 			}
 		}
 	}
@@ -468,7 +506,7 @@ public class ProcessTableController {
 				this.processHM.remove(processCB);
 			} else {
 				// update the label of the latest version
-				Label latest = (Label) processR.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getNextSibling()
+				Label latest = (Label) processR.getFirstChild().getNextSibling().getNextSibling().getNextSibling()
 				.getNextSibling().getNextSibling().getNextSibling();
 				Row lastVersionR = (Row) versionsR.getLastChild();
 				Checkbox lastVersionCB = (Checkbox) lastVersionR.getFirstChild();
