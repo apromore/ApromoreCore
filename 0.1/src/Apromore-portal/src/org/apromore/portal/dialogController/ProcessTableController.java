@@ -15,6 +15,7 @@ import javax.xml.bind.JAXBException;
 
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.ProcessNameColComparator;
+import org.apromore.portal.common.ProcessRankingColComparator;
 import org.apromore.portal.exception.ExceptionDao;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummariesType;
@@ -101,7 +102,7 @@ public class ProcessTableController {
 	private Button unselectAllB;
 	private Button refreshB;
 	private Column columnName;								// column to display process name
-
+	private Column columnRanking; 							// column to display process ranking
 	public ProcessTableController(MainController mainController) throws Exception {
 
 		/**
@@ -119,15 +120,21 @@ public class ProcessTableController {
 		this.selectAllB = (Button) this.processSummariesGrid.getFellow("selectAllB");
 		this.refreshB = (Button) this.processSummariesGrid.getFellow("refreshB");
 		this.columnName = (Column) this.processSummariesGrid.getFellow("columnName");
+		this.columnRanking = (Column) this.processSummariesGrid.getFellow("columnRanking");
 
 		ProcessNameColComparator asc1 = new ProcessNameColComparator(true),
-		dsc1 = new ProcessNameColComparator(false);
+			dsc1 = new ProcessNameColComparator(false);
 		this.columnName.setSortAscending(asc1);
 		this.columnName.setSortDescending(dsc1);
 
+		ProcessRankingColComparator asc2 = new ProcessRankingColComparator(true),
+			dsc2 = new ProcessRankingColComparator(false);
+		this.columnRanking.setSortAscending(asc2);
+		this.columnRanking.setSortDescending(dsc2);
+		
 		// if change grid layouts modify value accordingly
-		this.latestVersionPos = 6;
-		this.processTbPos = 2 ;
+		this.latestVersionPos = 8;
+		this.processTbPos = 3 ;
 
 		// initialize hashmaps
 		this.processHM = new HashMap<Checkbox,ProcessSummaryType>();
@@ -247,9 +254,7 @@ public class ProcessTableController {
 		String processIdS = process.getId().toString();
 		processSummaryD.setId(processIdS);
 		processSummaryD.setOpen(false);
-
 		this.processSummariesRows.appendChild(processSummaryR);
-
 		/** 
 		 * assign process summary values to labels
 		 */
@@ -259,22 +264,26 @@ public class ProcessTableController {
 		this.processHM.put(processCB, process);
 		List<Checkbox> listV = new ArrayList<Checkbox>();
 		this.mapProcessVersions.put(processCB, listV);
+		Label processIdLb = new Label(process.getId().toString());
 		Toolbarbutton processName = new Toolbarbutton(process.getName());
 		processName.setStyle(Constants.TOOLBARBUTTON_STYLE);
 		Label processOriginalLanguage = new Label(process.getOriginalNativeType());
 		Label processDomain = new Label(process.getDomain());
-		Hbox processProcessRanking = new Hbox();
+		Hbox processRankingHB = new Hbox();
 		if (process.getRanking()!=null && process.getRanking().toString().compareTo("")!=0) {
-			displayRanking(processProcessRanking, process.getRanking());
+			displayRanking(processRankingHB, process.getRanking());
 		}
+		Label processRankingValue = new Label(process.getRanking());
 		Label processLatestVersion = new Label(process.getLastVersion());
 		Label processOwner = new Label(process.getOwner());
 		processSummaryR.appendChild(processSummaryD);
 		processSummaryR.appendChild(processCB);
+		processSummaryR.appendChild(processIdLb);
 		processSummaryR.appendChild(processName);
 		processSummaryR.appendChild(processOriginalLanguage);
 		processSummaryR.appendChild(processDomain);
-		processSummaryR.appendChild(processProcessRanking);
+		processSummaryR.appendChild(processRankingHB);
+		processSummaryR.appendChild(processRankingValue);
 		processSummaryR.appendChild(processLatestVersion);
 		processSummaryR.appendChild(processOwner);
 
@@ -504,7 +513,7 @@ public class ProcessTableController {
 				this.processHM.remove(processCB);
 			} else {
 				// update the label of the latest version
-				Label latest = (Label) processR.getFirstChild().getNextSibling().getNextSibling().getNextSibling()
+				Label latest = (Label) processR.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getNextSibling()
 				.getNextSibling().getNextSibling().getNextSibling();
 				Row lastVersionR = (Row) versionsR.getLastChild();
 				Checkbox lastVersionCB = (Checkbox) lastVersionR.getFirstChild();
