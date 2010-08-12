@@ -20,7 +20,7 @@
 			<menuseparator />
 		</menupopup>
 	</menu>
-	<menu id="filtering" label="Advanced filtering">
+	<menu id="filtering" label="Filtering">
 		<menupopup>
 			<menuitem id="similaritySearch" label="Similarity search" disabled="true"/>
 			<menuseparator />

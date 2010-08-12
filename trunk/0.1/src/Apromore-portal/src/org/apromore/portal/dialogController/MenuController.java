@@ -12,6 +12,7 @@ import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -20,6 +21,7 @@ import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Window;
 
 
 public class MenuController extends Menubar {
@@ -119,6 +121,12 @@ public class MenuController extends Menubar {
 				deleteSelectedProcessVersions ();
 			}
 		});	
+		this.similaritySearchMI.addEventListener("onClick",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				searchSimilarProcesses ();
+			}
+		});	
 		this.mergeMI.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -127,8 +135,24 @@ public class MenuController extends Menubar {
 		});	
 	}
 
+	protected void searchSimilarProcesses() throws SuspendNotAllowedException, InterruptedException {
+		// TODO: GUI only, no logic
+		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
+			getSelectedProcessVersions();
+
+		if (selectedProcessVersions.size()==1) {
+			SimilaritySearchController similaritySearchC = 
+				new SimilaritySearchController(this. mainC, this, selectedProcessVersions);
+		} else if (selectedProcessVersions.size()==0) {
+			this.mainC.displayMessage("No process version selected.");
+		} else {
+			this.mainC.displayMessage("Too many versions selected (should exactly one).");
+		}
+		
+	}
+
 	protected void mergeSelectedProcessVersions() throws InterruptedException {
-		// TODO Auto-generated method stub
+		// TODO: GUI only, no logic
 		Messagebox.show("Merge under construction...", "Attention", Messagebox.OK,
 				Messagebox.INFORMATION);
 	}
