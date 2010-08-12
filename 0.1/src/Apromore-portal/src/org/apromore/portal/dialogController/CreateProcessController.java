@@ -122,6 +122,7 @@ public class CreateProcessController {
 			cbi = new Listitem();
 			this.nativeTypesLB.appendChild(cbi);
 			cbi.setLabel(this.formats_ext.get(it.next()));
+			
 			// TODO temporary so the user cannot choose to edit in epml format
 			if ("EPML 2.0".compareTo(cbi.getLabel())==0) {
 				cbi.setDisabled(true);
