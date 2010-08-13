@@ -75,6 +75,7 @@ public class EditOneProcessController extends Window {
 //				cbi.setSelected(true);
 //			}
 		}
+		((Listitem) this.nativeTypesLB.getFirstChild()).setSelected(true);
 		// Build list of annotations associated with the process version
 		for (int i=0; i<this.version.getAnnotations().size(); i++){
 			cbi = new Listitem();
