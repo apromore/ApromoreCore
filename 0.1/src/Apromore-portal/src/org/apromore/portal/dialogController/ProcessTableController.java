@@ -93,7 +93,8 @@ public class ProcessTableController {
 	// associated with checkbox p
 	private Integer latestVersionPos ;						// position of label latest version in row of process summary
 	private Integer processTbPos;							// position of toolbarbuttons associated with process names in rows of process summary
-
+	private Integer processSummaryCBPos;					// position of checkbox associated with process summary
+	
 	private Hbox pagingAndButtons;							// hbox which contains paging ang button components
 	private Hbox buttons;
 	private Paging pg;
@@ -134,7 +135,8 @@ public class ProcessTableController {
 		
 		// if change grid layouts modify value accordingly
 		this.latestVersionPos = 8;
-		this.processTbPos = 3 ;
+		this.processTbPos = 3;
+		this.processSummaryCBPos = 1;
 
 		// initialize hashmaps
 		this.processHM = new HashMap<Checkbox,ProcessSummaryType>();
@@ -195,7 +197,7 @@ public class ProcessTableController {
 		List<Row> processSummariesRs = this.processSummariesRows.getChildren();
 		for (int i=0; i<processSummariesRs.size();i++){
 			Row processSummaryR = processSummariesRs.get(i);
-			Checkbox processSummaryCB = (Checkbox) processSummaryR.getFirstChild().getNextSibling();
+			Checkbox processSummaryCB = (Checkbox) processSummaryR.getChildren().get(this.processSummaryCBPos);
 			if (processSummaryCB.isChecked()) {
 				reverseProcessSelection(i);
 			}
@@ -206,7 +208,7 @@ public class ProcessTableController {
 		List<Row> processSummariesRs = this.processSummariesRows.getChildren();
 		for (int i=0; i<processSummariesRs.size();i++){
 			Row processSummaryR = processSummariesRs.get(i);
-			Checkbox processSummaryCB = (Checkbox) processSummaryR.getFirstChild().getNextSibling();
+			Checkbox processSummaryCB = (Checkbox) processSummaryR.getChildren().get(this.processSummaryCBPos);
 			if (!processSummaryCB.isChecked()) {
 				reverseProcessSelection(i);
 			}
@@ -433,9 +435,9 @@ public class ProcessTableController {
 	 * @param ranking
 	 */
 	private void displayRanking(Hbox rankingHb, String ranking) {
-		String imgFull = "/img/selectAll-12.png";
-		String imgMid = "/img/revertSelection-12.png";
-		String imgBlank = "/img/unselectAll-12.png";
+		String imgFull = Constants.STAR_FULL_ICON;
+		String imgMid = Constants.STAR_MID_ICON;
+		String imgBlank = Constants.STAR_BLK_ICON;
 		Image star;
 		Float rankingF = Float.parseFloat(ranking);
 		int fullStars = rankingF.intValue();
@@ -469,7 +471,8 @@ public class ProcessTableController {
 	 * @throws InstantiationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public void unDisplay(HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws ClassNotFoundException, InstantiationException, IllegalAccessException, ExceptionDao, JAXBException {
+	public void unDisplay(HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) 
+	throws ClassNotFoundException, InstantiationException, IllegalAccessException, ExceptionDao, JAXBException {
 		// Update the table
 		Set<ProcessSummaryType> keySet = processVersions.keySet();
 		Iterator<ProcessSummaryType> it = keySet.iterator();
@@ -513,8 +516,7 @@ public class ProcessTableController {
 				this.processHM.remove(processCB);
 			} else {
 				// update the label of the latest version
-				Label latest = (Label) processR.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getNextSibling()
-				.getNextSibling().getNextSibling().getNextSibling();
+				Label latest = (Label) processR.getChildren().get(this.latestVersionPos);
 				Row lastVersionR = (Row) versionsR.getLastChild();
 				Checkbox lastVersionCB = (Checkbox) lastVersionR.getFirstChild();
 				latest.setValue(this.processVersionsHM.get(lastVersionCB).getName());
