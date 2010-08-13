@@ -25,4 +25,10 @@ public final class Constants {
 	
 	public static final String RELEASE_NOTES = "http://code.google.com/p/apromore/wiki/ReleaseNotes";
 	public static final String MORE_INFO = "http://code.google.com/p/apromore";
+
+	public static final String MSG_WHEN_CLOSE = "You are about to leave Apromore. You might loose unsaved data.";
+	
+	public static final String STAR_FULL_ICON = "/img/selectAll-12.png";
+	public static final String STAR_BLK_ICON = "/img/unselectAll-12.png";
+	public static final String STAR_MID_ICON = "/img/revert-12.png";
 }

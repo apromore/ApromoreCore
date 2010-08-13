@@ -27,6 +27,7 @@ import org.apromore.portal.model_manager.UserType;
 import org.apromore.portal.model_manager.UsernamesType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Menuitem;
@@ -47,13 +48,13 @@ public class MainController extends Window {
 	private ProcessTableController processtable;
 	private SimpleSearchController simplesearch;
 	private UserType currentUser ;				// the connected user, if any
-	private String confirmCloseMsg;
 	private ShortMessageController shortmessageC;
 	private Window shortmessageW;
 	private String host;
 	private String OryxEndPoint_xpdl;
 	private String OryxEndPoint_epml;
 	private Logger LOG;
+	private String msgWhenClose;
 
 	// uncomment when ready
 	//private NavigationController navigation;
@@ -69,6 +70,10 @@ public class MainController extends Window {
 	 */
 	public void onCreate() throws InterruptedException {		
 		try {
+			// if client browser is not gecko3 based (such as firefox) raise an exception
+			if (!Executions.getCurrent().isGecko() && !Executions.getCurrent().isGecko3()) {
+				throw new Exception("Sorry, we currently support firefox only.");
+			}
 			this.LOG = Logger.getLogger(MainController.class.getName());
 			/**
 			 * to get data
@@ -84,14 +89,15 @@ public class MainController extends Window {
 			//this.navigation = new NavigationController (this);
 
 			this.currentUser = null;
-			this.confirmCloseMsg ="You are about to leave Apromore. You might loose unsaved data.";
+			this.msgWhenClose = null;
 			// read Oryx access point in properties
 			InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);;  
 			Properties properties = new Properties();  
 			properties.load(inputStream);  
 			this.host = properties.getProperty("Host"); 
 			this.OryxEndPoint_xpdl = properties.getProperty("OryxEndPoint_xpdl");  
-			this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");  	
+			this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml"); 
+			
 		} catch (Exception e) {
 			Messagebox.show("Repository not available ("+e.getMessage()+")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
@@ -102,7 +108,8 @@ public class MainController extends Window {
 	 * register an event listener for the clientInfo event (to prevent user to close the browser window)
 	 */
 	public void onClientInfo (ClientInfoEvent event) {
-		Clients.confirmClose(this.confirmCloseMsg);
+		//Clients.confirmClose(this.msgWhenClose); doesn't work....
+		Clients.confirmClose(Constants.MSG_WHEN_CLOSE);
 	}
 
 	public void displayProcessSummaries(ProcessSummariesType processSummaries) throws Exception {
@@ -295,6 +302,11 @@ public class MainController extends Window {
 
 	public void setCurrentUser(UserType currentUser) {
 		this.currentUser = currentUser;
+		if (currentUser == null) {
+			this.msgWhenClose = null;
+		} else {
+			this.msgWhenClose = Constants.MSG_WHEN_CLOSE;
+		}
 	}
 
 	public ShortMessageController getShortmessageC() {
@@ -307,14 +319,6 @@ public class MainController extends Window {
 
 	public Window getShortmessageW() {
 		return shortmessageW;
-	}
-
-	public String getConfirmCloseMsg() {
-		return confirmCloseMsg;
-	}
-
-	public void setConfirmCloseMsg(String confirmCloseMsg) {
-		this.confirmCloseMsg = confirmCloseMsg;
 	}
 
 	public void setShortmessageW(Window shortmessageW) {
