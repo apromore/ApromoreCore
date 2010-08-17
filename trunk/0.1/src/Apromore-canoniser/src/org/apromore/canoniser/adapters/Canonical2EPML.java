@@ -1,3 +1,23 @@
+/**
+ * Canonical2EPML is a class for converting an CanonicalProcessType
+ *  object into a TypeEPML object.
+ * A Canonical2EPML object encapsulates the state of the main
+ * component resulted from the canonization process.  This
+ * state information includes the TypeEpml object which hold a header
+ * for the rest of the EPML elements.
+ * <p>
+ * 
+ *  
+                    
+@author      Abdul
+ *  
+                    
+@version     %I%, %G%
+ *  
+                    
+@since       1.0
+ */
+
 package org.apromore.canoniser.adapters;
 
 import java.math.BigInteger;
@@ -317,7 +337,7 @@ public class Canonical2EPML {
 						arcs_list.add(arc1);
 					}
 				}
-				else if(obj instanceof TypeEvent)
+				/*else if(obj instanceof TypeEvent)
 				{
 					if(ll.contains(resT.getId()))
 					{
@@ -328,7 +348,7 @@ public class Canonical2EPML {
 						arc2.setRelation(rel);
 						arcs_list.add(arc2);
 					}
-				}
+				}*/
 			}
 		}
 		

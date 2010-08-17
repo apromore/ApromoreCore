@@ -13,7 +13,9 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
 
 
@@ -46,7 +48,8 @@ import javax.xml.bind.annotation.XmlType;
     "coordinates",
     "definitions",
     "attributeTypes",
-    "directory"
+    "directory",
+    "epcs"
 })
 public class TypeEPML
     extends TExtensibleElements
@@ -59,6 +62,42 @@ public class TypeEPML
     protected List<TypeAttrTypes> attributeTypes;
     @XmlElement(required = true)
     protected List<TypeDirectory> directory;
+    
+    // modify
+    @XmlElements({
+        @XmlElement(name = "epc", type = TypeEPC.class)
+    })
+    protected List<TypeEPC> epcs;
+    
+    /**
+     * Gets the value of the epc property.
+     * 
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the epc property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getEpc().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link TypeEPC }
+     * 
+     */
+    public List<TypeEPC> getEpcs()
+    {
+    	if (epcs == null) {
+            epcs = new ArrayList<TypeEPC>();
+        }
+        return this.epcs;
+    }
+    // end
 
     /**
      * Gets the value of the graphicsDefault property.
