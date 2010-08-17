@@ -1,3 +1,26 @@
+/**
+ * EPML2Canonical is a class for converting an TypeEPML object
+ * into a CanonicalProcessType object.
+ * A EPML2Canonical object encapsulates the state of the two main
+ * components resulted from the canonization process.  This
+ * state information includes:
+ * <ul>
+ * <li>CanonicalProcessType object
+ * <li>AnnotationsType object
+ * </ul>
+ * <p>
+ * 
+ *  
+                    
+@author      Abdul
+ *  
+                    
+@version     %I%, %G%
+ *  
+                    
+@since       1.0
+ */
+
 package org.apromore.canoniser.adapters;
 
 import java.math.BigInteger;
@@ -91,8 +114,7 @@ public class EPML2Canonical{
 	
 	public EPML2Canonical(TypeEPML epml) throws JAXBException {
 
-	
-		if(epml.getDirectory() != null)
+		if(epml.getDirectory() != null && epml.getDirectory().size() > 0)
 		{
 			for(int i = 0; i < epml.getDirectory().size(); i++)
 			{
@@ -108,9 +130,20 @@ public class EPML2Canonical{
 				}
 				for(TaskType task: subnet_list)
 					task.setSubnetId(id_map.get(task.getSubnetId()));
+				subnet_list.clear();
 			}
 		} else {
 			// the epml element doesn't have any directory
+			for (TypeEPC epc: epml.getEpcs()) {
+					NetType net = new NetType();
+					translateEpc(net,epc);
+					id_map.put(epc.getEpcId(), BigInteger.valueOf(ids));
+					net.setId(BigInteger.valueOf(ids++));
+					cproc.getNet().add(net);
+			}
+			for(TaskType task: subnet_list)
+				task.setSubnetId(id_map.get(task.getSubnetId()));
+			subnet_list.clear();
 		}
 
 	}
@@ -221,7 +254,7 @@ public class EPML2Canonical{
 			for(BigInteger s: flow_source_id_list)
 				if(n.equals(s))
 					counter++;
-			if(counter == 1)
+			if(counter <= 1)
 				//TODO
 				//the and is joint
 			{
@@ -240,6 +273,7 @@ public class EPML2Canonical{
 				net.getNode().add(andS);
 			}
 		}
+		and_list.clear();
 		
 		/// make the same for or 
 		for(TypeOR or: or_list)
@@ -249,7 +283,7 @@ public class EPML2Canonical{
 			for(BigInteger s: flow_source_id_list)
 				if(n.equals(s))
 					counter++;
-			if(counter == 1)
+			if(counter <= 1)
 				//TODO
 				//the or is joint
 			{
@@ -269,6 +303,7 @@ public class EPML2Canonical{
 				processUnrequiredEvents(net,or.getId()); // after creating the split node ,, delete the event
 			}
 		}
+		or_list.clear();
 		
 		// make the same for xor
 		for(TypeXOR xor: xor_list)
@@ -278,7 +313,7 @@ public class EPML2Canonical{
 			for(BigInteger s: flow_source_id_list)
 				if(n.equals(s))
 					counter++;
-			if(counter == 1)
+			if(counter <= 1)
 				//TODO
 				// xor is joint
 			{
@@ -288,7 +323,6 @@ public class EPML2Canonical{
 				net.getNode().add(xorJ);
 			}
 			else
-				//TODO
 				//xor is split, create it
 			{
 				XORSplitType xorS = new XORSplitType();
@@ -298,11 +332,11 @@ public class EPML2Canonical{
 				processUnrequiredEvents(net,xor.getId()); // after creating the split node ,, delete the event
 			}
 		}
+		xor_list.clear();
 		
 		// find the edge after the split
 		// and remove the event
 		//TODO
-
 		
 	}
 
