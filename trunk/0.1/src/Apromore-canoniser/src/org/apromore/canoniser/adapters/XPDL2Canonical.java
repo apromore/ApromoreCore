@@ -91,6 +91,21 @@ public class XPDL2Canonical {
 		return anf;
 	}
 
+    /** 
+     * The constructor receives the file header then does the canonization process
+     * in order to allow the user to retrieve the produced process again into
+     * the canonical format. The user also will be able to retrieve the annotation
+     * element which stores the annotation data for the canonized model isolated 
+     * from the process flow.
+     * <p>
+     *
+     *  
+                    
+@param pkg       the header for an XPDL (XML Process Definition Language) which 
+     * is file format for BPMN diagrams.
+                    
+@since           1.0
+     */
 	public XPDL2Canonical(PackageType pkg) throws JAXBException, ExceptionAdapters {
 
 		this.cpf = new CanonicalProcessType();
