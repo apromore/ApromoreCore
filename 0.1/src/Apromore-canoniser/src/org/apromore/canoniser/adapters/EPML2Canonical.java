@@ -112,6 +112,24 @@ public class EPML2Canonical{
 		return annotations;
 	}
 	
+    /** 
+     * The constructor receives the header then does the canonization process
+     * in order to allow the user to retrieve the produced process again into
+     * the canonical format. The user also will be able to retrieve the annotation
+     * element which stores the annotation data for the canonized model isolated 
+     * from the process flow.
+     * <p>
+     *
+     *  
+                    
+	@param epml       the header for an EPML (EPC Markup Language) which 
+     * is file format for EPC diagrams.
+     * 
+
+	@throws JAXBException
+                    
+	@since           1.0
+     */
 	public EPML2Canonical(TypeEPML epml) throws JAXBException {
 
 		if(epml.getDirectory() != null && epml.getDirectory().size() > 0)
@@ -467,7 +485,7 @@ public class EPML2Canonical{
 				{
 					event_id = edge.getTargetId();
 					for(EdgeType edge2: net.getEdge())
-						if(edge2.getSourceId().equals(edge.getTargetId()))
+						if(edge2.getSourceId().equals(event_id))
 						{
 							edge.setTargetId(edge2.getTargetId());
 							edge_remove_list.add(edge2);

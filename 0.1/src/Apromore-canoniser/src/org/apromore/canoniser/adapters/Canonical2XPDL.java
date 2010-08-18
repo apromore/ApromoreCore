@@ -77,8 +77,8 @@ public class Canonical2XPDL {
 	private PackageType xpdl; 
 	/**
 	 * de-canonize data (canonical) into xpdl
-	 * @param data
-	 * @param xpdl
+	 * @param data 
+	 * @param xpdl 
 	 * @throws JAXBException
 	 */
 	@SuppressWarnings("unchecked")
@@ -156,6 +156,7 @@ public class Canonical2XPDL {
 		
 		resource_ref_list.clear();
 	}
+	
 	private void translateNet(ProcessType bpmnproc, NetType net) {
 		Activities acts = new Activities();
 		Transitions trans = new Transitions();
@@ -207,6 +208,7 @@ public class Canonical2XPDL {
 	private void completeMapping(ProcessType bpmnproc, NetType net) {
 		for (EventType event: events.keySet()) {
 			Activity act = canon2xpdl.get(event);
+			act.setName(event.getName());
 			Event xevent = events.get(event);
 			if (incomingFlows.get(act.getId()) == null) {
 				StartEvent startEvent = new StartEvent();
