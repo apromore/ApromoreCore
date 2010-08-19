@@ -160,6 +160,7 @@ public class Canonical2XPDL {
 			p.setBoundaryVisible(false);
 			p.setMainPool(true);
 			p.setProcess(bpmnproc.getId());
+			this.xpdl.getPools().getPool().add(p);
 		}
 		
 		resource_ref_list.clear();
