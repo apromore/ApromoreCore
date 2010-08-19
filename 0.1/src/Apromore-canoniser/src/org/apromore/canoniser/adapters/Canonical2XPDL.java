@@ -152,6 +152,14 @@ public class Canonical2XPDL {
 				}
 					
 			}
+		} else if (resource_ref_list.size() == 0) {
+			Pool p = new Pool();
+			p.setId("MainPool");
+			p.setName("Main Pool");
+			p.setOrientation("HORIZONTAL");
+			p.setBoundaryVisible(false);
+			p.setMainPool(true);
+			p.setProcess(bpmnproc.getId());
 		}
 		
 		resource_ref_list.clear();
