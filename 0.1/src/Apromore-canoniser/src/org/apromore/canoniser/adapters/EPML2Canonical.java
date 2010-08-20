@@ -176,10 +176,26 @@ public class EPML2Canonical{
 			} else if (obj instanceof TypeFunction) {
 				translateFunction(net, (TypeFunction) obj);
 				addNodeAnnotations(obj);
-			} else if(obj instanceof TypeAND || obj instanceof TypeOR || obj instanceof TypeXOR)
+			} else if(obj instanceof TypeAND)
 			{
-				translateGateway(net, obj);
+				id_map.put(((TEpcElement) obj).getId(), BigInteger.valueOf(ids));
 				addNodeAnnotations(obj);
+				((TEpcElement) obj).setId(BigInteger.valueOf(ids++));
+				and_list.add((TypeAND) obj);
+			}
+			else if(obj instanceof TypeOR)
+			{
+				id_map.put(((TEpcElement) obj).getId(), BigInteger.valueOf(ids));
+				addNodeAnnotations(obj);
+				((TEpcElement) obj).setId(BigInteger.valueOf(ids++));
+				or_list.add((TypeOR) obj);
+			}
+			else if(obj instanceof TypeXOR)
+			{
+				id_map.put(((TEpcElement) obj).getId(), BigInteger.valueOf(ids));
+				addNodeAnnotations(obj);
+				((TEpcElement) obj).setId(BigInteger.valueOf(ids++));
+				xor_list.add((TypeXOR) obj);
 			}
 			else if(obj instanceof TypeRole)
 			{
@@ -211,7 +227,6 @@ public class EPML2Canonical{
 				if(arc.getFlow() != null) {
 					if(range_ids.contains(arc.getFlow().getSource()) || range_ids.contains(arc.getFlow().getTarget()) )
 					{
-						System.out.println();
 						range_flow.add(arc);
 					}
 					else
@@ -221,7 +236,6 @@ public class EPML2Canonical{
 				else if(arc.getRelation() != null) {
 					if(range_ids.contains(arc.getRelation().getSource()) || range_ids.contains(arc.getRelation().getTarget()) )
 					{	
-						System.out.println();
 						range_relation.add(arc);
 					}
 					else
@@ -367,7 +381,7 @@ public class EPML2Canonical{
 		
 		if(arc.getGraphics() != null)
 		{
-			graph.setCpfId(arc.getId());
+			graph.setCpfId(id_map.get(arc.getId()));
 			try {
 				if(arc.getGraphics().get(0) != null)
 				{
