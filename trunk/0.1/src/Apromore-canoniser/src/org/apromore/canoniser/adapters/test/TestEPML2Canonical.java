@@ -23,8 +23,8 @@ public class TestEPML2Canonical {
 	 */
 	public static void main(String[] args) {
 
-
 		File folder = new File("/home/fauvet/models/test/");
+
 		FileFilter fileFilter = new FileFilter() { 
 			public boolean accept(File file) { 
 				return file.isFile(); 
