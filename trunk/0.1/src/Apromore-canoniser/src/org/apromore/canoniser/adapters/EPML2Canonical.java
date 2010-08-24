@@ -168,6 +168,8 @@ public class EPML2Canonical{
 
 	private void translateEpc(NetType net, TypeEPC epc)
 	{
+		List<String> role_names = new LinkedList<String>();
+
 		System.out.println(epc.getName());
 		for (Object obj: epc.getEventOrFunctionOrRole()) {
 			if (obj instanceof TypeEvent) {
@@ -199,8 +201,12 @@ public class EPML2Canonical{
 			}
 			else if(obj instanceof TypeRole)
 			{
-				translateRole((TypeRole)obj);
-				addNodeAnnotations(obj);
+				if(!role_names.contains(((TypeRole)obj).getName()))
+				{
+					translateRole((TypeRole)obj);
+					addNodeAnnotations(obj);
+					role_names.add(((TypeRole)obj).getName());
+				}
 			}
 			else if(obj instanceof TypeObject)
 			{
