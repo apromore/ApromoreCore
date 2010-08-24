@@ -22,6 +22,7 @@ import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ORJoinType;
 import org.apromore.cpf.ORSplitType;
+import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
@@ -34,6 +35,7 @@ import org.wfmc._2008.xpdl2.Activity;
 import org.wfmc._2008.xpdl2.ConnectorGraphicsInfo;
 import org.wfmc._2008.xpdl2.ConnectorGraphicsInfos;
 import org.wfmc._2008.xpdl2.Coordinates;
+import org.wfmc._2008.xpdl2.DataObject;
 import org.wfmc._2008.xpdl2.EndEvent;
 import org.wfmc._2008.xpdl2.Event;
 import org.wfmc._2008.xpdl2.Implementation;
@@ -73,6 +75,7 @@ public class Canonical2XPDL {
 	Map<EventType, Event> events = new HashMap<EventType, Event>();
 	Map<RoutingType, TransitionRestrictions> gateways = new HashMap<RoutingType, TransitionRestrictions>();
 	List<BigInteger> resource_ref_list = new LinkedList<BigInteger>();
+	List<BigInteger> object_ref_list = new LinkedList<BigInteger>();
 	
 	private PackageType xpdl; 
 	/**
@@ -93,6 +96,7 @@ public class Canonical2XPDL {
 			bpmnproc.setId(net.getId().toString());
 			translateNet(bpmnproc, net);
 			translateResources(bpmnproc, cpf);
+			//translateObjects(bpmnproc, cpf);
 			this.xpdl.getWorkflowProcesses().getWorkflowProcess().add(bpmnproc);
 		}
 		
@@ -117,8 +121,23 @@ public class Canonical2XPDL {
 			bpmnproc.setId(net.getId().toString());
 			translateNet(bpmnproc, net, anf);
 			translateResources(bpmnproc, cpf);
+			//translateObjects(bpmnproc, cpf);
 			this.xpdl.getWorkflowProcesses().getWorkflowProcess().add(bpmnproc);
 		}
+		
+	}
+
+	private void translateObjects(ProcessType bpmnproc, CanonicalProcessType cpf) {
+
+		for(ObjectType obj: cpf.getObject())
+		{
+			DataObject o = new DataObject();
+			o.setName(obj.getName());
+			o.setId(obj.getId().toString());
+			this.xpdl.getArtifacts().getArtifactAndAny().add(o);
+		}
+			
+		object_ref_list.clear();
 		
 	}
 
@@ -402,7 +421,7 @@ public class Canonical2XPDL {
 
 		canon2xpdl.put(node, act);
 		nodeRefMap.put(node.getId(), node);
-		
+
 		return act;
 	}
 
