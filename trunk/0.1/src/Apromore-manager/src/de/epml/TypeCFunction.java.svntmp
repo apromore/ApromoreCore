@@ -8,22 +8,19 @@
 
 package de.epml;
 
-import java.math.BigInteger;
-
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSchemaType;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for typeCOR complex type.
+ * <p>Java class for typeCFunction complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="typeCOR">
+ * &lt;complexType name="typeCFunction">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;choice minOccurs="0">
@@ -34,14 +31,12 @@ import javax.xml.bind.annotation.XmlType;
  *                 &lt;attribute name="value">
  *                   &lt;simpleType>
  *                     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
- *                       &lt;enumeration value="or"/>
- *                       &lt;enumeration value="and"/>
- *                       &lt;enumeration value="xor"/>
- *                       &lt;enumeration value="seq"/>
+ *                       &lt;enumeration value="on"/>
+ *                       &lt;enumeration value="off"/>
+ *                       &lt;enumeration value="opt"/>
  *                     &lt;/restriction>
  *                   &lt;/simpleType>
  *                 &lt;/attribute>
- *                 &lt;attribute name="goto" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" />
  *               &lt;/restriction>
  *             &lt;/complexContent>
  *           &lt;/complexType>
@@ -55,22 +50,22 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "typeCOR", propOrder = {
+@XmlType(name = "typeCFunction", propOrder = {
     "configuration"
 })
-public class TypeCOR {
+public class TypeCFunction {
 
-    protected TypeCOR.Configuration configuration;
+    protected TypeCFunction.Configuration configuration;
 
     /**
      * Gets the value of the configuration property.
      * 
      * @return
      *     possible object is
-     *     {@link TypeCOR.Configuration }
+     *     {@link TypeCFunction.Configuration }
      *     
      */
-    public TypeCOR.Configuration getConfiguration() {
+    public TypeCFunction.Configuration getConfiguration() {
         return configuration;
     }
 
@@ -79,10 +74,10 @@ public class TypeCOR {
      * 
      * @param value
      *     allowed object is
-     *     {@link TypeCOR.Configuration }
+     *     {@link TypeCFunction.Configuration }
      *     
      */
-    public void setConfiguration(TypeCOR.Configuration value) {
+    public void setConfiguration(TypeCFunction.Configuration value) {
         this.configuration = value;
     }
 
@@ -99,14 +94,12 @@ public class TypeCOR {
      *       &lt;attribute name="value">
      *         &lt;simpleType>
      *           &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
-     *             &lt;enumeration value="or"/>
-     *             &lt;enumeration value="and"/>
-     *             &lt;enumeration value="xor"/>
-     *             &lt;enumeration value="seq"/>
+     *             &lt;enumeration value="on"/>
+     *             &lt;enumeration value="off"/>
+     *             &lt;enumeration value="opt"/>
      *           &lt;/restriction>
      *         &lt;/simpleType>
      *       &lt;/attribute>
-     *       &lt;attribute name="goto" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" />
      *     &lt;/restriction>
      *   &lt;/complexContent>
      * &lt;/complexType>
@@ -120,9 +113,6 @@ public class TypeCOR {
 
         @XmlAttribute
         protected String value;
-        @XmlAttribute(name = "goto")
-        @XmlSchemaType(name = "positiveInteger")
-        protected BigInteger _goto;
 
         /**
          * Gets the value of the value property.
@@ -146,30 +136,6 @@ public class TypeCOR {
          */
         public void setValue(String value) {
             this.value = value;
-        }
-
-        /**
-         * Gets the value of the goto property.
-         * 
-         * @return
-         *     possible object is
-         *     {@link BigInteger }
-         *     
-         */
-        public BigInteger getGoto() {
-            return _goto;
-        }
-
-        /**
-         * Sets the value of the goto property.
-         * 
-         * @param value
-         *     allowed object is
-         *     {@link BigInteger }
-         *     
-         */
-        public void setGoto(BigInteger value) {
-            this._goto = value;
         }
 
     }
