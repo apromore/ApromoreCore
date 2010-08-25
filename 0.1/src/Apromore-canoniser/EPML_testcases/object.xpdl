@@ -1,24 +1,24 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0">
     <Pools>
-        <Pool Id="MainPool" Name="Main Pool" Orientation="HORIZONTAL" Process="1281435811139" BoundaryVisible="false" MainPool="true"/>
+        <Pool Id="MainPool" Name="Main Pool" Orientation="HORIZONTAL" Process="12" BoundaryVisible="false" MainPool="true"/>
     </Pools>
     <Associations>
-        <Association Id="xpdl_objects_1" Source="1281435811130" Target="1281435811133" AssociationDirection="To"/>
-        <Association Id="xpdl_objects_2" Source="1281435811134" Target="1281435811131" AssociationDirection="To"/>
+        <Association Id="xpdl_objects_1" Source="3" Target="6" AssociationDirection="To"/>
+        <Association Id="xpdl_objects_2" Source="7" Target="4" AssociationDirection="To"/>
     </Associations>
     <Artifacts>
-        <Artifact Id="1281435811133" Name="O1" ArtifactType="DataObject">
+        <Artifact Id="6" Name="O1" ArtifactType="DataObject">
             <DataObject Name="O1"/>
         </Artifact>
-        <Artifact Id="1281435811134" Name="O2" ArtifactType="DataObject">
+        <Artifact Id="7" Name="O2" ArtifactType="DataObject">
             <DataObject Name="O2"/>
         </Artifact>
     </Artifacts>
     <WorkflowProcesses>
-        <WorkflowProcess Id="1281435811139">
+        <WorkflowProcess Id="12">
             <Activities>
-                <Activity Id="1281435811128" Name="E1">
+                <Activity Id="1" Name="E1">
                     <Event>
                         <StartEvent Trigger="None"/>
                     </Event>
@@ -28,7 +28,7 @@
                         </NodeGraphicsInfo>
                     </NodeGraphicsInfos>
                 </Activity>
-                <Activity Id="1281435811129" Name="E2">
+                <Activity Id="2" Name="E2">
                     <Event>
                         <IntermediateEvent Trigger="None"/>
                     </Event>
@@ -38,7 +38,7 @@
                         </NodeGraphicsInfo>
                     </NodeGraphicsInfos>
                 </Activity>
-                <Activity Id="1281435811130" Name="F1">
+                <Activity Id="3" Name="F1">
                     <Implementation>
                         <Task/>
                     </Implementation>
@@ -48,7 +48,7 @@
                         </NodeGraphicsInfo>
                     </NodeGraphicsInfos>
                 </Activity>
-                <Activity Id="1281435811131" Name="F2">
+                <Activity Id="4" Name="F2">
                     <Implementation>
                         <Task/>
                     </Implementation>
@@ -58,7 +58,7 @@
                         </NodeGraphicsInfo>
                     </NodeGraphicsInfos>
                 </Activity>
-                <Activity Id="1281435811132" Name="E3">
+                <Activity Id="5" Name="E3">
                     <Event>
                         <EndEvent Result="None"/>
                     </Event>
@@ -70,10 +70,38 @@
                 </Activity>
             </Activities>
             <Transitions>
-                <Transition Id="1281435811135" From="1281435811128" To="1281435811130"/>
-                <Transition Id="1281435811136" From="1281435811130" To="1281435811129"/>
-                <Transition Id="1281435811137" From="1281435811129" To="1281435811131"/>
-                <Transition Id="1281435811138" From="1281435811131" To="1281435811132"/>
+                <Transition Id="8" From="1" To="3">
+                    <ConnectorGraphicsInfos>
+                        <ConnectorGraphicsInfo>
+                            <Coordinates XCoordinate="196.0" YCoordinate="240.0"/>
+                            <Coordinates XCoordinate="240.0" YCoordinate="240.0"/>
+                        </ConnectorGraphicsInfo>
+                    </ConnectorGraphicsInfos>
+                </Transition>
+                <Transition Id="9" From="3" To="2">
+                    <ConnectorGraphicsInfos>
+                        <ConnectorGraphicsInfo>
+                            <Coordinates XCoordinate="321.0" YCoordinate="240.0"/>
+                            <Coordinates XCoordinate="360.0" YCoordinate="240.0"/>
+                        </ConnectorGraphicsInfo>
+                    </ConnectorGraphicsInfos>
+                </Transition>
+                <Transition Id="10" From="2" To="4">
+                    <ConnectorGraphicsInfos>
+                        <ConnectorGraphicsInfo>
+                            <Coordinates XCoordinate="441.0" YCoordinate="240.0"/>
+                            <Coordinates XCoordinate="505.0" YCoordinate="240.0"/>
+                        </ConnectorGraphicsInfo>
+                    </ConnectorGraphicsInfos>
+                </Transition>
+                <Transition Id="11" From="4" To="5">
+                    <ConnectorGraphicsInfos>
+                        <ConnectorGraphicsInfo>
+                            <Coordinates XCoordinate="586.0" YCoordinate="240.0"/>
+                            <Coordinates XCoordinate="645.0" YCoordinate="240.0"/>
+                        </ConnectorGraphicsInfo>
+                    </ConnectorGraphicsInfos>
+                </Transition>
             </Transitions>
         </WorkflowProcess>
     </WorkflowProcesses>
