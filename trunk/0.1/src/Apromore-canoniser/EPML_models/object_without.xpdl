@@ -8,8 +8,12 @@
         <Association Id="xpdl_objects_2" Source="1281435811134" Target="1281435811131" AssociationDirection="To"/>
     </Associations>
     <Artifacts>
-        <DataObject Id="1281435811133" Name="O1"/>
-        <DataObject Id="1281435811134" Name="O2"/>
+        <Artifact Id="1281435811133" Name="O1" ArtifactType="DataObject">
+            <DataObject Name="O1"/>
+        </Artifact>
+        <Artifact Id="1281435811134" Name="O2" ArtifactType="DataObject">
+            <DataObject Name="O2"/>
+        </Artifact>
     </Artifacts>
     <WorkflowProcesses>
         <WorkflowProcess Id="1281435811139">
