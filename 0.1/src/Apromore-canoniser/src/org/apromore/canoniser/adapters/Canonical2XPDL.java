@@ -17,11 +17,13 @@ import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
+import org.apromore.cpf.InputOutputType;
 import org.apromore.cpf.MessageType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ORJoinType;
 import org.apromore.cpf.ORSplitType;
+import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
@@ -32,6 +34,9 @@ import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 import org.wfmc._2008.xpdl2.Activities;
 import org.wfmc._2008.xpdl2.Activity;
+import org.wfmc._2008.xpdl2.Artifacts;
+import org.wfmc._2008.xpdl2.Association;
+import org.wfmc._2008.xpdl2.Associations;
 import org.wfmc._2008.xpdl2.ConnectorGraphicsInfo;
 import org.wfmc._2008.xpdl2.ConnectorGraphicsInfos;
 import org.wfmc._2008.xpdl2.Coordinates;
@@ -76,6 +81,7 @@ public class Canonical2XPDL {
 	Map<RoutingType, TransitionRestrictions> gateways = new HashMap<RoutingType, TransitionRestrictions>();
 	List<BigInteger> resource_ref_list = new LinkedList<BigInteger>();
 	List<BigInteger> object_ref_list = new LinkedList<BigInteger>();
+	int object_ids;
 	
 	private PackageType xpdl; 
 	/**
@@ -90,6 +96,8 @@ public class Canonical2XPDL {
 		this.xpdl = new PackageType();
 		this.xpdl.setWorkflowProcesses(new WorkflowProcesses());
 		this.xpdl.setPools(new Pools());
+		object_ids = 1;
+		translateObjects(cpf);
 		
 		for (NetType net: cpf.getNet()) {
 			ProcessType bpmnproc = new ProcessType();
@@ -115,29 +123,33 @@ public class Canonical2XPDL {
 		this.xpdl = new PackageType();
 		this.xpdl.setWorkflowProcesses(new WorkflowProcesses());
 		this.xpdl.setPools(new Pools());
+		object_ids = 1;
+		translateObjects(cpf);
 		
 		for (NetType net: cpf.getNet()) {
 			ProcessType bpmnproc = new ProcessType();
 			bpmnproc.setId(net.getId().toString());
 			translateNet(bpmnproc, net, anf);
 			translateResources(bpmnproc, cpf);
-			//translateObjects(bpmnproc, cpf);
 			this.xpdl.getWorkflowProcesses().getWorkflowProcess().add(bpmnproc);
 		}
 		
 	}
 
-	private void translateObjects(ProcessType bpmnproc, CanonicalProcessType cpf) {
-
+	private void translateObjects(CanonicalProcessType cpf) {
+		
+		this.xpdl.setArtifacts(new Artifacts());
+		this.xpdl.setAssociations(new Associations());
 		for(ObjectType obj: cpf.getObject())
 		{
 			DataObject o = new DataObject();
 			o.setName(obj.getName());
 			o.setId(obj.getId().toString());
 			this.xpdl.getArtifacts().getArtifactAndAny().add(o);
+			//object_types.put(o.getId(), obj.)
 		}
 			
-		object_ref_list.clear();
+		//object_ref_list.clear();
 		
 	}
 
@@ -146,7 +158,7 @@ public class Canonical2XPDL {
 		if(resource_ref_list.size() == 1)
 		{
 			Pool p = new Pool();
-			//p.setName(value);
+			p.setName(cpf.getResourceType().get(0).getName());
 			p.setId(resource_ref_list.get(0).toString());
 			p.setProcess(bpmnproc.getId());
 			this.xpdl.getPools().getPool().add(p);
@@ -409,10 +421,28 @@ public class Canonical2XPDL {
 		Activity act = null;
 		if (node instanceof TaskType) {
 			act = translateTask(bpmnproc, node);
+			
 			for(ResourceTypeRefType ref: ((TaskType)node).getResourceTypeRef())
 			{
 				if(!resource_ref_list.contains(ref.getResourceTypeId()))
 					resource_ref_list.add(ref.getResourceTypeId());
+			}
+			
+			for(ObjectRefType ref: ((TaskType)node).getObjectRef())
+			{
+				Association a = new Association();
+				a.setId("xpdl_objects_"+object_ids++);
+				a.setAssociationDirection("To");
+				// output
+				if(ref.getType().equals(InputOutputType.OUTPUT))
+				{
+					a.setSource(((TaskType)node).getId().toString());
+					a.setTarget(ref.getObjectId().toString());
+				} else {
+					a.setSource(ref.getObjectId().toString());
+					a.setTarget(((TaskType)node).getId().toString());
+				}
+				this.xpdl.getAssociations().getAssociationAndAny().add(a);
 			}
 		} else if (node instanceof RoutingType) {
 			act = translateGateway(bpmnproc, node);

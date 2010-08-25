@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0">
+    <Pools/>
+    <WorkflowProcesses>
+        <WorkflowProcess Id="1281435810971">
+            <Activities>
+                <Activity Id="1281435810966">
+                    <Event>
+                        <StartEvent Trigger="None"/>
+                    </Event>
+                    <NodeGraphicsInfos>
+                        <NodeGraphicsInfo Width="81.0" Height="41.0">
+                            <Coordinates YCoordinate="210.0" XCoordinate="175.0"/>
+                        </NodeGraphicsInfo>
+                    </NodeGraphicsInfos>
+                </Activity>
+                <Activity Name="F" Id="1281435810967">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                    <NodeGraphicsInfos>
+                        <NodeGraphicsInfo Width="81.0" Height="41.0">
+                            <Coordinates YCoordinate="210.0" XCoordinate="325.0"/>
+                        </NodeGraphicsInfo>
+                    </NodeGraphicsInfos>
+                </Activity>
+                <Activity Id="1281435810968">
+                    <Event>
+                        <EndEvent Result="None"/>
+                    </Event>
+                    <NodeGraphicsInfos>
+                        <NodeGraphicsInfo Width="81.0" Height="41.0">
+                            <Coordinates YCoordinate="210.0" XCoordinate="475.0"/>
+                        </NodeGraphicsInfo>
+                    </NodeGraphicsInfos>
+                </Activity>
+            </Activities>
+            <Transitions>
+                <Transition To="1281435810967" From="1281435810966" Id="1281435810969"/>
+                <Transition To="1281435810968" From="1281435810967" Id="1281435810970"/>
+            </Transitions>
+        </WorkflowProcess>
+    </WorkflowProcesses>
+</Package>
