@@ -73,14 +73,14 @@
       </graphics>
     </arc>
     <arc id="20">
-      <flow source="3" target="6"/>
+      <relation source="3" target="6" type="role"/>
       <graphics>
         <position x="280" y="261"/>
         <position x="280" y="285"/>
       </graphics>
     </arc>
     <arc id="21">
-      <flow source="8" target="10"/>
+      <relation source="8" target="10" type="role"/>
       <graphics>
         <position x="545" y="261"/>
         <position x="545" y="280"/>

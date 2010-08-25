@@ -169,10 +169,12 @@ public class Canonical2XPDL {
 			this.xpdl.getPools().getPool().add(p);
 		}
 		else if (resource_ref_list.size() > 1) {
+			
 			for(ResourceTypeType res: cpf.getResourceType())
 			{
 				if(resource_ref_list.contains(res.getId()) && res.getSpecializationIds().size() > 0)
 				{
+					System.out.println("Hey, i am here");
 					Pool p = new Pool();
 					p.setName(res.getName());
 					p.setId(res.getId().toString());
@@ -185,6 +187,8 @@ public class Canonical2XPDL {
 						//lane.setName(value);
 						p.getLanes().getLane().add(lane);
 					}
+				} else { // when all of them should be lanes into a pool
+					
 				}
 					
 			}

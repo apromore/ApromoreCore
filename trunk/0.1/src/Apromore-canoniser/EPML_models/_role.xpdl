@@ -1,67 +1,44 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0">
-    <Pools/>
+    <Pools>
+        <Pool Id="4" Name="R" Process="11" BoundaryVisible="false"/>
+    </Pools>
+    <Associations/>
+    <Artifacts/>
     <WorkflowProcesses>
-        <WorkflowProcess Id="1281435811739">
+        <WorkflowProcess Id="11">
             <Activities>
-                <Activity Id="1281435811726">
+                <Activity Id="1" Name="E1">
                     <Event>
                         <StartEvent Trigger="None"/>
                     </Event>
-                    <NodeGraphicsInfos>
-                        <NodeGraphicsInfo Width="81.0" Height="41.0">
-                            <Coordinates YCoordinate="220.0" XCoordinate="115.0"/>
-                        </NodeGraphicsInfo>
-                    </NodeGraphicsInfos>
                 </Activity>
-                <Activity Id="1281435811727">
+                <Activity Id="2" Name="E2">
                     <Event>
                         <IntermediateEvent Trigger="None"/>
                     </Event>
-                    <NodeGraphicsInfos>
-                        <NodeGraphicsInfo Width="81.0" Height="41.0">
-                            <Coordinates YCoordinate="220.0" XCoordinate="360.0"/>
-                        </NodeGraphicsInfo>
-                    </NodeGraphicsInfos>
                 </Activity>
-                <Activity Name="F1" Id="1281435811728">
+                <Activity Id="3" Name="F1">
                     <Implementation>
                         <Task/>
                     </Implementation>
-                    <NodeGraphicsInfos>
-                        <NodeGraphicsInfo Width="81.0" Height="41.0">
-                            <Coordinates YCoordinate="220.0" XCoordinate="240.0"/>
-                        </NodeGraphicsInfo>
-                    </NodeGraphicsInfos>
                 </Activity>
-                <Activity Name="F2" Id="1281435811730">
+                <Activity Id="5" Name="F2">
                     <Implementation>
                         <Task/>
                     </Implementation>
-                    <NodeGraphicsInfos>
-                        <NodeGraphicsInfo Width="81.0" Height="41.0">
-                            <Coordinates YCoordinate="220.0" XCoordinate="505.0"/>
-                        </NodeGraphicsInfo>
-                    </NodeGraphicsInfos>
                 </Activity>
-                <Activity Id="1281435811731">
+                <Activity Id="6" Name="E3">
                     <Event>
                         <EndEvent Result="None"/>
                     </Event>
-                    <NodeGraphicsInfos>
-                        <NodeGraphicsInfo Width="81.0" Height="41.0">
-                            <Coordinates YCoordinate="220.0" XCoordinate="645.0"/>
-                        </NodeGraphicsInfo>
-                    </NodeGraphicsInfos>
                 </Activity>
             </Activities>
             <Transitions>
-                <Transition To="1281435811728" From="1281435811726" Id="1281435811733"/>
-                <Transition To="1281435811727" From="1281435811728" Id="1281435811734"/>
-                <Transition From="1281435811728" Id="1281435811735"/>
-                <Transition To="1281435811730" From="1281435811727" Id="1281435811736"/>
-                <Transition To="1281435811731" From="1281435811730" Id="1281435811737"/>
-                <Transition From="1281435811730" Id="1281435811738"/>
+                <Transition Id="7" From="1" To="3"/>
+                <Transition Id="8" From="3" To="2"/>
+                <Transition Id="9" From="2" To="5"/>
+                <Transition Id="10" From="5" To="6"/>
             </Transitions>
         </WorkflowProcess>
     </WorkflowProcesses>
