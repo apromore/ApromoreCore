@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0">
+    <Pools>
+        <Pool Id="MainPool" Name="Main Pool" Orientation="HORIZONTAL" Process="1281435811556" BoundaryVisible="false" MainPool="true"/>
+    </Pools>
+    <Associations>
+        <Association Id="xpdl_objects_1" Source="1281435811550" Target="1281435811551" AssociationDirection="To"/>
+        <Association Id="xpdl_objects_2" Source="1281435811550" Target="1281435811552" AssociationDirection="To"/>
+        <Association Id="xpdl_objects_3" Source="1281435811550" Target="1281435811553" AssociationDirection="To"/>
+    </Associations>
+    <Artifacts>
+        <DataObject Id="1281435811551" Name="O1"/>
+        <DataObject Id="1281435811552" Name="O2"/>
+        <DataObject Id="1281435811553" Name="O3"/>
+    </Artifacts>
+    <WorkflowProcesses>
+        <WorkflowProcess Id="1281435811556">
+            <Activities>
+                <Activity Id="1281435811548" Name="E1">
+                    <Event>
+                        <StartEvent Trigger="None"/>
+                    </Event>
+                </Activity>
+                <Activity Id="1281435811549" Name="E2">
+                    <Event>
+                        <EndEvent Result="None"/>
+                    </Event>
+                </Activity>
+                <Activity Id="1281435811550" Name="F">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                </Activity>
+            </Activities>
+            <Transitions>
+                <Transition Id="1281435811554" From="1281435811548" To="1281435811550"/>
+                <Transition Id="1281435811555" From="1281435811550" To="1281435811549"/>
+            </Transitions>
+        </WorkflowProcess>
+    </WorkflowProcesses>
+</Package>

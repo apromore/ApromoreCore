@@ -34,6 +34,7 @@ import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 import org.wfmc._2008.xpdl2.Activities;
 import org.wfmc._2008.xpdl2.Activity;
+import org.wfmc._2008.xpdl2.Artifact;
 import org.wfmc._2008.xpdl2.Artifacts;
 import org.wfmc._2008.xpdl2.Association;
 import org.wfmc._2008.xpdl2.Associations;
@@ -142,10 +143,14 @@ public class Canonical2XPDL {
 		this.xpdl.setAssociations(new Associations());
 		for(ObjectType obj: cpf.getObject())
 		{
+			Artifact a = new Artifact();
+			a.setArtifactType("DataObject");
+			a.setName(obj.getName());
 			DataObject o = new DataObject();
 			o.setName(obj.getName());
-			o.setId(obj.getId().toString());
-			this.xpdl.getArtifacts().getArtifactAndAny().add(o);
+			a.setId(obj.getId().toString());
+			a.setDataObject(o);
+			this.xpdl.getArtifacts().getArtifactAndAny().add(a);
 			//object_types.put(o.getId(), obj.)
 		}
 			
