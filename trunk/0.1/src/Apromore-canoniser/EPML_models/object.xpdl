@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0">
+    <Pools/>
+    <WorkflowProcesses>
+        <WorkflowProcess Id="1281435811139">
+            <Activities>
+                <Activity Id="1281435811128">
+                    <Event>
+                        <StartEvent Trigger="None"/>
+                    </Event>
+                </Activity>
+                <Activity Id="1281435811129">
+                    <Event>
+                        <IntermediateEvent Trigger="None"/>
+                    </Event>
+                </Activity>
+                <Activity Name="F1" Id="1281435811130">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                </Activity>
+                <Activity Name="F2" Id="1281435811131">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                </Activity>
+                <Activity Id="1281435811132">
+                    <Event>
+                        <EndEvent Result="None"/>
+                    </Event>
+                </Activity>
+            </Activities>
+            <Transitions>
+                <Transition To="1281435811130" From="1281435811128" Id="1281435811135"/>
+                <Transition To="1281435811129" From="1281435811130" Id="1281435811136"/>
+                <Transition To="1281435811131" From="1281435811129" Id="1281435811137"/>
+                <Transition To="1281435811132" From="1281435811131" Id="1281435811138"/>
+            </Transitions>
+        </WorkflowProcess>
+    </WorkflowProcesses>
+</Package>

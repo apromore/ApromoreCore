@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0">
+    <Pools/>
+    <WorkflowProcesses>
+        <WorkflowProcess Id="1281435811139">
+            <Activities>
+                <Activity Id="1281435811128">
+                    <Event>
+                        <StartEvent Trigger="None"/>
+                    </Event>
+                    <NodeGraphicsInfos>
+                        <NodeGraphicsInfo Width="81.0" Height="41.0">
+                            <Coordinates YCoordinate="220.0" XCoordinate="115.0"/>
+                        </NodeGraphicsInfo>
+                    </NodeGraphicsInfos>
+                </Activity>
+                <Activity Id="1281435811129">
+                    <Event>
+                        <IntermediateEvent Trigger="None"/>
+                    </Event>
+                    <NodeGraphicsInfos>
+                        <NodeGraphicsInfo Width="81.0" Height="41.0">
+                            <Coordinates YCoordinate="220.0" XCoordinate="360.0"/>
+                        </NodeGraphicsInfo>
+                    </NodeGraphicsInfos>
+                </Activity>
+                <Activity Name="F1" Id="1281435811130">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                    <NodeGraphicsInfos>
+                        <NodeGraphicsInfo Width="81.0" Height="41.0">
+                            <Coordinates YCoordinate="220.0" XCoordinate="240.0"/>
+                        </NodeGraphicsInfo>
+                    </NodeGraphicsInfos>
+                </Activity>
+                <Activity Name="F2" Id="1281435811131">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                    <NodeGraphicsInfos>
+                        <NodeGraphicsInfo Width="81.0" Height="41.0">
+                            <Coordinates YCoordinate="220.0" XCoordinate="505.0"/>
+                        </NodeGraphicsInfo>
+                    </NodeGraphicsInfos>
+                </Activity>
+                <Activity Id="1281435811132">
+                    <Event>
+                        <EndEvent Result="None"/>
+                    </Event>
+                    <NodeGraphicsInfos>
+                        <NodeGraphicsInfo Width="81.0" Height="41.0">
+                            <Coordinates YCoordinate="220.0" XCoordinate="645.0"/>
+                        </NodeGraphicsInfo>
+                    </NodeGraphicsInfos>
+                </Activity>
+            </Activities>
+            <Transitions>
+                <Transition To="1281435811130" From="1281435811128" Id="1281435811135"/>
+                <Transition To="1281435811129" From="1281435811130" Id="1281435811136"/>
+                <Transition To="1281435811131" From="1281435811129" Id="1281435811137"/>
+                <Transition To="1281435811132" From="1281435811131" Id="1281435811138"/>
+            </Transitions>
+        </WorkflowProcess>
+    </WorkflowProcesses>
+</Package>

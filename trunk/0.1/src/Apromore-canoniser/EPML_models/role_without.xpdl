@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0">
+    <Pools>
+        <Pool Id="1282702574094" Name="R" Process="1282702574101" BoundaryVisible="false"/>
+    </Pools>
+    <WorkflowProcesses>
+        <WorkflowProcess Id="1282702574101">
+            <Activities>
+                <Activity Id="1282702574091" Name="E1">
+                    <Event>
+                        <StartEvent Trigger="None"/>
+                    </Event>
+                </Activity>
+                <Activity Id="1282702574092" Name="E2">
+                    <Event>
+                        <IntermediateEvent Trigger="None"/>
+                    </Event>
+                </Activity>
+                <Activity Id="1282702574093" Name="F1">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                </Activity>
+                <Activity Id="1282702574095" Name="F2">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                </Activity>
+                <Activity Id="1282702574096" Name="E3">
+                    <Event>
+                        <EndEvent Result="None"/>
+                    </Event>
+                </Activity>
+            </Activities>
+            <Transitions>
+                <Transition Id="1282702574097" From="1282702574091" To="1282702574093"/>
+                <Transition Id="1282702574098" From="1282702574093" To="1282702574092"/>
+                <Transition Id="1282702574099" From="1282702574092" To="1282702574095"/>
+                <Transition Id="1282702574100" From="1282702574095" To="1282702574096"/>
+            </Transitions>
+        </WorkflowProcess>
+    </WorkflowProcesses>
+</Package>

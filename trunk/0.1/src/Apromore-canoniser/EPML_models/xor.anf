@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:Annotations xmlns:ns2="http://www.apromore.org/ANF">
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="1282170036726">
+        <position y="220" x="110"/>
+        <size height="41" width="81"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="1282170036727">
+        <position y="145" x="400"/>
+        <size height="41" width="81"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="1282170036728">
+        <position y="290" x="405"/>
+        <size height="41" width="81"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="1282170036729">
+        <position y="220" x="695"/>
+        <size height="41" width="81"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="1282170036730">
+        <position y="220" x="215"/>
+        <size height="41" width="81"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="1282170036731">
+        <position y="145" x="525"/>
+        <size height="41" width="81"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="1282170036732">
+        <position y="290" x="535"/>
+        <size height="41" width="81"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType">
+        <position y="230" x="630"/>
+        <size height="21" width="21"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType">
+        <position y="230" x="355"/>
+        <size height="21" width="21"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="10">
+        <position y="240" x="191"/>
+        <position y="240" x="215"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="14">
+        <position y="310" x="486"/>
+        <position y="310" x="535"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="15">
+        <position y="165" x="481"/>
+        <position y="165" x="525"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="21">
+        <position y="240" x="296"/>
+        <position y="240" x="355"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="22">
+        <position y="230" x="376"/>
+        <position y="165" x="400"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="23">
+        <position y="251" x="376"/>
+        <position y="310" x="405"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="24">
+        <position y="310" x="616"/>
+        <position y="251" x="630"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="25">
+        <position y="165" x="606"/>
+        <position y="230" x="630"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="26">
+        <position y="240" x="651"/>
+        <position y="240" x="695"/>
+    </Annotation>
+</ns2:Annotations>

@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF">
+    <Net id="1281435811556">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1281435811548">
+            <name>E1</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1281435811549">
+            <name>E2</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1281435811550">
+            <name>F</name>
+            <objectRef consumed="false" optional="false" type="output" objectId="1281435811551"/>
+            <objectRef consumed="false" optional="false" type="output" objectId="1281435811552"/>
+            <objectRef consumed="false" optional="false" type="output" objectId="1281435811553"/>
+        </Node>
+        <Edge targetId="1281435811550" sourceId="1281435811548" id="1281435811554"/>
+        <Edge targetId="1281435811549" sourceId="1281435811550" id="1281435811555"/>
+    </Net>
+    <Object id="1281435811551">
+        <name>O1</name>
+    </Object>
+    <Object id="1281435811552">
+        <name>O2</name>
+    </Object>
+    <Object id="1281435811553">
+        <name>O3</name>
+    </Object>
+</ns2:CanonicalProcess>

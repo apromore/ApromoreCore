@@ -23,7 +23,7 @@ public class TestEPML2Canonical {
 	 */
 	public static void main(String[] args) {
 
-		File folder = new File("/home/fauvet/models/test/");
+		File folder = new File("EPML_models");
 
 		FileFilter fileFilter = new FileFilter() { 
 			public boolean accept(File file) { 
@@ -36,7 +36,7 @@ public class TestEPML2Canonical {
 			File file = folderContent[i];
 			String filename = file.getName();
 			String extension = filename.split("\\.")[filename.split("\\.").length-1];
-			if (extension.compareTo("epml")==0) {
+			if (extension.compareTo("epml1")==0) {
 				System.out.println ("Analysing " + filename);
 				n++;
 				try{

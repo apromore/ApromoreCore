@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<epml:epml xmlns:epml="http://www.epml.de"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.epml.de EPML_2.0.xsd">
+        <epc epcId="1281437154411" name="EPC">
+            <event id="1281437154412">
+                <name>start</name>
+            </event>
+            <event id="1281437154413">
+                <name>end</name>
+            </event>
+            <event id="11">
+                <name>end</name>
+            </event>
+            <function id="1281437154414">
+                <name>A</name>
+            </function>
+            <function  id="1281437154415">
+                <name>B</name>
+            </function>
+            <arc id="1281437154416">
+                <flow target="1281437154414" source="1281437154412"/>
+            </arc>
+            <arc id="1111">
+                <flow target="11" source="1281437154414"/>
+            </arc>
+            <arc id="1281437154417">
+                <flow target="1281437154415" source="11"/>
+            </arc>
+            <arc id="1281437154418">
+                <flow target="1281437154413" source="1281437154415"/>
+            </arc>
+        </epc>
+</epml:epml>
