@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0">
+    <Pools>
+        <Pool Id="MainPool" Name="Main Pool" Orientation="HORIZONTAL" Process="1281435811139" BoundaryVisible="false" MainPool="true"/>
+    </Pools>
+    <Associations>
+        <Association Id="xpdl_objects_1" Source="1281435811130" Target="1281435811133" AssociationDirection="To"/>
+        <Association Id="xpdl_objects_2" Source="1281435811134" Target="1281435811131" AssociationDirection="To"/>
+    </Associations>
+    <Artifacts>
+        <DataObject Id="1281435811133" Name="O1"/>
+        <DataObject Id="1281435811134" Name="O2"/>
+    </Artifacts>
+    <WorkflowProcesses>
+        <WorkflowProcess Id="1281435811139">
+            <Activities>
+                <Activity Id="1281435811128" Name="E1">
+                    <Event>
+                        <StartEvent Trigger="None"/>
+                    </Event>
+                </Activity>
+                <Activity Id="1281435811129" Name="E2">
+                    <Event>
+                        <IntermediateEvent Trigger="None"/>
+                    </Event>
+                </Activity>
+                <Activity Id="1281435811130" Name="F1">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                </Activity>
+                <Activity Id="1281435811131" Name="F2">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                </Activity>
+                <Activity Id="1281435811132" Name="E3">
+                    <Event>
+                        <EndEvent Result="None"/>
+                    </Event>
+                </Activity>
+            </Activities>
+            <Transitions>
+                <Transition Id="1281435811135" From="1281435811128" To="1281435811130"/>
+                <Transition Id="1281435811136" From="1281435811130" To="1281435811129"/>
+                <Transition Id="1281435811137" From="1281435811129" To="1281435811131"/>
+                <Transition Id="1281435811138" From="1281435811131" To="1281435811132"/>
+            </Transitions>
+        </WorkflowProcess>
+    </WorkflowProcesses>
+</Package>

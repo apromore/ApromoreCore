@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF">
+    <Net id="1281436922148">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="1281436922149"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="1281436922150"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1281436922151">
+            <name>start</name>
+            <resourceTypeRef resourceTypeId="1281436922147"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1281436922152">
+            <name>end</name>
+            <resourceTypeRef resourceTypeId="1281436922147"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1281436922153">
+            <name>A</name>
+            <resourceTypeRef resourceTypeId="1281436922147"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1281436922154">
+            <name>B</name>
+            <resourceTypeRef resourceTypeId="1281436922147"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1281436922155">
+            <name>C</name>
+            <resourceTypeRef resourceTypeId="1281436922147"/>
+        </Node>
+        <Edge targetId="1281436922153" sourceId="1281436922151" id="1281436922156"/>
+        <Edge targetId="1281436922149" sourceId="1281436922153" id="1281436922157"/>
+        <Edge targetId="1281436922154" sourceId="1281436922149" condition="Y" id="1281436922158"/>
+        <Edge targetId="1281436922155" sourceId="1281436922149" condition="X" id="1281436922159"/>
+        <Edge targetId="1281436922150" sourceId="1281436922155" id="1281436922160"/>
+        <Edge targetId="1281436922150" sourceId="1281436922154" id="1281436922161"/>
+        <Edge targetId="1281436922152" sourceId="1281436922150" id="1281436922162"/>
+    </Net>
+    <ResourceType id="1281436922147"/>
+</ns2:CanonicalProcess>

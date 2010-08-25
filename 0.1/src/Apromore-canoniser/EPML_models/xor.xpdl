@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0">
+    <Pools/>
+    <WorkflowProcesses>
+        <WorkflowProcess Id="1282170036744">
+            <Activities>
+                <Activity Name="E1" Id="1282170036726">
+                    <Event>
+                        <StartEvent Trigger="None"/>
+                    </Event>
+                </Activity>
+                <Activity Name="E4" Id="1282170036729">
+                    <Event>
+                        <EndEvent Result="None"/>
+                    </Event>
+                </Activity>
+                <Activity Name="F1" Id="1282170036730">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                </Activity>
+                <Activity Name="F2" Id="1282170036731">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                </Activity>
+                <Activity Name="F3" Id="1282170036732">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                </Activity>
+                <Activity Id="1282170036733">
+                    <Route GatewayType="Exclusive"/>
+                    <TransitionRestrictions>
+                        <TransitionRestriction>
+                            <Join Type="Exclusive"/>
+                        </TransitionRestriction>
+                    </TransitionRestrictions>
+                </Activity>
+                <Activity Id="1282170036734">
+                    <Route GatewayType="Exclusive"/>
+                    <TransitionRestrictions>
+                        <TransitionRestriction>
+                            <Split ExclusiveType="Data" Type="Exclusive">
+<TransitionRefs>
+    <TransitionRef Id="1282170036739"/>
+    <TransitionRef Id="1282170036740"/>
+</TransitionRefs>
+                            </Split>
+                        </TransitionRestriction>
+                    </TransitionRestrictions>
+                </Activity>
+            </Activities>
+            <Transitions>
+                <Transition To="1282170036730" From="1282170036726" Id="1282170036735"/>
+                <Transition To="1282170036734" From="1282170036730" Id="1282170036738"/>
+                <Transition To="1282170036731" From="1282170036734" Id="1282170036739"/>
+                <Transition To="1282170036732" From="1282170036734" Id="1282170036740"/>
+                <Transition To="1282170036733" From="1282170036732" Id="1282170036741"/>
+                <Transition To="1282170036733" From="1282170036731" Id="1282170036742"/>
+                <Transition To="1282170036729" From="1282170036733" Id="1282170036743"/>
+            </Transitions>
+        </WorkflowProcess>
+    </WorkflowProcesses>
+</Package>
