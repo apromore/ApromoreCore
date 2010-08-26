@@ -4,8 +4,8 @@
         <Pool Id="MainPool" Name="Main Pool" Orientation="HORIZONTAL" Process="12" BoundaryVisible="false" MainPool="true"/>
     </Pools>
     <Associations>
-        <Association Id="xpdl_objects_1" Source="3" Target="6" AssociationDirection="To"/>
-        <Association Id="xpdl_objects_2" Source="7" Target="4" AssociationDirection="To"/>
+        <Association Id="xpdl_objects_1" Source="3" Target="6" Direction="To"/>
+        <Association Id="xpdl_objects_2" Source="7" Target="4" Direction="To"/>
     </Associations>
     <Artifacts>
         <Artifact Id="6" Name="O1" ArtifactType="DataObject">

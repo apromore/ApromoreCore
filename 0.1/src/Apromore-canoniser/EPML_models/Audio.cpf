@@ -1,0 +1,571 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF">
+    <Net id="191">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1">
+            <name>Temp picture&#xD;
+ cut available</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="2">
+            <name>Spotting&#xD;
+session</name>
+            <objectRef objectId="29" type="input"/>
+            <objectRef objectId="19" type="input"/>
+            <objectRef objectId="18" type="input"/>
+            <objectRef objectId="20" type="input"/>
+            <objectRef objectId="21" type="input"/>
+            <objectRef objectId="22" type="input"/>
+            <objectRef objectId="25" type="input"/>
+            <objectRef objectId="30" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="31" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="32" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="33" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="53" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="54" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="55" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="42" type="output"/>
+            <objectRef objectId="62" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="63" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="7" type="output"/>
+            <objectRef objectId="84" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="85" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="86" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="10" type="output"/>
+            <objectRef objectId="70" type="output"/>
+            <objectRef objectId="16" type="output"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="4">
+            <name> Music&#xD;
+Design</name>
+            <objectRef objectId="34" type="input"/>
+            <objectRef objectId="35" type="input"/>
+            <objectRef objectId="36" type="input"/>
+            <objectRef objectId="37" type="input"/>
+            <objectRef objectId="39" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="38" type="output" optional="true" consumed="false"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="5">
+            <name>Sound&#xD;
+Design</name>
+            <objectRef objectId="46" type="input"/>
+            <objectRef objectId="47" type="input"/>
+            <objectRef objectId="52" type="output" optional="true" consumed="false"/>
+            <objectRef objectId="51" type="input"/>
+            <objectRef objectId="30" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="31" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="32" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="33" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="53" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="54" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="55" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="42" type="output"/>
+            <objectRef objectId="62" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="63" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="7" type="output"/>
+            <objectRef objectId="84" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="85" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="86" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="10" type="output"/>
+            <objectRef objectId="70" type="output"/>
+            <objectRef objectId="16" type="output"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="7">
+            <name>Progress&#xD;
+ update</name>
+            <objectRef objectId="19" type="input"/>
+            <objectRef objectId="18" type="input"/>
+            <objectRef objectId="21" type="input"/>
+            <objectRef objectId="20" type="input"/>
+            <objectRef objectId="22" type="input"/>
+            <objectRef objectId="25" type="input"/>
+            <objectRef objectId="30" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="31" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="32" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="33" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="53" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="54" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="55" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="42" type="output"/>
+            <objectRef objectId="62" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="63" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="2" type="input"/>
+            <objectRef objectId="49" type="input"/>
+            <objectRef objectId="50" type="input"/>
+            <objectRef objectId="48" type="input"/>
+            <objectRef objectId="5" type="input"/>
+            <objectRef objectId="57" type="input"/>
+            <objectRef objectId="56" type="input"/>
+            <objectRef objectId="58" type="input"/>
+            <objectRef objectId="60" type="input"/>
+            <objectRef objectId="61" type="input"/>
+            <objectRef objectId="7" type="output"/>
+            <objectRef objectId="81" type="input"/>
+            <objectRef objectId="82" type="input"/>
+            <objectRef objectId="83" type="input"/>
+            <objectRef objectId="10" type="input"/>
+            <objectRef objectId="87" type="input"/>
+            <objectRef objectId="88" type="input"/>
+            <objectRef objectId="89" type="input"/>
+            <objectRef objectId="92" type="input"/>
+            <objectRef objectId="93" type="input"/>
+            <objectRef objectId="94" type="input"/>
+            <objectRef objectId="95" type="input"/>
+            <objectRef objectId="84" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="85" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="86" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="10" type="output"/>
+            <objectRef objectId="70" type="output"/>
+            <objectRef objectId="16" type="output"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="9">
+            <name>   Music&#xD;
+premixing</name>
+            <objectRef objectId="21" type="input"/>
+            <objectRef objectId="18" type="input"/>
+            <objectRef objectId="20" type="input"/>
+            <objectRef objectId="73" type="input"/>
+            <objectRef objectId="78" type="input"/>
+            <objectRef objectId="79" type="output" optional="false" consumed="false"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="10">
+            <name>  Sound&#xD;
+premixing</name>
+            <objectRef objectId="19" type="input"/>
+            <objectRef objectId="21" type="input"/>
+            <objectRef objectId="72" type="input"/>
+            <objectRef objectId="20" type="input"/>
+            <objectRef objectId="22" type="input"/>
+            <objectRef objectId="30" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="31" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="32" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="33" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="53" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="54" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="55" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="42" type="output"/>
+            <objectRef objectId="62" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="63" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="7" type="output"/>
+            <objectRef objectId="84" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="85" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="86" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="2" type="input"/>
+            <objectRef objectId="49" type="input"/>
+            <objectRef objectId="50" type="input"/>
+            <objectRef objectId="48" type="input"/>
+            <objectRef objectId="5" type="input"/>
+            <objectRef objectId="57" type="input"/>
+            <objectRef objectId="56" type="input"/>
+            <objectRef objectId="58" type="input"/>
+            <objectRef objectId="60" type="input"/>
+            <objectRef objectId="61" type="input"/>
+            <objectRef objectId="7" type="input"/>
+            <objectRef objectId="81" type="input"/>
+            <objectRef objectId="82" type="input"/>
+            <objectRef objectId="83" type="input"/>
+            <objectRef objectId="10" type="output"/>
+            <objectRef objectId="87" type="input"/>
+            <objectRef objectId="88" type="input"/>
+            <objectRef objectId="89" type="input"/>
+            <objectRef objectId="92" type="input"/>
+            <objectRef objectId="93" type="input"/>
+            <objectRef objectId="94" type="input"/>
+            <objectRef objectId="95" type="input"/>
+            <objectRef objectId="70" type="output"/>
+            <objectRef objectId="16" type="output"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="13">
+            <name>Music premix&#xD;
+   approval</name>
+            <objectRef objectId="18" type="input"/>
+            <objectRef objectId="21" type="input"/>
+            <objectRef objectId="20" type="input"/>
+            <objectRef objectId="73" type="input"/>
+            <objectRef objectId="80" type="input"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="16">
+            <name>Final mixing</name>
+            <objectRef objectId="19" type="input"/>
+            <objectRef objectId="21" type="input"/>
+            <objectRef objectId="20" type="input"/>
+            <objectRef objectId="72" type="input"/>
+            <objectRef objectId="73" type="input"/>
+            <objectRef objectId="18" type="input"/>
+            <objectRef objectId="96" type="output" optional="false" consumed="false"/>
+            <objectRef objectId="2" type="input"/>
+            <objectRef objectId="49" type="input"/>
+            <objectRef objectId="50" type="input"/>
+            <objectRef objectId="48" type="input"/>
+            <objectRef objectId="5" type="input"/>
+            <objectRef objectId="57" type="input"/>
+            <objectRef objectId="56" type="input"/>
+            <objectRef objectId="58" type="input"/>
+            <objectRef objectId="60" type="input"/>
+            <objectRef objectId="61" type="input"/>
+            <objectRef objectId="7" type="input"/>
+            <objectRef objectId="81" type="input"/>
+            <objectRef objectId="82" type="input"/>
+            <objectRef objectId="83" type="input"/>
+            <objectRef objectId="10" type="input"/>
+            <objectRef objectId="87" type="input"/>
+            <objectRef objectId="88" type="input"/>
+            <objectRef objectId="89" type="input"/>
+            <objectRef objectId="92" type="input"/>
+            <objectRef objectId="93" type="input"/>
+            <objectRef objectId="94" type="input"/>
+            <objectRef objectId="95" type="input"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="42">
+            <name>Sound tracks&#xD;
+   approval</name>
+            <objectRef objectId="21" type="input"/>
+            <objectRef objectId="20" type="input"/>
+            <objectRef objectId="19" type="input"/>
+            <objectRef objectId="2" type="input"/>
+            <objectRef objectId="49" type="input"/>
+            <objectRef objectId="50" type="input"/>
+            <objectRef objectId="48" type="input"/>
+            <objectRef objectId="5" type="input"/>
+            <objectRef objectId="57" type="input"/>
+            <objectRef objectId="56" type="input"/>
+            <objectRef objectId="58" type="input"/>
+            <objectRef objectId="60" type="input"/>
+            <objectRef objectId="61" type="input"/>
+            <objectRef objectId="7" type="input"/>
+            <objectRef objectId="81" type="input"/>
+            <objectRef objectId="82" type="input"/>
+            <objectRef objectId="83" type="input"/>
+            <objectRef objectId="10" type="input"/>
+            <objectRef objectId="87" type="input"/>
+            <objectRef objectId="88" type="input"/>
+            <objectRef objectId="89" type="input"/>
+            <objectRef objectId="92" type="input"/>
+            <objectRef objectId="93" type="input"/>
+            <objectRef objectId="94" type="input"/>
+            <objectRef objectId="95" type="input"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="43">
+            <name>Music design&#xD;
+  completed</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="70">
+            <name>Sound premix&#xD;
+    approval</name>
+            <objectRef objectId="19" type="input"/>
+            <objectRef objectId="21" type="input"/>
+            <objectRef objectId="20" type="input"/>
+            <objectRef objectId="72" type="input"/>
+            <objectRef objectId="2" type="input"/>
+            <objectRef objectId="49" type="input"/>
+            <objectRef objectId="50" type="input"/>
+            <objectRef objectId="48" type="input"/>
+            <objectRef objectId="5" type="input"/>
+            <objectRef objectId="57" type="input"/>
+            <objectRef objectId="56" type="input"/>
+            <objectRef objectId="58" type="input"/>
+            <objectRef objectId="60" type="input"/>
+            <objectRef objectId="61" type="input"/>
+            <objectRef objectId="7" type="input"/>
+            <objectRef objectId="81" type="input"/>
+            <objectRef objectId="82" type="input"/>
+            <objectRef objectId="83" type="input"/>
+            <objectRef objectId="10" type="input"/>
+            <objectRef objectId="87" type="input"/>
+            <objectRef objectId="88" type="input"/>
+            <objectRef objectId="89" type="input"/>
+            <objectRef objectId="92" type="input"/>
+            <objectRef objectId="93" type="input"/>
+            <objectRef objectId="94" type="input"/>
+            <objectRef objectId="95" type="input"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="71">
+            <name>Final mixing&#xD;
+   approval</name>
+            <objectRef objectId="19" type="input"/>
+            <objectRef objectId="21" type="input"/>
+            <objectRef objectId="20" type="input"/>
+            <objectRef objectId="72" type="input"/>
+            <objectRef objectId="73" type="input"/>
+            <objectRef objectId="18" type="input"/>
+            <objectRef objectId="97" type="input"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="98">
+            <name>Audio editing&#xD;
+  completed</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="102">
+            <name>   Sound&#xD;
+mastering</name>
+            <objectRef objectId="21" type="input"/>
+            <objectRef objectId="19" type="input"/>
+            <objectRef objectId="114" type="input"/>
+            <objectRef objectId="115" type="output" optional="false" consumed="false"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="27"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDJoinType" id="59"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="67"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDJoinType" id="90"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="103"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDJoinType" id="108"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="105"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="106"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="23"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="24"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="26"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="40"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="41"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="44"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="64"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="68"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="69"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="74"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="75"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="91"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="104"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="107"/>
+        <Edge id="122" sourceId="27" targetId="40"/>
+        <Edge id="123" sourceId="40" targetId="4"/>
+        <Edge id="124" sourceId="27" targetId="41"/>
+        <Edge id="125" sourceId="41" targetId="5"/>
+        <Edge id="126" sourceId="5" targetId="42"/>
+        <Edge id="127" sourceId="4" targetId="43"/>
+        <Edge id="128" sourceId="42" targetId="44"/>
+        <Edge id="129" condition="&#xD;&#xA;Sound tracks&#xD;&#xA;   approved&#xD;&#xA;" sourceId="44" targetId="59"/>
+        <Edge id="130" condition="Redo sound&#xD;&#xA;   design" sourceId="44" targetId="41"/>
+        <Edge id="132" sourceId="43" targetId="59"/>
+        <Edge id="134" condition="Redo audio&#xD;&#xA;   design" sourceId="64" targetId="26"/>
+        <Edge id="136" sourceId="67" targetId="68"/>
+        <Edge id="137" sourceId="67" targetId="69"/>
+        <Edge id="138" sourceId="68" targetId="9"/>
+        <Edge id="139" sourceId="69" targetId="10"/>
+        <Edge id="140" condition="Redo music&#xD;&#xA; premixing" sourceId="74" targetId="68"/>
+        <Edge id="143" condition="Redo sound&#xD;&#xA; premixing" sourceId="75" targetId="69"/>
+        <Edge id="145" condition="Redo sound&#xD;&#xA;   design" sourceId="75" targetId="41"/>
+        <Edge id="149" condition="Redo audio&#xD;&#xA;   design" sourceId="91" targetId="26"/>
+        <Edge id="151" condition="Licence not&#xD;&#xA;  needed" sourceId="104" targetId="107"/>
+        <Edge id="152" condition="Get SDDS" sourceId="105" targetId="106"/>
+        <Edge id="153" condition="Get DTS&#xD;&#xA;approval" sourceId="105" targetId="106"/>
+        <Edge id="156" sourceId="103" targetId="102"/>
+        <Edge id="157" sourceId="102" targetId="108"/>
+        <Edge id="159" condition="Re-hold&#xD;&#xA;session" sourceId="24" targetId="23"/>
+        <Edge id="161" condition="Redo music&#xD;&#xA;   design" sourceId="74" targetId="40"/>
+        <Edge id="162" sourceId="1" targetId="23"/>
+        <Edge id="163" sourceId="23" targetId="2"/>
+        <Edge id="164" sourceId="2" targetId="24"/>
+        <Edge id="165" condition="Spotting&#xD;&#xA;finished" sourceId="24" targetId="26"/>
+        <Edge id="167" sourceId="26" targetId="27"/>
+        <Edge id="168" sourceId="9" targetId="13"/>
+        <Edge id="169" sourceId="13" targetId="74"/>
+        <Edge id="170" condition="&#xD;&#xA;Music premix&#xD;&#xA;   approved&#xD;&#xA;" sourceId="74" targetId="90"/>
+        <Edge id="171" condition="Audio design&#xD;&#xA;  completed" sourceId="64" targetId="67"/>
+        <Edge id="173" sourceId="7" targetId="64"/>
+        <Edge id="174" sourceId="59" targetId="7"/>
+        <Edge id="175" sourceId="10" targetId="70"/>
+        <Edge id="176" sourceId="70" targetId="75"/>
+        <Edge id="177" condition="Sound premix&#xD;&#xA;   approved" sourceId="75" targetId="90"/>
+        <Edge id="178" sourceId="90" targetId="16"/>
+        <Edge id="179" sourceId="16" targetId="71"/>
+        <Edge id="180" sourceId="71" targetId="91"/>
+        <Edge id="181" condition="Final mix&#xD;&#xA;approved" sourceId="91" targetId="103"/>
+        <Edge id="183" sourceId="103" targetId="104"/>
+        <Edge id="184" condition="Get Licence&#xD;&#xA;  approval" sourceId="104" targetId="105"/>
+        <Edge id="186" condition="Get Dolby&#xD;&#xA;approval" sourceId="105" targetId="106"/>
+        <Edge id="188" sourceId="106" targetId="107"/>
+        <Edge id="189" sourceId="107" targetId="108"/>
+        <Edge id="190" sourceId="108" targetId="98"/>
+    </Net>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="18">
+        <name>Composer</name>
+    </ResourceType>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="19">
+        <name>S. Designer</name>
+    </ResourceType>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="20">
+        <name>Producer</name>
+    </ResourceType>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="21">
+        <name>Director</name>
+    </ResourceType>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="22">
+        <name>PP Supervisor</name>
+    </ResourceType>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="25">
+        <name>Picture Editor</name>
+    </ResourceType>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="72">
+        <name>Sound Mixer</name>
+    </ResourceType>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="73">
+        <name>Music Mixer</name>
+    </ResourceType>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="111">
+        <name>SDDS Rep.</name>
+    </ResourceType>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="112">
+        <name>Dolby Rep.</name>
+    </ResourceType>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="113">
+        <name>DTS Rep.</name>
+    </ResourceType>
+    <Object id="29">
+        <name>Temp picture cut</name>
+    </Object>
+    <Object id="30">
+        <name>Music cues</name>
+    </Object>
+    <Object id="31">
+        <name>Dialog cues</name>
+    </Object>
+    <Object id="32">
+        <name>Effect cues</name>
+    </Object>
+    <Object id="33">
+        <name>Atmos cues</name>
+    </Object>
+    <Object id="34">
+        <name>Music notes</name>
+    </Object>
+    <Object id="35">
+        <name>Temp picture cut</name>
+    </Object>
+    <Object id="36">
+        <name>Music cues</name>
+    </Object>
+    <Object id="37">
+        <name>Production sound</name>
+    </Object>
+    <Object id="38">
+        <name>Stereo files (temp)</name>
+    </Object>
+    <Object id="39">
+        <name>Music tracks</name>
+    </Object>
+    <Object id="46">
+        <name>Sound notes</name>
+    </Object>
+    <Object id="47">
+        <name>Temp picture cut</name>
+    </Object>
+    <Object id="48">
+        <name>Dialog cues</name>
+    </Object>
+    <Object id="49">
+        <name>Effect cues</name>
+    </Object>
+    <Object id="50">
+        <name>Atmos cues</name>
+    </Object>
+    <Object id="51">
+        <name>Production sound</name>
+    </Object>
+    <Object id="52">
+        <name>Audio files (temp)</name>
+    </Object>
+    <Object id="53">
+        <name>Dialog tracks</name>
+    </Object>
+    <Object id="54">
+        <name>FX tracks</name>
+    </Object>
+    <Object id="55">
+        <name>Atmos tracks</name>
+    </Object>
+    <Object id="56">
+        <name>Dialog tracks</name>
+    </Object>
+    <Object id="57">
+        <name>FX tracks</name>
+    </Object>
+    <Object id="58">
+        <name>Atmos tracks</name>
+    </Object>
+    <Object id="60">
+        <name>Stereo files (temp)</name>
+    </Object>
+    <Object id="61">
+        <name>Audio files (temp)</name>
+    </Object>
+    <Object id="62">
+        <name>Music notes</name>
+    </Object>
+    <Object id="63">
+        <name>Sound notes</name>
+    </Object>
+    <Object id="78">
+        <name>Music tracks</name>
+    </Object>
+    <Object id="79">
+        <name>Music premix</name>
+    </Object>
+    <Object id="80">
+        <name>Music premix</name>
+    </Object>
+    <Object id="81">
+        <name>Dialog tracks</name>
+    </Object>
+    <Object id="82">
+        <name>FX tracks</name>
+    </Object>
+    <Object id="83">
+        <name>Atmos tracks</name>
+    </Object>
+    <Object id="84">
+        <name>Dialog premix</name>
+    </Object>
+    <Object id="85">
+        <name>FX premix</name>
+    </Object>
+    <Object id="86">
+        <name>Atmos premix</name>
+    </Object>
+    <Object id="87">
+        <name>Dialog premix</name>
+    </Object>
+    <Object id="88">
+        <name>FX premix</name>
+    </Object>
+    <Object id="89">
+        <name>Atmos premix</name>
+    </Object>
+    <Object id="92">
+        <name>Music premix</name>
+    </Object>
+    <Object id="93">
+        <name>Dialog premix</name>
+    </Object>
+    <Object id="94">
+        <name>FX premix</name>
+    </Object>
+    <Object id="95">
+        <name>Atmos premix</name>
+    </Object>
+    <Object id="96">
+        <name>Final mix</name>
+    </Object>
+    <Object id="97">
+        <name>Final mix</name>
+    </Object>
+    <Object id="114">
+        <name>Final mix</name>
+    </Object>
+    <Object id="115">
+        <name>Final sound master</name>
+    </Object>
+    <Object id="116">
+        <name>Final mix</name>
+    </Object>
+    <Object id="117">
+        <name>DTS licence</name>
+    </Object>
+    <Object id="118">
+        <name>Final mix</name>
+    </Object>
+    <Object id="119">
+        <name>Dolby licence</name>
+    </Object>
+    <Object id="120">
+        <name>Final mix</name>
+    </Object>
+    <Object id="121">
+        <name>SDDS licence</name>
+    </Object>
+</ns2:CanonicalProcess>
