@@ -94,6 +94,7 @@ public class EPML2Canonical{
 	Map<BigInteger, TypeObject> obj_ref = new HashMap<BigInteger, TypeObject>();
 	List<TaskType> subnet_list = new LinkedList<TaskType>();
 	List<BigInteger> range_ids = new LinkedList<BigInteger>();
+	List<BigInteger> event_ids = new LinkedList<BigInteger>();
 	List<TypeArc> range_flow = new LinkedList<TypeArc>();
 	List<TypeArc> range_relation = new LinkedList<TypeArc>();
 	
@@ -503,7 +504,7 @@ public class EPML2Canonical{
 		for(EdgeType edge: net.getEdge())
 		{
 			try {
-				if(edge.getSourceId().equals(id))
+				if(edge.getSourceId().equals(id) && event_ids.contains(edge.getTargetId()))
 				{
 					event_id = edge.getTargetId();
 					for(EdgeType edge2: net.getEdge())
@@ -543,6 +544,7 @@ public class EPML2Canonical{
 	{
 		EventType node = new EventType();
 		id_map.put(event.getId(), BigInteger.valueOf(ids));
+		event_ids.add(BigInteger.valueOf(ids));
 		node.setId(BigInteger.valueOf(ids++));
 		node.setName(event.getName());
 		net.getNode().add(node);	

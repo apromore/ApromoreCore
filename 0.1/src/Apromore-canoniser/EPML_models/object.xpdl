@@ -10,9 +10,19 @@
     <Artifacts>
         <Artifact Id="6" Name="O1" ArtifactType="DataObject">
             <DataObject Name="O1"/>
+            <NodeGraphicsInfos>
+                <NodeGraphicsInfo Height="21.0" Width="81.0">
+                    <Coordinates XCoordinate="240.0" YCoordinate="285.0"/>
+                </NodeGraphicsInfo>
+            </NodeGraphicsInfos>
         </Artifact>
         <Artifact Id="7" Name="O2" ArtifactType="DataObject">
             <DataObject Name="O2"/>
+            <NodeGraphicsInfos>
+                <NodeGraphicsInfo Height="21.0" Width="81.0">
+                    <Coordinates XCoordinate="505.0" YCoordinate="280.0"/>
+                </NodeGraphicsInfo>
+            </NodeGraphicsInfos>
         </Artifact>
     </Artifacts>
     <WorkflowProcesses>
