@@ -70,7 +70,11 @@ import org.wfmc._2008.xpdl2.WorkflowProcesses;
 public class Canonical2XPDL {
 	Map<NodeType, Activity> canon2xpdl = new HashMap<NodeType, Activity>();
 	Map<EdgeType, Transition> edge2flow = new HashMap<EdgeType, Transition>();
+	Map<ObjectType, Artifact> object2xpdl = new HashMap<ObjectType, Artifact>();
+	//Map<ResourceTypeType, Object> resource2xpdl = new HashMap<ResourceTypeType, Object>();
 	Map<BigInteger, NodeType> nodeRefMap = new HashMap<BigInteger, NodeType>();
+	Map<BigInteger, ObjectType> objectRefMap = new HashMap<BigInteger, ObjectType>();
+	Map<BigInteger, Object> resourceRefMap = new HashMap<BigInteger, Object>();
 	Map<BigInteger, EdgeType> edgeRefMap = new HashMap<BigInteger, EdgeType>();
 	Map<String, Activity> xpdlRefMap = new HashMap<String, Activity>();
 	Map<BigInteger, String> cid2xid = new HashMap<BigInteger, String>();
@@ -105,7 +109,6 @@ public class Canonical2XPDL {
 			bpmnproc.setId(net.getId().toString());
 			translateNet(bpmnproc, net);
 			translateResources(bpmnproc, cpf);
-			//translateObjects(bpmnproc, cpf);
 			this.xpdl.getWorkflowProcesses().getWorkflowProcess().add(bpmnproc);
 		}
 		
@@ -151,10 +154,9 @@ public class Canonical2XPDL {
 			a.setId(obj.getId().toString());
 			a.setDataObject(o);
 			this.xpdl.getArtifacts().getArtifactAndAny().add(a);
-			//object_types.put(o.getId(), obj.)
+			objectRefMap.put(obj.getId(), obj);
+			object2xpdl.put(obj, a);
 		}
-			
-		//object_ref_list.clear();
 		
 	}
 
@@ -166,6 +168,7 @@ public class Canonical2XPDL {
 			p.setName(cpf.getResourceType().get(0).getName());
 			p.setId(resource_ref_list.get(0).toString());
 			p.setProcess(bpmnproc.getId());
+			resourceRefMap.put(resource_ref_list.get(0), p);
 			this.xpdl.getPools().getPool().add(p);
 		}
 		else if (resource_ref_list.size() > 1) {
@@ -186,7 +189,10 @@ public class Canonical2XPDL {
 						lane.setId(id.toString());
 						//lane.setName(value);
 						p.getLanes().getLane().add(lane);
+						resourceRefMap.put(id, lane);
 					}
+					resourceRefMap.put(res.getId(), p);
+					this.xpdl.getPools().getPool().add(p);
 				} else { // when all of them should be lanes into a pool
 					
 				}
@@ -251,6 +257,9 @@ public class Canonical2XPDL {
 		setTransitionsId(bpmnproc);
 		mapEdgeAnnotations(bpmnproc, annotations);
 		
+		mapResourceAnnotations(bpmnproc, annotations);
+		mapObjectAnnotations(bpmnproc, annotations);
+		
 		completeMapping(bpmnproc, net);
 	}
 
@@ -308,6 +317,97 @@ public class Canonical2XPDL {
 		}
 	}
 
+	private void mapObjectAnnotations(ProcessType bpmnproc,
+			AnnotationsType annotations) {
+		for (AnnotationType annotation: annotations.getAnnotation()) {
+			if (objectRefMap.containsKey(annotation.getCpfId())) {
+				// TODO: Handle 1-N mappings
+				BigInteger cid = annotation.getCpfId();
+				ObjectType obj = objectRefMap.get(cid);
+				Artifact arti = object2xpdl.get(obj);
+				
+				if (annotation instanceof GraphicsType) {
+					GraphicsType cGraphInfo = (GraphicsType)annotation;
+					NodeGraphicsInfos infos = new NodeGraphicsInfos();
+					NodeGraphicsInfo info = new NodeGraphicsInfo();
+					
+					if (cGraphInfo.getFill() != null)
+						// TODO: Parse color format
+						info.setFillColor(cGraphInfo.getFill().getColor());
+					
+					if(cGraphInfo.getSize() != null && cGraphInfo.getSize().getHeight() != null && cGraphInfo.getSize().getWidth() != null) {
+						info.setHeight(cGraphInfo.getSize().getHeight().doubleValue());
+						info.setWidth(cGraphInfo.getSize().getWidth().doubleValue());
+					}
+					Coordinates coords = new Coordinates();
+					if(cGraphInfo.getPosition() != null)
+					{
+						try {
+							coords.setXCoordinate(cGraphInfo.getPosition().get(0).getX().doubleValue());
+							coords.setYCoordinate(cGraphInfo.getPosition().get(0).getY().doubleValue());
+							info.setCoordinates(coords);
+						} catch (IndexOutOfBoundsException e) {
+							// TODO Auto-generated catch block
+							//e.printStackTrace();
+						} catch (NullPointerException e) {
+							
+						}
+					}
+					
+					infos.getNodeGraphicsInfo().add(info);
+					arti.setNodeGraphicsInfos(infos);
+				}
+			}			
+		}
+	}
+	
+	private void mapResourceAnnotations(ProcessType bpmnproc,
+			AnnotationsType annotations) {
+		for (AnnotationType annotation: annotations.getAnnotation()) {
+			if (resourceRefMap.containsKey(annotation.getCpfId())) {
+				// TODO: Handle 1-N mappings
+				BigInteger cid = annotation.getCpfId();
+				Object obj = resourceRefMap.get(cid);
+				
+				if (annotation instanceof GraphicsType) {
+					GraphicsType cGraphInfo = (GraphicsType)annotation;
+					NodeGraphicsInfos infos = new NodeGraphicsInfos();
+					NodeGraphicsInfo info = new NodeGraphicsInfo();
+					
+					if (cGraphInfo.getFill() != null)
+						// TODO: Parse color format
+						info.setFillColor(cGraphInfo.getFill().getColor());
+					
+					if(cGraphInfo.getSize() != null && cGraphInfo.getSize().getHeight() != null && cGraphInfo.getSize().getWidth() != null) {
+						info.setHeight(cGraphInfo.getSize().getHeight().doubleValue());
+						info.setWidth(cGraphInfo.getSize().getWidth().doubleValue());
+					}
+					Coordinates coords = new Coordinates();
+					if(cGraphInfo.getPosition() != null)
+					{
+						try {
+							coords.setXCoordinate(cGraphInfo.getPosition().get(0).getX().doubleValue());
+							coords.setYCoordinate(cGraphInfo.getPosition().get(0).getY().doubleValue());
+							info.setCoordinates(coords);
+						} catch (IndexOutOfBoundsException e) {
+							// TODO Auto-generated catch block
+							//e.printStackTrace();
+						} catch (NullPointerException e) {
+							
+						}
+					}
+					
+					infos.getNodeGraphicsInfo().add(info);
+					
+					if(obj instanceof Pool)
+						((Pool)obj).setNodeGraphicsInfos(infos);
+					else if(obj instanceof Lane)
+						((Lane)obj).setNodeGraphicsInfos(infos);
+				}
+			}			
+		}
+	}
+	
 	private void mapNodeAnnotations(ProcessType bpmnproc,
 			AnnotationsType annotations) {
 		for (AnnotationType annotation: annotations.getAnnotation()) {

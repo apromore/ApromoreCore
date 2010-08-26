@@ -44,7 +44,7 @@ public class TestEPML2Canonical {
 			StringTokenizer tokenizer = new StringTokenizer(filename, ".");
 			String filename_without_path = tokenizer.nextToken();
 			String extension = filename.split("\\.")[filename.split("\\.").length-1];
-			if (extension.compareTo("epml1")==0) {
+			if (extension.compareTo("epml")==0) {
 				System.out.println ("Analysing " + filename);
 				n++;
 				try{
