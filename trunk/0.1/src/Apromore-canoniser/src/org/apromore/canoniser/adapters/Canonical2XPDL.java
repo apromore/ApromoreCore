@@ -32,6 +32,8 @@ import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TimerType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
+import org.wfmc._2002.xpdl1.ExtendedAttribute;
+import org.wfmc._2002.xpdl1.ExtendedAttributes;
 import org.wfmc._2008.xpdl2.Activities;
 import org.wfmc._2008.xpdl2.Activity;
 import org.wfmc._2008.xpdl2.Artifact;
@@ -87,6 +89,7 @@ public class Canonical2XPDL {
 	List<BigInteger> resource_ref_list = new LinkedList<BigInteger>();
 	List<BigInteger> object_ref_list = new LinkedList<BigInteger>();
 	int object_ids;
+	boolean split_process;
 	
 	private PackageType xpdl; 
 	/**
@@ -102,6 +105,7 @@ public class Canonical2XPDL {
 		this.xpdl.setWorkflowProcesses(new WorkflowProcesses());
 		this.xpdl.setPools(new Pools());
 		object_ids = 1;
+		split_process = false;
 		translateObjects(cpf);
 		
 		for (NetType net: cpf.getNet()) {
@@ -109,11 +113,16 @@ public class Canonical2XPDL {
 			bpmnproc.setId(net.getId().toString());
 			translateNet(bpmnproc, net);
 			translateResources(bpmnproc, cpf);
+			if(split_process)
+			{
+				split(bpmnproc);
+			}
 			this.xpdl.getWorkflowProcesses().getWorkflowProcess().add(bpmnproc);
 		}
 		
 	}
-	
+
+
 	/**
 	 * de-canonize data (canonical) into xpdl using anf data
 	 * @param data
@@ -128,6 +137,7 @@ public class Canonical2XPDL {
 		this.xpdl.setWorkflowProcesses(new WorkflowProcesses());
 		this.xpdl.setPools(new Pools());
 		object_ids = 1;
+		split_process = false;
 		translateObjects(cpf);
 		
 		for (NetType net: cpf.getNet()) {
@@ -135,11 +145,45 @@ public class Canonical2XPDL {
 			bpmnproc.setId(net.getId().toString());
 			translateNet(bpmnproc, net, anf);
 			translateResources(bpmnproc, cpf);
+			if(split_process)
+			{
+				split(bpmnproc);
+			}
 			this.xpdl.getWorkflowProcesses().getWorkflowProcess().add(bpmnproc);
 		}
 		
 	}
 
+	
+	private void split(ProcessType bpmnproc) {
+		bpmnproc.setAdHocOrdering("Parallel");
+		bpmnproc.setProcessType("None");
+		bpmnproc.setStatus("None");
+		
+		ProcessType transproc = new ProcessType();
+		transproc.setAdHocOrdering("Sequential");
+		transproc.setProcessType("None");
+		transproc.setStatus("None");
+		transproc.setSuppressJoinFailure(true);
+		transproc.setId("MainPool-process");
+		transproc.setName("MainProcess");
+		
+		for (Object obj : bpmnproc.getContent())
+			if(obj instanceof Transitions)
+			{
+				transproc.getContent().add(((Transitions)obj));
+			}
+		
+		for (Object obj : transproc.getContent())
+			if(obj instanceof Transitions)
+			{
+				bpmnproc.getContent().remove(((Transitions)obj));
+			}
+		
+		this.xpdl.getWorkflowProcesses().getWorkflowProcess().add(transproc);
+		
+	}
+	
 	private void translateObjects(CanonicalProcessType cpf) {
 		
 		this.xpdl.setArtifacts(new Artifacts());
@@ -162,6 +206,9 @@ public class Canonical2XPDL {
 
 	private void translateResources(ProcessType bpmnproc, CanonicalProcessType cpf)
 	{
+		boolean flag = true;
+		Pool parent = new Pool();
+		
 		if(resource_ref_list.size() == 1)
 		{
 			Pool p = new Pool();
@@ -177,7 +224,6 @@ public class Canonical2XPDL {
 			{
 				if(resource_ref_list.contains(res.getId()) && res.getSpecializationIds().size() > 0)
 				{
-					System.out.println("Hey, i am here");
 					Pool p = new Pool();
 					p.setName(res.getName());
 					p.setId(res.getId().toString());
@@ -193,7 +239,45 @@ public class Canonical2XPDL {
 					}
 					resourceRefMap.put(res.getId(), p);
 					this.xpdl.getPools().getPool().add(p);
-				} else { // when all of them should be lanes into a pool
+				} else if (resource_ref_list.contains(res.getId()))
+				{ // when all of them should be lanes into a pool
+					
+					if(flag)
+					{
+						parent.setId(res.getId().toString()+"-Pool");
+						parent.setProcess(bpmnproc.getId());
+						parent.setLanes(new Lanes());
+						parent.setMainPool(false);
+						parent.setBoundaryVisible(true);
+						parent.setOrientation("HORIZONTAL");
+						resourceRefMap.put(res.getId(), parent);
+						this.xpdl.getPools().getPool().add(parent);
+						flag = false;
+						
+						Pool p = new Pool();
+						p.setId("MainPool");
+						p.setName("Main Pool");
+						p.setOrientation("HORIZONTAL");
+						p.setBoundaryVisible(false);
+						p.setMainPool(true);
+						p.setProcess("MainPool-process");
+						this.xpdl.getPools().getPool().add(p);
+						
+						split_process = true;
+					}
+					
+					Lane lane = new Lane();
+					lane.setParentPool(parent.getId());
+					lane.setId(res.getId().toString());
+					lane.setName(res.getName());
+					ExtendedAttributes atts = new ExtendedAttributes();
+					ExtendedAttribute att = new ExtendedAttribute();
+					att.setName("showcaption");
+					att.setValue("true");
+					atts.getExtendedAttribute().add(att);
+					lane.getAny().add(atts);
+					parent.getLanes().getLane().add(lane);
+					resourceRefMap.put(res.getId(), lane);
 					
 				}
 					
