@@ -94,9 +94,9 @@ public class Association {
     protected String target;
     @XmlAttribute(name = "Name")
     protected String name;
-    @XmlAttribute(name = "AssociationDirection")
+    @XmlAttribute(name = "Direction")
     @XmlJavaTypeAdapter(CollapsedStringAdapter.class)
-    protected String associationDirection;
+    protected String direction;
     @XmlAnyAttribute
     private Map<QName, String> otherAttributes = new HashMap<QName, String>();
 
@@ -283,10 +283,10 @@ public class Association {
      *     
      */
     public String getAssociationDirection() {
-        if (associationDirection == null) {
+        if (direction == null) {
             return "None";
         } else {
-            return associationDirection;
+            return direction;
         }
     }
 
@@ -299,7 +299,7 @@ public class Association {
      *     
      */
     public void setAssociationDirection(String value) {
-        this.associationDirection = value;
+        this.direction = value;
     }
 
     /**
