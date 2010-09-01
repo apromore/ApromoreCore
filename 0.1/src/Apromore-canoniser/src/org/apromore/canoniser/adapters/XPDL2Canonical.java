@@ -23,11 +23,13 @@ import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
+import org.apromore.cpf.InputOutputType;
 import org.apromore.cpf.MessageType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ORJoinType;
 import org.apromore.cpf.ORSplitType;
+import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
@@ -39,6 +41,7 @@ import org.apromore.cpf.XORSplitType;
 import org.wfmc._2008.xpdl2.Activities;
 import org.wfmc._2008.xpdl2.Activity;
 import org.wfmc._2008.xpdl2.Artifact;
+import org.wfmc._2008.xpdl2.Association;
 import org.wfmc._2008.xpdl2.Condition;
 import org.wfmc._2008.xpdl2.ConnectorGraphicsInfo;
 import org.wfmc._2008.xpdl2.ConnectorGraphicsInfos;
@@ -115,20 +118,23 @@ public class XPDL2Canonical {
 
 		if (pkg.getPools() != null) {
 			for (Pool pool : pkg.getPools().getPool()) {
-				ResourceTypeType res = new ResourceTypeType();
-				res.setId(BigInteger.valueOf(cpfId++));
-				res.setName(pool.getName());
-				pool_resource_map.put(pool.getProcess(), res);
-				if (pool.getLanes() != null) {
-					for (Lane lane : pool.getLanes().getLane()) {
-						ResourceTypeType r = new ResourceTypeType();
-						r.setId(BigInteger.valueOf(cpfId++));
-						r.setName(lane.getName());
-						res.getSpecializationIds().add(BigInteger.valueOf(cpfId-1));
-						this.cpf.getResourceType().add(r);
+				if(pool.isBoundaryVisible())
+				{
+					ResourceTypeType res = new ResourceTypeType();
+					res.setId(BigInteger.valueOf(cpfId++));
+					res.setName(pool.getName());
+					pool_resource_map.put(pool.getProcess(), res);
+					if (pool.getLanes() != null) {
+						for (Lane lane : pool.getLanes().getLane()) {
+							ResourceTypeType r = new ResourceTypeType();
+							r.setId(BigInteger.valueOf(cpfId++));
+							r.setName(lane.getName());
+							res.getSpecializationIds().add(BigInteger.valueOf(cpfId-1));
+							this.cpf.getResourceType().add(r);
+						}
 					}
+					this.cpf.getResourceType().add(res);
 				}
-				this.cpf.getResourceType().add(res);
 			}
 		}
 		
@@ -141,7 +147,7 @@ public class XPDL2Canonical {
 						ObjectType ot = new ObjectType();
 						ot.setName(arti.getDataObject().getName());
 						ot.setId(BigInteger.valueOf(cpfId++));
-						object_map.put(arti.getDataObject().getId(), ot.getId());
+						object_map.put(arti.getId(), ot.getId());
 						this.cpf.getObject().add(ot);
 					}
 				}
@@ -162,6 +168,37 @@ public class XPDL2Canonical {
 				process_unrequired_events(net);
 				recordAnnotations(bpmnproc, this.anf);
 				this.cpf.getNet().add(net);
+			}
+		}
+		
+		if(pkg.getAssociations() != null){
+			for(Object obj : pkg.getAssociations().getAssociationAndAny())
+			{
+				if(obj instanceof Association)
+				{
+					Association as = (Association)obj;
+					String source, target;
+					source = as.getSource();
+					target = as.getTarget();
+					if(xpdlRefMap.get(source) != null)
+					{
+						Activity act = xpdlRefMap.get(source);
+						TaskType node = (TaskType) xpdl2canon.get(act);
+						ObjectRefType ref = new ObjectRefType();
+						ref.setObjectId(object_map.get(target));
+						ref.setType(InputOutputType.OUTPUT);
+						node.getObjectRef().add(ref);
+					}
+					else if(xpdlRefMap.get(target) != null)
+					{
+						Activity act = xpdlRefMap.get(target);
+						TaskType node = (TaskType) xpdl2canon.get(act);
+						ObjectRefType ref = new ObjectRefType();
+						ref.setObjectId(object_map.get(source));
+						ref.setType(InputOutputType.INPUT);
+						node.getObjectRef().add(ref);
+					}
+				}
 			}
 		}
 		

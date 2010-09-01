@@ -123,6 +123,7 @@ public class Canonical2EPML {
 			// To do
 			TypeEPC epc = new TypeEPC();
 			epc.setEpcId(BigInteger.valueOf(ids++));
+			epc.setName(" ");
 			translateNet(epc,net);
 			for (ObjectType obj: cproc.getObject()){
 				if(object_res_list.contains(obj.getId()))
@@ -134,8 +135,8 @@ public class Canonical2EPML {
 			}
 			createRelationArc(epc,net);
 			object_res_list.clear();
-			validate_event_sequence(epc);
-			validate_function_sequence(epc);
+			//validate_event_sequence(epc);
+			//validate_function_sequence(epc);
 			epml.getDirectory().get(0).getEpcOrDirectory().add(epc);
 		}
 		
@@ -186,7 +187,7 @@ public class Canonical2EPML {
 			edgeRefMap.put(edge.getId(), edge);			
 			if(flag)
 			{
-				{		
+						
 				if(id_map.get(edge.getTargetId())!= null) {
 					TypeArc arc = new TypeArc();
 					TypeFlow flow = new TypeFlow();
@@ -198,11 +199,11 @@ public class Canonical2EPML {
 					arc.setFlow(flow);
 					epc.getEventOrFunctionOrRole().add(arc);
 					epcRefMap.put(arc.getId(), arc);
-					}
+				}
 				else {
 					id_map.put(edge.getTargetId(),id_map.get(edge.getSourceId()));
-					}
 				}
+				
 			}
 		}
 		
@@ -225,10 +226,16 @@ public class Canonical2EPML {
 						if(ref.getType().equals(InputOutputType.OUTPUT)){
 							rel.setSource(id_map.get(node.getId()));
 							rel.setTarget(id_map.get(ref.getObjectId()));
+							BigInteger id = id_map.get(ref.getObjectId());
+							TypeObject o = (TypeObject) epcRefMap.get(id);
+							o.setType("output");
 						}
 						else{
 							rel.setTarget(id_map.get(node.getId()));
 							rel.setSource(id_map.get(ref.getObjectId()));
+							BigInteger id = id_map.get(ref.getObjectId());
+							TypeObject o = (TypeObject) epcRefMap.get(id);
+							o.setType("input");
 						}					
 						arc.setRelation(rel);
 						epc.getEventOrFunctionOrRole().add(arc);
@@ -299,6 +306,7 @@ public class Canonical2EPML {
 		object.setDefRef(find_def_id("object",object.getName()));
 		object.setFinal(obj.isConfigurable());
 		epc.getEventOrFunctionOrRole().add(object);
+		epcRefMap.put(object.getId(), object);
 	}
 	
 	private void translateResource(ResourceTypeType resT, TypeEPC epc)
