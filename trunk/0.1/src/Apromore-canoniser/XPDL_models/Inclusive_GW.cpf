@@ -1,35 +1,34 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF">
-    <Net id="1281436922711">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="1281436922712"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="1281436922713"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1281436922714">
+    <Net id="1283312108213">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="1283312108214"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="1283312108215"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1283312108216">
             <name>start</name>
-            <resourceTypeRef resourceTypeId="1281436922710"/>
+            <resourceTypeRef/>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1281436922715">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1283312108217">
             <name>end</name>
-            <resourceTypeRef resourceTypeId="1281436922710"/>
+            <resourceTypeRef/>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1281436922716">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1283312108218">
             <name>A</name>
-            <resourceTypeRef resourceTypeId="1281436922710"/>
+            <resourceTypeRef/>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1281436922717">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1283312108219">
             <name>B</name>
-            <resourceTypeRef resourceTypeId="1281436922710"/>
+            <resourceTypeRef/>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1281436922718">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1283312108220">
             <name>C</name>
-            <resourceTypeRef resourceTypeId="1281436922710"/>
+            <resourceTypeRef/>
         </Node>
-        <Edge targetId="1281436922716" sourceId="1281436922714" id="1281436922719"/>
-        <Edge targetId="1281436922712" sourceId="1281436922716" id="1281436922720"/>
-        <Edge targetId="1281436922717" sourceId="1281436922712" condition="Y" id="1281436922721"/>
-        <Edge targetId="1281436922718" sourceId="1281436922712" condition="X" id="1281436922722"/>
-        <Edge targetId="1281436922713" sourceId="1281436922718" id="1281436922723"/>
-        <Edge targetId="1281436922713" sourceId="1281436922717" id="1281436922724"/>
-        <Edge targetId="1281436922715" sourceId="1281436922713" id="1281436922725"/>
+        <Edge id="1283312108221" sourceId="1283312108216" targetId="1283312108218"/>
+        <Edge id="1283312108222" sourceId="1283312108218" targetId="1283312108214"/>
+        <Edge id="1283312108223" condition="Y" sourceId="1283312108214" targetId="1283312108219"/>
+        <Edge id="1283312108224" condition="X" sourceId="1283312108214" targetId="1283312108220"/>
+        <Edge id="1283312108225" sourceId="1283312108220" targetId="1283312108215"/>
+        <Edge id="1283312108226" sourceId="1283312108219" targetId="1283312108215"/>
+        <Edge id="1283312108227" sourceId="1283312108215" targetId="1283312108217"/>
     </Net>
-    <ResourceType id="1281436922710"/>
 </ns2:CanonicalProcess>
