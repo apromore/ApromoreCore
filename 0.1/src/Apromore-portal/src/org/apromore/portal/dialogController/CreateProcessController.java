@@ -253,7 +253,8 @@ public class CreateProcessController {
 		String nativeType = cbi.getLabel();
 		String domain = process.getDomain();
 		String annotation = Constants.INITIAL_ANNOTATION;
-		this.mainC.editProcess(processId, processName, version, nativeType, domain, annotation);
+		Integer readOnly = 0;
+		this.mainC.editProcess(processId, processName, version, nativeType, domain, annotation, readOnly);
 		cancel();
 	}
 	protected void cancel() throws Exception {
