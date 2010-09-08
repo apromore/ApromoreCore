@@ -23,6 +23,10 @@
 						<!-- listbox implemented in controller -->
 					</listbox>
 				</row>
+				<row>
+					<label value="Edit annotation only" />
+					<checkbox checked="false" tooltiptext="Tick this checkbox if you wish to edit selected annotation"/>
+				</row>
 				<row spans="3">
 					<div align="center">
 						<button label="OK" image="img/ok.png" >
