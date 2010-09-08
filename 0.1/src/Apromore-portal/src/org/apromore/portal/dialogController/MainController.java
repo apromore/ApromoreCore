@@ -215,9 +215,22 @@ public class MainController extends Window {
 					Messagebox.ERROR);
 		}
 	}
-
+/**
+ * Call editor to edit process version whose id is processId, name is processName and version 
+ * name is version. nativeType identifies language to be used to edit the process version. 
+ * If annotation is instantiated, it identifies the annotation file to be used. 
+ * If readOnly=1, annotations only are editable. 
+ * @param processId
+ * @param processName
+ * @param version
+ * @param nativeType
+ * @param domain
+ * @param annotation
+ * @param readOnly
+ * @throws Exception
+ */
 	public void editProcess(Integer processId, String processName, String version, 
-			String nativeType, String domain, String annotation) throws Exception {
+			String nativeType, String domain, String annotation, Integer readOnly) throws Exception {
 
 		String instruction="", url=getHost();
 		int offsetH = 100, offsetV=200;
@@ -246,6 +259,9 @@ public class MainController extends Window {
 				throw new ExceptionWriteEditSession("Native format not supported.");
 			}
 			url += editSessionCode;
+			// add one parameter READ_ONLY: value is 1 when user chose to edit annotations,
+			// otherwise value is 0.
+			url += Constants.READ_ONLY + "=" + readOnly;
 			instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV 
 			+ ",height=600,width=800,scrollbars=1,resizable=1'); ";
 			Clients.evalJavaScript(instruction);

@@ -13,6 +13,7 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Messagebox;
@@ -28,6 +29,7 @@ public class EditOneProcessController extends Window {
 	private Button cancelAllB;
 	private Listbox nativeTypesLB;
 	private Listbox annotationsLB;
+	private Checkbox readOnlyCB;
 	private MainController mainC ;
 	private EditListProcessesController editListProcessesC;
 	private ProcessSummaryType process;
@@ -48,9 +50,11 @@ public class EditOneProcessController extends Window {
 		Rows rows = (Rows) this.chooseNativeW.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
 		Row nativeTypesR = (Row) rows.getFirstChild();
 		Row annotationR = (Row) nativeTypesR.getNextSibling();
+		Row readOnlyR = (Row) annotationR.getNextSibling();
 		Row buttonsR = (Row) annotationR.getNextSibling();
 		this.nativeTypesLB = (Listbox) nativeTypesR.getFirstChild().getNextSibling();
 		this.annotationsLB = (Listbox) annotationR.getFirstChild().getNextSibling();
+		this.readOnlyCB = (Checkbox) readOnlyR.getFirstChild().getNextSibling();
 		this.okB = (Button) buttonsR.getFirstChild().getFirstChild();
 		this.cancelB = (Button) this.okB.getNextSibling();
 		this.cancelAllB = (Button) this.cancelB.getNextSibling();
@@ -149,12 +153,18 @@ public class EditOneProcessController extends Window {
 			String nativeType = cbi.getLabel();
 			String domain = this.process.getDomain();
 			String annotation = null;
+			Integer readOnly = 0;
 			if (this.annotationsLB.getSelectedItem() != null
 					&& Constants.NO_ANNOTATIONS.compareTo(this.annotationsLB.getSelectedItem().getLabel())!=0) {
 				annotation = this.annotationsLB.getSelectedItem().getLabel();
 			}
+			if (this.readOnlyCB.isChecked()) {
+				readOnly = 1;
+			} else {
+				readOnly = 0;
+			}
 			// editProcess is hosted by main controller as it is called by others.
-			this.mainC.editProcess(processId, processName, version, nativeType, domain, annotation);
+			this.mainC.editProcess(processId, processName, version, nativeType, domain, annotation, readOnly);
 			// delete process from the list of processes still to be edited
 			this.editListProcessesC.deleteFromToBeEdited(this);
 			closePopup();
