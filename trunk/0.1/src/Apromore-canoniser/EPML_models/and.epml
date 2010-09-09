@@ -78,5 +78,36 @@
         <position x="340" y="370"/>
       </graphics>
     </arc>
+    <event id="16">
+      <name>Event_16</name>
+      <graphics>
+        <position height="41" width="81" x="605" y="120"/>
+      </graphics>
+    </event>
+    <and id="17">
+      <graphics>
+        <position height="21" width="21" x="635" y="240"/>
+      </graphics>
+    </and>
+    <function id="18">
+      <name>Function_18</name>
+      <graphics>
+        <position height="41" width="81" x="605" y="350"/>
+      </graphics>
+    </function>
+    <arc id="19">
+      <flow source="16" target="17"/>
+      <graphics>
+        <position x="645" y="161"/>
+        <position x="645" y="240"/>
+      </graphics>
+    </arc>
+    <arc id="20">
+      <flow source="17" target="18"/>
+      <graphics>
+        <position x="645" y="261"/>
+        <position x="645" y="350"/>
+      </graphics>
+    </arc>
   </epc>
 </epml:epml>

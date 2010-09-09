@@ -1,47 +1,65 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0">
     <Pools>
-        <Pool Id="MainPool" Name="Main Pool" Orientation="HORIZONTAL" Process="13" BoundaryVisible="false" MainPool="true"/>
+        <Pool Id="MainPool" Name="Main Pool" Orientation="HORIZONTAL" Process="1283925170064" BoundaryVisible="false" MainPool="true"/>
     </Pools>
     <Associations/>
     <Artifacts/>
     <WorkflowProcesses>
-        <WorkflowProcess Id="13">
+        <WorkflowProcess Id="1283925170064">
             <Activities>
-                <Activity Id="1" Name="E1">
+                <Activity Id="1283925170047" Name="E1">
                     <Event>
                         <StartEvent Trigger="None"/>
                     </Event>
                 </Activity>
-                <Activity Id="2" Name="E2">
+                <Activity Id="1283925170048" Name="E2">
                     <Event>
                         <EndEvent Result="None"/>
                     </Event>
                 </Activity>
-                <Activity Id="3" Name="F1">
+                <Activity Id="1283925170049" Name="F1">
                     <Implementation>
                         <Task/>
                     </Implementation>
                 </Activity>
-                <Activity Id="4" Name="F2">
+                <Activity Id="1283925170050" Name="F2">
                     <Implementation>
                         <Task/>
                     </Implementation>
                 </Activity>
-                <Activity Id="5">
+                <Activity Id="1283925170053" Name="Event_16">
+                    <Event>
+                        <StartEvent Trigger="None"/>
+                    </Event>
+                </Activity>
+                <Activity Id="1283925170055" Name="Function_18">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                </Activity>
+                <Activity Id="1283925170051">
                     <Route GatewayType="Parallel"/>
                     <TransitionRestrictions>
                         <TransitionRestriction>
                             <Split Type="Parallel">
 <TransitionRefs>
-    <TransitionRef Id="8"/>
-    <TransitionRef Id="9"/>
+    <TransitionRef Id="1283925170057"/>
+    <TransitionRef Id="1283925170058"/>
 </TransitionRefs>
                             </Split>
                         </TransitionRestriction>
                     </TransitionRestrictions>
                 </Activity>
-                <Activity Id="6">
+                <Activity Id="1283925170052">
+                    <Route GatewayType="Parallel"/>
+                    <TransitionRestrictions>
+                        <TransitionRestriction>
+                            <Join Type="Parallel"/>
+                        </TransitionRestriction>
+                    </TransitionRestrictions>
+                </Activity>
+                <Activity Id="1283925170054">
                     <Route GatewayType="Parallel"/>
                     <TransitionRestrictions>
                         <TransitionRestriction>
@@ -51,12 +69,14 @@
                 </Activity>
             </Activities>
             <Transitions>
-                <Transition Id="7" From="1" To="5"/>
-                <Transition Id="8" From="5" To="3"/>
-                <Transition Id="9" From="5" To="4"/>
-                <Transition Id="10" From="4" To="6"/>
-                <Transition Id="11" From="3" To="6"/>
-                <Transition Id="12" From="6" To="2"/>
+                <Transition Id="1283925170056" From="1283925170047" To="1283925170051"/>
+                <Transition Id="1283925170057" From="1283925170051" To="1283925170049"/>
+                <Transition Id="1283925170058" From="1283925170051" To="1283925170050"/>
+                <Transition Id="1283925170059" From="1283925170050" To="1283925170052"/>
+                <Transition Id="1283925170060" From="1283925170049" To="1283925170052"/>
+                <Transition Id="1283925170061" From="1283925170052" To="1283925170048"/>
+                <Transition Id="1283925170062" From="1283925170053" To="1283925170054"/>
+                <Transition Id="1283925170063" From="1283925170054" To="1283925170055"/>
             </Transitions>
         </WorkflowProcess>
     </WorkflowProcesses>
