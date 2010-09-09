@@ -1,25 +1,35 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF">
-    <Net id="13">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1">
+    <Net id="1283925170064">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1283925170047">
             <name>E1</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="2">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1283925170048">
             <name>E2</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="3">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1283925170049">
             <name>F1</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="4">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1283925170050">
             <name>F2</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="5"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDJoinType" id="6"/>
-        <Edge id="7" sourceId="1" targetId="5"/>
-        <Edge id="8" sourceId="5" targetId="3"/>
-        <Edge id="9" sourceId="5" targetId="4"/>
-        <Edge id="10" sourceId="4" targetId="6"/>
-        <Edge id="11" sourceId="3" targetId="6"/>
-        <Edge id="12" sourceId="6" targetId="2"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1283925170053">
+            <name>Event_16</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1283925170055">
+            <name>Function_18</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="1283925170051"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDJoinType" id="1283925170052"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDJoinType" id="1283925170054"/>
+        <Edge id="1283925170056" sourceId="1283925170047" targetId="1283925170051"/>
+        <Edge id="1283925170057" sourceId="1283925170051" targetId="1283925170049"/>
+        <Edge id="1283925170058" sourceId="1283925170051" targetId="1283925170050"/>
+        <Edge id="1283925170059" sourceId="1283925170050" targetId="1283925170052"/>
+        <Edge id="1283925170060" sourceId="1283925170049" targetId="1283925170052"/>
+        <Edge id="1283925170061" sourceId="1283925170052" targetId="1283925170048"/>
+        <Edge id="1283925170062" sourceId="1283925170053" targetId="1283925170054"/>
+        <Edge id="1283925170063" sourceId="1283925170054" targetId="1283925170055"/>
     </Net>
+    <attribute typeRef="IntialFormat" value="EPML"/>
 </ns2:CanonicalProcess>

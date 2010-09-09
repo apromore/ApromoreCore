@@ -30,6 +30,7 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TimerType;
+import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 import org.wfmc._2002.xpdl1.ExtendedAttribute;
@@ -88,8 +89,10 @@ public class Canonical2XPDL {
 	Map<RoutingType, TransitionRestrictions> gateways = new HashMap<RoutingType, TransitionRestrictions>();
 	List<BigInteger> resource_ref_list = new LinkedList<BigInteger>();
 	List<BigInteger> object_ref_list = new LinkedList<BigInteger>();
+	List<AnnData> mani_trans = new LinkedList<AnnData>();
+	List<String> mani_trans_list = new LinkedList<String>();
 	int object_ids;
-	boolean split_process;
+	boolean split_process, EPML_flag;
 	
 	private PackageType xpdl; 
 	/**
@@ -132,6 +135,14 @@ public class Canonical2XPDL {
 	 */
 	@SuppressWarnings("unchecked")
 	public Canonical2XPDL(CanonicalProcessType cpf, AnnotationsType anf) throws JAXBException {
+		
+		this.EPML_flag = false;
+		for(TypeAttribute att: cpf.getAttribute())
+		{
+			if(att.getTypeRef().equals("IntialFormat"))
+				if(att.getValue().equals("EPML"))
+					this.EPML_flag = true;
+		}
 		
 		this.xpdl = new PackageType();
 		this.xpdl.setWorkflowProcesses(new WorkflowProcesses());
@@ -529,11 +540,58 @@ public class Canonical2XPDL {
 						}
 					}
 					
+					if(EPML_flag)
+					{
+						for(Object obj : act.getContent())
+							if(obj instanceof Event)
+								info = manipulateEPML(info, 'e', act.getId());
+							else if(obj instanceof Route)
+								info = manipulateEPML(info, 'r', act.getId());
+					}
+					
 					infos.getNodeGraphicsInfo().add(info);
 					act.getContent().add(infos);
 				}
 			}			
 		}
+	}
+	
+	private NodeGraphicsInfo manipulateEPML(NodeGraphicsInfo info, char c ,String id)
+	{
+		double wo, wn, ho, hn, xo, yo, xn, yn;
+		wo = wn = ho = hn = xo = yo = xn = yn = 0;
+		
+		try
+		{
+			wo = info.getWidth();
+			ho = info.getHeight();
+			xo = info.getCoordinates().getXCoordinate();
+			yo = info.getCoordinates().getYCoordinate();
+		} catch (NullPointerException e)
+		{
+			
+			e.printStackTrace();
+		}
+		
+		if(c == 'e')
+		{
+			wn = hn = 30.0;
+			info.setHeight(30.0);
+			info.setWidth(30.0);
+		} else if(c == 'r')
+		{
+			wn = hn = 40.0;
+			info.setHeight(40.0);
+			info.setWidth(40.0);
+		}
+		
+		xn = xo+(wo-wn)/2;
+		yn = yo+(ho-hn)/2;
+		info.getCoordinates().setXCoordinate(xn);
+		info.getCoordinates().setYCoordinate(yn);
+		mani_trans_list.add(id);
+		mani_trans.add(new AnnData(id,xo, yo, xn, yn, ho, wo, hn, wn));
+		return info;
 	}
 
 	private void mapEdgeAnnotations(ProcessType bpmnproc,
@@ -556,6 +614,33 @@ public class Canonical2XPDL {
 						coords.setXCoordinate(pos.getX().doubleValue());
 						coords.setYCoordinate(pos.getY().doubleValue());
 						info.getCoordinates().add(coords);
+					}
+					
+					if(EPML_flag)
+					{
+						if(mani_trans_list.contains(flow.getFrom()) || mani_trans_list.contains(flow.getTo()))
+						{
+							AnnData annData = null;
+							for(AnnData ad: mani_trans)
+							{
+								if(ad.elementID.equals(flow.getFrom()) || ad.elementID.equals(flow.getTo()))
+								{
+									annData = ad;
+									for(Coordinates coor: info.getCoordinates())
+									{
+										if(coor.getXCoordinate() >= annData.oldX 
+											&& coor.getXCoordinate() <= annData.oldX+annData.oldW
+											&& coor.getYCoordinate() >= annData.oldY
+											&& coor.getYCoordinate() <= annData.oldY+annData.oldH)
+										{
+											System.out.println("Edge is set: " + flow.getId());
+											coor.setXCoordinate( annData.newX+annData.newH/2);
+											coor.setYCoordinate( annData.newY+annData.newH/2);
+										}
+									}
+								}
+							}
+						}
 					}
 					
 					infos.getConnectorGraphicsInfo().add(info);
@@ -736,4 +821,23 @@ public class Canonical2XPDL {
 		return xpdl;
 	}
 
+}
+
+class AnnData
+{
+	String elementID;
+	double oldX, oldY, newX, newY, oldH, oldW, newH, newW;
+	
+	public AnnData(String id, double oldX, double oldY, double newX, double newY, double oldH, double oldW, double newH, double newW)
+	{
+		this.elementID = id;
+		this.oldX = oldX;
+		this.oldY = oldY;
+		this.newX = newX;
+		this.newY = newY;
+		this.oldH = oldH;
+		this.oldW = oldW;
+		this.newH = newH;
+		this.newW = newW;
+	}
 }

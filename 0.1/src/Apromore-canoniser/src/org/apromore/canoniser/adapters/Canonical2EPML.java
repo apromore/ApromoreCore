@@ -27,6 +27,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
 
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
@@ -87,10 +88,12 @@ public class Canonical2EPML {
 	Map<BigInteger, NodeType> nodeRefMap = new HashMap<BigInteger, NodeType>();
 	Map<BigInteger, EdgeType> edgeRefMap = new HashMap<BigInteger, EdgeType>();
 	Map<BigInteger, Object> epcRefMap = new HashMap<BigInteger, Object>();
+	List<TEpcElement> eventFuncList = new LinkedList<TEpcElement>();
 	List<BigInteger> object_res_list = new LinkedList<BigInteger>();
 	Map<BigInteger, List<BigInteger>> role_map = new HashMap<BigInteger, List<BigInteger>>();
 	List<TypeFunction> subnet_list = new LinkedList<TypeFunction>();
 	List<TypeProcessInterface> pi_list = new LinkedList<TypeProcessInterface>();
+	List<Object> temp_list = new LinkedList<Object>();
 	
 	List<TypeFlow> flow_list = new LinkedList<TypeFlow>();
 	
@@ -104,17 +107,279 @@ public class Canonical2EPML {
 		return epml;
 	}
 	
+	public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations, boolean addFakes) throws JAXBException {
+		main(cproc, addFakes);
+		mapNodeAnnotations(annotations);
+		mapEdgeAnnotations(annotations);
+	}
+	
+	/** 
+     * Validate.
+     * <p>
+     *
+     *  
+                    
+	@param epc       the header for an EPC 
+     * 
+                    
+	@since           1.0
+     */
+	private void validate_model(TypeEPC epc) {
+		List<TEpcElement> successors = new LinkedList<TEpcElement>(); 
+		int events, funcs;
+		for(Object obj: epc.getEventOrFunctionOrRole())
+			if(obj instanceof TypeFunction || obj instanceof TypeEvent)
+				eventFuncList.add((TEpcElement) obj);
+		
+		for(TEpcElement element: eventFuncList)
+		{
+			if(element instanceof TypeEvent)
+			{
+				successors = retrieve_successors(element,epc);
+				events = funcs = 0;
+				for(TEpcElement obj: successors)
+					if(obj instanceof TypeFunction)
+						funcs++;
+					else
+						events++;
+				if (events == 0 && funcs == 0)
+				{
+					// Do Nothing
+				}
+				else if(events == 0)
+				{
+					// DO NOTHING
+				} else if(funcs == 0)
+				{
+					// Add fake function after the current event
+					TypeFunction func = new TypeFunction();
+					TypeArc arc1, arc2 = new TypeArc();
+					TypeFlow flow = new TypeFlow();
+					arc2.setFlow(flow);
+					
+					arc1 = find_post_arc(element,epc);
+					add_fake(arc1,func,arc2,epc);
+					
+				} else {
+					if(events > funcs)
+					{
+						//Add fake function after the current event
+						TypeFunction func = new TypeFunction();
+						TypeArc arc1, arc2 = new TypeArc();
+						TypeFlow flow = new TypeFlow();
+						arc2.setFlow(flow);
+						
+						arc1 = find_pre_arc(element,epc);
+						add_fake(arc1,func,arc2,epc);
+						
+						//Add fake event before each successor function
+						for(TEpcElement tepc: successors)
+						{
+							if(tepc instanceof TypeFunction)
+							{
+								TypeEvent event = new TypeEvent();
+								TypeArc arc11, arc22 = new TypeArc();
+								TypeFlow flow1 = new TypeFlow();
+								arc22.setFlow(flow1);
+								
+								arc11 = find_pre_arc(element,epc);
+								add_fake(arc11,event,arc22,epc);
+							}
+						}
+					} else {
+						// Add fake function before each successor event
+						for(TEpcElement tepc: successors)
+						{
+							if(tepc instanceof TypeEvent)
+							{
+								TypeFunction func = new TypeFunction();
+								TypeArc arc11, arc22 = new TypeArc();
+								TypeFlow flow1 = new TypeFlow();
+								arc22.setFlow(flow1);
+								
+								arc11 = find_pre_arc(element,epc);
+								add_fake(arc11,func,arc22,epc);
+							}
+						}
+					}
+				}
+				
+			} else if(element instanceof TypeFunction)
+			{
+				successors = retrieve_successors((TEpcElement) element,epc);
+				events = funcs = 0;
+				for(TEpcElement obj: successors)
+					if(obj instanceof TypeFunction)
+						funcs++;
+					else
+						events++;
+				
+				if(funcs == 0 && events == 0)
+				{
+					// Do Nothing
+				}
+				if(funcs == 0)
+				{
+					// DO NOTHING
+				} else if(events == 0)
+				{	
+					// Add fake event after the current function
+					TypeEvent event = new TypeEvent();
+					TypeArc arc1, arc2 = new TypeArc();
+					TypeFlow flow = new TypeFlow();
+					arc2.setFlow(flow);
+					
+					arc1 = find_post_arc(element,epc);
+					add_fake(arc1,event,arc2,epc);
+				} else {
+					if(funcs > events)
+					{
+						//Add fake event after the current function
+						TypeEvent event = new TypeEvent();
+						TypeArc arc1, arc2 = new TypeArc();
+						TypeFlow flow = new TypeFlow();
+						arc2.setFlow(flow);
+						
+						arc1 = find_post_arc(element,epc);
+						add_fake(arc1,event,arc2,epc);
+						
+						//Add fake function before each successor event
+						for(TEpcElement tepc: successors)
+						{
+							if(tepc instanceof TypeEvent)
+							{
+								TypeFunction func = new TypeFunction();
+								TypeArc arc11, arc22 = new TypeArc();
+								TypeFlow flow1 = new TypeFlow();
+								arc22.setFlow(flow1);
+								
+								arc11 = find_pre_arc(element,epc);
+								add_fake(arc11,func,arc22,epc);
+							}
+						}
+						
+					} else {
+						// Add fake event before each successor function
+						for(TEpcElement tepc: successors)
+						{
+							if(tepc instanceof TypeFunction)
+							{
+								TypeEvent event = new TypeEvent();
+								TypeArc arc11, arc22 = new TypeArc();
+								TypeFlow flow1 = new TypeFlow();
+								arc22.setFlow(flow1);
+								
+								arc11 = find_pre_arc(element,epc);
+								add_fake(arc11,event,arc22,epc);
+							}
+						}
+					}
+				}
+				
+			}
+		}
+		
+	}
+
+	private void add_fake(TypeArc arc1,
+			TEpcElement element, TypeArc arc2, TypeEPC epc) {
+		
+		element.setId(BigInteger.valueOf(ids++));
+		TExtensibleElements ex;
+		QName typeRef =  null;
+		//element.getOtherAttributes().put(typeRef, "fake");
+		element.setName("");
+		arc2.setId(BigInteger.valueOf(ids++));
+		arc2.getFlow().setSource(element.getId());
+		arc2.getFlow().setTarget(arc1.getFlow().getTarget());
+		arc1.getFlow().setTarget(element.getId());
+		
+		epc.getEventOrFunctionOrRole().add(element);
+		epc.getEventOrFunctionOrRole().add(arc2);
+	}
+
+	private TypeArc find_pre_arc(TEpcElement element, TypeEPC epc) {
+		for(Object obj: epc.getEventOrFunctionOrRole())
+		{
+			try {
+				if (obj instanceof TypeArc)
+					if (((TypeArc) obj).getFlow().getTarget()
+							.equals(element.getId()))
+						return (TypeArc) obj;
+			} catch (NullPointerException e) {
+				// TODO: handle exception
+			}
+		}
+		return null;
+	}
+	
+	private TypeArc find_post_arc(TEpcElement element, TypeEPC epc) {
+		for(Object obj: epc.getEventOrFunctionOrRole())
+		{
+			try {
+				if (obj instanceof TypeArc)
+					if (((TypeArc) obj).getFlow().getSource()
+							.equals(element.getId()))
+						return (TypeArc) obj;
+			} catch (NullPointerException e) {
+				// TODO: handle exception
+			}
+		}
+		return null;
+	}
+
+	private List<TEpcElement> retrieve_successors(TEpcElement element, TypeEPC epc) {
+		List<Object> elements = new LinkedList<Object>(); 
+		List<TEpcElement> successors = new LinkedList<TEpcElement>(); 
+		elements.add(element);
+		boolean flag = false;
+		
+		while(!elements.isEmpty())
+		{
+			Object obj = elements.get(0);
+			elements.remove(obj);
+			System.out.println(elements.size());
+			if( flag && (obj instanceof TypeEvent || obj instanceof TypeFunction))
+			{
+				successors.add((TEpcElement) obj);
+			}
+			else {
+				flag = true;
+				for(Object object: epc.getEventOrFunctionOrRole())
+					if(object instanceof TypeArc)
+					{
+						if(((TypeArc)object).getFlow() != null)
+						{
+							TypeFlow flow = ((TypeArc)object).getFlow();
+							if(flow.getSource().equals(((TEpcElement)obj).getId()))
+							{
+								System.out.println("Element added: "+ epcRefMap.get(flow.getTarget()).getClass().toString());
+								elements.add(epcRefMap.get(flow.getTarget()));
+							}
+						}
+					}
+			}
+				
+		}
+		
+		return successors;
+	}
+
 	public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations) throws JAXBException {
-		main(cproc);
+		main(cproc,false);
 		mapNodeAnnotations(annotations);
 		mapEdgeAnnotations(annotations);
 	}
 	
 	public Canonical2EPML(CanonicalProcessType cproc) throws JAXBException {
-		main(cproc);
+		main(cproc,false);
 	}
 	
-	private void main(CanonicalProcessType cproc)
+	public Canonical2EPML(CanonicalProcessType cproc, boolean addFakes) throws JAXBException {
+		main(cproc,addFakes);
+	}
+	
+	private void main(CanonicalProcessType cproc, boolean addFakes)
 	{
 		epml.getDirectory().add(dir);
 		epml.setDefinitions(new TypeDefinitions());
@@ -135,8 +400,8 @@ public class Canonical2EPML {
 			}
 			createRelationArc(epc,net);
 			object_res_list.clear();
-			//validate_event_sequence(epc);
-			//validate_function_sequence(epc);
+			if(addFakes)
+				validate_model(epc);
 			epml.getDirectory().get(0).getEpcOrDirectory().add(epc);
 		}
 		
