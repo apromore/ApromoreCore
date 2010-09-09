@@ -56,6 +56,7 @@ import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TaskType;
+import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
@@ -132,6 +133,11 @@ public class EPML2Canonical{
 	@since           1.0
      */
 	public EPML2Canonical(TypeEPML epml) throws JAXBException {
+
+		TypeAttribute att = new TypeAttribute();
+		att.setTypeRef("IntialFormat");
+		att.setValue("EPML");
+		cproc.getAttribute().add(att);
 
 		if(epml.getDirectory() != null && epml.getDirectory().size() > 0)
 		{
