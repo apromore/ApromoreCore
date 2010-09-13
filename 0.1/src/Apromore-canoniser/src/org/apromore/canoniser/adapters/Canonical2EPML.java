@@ -149,10 +149,10 @@ public class Canonical2EPML {
 				{
 					// Do Nothing
 				}
-				else if(events == 0)
+				else if(events == 0 && funcs != 0)
 				{
 					// DO NOTHING
-				} else if(funcs == 0)
+				} else if(funcs == 0 && events != 0)
 				{
 					// Add fake function after the current event
 					TypeFunction func = new TypeFunction();
@@ -284,6 +284,20 @@ public class Canonical2EPML {
 		
 	}
 
+	/** 
+     * Adds a fake element between the received two arcs.
+     * <p>
+     *
+     *  
+                    
+	@param epc       the header for an EPCs model
+	       element
+	       arc1
+	       arc2
+     * 
+                    
+	@since           1.0
+     */
 	private void add_fake(TypeArc arc1,
 			TEpcElement element, TypeArc arc2, TypeEPC epc) {
 		
@@ -301,6 +315,19 @@ public class Canonical2EPML {
 		epc.getEventOrFunctionOrRole().add(arc2);
 	}
 
+	/** 
+     * It take two parameters and returns the previous arc element for 
+     * the received EPC element if it is exist.
+     * <p>
+     *
+     *  
+                    
+	@param epc       the header for an EPCs model
+	       element   the element from this epc intended to retrieve its previous arc
+     * 
+                    
+	@since           1.0
+     */
 	private TypeArc find_pre_arc(TEpcElement element, TypeEPC epc) {
 		for(Object obj: epc.getEventOrFunctionOrRole())
 		{
@@ -865,131 +892,6 @@ public class Canonical2EPML {
 				}
 			}			
 		}
-	}
-	
-	private void validate_event_sequence(TypeEPC epc)
-	{
-		for(Object obj : epc.getEventOrFunctionOrRole())
-		{
-			if(obj instanceof TypeEvent)
-			{
-				if(event_validate((TEpcElement) obj))
-				{
-					TypeFunction func = new TypeFunction();
-					func.setName("");
-					func.setId(BigInteger.valueOf(ids++));
-					TypeArc arc = new TypeArc();
-					TypeFlow flow = new TypeFlow();
-					arc.setFlow(flow);
-					flow.setSource(func.getId());
-					arc.setId(BigInteger.valueOf(ids++));
-					
-					for(TypeFlow f: flow_list)
-					{
-						if(f.getSource() == ((TypeEvent)obj).getId())
-						{
-							flow.setTarget(f.getTarget());
-							f.setTarget(flow.getSource());
-						}
-					}
-					
-					epcRefMap.put(func.getId(), func);
-					flow_list.add(flow);
-				}
-			}
-		}
-	}
-	
-	private boolean event_validate(TEpcElement obj)
-	{
-		boolean flag = true;
-		List<BigInteger> target_list = new LinkedList<BigInteger>();
-		
-		for(TypeFlow flow : flow_list)
-		{
-			if(flow.getSource() == obj.getId())
-			{
-				flag = false;
-				target_list.add(flow.getTarget());
-			}
-		}
-		
-		if(flag)
-			return false;
-		else if(obj instanceof TypeFunction)
-			return false;
-		else if(obj instanceof TypeEvent)
-			return true;
-		else
-		{
-			for(BigInteger id: target_list)
-				return event_validate((TEpcElement) epcRefMap.get(id));
-		}
-		
-		return false;
-	}
-	
-	// validating functions sequence
-	private void validate_function_sequence(TypeEPC epc)
-	{
-		for(Object obj : epc.getEventOrFunctionOrRole())
-		{
-			if(obj instanceof TypeFunction)
-			{
-				if(function_validate((TEpcElement) obj))
-				{
-					TypeEvent event = new TypeEvent();
-					event.setName("");
-					event.setId(BigInteger.valueOf(ids++));
-					TypeArc arc = new TypeArc();
-					TypeFlow flow = new TypeFlow();
-					arc.setFlow(flow);
-					flow.setSource(event.getId());
-					arc.setId(BigInteger.valueOf(ids++));
-					
-					for(TypeFlow f: flow_list)
-					{
-						if(f.getSource() == ((TypeFunction)obj).getId())
-						{
-							flow.setTarget(f.getTarget());
-							f.setTarget(flow.getSource());
-						}
-					}
-					
-					epcRefMap.put(event.getId(), event);
-					flow_list.add(flow);
-				}
-			}
-		}
-	}
-	
-	private boolean function_validate(TEpcElement obj)
-	{
-		boolean flag = true;
-		List<BigInteger> target_list = new LinkedList<BigInteger>();
-		
-		for(TypeFlow flow : flow_list)
-		{
-			if(flow.getSource() == obj.getId())
-			{
-				flag = false;
-				target_list.add(flow.getTarget());
-			}
-		}
-		
-		if(flag)
-			return false;
-		else if(obj instanceof TypeFunction)
-			return true;
-		else if(obj instanceof TypeEvent)
-			return false;
-		else
-		{
-			for(BigInteger id: target_list)
-				return function_validate((TEpcElement) epcRefMap.get(id));
-		}
-		
-		return false;
 	}
 	
 	private BigInteger find_def_id(String type, String name)
