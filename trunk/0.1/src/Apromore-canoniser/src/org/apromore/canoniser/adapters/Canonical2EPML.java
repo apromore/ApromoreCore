@@ -114,12 +114,15 @@ public class Canonical2EPML {
 	}
 	
 	/** 
-     * Validate.
+     * Validating EPCs model against the Event-Function rule. The fake functions and events
+     * will be added as needed. The algorithm will also minimized them as much as possible.
+     * It verifies the functions and events elements one by one until the last element.
+     * This method will only be called if the addFakes boolean value is defined and true.
      * <p>
      *
      *  
                     
-	@param epc       the header for an EPC 
+	@param epc       the header for an EPCs model
      * 
                     
 	@since           1.0
@@ -313,6 +316,19 @@ public class Canonical2EPML {
 		return null;
 	}
 	
+	/** 
+     * It take two parameters and returns the post arc element for 
+     * the received EPC element if it is exist.
+     * <p>
+     *
+     *  
+                    
+	@param epc       the header for an EPCs model
+	       element   the element from this epc intended to retrieve its post arc
+     * 
+                    
+	@since           1.0
+     */
 	private TypeArc find_post_arc(TEpcElement element, TypeEPC epc) {
 		for(Object obj: epc.getEventOrFunctionOrRole())
 		{
@@ -328,6 +344,19 @@ public class Canonical2EPML {
 		return null;
 	}
 
+	/** 
+     * It take two parameters and returns all the successors elements for 
+     * the received EPC element.
+     * <p>
+     *
+     *  
+                    
+	@param epc       the header for an EPCs model
+	       element   the element from this epc intended to retrieve its successors
+     * 
+                    
+	@since           1.0
+     */
 	private List<TEpcElement> retrieve_successors(TEpcElement element, TypeEPC epc) {
 		List<Object> elements = new LinkedList<Object>(); 
 		List<TEpcElement> successors = new LinkedList<TEpcElement>(); 

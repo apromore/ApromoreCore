@@ -823,6 +823,12 @@ public class Canonical2XPDL {
 
 }
 
+
+/**
+ * This calss is temporary implemented in order to manipulate the annotation 
+ * data when conversion from EPCs to BPMN.
+ */
+
 class AnnData
 {
 	String elementID;
