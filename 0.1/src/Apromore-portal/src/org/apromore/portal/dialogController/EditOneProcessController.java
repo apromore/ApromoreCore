@@ -51,7 +51,7 @@ public class EditOneProcessController extends Window {
 		Row nativeTypesR = (Row) rows.getFirstChild();
 		Row annotationR = (Row) nativeTypesR.getNextSibling();
 		Row readOnlyR = (Row) annotationR.getNextSibling();
-		Row buttonsR = (Row) annotationR.getNextSibling();
+		Row buttonsR = (Row) readOnlyR.getNextSibling();
 		this.nativeTypesLB = (Listbox) nativeTypesR.getFirstChild().getNextSibling();
 		this.annotationsLB = (Listbox) annotationR.getFirstChild().getNextSibling();
 		this.readOnlyCB = (Checkbox) readOnlyR.getFirstChild().getNextSibling();

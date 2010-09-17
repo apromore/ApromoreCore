@@ -261,7 +261,7 @@ public class MainController extends Window {
 			url += editSessionCode;
 			// add one parameter READ_ONLY: value is 1 when user chose to edit annotations,
 			// otherwise value is 0.
-			url += Constants.READ_ONLY + "=" + readOnly;
+			url += "&" + Constants.READ_ONLY + "=" + readOnly;
 			instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV 
 			+ ",height=600,width=800,scrollbars=1,resizable=1'); ";
 			Clients.evalJavaScript(instruction);
