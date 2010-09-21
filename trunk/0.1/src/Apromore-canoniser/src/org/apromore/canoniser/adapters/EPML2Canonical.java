@@ -30,6 +30,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.xml.bind.JAXBException;
+import javax.xml.namespace.QName;
 
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
@@ -134,6 +135,8 @@ public class EPML2Canonical{
      */
 	public EPML2Canonical(TypeEPML epml) throws JAXBException {
 
+		epml = removeFakes(epml);
+		
 		TypeAttribute att = new TypeAttribute();
 		att.setTypeRef("IntialFormat");
 		att.setValue("EPML");
@@ -172,6 +175,115 @@ public class EPML2Canonical{
 		}
 
 	}
+
+	
+	/** 
+     * This method for removing the fake functions
+     * and events in case the model has them.
+     * <p>
+     *
+     *  
+                    
+	@param epml       the header for an EPML 
+     * 
+     * 
+    @return epml      the header for the EPML model after modification
+                    
+	@since           1.0
+     */
+	private TypeEPML removeFakes(TypeEPML epml) {
+		List<TEpcElement> remove_list = new LinkedList<TEpcElement>();
+		List<TypeArc> arc_remove_list = new LinkedList<TypeArc>();
+		boolean dir = true;
+		
+		if(epml.getDirectory() != null && epml.getDirectory().size() > 0)
+		{
+			for(int i = 0; i < epml.getDirectory().size(); i++)
+			{
+				for (TExtensibleElements epc: epml.getDirectory().get(i).getEpcOrDirectory()) {
+					if(epc instanceof TypeEPC)
+					{
+						for(Object element: ((TypeEPC) epc).getEventOrFunctionOrRole())
+						{
+							if(element instanceof TypeFunction || element instanceof TypeEvent)
+							{	
+								QName typeRef = new QName("typeRef");
+								String str = ((TEpcElement)element).getOtherAttributes().get(typeRef);
+								if (str != null && str.equals("fake"))
+								{
+									remove_list.add((TEpcElement)element);
+								}
+							}
+						}
+						for(TEpcElement element: remove_list) {
+							for(Object arc: ((TypeEPC) epc).getEventOrFunctionOrRole())
+							{
+								if(arc instanceof TypeArc)
+								{
+									if(((TypeArc)arc).getFlow() != null) 
+										if(((TypeArc)arc).getFlow().getSource().equals(element.getId()) )
+										{
+											for(Object arc2: ((TypeEPC) epc).getEventOrFunctionOrRole())
+											{
+												if(arc2 instanceof TypeArc)
+													if(((TypeArc)arc2).getFlow().getTarget().equals(element.getId()))
+														((TypeArc)arc2).getFlow().setTarget(((TypeArc)arc).getFlow().getTarget());
+											}
+											arc_remove_list.add((TypeArc) arc);
+										}
+								}
+							}
+							for(TypeArc arc: arc_remove_list)
+								((TypeEPC)epc).getEventOrFunctionOrRole().remove(arc);
+							((TypeEPC)epc).getEventOrFunctionOrRole().remove(element);
+						}
+					}
+				}
+			}
+		} else {
+			// the epml element doesn't have any directory
+			dir = false;
+			for (TypeEPC epc: epml.getEpcs()) {
+				for(Object element: ((TypeEPC) epc).getEventOrFunctionOrRole())
+				{
+					if(element instanceof TypeFunction || element instanceof TypeEvent)
+					{
+						QName typeRef = new QName("typeRef");
+						if (((TEpcElement)element).getOtherAttributes().get(typeRef) =="fake")
+						{
+							remove_list.add((TEpcElement)element);
+						}
+					}
+				}
+				for(TEpcElement element: remove_list)
+				{
+					for(Object arc: ((TypeEPC) epc).getEventOrFunctionOrRole())
+					{
+						if(arc instanceof TypeArc)
+						{
+							if(((TypeArc)arc).getFlow() != null) 
+								if(((TypeArc)arc).getFlow().getSource().equals(element.getId()) )
+								{
+									for(Object arc2: ((TypeEPC) epc).getEventOrFunctionOrRole())
+									{
+										if(arc2 instanceof TypeArc)
+											if(((TypeArc)arc2).getFlow().getTarget().equals(element.getId()))
+												((TypeArc)arc2).getFlow().setTarget(((TypeArc)arc).getFlow().getTarget());
+									}
+									arc_remove_list.add((TypeArc) arc);
+								}
+						}
+					}
+					for(TypeArc arc: arc_remove_list)
+						((TypeEPC)epc).getEventOrFunctionOrRole().remove(arc);
+					((TypeEPC)epc).getEventOrFunctionOrRole().remove(element);
+				}
+			}
+		}
+		
+		return epml;
+	}
+	
 
 	private void translateEpc(NetType net, TypeEPC epc)
 	{

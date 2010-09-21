@@ -633,7 +633,7 @@ public class Canonical2XPDL {
 											&& coor.getYCoordinate() >= annData.oldY
 											&& coor.getYCoordinate() <= annData.oldY+annData.oldH)
 										{
-											System.out.println("Edge is set: " + flow.getId());
+											//System.out.println("Edge is set: " + flow.getId());
 											coor.setXCoordinate( annData.newX+annData.newH/2);
 											coor.setYCoordinate( annData.newY+annData.newH/2);
 										}

@@ -3,6 +3,7 @@ package org.apromore.canoniser.adapters.test;
 import java.io.File;
 import java.io.FileFilter;
 import java.io.FilenameFilter;
+import java.util.StringTokenizer;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -34,6 +35,8 @@ public class TestXPDL2Canonical {
 		for (int i=0;i<folderContent.length;i++) {
 			File file = folderContent[i];
 			String filename = file.getName();
+			StringTokenizer tokenizer = new StringTokenizer(filename, ".");
+			String filename_without_path = tokenizer.nextToken();
 			String extension = filename.split("\\.")[filename.split("\\.").length-1];
 			if (extension.compareTo("xpdl")==0) {
 				System.out.println ("Analysing " + filename);
@@ -51,13 +54,13 @@ public class TestXPDL2Canonical {
 					m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 					JAXBElement<CanonicalProcessType> cprocRootElem = 
 						new org.apromore.cpf.ObjectFactory().createCanonicalProcess(xpdl2canonical.getCpf());
-					m.marshal(cprocRootElem, new File(folder,filename + ".cpf"));
+					m.marshal(cprocRootElem, new File(folder,filename_without_path + ".cpf"));
 
 					jc = JAXBContext.newInstance("org.apromore.anf");
 					m = jc.createMarshaller();
 					m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 					JAXBElement<AnnotationsType> annsRootElem = new org.apromore.anf.ObjectFactory().createAnnotations(xpdl2canonical.getAnf());
-					m.marshal(annsRootElem, new File (folder,filename + ".anf"));
+					m.marshal(annsRootElem, new File (folder,filename_without_path + ".anf"));
 
 				} catch (JAXBException e) {
 					// TODO Auto-generated catch block
@@ -67,7 +70,7 @@ public class TestXPDL2Canonical {
 				}
 				
 			} else {
-				System.out.println ("Skipping " + filename);
+				System.out.println ("Skipping " + filename_without_path);
 			}	
 		}
 		System.out.println ("Analysed " + n + " files.");
