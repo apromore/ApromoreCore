@@ -107,12 +107,6 @@ public class Canonical2EPML {
 		return epml;
 	}
 	
-	public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations, boolean addFakes) throws JAXBException {
-		main(cproc, addFakes);
-		mapNodeAnnotations(annotations);
-		mapEdgeAnnotations(annotations);
-	}
-	
 	/** 
      * Validating EPCs model against the Event-Function rule. The fake functions and events
      * will be added as needed. The algorithm will also minimized them as much as possible.
@@ -303,8 +297,8 @@ public class Canonical2EPML {
 		
 		element.setId(BigInteger.valueOf(ids++));
 		TExtensibleElements ex;
-		QName typeRef =  null;
-		//element.getOtherAttributes().put(typeRef, "fake");
+		QName typeRef = new QName("typeRef");
+		element.getOtherAttributes().put(typeRef, "fake");
 		element.setName("");
 		arc2.setId(BigInteger.valueOf(ids++));
 		arc2.getFlow().setSource(element.getId());
@@ -338,6 +332,7 @@ public class Canonical2EPML {
 						return (TypeArc) obj;
 			} catch (NullPointerException e) {
 				// TODO: handle exception
+				e.printStackTrace();
 			}
 		}
 		return null;
@@ -366,6 +361,7 @@ public class Canonical2EPML {
 						return (TypeArc) obj;
 			} catch (NullPointerException e) {
 				// TODO: handle exception
+				e.printStackTrace();
 			}
 		}
 		return null;
@@ -421,20 +417,98 @@ public class Canonical2EPML {
 		return successors;
 	}
 
+	/** 
+     * Constructor for de-canonizing CPF & ANF files. The fake 
+     * feature will be set to false as a default value.
+     * <p>
+     *
+     *  
+                    
+	@param cproc             the header for a CPF model
+     *     annotations       the header for an ANF model
+                    
+	@since           1.0
+	
+	@throws JAXB Exception
+	* this throws will be changed to ExceptionStore
+     */
 	public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations) throws JAXBException {
 		main(cproc,false);
 		mapNodeAnnotations(annotations);
 		mapEdgeAnnotations(annotations);
 	}
 	
+	/** 
+     * Constructor for de-canonizing CPF file without 
+     * annotations. The fake feature will be set to false 
+     * as a default value.
+     * <p>
+     *
+     *  
+                    
+	@param cproc             the header for a CPF model
+                    
+	@since           1.0
+	
+	@throws JAXB Exception
+	* this throws will be changed to ExceptionStore
+     */
 	public Canonical2EPML(CanonicalProcessType cproc) throws JAXBException {
 		main(cproc,false);
 	}
 	
+	
+	/** 
+     * Constructor for de-canonizing CPF & ANF files.
+     * <p>
+     *
+     *  
+                    
+	@param cproc             the header for a CPF model
+     *     annotations       the header for an ANF model
+     *     addFake           Boolean value to either add fake elements or not.
+                    
+	@since           1.0
+	
+	@throws JAXB Exception
+	* this throws will be changed to ExceptionStore
+     */
+	public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations, boolean addFakes) throws JAXBException {
+		main(cproc, addFakes);
+		mapNodeAnnotations(annotations);
+		mapEdgeAnnotations(annotations);
+	}
+	
+	/** 
+     * Constructor for de-canonizing CPF file without annotation.
+     * <p>
+     *
+     *  
+                    
+	@param cproc             the header for a CPF model
+     *     addFake           Boolean value to either add fake elements or not.
+                    
+	@since           1.0
+	
+	@throws JAXB Exception
+	* this throws will be changed to ExceptionStore
+     */
 	public Canonical2EPML(CanonicalProcessType cproc, boolean addFakes) throws JAXBException {
 		main(cproc,addFakes);
 	}
 	
+	/** 
+     * This main method to be reused by all the constructors
+     * for all cases.
+     * <p>
+     *
+     *  
+                    
+	@param cproc             the header for a CPF model
+     *     addFake           Boolean value to either add fake elements or not.
+                    
+	@since           1.0
+     */
 	private void main(CanonicalProcessType cproc, boolean addFakes)
 	{
 		epml.getDirectory().add(dir);

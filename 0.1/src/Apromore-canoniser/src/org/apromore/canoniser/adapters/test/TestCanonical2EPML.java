@@ -44,7 +44,7 @@ public class TestCanonical2EPML {
 			m2.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<TypeEPML> cprocRootElem2 = 
 				new de.epml.ObjectFactory().createEpml(canonical2epml_1.getEPML());
-			m2.marshal(cprocRootElem2, new File("XPDL_models/Parallel_GW1.epml"));
+			m2.marshal(cprocRootElem2, new File("XPDL_models/Parallel_GW.epml"));
 			
 			Canonical2EPML canonical2epml_2 = new Canonical2EPML (cpf, anf, true);
 			
@@ -52,7 +52,7 @@ public class TestCanonical2EPML {
 			m1.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<TypeEPML> cprocRootElem1 = 
 				new de.epml.ObjectFactory().createEpml(canonical2epml_2.getEPML());
-			m1.marshal(cprocRootElem1, new File("XPDL_models/Parallel_GW1_anf.epml"));
+			m1.marshal(cprocRootElem1, new File("XPDL_models/Parallel_GW_anf.epml"));
 			
 			
 		} catch (JAXBException e) {
