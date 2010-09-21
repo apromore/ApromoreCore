@@ -3,15 +3,11 @@ package org.apromore.portal.model_manager;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
-import org.apache.cxf.jaxb.JAXBToStringBuilder;
-import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
@@ -37,11 +33,11 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 @XmlType(name = "DomainsType", propOrder = {
     "domain"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:46:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:27:36+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class DomainsType {
 
     @XmlElement(name = "Domain")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:46:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:27:36+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<String> domain;
 
     /**
@@ -66,23 +62,12 @@ public class DomainsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:46:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:27:36+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<String> getDomain() {
         if (domain == null) {
             domain = new ArrayList<String>();
         }
         return this.domain;
-    }
-
-    /**
-     * Generates a String representation of the contents of this type.
-     * This is an extension method, produced by the 'ts' xjc plugin
-     * 
-     */
-    @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:46:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String toString() {
-        return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
 
 }

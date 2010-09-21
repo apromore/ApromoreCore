@@ -10,6 +10,7 @@ import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.apromore.portal.dialogController.MainController;
 
 public class ExportListNativeController {
 	private MainController mainC ;		// the main controller

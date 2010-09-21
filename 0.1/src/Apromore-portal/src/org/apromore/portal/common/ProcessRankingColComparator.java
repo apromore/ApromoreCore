@@ -21,11 +21,11 @@ public class ProcessRankingColComparator implements Comparator {
 		l2 = (Label) r2.getChildren().get(7);
 
 		String s1 = l1.getValue(), s2 = l2.getValue();
-		if (s1.isEmpty() && s2.isEmpty()) {
+		if (s1.length()==0 && s2.length()==0) {
 			return _asc ? 1: 1;
-		} else if (!s1.isEmpty() && s2.isEmpty()) {
+		} else if (s1.length()!=0 && s2.length()==0) {
 			return _asc ? 1: -1;
-		} else if (s1.isEmpty() && !s2.isEmpty()) {
+		} else if (s1.length()==0 && s2.length()!=0) {
 			return _asc ? -1: 1;
 		} else {
 			Float i1 = Float.parseFloat(s1),

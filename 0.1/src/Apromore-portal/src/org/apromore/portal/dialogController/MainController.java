@@ -99,6 +99,10 @@ public class MainController extends Window {
 			this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml"); 
 			
 		} catch (Exception e) {
+			String message = e.getMessage();
+			if (message ==null) {
+				message = "contact Apromore administrator";
+			}
 			Messagebox.show("Repository not available ("+e.getMessage()+")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		}
@@ -249,21 +253,23 @@ public class MainController extends Window {
 			editSession.setAnnotation(annotation);
 		}
 		try {
+			// create and store an edit session
 			RequestToManager request = new  RequestToManager();
 			editSessionCode = request.WriteEditSession(editSession);
 			if ("XPDL 2.1".compareTo(nativeType)==0) {
-				url += getOryxEndPoint_xpdl()+"sessionCode=";
+				url += getOryxEndPoint_xpdl() + Constants.SESSION_CODE;
 			} else if ("EPML 2.0".compareTo(nativeType)==0) {
-				url += getOryxEndPoint_epml()+"sessionCode=";
+				url += getOryxEndPoint_epml() + Constants.SESSION_CODE;
 			} else {
 				throw new ExceptionWriteEditSession("Native format not supported.");
 			}
 			url += editSessionCode;
 			// add one parameter READ_ONLY: value is 1 when user chose to edit annotations,
 			// otherwise value is 0.
-			url += "&" + Constants.READ_ONLY + "=" + readOnly;
+			url += "&" + Constants.ANNOTATIONS_ONLY + "=" + readOnly;
 			instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV 
 			+ ",height=600,width=800,scrollbars=1,resizable=1'); ";
+			// Send http post to Oryx
 			Clients.evalJavaScript(instruction);
 		} catch (ExceptionWriteEditSession e) {
 			Messagebox.show("Cannot edit " + processName + " (" 
