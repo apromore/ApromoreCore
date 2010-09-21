@@ -1,22 +1,2 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:Annotations xmlns:ns2="http://www.apromore.org/ANF">
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="1281436920623" id="1">
-        <position y="85.0" x="47.0"/>
-        <size height="30.0" width="30.0"/>
-    </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="1281436920624" id="2">
-        <position y="86.0" x="420.0"/>
-        <size height="28.0" width="28.0"/>
-    </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="1281436920625" id="3">
-        <position y="60.0" x="122.0"/>
-        <size height="80.0" width="100.0"/>
-    </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="1281436920626" id="4">
-        <position y="60.0" x="267.0"/>
-        <size height="80.0" width="100.0"/>
-    </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="1281436920627" id="5"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="1281436920628" id="6"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="1281436920629" id="7"/>
-</ns2:Annotations>
+<ns2:Annotations xmlns:ns2="http://www.apromore.org/ANF"/>
