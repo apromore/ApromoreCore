@@ -71,10 +71,6 @@ public class EditOneProcessController extends Window {
 			cbi = new Listitem();
 			this.nativeTypesLB.appendChild(cbi);
 			cbi.setLabel(formats.get(it.next()));
-			// TODO temporary so the user cannot choose to edit in epml format
-			if ("EPML 2.0".compareTo(cbi.getLabel())==0) {
-				cbi.setDisabled(true);
-			}
 			if ("XPDL 2.1".compareTo(cbi.getLabel())==0) {
 				cbi.setSelected(true);
 			}
