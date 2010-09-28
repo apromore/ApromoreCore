@@ -3,7 +3,6 @@ package org.apromore.manager.canoniser;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.sql.Date;
 import java.util.Iterator;
 
 import javax.activation.DataHandler;
