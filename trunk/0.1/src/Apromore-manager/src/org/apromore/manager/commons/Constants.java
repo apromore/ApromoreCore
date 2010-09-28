@@ -1,6 +1,5 @@
 package org.apromore.manager.commons;
 
-import javax.xml.namespace.QName;
 
 public final class Constants {
 
