@@ -263,7 +263,7 @@ public class MainController extends Window {
 			} else {
 				throw new ExceptionWriteEditSession("Native format not supported.");
 			}
-			url += editSessionCode;
+			url += "=" + editSessionCode;
 			// add one parameter READ_ONLY: value is 1 when user chose to edit annotations,
 			// otherwise value is 0.
 			url += "&" + Constants.ANNOTATIONS_ONLY + "=" + readOnly;
