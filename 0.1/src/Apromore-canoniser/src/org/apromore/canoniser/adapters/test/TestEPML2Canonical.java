@@ -30,7 +30,7 @@ public class TestEPML2Canonical {
 
 		boolean de_flag = true;
 		
-		File folder = new File("XPDL_models");
+		File folder = new File("EPML_models");
 		FileFilter fileFilter = new FileFilter() { 
 			public boolean accept(File file) { 
 				return file.isFile(); 

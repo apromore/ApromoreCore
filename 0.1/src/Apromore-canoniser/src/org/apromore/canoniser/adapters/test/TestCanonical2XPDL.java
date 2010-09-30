@@ -21,8 +21,8 @@ public class TestCanonical2XPDL {
 	 * @throws ExceptionAdapters 
 	 */
 	public static void main(String[] args) throws ExceptionAdapters {
-		File cpf_file = new File("EPML_models/and.cpf");
-		File anf_file = new File("EPML_models/and.anf");
+		File cpf_file = new File("EPML_models/object.cpf");
+		File anf_file = new File("EPML_models/object.anf");
 		//File cpf_file = new File("/home/fauvet/models/model1.cpf");
 		//File anf_file = new File("/home/fauvet/models/model1.anf");
 		try {
@@ -45,11 +45,11 @@ public class TestCanonical2XPDL {
 			
 			JAXBElement<PackageType> cprocRootElem1 = 
 				new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl_with_anf.getXpdl());
-			m1.marshal(cprocRootElem1, new File("EPML_models/and.xpdl"));
+			m1.marshal(cprocRootElem1, new File("EPML_models/object.xpdl"));
 			
 			JAXBElement<PackageType> cprocRootElem2 = 
 				new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl_no_anf.getXpdl());
-			m1.marshal(cprocRootElem2, new File("EPML_models/_and.xpdl"));
+			m1.marshal(cprocRootElem2, new File("EPML_models/_object.xpdl"));
 			
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
