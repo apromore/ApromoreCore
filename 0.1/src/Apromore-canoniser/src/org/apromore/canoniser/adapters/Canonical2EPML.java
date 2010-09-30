@@ -26,7 +26,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
 import org.apromore.anf.AnnotationType;
@@ -325,15 +324,14 @@ public class Canonical2EPML {
 	private TypeArc find_pre_arc(TEpcElement element, TypeEPC epc) {
 		for(Object obj: epc.getEventOrFunctionOrRole())
 		{
-			try {
+			if(obj != null && 
+					((TypeArc) obj).getFlow() != null && 
+					((TypeArc) obj).getFlow().getTarget() != null
+					&& element != null)
 				if (obj instanceof TypeArc)
 					if (((TypeArc) obj).getFlow().getTarget()
 							.equals(element.getId()))
 						return (TypeArc) obj;
-			} catch (NullPointerException e) {
-				// TODO: handle exception
-				e.printStackTrace();
-			}
 		}
 		return null;
 	}
@@ -354,15 +352,14 @@ public class Canonical2EPML {
 	private TypeArc find_post_arc(TEpcElement element, TypeEPC epc) {
 		for(Object obj: epc.getEventOrFunctionOrRole())
 		{
-			try {
+			if(obj != null && 
+						((TypeArc) obj).getFlow() != null && 
+						((TypeArc) obj).getFlow().getSource() != null
+						&& element != null)
 				if (obj instanceof TypeArc)
 					if (((TypeArc) obj).getFlow().getSource()
 							.equals(element.getId()))
 						return (TypeArc) obj;
-			} catch (NullPointerException e) {
-				// TODO: handle exception
-				e.printStackTrace();
-			}
 		}
 		return null;
 	}
@@ -429,10 +426,9 @@ public class Canonical2EPML {
                     
 	@since           1.0
 	
-	@throws JAXB Exception
-	* this throws will be changed to ExceptionStore
+	@throws 
      */
-	public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations) throws JAXBException {
+	public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations) {
 		main(cproc,false);
 		mapNodeAnnotations(annotations);
 		mapEdgeAnnotations(annotations);
@@ -450,10 +446,9 @@ public class Canonical2EPML {
                     
 	@since           1.0
 	
-	@throws JAXB Exception
-	* this throws will be changed to ExceptionStore
+	@throws 
      */
-	public Canonical2EPML(CanonicalProcessType cproc) throws JAXBException {
+	public Canonical2EPML(CanonicalProcessType cproc) {
 		main(cproc,false);
 	}
 	
@@ -470,10 +465,9 @@ public class Canonical2EPML {
                     
 	@since           1.0
 	
-	@throws JAXB Exception
-	* this throws will be changed to ExceptionStore
+	@throws 
      */
-	public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations, boolean addFakes) throws JAXBException {
+	public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations, boolean addFakes) {
 		main(cproc, addFakes);
 		mapNodeAnnotations(annotations);
 		mapEdgeAnnotations(annotations);
@@ -490,10 +484,9 @@ public class Canonical2EPML {
                     
 	@since           1.0
 	
-	@throws JAXB Exception
-	* this throws will be changed to ExceptionStore
+	@throws 
      */
-	public Canonical2EPML(CanonicalProcessType cproc, boolean addFakes) throws JAXBException {
+	public Canonical2EPML(CanonicalProcessType cproc, boolean addFakes) {
 		main(cproc,addFakes);
 	}
 	

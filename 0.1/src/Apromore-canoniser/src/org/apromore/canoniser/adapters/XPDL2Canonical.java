@@ -10,8 +10,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringTokenizer;
 
-import javax.xml.bind.JAXBException;
-
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.FillType;
 import org.apromore.anf.GraphicsType;
@@ -36,6 +34,7 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.StateType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TimerType;
+import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 import org.wfmc._2008.xpdl2.Activities;
@@ -67,6 +66,10 @@ public class XPDL2Canonical {
 
 	List<Activity> activities = new LinkedList<Activity>();
 	List<Transition> transitions = new LinkedList<Transition>();
+	List<Pool> pools = new LinkedList<Pool>();
+	List<Lane> lanes = new LinkedList<Lane>();
+	Map<Lane, ResourceTypeType> lane2resourceType = new HashMap<Lane, ResourceTypeType>();
+	Map<Pool, ResourceTypeType> pool2resourceType = new HashMap<Pool, ResourceTypeType>();
 	Map<String, Activity> xpdlRefMap = new HashMap<String, Activity>();
 	Map<Activity, NodeType> xpdl2canon = new HashMap<Activity, NodeType>();
 	Map<Transition, EdgeType> edgeMap = new HashMap<Transition, EdgeType>();
@@ -109,7 +112,7 @@ public class XPDL2Canonical {
                     
 @since           1.0
      */
-	public XPDL2Canonical(PackageType pkg) throws JAXBException, ExceptionAdapters {
+	public XPDL2Canonical(PackageType pkg) throws ExceptionAdapters {
 
 		this.cpf = new CanonicalProcessType();
 		this.anf = new AnnotationsType();
@@ -131,9 +134,13 @@ public class XPDL2Canonical {
 							r.setName(lane.getName());
 							res.getSpecializationIds().add(BigInteger.valueOf(cpfId-1));
 							this.cpf.getResourceType().add(r);
+							lanes.add(lane);
+							lane2resourceType.put(lane, r);
 						}
 					}
 					this.cpf.getResourceType().add(res);
+					pool2resourceType.put(pool, res);
+					pools.add(pool);
 				}
 			}
 		}
@@ -153,21 +160,37 @@ public class XPDL2Canonical {
 				}
 			}
 		}
-		
+
 		if (pkg.getWorkflowProcesses() != null) {
+			int size, count = 1;
+			size = pkg.getWorkflowProcesses().getWorkflowProcess().size();
 			for (ProcessType bpmnproc : pkg.getWorkflowProcesses().getWorkflowProcess()) {
 				NetType net = new NetType();
 				net.setId(BigInteger.valueOf(cpfId++));
 				ResourceTypeType res;
 				res = pool_resource_map.get(bpmnproc.getId());
 				ResourceTypeRefType ref = new ResourceTypeRefType();
-				if (res != null) {
+				if (res != null && res.getSpecializationIds().size() == 0) {
 					ref.setResourceTypeId(res.getId());
+					ref.setOptional(false);
+				} else {
+					ref = null;
 				}
 				translateProcess(net, bpmnproc, ref);
 				process_unrequired_events(net);
 				recordAnnotations(bpmnproc, this.anf);
-				this.cpf.getNet().add(net);
+				
+				/* Temp solution to turn around multiple lanes problem*/
+				if (size == 2 && count == 1) {
+					count++;
+				} else {
+					activities.clear();
+					transitions.clear();
+					this.cpf.getNet().add(net);
+				}
+				//activities.clear();
+				//transitions.clear();
+				//this.cpf.getNet().add(net);
 			}
 		}
 		
@@ -204,7 +227,7 @@ public class XPDL2Canonical {
 		
 	}
 
-	private void process_unrequired_events(NetType net) {
+	private void process_unrequired_events(NetType net) throws ExceptionAdapters {
 		List<EdgeType> edge_remove_list = new LinkedList<EdgeType>();
 		BigInteger source_id;
 		try {
@@ -237,8 +260,9 @@ public class XPDL2Canonical {
 			node_remove_list.clear();
 			
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			//e.printStackTrace();
+			String msg = "Failed to get some attributes when removing the unrequired events.";
+			// log.error(msg, e);
+			throw new ExceptionAdapters(msg, e);
 		}
 	}
 
@@ -264,15 +288,15 @@ public class XPDL2Canonical {
 							pos.setX(BigDecimal.valueOf(xGraphInfo.getCoordinates().getXCoordinate()));
 							pos.setY(BigDecimal.valueOf(xGraphInfo.getCoordinates().getYCoordinate()));
 							cGraphInfo.getPosition().add(pos);
+							if(xpdl2canon.get(act) instanceof WorkType)
+								addRefs((WorkType) xpdl2canon.get(act), xGraphInfo.getCoordinates().getXCoordinate(), xGraphInfo.getCoordinates().getYCoordinate());
 						}
 
 						SizeType size = new SizeType();
-						try{
+						if(xGraphInfo != null) {
 							size.setHeight(BigDecimal.valueOf(xGraphInfo.getHeight()));
 							size.setWidth(BigDecimal.valueOf(xGraphInfo.getWidth()));
 						}
-						catch(NullPointerException e)
-						{}
 						
 						cGraphInfo.setSize(size);
 					}
@@ -282,28 +306,117 @@ public class XPDL2Canonical {
 		}	
 
 		for (Transition trans: transitions) {
-			try{
 				GraphicsType cGraphInfo = new GraphicsType();
 				cGraphInfo.setId(BigInteger.valueOf(anfId++));
-				cGraphInfo.setCpfId(edgeMap.get(trans).getId());
-				ConnectorGraphicsInfos infos = trans.getConnectorGraphicsInfos();
-				if(infos != null) {
-					for (ConnectorGraphicsInfo xGraphInfo: infos.getConnectorGraphicsInfo()) {
-						for (Coordinates coord: xGraphInfo.getCoordinates()) {
-							PositionType pos = new PositionType();
-							pos.setX(BigDecimal.valueOf(coord.getXCoordinate()));
-							pos.setY(BigDecimal.valueOf(coord.getYCoordinate()));
-							cGraphInfo.getPosition().add(pos);
+				if(edgeMap.get(trans) != null) {
+					cGraphInfo.setCpfId(edgeMap.get(trans).getId());
+					ConnectorGraphicsInfos infos = trans.getConnectorGraphicsInfos();
+					if(infos != null) {
+						for (ConnectorGraphicsInfo xGraphInfo: infos.getConnectorGraphicsInfo()) {
+							for (Coordinates coord: xGraphInfo.getCoordinates()) {
+								PositionType pos = new PositionType();
+								if(cGraphInfo.getPosition() != null && coord != null){
+									pos.setX(BigDecimal.valueOf(coord.getXCoordinate()));
+									pos.setY(BigDecimal.valueOf(coord.getYCoordinate()));
+									cGraphInfo.getPosition().add(pos);
+								}
+							}
 						}
 					}
+					annotations.getAnnotation().add(cGraphInfo);
 				}
-				annotations.getAnnotation().add(cGraphInfo);
-				
-			} catch (NullPointerException e){
-				
-			}
 			
 		}
+		
+		for(Pool pool: pools){
+			GraphicsType cGraphInfo = new GraphicsType();
+			cGraphInfo.setId(BigInteger.valueOf(anfId++));
+			cGraphInfo.setCpfId(pool2resourceType.get(pool).getId());
+			NodeGraphicsInfos infos = pool.getNodeGraphicsInfos();
+
+			for (NodeGraphicsInfo xGraphInfo: infos.getNodeGraphicsInfo()){
+				if (xGraphInfo.getFillColor() != null) {
+					FillType fill = new FillType();
+					fill.setColor(xGraphInfo.getFillColor());
+					cGraphInfo.setFill(fill);
+				}
+
+				if (xGraphInfo.getCoordinates() != null) {
+					PositionType pos = new PositionType();
+					pos.setX(BigDecimal.valueOf(xGraphInfo.getCoordinates().getXCoordinate()));
+					pos.setY(BigDecimal.valueOf(xGraphInfo.getCoordinates().getYCoordinate()));
+					cGraphInfo.getPosition().add(pos);
+				}
+
+				SizeType size = new SizeType();
+				if(xGraphInfo != null){
+					size.setHeight(BigDecimal.valueOf(xGraphInfo.getHeight()));
+					size.setWidth(BigDecimal.valueOf(xGraphInfo.getWidth()));
+				}
+
+				cGraphInfo.setSize(size);
+			}
+			
+			annotations.getAnnotation().add(cGraphInfo);
+		}
+		
+		for(Lane lane: lanes){
+			GraphicsType cGraphInfo = new GraphicsType();
+			cGraphInfo.setId(BigInteger.valueOf(anfId++));
+			cGraphInfo.setCpfId(lane2resourceType.get(lane).getId());
+			NodeGraphicsInfos infos = lane.getNodeGraphicsInfos();
+
+			for (NodeGraphicsInfo xGraphInfo: infos.getNodeGraphicsInfo()){
+				if (xGraphInfo.getFillColor() != null) {
+					FillType fill = new FillType();
+					fill.setColor(xGraphInfo.getFillColor());
+					cGraphInfo.setFill(fill);
+				}
+
+				if (xGraphInfo.getCoordinates() != null) {
+					PositionType pos = new PositionType();
+					pos.setX(BigDecimal.valueOf(xGraphInfo.getCoordinates().getXCoordinate()));
+					pos.setY(BigDecimal.valueOf(xGraphInfo.getCoordinates().getYCoordinate()));
+					cGraphInfo.getPosition().add(pos);
+				}
+
+				SizeType size = new SizeType();
+				if(xGraphInfo != null){
+					size.setHeight(BigDecimal.valueOf(xGraphInfo.getHeight()));
+					size.setWidth(BigDecimal.valueOf(xGraphInfo.getWidth()));
+				}
+
+				cGraphInfo.setSize(size);
+			}
+			
+			annotations.getAnnotation().add(cGraphInfo);
+		}
+	}
+
+	private void addRefs(WorkType node, Double xCoordinate, Double yCoordinate) {
+		double x, w, y, h;
+		for(Lane lane: lanes){
+			if(lane.getNodeGraphicsInfos() != null
+					&& lane.getNodeGraphicsInfos().getNodeGraphicsInfo().size() > 0
+					&& lane.getNodeGraphicsInfos().getNodeGraphicsInfo().get(0) != null){
+				NodeGraphicsInfo gi = lane.getNodeGraphicsInfos().getNodeGraphicsInfo().get(0);
+				if(gi.getCoordinates() != null){
+					x = gi.getCoordinates().getXCoordinate();
+					y = gi.getCoordinates().getYCoordinate();
+					w = gi.getWidth();
+					h = gi.getHeight();
+					if(xCoordinate >= x && xCoordinate <= x+w
+							&& yCoordinate >= y && yCoordinate <= y+h)
+					{
+						ResourceTypeRefType ref = new ResourceTypeRefType();
+						ref.setResourceTypeId(lane2resourceType.get(lane).getId());
+						ref.setOptional(false);
+						node.getResourceTypeRef().add(ref);
+					}
+				}
+			}
+		}
+		
 	}
 
 	private void translateProcess(NetType net, ProcessType bpmnproc, ResourceTypeRefType ref) throws ExceptionAdapters {
@@ -430,12 +543,14 @@ public class XPDL2Canonical {
 			//System.out.println("Gateway: " + route.getGatewayType());
 		} else if (event != null) {
 			node = translateEvent(net, act, event);
-			((EventType)node).getResourceTypeRef().add(ref);
+			if(ref != null)
+				((EventType)node).getResourceTypeRef().add(ref);
 			//System.out.println("Event: " + act.getName());
 		} else {
 			// TODO: Subprocesses ...
 			node = translateTask(net, act);
-			((TaskType)node).getResourceTypeRef().add(ref);
+			if(ref != null)
+				((TaskType)node).getResourceTypeRef().add(ref);
 			//System.out.println("Activity: " + act.getName());
 		}
 
