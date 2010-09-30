@@ -6,12 +6,11 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBException;
-
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
+import org.apromore.canoniser.exception.ExceptionAdapters;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -99,10 +98,10 @@ public class Canonical2XPDL {
 	 * de-canonize data (canonical) into xpdl
 	 * @param data 
 	 * @param xpdl 
-	 * @throws JAXBException
+	 * @throws 
 	 */
 	@SuppressWarnings("unchecked")
-	public Canonical2XPDL(CanonicalProcessType cpf) throws JAXBException {
+	public Canonical2XPDL(CanonicalProcessType cpf) {
 		
 		this.xpdl = new PackageType();
 		this.xpdl.setWorkflowProcesses(new WorkflowProcesses());
@@ -131,10 +130,10 @@ public class Canonical2XPDL {
 	 * @param data
 	 * @param xpdl
 	 * @param anf
-	 * @throws JAXBException
+	 * @throws ExceptionAdapters 
 	 */
 	@SuppressWarnings("unchecked")
-	public Canonical2XPDL(CanonicalProcessType cpf, AnnotationsType anf) throws JAXBException {
+	public Canonical2XPDL(CanonicalProcessType cpf, AnnotationsType anf) throws ExceptionAdapters {
 		
 		this.EPML_flag = false;
 		for(TypeAttribute att: cpf.getAttribute())
@@ -329,7 +328,7 @@ public class Canonical2XPDL {
 		completeMapping(bpmnproc, net);
 	}
 	
-	private void translateNet(ProcessType bpmnproc, NetType net,  AnnotationsType annotations) {
+	private void translateNet(ProcessType bpmnproc, NetType net,  AnnotationsType annotations) throws ExceptionAdapters {
 		Activities acts = new Activities();
 		Transitions trans = new Transitions();
 		
@@ -413,7 +412,7 @@ public class Canonical2XPDL {
 	}
 
 	private void mapObjectAnnotations(ProcessType bpmnproc,
-			AnnotationsType annotations) {
+			AnnotationsType annotations) throws ExceptionAdapters {
 		for (AnnotationType annotation: annotations.getAnnotation()) {
 			if (objectRefMap.containsKey(annotation.getCpfId())) {
 				// TODO: Handle 1-N mappings
@@ -442,10 +441,13 @@ public class Canonical2XPDL {
 							coords.setYCoordinate(cGraphInfo.getPosition().get(0).getY().doubleValue());
 							info.setCoordinates(coords);
 						} catch (IndexOutOfBoundsException e) {
-							// TODO Auto-generated catch block
-							//e.printStackTrace();
+							String msg = "Failed to get coordinates of the Object, Index out.";
+							// log.error(msg, e);
+							throw new ExceptionAdapters(msg, e);
 						} catch (NullPointerException e) {
-							
+							String msg = "Failed to get some attributes when getting coordinates of Object, Null.";
+							// log.error(msg, e);
+							throw new ExceptionAdapters(msg, e);
 						}
 					}
 					
@@ -457,7 +459,7 @@ public class Canonical2XPDL {
 	}
 	
 	private void mapResourceAnnotations(ProcessType bpmnproc,
-			AnnotationsType annotations) {
+			AnnotationsType annotations) throws ExceptionAdapters {
 		for (AnnotationType annotation: annotations.getAnnotation()) {
 			if (resourceRefMap.containsKey(annotation.getCpfId())) {
 				// TODO: Handle 1-N mappings
@@ -485,10 +487,13 @@ public class Canonical2XPDL {
 							coords.setYCoordinate(cGraphInfo.getPosition().get(0).getY().doubleValue());
 							info.setCoordinates(coords);
 						} catch (IndexOutOfBoundsException e) {
-							// TODO Auto-generated catch block
-							//e.printStackTrace();
+							String msg = "Failed to get coordinates of the Resource Type, Index out.";
+							// log.error(msg, e);
+							throw new ExceptionAdapters(msg, e);
 						} catch (NullPointerException e) {
-							
+							String msg = "Failed to get some attributes when getting coordinates of the Resource Type, Null.";
+							// log.error(msg, e);
+							throw new ExceptionAdapters(msg, e);
 						}
 					}
 					
@@ -504,7 +509,7 @@ public class Canonical2XPDL {
 	}
 	
 	private void mapNodeAnnotations(ProcessType bpmnproc,
-			AnnotationsType annotations) {
+			AnnotationsType annotations) throws ExceptionAdapters {
 		for (AnnotationType annotation: annotations.getAnnotation()) {
 			if (nodeRefMap.containsKey(annotation.getCpfId())) {
 				// TODO: Handle 1-N mappings
@@ -533,10 +538,13 @@ public class Canonical2XPDL {
 							coords.setYCoordinate(cGraphInfo.getPosition().get(0).getY().doubleValue());
 							info.setCoordinates(coords);
 						} catch (IndexOutOfBoundsException e) {
-							// TODO Auto-generated catch block
-							//e.printStackTrace();
+							String msg = "Failed to get coordinates of the Node, Index out.";
+							// log.error(msg, e);
+							throw new ExceptionAdapters(msg, e);
 						} catch (NullPointerException e) {
-							
+							String msg = "Failed to get some attributes when getting coordinates of the Node, Null.";
+							// log.error(msg, e);
+							throw new ExceptionAdapters(msg, e);
 						}
 					}
 					
@@ -561,16 +569,12 @@ public class Canonical2XPDL {
 		double wo, wn, ho, hn, xo, yo, xn, yn;
 		wo = wn = ho = hn = xo = yo = xn = yn = 0;
 		
-		try
+		if(info != null && info.getCoordinates() != null)
 		{
 			wo = info.getWidth();
 			ho = info.getHeight();
 			xo = info.getCoordinates().getXCoordinate();
 			yo = info.getCoordinates().getYCoordinate();
-		} catch (NullPointerException e)
-		{
-			
-			e.printStackTrace();
 		}
 		
 		if(c == 'e')

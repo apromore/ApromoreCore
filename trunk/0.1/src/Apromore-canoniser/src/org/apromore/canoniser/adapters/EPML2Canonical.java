@@ -29,7 +29,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBException;
 import javax.xml.namespace.QName;
 
 import org.apromore.anf.AnnotationType;
@@ -40,6 +39,7 @@ import org.apromore.anf.GraphicsType;
 import org.apromore.anf.LineType;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SizeType;
+import org.apromore.canoniser.exception.ExceptionAdapters;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -129,11 +129,11 @@ public class EPML2Canonical{
      * is file format for EPC diagrams.
      * 
 
-	@throws JAXBException
+	@throws ExceptionAdapters 
                     
 	@since           1.0
      */
-	public EPML2Canonical(TypeEPML epml) throws JAXBException {
+	public EPML2Canonical(TypeEPML epml) throws ExceptionAdapters {
 
 		epml = removeFakes(epml);
 		
@@ -285,7 +285,7 @@ public class EPML2Canonical{
 	}
 	
 
-	private void translateEpc(NetType net, TypeEPC epc)
+	private void translateEpc(NetType net, TypeEPC epc) throws ExceptionAdapters
 	{
 		Map<String, BigInteger> role_names = new HashMap<String, BigInteger>();
 
@@ -500,7 +500,7 @@ public class EPML2Canonical{
 	}
 
 
-	private void addEdgeAnnotation(TypeArc arc) {
+	private void addEdgeAnnotation(TypeArc arc) throws ExceptionAdapters {
 		
 		LineType line = new LineType();
 		GraphicsType graph = new GraphicsType();
@@ -544,9 +544,9 @@ public class EPML2Canonical{
 					annotations.getAnnotation().add(graph);
 				}
 			} catch (IndexOutOfBoundsException e) {
-				// TODO Auto-generated catch block
-				//e.printStackTrace();
-				//System.out.println("Index out");
+				String msg = "Failed to get coordinates of the Edge, Index Out.";
+				// log.error(msg, e);
+				throw new ExceptionAdapters(msg, e);
 			}
 		}
 	}
@@ -614,7 +614,7 @@ public class EPML2Canonical{
 
 	// should be in the end
 	
-	private void processUnrequiredEvents(NetType net, BigInteger id)
+	private void processUnrequiredEvents(NetType net, BigInteger id) throws ExceptionAdapters
 	{
 		List<EdgeType> edge_remove_list = new LinkedList<EdgeType>();
 		List<NodeType> node_remove_list = new LinkedList<NodeType>();
@@ -645,7 +645,9 @@ public class EPML2Canonical{
 			}
 			catch (NullPointerException e)
 			{
-				
+				String msg = "Failed to get some attributes when trying to remove the unrequired events, Null.";
+				// log.error(msg, e);
+				throw new ExceptionAdapters(msg, e);
 			}
 		}
 		
