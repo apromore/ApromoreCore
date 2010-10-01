@@ -234,7 +234,7 @@ public class MainController extends Window {
  * @throws Exception
  */
 	public void editProcess(Integer processId, String processName, String version, 
-			String nativeType, String domain, String annotation, Integer readOnly) throws Exception {
+			String nativeType, String domain, String annotation, String readOnly) throws Exception {
 
 		String instruction="", url=getHost();
 		int offsetH = 100, offsetV=200;

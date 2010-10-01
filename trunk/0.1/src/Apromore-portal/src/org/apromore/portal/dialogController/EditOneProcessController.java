@@ -149,15 +149,15 @@ public class EditOneProcessController extends Window {
 			String nativeType = cbi.getLabel();
 			String domain = this.process.getDomain();
 			String annotation = null;
-			Integer readOnly = 0;
+			String readOnly = "false";
 			if (this.annotationsLB.getSelectedItem() != null
 					&& Constants.NO_ANNOTATIONS.compareTo(this.annotationsLB.getSelectedItem().getLabel())!=0) {
 				annotation = this.annotationsLB.getSelectedItem().getLabel();
 			}
 			if (this.readOnlyCB.isChecked()) {
-				readOnly = 1;
+				readOnly = "true";
 			} else {
-				readOnly = 0;
+				readOnly = "false";
 			}
 			// editProcess is hosted by main controller as it is called by others.
 			this.mainC.editProcess(processId, processName, version, nativeType, domain, annotation, readOnly);
