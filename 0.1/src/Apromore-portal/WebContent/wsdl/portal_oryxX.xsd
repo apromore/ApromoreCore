@@ -7,6 +7,10 @@
 	<element name="WriteNewProcessOutputMsg" type="tns:WriteNewProcessOutputMsgType"/>
 	<element name="WriteProcessInputMsg" type="tns:WriteProcessInputMsgType"/>
 	<element name="WriteProcessOutputMsg" type="tns:WriteProcessOutputMsgType"/>
+	<element name="WriteNewAnnotationInputMsg" type="tns:WriteNewAnnotationInputMsgType"/>
+	<element name="WriteNewAnnotationOutputMsg" type="tns:WriteNewAnnotationOutputMsgType"/>
+	<element name="WriteAnnotationInputMsg" type="tns:WriteAnnotationInputMsgType"/>
+	<element name="WriteAnnotationOutputMsg" type="tns:WriteAnnotationOutputMsgType"/>
 	<element name="CloseSessionInputMsg" type="tns:CloseSessionInputMsgType"/>
 	<element name="CloseSessionOutputMsg" type="tns:CloseSessionOutputMsgType"/>
 
@@ -43,7 +47,6 @@
 		</sequence>
 		<attribute name="EditSessionCode" type="int"/>
 		<attribute name="PreVersion" type="string"/>
-		<attribute name="AnnotationName" type="string"/>
 	</complexType>
 
 	<complexType name="WriteProcessOutputMsgType">
@@ -52,6 +55,33 @@
 		</sequence>
 	</complexType>
 
+	<complexType name="WriteNewAnnotationInputMsgType">
+		<sequence>
+			<element name="Native" type="base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+		</sequence>
+		<attribute name="EditSessionCode" type="int"/>
+		<attribute name="AnnotationName" type="string"/>
+	</complexType>
+
+	<complexType name="WriteNewAnnotationOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType"/>
+		</sequence>
+	</complexType>
+
+	<complexType name="WriteAnnotationInputMsgType">
+		<sequence>
+			<element name="Native" type="base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+		</sequence>
+		<attribute name="EditSessionCode" type="int"/>
+	</complexType>
+
+	<complexType name="WriteAnnotationOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType"/>
+		</sequence>
+	</complexType>
+	
 	<complexType name="ResultType">
 		<attribute name="message" type="string"/>
 		<attribute name="code" type="int"/>

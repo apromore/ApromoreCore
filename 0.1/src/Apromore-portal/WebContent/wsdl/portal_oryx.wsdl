@@ -26,7 +26,23 @@
     <part name="payload" element="tnsx:WriteProcessOutputMsg">
     </part>
   </message>
-  <message name="CloseSessionInputMsg">
+ <message name="WriteAnnotationInputMsg">
+    <part name="payload" element="tnsx:WriteAnnotationInputMsg">
+    </part>
+  </message>
+  <message name="WriteAnnotationOutputMsg">
+    <part name="payload" element="tnsx:WriteAnnotationOutputMsg">
+    </part>
+  </message>
+  <message name="WriteNewAnnotationInputMsg">
+    <part name="payload" element="tnsx:WriteNewAnnotationInputMsg">
+    </part>
+  </message>
+  <message name="WriteNewAnnotationOutputMsg">
+    <part name="payload" element="tnsx:WriteNewAnnotationOutputMsg">
+    </part>
+  </message>
+   <message name="CloseSessionInputMsg">
     <part name="payload" element="tnsx:CloseSessionInputMsg">
     </part>
   </message>
@@ -51,6 +67,18 @@
       <input name="WriteProcessRequest" message="tns:WriteProcessInputMsg">
     </input>
       <output name="WriteProcessResponse" message="tns:WriteProcessOutputMsg">
+    </output>
+    </operation>
+    <operation name="WriteNewAnnotation">
+      <input name="WriteNewAnnotationRequest" message="tns:WriteNewAnnotationInputMsg">
+    </input>
+      <output name="WriteNewAnnotationResponse" message="tns:WriteNewAnnotationOutputMsg">
+    </output>
+    </operation>
+    <operation name="WriteAnnotation">
+      <input name="WriteAnnotationRequest" message="tns:WriteAnnotationInputMsg">
+    </input>
+      <output name="WriteAnnotationResponse" message="tns:WriteAnnotationOutputMsg">
     </output>
     </operation>
     <operation name="CloseSession">
@@ -86,6 +114,24 @@
         <soap:body use="literal"/>
       </input>
       <output name="WriteProcessResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>  
+    <operation name="WriteNewAnnotation">
+      <soap:operation style="document"/>
+      <input name="WriteNewAnnotationRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="WriteNewAnnotationResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="WriteAnnotation">
+      <soap:operation style="document"/>
+      <input name="WriteAnnotationRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="WriteAnnotationResponse">
         <soap:body use="literal"/>
       </output>
     </operation>

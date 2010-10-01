@@ -32,5 +32,5 @@ public final class Constants {
 	public static final String STAR_BLK_ICON = "/img/unselectAll-12.png";
 	public static final String STAR_MID_ICON = "/img/revert-12.png";
 	public static final String SESSION_CODE = "sessionCode";
-	public static final String ANNOTATIONS_ONLY = "annotationsOnly";
+	public static final String ANNOTATIONS_ONLY = "notationsOnly";
 }
