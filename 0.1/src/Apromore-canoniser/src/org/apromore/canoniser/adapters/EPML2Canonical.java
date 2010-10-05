@@ -509,7 +509,7 @@ public class EPML2Canonical{
 		if(arc.getGraphics() != null)
 		{
 			graph.setCpfId(id_map.get(arc.getId()));
-			try {
+			if(arc.getGraphics().size() > 0) {
 				if(arc.getGraphics().get(0) != null)
 				{
 					if(arc.getGraphics().get(0).getFont() != null)
@@ -543,10 +543,6 @@ public class EPML2Canonical{
 					}
 					annotations.getAnnotation().add(graph);
 				}
-			} catch (IndexOutOfBoundsException e) {
-				String msg = "Failed to get coordinates of the Edge, Index Out.";
-				// log.error(msg, e);
-				throw new ExceptionAdapters(msg, e);
 			}
 		}
 	}
@@ -619,35 +615,29 @@ public class EPML2Canonical{
 		List<EdgeType> edge_remove_list = new LinkedList<EdgeType>();
 		List<NodeType> node_remove_list = new LinkedList<NodeType>();
 		BigInteger event_id;
+		boolean found = false;
 		for(EdgeType edge: net.getEdge())
 		{
-			try {
+			if(edge.getSourceId() != null) {
 				if(edge.getSourceId().equals(id) && event_ids.contains(edge.getTargetId()))
 				{
 					event_id = edge.getTargetId();
 					for(EdgeType edge2: net.getEdge())
-						if(edge2.getSourceId().equals(event_id))
+						if(edge2.getSourceId()!= null && edge2.getSourceId().equals(event_id))
 						{
 							edge.setTargetId(edge2.getTargetId());
 							edge_remove_list.add(edge2);
-							//net.getEdge().remove(edge2);
+							found = true;
 						}
-					
 					// delete the unrequired event and set its name as a condition for the edge
-					for(NodeType node: net.getNode())
-						if(node.getId().equals(event_id))
-						{
-							edge.setCondition(node.getName());
-							node_remove_list.add(node);
-							//net.getNode().remove(node);
-						}
+					if(found)
+						for(NodeType node: net.getNode())
+							if(node.getId().equals(event_id))
+							{
+								edge.setCondition(node.getName());
+								node_remove_list.add(node);
+							}
 				}
-			}
-			catch (NullPointerException e)
-			{
-				String msg = "Failed to get some attributes when trying to remove the unrequired events, Null.";
-				// log.error(msg, e);
-				throw new ExceptionAdapters(msg, e);
 			}
 		}
 		
@@ -696,7 +686,9 @@ public class EPML2Canonical{
 	
 	private void translateArc(NetType net, TypeArc arc)
 	{
-		if(arc.getFlow() != null) // if it is null, that's mean the arc is relation
+		if(arc.getFlow() != null 
+				&& id_map.get(arc.getFlow().getSource()) != null
+				&& id_map.get(arc.getFlow().getTarget()) != null) // if it is null, that's mean the arc is relation
 		{
 			EdgeType edge = new EdgeType();
 			id_map.put(arc.getId(), BigInteger.valueOf(ids));
