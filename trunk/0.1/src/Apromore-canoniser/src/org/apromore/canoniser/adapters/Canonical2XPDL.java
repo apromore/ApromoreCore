@@ -40,6 +40,7 @@ import org.wfmc._2008.xpdl2.Artifact;
 import org.wfmc._2008.xpdl2.Artifacts;
 import org.wfmc._2008.xpdl2.Association;
 import org.wfmc._2008.xpdl2.Associations;
+import org.wfmc._2008.xpdl2.Condition;
 import org.wfmc._2008.xpdl2.ConnectorGraphicsInfo;
 import org.wfmc._2008.xpdl2.ConnectorGraphicsInfos;
 import org.wfmc._2008.xpdl2.Coordinates;
@@ -78,6 +79,7 @@ public class Canonical2XPDL {
 	Map<BigInteger, ObjectType> objectRefMap = new HashMap<BigInteger, ObjectType>();
 	Map<BigInteger, Object> resourceRefMap = new HashMap<BigInteger, Object>();
 	Map<BigInteger, EdgeType> edgeRefMap = new HashMap<BigInteger, EdgeType>();
+	//Map<BigInteger, EdgeType> assocRefMap = new HashMap<BigInteger, EdgeType>();
 	Map<String, Activity> xpdlRefMap = new HashMap<String, Activity>();
 	Map<BigInteger, String> cid2xid = new HashMap<BigInteger, String>();
 	
@@ -162,9 +164,83 @@ public class Canonical2XPDL {
 			this.xpdl.getWorkflowProcesses().getWorkflowProcess().add(bpmnproc);
 		}
 		
+		if(EPML_flag)
+			enhance_annotation();
 	}
 
-	
+	/**
+	 * This method is for enhancing the annotation in case that 
+	 * initial format is other than XPDL
+	 */
+	private void enhance_annotation() {
+		List<Activity> activities = null;
+		List<Transition> transitions = null;
+		if (xpdl.getWorkflowProcesses() != null) {
+			int size, count = 1;
+			size = xpdl.getWorkflowProcesses().getWorkflowProcess().size();
+			for (ProcessType bpmnproc : xpdl.getWorkflowProcesses().getWorkflowProcess()) {
+				for (Object obj: bpmnproc.getContent()) {
+					if (obj instanceof Activities)
+						activities = ((Activities)obj).getActivity();
+					else if (obj instanceof Transitions)
+						transitions = ((Transitions)obj).getTransition();
+				}
+				for (Activity act: activities){
+					TransitionRefs refs = null;
+					NodeGraphicsInfos infos = null;
+					for(Object obj: act.getContent())
+						if(obj instanceof TransitionRestrictions) {
+							for (TransitionRestriction trest: ((TransitionRestrictions)obj).getTransitionRestriction()) {
+								if (trest.getSplit() != null && 
+										(trest.getSplit().getType().equals("Exclusive") || trest.getSplit().getType().equals("Inclusive")))
+									refs = trest.getSplit().getTransitionRefs();
+							}
+						} else if(obj instanceof NodeGraphicsInfos) {
+							infos = (NodeGraphicsInfos) obj;
+						}
+					if(refs != null && infos != null && infos.getNodeGraphicsInfo() != null){
+						double x,y,h,w, newX = 0, newY = 0;
+						h = infos.getNodeGraphicsInfo().get(0).getHeight();
+						w = infos.getNodeGraphicsInfo().get(0).getWidth();
+						x = infos.getNodeGraphicsInfo().get(0).getCoordinates().getXCoordinate();
+						y = infos.getNodeGraphicsInfo().get(0).getCoordinates().getYCoordinate();
+						for(TransitionRef ref: refs.getTransitionRef())
+							for(Transition flow: transitions)
+								if(ref.getId().equals(flow.getId()))
+								{
+									for(Activity act2: activities)
+										if(flow.getTo() != null && flow.getTo().equals(act2.getId())){
+											for(Object obj: act2.getContent())
+												if(obj instanceof NodeGraphicsInfos)
+												{
+													NodeGraphicsInfos infos2 = (NodeGraphicsInfos) obj;
+													if(infos2 != null && infos2.getNodeGraphicsInfo() != null)
+													{
+														newX = infos2.getNodeGraphicsInfo().get(0).getCoordinates().getXCoordinate() + 
+															infos2.getNodeGraphicsInfo().get(0).getWidth()/2;
+														newY = infos2.getNodeGraphicsInfo().get(0).getCoordinates().getYCoordinate();
+													}
+													
+												}
+										}
+									if(flow.getConnectorGraphicsInfos() != null &&
+											flow.getConnectorGraphicsInfos().getConnectorGraphicsInfo() != null)
+										for(ConnectorGraphicsInfo info: flow.getConnectorGraphicsInfos().getConnectorGraphicsInfo())
+											for(Coordinates coord: info.getCoordinates())
+												if(!(coord.getXCoordinate() > x && coord.getXCoordinate() < x+w &&
+														coord.getYCoordinate() > y && coord.getYCoordinate() < y+h)){
+														coord.setXCoordinate(newX);
+														coord.setYCoordinate(newY);
+													}
+								}
+					}
+				}
+			}
+		}
+		
+	}
+
+
 	private void split(ProcessType bpmnproc) {
 		bpmnproc.setAdHocOrdering("Parallel");
 		bpmnproc.setProcessType("None");
@@ -654,6 +730,36 @@ public class Canonical2XPDL {
 		}
 	}
 	
+	/*
+	private void mapAssociationAnnotations(ProcessType bpmnproc,
+			AnnotationsType annotations) {
+		for (AnnotationType annotation: annotations.getAnnotation()) {
+			if (assocRefMap.containsKey(annotation.getCpfId())) {
+				// TODO: Handle 1-N mappings
+				BigInteger cid = annotation.getCpfId();
+				EdgeType edge = edgeRefMap.get(cid);
+				Transition flow = edge2flow.get(edge);
+				
+				if (annotation instanceof GraphicsType) {
+					GraphicsType cGraphInfo = (GraphicsType)annotation;
+					
+					ConnectorGraphicsInfos infos = new ConnectorGraphicsInfos();
+					ConnectorGraphicsInfo info = new ConnectorGraphicsInfo();
+					
+					for (PositionType pos: cGraphInfo.getPosition()) {
+						Coordinates coords = new Coordinates();
+						coords.setXCoordinate(pos.getX().doubleValue());
+						coords.setYCoordinate(pos.getY().doubleValue());
+						info.getCoordinates().add(coords);
+					}
+					
+					infos.getConnectorGraphicsInfo().add(info);
+					flow.setConnectorGraphicsInfos(infos);
+				}
+			}			
+		}
+	} */
+	
 	private void setActivitiesId(ProcessType bpmnproc)
 	{
 		for(NodeType node: nodeRefMap.values())
@@ -679,6 +785,11 @@ public class Canonical2XPDL {
 		Transition flow = new Transition();
 		flow.setFrom(cid2xid.get(edge.getSourceId()));
 		flow.setTo(cid2xid.get(edge.getTargetId()));
+		if(edge.getCondition() != null){
+			Condition cond = new Condition();
+			cond.setExpression(edge.getCondition());
+			flow.setCondition(cond);
+		}	
 		edge2flow.put(edge, flow);
 		edgeRefMap.put(edge.getId(), edge);
 		
