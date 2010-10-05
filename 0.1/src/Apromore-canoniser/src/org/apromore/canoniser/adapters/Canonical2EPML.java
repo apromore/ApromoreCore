@@ -352,7 +352,7 @@ public class Canonical2EPML {
 	private TypeArc find_post_arc(TEpcElement element, TypeEPC epc) {
 		for(Object obj: epc.getEventOrFunctionOrRole())
 		{
-			if(obj != null && 
+			if(obj != null && obj instanceof TypeArc &&
 						((TypeArc) obj).getFlow() != null && 
 						((TypeArc) obj).getFlow().getSource() != null
 						&& element != null)
