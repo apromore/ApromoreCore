@@ -21,8 +21,8 @@ public class TestCanonical2XPDL {
 	 * @throws ExceptionAdapters 
 	 */
 	public static void main(String[] args) throws ExceptionAdapters {
-		File cpf_file = new File("work_package/vpp_2341_merged.cpf");
-		File anf_file = new File("work_package/vpp_2341_merged.anf");
+		File cpf_file = new File("work_package/object.cpf");
+		File anf_file = new File("work_package/object.anf");
 		//File cpf_file = new File("/home/fauvet/models/model1.cpf");
 		//File anf_file = new File("/home/fauvet/models/model1.anf");
 		try {

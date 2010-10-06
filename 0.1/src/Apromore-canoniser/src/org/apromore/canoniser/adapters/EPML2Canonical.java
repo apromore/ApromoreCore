@@ -707,6 +707,11 @@ public class EPML2Canonical{
 					if(arc.getRelation().getType() != null && arc.getRelation().getType().equals("role"))
 					{
 						ResourceTypeRefType ref = new ResourceTypeRefType();
+						TypeAttribute att = new TypeAttribute();
+						id_map.put(arc.getId(), BigInteger.valueOf(ids));
+						att.setTypeRef("RefID");
+						att.setValue(String.valueOf(ids++));
+						ref.getAttribute().add(att);
 						ref.setResourceTypeId(id_map.get(arc.getRelation().getTarget()));
 						if (role_ref.get(arc.getRelation().getSource()) != null) {
 							ref.setOptional(role_ref.get(arc.getRelation().getSource()).isOptional());
@@ -716,6 +721,11 @@ public class EPML2Canonical{
 					}
 					else {
 						ObjectRefType ref = new ObjectRefType();
+						TypeAttribute att = new TypeAttribute();
+						id_map.put(arc.getId(), BigInteger.valueOf(ids));
+						att.setTypeRef("RefID");
+						att.setValue(String.valueOf(ids++));
+						ref.getAttribute().add(att);
 						ref.setObjectId(id_map.get(arc.getRelation().getTarget()));
 						ref.setType(InputOutputType.OUTPUT);
 						if (obj_ref.get(arc.getRelation().getTarget()) != null) {
@@ -728,6 +738,11 @@ public class EPML2Canonical{
 				else if(node.getId().equals(id_map.get(arc.getRelation().getTarget()))){
 					
 						ObjectRefType ref = new ObjectRefType();
+						TypeAttribute att = new TypeAttribute();
+						id_map.put(arc.getId(), BigInteger.valueOf(ids));
+						att.setTypeRef("RefID");
+						att.setValue(String.valueOf(ids++));
+						ref.getAttribute().add(att);
 						ref.setObjectId(id_map.get(arc.getRelation().getSource()));
 						ref.setType(InputOutputType.INPUT);
 						// TODO fixing the null cause , missing sources an targets

@@ -23,8 +23,8 @@ public class TestCanonical2EPML {
 	public static void main(String[] args) {
 		//File cpf_file = new File("/home/fauvet/models/epml_models/SAP_1.cpf");
 		//File anf_file = new File("/home/fauvet/models/epml_models/SAP_1.anf");
-		File cpf_file = new File("XPDL_models/111fakes.cpf");
-		File anf_file = new File("XPDL_models/111fakes.anf");		
+		File cpf_file = new File("work_package/object.cpf");
+		File anf_file = new File("work_package/object.anf");		
 		try {
 			JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
 			Unmarshaller u = jc.createUnmarshaller();
@@ -52,7 +52,7 @@ public class TestCanonical2EPML {
 			m1.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<TypeEPML> cprocRootElem1 = 
 				new de.epml.ObjectFactory().createEpml(canonical2epml_2.getEPML());
-			m1.marshal(cprocRootElem1, new File("XPDL_models/111fakes_anf.epml"));
+			m1.marshal(cprocRootElem1, new File("work_package/111object.epml"));
 			
 			
 		} catch (JAXBException e) {
