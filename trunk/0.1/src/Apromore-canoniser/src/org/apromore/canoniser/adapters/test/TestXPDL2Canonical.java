@@ -24,7 +24,7 @@ public class TestXPDL2Canonical {
 	 */
 	public static void main(String[] args) {
 
-		File folder = new File("XPDL_models");
+		File folder = new File("faulty");
 		FileFilter fileFilter = new FileFilter() { 
 			public boolean accept(File file) { 
 				return file.isFile(); 
@@ -38,7 +38,7 @@ public class TestXPDL2Canonical {
 			StringTokenizer tokenizer = new StringTokenizer(filename, ".");
 			String filename_without_path = tokenizer.nextToken();
 			String extension = filename.split("\\.")[filename.split("\\.").length-1];
-			if (extension.compareTo("xpdl1")==0) {
+			if (extension.compareTo("xpdl")==0) {
 				System.out.println ("Analysing " + filename);
 				n++;
 				try{

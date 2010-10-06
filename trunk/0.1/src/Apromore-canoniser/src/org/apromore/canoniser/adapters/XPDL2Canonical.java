@@ -203,23 +203,29 @@ public class XPDL2Canonical {
 					String source, target;
 					source = as.getSource();
 					target = as.getTarget();
-					if(xpdlRefMap.get(source) != null)
-					{
-						Activity act = xpdlRefMap.get(source);
-						TaskType node = (TaskType) xpdl2canon.get(act);
-						ObjectRefType ref = new ObjectRefType();
-						ref.setObjectId(object_map.get(target));
-						ref.setType(InputOutputType.OUTPUT);
-						node.getObjectRef().add(ref);
-					}
-					else if(xpdlRefMap.get(target) != null)
-					{
-						Activity act = xpdlRefMap.get(target);
-						TaskType node = (TaskType) xpdl2canon.get(act);
-						ObjectRefType ref = new ObjectRefType();
-						ref.setObjectId(object_map.get(source));
-						ref.setType(InputOutputType.INPUT);
-						node.getObjectRef().add(ref);
+					try {
+						if(xpdlRefMap.get(source) != null)
+						{
+							Activity act = xpdlRefMap.get(source);
+							WorkType node = (WorkType) xpdl2canon.get(act);
+							ObjectRefType ref = new ObjectRefType();
+							ref.setObjectId(object_map.get(target));
+							ref.setType(InputOutputType.OUTPUT);
+							node.getObjectRef().add(ref);
+						}
+						else if(xpdlRefMap.get(target) != null)
+						{
+							Activity act = xpdlRefMap.get(target);
+							WorkType node = (WorkType) xpdl2canon.get(act);
+							ObjectRefType ref = new ObjectRefType();
+							ref.setObjectId(object_map.get(source));
+							ref.setType(InputOutputType.INPUT);
+							node.getObjectRef().add(ref);
+						}
+					} catch (ClassCastException e) {
+						String msg = "Not Supported: Gateways in Canonical Format don't have a connection with an Object Type.";
+						// Logging the exception
+						throw new ExceptionAdapters(msg,e);
 					}
 				}
 			}
