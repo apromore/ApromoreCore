@@ -74,9 +74,11 @@ public class Canonical2XPDL {
 	Map<NodeType, Activity> canon2xpdl = new HashMap<NodeType, Activity>();
 	Map<EdgeType, Transition> edge2flow = new HashMap<EdgeType, Transition>();
 	Map<ObjectType, Artifact> object2xpdl = new HashMap<ObjectType, Artifact>();
+	Map<ObjectRefType, Association> ref2assoc = new HashMap<ObjectRefType, Association>();
 	//Map<ResourceTypeType, Object> resource2xpdl = new HashMap<ResourceTypeType, Object>();
 	Map<BigInteger, NodeType> nodeRefMap = new HashMap<BigInteger, NodeType>();
-	Map<BigInteger, ObjectType> objectRefMap = new HashMap<BigInteger, ObjectType>();
+	Map<BigInteger, ObjectType> objectMap = new HashMap<BigInteger, ObjectType>();
+	Map<BigInteger, ObjectRefType> objectRefMap = new HashMap<BigInteger, ObjectRefType>();
 	Map<BigInteger, Object> resourceRefMap = new HashMap<BigInteger, Object>();
 	Map<BigInteger, EdgeType> edgeRefMap = new HashMap<BigInteger, EdgeType>();
 	//Map<BigInteger, EdgeType> assocRefMap = new HashMap<BigInteger, EdgeType>();
@@ -284,7 +286,7 @@ public class Canonical2XPDL {
 			a.setId(obj.getId().toString());
 			a.setDataObject(o);
 			this.xpdl.getArtifacts().getArtifactAndAny().add(a);
-			objectRefMap.put(obj.getId(), obj);
+			objectMap.put(obj.getId(), obj);
 			object2xpdl.put(obj, a);
 		}
 		
@@ -429,6 +431,7 @@ public class Canonical2XPDL {
 		
 		mapResourceAnnotations(bpmnproc, annotations);
 		mapObjectAnnotations(bpmnproc, annotations);
+		mapAssociationAnnotations(bpmnproc, annotations);
 		
 		completeMapping(bpmnproc, net);
 	}
@@ -490,10 +493,10 @@ public class Canonical2XPDL {
 	private void mapObjectAnnotations(ProcessType bpmnproc,
 			AnnotationsType annotations) throws ExceptionAdapters {
 		for (AnnotationType annotation: annotations.getAnnotation()) {
-			if (objectRefMap.containsKey(annotation.getCpfId())) {
+			if (objectMap.containsKey(annotation.getCpfId())) {
 				// TODO: Handle 1-N mappings
 				BigInteger cid = annotation.getCpfId();
-				ObjectType obj = objectRefMap.get(cid);
+				ObjectType obj = objectMap.get(cid);
 				Artifact arti = object2xpdl.get(obj);
 				
 				if (annotation instanceof GraphicsType) {
@@ -730,15 +733,15 @@ public class Canonical2XPDL {
 		}
 	}
 	
-	/*
+	
 	private void mapAssociationAnnotations(ProcessType bpmnproc,
 			AnnotationsType annotations) {
 		for (AnnotationType annotation: annotations.getAnnotation()) {
-			if (assocRefMap.containsKey(annotation.getCpfId())) {
+			if (objectRefMap.containsKey(annotation.getCpfId())) {
 				// TODO: Handle 1-N mappings
 				BigInteger cid = annotation.getCpfId();
-				EdgeType edge = edgeRefMap.get(cid);
-				Transition flow = edge2flow.get(edge);
+				ObjectRefType ref = objectRefMap.get(cid);
+				Association assoc = ref2assoc.get(ref);
 				
 				if (annotation instanceof GraphicsType) {
 					GraphicsType cGraphInfo = (GraphicsType)annotation;
@@ -754,11 +757,11 @@ public class Canonical2XPDL {
 					}
 					
 					infos.getConnectorGraphicsInfo().add(info);
-					flow.setConnectorGraphicsInfos(infos);
+					assoc.setConnectorGraphicsInfos(infos);
 				}
 			}			
 		}
-	} */
+	} 
 	
 	private void setActivitiesId(ProcessType bpmnproc)
 	{
@@ -835,6 +838,10 @@ public class Canonical2XPDL {
 					a.setSource(ref.getObjectId().toString());
 					a.setTarget(((TaskType)node).getId().toString());
 				}
+				for(TypeAttribute att: ref.getAttribute())
+					if(att.getTypeRef().equals("RefID"))
+						objectRefMap.put(BigInteger.valueOf(Long.parseLong(att.getValue())), ref);
+				ref2assoc.put(ref, a);
 				this.xpdl.getAssociations().getAssociationAndAny().add(a);
 			}
 		} else if (node instanceof RoutingType) {

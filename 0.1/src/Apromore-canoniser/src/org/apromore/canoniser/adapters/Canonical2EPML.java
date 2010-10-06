@@ -48,6 +48,7 @@ import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TaskType;
+import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
@@ -87,6 +88,7 @@ public class Canonical2EPML {
 	Map<BigInteger, NodeType> nodeRefMap = new HashMap<BigInteger, NodeType>();
 	Map<BigInteger, EdgeType> edgeRefMap = new HashMap<BigInteger, EdgeType>();
 	Map<BigInteger, Object> epcRefMap = new HashMap<BigInteger, Object>();
+	Map<BigInteger, ObjectRefType> objectRefMap = new HashMap<BigInteger, ObjectRefType>();
 	List<TEpcElement> eventFuncList = new LinkedList<TEpcElement>();
 	List<BigInteger> object_res_list = new LinkedList<BigInteger>();
 	Map<BigInteger, List<BigInteger>> role_map = new HashMap<BigInteger, List<BigInteger>>();
@@ -624,8 +626,15 @@ public class Canonical2EPML {
 							BigInteger id = id_map.get(ref.getObjectId());
 							TypeObject o = (TypeObject) epcRefMap.get(id);
 							o.setType("input");
-						}					
+						}
+						for(TypeAttribute att : ref.getAttribute())
+							if(att.getTypeRef().equals("RefID")){
+								BigInteger l = BigInteger.valueOf(Long.parseLong(att.getValue()));
+								objectRefMap.put(l,ref);
+								id_map.put(l,arc.getId());
+							}
 						arc.setRelation(rel);
+						epcRefMap.put(arc.getId(), arc);
 						epc.getEventOrFunctionOrRole().add(arc);
 					}
 				}
@@ -914,7 +923,8 @@ public class Canonical2EPML {
 
 	private void mapEdgeAnnotations(AnnotationsType annotations) {
 		for (AnnotationType annotation: annotations.getAnnotation()) {
-			if (edgeRefMap.containsKey(annotation.getCpfId())) {
+			if (edgeRefMap.containsKey(annotation.getCpfId()) 
+					|| objectRefMap.containsKey(annotation.getCpfId())) {
 				// TODO: Handle 1-N mappings
 				BigInteger cid = annotation.getCpfId();
 				TypeLine line = new TypeLine();
