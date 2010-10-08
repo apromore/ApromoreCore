@@ -13,7 +13,27 @@
 	<element name="StoreNativeOutputMsg" type="tns:StoreNativeOutputMsgType" />
 	<element name="StoreVersionInputMsg" type="tns:StoreVersionInputMsgType" />
 	<element name="StoreVersionOutputMsg" type="tns:StoreVersionOutputMsgType" />
+	<element name="WriteAnnotationInputMsg" type="tns:WriteAnnotationInputMsgType" />
+	<element name="WriteAnnotationOutputMsg" type="tns:WriteAnnotationOutputMsgType" />
 
+	<complexType name="WriteAnnotationInputMsgType">
+		<sequence>
+			<element name="Anf" type="base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+		</sequence>
+		<attribute name="EditSessionCode" type="int"/>
+		<attribute name="AnnotationName" type="string"/>
+		<attribute name="IsNew" type="boolean"/>
+		<attribute name="ProcessId" type="int"/>
+		<attribute name="Version" type="string"/>
+		<attribute name="NativeType" type="string"/>
+	</complexType>
+
+	<complexType name="WriteAnnotationOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType"/>
+		</sequence>
+	</complexType>
+	
 	<complexType name="ResultType">
 		<attribute name="message" type="string" />
 		<attribute name="code" type="int" />
