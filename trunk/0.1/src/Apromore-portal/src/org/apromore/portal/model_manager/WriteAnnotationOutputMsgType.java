@@ -4,22 +4,24 @@ package org.apromore.portal.model_manager;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.cxf.jaxb.JAXBToStringBuilder;
 import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for ReadEditSessionInputMsgType complex type.
+ * <p>Java class for WriteAnnotationOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ReadEditSessionInputMsgType">
+ * &lt;complexType name="WriteAnnotationOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="EditSessionCode" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;sequence>
+ *         &lt;element name="Result" type="{http://www.apromore.org/manager/model_portal}ResultType"/>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -28,38 +30,40 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReadEditSessionInputMsgType")
+@XmlType(name = "WriteAnnotationOutputMsgType", propOrder = {
+    "result"
+})
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class ReadEditSessionInputMsgType {
+public class WriteAnnotationOutputMsgType {
 
-    @XmlAttribute(name = "EditSessionCode")
+    @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected Integer editSessionCode;
+    protected ResultType result;
 
     /**
-     * Gets the value of the editSessionCode property.
+     * Gets the value of the result property.
      * 
      * @return
      *     possible object is
-     *     {@link Integer }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public Integer getEditSessionCode() {
-        return editSessionCode;
+    public ResultType getResult() {
+        return result;
     }
 
     /**
-     * Sets the value of the editSessionCode property.
+     * Sets the value of the result property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Integer }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setEditSessionCode(Integer value) {
-        this.editSessionCode = value;
+    public void setResult(ResultType value) {
+        this.result = value;
     }
 
     /**

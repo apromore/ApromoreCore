@@ -6,6 +6,8 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import org.apache.cxf.jaxb.JAXBToStringBuilder;
+import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
@@ -33,14 +35,14 @@ import javax.xml.bind.annotation.XmlType;
     "result",
     "nativeTypes"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:27:36+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ReadNativeTypesOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:27:36+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ResultType result;
     @XmlElement(name = "NativeTypes", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:27:36+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected NativeTypesType nativeTypes;
 
     /**
@@ -51,7 +53,7 @@ public class ReadNativeTypesOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:27:36+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ResultType getResult() {
         return result;
     }
@@ -64,7 +66,7 @@ public class ReadNativeTypesOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:27:36+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -77,7 +79,7 @@ public class ReadNativeTypesOutputMsgType {
      *     {@link NativeTypesType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:27:36+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public NativeTypesType getNativeTypes() {
         return nativeTypes;
     }
@@ -90,9 +92,20 @@ public class ReadNativeTypesOutputMsgType {
      *     {@link NativeTypesType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:27:36+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setNativeTypes(NativeTypesType value) {
         this.nativeTypes = value;
+    }
+
+    /**
+     * Generates a String representation of the contents of this type.
+     * This is an extension method, produced by the 'ts' xjc plugin
+     * 
+     */
+    @Override
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public String toString() {
+        return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
 
 }

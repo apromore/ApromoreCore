@@ -61,6 +61,7 @@ import org.apromore.portal.model_manager.UpdateProcessOutputMsgType;
 import org.apromore.portal.model_manager.UserType;
 import org.apromore.portal.model_manager.UsernamesType;
 import org.apromore.portal.model_manager.VersionSummaryType;
+import org.apromore.portal.model_manager.WriteAnnotationInputMsgType;
 import org.apromore.portal.model_manager.WriteEditSessionInputMsgType;
 import org.apromore.portal.model_manager.WriteEditSessionOutputMsgType;
 import org.apromore.portal.model_manager.WriteUserInputMsgType;
@@ -304,5 +305,24 @@ public class RequestToManager {
 		}
 	}
 
-
+	/**
+	 * write annotation contained in native_is. If isNew, then the annotation is new
+	 * and its name is annotName, otherwise it exist already and its name is 
+	 * annotationName in editSessionMapping identified by editSessionCode
+	 * @param editSessionCode
+	 * @param annotName
+	 * @param isNew
+	 * @param native_is
+	 * @throws IOException 
+	 */
+	public void WriteAnnotation(Integer editSessionCode, String annotName,
+			boolean isNew, Integer processId, String version, String nat_type, 
+			InputStream native_is) throws IOException {
+		WriteAnnotationInputMsgType payload = new WriteAnnotationInputMsgType();
+		payload.setEditSessionCode(editSessionCode);
+		payload.setAnnotationName(annotName);
+		payload.setIsNew(isNew);
+		DataSource sourceNat = new ByteArrayDataSource(native_is, "text/xml"); 
+		payload.setNative(new DataHandler(sourceNat));
+	}
 }

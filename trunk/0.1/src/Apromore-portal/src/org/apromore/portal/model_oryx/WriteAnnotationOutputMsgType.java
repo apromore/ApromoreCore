@@ -1,5 +1,5 @@
 
-package org.apromore.portal.model_manager;
+package org.apromore.portal.model_oryx;
 
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
@@ -11,16 +11,16 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for DeleteProcessVersionsOutputMsgType complex type.
+ * <p>Java class for WriteAnnotationOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DeleteProcessVersionsOutputMsgType">
+ * &lt;complexType name="WriteAnnotationOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="Result" type="{http://www.apromore.org/manager/model_portal}ResultType"/>
+ *         &lt;element name="Result" type="{http://www.apromore.org/portal/model_oryx}ResultType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -30,14 +30,14 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DeleteProcessVersionsOutputMsgType", propOrder = {
+@XmlType(name = "WriteAnnotationOutputMsgType", propOrder = {
     "result"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class DeleteProcessVersionsOutputMsgType {
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-08T04:23:52+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+public class WriteAnnotationOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-08T04:23:52+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ResultType result;
 
     /**
@@ -48,7 +48,7 @@ public class DeleteProcessVersionsOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-08T04:23:52+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ResultType getResult() {
         return result;
     }
@@ -61,7 +61,7 @@ public class DeleteProcessVersionsOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-08T04:23:52+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -72,7 +72,7 @@ public class DeleteProcessVersionsOutputMsgType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:09:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-08T04:23:52+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
