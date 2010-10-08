@@ -12,12 +12,15 @@ import javax.xml.namespace.QName;
 
 import org.apromore.manager.exception.ExceptionCanoniseVersion;
 import org.apromore.manager.exception.ExceptionDeCanonise;
+import org.apromore.manager.exception.ExceptionGenerateAnnotation;
 import org.apromore.manager.exception.ExceptionImport;
 import org.apromore.manager.exception.ExceptionVersion;
 import org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType;
 import org.apromore.manager.model_canoniser.CanoniseVersionInputMsgType;
 import org.apromore.manager.model_canoniser.CanoniseVersionOutputMsgType;
 import org.apromore.manager.model_canoniser.DeCanoniseProcessInputMsgType;
+import org.apromore.manager.model_canoniser.GenerateAnnotationInputMsgType;
+import org.apromore.manager.model_canoniser.GenerateAnnotationOutputMsgType;
 import org.apromore.manager.model_portal.VersionSummaryType;
 
 public class RequestToCanoniser {
@@ -69,7 +72,7 @@ public class RequestToCanoniser {
 		} else {
 			org.apromore.manager.model_portal.ProcessSummaryType processP =
 				new org.apromore.manager.model_portal.ProcessSummaryType();
-			
+
 			processP.setDomain(res.getProcessSummary().getDomain());
 			processP.setId(res.getProcessSummary().getId());
 			processP.setLastVersion(res.getProcessSummary().getLastVersion());
@@ -96,7 +99,7 @@ public class RequestToCanoniser {
 				processP.getVersionSummaries().add(first_versionP);
 			}
 			return processP;
-			
+
 		}
 	}
 
@@ -145,4 +148,22 @@ public class RequestToCanoniser {
 		}
 	}
 
+	public void GenerateAnnotation(String annotName, Integer editSessionCode,
+			Boolean isNew, Integer processId, String version, String nat_type, 
+			InputStream native_is) throws IOException, ExceptionGenerateAnnotation {
+		GenerateAnnotationInputMsgType payload = new GenerateAnnotationInputMsgType();
+		DataSource source = new ByteArrayDataSource(native_is, "text/xml");
+		payload.setEditSessionCode(editSessionCode);
+		payload.setNative(new DataHandler(source));
+		payload.setIsNew(isNew);
+		payload.setAnnotationName(annotName);
+		payload.setProcessId(processId);
+		payload.setVersion(version);
+		payload.setNativeType(nat_type);
+		// send request to canoniser
+		GenerateAnnotationOutputMsgType res = this.port.generateAnnotation(payload);
+		if (res.getResult().getCode() == -1) {
+			throw new ExceptionGenerateAnnotation (res.getResult().getMessage());
+		}
+	}
 }

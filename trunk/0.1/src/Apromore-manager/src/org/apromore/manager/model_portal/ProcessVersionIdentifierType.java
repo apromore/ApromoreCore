@@ -3,13 +3,14 @@ package org.apromore.manager.model_portal;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
+import org.apache.cxf.jaxb.JAXBToStringBuilder;
+import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
@@ -36,14 +37,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ProcessVersionIdentifierType", propOrder = {
     "versionName"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:20:24+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:13:13+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ProcessVersionIdentifierType {
 
     @XmlElement(name = "VersionName", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:20:24+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:13:13+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<String> versionName;
     @XmlAttribute(name = "Processid")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:20:24+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:13:13+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Integer processid;
 
     /**
@@ -68,7 +69,7 @@ public class ProcessVersionIdentifierType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:20:24+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:13:13+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<String> getVersionName() {
         if (versionName == null) {
             versionName = new ArrayList<String>();
@@ -84,7 +85,7 @@ public class ProcessVersionIdentifierType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:20:24+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:13:13+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Integer getProcessid() {
         return processid;
     }
@@ -97,9 +98,20 @@ public class ProcessVersionIdentifierType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:20:24+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:13:13+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessid(Integer value) {
         this.processid = value;
+    }
+
+    /**
+     * Generates a String representation of the contents of this type.
+     * This is an extension method, produced by the 'ts' xjc plugin
+     * 
+     */
+    @Override
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:13:13+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public String toString() {
+        return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
 
 }

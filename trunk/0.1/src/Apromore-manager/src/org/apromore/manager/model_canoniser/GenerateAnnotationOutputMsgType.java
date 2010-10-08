@@ -4,23 +4,24 @@ package org.apromore.manager.model_canoniser;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.cxf.jaxb.JAXBToStringBuilder;
 import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for ResultType complex type.
+ * <p>Java class for GenerateAnnotationOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ResultType">
+ * &lt;complexType name="GenerateAnnotationOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="message" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="code" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;sequence>
+ *         &lt;element name="Result" type="{http://www.apromore.org/canoniser/model_manager}ResultType"/>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -29,67 +30,40 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ResultType")
+@XmlType(name = "GenerateAnnotationOutputMsgType", propOrder = {
+    "result"
+})
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class ResultType {
+public class GenerateAnnotationOutputMsgType {
 
-    @XmlAttribute(name = "message")
+    @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String message;
-    @XmlAttribute(name = "code")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected Integer code;
+    protected ResultType result;
 
     /**
-     * Gets the value of the message property.
+     * Gets the value of the result property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getMessage() {
-        return message;
+    public ResultType getResult() {
+        return result;
     }
 
     /**
-     * Sets the value of the message property.
+     * Sets the value of the result property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setMessage(String value) {
-        this.message = value;
-    }
-
-    /**
-     * Gets the value of the code property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public Integer getCode() {
-        return code;
-    }
-
-    /**
-     * Sets the value of the code property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setCode(Integer value) {
-        this.code = value;
+    public void setResult(ResultType value) {
+        this.result = value;
     }
 
     /**

@@ -31,6 +31,26 @@
 	<element name="UpdateProcessOutputMsg" type="tns:UpdateProcessOutputMsgType" />
 	<element name="DeleteProcessVersionsInputMsg" type="tns:DeleteProcessVersionsInputMsgType" />
 	<element name="DeleteProcessVersionsOutputMsg" type="tns:DeleteProcessVersionsOutputMsgType" />
+	<element name="WriteAnnotationInputMsg" type="tns:WriteAnnotationInputMsgType" />
+	<element name="WriteAnnotationOutputMsg" type="tns:WriteAnnotationOutputMsgType" />
+
+	<complexType name="WriteAnnotationInputMsgType">
+		<sequence>
+			<element name="Native" type="base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+		</sequence>
+		<attribute name="EditSessionCode" type="int"/>
+		<attribute name="AnnotationName" type="string"/>
+		<attribute name="IsNew" type="boolean"/>
+		<attribute name="ProcessId" type="int"/>
+		<attribute name="Version" type="string"/>
+		<attribute name="NativeType" type="string"/>
+	</complexType>
+
+	<complexType name="WriteAnnotationOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType"/>
+		</sequence>
+	</complexType>
 
 	<complexType name="ReadProcessSummariesInputMsgType">
 		<attribute name="SearchExpression" type="string" />
