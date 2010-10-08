@@ -24,14 +24,17 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _StoreNativeInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreNativeInputMsg");
+    private final static QName _WriteAnnotationInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "WriteAnnotationInputMsg");
+	private final static QName _StoreNativeInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreNativeInputMsg");
     private final static QName _StoreVersionOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreVersionOutputMsg");
     private final static QName _StoreNativeOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreNativeOutputMsg");
     private final static QName _StoreNativeCpfInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreNativeCpfInputMsg");
     private final static QName _StoreNativeCpfOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreNativeCpfOutputMsg");
     private final static QName _StoreVersionInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreVersionInputMsg");
 
-    /**
+    private final static QName _WriteAnnotationOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "WriteAnnotationOutputMsg");
+
+	/**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.apromore.data_access.model_canoniser
      * 
      */
@@ -63,6 +66,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link WriteAnnotationInputMsgType }
+     * 
+     */
+    public WriteAnnotationInputMsgType createWriteAnnotationInputMsgType() {
+        return new WriteAnnotationInputMsgType();
+    }
+
+	/**
      * Create an instance of {@link StoreNativeCpfOutputMsgType }
      * 
      */
@@ -79,6 +90,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link WriteAnnotationInputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_canoniser", name = "WriteAnnotationInputMsg")
+    public JAXBElement<WriteAnnotationInputMsgType> createWriteAnnotationInputMsg(WriteAnnotationInputMsgType value) {
+        return new JAXBElement<WriteAnnotationInputMsgType>(_WriteAnnotationInputMsg_QNAME, WriteAnnotationInputMsgType.class, null, value);
+    }
+
+	/**
      * Create an instance of {@link StoreNativeOutputMsgType }
      * 
      */
@@ -103,6 +123,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link WriteAnnotationOutputMsgType }
+     * 
+     */
+    public WriteAnnotationOutputMsgType createWriteAnnotationOutputMsgType() {
+        return new WriteAnnotationOutputMsgType();
+    }
+
+	/**
      * Create an instance of {@link StoreVersionInputMsgType }
      * 
      */
@@ -162,6 +190,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_canoniser", name = "StoreVersionInputMsg")
     public JAXBElement<StoreVersionInputMsgType> createStoreVersionInputMsg(StoreVersionInputMsgType value) {
         return new JAXBElement<StoreVersionInputMsgType>(_StoreVersionInputMsg_QNAME, StoreVersionInputMsgType.class, null, value);
+    }
+
+	/**
+     * Create an instance of {@link JAXBElement }{@code <}{@link WriteAnnotationOutputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_canoniser", name = "WriteAnnotationOutputMsg")
+    public JAXBElement<WriteAnnotationOutputMsgType> createWriteAnnotationOutputMsg(WriteAnnotationOutputMsgType value) {
+        return new JAXBElement<WriteAnnotationOutputMsgType>(_WriteAnnotationOutputMsg_QNAME, WriteAnnotationOutputMsgType.class, null, value);
     }
 
 }
