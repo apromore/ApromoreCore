@@ -10,6 +10,7 @@ import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.namespace.QName;
 
+import org.apromore.canoniser.exception.ExceptionAnnotation;
 import org.apromore.canoniser.exception.ExceptionStore;
 import org.apromore.canoniser.exception.ExceptionVersion;
 import org.apromore.canoniser.model_da.StoreNativeCpfInputMsgType;
@@ -18,6 +19,8 @@ import org.apromore.canoniser.model_da.StoreNativeInputMsgType;
 import org.apromore.canoniser.model_da.StoreNativeOutputMsgType;
 import org.apromore.canoniser.model_da.StoreVersionInputMsgType;
 import org.apromore.canoniser.model_da.StoreVersionOutputMsgType;
+import org.apromore.canoniser.model_da.WriteAnnotationInputMsgType;
+import org.apromore.canoniser.model_da.WriteAnnotationOutputMsgType;
 import org.apromore.canoniser.model_manager.ProcessSummaryType;
 import org.apromore.canoniser.model_manager.VersionSummaryType;
 
@@ -121,6 +124,24 @@ public class RequestToDA {
 			throw new ExceptionStore (res.getResult().getMessage());
 		} else if (res.getResult().getCode() == -3) {
 			throw new ExceptionVersion (res.getResult().getMessage());
+		}
+	}
+
+	public void WriteAnnotation(Integer editSessionCode, String annotationName,
+			Boolean isNew, Integer processId, String version,
+			String nativeType, InputStream inputStream, InputStream anf_is) throws IOException, ExceptionAnnotation {
+		WriteAnnotationInputMsgType payload = new WriteAnnotationInputMsgType();
+		payload.setAnnotationName(annotationName);
+		payload.setEditSessionCode(editSessionCode);
+		payload.setProcessId(processId);
+		payload.setVersion(version);
+		payload.setIsNew(isNew);
+		payload.setNativeType(nativeType);
+		DataSource source_anf = new ByteArrayDataSource(anf_is, "text/xml"); 
+		payload.setAnf(new DataHandler(source_anf));
+		WriteAnnotationOutputMsgType res = this.port.writeAnnotation(payload);
+		if (res.getResult().getCode() == -1) {
+			throw new ExceptionAnnotation (res.getResult().getMessage());
 		}
 	}
 }

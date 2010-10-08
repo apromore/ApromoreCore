@@ -1,27 +1,27 @@
 
-package org.apromore.anf;
+package org.apromore.canoniser.model_da;
 
-import java.math.BigDecimal;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.cxf.jaxb.JAXBToStringBuilder;
 import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for sizeType complex type.
+ * <p>Java class for WriteAnnotationOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="sizeType">
+ * &lt;complexType name="WriteAnnotationOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="width" type="{http://www.w3.org/2001/XMLSchema}decimal" />
- *       &lt;attribute name="height" type="{http://www.w3.org/2001/XMLSchema}decimal" />
+ *       &lt;sequence>
+ *         &lt;element name="Result" type="{http://www.apromore.org/data_access/model_canoniser}ResultType"/>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -30,70 +30,43 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "sizeType")
+@XmlType(name = "WriteAnnotationOutputMsgType", propOrder = {
+    "result"
+})
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class SizeType {
+public class WriteAnnotationOutputMsgType {
 
-    @XmlAttribute(name = "width")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected BigDecimal width;
-    @XmlAttribute(name = "height")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected BigDecimal height;
+    @XmlElement(name = "Result", required = true)
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    protected ResultType result;
 
     /**
-     * Gets the value of the width property.
+     * Gets the value of the result property.
      * 
      * @return
      *     possible object is
-     *     {@link BigDecimal }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-	public BigDecimal getWidth() {
-        return width;
+    public ResultType getResult() {
+        return result;
     }
 
     /**
-     * Sets the value of the width property.
+     * Sets the value of the result property.
      * 
      * @param value
      *     allowed object is
-     *     {@link BigDecimal }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-	public void setWidth(BigDecimal value) {
-        this.width = value;
+    public void setResult(ResultType value) {
+        this.result = value;
     }
 
     /**
-     * Gets the value of the height property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BigDecimal }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-	public BigDecimal getHeight() {
-        return height;
-    }
-
-    /**
-     * Sets the value of the height property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BigDecimal }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-	public void setHeight(BigDecimal value) {
-        this.height = value;
-    }
-
-	/**
      * Generates a String representation of the contents of this type.
      * This is an extension method, produced by the 'ts' xjc plugin
      * 
