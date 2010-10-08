@@ -114,6 +114,14 @@
     <part name="payload" element="tnsx:ReadDomainsInputMsg">
     </part>
   </message>
+  <message name="WriteAnnotationOutputMsg">
+    <part name="payload" element="tnsx:WriteAnnotationOutputMsg">
+    </part>
+  </message>
+  <message name="WriteAnnotationInputMsg">
+    <part name="payload" element="tnsx:WriteAnnotationInputMsg">
+    </part>
+  </message>
   <portType name="ManagerPortalPortType">
     <operation name="ReadProcessSummaries">
       <input name="ReadProcessSummariesRequest" message="tns:ReadProcessSummariesInputMsg">
@@ -167,6 +175,12 @@
       <input name="WriteEditSessionRequest" message="tns:WriteEditSessionInputMsg">
     </input>
       <output name="WriteEditSessionResponse" message="tns:WriteEditSessionOutputMsg">
+    </output>
+    </operation>
+    <operation name="WriteAnnotation">
+      <input name="WriteAnnotationRequest" message="tns:WriteAnnotationInputMsg">
+    </input>
+      <output name="WriteAnnotationResponse" message="tns:WriteAnnotationOutputMsg">
     </output>
     </operation>
     <operation name="ReadEditSession">
@@ -289,6 +303,15 @@
         <soap:body use="literal"/>
       </input>
       <output name="WriteEditSessionResponse">
+        <soap:body use="literal"/>
+      </output>
+    </operation>
+    <operation name="WriteAnnotation">
+      <soap:operation style="document"/>
+      <input name="WriteAnnotationRequest">
+        <soap:body use="literal"/>
+      </input>
+      <output name="WriteAnnotationResponse">
         <soap:body use="literal"/>
       </output>
     </operation>

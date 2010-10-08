@@ -3,14 +3,12 @@ package org.apromore.manager.model_canoniser;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
 import org.apache.cxf.jaxb.JAXBToStringBuilder;
 import org.apache.cxf.jaxb.JAXBToStringStyle;
 
@@ -43,26 +41,26 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 @XmlType(name = "VersionSummaryType", propOrder = {
     "annotations"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class VersionSummaryType {
 
     @XmlElement(name = "Annotations")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<String> annotations;
     @XmlAttribute(name = "ranking")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String ranking;
     @XmlAttribute(name = "name")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String name;
     @XmlAttribute(name = "last_update")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String lastUpdate;
     @XmlAttribute(name = "creation_date")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String creationDate;
     @XmlAttribute(name = "documentation")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String documentation;
 
     /**
@@ -87,7 +85,7 @@ public class VersionSummaryType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<String> getAnnotations() {
         if (annotations == null) {
             annotations = new ArrayList<String>();
@@ -103,7 +101,7 @@ public class VersionSummaryType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getRanking() {
         return ranking;
     }
@@ -116,7 +114,7 @@ public class VersionSummaryType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setRanking(String value) {
         this.ranking = value;
     }
@@ -129,7 +127,7 @@ public class VersionSummaryType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getName() {
         return name;
     }
@@ -142,7 +140,7 @@ public class VersionSummaryType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setName(String value) {
         this.name = value;
     }
@@ -155,7 +153,7 @@ public class VersionSummaryType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getLastUpdate() {
         return lastUpdate;
     }
@@ -168,7 +166,7 @@ public class VersionSummaryType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setLastUpdate(String value) {
         this.lastUpdate = value;
     }
@@ -181,7 +179,7 @@ public class VersionSummaryType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getCreationDate() {
         return creationDate;
     }
@@ -194,7 +192,7 @@ public class VersionSummaryType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setCreationDate(String value) {
         this.creationDate = value;
     }
@@ -207,7 +205,7 @@ public class VersionSummaryType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getDocumentation() {
         return documentation;
     }
@@ -220,7 +218,7 @@ public class VersionSummaryType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:04:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setDocumentation(String value) {
         this.documentation = value;
     }
@@ -230,8 +228,8 @@ public class VersionSummaryType {
      * This is an extension method, produced by the 'ts' xjc plugin
      * 
      */
-//    @Override
-//    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T05:53:47+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Override
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:20:35+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
