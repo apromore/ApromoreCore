@@ -30,6 +30,8 @@ public class ObjectFactory {
     private final static QName _CanoniseVersionInputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "CanoniseVersionInputMsg");
     private final static QName _DeCanoniseProcessInputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "DeCanoniseProcessInputMsg");
     private final static QName _DeCanoniseProcessOutputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "DeCanoniseProcessOutputMsg");
+    private final static QName _GenerateAnnotationInputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "GenerateAnnotationInputMsg");
+    private final static QName _GenerateAnnotationOutputMsg_QNAME = new QName("http://www.apromore.org/canoniser/model_manager", "GenerateAnnotationOutputMsg");
 
     /**
      * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.apromore.manager.model_canoniser
@@ -39,35 +41,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CanoniseProcessInputMsgType }
+     * Create an instance of {@link GenerateAnnotationOutputMsgType }
      * 
      */
-    public CanoniseProcessInputMsgType createCanoniseProcessInputMsgType() {
-        return new CanoniseProcessInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link CanoniseVersionInputMsgType }
-     * 
-     */
-    public CanoniseVersionInputMsgType createCanoniseVersionInputMsgType() {
-        return new CanoniseVersionInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link VersionSummaryType }
-     * 
-     */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
-    }
-
-    /**
-     * Create an instance of {@link DeCanoniseProcessOutputMsgType }
-     * 
-     */
-    public DeCanoniseProcessOutputMsgType createDeCanoniseProcessOutputMsgType() {
-        return new DeCanoniseProcessOutputMsgType();
+    public GenerateAnnotationOutputMsgType createGenerateAnnotationOutputMsgType() {
+        return new GenerateAnnotationOutputMsgType();
     }
 
     /**
@@ -79,19 +57,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link DeCanoniseProcessInputMsgType }
-     * 
-     */
-    public DeCanoniseProcessInputMsgType createDeCanoniseProcessInputMsgType() {
-        return new DeCanoniseProcessInputMsgType();
-    }
-
-    /**
      * Create an instance of {@link ProcessSummaryType }
      * 
      */
     public ProcessSummaryType createProcessSummaryType() {
         return new ProcessSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link GenerateAnnotationInputMsgType }
+     * 
+     */
+    public GenerateAnnotationInputMsgType createGenerateAnnotationInputMsgType() {
+        return new GenerateAnnotationInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link CanoniseVersionOutputMsgType }
+     * 
+     */
+    public CanoniseVersionOutputMsgType createCanoniseVersionOutputMsgType() {
+        return new CanoniseVersionOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link DeCanoniseProcessOutputMsgType }
+     * 
+     */
+    public DeCanoniseProcessOutputMsgType createDeCanoniseProcessOutputMsgType() {
+        return new DeCanoniseProcessOutputMsgType();
     }
 
     /**
@@ -103,11 +97,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CanoniseVersionOutputMsgType }
+     * Create an instance of {@link VersionSummaryType }
      * 
      */
-    public CanoniseVersionOutputMsgType createCanoniseVersionOutputMsgType() {
-        return new CanoniseVersionOutputMsgType();
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link DeCanoniseProcessInputMsgType }
+     * 
+     */
+    public DeCanoniseProcessInputMsgType createDeCanoniseProcessInputMsgType() {
+        return new DeCanoniseProcessInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link CanoniseVersionInputMsgType }
+     * 
+     */
+    public CanoniseVersionInputMsgType createCanoniseVersionInputMsgType() {
+        return new CanoniseVersionInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link CanoniseProcessInputMsgType }
+     * 
+     */
+    public CanoniseProcessInputMsgType createCanoniseProcessInputMsgType() {
+        return new CanoniseProcessInputMsgType();
     }
 
     /**
@@ -162,6 +180,24 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://www.apromore.org/canoniser/model_manager", name = "DeCanoniseProcessOutputMsg")
     public JAXBElement<DeCanoniseProcessOutputMsgType> createDeCanoniseProcessOutputMsg(DeCanoniseProcessOutputMsgType value) {
         return new JAXBElement<DeCanoniseProcessOutputMsgType>(_DeCanoniseProcessOutputMsg_QNAME, DeCanoniseProcessOutputMsgType.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GenerateAnnotationInputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/canoniser/model_manager", name = "GenerateAnnotationInputMsg")
+    public JAXBElement<GenerateAnnotationInputMsgType> createGenerateAnnotationInputMsg(GenerateAnnotationInputMsgType value) {
+        return new JAXBElement<GenerateAnnotationInputMsgType>(_GenerateAnnotationInputMsg_QNAME, GenerateAnnotationInputMsgType.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GenerateAnnotationOutputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/canoniser/model_manager", name = "GenerateAnnotationOutputMsg")
+    public JAXBElement<GenerateAnnotationOutputMsgType> createGenerateAnnotationOutputMsg(GenerateAnnotationOutputMsgType value) {
+        return new JAXBElement<GenerateAnnotationOutputMsgType>(_GenerateAnnotationOutputMsg_QNAME, GenerateAnnotationOutputMsgType.class, null, value);
     }
 
 }
