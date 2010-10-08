@@ -9,6 +9,8 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlType;
+import org.apache.cxf.jaxb.JAXBToStringBuilder;
+import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
@@ -42,32 +44,32 @@ import javax.xml.bind.annotation.XmlType;
     "cpf",
     "anf"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class StoreVersionInputMsgType {
 
     @XmlElement(name = "Native", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected DataHandler _native;
     @XmlElement(name = "Cpf", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected DataHandler cpf;
     @XmlElement(name = "Anf", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected DataHandler anf;
     @XmlAttribute(name = "EditSessionCode")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Integer editSessionCode;
     @XmlAttribute(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Integer processId;
     @XmlAttribute(name = "PreVersion")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String preVersion;
     @XmlAttribute(name = "NativeType")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String nativeType;
 
     /**
@@ -78,7 +80,7 @@ public class StoreVersionInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public DataHandler getNative() {
         return _native;
     }
@@ -91,7 +93,7 @@ public class StoreVersionInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setNative(DataHandler value) {
         this._native = value;
     }
@@ -104,7 +106,7 @@ public class StoreVersionInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public DataHandler getCpf() {
         return cpf;
     }
@@ -117,7 +119,7 @@ public class StoreVersionInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setCpf(DataHandler value) {
         this.cpf = value;
     }
@@ -130,7 +132,7 @@ public class StoreVersionInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public DataHandler getAnf() {
         return anf;
     }
@@ -143,7 +145,7 @@ public class StoreVersionInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setAnf(DataHandler value) {
         this.anf = value;
     }
@@ -156,7 +158,7 @@ public class StoreVersionInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Integer getEditSessionCode() {
         return editSessionCode;
     }
@@ -169,7 +171,7 @@ public class StoreVersionInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setEditSessionCode(Integer value) {
         this.editSessionCode = value;
     }
@@ -182,7 +184,7 @@ public class StoreVersionInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Integer getProcessId() {
         return processId;
     }
@@ -195,7 +197,7 @@ public class StoreVersionInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessId(Integer value) {
         this.processId = value;
     }
@@ -208,7 +210,7 @@ public class StoreVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getPreVersion() {
         return preVersion;
     }
@@ -221,7 +223,7 @@ public class StoreVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setPreVersion(String value) {
         this.preVersion = value;
     }
@@ -234,7 +236,7 @@ public class StoreVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getNativeType() {
         return nativeType;
     }
@@ -247,9 +249,20 @@ public class StoreVersionInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:10:16+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setNativeType(String value) {
         this.nativeType = value;
+    }
+
+    /**
+     * Generates a String representation of the contents of this type.
+     * This is an extension method, produced by the 'ts' xjc plugin
+     * 
+     */
+    @Override
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:50:43+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public String toString() {
+        return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
 
 }
