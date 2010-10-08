@@ -11,12 +11,12 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for StoreVersionOutputMsgType complex type.
+ * <p>Java class for WriteAnnotationOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="StoreVersionOutputMsgType">
+ * &lt;complexType name="WriteAnnotationOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -30,11 +30,11 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "StoreVersionOutputMsgType", propOrder = {
+@XmlType(name = "WriteAnnotationOutputMsgType", propOrder = {
     "result"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T03:17:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class StoreVersionOutputMsgType {
+public class WriteAnnotationOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T03:17:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")

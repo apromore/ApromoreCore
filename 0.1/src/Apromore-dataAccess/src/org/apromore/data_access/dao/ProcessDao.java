@@ -30,6 +30,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apromore.data_access.commons.ConstantDB;
 import org.apromore.data_access.commons.Constants;
+import org.apromore.data_access.exception.ExceptionAnntotationName;
 import org.apromore.data_access.exception.ExceptionDao;
 import org.apromore.data_access.exception.ExceptionStoreVersion;
 import org.apromore.data_access.exception.ExceptionSyncNPF;
@@ -1692,6 +1693,105 @@ public class ProcessDao extends BasicDao {
 	public void storeCpf(String processName, String versionName,
 			String username, InputStream cpf_is) {
 		// TODO
+	}
+
+	/**
+	 * Store an annotation: it is associated with the process version identified by 
+	 * (processId, version), and native process identified by the process version uri and 
+	 * the native type nat_type. Its content is content. If isNew then a new annotation
+	 * is stored (its name must not exist for the given process  version), otherwise
+	 * the existing annotation is overridden.
+	 * @param name
+	 * @param processId
+	 * @param version
+	 * @param nat_type
+	 * @param content
+	 * @param isNew
+	 * @throws SQLException 
+	 * @throws ExceptionDao
+	 * TODO 
+	 * @throws ExceptionAnntotationName 
+	 */
+	public void storeAnnotation (String name, Integer processId, String version, String nat_type, InputStream content,
+			Boolean isNew) 
+	throws SQLException, ExceptionDao, ExceptionAnntotationName {
+		Connection conn = null;
+		PreparedStatement stmtp = null;
+		Statement stmt = null ;
+		String query = null;	
+		ResultSet rs = null;
+		String cpf_uri = null;
+		Integer npf_uri = null;
+		try {
+			conn = this.getConnection();
+			// retrieve uri of the associated canonical process
+			query = " select " + ConstantDB.ATTR_URI
+			+ " from " + ConstantDB.TABLE_CANONICALS
+			+ " where " + ConstantDB.ATTR_PROCESSID + " = " + processId
+			+ " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + version + "'";
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
+			// should return one tuple only
+			if (rs.next()) {
+				cpf_uri = rs.getString(1);
+			} else {
+				throw new ExceptionDao ("Cannot retrieve canonical.");
+			}
+			// retrieve uri of the associated native process
+			rs.close(); stmt.close();
+			query = " select " + ConstantDB.ATTR_URI
+			+ " from " + ConstantDB.TABLE_NATIVES
+			+ " where " + ConstantDB.ATTR_CANONICAL + " = '" + cpf_uri + "'";
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
+			// should return one tuple only
+			if (rs.next()) {
+				npf_uri = rs.getInt(1);
+			} else {
+				throw new ExceptionDao ("Cannot retrieve native.");
+			}
+			if (isNew) {
+				// store new annotation
+				query = " insert into " + ConstantDB.TABLE_ANNOTATIONS
+				+ "(" + ConstantDB.ATTR_NATIVE 
+				+ "," + ConstantDB.ATTR_CANONICAL
+				+ "," + ConstantDB.ATTR_NAME
+				+ "," + ConstantDB.ATTR_CONTENT + ") values (?,?,?,?) ";
+				stmtp = conn.prepareStatement(query);
+				stmtp.setInt(1, npf_uri);
+				stmtp.setString(2, cpf_uri);
+				stmtp.setString(3, name);
+				stmtp.setString(4, inputStream2String(content));
+				stmtp.executeUpdate();
+			} else {
+				// update annotation
+				query = " update " + ConstantDB.TABLE_ANNOTATIONS
+				+ " set " + ConstantDB.ATTR_CONTENT + " = ? "
+				+ " where " + ConstantDB.ATTR_CANONICAL + " = ? "
+				+ " and "   + ConstantDB.ATTR_NAME + " = ? " ;
+				stmtp = conn.prepareStatement(query);
+				stmtp.setString(1, inputStream2String(content));
+				stmtp.setString(2, cpf_uri);
+				stmtp.setString(3, name);
+				stmtp.executeUpdate();
+			}
+			conn.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			conn.rollback();
+			if (e.getErrorCode()==ConstantDB.ERROR_UNIQUE) {
+				throw new ExceptionAnntotationName ("Annotation name already exists");
+			} else {
+				throw new ExceptionDao ("SQL error: " + e.getMessage() + "\n");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
+			throw new ExceptionDao ("Error: " + e.getMessage() + "\n");
+		} finally {
+			Release(conn, stmtp, null);
+			Release(conn, stmt, rs);
+		}
 	}
 }
 
