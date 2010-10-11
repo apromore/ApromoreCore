@@ -177,8 +177,11 @@ import de.epml.TypeEPML;
 			String documentation = payload.getDocumentation();
 			String created = payload.getCreationDate();
 			String lastupdate = payload.getLastUpdate();
-			InputStream anf_is = null, cpf_is = null;
-			Canonise(process_xml, nativeType, anf_is, cpf_is);
+			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream(), 
+			                      cpf_xml = new ByteArrayOutputStream();
+			Canonise(process_xml, nativeType, anf_xml, cpf_xml);
+			InputStream anf_is = new ByteArrayInputStream(anf_xml.toByteArray());
+			InputStream cpf_is = new ByteArrayInputStream(cpf_xml.toByteArray());
 			RequestToDA request = new RequestToDA();
 			ProcessSummaryType process = request.storeNativeCpf (username, processName, domain, nativeType, versionName, 
 						documentation, created, lastupdate, handler.getInputStream(), cpf_is, anf_is);
@@ -208,8 +211,10 @@ import de.epml.TypeEPML;
 			Integer processId = payload.getProcessId();
 			String version = payload.getVersion();
 			String nativeType = payload.getNativeType();
-			InputStream anf_is = null, cpf_is = null;
-			Canonise(npf_is, nativeType, anf_is, cpf_is);
+			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream(), 
+            	cpf_xml = new ByteArrayOutputStream();
+			Canonise(npf_is, nativeType, anf_xml, cpf_xml);
+			InputStream anf_is = new ByteArrayInputStream(anf_xml.toByteArray());
 			RequestToDA request = new RequestToDA();
 			request.WriteAnnotation(editSessionCode, annotationName, isNew, processId, version, nativeType, 
 					handler.getInputStream(), anf_is);
@@ -218,7 +223,7 @@ import de.epml.TypeEPML;
 		} catch (Exception ex) {
 			ex.printStackTrace();
 			result.setCode(-1);
-			result.setMessage ("De-canonisation failed: " + ex.getMessage());
+			result.setMessage ("Generation of annotation failed: " + ex.getMessage());
 		}
 		return res;
 	}
@@ -237,9 +242,11 @@ import de.epml.TypeEPML;
 			int processId = payload.getProcessId();
 			String nativeType = payload.getNativeType();
 			String preVersion = payload.getPreVersion();
-			InputStream anf_is = null, cpf_is = null;
-			Canonise (process_xml, nativeType, anf_is, cpf_is);
-
+			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream(), 
+        	cpf_xml = new ByteArrayOutputStream();
+			Canonise (process_xml, nativeType, anf_xml, cpf_xml);
+			InputStream anf_is = new ByteArrayInputStream(anf_xml.toByteArray());
+			InputStream cpf_is = new ByteArrayInputStream(cpf_xml.toByteArray());
 			RequestToDA request = new RequestToDA();
 			request.StoreVersion (editSessionCode, processId, preVersion, nativeType, 
 					handler.getInputStream(), anf_is, cpf_is);
@@ -270,7 +277,7 @@ import de.epml.TypeEPML;
 
 
 	private void Canonise (InputStream process_xml, String nativeType,
-			InputStream anf_is, InputStream cpf_is) throws ExceptionAdapters, JAXBException {
+			ByteArrayOutputStream anf_xml, ByteArrayOutputStream cpf_xml) throws ExceptionAdapters, JAXBException {
 		/**
 		 * native type must be supported by apromore.
 		 * At the moment: XPDL 2.1 adn EPML 2.0
@@ -289,18 +296,17 @@ import de.epml.TypeEPML;
 			m_anf.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<AnnotationsType> cproc_anf = 
 				new org.apromore.anf.ObjectFactory().createAnnotations(xpdl2canonical.getAnf());
-			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream();
 			m_anf.marshal(cproc_anf, anf_xml);
-			anf_is = new ByteArrayInputStream(anf_xml.toByteArray());
+			//anf_is = new ByteArrayInputStream(anf_xml.toByteArray());
 
 			jc1 = JAXBContext.newInstance(Constants.JAXB_CONTEXT_CPF);
 			Marshaller m_cpf = jc1.createMarshaller();
 			m_cpf.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<CanonicalProcessType> cproc_cpf = 
 				new org.apromore.cpf.ObjectFactory().createCanonicalProcess(xpdl2canonical.getCpf());
-			ByteArrayOutputStream cpf_xml = new ByteArrayOutputStream();
+			cpf_xml = new ByteArrayOutputStream();
 			m_cpf.marshal(cproc_cpf, cpf_xml);
-			cpf_is = new ByteArrayInputStream(cpf_xml.toByteArray());
+			
 		} else if (nativeType.compareTo("EPML 2.0")==0) {
 			JAXBContext jc1 = JAXBContext.newInstance("de.epml");
 			Unmarshaller u = jc1.createUnmarshaller();
@@ -314,18 +320,15 @@ import de.epml.TypeEPML;
 			m_anf.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<AnnotationsType> cproc_anf = 
 				new org.apromore.anf.ObjectFactory().createAnnotations(epml2canonical.getANF());
-			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream();
 			m_anf.marshal(cproc_anf, anf_xml);
-			anf_is = new ByteArrayInputStream(anf_xml.toByteArray());
 
 			jc1 = JAXBContext.newInstance(Constants.JAXB_CONTEXT_CPF);
 			Marshaller m_cpf = jc1.createMarshaller();
 			m_cpf.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<CanonicalProcessType> cproc_cpf = 
 				new org.apromore.cpf.ObjectFactory().createCanonicalProcess(epml2canonical.getCPF());
-			ByteArrayOutputStream cpf_xml = new ByteArrayOutputStream();
+			cpf_xml = new ByteArrayOutputStream();
 			m_cpf.marshal(cproc_cpf, cpf_xml);
-			cpf_is = new ByteArrayInputStream(cpf_xml.toByteArray());
 
 		} else {
 			throw new ExceptionAdapters("Native type not supported.");
