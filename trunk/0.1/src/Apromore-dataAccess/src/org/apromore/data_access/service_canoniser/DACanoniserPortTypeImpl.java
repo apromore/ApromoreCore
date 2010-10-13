@@ -65,6 +65,8 @@ import org.apromore.data_access.model_canoniser.WriteAnnotationOutputMsgType;
 			String version = payload.getVersion();
 			String nat_type = payload.getNativeType();
 			ProcessDao.getInstance().storeAnnotation(annotationName, processId, version, nat_type, anf_is, isNew);
+			result.setCode(0);
+			result.setMessage("");
 		} catch (IOException e) {
 			result.setCode(-1);
 			result.setMessage(e.getMessage());
