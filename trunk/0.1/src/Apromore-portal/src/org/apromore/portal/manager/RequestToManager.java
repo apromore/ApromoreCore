@@ -62,6 +62,7 @@ import org.apromore.portal.model_manager.UserType;
 import org.apromore.portal.model_manager.UsernamesType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.apromore.portal.model_manager.WriteAnnotationInputMsgType;
+import org.apromore.portal.model_manager.WriteAnnotationOutputMsgType;
 import org.apromore.portal.model_manager.WriteEditSessionInputMsgType;
 import org.apromore.portal.model_manager.WriteEditSessionOutputMsgType;
 import org.apromore.portal.model_manager.WriteUserInputMsgType;
@@ -313,16 +314,25 @@ public class RequestToManager {
 	 * @param annotName
 	 * @param isNew
 	 * @param native_is
+	 * @throws ExceptionEditDataProcess 
 	 * @throws IOException 
 	 */
 	public void WriteAnnotation(Integer editSessionCode, String annotName,
 			boolean isNew, Integer processId, String version, String nat_type, 
-			InputStream native_is) throws IOException {
+			InputStream native_is) throws ExceptionEditDataProcess, IOException  {
 		WriteAnnotationInputMsgType payload = new WriteAnnotationInputMsgType();
 		payload.setEditSessionCode(editSessionCode);
 		payload.setAnnotationName(annotName);
 		payload.setIsNew(isNew);
+		payload.setProcessId(processId);
+		payload.setVersion(version);
+		payload.setNativeType(nat_type);
 		DataSource sourceNat = new ByteArrayDataSource(native_is, "text/xml"); 
 		payload.setNative(new DataHandler(sourceNat));
+		WriteAnnotationOutputMsgType res = this.port.writeAnnotation(payload);
+		ResultType result = res.getResult();
+		if (result.getCode() == -1) {
+			throw new ExceptionEditDataProcess (result.getMessage()); 
+		}
 	}
 }
