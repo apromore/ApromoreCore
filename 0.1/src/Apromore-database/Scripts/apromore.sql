@@ -68,7 +68,8 @@ create table canonicals (
     documentation text,
     content longtext,
     constraint pk_canonicals primary key (uri),
-    constraint un_canonicals unique (processId, version_name)
+    constraint un_canonicals unique (processId, version_name),
+    constraint fk_canonicals foreign key (processId) references processes(processId)
 ) engine=innoDB;
 show warnings ;
 
@@ -81,7 +82,7 @@ create table natives (
     constraint un_natives unique (canonical,nat_type),
     constraint fk_natives foreign key (nat_type) references native_types(nat_type), 
     constraint fk_natives3 foreign key (canonical) references canonicals(uri)
-   		on update cascade on delete cascade
+on update cascade on delete cascade
 ) engine=innoDB;
 show warnings ;
 
@@ -89,12 +90,12 @@ create table annotations (
     uri         int     auto_increment,
     native      int,
     canonical varchar(40),
-    name 		varchar(40),
+    name varchar(40),
     content longtext,
     constraint pk_annotation primary key (uri),
     constraint un_annotation unique (canonical,name),
     constraint fk_annotation foreign key (native) references natives (uri)
-		on update cascade on delete cascade
+on update cascade on delete cascade
 ) engine=innoDB;
 show warnings ;
 
@@ -104,29 +105,29 @@ create table derived_versions (
     derived_version varchar(20),
     constraint pk_derived_version primary key (processId,version,derived_version),
     constraint fk_derived_version1 foreign key (processId,version)
-    	references canonicals(processId,version_name)
-    	on delete cascade on update cascade,
+    references canonicals(processId,version_name)
+    on delete cascade on update cascade,
     constraint fk_derived_version2 foreign key (processId,derived_version)
-    	references canonicals(processId,version_name)
-    	on delete cascade on update cascade
+    references canonicals(processId,version_name)
+    on delete cascade on update cascade
 ) engine=InnoDB;
 show warnings ;
 
 create table edit_session_mappings (
-	code int auto_increment,
-	recordTime datetime,
-	username varchar(10),
-	processId int,
-	version_name varchar(40),
-	nat_type  varchar(20),
-	annotation varchar(40),
-	remove_fake_events boolean,
-	constraint pk_edit_session_mappings primary key (code),
-	constraint fk__edit_session_mappings1 foreign key (username) references users(username)
-	on delete cascade on update cascade,
-	constraint fk__edit_session_mappings2 foreign key (processId,version_name)
-	references canonicals(processId,version_name)
-	on delete cascade on update cascade
+       code int auto_increment,
+       recordTime datetime,
+username varchar(10),
+processId int,
+version_name varchar(40),
+nat_type  varchar(20),
+annotation varchar(40),
+remove_fake_events boolean,
+constraint pk_edit_session_mappings primary key (code),
+constraint fk__edit_session_mappings1 foreign key (username) references users(username)
+on delete cascade on update cascade,
+constraint fk__edit_session_mappings2 foreign key (processId,version_name)
+   references canonicals(processId,version_name)
+on delete cascade on update cascade
 ) engine=InnoDB;
 show warnings ;
 
