@@ -243,7 +243,7 @@ import de.epml.TypeEPML;
 			String nativeType = payload.getNativeType();
 			String preVersion = payload.getPreVersion();
 			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream(), 
-        	cpf_xml = new ByteArrayOutputStream();
+        	                      cpf_xml = new ByteArrayOutputStream();
 			Canonise (process_xml, nativeType, anf_xml, cpf_xml);
 			InputStream anf_is = new ByteArrayInputStream(anf_xml.toByteArray());
 			InputStream cpf_is = new ByteArrayInputStream(cpf_xml.toByteArray());
@@ -304,7 +304,6 @@ import de.epml.TypeEPML;
 			m_cpf.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<CanonicalProcessType> cproc_cpf = 
 				new org.apromore.cpf.ObjectFactory().createCanonicalProcess(xpdl2canonical.getCpf());
-			cpf_xml = new ByteArrayOutputStream();
 			m_cpf.marshal(cproc_cpf, cpf_xml);
 			
 		} else if (nativeType.compareTo("EPML 2.0")==0) {
@@ -327,7 +326,6 @@ import de.epml.TypeEPML;
 			m_cpf.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<CanonicalProcessType> cproc_cpf = 
 				new org.apromore.cpf.ObjectFactory().createCanonicalProcess(epml2canonical.getCPF());
-			cpf_xml = new ByteArrayOutputStream();
 			m_cpf.marshal(cproc_cpf, cpf_xml);
 
 		} else {
