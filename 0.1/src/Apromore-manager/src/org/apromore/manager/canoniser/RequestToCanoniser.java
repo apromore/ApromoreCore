@@ -56,7 +56,6 @@ public class RequestToCanoniser {
 			String nativeType, InputStream cpf, String domain, String documentation, String created, String lastupdate) 
 	throws IOException, ExceptionImport {
 		org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType payload = new CanoniseProcessInputMsgType();
-		DataSource source = new ByteArrayDataSource(cpf, "text/xml"); 
 		payload.setUsername(username);
 		payload.setNativeType(nativeType);
 		payload.setProcessName(processName);
@@ -65,6 +64,7 @@ public class RequestToCanoniser {
 		payload.setDocumentation(documentation);
 		payload.setCreationDate(created);
 		payload.setLastUpdate(lastupdate);
+		DataSource source = new ByteArrayDataSource(cpf, "text/xml"); 
 		payload.setProcessDescription(new DataHandler(source));
 		org.apromore.manager.model_canoniser.CanoniseProcessOutputMsgType res = this.port.canoniseProcess(payload);
 		if (res.getResult().getCode() == -1) {
