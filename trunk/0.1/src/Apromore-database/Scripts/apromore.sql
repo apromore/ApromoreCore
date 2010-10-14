@@ -70,6 +70,7 @@ create table canonicals (
     constraint pk_canonicals primary key (uri),
     constraint un_canonicals unique (processId, version_name),
     constraint fk_canonicals foreign key (processId) references processes(processId)
+    	on delete cascade on update cascade
 ) engine=innoDB;
 show warnings ;
 
