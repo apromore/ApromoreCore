@@ -101,7 +101,8 @@ import org.apromore.data_access.model_manager.WriteUserOutputMsgType;
 		return res;
     }
 
-	public org.apromore.data_access.model_manager.ReadFormatOutputMsgType readFormat(org.apromore.data_access.model_manager.ReadFormatInputMsgType payload) { 
+	public org.apromore.data_access.model_manager.ReadFormatOutputMsgType 
+	readFormat (org.apromore.data_access.model_manager.ReadFormatInputMsgType payload) { 
 		LOG.info("Executing operation readNative");
 		System.out.println(payload);
 		ReadFormatOutputMsgType res = new ReadFormatOutputMsgType();
