@@ -4,8 +4,8 @@
 	targetNamespace="http://www.apromore.org/data_access/model_canoniser"
 	xmlns:tns="http://www.apromore.org/data_access/model_canoniser">
 
-	<import schemaLocation="anf_0.1.xsd" namespace="http://www.apromore.org/ANF" />
-	<import schemaLocation="cpf.xsd" namespace="http://www.apromore.org/CPF" />
+	<import schemaLocation="anf_0.2.xsd" namespace="http://www.apromore.org/ANF" />
+	<import schemaLocation="cpf_0.4.xsd" namespace="http://www.apromore.org/CPF" />
 
 	<element name="StoreNativeCpfInputMsg" type="tns:StoreNativeCpfInputMsgType" />
 	<element name="StoreNativeCpfOutputMsg" type="tns:StoreNativeCpfOutputMsgType" />
@@ -84,15 +84,21 @@
 	<complexType name="VersionSummaryType">
 		<sequence>
 			<element minOccurs="0" maxOccurs="unbounded" name="Annotations"
-				type="string" />
+				type="tns:AnnotationsType" />
 		</sequence>
 		<attribute name="ranking" type="string" />
 		<attribute name="name" type="string" />
-		<attribute name="documentation" type="string" />
 		<attribute name="last_update" type="string" />
 		<attribute name="creation_date" type="string" />
 	</complexType>
 
+	<complexType name="AnnotationsType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="AnnotationName"
+				type="string" />
+		</sequence>
+		<attribute name="NativeType" type="string" />
+	</complexType>
 	<complexType name="StoreNativeInputMsgType">
 		<sequence>
 			<element name="processId" type="int" />
