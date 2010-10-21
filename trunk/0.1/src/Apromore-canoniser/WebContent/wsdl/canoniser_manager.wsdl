@@ -14,12 +14,12 @@
     <part name="payload" element="tnsx:GenerateAnnotationInputMsg">
     </part>
   </message>
-  <message name="DeCanoniseProcessInputMsg">
-    <part name="payload" element="tnsx:DeCanoniseProcessInputMsg">
-    </part>
-  </message>
   <message name="DeCanoniseProcessOutputMsg">
     <part name="payload" element="tnsx:DeCanoniseProcessOutputMsg">
+    </part>
+  </message>
+  <message name="DeCanoniseProcessInputMsg">
+    <part name="payload" element="tnsx:DeCanoniseProcessInputMsg">
     </part>
   </message>
   <message name="CanoniseVersionInputMsg">
