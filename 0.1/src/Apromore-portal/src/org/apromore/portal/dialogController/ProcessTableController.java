@@ -32,11 +32,10 @@ import org.zkoss.zul.Columns;
 import org.zkoss.zul.Detail;
 import org.zkoss.zul.Grid;
 import org.zkoss.zul.Hbox;
-import org.zkoss.zul.Html;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
+import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Paging;
-import org.zkoss.zul.Popup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Toolbarbutton;
@@ -337,15 +336,15 @@ public class ProcessTableController {
 			headCreationDate.setSort("auto");
 			Column headLastUpdate = new Column("Last update");
 			headLastUpdate.setSort("auto");
-			Column headDocumentation = new Column("Documentation");
-			headDocumentation.setSort("auto");
+			Column headAnnotation = new Column("Annotation(s)");
+			headAnnotation.setSort("auto");
 			Column headRanking  = new Column("Ranking");
 			headRanking.setSort("auto");
 
 			headVersionName.setWidth("15%");
 			headCreationDate.setWidth("25%");
 			headLastUpdate.setWidth("25%");
-			headDocumentation.setWidth("30%");
+			headAnnotation.setWidth("30%");
 			headRanking.setWidth("15%");
 
 			processVersionG.appendChild(versionHeads);
@@ -353,7 +352,7 @@ public class ProcessTableController {
 			versionHeads.appendChild(headVersionName);
 			versionHeads.appendChild(headCreationDate);
 			versionHeads.appendChild(headLastUpdate);
-			versionHeads.appendChild(headDocumentation);
+			versionHeads.appendChild(headAnnotation);
 			versionHeads.appendChild(headRanking);
 
 			processSummaryD.appendChild(processVersionG);
@@ -387,24 +386,18 @@ public class ProcessTableController {
 				if (version.getRanking()!=null && version.getRanking().toString().compareTo("")!=0) {
 					displayRanking(versionRanking, version.getRanking());
 				} 
-				Label versionDocumentation = new Label();
-				if ("".compareTo(version.getDocumentation())!=0) {
-					String docBeginning = "Click here to read more...";
-					versionDocumentation.setValue(docBeginning);
-					Popup docPopup = new Popup();
-					Html docHtml = new Html(version.getDocumentation());
-					docPopup.appendChild(docHtml);
-					versionDocumentation.setPopup(docPopup);
-					this.mainC.appendChild(docPopup);
-				} else {
-					versionDocumentation.setValue("");
-				}
+				// build drop down list of annotations: one line for each associated native type,
+				// and for each of which the list of existing annotations
+				// TODO
+				Listbox annotationLB = new Listbox();
+				List<String> annotations = version.getAnnotations();
+				
 				processVersionsR.appendChild(versionR);
 				versionR.appendChild(versionCB);
 				versionR.appendChild(versionName);
 				versionR.appendChild(versionCreationDate);
 				versionR.appendChild(versionLastUpdate);
-				versionR.appendChild(versionDocumentation);
+				versionR.appendChild(annotationLB);
 				versionR.appendChild(versionRanking);
 				/* the process might has been already selected, thus its latest version has to be marked as 
 				 * selected too.
