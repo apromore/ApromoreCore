@@ -34,6 +34,7 @@ import org.apromore.data_access.exception.ExceptionAnntotationName;
 import org.apromore.data_access.exception.ExceptionDao;
 import org.apromore.data_access.exception.ExceptionStoreVersion;
 import org.apromore.data_access.exception.ExceptionSyncNPF;
+import org.apromore.data_access.model_canoniser.AnnotationsType;
 import org.apromore.data_access.model_manager.ProcessSummariesType;
 import org.apromore.data_access.model_manager.ProcessSummaryType;
 import org.apromore.data_access.model_manager.VersionSummaryType;
@@ -433,8 +434,9 @@ public class ProcessDao extends BasicDao {
 			first_version.setCreationDate(creationDate);
 			first_version.setLastUpdate(lastUpdate);
 			first_version.setRanking("");
-			first_version.setDocumentation(documentation);
-			first_version.getAnnotations().add(Constants.INITIAL_ANNOTATION);
+			AnnotationsType annotType = new AnnotationsType();
+			annotType.setNativeType(nativeType);
+			annotType.getAnnotationName().add(Constants.INITIAL_ANNOTATION);
 			conn.commit();
 
 		} catch (SQLException e) {
