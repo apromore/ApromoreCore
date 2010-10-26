@@ -21,6 +21,7 @@ import org.apromore.canoniser.model_da.StoreVersionInputMsgType;
 import org.apromore.canoniser.model_da.StoreVersionOutputMsgType;
 import org.apromore.canoniser.model_da.WriteAnnotationInputMsgType;
 import org.apromore.canoniser.model_da.WriteAnnotationOutputMsgType;
+import org.apromore.canoniser.model_manager.AnnotationsType;
 import org.apromore.canoniser.model_manager.ProcessSummaryType;
 import org.apromore.canoniser.model_manager.VersionSummaryType;
 
@@ -79,10 +80,14 @@ public class RequestToDA {
 					(org.apromore.canoniser.model_da.VersionSummaryType) it.next();
 				first_versionM.setName(versionDa.getName());
 				first_versionM.setRanking(versionDa.getRanking());
-				first_versionM.setDocumentation(versionDa.getDocumentation());
 				first_versionM.setCreationDate(versionDa.getCreationDate());
 				first_versionM.setLastUpdate(versionDa.getLastUpdate());
-				first_versionM.getAnnotations().addAll(versionDa.getAnnotations());
+				for (int i=0; i<versionDa.getAnnotations().size(); i++) {
+					org.apromore.canoniser.model_manager.AnnotationsType annotationsM = new AnnotationsType();
+					annotationsM.setNativeType(versionDa.getAnnotations().get(i).getNativeType());
+					annotationsM.getAnnotationName().addAll(versionDa.getAnnotations().get(i).getAnnotationName());
+					first_versionM.getAnnotations().add(annotationsM);
+				}
 				processM.getVersionSummaries().add(first_versionM);
 			}
 			return processM;
