@@ -36,19 +36,20 @@
 
 	<complexType name="WriteAnnotationInputMsgType">
 		<sequence>
-			<element name="Native" type="base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+			<element name="Native" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
-		<attribute name="EditSessionCode" type="int"/>
-		<attribute name="AnnotationName" type="string"/>
-		<attribute name="IsNew" type="boolean"/>
-		<attribute name="ProcessId" type="int"/>
-		<attribute name="Version" type="string"/>
-		<attribute name="NativeType" type="string"/>
+		<attribute name="EditSessionCode" type="int" />
+		<attribute name="AnnotationName" type="string" />
+		<attribute name="IsNew" type="boolean" />
+		<attribute name="ProcessId" type="int" />
+		<attribute name="Version" type="string" />
+		<attribute name="NativeType" type="string" />
 	</complexType>
 
 	<complexType name="WriteAnnotationOutputMsgType">
 		<sequence>
-			<element name="Result" type="tns:ResultType"/>
+			<element name="Result" type="tns:ResultType" />
 		</sequence>
 	</complexType>
 
@@ -89,13 +90,20 @@
 	<complexType name="VersionSummaryType">
 		<sequence>
 			<element minOccurs="0" maxOccurs="unbounded" name="Annotations"
-				type="string" />
+				type="tns:AnnotationsType" />
 		</sequence>
 		<attribute name="ranking" type="string" />
 		<attribute name="name" type="string" />
 		<attribute name="last_update" type="string" />
 		<attribute name="creation_date" type="string" />
-		<attribute name="documentation" type="string" />
+	</complexType>
+
+	<complexType name="AnnotationsType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="AnnotationName"
+				type="string" />
+		</sequence>
+		<attribute name="NativeType" type="string" />
 	</complexType>
 
 	<complexType name="EditProcessDataOutputMsgType">
@@ -136,8 +144,8 @@
 		<sequence>
 			<element name="Result" type="tns:ResultType" minOccurs="1"
 				maxOccurs="1" />
-			<element name="NativeTypes" type="tns:NativeTypesType" minOccurs="1"
-				maxOccurs="1" />
+			<element name="NativeTypes" type="tns:NativeTypesType"
+				minOccurs="1" maxOccurs="1" />
 		</sequence>
 	</complexType>
 
@@ -183,14 +191,14 @@
 				maxOccurs="1" />
 		</sequence>
 	</complexType>
-	
+
 	<complexType name="UsernamesType">
 		<sequence>
 			<element name="Username" type="string" minOccurs="1"
 				maxOccurs="unbounded" />
 		</sequence>
 	</complexType>
-	
+
 	<complexType name="WriteUserInputMsgType">
 		<sequence>
 			<element name="User" type="tns:UserType" />

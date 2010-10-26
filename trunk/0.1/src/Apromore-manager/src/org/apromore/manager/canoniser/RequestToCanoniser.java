@@ -21,6 +21,7 @@ import org.apromore.manager.model_canoniser.CanoniseVersionOutputMsgType;
 import org.apromore.manager.model_canoniser.DeCanoniseProcessInputMsgType;
 import org.apromore.manager.model_canoniser.GenerateAnnotationInputMsgType;
 import org.apromore.manager.model_canoniser.GenerateAnnotationOutputMsgType;
+import org.apromore.manager.model_portal.AnnotationsType;
 import org.apromore.manager.model_portal.VersionSummaryType;
 
 public class RequestToCanoniser {
@@ -92,10 +93,14 @@ public class RequestToCanoniser {
 				first_versionP.setLastUpdate(versionC.getLastUpdate());
 				first_versionP.setName(versionC.getName());
 				first_versionP.setRanking(versionC.getRanking());
-				first_versionP.setDocumentation(versionC.getDocumentation());
 				first_versionP.setCreationDate(versionC.getCreationDate());
 				first_versionP.setLastUpdate(versionC.getLastUpdate());
-				first_versionP.getAnnotations().addAll(versionC.getAnnotations());
+				for (int i=0; i<versionC.getAnnotations().size();i++) {
+					org.apromore.manager.model_portal.AnnotationsType annotationsC = new AnnotationsType();
+					annotationsC.getAnnotationName().addAll(versionC.getAnnotations().get(i).getAnnotationName());
+					annotationsC.setNativeType(versionC.getAnnotations().get(i).getNativeType());
+					first_versionP.getAnnotations().add(annotationsC);
+				}
 				processP.getVersionSummaries().add(first_versionP);
 			}
 			return processP;
