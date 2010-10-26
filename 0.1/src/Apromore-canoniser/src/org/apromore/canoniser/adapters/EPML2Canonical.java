@@ -627,16 +627,23 @@ public class EPML2Canonical{
 						{
 							edge.setTargetId(edge2.getTargetId());
 							edge_remove_list.add(edge2);
-							found = true;
+							found = true; // To know in case the event is the last element in the mode
 						}
 					// delete the unrequired event and set its name as a condition for the edge
-					if(found)
-						for(NodeType node: net.getNode())
-							if(node.getId().equals(event_id))
+					for(NodeType node: net.getNode())
+						if(node.getId().equals(event_id))
+						{
+							if(found)
 							{
 								edge.setCondition(node.getName());
 								node_remove_list.add(node);
 							}
+							else
+							{
+								edge.setCondition(node.getName());
+								node.setName("");
+							}
+						}
 				}
 			}
 		}
