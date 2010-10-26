@@ -14,7 +14,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -34,7 +33,7 @@ import org.apromore.data_access.exception.ExceptionAnntotationName;
 import org.apromore.data_access.exception.ExceptionDao;
 import org.apromore.data_access.exception.ExceptionStoreVersion;
 import org.apromore.data_access.exception.ExceptionSyncNPF;
-import org.apromore.data_access.model_canoniser.AnnotationsType;
+import org.apromore.data_access.model_manager.AnnotationsType;
 import org.apromore.data_access.model_manager.ProcessSummariesType;
 import org.apromore.data_access.model_manager.ProcessSummaryType;
 import org.apromore.data_access.model_manager.VersionSummaryType;
@@ -108,6 +107,8 @@ public class ProcessDao extends BasicDao {
 		ResultSet rsA = null;
 		Statement stmtV = null;
 		ResultSet rsV = null;
+		Statement stmtO = null;
+		ResultSet rsO = null;
 		String requeteV = null;
 		try {
 			conn = this.getConnection();
@@ -158,31 +159,44 @@ public class ProcessDao extends BasicDao {
 				rsV = stmtV.executeQuery(requeteV);
 				String lastVersion="";
 				while (rsV.next()){
-					query = " select " + ConstantDB.ATTR_NAME
-					+ " from " + ConstantDB.TABLE_ANNOTATIONS + " A "
-					+ " join " + ConstantDB.TABLE_CANONICALS + " C "
-					+ " on (" + "A." + ConstantDB.ATTR_CANONICAL + " = " + "C." + ConstantDB.ATTR_URI + ")"
-					+ " where " + ConstantDB.ATTR_PROCESSID + " = " + processId
-					+ "  and " + ConstantDB.ATTR_VERSION_NAME + " = '" + rsV.getString(1) + "'";
-					stmtA = conn.createStatement();
-					rsA = stmtA.executeQuery(query);
-					List<String> listAnnotations = new ArrayList();
-					while(rsA.next()) {
-						listAnnotations.add(rsA.getString(1));
-					}
 					VersionSummaryType version = new VersionSummaryType();
 					version.setName(rsV.getString(1));
 					lastVersion = version.getName();
 					version.setCreationDate(rsV.getString(2));
 					version.setLastUpdate(rsV.getString(3));
 					version.setRanking(rsV.getString(4));
-					version.setDocumentation(rsV.getString(5));
-					version.getAnnotations().addAll(listAnnotations);
 					processSummary.getVersionSummaries().add(version);
+					// for each version (a canonical process), retrieve for each of its native process
+					// the list of corresponding annotations
+					query = " select " + "N." + ConstantDB.ATTR_URI + ", N." + ConstantDB.ATTR_NAT_TYPE
+					+ " from " + ConstantDB.TABLE_CANONICALS + " C "
+					+ " join " + ConstantDB.TABLE_NATIVES + " N "
+					+ " on (" + "C." + ConstantDB.ATTR_URI + "=" + "N." + ConstantDB.ATTR_CANONICAL + ")"
+					+ " where " + "C." + ConstantDB.ATTR_PROCESSID + " = " + processId
+					+ "  and " + "C." + ConstantDB.ATTR_VERSION_NAME + " = '" + rsV.getString(1) + "'";
+					stmtA = conn.createStatement();
+					rsA = stmtA.executeQuery(query);
+					while(rsA.next()) {
+						// For each native, retrieve annotations
+						AnnotationsType annotations = new AnnotationsType();
+						version.getAnnotations().add(annotations);
+						annotations.setNativeType(rsA.getString(2));
+						query = " select " + ConstantDB.ATTR_NAME
+						+ " from " + ConstantDB.TABLE_ANNOTATIONS
+						+ " where " + ConstantDB.ATTR_NATIVE + " = " + rsA.getInt(1);
+						stmtO = conn.createStatement();
+						rsO = stmtO.executeQuery(query);
+						while(rsO.next()) {
+							annotations.getAnnotationName().add(rsO.getString(1));
+						}
+						rsO.close(); stmtO.close();
+					}
+					rsA.close(); stmtA.close();
 				}
 				processSummary.setLastVersion(lastVersion);
 				rsV.close(); stmtV.close();	
 			} 
+			conn.commit();
 		}
 		catch (SQLException e) {
 			throw new ExceptionDao("Error: ProcessDao " + e.getMessage() + "\n");
@@ -434,9 +448,11 @@ public class ProcessDao extends BasicDao {
 			first_version.setCreationDate(creationDate);
 			first_version.setLastUpdate(lastUpdate);
 			first_version.setRanking("");
-			AnnotationsType annotType = new AnnotationsType();
-			annotType.setNativeType(nativeType);
-			annotType.getAnnotationName().add(Constants.INITIAL_ANNOTATION);
+			org.apromore.data_access.model_canoniser.AnnotationsType annotations = 
+				new org.apromore.data_access.model_canoniser.AnnotationsType();
+			first_version.getAnnotations().add(annotations);
+			annotations.setNativeType(nativeType);
+			annotations.getAnnotationName().add(Constants.INITIAL_ANNOTATION);
 			conn.commit();
 
 		} catch (SQLException e) {
