@@ -3,13 +3,11 @@ package org.apromore.manager.model_da;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
 import org.apache.cxf.jaxb.JAXBToStringBuilder;
 import org.apache.cxf.jaxb.JAXBToStringStyle;
 
@@ -37,11 +35,11 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 @XmlType(name = "NativeTypesType", propOrder = {
     "nativeType"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T06:09:33+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class NativeTypesType {
 
     @XmlElement(name = "NativeType")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T06:09:33+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<FormatType> nativeType;
 
     /**
@@ -66,7 +64,7 @@ public class NativeTypesType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T06:09:33+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<FormatType> getNativeType() {
         if (nativeType == null) {
             nativeType = new ArrayList<FormatType>();
@@ -80,7 +78,7 @@ public class NativeTypesType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T06:09:33+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }

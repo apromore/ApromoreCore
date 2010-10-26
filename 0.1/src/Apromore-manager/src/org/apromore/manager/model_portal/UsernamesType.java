@@ -35,11 +35,11 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 @XmlType(name = "UsernamesType", propOrder = {
     "username"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:13:13+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:52:18+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class UsernamesType {
 
     @XmlElement(name = "Username", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:13:13+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:52:18+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<String> username;
 
     /**
@@ -64,7 +64,7 @@ public class UsernamesType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:13:13+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:52:18+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<String> getUsername() {
         if (username == null) {
             username = new ArrayList<String>();
@@ -78,7 +78,7 @@ public class UsernamesType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-06T11:13:13+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:52:18+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
