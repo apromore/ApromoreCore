@@ -10,6 +10,7 @@ import java.util.Set;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionExport;
 import org.apromore.portal.manager.RequestToManager;
+import org.apromore.portal.model_manager.AnnotationsType;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -44,14 +45,14 @@ public class ExportOneNativeController extends Window {
 	private int processId;
 	private String versionName;
 	private String originalType;
-	private List<String> annotations;	// list of available annotations for this process version
+	private List<AnnotationsType> annotations;	// list of available annotations for this process version
 	private HashMap<String, String> formats_ext; // <k, v> belongs to nativeTypes: the file extension k
 	// is associated with the native type v (<xpdl,XPDL 1.2>)
 
 	public ExportOneNativeController (ExportListNativeController exportListControllerC, 
 			MainController mainC, int processId, 
 			String processName, String originalType, String versionName, 
-			List<String> annotations, HashMap<String, String> formats_ext) throws SuspendNotAllowedException, InterruptedException   {
+			List<AnnotationsType> annotations, HashMap<String, String> formats_ext) throws SuspendNotAllowedException, InterruptedException   {
 
 		this.mainC = mainC;
 		this.exportListControllerC = exportListControllerC;
@@ -91,11 +92,17 @@ public class ExportOneNativeController extends Window {
 		cbi = new Listitem();
 		this.formatsLB.appendChild(cbi);
 		cbi.setLabel(Constants.CANONICAL);
+		cbi.setValue(Constants.CANONICAL);
 		// - Annotations associated with the process version
 		for (int i=0;i<annotations.size();i++) {
-			cbi = new Listitem();
-			this.formatsLB.appendChild(cbi);
-			cbi.setLabel(Constants.ANNOTATIONS + " - " + annotations.get(i));
+			String nat_type = annotations.get(i).getNativeType();
+			for (int k=0; k<annotations.get(i).getAnnotationName().size();k++) {
+				cbi = new Listitem();
+				this.formatsLB.appendChild(cbi);
+				cbi.setLabel(Constants.ANNOTATIONS + " - " + annotations.get(i).getAnnotationName().get(k) 
+						+ " (" + nat_type + ")");
+				cbi.setValue(Constants.ANNOTATIONS + " - " + annotations.get(i).getAnnotationName().get(k));
+			}
 		}
 		// - Available native formats
 		Set<String> extensions = this.formats_ext.keySet();
@@ -103,7 +110,9 @@ public class ExportOneNativeController extends Window {
 		while (it.hasNext()){
 			cbi = new Listitem();
 			this.formatsLB.appendChild(cbi);
-			cbi.setLabel(this.formats_ext.get(it.next()));
+			String nat_format = it.next();
+			cbi.setLabel(this.formats_ext.get(nat_format));
+			cbi.setValue(this.formats_ext.get(nat_format));
 		}
 		this.formatsLB.setSelectedItem((Listitem) this.formatsLB.getFirstChild());
 
@@ -112,11 +121,16 @@ public class ExportOneNativeController extends Window {
 		cbi.setLabel(Constants.NO_ANNOTATIONS);
 		this.annotationsLB.appendChild(cbi);
 		for (int i=0; i<this.annotations.size(); i++){
-			cbi = new Listitem();
-			this.annotationsLB.appendChild(cbi);
-			cbi.setLabel(this.annotations.get(i));
-			if (Constants.INITIAL_ANNOTATION.compareTo(cbi.getLabel())==0) {
-				cbi.setSelected(true);
+			String native_type = this.annotations.get(i).getNativeType();
+			for (int k=0;k<this.annotations.get(i).getAnnotationName().size();k++){
+				cbi = new Listitem();
+				this.annotationsLB.appendChild(cbi);
+				cbi.setLabel(this.annotations.get(i).getAnnotationName().get(k) 
+						+ " (" + native_type + ")");
+				cbi.setValue(this.annotations.get(i).getAnnotationName().get(k));
+				if (Constants.INITIAL_ANNOTATION.compareTo(this.annotations.get(i).getAnnotationName().get(k))==0) {
+					cbi.setSelected(true);
+				}
 			}
 		}
 
@@ -159,7 +173,7 @@ public class ExportOneNativeController extends Window {
 		this.okB.setDisabled(false);
 		// if the selected format is an available native format, display
 		// the choice for an annotation
-		if (formats_ext.containsValue(this.formatsLB.getSelectedItem().getLabel())) {
+		if (formats_ext.containsValue((String) this.formatsLB.getSelectedItem().getValue())) {
 			this.annotationsR.setVisible(true);
 		} else {
 			this.annotationsR.setVisible(false);
@@ -177,11 +191,11 @@ public class ExportOneNativeController extends Window {
 
 	private void export() throws InterruptedException {
 		try {
-			if (this.formatsLB.getSelectedItem().getLabel().compareTo("")==0) {
+			if (this.formatsLB.getSelectedItem().getValue()==null) {
 				Messagebox.show("Please choose a target native type", "Attention", Messagebox.OK,
 						Messagebox.ERROR);
 			} else {
-				String format = this.formatsLB.getSelectedItem().getLabel();
+				String format = (String) this.formatsLB.getSelectedItem().getValue();
 				String ext = null ;
 				// retrieve the extension associated with the format
 				if (Constants.CANONICAL.compareTo(format)==0) {
@@ -209,8 +223,8 @@ public class ExportOneNativeController extends Window {
 				processname = this.processNameL.getValue().replaceAll(":", "_");
 				processname = this.processNameL.getValue().replaceAll(";", "_");
 				String filename = processname + "." + ext;
-				String annotation = this.annotationsLB.getSelectedItem().getLabel();
-				Boolean withAnnotation = (this.annotationsLB.getSelectedItem().getLabel().compareTo(Constants.NO_ANNOTATIONS)!=0);
+				String annotation = (String) this.annotationsLB.getSelectedItem().getValue();
+				Boolean withAnnotation = annotation.compareTo(Constants.NO_ANNOTATIONS)!=0;
 				RequestToManager request = new RequestToManager();
 				InputStream native_is =
 					request.ExportFormat (this.processId, processname, this.versionName, format, annotation, withAnnotation, 

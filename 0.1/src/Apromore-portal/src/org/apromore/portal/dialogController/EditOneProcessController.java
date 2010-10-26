@@ -58,7 +58,7 @@ public class EditOneProcessController extends Window {
 		this.okB = (Button) buttonsR.getFirstChild().getFirstChild();
 		this.cancelB = (Button) this.okB.getNextSibling();
 		this.cancelAllB = (Button) this.cancelB.getNextSibling();
-		
+
 		// enable cancelAll button if at least 1 process versions left.
 		this.cancelAllB.setVisible(this.editListProcessesC.getToEditList().size()>0);
 
@@ -81,11 +81,16 @@ public class EditOneProcessController extends Window {
 		//((Listitem) this.nativeTypesLB.getFirstChild()).setSelected(true);
 		// Build list of annotations associated with the process version
 		for (int i=0; i<this.version.getAnnotations().size(); i++){
-			cbi = new Listitem();
-			this.annotationsLB.appendChild(cbi);
-			cbi.setLabel(this.version.getAnnotations().get(i));
-			if (Constants.INITIAL_ANNOTATION.compareTo(cbi.getLabel())==0) {
-				cbi.setSelected(true);
+			String native_type = this.version.getAnnotations().get(i).getNativeType();
+			for (int k=0;k<this.version.getAnnotations().get(i).getAnnotationName().size();k++){
+				cbi = new Listitem();
+				this.annotationsLB.appendChild(cbi);
+				cbi.setLabel(this.version.getAnnotations().get(i).getAnnotationName().get(k) 
+						+ " (" + native_type + ")");
+				cbi.setValue(this.version.getAnnotations().get(i).getAnnotationName().get(k));
+				if (Constants.INITIAL_ANNOTATION.compareTo((String) cbi.getValue())==0) {
+					cbi.setSelected(true);
+				}
 			}
 		}
 		cbi = new Listitem();
@@ -122,7 +127,7 @@ public class EditOneProcessController extends Window {
 		//					Messagebox.ERROR);
 		//		}
 	}
-	
+
 	protected void cancel() throws Exception {
 		// delete process from the list of processes still to be edited
 		this.editListProcessesC.deleteFromToBeEdited(this);
@@ -155,7 +160,7 @@ public class EditOneProcessController extends Window {
 			String readOnly = "false";
 			if (this.annotationsLB.getSelectedItem() != null
 					&& Constants.NO_ANNOTATIONS.compareTo(this.annotationsLB.getSelectedItem().getLabel())!=0) {
-				annotation = this.annotationsLB.getSelectedItem().getLabel();
+				annotation = (String) this.annotationsLB.getSelectedItem().getValue();
 			}
 			if (this.readOnlyCB.isChecked()) {
 				readOnly = "true";
