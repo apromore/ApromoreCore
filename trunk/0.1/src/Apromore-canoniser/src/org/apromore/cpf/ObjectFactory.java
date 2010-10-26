@@ -34,11 +34,147 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link EdgeType }
+     * Create an instance of {@link JoinType }
      * 
      */
-    public EdgeType createEdgeType() {
-        return new EdgeType();
+    public JoinType createJoinType() {
+        return new JoinType();
+    }
+
+    /**
+     * Create an instance of {@link ObjectType }
+     * 
+     */
+    public ObjectType createObjectType() {
+        return new ObjectType();
+    }
+
+    /**
+     * Create an instance of {@link EventType }
+     * 
+     */
+    public EventType createEventType() {
+        return new EventType();
+    }
+
+    /**
+     * Create an instance of {@link NetType }
+     * 
+     */
+    public NetType createNetType() {
+        return new NetType();
+    }
+
+    /**
+     * Create an instance of {@link WorkType }
+     * 
+     */
+    public WorkType createWorkType() {
+        return new WorkType();
+    }
+
+    /**
+     * Create an instance of {@link TaskType }
+     * 
+     */
+    public TaskType createTaskType() {
+        return new TaskType();
+    }
+
+    /**
+     * Create an instance of {@link HumanType }
+     * 
+     */
+    public HumanType createHumanType() {
+        return new HumanType();
+    }
+
+    /**
+     * Create an instance of {@link NodeType }
+     * 
+     */
+    public NodeType createNodeType() {
+        return new NodeType();
+    }
+
+    /**
+     * Create an instance of {@link SoftType }
+     * 
+     */
+    public SoftType createSoftType() {
+        return new SoftType();
+    }
+
+    /**
+     * Create an instance of {@link ObjectRefType }
+     * 
+     */
+    public ObjectRefType createObjectRefType() {
+        return new ObjectRefType();
+    }
+
+    /**
+     * Create an instance of {@link NonhumanType }
+     * 
+     */
+    public NonhumanType createNonhumanType() {
+        return new NonhumanType();
+    }
+
+    /**
+     * Create an instance of {@link HardType }
+     * 
+     */
+    public HardType createHardType() {
+        return new HardType();
+    }
+
+    /**
+     * Create an instance of {@link XORSplitType }
+     * 
+     */
+    public XORSplitType createXORSplitType() {
+        return new XORSplitType();
+    }
+
+    /**
+     * Create an instance of {@link ORSplitType }
+     * 
+     */
+    public ORSplitType createORSplitType() {
+        return new ORSplitType();
+    }
+
+    /**
+     * Create an instance of {@link TimerType }
+     * 
+     */
+    public TimerType createTimerType() {
+        return new TimerType();
+    }
+
+    /**
+     * Create an instance of {@link ORJoinType }
+     * 
+     */
+    public ORJoinType createORJoinType() {
+        return new ORJoinType();
+    }
+
+    /**
+     * Create an instance of {@link StateType }
+     * 
+     */
+    public StateType createStateType() {
+        return new StateType();
+    }
+
+    /**
+     * Create an instance of {@link MessageType }
+     * 
+     */
+    public MessageType createMessageType() {
+        return new MessageType();
     }
 
     /**
@@ -50,11 +186,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ObjectType }
+     * Create an instance of {@link TypeAttribute }
      * 
      */
-    public ObjectType createObjectType() {
-        return new ObjectType();
+    public TypeAttribute createTypeAttribute() {
+        return new TypeAttribute();
+    }
+
+    /**
+     * Create an instance of {@link ANDSplitType }
+     * 
+     */
+    public ANDSplitType createANDSplitType() {
+        return new ANDSplitType();
+    }
+
+    /**
+     * Create an instance of {@link SplitType }
+     * 
+     */
+    public SplitType createSplitType() {
+        return new SplitType();
+    }
+
+    /**
+     * Create an instance of {@link EdgeType }
+     * 
+     */
+    public EdgeType createEdgeType() {
+        return new EdgeType();
     }
 
     /**
@@ -74,35 +234,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ANDJoinType }
+     * Create an instance of {@link XORJoinType }
      * 
      */
-    public ANDJoinType createANDJoinType() {
-        return new ANDJoinType();
-    }
-
-    /**
-     * Create an instance of {@link TaskType }
-     * 
-     */
-    public TaskType createTaskType() {
-        return new TaskType();
-    }
-
-    /**
-     * Create an instance of {@link NetType }
-     * 
-     */
-    public NetType createNetType() {
-        return new NetType();
-    }
-
-    /**
-     * Create an instance of {@link JoinType }
-     * 
-     */
-    public JoinType createJoinType() {
-        return new JoinType();
+    public XORJoinType createXORJoinType() {
+        return new XORJoinType();
     }
 
     /**
@@ -114,147 +250,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link MessageType }
+     * Create an instance of {@link ANDJoinType }
      * 
      */
-    public MessageType createMessageType() {
-        return new MessageType();
-    }
-
-    /**
-     * Create an instance of {@link ObjectRefType }
-     * 
-     */
-    public ObjectRefType createObjectRefType() {
-        return new ObjectRefType();
-    }
-
-    /**
-     * Create an instance of {@link EventType }
-     * 
-     */
-    public EventType createEventType() {
-        return new EventType();
-    }
-
-    /**
-     * Create an instance of {@link ORSplitType }
-     * 
-     */
-    public ORSplitType createORSplitType() {
-        return new ORSplitType();
-    }
-
-    /**
-     * Create an instance of {@link SplitType }
-     * 
-     */
-    public SplitType createSplitType() {
-        return new SplitType();
-    }
-
-    /**
-     * Create an instance of {@link NodeType }
-     * 
-     */
-    public NodeType createNodeType() {
-        return new NodeType();
-    }
-
-    /**
-     * Create an instance of {@link TypeAttribute }
-     * 
-     */
-    public TypeAttribute createTypeAttribute() {
-        return new TypeAttribute();
-    }
-
-    /**
-     * Create an instance of {@link ORJoinType }
-     * 
-     */
-    public ORJoinType createORJoinType() {
-        return new ORJoinType();
-    }
-
-    /**
-     * Create an instance of {@link TimerType }
-     * 
-     */
-    public TimerType createTimerType() {
-        return new TimerType();
-    }
-
-    /**
-     * Create an instance of {@link XORSplitType }
-     * 
-     */
-    public XORSplitType createXORSplitType() {
-        return new XORSplitType();
-    }
-
-    /**
-     * Create an instance of {@link NonhumanType }
-     * 
-     */
-    public NonhumanType createNonhumanType() {
-        return new NonhumanType();
-    }
-
-    /**
-     * Create an instance of {@link SoftType }
-     * 
-     */
-    public SoftType createSoftType() {
-        return new SoftType();
-    }
-
-    /**
-     * Create an instance of {@link ANDSplitType }
-     * 
-     */
-    public ANDSplitType createANDSplitType() {
-        return new ANDSplitType();
-    }
-
-    /**
-     * Create an instance of {@link XORJoinType }
-     * 
-     */
-    public XORJoinType createXORJoinType() {
-        return new XORJoinType();
-    }
-
-    /**
-     * Create an instance of {@link HardType }
-     * 
-     */
-    public HardType createHardType() {
-        return new HardType();
-    }
-
-    /**
-     * Create an instance of {@link HumanType }
-     * 
-     */
-    public HumanType createHumanType() {
-        return new HumanType();
-    }
-
-    /**
-     * Create an instance of {@link StateType }
-     * 
-     */
-    public StateType createStateType() {
-        return new StateType();
-    }
-
-    /**
-     * Create an instance of {@link WorkType }
-     * 
-     */
-    public WorkType createWorkType() {
-        return new WorkType();
+    public ANDJoinType createANDJoinType() {
+        return new ANDJoinType();
     }
 
     /**
