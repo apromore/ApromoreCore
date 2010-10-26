@@ -5,7 +5,7 @@
 	xmlns:tns="http://www.apromore.org/data_access/model_canoniser">
 
 	<import schemaLocation="anf_0.2.xsd" namespace="http://www.apromore.org/ANF" />
-	<import schemaLocation="cpf_0.4.xsd" namespace="http://www.apromore.org/CPF" />
+	<import schemaLocation="cpf_0.5.xsd" namespace="http://www.apromore.org/CPF" />
 
 	<element name="StoreNativeCpfInputMsg" type="tns:StoreNativeCpfInputMsgType" />
 	<element name="StoreNativeCpfOutputMsg" type="tns:StoreNativeCpfOutputMsgType" />
@@ -99,6 +99,7 @@
 		</sequence>
 		<attribute name="NativeType" type="string" />
 	</complexType>
+	
 	<complexType name="StoreNativeInputMsgType">
 		<sequence>
 			<element name="processId" type="int" />
