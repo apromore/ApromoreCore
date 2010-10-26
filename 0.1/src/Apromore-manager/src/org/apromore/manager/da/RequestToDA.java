@@ -42,6 +42,7 @@ import org.apromore.manager.model_da.UserType;
 import org.apromore.manager.model_da.WriteEditSessionInputMsgType;
 import org.apromore.manager.model_da.WriteUserInputMsgType;
 import org.apromore.manager.model_da.WriteUserOutputMsgType;
+import org.apromore.manager.model_portal.AnnotationsType;
 import org.apromore.manager.model_portal.ProcessSummariesType;
 import org.apromore.manager.model_portal.ProcessSummaryType;
 import org.apromore.manager.model_portal.UsernamesType;
@@ -231,15 +232,18 @@ public class RequestToDA {
 					versionP.setCreationDate(versionM.getCreationDate());
 					versionP.setLastUpdate(versionM.getLastUpdate());
 					versionP.setName(versionM.getName());
-					versionP.setRanking(versionM.getRanking());					
-					versionP.setDocumentation(versionM.getDocumentation());
-					versionP.getAnnotations().addAll(versionM.getAnnotations());
+					versionP.setRanking(versionM.getRanking());
+					for (int k=0;k<versionM.getAnnotations().size();k++){
+						org.apromore.manager.model_portal.AnnotationsType annotations = new AnnotationsType();
+						annotations.setNativeType(versionM.getAnnotations().get(k).getNativeType());
+						annotations.getAnnotationName().addAll(versionM.getAnnotations().get(k).getAnnotationName());
+						versionP.getAnnotations().add(annotations);
+					}
 				}
 			}
 			return processesP;
 		}
 	}
-
 
 	public InputStream ReadFormat(int processId, String version,
 			String nativeType) throws ExceptionReadProcessSummaries, IOException, ExceptionReadNative {	
