@@ -35,6 +35,7 @@ import org.zkoss.zul.Hbox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Listbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Paging;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
@@ -388,9 +389,20 @@ public class ProcessTableController {
 				} 
 				// build drop down list of annotations: one line for each associated native type,
 				// and for each of which the list of existing annotations
-				// TODO
 				Listbox annotationLB = new Listbox();
-				List<String> annotations = version.getAnnotations();
+				annotationLB.setMold("select");
+				annotationLB.setRows(1);
+				annotationLB.setStyle(Constants.UNSELECTED_VERSION);
+				for(int i=0;i<version.getAnnotations().size();i++){
+					Listitem annotationsI = new Listitem();
+					annotationLB.appendChild(annotationsI);
+					String annotationS = version.getAnnotations().get(i).getNativeType() + ": ";
+					annotationS += version.getAnnotations().get(i).getAnnotationName().get(0);
+					for(int k=1;k<version.getAnnotations().get(i).getAnnotationName().size();k++) {
+						annotationS += ", " + version.getAnnotations().get(i).getAnnotationName().get(k);
+					}
+					annotationsI.setLabel(annotationS);
+				}
 				
 				processVersionsR.appendChild(versionR);
 				versionR.appendChild(versionCB);
@@ -584,13 +596,19 @@ public class ProcessTableController {
 
 		String selected = Constants.SELECTED_VERSION ;
 		String unselected = Constants.UNSELECTED_VERSION;
-
+		Listbox annotations = (Listbox) versionR.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getNextSibling();
 		if (highlighted) {
 			versionR.setStyle(selected);	// highlight version
 			ColorFont (versionR, "#FFFFFF");
+			// highlight drop down list box
+			annotations.setStyle(selected);
+			ColorFont (annotations, "#FFFFFF");
 		} else {
 			versionR.setStyle(unselected);
 			ColorFont (versionR, "#000000");
+			// highlight drop down list box
+			annotations.setStyle(unselected);
+			ColorFont (annotations, "#000000");
 		}
 
 
@@ -829,10 +847,12 @@ public class ProcessTableController {
 		}
 	}
 	private void ColorFont(HtmlBasedComponent v, String color) {
-		Iterator<HtmlBasedComponent> itV = v.getChildren().iterator();
-		while (itV.hasNext()) {
-			((HtmlBasedComponent) itV.next()).setStyle("color:"+color + ";" + Constants.TOOLBARBUTTON_STYLE);
-		}
+	
+//		Iterator<HtmlBasedComponent> itV = v.getChildren().iterator();
+//		while (itV.hasNext()) {
+//			HtmlBasedComponent child = (HtmlBasedComponent) itV.next();
+//			child.setStyle("color:"+color + ";" + Constants.TOOLBARBUTTON_STYLE);
+//		}
 	}
 
 	public HashMap<Checkbox, VersionSummaryType> getProcessVersionsHM() {
