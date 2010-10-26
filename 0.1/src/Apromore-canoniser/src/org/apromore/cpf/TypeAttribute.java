@@ -31,15 +31,15 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "typeAttribute")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class TypeAttribute {
 
     @XmlAttribute(name = "typeRef", required = true)
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String typeRef;
     @XmlAttribute(name = "value")
     @XmlSchemaType(name = "anySimpleType")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String value;
 
     /**
@@ -50,7 +50,7 @@ public class TypeAttribute {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public String getTypeRef() {
         return typeRef;
     }
@@ -63,7 +63,7 @@ public class TypeAttribute {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setTypeRef(String value) {
         this.typeRef = value;
     }
@@ -76,7 +76,7 @@ public class TypeAttribute {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public String getValue() {
         return value;
     }
@@ -89,7 +89,7 @@ public class TypeAttribute {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setValue(String value) {
         this.value = value;
     }
@@ -100,7 +100,7 @@ public class TypeAttribute {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }

@@ -49,23 +49,23 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
     NonhumanType.class,
     HumanType.class
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ResourceTypeType {
 
     @XmlElement(required = true)
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String name;
     @XmlElement(defaultValue = "false")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Boolean configurable;
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	protected List<TypeAttribute> attribute;
     @XmlAttribute(name = "id", required = true)
     @XmlSchemaType(name = "positiveInteger")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected BigInteger id;
     @XmlAttribute(name = "specializationIds")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<BigInteger> specializationIds;
 
     /**
@@ -76,7 +76,7 @@ public class ResourceTypeType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public String getName() {
         return name;
     }
@@ -89,7 +89,7 @@ public class ResourceTypeType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setName(String value) {
         this.name = value;
     }
@@ -102,7 +102,7 @@ public class ResourceTypeType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public Boolean isConfigurable() {
         return configurable;
     }
@@ -115,7 +115,7 @@ public class ResourceTypeType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setConfigurable(Boolean value) {
         this.configurable = value;
     }
@@ -142,7 +142,7 @@ public class ResourceTypeType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public List<TypeAttribute> getAttribute() {
         if (attribute == null) {
             attribute = new ArrayList<TypeAttribute>();
@@ -158,7 +158,7 @@ public class ResourceTypeType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public BigInteger getId() {
         return id;
     }
@@ -171,7 +171,7 @@ public class ResourceTypeType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setId(BigInteger value) {
         this.id = value;
     }
@@ -198,7 +198,7 @@ public class ResourceTypeType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public List<BigInteger> getSpecializationIds() {
         if (specializationIds == null) {
             specializationIds = new ArrayList<BigInteger>();
@@ -212,7 +212,7 @@ public class ResourceTypeType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }

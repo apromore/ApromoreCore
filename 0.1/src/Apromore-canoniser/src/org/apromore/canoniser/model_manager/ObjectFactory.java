@@ -41,19 +41,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ResultType }
+     * Create an instance of {@link GenerateAnnotationOutputMsgType }
      * 
      */
-    public ResultType createResultType() {
-        return new ResultType();
+    public GenerateAnnotationOutputMsgType createGenerateAnnotationOutputMsgType() {
+        return new GenerateAnnotationOutputMsgType();
     }
 
     /**
-     * Create an instance of {@link CanoniseProcessInputMsgType }
+     * Create an instance of {@link CanoniseVersionOutputMsgType }
      * 
      */
-    public CanoniseProcessInputMsgType createCanoniseProcessInputMsgType() {
-        return new CanoniseProcessInputMsgType();
+    public CanoniseVersionOutputMsgType createCanoniseVersionOutputMsgType() {
+        return new CanoniseVersionOutputMsgType();
     }
 
     /**
@@ -62,22 +62,6 @@ public class ObjectFactory {
      */
     public CanoniseVersionInputMsgType createCanoniseVersionInputMsgType() {
         return new CanoniseVersionInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link DeCanoniseProcessInputMsgType }
-     * 
-     */
-    public DeCanoniseProcessInputMsgType createDeCanoniseProcessInputMsgType() {
-        return new DeCanoniseProcessInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link GenerateAnnotationOutputMsgType }
-     * 
-     */
-    public GenerateAnnotationOutputMsgType createGenerateAnnotationOutputMsgType() {
-        return new GenerateAnnotationOutputMsgType();
     }
 
     /**
@@ -97,11 +81,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CanoniseVersionOutputMsgType }
+     * Create an instance of {@link CanoniseProcessInputMsgType }
      * 
      */
-    public CanoniseVersionOutputMsgType createCanoniseVersionOutputMsgType() {
-        return new CanoniseVersionOutputMsgType();
+    public CanoniseProcessInputMsgType createCanoniseProcessInputMsgType() {
+        return new CanoniseProcessInputMsgType();
     }
 
     /**
@@ -113,11 +97,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link GenerateAnnotationInputMsgType }
+     * Create an instance of {@link ResultType }
      * 
      */
-    public GenerateAnnotationInputMsgType createGenerateAnnotationInputMsgType() {
-        return new GenerateAnnotationInputMsgType();
+    public ResultType createResultType() {
+        return new ResultType();
     }
 
     /**
@@ -126,6 +110,30 @@ public class ObjectFactory {
      */
     public ProcessSummaryType createProcessSummaryType() {
         return new ProcessSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link GenerateAnnotationInputMsgType }
+     * 
+     */
+    public GenerateAnnotationInputMsgType createGenerateAnnotationInputMsgType() {
+        return new GenerateAnnotationInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link AnnotationsType }
+     * 
+     */
+    public AnnotationsType createAnnotationsType() {
+        return new AnnotationsType();
+    }
+
+    /**
+     * Create an instance of {@link DeCanoniseProcessInputMsgType }
+     * 
+     */
+    public DeCanoniseProcessInputMsgType createDeCanoniseProcessInputMsgType() {
+        return new DeCanoniseProcessInputMsgType();
     }
 
     /**

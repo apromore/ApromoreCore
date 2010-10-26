@@ -26,6 +26,7 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  *       &lt;sequence>
  *         &lt;element name="attribute" type="{http://www.apromore.org/CPF}typeAttribute" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
+ *       &lt;attribute name="id" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" />
  *       &lt;attribute name="resourceTypeId" type="{http://www.w3.org/2001/XMLSchema}positiveInteger" />
  *       &lt;attribute name="optional" type="{http://www.w3.org/2001/XMLSchema}boolean" default="false" />
  *       &lt;attribute name="qualifier" type="{http://www.w3.org/2001/XMLSchema}string" />
@@ -40,20 +41,24 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 @XmlType(name = "resourceTypeRefType", propOrder = {
     "attribute"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ResourceTypeRefType {
 
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	protected List<TypeAttribute> attribute;
+    @XmlAttribute(name = "id")
+    @XmlSchemaType(name = "positiveInteger")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    protected BigInteger id;
     @XmlAttribute(name = "resourceTypeId")
     @XmlSchemaType(name = "positiveInteger")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected BigInteger resourceTypeId;
     @XmlAttribute(name = "optional")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Boolean optional;
     @XmlAttribute(name = "qualifier")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String qualifier;
 
     /**
@@ -78,12 +83,38 @@ public class ResourceTypeRefType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public List<TypeAttribute> getAttribute() {
         if (attribute == null) {
             attribute = new ArrayList<TypeAttribute>();
         }
         return this.attribute;
+    }
+
+    /**
+     * Gets the value of the id property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link BigInteger }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	public BigInteger getId() {
+        return id;
+    }
+
+    /**
+     * Sets the value of the id property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link BigInteger }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	public void setId(BigInteger value) {
+        this.id = value;
     }
 
     /**
@@ -94,7 +125,7 @@ public class ResourceTypeRefType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public BigInteger getResourceTypeId() {
         return resourceTypeId;
     }
@@ -107,7 +138,7 @@ public class ResourceTypeRefType {
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setResourceTypeId(BigInteger value) {
         this.resourceTypeId = value;
     }
@@ -120,7 +151,7 @@ public class ResourceTypeRefType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public boolean isOptional() {
         if (optional == null) {
             return false;
@@ -137,7 +168,7 @@ public class ResourceTypeRefType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setOptional(Boolean value) {
         this.optional = value;
     }
@@ -150,7 +181,7 @@ public class ResourceTypeRefType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public String getQualifier() {
         return qualifier;
     }
@@ -163,7 +194,7 @@ public class ResourceTypeRefType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setQualifier(String value) {
         this.qualifier = value;
     }
@@ -174,7 +205,7 @@ public class ResourceTypeRefType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T02:28:53+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
