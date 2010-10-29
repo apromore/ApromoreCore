@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF">
+    <Net id="1288089387836">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1288089387823">
+            <name>E1</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1288089387824">
+            <name>E2</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1288089387825">
+            <name>F1</name>
+            <resourceTypeRef resourceTypeId="1288089387826">
+                <attribute typeRef="RefID" value="1288089387834"/>
+            </resourceTypeRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1288089387827">
+            <name>F2</name>
+            <resourceTypeRef resourceTypeId="1288089387829">
+                <attribute typeRef="RefID" value="1288089387835"/>
+            </resourceTypeRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1288089387828">
+            <name>E3</name>
+        </Node>
+        <Edge id="1288089387830" sourceId="1288089387823" targetId="1288089387825"/>
+        <Edge id="1288089387831" sourceId="1288089387825" targetId="1288089387824"/>
+        <Edge id="1288089387832" sourceId="1288089387824" targetId="1288089387827"/>
+        <Edge id="1288089387833" sourceId="1288089387827" targetId="1288089387828"/>
+    </Net>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="1288089387826">
+        <name>R1</name>
+    </ResourceType>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="1288089387829">
+        <name>R2</name>
+    </ResourceType>
+    <attribute typeRef="IntialFormat" value="EPML"/>
+</ns2:CanonicalProcess>

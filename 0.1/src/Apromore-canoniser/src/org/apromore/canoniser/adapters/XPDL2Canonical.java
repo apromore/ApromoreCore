@@ -340,7 +340,9 @@ public class XPDL2Canonical {
 			cGraphInfo.setCpfId(pool2resourceType.get(pool).getId());
 			NodeGraphicsInfos infos = pool.getNodeGraphicsInfos();
 
-			for (NodeGraphicsInfo xGraphInfo: infos.getNodeGraphicsInfo()){
+			if(infos != null)
+			for (NodeGraphicsInfo xGraphInfo: infos.getNodeGraphicsInfo())
+			{
 				if (xGraphInfo.getFillColor() != null) {
 					FillType fill = new FillType();
 					fill.setColor(xGraphInfo.getFillColor());
@@ -372,7 +374,9 @@ public class XPDL2Canonical {
 			cGraphInfo.setCpfId(lane2resourceType.get(lane).getId());
 			NodeGraphicsInfos infos = lane.getNodeGraphicsInfos();
 
-			for (NodeGraphicsInfo xGraphInfo: infos.getNodeGraphicsInfo()){
+			if(infos != null)
+			for (NodeGraphicsInfo xGraphInfo: infos.getNodeGraphicsInfo())
+			{
 				if (xGraphInfo.getFillColor() != null) {
 					FillType fill = new FillType();
 					fill.setColor(xGraphInfo.getFillColor());
