@@ -187,6 +187,7 @@ public class Canonical2XPDL {
 					else if (obj instanceof Transitions)
 						transitions = ((Transitions)obj).getTransition();
 				}
+				if(activities != null)
 				for (Activity act: activities){
 					TransitionRefs refs = null;
 					NodeGraphicsInfos infos = null;
@@ -358,12 +359,6 @@ public class Canonical2XPDL {
 					lane.setParentPool(parent.getId());
 					lane.setId(res.getId().toString());
 					lane.setName(res.getName());
-					ExtendedAttributes atts = new ExtendedAttributes();
-					ExtendedAttribute att = new ExtendedAttribute();
-					att.setName("showcaption");
-					att.setValue("true");
-					atts.getExtendedAttribute().add(att);
-					lane.getAny().add(atts);
 					parent.getLanes().getLane().add(lane);
 					resourceRefMap.put(res.getId(), lane);
 					
