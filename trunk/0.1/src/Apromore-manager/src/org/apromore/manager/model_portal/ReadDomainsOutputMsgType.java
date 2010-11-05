@@ -35,14 +35,14 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
     "result",
     "domains"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:52:18+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ReadDomainsOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:52:18+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ResultType result;
     @XmlElement(name = "Domains", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:52:18+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected DomainsType domains;
 
     /**
@@ -53,7 +53,7 @@ public class ReadDomainsOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:52:18+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ResultType getResult() {
         return result;
     }
@@ -66,7 +66,7 @@ public class ReadDomainsOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:52:18+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -79,7 +79,7 @@ public class ReadDomainsOutputMsgType {
      *     {@link DomainsType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:52:18+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public DomainsType getDomains() {
         return domains;
     }
@@ -92,7 +92,7 @@ public class ReadDomainsOutputMsgType {
      *     {@link DomainsType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:52:18+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setDomains(DomainsType value) {
         this.domains = value;
     }
@@ -103,7 +103,7 @@ public class ReadDomainsOutputMsgType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:52:18+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }

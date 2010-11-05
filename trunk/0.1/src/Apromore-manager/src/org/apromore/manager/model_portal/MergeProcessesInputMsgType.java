@@ -1,12 +1,9 @@
 
 package org.apromore.manager.model_portal;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.cxf.jaxb.JAXBToStringBuilder;
@@ -14,22 +11,22 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for UserType complex type.
+ * <p>Java class for MergeProcessesInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="UserType">
+ * &lt;complexType name="MergeProcessesInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="SearchHistories" type="{http://www.apromore.org/manager/model_portal}SearchHistoriesType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="ProcessName" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="VersionName" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Username" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Cpf_ids" type="{http://www.apromore.org/manager/model_portal}Cpf_idsType"/>
+ *         &lt;element name="Algorithm" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Parameters" type="{http://www.apromore.org/manager/model_portal}ParametersType"/>
  *       &lt;/sequence>
- *       &lt;attribute name="firstname" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="lastname" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="email" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="username" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="passwd" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -38,63 +35,38 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "UserType", propOrder = {
-    "searchHistories"
+@XmlType(name = "MergeProcessesInputMsgType", propOrder = {
+    "processName",
+    "versionName",
+    "username",
+    "cpfIds",
+    "algorithm",
+    "parameters"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class UserType {
+public class MergeProcessesInputMsgType {
 
-    @XmlElement(name = "SearchHistories")
+    @XmlElement(name = "ProcessName", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected List<SearchHistoriesType> searchHistories;
-    @XmlAttribute(name = "firstname")
+    protected String processName;
+    @XmlElement(name = "VersionName", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String firstname;
-    @XmlAttribute(name = "lastname")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String lastname;
-    @XmlAttribute(name = "email")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String email;
-    @XmlAttribute(name = "username")
+    protected String versionName;
+    @XmlElement(name = "Username", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String username;
-    @XmlAttribute(name = "passwd")
+    @XmlElement(name = "Cpf_ids", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String passwd;
+    protected CpfIdsType cpfIds;
+    @XmlElement(name = "Algorithm", required = true)
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    protected String algorithm;
+    @XmlElement(name = "Parameters", required = true)
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    protected ParametersType parameters;
 
     /**
-     * Gets the value of the searchHistories property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the searchHistories property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getSearchHistories().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link SearchHistoriesType }
-     * 
-     * 
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public List<SearchHistoriesType> getSearchHistories() {
-        if (searchHistories == null) {
-            searchHistories = new ArrayList<SearchHistoriesType>();
-        }
-        return this.searchHistories;
-    }
-
-    /**
-     * Gets the value of the firstname property.
+     * Gets the value of the processName property.
      * 
      * @return
      *     possible object is
@@ -102,12 +74,12 @@ public class UserType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getFirstname() {
-        return firstname;
+    public String getProcessName() {
+        return processName;
     }
 
     /**
-     * Sets the value of the firstname property.
+     * Sets the value of the processName property.
      * 
      * @param value
      *     allowed object is
@@ -115,12 +87,12 @@ public class UserType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setFirstname(String value) {
-        this.firstname = value;
+    public void setProcessName(String value) {
+        this.processName = value;
     }
 
     /**
-     * Gets the value of the lastname property.
+     * Gets the value of the versionName property.
      * 
      * @return
      *     possible object is
@@ -128,12 +100,12 @@ public class UserType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getLastname() {
-        return lastname;
+    public String getVersionName() {
+        return versionName;
     }
 
     /**
-     * Sets the value of the lastname property.
+     * Sets the value of the versionName property.
      * 
      * @param value
      *     allowed object is
@@ -141,34 +113,8 @@ public class UserType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setLastname(String value) {
-        this.lastname = value;
-    }
-
-    /**
-     * Gets the value of the email property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getEmail() {
-        return email;
-    }
-
-    /**
-     * Sets the value of the email property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setEmail(String value) {
-        this.email = value;
+    public void setVersionName(String value) {
+        this.versionName = value;
     }
 
     /**
@@ -198,7 +144,33 @@ public class UserType {
     }
 
     /**
-     * Gets the value of the passwd property.
+     * Gets the value of the cpfIds property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link CpfIdsType }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public CpfIdsType getCpfIds() {
+        return cpfIds;
+    }
+
+    /**
+     * Sets the value of the cpfIds property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link CpfIdsType }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public void setCpfIds(CpfIdsType value) {
+        this.cpfIds = value;
+    }
+
+    /**
+     * Gets the value of the algorithm property.
      * 
      * @return
      *     possible object is
@@ -206,12 +178,12 @@ public class UserType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getPasswd() {
-        return passwd;
+    public String getAlgorithm() {
+        return algorithm;
     }
 
     /**
-     * Sets the value of the passwd property.
+     * Sets the value of the algorithm property.
      * 
      * @param value
      *     allowed object is
@@ -219,8 +191,34 @@ public class UserType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setPasswd(String value) {
-        this.passwd = value;
+    public void setAlgorithm(String value) {
+        this.algorithm = value;
+    }
+
+    /**
+     * Gets the value of the parameters property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ParametersType }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public ParametersType getParameters() {
+        return parameters;
+    }
+
+    /**
+     * Sets the value of the parameters property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ParametersType }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public void setParameters(ParametersType value) {
+        this.parameters = value;
     }
 
     /**
