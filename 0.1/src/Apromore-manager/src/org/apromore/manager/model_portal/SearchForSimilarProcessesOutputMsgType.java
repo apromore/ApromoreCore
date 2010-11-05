@@ -1,26 +1,30 @@
 
 package org.apromore.manager.model_portal;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.cxf.jaxb.JAXBToStringBuilder;
 import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for FormatType complex type.
+ * <p>Java class for SearchForSimilarProcessesOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="FormatType">
+ * &lt;complexType name="SearchForSimilarProcessesOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="format" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="extension" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;sequence>
+ *         &lt;element name="Result" type="{http://www.apromore.org/manager/model_portal}ResultType"/>
+ *         &lt;element name="Canonicals" type="{http://www.apromore.org/manager/model_portal}CanonicalsType" maxOccurs="unbounded" minOccurs="0"/>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -29,67 +33,74 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FormatType")
+@XmlType(name = "SearchForSimilarProcessesOutputMsgType", propOrder = {
+    "result",
+    "canonicals"
+})
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class FormatType {
+public class SearchForSimilarProcessesOutputMsgType {
 
-    @XmlAttribute(name = "format")
+    @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String format;
-    @XmlAttribute(name = "extension")
+    protected ResultType result;
+    @XmlElement(name = "Canonicals")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String extension;
+    protected List<CanonicalsType> canonicals;
 
     /**
-     * Gets the value of the format property.
+     * Gets the value of the result property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getFormat() {
-        return format;
+    public ResultType getResult() {
+        return result;
     }
 
     /**
-     * Sets the value of the format property.
+     * Sets the value of the result property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setFormat(String value) {
-        this.format = value;
+    public void setResult(ResultType value) {
+        this.result = value;
     }
 
     /**
-     * Gets the value of the extension property.
+     * Gets the value of the canonicals property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     * <p>
+     * This accessor method returns a reference to the live list,
+     * not a snapshot. Therefore any modification you make to the
+     * returned list will be present inside the JAXB object.
+     * This is why there is not a <CODE>set</CODE> method for the canonicals property.
+     * 
+     * <p>
+     * For example, to add a new item, do as follows:
+     * <pre>
+     *    getCanonicals().add(newItem);
+     * </pre>
+     * 
+     * 
+     * <p>
+     * Objects of the following type(s) are allowed in the list
+     * {@link CanonicalsType }
+     * 
+     * 
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getExtension() {
-        return extension;
-    }
-
-    /**
-     * Sets the value of the extension property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setExtension(String value) {
-        this.extension = value;
+    public List<CanonicalsType> getCanonicals() {
+        if (canonicals == null) {
+            canonicals = new ArrayList<CanonicalsType>();
+        }
+        return this.canonicals;
     }
 
     /**

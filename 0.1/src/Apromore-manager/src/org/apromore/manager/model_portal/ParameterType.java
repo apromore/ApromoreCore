@@ -4,23 +4,25 @@ package org.apromore.manager.model_portal;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.cxf.jaxb.JAXBToStringBuilder;
 import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for FormatType complex type.
+ * <p>Java class for ParameterType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="FormatType">
+ * &lt;complexType name="ParameterType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="format" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="extension" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;sequence>
+ *         &lt;element name="Name" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Value" type="{http://www.w3.org/2001/XMLSchema}double"/>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -29,19 +31,22 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "FormatType")
+@XmlType(name = "ParameterType", propOrder = {
+    "name",
+    "value"
+})
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class FormatType {
+public class ParameterType {
 
-    @XmlAttribute(name = "format")
+    @XmlElement(name = "Name", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String format;
-    @XmlAttribute(name = "extension")
+    protected String name;
+    @XmlElement(name = "Value")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String extension;
+    protected double value;
 
     /**
-     * Gets the value of the format property.
+     * Gets the value of the name property.
      * 
      * @return
      *     possible object is
@@ -49,12 +54,12 @@ public class FormatType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getFormat() {
-        return format;
+    public String getName() {
+        return name;
     }
 
     /**
-     * Sets the value of the format property.
+     * Sets the value of the name property.
      * 
      * @param value
      *     allowed object is
@@ -62,34 +67,26 @@ public class FormatType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setFormat(String value) {
-        this.format = value;
+    public void setName(String value) {
+        this.name = value;
     }
 
     /**
-     * Gets the value of the extension property.
+     * Gets the value of the value property.
      * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getExtension() {
-        return extension;
+    public double getValue() {
+        return value;
     }
 
     /**
-     * Sets the value of the extension property.
+     * Sets the value of the value property.
      * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setExtension(String value) {
-        this.extension = value;
+    public void setValue(double value) {
+        this.value = value;
     }
 
     /**

@@ -27,7 +27,8 @@ public class ObjectFactory {
     private final static QName _ExportFormatInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ExportFormatInputMsg");
     private final static QName _ReadNativeTypesOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadNativeTypesOutputMsg");
     private final static QName _ReadUserInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadUserInputMsg");
-    private final static QName _DeleteProcessVersionsInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "DeleteProcessVersionsInputMsg");
+    private final static QName _MergeProcessesOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "MergeProcessesOutputMsg");
+	private final static QName _DeleteProcessVersionsInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "DeleteProcessVersionsInputMsg");
     private final static QName _DeleteEditSessionOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "DeleteEditSessionOutputMsg");
     private final static QName _DeleteProcessVersionsOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "DeleteProcessVersionsOutputMsg");
     private final static QName _WriteAnnotationInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "WriteAnnotationInputMsg");
@@ -42,17 +43,20 @@ public class ObjectFactory {
     private final static QName _ImportProcessOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ImportProcessOutputMsg");
     private final static QName _ReadNativeTypesInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadNativeTypesInputMsg");
     private final static QName _ReadEditSessionInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadEditSessionInputMsg");
-    private final static QName _EditProcessDataInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "EditProcessDataInputMsg");
+    private final static QName _MergeProcessesInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "MergeProcessesInputMsg");
+	private final static QName _EditProcessDataInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "EditProcessDataInputMsg");
     private final static QName _WriteEditSessionInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "WriteEditSessionInputMsg");
     private final static QName _WriteUserInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "WriteUserInputMsg");
     private final static QName _ReadProcessSummariesOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadProcessSummariesOutputMsg");
     private final static QName _ReadDomainsInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadDomainsInputMsg");
-    private final static QName _ExportFormatOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ExportFormatOutputMsg");
+    private final static QName _SearchForSimilarProcessesInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "SearchForSimilarProcessesInputMsg");
+	private final static QName _ExportFormatOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ExportFormatOutputMsg");
     private final static QName _WriteAnnotationOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "WriteAnnotationOutputMsg");
     private final static QName _UpdateProcessOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "UpdateProcessOutputMsg");
     private final static QName _ReadProcessSummariesInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadProcessSummariesInputMsg");
     private final static QName _ReadDomainsOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadDomainsOutputMsg");
-    private final static QName _ReadEditSessionOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadEditSessionOutputMsg");
+    private final static QName _SearchForSimilarProcessesOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "SearchForSimilarProcessesOutputMsg");
+	private final static QName _ReadEditSessionOutputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadEditSessionOutputMsg");
     private final static QName _ReadAllUsersInputMsg_QNAME = new QName("http://www.apromore.org/manager/model_portal", "ReadAllUsersInputMsg");
 
     /**
@@ -87,6 +91,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link CpfIdsType }
+     * 
+     */
+    public CpfIdsType createCpfIdsType() {
+        return new CpfIdsType();
+    }
+
+	/**
      * Create an instance of {@link ReadEditSessionInputMsgType }
      * 
      */
@@ -223,6 +235,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link CanonicalsType }
+     * 
+     */
+    public CanonicalsType createCanonicalsType() {
+        return new CanonicalsType();
+    }
+
+	/**
+     * Create an instance of {@link ParameterType }
+     * 
+     */
+    public ParameterType createParameterType() {
+        return new ParameterType();
+    }
+
+	/**
      * Create an instance of {@link ReadNativeTypesInputMsgType }
      * 
      */
@@ -239,6 +267,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link MergeProcessesInputMsgType }
+     * 
+     */
+    public MergeProcessesInputMsgType createMergeProcessesInputMsgType() {
+        return new MergeProcessesInputMsgType();
+    }
+
+	/**
      * Create an instance of {@link ReadAllUsersInputMsgType }
      * 
      */
@@ -295,6 +331,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link SearchForSimilarProcessesInputMsgType }
+     * 
+     */
+    public SearchForSimilarProcessesInputMsgType createSearchForSimilarProcessesInputMsgType() {
+        return new SearchForSimilarProcessesInputMsgType();
+    }
+
+	/**
      * Create an instance of {@link ProcessSummaryType }
      * 
      */
@@ -359,6 +403,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link MergeProcessesOutputMsgType }
+     * 
+     */
+    public MergeProcessesOutputMsgType createMergeProcessesOutputMsgType() {
+        return new MergeProcessesOutputMsgType();
+    }
+
+	/**
      * Create an instance of {@link ReadEditSessionOutputMsgType }
      * 
      */
@@ -367,6 +419,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ParametersType }
+     * 
+     */
+    public ParametersType createParametersType() {
+        return new ParametersType();
+    }
+
+	/**
      * Create an instance of {@link ReadDomainsOutputMsgType }
      * 
      */
@@ -375,6 +435,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link SearchForSimilarProcessesOutputMsgType }
+     * 
+     */
+    public SearchForSimilarProcessesOutputMsgType createSearchForSimilarProcessesOutputMsgType() {
+        return new SearchForSimilarProcessesOutputMsgType();
+    }
+
+	/**
+     * Create an instance of {@link CpfIdType }
+     * 
+     */
+    public CpfIdType createCpfIdType() {
+        return new CpfIdType();
+    }
+
+	/**
      * Create an instance of {@link ReadUserInputMsgType }
      * 
      */
@@ -434,6 +510,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link MergeProcessesOutputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/manager/model_portal", name = "MergeProcessesOutputMsg")
+    public JAXBElement<MergeProcessesOutputMsgType> createMergeProcessesOutputMsg(MergeProcessesOutputMsgType value) {
+        return new JAXBElement<MergeProcessesOutputMsgType>(_MergeProcessesOutputMsg_QNAME, MergeProcessesOutputMsgType.class, null, value);
+    }
+
+	/**
      * Create an instance of {@link JAXBElement }{@code <}{@link DeleteProcessVersionsInputMsgType }{@code >}}
      * 
      */
@@ -569,6 +654,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link MergeProcessesInputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/manager/model_portal", name = "MergeProcessesInputMsg")
+    public JAXBElement<MergeProcessesInputMsgType> createMergeProcessesInputMsg(MergeProcessesInputMsgType value) {
+        return new JAXBElement<MergeProcessesInputMsgType>(_MergeProcessesInputMsg_QNAME, MergeProcessesInputMsgType.class, null, value);
+    }
+
+	/**
      * Create an instance of {@link JAXBElement }{@code <}{@link EditProcessDataInputMsgType }{@code >}}
      * 
      */
@@ -614,6 +708,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link SearchForSimilarProcessesInputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/manager/model_portal", name = "SearchForSimilarProcessesInputMsg")
+    public JAXBElement<SearchForSimilarProcessesInputMsgType> createSearchForSimilarProcessesInputMsg(SearchForSimilarProcessesInputMsgType value) {
+        return new JAXBElement<SearchForSimilarProcessesInputMsgType>(_SearchForSimilarProcessesInputMsg_QNAME, SearchForSimilarProcessesInputMsgType.class, null, value);
+    }
+
+	/**
      * Create an instance of {@link JAXBElement }{@code <}{@link ExportFormatOutputMsgType }{@code >}}
      * 
      */
@@ -659,6 +762,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link SearchForSimilarProcessesOutputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/manager/model_portal", name = "SearchForSimilarProcessesOutputMsg")
+    public JAXBElement<SearchForSimilarProcessesOutputMsgType> createSearchForSimilarProcessesOutputMsg(SearchForSimilarProcessesOutputMsgType value) {
+        return new JAXBElement<SearchForSimilarProcessesOutputMsgType>(_SearchForSimilarProcessesOutputMsg_QNAME, SearchForSimilarProcessesOutputMsgType.class, null, value);
+    }
+
+	/**
      * Create an instance of {@link JAXBElement }{@code <}{@link ReadEditSessionOutputMsgType }{@code >}}
      * 
      */

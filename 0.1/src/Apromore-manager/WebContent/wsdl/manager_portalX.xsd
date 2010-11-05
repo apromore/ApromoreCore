@@ -33,6 +33,10 @@
 	<element name="DeleteProcessVersionsOutputMsg" type="tns:DeleteProcessVersionsOutputMsgType" />
 	<element name="WriteAnnotationInputMsg" type="tns:WriteAnnotationInputMsgType" />
 	<element name="WriteAnnotationOutputMsg" type="tns:WriteAnnotationOutputMsgType" />
+	<element name="SearchForSimilarProcessesInputMsg" type="tns:SearchForSimilarProcessesInputMsgType" />
+	<element name="SearchForSimilarProcessesOutputMsg" type="tns:SearchForSimilarProcessesOutputMsgType" />
+	<element name="MergeProcessesInputMsg" type="tns:MergeProcessesInputMsgType" />
+	<element name="MergeProcessesOutputMsg" type="tns:MergeProcessesOutputMsgType" />
 
 	<complexType name="WriteAnnotationInputMsgType">
 		<sequence>
@@ -364,5 +368,74 @@
 			<element name="Result" type="tns:ResultType" />
 		</sequence>
 	</complexType>
+	<complexType name="SearchForSimilarProcessesInputMsgType">
+		<sequence>
+			<element name="ProcessId" type="int" />
+			<element name="VersionName" type="string" />
+			<element name="Algorithm" type="string" />
+			<element name="Parameters" type="tns:ParametersType" />
+		</sequence>
+	</complexType>
 
+	<complexType name="ParametersType">
+		<sequence>
+			<element name="Parameter" type="tns:ParameterType" minOccurs="1"
+				maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ParameterType">
+		<sequence>
+			<element name="Name" type="string" />
+			<element name="Value" type="double" />
+		</sequence>
+	</complexType>
+	<complexType name="SearchForSimilarProcessesOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+			<element name="Canonicals" type="tns:CanonicalsType" 
+				minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="CanonicalsType">
+		<sequence>
+			<element name="ProcessId" type="int" />
+			<element name="VersionName" type="string" />
+			<element name="Cpf" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="MergeProcessesInputMsgType">
+		<sequence>
+			<element name="ProcessName" type="string" />
+			<element name="VersionName" type="string" />
+			<element name="Username" type="string" />
+			<element name="Cpf_ids" type="tns:Cpf_idsType" />
+			<element name="Algorithm" type="string" />
+			<element name="Parameters" type="tns:ParametersType" />
+		</sequence>
+	</complexType>
+
+	<complexType name="Cpf_idsType">
+		<sequence>
+			<element minOccurs="1" maxOccurs="unbounded" name="Cpf_id"
+				type="tns:Cpf_idType" />
+		</sequence>
+	</complexType>
+
+	<complexType name="Cpf_idType">
+		<attribute name="ProcessId" type="int" />
+		<attribute name="VersionName" type="string" />
+	</complexType>
+
+	<complexType name="MergeProcessesOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+			<element name="ProcessSummary" type="tns:ProcessSummaryType"
+				minOccurs="0" maxOccurs="1" />
+		</sequence>
+	</complexType>
 </schema>
