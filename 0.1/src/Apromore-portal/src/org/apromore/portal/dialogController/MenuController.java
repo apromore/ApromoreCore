@@ -152,9 +152,30 @@ public class MenuController extends Menubar {
 	}
 
 	protected void mergeSelectedProcessVersions() throws InterruptedException {
-		// TODO: GUI only, no logic
-		Messagebox.show("Merge under construction...", "Attention", Messagebox.OK,
-				Messagebox.INFORMATION);
+		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
+			getSelectedProcessVersions();
+		
+		if (selectedProcessVersions.size() > 1) {
+			try {
+				new ProcessMergeController(this.mainC, this,
+						selectedProcessVersions);
+			} catch (SuspendNotAllowedException e) {
+				Messagebox.show(e.getMessage(), "Attention", Messagebox.OK,
+						Messagebox.ERROR);
+			} catch (ExceptionAllUsers e) {
+				String message;
+				if (e.getMessage() == null) {
+					message = "Couldn't retrieve users reference list.";
+				} else {
+					message = e.getMessage();
+				}
+				Messagebox.show(message, "Attention", Messagebox.OK,
+						Messagebox.ERROR);
+			}
+		} else {
+			this.mainC
+					.displayMessage("Select at least 2 process models for merge.");
+		}
 	}
 
 	protected void createModel() throws InterruptedException {

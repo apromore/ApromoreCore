@@ -1,7 +1,4 @@
-<!-- similaritysearch window does currently not have any controller
-	Temporary: demo only
--->
-<window width="300px" closable="false" position="center" title="Search for similar processes">
+<window width="300px" closable="false" position="center" title="Merge process models">
 	<vbox vflex="1">
 		<grid>
 			<columns sizable="true">
@@ -9,12 +6,24 @@
 				<column width="40%"></column>
 			</columns>
 			<rows>
-				<row id="similaritySearchAlgoChoice">
+				<row id="mergedname">
+					<label value="Process name*" width="100%"/>
+					<textbox width="100%"/>
+				</row>
+				<row id="mergedowner" width="100%">
+					<label value="Owner*" />
+					<!-- combobox implemented in SelectDynamicListController -->
+				</row>
+				<row id="removeEnt">
+					<label value="Remove entanglements" />
+					<checkbox checked="false" tooltiptext="Tick this checkbox if you wish remove entanglements from mappings"/>
+				</row>
+				<row id="mergeAlgoChoice">
 					<label value="Algorithm (please choose one)" width="100%" />
 					<listbox width="100%" />
 				</row>
-				<row id="modelthreshold" visible="false">
-					<label value="Model sim. threshold" width="100%" />
+				<row id="mergethreshold" visible="false">
+					<label value="Model merge threshold" width="100%" />
 					<doublebox value="0.5" width="100%" />	
 				</row>
 				<row id="labelthreshold" visible="false">
@@ -29,10 +38,10 @@
 					<label value="Skip-e weight" width="100%" />
 					<doublebox value="1" width="100%" />	
 				</row>
-				<row id="subeweight" visible="false">
+				<!-- row id="subeweight" visible="false">
 					<label value="Sub-e weight" width="100%" />
 					<doublebox value="1" width="100%" />	
-				</row>
+				</row -->
 				<row id="skipnweight" visible="false">
 					<label value="Skip-n weight" width="100%" />
 					<doublebox value="1" width="100%" />	
@@ -41,10 +50,10 @@
 					<label value="Sub-n weight" width="100%" />
 					<doublebox value="1" width="100%" />	
 				</row>
-				<row id="similaritySearchButtons" spans="2">
+				<row id="mergeButtons" spans="2">
 					<div align="center">
-						<button id="similaritySearchOKbutton" label="OK" image="img/ok.png" disabled="true"></button>
-						<button id="similaritySearchCancelbutton"  label="Cancel"
+						<button id="mergeOKButton" label="OK" image="img/ok.png" disabled="true"></button>
+						<button id="mergeCancelButton"  label="Cancel"
 							image="img/cancel2.png">
 						</button>
 					</div>

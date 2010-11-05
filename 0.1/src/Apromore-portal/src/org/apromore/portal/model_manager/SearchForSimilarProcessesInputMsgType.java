@@ -1,12 +1,9 @@
 
 package org.apromore.portal.model_manager;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.cxf.jaxb.JAXBToStringBuilder;
@@ -14,21 +11,20 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for VersionSummaryType complex type.
+ * <p>Java class for SearchForSimilarProcessesInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="VersionSummaryType">
+ * &lt;complexType name="SearchForSimilarProcessesInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="Annotations" type="{http://www.apromore.org/manager/model_portal}AnnotationsType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="ProcessId" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="VersionName" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Algorithm" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Parameters" type="{http://www.apromore.org/manager/model_portal}ParametersType"/>
  *       &lt;/sequence>
- *       &lt;attribute name="ranking" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="last_update" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="creation_date" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -37,60 +33,48 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "VersionSummaryType", propOrder = {
-    "annotations"
+@XmlType(name = "SearchForSimilarProcessesInputMsgType", propOrder = {
+    "processId",
+    "versionName",
+    "algorithm",
+    "parameters"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class VersionSummaryType {
+public class SearchForSimilarProcessesInputMsgType {
 
-    @XmlElement(name = "Annotations")
+    @XmlElement(name = "ProcessId")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected List<AnnotationsType> annotations;
-    @XmlAttribute(name = "ranking")
+    protected int processId;
+    @XmlElement(name = "VersionName", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String ranking;
-    @XmlAttribute(name = "name")
+    protected String versionName;
+    @XmlElement(name = "Algorithm", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String name;
-    @XmlAttribute(name = "last_update")
+    protected String algorithm;
+    @XmlElement(name = "Parameters", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String lastUpdate;
-    @XmlAttribute(name = "creation_date")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String creationDate;
+    protected ParametersType parameters;
 
     /**
-     * Gets the value of the annotations property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the annotations property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAnnotations().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link AnnotationsType }
-     * 
+     * Gets the value of the processId property.
      * 
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public List<AnnotationsType> getAnnotations() {
-        if (annotations == null) {
-            annotations = new ArrayList<AnnotationsType>();
-        }
-        return this.annotations;
+    public int getProcessId() {
+        return processId;
     }
 
     /**
-     * Gets the value of the ranking property.
+     * Sets the value of the processId property.
+     * 
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public void setProcessId(int value) {
+        this.processId = value;
+    }
+
+    /**
+     * Gets the value of the versionName property.
      * 
      * @return
      *     possible object is
@@ -98,12 +82,12 @@ public class VersionSummaryType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getRanking() {
-        return ranking;
+    public String getVersionName() {
+        return versionName;
     }
 
     /**
-     * Sets the value of the ranking property.
+     * Sets the value of the versionName property.
      * 
      * @param value
      *     allowed object is
@@ -111,12 +95,12 @@ public class VersionSummaryType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setRanking(String value) {
-        this.ranking = value;
+    public void setVersionName(String value) {
+        this.versionName = value;
     }
 
     /**
-     * Gets the value of the name property.
+     * Gets the value of the algorithm property.
      * 
      * @return
      *     possible object is
@@ -124,12 +108,12 @@ public class VersionSummaryType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getName() {
-        return name;
+    public String getAlgorithm() {
+        return algorithm;
     }
 
     /**
-     * Sets the value of the name property.
+     * Sets the value of the algorithm property.
      * 
      * @param value
      *     allowed object is
@@ -137,60 +121,34 @@ public class VersionSummaryType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setName(String value) {
-        this.name = value;
+    public void setAlgorithm(String value) {
+        this.algorithm = value;
     }
 
     /**
-     * Gets the value of the lastUpdate property.
+     * Gets the value of the parameters property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link ParametersType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getLastUpdate() {
-        return lastUpdate;
+    public ParametersType getParameters() {
+        return parameters;
     }
 
     /**
-     * Sets the value of the lastUpdate property.
+     * Sets the value of the parameters property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link ParametersType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setLastUpdate(String value) {
-        this.lastUpdate = value;
-    }
-
-    /**
-     * Gets the value of the creationDate property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getCreationDate() {
-        return creationDate;
-    }
-
-    /**
-     * Sets the value of the creationDate property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setCreationDate(String value) {
-        this.creationDate = value;
+    public void setParameters(ParametersType value) {
+        this.parameters = value;
     }
 
     /**
