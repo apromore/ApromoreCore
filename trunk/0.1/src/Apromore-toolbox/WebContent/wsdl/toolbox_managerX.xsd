@@ -98,12 +98,20 @@
 	<complexType name="VersionSummaryType">
 		<sequence>
 			<element minOccurs="0" maxOccurs="unbounded" name="Annotations"
-				type="string" />
+				type="tns:AnnotationsType" />
 		</sequence>
 		<attribute name="ranking" type="string" />
 		<attribute name="name" type="string" />
-		<attribute name="documentation" type="string" />
 		<attribute name="last_update" type="string" />
 		<attribute name="creation_date" type="string" />
 	</complexType>
+
+	<complexType name="AnnotationsType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="AnnotationName"
+				type="string" />
+		</sequence>
+		<attribute name="NativeType" type="string" />
+	</complexType>
+
 </schema>

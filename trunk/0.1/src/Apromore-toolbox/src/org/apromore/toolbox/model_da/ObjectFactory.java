@@ -24,8 +24,8 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _StoreCpfOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "StoreCpfOutputMsg");
     private final static QName _ReadCanonicalsInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "ReadCanonicalsInputMsg");
+    private final static QName _StoreCpfOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "StoreCpfOutputMsg");
     private final static QName _ReadCanonicalsOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "ReadCanonicalsOutputMsg");
     private final static QName _StoreCpfInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "StoreCpfInputMsg");
 
@@ -37,27 +37,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ResultType }
-     * 
-     */
-    public ResultType createResultType() {
-        return new ResultType();
-    }
-
-    /**
      * Create an instance of {@link CpfIdsType }
      * 
      */
     public CpfIdsType createCpfIdsType() {
         return new CpfIdsType();
-    }
-
-    /**
-     * Create an instance of {@link CanonicalsType }
-     * 
-     */
-    public CanonicalsType createCanonicalsType() {
-        return new CanonicalsType();
     }
 
     /**
@@ -69,19 +53,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link VersionSummaryType }
+     * Create an instance of {@link CanonicalType }
      * 
      */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
-    }
-
-    /**
-     * Create an instance of {@link StoreCpfOutputMsgType }
-     * 
-     */
-    public StoreCpfOutputMsgType createStoreCpfOutputMsgType() {
-        return new StoreCpfOutputMsgType();
+    public CanonicalType createCanonicalType() {
+        return new CanonicalType();
     }
 
     /**
@@ -101,14 +77,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CpfIdType }
-     * 
-     */
-    public CpfIdType createCpfIdType() {
-        return new CpfIdType();
-    }
-
-    /**
      * Create an instance of {@link ProcessSummaryType }
      * 
      */
@@ -117,12 +85,43 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link StoreCpfOutputMsgType }{@code >}}
+     * Create an instance of {@link CpfIdType }
      * 
      */
-    @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_toolbox", name = "StoreCpfOutputMsg")
-    public JAXBElement<StoreCpfOutputMsgType> createStoreCpfOutputMsg(StoreCpfOutputMsgType value) {
-        return new JAXBElement<StoreCpfOutputMsgType>(_StoreCpfOutputMsg_QNAME, StoreCpfOutputMsgType.class, null, value);
+    public CpfIdType createCpfIdType() {
+        return new CpfIdType();
+    }
+
+    /**
+     * Create an instance of {@link StoreCpfOutputMsgType }
+     * 
+     */
+    public StoreCpfOutputMsgType createStoreCpfOutputMsgType() {
+        return new StoreCpfOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link VersionSummaryType }
+     * 
+     */
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link CanonicalsType }
+     * 
+     */
+    public CanonicalsType createCanonicalsType() {
+        return new CanonicalsType();
+    }
+
+    /**
+     * Create an instance of {@link ResultType }
+     * 
+     */
+    public ResultType createResultType() {
+        return new ResultType();
     }
 
     /**
@@ -132,6 +131,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_toolbox", name = "ReadCanonicalsInputMsg")
     public JAXBElement<ReadCanonicalsInputMsgType> createReadCanonicalsInputMsg(ReadCanonicalsInputMsgType value) {
         return new JAXBElement<ReadCanonicalsInputMsgType>(_ReadCanonicalsInputMsg_QNAME, ReadCanonicalsInputMsgType.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link StoreCpfOutputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_toolbox", name = "StoreCpfOutputMsg")
+    public JAXBElement<StoreCpfOutputMsgType> createStoreCpfOutputMsg(StoreCpfOutputMsgType value) {
+        return new JAXBElement<StoreCpfOutputMsgType>(_StoreCpfOutputMsg_QNAME, StoreCpfOutputMsgType.class, null, value);
     }
 
     /**

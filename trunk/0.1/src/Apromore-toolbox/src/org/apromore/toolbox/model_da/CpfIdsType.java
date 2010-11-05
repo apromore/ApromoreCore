@@ -8,8 +8,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import org.apache.cxf.jaxb.JAXBToStringBuilder;
-import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
@@ -35,11 +33,11 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 @XmlType(name = "Cpf_idsType", propOrder = {
     "cpfId"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T03:40:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:19:39+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class CpfIdsType {
 
     @XmlElement(name = "Cpf_id", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T03:40:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:19:39+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<CpfIdType> cpfId;
 
     /**
@@ -64,23 +62,12 @@ public class CpfIdsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T03:40:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-09-18T01:19:39+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<CpfIdType> getCpfId() {
         if (cpfId == null) {
             cpfId = new ArrayList<CpfIdType>();
         }
         return this.cpfId;
-    }
-
-    /**
-     * Generates a String representation of the contents of this type.
-     * This is an extension method, produced by the 'ts' xjc plugin
-     * 
-     */
-    @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-04T03:40:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String toString() {
-        return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
 
 }
