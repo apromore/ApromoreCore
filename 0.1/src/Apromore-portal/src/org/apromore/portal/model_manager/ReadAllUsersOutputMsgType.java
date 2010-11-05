@@ -35,14 +35,14 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
     "result",
     "usernames"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T10:58:22+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ReadAllUsersOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T10:58:22+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ResultType result;
     @XmlElement(name = "Usernames", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T10:58:22+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected UsernamesType usernames;
 
     /**
@@ -53,7 +53,7 @@ public class ReadAllUsersOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T10:58:22+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ResultType getResult() {
         return result;
     }
@@ -66,7 +66,7 @@ public class ReadAllUsersOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T10:58:22+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -79,7 +79,7 @@ public class ReadAllUsersOutputMsgType {
      *     {@link UsernamesType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T10:58:22+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public UsernamesType getUsernames() {
         return usernames;
     }
@@ -92,7 +92,7 @@ public class ReadAllUsersOutputMsgType {
      *     {@link UsernamesType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T10:58:22+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setUsernames(UsernamesType value) {
         this.usernames = value;
     }
@@ -103,7 +103,7 @@ public class ReadAllUsersOutputMsgType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T10:58:22+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }

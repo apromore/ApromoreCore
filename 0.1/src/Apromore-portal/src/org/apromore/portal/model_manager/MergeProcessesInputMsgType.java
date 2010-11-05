@@ -4,28 +4,29 @@ package org.apromore.portal.model_manager;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
+import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.cxf.jaxb.JAXBToStringBuilder;
 import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for ExportFormatInputMsgType complex type.
+ * <p>Java class for MergeProcessesInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ExportFormatInputMsgType">
+ * &lt;complexType name="MergeProcessesInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="Format" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="ProcessId" type="{http://www.w3.org/2001/XMLSchema}int" />
- *       &lt;attribute name="ProcessName" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="VersionName" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="AnnotationName" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="withAnnotations" type="{http://www.w3.org/2001/XMLSchema}boolean" />
- *       &lt;attribute name="Owner" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;sequence>
+ *         &lt;element name="ProcessName" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="VersionName" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Username" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Cpf_ids" type="{http://www.apromore.org/manager/model_portal}Cpf_idsType"/>
+ *         &lt;element name="Algorithm" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Parameters" type="{http://www.apromore.org/manager/model_portal}ParametersType"/>
+ *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -34,83 +35,35 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ExportFormatInputMsgType")
+@XmlType(name = "MergeProcessesInputMsgType", propOrder = {
+    "processName",
+    "versionName",
+    "username",
+    "cpfIds",
+    "algorithm",
+    "parameters"
+})
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class ExportFormatInputMsgType {
+public class MergeProcessesInputMsgType {
 
-    @XmlAttribute(name = "Format")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String format;
-    @XmlAttribute(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected Integer processId;
-    @XmlAttribute(name = "ProcessName")
+    @XmlElement(name = "ProcessName", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String processName;
-    @XmlAttribute(name = "VersionName")
+    @XmlElement(name = "VersionName", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String versionName;
-    @XmlAttribute(name = "AnnotationName")
+    @XmlElement(name = "Username", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String annotationName;
-    @XmlAttribute(name = "withAnnotations")
+    protected String username;
+    @XmlElement(name = "Cpf_ids", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected Boolean withAnnotations;
-    @XmlAttribute(name = "Owner")
+    protected CpfIdsType cpfIds;
+    @XmlElement(name = "Algorithm", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String owner;
-
-    /**
-     * Gets the value of the format property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
+    protected String algorithm;
+    @XmlElement(name = "Parameters", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getFormat() {
-        return format;
-    }
-
-    /**
-     * Sets the value of the format property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setFormat(String value) {
-        this.format = value;
-    }
-
-    /**
-     * Gets the value of the processId property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Integer }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public Integer getProcessId() {
-        return processId;
-    }
-
-    /**
-     * Sets the value of the processId property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Integer }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setProcessId(Integer value) {
-        this.processId = value;
-    }
+    protected ParametersType parameters;
 
     /**
      * Gets the value of the processName property.
@@ -165,7 +118,7 @@ public class ExportFormatInputMsgType {
     }
 
     /**
-     * Gets the value of the annotationName property.
+     * Gets the value of the username property.
      * 
      * @return
      *     possible object is
@@ -173,12 +126,12 @@ public class ExportFormatInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getAnnotationName() {
-        return annotationName;
+    public String getUsername() {
+        return username;
     }
 
     /**
-     * Sets the value of the annotationName property.
+     * Sets the value of the username property.
      * 
      * @param value
      *     allowed object is
@@ -186,38 +139,38 @@ public class ExportFormatInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setAnnotationName(String value) {
-        this.annotationName = value;
+    public void setUsername(String value) {
+        this.username = value;
     }
 
     /**
-     * Gets the value of the withAnnotations property.
+     * Gets the value of the cpfIds property.
      * 
      * @return
      *     possible object is
-     *     {@link Boolean }
+     *     {@link CpfIdsType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public Boolean isWithAnnotations() {
-        return withAnnotations;
+    public CpfIdsType getCpfIds() {
+        return cpfIds;
     }
 
     /**
-     * Sets the value of the withAnnotations property.
+     * Sets the value of the cpfIds property.
      * 
      * @param value
      *     allowed object is
-     *     {@link Boolean }
+     *     {@link CpfIdsType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setWithAnnotations(Boolean value) {
-        this.withAnnotations = value;
+    public void setCpfIds(CpfIdsType value) {
+        this.cpfIds = value;
     }
 
     /**
-     * Gets the value of the owner property.
+     * Gets the value of the algorithm property.
      * 
      * @return
      *     possible object is
@@ -225,12 +178,12 @@ public class ExportFormatInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getOwner() {
-        return owner;
+    public String getAlgorithm() {
+        return algorithm;
     }
 
     /**
-     * Sets the value of the owner property.
+     * Sets the value of the algorithm property.
      * 
      * @param value
      *     allowed object is
@@ -238,8 +191,34 @@ public class ExportFormatInputMsgType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setOwner(String value) {
-        this.owner = value;
+    public void setAlgorithm(String value) {
+        this.algorithm = value;
+    }
+
+    /**
+     * Gets the value of the parameters property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ParametersType }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public ParametersType getParameters() {
+        return parameters;
+    }
+
+    /**
+     * Sets the value of the parameters property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ParametersType }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public void setParameters(ParametersType value) {
+        this.parameters = value;
     }
 
     /**

@@ -3,6 +3,8 @@ package org.apromore.portal.dialogController;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apromore.portal.manager.RequestToManager;
+import org.apromore.portal.model_manager.CanonicalsType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.Executions;
@@ -10,9 +12,9 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
+import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Window;
 
@@ -24,6 +26,7 @@ public class SimilaritySearchController extends Window {
 	private Row algoChoiceR;
 	private Row buttonsR;
 	private Listbox algosLB;
+	private Row modelthreshold;
 	private Row labelthreshold;
 	private Row contextthreshold;
 	private Row skipeweight;
@@ -32,12 +35,14 @@ public class SimilaritySearchController extends Window {
 	private Row subnweight;
 	private Button OKbutton;
 	private Button CancelButton;
+	private int selectedModelId;
 	
 	public SimilaritySearchController (MainController mainC, MenuController menuC, 
 			HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) 
 	throws SuspendNotAllowedException, InterruptedException {
 		this.mainC = mainC;
 		this.menuC = menuC;
+		this.selectedModelId = selectedProcessVersions.keySet().iterator().next().getId();
 
 		this.similaritySearchW = (Window) Executions.createComponents("macros/similaritysearch.zul", null, null);
 		
@@ -48,6 +53,7 @@ public class SimilaritySearchController extends Window {
 		this.CancelButton = (Button) this.similaritySearchW.getFellow("similaritySearchCancelbutton");
 		
 		// get parameter rows
+		this.modelthreshold = (Row) this.similaritySearchW.getFellow("modelthreshold");
 		this.labelthreshold = (Row) this.similaritySearchW.getFellow("labelthreshold");
 		this.contextthreshold = (Row) this.similaritySearchW.getFellow("contextthreshold");
 		this.skipeweight = (Row) this.similaritySearchW.getFellow("skipeweight");
@@ -96,16 +102,37 @@ public class SimilaritySearchController extends Window {
 		this.similaritySearchW.detach();
 	}
 
-	protected void searchSimilarProcesses() throws InterruptedException {
+	protected void searchSimilarProcesses() throws Exception {
 		
-		Messagebox.show("Not yet available...", "Attention", Messagebox.OK,
-			Messagebox.INFORMATION);
+		RequestToManager request = new RequestToManager();
+		List<CanonicalsType> result = request.searchForSimilarProcesses(
+				selectedModelId, 
+				this.algosLB.getSelectedItem().getLabel(),
+				((Doublebox) this.modelthreshold.getFirstChild().getNextSibling()).getValue(),
+				((Doublebox) this.labelthreshold.getFirstChild().getNextSibling()).getValue(),
+				((Doublebox)  this.contextthreshold.getFirstChild().getNextSibling()).getValue(),
+				((Doublebox)  this.skipnweight.getFirstChild().getNextSibling()).getValue(),
+				((Doublebox) this.subnweight.getFirstChild().getNextSibling()).getValue(),
+				((Doublebox) this.skipeweight.getFirstChild().getNextSibling()).getValue());
 		
+		String message = null;
+		if (result.size() > 1) {
+			message = " processes.";
+		} else {
+			message = " process.";
+		}
+		mainC.displayMessage(result.size() + message);
+//		mainC.displayProcessSummaries(result); // TODO show the result
+
+//		Messagebox.show("Not yet available...", "Attention", Messagebox.OK,
+//			Messagebox.INFORMATION);
+		this.similaritySearchW.detach();
 	}
 
 	protected void updateActions() {
 		this.OKbutton.setDisabled(false);
 		String algo = this.algosLB.getSelectedItem().getLabel();
+		this.modelthreshold.setVisible(algo.compareTo("Hungarian")==0 || algo.compareTo("Greedy")==0);
 		this.labelthreshold.setVisible(algo.compareTo("Hungarian")==0 || algo.compareTo("Greedy")==0);
 		this.contextthreshold.setVisible(algo.compareTo("Hungarian")==0 || algo.compareTo("Greedy")==0);
 		this.skipeweight.setVisible(algo.compareTo("Greedy")==0);

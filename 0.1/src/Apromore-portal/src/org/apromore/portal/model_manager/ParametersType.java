@@ -13,16 +13,16 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for DeleteProcessVersionsInputMsgType complex type.
+ * <p>Java class for ParametersType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DeleteProcessVersionsInputMsgType">
+ * &lt;complexType name="ParametersType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="ProcessVersionIdentifier" type="{http://www.apromore.org/manager/model_portal}ProcessVersionIdentifierType" maxOccurs="unbounded"/>
+ *         &lt;element name="Parameter" type="{http://www.apromore.org/manager/model_portal}ParameterType" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -32,44 +32,44 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DeleteProcessVersionsInputMsgType", propOrder = {
-    "processVersionIdentifier"
+@XmlType(name = "ParametersType", propOrder = {
+    "parameter"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class DeleteProcessVersionsInputMsgType {
+public class ParametersType {
 
-    @XmlElement(name = "ProcessVersionIdentifier", required = true)
+    @XmlElement(name = "Parameter", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected List<ProcessVersionIdentifierType> processVersionIdentifier;
+    protected List<ParameterType> parameter;
 
     /**
-     * Gets the value of the processVersionIdentifier property.
+     * Gets the value of the parameter property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the processVersionIdentifier property.
+     * This is why there is not a <CODE>set</CODE> method for the parameter property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getProcessVersionIdentifier().add(newItem);
+     *    getParameter().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link ProcessVersionIdentifierType }
+     * {@link ParameterType }
      * 
      * 
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public List<ProcessVersionIdentifierType> getProcessVersionIdentifier() {
-        if (processVersionIdentifier == null) {
-            processVersionIdentifier = new ArrayList<ProcessVersionIdentifierType>();
+    public List<ParameterType> getParameter() {
+        if (parameter == null) {
+            parameter = new ArrayList<ParameterType>();
         }
-        return this.processVersionIdentifier;
+        return this.parameter;
     }
 
     /**

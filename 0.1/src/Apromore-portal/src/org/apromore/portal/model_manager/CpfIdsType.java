@@ -13,16 +13,16 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for DeleteProcessVersionsInputMsgType complex type.
+ * <p>Java class for Cpf_idsType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DeleteProcessVersionsInputMsgType">
+ * &lt;complexType name="Cpf_idsType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="ProcessVersionIdentifier" type="{http://www.apromore.org/manager/model_portal}ProcessVersionIdentifierType" maxOccurs="unbounded"/>
+ *         &lt;element name="Cpf_id" type="{http://www.apromore.org/manager/model_portal}Cpf_idType" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -32,44 +32,44 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DeleteProcessVersionsInputMsgType", propOrder = {
-    "processVersionIdentifier"
+@XmlType(name = "Cpf_idsType", propOrder = {
+    "cpfId"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class DeleteProcessVersionsInputMsgType {
+public class CpfIdsType {
 
-    @XmlElement(name = "ProcessVersionIdentifier", required = true)
+    @XmlElement(name = "Cpf_id", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected List<ProcessVersionIdentifierType> processVersionIdentifier;
+    protected List<CpfIdType> cpfId;
 
     /**
-     * Gets the value of the processVersionIdentifier property.
+     * Gets the value of the cpfId property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the processVersionIdentifier property.
+     * This is why there is not a <CODE>set</CODE> method for the cpfId property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getProcessVersionIdentifier().add(newItem);
+     *    getCpfId().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link ProcessVersionIdentifierType }
+     * {@link CpfIdType }
      * 
      * 
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public List<ProcessVersionIdentifierType> getProcessVersionIdentifier() {
-        if (processVersionIdentifier == null) {
-            processVersionIdentifier = new ArrayList<ProcessVersionIdentifierType>();
+    public List<CpfIdType> getCpfId() {
+        if (cpfId == null) {
+            cpfId = new ArrayList<CpfIdType>();
         }
-        return this.processVersionIdentifier;
+        return this.cpfId;
     }
 
     /**
