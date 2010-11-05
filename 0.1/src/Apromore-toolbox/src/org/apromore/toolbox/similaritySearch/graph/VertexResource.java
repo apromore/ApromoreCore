@@ -1,0 +1,66 @@
+package org.apromore.toolbox.similaritySearch.graph;
+
+import java.math.BigInteger;
+import java.util.HashSet;
+
+public class VertexResource {
+	
+	public enum Type {
+		Human,
+		NonHuman,
+		Other
+	}
+	
+	private BigInteger id;
+	private Type type;
+	private String name;
+	private boolean configurable;
+	private HashSet<String> models = new HashSet<String>();;
+
+	public VertexResource(BigInteger id, String name,
+			Boolean configurable, Type type) {
+		this.id = id;
+		this.type = type;
+		this.name = name;
+		this.configurable = configurable == null ? false : configurable;
+	}
+	
+	public Type getType() {
+		return type;
+	}
+	
+	public BigInteger getId() {
+		return id;
+	}
+	public void setId(BigInteger id) {
+		this.id = id;
+	}
+
+	public void setType(Type type) {
+		this.type = type;
+	}
+	public String getName() {
+		return name;
+	}
+	public void setName(String name) {
+		this.name = name;
+	}
+	public boolean isConfigurable() {
+		return configurable;
+	}
+	public void setConfigurable(boolean configurable) {
+		this.configurable = configurable;
+	}
+	
+	public HashSet<String> getModels() {
+		return models;
+	}
+
+	public void addModels(HashSet<String> labels) {
+		this.models.addAll(labels);
+	}
+
+	public void addModel(String label) {
+		models.add(label);
+	}	
+}
