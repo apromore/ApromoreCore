@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Set;
 
@@ -27,6 +28,9 @@ import org.apromore.portal.exception.ExceptionUpdateProcess;
 import org.apromore.portal.exception.ExceptionUser;
 import org.apromore.portal.exception.ExceptionVersion;
 import org.apromore.portal.exception.ExceptionWriteEditSession;
+import org.apromore.portal.model_manager.CanonicalsType;
+import org.apromore.portal.model_manager.CpfIdType;
+import org.apromore.portal.model_manager.CpfIdsType;
 import org.apromore.portal.model_manager.DeleteEditSessionInputMsgType;
 import org.apromore.portal.model_manager.DeleteEditSessionOutputMsgType;
 import org.apromore.portal.model_manager.DeleteProcessVersionsInputMsgType;
@@ -39,7 +43,11 @@ import org.apromore.portal.model_manager.ExportFormatInputMsgType;
 import org.apromore.portal.model_manager.ExportFormatOutputMsgType;
 import org.apromore.portal.model_manager.ImportProcessInputMsgType;
 import org.apromore.portal.model_manager.ImportProcessOutputMsgType;
+import org.apromore.portal.model_manager.MergeProcessesInputMsgType;
+import org.apromore.portal.model_manager.MergeProcessesOutputMsgType;
 import org.apromore.portal.model_manager.NativeTypesType;
+import org.apromore.portal.model_manager.ParameterType;
+import org.apromore.portal.model_manager.ParametersType;
 import org.apromore.portal.model_manager.ProcessSummariesType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.ProcessVersionIdentifierType;
@@ -56,6 +64,8 @@ import org.apromore.portal.model_manager.ReadProcessSummariesOutputMsgType;
 import org.apromore.portal.model_manager.ReadUserInputMsgType;
 import org.apromore.portal.model_manager.ReadUserOutputMsgType;
 import org.apromore.portal.model_manager.ResultType;
+import org.apromore.portal.model_manager.SearchForSimilarProcessesInputMsgType;
+import org.apromore.portal.model_manager.SearchForSimilarProcessesOutputMsgType;
 import org.apromore.portal.model_manager.UpdateProcessInputMsgType;
 import org.apromore.portal.model_manager.UpdateProcessOutputMsgType;
 import org.apromore.portal.model_manager.UserType;
@@ -152,6 +162,157 @@ public class RequestToManager {
 			return res.getProcessSummaries();
 		}
 	}
+
+public List<CanonicalsType> searchForSimilarProcesses(
+			int selectedModelId, 
+			String method, 
+			double modelthreshold, 
+			double labelthreshold, 
+			double contextthreshold, 
+			double skipnweight, 
+			double subnweight, 
+			double skipeweight) throws ExceptionProcess {
+		
+		SearchForSimilarProcessesInputMsgType payload = new SearchForSimilarProcessesInputMsgType();
+		payload.setAlgorithm(method);
+		payload.setProcessId(selectedModelId);
+		ParametersType params = new ParametersType();
+		// modelthreshold
+		ParameterType p = new ParameterType();
+		p.setName("modelthreshold");
+		p.setValue(modelthreshold);
+		params.getParameter().add(p);
+	
+		// labelthreshold
+		p = new ParameterType();
+		p.setName("labelthreshold");
+		p.setValue(labelthreshold);
+		params.getParameter().add(p);
+
+		// contextthreshold
+		p = new ParameterType();
+		p.setName("contextthreshold");
+		p.setValue(contextthreshold);
+		params.getParameter().add(p);
+		
+		if ("Greedy".equals(method)) {
+			// skipnweight
+			p = new ParameterType();
+			p.setName("skipnweight");
+			p.setValue(skipnweight);
+			params.getParameter().add(p);
+	
+			// subnweight
+			p = new ParameterType();
+			p.setName("subnweight");
+			p.setValue(subnweight);
+			params.getParameter().add(p);
+			
+			// skipeweight
+			p = new ParameterType();
+			p.setName("skipeweight");
+			p.setValue(skipeweight);
+			params.getParameter().add(p);
+		}
+		payload.setParameters(params);
+		
+		SearchForSimilarProcessesOutputMsgType res = this.port.searchForSimilarProcesses(payload);
+
+		ResultType result = res.getResult();
+		if (result.getCode() == -1) {
+			throw new ExceptionProcess (result.getMessage()); 
+		} else {
+			return res.getCanonicals();
+		}
+	}
+
+	public ProcessSummaryType mergeProcesses(
+			LinkedList<Integer> mergeModelIds, 
+			String mergedProcessname,
+//			String mergedversionName,
+			String mergedUsername,
+			String method,
+			boolean removeEntanglements,
+			double mergethreshold, 
+			double labelthreshold, 
+			double contextthreshold, 
+			double skipnweight, 
+			double subnweight, 
+			double skipeweight) throws ExceptionProcess {
+		
+		MergeProcessesInputMsgType payload = new MergeProcessesInputMsgType();
+		
+		// merged process data
+		payload.setProcessName(mergedProcessname);
+//		payload.setVersionName(mergedversionName);
+		payload.setUsername(mergedUsername);
+		
+		// process models 
+		CpfIdsType modelIdList = new CpfIdsType();
+		for (Integer i : mergeModelIds) {
+			CpfIdType id = new CpfIdType();
+			id.setProcessId(i);
+		}
+		payload.setCpfIds(modelIdList);
+		payload.setAlgorithm(method);
+		
+		// PARAMETERS
+		ParametersType params = new ParametersType();
+		// remove entanglements
+		ParameterType p = new ParameterType();
+		p.setName("removeent");
+		p.setValue(removeEntanglements ? 1 : 0);
+		params.getParameter().add(p);
+
+		// modelthreshold
+		p = new ParameterType();
+		p.setName("modelthreshold");
+		p.setValue(mergethreshold);
+		params.getParameter().add(p);
+	
+		// labelthreshold
+		p = new ParameterType();
+		p.setName("labelthreshold");
+		p.setValue(labelthreshold);
+		params.getParameter().add(p);
+
+		// contextthreshold
+		p = new ParameterType();
+		p.setName("contextthreshold");
+		p.setValue(contextthreshold);
+		params.getParameter().add(p);
+		
+		if ("Greedy".equals(method)) {
+			// skipnweight
+			p = new ParameterType();
+			p.setName("skipnweight");
+			p.setValue(skipnweight);
+			params.getParameter().add(p);
+	
+			// subnweight
+			p = new ParameterType();
+			p.setName("subnweight");
+			p.setValue(subnweight);
+			params.getParameter().add(p);
+			
+			// skipeweight
+			p = new ParameterType();
+			p.setName("skipeweight");
+			p.setValue(skipeweight);
+			params.getParameter().add(p);
+		}
+		payload.setParameters(params);
+		
+		MergeProcessesOutputMsgType res = this.port.mergeProcesses(payload);
+
+		ResultType result = res.getResult();
+		if (result.getCode() == -1) {
+			throw new ExceptionProcess (result.getMessage()); 
+		} else {
+			return res.getProcessSummary();
+		}
+	}
+
 
 	public ProcessSummaryType importProcess (String username, String nativeType, String processName, 
 			String versionName, InputStream xml_process, String domain, String documentation, String created, String lastUpdate) 

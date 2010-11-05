@@ -13,16 +13,17 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for DeleteProcessVersionsInputMsgType complex type.
+ * <p>Java class for SearchForSimilarProcessesOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="DeleteProcessVersionsInputMsgType">
+ * &lt;complexType name="SearchForSimilarProcessesOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="ProcessVersionIdentifier" type="{http://www.apromore.org/manager/model_portal}ProcessVersionIdentifierType" maxOccurs="unbounded"/>
+ *         &lt;element name="Result" type="{http://www.apromore.org/manager/model_portal}ResultType"/>
+ *         &lt;element name="Canonicals" type="{http://www.apromore.org/manager/model_portal}CanonicalsType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -32,44 +33,74 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "DeleteProcessVersionsInputMsgType", propOrder = {
-    "processVersionIdentifier"
+@XmlType(name = "SearchForSimilarProcessesOutputMsgType", propOrder = {
+    "result",
+    "canonicals"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class DeleteProcessVersionsInputMsgType {
+public class SearchForSimilarProcessesOutputMsgType {
 
-    @XmlElement(name = "ProcessVersionIdentifier", required = true)
+    @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected List<ProcessVersionIdentifierType> processVersionIdentifier;
+    protected ResultType result;
+    @XmlElement(name = "Canonicals")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    protected List<CanonicalsType> canonicals;
 
     /**
-     * Gets the value of the processVersionIdentifier property.
+     * Gets the value of the result property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ResultType }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public ResultType getResult() {
+        return result;
+    }
+
+    /**
+     * Sets the value of the result property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ResultType }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public void setResult(ResultType value) {
+        this.result = value;
+    }
+
+    /**
+     * Gets the value of the canonicals property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the processVersionIdentifier property.
+     * This is why there is not a <CODE>set</CODE> method for the canonicals property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getProcessVersionIdentifier().add(newItem);
+     *    getCanonicals().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link ProcessVersionIdentifierType }
+     * {@link CanonicalsType }
      * 
      * 
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:11:50+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public List<ProcessVersionIdentifierType> getProcessVersionIdentifier() {
-        if (processVersionIdentifier == null) {
-            processVersionIdentifier = new ArrayList<ProcessVersionIdentifierType>();
+    public List<CanonicalsType> getCanonicals() {
+        if (canonicals == null) {
+            canonicals = new ArrayList<CanonicalsType>();
         }
-        return this.processVersionIdentifier;
+        return this.canonicals;
     }
 
     /**
