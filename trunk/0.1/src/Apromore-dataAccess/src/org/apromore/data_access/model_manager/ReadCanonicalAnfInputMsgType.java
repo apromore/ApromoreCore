@@ -32,20 +32,20 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ReadCanonicalAnfInputMsgType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T03:11:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:53:11+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ReadCanonicalAnfInputMsgType {
 
     @XmlAttribute(name = "processId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T03:11:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:53:11+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Integer processId;
     @XmlAttribute(name = "version")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T03:11:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:53:11+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String version;
     @XmlAttribute(name = "withAnnotation")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T03:11:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:53:11+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Boolean withAnnotation;
     @XmlAttribute(name = "annotationName")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T03:11:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:53:11+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String annotationName;
 
     /**
@@ -56,7 +56,7 @@ public class ReadCanonicalAnfInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T03:11:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:53:11+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Integer getProcessId() {
         return processId;
     }
@@ -69,7 +69,7 @@ public class ReadCanonicalAnfInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T03:11:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:53:11+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessId(Integer value) {
         this.processId = value;
     }
@@ -82,7 +82,7 @@ public class ReadCanonicalAnfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T03:11:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:53:11+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getVersion() {
         return version;
     }
@@ -95,7 +95,7 @@ public class ReadCanonicalAnfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T03:11:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:53:11+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setVersion(String value) {
         this.version = value;
     }
@@ -108,7 +108,7 @@ public class ReadCanonicalAnfInputMsgType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T03:11:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:53:11+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Boolean isWithAnnotation() {
         return withAnnotation;
     }
@@ -121,7 +121,7 @@ public class ReadCanonicalAnfInputMsgType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T03:11:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:53:11+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setWithAnnotation(Boolean value) {
         this.withAnnotation = value;
     }
@@ -134,7 +134,7 @@ public class ReadCanonicalAnfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T03:11:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:53:11+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getAnnotationName() {
         return annotationName;
     }
@@ -147,7 +147,7 @@ public class ReadCanonicalAnfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T03:11:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:53:11+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setAnnotationName(String value) {
         this.annotationName = value;
     }
@@ -158,7 +158,7 @@ public class ReadCanonicalAnfInputMsgType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T03:11:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:53:11+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
