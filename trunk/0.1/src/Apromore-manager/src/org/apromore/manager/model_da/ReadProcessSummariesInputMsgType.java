@@ -29,11 +29,11 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ReadProcessSummariesInputMsgType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:58:01+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ReadProcessSummariesInputMsgType {
 
     @XmlAttribute(name = "SearchExpression")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:58:01+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String searchExpression;
 
     /**
@@ -44,7 +44,7 @@ public class ReadProcessSummariesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:58:01+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getSearchExpression() {
         return searchExpression;
     }
@@ -57,7 +57,7 @@ public class ReadProcessSummariesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:58:01+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setSearchExpression(String value) {
         this.searchExpression = value;
     }
@@ -68,7 +68,7 @@ public class ReadProcessSummariesInputMsgType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:58:01+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }

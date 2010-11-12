@@ -31,17 +31,17 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ReadFormatInputMsgType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:58:01+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ReadFormatInputMsgType {
 
     @XmlAttribute(name = "processId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:58:01+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Integer processId;
     @XmlAttribute(name = "version")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:58:01+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String version;
     @XmlAttribute(name = "format")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:58:01+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String format;
 
     /**
@@ -52,7 +52,7 @@ public class ReadFormatInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:58:01+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Integer getProcessId() {
         return processId;
     }
@@ -65,7 +65,7 @@ public class ReadFormatInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:58:01+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessId(Integer value) {
         this.processId = value;
     }
@@ -78,7 +78,7 @@ public class ReadFormatInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:58:01+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getVersion() {
         return version;
     }
@@ -91,7 +91,7 @@ public class ReadFormatInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:58:01+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setVersion(String value) {
         this.version = value;
     }
@@ -104,7 +104,7 @@ public class ReadFormatInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:58:01+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getFormat() {
         return format;
     }
@@ -117,7 +117,7 @@ public class ReadFormatInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:58:01+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setFormat(String value) {
         this.format = value;
     }
@@ -128,7 +128,7 @@ public class ReadFormatInputMsgType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-25T04:46:33+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:58:01+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }

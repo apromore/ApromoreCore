@@ -41,25 +41,25 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
     "versionName",
     "cpf"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T09:46:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class CanonicalsType {
 
     @XmlElement(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T09:46:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected int processId;
     @XmlElement(name = "VersionName", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T09:46:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String versionName;
     @XmlElement(name = "Cpf")
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T09:46:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<DataHandler> cpf;
 
     /**
      * Gets the value of the processId property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T09:46:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public int getProcessId() {
         return processId;
     }
@@ -68,7 +68,7 @@ public class CanonicalsType {
      * Sets the value of the processId property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T09:46:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessId(int value) {
         this.processId = value;
     }
@@ -81,7 +81,7 @@ public class CanonicalsType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T09:46:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getVersionName() {
         return versionName;
     }
@@ -94,7 +94,7 @@ public class CanonicalsType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T09:46:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setVersionName(String value) {
         this.versionName = value;
     }
@@ -121,7 +121,7 @@ public class CanonicalsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T09:46:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<DataHandler> getCpf() {
         if (cpf == null) {
             cpf = new ArrayList<DataHandler>();
@@ -135,7 +135,7 @@ public class CanonicalsType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-05T05:28:49+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T09:46:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }

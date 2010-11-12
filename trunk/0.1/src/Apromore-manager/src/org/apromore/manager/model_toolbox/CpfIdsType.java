@@ -3,13 +3,11 @@ package org.apromore.manager.model_toolbox;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-
 import org.apache.cxf.jaxb.JAXBToStringBuilder;
 import org.apache.cxf.jaxb.JAXBToStringStyle;
 
@@ -37,11 +35,11 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 @XmlType(name = "Cpf_idsType", propOrder = {
     "cpfId"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-05T08:37:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:13:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class CpfIdsType {
 
     @XmlElement(name = "Cpf_id", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-05T08:37:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:13:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<CpfIdType> cpfId;
 
     /**
@@ -66,7 +64,7 @@ public class CpfIdsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-05T08:37:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:13:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<CpfIdType> getCpfId() {
         if (cpfId == null) {
             cpfId = new ArrayList<CpfIdType>();
@@ -80,7 +78,7 @@ public class CpfIdsType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-08-05T08:37:46+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:13:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
