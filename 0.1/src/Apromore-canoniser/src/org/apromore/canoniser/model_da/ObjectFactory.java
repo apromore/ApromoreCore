@@ -41,35 +41,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link VersionSummaryType }
+     * Create an instance of {@link ProcessSummaryType }
      * 
      */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
     }
 
     /**
-     * Create an instance of {@link StoreNativeCpfInputMsgType }
+     * Create an instance of {@link WriteAnnotationInputMsgType }
      * 
      */
-    public StoreNativeCpfInputMsgType createStoreNativeCpfInputMsgType() {
-        return new StoreNativeCpfInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link StoreNativeInputMsgType }
-     * 
-     */
-    public StoreNativeInputMsgType createStoreNativeInputMsgType() {
-        return new StoreNativeInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link WriteAnnotationOutputMsgType }
-     * 
-     */
-    public WriteAnnotationOutputMsgType createWriteAnnotationOutputMsgType() {
-        return new WriteAnnotationOutputMsgType();
+    public WriteAnnotationInputMsgType createWriteAnnotationInputMsgType() {
+        return new WriteAnnotationInputMsgType();
     }
 
     /**
@@ -81,11 +65,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link AnnotationsType }
+     * Create an instance of {@link StoreNativeCpfOutputMsgType }
      * 
      */
-    public AnnotationsType createAnnotationsType() {
-        return new AnnotationsType();
+    public StoreNativeCpfOutputMsgType createStoreNativeCpfOutputMsgType() {
+        return new StoreNativeCpfOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link VersionSummaryType }
+     * 
+     */
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
     }
 
     /**
@@ -97,27 +89,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ProcessSummaryType }
+     * Create an instance of {@link AnnotationsType }
      * 
      */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
+    public AnnotationsType createAnnotationsType() {
+        return new AnnotationsType();
     }
 
     /**
-     * Create an instance of {@link StoreVersionOutputMsgType }
+     * Create an instance of {@link StoreNativeInputMsgType }
      * 
      */
-    public StoreVersionOutputMsgType createStoreVersionOutputMsgType() {
-        return new StoreVersionOutputMsgType();
+    public StoreNativeInputMsgType createStoreNativeInputMsgType() {
+        return new StoreNativeInputMsgType();
     }
 
     /**
-     * Create an instance of {@link StoreNativeCpfOutputMsgType }
+     * Create an instance of {@link StoreNativeCpfInputMsgType }
      * 
      */
-    public StoreNativeCpfOutputMsgType createStoreNativeCpfOutputMsgType() {
-        return new StoreNativeCpfOutputMsgType();
+    public StoreNativeCpfInputMsgType createStoreNativeCpfInputMsgType() {
+        return new StoreNativeCpfInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link WriteAnnotationOutputMsgType }
+     * 
+     */
+    public WriteAnnotationOutputMsgType createWriteAnnotationOutputMsgType() {
+        return new WriteAnnotationOutputMsgType();
     }
 
     /**
@@ -129,11 +129,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link WriteAnnotationInputMsgType }
+     * Create an instance of {@link StoreVersionOutputMsgType }
      * 
      */
-    public WriteAnnotationInputMsgType createWriteAnnotationInputMsgType() {
-        return new WriteAnnotationInputMsgType();
+    public StoreVersionOutputMsgType createStoreVersionOutputMsgType() {
+        return new StoreVersionOutputMsgType();
     }
 
     /**
