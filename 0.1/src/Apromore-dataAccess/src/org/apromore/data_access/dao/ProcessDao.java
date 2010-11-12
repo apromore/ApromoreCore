@@ -14,6 +14,7 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -21,6 +22,9 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.activation.DataHandler;
+import javax.mail.util.ByteArrayDataSource;
+import javax.sql.DataSource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -37,6 +41,7 @@ import org.apromore.data_access.model_manager.AnnotationsType;
 import org.apromore.data_access.model_manager.ProcessSummariesType;
 import org.apromore.data_access.model_manager.ProcessSummaryType;
 import org.apromore.data_access.model_manager.VersionSummaryType;
+import org.apromore.data_access.model_toolbox.CanonicalType;
 import org.wfmc._2008.xpdl2.Author;
 import org.wfmc._2008.xpdl2.Created;
 import org.wfmc._2008.xpdl2.Documentation;
@@ -1811,5 +1816,45 @@ public class ProcessDao extends BasicDao {
 			Release(conn, stmt, rs);
 		}
 	}
+	
+	/**
+	 * Return all canonicals 
+	 * @return
+	 * @throws ExceptionDao
+	 */
+	public List<CanonicalType> getAllCanonicals () throws ExceptionDao {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		String query = null;
+		List<CanonicalType> toReturn = new ArrayList<CanonicalType>();
+		try {
+			conn = this.getConnection();
+			stmt = conn.createStatement();
+			query = " select " + ConstantDB.ATTR_PROCESSID +", "+ 
+			ConstantDB.ATTR_VERSION_NAME + ", "+ ConstantDB.ATTR_CONTENT
+			+ " from " + ConstantDB.TABLE_CANONICALS;
+			rs = stmt.executeQuery(query);
+			while (rs.next()) {
+				CanonicalType cpf = new CanonicalType();
+            	cpf.setProcessId(rs.getInt(1));
+            	cpf.setVersionName(rs.getString(2));
+    			String cpf_str = rs.getString(3); 
+    			ByteArrayDataSource sourceCpf = new ByteArrayDataSource(cpf_str, "text/xml"); 
+            	cpf.setCpf(new DataHandler(sourceCpf));
+            	toReturn.add(cpf);
+			} 
+			return toReturn;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new ExceptionDao ("SQL error: " + e.getMessage() + "\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ExceptionDao ("Error: " + e.getMessage() + "\n");
+		} finally {
+			Release(conn, stmt, rs);
+		}
+	}
+
 }
 

@@ -47,39 +47,39 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 @XmlType(name = "AnnotationsType", propOrder = {
     "annotation"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class AnnotationsType {
 
     @XmlElement(name = "Annotation", required = true)
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<AnnotationType> annotation;
     @XmlAttribute(name = "uri", required = true)
     @XmlSchemaType(name = "anyURI")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String uri;
     @XmlAttribute(name = "version", required = true)
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected BigDecimal version;
     @XmlAttribute(name = "name")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String name;
     @XmlAttribute(name = "author")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String author;
     @XmlAttribute(name = "creationDate")
     @XmlSchemaType(name = "dateTime")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected XMLGregorianCalendar creationDate;
     @XmlAttribute(name = "modificationDate")
     @XmlSchemaType(name = "dateTime")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected XMLGregorianCalendar modificationDate;
     @XmlAttribute(name = "cpfUri", required = true)
     @XmlSchemaType(name = "anyURI")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String cpfUri;
     @XmlAttribute(name = "cpfVersion", required = true)
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected BigDecimal cpfVersion;
 
     /**
@@ -104,7 +104,7 @@ public class AnnotationsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public List<AnnotationType> getAnnotation() {
         if (annotation == null) {
             annotation = new ArrayList<AnnotationType>();
@@ -120,7 +120,7 @@ public class AnnotationsType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public String getUri() {
         return uri;
     }
@@ -133,7 +133,7 @@ public class AnnotationsType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setUri(String value) {
         this.uri = value;
     }
@@ -146,7 +146,7 @@ public class AnnotationsType {
      *     {@link BigDecimal }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public BigDecimal getVersion() {
         return version;
     }
@@ -159,7 +159,7 @@ public class AnnotationsType {
      *     {@link BigDecimal }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setVersion(BigDecimal value) {
         this.version = value;
     }
@@ -172,7 +172,7 @@ public class AnnotationsType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public String getName() {
         return name;
     }
@@ -185,7 +185,7 @@ public class AnnotationsType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setName(String value) {
         this.name = value;
     }
@@ -198,7 +198,7 @@ public class AnnotationsType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public String getAuthor() {
         return author;
     }
@@ -211,7 +211,7 @@ public class AnnotationsType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setAuthor(String value) {
         this.author = value;
     }
@@ -224,7 +224,7 @@ public class AnnotationsType {
      *     {@link XMLGregorianCalendar }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public XMLGregorianCalendar getCreationDate() {
         return creationDate;
     }
@@ -237,7 +237,7 @@ public class AnnotationsType {
      *     {@link XMLGregorianCalendar }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setCreationDate(XMLGregorianCalendar value) {
         this.creationDate = value;
     }
@@ -250,7 +250,7 @@ public class AnnotationsType {
      *     {@link XMLGregorianCalendar }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public XMLGregorianCalendar getModificationDate() {
         return modificationDate;
     }
@@ -263,7 +263,7 @@ public class AnnotationsType {
      *     {@link XMLGregorianCalendar }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setModificationDate(XMLGregorianCalendar value) {
         this.modificationDate = value;
     }
@@ -276,7 +276,7 @@ public class AnnotationsType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public String getCpfUri() {
         return cpfUri;
     }
@@ -289,7 +289,7 @@ public class AnnotationsType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setCpfUri(String value) {
         this.cpfUri = value;
     }
@@ -302,7 +302,7 @@ public class AnnotationsType {
      *     {@link BigDecimal }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public BigDecimal getCpfVersion() {
         return cpfVersion;
     }
@@ -315,7 +315,7 @@ public class AnnotationsType {
      *     {@link BigDecimal }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setCpfVersion(BigDecimal value) {
         this.cpfVersion = value;
     }
@@ -326,7 +326,7 @@ public class AnnotationsType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-21T03:48:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:51:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }

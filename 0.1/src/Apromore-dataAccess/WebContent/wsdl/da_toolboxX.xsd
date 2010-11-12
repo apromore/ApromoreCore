@@ -14,21 +14,7 @@
 	</complexType>
 
 	<complexType name="ReadCanonicalsInputMsgType">
-		<sequence>
-			<element name="Cpf_ids" type="tns:Cpf_idsType" />
-		</sequence>
-	</complexType>
-
-	<complexType name="Cpf_idsType">
-		<sequence>
-			<element minOccurs="1" maxOccurs="unbounded" name="Cpf_id"
-				type="tns:Cpf_idType" />
-		</sequence>
-	</complexType>
-
-	<complexType name="Cpf_idType">
-		<attribute name="ProcessId" type="int" />
-		<attribute name="VersionName" type="string" />
+		<attribute name="Empty" type="string" use="optional" />
 	</complexType>
 
 	<complexType name="ReadCanonicalsOutputMsgType">
@@ -40,10 +26,11 @@
 
 	<complexType name="CanonicalsType">
 		<sequence>
-			<element name="Canonical" type="tns:CanonicalType" minOccurs="1" maxOccurs="unbounded"/>
+			<element name="Canonical" type="tns:CanonicalType" minOccurs="1"
+				maxOccurs="unbounded" />
 		</sequence>
 	</complexType>
-	
+
 	<complexType name="CanonicalType">
 		<sequence>
 			<element name="ProcessId" type="int" />
@@ -89,13 +76,20 @@
 	<complexType name="VersionSummaryType">
 		<sequence>
 			<element minOccurs="0" maxOccurs="unbounded" name="Annotations"
-				type="string" />
+				type="tns:AnnotationsType" />
 		</sequence>
 		<attribute name="ranking" type="string" />
 		<attribute name="name" type="string" />
-		<attribute name="documentation" type="string" />
 		<attribute name="last_update" type="string" />
 		<attribute name="creation_date" type="string" />
+	</complexType>
+
+	<complexType name="AnnotationsType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="AnnotationName"
+				type="string" />
+		</sequence>
+		<attribute name="NativeType" type="string" />
 	</complexType>
 
 </schema>
