@@ -37,19 +37,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ReadCanonicalsInputMsgType }
+     * Create an instance of {@link ResultType }
      * 
      */
-    public ReadCanonicalsInputMsgType createReadCanonicalsInputMsgType() {
-        return new ReadCanonicalsInputMsgType();
+    public ResultType createResultType() {
+        return new ResultType();
     }
 
     /**
-     * Create an instance of {@link ProcessSummaryType }
+     * Create an instance of {@link AnnotationsType }
      * 
      */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
+    public AnnotationsType createAnnotationsType() {
+        return new AnnotationsType();
     }
 
     /**
@@ -61,19 +61,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CpfIdsType }
+     * Create an instance of {@link CanonicalType }
      * 
      */
-    public CpfIdsType createCpfIdsType() {
-        return new CpfIdsType();
+    public CanonicalType createCanonicalType() {
+        return new CanonicalType();
     }
 
     /**
-     * Create an instance of {@link ResultType }
+     * Create an instance of {@link ReadCanonicalsOutputMsgType }
      * 
      */
-    public ResultType createResultType() {
-        return new ResultType();
+    public ReadCanonicalsOutputMsgType createReadCanonicalsOutputMsgType() {
+        return new ReadCanonicalsOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessSummaryType }
+     * 
+     */
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link StoreCpfInputMsgType }
+     * 
+     */
+    public StoreCpfInputMsgType createStoreCpfInputMsgType() {
+        return new StoreCpfInputMsgType();
     }
 
     /**
@@ -93,35 +109,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ReadCanonicalsOutputMsgType }
+     * Create an instance of {@link ReadCanonicalsInputMsgType }
      * 
      */
-    public ReadCanonicalsOutputMsgType createReadCanonicalsOutputMsgType() {
-        return new ReadCanonicalsOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link StoreCpfInputMsgType }
-     * 
-     */
-    public StoreCpfInputMsgType createStoreCpfInputMsgType() {
-        return new StoreCpfInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link CpfIdType }
-     * 
-     */
-    public CpfIdType createCpfIdType() {
-        return new CpfIdType();
-    }
-
-    /**
-     * Create an instance of {@link CanonicalType }
-     * 
-     */
-    public CanonicalType createCanonicalType() {
-        return new CanonicalType();
+    public ReadCanonicalsInputMsgType createReadCanonicalsInputMsgType() {
+        return new ReadCanonicalsInputMsgType();
     }
 
     /**
