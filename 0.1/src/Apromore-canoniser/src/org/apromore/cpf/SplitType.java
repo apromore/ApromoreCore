@@ -33,7 +33,7 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
     XORSplitType.class,
     ORSplitType.class
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:56:43+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class SplitType
     extends RoutingType
 {
@@ -44,7 +44,7 @@ public class SplitType
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-26T09:56:03+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:56:43+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
