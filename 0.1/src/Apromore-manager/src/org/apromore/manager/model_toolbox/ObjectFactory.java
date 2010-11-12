@@ -37,14 +37,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link MergeProcessesInputMsgType }
-     * 
-     */
-    public MergeProcessesInputMsgType createMergeProcessesInputMsgType() {
-        return new MergeProcessesInputMsgType();
-    }
-
-    /**
      * Create an instance of {@link SearchForSimilarProcessesOutputMsgType }
      * 
      */
@@ -53,51 +45,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link VersionSummaryType }
+     * Create an instance of {@link AnnotationsType }
      * 
      */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
-    }
-
-    /**
-     * Create an instance of {@link CpfIdsType }
-     * 
-     */
-    public CpfIdsType createCpfIdsType() {
-        return new CpfIdsType();
-    }
-
-    /**
-     * Create an instance of {@link SearchForSimilarProcessesInputMsgType }
-     * 
-     */
-    public SearchForSimilarProcessesInputMsgType createSearchForSimilarProcessesInputMsgType() {
-        return new SearchForSimilarProcessesInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ParameterType }
-     * 
-     */
-    public ParameterType createParameterType() {
-        return new ParameterType();
-    }
-
-    /**
-     * Create an instance of {@link MergeProcessesOutputMsgType }
-     * 
-     */
-    public MergeProcessesOutputMsgType createMergeProcessesOutputMsgType() {
-        return new MergeProcessesOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link CpfIdType }
-     * 
-     */
-    public CpfIdType createCpfIdType() {
-        return new CpfIdType();
+    public AnnotationsType createAnnotationsType() {
+        return new AnnotationsType();
     }
 
     /**
@@ -109,11 +61,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ResultType }
+     * Create an instance of {@link SearchForSimilarProcessesInputMsgType }
      * 
      */
-    public ResultType createResultType() {
-        return new ResultType();
+    public SearchForSimilarProcessesInputMsgType createSearchForSimilarProcessesInputMsgType() {
+        return new SearchForSimilarProcessesInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessSummaryType }
+     * 
+     */
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
     }
 
     /**
@@ -125,11 +85,67 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ProcessSummaryType }
+     * Create an instance of {@link VersionSummaryType }
      * 
      */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link ResultType }
+     * 
+     */
+    public ResultType createResultType() {
+        return new ResultType();
+    }
+
+    /**
+     * Create an instance of {@link CanonicalType }
+     * 
+     */
+    public CanonicalType createCanonicalType() {
+        return new CanonicalType();
+    }
+
+    /**
+     * Create an instance of {@link MergeProcessesOutputMsgType }
+     * 
+     */
+    public MergeProcessesOutputMsgType createMergeProcessesOutputMsgType() {
+        return new MergeProcessesOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link CpfIdsType }
+     * 
+     */
+    public CpfIdsType createCpfIdsType() {
+        return new CpfIdsType();
+    }
+
+    /**
+     * Create an instance of {@link MergeProcessesInputMsgType }
+     * 
+     */
+    public MergeProcessesInputMsgType createMergeProcessesInputMsgType() {
+        return new MergeProcessesInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ParameterType }
+     * 
+     */
+    public ParameterType createParameterType() {
+        return new ParameterType();
+    }
+
+    /**
+     * Create an instance of {@link CpfIdType }
+     * 
+     */
+    public CpfIdType createCpfIdType() {
+        return new CpfIdType();
     }
 
     /**
