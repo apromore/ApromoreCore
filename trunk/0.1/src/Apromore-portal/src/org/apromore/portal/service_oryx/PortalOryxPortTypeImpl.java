@@ -87,7 +87,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			newEditSession.setProcessName(editSession.getProcessName());
 			newEditSession.setUsername(editSession.getUsername());
 			newEditSession.setVersionName(editSession.getVersionName());
-			newEditSession.setWithAnnotation(true);
+			newEditSession.setWithAnnotation(editSession.isWithAnnotation());
 			newEditSession.setAnnotation(editSession.getAnnotation());
 			int newEditSessionCode = request.WriteEditSession(newEditSession);
 			res.setEditSessionCode(newEditSessionCode);
