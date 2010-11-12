@@ -1,29 +1,30 @@
 
 package org.apromore.manager.model_toolbox;
 
+import javax.activation.DataHandler;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.cxf.jaxb.JAXBToStringBuilder;
 import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for SearchForSimilarProcessesInputMsgType complex type.
+ * <p>Java class for CanonicalType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="SearchForSimilarProcessesInputMsgType">
+ * &lt;complexType name="CanonicalType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="ProcessId" type="{http://www.w3.org/2001/XMLSchema}int"/>
  *         &lt;element name="VersionName" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Algorithm" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="Parameters" type="{http://www.apromore.org/toolbox/model_manager}ParametersType"/>
+ *         &lt;element name="Cpf" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -33,14 +34,13 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SearchForSimilarProcessesInputMsgType", propOrder = {
+@XmlType(name = "CanonicalType", propOrder = {
     "processId",
     "versionName",
-    "algorithm",
-    "parameters"
+    "cpf"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:13:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class SearchForSimilarProcessesInputMsgType {
+public class CanonicalType {
 
     @XmlElement(name = "ProcessId")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:13:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
@@ -48,12 +48,10 @@ public class SearchForSimilarProcessesInputMsgType {
     @XmlElement(name = "VersionName", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:13:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String versionName;
-    @XmlElement(name = "Algorithm", required = true)
+    @XmlElement(name = "Cpf", required = true)
+    @XmlMimeType("application/octet-stream")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:13:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String algorithm;
-    @XmlElement(name = "Parameters", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:13:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected ParametersType parameters;
+    protected DataHandler cpf;
 
     /**
      * Gets the value of the processId property.
@@ -100,55 +98,29 @@ public class SearchForSimilarProcessesInputMsgType {
     }
 
     /**
-     * Gets the value of the algorithm property.
+     * Gets the value of the cpf property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link DataHandler }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:13:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getAlgorithm() {
-        return algorithm;
+    public DataHandler getCpf() {
+        return cpf;
     }
 
     /**
-     * Sets the value of the algorithm property.
+     * Sets the value of the cpf property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link DataHandler }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:13:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setAlgorithm(String value) {
-        this.algorithm = value;
-    }
-
-    /**
-     * Gets the value of the parameters property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ParametersType }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:13:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public ParametersType getParameters() {
-        return parameters;
-    }
-
-    /**
-     * Sets the value of the parameters property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ParametersType }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:13:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setParameters(ParametersType value) {
-        this.parameters = value;
+    public void setCpf(DataHandler value) {
+        this.cpf = value;
     }
 
     /**

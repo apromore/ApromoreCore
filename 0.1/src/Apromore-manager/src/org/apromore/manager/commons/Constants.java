@@ -11,6 +11,10 @@ public final class Constants {
 	public static final String CANONISER_MANAGER_URI = "http://www.apromore.org/canoniser/service_manager" ;
 	public static final String CANONISER_MANAGER_SERVICE = "CanoniserManagerService";
 
+	// Toolbox details
+	public static final String TOOLBOX_MANAGER_URI = "http://www.apromore.org/toolbox/service_manager" ;
+	public static final String TOOLBOX_MANAGER_SERVICE = "ToolboxManagerService";
+
 	
 	// JAXB
 	public static final String JAXB_xpdl2Canonical = "org.apromore.messages";
