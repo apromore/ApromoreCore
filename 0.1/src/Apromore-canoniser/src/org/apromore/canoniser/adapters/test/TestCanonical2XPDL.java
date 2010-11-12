@@ -21,8 +21,8 @@ public class TestCanonical2XPDL {
 	 * @throws ExceptionAdapters 
 	 */
 	public static void main(String[] args) throws ExceptionAdapters {
-		File cpf_file = new File("work_package/role_2.cpf");
-		File anf_file = new File("work_package/role_2.anf");
+		File cpf_file = new File("/coldplay/home/fauvet/models/test/test-rouge.cpf");
+		File anf_file = new File("/coldplay/home/fauvet/models/test/test-rouge.anf");
 		//File cpf_file = new File("/home/fauvet/models/model1.cpf");
 		//File anf_file = new File("/home/fauvet/models/model1.anf");
 		try {
@@ -45,11 +45,11 @@ public class TestCanonical2XPDL {
 			
 			JAXBElement<PackageType> cprocRootElem1 = 
 				new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl_with_anf.getXpdl());
-			m1.marshal(cprocRootElem1, new File("work_package/role_2.xpdl"));
+			m1.marshal(cprocRootElem1, new File("/coldplay/home/fauvet/models/test/test-rouge_wa.xpdl"));
 			
 			JAXBElement<PackageType> cprocRootElem2 = 
 				new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl_no_anf.getXpdl());
-			m1.marshal(cprocRootElem2, new File("work_package/_role_2.xpdl"));
+			m1.marshal(cprocRootElem2, new File("/coldplay/home/fauvet/models/test/test-rouge_na.xpdl"));
 			
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
