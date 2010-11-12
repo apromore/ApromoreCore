@@ -32,17 +32,17 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 @XmlType(name = "CloseSessionInputMsgType", propOrder = {
     "code"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-08T04:23:52+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T10:41:13+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class CloseSessionInputMsgType {
 
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-08T04:23:52+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T10:41:13+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected int code;
 
     /**
      * Gets the value of the code property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-08T04:23:52+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T10:41:13+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public int getCode() {
         return code;
     }
@@ -51,7 +51,7 @@ public class CloseSessionInputMsgType {
      * Sets the value of the code property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-08T04:23:52+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T10:41:13+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setCode(int value) {
         this.code = value;
     }
@@ -62,7 +62,7 @@ public class CloseSessionInputMsgType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-10-08T04:23:52+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T10:41:13+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }

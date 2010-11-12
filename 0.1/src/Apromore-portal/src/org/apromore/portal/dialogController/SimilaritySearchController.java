@@ -114,14 +114,14 @@ public class SimilaritySearchController extends Window {
 				((Doublebox)  this.skipnweight.getFirstChild().getNextSibling()).getValue(),
 				((Doublebox) this.subnweight.getFirstChild().getNextSibling()).getValue(),
 				((Doublebox) this.skipeweight.getFirstChild().getNextSibling()).getValue());
-		
-		String message = null;
+
+		String message = "Search returned " + result.size() ;
 		if (result.size() > 1) {
-			message = " processes.";
+			message += " processes.";
 		} else {
-			message = " process.";
+			message += " process.";
 		}
-		mainC.displayMessage(result.size() + message);
+		mainC.displayMessage(message);
 //		mainC.displayProcessSummaries(result); // TODO show the result
 
 //		Messagebox.show("Not yet available...", "Attention", Messagebox.OK,
