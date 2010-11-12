@@ -67,6 +67,7 @@
 		<sequence>
 			<element name="Result" type="tns:ResultType"/>
 		</sequence>
+		<attribute name="EditSessionCode" type="int"/>
 	</complexType>
 
 	<complexType name="WriteAnnotationInputMsgType">
