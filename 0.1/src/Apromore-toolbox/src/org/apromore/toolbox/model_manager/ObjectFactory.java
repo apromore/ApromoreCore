@@ -37,6 +37,30 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ParametersType }
+     * 
+     */
+    public ParametersType createParametersType() {
+        return new ParametersType();
+    }
+
+    /**
+     * Create an instance of {@link CanonicalsType }
+     * 
+     */
+    public CanonicalsType createCanonicalsType() {
+        return new CanonicalsType();
+    }
+
+    /**
+     * Create an instance of {@link SearchForSimilarProcessesInputMsgType }
+     * 
+     */
+    public SearchForSimilarProcessesInputMsgType createSearchForSimilarProcessesInputMsgType() {
+        return new SearchForSimilarProcessesInputMsgType();
+    }
+
+    /**
      * Create an instance of {@link CpfIdsType }
      * 
      */
@@ -45,35 +69,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ResultType }
+     * Create an instance of {@link ProcessSummaryType }
      * 
      */
-    public ResultType createResultType() {
-        return new ResultType();
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
     }
 
     /**
-     * Create an instance of {@link ParameterType }
+     * Create an instance of {@link VersionSummaryType }
      * 
      */
-    public ParameterType createParameterType() {
-        return new ParameterType();
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
     }
 
     /**
-     * Create an instance of {@link MergeProcessesInputMsgType }
+     * Create an instance of {@link CanonicalType }
      * 
      */
-    public MergeProcessesInputMsgType createMergeProcessesInputMsgType() {
-        return new MergeProcessesInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ParametersType }
-     * 
-     */
-    public ParametersType createParametersType() {
-        return new ParametersType();
+    public CanonicalType createCanonicalType() {
+        return new CanonicalType();
     }
 
     /**
@@ -93,11 +109,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link VersionSummaryType }
+     * Create an instance of {@link ParameterType }
      * 
      */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
+    public ParameterType createParameterType() {
+        return new ParameterType();
     }
 
     /**
@@ -109,27 +125,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ProcessSummaryType }
+     * Create an instance of {@link ResultType }
      * 
      */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
+    public ResultType createResultType() {
+        return new ResultType();
     }
 
     /**
-     * Create an instance of {@link CanonicalsType }
+     * Create an instance of {@link MergeProcessesInputMsgType }
      * 
      */
-    public CanonicalsType createCanonicalsType() {
-        return new CanonicalsType();
-    }
-
-    /**
-     * Create an instance of {@link SearchForSimilarProcessesInputMsgType }
-     * 
-     */
-    public SearchForSimilarProcessesInputMsgType createSearchForSimilarProcessesInputMsgType() {
-        return new SearchForSimilarProcessesInputMsgType();
+    public MergeProcessesInputMsgType createMergeProcessesInputMsgType() {
+        return new MergeProcessesInputMsgType();
     }
 
     /**

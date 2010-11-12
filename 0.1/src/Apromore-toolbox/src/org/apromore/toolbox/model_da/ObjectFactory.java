@@ -24,8 +24,8 @@ import javax.xml.namespace.QName;
 @XmlRegistry
 public class ObjectFactory {
 
-    private final static QName _ReadCanonicalsInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "ReadCanonicalsInputMsg");
     private final static QName _StoreCpfOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "StoreCpfOutputMsg");
+    private final static QName _ReadCanonicalsInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "ReadCanonicalsInputMsg");
     private final static QName _ReadCanonicalsOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "ReadCanonicalsOutputMsg");
     private final static QName _StoreCpfInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "StoreCpfInputMsg");
 
@@ -37,11 +37,67 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CpfIdsType }
+     * Create an instance of {@link ResultType }
      * 
      */
-    public CpfIdsType createCpfIdsType() {
-        return new CpfIdsType();
+    public ResultType createResultType() {
+        return new ResultType();
+    }
+
+    /**
+     * Create an instance of {@link VersionSummaryType }
+     * 
+     */
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link StoreCpfOutputMsgType }
+     * 
+     */
+    public StoreCpfOutputMsgType createStoreCpfOutputMsgType() {
+        return new StoreCpfOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessSummaryType }
+     * 
+     */
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link AnnotationsType }
+     * 
+     */
+    public AnnotationsType createAnnotationsType() {
+        return new AnnotationsType();
+    }
+
+    /**
+     * Create an instance of {@link StoreCpfInputMsgType }
+     * 
+     */
+    public StoreCpfInputMsgType createStoreCpfInputMsgType() {
+        return new StoreCpfInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link CanonicalsType }
+     * 
+     */
+    public CanonicalsType createCanonicalsType() {
+        return new CanonicalsType();
+    }
+
+    /**
+     * Create an instance of {@link ReadCanonicalsInputMsgType }
+     * 
+     */
+    public ReadCanonicalsInputMsgType createReadCanonicalsInputMsgType() {
+        return new ReadCanonicalsInputMsgType();
     }
 
     /**
@@ -61,67 +117,12 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ReadCanonicalsInputMsgType }
+     * Create an instance of {@link JAXBElement }{@code <}{@link StoreCpfOutputMsgType }{@code >}}
      * 
      */
-    public ReadCanonicalsInputMsgType createReadCanonicalsInputMsgType() {
-        return new ReadCanonicalsInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link StoreCpfInputMsgType }
-     * 
-     */
-    public StoreCpfInputMsgType createStoreCpfInputMsgType() {
-        return new StoreCpfInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ProcessSummaryType }
-     * 
-     */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
-    }
-
-    /**
-     * Create an instance of {@link CpfIdType }
-     * 
-     */
-    public CpfIdType createCpfIdType() {
-        return new CpfIdType();
-    }
-
-    /**
-     * Create an instance of {@link StoreCpfOutputMsgType }
-     * 
-     */
-    public StoreCpfOutputMsgType createStoreCpfOutputMsgType() {
-        return new StoreCpfOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link VersionSummaryType }
-     * 
-     */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
-    }
-
-    /**
-     * Create an instance of {@link CanonicalsType }
-     * 
-     */
-    public CanonicalsType createCanonicalsType() {
-        return new CanonicalsType();
-    }
-
-    /**
-     * Create an instance of {@link ResultType }
-     * 
-     */
-    public ResultType createResultType() {
-        return new ResultType();
+    @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_toolbox", name = "StoreCpfOutputMsg")
+    public JAXBElement<StoreCpfOutputMsgType> createStoreCpfOutputMsg(StoreCpfOutputMsgType value) {
+        return new JAXBElement<StoreCpfOutputMsgType>(_StoreCpfOutputMsg_QNAME, StoreCpfOutputMsgType.class, null, value);
     }
 
     /**
@@ -131,15 +132,6 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_toolbox", name = "ReadCanonicalsInputMsg")
     public JAXBElement<ReadCanonicalsInputMsgType> createReadCanonicalsInputMsg(ReadCanonicalsInputMsgType value) {
         return new JAXBElement<ReadCanonicalsInputMsgType>(_ReadCanonicalsInputMsg_QNAME, ReadCanonicalsInputMsgType.class, null, value);
-    }
-
-    /**
-     * Create an instance of {@link JAXBElement }{@code <}{@link StoreCpfOutputMsgType }{@code >}}
-     * 
-     */
-    @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_toolbox", name = "StoreCpfOutputMsg")
-    public JAXBElement<StoreCpfOutputMsgType> createStoreCpfOutputMsg(StoreCpfOutputMsgType value) {
-        return new JAXBElement<StoreCpfOutputMsgType>(_StoreCpfOutputMsg_QNAME, StoreCpfOutputMsgType.class, null, value);
     }
 
     /**
