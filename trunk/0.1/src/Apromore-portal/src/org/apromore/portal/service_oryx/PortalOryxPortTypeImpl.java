@@ -6,8 +6,10 @@
 
 package org.apromore.portal.service_oryx;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
@@ -67,7 +69,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 		
         try {
             Integer code = payload.getEditSessionCode();
-            String annotName = payload.getAnnotationName();
+            String newAnnotationName = payload.getAnnotationName();
 			DataHandler handler = payload.getNative();
 			InputStream native_is = handler.getInputStream();
 			RequestToManager request = new RequestToManager();
@@ -76,7 +78,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			String nat_type = editSession.getNativeType();
 			Integer processId = editSession.getProcessId();
 			String version = editSession.getVersionName();
-			request.WriteAnnotation (code, annotName, true, processId, version, nat_type, native_is);
+			request.WriteAnnotation (code, newAnnotationName, true, processId, version, nat_type, native_is);
 			// delete previous edit session
 			request.DeleteEditionSession(code);
 			// request a new session code for the new process and return it to Oryx
@@ -88,7 +90,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			newEditSession.setUsername(editSession.getUsername());
 			newEditSession.setVersionName(editSession.getVersionName());
 			newEditSession.setWithAnnotation(editSession.isWithAnnotation());
-			newEditSession.setAnnotation(editSession.getAnnotation());
+			newEditSession.setAnnotation(newAnnotationName);
 			int newEditSessionCode = request.WriteEditSession(newEditSession);
 			res.setEditSessionCode(newEditSessionCode);
         	result.setCode(0);
@@ -117,7 +119,8 @@ import org.wfmc._2008.xpdl2.PackageType;
 			String nat_type = editSession.getNativeType();
 			Integer processId = editSession.getProcessId();
 			String version = editSession.getVersionName();
-			request.WriteAnnotation (code, null, false, processId, version, nat_type, native_is);
+			String annotationName = editSession.getAnnotation();
+			request.WriteAnnotation (code, annotationName, false, processId, version, nat_type, native_is);
         	result.setCode(0);
 			result.setMessage("");
 		} catch (Exception ex) {
