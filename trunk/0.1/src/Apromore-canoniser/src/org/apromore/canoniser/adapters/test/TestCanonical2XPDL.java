@@ -21,8 +21,9 @@ public class TestCanonical2XPDL {
 	 * @throws ExceptionAdapters 
 	 */
 	public static void main(String[] args) throws ExceptionAdapters {
-		File cpf_file = new File("/coldplay/home/fauvet/models/test/test-rouge.cpf");
-		File anf_file = new File("/coldplay/home/fauvet/models/test/test-rouge.anf");
+		File cpf_file = new File("/coldplay/home/fauvet/models/test/test-blue.cpf");
+		File anf_initial_file = new File("/coldplay/home/fauvet/models/test/test-blue-initial.anf");
+		File anf_green_file = new File("/coldplay/home/fauvet/models/test/test-blue-green.anf");
 		//File cpf_file = new File("/home/fauvet/models/model1.cpf");
 		//File anf_file = new File("/home/fauvet/models/model1.anf");
 		try {
@@ -33,11 +34,11 @@ public class TestCanonical2XPDL {
 
 			jc = JAXBContext.newInstance("org.apromore.anf");
 			u = jc.createUnmarshaller();
-			JAXBElement<AnnotationsType> anfRootElement = (JAXBElement<AnnotationsType>) u.unmarshal(anf_file);
+			JAXBElement<AnnotationsType> anfRootElement = (JAXBElement<AnnotationsType>) u.unmarshal(anf_initial_file);
 			AnnotationsType anf = anfRootElement.getValue();
 			
 			Canonical2XPDL canonical2xpdl_with_anf = new Canonical2XPDL (cpf, anf);
-			Canonical2XPDL canonical2xpdl_no_anf = new Canonical2XPDL(cpf);
+//			Canonical2XPDL canonical2xpdl_no_anf = new Canonical2XPDL(cpf);
 			
 			jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
 			Marshaller m1 = jc.createMarshaller();
@@ -45,11 +46,21 @@ public class TestCanonical2XPDL {
 			
 			JAXBElement<PackageType> cprocRootElem1 = 
 				new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl_with_anf.getXpdl());
-			m1.marshal(cprocRootElem1, new File("/coldplay/home/fauvet/models/test/test-rouge_wa.xpdl"));
+			m1.marshal(cprocRootElem1, new File("/coldplay/home/fauvet/models/test/test-blue-initial.xpdl"));
+			
+			jc = JAXBContext.newInstance("org.apromore.anf");
+			u = jc.createUnmarshaller();
+			anfRootElement = (JAXBElement<AnnotationsType>) u.unmarshal(anf_green_file);
+			anf = anfRootElement.getValue();
+			
+			canonical2xpdl_with_anf = new Canonical2XPDL (cpf, anf);
+			jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
+			Marshaller m2 = jc.createMarshaller();
+			m2.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			
 			JAXBElement<PackageType> cprocRootElem2 = 
-				new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl_no_anf.getXpdl());
-			m1.marshal(cprocRootElem2, new File("/coldplay/home/fauvet/models/test/test-rouge_na.xpdl"));
+				new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl_with_anf.getXpdl());
+			m1.marshal(cprocRootElem2, new File("/coldplay/home/fauvet/models/test/test-blue-green.xpdl"));
 			
 		} catch (JAXBException e) {
 			// TODO Auto-generated catch block
