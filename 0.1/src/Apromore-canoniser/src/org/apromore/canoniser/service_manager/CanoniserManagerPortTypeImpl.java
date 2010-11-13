@@ -6,10 +6,12 @@
 
 package org.apromore.canoniser.service_manager;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
 import javax.jws.WebMethod;
@@ -216,11 +218,13 @@ import de.epml.TypeEPML;
 			String nativeType = payload.getNativeType();
 			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream(), 
             	cpf_xml = new ByteArrayOutputStream();
+			
 			Canonise(npf_is, nativeType, anf_xml, cpf_xml);
-			InputStream anf_is = new ByteArrayInputStream(anf_xml.toByteArray());
+			npf_is.reset();
+			InputStream anf_is = new ByteArrayInputStream(anf_xml.toByteArray());			
 			RequestToDA request = new RequestToDA();
 			request.WriteAnnotation(editSessionCode, annotationName, isNew, processId, version, nativeType, 
-					handler.getInputStream(), anf_is);
+					npf_is, anf_is);
 			result.setCode(0);
 			result.setMessage("");
 		} catch (Exception ex) {
