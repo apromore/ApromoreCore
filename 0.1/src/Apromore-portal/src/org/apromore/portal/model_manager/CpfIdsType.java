@@ -35,11 +35,11 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 @XmlType(name = "Cpf_idsType", propOrder = {
     "cpfId"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T09:21:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class CpfIdsType {
 
     @XmlElement(name = "Cpf_id", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T09:21:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<CpfIdType> cpfId;
 
     /**
@@ -64,7 +64,7 @@ public class CpfIdsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T09:21:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<CpfIdType> getCpfId() {
         if (cpfId == null) {
             cpfId = new ArrayList<CpfIdType>();
@@ -78,7 +78,7 @@ public class CpfIdsType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T09:21:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
