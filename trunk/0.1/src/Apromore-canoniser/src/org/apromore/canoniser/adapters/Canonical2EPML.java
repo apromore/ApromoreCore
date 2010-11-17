@@ -389,7 +389,6 @@ public class Canonical2EPML {
 		{
 			Object obj = elements.get(0);
 			elements.remove(obj);
-			System.out.println(elements.size());
 			if( flag && (obj instanceof TypeEvent || obj instanceof TypeFunction))
 			{
 				successors.add((TEpcElement) obj);
@@ -404,7 +403,6 @@ public class Canonical2EPML {
 							TypeFlow flow = ((TypeArc)object).getFlow();
 							if(flow.getSource().equals(((TEpcElement)obj).getId()))
 							{
-								System.out.println("Element added: "+ epcRefMap.get(flow.getTarget()).getClass().toString());
 								elements.add(epcRefMap.get(flow.getTarget()));
 							}
 						}
@@ -508,9 +506,8 @@ public class Canonical2EPML {
 	{
 		epml.getDirectory().add(dir);
 		epml.setDefinitions(new TypeDefinitions());
-	
+
 		for (NetType net: cproc.getNet()) {
-			// To do
 			TypeEPC epc = new TypeEPC();
 			epc.setEpcId(BigInteger.valueOf(ids++));
 			epc.setName(" ");
@@ -538,7 +535,6 @@ public class Canonical2EPML {
 	
 	private void translateNet(TypeEPC epc, NetType net)
 	{
-		
 		for (NodeType node: net.getNode()) {
 			if(node instanceof TaskType || node instanceof EventType)
 			{
@@ -814,7 +810,6 @@ public class Canonical2EPML {
 	private void createEvent(TypeEPC epc,  NetType net)
 	{
 		BigInteger n;
-		
 
 		for(BigInteger id: event_list)
 			for (EdgeType edge: net.getEdge()) {
