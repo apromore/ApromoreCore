@@ -134,7 +134,16 @@ public class EPML2Canonical{
 	@since           1.0
      */
 	public EPML2Canonical(TypeEPML epml) throws ExceptionAdapters {
+		main(epml);
+	}
+	
+	public EPML2Canonical(TypeEPML epml, long id) throws ExceptionAdapters {
+		this.ids = id;
+		main(epml);
+	}
 
+	void main(TypeEPML epml)
+	{
 		epml = removeFakes(epml);
 		
 		TypeAttribute att = new TypeAttribute();
@@ -173,10 +182,7 @@ public class EPML2Canonical{
 				task.setSubnetId(id_map.get(task.getSubnetId()));
 			subnet_list.clear();
 		}
-
 	}
-
-	
 	/** 
      * This method for removing the fake functions
      * and events in case the model has them.

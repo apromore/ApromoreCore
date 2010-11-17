@@ -92,6 +92,7 @@ public class Canonical2XPDL {
 	Map<RoutingType, TransitionRestrictions> gateways = new HashMap<RoutingType, TransitionRestrictions>();
 	List<BigInteger> resource_ref_list = new LinkedList<BigInteger>();
 	List<BigInteger> object_ref_list = new LinkedList<BigInteger>();
+	Map<BigInteger, BigInteger> task_resource_map = new HashMap<BigInteger, BigInteger>();
 	List<AnnData> mani_trans = new LinkedList<AnnData>();
 	List<String> mani_trans_list = new LinkedList<String>();
 	int object_ids;
@@ -167,8 +168,17 @@ public class Canonical2XPDL {
 		}
 		
 		if(EPML_flag)
+		{
 			enhance_annotation();
+			resize_lanes();
+		}
 	}
+
+	private void resize_lanes() {
+			
+		
+	}
+
 
 	/**
 	 * This method is for enhancing the annotation in case that 
@@ -817,6 +827,7 @@ public class Canonical2XPDL {
 			{
 				if(!resource_ref_list.contains(ref.getResourceTypeId()))
 					resource_ref_list.add(ref.getResourceTypeId());
+				task_resource_map.put(node.getId(), ref.getResourceTypeId());
 			}
 			
 			for(ObjectRefType ref: ((TaskType)node).getObjectRef())

@@ -23,8 +23,8 @@ public class TestCanonical2EPML {
 	public static void main(String[] args) {
 		//File cpf_file = new File("/home/fauvet/models/epml_models/SAP_1.cpf");
 		//File anf_file = new File("/home/fauvet/models/epml_models/SAP_1.anf");
-		File cpf_file = new File("work_package/object.cpf");
-		File anf_file = new File("work_package/object.anf");		
+		File cpf_file = new File("work_package/111test.cpf");
+		File anf_file = new File("work_package/111test.anf");		
 		try {
 			JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
 			Unmarshaller u = jc.createUnmarshaller();
@@ -36,15 +36,15 @@ public class TestCanonical2EPML {
 			JAXBElement<AnnotationsType> anfRootElement = (JAXBElement<AnnotationsType>) u.unmarshal(anf_file);
 			AnnotationsType anf = anfRootElement.getValue();
 
-			Canonical2EPML canonical2epml_1 = new Canonical2EPML(cpf,true);
+			//Canonical2EPML canonical2epml_1 = new Canonical2EPML(cpf,true);
 			
 			jc = JAXBContext.newInstance("de.epml");
 			
-			Marshaller m2 = jc.createMarshaller();
-			m2.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-			JAXBElement<TypeEPML> cprocRootElem2 = 
-				new de.epml.ObjectFactory().createEpml(canonical2epml_1.getEPML());
-			m2.marshal(cprocRootElem2, new File("XPDL_models/111fakes.epml"));
+			//Marshaller m2 = jc.createMarshaller();
+			//m2.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+			//JAXBElement<TypeEPML> cprocRootElem2 = 
+				//new de.epml.ObjectFactory().createEpml(canonical2epml_1.getEPML());
+			//m2.marshal(cprocRootElem2, new File("XPDL_models/_111test.epml"));
 			
 			Canonical2EPML canonical2epml_2 = new Canonical2EPML (cpf, anf, true);
 			
@@ -52,7 +52,7 @@ public class TestCanonical2EPML {
 			m1.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			JAXBElement<TypeEPML> cprocRootElem1 = 
 				new de.epml.ObjectFactory().createEpml(canonical2epml_2.getEPML());
-			m1.marshal(cprocRootElem1, new File("work_package/111object.epml"));
+			m1.marshal(cprocRootElem1, new File("work_package/111test.epml"));
 			
 			
 		} catch (JAXBException e) {
