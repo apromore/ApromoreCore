@@ -7,6 +7,8 @@
 	<element name="ReadCanonicalsOutputMsg" type="tns:ReadCanonicalsOutputMsgType" />
 	<element name="StoreCpfInputMsg" type="tns:StoreCpfInputMsgType" />
 	<element name="StoreCpfOutputMsg" type="tns:StoreCpfOutputMsgType" />
+	<element name="ReadProcessSummariesInputMsg" type="tns:ReadProcessSummariesInputMsgType" />
+	<element name="ReadProcessSummariesOutputMsg" type="tns:ReadProcessSummariesOutputMsgType" />
 
 	<complexType name="ResultType">
 		<attribute name="message" type="string" />
@@ -58,6 +60,12 @@
 		</sequence>
 	</complexType>
 
+	<complexType name="ProcessSummariesType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="ProcessSummary"
+				type="tns:ProcessSummaryType" />
+		</sequence>
+	</complexType>
 
 	<complexType name="ProcessSummaryType">
 		<sequence>
@@ -90,6 +98,33 @@
 				type="string" />
 		</sequence>
 		<attribute name="NativeType" type="string" />
+	</complexType>
+
+	<complexType name="ReadProcessSummariesInputMsgType">
+		<sequence>
+			<element name="ProcessVersions" type="tns:ProcessVersionsType" 
+			minOccurs="1" maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ProcessVersionsType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="ProcessVersion"
+				type="tns:ProcessVersionType" />
+		</sequence>
+	</complexType>
+	<complexType name="ProcessVersionType">
+		<attribute name="ProcessId" type="int" />
+		<attribute name="VersionName" type="string" />
+	</complexType>
+
+	<complexType name="ReadProcessSummariesOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+			<element name="ProcessSummaries" type="tns:ProcessSummariesType"
+				minOccurs="1" maxOccurs="1" />
+		</sequence>
 	</complexType>
 
 </schema>
