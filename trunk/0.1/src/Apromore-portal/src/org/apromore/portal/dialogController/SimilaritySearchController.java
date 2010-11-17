@@ -105,7 +105,7 @@ public class SimilaritySearchController extends Window {
 	protected void searchSimilarProcesses() throws Exception {
 		
 		RequestToManager request = new RequestToManager();
-		List<CanonicalsType> result = request.searchForSimilarProcesses(
+		CanonicalsType result = request.searchForSimilarProcesses(
 				selectedModelId, 
 				this.algosLB.getSelectedItem().getLabel(),
 				((Doublebox) this.modelthreshold.getFirstChild().getNextSibling()).getValue(),
@@ -115,8 +115,8 @@ public class SimilaritySearchController extends Window {
 				((Doublebox) this.subnweight.getFirstChild().getNextSibling()).getValue(),
 				((Doublebox) this.skipeweight.getFirstChild().getNextSibling()).getValue());
 
-		String message = "Search returned " + result.size() ;
-		if (result.size() > 1) {
+		String message = "Search returned " + result.getCanonicalType().size() ;
+		if (result.getCanonicalType().size() > 1) {
 			message += " processes.";
 		} else {
 			message += " process.";

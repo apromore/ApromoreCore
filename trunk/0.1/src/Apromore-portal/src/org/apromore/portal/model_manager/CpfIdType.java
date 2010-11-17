@@ -30,14 +30,14 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Cpf_idType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class CpfIdType {
 
     @XmlAttribute(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Integer processId;
     @XmlAttribute(name = "VersionName")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String versionName;
 
     /**
@@ -48,7 +48,7 @@ public class CpfIdType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Integer getProcessId() {
         return processId;
     }
@@ -61,7 +61,7 @@ public class CpfIdType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessId(Integer value) {
         this.processId = value;
     }
@@ -74,7 +74,7 @@ public class CpfIdType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getVersionName() {
         return versionName;
     }
@@ -87,7 +87,7 @@ public class CpfIdType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setVersionName(String value) {
         this.versionName = value;
     }
@@ -98,7 +98,7 @@ public class CpfIdType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }

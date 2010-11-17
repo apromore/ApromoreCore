@@ -163,7 +163,7 @@ public class RequestToManager {
 		}
 	}
 
-public List<CanonicalsType> searchForSimilarProcesses(
+	public CanonicalsType searchForSimilarProcesses(
 			int selectedModelId, 
 			String method, 
 			double modelthreshold, 
@@ -172,7 +172,7 @@ public List<CanonicalsType> searchForSimilarProcesses(
 			double skipnweight, 
 			double subnweight, 
 			double skipeweight) throws ExceptionProcess {
-		
+
 		SearchForSimilarProcessesInputMsgType payload = new SearchForSimilarProcessesInputMsgType();
 		payload.setAlgorithm(method);
 		payload.setProcessId(selectedModelId);
@@ -182,7 +182,7 @@ public List<CanonicalsType> searchForSimilarProcesses(
 		p.setName("modelthreshold");
 		p.setValue(modelthreshold);
 		params.getParameter().add(p);
-	
+
 		// labelthreshold
 		p = new ParameterType();
 		p.setName("labelthreshold");
@@ -194,20 +194,20 @@ public List<CanonicalsType> searchForSimilarProcesses(
 		p.setName("contextthreshold");
 		p.setValue(contextthreshold);
 		params.getParameter().add(p);
-		
+
 		if ("Greedy".equals(method)) {
 			// skipnweight
 			p = new ParameterType();
 			p.setName("skipnweight");
 			p.setValue(skipnweight);
 			params.getParameter().add(p);
-	
+
 			// subnweight
 			p = new ParameterType();
 			p.setName("subnweight");
 			p.setValue(subnweight);
 			params.getParameter().add(p);
-			
+
 			// skipeweight
 			p = new ParameterType();
 			p.setName("skipeweight");
@@ -215,7 +215,7 @@ public List<CanonicalsType> searchForSimilarProcesses(
 			params.getParameter().add(p);
 		}
 		payload.setParameters(params);
-		
+
 		SearchForSimilarProcessesOutputMsgType res = this.port.searchForSimilarProcesses(payload);
 
 		ResultType result = res.getResult();
@@ -229,7 +229,7 @@ public List<CanonicalsType> searchForSimilarProcesses(
 	public ProcessSummaryType mergeProcesses(
 			LinkedList<Integer> mergeModelIds, 
 			String mergedProcessname,
-//			String mergedversionName,
+			//			String mergedversionName,
 			String mergedUsername,
 			String method,
 			boolean removeEntanglements,
@@ -239,14 +239,14 @@ public List<CanonicalsType> searchForSimilarProcesses(
 			double skipnweight, 
 			double subnweight, 
 			double skipeweight) throws ExceptionProcess {
-		
+
 		MergeProcessesInputMsgType payload = new MergeProcessesInputMsgType();
-		
+
 		// merged process data
 		payload.setProcessName(mergedProcessname);
-//		payload.setVersionName(mergedversionName);
+		//		payload.setVersionName(mergedversionName);
 		payload.setUsername(mergedUsername);
-		
+
 		// process models 
 		CpfIdsType modelIdList = new CpfIdsType();
 		for (Integer i : mergeModelIds) {
@@ -255,7 +255,7 @@ public List<CanonicalsType> searchForSimilarProcesses(
 		}
 		payload.setCpfIds(modelIdList);
 		payload.setAlgorithm(method);
-		
+
 		// PARAMETERS
 		ParametersType params = new ParametersType();
 		// remove entanglements
@@ -269,7 +269,7 @@ public List<CanonicalsType> searchForSimilarProcesses(
 		p.setName("modelthreshold");
 		p.setValue(mergethreshold);
 		params.getParameter().add(p);
-	
+
 		// labelthreshold
 		p = new ParameterType();
 		p.setName("labelthreshold");
@@ -281,20 +281,20 @@ public List<CanonicalsType> searchForSimilarProcesses(
 		p.setName("contextthreshold");
 		p.setValue(contextthreshold);
 		params.getParameter().add(p);
-		
+
 		if ("Greedy".equals(method)) {
 			// skipnweight
 			p = new ParameterType();
 			p.setName("skipnweight");
 			p.setValue(skipnweight);
 			params.getParameter().add(p);
-	
+
 			// subnweight
 			p = new ParameterType();
 			p.setName("subnweight");
 			p.setValue(subnweight);
 			params.getParameter().add(p);
-			
+
 			// skipeweight
 			p = new ParameterType();
 			p.setName("skipeweight");
@@ -302,7 +302,7 @@ public List<CanonicalsType> searchForSimilarProcesses(
 			params.getParameter().add(p);
 		}
 		payload.setParameters(params);
-		
+
 		MergeProcessesOutputMsgType res = this.port.mergeProcesses(payload);
 
 		ResultType result = res.getResult();
