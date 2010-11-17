@@ -113,7 +113,16 @@ public class XPDL2Canonical {
 @since           1.0
      */
 	public XPDL2Canonical(PackageType pkg) throws ExceptionAdapters {
-
+		main(pkg);
+	}
+	
+	public XPDL2Canonical(PackageType pkg, long id) throws ExceptionAdapters {
+		this.cpf = id;
+		main(pkg);
+	}
+	
+	void main(PackageType pkg)
+	{
 		this.cpf = new CanonicalProcessType();
 		this.anf = new AnnotationsType();
 
@@ -230,7 +239,6 @@ public class XPDL2Canonical {
 				}
 			}
 		}
-		
 	}
 
 	private void process_unrequired_events(NetType net) throws ExceptionAdapters {

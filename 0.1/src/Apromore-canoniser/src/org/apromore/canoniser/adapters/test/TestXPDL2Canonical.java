@@ -24,7 +24,7 @@ public class TestXPDL2Canonical {
 	 */
 	public static void main(String[] args) {
 
-		File folder = new File("faulty");
+		File folder = new File("work_package");
 		FileFilter fileFilter = new FileFilter() { 
 			public boolean accept(File file) { 
 				return file.isFile(); 
