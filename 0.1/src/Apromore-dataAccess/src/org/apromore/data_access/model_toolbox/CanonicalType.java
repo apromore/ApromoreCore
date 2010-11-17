@@ -39,25 +39,25 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
     "versionName",
     "cpf"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:54:47+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class CanonicalType {
 
     @XmlElement(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:54:47+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected int processId;
     @XmlElement(name = "VersionName", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:54:47+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String versionName;
     @XmlElement(name = "Cpf", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:54:47+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected DataHandler cpf;
 
     /**
      * Gets the value of the processId property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:54:47+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public int getProcessId() {
         return processId;
     }
@@ -66,7 +66,7 @@ public class CanonicalType {
      * Sets the value of the processId property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:54:47+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessId(int value) {
         this.processId = value;
     }
@@ -79,7 +79,7 @@ public class CanonicalType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:54:47+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getVersionName() {
         return versionName;
     }
@@ -92,7 +92,7 @@ public class CanonicalType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:54:47+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setVersionName(String value) {
         this.versionName = value;
     }
@@ -105,7 +105,7 @@ public class CanonicalType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:54:47+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public DataHandler getCpf() {
         return cpf;
     }
@@ -118,7 +118,7 @@ public class CanonicalType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:54:47+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setCpf(DataHandler value) {
         this.cpf = value;
     }
@@ -129,7 +129,7 @@ public class CanonicalType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-12T08:54:47+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }

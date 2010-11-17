@@ -1,12 +1,9 @@
 
 package org.apromore.data_access.model_toolbox;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.cxf.jaxb.JAXBToStringBuilder;
@@ -14,18 +11,18 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for AnnotationsType complex type.
+ * <p>Java class for ReadProcessSummariesOutputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="AnnotationsType">
+ * &lt;complexType name="ReadProcessSummariesOutputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="AnnotationName" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="Result" type="{http://www.apromore.org/data_access/model_toolbox}ResultType"/>
+ *         &lt;element name="ProcessSummaries" type="{http://www.apromore.org/data_access/model_toolbox}ProcessSummariesType"/>
  *       &lt;/sequence>
- *       &lt;attribute name="NativeType" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -34,73 +31,70 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AnnotationsType", propOrder = {
-    "annotationName"
+@XmlType(name = "ReadProcessSummariesOutputMsgType", propOrder = {
+    "result",
+    "processSummaries"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class AnnotationsType {
+public class ReadProcessSummariesOutputMsgType {
 
-    @XmlElement(name = "AnnotationName")
+    @XmlElement(name = "Result", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected List<String> annotationName;
-    @XmlAttribute(name = "NativeType")
+    protected ResultType result;
+    @XmlElement(name = "ProcessSummaries", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String nativeType;
-
-    /**
-     * Gets the value of the annotationName property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the annotationName property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getAnnotationName().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link String }
-     * 
-     * 
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public List<String> getAnnotationName() {
-        if (annotationName == null) {
-            annotationName = new ArrayList<String>();
-        }
-        return this.annotationName;
-    }
+    protected ProcessSummariesType processSummaries;
 
     /**
-     * Gets the value of the nativeType property.
+     * Gets the value of the result property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getNativeType() {
-        return nativeType;
+    public ResultType getResult() {
+        return result;
     }
 
     /**
-     * Sets the value of the nativeType property.
+     * Sets the value of the result property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link ResultType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setNativeType(String value) {
-        this.nativeType = value;
+    public void setResult(ResultType value) {
+        this.result = value;
+    }
+
+    /**
+     * Gets the value of the processSummaries property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link ProcessSummariesType }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public ProcessSummariesType getProcessSummaries() {
+        return processSummaries;
+    }
+
+    /**
+     * Sets the value of the processSummaries property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link ProcessSummariesType }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public void setProcessSummaries(ProcessSummariesType value) {
+        this.processSummaries = value;
     }
 
     /**

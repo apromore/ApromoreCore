@@ -529,20 +529,20 @@ public class ProcessDao extends BasicDao {
 			String lastUpdate) throws JAXBException {
 
 		InputStream res = null;
-			JAXBContext jc = JAXBContext.newInstance("org.apromore.anf");
-			Unmarshaller u = jc.createUnmarshaller();
-			JAXBElement<org.apromore.anf.AnnotationsType> rootElement = 
-				(JAXBElement<org.apromore.anf.AnnotationsType>) u.unmarshal(anf_xml);
-			org.apromore.anf.AnnotationsType annotations = rootElement.getValue();
-			annotations.setAuthor(username);
-			annotations.setCpfUri(cpf_uri);
-			// TODO: fix data types in anf
-			Marshaller m = jc.createMarshaller();
-			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-			ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
-			m.marshal(rootElement, xpdl_xml);
-			res = new ByteArrayInputStream(xpdl_xml.toByteArray());
-			
+		JAXBContext jc = JAXBContext.newInstance("org.apromore.anf");
+		Unmarshaller u = jc.createUnmarshaller();
+		JAXBElement<org.apromore.anf.AnnotationsType> rootElement = 
+			(JAXBElement<org.apromore.anf.AnnotationsType>) u.unmarshal(anf_xml);
+		org.apromore.anf.AnnotationsType annotations = rootElement.getValue();
+		annotations.setAuthor(username);
+		annotations.setCpfUri(cpf_uri);
+		// TODO: fix data types in anf
+		Marshaller m = jc.createMarshaller();
+		m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+		ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
+		m.marshal(rootElement, xpdl_xml);
+		res = new ByteArrayInputStream(xpdl_xml.toByteArray());
+
 		return res;
 	}
 
@@ -571,7 +571,7 @@ public class ProcessDao extends BasicDao {
 			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
 			PackageType pkg = rootElement.getValue();
 			copyParam2xpdl (pkg, cpf_uri, processName, version, username, creationDate, lastUpdate, documentation);
-			
+
 			Marshaller m = jc.createMarshaller();
 			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 			ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
@@ -1852,7 +1852,7 @@ public class ProcessDao extends BasicDao {
 			Release(conn, stmt, rs);
 		}
 	}
-	
+
 	/**
 	 * Return all canonicals 
 	 * @return
@@ -1873,13 +1873,143 @@ public class ProcessDao extends BasicDao {
 			rs = stmt.executeQuery(query);
 			while (rs.next()) {
 				CanonicalType cpf = new CanonicalType();
-            	cpf.setProcessId(rs.getInt(1));
-            	cpf.setVersionName(rs.getString(2));
-    			String cpf_str = rs.getString(3); 
-    			ByteArrayDataSource sourceCpf = new ByteArrayDataSource(cpf_str, "text/xml"); 
-            	cpf.setCpf(new DataHandler(sourceCpf));
-            	toReturn.add(cpf);
+				cpf.setProcessId(rs.getInt(1));
+				cpf.setVersionName(rs.getString(2));
+				String cpf_str = rs.getString(3); 
+				ByteArrayDataSource sourceCpf = new ByteArrayDataSource(cpf_str, "text/xml"); 
+				cpf.setCpf(new DataHandler(sourceCpf));
+				toReturn.add(cpf);
 			} 
+			return toReturn;
+		} catch (SQLException e) {
+			e.printStackTrace();
+			throw new ExceptionDao ("SQL error: " + e.getMessage() + "\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ExceptionDao ("Error: " + e.getMessage() + "\n");
+		} finally {
+			Release(conn, stmt, rs);
+		}
+	}
+	/**
+	 * Returns a list of process summaries whose id are in processIds. For each of which only versions in versionNames
+	 * are returned.
+	 * @param processIds
+	 * @param versionNames
+	 * @return
+	 * @throws ExceptionDao 
+	 */
+	public org.apromore.data_access.model_toolbox.ProcessSummariesType getProcessSummaries(
+			List<Integer> processIds, List<String> versionNames) throws ExceptionDao {
+
+		Connection conn = null;
+		Statement stmt = null, stmtV = null, stmtA = null;
+		ResultSet rs = null, rsV = null, rsA = null;
+		String query = null;
+		org.apromore.data_access.model_toolbox.ProcessSummariesType toReturn = 
+			new org.apromore.data_access.model_toolbox.ProcessSummariesType();
+
+		// build a list of <pId, list of <vN>> such as <p, LV> belongs to it
+		// iff for each v in LV, let j be the index of v in versionNames, p=processIds[j]
+		HashMap<Integer, String> processes = new HashMap<Integer, String>();
+		String l = null;
+		for (int i=0;i<processIds.size();i++) {
+			if(processes.keySet().contains(processIds.get(i))) {
+				l = processes.get(processIds.get(i)) + ",";
+				processes.remove(processes.get(i));
+			} 
+			l += "'" + versionNames.get(i) + "'";
+			processes.put(processIds.get(i), l);
+		}
+		try {
+			stmt = conn.createStatement();
+			for (Integer k: processes.keySet()) {
+				query = "SELECT distinct " + ConstantDB.ATTR_PROCESSID + "," 
+				+             ConstantDB.ATTR_NAME + ", "
+				+             ConstantDB.ATTR_DOMAIN + "," 
+				+             ConstantDB.ATTR_ORIGINAL_TYPE + ","
+				+     " coalesce(R." + ConstantDB.ATTR_RANKING  + ",''),"
+				+             ConstantDB.ATTR_OWNER
+				+     " FROM " + ConstantDB.TABLE_PROCESSES
+				+     " natural join " + ConstantDB.TABLE_CANONICALS + " C "
+				+     "    join " + ConstantDB.VIEW_PROCESS_RANKING + " R using (" + ConstantDB.ATTR_PROCESSID + ")" 
+				+     " where " + ConstantDB.ATTR_PROCESSID + " = " + k ;
+				query += " order by " + ConstantDB.ATTR_PROCESSID ;
+				rs = stmt.executeQuery(query);
+				while (rs.next()) {
+					int processId = rs.getInt(1);
+					org.apromore.data_access.model_toolbox.ProcessSummaryType processSummary = 
+						new org.apromore.data_access.model_toolbox.ProcessSummaryType();
+					toReturn.getProcessSummary().add(processSummary);
+					processSummary.setId(processId);
+					processSummary.setName(rs.getString(2));
+					processSummary.setDomain(rs.getString(3));
+					processSummary.setOriginalNativeType(rs.getString(4));
+					processSummary.setRanking(rs.getString(5));
+					processSummary.setOwner(rs.getString(6));
+					String versionList ;
+					if (processes.get(k).endsWith(",")) {
+						versionList = processes.get(k);
+					} else {
+						versionList = processes.get(k).substring(0, processes.get(k).length()-1);
+					}
+					stmtV = conn.createStatement();
+					query = " select " + ConstantDB.ATTR_VERSION_NAME + ", "
+					//+ "date_format(" + ConstantDB.ATTR_CREATION_DATE + ", '%d/%c/%Y %k:%i:%f')" + ",  "
+					//+ "date_format(" + ConstantDB.ATTR_LAST_UPDATE  + ", '%d/%c/%Y %k:%i:%f')" + ",  "
+					+ ConstantDB.ATTR_CREATION_DATE + ", "
+					+ ConstantDB.ATTR_LAST_UPDATE + ", "
+					+ " coalesce(" + ConstantDB.ATTR_RANKING + ",''),"
+					+ ConstantDB.ATTR_DOCUMENTATION
+					+ " from " + ConstantDB.TABLE_CANONICALS
+					+ " where  " + ConstantDB.ATTR_PROCESSID + " = " + processId 
+					+ " and    " + ConstantDB.ATTR_VERSION_NAME + " in (" + versionList + ")"
+					+ " order by  " + ConstantDB.ATTR_CREATION_DATE ;
+					rsV = stmtV.executeQuery(query);
+					String lastVersion="";
+					while (rsV.next()){
+						org.apromore.data_access.model_toolbox.VersionSummaryType version = 
+							new org.apromore.data_access.model_toolbox.VersionSummaryType();
+						version.setName(rsV.getString(1));
+						lastVersion = version.getName();
+						version.setCreationDate(rsV.getString(2));
+						version.setLastUpdate(rsV.getString(3));
+						version.setRanking(rsV.getString(4));
+						processSummary.getVersionSummaries().add(version);
+						// for each version (a canonical process), retrieve for each of its native process
+						// the list of corresponding annotations
+						query = " select " + "N." + ConstantDB.ATTR_URI + ", N." + ConstantDB.ATTR_NAT_TYPE
+						+ " from " + ConstantDB.TABLE_CANONICALS + " C "
+						+ " join " + ConstantDB.TABLE_NATIVES + " N "
+						+ " on (" + "C." + ConstantDB.ATTR_URI + "=" + "N." + ConstantDB.ATTR_CANONICAL + ")"
+						+ " where " + "C." + ConstantDB.ATTR_PROCESSID + " = " + processId
+						+ "  and " + "C." + ConstantDB.ATTR_VERSION_NAME + " = '" + rsV.getString(1) + "'";
+						stmtA = conn.createStatement();
+						rsA = stmtA.executeQuery(query);
+						while(rsA.next()) {
+							// For each native, retrieve annotations
+							org.apromore.data_access.model_toolbox.AnnotationsType annotations = 
+								new org.apromore.data_access.model_toolbox.AnnotationsType();
+							version.getAnnotations().add(annotations);
+							annotations.setNativeType(rsA.getString(2));
+							query = " select " + ConstantDB.ATTR_NAME
+							+ " from " + ConstantDB.TABLE_ANNOTATIONS
+							+ " where " + ConstantDB.ATTR_NATIVE + " = " + rsA.getInt(1);
+							stmtA = conn.createStatement();
+							rsA = stmtA.executeQuery(query);
+							while(rsA.next()) {
+								annotations.getAnnotationName().add(rsA.getString(1));
+							}
+							rsA.close(); stmtA.close();
+						}
+						rsA.close(); stmtA.close();
+					}
+					processSummary.setLastVersion(lastVersion);
+					rsV.close(); stmtV.close();	
+				} 
+			}
+			conn.commit();
+
 			return toReturn;
 		} catch (SQLException e) {
 			e.printStackTrace();

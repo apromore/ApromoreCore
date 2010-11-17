@@ -25,6 +25,8 @@ import javax.xml.namespace.QName;
 public class ObjectFactory {
 
     private final static QName _StoreCpfOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "StoreCpfOutputMsg");
+    private final static QName _ReadProcessSummariesInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "ReadProcessSummariesInputMsg");
+    private final static QName _ReadProcessSummariesOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "ReadProcessSummariesOutputMsg");
     private final static QName _ReadCanonicalsInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "ReadCanonicalsInputMsg");
     private final static QName _ReadCanonicalsOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "ReadCanonicalsOutputMsg");
     private final static QName _StoreCpfInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "StoreCpfInputMsg");
@@ -37,11 +39,43 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ResultType }
+     * Create an instance of {@link ProcessSummariesType }
      * 
      */
-    public ResultType createResultType() {
-        return new ResultType();
+    public ProcessSummariesType createProcessSummariesType() {
+        return new ProcessSummariesType();
+    }
+
+    /**
+     * Create an instance of {@link CanonicalType }
+     * 
+     */
+    public CanonicalType createCanonicalType() {
+        return new CanonicalType();
+    }
+
+    /**
+     * Create an instance of {@link StoreCpfOutputMsgType }
+     * 
+     */
+    public StoreCpfOutputMsgType createStoreCpfOutputMsgType() {
+        return new StoreCpfOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link StoreCpfInputMsgType }
+     * 
+     */
+    public StoreCpfInputMsgType createStoreCpfInputMsgType() {
+        return new StoreCpfInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ReadCanonicalsInputMsgType }
+     * 
+     */
+    public ReadCanonicalsInputMsgType createReadCanonicalsInputMsgType() {
+        return new ReadCanonicalsInputMsgType();
     }
 
     /**
@@ -61,11 +95,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CanonicalType }
+     * Create an instance of {@link CanonicalsType }
      * 
      */
-    public CanonicalType createCanonicalType() {
-        return new CanonicalType();
+    public CanonicalsType createCanonicalsType() {
+        return new CanonicalsType();
+    }
+
+    /**
+     * Create an instance of {@link ResultType }
+     * 
+     */
+    public ResultType createResultType() {
+        return new ResultType();
     }
 
     /**
@@ -77,6 +119,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ReadProcessSummariesInputMsgType }
+     * 
+     */
+    public ReadProcessSummariesInputMsgType createReadProcessSummariesInputMsgType() {
+        return new ReadProcessSummariesInputMsgType();
+    }
+
+    /**
      * Create an instance of {@link ProcessSummaryType }
      * 
      */
@@ -85,35 +135,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StoreCpfInputMsgType }
+     * Create an instance of {@link ProcessVersionsType }
      * 
      */
-    public StoreCpfInputMsgType createStoreCpfInputMsgType() {
-        return new StoreCpfInputMsgType();
+    public ProcessVersionsType createProcessVersionsType() {
+        return new ProcessVersionsType();
     }
 
     /**
-     * Create an instance of {@link CanonicalsType }
+     * Create an instance of {@link ReadProcessSummariesOutputMsgType }
      * 
      */
-    public CanonicalsType createCanonicalsType() {
-        return new CanonicalsType();
-    }
-
-    /**
-     * Create an instance of {@link StoreCpfOutputMsgType }
-     * 
-     */
-    public StoreCpfOutputMsgType createStoreCpfOutputMsgType() {
-        return new StoreCpfOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ReadCanonicalsInputMsgType }
-     * 
-     */
-    public ReadCanonicalsInputMsgType createReadCanonicalsInputMsgType() {
-        return new ReadCanonicalsInputMsgType();
+    public ReadProcessSummariesOutputMsgType createReadProcessSummariesOutputMsgType() {
+        return new ReadProcessSummariesOutputMsgType();
     }
 
     /**
@@ -123,6 +157,24 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_toolbox", name = "StoreCpfOutputMsg")
     public JAXBElement<StoreCpfOutputMsgType> createStoreCpfOutputMsg(StoreCpfOutputMsgType value) {
         return new JAXBElement<StoreCpfOutputMsgType>(_StoreCpfOutputMsg_QNAME, StoreCpfOutputMsgType.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ReadProcessSummariesInputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_toolbox", name = "ReadProcessSummariesInputMsg")
+    public JAXBElement<ReadProcessSummariesInputMsgType> createReadProcessSummariesInputMsg(ReadProcessSummariesInputMsgType value) {
+        return new JAXBElement<ReadProcessSummariesInputMsgType>(_ReadProcessSummariesInputMsg_QNAME, ReadProcessSummariesInputMsgType.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link ReadProcessSummariesOutputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_toolbox", name = "ReadProcessSummariesOutputMsg")
+    public JAXBElement<ReadProcessSummariesOutputMsgType> createReadProcessSummariesOutputMsg(ReadProcessSummariesOutputMsgType value) {
+        return new JAXBElement<ReadProcessSummariesOutputMsgType>(_ReadProcessSummariesOutputMsg_QNAME, ReadProcessSummariesOutputMsgType.class, null, value);
     }
 
     /**
