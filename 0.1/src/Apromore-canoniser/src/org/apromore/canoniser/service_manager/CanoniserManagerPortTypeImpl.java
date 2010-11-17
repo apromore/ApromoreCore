@@ -282,7 +282,15 @@ import de.epml.TypeEPML;
 		return res;
 	}
 
-
+/**
+ * Generate cpf_xml and anf_xml from process_xml which is specified in language nativeType
+ * @param process_xml
+ * @param nativeType
+ * @param anf_xml
+ * @param cpf_xml
+ * @throws ExceptionAdapters
+ * @throws JAXBException
+ */
 	private void Canonise (InputStream process_xml, String nativeType,
 			ByteArrayOutputStream anf_xml, ByteArrayOutputStream cpf_xml) throws ExceptionAdapters, JAXBException {
 		/**
