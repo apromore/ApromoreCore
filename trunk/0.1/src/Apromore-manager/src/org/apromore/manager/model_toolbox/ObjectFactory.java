@@ -37,35 +37,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SearchForSimilarProcessesOutputMsgType }
+     * Create an instance of {@link VersionSummaryType }
      * 
      */
-    public SearchForSimilarProcessesOutputMsgType createSearchForSimilarProcessesOutputMsgType() {
-        return new SearchForSimilarProcessesOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link AnnotationsType }
-     * 
-     */
-    public AnnotationsType createAnnotationsType() {
-        return new AnnotationsType();
-    }
-
-    /**
-     * Create an instance of {@link CanonicalsType }
-     * 
-     */
-    public CanonicalsType createCanonicalsType() {
-        return new CanonicalsType();
-    }
-
-    /**
-     * Create an instance of {@link SearchForSimilarProcessesInputMsgType }
-     * 
-     */
-    public SearchForSimilarProcessesInputMsgType createSearchForSimilarProcessesInputMsgType() {
-        return new SearchForSimilarProcessesInputMsgType();
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
     }
 
     /**
@@ -77,27 +53,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ParametersType }
+     * Create an instance of {@link MergeProcessesInputMsgType }
      * 
      */
-    public ParametersType createParametersType() {
-        return new ParametersType();
-    }
-
-    /**
-     * Create an instance of {@link VersionSummaryType }
-     * 
-     */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
-    }
-
-    /**
-     * Create an instance of {@link ResultType }
-     * 
-     */
-    public ResultType createResultType() {
-        return new ResultType();
+    public MergeProcessesInputMsgType createMergeProcessesInputMsgType() {
+        return new MergeProcessesInputMsgType();
     }
 
     /**
@@ -109,11 +69,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link MergeProcessesOutputMsgType }
+     * Create an instance of {@link ParameterType }
      * 
      */
-    public MergeProcessesOutputMsgType createMergeProcessesOutputMsgType() {
-        return new MergeProcessesOutputMsgType();
+    public ParameterType createParameterType() {
+        return new ParameterType();
     }
 
     /**
@@ -125,19 +85,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link MergeProcessesInputMsgType }
+     * Create an instance of {@link ResultType }
      * 
      */
-    public MergeProcessesInputMsgType createMergeProcessesInputMsgType() {
-        return new MergeProcessesInputMsgType();
+    public ResultType createResultType() {
+        return new ResultType();
     }
 
     /**
-     * Create an instance of {@link ParameterType }
+     * Create an instance of {@link ParametersType }
      * 
      */
-    public ParameterType createParameterType() {
-        return new ParameterType();
+    public ParametersType createParametersType() {
+        return new ParametersType();
     }
 
     /**
@@ -146,6 +106,46 @@ public class ObjectFactory {
      */
     public CpfIdType createCpfIdType() {
         return new CpfIdType();
+    }
+
+    /**
+     * Create an instance of {@link SearchForSimilarProcessesInputMsgType }
+     * 
+     */
+    public SearchForSimilarProcessesInputMsgType createSearchForSimilarProcessesInputMsgType() {
+        return new SearchForSimilarProcessesInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link AnnotationsType }
+     * 
+     */
+    public AnnotationsType createAnnotationsType() {
+        return new AnnotationsType();
+    }
+
+    /**
+     * Create an instance of {@link MergeProcessesOutputMsgType }
+     * 
+     */
+    public MergeProcessesOutputMsgType createMergeProcessesOutputMsgType() {
+        return new MergeProcessesOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link CanonicalsType }
+     * 
+     */
+    public CanonicalsType createCanonicalsType() {
+        return new CanonicalsType();
+    }
+
+    /**
+     * Create an instance of {@link SearchForSimilarProcessesOutputMsgType }
+     * 
+     */
+    public SearchForSimilarProcessesOutputMsgType createSearchForSimilarProcessesOutputMsgType() {
+        return new SearchForSimilarProcessesOutputMsgType();
     }
 
     /**
