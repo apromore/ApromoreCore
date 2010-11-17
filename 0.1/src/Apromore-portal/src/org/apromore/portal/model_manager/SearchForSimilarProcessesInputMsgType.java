@@ -39,27 +39,27 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
     "algorithm",
     "parameters"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class SearchForSimilarProcessesInputMsgType {
 
     @XmlElement(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected int processId;
     @XmlElement(name = "VersionName", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String versionName;
     @XmlElement(name = "Algorithm", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String algorithm;
     @XmlElement(name = "Parameters", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ParametersType parameters;
 
     /**
      * Gets the value of the processId property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public int getProcessId() {
         return processId;
     }
@@ -68,7 +68,7 @@ public class SearchForSimilarProcessesInputMsgType {
      * Sets the value of the processId property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessId(int value) {
         this.processId = value;
     }
@@ -81,7 +81,7 @@ public class SearchForSimilarProcessesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getVersionName() {
         return versionName;
     }
@@ -94,7 +94,7 @@ public class SearchForSimilarProcessesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setVersionName(String value) {
         this.versionName = value;
     }
@@ -107,7 +107,7 @@ public class SearchForSimilarProcessesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getAlgorithm() {
         return algorithm;
     }
@@ -120,7 +120,7 @@ public class SearchForSimilarProcessesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setAlgorithm(String value) {
         this.algorithm = value;
     }
@@ -133,7 +133,7 @@ public class SearchForSimilarProcessesInputMsgType {
      *     {@link ParametersType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ParametersType getParameters() {
         return parameters;
     }
@@ -146,7 +146,7 @@ public class SearchForSimilarProcessesInputMsgType {
      *     {@link ParametersType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setParameters(ParametersType value) {
         this.parameters = value;
     }
@@ -157,7 +157,7 @@ public class SearchForSimilarProcessesInputMsgType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }

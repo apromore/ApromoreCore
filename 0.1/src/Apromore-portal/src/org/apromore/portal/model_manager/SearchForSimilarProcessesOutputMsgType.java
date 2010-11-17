@@ -1,8 +1,6 @@
 
 package org.apromore.portal.model_manager;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
@@ -23,7 +21,7 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="Result" type="{http://www.apromore.org/manager/model_portal}ResultType"/>
- *         &lt;element name="Canonicals" type="{http://www.apromore.org/manager/model_portal}CanonicalsType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="Canonicals" type="{http://www.apromore.org/manager/model_portal}CanonicalsType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -37,15 +35,15 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
     "result",
     "canonicals"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class SearchForSimilarProcessesOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ResultType result;
-    @XmlElement(name = "Canonicals")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected List<CanonicalsType> canonicals;
+    @XmlElement(name = "Canonicals", required = true)
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    protected CanonicalsType canonicals;
 
     /**
      * Gets the value of the result property.
@@ -55,7 +53,7 @@ public class SearchForSimilarProcessesOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ResultType getResult() {
         return result;
     }
@@ -68,7 +66,7 @@ public class SearchForSimilarProcessesOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -76,31 +74,27 @@ public class SearchForSimilarProcessesOutputMsgType {
     /**
      * Gets the value of the canonicals property.
      * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the canonicals property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getCanonicals().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link CanonicalsType }
-     * 
-     * 
+     * @return
+     *     possible object is
+     *     {@link CanonicalsType }
+     *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public List<CanonicalsType> getCanonicals() {
-        if (canonicals == null) {
-            canonicals = new ArrayList<CanonicalsType>();
-        }
-        return this.canonicals;
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public CanonicalsType getCanonicals() {
+        return canonicals;
+    }
+
+    /**
+     * Sets the value of the canonicals property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link CanonicalsType }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public void setCanonicals(CanonicalsType value) {
+        this.canonicals = value;
     }
 
     /**
@@ -109,7 +103,7 @@ public class SearchForSimilarProcessesOutputMsgType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-13T11:23:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
