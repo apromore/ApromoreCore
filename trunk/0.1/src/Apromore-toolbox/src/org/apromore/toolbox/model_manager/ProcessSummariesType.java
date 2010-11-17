@@ -13,16 +13,16 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for CanonicalsType complex type.
+ * <p>Java class for ProcessSummariesType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="CanonicalsType">
+ * &lt;complexType name="ProcessSummariesType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="CanonicalType" type="{http://www.apromore.org/toolbox/model_manager}CanonicalType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="ProcessSummary" type="{http://www.apromore.org/toolbox/model_manager}ProcessSummaryType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -32,44 +32,44 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CanonicalsType", propOrder = {
-    "canonicalType"
+@XmlType(name = "ProcessSummariesType", propOrder = {
+    "processSummary"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:11:17+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class CanonicalsType {
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:28:15+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+public class ProcessSummariesType {
 
-    @XmlElement(name = "CanonicalType")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:11:17+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected List<CanonicalType> canonicalType;
+    @XmlElement(name = "ProcessSummary")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:28:15+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    protected List<ProcessSummaryType> processSummary;
 
     /**
-     * Gets the value of the canonicalType property.
+     * Gets the value of the processSummary property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the canonicalType property.
+     * This is why there is not a <CODE>set</CODE> method for the processSummary property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getCanonicalType().add(newItem);
+     *    getProcessSummary().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link CanonicalType }
+     * {@link ProcessSummaryType }
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:11:17+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public List<CanonicalType> getCanonicalType() {
-        if (canonicalType == null) {
-            canonicalType = new ArrayList<CanonicalType>();
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:28:15+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public List<ProcessSummaryType> getProcessSummary() {
+        if (processSummary == null) {
+            processSummary = new ArrayList<ProcessSummaryType>();
         }
-        return this.canonicalType;
+        return this.processSummary;
     }
 
     /**
@@ -78,7 +78,7 @@ public class CanonicalsType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-11T04:11:17+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:28:15+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }

@@ -11,17 +11,16 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for ReadCanonicalsOutputMsgType complex type.
+ * <p>Java class for ReadProcessSummariesInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ReadCanonicalsOutputMsgType">
+ * &lt;complexType name="ReadProcessSummariesInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="Result" type="{http://www.apromore.org/data_access/model_toolbox}ResultType"/>
- *         &lt;element name="Canonicals" type="{http://www.apromore.org/data_access/model_toolbox}CanonicalsType"/>
+ *         &lt;element name="ProcessVersions" type="{http://www.apromore.org/data_access/model_toolbox}ProcessVersionsType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -31,70 +30,40 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReadCanonicalsOutputMsgType", propOrder = {
-    "result",
-    "canonicals"
+@XmlType(name = "ReadProcessSummariesInputMsgType", propOrder = {
+    "processVersions"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:49:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class ReadCanonicalsOutputMsgType {
+public class ReadProcessSummariesInputMsgType {
 
-    @XmlElement(name = "Result", required = true)
+    @XmlElement(name = "ProcessVersions", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:49:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected ResultType result;
-    @XmlElement(name = "Canonicals", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:49:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected CanonicalsType canonicals;
+    protected ProcessVersionsType processVersions;
 
     /**
-     * Gets the value of the result property.
+     * Gets the value of the processVersions property.
      * 
      * @return
      *     possible object is
-     *     {@link ResultType }
+     *     {@link ProcessVersionsType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:49:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public ResultType getResult() {
-        return result;
+    public ProcessVersionsType getProcessVersions() {
+        return processVersions;
     }
 
     /**
-     * Sets the value of the result property.
+     * Sets the value of the processVersions property.
      * 
      * @param value
      *     allowed object is
-     *     {@link ResultType }
+     *     {@link ProcessVersionsType }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:49:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setResult(ResultType value) {
-        this.result = value;
-    }
-
-    /**
-     * Gets the value of the canonicals property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link CanonicalsType }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:49:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public CanonicalsType getCanonicals() {
-        return canonicals;
-    }
-
-    /**
-     * Sets the value of the canonicals property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link CanonicalsType }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:49:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setCanonicals(CanonicalsType value) {
-        this.canonicals = value;
+    public void setProcessVersions(ProcessVersionsType value) {
+        this.processVersions = value;
     }
 
     /**
