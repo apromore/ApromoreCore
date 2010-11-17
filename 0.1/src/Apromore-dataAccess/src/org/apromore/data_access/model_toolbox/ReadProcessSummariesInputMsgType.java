@@ -6,7 +6,6 @@ import java.util.List;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.cxf.jaxb.JAXBToStringBuilder;
@@ -14,18 +13,17 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for AnnotationsType complex type.
+ * <p>Java class for ReadProcessSummariesInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="AnnotationsType">
+ * &lt;complexType name="ReadProcessSummariesInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="AnnotationName" type="{http://www.w3.org/2001/XMLSchema}string" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="ProcessVersions" type="{http://www.apromore.org/data_access/model_toolbox}ProcessVersionsType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
- *       &lt;attribute name="NativeType" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -34,73 +32,44 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "AnnotationsType", propOrder = {
-    "annotationName"
+@XmlType(name = "ReadProcessSummariesInputMsgType", propOrder = {
+    "processVersions"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class AnnotationsType {
+public class ReadProcessSummariesInputMsgType {
 
-    @XmlElement(name = "AnnotationName")
+    @XmlElement(name = "ProcessVersions")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected List<String> annotationName;
-    @XmlAttribute(name = "NativeType")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String nativeType;
+    protected List<ProcessVersionsType> processVersions;
 
     /**
-     * Gets the value of the annotationName property.
+     * Gets the value of the processVersions property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the annotationName property.
+     * This is why there is not a <CODE>set</CODE> method for the processVersions property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getAnnotationName().add(newItem);
+     *    getProcessVersions().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link String }
+     * {@link ProcessVersionsType }
      * 
      * 
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public List<String> getAnnotationName() {
-        if (annotationName == null) {
-            annotationName = new ArrayList<String>();
+    public List<ProcessVersionsType> getProcessVersions() {
+        if (processVersions == null) {
+            processVersions = new ArrayList<ProcessVersionsType>();
         }
-        return this.annotationName;
-    }
-
-    /**
-     * Gets the value of the nativeType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getNativeType() {
-        return nativeType;
-    }
-
-    /**
-     * Sets the value of the nativeType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:08:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setNativeType(String value) {
-        this.nativeType = value;
+        return this.processVersions;
     }
 
     /**
