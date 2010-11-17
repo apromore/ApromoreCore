@@ -390,21 +390,26 @@
 			<element name="Value" type="double" />
 		</sequence>
 	</complexType>
+
 	<complexType name="SearchForSimilarProcessesOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" />
-			<element name="Canonicals" type="tns:CanonicalsType" 
-				minOccurs="0" maxOccurs="unbounded" />
+			<element name="Canonicals" type="tns:CanonicalsType" />
 		</sequence>
 	</complexType>
 
 	<complexType name="CanonicalsType">
 		<sequence>
+			<element name="CanonicalType" type="tns:CanonicalType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+	<complexType name="CanonicalType">
+		<sequence>
 			<element name="ProcessId" type="int" />
 			<element name="VersionName" type="string" />
 			<element name="Cpf" type="base64Binary"
-				xmime:expectedContentTypes="application/octet-stream" minOccurs="0"
-				maxOccurs="unbounded" />
+				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
 	</complexType>
 
