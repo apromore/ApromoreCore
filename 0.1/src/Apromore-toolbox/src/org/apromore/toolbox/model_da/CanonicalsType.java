@@ -35,11 +35,11 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 @XmlType(name = "CanonicalsType", propOrder = {
     "canonical"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:49:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T04:19:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class CanonicalsType {
 
     @XmlElement(name = "Canonical", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:49:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T04:19:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<CanonicalType> canonical;
 
     /**
@@ -64,7 +64,7 @@ public class CanonicalsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:49:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T04:19:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<CanonicalType> getCanonical() {
         if (canonical == null) {
             canonical = new ArrayList<CanonicalType>();
@@ -78,7 +78,7 @@ public class CanonicalsType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-17T05:49:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T04:19:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }

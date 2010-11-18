@@ -37,51 +37,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SearchForSimilarProcessesOutputMsgType }
-     * 
-     */
-    public SearchForSimilarProcessesOutputMsgType createSearchForSimilarProcessesOutputMsgType() {
-        return new SearchForSimilarProcessesOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ParameterType }
-     * 
-     */
-    public ParameterType createParameterType() {
-        return new ParameterType();
-    }
-
-    /**
-     * Create an instance of {@link CpfIdsType }
-     * 
-     */
-    public CpfIdsType createCpfIdsType() {
-        return new CpfIdsType();
-    }
-
-    /**
-     * Create an instance of {@link ProcessSummariesType }
-     * 
-     */
-    public ProcessSummariesType createProcessSummariesType() {
-        return new ProcessSummariesType();
-    }
-
-    /**
      * Create an instance of {@link SearchForSimilarProcessesInputMsgType }
      * 
      */
     public SearchForSimilarProcessesInputMsgType createSearchForSimilarProcessesInputMsgType() {
         return new SearchForSimilarProcessesInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ResultType }
-     * 
-     */
-    public ResultType createResultType() {
-        return new ResultType();
     }
 
     /**
@@ -93,27 +53,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link MergeProcessesInputMsgType }
+     * Create an instance of {@link VersionSummaryType }
      * 
      */
-    public MergeProcessesInputMsgType createMergeProcessesInputMsgType() {
-        return new MergeProcessesInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ProcessSummaryType }
-     * 
-     */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
-    }
-
-    /**
-     * Create an instance of {@link CpfIdType }
-     * 
-     */
-    public CpfIdType createCpfIdType() {
-        return new CpfIdType();
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
     }
 
     /**
@@ -125,6 +69,62 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link SearchForSimilarProcessesOutputMsgType }
+     * 
+     */
+    public SearchForSimilarProcessesOutputMsgType createSearchForSimilarProcessesOutputMsgType() {
+        return new SearchForSimilarProcessesOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessSummaryType }
+     * 
+     */
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessVersionIdsType }
+     * 
+     */
+    public ProcessVersionIdsType createProcessVersionIdsType() {
+        return new ProcessVersionIdsType();
+    }
+
+    /**
+     * Create an instance of {@link ParameterType }
+     * 
+     */
+    public ParameterType createParameterType() {
+        return new ParameterType();
+    }
+
+    /**
+     * Create an instance of {@link ResultType }
+     * 
+     */
+    public ResultType createResultType() {
+        return new ResultType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessVersionIdType }
+     * 
+     */
+    public ProcessVersionIdType createProcessVersionIdType() {
+        return new ProcessVersionIdType();
+    }
+
+    /**
+     * Create an instance of {@link MergeProcessesInputMsgType }
+     * 
+     */
+    public MergeProcessesInputMsgType createMergeProcessesInputMsgType() {
+        return new MergeProcessesInputMsgType();
+    }
+
+    /**
      * Create an instance of {@link AnnotationsType }
      * 
      */
@@ -133,11 +133,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link VersionSummaryType }
+     * Create an instance of {@link ProcessSummariesType }
      * 
      */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
+    public ProcessSummariesType createProcessSummariesType() {
+        return new ProcessSummariesType();
     }
 
     /**
