@@ -24,7 +24,6 @@ import java.util.Vector;
 
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
-import javax.sql.DataSource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -42,6 +41,7 @@ import org.apromore.data_access.model_manager.ProcessSummariesType;
 import org.apromore.data_access.model_manager.ProcessSummaryType;
 import org.apromore.data_access.model_manager.VersionSummaryType;
 import org.apromore.data_access.model_toolbox.CanonicalType;
+import org.apromore.data_access.model_toolbox.ProcessVersionType;
 import org.wfmc._2008.xpdl2.Author;
 import org.wfmc._2008.xpdl2.Created;
 import org.wfmc._2008.xpdl2.Documentation;
@@ -383,14 +383,14 @@ public class ProcessDao extends BasicDao {
 			}
 			if (lastUpdate==null) lastUpdate="";
 			if (documentation==null) documentation="";
-			String cpf_uri = newCpf(processId, version);
+			String cpf_uri = newCpfURI(processId, version);
 			// copy parameters values in npf 
 			InputStream sync_npf = copyParam2NPF(process_xml, nativeType, cpf_uri, processName, version,
 					username, creationDate, lastUpdate, documentation);
-			//InputStream sync_anf = copyParam2ANF(anf_xml, cpf_uri, processName, version,
-			//		username, creationDate, lastUpdate);
+			InputStream sync_cpf = copyParam2CPF(cpf_xml, cpf_uri, processName, version,
+					username, creationDate, lastUpdate);
 			String process_string = inputStream2String(sync_npf).trim();
-			String cpf_string = inputStream2String(cpf_xml).trim();
+			String cpf_string = inputStream2String(sync_cpf).trim();
 			String anf_string = inputStream2String(anf_xml).trim();
 			query = " insert into " + ConstantDB.TABLE_CANONICALS
 			+ "(" + ConstantDB.ATTR_URI + ","
@@ -482,7 +482,7 @@ public class ProcessDao extends BasicDao {
 	 * @param version
 	 * @return
 	 */
-	private String newCpf(Integer processId, String version) {
+	private String newCpfURI(Integer processId, String version) {
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmS");
 		Date date = new Date();
 		String time = dateFormat.format(date);
@@ -596,6 +596,31 @@ public class ProcessDao extends BasicDao {
 		return res;
 	}
 
+	private InputStream copyParam2CPF(InputStream cpf_xml,
+			String cpf_uri, String processName,
+			String version, String username, String creationDate,
+			String lastUpdate) throws JAXBException {
+
+		InputStream res = null;
+
+		JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
+		Unmarshaller u = jc.createUnmarshaller();
+		JAXBElement<org.apromore.cpf.CanonicalProcessType> rootElement = 
+			(JAXBElement<org.apromore.cpf.CanonicalProcessType>) u.unmarshal(cpf_xml);
+		org.apromore.cpf.CanonicalProcessType cpf = rootElement.getValue();
+		cpf.setAuthor(username);
+		cpf.setName(processName);
+		cpf.setUri(cpf_uri);
+		cpf.setVersion(version);
+		cpf.setCreationDate(creationDate);
+		cpf.setModificationDate(lastUpdate);
+		Marshaller m = jc.createMarshaller();
+		m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+		ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
+		m.marshal(rootElement, xpdl_xml);
+		res = new ByteArrayInputStream(xpdl_xml.toByteArray());
+		return res;
+	}
 	/**
 	 * Modify pkg (npf of type xpdl) with parameters values if not null.
 	 * @param pkg
@@ -959,7 +984,7 @@ public class ProcessDao extends BasicDao {
 					// version "0.0" is the one created at process creation time. 
 					// Should be overridden by the next one.
 					// if preVersion != newVersion: try to derive newVersion from preVersion
-					String newCpf_uri = newCpf(processId, newVersion);
+					String newCpf_uri = newCpfURI(processId, newVersion);
 					copyParam2xpdl (pkg, newCpf_uri, processName, newVersion, username, creationDate, lastUpdate, documentation);
 					pkg.setId(newCpf_uri);
 					Marshaller m = jc.createMarshaller();
@@ -1032,7 +1057,7 @@ public class ProcessDao extends BasicDao {
 
 				if (preVersion.compareTo("0.0")!=0 && newVersion.compareTo(preVersion)!=0) {
 					// if preVersion != newVersion: try to derive newVersion from preVersion
-					String newCpf_uri = newCpf(processId, preVersion);
+					String newCpf_uri = newCpfURI(processId, preVersion);
 					deriveVersion (newCpf_uri, processId, preVersion, newVersion, nativeType, npf_is, cpf_is, apf_is,
 							editSessionCode, lastUpdate, documentation);
 					// TODO: copy the newCpf in epml object and synchronise data with npf.
@@ -1742,15 +1767,88 @@ public class ProcessDao extends BasicDao {
 	}
 
 	/**
-	 * 
+	 * Create a process whose name is processName, first version is versionName. The process is created by
+	 * username and its cpf is cpf_is.
 	 * @param processName
 	 * @param versionName
 	 * @param username
 	 * @param cpf_is
+	 * @throws SQLException 
+	 * @throws ExceptionDao 
 	 */
-	public void storeCpf(String processName, String versionName,
-			String username, InputStream cpf_is) {
-		// TODO
+	public org.apromore.data_access.model_toolbox.ProcessSummaryType 
+	storeCpf(String processName, String versionName, String username, InputStream cpf_is) throws SQLException, ExceptionDao {
+		Connection conn = null;
+		Statement stmt0 = null;
+		PreparedStatement stmtp = null;
+		ResultSet rs0 = null, keys = null;
+		String query = null;
+		String annotationName = Constants.INITIAL_ANNOTATION;
+		org.apromore.data_access.model_toolbox.ProcessSummaryType process = 
+			new org.apromore.data_access.model_toolbox.ProcessSummaryType();
+		org.apromore.data_access.model_toolbox.VersionSummaryType first_version =
+			new org.apromore.data_access.model_toolbox.VersionSummaryType();
+		process.getVersionSummaries().clear();
+		process.getVersionSummaries().add(first_version);
+		try {
+			conn = this.getConnection();
+			// store process details to get processId.
+			query = " insert into " + ConstantDB.TABLE_PROCESSES
+			+ "(" + ConstantDB.ATTR_NAME + ","
+			+		ConstantDB.ATTR_OWNER + ")"
+			+ " values (?, ?) ";
+			stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+			stmtp.setString(1, processName);
+			stmtp.setString(2, username);
+			int rs1 = stmtp.executeUpdate();
+			keys = stmtp.getGeneratedKeys() ;
+			if (!keys.next()) {
+				throw new ExceptionDao ("Error: cannot retrieve generated key.");
+			}
+			Integer processId = keys.getInt(1);
+			keys.close(); stmtp.close();
+
+			// Store informations given as parameters in both NPF and ANF
+			// creationDate might be null or empty. 
+			String creationDate = now();
+			String lastUpdate="";
+			String documentation="";
+			String cpf_uri = newCpfURI(processId, versionName);
+			InputStream sync_cpf = copyParam2CPF(cpf_is, cpf_uri, processName, versionName,
+					username, creationDate, lastUpdate);
+			String cpf_string = inputStream2String(sync_cpf).trim();
+			query = " insert into " + ConstantDB.TABLE_CANONICALS
+			+ "(" + ConstantDB.ATTR_URI + ","
+			+     ConstantDB.ATTR_PROCESSID + ","
+			+     ConstantDB.ATTR_VERSION_NAME + ","
+			+     ConstantDB.ATTR_CREATION_DATE + ","
+			+     ConstantDB.ATTR_LAST_UPDATE + ","
+			+     ConstantDB.ATTR_CONTENT + "," 
+			+	  ConstantDB.ATTR_DOCUMENTATION + ")"
+			+ " values (?, ?, ?, ?, ?, ?, ?) ";
+			//+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%s'), str_to_date(?,), ?, ?) ";
+			stmtp = conn.prepareStatement(query);
+			stmtp.setString(1, cpf_uri);
+			stmtp.setInt(2, processId);
+			stmtp.setString(3, versionName);
+			stmtp.setString(4,creationDate);
+			stmtp.setString(5,lastUpdate);
+			stmtp.setString(6, cpf_string);
+			stmtp.setString(7, documentation);
+			Integer rs2 = stmtp.executeUpdate();
+			conn.commit();
+		} catch (SQLException e) {
+			e.printStackTrace();
+			conn.rollback();
+			throw new ExceptionDao ("SQL error: " + e.getMessage() + "\n");
+		} catch (Exception e) {
+			e.printStackTrace();
+			conn.rollback();
+			throw new ExceptionDao ("Error: " + e.getMessage() + "\n");
+		} finally {
+			Release(conn, stmt0, rs0);
+		}
+		return process;
 	}
 
 	/**
@@ -1855,10 +1953,11 @@ public class ProcessDao extends BasicDao {
 
 	/**
 	 * Return all canonicals 
+	 * @param processVersionId TODO
 	 * @return
 	 * @throws ExceptionDao
 	 */
-	public List<CanonicalType> getAllCanonicals () throws ExceptionDao {
+	public List<CanonicalType> getCanonicals (List<ProcessVersionType> pvIds) throws ExceptionDao {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -1870,6 +1969,15 @@ public class ProcessDao extends BasicDao {
 			query = " select " + ConstantDB.ATTR_PROCESSID +", "+ 
 			ConstantDB.ATTR_VERSION_NAME + ", "+ ConstantDB.ATTR_CONTENT
 			+ " from " + ConstantDB.TABLE_CANONICALS;
+			if (pvIds.size()>0) {
+				String condition = " where " + ConstantDB.ATTR_PROCESSID + " = " + pvIds.get(0).getProcessId();
+				condition += " and " + ConstantDB.ATTR_VERSION_NAME + " = " + pvIds.get(0).getVersionName();
+				for(int i=1;i<pvIds.size();i++){
+					condition += " or " + ConstantDB.ATTR_PROCESSID + " = " + pvIds.get(i).getProcessId();
+					condition += " and " + ConstantDB.ATTR_VERSION_NAME + " = " + pvIds.get(i).getVersionName();
+				}
+				query += condition;
+			}
 			rs = stmt.executeQuery(query);
 			while (rs.next()) {
 				CanonicalType cpf = new CanonicalType();

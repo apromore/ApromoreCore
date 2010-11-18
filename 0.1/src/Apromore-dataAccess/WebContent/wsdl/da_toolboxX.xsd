@@ -16,7 +16,10 @@
 	</complexType>
 
 	<complexType name="ReadCanonicalsInputMsgType">
-		<attribute name="Empty" type="string" use="optional" />
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="ProcessVersion"
+				type="tns:ProcessVersionType" />
+		</sequence>
 	</complexType>
 
 	<complexType name="ReadCanonicalsOutputMsgType">
@@ -102,8 +105,8 @@
 
 	<complexType name="ReadProcessSummariesInputMsgType">
 		<sequence>
-			<element name="ProcessVersions" type="tns:ProcessVersionsType" 
-			minOccurs="1" maxOccurs="1" />
+			<element name="ProcessVersions" type="tns:ProcessVersionsType"
+				minOccurs="1" maxOccurs="1" />
 		</sequence>
 	</complexType>
 
@@ -113,6 +116,7 @@
 				type="tns:ProcessVersionType" />
 		</sequence>
 	</complexType>
+	
 	<complexType name="ProcessVersionType">
 		<attribute name="ProcessId" type="int" />
 		<attribute name="VersionName" type="string" />

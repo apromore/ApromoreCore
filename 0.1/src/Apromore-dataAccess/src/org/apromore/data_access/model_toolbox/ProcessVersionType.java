@@ -4,25 +4,23 @@ package org.apromore.data_access.model_toolbox;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.cxf.jaxb.JAXBToStringBuilder;
 import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for ReadCanonicalsOutputMsgType complex type.
+ * <p>Java class for ProcessVersionType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ReadCanonicalsOutputMsgType">
+ * &lt;complexType name="ProcessVersionType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="Result" type="{http://www.apromore.org/data_access/model_toolbox}ResultType"/>
- *         &lt;element name="Canonicals" type="{http://www.apromore.org/data_access/model_toolbox}CanonicalsType"/>
- *       &lt;/sequence>
+ *       &lt;attribute name="ProcessId" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="VersionName" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -31,70 +29,67 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ReadCanonicalsOutputMsgType", propOrder = {
-    "result",
-    "canonicals"
-})
+@XmlType(name = "ProcessVersionType")
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T04:27:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class ReadCanonicalsOutputMsgType {
+public class ProcessVersionType {
 
-    @XmlElement(name = "Result", required = true)
+    @XmlAttribute(name = "ProcessId")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T04:27:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected ResultType result;
-    @XmlElement(name = "Canonicals", required = true)
+    protected Integer processId;
+    @XmlAttribute(name = "VersionName")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T04:27:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected CanonicalsType canonicals;
+    protected String versionName;
 
     /**
-     * Gets the value of the result property.
+     * Gets the value of the processId property.
      * 
      * @return
      *     possible object is
-     *     {@link ResultType }
+     *     {@link Integer }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T04:27:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public ResultType getResult() {
-        return result;
+    public Integer getProcessId() {
+        return processId;
     }
 
     /**
-     * Sets the value of the result property.
+     * Sets the value of the processId property.
      * 
      * @param value
      *     allowed object is
-     *     {@link ResultType }
+     *     {@link Integer }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T04:27:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setResult(ResultType value) {
-        this.result = value;
+    public void setProcessId(Integer value) {
+        this.processId = value;
     }
 
     /**
-     * Gets the value of the canonicals property.
+     * Gets the value of the versionName property.
      * 
      * @return
      *     possible object is
-     *     {@link CanonicalsType }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T04:27:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public CanonicalsType getCanonicals() {
-        return canonicals;
+    public String getVersionName() {
+        return versionName;
     }
 
     /**
-     * Sets the value of the canonicals property.
+     * Sets the value of the versionName property.
      * 
      * @param value
      *     allowed object is
-     *     {@link CanonicalsType }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T04:27:53+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setCanonicals(CanonicalsType value) {
-        this.canonicals = value;
+    public void setVersionName(String value) {
+        this.versionName = value;
     }
 
     /**
