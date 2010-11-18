@@ -142,7 +142,7 @@ public class EPML2Canonical{
 		main(epml);
 	}
 
-	void main(TypeEPML epml)
+	void main(TypeEPML epml) throws ExceptionAdapters
 	{
 		epml = removeFakes(epml);
 		
