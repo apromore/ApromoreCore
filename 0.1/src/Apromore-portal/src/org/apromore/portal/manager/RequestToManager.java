@@ -29,8 +29,8 @@ import org.apromore.portal.exception.ExceptionUser;
 import org.apromore.portal.exception.ExceptionVersion;
 import org.apromore.portal.exception.ExceptionWriteEditSession;
 import org.apromore.portal.model_manager.CanonicalsType;
-import org.apromore.portal.model_manager.CpfIdType;
-import org.apromore.portal.model_manager.CpfIdsType;
+import org.apromore.portal.model_manager.ProcessVersionIdType;
+import org.apromore.portal.model_manager.ProcessVersionIdsType;
 import org.apromore.portal.model_manager.DeleteEditSessionInputMsgType;
 import org.apromore.portal.model_manager.DeleteEditSessionOutputMsgType;
 import org.apromore.portal.model_manager.DeleteProcessVersionsInputMsgType;
@@ -248,12 +248,12 @@ public class RequestToManager {
 		payload.setUsername(mergedUsername);
 
 		// process models 
-		CpfIdsType modelIdList = new CpfIdsType();
+		ProcessVersionIdsType modelIdList = new ProcessVersionIdsType();
 		for (Integer i : mergeModelIds) {
-			CpfIdType id = new CpfIdType();
+			ProcessVersionIdType id = new ProcessVersionIdType();
 			id.setProcessId(i);
 		}
-		payload.setCpfIds(modelIdList);
+		payload.setProcessVersionIds(modelIdList);
 		payload.setAlgorithm(method);
 
 		// PARAMETERS
