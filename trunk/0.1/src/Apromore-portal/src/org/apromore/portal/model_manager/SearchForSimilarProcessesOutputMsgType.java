@@ -35,14 +35,14 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
     "result",
     "canonicals"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T01:22:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class SearchForSimilarProcessesOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T01:22:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ResultType result;
     @XmlElement(name = "Canonicals", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T01:22:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected CanonicalsType canonicals;
 
     /**
@@ -53,7 +53,7 @@ public class SearchForSimilarProcessesOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T01:22:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ResultType getResult() {
         return result;
     }
@@ -66,7 +66,7 @@ public class SearchForSimilarProcessesOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T01:22:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -79,7 +79,7 @@ public class SearchForSimilarProcessesOutputMsgType {
      *     {@link CanonicalsType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T01:22:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public CanonicalsType getCanonicals() {
         return canonicals;
     }
@@ -92,7 +92,7 @@ public class SearchForSimilarProcessesOutputMsgType {
      *     {@link CanonicalsType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T01:22:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setCanonicals(CanonicalsType value) {
         this.canonicals = value;
     }
@@ -103,7 +103,7 @@ public class SearchForSimilarProcessesOutputMsgType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:57:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T01:22:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
