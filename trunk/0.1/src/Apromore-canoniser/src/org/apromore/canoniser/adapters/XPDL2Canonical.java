@@ -117,11 +117,11 @@ public class XPDL2Canonical {
 	}
 	
 	public XPDL2Canonical(PackageType pkg, long id) throws ExceptionAdapters {
-		this.cpf = id;
+		this.cpfId = id;
 		main(pkg);
 	}
 	
-	void main(PackageType pkg)
+	void main(PackageType pkg) throws ExceptionAdapters
 	{
 		this.cpf = new CanonicalProcessType();
 		this.anf = new AnnotationsType();
