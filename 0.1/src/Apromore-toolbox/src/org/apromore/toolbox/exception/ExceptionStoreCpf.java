@@ -1,22 +1,22 @@
 package org.apromore.toolbox.exception;
 
-public class ExceptionReadAllCanonicals extends Exception {
+public class ExceptionStoreCpf extends Exception {
 
-	public ExceptionReadAllCanonicals() {
+	public ExceptionStoreCpf() {
 		// TODO Auto-generated constructor stub
 	}
 
-	public ExceptionReadAllCanonicals(String message) {
+	public ExceptionStoreCpf(String message) {
 		super(message);
 		// TODO Auto-generated constructor stub
 	}
 
-	public ExceptionReadAllCanonicals(Throwable cause) {
+	public ExceptionStoreCpf(Throwable cause) {
 		super(cause);
 		// TODO Auto-generated constructor stub
 	}
 
-	public ExceptionReadAllCanonicals(String message, Throwable cause) {
+	public ExceptionStoreCpf(String message, Throwable cause) {
 		super(message, cause);
 		// TODO Auto-generated constructor stub
 	}
