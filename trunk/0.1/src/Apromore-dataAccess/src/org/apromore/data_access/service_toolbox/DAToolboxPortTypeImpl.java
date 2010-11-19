@@ -110,11 +110,12 @@ public class DAToolboxPortTypeImpl implements DAToolboxPortType {
         String processName = payload.getProcessName();
         String versionName = payload.getVersion();
         String username = payload.getUsername();
+        String cpf_uri = payload.getCpfUri();
         DataHandler handler = payload.getCpf();
         try {
             InputStream cpf_is = handler.getInputStream();
             org.apromore.data_access.model_toolbox.ProcessSummaryType process = 
-            	ProcessDao.getInstance().storeCpf(processName, versionName, username, cpf_is);
+            	ProcessDao.getInstance().storeCpf(processName, versionName, username, cpf_is, cpf_uri);
             res.setProcessSummary(process);
             result.setCode(0);
             result.setMessage("");
