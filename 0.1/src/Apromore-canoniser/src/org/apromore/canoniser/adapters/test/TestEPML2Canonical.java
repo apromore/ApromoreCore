@@ -15,9 +15,7 @@ import org.apromore.canoniser.adapters.Canonical2EPML;
 import org.apromore.canoniser.adapters.Canonical2XPDL;
 import org.apromore.canoniser.adapters.EPML2Canonical;
 import org.apromore.canoniser.adapters.XPDL2Canonical;
-import org.apromore.canoniser.exception.ExceptionStore;
 import org.apromore.cpf.CanonicalProcessType;
-import org.wfmc._2008.xpdl2.PackageType;
 
 import de.epml.TypeEPML;
 

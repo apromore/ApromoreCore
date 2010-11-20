@@ -302,7 +302,7 @@ import de.epml.TypeEPML;
 			ByteArrayOutputStream anf_xml, ByteArrayOutputStream cpf_xml, long cpf_uri) throws ExceptionAdapters, JAXBException {
 		/**
 		 * native type must be supported by apromore.
-		 * At the moment: XPDL 2.1 adn EPML 2.0
+		 * At the moment: XPDL 2.1 and EPML 2.0
 		 */
 		long cpf_uri_to_store = cpf_uri;
 		if (nativeType.compareTo("XPDL 2.1")==0) {
