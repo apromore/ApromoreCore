@@ -187,8 +187,7 @@ import de.epml.TypeEPML;
 			String lastupdate = payload.getLastUpdate();
 			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream(), 
 			cpf_xml = new ByteArrayOutputStream();
-			// processId is used to generate a cpf_uri. As here, we don't know it, we give an arbitrary value: 9
-			String cpf_uri = newCpfURI(9, versionName);
+			String cpf_uri = newCpfURI();
 			Canonise (process_xml, nativeType, anf_xml, cpf_xml, Long.parseLong(cpf_uri));
 			InputStream anf_is = new ByteArrayInputStream(anf_xml.toByteArray());
 			InputStream cpf_is = new ByteArrayInputStream(cpf_xml.toByteArray());
@@ -223,6 +222,7 @@ import de.epml.TypeEPML;
 			String nativeType = payload.getNativeType();
 			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream(), 
 			cpf_xml = new ByteArrayOutputStream();
+			// as the canonical has not changed, no need for a cpf_uri: give 0
 			Canonise(npf_is, nativeType, anf_xml, cpf_xml, 0);
 			npf_is.reset();
 			InputStream anf_is = new ByteArrayInputStream(anf_xml.toByteArray());			
@@ -255,7 +255,7 @@ import de.epml.TypeEPML;
 			String preVersion = payload.getPreVersion();
 			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream(), 
 			cpf_xml = new ByteArrayOutputStream();
-			String cpf_uri = newCpfURI(processId, preVersion);
+			String cpf_uri = newCpfURI();
 			Canonise (process_xml, nativeType, anf_xml, cpf_xml, Long.parseLong(cpf_uri));
 			InputStream anf_is = new ByteArrayInputStream(anf_xml.toByteArray());
 			InputStream cpf_is = new ByteArrayInputStream(cpf_xml.toByteArray());
@@ -312,7 +312,7 @@ import de.epml.TypeEPML;
 			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
 			PackageType pkg = rootElement.getValue();
 			XPDL2Canonical xpdl2canonical = new XPDL2Canonical(pkg, cpf_uri_to_store);
-
+			// cpf_uri=0 means that the cpf has not been changed, so take its uri from its xml description
 			if (cpf_uri==0) {
 				cpf_uri_to_store = Long.parseLong(pkg.getId());
 			} 
@@ -367,10 +367,10 @@ import de.epml.TypeEPML;
 	 * @param version
 	 * @return
 	 */
-	private String newCpfURI(Integer processId, String version) {
-		DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmS");
+	private String newCpfURI() {
+		DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmsSSS");
 		Date date = new Date();
 		String time = dateFormat.format(date);
-		return processId.toString() + version.replaceAll("\\.", "") + time;
+		return time;
 	}
 }
