@@ -7,7 +7,10 @@
 package org.apromore.data_access.service_toolbox;
 
 import java.io.InputStream;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -110,12 +113,11 @@ public class DAToolboxPortTypeImpl implements DAToolboxPortType {
         String processName = payload.getProcessName();
         String versionName = payload.getVersion();
         String username = payload.getUsername();
-        String cpf_uri = payload.getCpfUri();
         DataHandler handler = payload.getCpf();
         try {
             InputStream cpf_is = handler.getInputStream();
             org.apromore.data_access.model_toolbox.ProcessSummaryType process = 
-            	ProcessDao.getInstance().storeCpf(processName, versionName, username, cpf_is, cpf_uri);
+            	ProcessDao.getInstance().storeCpf(processName, versionName, username, cpf_is, newCpfURI());
             res.setProcessSummary(process);
             result.setCode(0);
             result.setMessage("");
@@ -125,5 +127,16 @@ public class DAToolboxPortTypeImpl implements DAToolboxPortType {
         }
         return res;
     }
-
+    /**
+	 * Generate a cpf uri for version of processId
+	 * @param processId
+	 * @param version
+	 * @return
+	 */
+	private String newCpfURI() {
+		DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmsSSS");
+		Date date = new Date();
+		String time = dateFormat.format(date);
+		return time;
+	}
 }
