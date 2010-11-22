@@ -32,13 +32,7 @@
       <element name="Annotation" type="anf:AnnotationType" minOccurs="1" maxOccurs="unbounded"/>
     </sequence>
     <attribute name="uri" type="anyURI" use="required"/>
-    <attribute name="version" type="string" use="required"/>
     <attribute name="name" type="string" use="optional"/>
-   	<attribute name="author" type="string"/>
-   	<attribute name="creationDate" type="string"/>
-   	<attribute name="modificationDate" type="string"/>    
-    <attribute name="cpfUri" type="anyURI" use="required"/>
-    <attribute name="cpfVersion" type="decimal" use="required"/>
   </complexType>    
 
   <complexType name="AnnotationType">
