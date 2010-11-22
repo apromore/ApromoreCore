@@ -22,7 +22,7 @@
         xmlns:cpf="http://www.apromore.org/CPF"
         targetNamespace="http://www.apromore.org/CPF"
         attributeFormDefault="unqualified" elementFormDefault="unqualified"
-        version="0.4">
+        version="0.5">
 
   <element name="CanonicalProcess" type="cpf:CanonicalProcessType">
     <unique name="nIdUn"><!-- all net ids must be different -->
@@ -85,11 +85,11 @@
    	  <element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded"/>
     </sequence>
     <attribute name="uri" type="anyURI" use="required"/>
-    <attribute name="version" type="decimal" use="required"/>
+    <attribute name="version" type="string" use="required"/>
     <attribute name="name" type="string" use="required"/>
    	<attribute name="author" type="string"/>
-   	<attribute name="creationDate" type="dateTime"/>
-   	<attribute name="modificationDate" type="dateTime"/>
+   	<attribute name="creationDate" type="string"/>
+   	<attribute name="modificationDate" type="string"/>
     <attribute name="rootId" type="positiveInteger" use="required"/>
   </complexType>    
 
