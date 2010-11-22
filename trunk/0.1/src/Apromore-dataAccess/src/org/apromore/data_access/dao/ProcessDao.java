@@ -384,9 +384,10 @@ public class ProcessDao extends BasicDao {
 			if (lastUpdate==null) lastUpdate="";
 			if (documentation==null) documentation="";
 			// copy parameters values in sync_npf and retrieve cpf_uri
-			String cpf_uri = null;
+			StringBuilder cpf_uri_builder = new StringBuilder();
 			InputStream sync_npf = copyParam2NPF(process_xml, nativeType, processName, version,
-					username, creationDate, lastUpdate, documentation, cpf_uri);
+					username, creationDate, lastUpdate, documentation, cpf_uri_builder);
+			String cpf_uri = cpf_uri_builder.toString();
 			// copy parameter values in sync_cpf
 			InputStream sync_cpf = copyParam2CPF(cpf_xml, processName, version,
 					username, creationDate, lastUpdate);
@@ -548,7 +549,7 @@ public class ProcessDao extends BasicDao {
 	private InputStream copyParam2NPF(InputStream process_xml,
 			String nativeType, String processName,
 			String version, String username, String creationDate,
-			String lastUpdate, String documentation, String cpf_uri) throws JAXBException {
+			String lastUpdate, String documentation, StringBuilder cpf_uri) throws JAXBException {
 
 		InputStream res = null;
 		if (nativeType.compareTo("XPDL 2.1")==0) {
@@ -556,7 +557,7 @@ public class ProcessDao extends BasicDao {
 			Unmarshaller u = jc.createUnmarshaller();
 			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
 			PackageType pkg = rootElement.getValue();
-			cpf_uri = pkg.getId();
+			cpf_uri.append(pkg.getId());
 			copyParam2xpdl (pkg, processName, version, username, creationDate, lastUpdate, documentation);
 
 			Marshaller m = jc.createMarshaller();
