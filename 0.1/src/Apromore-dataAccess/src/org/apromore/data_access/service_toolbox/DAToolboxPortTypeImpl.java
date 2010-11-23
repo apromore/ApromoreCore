@@ -60,8 +60,7 @@ public class DAToolboxPortTypeImpl implements DAToolboxPortType {
         ResultType result = new ResultType();
         ReadProcessSummariesOutputMsgType res = new ReadProcessSummariesOutputMsgType();
         res.setResult(result);
-        try {
-            
+        try {        
         	List<Integer> processIds = new ArrayList<Integer>();
         	List<String> versionNames = new ArrayList<String>();
         	for (ProcessVersionType pv: payload.getProcessVersions().getProcessVersion()) {
