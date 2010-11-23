@@ -56,7 +56,7 @@ public class RequestToDA {
 	throws ExceptionReadProcessSummaries {
 		org.apromore.toolbox.model_da.ReadProcessSummariesInputMsgType payload =
 			new ReadProcessSummariesInputMsgType();
-		
+		payload.setProcessVersions(processes);
 		ProcessSummariesType toReturn = null;
 		ReadProcessSummariesOutputMsgType res = this.port.readProcessSummaries(payload);
 		ResultType result = res.getResult();
