@@ -13,16 +13,16 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for Cpf_idsType complex type.
+ * <p>Java class for ProcessSummariesType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="Cpf_idsType">
+ * &lt;complexType name="ProcessSummariesType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="Cpf_id" type="{http://www.apromore.org/toolbox/model_manager}Cpf_idType" maxOccurs="unbounded"/>
+ *         &lt;element name="ProcessSummary" type="{http://www.apromore.org/toolbox/model_manager}ProcessSummaryType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -32,44 +32,44 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "Cpf_idsType", propOrder = {
-    "cpfId"
+@XmlType(name = "ProcessSummariesType", propOrder = {
+    "processSummary"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class CpfIdsType {
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:48:57+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+public class ProcessSummariesType {
 
-    @XmlElement(name = "Cpf_id", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected List<CpfIdType> cpfId;
+    @XmlElement(name = "ProcessSummary")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:48:57+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    protected List<ProcessSummaryType> processSummary;
 
     /**
-     * Gets the value of the cpfId property.
+     * Gets the value of the processSummary property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the cpfId property.
+     * This is why there is not a <CODE>set</CODE> method for the processSummary property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getCpfId().add(newItem);
+     *    getProcessSummary().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link CpfIdType }
+     * {@link ProcessSummaryType }
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public List<CpfIdType> getCpfId() {
-        if (cpfId == null) {
-            cpfId = new ArrayList<CpfIdType>();
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:48:57+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public List<ProcessSummaryType> getProcessSummary() {
+        if (processSummary == null) {
+            processSummary = new ArrayList<ProcessSummaryType>();
         }
-        return this.cpfId;
+        return this.processSummary;
     }
 
     /**
@@ -78,7 +78,7 @@ public class CpfIdsType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:48:57+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
