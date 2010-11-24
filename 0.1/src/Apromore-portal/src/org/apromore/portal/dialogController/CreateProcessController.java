@@ -175,45 +175,9 @@ public class CreateProcessController {
 				String nativeType = this.nativeTypesLB.getSelectedItem().getLabel();
 				String versionName = "0.0";
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
-		        Date date = new Date();
-		        String creationDate = dateFormat.format(date);
-				// create an empty model corresponding to the native type
-		        // must have at least creation date, author, process name, version name
+		        String creationDate = dateFormat.format(new Date());
 				InputStream nativeProcess = null;
-				if ("XPDL 2.1".compareTo(nativeType)==0) {
-					PackageType pkg = new PackageType();
-					pkg.setName(processName);
-					PackageHeader hder = new PackageHeader();
-					pkg.setPackageHeader(hder);
-					RedefinableHeader rhder = new RedefinableHeader();
-					pkg.setRedefinableHeader(rhder);
-					Author author = new Author();
-					rhder.setAuthor(author);
-					author.setValue(owner);
-					Version version = new Version();
-					rhder.setVersion(version);
-					version.setValue(versionName);
-					Created created = new Created();
-					hder.setCreated(created);
-			        created.setValue(creationDate);
-					JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
-	                Marshaller m = jc.createMarshaller();
-	                m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-	                JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(pkg);
-	                ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
-	                m.marshal(rootxpdl, xpdl_xml);
-	                nativeProcess = new ByteArrayInputStream(xpdl_xml.toByteArray());
-
-				} else if ("EPML 2.0".compareTo(nativeType)==0) {
-					TypeEPML epml = new TypeEPML();
-					JAXBContext jc = JAXBContext.newInstance("de.epml");
-	                Marshaller m = jc.createMarshaller();
-	                m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-	                JAXBElement<TypeEPML> rootepml = new de.epml.ObjectFactory().createEpml(epml);
-	                ByteArrayOutputStream epml_xml = new ByteArrayOutputStream();
-	                m.marshal(rootepml, epml_xml);
-	                nativeProcess = new ByteArrayInputStream(epml_xml.toByteArray());
-				}				
+				// call import with empty native
 				ProcessSummaryType process = 
 					request.importProcess(owner, nativeType, processName, versionName, 
 							nativeProcess, domain, null, creationDate, null);
