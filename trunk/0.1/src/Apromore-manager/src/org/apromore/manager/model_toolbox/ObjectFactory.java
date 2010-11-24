@@ -45,6 +45,38 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ProcessVersionIdType }
+     * 
+     */
+    public ProcessVersionIdType createProcessVersionIdType() {
+        return new ProcessVersionIdType();
+    }
+
+    /**
+     * Create an instance of {@link ParametersType }
+     * 
+     */
+    public ParametersType createParametersType() {
+        return new ParametersType();
+    }
+
+    /**
+     * Create an instance of {@link SearchForSimilarProcessesOutputMsgType }
+     * 
+     */
+    public SearchForSimilarProcessesOutputMsgType createSearchForSimilarProcessesOutputMsgType() {
+        return new SearchForSimilarProcessesOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link MergeProcessesOutputMsgType }
+     * 
+     */
+    public MergeProcessesOutputMsgType createMergeProcessesOutputMsgType() {
+        return new MergeProcessesOutputMsgType();
+    }
+
+    /**
      * Create an instance of {@link ProcessSummaryType }
      * 
      */
@@ -61,27 +93,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link CanonicalType }
+     * Create an instance of {@link ProcessVersionIdsType }
      * 
      */
-    public CanonicalType createCanonicalType() {
-        return new CanonicalType();
-    }
-
-    /**
-     * Create an instance of {@link ParameterType }
-     * 
-     */
-    public ParameterType createParameterType() {
-        return new ParameterType();
-    }
-
-    /**
-     * Create an instance of {@link CpfIdsType }
-     * 
-     */
-    public CpfIdsType createCpfIdsType() {
-        return new CpfIdsType();
+    public ProcessVersionIdsType createProcessVersionIdsType() {
+        return new ProcessVersionIdsType();
     }
 
     /**
@@ -93,19 +109,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ParametersType }
+     * Create an instance of {@link AnnotationsType }
      * 
      */
-    public ParametersType createParametersType() {
-        return new ParametersType();
+    public AnnotationsType createAnnotationsType() {
+        return new AnnotationsType();
     }
 
     /**
-     * Create an instance of {@link CpfIdType }
+     * Create an instance of {@link ProcessSummariesType }
      * 
      */
-    public CpfIdType createCpfIdType() {
-        return new CpfIdType();
+    public ProcessSummariesType createProcessSummariesType() {
+        return new ProcessSummariesType();
     }
 
     /**
@@ -117,35 +133,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link AnnotationsType }
+     * Create an instance of {@link ParameterType }
      * 
      */
-    public AnnotationsType createAnnotationsType() {
-        return new AnnotationsType();
-    }
-
-    /**
-     * Create an instance of {@link MergeProcessesOutputMsgType }
-     * 
-     */
-    public MergeProcessesOutputMsgType createMergeProcessesOutputMsgType() {
-        return new MergeProcessesOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link CanonicalsType }
-     * 
-     */
-    public CanonicalsType createCanonicalsType() {
-        return new CanonicalsType();
-    }
-
-    /**
-     * Create an instance of {@link SearchForSimilarProcessesOutputMsgType }
-     * 
-     */
-    public SearchForSimilarProcessesOutputMsgType createSearchForSimilarProcessesOutputMsgType() {
-        return new SearchForSimilarProcessesOutputMsgType();
+    public ParameterType createParameterType() {
+        return new ParameterType();
     }
 
     /**

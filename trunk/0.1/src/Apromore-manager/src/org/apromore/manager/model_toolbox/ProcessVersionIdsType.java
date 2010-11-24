@@ -13,16 +13,16 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for CanonicalsType complex type.
+ * <p>Java class for ProcessVersion_idsType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="CanonicalsType">
+ * &lt;complexType name="ProcessVersion_idsType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="CanonicalType" type="{http://www.apromore.org/toolbox/model_manager}CanonicalType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="ProcessVersion_id" type="{http://www.apromore.org/toolbox/model_manager}ProcessVersion_idType" maxOccurs="unbounded"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -32,44 +32,44 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "CanonicalsType", propOrder = {
-    "canonicalType"
+@XmlType(name = "ProcessVersion_idsType", propOrder = {
+    "processVersionId"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class CanonicalsType {
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:48:57+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+public class ProcessVersionIdsType {
 
-    @XmlElement(name = "CanonicalType")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected List<CanonicalType> canonicalType;
+    @XmlElement(name = "ProcessVersion_id", required = true)
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:48:57+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    protected List<ProcessVersionIdType> processVersionId;
 
     /**
-     * Gets the value of the canonicalType property.
+     * Gets the value of the processVersionId property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the canonicalType property.
+     * This is why there is not a <CODE>set</CODE> method for the processVersionId property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getCanonicalType().add(newItem);
+     *    getProcessVersionId().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link CanonicalType }
+     * {@link ProcessVersionIdType }
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public List<CanonicalType> getCanonicalType() {
-        if (canonicalType == null) {
-            canonicalType = new ArrayList<CanonicalType>();
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:48:57+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public List<ProcessVersionIdType> getProcessVersionId() {
+        if (processVersionId == null) {
+            processVersionId = new ArrayList<ProcessVersionIdType>();
         }
-        return this.canonicalType;
+        return this.processVersionId;
     }
 
     /**
@@ -78,7 +78,7 @@ public class CanonicalsType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:48:57+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
