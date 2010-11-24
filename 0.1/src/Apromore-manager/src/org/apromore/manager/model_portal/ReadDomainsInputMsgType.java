@@ -29,11 +29,11 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ReadDomainsInputMsgType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:55:41+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ReadDomainsInputMsgType {
 
     @XmlAttribute(name = "Empty")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:55:41+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String empty;
 
     /**
@@ -44,7 +44,7 @@ public class ReadDomainsInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:55:41+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getEmpty() {
         return empty;
     }
@@ -57,7 +57,7 @@ public class ReadDomainsInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:55:41+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setEmpty(String value) {
         this.empty = value;
     }
@@ -68,7 +68,7 @@ public class ReadDomainsInputMsgType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:55:41+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
