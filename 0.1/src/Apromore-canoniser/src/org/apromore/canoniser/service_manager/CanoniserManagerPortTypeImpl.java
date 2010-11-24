@@ -187,8 +187,7 @@ import de.epml.TypeEPML;
 			String lastupdate = payload.getLastUpdate();
 			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream(), 
 			cpf_xml = new ByteArrayOutputStream();
-			String cpf_uri = newCpfURI();
-			Canonise (process_xml, nativeType, anf_xml, cpf_xml, Long.parseLong(cpf_uri));
+			Canonise (process_xml, nativeType, anf_xml, cpf_xml);
 			InputStream anf_is = new ByteArrayInputStream(anf_xml.toByteArray());
 			InputStream cpf_is = new ByteArrayInputStream(cpf_xml.toByteArray());
 			RequestToDA request = new RequestToDA();
@@ -222,8 +221,7 @@ import de.epml.TypeEPML;
 			String nativeType = payload.getNativeType();
 			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream(), 
 			cpf_xml = new ByteArrayOutputStream();
-			// as the canonical has not changed, no need for a cpf_uri: give 0
-			Canonise(npf_is, nativeType, anf_xml, cpf_xml, 0);
+			Canonise(npf_is, nativeType, anf_xml, cpf_xml);
 			npf_is.reset();
 			InputStream anf_is = new ByteArrayInputStream(anf_xml.toByteArray());			
 			RequestToDA request = new RequestToDA();
@@ -255,8 +253,7 @@ import de.epml.TypeEPML;
 			String preVersion = payload.getPreVersion();
 			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream(), 
 			cpf_xml = new ByteArrayOutputStream();
-			String cpf_uri = newCpfURI();
-			Canonise (process_xml, nativeType, anf_xml, cpf_xml, Long.parseLong(cpf_uri));
+			Canonise (process_xml, nativeType, anf_xml, cpf_xml);
 			InputStream anf_is = new ByteArrayInputStream(anf_xml.toByteArray());
 			InputStream cpf_is = new ByteArrayInputStream(cpf_xml.toByteArray());
 			RequestToDA request = new RequestToDA();
@@ -299,23 +296,18 @@ import de.epml.TypeEPML;
 	 * @throws JAXBException
 	 */
 	private void Canonise (InputStream process_xml, String nativeType,
-			ByteArrayOutputStream anf_xml, ByteArrayOutputStream cpf_xml, long cpf_uri) throws ExceptionAdapters, JAXBException {
+			ByteArrayOutputStream anf_xml, ByteArrayOutputStream cpf_xml) throws ExceptionAdapters, JAXBException {
 		/**
 		 * native type must be supported by apromore.
 		 * At the moment: XPDL 2.1 and EPML 2.0
 		 */
-		long cpf_uri_to_store = cpf_uri;
 		if (nativeType.compareTo("XPDL 2.1")==0) {
 
 			JAXBContext jc1 = JAXBContext.newInstance(Constants.JAXB_CONTEXT_XPDL);
 			Unmarshaller u = jc1.createUnmarshaller();
 			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
 			PackageType pkg = rootElement.getValue();
-			XPDL2Canonical xpdl2canonical = new XPDL2Canonical(pkg, cpf_uri_to_store);
-			// cpf_uri=0 means that the cpf has not been changed, so take its uri from its xml description
-			if (cpf_uri==0) {
-				cpf_uri_to_store = Long.parseLong(pkg.getId());
-			} 
+			XPDL2Canonical xpdl2canonical = new XPDL2Canonical(pkg, Long.parseLong(pkg.getId()));
 			
 			jc1 = JAXBContext.newInstance(Constants.JAXB_CONTEXT_ANF);
 			Marshaller m_anf = jc1.createMarshaller();
@@ -337,10 +329,7 @@ import de.epml.TypeEPML;
 			Unmarshaller u = jc1.createUnmarshaller();
 			JAXBElement<TypeEPML> rootElement = (JAXBElement<TypeEPML>) u.unmarshal(process_xml);
 			TypeEPML epml = rootElement.getValue();
-
-			if (cpf_uri==0) {
-				// TODO cpf_uri_to_store = Long.parseLong(epml.getId());
-			} 
+			// TODO get epml process URI...
 			EPML2Canonical epml2canonical = new EPML2Canonical(epml);
 
 			jc1 = JAXBContext.newInstance(Constants.JAXB_CONTEXT_ANF);
@@ -360,17 +349,5 @@ import de.epml.TypeEPML;
 		} else {
 			throw new ExceptionAdapters("Native type not supported.");
 		}
-	}
-	/**
-	 * Generate a cpf uri for version of processId
-	 * @param processId
-	 * @param version
-	 * @return
-	 */
-	private String newCpfURI() {
-		DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmsSSS");
-		Date date = new Date();
-		String time = dateFormat.format(date);
-		return time;
 	}
 }
