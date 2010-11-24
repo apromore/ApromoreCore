@@ -5,11 +5,14 @@ import java.net.URL;
 import javax.xml.namespace.QName;
 
 import org.apromore.manager.commons.Constants;
+import org.apromore.manager.exception.ExceptionMergeProcess;
 import org.apromore.manager.exception.ExceptionSearchForSimilar;
-import org.apromore.manager.model_portal.CanonicalType;
-import org.apromore.manager.model_portal.CanonicalsType;
+import org.apromore.manager.model_portal.ProcessSummariesType;
+import org.apromore.manager.model_portal.VersionSummaryType;
+import org.apromore.manager.model_toolbox.MergeProcessesInputMsgType;
 import org.apromore.manager.model_toolbox.ParameterType;
 import org.apromore.manager.model_toolbox.ParametersType;
+import org.apromore.manager.model_toolbox.ProcessVersionIdsType;
 import org.apromore.manager.model_toolbox.ResultType;
 import org.apromore.manager.model_toolbox.SearchForSimilarProcessesInputMsgType;
 
@@ -25,57 +28,13 @@ public class RequestToToolbox {
 	}
 
 	
-	public org.apromore.manager.model_portal.CanonicalsType SearchForSimilarProcesses(
+	public org.apromore.manager.model_portal.ProcessSummariesType SearchForSimilarProcesses(
 			int selectedModelId, 
-			String method, 
-			double modelthreshold, 
-			double labelthreshold, 
-			double contextthreshold, 
-			double skipnweight, 
-			double subnweight, 
-			double skipeweight) throws ExceptionSearchForSimilar {
+			String method,ParametersType params) throws ExceptionSearchForSimilar {
 		org.apromore.manager.model_toolbox.SearchForSimilarProcessesInputMsgType payload =
 			new SearchForSimilarProcessesInputMsgType();
 		payload.setAlgorithm(method);
 		payload.setProcessId(selectedModelId);
-		org.apromore.manager.model_toolbox.ParametersType params = new ParametersType();
-		// modelthreshold
-		org.apromore.manager.model_toolbox.ParameterType p = new ParameterType();
-		p.setName("modelthreshold");
-		p.setValue(modelthreshold);
-		params.getParameter().add(p);
-
-		// labelthreshold
-		p = new ParameterType();
-		p.setName("labelthreshold");
-		p.setValue(labelthreshold);
-		params.getParameter().add(p);
-
-		// contextthreshold
-		p = new ParameterType();
-		p.setName("contextthreshold");
-		p.setValue(contextthreshold);
-		params.getParameter().add(p);
-
-		if ("Greedy".equals(method)) {
-			// skipnweight
-			p = new ParameterType();
-			p.setName("skipnweight");
-			p.setValue(skipnweight);
-			params.getParameter().add(p);
-
-			// subnweight
-			p = new ParameterType();
-			p.setName("subnweight");
-			p.setValue(subnweight);
-			params.getParameter().add(p);
-
-			// skipeweight
-			p = new ParameterType();
-			p.setName("skipeweight");
-			p.setValue(skipeweight);
-			params.getParameter().add(p);
-		}
 		payload.setParameters(params);
 		org.apromore.manager.model_toolbox.SearchForSimilarProcessesOutputMsgType res =
 			this.port.searchForSimilarProcesses(payload);
@@ -83,14 +42,60 @@ public class RequestToToolbox {
 		if (result.getCode()==-1) {
 			throw new ExceptionSearchForSimilar (result.getMessage());
 		} else {
-			org.apromore.manager.model_portal.CanonicalsType canonicalsP = new CanonicalsType();
-			for (org.apromore.manager.model_toolbox.CanonicalType canonicalT: res.getCanonicals().getCanonicalType()) {
-				org.apromore.manager.model_portal.CanonicalType canonicalP = new CanonicalType();
-				canonicalP.setCpf(canonicalT.getCpf());
-				canonicalP.setProcessId(canonicalT.getProcessId());
-				canonicalP.setVersionName(canonicalT.getVersionName());
+			org.apromore.manager.model_portal.ProcessSummariesType processesP = new ProcessSummariesType();
+			for (org.apromore.manager.model_toolbox.ProcessSummaryType processT: res.getProcessSummaries().getProcessSummary()) {
+				org.apromore.manager.model_portal.ProcessSummaryType processP = 
+					new org.apromore.manager.model_portal.ProcessSummaryType();
+				processP.setId(processT.getId());
+				processP.setLastVersion(processT.getLastVersion());
+				processP.setName(processT.getName());
+				processP.setOwner(processT.getOwner());
+				org.apromore.manager.model_portal.VersionSummaryType versionP =
+					new VersionSummaryType();
+				versionP.setCreationDate(processT.getVersionSummaries().get(0).getCreationDate());
+				versionP.setLastUpdate(processT.getVersionSummaries().get(0).getLastUpdate());
+				versionP.setName(processT.getVersionSummaries().get(0).getName());
+				processP.getVersionSummaries().add(versionP);
 			}
-			return canonicalsP;
+			return processesP;
 		}
+	}
+
+
+	public org.apromore.manager.model_portal.ProcessSummaryType MergeProcesses(String processName,
+			String version, String username, String algo, ParametersType parameters,
+			ProcessVersionIdsType ids) throws ExceptionMergeProcess {
+		org.apromore.manager.model_portal.ProcessSummaryType mergedProcessP =
+			new org.apromore.manager.model_portal.ProcessSummaryType();
+		// build message to be sent to toolbox.
+		org.apromore.manager.model_toolbox.MergeProcessesInputMsgType payload =
+			new MergeProcessesInputMsgType();
+		payload.setProcessName(processName);
+		payload.setVersionName(version);
+		payload.setAlgorithm(algo);
+		payload.setParameters(parameters);
+		payload.setProcessVersionIds(ids);
+		payload.setUsername(username);
+		org.apromore.manager.model_toolbox.MergeProcessesOutputMsgType res =
+			this.port.mergeProcesses(payload);
+		ResultType result = res.getResult();
+		if (result.getCode()==-1) {
+			throw new ExceptionMergeProcess (result.getMessage());
+		} else {
+		// build response
+			org.apromore.manager.model_toolbox.ProcessSummaryType mergedProcessT = res.getProcessSummary();
+			mergedProcessP.setDomain(mergedProcessT.getDomain());
+			mergedProcessP.setId(mergedProcessT.getId());
+			mergedProcessP.setLastVersion(mergedProcessT.getLastVersion());
+			mergedProcessP.setName(mergedProcessT.getName());
+			mergedProcessP.setOwner(mergedProcessT.getOwner());
+			org.apromore.manager.model_portal.VersionSummaryType versionP =
+				new VersionSummaryType();
+			versionP.setCreationDate(mergedProcessT.getVersionSummaries().get(0).getCreationDate());
+			versionP.setLastUpdate(mergedProcessT.getVersionSummaries().get(0).getLastUpdate());
+			versionP.setName(mergedProcessT.getVersionSummaries().get(0).getName());
+			mergedProcessP.getVersionSummaries().add(versionP);
+		}
+		return mergedProcessP;
 	}
 }
