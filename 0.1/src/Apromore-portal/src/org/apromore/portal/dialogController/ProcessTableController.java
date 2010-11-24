@@ -394,14 +394,13 @@ public class ProcessTableController {
 				annotationLB.setRows(1);
 				annotationLB.setStyle(Constants.UNSELECTED_VERSION);
 				for(int i=0;i<version.getAnnotations().size();i++){
-					Listitem annotationsI = new Listitem();
-					annotationLB.appendChild(annotationsI);
-					String annotationS = version.getAnnotations().get(i).getNativeType() + ": ";
-					annotationS += version.getAnnotations().get(i).getAnnotationName().get(0);
-					for(int k=1;k<version.getAnnotations().get(i).getAnnotationName().size();k++) {
-						annotationS += ", " + version.getAnnotations().get(i).getAnnotationName().get(k);
+					String language = version.getAnnotations().get(i).getNativeType();
+					for(int k=0;k<version.getAnnotations().get(i).getAnnotationName().size();k++) {
+						Listitem annotationsI = new Listitem();
+						annotationLB.appendChild(annotationsI);
+						String annotationName = version.getAnnotations().get(i).getAnnotationName().get(k);
+						annotationsI.setLabel(annotationName + " (" + language + ")");
 					}
-					annotationsI.setLabel(annotationS);
 				}
 				
 				processVersionsR.appendChild(versionR);

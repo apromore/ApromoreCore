@@ -27,9 +27,11 @@ public class EditOneProcessController extends Window {
 	private Button okB;
 	private Button cancelB;
 	private Button cancelAllB;
+	private Row readOnlyR;
 	private Listbox nativeTypesLB;
 	private Listbox annotationsLB;
-	private Checkbox readOnlyCB;
+	private Checkbox annotationOnlyCB;
+	private Listitem noAnnotationI;
 	private MainController mainC ;
 	private EditListProcessesController editListProcessesC;
 	private ProcessSummaryType process;
@@ -50,11 +52,11 @@ public class EditOneProcessController extends Window {
 		Rows rows = (Rows) this.chooseNativeW.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
 		Row nativeTypesR = (Row) rows.getFirstChild();
 		Row annotationR = (Row) nativeTypesR.getNextSibling();
-		Row readOnlyR = (Row) annotationR.getNextSibling();
+		this.readOnlyR = (Row) annotationR.getNextSibling();
 		Row buttonsR = (Row) readOnlyR.getNextSibling();
 		this.nativeTypesLB = (Listbox) nativeTypesR.getFirstChild().getNextSibling();
 		this.annotationsLB = (Listbox) annotationR.getFirstChild().getNextSibling();
-		this.readOnlyCB = (Checkbox) readOnlyR.getFirstChild().getNextSibling();
+		this.annotationOnlyCB = (Checkbox) readOnlyR.getFirstChild().getNextSibling();
 		this.okB = (Button) buttonsR.getFirstChild().getFirstChild();
 		this.cancelB = (Button) this.okB.getNextSibling();
 		this.cancelAllB = (Button) this.cancelB.getNextSibling();
@@ -93,10 +95,22 @@ public class EditOneProcessController extends Window {
 				}
 			}
 		}
-		cbi = new Listitem();
-		cbi.setLabel(Constants.NO_ANNOTATIONS);
-		this.annotationsLB.appendChild(cbi);
+		this.noAnnotationI = new Listitem();
+		this.noAnnotationI.setLabel(Constants.NO_ANNOTATIONS);
+		this.annotationsLB.appendChild(this.noAnnotationI);
 
+		this.annotationsLB.addEventListener("onSelect",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				syncReadOnlyR(event);
+			}
+		});
+		this.annotationOnlyCB.addEventListener("onCheck",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				syncListboxe(event);
+			}
+		});
 		this.okB.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -126,6 +140,22 @@ public class EditOneProcessController extends Window {
 		//			Messagebox.show("Not owner", "Attention", Messagebox.OK,
 		//					Messagebox.ERROR);
 		//		}
+	}
+	/**
+	 * If "no annotation" has been selected in the list box, the row
+	 * with checkbox "annotation only" has to be disabled.
+	 * @param event
+	 */
+	protected void syncReadOnlyR(Event event) {
+			this.annotationOnlyCB.setDisabled(this.noAnnotationI.isSelected());
+	}
+	/**
+	 * If check box "Annotation only" is checked item "- no annotation" has to be disabled
+	 * @param event
+	 */
+	protected void syncListboxe(Event event) {
+		// if users tick "annotation only", disable "no annotation" in the list
+			this.noAnnotationI.setDisabled(this.annotationOnlyCB.isChecked());
 	}
 
 	protected void cancel() throws Exception {
@@ -162,7 +192,7 @@ public class EditOneProcessController extends Window {
 					&& Constants.NO_ANNOTATIONS.compareTo(this.annotationsLB.getSelectedItem().getLabel())!=0) {
 				annotation = (String) this.annotationsLB.getSelectedItem().getValue();
 			}
-			if (this.readOnlyCB.isChecked()) {
+			if (this.annotationOnlyCB.isChecked()) {
 				readOnly = "true";
 			} else {
 				readOnly = "false";
