@@ -391,47 +391,33 @@
 		</sequence>
 	</complexType>
 
-	<complexType name="SearchForSimilarProcessesOutputMsgType">
+<complexType name="SearchForSimilarProcessesOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" />
-			<element name="Canonicals" type="tns:CanonicalsType" />
-		</sequence>
-	</complexType>
-
-	<complexType name="CanonicalsType">
-		<sequence>
-			<element name="CanonicalType" type="tns:CanonicalType"
-				minOccurs="0" maxOccurs="unbounded" />
-		</sequence>
-	</complexType>
-	<complexType name="CanonicalType">
-		<sequence>
-			<element name="ProcessId" type="int" />
-			<element name="VersionName" type="string" />
-			<element name="Cpf" type="base64Binary"
-				xmime:expectedContentTypes="application/octet-stream" />
+			<element name="ProcessSummaries" type="tns:ProcessSummariesType" />
 		</sequence>
 	</complexType>
 
 	<complexType name="MergeProcessesInputMsgType">
 		<sequence>
-			<element name="ProcessName" type="string" />
-			<element name="VersionName" type="string" />
-			<element name="Username" type="string" />
-			<element name="Cpf_ids" type="tns:Cpf_idsType" />
-			<element name="Algorithm" type="string" />
+			<element name="ProcessVersion_ids" type="tns:ProcessVersion_idsType" />
 			<element name="Parameters" type="tns:ParametersType" />
 		</sequence>
+		<attribute name="ProcessName" type="string" />
+		<attribute name="VersionName" type="string" />
+		<attribute name="Username" type="string" />
+		<attribute name="ProcessId" type="int" />
+		<attribute name="Algorithm" type="string" />
 	</complexType>
 
-	<complexType name="Cpf_idsType">
+	<complexType name="ProcessVersion_idsType">
 		<sequence>
-			<element minOccurs="1" maxOccurs="unbounded" name="Cpf_id"
-				type="tns:Cpf_idType" />
+			<element minOccurs="1" maxOccurs="unbounded" name="ProcessVersion_id"
+				type="tns:ProcessVersion_idType" />
 		</sequence>
 	</complexType>
 
-	<complexType name="Cpf_idType">
+	<complexType name="ProcessVersion_idType">
 		<attribute name="ProcessId" type="int" />
 		<attribute name="VersionName" type="string" />
 	</complexType>
