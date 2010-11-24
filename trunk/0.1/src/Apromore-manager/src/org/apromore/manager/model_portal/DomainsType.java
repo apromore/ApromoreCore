@@ -35,11 +35,11 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 @XmlType(name = "DomainsType", propOrder = {
     "domain"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:55:41+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class DomainsType {
 
     @XmlElement(name = "Domain")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:55:41+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<String> domain;
 
     /**
@@ -64,7 +64,7 @@ public class DomainsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:55:41+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<String> getDomain() {
         if (domain == null) {
             domain = new ArrayList<String>();
@@ -78,7 +78,7 @@ public class DomainsType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T04:55:41+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
