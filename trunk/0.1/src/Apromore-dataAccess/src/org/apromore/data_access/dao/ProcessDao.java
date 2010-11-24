@@ -387,7 +387,8 @@ public class ProcessDao extends BasicDao {
 			StringBuilder cpf_uri_builder = new StringBuilder();
 			InputStream sync_npf = copyParam2NPF(process_xml, nativeType, processName, version,
 					username, creationDate, lastUpdate, documentation, cpf_uri_builder);
-			String cpf_uri = cpf_uri_builder.toString();
+			String cpf_uri = new String();
+			cpf_uri = cpf_uri_builder.toString();
 			// copy parameter values in sync_cpf
 			InputStream sync_cpf = copyParam2CPF(cpf_xml, processName, version,
 					username, creationDate, lastUpdate);
