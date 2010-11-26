@@ -4,7 +4,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import org.apromore.portal.manager.RequestToManager;
-import org.apromore.portal.model_manager.CanonicalsType;
+import org.apromore.portal.model_manager.ProcessSummariesType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.Executions;
@@ -35,15 +35,16 @@ public class SimilaritySearchController extends Window {
 	private Row subnweight;
 	private Button OKbutton;
 	private Button CancelButton;
-	private int selectedModelId;
+	private String versionName;
+	private Integer processId;
 	
 	public SimilaritySearchController (MainController mainC, MenuController menuC, 
-			HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) 
+			Integer processId, String versionName) 
 	throws SuspendNotAllowedException, InterruptedException {
 		this.mainC = mainC;
 		this.menuC = menuC;
-		this.selectedModelId = selectedProcessVersions.keySet().iterator().next().getId();
-
+		this.versionName = versionName;
+		this.processId = processId;
 		this.similaritySearchW = (Window) Executions.createComponents("macros/similaritysearch.zul", null, null);
 		
 		this.algoChoiceR = (Row) this.similaritySearchW.getFellow("similaritySearchAlgoChoice");
@@ -105,8 +106,8 @@ public class SimilaritySearchController extends Window {
 	protected void searchSimilarProcesses() throws Exception {
 		
 		RequestToManager request = new RequestToManager();
-		CanonicalsType result = request.searchForSimilarProcesses(
-				selectedModelId, 
+		ProcessSummariesType result = request.searchForSimilarProcesses(
+				this.processId, this.versionName,
 				this.algosLB.getSelectedItem().getLabel(),
 				((Doublebox) this.modelthreshold.getFirstChild().getNextSibling()).getValue(),
 				((Doublebox) this.labelthreshold.getFirstChild().getNextSibling()).getValue(),
@@ -115,14 +116,14 @@ public class SimilaritySearchController extends Window {
 				((Doublebox) this.subnweight.getFirstChild().getNextSibling()).getValue(),
 				((Doublebox) this.skipeweight.getFirstChild().getNextSibling()).getValue());
 
-		String message = "Search returned " + result.getCanonicalType().size() ;
-		if (result.getCanonicalType().size() > 1) {
+		String message = "Search returned " + result.getProcessSummary().size() ;
+		if (result.getProcessSummary().size() > 1) {
 			message += " processes.";
 		} else {
 			message += " process.";
 		}
 		mainC.displayMessage(message);
-//		mainC.displayProcessSummaries(result); // TODO show the result
+		mainC.displayProcessSummaries(result);
 
 //		Messagebox.show("Not yet available...", "Attention", Messagebox.OK,
 //			Messagebox.INFORMATION);

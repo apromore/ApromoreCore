@@ -28,9 +28,6 @@ import org.apromore.portal.exception.ExceptionUpdateProcess;
 import org.apromore.portal.exception.ExceptionUser;
 import org.apromore.portal.exception.ExceptionVersion;
 import org.apromore.portal.exception.ExceptionWriteEditSession;
-import org.apromore.portal.model_manager.CanonicalsType;
-import org.apromore.portal.model_manager.ProcessVersionIdType;
-import org.apromore.portal.model_manager.ProcessVersionIdsType;
 import org.apromore.portal.model_manager.DeleteEditSessionInputMsgType;
 import org.apromore.portal.model_manager.DeleteEditSessionOutputMsgType;
 import org.apromore.portal.model_manager.DeleteProcessVersionsInputMsgType;
@@ -50,7 +47,9 @@ import org.apromore.portal.model_manager.ParameterType;
 import org.apromore.portal.model_manager.ParametersType;
 import org.apromore.portal.model_manager.ProcessSummariesType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
+import org.apromore.portal.model_manager.ProcessVersionIdType;
 import org.apromore.portal.model_manager.ProcessVersionIdentifierType;
+import org.apromore.portal.model_manager.ProcessVersionIdsType;
 import org.apromore.portal.model_manager.ReadAllUsersInputMsgType;
 import org.apromore.portal.model_manager.ReadAllUsersOutputMsgType;
 import org.apromore.portal.model_manager.ReadDomainsInputMsgType;
@@ -163,8 +162,8 @@ public class RequestToManager {
 		}
 	}
 
-	public CanonicalsType searchForSimilarProcesses(
-			int selectedModelId, 
+	public org.apromore.portal.model_manager.ProcessSummariesType searchForSimilarProcesses(
+			int processId, String versionName, 
 			String method, 
 			double modelthreshold, 
 			double labelthreshold, 
@@ -175,7 +174,8 @@ public class RequestToManager {
 
 		SearchForSimilarProcessesInputMsgType payload = new SearchForSimilarProcessesInputMsgType();
 		payload.setAlgorithm(method);
-		payload.setProcessId(selectedModelId);
+		payload.setProcessId(processId);
+		payload.setVersionName(versionName);
 		ParametersType params = new ParametersType();
 		// modelthreshold
 		ParameterType p = new ParameterType();
@@ -222,7 +222,7 @@ public class RequestToManager {
 		if (result.getCode() == -1) {
 			throw new ExceptionProcess (result.getMessage()); 
 		} else {
-			return res.getCanonicals();
+			return res.getProcessSummaries();
 		}
 	}
 
