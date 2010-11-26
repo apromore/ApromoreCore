@@ -17,6 +17,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.Utils;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
@@ -111,10 +112,10 @@ public class CreateProcessController {
 		this.nativeTypesR.setVisible(true);
 		versionNameR.setVisible(false);
 		rankingR.setVisible(false);
-		
+
 		// default values
 		this.ownerCB.setValue(this.mainC.getCurrentUser().getUsername());
-		
+
 		Set<String> extensions = this.formats_ext.keySet();
 		Iterator<String> it = extensions.iterator();
 		Listitem cbi;
@@ -122,7 +123,7 @@ public class CreateProcessController {
 			cbi = new Listitem();
 			this.nativeTypesLB.appendChild(cbi);
 			cbi.setLabel(this.formats_ext.get(it.next()));
-			
+
 			if ("XPDL 2.1".compareTo(cbi.getLabel())==0) {
 				cbi.setSelected(true);
 			}
@@ -165,7 +166,7 @@ public class CreateProcessController {
 			if (this.processNameT.getValue().compareTo("")==0
 					|| this.nativeTypesLB.getSelectedItem() == null
 					|| this.nativeTypesLB.getSelectedItem() != null 
-					   && this.nativeTypesLB.getSelectedItem().getLabel().compareTo("")==0) {
+					&& this.nativeTypesLB.getSelectedItem().getLabel().compareTo("")==0) {
 				Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK,
 						Messagebox.ERROR);
 			} else {
@@ -175,9 +176,48 @@ public class CreateProcessController {
 				String nativeType = this.nativeTypesLB.getSelectedItem().getLabel();
 				String versionName = "0.0";
 				DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
-		        String creationDate = dateFormat.format(new Date());
+				String creationDate = dateFormat.format(new Date());
 				InputStream nativeProcess = null;
-				// call import with empty native
+				// build an empty native with the minimum content:
+				// uri, owner, natie type
+				// create new native process, as this import if for process creation purpose
+				String cpf_uri = Utils.newCpfURI();
+				if ("XPDL 2.1".compareTo(nativeType)==0) {
+					PackageType pkg = new PackageType();
+					pkg.setName(processName);
+					pkg.setId(cpf_uri);
+					PackageHeader hder = new PackageHeader();
+					pkg.setPackageHeader(hder);
+					RedefinableHeader rhder = new RedefinableHeader();
+					pkg.setRedefinableHeader(rhder);
+					Author author = new Author();
+					rhder.setAuthor(author);
+					author.setValue(owner);
+					Version version = new Version();
+					rhder.setVersion(version);
+					version.setValue(versionName);
+					Created created = new Created();
+					hder.setCreated(created);
+					created.setValue(creationDate);
+					JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
+					Marshaller m = jc.createMarshaller();
+					m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+					JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(pkg);
+					ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
+					m.marshal(rootxpdl, xpdl_xml);
+					nativeProcess = new ByteArrayInputStream(xpdl_xml.toByteArray());
+
+				} else if ("EPML 2.0".compareTo(nativeType)==0) {
+					// TODO: where to put process version uri?
+					TypeEPML epml = new TypeEPML();
+					JAXBContext jc = JAXBContext.newInstance("de.epml");
+					Marshaller m = jc.createMarshaller();
+					m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+					JAXBElement<TypeEPML> rootepml = new de.epml.ObjectFactory().createEpml(epml);
+					ByteArrayOutputStream epml_xml = new ByteArrayOutputStream();
+					m.marshal(rootepml, epml_xml);
+					nativeProcess = new ByteArrayInputStream(epml_xml.toByteArray());
+				}
 				ProcessSummaryType process = 
 					request.importProcess(owner, nativeType, processName, versionName, 
 							nativeProcess, domain, null, creationDate, null);
