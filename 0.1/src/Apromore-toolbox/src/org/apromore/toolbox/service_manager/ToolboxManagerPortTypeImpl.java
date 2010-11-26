@@ -64,11 +64,12 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 			org.apromore.toolbox.da.RequestToDA request = new RequestToDA();
 
 			org.apromore.toolbox.model_da.ProcessVersionsType idsDa = new ProcessVersionsType();
-			// idsDa list of processVersion ids which empty
+			// idsDa is a list of processVersion ids which empty
 			List<CanonicalType> allCanonicals = request.ReadCanonicals(idsDa);
 			CanonicalType search = null;
 			for (int i=0;i<allCanonicals.size();i++) {
-				if (allCanonicals.get(i).getProcessId() == payload.getProcessId()) {
+				if (allCanonicals.get(i).getProcessId() == payload.getProcessId() 
+					&& allCanonicals.get(i).getVersionName().compareTo(payload.getVersionName())==0) {
 					search = allCanonicals.get(i);
 					break;
 				}
@@ -112,7 +113,7 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 
 			org.apromore.toolbox.model_da.ProcessVersionsType similarProcesses = 
 				new ProcessVersionsType();
-
+			double similarity;
 			for (int j=0;j<allCanonicals.size();j++) {
 				CanonicalType canonical = allCanonicals.get(j);
 				// search canonical model
@@ -121,10 +122,10 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 				JAXBElement<CanonicalProcessType> documentRootElement = 
 					(JAXBElement<CanonicalProcessType>) u.unmarshal(document_is);
 				CanonicalProcessType documentCpf = documentRootElement.getValue();
-				double similarity = SearchForSimilarProcesses.findProcessesSimilarity(
+				similarity = SearchForSimilarProcesses.findProcessesSimilarity(
 						searchCpf, documentCpf, algorithm, labelthreshold, contextthreshold, 
 						skipnweight, subnweight, skipeweight); 
-				if (similarity > modelthreshold) {
+				if (similarity >= modelthreshold) {
 					ProcessVersionType processVersion = new ProcessVersionType();
 					processVersion.setProcessId(canonical.getProcessId());
 					processVersion.setVersionName(canonical.getVersionName());
