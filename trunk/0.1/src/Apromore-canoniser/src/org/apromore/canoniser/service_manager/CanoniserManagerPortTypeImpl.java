@@ -221,7 +221,9 @@ import de.epml.TypeEPML;
 			String nativeType = payload.getNativeType();
 			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream(), 
 			cpf_xml = new ByteArrayOutputStream();
+			
 			Canonise(npf_is, nativeType, anf_xml, cpf_xml);
+			
 			npf_is.reset();
 			InputStream anf_is = new ByteArrayInputStream(anf_xml.toByteArray());			
 			RequestToDA request = new RequestToDA();
