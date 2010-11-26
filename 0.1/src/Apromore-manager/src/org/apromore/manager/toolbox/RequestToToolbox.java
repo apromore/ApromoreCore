@@ -9,6 +9,7 @@ import org.apromore.manager.exception.ExceptionMergeProcess;
 import org.apromore.manager.exception.ExceptionSearchForSimilar;
 import org.apromore.manager.model_portal.ProcessSummariesType;
 import org.apromore.manager.model_portal.VersionSummaryType;
+import org.apromore.manager.model_toolbox.AnnotationsType;
 import org.apromore.manager.model_toolbox.MergeProcessesInputMsgType;
 import org.apromore.manager.model_toolbox.ParameterType;
 import org.apromore.manager.model_toolbox.ParametersType;
@@ -27,15 +28,16 @@ public class RequestToToolbox {
 		this.port = ss.getToolboxManager();
 	}
 
-	
+
 	public org.apromore.manager.model_portal.ProcessSummariesType SearchForSimilarProcesses(
-			int selectedModelId, 
-			String method,ParametersType params) throws ExceptionSearchForSimilar {
+			int processId, String versionName,
+			String method, ParametersType params) throws ExceptionSearchForSimilar {
 		org.apromore.manager.model_toolbox.SearchForSimilarProcessesInputMsgType payload =
 			new SearchForSimilarProcessesInputMsgType();
 		payload.setAlgorithm(method);
-		payload.setProcessId(selectedModelId);
+		payload.setProcessId(processId);
 		payload.setParameters(params);
+		payload.setVersionName(versionName);
 		org.apromore.manager.model_toolbox.SearchForSimilarProcessesOutputMsgType res =
 			this.port.searchForSimilarProcesses(payload);
 		ResultType result = res.getResult();
@@ -43,19 +45,32 @@ public class RequestToToolbox {
 			throw new ExceptionSearchForSimilar (result.getMessage());
 		} else {
 			org.apromore.manager.model_portal.ProcessSummariesType processesP = new ProcessSummariesType();
-			for (org.apromore.manager.model_toolbox.ProcessSummaryType processT: res.getProcessSummaries().getProcessSummary()) {
+			for (org.apromore.manager.model_toolbox.ProcessSummaryType processT: 
+				res.getProcessSummaries().getProcessSummary()) {
 				org.apromore.manager.model_portal.ProcessSummaryType processP = 
 					new org.apromore.manager.model_portal.ProcessSummaryType();
+				processesP.getProcessSummary().add(processP);
 				processP.setId(processT.getId());
 				processP.setLastVersion(processT.getLastVersion());
 				processP.setName(processT.getName());
 				processP.setOwner(processT.getOwner());
-				org.apromore.manager.model_portal.VersionSummaryType versionP =
-					new VersionSummaryType();
-				versionP.setCreationDate(processT.getVersionSummaries().get(0).getCreationDate());
-				versionP.setLastUpdate(processT.getVersionSummaries().get(0).getLastUpdate());
-				versionP.setName(processT.getVersionSummaries().get(0).getName());
-				processP.getVersionSummaries().add(versionP);
+				for (org.apromore.manager.model_toolbox.VersionSummaryType versionT:
+					processT.getVersionSummaries()) {
+					org.apromore.manager.model_portal.VersionSummaryType versionP =
+						new VersionSummaryType();
+					processP.getVersionSummaries().add(versionP);
+					versionP.setCreationDate(versionT.getCreationDate());
+					versionP.setLastUpdate(versionT.getLastUpdate());
+					versionP.setName(versionT.getName());
+					for (org.apromore.manager.model_toolbox.AnnotationsType annotT:
+						versionT.getAnnotations()) {
+						org.apromore.manager.model_portal.AnnotationsType annotP =
+							new org.apromore.manager.model_portal.AnnotationsType();
+						versionP.getAnnotations().add(annotP);
+						annotP.setNativeType(annotT.getNativeType());
+						annotP.getAnnotationName().addAll(annotT.getAnnotationName());
+					}
+				}
 			}
 			return processesP;
 		}
@@ -82,7 +97,7 @@ public class RequestToToolbox {
 		if (result.getCode()==-1) {
 			throw new ExceptionMergeProcess (result.getMessage());
 		} else {
-		// build response
+			// build response
 			org.apromore.manager.model_toolbox.ProcessSummaryType mergedProcessT = res.getProcessSummary();
 			mergedProcessP.setDomain(mergedProcessT.getDomain());
 			mergedProcessP.setId(mergedProcessT.getId());
