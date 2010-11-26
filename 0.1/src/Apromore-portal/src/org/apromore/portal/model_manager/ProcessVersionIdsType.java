@@ -35,11 +35,11 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 @XmlType(name = "ProcessVersion_idsType", propOrder = {
     "processVersionId"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T01:22:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-26T08:58:52+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ProcessVersionIdsType {
 
     @XmlElement(name = "ProcessVersion_id", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T01:22:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-26T08:58:52+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<ProcessVersionIdType> processVersionId;
 
     /**
@@ -64,7 +64,7 @@ public class ProcessVersionIdsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T01:22:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-26T08:58:52+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<ProcessVersionIdType> getProcessVersionId() {
         if (processVersionId == null) {
             processVersionId = new ArrayList<ProcessVersionIdType>();
@@ -78,7 +78,7 @@ public class ProcessVersionIdsType {
      * 
      */
     @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-18T01:22:04+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-26T08:58:52+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String toString() {
         return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
