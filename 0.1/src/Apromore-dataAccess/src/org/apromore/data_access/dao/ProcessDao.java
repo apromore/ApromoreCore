@@ -1971,14 +1971,14 @@ public class ProcessDao extends BasicDao {
 
 		if(processIds.size()!=0 && versionNames.size()!=0) {
 			Connection conn = null;
-			Statement stmt = null, stmtV = null, stmtA = null;
-			ResultSet rs = null, rsV = null, rsA = null;
+			Statement stmt = null, stmtV = null, stmtA = null, stmtB = null;
+			ResultSet rs = null, rsV = null, rsA = null, rsB = null;
 			String query = null;
 
-			// build a list of <pId, list of <vN>> such as <p, LV> belongs to it
+			// build a list of <integer, string> such as <p, LV> belongs to it
 			// iff for each v in LV, let j be the index of v in versionNames, p=processIds[j]
 			HashMap<Integer, String> processes = new HashMap<Integer, String>();
-			String l = null;
+			String l = "";
 			for (int i=0;i<processIds.size();i++) {
 				if(processes.keySet().contains(processIds.get(i))) {
 					l = processes.get(processIds.get(i)) + ",";
@@ -1991,10 +1991,10 @@ public class ProcessDao extends BasicDao {
 				conn = this.getConnection();
 				stmt = conn.createStatement();
 				for (Integer k: processes.keySet()) {
-					query = "SELECT distinct " + ConstantDB.ATTR_PROCESSID + "," 
+					query = " SELECT distinct " + ConstantDB.ATTR_PROCESSID + ", " 
 					+             ConstantDB.ATTR_NAME + ", "
-					+             ConstantDB.ATTR_DOMAIN + "," 
-					+             ConstantDB.ATTR_ORIGINAL_TYPE + ","
+					+             ConstantDB.ATTR_DOMAIN + ", " 
+					+             ConstantDB.ATTR_ORIGINAL_TYPE + ", "
 					+     " coalesce(R." + ConstantDB.ATTR_RANKING  + ",''),"
 					+             ConstantDB.ATTR_OWNER
 					+     " FROM " + ConstantDB.TABLE_PROCESSES
@@ -2016,9 +2016,9 @@ public class ProcessDao extends BasicDao {
 						processSummary.setOwner(rs.getString(6));
 						String versionList ;
 						if (processes.get(k).endsWith(",")) {
-							versionList = processes.get(k);
-						} else {
 							versionList = processes.get(k).substring(0, processes.get(k).length()-1);
+						} else {
+							versionList = processes.get(k);
 						}
 						stmtV = conn.createStatement();
 						query = " select " + ConstantDB.ATTR_VERSION_NAME + ", "
@@ -2062,12 +2062,12 @@ public class ProcessDao extends BasicDao {
 								query = " select " + ConstantDB.ATTR_NAME
 								+ " from " + ConstantDB.TABLE_ANNOTATIONS
 								+ " where " + ConstantDB.ATTR_NATIVE + " = " + rsA.getInt(1);
-								stmtA = conn.createStatement();
-								rsA = stmtA.executeQuery(query);
-								while(rsA.next()) {
-									annotations.getAnnotationName().add(rsA.getString(1));
+								stmtB = conn.createStatement();
+								rsB = stmtB.executeQuery(query);
+								while(rsB.next()) {
+									annotations.getAnnotationName().add(rsB.getString(1));
 								}
-								rsA.close(); stmtA.close();
+								rsB.close(); stmtB.close();
 							}
 							rsA.close(); stmtA.close();
 						}
