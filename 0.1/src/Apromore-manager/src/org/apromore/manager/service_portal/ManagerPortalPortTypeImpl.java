@@ -216,7 +216,7 @@ import de.epml.TypeEPML;
 		try {
 			String algo = payload.getAlgorithm();
 			Integer processId = payload.getProcessId();
-			String version = payload.getVersionName();
+			String versionName = payload.getVersionName();
 			org.apromore.manager.model_toolbox.ParametersType paramsT = new ParametersType();
 			for (ParameterType p : payload.getParameters().getParameter()) {
 				org.apromore.manager.model_toolbox.ParameterType paramT = 
@@ -227,7 +227,7 @@ import de.epml.TypeEPML;
 			}
 			RequestToToolbox req = new RequestToToolbox();
 			org.apromore.manager.model_portal.ProcessSummariesType processes = 
-				req.SearchForSimilarProcesses(processId, algo, paramsT);
+				req.SearchForSimilarProcesses(processId, versionName, algo, paramsT);
 			res.setProcessSummaries(processes);
 			result.setCode(0);
 			result.setMessage("");			
