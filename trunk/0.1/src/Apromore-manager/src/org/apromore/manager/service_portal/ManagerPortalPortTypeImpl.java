@@ -530,7 +530,7 @@ import de.epml.TypeEPML;
 				} else {
 					native_xml = requestCa.DeCanonise (processId, version, format, cpf_is, null);
 				}
-				// record meta data in native_xml: rocess and version names
+				// record meta data in native_xml: process and version names
 				InputStream native_xml_sync = 
 					copyParam2NPF(native_xml, format, processname, version, owner, null, null);
 				DataSource source = new ByteArrayDataSource(native_xml_sync, "text/xml"); 
@@ -579,49 +579,7 @@ import de.epml.TypeEPML;
 			String creationDate = payload.getCreationDate();
 			String lastupdate = payload.getLastUpdate();
 			DataHandler handler = payload.getProcessDescription();
-			InputStream is = null;
-			if (handler==null) {
-				// create new native process, as this import if for process creation purpose
-				String cpf_uri = newCpfURI();
-				if ("XPDL 2.1".compareTo(nativeType)==0) {
-					PackageType pkg = new PackageType();
-					pkg.setName(processName);
-					pkg.setId(cpf_uri);
-					PackageHeader hder = new PackageHeader();
-					pkg.setPackageHeader(hder);
-					RedefinableHeader rhder = new RedefinableHeader();
-					pkg.setRedefinableHeader(rhder);
-					Author author = new Author();
-					rhder.setAuthor(author);
-					author.setValue(username);
-					Version version = new Version();
-					rhder.setVersion(version);
-					version.setValue(versionName);
-					Created created = new Created();
-					hder.setCreated(created);
-					created.setValue(creationDate);
-					JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
-					Marshaller m = jc.createMarshaller();
-					m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-					JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(pkg);
-					ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
-					m.marshal(rootxpdl, xpdl_xml);
-					is = new ByteArrayInputStream(xpdl_xml.toByteArray());
-
-				} else if ("EPML 2.0".compareTo(nativeType)==0) {
-					// TODO: where to put process version uri?
-					TypeEPML epml = new TypeEPML();
-					JAXBContext jc = JAXBContext.newInstance("de.epml");
-					Marshaller m = jc.createMarshaller();
-					m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-					JAXBElement<TypeEPML> rootepml = new de.epml.ObjectFactory().createEpml(epml);
-					ByteArrayOutputStream epml_xml = new ByteArrayOutputStream();
-					m.marshal(rootepml, epml_xml);
-					is = new ByteArrayInputStream(epml_xml.toByteArray());
-				}	
-			} else {
-				is = handler.getInputStream();
-			}
+			InputStream is =  handler.getInputStream();
 			RequestToCanoniser request = new RequestToCanoniser();
 			org.apromore.manager.model_portal.ProcessSummaryType process =
 				request.CanoniseProcess(username, processName, versionName, 
@@ -778,7 +736,7 @@ import de.epml.TypeEPML;
 			Unmarshaller u = jc.createUnmarshaller();
 			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
 			PackageType pkg = rootElement.getValue();
-			pkg = copyParam2xpdl (pkg, processName, version, username, lastUpdate, documentation);
+			copyParam2xpdl (pkg, processName, version, username, lastUpdate, documentation);
 
 			Marshaller m = jc.createMarshaller();
 			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
@@ -816,7 +774,7 @@ import de.epml.TypeEPML;
 	 * @param documentation
 	 * @return
 	 */
-	private PackageType copyParam2xpdl(PackageType pkg, 
+	private void copyParam2xpdl(PackageType pkg, 
 			String processName, String version, String username,
 			String lastUpdate, String documentation) {
 
@@ -864,13 +822,14 @@ import de.epml.TypeEPML;
 				pkg.getPackageHeader().setDocumentation(doc);
 			}
 		}
+		if (processName!=null) pkg.setName(processName);
 		if (version!=null) pkg.getRedefinableHeader().getVersion().setValue(version);
 		if (username!=null) pkg.getRedefinableHeader().getAuthor().setValue(username);
 		if (creationDate!=null)	pkg.getPackageHeader().getCreated().setValue(creationDate);
 		if (lastUpdate!=null)pkg.getPackageHeader().getModificationDate().setValue(lastUpdate);
 		if (documentation!=null)pkg.getPackageHeader().getDocumentation().setValue(documentation);
-		return pkg;
 	}
+	
 	/**
 	 * Generate a cpf uri for version of processId
 	 * @param processId
