@@ -319,10 +319,8 @@ public class RequestToManager {
 	throws IOException, ExceptionImport {
 
 		ImportProcessInputMsgType payload = new ImportProcessInputMsgType();
-		if(xml_process!=null) {
-			DataSource source = new ByteArrayDataSource(xml_process, "text/xml"); 
-			payload.setProcessDescription(new DataHandler(source));
-		}
+		DataSource source = new ByteArrayDataSource(xml_process, "text/xml"); 
+		payload.setProcessDescription(new DataHandler(source));
 		payload.setUsername(username);
 		payload.setNativeType(nativeType);
 		payload.setProcessName(processName);
