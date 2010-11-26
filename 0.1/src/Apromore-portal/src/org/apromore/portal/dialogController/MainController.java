@@ -208,9 +208,9 @@ public class MainController extends Window {
 			}
 			String message;
 			if (nb > 1) {
-				message = " process versions deleted.";
+				message = nb + " process versions deleted.";
 			} else {
-				message = " process version deleted.";
+				message = " One process version deleted.";
 			}
 			displayMessage(message);
 		} catch (ExceptionDeleteProcess e) {

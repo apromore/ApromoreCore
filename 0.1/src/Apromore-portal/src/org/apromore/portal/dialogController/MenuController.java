@@ -12,7 +12,6 @@ import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
-import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -21,7 +20,6 @@ import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menuitem;
 import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.Window;
 
 
 public class MenuController extends Menubar {
@@ -41,15 +39,15 @@ public class MenuController extends Menubar {
 	private Menuitem deleteMI;
 	private Menuitem copyMI;
 	private Menuitem pasteMI;
-	
+
 	private Menu evaluationM;
 	private Menu filteringM;
 	private Menuitem similaritySearchMI;
 	private Menuitem exactMatchingMI;
-	
+
 	private Menu designM;
 	private Menuitem mergeMI;
-	
+
 	private Menu presentationM;
 	private Menuitem evalQualityMI;
 	private Menuitem evalCorrectnessMI;
@@ -70,13 +68,13 @@ public class MenuController extends Menubar {
 		this.deleteMI = (Menuitem) this.menuB.getFellow("processDelete");
 		this.copyMI = (Menuitem) this.menuB.getFellow("processCopy");
 		this.pasteMI = (Menuitem) this.menuB.getFellow("processPaste");
-		
+
 		this.evaluationM = (Menu) this.menuB.getFellow("evaluation");
-		
+
 		this.filteringM = (Menu) this.menuB.getFellow("filtering");
 		this.similaritySearchMI = (Menuitem) this.menuB.getFellow("similaritySearch");
 		this.exactMatchingMI = (Menuitem) this.menuB.getFellow("exactMatching");
-		
+
 		this.designM = (Menu) this.menuB.getFellow("design");
 		this.mergeMI = (Menuitem) this.menuB.getFellow("designMerging");
 		this.presentationM = (Menu) this.menuB.getFellow("presentation");
@@ -87,7 +85,7 @@ public class MenuController extends Menubar {
 				createModel ();
 			}
 		});	 
-		
+
 		this.importMI.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -136,25 +134,28 @@ public class MenuController extends Menubar {
 	}
 
 	protected void searchSimilarProcesses() throws SuspendNotAllowedException, InterruptedException {
-		// TODO: GUI only, no logic
 		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
-
-		if (selectedProcessVersions.size()==1) {
+		int processId;
+		String versionName;
+		if (selectedProcessVersions.size()==1
+				&& selectedProcessVersions.get(selectedProcessVersions.keySet().iterator().next()).size()==1) {
+			processId = selectedProcessVersions.keySet().iterator().next().getId();
+			versionName = selectedProcessVersions.get(selectedProcessVersions.keySet().iterator().next()).get(0).getName();
 			SimilaritySearchController similaritySearchC = 
-				new SimilaritySearchController(this. mainC, this, selectedProcessVersions);
+				new SimilaritySearchController(this. mainC, this, processId, versionName);
 		} else if (selectedProcessVersions.size()==0) {
-			this.mainC.displayMessage("No process version selected.");
+			this.mainC.displayMessage("No process version selected, should be exactly one.");
 		} else {
-			this.mainC.displayMessage("Too many versions selected (should exactly one).");
+			this.mainC.displayMessage("Too many versions selected (should be exactly one).");
 		}
-		
+
 	}
 
 	protected void mergeSelectedProcessVersions() throws InterruptedException {
 		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
-		
+
 		if (selectedProcessVersions.size() > 1) {
 			try {
 				new ProcessMergeController(this.mainC, this,
@@ -174,7 +175,7 @@ public class MenuController extends Menubar {
 			}
 		} else {
 			this.mainC
-					.displayMessage("Select at least 2 process models for merge.");
+			.displayMessage("Select at least 2 process models for merge.");
 		}
 	}
 
@@ -215,7 +216,7 @@ public class MenuController extends Menubar {
 			Messagebox.show(message, "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		}
-		
+
 	}
 
 	/**
