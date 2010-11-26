@@ -1,5 +1,7 @@
 package org.apromore.portal.dialogController;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -7,8 +9,10 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.apromore.portal.common.Utils;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.manager.RequestToManager;
@@ -94,15 +98,18 @@ public class ImportOneProcessController extends Window {
 
 			JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
 			Unmarshaller u = jc.createUnmarshaller();
-			// as the InputStream nativeProcess needs to be read multiple times, place a
-			// mark for future reset
-			this.nativeProcess.mark(0);
 			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(this.nativeProcess);
 			PackageType pkg = rootElement.getValue();
 
-			// reset InputStream to previous mark
-			this.nativeProcess.reset();
-
+			// change uri: set it as Apromore style
+			pkg.setId(Utils.newCpfURI());
+			Marshaller m = jc.createMarshaller();
+            m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+            JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(pkg);
+            ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
+            m.marshal(rootxpdl, xpdl_xml);
+            this.nativeProcess = new ByteArrayInputStream(xpdl_xml.toByteArray());
+			
 			try {// get process name if defined
 				if (pkg.getName().trim().compareTo("")!=0) {
 					readProcessName = pkg.getName().trim();
@@ -141,7 +148,7 @@ public class ImportOneProcessController extends Window {
 				// default value
 			}
 		} else if (nativeType.compareTo("EPML 2.0")==0) {
-
+			// TODO
 		}
 		this.processName.setValue(readProcessName);
 		this.versionName.setValue(readVersionName);

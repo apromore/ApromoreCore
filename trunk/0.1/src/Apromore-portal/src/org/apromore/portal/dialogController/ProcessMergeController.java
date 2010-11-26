@@ -6,7 +6,6 @@ import java.util.List;
 
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.manager.RequestToManager;
-import org.apromore.portal.model_manager.CanonicalsType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
 import org.zkoss.zk.ui.Executions;
@@ -44,7 +43,7 @@ public class ProcessMergeController extends Window {
 	private Row skipnweight;
 	private Row subnweight;
 	private Row ownerR;
-	Row processNameR;
+	private Row processNameR;
 	private Button OKbutton;
 	private Button CancelButton;
 	private LinkedList<Integer> selectedModelIds;
@@ -154,14 +153,9 @@ public class ProcessMergeController extends Window {
 				((Doublebox) this.subnweight.getFirstChild().getNextSibling()).getValue(),
 				((Doublebox) this.skipeweight.getFirstChild().getNextSibling()).getValue());
 		
-		String message = null;
-//		if (result.size() > 1) {
-//			message = " processes.";
-//		} else {
-//			message = " process.";
-//		}
-//		mainC.displayMessage(result.size() + message);
-//		mainC.displayProcessSummaries(result); // TODO show the result
+		String message = "One process.";
+		mainC.displayMessage(message);
+		mainC.displayNewProcess(result);
 
 //		Messagebox.show("Not yet available...", "Attention", Messagebox.OK,
 //			Messagebox.INFORMATION);
