@@ -1004,43 +1004,19 @@ public class ProcessDao extends BasicDao {
 					if (rs.next()) {
 						throw new ExceptionStoreVersion ("Version " + preVersion + " cannot be overridden.");
 					} else {
-						stmt.close();rs.close();
-						// cpf_uri copied by Oryx in native is wrong....
-						// get it from canonicals....
-						query = " select " + ConstantDB.ATTR_URI
-						+ " from " + ConstantDB.TABLE_CANONICALS
-						+ " where " + ConstantDB.ATTR_PROCESSID + " = " + processId
-						+ " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + preVersion + "'";
-						stmt = conn.createStatement();
-						rs = stmt.executeQuery(query);
-						if (!rs.next()) {
-							throw new ExceptionStoreVersion ("Version " + preVersion + " cannot be overridden.");
-						} else {
-							cpf_uri = rs.getString(1);
-							if (preVersion.compareTo("0.0")==0) {
-								// version "0.0" is the one created at process creation time. 
-								// Should be overridden by the next one.
-								copyParam2xpdl (pkg, processName, newVersion, username, creationDate, lastUpdate, documentation);
-								Marshaller m = jc.createMarshaller();
-								m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-								JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(pkg);
-								ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
-								m.marshal(rootxpdl, xpdl_xml);
-								InputStream newNpf_is = new ByteArrayInputStream(xpdl_xml.toByteArray());
-								overrideVersion (processId, preVersion, nativeType, newNpf_is, cpf_is, apf_is,
-										creationDate, lastUpdate, documentation, newVersion);
-							} else {
-								copyParam2xpdl (pkg, processName, preVersion, username, creationDate, lastUpdate, documentation);
-								Marshaller m = jc.createMarshaller();
-								m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-								JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(pkg);
-								ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
-								m.marshal(rootxpdl, xpdl_xml);
-								InputStream newNpf_is = new ByteArrayInputStream(xpdl_xml.toByteArray());
-								overrideVersion (processId, preVersion, nativeType, newNpf_is, cpf_is, apf_is,
-										creationDate, lastUpdate, documentation, null);
-							}
+						if (preVersion.compareTo("0.0")!=0) {
+							newVersion = null;
 						}
+						// version "0.0" is the one created at process creation time. 
+						copyParam2xpdl (pkg, processName, newVersion, username, creationDate, lastUpdate, documentation);
+						Marshaller m = jc.createMarshaller();
+						m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+						JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(pkg);
+						ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
+						m.marshal(rootxpdl, xpdl_xml);
+						InputStream newNpf_is = new ByteArrayInputStream(xpdl_xml.toByteArray());
+						overrideVersion (cpf_uri, processId, preVersion, nativeType, newNpf_is, cpf_is, apf_is,
+								creationDate, lastUpdate, documentation, newVersion);
 					}
 					conn.commit();
 				}
@@ -1070,17 +1046,11 @@ public class ProcessDao extends BasicDao {
 					if (rs.next()) {
 						throw new ExceptionStoreVersion ("Version " + preVersion + " cannot be overridden.");
 					} else {
-						if (preVersion.compareTo("0.0")==0) {
-							// version "0.0" is the one created at process creation time. 
-							// Should be overridden by the next one.
-							overrideVersion (processId, preVersion, nativeType, npf_is, cpf_is, apf_is,
-									creationDate, lastUpdate, documentation, newVersion);
-							// TODO: synchronise data with npf.
-						} else {
-
-							overrideVersion (processId, preVersion, nativeType, npf_is, cpf_is, apf_is,
-									creationDate, lastUpdate, documentation, null);
+						if (preVersion.compareTo("0.0")!=0) {
+							newVersion = null;
 						}
+						overrideVersion (cpf_uri, processId, preVersion, nativeType, npf_is, cpf_is, apf_is,
+								creationDate, lastUpdate, documentation, newVersion);
 					}
 					conn.commit();
 				}
@@ -1140,7 +1110,7 @@ public class ProcessDao extends BasicDao {
 	 * @throws ExceptionDao 
 	 * @throws SQLException 
 	 */
-	private void overrideVersion(int processId, String versionName,
+	private void overrideVersion(String cpf_uri, int processId, String versionName,
 			String nativeType, InputStream npf_is, InputStream cpf_is,
 			InputStream apf_is, String creationDate,
 			String lastUpdate, String documentation, String initialVersion) throws ExceptionDao, SQLException {
@@ -1161,29 +1131,19 @@ public class ProcessDao extends BasicDao {
 			+ " set " + ConstantDB.ATTR_LAST_UPDATE + " = ? "
 			+ " , "   + ConstantDB.ATTR_DOCUMENTATION  + " = ? "
 			+ " , "   + ConstantDB.ATTR_CONTENT + "= ? "
+			+ " , "   + ConstantDB.ATTR_URI + "= ? "
 			+ " where " + ConstantDB.ATTR_PROCESSID  + " = ? "
 			+    " and " + ConstantDB.ATTR_VERSION_NAME  + " = ? ";
 			stmtp = conn.prepareStatement(query);
 			stmtp.setString(1, lastUpdate);
 			stmtp.setString(2,documentation);
 			stmtp.setString(3, cpf_string);
-			stmtp.setInt(4,processId);
-			stmtp.setString(5,versionName);
+			stmtp.setString(4, cpf_uri);
+			stmtp.setInt(5,processId);
+			stmtp.setString(6,versionName);
 			int rs1 = stmtp.executeUpdate();
 			stmtp.close();
 			// update anf and npf
-			// need cpf uri
-			query = " select " + ConstantDB.ATTR_URI
-			+ " from " + ConstantDB.TABLE_CANONICALS
-			+ " where " + ConstantDB.ATTR_PROCESSID + " = ? "
-			+ " and "   + ConstantDB.ATTR_VERSION_NAME + " = ? ";
-			stmtp = conn.prepareStatement(query);
-			stmtp.setInt(1,processId);
-			stmtp.setString(2, versionName);
-			rs = stmtp.executeQuery();
-			if (!rs.next()) throw new ExceptionDao ("Cannot access canonical.");
-			String cpf_uri = rs.getString(1);
-			stmtp.close();
 			// delete all natives associated with process version
 			query = " delete from " + ConstantDB.TABLE_NATIVES
 			+ " where " + ConstantDB.ATTR_CANONICAL + " = ? ";
@@ -2008,7 +1968,7 @@ public class ProcessDao extends BasicDao {
 
 		org.apromore.data_access.model_toolbox.ProcessSummariesType toReturn = 
 			new org.apromore.data_access.model_toolbox.ProcessSummariesType();
-		
+
 		if(processIds.size()!=0 && versionNames.size()!=0) {
 			Connection conn = null;
 			Statement stmt = null, stmtV = null, stmtA = null;
