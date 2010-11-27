@@ -7,6 +7,8 @@
 package org.apromore.portal.service_oryx;
 
 import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -17,9 +19,11 @@ import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.Utils;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.exception.ExceptionReadEditSession;
 import org.apromore.portal.exception.ExceptionUpdateProcess;
@@ -48,11 +52,11 @@ import org.wfmc._2008.xpdl2.PackageType;
  */
 
 @javax.jws.WebService(
-                      serviceName = "PortalOryxService",
-                      portName = "PortalOryx",
-                      targetNamespace = "http://www.apromore.org/portal/service_oryx",
-                      wsdlLocation = "http://localhost:8080/Apromore-portal/services?wsdl",
-                      endpointInterface = "org.apromore.portal.service_oryx.PortalOryxPortType")
+		serviceName = "PortalOryxService",
+		portName = "PortalOryx",
+		targetNamespace = "http://www.apromore.org/portal/service_oryx",
+		wsdlLocation = "http://localhost:8080/Apromore-portal/services?wsdl",
+		endpointInterface = "org.apromore.portal.service_oryx.PortalOryxPortType")
 
 		public class PortalOryxPortTypeImpl implements PortalOryxPortType {
 
@@ -61,15 +65,15 @@ import org.wfmc._2008.xpdl2.PackageType;
 
 	public org.apromore.portal.model_oryx.WriteNewAnnotationOutputMsgType writeNewAnnotation
 	(org.apromore.portal.model_oryx.WriteNewAnnotationInputMsgType payload) { 
-        LOG.info("Executing operation writeNewAnnotation");
-        System.out.println(payload);
-        WriteNewAnnotationOutputMsgType res = new WriteNewAnnotationOutputMsgType();
+		LOG.info("Executing operation writeNewAnnotation");
+		System.out.println(payload);
+		WriteNewAnnotationOutputMsgType res = new WriteNewAnnotationOutputMsgType();
 		ResultType result = new ResultType();
 		res.setResult(result);
-		
-        try {
-            Integer code = payload.getEditSessionCode();
-            String newAnnotationName = payload.getAnnotationName();
+
+		try {
+			Integer code = payload.getEditSessionCode();
+			String newAnnotationName = payload.getAnnotationName();
 			DataHandler handler = payload.getNative();
 			InputStream native_is = handler.getInputStream();
 			RequestToManager request = new RequestToManager();
@@ -93,7 +97,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			newEditSession.setAnnotation(newAnnotationName);
 			int newEditSessionCode = request.WriteEditSession(newEditSession);
 			res.setEditSessionCode(newEditSessionCode);
-        	result.setCode(0);
+			result.setCode(0);
 			result.setMessage("");
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -101,16 +105,16 @@ import org.wfmc._2008.xpdl2.PackageType;
 			result.setMessage(ex.getMessage());
 		}
 		return res;
-    }
+	}
 
 	public org.apromore.portal.model_oryx.WriteAnnotationOutputMsgType writeAnnotation(org.apromore.portal.model_oryx.WriteAnnotationInputMsgType payload) { 
-        LOG.info("Executing operation writeAnnotation");
-        System.out.println(payload);
-        WriteAnnotationOutputMsgType res = new WriteAnnotationOutputMsgType();
+		LOG.info("Executing operation writeAnnotation");
+		System.out.println(payload);
+		WriteAnnotationOutputMsgType res = new WriteAnnotationOutputMsgType();
 		ResultType result = new ResultType();
 		res.setResult(result);
-        try {
-            Integer code = payload.getEditSessionCode();
+		try {
+			Integer code = payload.getEditSessionCode();
 			DataHandler handler = payload.getNative();
 			InputStream native_is = handler.getInputStream();
 			RequestToManager request = new RequestToManager();
@@ -121,7 +125,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			String version = editSession.getVersionName();
 			String annotationName = editSession.getAnnotation();
 			request.WriteAnnotation (code, annotationName, false, processId, version, nat_type, native_is);
-        	result.setCode(0);
+			result.setCode(0);
 			result.setMessage("");
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -129,7 +133,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			result.setMessage(ex.getMessage());
 		}
 		return res;
-    }
+	}
 
 	public CloseSessionOutputMsgType closeSession(CloseSessionInputMsgType payload) { 
 		LOG.info("Executing operation closeSession");
@@ -224,7 +228,9 @@ import org.wfmc._2008.xpdl2.PackageType;
 			String documentation = null;
 			String created = null;
 			String lastupdate = null;
-			if (nativeType.compareTo("XPDL 2.1")==0) {
+			// Need a new URI for the npf
+			String cpf_uri = Utils.newCpfURI();
+			if ("XPDL 2.1".compareTo(nativeType)==0) {
 				JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
 				Unmarshaller u = jc.createUnmarshaller();
 				JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(native_is);
@@ -250,11 +256,19 @@ import org.wfmc._2008.xpdl2.PackageType;
 				} catch (NullPointerException e) {
 					throw new ExceptionImport("Missing information in NPF.");
 				}
+				pkg.setId(cpf_uri);
+				Marshaller m = jc.createMarshaller();
+				m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+				JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(pkg);
+				ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
+				m.marshal(rootxpdl, xpdl_xml);
+				native_is = new ByteArrayInputStream(xpdl_xml.toByteArray());
+			} else if ("EPML 2.0".compareTo(nativeType)==0) {
+				// TODO: apply same for epml models
 			} else {
 				throw new ExceptionImport("WriteNewProcess: native format not supported");
 			}
 			// import native for corresponding process version
-			native_is = handler.getInputStream();
 			ProcessSummaryType newProcess = request.importProcess(username, nativeType, new_processName, new_versionName, native_is, 
 					domain, documentation, created, lastupdate);
 			// delete edit session
