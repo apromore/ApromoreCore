@@ -1978,14 +1978,15 @@ public class ProcessDao extends BasicDao {
 			// build a list of <integer, string> such as <p, LV> belongs to it
 			// iff for each v in LV, let j be the index of v in versionNames, p=processIds[j]
 			HashMap<Integer, String> processes = new HashMap<Integer, String>();
-			String l = "";
-			for (int i=0;i<processIds.size();i++) {
+			processes.put(processIds.get(0), "'" + versionNames.get(0) + "'");
+			for (int i=1;i<processIds.size();i++) {
 				if(processes.keySet().contains(processIds.get(i))) {
-					l = processes.get(processIds.get(i)) + ",";
-					processes.remove(processes.get(i));
-				} 
-				l += "'" + versionNames.get(i) + "'";
-				processes.put(processIds.get(i), l);
+					String l = processes.get(processIds.get(i))+ ", '" + versionNames.get(i) + "'";
+					processes.remove(processIds.get(i));
+					processes.put(processIds.get(i), l);
+				} else {
+					processes.put(processIds.get(i), "'" + versionNames.get(i) + "'");
+				}
 			}
 			try {
 				conn = this.getConnection();
@@ -2014,12 +2015,6 @@ public class ProcessDao extends BasicDao {
 						processSummary.setOriginalNativeType(rs.getString(4));
 						processSummary.setRanking(rs.getString(5));
 						processSummary.setOwner(rs.getString(6));
-						String versionList ;
-						if (processes.get(k).endsWith(",")) {
-							versionList = processes.get(k).substring(0, processes.get(k).length()-1);
-						} else {
-							versionList = processes.get(k);
-						}
 						stmtV = conn.createStatement();
 						query = " select " + ConstantDB.ATTR_VERSION_NAME + ", "
 						//+ "date_format(" + ConstantDB.ATTR_CREATION_DATE + ", '%d/%c/%Y %k:%i:%f')" + ",  "
@@ -2030,7 +2025,7 @@ public class ProcessDao extends BasicDao {
 						+ ConstantDB.ATTR_DOCUMENTATION
 						+ " from " + ConstantDB.TABLE_CANONICALS
 						+ " where  " + ConstantDB.ATTR_PROCESSID + " = " + processId 
-						+ " and    " + ConstantDB.ATTR_VERSION_NAME + " in (" + versionList + ")"
+						+ " and    " + ConstantDB.ATTR_VERSION_NAME + " in (" + processes.get(k) + ")"
 						+ " order by  " + ConstantDB.ATTR_CREATION_DATE ;
 						rsV = stmtV.executeQuery(query);
 						String lastVersion="";
