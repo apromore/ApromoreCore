@@ -28,9 +28,11 @@ public class ObjectFactory {
     private final static QName _StoreNativeInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreNativeInputMsg");
     private final static QName _StoreVersionOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreVersionOutputMsg");
     private final static QName _StoreNativeOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreNativeOutputMsg");
+    private final static QName _GetCpfUriInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "GetCpfUriInputMsg");
     private final static QName _StoreNativeCpfInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreNativeCpfInputMsg");
     private final static QName _StoreNativeCpfOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreNativeCpfOutputMsg");
     private final static QName _StoreVersionInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "StoreVersionInputMsg");
+    private final static QName _GetCpfUriOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "GetCpfUriOutputMsg");
     private final static QName _WriteAnnotationOutputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_canoniser", "WriteAnnotationOutputMsg");
 
     /**
@@ -41,35 +43,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ProcessSummaryType }
+     * Create an instance of {@link StoreVersionOutputMsgType }
      * 
      */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
+    public StoreVersionOutputMsgType createStoreVersionOutputMsgType() {
+        return new StoreVersionOutputMsgType();
     }
 
     /**
-     * Create an instance of {@link WriteAnnotationInputMsgType }
+     * Create an instance of {@link GetCpfUriInputMsgType }
      * 
      */
-    public WriteAnnotationInputMsgType createWriteAnnotationInputMsgType() {
-        return new WriteAnnotationInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link StoreVersionInputMsgType }
-     * 
-     */
-    public StoreVersionInputMsgType createStoreVersionInputMsgType() {
-        return new StoreVersionInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link StoreNativeCpfOutputMsgType }
-     * 
-     */
-    public StoreNativeCpfOutputMsgType createStoreNativeCpfOutputMsgType() {
-        return new StoreNativeCpfOutputMsgType();
+    public GetCpfUriInputMsgType createGetCpfUriInputMsgType() {
+        return new GetCpfUriInputMsgType();
     }
 
     /**
@@ -81,19 +67,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StoreNativeOutputMsgType }
+     * Create an instance of {@link StoreNativeCpfInputMsgType }
      * 
      */
-    public StoreNativeOutputMsgType createStoreNativeOutputMsgType() {
-        return new StoreNativeOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link AnnotationsType }
-     * 
-     */
-    public AnnotationsType createAnnotationsType() {
-        return new AnnotationsType();
+    public StoreNativeCpfInputMsgType createStoreNativeCpfInputMsgType() {
+        return new StoreNativeCpfInputMsgType();
     }
 
     /**
@@ -105,11 +83,35 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StoreNativeCpfInputMsgType }
+     * Create an instance of {@link ProcessSummaryType }
      * 
      */
-    public StoreNativeCpfInputMsgType createStoreNativeCpfInputMsgType() {
-        return new StoreNativeCpfInputMsgType();
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link AnnotationsType }
+     * 
+     */
+    public AnnotationsType createAnnotationsType() {
+        return new AnnotationsType();
+    }
+
+    /**
+     * Create an instance of {@link StoreNativeCpfOutputMsgType }
+     * 
+     */
+    public StoreNativeCpfOutputMsgType createStoreNativeCpfOutputMsgType() {
+        return new StoreNativeCpfOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link StoreVersionInputMsgType }
+     * 
+     */
+    public StoreVersionInputMsgType createStoreVersionInputMsgType() {
+        return new StoreVersionInputMsgType();
     }
 
     /**
@@ -121,6 +123,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link StoreNativeOutputMsgType }
+     * 
+     */
+    public StoreNativeOutputMsgType createStoreNativeOutputMsgType() {
+        return new StoreNativeOutputMsgType();
+    }
+
+    /**
      * Create an instance of {@link ResultType }
      * 
      */
@@ -129,11 +139,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StoreVersionOutputMsgType }
+     * Create an instance of {@link WriteAnnotationInputMsgType }
      * 
      */
-    public StoreVersionOutputMsgType createStoreVersionOutputMsgType() {
-        return new StoreVersionOutputMsgType();
+    public WriteAnnotationInputMsgType createWriteAnnotationInputMsgType() {
+        return new WriteAnnotationInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link GetCpfUriOutputMsgType }
+     * 
+     */
+    public GetCpfUriOutputMsgType createGetCpfUriOutputMsgType() {
+        return new GetCpfUriOutputMsgType();
     }
 
     /**
@@ -173,6 +191,15 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetCpfUriInputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_canoniser", name = "GetCpfUriInputMsg")
+    public JAXBElement<GetCpfUriInputMsgType> createGetCpfUriInputMsg(GetCpfUriInputMsgType value) {
+        return new JAXBElement<GetCpfUriInputMsgType>(_GetCpfUriInputMsg_QNAME, GetCpfUriInputMsgType.class, null, value);
+    }
+
+    /**
      * Create an instance of {@link JAXBElement }{@code <}{@link StoreNativeCpfInputMsgType }{@code >}}
      * 
      */
@@ -197,6 +224,15 @@ public class ObjectFactory {
     @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_canoniser", name = "StoreVersionInputMsg")
     public JAXBElement<StoreVersionInputMsgType> createStoreVersionInputMsg(StoreVersionInputMsgType value) {
         return new JAXBElement<StoreVersionInputMsgType>(_StoreVersionInputMsg_QNAME, StoreVersionInputMsgType.class, null, value);
+    }
+
+    /**
+     * Create an instance of {@link JAXBElement }{@code <}{@link GetCpfUriOutputMsgType }{@code >}}
+     * 
+     */
+    @XmlElementDecl(namespace = "http://www.apromore.org/data_access/model_canoniser", name = "GetCpfUriOutputMsg")
+    public JAXBElement<GetCpfUriOutputMsgType> createGetCpfUriOutputMsg(GetCpfUriOutputMsgType value) {
+        return new JAXBElement<GetCpfUriOutputMsgType>(_GetCpfUriOutputMsg_QNAME, GetCpfUriOutputMsgType.class, null, value);
     }
 
     /**
