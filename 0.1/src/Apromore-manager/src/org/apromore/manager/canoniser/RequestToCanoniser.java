@@ -41,6 +41,7 @@ public class RequestToCanoniser {
 	 * 
 	 * @param username
 	 * @param processName
+	 * @param cpfURI TODO
 	 * @param versionName
 	 * @param nativeType
 	 * @param cpf
@@ -53,8 +54,8 @@ public class RequestToCanoniser {
 	 * @throws ExceptionImport
 	 */
 	public org.apromore.manager.model_portal.ProcessSummaryType 
-	CanoniseProcess(String username, String processName, String versionName, 
-			String nativeType, InputStream cpf, String domain, String documentation, String created, String lastupdate) 
+	CanoniseProcess(String username, String processName, String cpfURI, 
+			String versionName, String nativeType, InputStream cpf, String domain, String documentation, String created, String lastupdate) 
 	throws IOException, ExceptionImport {
 		org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType payload = new CanoniseProcessInputMsgType();
 		payload.setUsername(username);
@@ -65,6 +66,7 @@ public class RequestToCanoniser {
 		payload.setDocumentation(documentation);
 		payload.setCreationDate(created);
 		payload.setLastUpdate(lastupdate);
+		payload.setCpfUri(cpfURI);
 		DataSource source = new ByteArrayDataSource(cpf, "text/xml"); 
 		payload.setProcessDescription(new DataHandler(source));
 		org.apromore.manager.model_canoniser.CanoniseProcessOutputMsgType res = this.port.canoniseProcess(payload);
@@ -134,8 +136,8 @@ public class RequestToCanoniser {
 	}
 
 	public void 
-	CanoniseVersion(Integer editSessionCode, Integer processId, String preVersion, String nativeType,
-			InputStream native_is) 
+	CanoniseVersion(Integer editSessionCode, Integer processId, String cpfURI, String preVersion,
+			String nativeType, InputStream native_is) 
 	throws IOException, ExceptionCanoniseVersion, ExceptionVersion {
 		CanoniseVersionInputMsgType payload = new CanoniseVersionInputMsgType();
 		DataSource source = new ByteArrayDataSource(native_is, "text/xml");
@@ -144,6 +146,7 @@ public class RequestToCanoniser {
 		payload.setNativeType(nativeType);
 		payload.setProcessId(processId);
 		payload.setPreVersion(preVersion);
+		payload.setCpfUri(cpfURI);
 		// send request to canoniser
 		CanoniseVersionOutputMsgType res = this.port.canoniseVersion(payload);
 		if (res.getResult().getCode() == -1) {
