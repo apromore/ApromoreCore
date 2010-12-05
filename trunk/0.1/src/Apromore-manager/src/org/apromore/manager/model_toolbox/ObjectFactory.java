@@ -85,6 +85,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link CpfIdsType }
+     * 
+     */
+    public CpfIdsType createCpfIdsType() {
+        return new CpfIdsType();
+    }
+
+	/**
      * Create an instance of {@link MergeProcessesInputMsgType }
      * 
      */
@@ -117,6 +125,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link CanonicalsType }
+     * 
+     */
+    public CanonicalsType createCanonicalsType() {
+        return new CanonicalsType();
+    }
+
+	/**
+     * Create an instance of {@link CanonicalType }
+     * 
+     */
+    public CanonicalType createCanonicalType() {
+        return new CanonicalType();
+    }
+
+	/**
      * Create an instance of {@link ProcessSummariesType }
      * 
      */
@@ -141,6 +165,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link CpfIdType }
+     * 
+     */
+    public CpfIdType createCpfIdType() {
+        return new CpfIdType();
+    }
+
+	/**
      * Create an instance of {@link JAXBElement }{@code <}{@link MergeProcessesOutputMsgType }{@code >}}
      * 
      */
