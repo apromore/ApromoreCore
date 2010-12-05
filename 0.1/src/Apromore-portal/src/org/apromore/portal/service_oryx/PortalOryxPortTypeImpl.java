@@ -228,8 +228,6 @@ import org.wfmc._2008.xpdl2.PackageType;
 			String documentation = null;
 			String created = null;
 			String lastupdate = null;
-			// Need a new URI for the npf
-			String cpf_uri = Utils.newCpfURI();
 			if ("XPDL 2.1".compareTo(nativeType)==0) {
 				JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
 				Unmarshaller u = jc.createUnmarshaller();
@@ -256,7 +254,6 @@ import org.wfmc._2008.xpdl2.PackageType;
 				} catch (NullPointerException e) {
 					throw new ExceptionImport("Missing information in NPF.");
 				}
-				pkg.setId(cpf_uri);
 				Marshaller m = jc.createMarshaller();
 				m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 				JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(pkg);
@@ -264,7 +261,8 @@ import org.wfmc._2008.xpdl2.PackageType;
 				m.marshal(rootxpdl, xpdl_xml);
 				native_is = new ByteArrayInputStream(xpdl_xml.toByteArray());
 			} else if ("EPML 2.0".compareTo(nativeType)==0) {
-				// TODO: apply same for epml models
+				// as epml doesn't support version, process names, etc.. 
+				// there is nothing to do!
 			} else {
 				throw new ExceptionImport("WriteNewProcess: native format not supported");
 			}

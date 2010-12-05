@@ -17,16 +17,4 @@ public class Utils {
 		
 		return day + " " + time;
 	}
-	/**
-	 * Generate a cpf uri for version of processId
-	 * @param processId
-	 * @param version
-	 * @return
-	 */
-	public static String newCpfURI() {
-		DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmsSSS");
-		Date date = new Date();
-		String time = dateFormat.format(date);
-		return time;
-	}
 }
