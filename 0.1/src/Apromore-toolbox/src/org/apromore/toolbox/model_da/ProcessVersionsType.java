@@ -8,8 +8,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import org.apache.cxf.jaxb.JAXBToStringBuilder;
-import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
@@ -35,11 +33,11 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 @XmlType(name = "ProcessVersionsType", propOrder = {
     "processVersion"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:52:30+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T02:27:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ProcessVersionsType {
 
     @XmlElement(name = "ProcessVersion")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:52:30+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T02:27:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<ProcessVersionType> processVersion;
 
     /**
@@ -64,23 +62,12 @@ public class ProcessVersionsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:52:30+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T02:27:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<ProcessVersionType> getProcessVersion() {
         if (processVersion == null) {
             processVersion = new ArrayList<ProcessVersionType>();
         }
         return this.processVersion;
-    }
-
-    /**
-     * Generates a String representation of the contents of this type.
-     * This is an extension method, produced by the 'ts' xjc plugin
-     * 
-     */
-    @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:52:30+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String toString() {
-        return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
 
 }
