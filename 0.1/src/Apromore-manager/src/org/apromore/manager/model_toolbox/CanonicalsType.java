@@ -13,16 +13,16 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for ParametersType complex type.
+ * <p>Java class for CanonicalsType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ParametersType">
+ * &lt;complexType name="CanonicalsType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="Parameter" type="{http://www.apromore.org/toolbox/model_manager}ParameterType" maxOccurs="unbounded"/>
+ *         &lt;element name="CanonicalType" type="{http://www.apromore.org/toolbox/model_manager}CanonicalType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -32,44 +32,44 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ParametersType", propOrder = {
-    "parameter"
+@XmlType(name = "CanonicalsType", propOrder = {
+    "canonicalType"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class ParametersType {
+public class CanonicalsType {
 
-    @XmlElement(name = "Parameter", required = true)
+    @XmlElement(name = "CanonicalType")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected List<ParameterType> parameter;
+    protected List<CanonicalType> canonicalType;
 
     /**
-     * Gets the value of the parameter property.
+     * Gets the value of the canonicalType property.
      * 
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the parameter property.
+     * This is why there is not a <CODE>set</CODE> method for the canonicalType property.
      * 
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
-     *    getParameter().add(newItem);
+     *    getCanonicalType().add(newItem);
      * </pre>
      * 
      * 
      * <p>
      * Objects of the following type(s) are allowed in the list
-     * {@link ParameterType }
+     * {@link CanonicalType }
      * 
      * 
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public List<ParameterType> getParameter() {
-        if (parameter == null) {
-            parameter = new ArrayList<ParameterType>();
+    public List<CanonicalType> getCanonicalType() {
+        if (canonicalType == null) {
+            canonicalType = new ArrayList<CanonicalType>();
         }
-        return this.parameter;
+        return this.canonicalType;
     }
 
     /**

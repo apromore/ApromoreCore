@@ -6,8 +6,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import org.apache.cxf.jaxb.JAXBToStringBuilder;
-import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
@@ -35,14 +33,14 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
     "result",
     "processSummary"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:06:39+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ImportProcessOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:06:39+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ResultType result;
     @XmlElement(name = "ProcessSummary", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:06:39+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ProcessSummaryType processSummary;
 
     /**
@@ -53,7 +51,7 @@ public class ImportProcessOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:06:39+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ResultType getResult() {
         return result;
     }
@@ -66,7 +64,7 @@ public class ImportProcessOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:06:39+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -79,7 +77,7 @@ public class ImportProcessOutputMsgType {
      *     {@link ProcessSummaryType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:06:39+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ProcessSummaryType getProcessSummary() {
         return processSummary;
     }
@@ -92,20 +90,9 @@ public class ImportProcessOutputMsgType {
      *     {@link ProcessSummaryType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:06:39+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessSummary(ProcessSummaryType value) {
         this.processSummary = value;
-    }
-
-    /**
-     * Generates a String representation of the contents of this type.
-     * This is an extension method, produced by the 'ts' xjc plugin
-     * 
-     */
-    @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-20T05:14:27+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String toString() {
-        return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
 
 }

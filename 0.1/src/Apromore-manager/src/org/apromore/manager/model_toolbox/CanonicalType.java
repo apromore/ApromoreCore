@@ -1,27 +1,30 @@
 
 package org.apromore.manager.model_toolbox;
 
+import javax.activation.DataHandler;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlMimeType;
 import javax.xml.bind.annotation.XmlType;
 import org.apache.cxf.jaxb.JAXBToStringBuilder;
 import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for SearchForSimilarProcessesOutputMsgType complex type.
+ * <p>Java class for CanonicalType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="SearchForSimilarProcessesOutputMsgType">
+ * &lt;complexType name="CanonicalType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="Result" type="{http://www.apromore.org/toolbox/model_manager}ResultType"/>
- *         &lt;element name="Canonicals" type="{http://www.apromore.org/toolbox/model_manager}CanonicalsType"/>
+ *         &lt;element name="ProcessId" type="{http://www.w3.org/2001/XMLSchema}int"/>
+ *         &lt;element name="VersionName" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="Cpf" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -31,99 +34,93 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "SearchForSimilarProcessesOutputMsgType", propOrder = {
-    "result",
-    "canonicals"
+@XmlType(name = "CanonicalType", propOrder = {
+    "processId",
+    "versionName",
+    "cpf"
 })
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class SearchForSimilarProcessesOutputMsgType {
+public class CanonicalType {
 
-    @XmlElement(name = "Result", required = true)
+    @XmlElement(name = "ProcessId")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected ResultType result;
-    @XmlElement(name = "Canonicals", required = true)
+    protected int processId;
+    @XmlElement(name = "VersionName", required = true)
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected CanonicalsType canonicals;
-//	@XmlElement(name = "ProcessSummaries", required = true)
-//    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:48:57+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected ProcessSummariesType processSummaries;
+    protected String versionName;
+    @XmlElement(name = "Cpf", required = true)
+    @XmlMimeType("application/octet-stream")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    protected DataHandler cpf;
 
     /**
-     * Gets the value of the result property.
+     * Gets the value of the processId property.
+     * 
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public int getProcessId() {
+        return processId;
+    }
+
+    /**
+     * Sets the value of the processId property.
+     * 
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public void setProcessId(int value) {
+        this.processId = value;
+    }
+
+    /**
+     * Gets the value of the versionName property.
      * 
      * @return
      *     possible object is
-     *     {@link ResultType }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public ResultType getResult() {
-        return result;
+    public String getVersionName() {
+        return versionName;
     }
 
     /**
-     * Sets the value of the result property.
+     * Sets the value of the versionName property.
      * 
      * @param value
      *     allowed object is
-     *     {@link ResultType }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setResult(ResultType value) {
-        this.result = value;
+    public void setVersionName(String value) {
+        this.versionName = value;
     }
 
     /**
-     * Gets the value of the canonicals property.
+     * Gets the value of the cpf property.
      * 
      * @return
      *     possible object is
-     *     {@link CanonicalsType }
+     *     {@link DataHandler }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public CanonicalsType getCanonicals() {
-        return canonicals;
-    }
-
-	/**
-     * Sets the value of the canonicals property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link CanonicalsType }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setCanonicals(CanonicalsType value) {
-        this.canonicals = value;
-    }
-
-	/**
-     * Gets the value of the processSummaries property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ProcessSummariesType }
-     *     
-     */
-//    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:48:57+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public ProcessSummariesType getProcessSummaries() {
-        return processSummaries;
+    public DataHandler getCpf() {
+        return cpf;
     }
 
     /**
-     * Sets the value of the processSummaries property.
+     * Sets the value of the cpf property.
      * 
      * @param value
      *     allowed object is
-     *     {@link ProcessSummariesType }
+     *     {@link DataHandler }
      *     
      */
-//    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:48:57+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setProcessSummaries(ProcessSummariesType value) {
-        this.processSummaries = value;
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public void setCpf(DataHandler value) {
+        this.cpf = value;
     }
 
     /**
