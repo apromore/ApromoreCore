@@ -58,7 +58,7 @@
 		<attribute name="ProcessName" type="string" />
 		<attribute name="VersionName" type="string" />
 		<attribute name="Username" type="string" />
-		<attribute name="ProcessId" type="int" />
+		<attribute name="Cpf_uri" type="string" />
 		<attribute name="Algorithm" type="string" />
 	</complexType>
 
