@@ -40,6 +40,14 @@
 		<part name="payload" element="tnsx:WriteAnnotationInputMsg">
 		</part>
 	</message>
+	<message name="GetCpfUriOutputMsg">
+		<part name="payload" element="tnsx:GetCpfUriOutputMsg">
+		</part>
+	</message>
+	<message name="GetCpfUriInputMsg">
+		<part name="payload" element="tnsx:GetCpfUriInputMsg">
+		</part>
+	</message>
 
 
 	<portType name="DACanoniserPortType">
@@ -65,6 +73,12 @@
 			<input name="WriteAnnotationRequest" message="tns:WriteAnnotationInputMsg">
 			</input>
 			<output name="WriteAnnotationResponse" message="tns:WriteAnnotationOutputMsg">
+			</output>
+		</operation>
+		<operation name="GetCpfUri">
+			<input name="GetCpfUriRequest" message="tns:GetCpfUriInputMsg">
+			</input>
+			<output name="GetCpfUriResponse" message="tns:GetCpfUriOutputMsg">
 			</output>
 		</operation>
 	</portType>
@@ -105,6 +119,15 @@
 				<soap:body use="literal" />
 			</input>
 			<output name="WriteAnnotationResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="GetCpfUri">
+			<soap:operation style="document" />
+			<input name="GetCpfUriRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="GetCpfUriResponse">
 				<soap:body use="literal" />
 			</output>
 		</operation>
