@@ -31,6 +31,8 @@ import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
+import de.epml.TypeEPML;
+
 public class ImportOneProcessController extends Window {
 
 	private MainController mainC;
@@ -100,16 +102,7 @@ public class ImportOneProcessController extends Window {
 			Unmarshaller u = jc.createUnmarshaller();
 			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(this.nativeProcess);
 			PackageType pkg = rootElement.getValue();
-
-			// change uri: set it as Apromore style
-			pkg.setId(Utils.newCpfURI());
-			Marshaller m = jc.createMarshaller();
-            m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-            JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(pkg);
-            ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
-            m.marshal(rootxpdl, xpdl_xml);
-            this.nativeProcess = new ByteArrayInputStream(xpdl_xml.toByteArray());
-			
+			this.nativeProcess.reset();
 			try {// get process name if defined
 				if (pkg.getName().trim().compareTo("")!=0) {
 					readProcessName = pkg.getName().trim();
@@ -148,7 +141,9 @@ public class ImportOneProcessController extends Window {
 				// default value
 			}
 		} else if (nativeType.compareTo("EPML 2.0")==0) {
-			// TODO
+			// as epml doesn't support process name, version, etc..
+			// there is nothing much to do: leave values to default.
+			
 		}
 		this.processName.setValue(readProcessName);
 		this.versionName.setValue(readVersionName);

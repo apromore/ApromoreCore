@@ -315,7 +315,8 @@ public class RequestToManager {
 
 
 	public ProcessSummaryType importProcess (String username, String nativeType, String processName, 
-			String versionName, InputStream xml_process, String domain, String documentation, String created, String lastUpdate) 
+			String versionName, InputStream xml_process, String domain, 
+			String documentation, String created, String lastUpdate) 
 	throws IOException, ExceptionImport {
 
 		ImportProcessInputMsgType payload = new ImportProcessInputMsgType();
