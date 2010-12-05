@@ -15,25 +15,41 @@
 	<element name="StoreVersionOutputMsg" type="tns:StoreVersionOutputMsgType" />
 	<element name="WriteAnnotationInputMsg" type="tns:WriteAnnotationInputMsgType" />
 	<element name="WriteAnnotationOutputMsg" type="tns:WriteAnnotationOutputMsgType" />
+	<element name="GetCpfUriInputMsg" type="tns:GetCpfUriInputMsgType" />
+	<element name="GetCpfUriOutputMsg" type="tns:GetCpfUriOutputMsgType" />
 
 	<complexType name="WriteAnnotationInputMsgType">
 		<sequence>
-			<element name="Anf" type="base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+			<element name="Anf" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
-		<attribute name="EditSessionCode" type="int"/>
-		<attribute name="AnnotationName" type="string"/>
-		<attribute name="IsNew" type="boolean"/>
-		<attribute name="ProcessId" type="int"/>
-		<attribute name="Version" type="string"/>
-		<attribute name="NativeType" type="string"/>
+		<attribute name="EditSessionCode" type="int" />
+		<attribute name="AnnotationName" type="string" />
+		<attribute name="IsNew" type="boolean" />
+		<attribute name="ProcessId" type="int" />
+		<attribute name="Version" type="string" />
+		<attribute name="CpfURI" type="string"/>
+		<attribute name="NativeType" type="string" />
 	</complexType>
 
 	<complexType name="WriteAnnotationOutputMsgType">
 		<sequence>
-			<element name="Result" type="tns:ResultType"/>
+			<element name="Result" type="tns:ResultType" />
 		</sequence>
 	</complexType>
 	
+	<complexType name="GetCpfUriInputMsgType">
+		<attribute name="ProcessId" type="int" />
+		<attribute name="Version" type="string" />
+	</complexType>
+
+	<complexType name="GetCpfUriOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+		</sequence>
+		<attribute name="CpfURI" type="string"/>
+	</complexType>
+
 	<complexType name="ResultType">
 		<attribute name="message" type="string" />
 		<attribute name="code" type="int" />
@@ -49,6 +65,7 @@
 				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
 		<attribute name="ProcessName" type="string" />
+		<attribute name="CpfURI" type="string"/>
 		<attribute name="Domain" type="string" />
 		<attribute name="NativeType" type="string" />
 		<attribute name="Username" type="string" />
@@ -99,7 +116,7 @@
 		</sequence>
 		<attribute name="NativeType" type="string" />
 	</complexType>
-	
+
 	<complexType name="StoreNativeInputMsgType">
 		<sequence>
 			<element name="processId" type="int" />
@@ -128,6 +145,7 @@
 		<attribute name="EditSessionCode" type="int" />
 		<attribute name="ProcessId" type="int" />
 		<attribute name="PreVersion" type="string" />
+		<attribute name="CpfURI" type="string"/>
 		<attribute name="NativeType" type="string" />
 	</complexType>
 	<complexType name="StoreVersionOutputMsgType">
