@@ -1,20 +1,22 @@
 
-package org.apromore.manager.model_portal;
+package org.apromore.manager.model_toolbox;
 
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
+import org.apache.cxf.jaxb.JAXBToStringBuilder;
+import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
- * <p>Java class for ProcessVersion_idType complex type.
+ * <p>Java class for Cpf_idType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ProcessVersion_idType">
+ * &lt;complexType name="Cpf_idType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;attribute name="ProcessId" type="{http://www.w3.org/2001/XMLSchema}int" />
@@ -27,15 +29,15 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ProcessVersion_idType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:06:39+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class ProcessVersionIdType {
+@XmlType(name = "Cpf_idType")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+public class CpfIdType {
 
     @XmlAttribute(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:06:39+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Integer processId;
     @XmlAttribute(name = "VersionName")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:06:39+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String versionName;
 
     /**
@@ -46,7 +48,7 @@ public class ProcessVersionIdType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:06:39+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Integer getProcessId() {
         return processId;
     }
@@ -59,7 +61,7 @@ public class ProcessVersionIdType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:06:39+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessId(Integer value) {
         this.processId = value;
     }
@@ -72,7 +74,7 @@ public class ProcessVersionIdType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:06:39+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getVersionName() {
         return versionName;
     }
@@ -85,9 +87,20 @@ public class ProcessVersionIdType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:06:39+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setVersionName(String value) {
         this.versionName = value;
+    }
+
+    /**
+     * Generates a String representation of the contents of this type.
+     * This is an extension method, produced by the 'ts' xjc plugin
+     * 
+     */
+    @Override
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public String toString() {
+        return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
 
 }
