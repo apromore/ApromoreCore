@@ -338,8 +338,9 @@ public class ProcessDao extends BasicDao {
 	 */
 	public org.apromore.data_access.model_canoniser.ProcessSummaryType 
 	storeNativeCpf 
-	(String username, String processName, String domain, String documentation,
-			String nativeType, String version, String creationDate, String lastUpdate, InputStream process_xml,
+	(String username, String processName, String cpf_uri, String domain, String documentation,
+			String nativeType, String version, String creationDate, String lastUpdate, 
+			InputStream process_xml,
 			InputStream cpf_xml, InputStream anf_xml) throws SQLException, ExceptionDao {
 
 		Connection conn = null;
@@ -367,7 +368,7 @@ public class ProcessDao extends BasicDao {
 			stmtp.setString(1, processName);
 			stmtp.setString(2, domain);
 			stmtp.setString(3, username);
-			stmtp.setString(4,nativeType);
+			stmtp.setString(4, nativeType);
 			int rs1 = stmtp.executeUpdate();
 			keys = stmtp.getGeneratedKeys() ;
 			if (!keys.next()) {
@@ -383,12 +384,9 @@ public class ProcessDao extends BasicDao {
 			}
 			if (lastUpdate==null) lastUpdate="";
 			if (documentation==null) documentation="";
-			// copy parameters values in sync_npf and retrieve cpf_uri
-			StringBuilder cpf_uri_builder = new StringBuilder();
+			// copy parameters values in sync_npf
 			InputStream sync_npf = copyParam2NPF(process_xml, nativeType, processName, version,
-					username, creationDate, lastUpdate, documentation, cpf_uri_builder);
-			String cpf_uri = new String();
-			cpf_uri = cpf_uri_builder.toString();
+					username, creationDate, lastUpdate, documentation);
 			// copy parameter values in sync_cpf
 			InputStream sync_cpf = copyParam2CPF(cpf_xml, processName, version,
 					username, creationDate, lastUpdate);
@@ -550,7 +548,7 @@ public class ProcessDao extends BasicDao {
 	private InputStream copyParam2NPF(InputStream process_xml,
 			String nativeType, String processName,
 			String version, String username, String creationDate,
-			String lastUpdate, String documentation, StringBuilder cpf_uri) throws JAXBException {
+			String lastUpdate, String documentation) throws JAXBException {
 
 		InputStream res = null;
 		if (nativeType.compareTo("XPDL 2.1")==0) {
@@ -558,7 +556,6 @@ public class ProcessDao extends BasicDao {
 			Unmarshaller u = jc.createUnmarshaller();
 			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
 			PackageType pkg = rootElement.getValue();
-			cpf_uri.append(pkg.getId());
 			copyParam2xpdl (pkg, processName, version, username, creationDate, lastUpdate, documentation);
 
 			Marshaller m = jc.createMarshaller();
@@ -568,19 +565,9 @@ public class ProcessDao extends BasicDao {
 			res = new ByteArrayInputStream(xpdl_xml.toByteArray());
 
 		} else if (nativeType.compareTo("EPML 2.0")==0) {
-			JAXBContext jc = JAXBContext.newInstance("de.epml");
-			Unmarshaller u = jc.createUnmarshaller();
-			JAXBElement<TypeEPML> rootElement = (JAXBElement<TypeEPML>) u.unmarshal(process_xml);
-			TypeEPML epml = rootElement.getValue();
-			// TODO cpf_uri = ?????
-			// TODO
-
-			Marshaller m = jc.createMarshaller();
-			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-			ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
-			m.marshal(rootElement, xpdl_xml);
-			res = new ByteArrayInputStream(xpdl_xml.toByteArray());
-
+			// as epml doesn't support process, version names and etc.
+			// nothing to do.
+			res = process_xml;
 		}
 		return res;
 	}
@@ -936,7 +923,8 @@ public class ProcessDao extends BasicDao {
 	 * @throws ExceptionStoreVersion 
 	 * @throws ExceptionSyncNPF 
 	 */
-	public void storeVersion (int editSessionCode, Integer processId, String preVersion, String nativeType, 
+	public void storeVersion (int editSessionCode, Integer processId, String preVersion, 
+			String cpf_uri, String nativeType, 
 			InputStream npf_is, InputStream cpf_is, InputStream apf_is) 
 	throws ExceptionDao, SQLException, ExceptionSyncNPF, ExceptionStoreVersion {
 		String query;
@@ -950,7 +938,6 @@ public class ProcessDao extends BasicDao {
 			String documentation = null;
 			String username = null;
 			String processName = null;
-			String cpf_uri = null;
 			// read the data above from native_is
 			npf_is.mark(0);
 			if (nativeType.compareTo("XPDL 2.1")==0) {
@@ -963,7 +950,6 @@ public class ProcessDao extends BasicDao {
 					processName = pkg.getName();
 					newVersion = pkg.getRedefinableHeader().getVersion().getValue().trim();
 					creationDate = pkg.getPackageHeader().getCreated().getValue().trim();
-					cpf_uri = pkg.getId();
 					if (pkg.getPackageHeader().getModificationDate()!=null) {
 						lastUpdate = pkg.getPackageHeader().getModificationDate().getValue().trim();
 					} else {
@@ -982,7 +968,6 @@ public class ProcessDao extends BasicDao {
 					// Should be overridden by the next one.
 					// if preVersion != newVersion: try to derive newVersion from preVersion
 					copyParam2xpdl (pkg, processName, newVersion, username, creationDate, lastUpdate, documentation);
-					cpf_uri=pkg.getId();
 					Marshaller m = jc.createMarshaller();
 					m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 					JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(pkg);
@@ -1386,75 +1371,6 @@ public class ProcessDao extends BasicDao {
 		}
 	}
 
-	/**
-	 * Override process version data related to editSessionCode, processId, versionName with those
-	 * temporary stored in temp_versions table
-	 * @param editSessionCode
-	 * @param processId
-	 * @param versionName
-	 * @throws SQLException
-	 * @throws ExceptionDao
-	 */
-	public void confirmStoreVersion (int editSessionCode, int processId, String nativeType, String preVersion, String newVersion) 
-	throws SQLException, ExceptionDao {
-
-		Connection conn = null;
-		PreparedStatement stmtp = null;
-		ResultSet rs0 = null;
-		String query = null;
-
-		try {
-			conn = this.getConnection();
-			// newVersion already exists. User has confirmed that new data override preceding one.
-			// get information from temp_versions
-			query = " select " + ConstantDB.ATTR_CODE
-			+ "," + ConstantDB.ATTR_RECORD_TIME
-			+ "," + ConstantDB.ATTR_PROCESSID
-			+ "," + ConstantDB.ATTR_PRE_VERSION_NAME
-			+ "," + ConstantDB.ATTR_NEW_VERSION_NAME
-			+ "," + ConstantDB.ATTR_CREATION_DATE
-			+ "," + ConstantDB.ATTR_LAST_UPDATE
-			+ "," + ConstantDB.ATTR_ANNOTATION
-			+ "," + ConstantDB.ATTR_DOCUMENTATION
-			+ "," + ConstantDB.ATTR_CPF
-			+ "," + ConstantDB.ATTR_APF
-			+ "," + ConstantDB.ATTR_NPF
-			+ " from " + ConstantDB.TABLE_TEMP_VERSIONS
-			+ " where " + ConstantDB.ATTR_CODE + " = ? "
-			+ "   and " + ConstantDB.ATTR_PROCESSID + " = ? "
-			+ "   and " + ConstantDB.ATTR_PRE_VERSION_NAME + " = ? "
-			+ "   and " + ConstantDB.ATTR_NEW_VERSION_NAME + " = ? ";
-			stmtp = conn.prepareStatement(query);
-			stmtp.setInt(1, editSessionCode);
-			stmtp.setInt(2, processId);
-			stmtp.setString(3, preVersion);
-			stmtp.setString(4, newVersion);
-			rs0 = stmtp.executeQuery();
-			if (!rs0.next()) {
-				throw new ExceptionDao ("Coudn't retrieve temporary data.");
-			} else {
-				// should return only one tuple....
-				String creationDate = rs0.getString(5);
-				String lastupdate = rs0.getString(6);
-				String annotation = rs0.getString(8);
-				String documentation = rs0.getString(8);
-				String cpf = rs0.getString(9);
-				String apf = rs0.getString(10);
-				String npf  = rs0.getString(11);
-				stmtp.close();
-				ByteArrayInputStream cpf_is = new ByteArrayInputStream(cpf.getBytes());
-				ByteArrayInputStream apf_is = new ByteArrayInputStream(apf.getBytes());
-				ByteArrayInputStream npf_is = new ByteArrayInputStream(npf.getBytes());
-				storeVersion(editSessionCode, processId, newVersion, nativeType, npf_is, cpf_is, apf_is);
-			} 
-		} catch (Exception e) {
-			e.printStackTrace();
-			conn.rollback();
-			throw new ExceptionDao ("SQL error: " + e.getMessage() + "\n");
-		} finally {
-			Release(conn, stmtp, null);
-		}
-	}
 
 	/**
 	 * For each given process, delete each of its given versions from the database. 
@@ -1824,7 +1740,8 @@ public class ProcessDao extends BasicDao {
 	 * TODO 
 	 * @throws ExceptionAnntotationName 
 	 */
-	public void storeAnnotation (String name, Integer processId, String version, String nat_type, InputStream content,
+	public void storeAnnotation (String name, Integer processId, String cpfUri,
+			String version, String nat_type, InputStream content,
 			Boolean isNew) 
 	throws SQLException, ExceptionDao, ExceptionAnntotationName {
 		Connection conn = null;
@@ -1832,28 +1749,12 @@ public class ProcessDao extends BasicDao {
 		Statement stmt = null ;
 		String query = null;	
 		ResultSet rs = null;
-		String cpf_uri = null;
 		Integer npf_uri = null;
 		try {		
 			conn = this.getConnection();
-			// retrieve uri of the associated canonical process
-			query = " select " + ConstantDB.ATTR_URI
-			+ " from " + ConstantDB.TABLE_CANONICALS
-			+ " where " + ConstantDB.ATTR_PROCESSID + " = " + processId
-			+ " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + version + "'";
-			stmt = conn.createStatement();
-			rs = stmt.executeQuery(query);
-			// should return one tuple only
-			if (rs.next()) {
-				cpf_uri = rs.getString(1);
-			} else {
-				throw new ExceptionDao ("Cannot retrieve canonical.");
-			}
-			// retrieve uri of the associated native process
-			rs.close(); stmt.close();
 			query = " select " + ConstantDB.ATTR_URI
 			+ " from " + ConstantDB.TABLE_NATIVES
-			+ " where " + ConstantDB.ATTR_CANONICAL + " = '" + cpf_uri + "'";
+			+ " where " + ConstantDB.ATTR_CANONICAL + " = '" + cpfUri + "'";
 			stmt = conn.createStatement();
 			rs = stmt.executeQuery(query);
 			// should return one tuple only
@@ -1872,7 +1773,7 @@ public class ProcessDao extends BasicDao {
 				+ "," + ConstantDB.ATTR_CONTENT + ") values (?,?,?,?) ";
 				stmtp = conn.prepareStatement(query);
 				stmtp.setInt(1, npf_uri);
-				stmtp.setString(2, cpf_uri);
+				stmtp.setString(2, cpfUri);
 				stmtp.setString(3, name);
 				stmtp.setString(4, anf_str);
 				stmtp.executeUpdate();
@@ -1884,7 +1785,7 @@ public class ProcessDao extends BasicDao {
 				+ " and "   + ConstantDB.ATTR_NAME + " = ? " ;
 				stmtp = conn.prepareStatement(query);
 				stmtp.setString(1, anf_str);
-				stmtp.setString(2, cpf_uri);
+				stmtp.setString(2, cpfUri);
 				stmtp.setString(3, name);
 				stmtp.executeUpdate();
 			}
@@ -2082,6 +1983,41 @@ public class ProcessDao extends BasicDao {
 			}
 		}
 		return toReturn;
+	}
+
+	/**
+	 * Return the cpf_uri associated with canonical identified by processId, version
+	 * @param processId
+	 * @param version
+	 * @return
+	 * @throws ExceptionDao 
+	 */
+	public String getCpfUri(Integer processId, String version) throws ExceptionDao {
+		Connection conn = null;
+		Statement stmt = null;
+		ResultSet rs = null;
+		String query = null;
+		try {
+			conn = this.getConnection();
+			// retrieve uri of the associated canonical process
+			query = " select " + ConstantDB.ATTR_URI
+			+ " from " + ConstantDB.TABLE_CANONICALS
+			+ " where " + ConstantDB.ATTR_PROCESSID + " = " + processId
+			+ " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + version + "'";
+			stmt = conn.createStatement();
+			rs = stmt.executeQuery(query);
+			// should return one tuple only
+			if (rs.next()) {
+				return rs.getString(1);
+			} else {
+				throw new ExceptionDao ("Cannot retrieve canonical.");
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+			throw new ExceptionDao ("Error: " + e.getMessage() + "\n");
+		} finally {
+			Release(conn, stmt, rs);
+		}
 	}
 
 }
