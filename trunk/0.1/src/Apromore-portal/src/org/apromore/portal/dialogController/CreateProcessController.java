@@ -179,13 +179,11 @@ public class CreateProcessController {
 				String creationDate = dateFormat.format(new Date());
 				InputStream nativeProcess = null;
 				// build an empty native with the minimum content:
-				// uri, owner, natie type
+				// owner, native type
 				// create new native process, as this import if for process creation purpose
-				String cpf_uri = Utils.newCpfURI();
 				if ("XPDL 2.1".compareTo(nativeType)==0) {
 					PackageType pkg = new PackageType();
 					pkg.setName(processName);
-					pkg.setId(cpf_uri);
 					PackageHeader hder = new PackageHeader();
 					pkg.setPackageHeader(hder);
 					RedefinableHeader rhder = new RedefinableHeader();
@@ -208,8 +206,10 @@ public class CreateProcessController {
 					nativeProcess = new ByteArrayInputStream(xpdl_xml.toByteArray());
 
 				} else if ("EPML 2.0".compareTo(nativeType)==0) {
-					// TODO: where to put process version uri?
+					// as epml doesn't support process, version, etc. nothing else to do
+					// then just creation an empty process.
 					TypeEPML epml = new TypeEPML();
+				
 					JAXBContext jc = JAXBContext.newInstance("de.epml");
 					Marshaller m = jc.createMarshaller();
 					m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
