@@ -4,23 +4,21 @@ package org.apromore.canoniser.model_da;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for StoreNativeCpfOutputMsgType complex type.
+ * <p>Java class for GetCpfUriInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="StoreNativeCpfOutputMsgType">
+ * &lt;complexType name="GetCpfUriInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="Result" type="{http://www.apromore.org/data_access/model_canoniser}ResultType"/>
- *         &lt;element name="ProcessSummary" type="{http://www.apromore.org/data_access/model_canoniser}ProcessSummaryType" minOccurs="0"/>
- *       &lt;/sequence>
+ *       &lt;attribute name="ProcessId" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="Version" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -29,70 +27,67 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "StoreNativeCpfOutputMsgType", propOrder = {
-    "result",
-    "processSummary"
-})
+@XmlType(name = "GetCpfUriInputMsgType")
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class StoreNativeCpfOutputMsgType {
+public class GetCpfUriInputMsgType {
 
-    @XmlElement(name = "Result", required = true)
+    @XmlAttribute(name = "ProcessId")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected ResultType result;
-    @XmlElement(name = "ProcessSummary")
+    protected Integer processId;
+    @XmlAttribute(name = "Version")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected ProcessSummaryType processSummary;
+    protected String version;
 
     /**
-     * Gets the value of the result property.
+     * Gets the value of the processId property.
      * 
      * @return
      *     possible object is
-     *     {@link ResultType }
+     *     {@link Integer }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public ResultType getResult() {
-        return result;
+    public Integer getProcessId() {
+        return processId;
     }
 
     /**
-     * Sets the value of the result property.
+     * Sets the value of the processId property.
      * 
      * @param value
      *     allowed object is
-     *     {@link ResultType }
+     *     {@link Integer }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setResult(ResultType value) {
-        this.result = value;
+    public void setProcessId(Integer value) {
+        this.processId = value;
     }
 
     /**
-     * Gets the value of the processSummary property.
+     * Gets the value of the version property.
      * 
      * @return
      *     possible object is
-     *     {@link ProcessSummaryType }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public ProcessSummaryType getProcessSummary() {
-        return processSummary;
+    public String getVersion() {
+        return version;
     }
 
     /**
-     * Sets the value of the processSummary property.
+     * Sets the value of the version property.
      * 
      * @param value
      *     allowed object is
-     *     {@link ProcessSummaryType }
+     *     {@link String }
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setProcessSummary(ProcessSummaryType value) {
-        this.processSummary = value;
+    public void setVersion(String value) {
+        this.version = value;
     }
 
 }

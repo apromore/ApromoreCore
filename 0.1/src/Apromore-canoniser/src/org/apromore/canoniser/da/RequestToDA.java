@@ -11,8 +11,11 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.xml.namespace.QName;
 
 import org.apromore.canoniser.exception.ExceptionAnnotation;
+import org.apromore.canoniser.exception.ExceptionCpfUri;
 import org.apromore.canoniser.exception.ExceptionStore;
 import org.apromore.canoniser.exception.ExceptionVersion;
+import org.apromore.canoniser.model_da.GetCpfUriInputMsgType;
+import org.apromore.canoniser.model_da.GetCpfUriOutputMsgType;
 import org.apromore.canoniser.model_da.StoreNativeCpfInputMsgType;
 import org.apromore.canoniser.model_da.StoreNativeCpfOutputMsgType;
 import org.apromore.canoniser.model_da.StoreNativeInputMsgType;
@@ -37,13 +40,14 @@ public class RequestToDA {
 	}
 
 	public org.apromore.canoniser.model_manager.ProcessSummaryType 
-	storeNativeCpf (String username, String processName, 
+	storeNativeCpf (String username, String processName, String cpfURI,
 			String domain, String nativeType, String versionName, String documentation, String created, String lastupdate,
 			InputStream process_xml, InputStream cpf_xml, InputStream anf_xml) throws IOException, ExceptionStore {
 
 		org.apromore.canoniser.model_manager.ProcessSummaryType processM =
 			new ProcessSummaryType();
 		StoreNativeCpfInputMsgType payload = new StoreNativeCpfInputMsgType();
+		payload.setCpfURI(cpfURI);
 		payload.setUsername(username);
 		payload.setNativeType(nativeType);
 		payload.setProcessName(processName);
@@ -109,11 +113,13 @@ public class RequestToDA {
 		}
 	}
 
-	public void StoreVersion(int editSessionCode, int processId, String preVersion, String nativeType, 
+	public void StoreVersion(int editSessionCode, int processId, String preVersion, 
+			String cpfURI, String nativeType, 
 			InputStream native_is, InputStream anf_xml_is,
 			InputStream cpf_xml_is) throws IOException, ExceptionStore, ExceptionVersion {
 
 		StoreVersionInputMsgType payload = new StoreVersionInputMsgType();
+		payload.setCpfURI(cpfURI);
 		payload.setNativeType(nativeType);
 		payload.setProcessId(processId);
 		payload.setPreVersion(preVersion);
@@ -133,7 +139,7 @@ public class RequestToDA {
 	}
 
 	public void WriteAnnotation(Integer editSessionCode, String annotationName,
-			Boolean isNew, Integer processId, String version,
+			Boolean isNew, Integer processId, String version, String cpfUri,
 			String nativeType, InputStream inputStream, InputStream anf_is) throws IOException, ExceptionAnnotation {
 		WriteAnnotationInputMsgType payload = new WriteAnnotationInputMsgType();
 		payload.setAnnotationName(annotationName);
@@ -142,11 +148,24 @@ public class RequestToDA {
 		payload.setVersion(version);
 		payload.setIsNew(isNew);
 		payload.setNativeType(nativeType);
+		payload.setCpfURI(cpfUri);
 		DataSource source_anf = new ByteArrayDataSource(anf_is, "text/xml"); 
 		payload.setAnf(new DataHandler(source_anf));
 		WriteAnnotationOutputMsgType res = this.port.writeAnnotation(payload);
 		if (res.getResult().getCode() == -1) {
 			throw new ExceptionAnnotation (res.getResult().getMessage());
 		}
+	}
+
+	public String GetCpfUri(Integer processId, String version) throws ExceptionCpfUri {
+		GetCpfUriInputMsgType payload = new GetCpfUriInputMsgType();
+		payload.setProcessId(processId);
+		payload.setVersion(version);
+		GetCpfUriOutputMsgType res = this.port.getCpfUri(payload);
+		if (res.getResult().getCode() == -1) {
+			throw new ExceptionCpfUri (res.getResult().getMessage());
+		}
+		return res.getCpfURI();
+		
 	}
 }
