@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummaryType;
@@ -44,11 +45,12 @@ public class ProcessMergeController extends Window {
 	private Row subnweight;
 	private Row ownerR;
 	private Row processNameR;
+	private Row versionNameR;
 	private Button OKbutton;
 	private Button CancelButton;
 	private LinkedList<Integer> selectedModelIds;
 	private Textbox processNameT;
-	private SelectDynamicListController ownerCB;
+	private Textbox versionNameT;
 	
 	public ProcessMergeController (MainController mainC, MenuController menuC, 
 			HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) 
@@ -61,14 +63,15 @@ public class ProcessMergeController extends Window {
 			this.selectedModelIds.add(v.getId());
 		}
 
-		this.processMergeW = (Window) Executions.createComponents("macros/processMerge.zul", null, null);
+		this.processMergeW = (Window) Executions.createComponents("macros/processmerge.zul", null, null);
 		this.processMergeW.setTitle("Merge processes.");
 		
-		this.processNameR = (Row) this.processMergeW.getFellow("mergedname");
+		this.processNameR = (Row) this.processMergeW.getFellow("mergednamep");
 		this.processNameT = (Textbox) processNameR.getFirstChild().getNextSibling();
-		
-		this.ownerR = (Row) this.processMergeW.getFellow("mergedowner");
-		
+
+		this.versionNameR = (Row) this.processMergeW.getFellow("mergednamev");
+		this.versionNameT = (Textbox) versionNameR.getFirstChild().getNextSibling();
+		this.versionNameT.setValue("0.1");
 		this.removeEntR = (Row) this.processMergeW.getFellow("removeEnt");
 		this.algoChoiceR = (Row) this.processMergeW.getFellow("mergeAlgoChoice");
 		this.buttonsR = (Row) this.processMergeW.getFellow("mergeButtons");
@@ -95,16 +98,6 @@ public class ProcessMergeController extends Window {
 		listItem.setLabel("Greedy");
 		this.algosLB.appendChild(listItem);
 		
-		List<String> usernames = this.mainC.getUsers();
-		this.ownerCB = new SelectDynamicListController(usernames);
-		this.ownerCB.setReference(usernames);
-		this.ownerCB.setAutodrop(true);
-		this.ownerCB.setWidth("85%");
-		this.ownerCB.setHeight("100%");
-		this.ownerCB.setAttribute("hflex", "1");
-		this.ownerR.appendChild(ownerCB);
-
-
 		this.algosLB.addEventListener("onSelect",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -143,7 +136,8 @@ public class ProcessMergeController extends Window {
 		ProcessSummaryType result = request.mergeProcesses(
 				selectedModelIds, 
 				this.processNameT.getValue(),
-				this.ownerCB.getSelectedItem().getLabel(),
+				this.versionNameT.getValue(),
+				this.mainC.getCurrentUser().getUsername(),
 				this.algosLB.getSelectedItem().getLabel(),
 				this.removeEnt.isChecked(),
 				((Doublebox) this.mergethreshold.getFirstChild().getNextSibling()).getValue(),
