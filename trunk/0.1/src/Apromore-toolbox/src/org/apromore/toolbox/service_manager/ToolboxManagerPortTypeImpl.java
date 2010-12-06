@@ -272,6 +272,7 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 				new ProcessSummaryType();
 			org.apromore.toolbox.model_manager.VersionSummaryType versionM =
 				new VersionSummaryType();
+			processM.getVersionSummaries().add(versionM);
 			// the returned process has one version, no annotations
 			processM.setId(process.getId());
 			processM.setLastVersion(process.getLastVersion());
