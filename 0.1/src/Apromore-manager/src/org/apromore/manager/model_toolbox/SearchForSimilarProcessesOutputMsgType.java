@@ -6,8 +6,6 @@ import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
-import org.apache.cxf.jaxb.JAXBToStringBuilder;
-import org.apache.cxf.jaxb.JAXBToStringStyle;
 
 
 /**
@@ -21,7 +19,7 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
  *         &lt;element name="Result" type="{http://www.apromore.org/toolbox/model_manager}ResultType"/>
- *         &lt;element name="Canonicals" type="{http://www.apromore.org/toolbox/model_manager}CanonicalsType"/>
+ *         &lt;element name="ProcessSummaries" type="{http://www.apromore.org/toolbox/model_manager}ProcessSummariesType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -33,19 +31,16 @@ import org.apache.cxf.jaxb.JAXBToStringStyle;
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "SearchForSimilarProcessesOutputMsgType", propOrder = {
     "result",
-    "canonicals"
+    "processSummaries"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-06T11:48:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class SearchForSimilarProcessesOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-06T11:48:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ResultType result;
-    @XmlElement(name = "Canonicals", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected CanonicalsType canonicals;
-//	@XmlElement(name = "ProcessSummaries", required = true)
-//    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:48:57+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @XmlElement(name = "ProcessSummaries", required = true)
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-06T11:48:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ProcessSummariesType processSummaries;
 
     /**
@@ -56,7 +51,7 @@ public class SearchForSimilarProcessesOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-06T11:48:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ResultType getResult() {
         return result;
     }
@@ -69,38 +64,12 @@ public class SearchForSimilarProcessesOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-06T11:48:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setResult(ResultType value) {
         this.result = value;
     }
 
     /**
-     * Gets the value of the canonicals property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link CanonicalsType }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public CanonicalsType getCanonicals() {
-        return canonicals;
-    }
-
-	/**
-     * Sets the value of the canonicals property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link CanonicalsType }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setCanonicals(CanonicalsType value) {
-        this.canonicals = value;
-    }
-
-	/**
      * Gets the value of the processSummaries property.
      * 
      * @return
@@ -108,7 +77,7 @@ public class SearchForSimilarProcessesOutputMsgType {
      *     {@link ProcessSummariesType }
      *     
      */
-//    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:48:57+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-06T11:48:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ProcessSummariesType getProcessSummaries() {
         return processSummaries;
     }
@@ -121,20 +90,9 @@ public class SearchForSimilarProcessesOutputMsgType {
      *     {@link ProcessSummariesType }
      *     
      */
-//    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-22T05:48:57+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-06T11:48:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessSummaries(ProcessSummariesType value) {
         this.processSummaries = value;
-    }
-
-    /**
-     * Generates a String representation of the contents of this type.
-     * This is an extension method, produced by the 'ts' xjc plugin
-     * 
-     */
-    @Override
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-11-16T05:26:45+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String toString() {
-        return JAXBToStringBuilder.valueOf(this, JAXBToStringStyle.DEFAULT_STYLE);
     }
 
 }
