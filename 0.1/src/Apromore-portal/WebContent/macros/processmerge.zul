@@ -6,13 +6,13 @@
 				<column width="40%"></column>
 			</columns>
 			<rows>
-				<row id="mergedname">
+				<row id="mergednamep">
 					<label value="Process name*" width="100%"/>
 					<textbox width="100%"/>
 				</row>
-				<row id="mergedowner" width="100%">
-					<label value="Owner*" />
-					<!-- combobox implemented in SelectDynamicListController -->
+				<row id="mergednamev">
+					<label value="Version name*" width="100%"/>
+					<textbox width="100%"/>
 				</row>
 				<row id="removeEnt">
 					<label value="Remove entanglements" />
