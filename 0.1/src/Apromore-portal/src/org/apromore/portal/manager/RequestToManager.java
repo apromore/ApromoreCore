@@ -229,7 +229,7 @@ public class RequestToManager {
 	public ProcessSummaryType mergeProcesses(
 			LinkedList<Integer> mergeModelIds, 
 			String mergedProcessname,
-			//			String mergedversionName,
+			String mergedversionName,
 			String mergedUsername,
 			String method,
 			boolean removeEntanglements,
@@ -244,7 +244,7 @@ public class RequestToManager {
 
 		// merged process data
 		payload.setProcessName(mergedProcessname);
-		//		payload.setVersionName(mergedversionName);
+		payload.setVersionName(mergedversionName);
 		payload.setUsername(mergedUsername);
 
 		// process models 
