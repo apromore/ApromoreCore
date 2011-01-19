@@ -22,6 +22,8 @@
 		<sequence>
 			<element name="Result" type="tns:ResultType"/>
 			<element name="Native" type="base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+			<element name="NativeType" type="string"/>
+			<element name="EditionType" type="string"/>
 		</sequence>
 	</complexType>
 
