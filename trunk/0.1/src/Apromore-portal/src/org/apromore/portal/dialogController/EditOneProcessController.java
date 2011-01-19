@@ -76,9 +76,9 @@ public class EditOneProcessController extends Window {
 			if ("XPDL 2.1".compareTo(cbi.getLabel())==0) {
 				cbi.setSelected(true);
 			}
-			if ("EPML 2.0".compareTo(cbi.getLabel())==0) {
-				cbi.setDisabled(true);
-			}
+//			if ("EPML 2.0".compareTo(cbi.getLabel())==0) {
+//				cbi.setDisabled(true);
+//			}
 		}
 		//((Listitem) this.nativeTypesLB.getFirstChild()).setSelected(true);
 		// Build list of annotations associated with the process version
