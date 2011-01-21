@@ -17,6 +17,7 @@ import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
+import javax.xml.namespace.QName;
 
 
 /**
@@ -227,6 +228,36 @@ public class TypeEPML
             directory = new ArrayList<TypeDirectory>();
         }
         return this.directory;
+    }
+    
+    /**
+     * Sets the value of the EPML id.
+     * 
+     * @param URI
+     *     String
+     *     
+     */
+    public void setId(String URI)
+    {
+    	QName name1 = new QName("xmlns:apromore");
+		String value1 = "http://www.apromore.org";
+		QName name2 = new QName("apromore:URI");
+		String value2 = URI;
+		this.getOtherAttributes().put(name1, value1);
+		this.getOtherAttributes().put(name2, value2);
+    }
+    
+    /**
+     * Gets the value of the EPML id.
+     * 
+     * @return URI
+     *     String
+     *     
+     */
+    public String getId()
+    {
+    	QName name = new QName("apromore:URI");
+    	return this.getOtherAttributes().get(name);
     }
 
 }

@@ -565,8 +565,11 @@ public class ProcessDao extends BasicDao {
 			res = new ByteArrayInputStream(xpdl_xml.toByteArray());
 
 		} else if (nativeType.compareTo("EPML 2.0")==0) {
-			// as epml doesn't support process, version names and etc.
-			// nothing to do.
+			JAXBContext jc = JAXBContext.newInstance("de.epml");
+			Unmarshaller u = jc.createUnmarshaller();
+			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
+			PackageType pkg = rootElement.getValue();
+			copyParam2xpdl (pkg, processName, version, username, creationDate, lastUpdate, documentation);
 			res = process_xml;
 		}
 		return res;
@@ -672,7 +675,7 @@ public class ProcessDao extends BasicDao {
 
 	/**
 	 * Return the native format for process version identified by <processId, version>
-	 * in native type nativeType
+	 * in native type nativeType.
 	 * @param processId
 	 * @param version
 	 * @param nativeType
