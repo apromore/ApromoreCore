@@ -1740,8 +1740,8 @@ public class ProcessDao extends BasicDao {
 	 * TODO 
 	 * @throws ExceptionAnntotationName 
 	 */
-	public void storeAnnotation (String name, Integer processId, String cpfUri,
-			String version, String nat_type, InputStream content,
+	public void storeAnnotation (String name, Integer processId, String version,
+			String cpfUri, String nat_type, InputStream content,
 			Boolean isNew) 
 	throws SQLException, ExceptionDao, ExceptionAnntotationName {
 		Connection conn = null;
