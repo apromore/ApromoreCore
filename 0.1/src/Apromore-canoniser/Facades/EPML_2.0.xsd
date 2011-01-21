@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns="http://www.epml.de" xmlns:epml="http://www.epml.de" xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.epml.de" elementFormDefault="unqualified" attributeFormDefault="unqualified" version="2.0">
+<xs:schema xmlns="http://www.epml.de" xmlns:epml="http://www.epml.de" 
+xmlns:xs="http://www.w3.org/2001/XMLSchema" targetNamespace="http://www.epml.de" 
+elementFormDefault="unqualified" attributeFormDefault="unqualified" version="2.0">
 	<xs:complexType name="tExtensibleElements">
 		<xs:sequence>
 			<xs:element name="documentation" type="xs:anyType" minOccurs="0"/>
