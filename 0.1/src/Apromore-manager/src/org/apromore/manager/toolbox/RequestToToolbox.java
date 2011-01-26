@@ -97,19 +97,23 @@ public class RequestToToolbox {
 		if (result.getCode()==-1) {
 			throw new ExceptionMergeProcess (result.getMessage());
 		} else {
-			// build response
 			org.apromore.manager.model_toolbox.ProcessSummaryType mergedProcessT = res.getProcessSummary();
-			mergedProcessP.setDomain(mergedProcessT.getDomain());
-			mergedProcessP.setId(mergedProcessT.getId());
-			mergedProcessP.setLastVersion(mergedProcessT.getLastVersion());
-			mergedProcessP.setName(mergedProcessT.getName());
-			mergedProcessP.setOwner(mergedProcessT.getOwner());
-			org.apromore.manager.model_portal.VersionSummaryType versionP =
-				new VersionSummaryType();
-			versionP.setCreationDate(mergedProcessT.getVersionSummaries().get(0).getCreationDate());
-			versionP.setLastUpdate(mergedProcessT.getVersionSummaries().get(0).getLastUpdate());
-			versionP.setName(mergedProcessT.getVersionSummaries().get(0).getName());
-			mergedProcessP.getVersionSummaries().add(versionP);
+			// The merge might have not built any process....
+			if (mergedProcessP.getVersionSummaries().size()==0) {
+				throw new ExceptionMergeProcess ("Merge didn't return any results.");
+			} else {
+				mergedProcessP.setDomain(mergedProcessT.getDomain());
+				mergedProcessP.setId(mergedProcessT.getId());
+				mergedProcessP.setLastVersion(mergedProcessT.getLastVersion());
+				mergedProcessP.setName(mergedProcessT.getName());
+				mergedProcessP.setOwner(mergedProcessT.getOwner());
+				org.apromore.manager.model_portal.VersionSummaryType versionP =
+					new VersionSummaryType();
+				versionP.setCreationDate(mergedProcessT.getVersionSummaries().get(0).getCreationDate());
+				versionP.setLastUpdate(mergedProcessT.getVersionSummaries().get(0).getLastUpdate());
+				versionP.setName(mergedProcessT.getVersionSummaries().get(0).getName());
+				mergedProcessP.getVersionSummaries().add(versionP);
+			}
 		}
 		return mergedProcessP;
 	}
