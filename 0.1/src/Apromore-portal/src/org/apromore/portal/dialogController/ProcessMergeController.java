@@ -49,20 +49,15 @@ public class ProcessMergeController extends Window {
 	private Row versionNameR;
 	private Button OKbutton;
 	private Button CancelButton;
-	private LinkedList<Integer> selectedModelIds;
 	private Textbox processNameT;
 	private Textbox versionNameT;
+	HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions;
 
 	public ProcessMergeController (MainController mainC, MenuController menuC, 
 			HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) 
 	throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers {
 		this.mainC = mainC;
 		this.menuC = menuC;
-
-		selectedModelIds = new LinkedList<Integer>();
-		for (ProcessSummaryType v : selectedProcessVersions.keySet()) {
-			this.selectedModelIds.add(v.getId());
-		}
 
 		this.processMergeW = (Window) Executions.createComponents("macros/processmerge.zul", null, null);
 		this.processMergeW.setTitle("Merge processes.");
@@ -80,6 +75,7 @@ public class ProcessMergeController extends Window {
 		this.OKbutton = (Button) this.processMergeW.getFellow("mergeOKButton");
 		this.CancelButton = (Button) this.processMergeW.getFellow("mergeCancelButton");
 
+		this.selectedProcessVersions = selectedProcessVersions;
 		// get parameter rows
 		this.removeEnt = (Checkbox) removeEntR.getFirstChild().getNextSibling();
 		this.mergethreshold = (Row) this.processMergeW.getFellow("mergethreshold");
@@ -136,7 +132,7 @@ public class ProcessMergeController extends Window {
 		try {
 			RequestToManager request = new RequestToManager();
 			ProcessSummaryType result = request.mergeProcesses(
-					selectedModelIds, 
+					selectedProcessVersions, 
 					this.processNameT.getValue(),
 					this.versionNameT.getValue(),
 					this.mainC.getCurrentUser().getUsername(),
