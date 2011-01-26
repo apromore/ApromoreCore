@@ -136,6 +136,7 @@ public class MenuController extends Menubar {
 	protected void searchSimilarProcesses() throws SuspendNotAllowedException, InterruptedException {
 		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
+		this.mainC.eraseMessage();
 		int processId;
 		String versionName;
 		if (selectedProcessVersions.size()==1
@@ -155,6 +156,7 @@ public class MenuController extends Menubar {
 	protected void mergeSelectedProcessVersions() throws InterruptedException {
 		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
+		this.mainC.eraseMessage();
 
 		if (selectedProcessVersions.size() > 1) {
 			try {
@@ -180,6 +182,7 @@ public class MenuController extends Menubar {
 	}
 
 	protected void createModel() throws InterruptedException {
+		this.mainC.eraseMessage();
 		try {
 			this.createC = new CreateProcessController (this.mainC, this.mainC.getNativeTypes());
 		} catch (SuspendNotAllowedException e) {
@@ -226,6 +229,7 @@ public class MenuController extends Menubar {
 	 * @throws SuspendNotAllowedException 
 	 */
 	protected void editNative() throws InterruptedException, SuspendNotAllowedException, ExceptionFormats {
+		this.mainC.eraseMessage();
 		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
 		if (selectedProcessVersions.size()!=0) {
@@ -242,6 +246,7 @@ public class MenuController extends Menubar {
 	 * @throws Exception 
 	 */
 	protected void deleteSelectedProcessVersions() throws Exception {
+		this.mainC.eraseMessage();
 		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
 		if (selectedProcessVersions.size()!=0) {
@@ -260,6 +265,7 @@ public class MenuController extends Menubar {
 	 */
 	protected void exportNative() throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
 
+		this.mainC.eraseMessage();
 		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
 
@@ -272,6 +278,7 @@ public class MenuController extends Menubar {
 	}
 
 	protected void importModel () throws InterruptedException{
+		this.mainC.eraseMessage();
 		try {
 			this.importC = new ImportListProcessesController(this, mainC);
 		} catch (DialogException e) {
@@ -288,6 +295,7 @@ public class MenuController extends Menubar {
 	 * @return HashMap<ProcessSummaryType,List<VersionSummaryType>>
 	 */
 	private HashMap<ProcessSummaryType,List<VersionSummaryType>> getSelectedProcessVersions() {
+		this.mainC.eraseMessage();
 		/* Build a list of the selected process versions <p, v>
 		 */
 		HashMap<Checkbox, VersionSummaryType> processVersionHM = this.mainC.getProcesstable().getProcessVersionsHM();
@@ -332,6 +340,7 @@ public class MenuController extends Menubar {
 	 * @throws ExceptionDomains 
 	 */
 	private void editData() throws SuspendNotAllowedException, InterruptedException, ExceptionDomains, ExceptionAllUsers {
+		this.mainC.eraseMessage();
 		HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
 
