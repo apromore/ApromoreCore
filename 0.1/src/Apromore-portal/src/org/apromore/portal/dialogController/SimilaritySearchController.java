@@ -103,31 +103,32 @@ public class SimilaritySearchController extends Window {
 		this.similaritySearchW.detach();
 	}
 
-	protected void searchSimilarProcesses() throws Exception {
-		
-		RequestToManager request = new RequestToManager();
-		ProcessSummariesType result = request.searchForSimilarProcesses(
-				this.processId, this.versionName,
-				this.algosLB.getSelectedItem().getLabel(),
-				((Doublebox) this.modelthreshold.getFirstChild().getNextSibling()).getValue(),
-				((Doublebox) this.labelthreshold.getFirstChild().getNextSibling()).getValue(),
-				((Doublebox)  this.contextthreshold.getFirstChild().getNextSibling()).getValue(),
-				((Doublebox)  this.skipnweight.getFirstChild().getNextSibling()).getValue(),
-				((Doublebox) this.subnweight.getFirstChild().getNextSibling()).getValue(),
-				((Doublebox) this.skipeweight.getFirstChild().getNextSibling()).getValue());
+	protected void searchSimilarProcesses() {
+		String message = null;
+		try {
+			RequestToManager request = new RequestToManager();
+			ProcessSummariesType result = request.searchForSimilarProcesses(
+					this.processId, this.versionName,
+					this.algosLB.getSelectedItem().getLabel(),
+					((Doublebox) this.modelthreshold.getFirstChild().getNextSibling()).getValue(),
+					((Doublebox) this.labelthreshold.getFirstChild().getNextSibling()).getValue(),
+					((Doublebox)  this.contextthreshold.getFirstChild().getNextSibling()).getValue(),
+					((Doublebox)  this.skipnweight.getFirstChild().getNextSibling()).getValue(),
+					((Doublebox) this.subnweight.getFirstChild().getNextSibling()).getValue(),
+					((Doublebox) this.skipeweight.getFirstChild().getNextSibling()).getValue());
 
-		String message = "Search returned " + result.getProcessSummary().size() ;
-		if (result.getProcessSummary().size() > 1) {
-			message += " processes.";
-		} else {
-			message += " process.";
+			message = "Search returned " + result.getProcessSummary().size() ;
+			if (result.getProcessSummary().size() > 1) {
+				message += " processes.";
+			} else {
+				message += " process.";
+			}
+			mainC.displayProcessSummaries(result);
+		} catch (Exception e) {
+			message = "Search failed (" + e.getMessage() + ")";
 		}
-		mainC.displayMessage(message);
-		mainC.displayProcessSummaries(result);
-
-//		Messagebox.show("Not yet available...", "Attention", Messagebox.OK,
-//			Messagebox.INFORMATION);
 		this.similaritySearchW.detach();
+		mainC.displayMessage(message);
 	}
 
 	protected void updateActions() {
