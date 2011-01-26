@@ -218,6 +218,7 @@ public class CreateProcessController {
 					m.marshal(rootepml, epml_xml);
 					nativeProcess = new ByteArrayInputStream(epml_xml.toByteArray());
 				}
+				// documentation and lastupdate are set to null
 				ProcessSummaryType process = 
 					request.importProcess(owner, nativeType, processName, versionName, 
 							nativeProcess, domain, null, creationDate, null);
