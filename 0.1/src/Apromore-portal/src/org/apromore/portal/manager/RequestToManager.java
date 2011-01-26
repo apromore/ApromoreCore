@@ -5,8 +5,8 @@ import java.io.InputStream;
 import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.LinkedList;
 import java.util.List;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.activation.DataHandler;
@@ -227,7 +227,7 @@ public class RequestToManager {
 	}
 
 	public ProcessSummaryType mergeProcesses(
-			LinkedList<Integer> mergeModelIds, 
+			HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions, 
 			String mergedProcessname,
 			String mergedversionName,
 			String mergedUsername,
@@ -249,9 +249,13 @@ public class RequestToManager {
 
 		// process models 
 		ProcessVersionIdsType modelIdList = new ProcessVersionIdsType();
-		for (Integer i : mergeModelIds) {
-			ProcessVersionIdType id = new ProcessVersionIdType();
-			id.setProcessId(i);
+		for (Entry<ProcessSummaryType, List<VersionSummaryType>> i : selectedProcessVersions.entrySet()) {
+			for (VersionSummaryType v : i.getValue()) {
+				ProcessVersionIdType id = new ProcessVersionIdType();
+				id.setProcessId(i.getKey().getId());
+				id.setVersionName(v.getName());
+				modelIdList.getProcessVersionId().add(id);
+			}
 		}
 		payload.setProcessVersionIds(modelIdList);
 		payload.setAlgorithm(method);
