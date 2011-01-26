@@ -388,7 +388,7 @@ public class ProcessDao extends BasicDao {
 			InputStream sync_npf = copyParam2NPF(process_xml, nativeType, processName, version,
 					username, creationDate, lastUpdate, documentation);
 			// copy parameter values in sync_cpf
-			InputStream sync_cpf = copyParam2CPF(cpf_xml, processName, version,
+			InputStream sync_cpf = copyParam2CPF(cpf_xml, cpf_uri, processName, version,
 					username, creationDate, lastUpdate);
 			String process_string = inputStream2String(sync_npf).trim();
 			String cpf_string = inputStream2String(sync_cpf).trim();
@@ -583,6 +583,7 @@ public class ProcessDao extends BasicDao {
 	 * @throws JAXBException
 	 */
 	private InputStream copyParam2CPF(InputStream cpf_xml,
+			String cpf_uri,
 			String processName,
 			String version, String username, String creationDate,
 			String lastUpdate) throws JAXBException {
@@ -599,6 +600,7 @@ public class ProcessDao extends BasicDao {
 		cpf.setVersion(version);
 		cpf.setCreationDate(creationDate);
 		cpf.setModificationDate(lastUpdate);
+		cpf.setUri(cpf_uri);
 		Marshaller m = jc.createMarshaller();
 		m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
 		ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
@@ -1638,7 +1640,8 @@ public class ProcessDao extends BasicDao {
 
 	/**
 	 * Create a process whose name is processName, first version is versionName. The process is created by
-	 * username and its cpf is cpf_is.
+	 * username and its cpf is cpf_is. Doesn't have neither anf nor npf.
+	 * @return processSummary
 	 * @param processName
 	 * @param versionName
 	 * @param username
@@ -1654,7 +1657,6 @@ public class ProcessDao extends BasicDao {
 		PreparedStatement stmtp = null;
 		ResultSet rs0 = null, keys = null;
 		String query = null;
-		String annotationName = Constants.INITIAL_ANNOTATION;
 		org.apromore.data_access.model_toolbox.ProcessSummaryType process = 
 			new org.apromore.data_access.model_toolbox.ProcessSummaryType();
 		org.apromore.data_access.model_toolbox.VersionSummaryType first_version =
@@ -1684,7 +1686,7 @@ public class ProcessDao extends BasicDao {
 			String creationDate = now();
 			String lastUpdate="";
 			String documentation="";
-			InputStream sync_cpf = copyParam2CPF(cpf_is, processName, versionName,
+			InputStream sync_cpf = copyParam2CPF(cpf_is, cpf_uri, processName, versionName,
 					username, creationDate, lastUpdate);
 			String cpf_string = inputStream2String(sync_cpf).trim();
 			query = " insert into " + ConstantDB.TABLE_CANONICALS
@@ -1706,6 +1708,13 @@ public class ProcessDao extends BasicDao {
 			stmtp.setString(6, cpf_string);
 			stmtp.setString(7, documentation);
 			Integer rs2 = stmtp.executeUpdate();
+			process.setId(processId);
+			process.setName(processName);
+			process.setOwner(username);
+			process.setLastVersion(versionName);
+			first_version.setName(versionName);
+			first_version.setLastUpdate(lastUpdate);
+			first_version.setCreationDate(creationDate);
 			conn.commit();
 		} catch (SQLException e) {
 			e.printStackTrace();
