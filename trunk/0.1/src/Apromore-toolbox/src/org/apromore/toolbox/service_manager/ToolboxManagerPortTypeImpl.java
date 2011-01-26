@@ -255,7 +255,7 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 			CanonicalProcessType merged = 
 				MergeProcesses.mergeProcesses(
 						toMerge, removeEntanglements, algorithm, 
-						labelthreshold, contextthreshold, skipnweight, subnweight, skipeweight);
+						modelthreshold, labelthreshold, contextthreshold, skipnweight, subnweight, skipeweight);
 
 			//        	System.out.println("merged "+ merged);
             Marshaller m = jc.createMarshaller();
