@@ -565,11 +565,7 @@ public class ProcessDao extends BasicDao {
 			res = new ByteArrayInputStream(xpdl_xml.toByteArray());
 
 		} else if (nativeType.compareTo("EPML 2.0")==0) {
-			JAXBContext jc = JAXBContext.newInstance("de.epml");
-			Unmarshaller u = jc.createUnmarshaller();
-			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
-			PackageType pkg = rootElement.getValue();
-			copyParam2xpdl (pkg, processName, version, username, creationDate, lastUpdate, documentation);
+			// TODO as epml xschema does not allow any meta data, nothing to do
 			res = process_xml;
 		}
 		return res;
@@ -613,7 +609,6 @@ public class ProcessDao extends BasicDao {
 	/**
 	 * Modify pkg (npf of type xpdl) with parameters values if not null.
 	 * @param pkg
-	 * @param processId
 	 * @param processName
 	 * @param version
 	 * @param username
