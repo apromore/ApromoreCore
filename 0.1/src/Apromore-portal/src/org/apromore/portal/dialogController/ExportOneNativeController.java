@@ -223,9 +223,15 @@ public class ExportOneNativeController extends Window {
 				processname = this.processNameL.getValue().replaceAll(":", "_");
 				processname = this.processNameL.getValue().replaceAll(";", "_");
 				String filename = processname + "." + ext;
-				String annotation = (String) this.annotationsLB.getSelectedItem().getValue();
-				Boolean withAnnotation = annotation.compareTo(Constants.NO_ANNOTATIONS)!=0;
-				RequestToManager request = new RequestToManager();
+				String annotation = null;
+				Boolean withAnnotation = false ;
+				if (this.annotationsLB.getSelectedItem() != null) {
+					annotation = (String) this.annotationsLB.getSelectedItem().getValue();
+					withAnnotation = annotation.compareTo(Constants.NO_ANNOTATIONS)!=0;
+				} else {
+					withAnnotation = false;
+				}
+					RequestToManager request = new RequestToManager();
 				InputStream native_is =
 					request.ExportFormat (this.processId, processname, this.versionName, format, annotation, withAnnotation, 
 							this.mainC.getCurrentUser().getUsername());
