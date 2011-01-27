@@ -37,91 +37,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link SearchForSimilarProcessesInputMsgType }
-     * 
-     */
-    public SearchForSimilarProcessesInputMsgType createSearchForSimilarProcessesInputMsgType() {
-        return new SearchForSimilarProcessesInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link VersionSummaryType }
-     * 
-     */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
-    }
-
-    /**
-     * Create an instance of {@link ProcessSummaryType }
-     * 
-     */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
-    }
-
-    /**
-     * Create an instance of {@link ProcessVersionIdType }
-     * 
-     */
-    public ProcessVersionIdType createProcessVersionIdType() {
-        return new ProcessVersionIdType();
-    }
-
-    /**
-     * Create an instance of {@link MergeProcessesOutputMsgType }
-     * 
-     */
-    public MergeProcessesOutputMsgType createMergeProcessesOutputMsgType() {
-        return new MergeProcessesOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link AnnotationsType }
-     * 
-     */
-    public AnnotationsType createAnnotationsType() {
-        return new AnnotationsType();
-    }
-
-    /**
      * Create an instance of {@link ParametersType }
      * 
      */
     public ParametersType createParametersType() {
         return new ParametersType();
-    }
-
-    /**
-     * Create an instance of {@link ParameterType }
-     * 
-     */
-    public ParameterType createParameterType() {
-        return new ParameterType();
-    }
-
-    /**
-     * Create an instance of {@link ProcessVersionIdsType }
-     * 
-     */
-    public ProcessVersionIdsType createProcessVersionIdsType() {
-        return new ProcessVersionIdsType();
-    }
-
-    /**
-     * Create an instance of {@link SearchForSimilarProcessesOutputMsgType }
-     * 
-     */
-    public SearchForSimilarProcessesOutputMsgType createSearchForSimilarProcessesOutputMsgType() {
-        return new SearchForSimilarProcessesOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ResultType }
-     * 
-     */
-    public ResultType createResultType() {
-        return new ResultType();
     }
 
     /**
@@ -133,11 +53,91 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ProcessVersionIdsType }
+     * 
+     */
+    public ProcessVersionIdsType createProcessVersionIdsType() {
+        return new ProcessVersionIdsType();
+    }
+
+    /**
+     * Create an instance of {@link MergeProcessesOutputMsgType }
+     * 
+     */
+    public MergeProcessesOutputMsgType createMergeProcessesOutputMsgType() {
+        return new MergeProcessesOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ParameterType }
+     * 
+     */
+    public ParameterType createParameterType() {
+        return new ParameterType();
+    }
+
+    /**
+     * Create an instance of {@link ResultType }
+     * 
+     */
+    public ResultType createResultType() {
+        return new ResultType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessSummaryType }
+     * 
+     */
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link VersionSummaryType }
+     * 
+     */
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link SearchForSimilarProcessesInputMsgType }
+     * 
+     */
+    public SearchForSimilarProcessesInputMsgType createSearchForSimilarProcessesInputMsgType() {
+        return new SearchForSimilarProcessesInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link SearchForSimilarProcessesOutputMsgType }
+     * 
+     */
+    public SearchForSimilarProcessesOutputMsgType createSearchForSimilarProcessesOutputMsgType() {
+        return new SearchForSimilarProcessesOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link AnnotationsType }
+     * 
+     */
+    public AnnotationsType createAnnotationsType() {
+        return new AnnotationsType();
+    }
+
+    /**
      * Create an instance of {@link MergeProcessesInputMsgType }
      * 
      */
     public MergeProcessesInputMsgType createMergeProcessesInputMsgType() {
         return new MergeProcessesInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessVersionIdType }
+     * 
+     */
+    public ProcessVersionIdType createProcessVersionIdType() {
+        return new ProcessVersionIdType();
     }
 
     /**
