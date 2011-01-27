@@ -49,6 +49,7 @@
 		<sequence>
 			<element name="processName" type="string" />
 			<element name="version" type="string" />
+			<element name="domain" type="string" />
 			<element name="username" type="string" />
 			<element name="Cpf" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
