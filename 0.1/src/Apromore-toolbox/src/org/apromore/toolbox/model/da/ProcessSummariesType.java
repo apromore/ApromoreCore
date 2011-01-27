@@ -1,5 +1,5 @@
 
-package org.apromore.toolbox.model_manager;
+package org.apromore.toolbox.model.da;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +20,7 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
- *         &lt;element name="ProcessSummary" type="{http://www.apromore.org/toolbox/model_manager}ProcessSummaryType" maxOccurs="unbounded" minOccurs="0"/>
+ *         &lt;element name="ProcessSummary" type="{http://www.apromore.org/data_access/model_toolbox}ProcessSummaryType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -33,11 +33,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ProcessSummariesType", propOrder = {
     "processSummary"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T02:56:19+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T02:57:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ProcessSummariesType {
 
     @XmlElement(name = "ProcessSummary")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T02:56:19+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T02:57:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<ProcessSummaryType> processSummary;
 
     /**
@@ -62,7 +62,7 @@ public class ProcessSummariesType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T02:56:19+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T02:57:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<ProcessSummaryType> getProcessSummary() {
         if (processSummary == null) {
             processSummary = new ArrayList<ProcessSummaryType>();
