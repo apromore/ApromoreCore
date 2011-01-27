@@ -1,5 +1,5 @@
 
-package org.apromore.toolbox.model_da;
+package org.apromore.toolbox.model.da;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -11,12 +11,12 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ProcessVersionsType complex type.
+ * <p>Java class for ReadCanonicalsInputMsgType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ProcessVersionsType">
+ * &lt;complexType name="ReadCanonicalsInputMsgType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;sequence>
@@ -30,14 +30,14 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ProcessVersionsType", propOrder = {
+@XmlType(name = "ReadCanonicalsInputMsgType", propOrder = {
     "processVersion"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:01:05+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class ProcessVersionsType {
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T02:57:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+public class ReadCanonicalsInputMsgType {
 
     @XmlElement(name = "ProcessVersion")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:01:05+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T02:57:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<ProcessVersionType> processVersion;
 
     /**
@@ -62,7 +62,7 @@ public class ProcessVersionsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:01:05+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T02:57:55+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<ProcessVersionType> getProcessVersion() {
         if (processVersion == null) {
             processVersion = new ArrayList<ProcessVersionType>();

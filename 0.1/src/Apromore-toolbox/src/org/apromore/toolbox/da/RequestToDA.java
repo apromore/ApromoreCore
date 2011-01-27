@@ -68,7 +68,8 @@ public class RequestToDA {
 		return toReturn;
 	}
 	
-	public ProcessSummaryType StoreCpf (String processName, String versionName, String userName,
+	public ProcessSummaryType StoreCpf (String processName, String versionName, 
+			String domain, String userName,
 			InputStream cpf_is) throws IOException, ExceptionStoreCpf {
 		ProcessSummaryType process = null;
 		org.apromore.toolbox.model_da.StoreCpfInputMsgType payload =
@@ -76,6 +77,7 @@ public class RequestToDA {
 		payload.setProcessName(processName);
 		payload.setUsername(userName);
 		payload.setVersion(versionName);
+		payload.setDomain(domain);
 		DataSource sourceCpf = new ByteArrayDataSource(cpf_is, "text/xml"); 
 		payload.setCpf(new DataHandler(sourceCpf));	
 		org.apromore.toolbox.model_da.StoreCpfOutputMsgType res =

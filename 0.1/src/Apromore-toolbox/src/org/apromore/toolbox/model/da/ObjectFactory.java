@@ -1,5 +1,5 @@
 
-package org.apromore.toolbox.model_da;
+package org.apromore.toolbox.model.da;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlElementDecl;
@@ -10,7 +10,7 @@ import javax.xml.namespace.QName;
 /**
  * This object contains factory methods for each 
  * Java content interface and Java element interface 
- * generated in the org.apromore.toolbox.model_da package. 
+ * generated in the org.apromore.toolbox.model.da package. 
  * <p>An ObjectFactory allows you to programatically 
  * construct new instances of the Java representation 
  * for XML content. The Java representation of XML 
@@ -32,18 +32,18 @@ public class ObjectFactory {
     private final static QName _StoreCpfInputMsg_QNAME = new QName("http://www.apromore.org/data_access/model_toolbox", "StoreCpfInputMsg");
 
     /**
-     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.apromore.toolbox.model_da
+     * Create a new ObjectFactory that can be used to create new instances of schema derived classes for package: org.apromore.toolbox.model.da
      * 
      */
     public ObjectFactory() {
     }
 
     /**
-     * Create an instance of {@link CanonicalsType }
+     * Create an instance of {@link StoreCpfInputMsgType }
      * 
      */
-    public CanonicalsType createCanonicalsType() {
-        return new CanonicalsType();
+    public StoreCpfInputMsgType createStoreCpfInputMsgType() {
+        return new StoreCpfInputMsgType();
     }
 
     /**
@@ -63,43 +63,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ProcessSummariesType }
+     * Create an instance of {@link ProcessSummaryType }
      * 
      */
-    public ProcessSummariesType createProcessSummariesType() {
-        return new ProcessSummariesType();
-    }
-
-    /**
-     * Create an instance of {@link AnnotationsType }
-     * 
-     */
-    public AnnotationsType createAnnotationsType() {
-        return new AnnotationsType();
-    }
-
-    /**
-     * Create an instance of {@link CanonicalType }
-     * 
-     */
-    public CanonicalType createCanonicalType() {
-        return new CanonicalType();
-    }
-
-    /**
-     * Create an instance of {@link ProcessVersionType }
-     * 
-     */
-    public ProcessVersionType createProcessVersionType() {
-        return new ProcessVersionType();
-    }
-
-    /**
-     * Create an instance of {@link VersionSummaryType }
-     * 
-     */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
     }
 
     /**
@@ -111,19 +79,27 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ResultType }
+     * Create an instance of {@link ProcessSummariesType }
      * 
      */
-    public ResultType createResultType() {
-        return new ResultType();
+    public ProcessSummariesType createProcessSummariesType() {
+        return new ProcessSummariesType();
     }
 
     /**
-     * Create an instance of {@link ReadProcessSummariesOutputMsgType }
+     * Create an instance of {@link ProcessVersionType }
      * 
      */
-    public ReadProcessSummariesOutputMsgType createReadProcessSummariesOutputMsgType() {
-        return new ReadProcessSummariesOutputMsgType();
+    public ProcessVersionType createProcessVersionType() {
+        return new ProcessVersionType();
+    }
+
+    /**
+     * Create an instance of {@link AnnotationsType }
+     * 
+     */
+    public AnnotationsType createAnnotationsType() {
+        return new AnnotationsType();
     }
 
     /**
@@ -135,19 +111,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ProcessSummaryType }
+     * Create an instance of {@link VersionSummaryType }
      * 
      */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
     }
 
     /**
-     * Create an instance of {@link StoreCpfInputMsgType }
+     * Create an instance of {@link CanonicalsType }
      * 
      */
-    public StoreCpfInputMsgType createStoreCpfInputMsgType() {
-        return new StoreCpfInputMsgType();
+    public CanonicalsType createCanonicalsType() {
+        return new CanonicalsType();
     }
 
     /**
@@ -156,6 +132,30 @@ public class ObjectFactory {
      */
     public ProcessVersionsType createProcessVersionsType() {
         return new ProcessVersionsType();
+    }
+
+    /**
+     * Create an instance of {@link ReadProcessSummariesOutputMsgType }
+     * 
+     */
+    public ReadProcessSummariesOutputMsgType createReadProcessSummariesOutputMsgType() {
+        return new ReadProcessSummariesOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ResultType }
+     * 
+     */
+    public ResultType createResultType() {
+        return new ResultType();
+    }
+
+    /**
+     * Create an instance of {@link CanonicalType }
+     * 
+     */
+    public CanonicalType createCanonicalType() {
+        return new CanonicalType();
     }
 
     /**
