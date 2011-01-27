@@ -1650,7 +1650,7 @@ public class ProcessDao extends BasicDao {
 	 * @throws ExceptionDao 
 	 */
 	public org.apromore.data_access.model_toolbox.ProcessSummaryType 
-	storeCpf(String processName, String versionName, String username, InputStream cpf_is, String cpf_uri) 
+	storeCpf(String processName, String versionName, String domain, String username, InputStream cpf_is, String cpf_uri) 
 	throws SQLException, ExceptionDao {
 		Connection conn = null;
 		Statement stmt0 = null;
@@ -1668,11 +1668,13 @@ public class ProcessDao extends BasicDao {
 			// store process details to get processId.
 			query = " insert into " + ConstantDB.TABLE_PROCESSES
 			+ "(" + ConstantDB.ATTR_NAME + ","
-			+		ConstantDB.ATTR_OWNER + ")"
+			+		ConstantDB.ATTR_OWNER + ","
+			+		ConstantDB.ATTR_DOMAIN + ")"
 			+ " values (?, ?) ";
 			stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmtp.setString(1, processName);
 			stmtp.setString(2, username);
+			stmtp.setString(3, domain);
 			int rs1 = stmtp.executeUpdate();
 			keys = stmtp.getGeneratedKeys() ;
 			if (!keys.next()) {
