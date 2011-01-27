@@ -78,7 +78,7 @@ public class RequestToToolbox {
 
 
 	public org.apromore.manager.model_portal.ProcessSummaryType MergeProcesses(String processName,
-			String version, String username, String algo, ParametersType parameters,
+			String version, String domain, String username, String algo, ParametersType parameters,
 			ProcessVersionIdsType ids) throws ExceptionMergeProcess {
 		org.apromore.manager.model_portal.ProcessSummaryType mergedProcessP =
 			new org.apromore.manager.model_portal.ProcessSummaryType();
@@ -87,6 +87,7 @@ public class RequestToToolbox {
 			new MergeProcessesInputMsgType();
 		payload.setProcessName(processName);
 		payload.setVersionName(version);
+		payload.setDomain(domain);
 		payload.setAlgorithm(algo);
 		payload.setParameters(parameters);
 		payload.setProcessVersionIds(ids);

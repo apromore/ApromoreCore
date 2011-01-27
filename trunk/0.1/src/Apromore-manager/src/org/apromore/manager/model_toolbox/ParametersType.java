@@ -33,11 +33,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ParametersType", propOrder = {
     "parameter"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-06T11:48:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:49:10+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ParametersType {
 
     @XmlElement(name = "Parameter", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-06T11:48:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:49:10+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<ParameterType> parameter;
 
     /**
@@ -62,7 +62,7 @@ public class ParametersType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-06T11:48:36+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:49:10+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<ParameterType> getParameter() {
         if (parameter == null) {
             parameter = new ArrayList<ParameterType>();
