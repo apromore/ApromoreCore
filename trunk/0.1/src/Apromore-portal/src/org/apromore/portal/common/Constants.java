@@ -33,4 +33,6 @@ public final class Constants {
 	public static final String STAR_MID_ICON = "/img/revert-12.png";
 	public static final String SESSION_CODE = "sessionCode";
 	public static final String ANNOTATIONS_ONLY = "notationsOnly";
+	
+	public static final String INITIAL_VERSION = "0.1";
 }

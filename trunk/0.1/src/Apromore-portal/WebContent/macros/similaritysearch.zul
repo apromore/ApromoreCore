@@ -2,7 +2,7 @@
 	Temporary: demo only
 -->
 <window width="300px" closable="false" position="center" title="Search for similar processes">
-	<vbox vflex="1">
+	<vbox>
 		<grid>
 			<columns sizable="true">
 				<column width="60%"></column>

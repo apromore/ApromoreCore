@@ -153,7 +153,7 @@ public class MenuController extends Menubar {
 
 	}
 
-	protected void mergeSelectedProcessVersions() throws InterruptedException {
+	protected void mergeSelectedProcessVersions() throws InterruptedException, ExceptionDomains {
 		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
 		this.mainC.eraseMessage();
