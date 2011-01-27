@@ -33,14 +33,14 @@ import javax.xml.bind.annotation.XmlType;
     "result",
     "processSummary"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T02:56:19+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:44:33+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class MergeProcessesOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T02:56:19+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:44:33+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ResultType result;
     @XmlElement(name = "ProcessSummary")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T02:56:19+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:44:33+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ProcessSummaryType processSummary;
 
     /**
@@ -51,7 +51,7 @@ public class MergeProcessesOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T02:56:19+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:44:33+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ResultType getResult() {
         return result;
     }
@@ -64,7 +64,7 @@ public class MergeProcessesOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T02:56:19+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:44:33+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -77,7 +77,7 @@ public class MergeProcessesOutputMsgType {
      *     {@link ProcessSummaryType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T02:56:19+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:44:33+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ProcessSummaryType getProcessSummary() {
         return processSummary;
     }
@@ -90,7 +90,7 @@ public class MergeProcessesOutputMsgType {
      *     {@link ProcessSummaryType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T02:56:19+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:44:33+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessSummary(ProcessSummaryType value) {
         this.processSummary = value;
     }
