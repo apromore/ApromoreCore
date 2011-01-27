@@ -65,12 +65,16 @@ public class SimilaritySearchController extends Window {
 		this.algosLB = (Listbox) this.algoChoiceR.getFirstChild().getNextSibling();
 		// build the listbox to choose algo
 		Listitem listItem = new Listitem();
-		listItem.setLabel("Hungarian");
-		this.algosLB.appendChild(listItem);
-		listItem = new Listitem();
 		listItem.setLabel("Greedy");
 		this.algosLB.appendChild(listItem);
-
+		listItem.setSelected(true);
+		
+		listItem = new Listitem();
+		listItem.setLabel("Hungarian");
+		this.algosLB.appendChild(listItem);
+		
+		updateActions();
+		
 		this.algosLB.addEventListener("onSelect",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
