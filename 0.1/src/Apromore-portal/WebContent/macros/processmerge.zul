@@ -1,5 +1,5 @@
 <window width="300px" closable="false" position="center" title="Merge process models">
-	<vbox vflex="1">
+	<vbox>
 		<grid>
 			<columns sizable="true">
 				<column width="60%"></column>
@@ -13,6 +13,10 @@
 				<row id="mergednamev">
 					<label value="Version name*" width="100%"/>
 					<textbox width="100%"/>
+				</row>
+				<row id="mergeddomainR">
+					<label value="Domain" width="100%"/>
+					<!-- combobox implemented in SelectDynamicListController -->
 				</row>
 				<row id="removeEnt">
 					<label value="Remove entanglements" />
@@ -57,6 +61,9 @@
 							image="img/cancel2.png">
 						</button>
 					</div>
+				</row>
+				<row>
+					<label value="*: value is mandatory" style="color: red"/>
 				</row>
 			</rows>
 		</grid>

@@ -230,6 +230,7 @@ public class RequestToManager {
 			HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions, 
 			String mergedProcessname,
 			String mergedversionName,
+			String mergedDomain,
 			String mergedUsername,
 			String method,
 			boolean removeEntanglements,
@@ -245,6 +246,7 @@ public class RequestToManager {
 		// merged process data
 		payload.setProcessName(mergedProcessname);
 		payload.setVersionName(mergedversionName);
+		payload.setDomain(mergedDomain);
 		payload.setUsername(mergedUsername);
 
 		// process models 

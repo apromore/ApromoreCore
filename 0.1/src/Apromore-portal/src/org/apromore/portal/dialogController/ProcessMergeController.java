@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionAllUsers;
+import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionProcess;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummaryType;
@@ -51,11 +52,14 @@ public class ProcessMergeController extends Window {
 	private Button CancelButton;
 	private Textbox processNameT;
 	private Textbox versionNameT;
+	private Row mergeDomainR;
+	private SelectDynamicListController domainCB;
+	
 	HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions;
 
 	public ProcessMergeController (MainController mainC, MenuController menuC, 
 			HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) 
-	throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers {
+	throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
 		this.mainC = mainC;
 		this.menuC = menuC;
 
@@ -67,7 +71,18 @@ public class ProcessMergeController extends Window {
 
 		this.versionNameR = (Row) this.processMergeW.getFellow("mergednamev");
 		this.versionNameT = (Textbox) versionNameR.getFirstChild().getNextSibling();
-		this.versionNameT.setValue("0.1");
+		this.versionNameT.setValue(Constants.INITIAL_VERSION);
+		
+		this.mergeDomainR = (Row) this.processMergeW.getFellow("mergeddomainR");
+		List<String> domains = this.mainC.getDomains();
+		this.domainCB = new SelectDynamicListController(domains);
+		this.domainCB.setReference(domains);
+		this.domainCB.setAutodrop(true);
+		this.domainCB.setWidth("85%");
+		this.domainCB.setHeight("100%");
+		this.domainCB.setAttribute("hflex", "1");
+		this.mergeDomainR.appendChild(domainCB);
+		
 		this.removeEntR = (Row) this.processMergeW.getFellow("removeEnt");
 		this.algoChoiceR = (Row) this.processMergeW.getFellow("mergeAlgoChoice");
 		this.buttonsR = (Row) this.processMergeW.getFellow("mergeButtons");
@@ -88,13 +103,29 @@ public class ProcessMergeController extends Window {
 
 		this.algosLB = (Listbox) this.algoChoiceR.getFirstChild().getNextSibling();
 		// build the listbox to choose algo
+		// greedy is the one by default
 		Listitem listItem = new Listitem();
-		listItem.setLabel("Hungarian");
-		this.algosLB.appendChild(listItem);
-		listItem = new Listitem();
 		listItem.setLabel("Greedy");
 		this.algosLB.appendChild(listItem);
-
+		listItem.setSelected(true);
+		listItem = new Listitem();
+		listItem.setLabel("Hungarian");
+		this.algosLB.appendChild(listItem);
+		
+		updateActions();
+		
+		this.processNameT.addEventListener("onChange", 
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				updateActions();
+			}
+		});
+		this.versionNameT.addEventListener("onChange", 
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				updateActions();
+			}
+		});
 		this.algosLB.addEventListener("onSelect",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -129,33 +160,42 @@ public class ProcessMergeController extends Window {
 
 	protected void mergeProcesses() {
 		String message = null;
-		try {
-			RequestToManager request = new RequestToManager();
-			ProcessSummaryType result = request.mergeProcesses(
-					selectedProcessVersions, 
-					this.processNameT.getValue(),
-					this.versionNameT.getValue(),
-					this.mainC.getCurrentUser().getUsername(),
-					this.algosLB.getSelectedItem().getLabel(),
-					this.removeEnt.isChecked(),
-					((Doublebox) this.mergethreshold.getFirstChild().getNextSibling()).getValue(),
-					((Doublebox) this.labelthreshold.getFirstChild().getNextSibling()).getValue(),
-					((Doublebox)  this.contextthreshold.getFirstChild().getNextSibling()).getValue(),
-					((Doublebox)  this.skipnweight.getFirstChild().getNextSibling()).getValue(),
-					((Doublebox) this.subnweight.getFirstChild().getNextSibling()).getValue(),
-					((Doublebox) this.skipeweight.getFirstChild().getNextSibling()).getValue());
+		if ("".compareTo(this.processNameT.getValue())!=0 &&
+				"".compareTo(this.versionNameT.getValue())!=0) {
+			try {
+				RequestToManager request = new RequestToManager();
+				ProcessSummaryType result = request.mergeProcesses(
+						selectedProcessVersions, this.processNameT.getValue(),
+						this.versionNameT.getValue(), this.domainCB.getValue(),
+						this.mainC.getCurrentUser().getUsername(), this.algosLB
+								.getSelectedItem().getLabel(), this.removeEnt
+								.isChecked(), ((Doublebox) this.mergethreshold
+								.getFirstChild().getNextSibling()).getValue(),
+						((Doublebox) this.labelthreshold.getFirstChild()
+								.getNextSibling()).getValue(),
+						((Doublebox) this.contextthreshold.getFirstChild()
+								.getNextSibling()).getValue(),
+						((Doublebox) this.skipnweight.getFirstChild()
+								.getNextSibling()).getValue(),
+						((Doublebox) this.subnweight.getFirstChild()
+								.getNextSibling()).getValue(),
+						((Doublebox) this.skipeweight.getFirstChild()
+								.getNextSibling()).getValue());
 
-			message = "Merge built one process.";
-			mainC.displayNewProcess(result);
-		} catch (Exception e) {
-			message = "Merge failed (" + e.getMessage() + ")";
+				message = "Merge built one process.";
+				mainC.displayNewProcess(result);
+			} catch (Exception e) {
+				message = "Merge failed (" + e.getMessage() + ")";
+			}
+			mainC.displayMessage(message);
+			this.processMergeW.detach();
 		}
-		mainC.displayMessage(message);
-		this.processMergeW.detach();
 	}
 
 	protected void updateActions() {
-		this.OKbutton.setDisabled(false);
+		this.OKbutton.setDisabled("".compareTo(this.processNameT.getValue())==0 ||
+				"".compareTo(this.versionNameT.getValue())==0);
+		
 		String algo = this.algosLB.getSelectedItem().getLabel();
 		this.mergethreshold.setVisible(algo.compareTo("Hungarian")==0 || algo.compareTo("Greedy")==0);
 		this.labelthreshold.setVisible(algo.compareTo("Hungarian")==0 || algo.compareTo("Greedy")==0);
