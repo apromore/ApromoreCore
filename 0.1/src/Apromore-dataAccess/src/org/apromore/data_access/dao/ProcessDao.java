@@ -1670,7 +1670,7 @@ public class ProcessDao extends BasicDao {
 			+ "(" + ConstantDB.ATTR_NAME + ","
 			+		ConstantDB.ATTR_OWNER + ","
 			+		ConstantDB.ATTR_DOMAIN + ")"
-			+ " values (?, ?) ";
+			+ " values (?, ?, ?) ";
 			stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
 			stmtp.setString(1, processName);
 			stmtp.setString(2, username);
