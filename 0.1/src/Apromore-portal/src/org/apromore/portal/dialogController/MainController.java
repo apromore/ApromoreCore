@@ -195,7 +195,8 @@ public class MainController extends Window {
 	 * @throws ClassNotFoundException 
 	 */
 	public void deleteProcessVersions(
-			HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException, ExceptionDao, JAXBException {
+			HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) 
+	throws InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException, ExceptionDao, JAXBException {
 		RequestToManager request = new RequestToManager();
 		try {
 			request.DeleteProcessVersions (processVersions);
