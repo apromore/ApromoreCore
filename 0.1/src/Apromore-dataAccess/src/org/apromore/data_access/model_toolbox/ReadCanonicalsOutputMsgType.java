@@ -33,14 +33,14 @@ import javax.xml.bind.annotation.XmlType;
     "result",
     "canonicals"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T01:54:22+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ReadCanonicalsOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T01:54:22+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ResultType result;
     @XmlElement(name = "Canonicals", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T01:54:22+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected CanonicalsType canonicals;
 
     /**
@@ -51,7 +51,7 @@ public class ReadCanonicalsOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T01:54:22+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ResultType getResult() {
         return result;
     }
@@ -64,7 +64,7 @@ public class ReadCanonicalsOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T01:54:22+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -77,7 +77,7 @@ public class ReadCanonicalsOutputMsgType {
      *     {@link CanonicalsType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T01:54:22+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public CanonicalsType getCanonicals() {
         return canonicals;
     }
@@ -90,7 +90,7 @@ public class ReadCanonicalsOutputMsgType {
      *     {@link CanonicalsType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T01:54:22+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setCanonicals(CanonicalsType value) {
         this.canonicals = value;
     }
