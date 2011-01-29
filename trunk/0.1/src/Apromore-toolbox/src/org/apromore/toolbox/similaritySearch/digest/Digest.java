@@ -5,16 +5,18 @@ import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import org.apromore.toolbox.similaritySearch.common.IdGeneratorHelper;
 import org.apromore.toolbox.similaritySearch.graph.Edge;
 import org.apromore.toolbox.similaritySearch.graph.Graph;
 import org.apromore.toolbox.similaritySearch.graph.Vertex;
 
 public class Digest {
 	
-	public static Graph digest(Graph merged, int freq) {
+	public static Graph digest(Graph merged, IdGeneratorHelper idGenerator, int freq) {
 		Graph digest = new Graph();
+		digest.setIdGenerator(idGenerator);
 		digest.name = merged.name + "_digest";
-		digest.ID = String.valueOf(Graph.getNextId());
+		digest.ID = String.valueOf(idGenerator.getNextId());
 		
 		// add all the edges that occur in the merged
 		// model more or equal as the frequency given
@@ -71,7 +73,7 @@ public class Digest {
 				Vertex mergedCh = merged.getVertexMap().get(ch.getID());
 				if (hasPath(mergedP, mergedCh, digest)) {
 					// TODO add new node type .. and the presentation???
-					Vertex placeholder = new Vertex(Vertex.Type.function, "#", Graph.getNextId());
+					Vertex placeholder = new Vertex(Vertex.Type.function, "#", idGenerator.getNextId());
 					digest.addVertex(placeholder);
 					digest.connectVertices(p, placeholder);
 					digest.connectVertices(placeholder, ch);

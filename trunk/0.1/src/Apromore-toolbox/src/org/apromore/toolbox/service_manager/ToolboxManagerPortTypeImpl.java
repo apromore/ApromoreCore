@@ -76,7 +76,8 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 			if (search == null) {
 				throw new Exception("Canonical not found.");
 			}
-			allCanonicals.remove(search);
+			// show also the search model in the resultset?
+//			allCanonicals.remove(search);
 			JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
 			Unmarshaller u = jc.createUnmarshaller();
 

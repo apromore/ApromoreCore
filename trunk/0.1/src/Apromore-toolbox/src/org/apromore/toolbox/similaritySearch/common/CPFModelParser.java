@@ -47,7 +47,8 @@ public class CPFModelParser{
 	
     public static Graph readModel(CanonicalProcessType cpf){
     	Graph epcGraph = new Graph();
-		
+		epcGraph.name = cpf.getName();
+    	
     	NetType mainNet = null;
     	for (NetType n : cpf.getNet()) {
     		if (n.getNode().size() > 0) {
@@ -257,7 +258,7 @@ public class CPFModelParser{
 		return graphLabels;
 	}
     
-    public static CanonicalProcessType writeModel(Graph g){
+    public static CanonicalProcessType writeModel(Graph g, IdGeneratorHelper idGenerator){
     	CanonicalProcessType toReturn = new CanonicalProcessType();
     	
     	// objects and resources
@@ -299,6 +300,7 @@ public class CPFModelParser{
     	}
     	
     	NetType net = new NetType();
+    	net.setId(idGenerator.getNextId());
     	toReturn.getNet().add(net);
     	
     	for (Vertex v : g.getVertices()) {
@@ -384,6 +386,9 @@ public class CPFModelParser{
     	for (Edge e : g.getEdges()) {
     		EdgeType et = new EdgeType();
     		et.setId(e.getId());
+    		// from and to vertex
+    		et.setSourceId(e.getFromVertex());
+    		et.setTargetId(e.getToVertex());
     		// attributes
     		TypeAttribute a = new TypeAttribute();
     		a.setTypeRef("annotation");

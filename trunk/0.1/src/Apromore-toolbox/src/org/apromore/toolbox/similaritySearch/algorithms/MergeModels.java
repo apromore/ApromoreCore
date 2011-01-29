@@ -4,6 +4,7 @@ package org.apromore.toolbox.similaritySearch.algorithms;
 import java.util.HashSet;
 import java.util.LinkedList;
 
+import org.apromore.toolbox.similaritySearch.common.IdGeneratorHelper;
 import org.apromore.toolbox.similaritySearch.common.VertexPair;
 import org.apromore.toolbox.similaritySearch.common.algos.GraphEditDistanceGreedy;
 import org.apromore.toolbox.similaritySearch.common.algos.TwoVertices;
@@ -20,11 +21,13 @@ import org.apromore.toolbox.similaritySearch.planarGraphMathing.PlanarGraphMathi
 public class MergeModels {
 
 	public static Graph mergeModels (Graph g1, Graph g2, 
+			IdGeneratorHelper idGenerator,
 			boolean removeEnt, 
 			String algortithm, 
 			double ...param) {
 		
 		Graph merged = new Graph();
+		merged.setIdGenerator(idGenerator);
 		long startTime = System.currentTimeMillis();
 
 		merged.addVertices(g1.getVertices());
@@ -179,7 +182,7 @@ public class MergeModels {
 				if ((addgw || addgwr) && vp.getLeft().getParents().size() == 1 &&
 						vp.getRight().getParents().size() == 1) {
 					
-					Vertex newGw = new Vertex(GWType.xor, Graph.getNextId());
+					Vertex newGw = new Vertex(GWType.xor, idGenerator.getNextId());
 					newGw.setConfigurable(true);
 					merged.addVertex(newGw);
 					
@@ -225,7 +228,7 @@ public class MergeModels {
 				if ((addgw || addgwr) && vp.getLeft().getChildren().size() == 1 &&
 						vp.getRight().getChildren().size() == 1) {
 					
-					Vertex newGw = new Vertex(GWType.xor, Graph.getNextId());
+					Vertex newGw = new Vertex(GWType.xor, idGenerator.getNextId());
 					newGw.setConfigurable(true);
 					merged.addVertex(newGw);
 					
@@ -287,7 +290,7 @@ public class MergeModels {
 			merged.name += l + ",";
 		}
 		merged.name = merged.name.substring(0, merged.name.length() - 1);
-		merged.ID = String.valueOf(Graph.getNextId());
+		merged.ID = String.valueOf(idGenerator.getNextId());
 		
 		return merged;
 	}
