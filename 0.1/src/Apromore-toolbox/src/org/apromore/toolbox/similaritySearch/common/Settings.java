@@ -12,11 +12,6 @@ public class Settings {
 	public static boolean considerEvents = true;
 	public static boolean considerGateways = true;
 	
-	// weights for greedy and other algorithms
-	public static double vweight = 1.0;
-	public static double sweight = 1.0;
-	public static double eweight = 1.0;	
-	
 	private static SnowballStemmer englishStemmer;
 	
 	public static SnowballStemmer getEnglishStemmer() {
