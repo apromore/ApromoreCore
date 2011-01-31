@@ -106,6 +106,7 @@
 		<attribute name="name" type="string" />
 		<attribute name="last_update" type="string" />
 		<attribute name="creation_date" type="string" />
+		<attribute name="score" type="double" />
 	</complexType>
 
 	<complexType name="AnnotationsType">
