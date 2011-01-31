@@ -99,11 +99,14 @@ public class MainController extends Window {
 			this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml"); 
 			
 		} catch (Exception e) {
-			String message = e.getMessage();
-			if (message ==null) {
-				message = "contact Apromore administrator";
+			String message = null;
+			if (e.getMessage() == null) {
+				message = "Please contact Apromore's administrator";
+			} else {
+				message = e.getMessage();
 			}
-			Messagebox.show("Repository not available ("+e.getMessage()+")", "Attention", Messagebox.OK,
+			e.printStackTrace();
+			Messagebox.show("Repository not available ("+ message +")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		}
 	}
@@ -116,11 +119,22 @@ public class MainController extends Window {
 		Clients.confirmClose(Constants.MSG_WHEN_CLOSE);
 	}
 
-	public void displayProcessSummaries(ProcessSummariesType processSummaries) throws Exception {
+	/**
+	 * Call for refreshing diplay of data: if isQueryResult, the query is given by version of process
+	 * @param processSummaries
+	 * @param isQueryResult
+	 * @param process
+	 * @param version
+	 * @throws Exception
+	 */
+	public void displayProcessSummaries(ProcessSummariesType processSummaries, 
+			Boolean isQueryResult,
+			ProcessSummaryType process, VersionSummaryType version) throws Exception {
 		int activePage = this.processtable.getPg().getActivePage();
 		this.processtable.emptyProcessSummaries();
 		this.processtable.newPaging();
-		this.processtable.displayProcessSummaries(processSummaries);
+		this.processtable.setIsQueryResult(isQueryResult);
+		this.processtable.displayProcessSummaries(processSummaries, isQueryResult, process, version);
 		int lastPage = this.processtable.getPg().getPageCount()-1;
 		if (lastPage<activePage) {
 			this.processtable.getPg().setActivePage(lastPage);
@@ -158,7 +172,7 @@ public class MainController extends Window {
 		}
 		this.displayMessage(processSummaries.getProcessSummary().size() + message);
 		this.simplesearch.clearSearches();
-		this.displayProcessSummaries(processSummaries);
+		this.displayProcessSummaries(processSummaries, false, null, null);
 	}
 
 	/**
