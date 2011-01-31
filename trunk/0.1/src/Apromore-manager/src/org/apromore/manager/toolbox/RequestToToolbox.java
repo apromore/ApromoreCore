@@ -54,6 +54,9 @@ public class RequestToToolbox {
 				processP.setLastVersion(processT.getLastVersion());
 				processP.setName(processT.getName());
 				processP.setOwner(processT.getOwner());
+				processP.setRanking(processT.getRanking());
+				processP.setDomain(processT.getDomain());
+				processP.setOriginalNativeType(processT.getOriginalNativeType());
 				for (org.apromore.manager.model_toolbox.VersionSummaryType versionT:
 					processT.getVersionSummaries()) {
 					org.apromore.manager.model_portal.VersionSummaryType versionP =
@@ -62,6 +65,7 @@ public class RequestToToolbox {
 					versionP.setCreationDate(versionT.getCreationDate());
 					versionP.setLastUpdate(versionT.getLastUpdate());
 					versionP.setName(versionT.getName());
+					versionP.setRanking(versionT.getRanking());
 					for (org.apromore.manager.model_toolbox.AnnotationsType annotT:
 						versionT.getAnnotations()) {
 						org.apromore.manager.model_portal.AnnotationsType annotP =
