@@ -133,6 +133,11 @@ public class MenuController extends Menubar {
 		});	
 	}
 
+	/**
+	 * Search for similar processes to the one currently selected
+	 * @throws SuspendNotAllowedException
+	 * @throws InterruptedException
+	 */
 	protected void searchSimilarProcesses() throws SuspendNotAllowedException, InterruptedException {
 		HashMap<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions =
 			getSelectedProcessVersions();
@@ -141,10 +146,10 @@ public class MenuController extends Menubar {
 		String versionName;
 		if (selectedProcessVersions.size()==1
 				&& selectedProcessVersions.get(selectedProcessVersions.keySet().iterator().next()).size()==1) {
-			processId = selectedProcessVersions.keySet().iterator().next().getId();
-			versionName = selectedProcessVersions.get(selectedProcessVersions.keySet().iterator().next()).get(0).getName();
+			ProcessSummaryType process = selectedProcessVersions.keySet().iterator().next();
+			VersionSummaryType version = selectedProcessVersions.get(selectedProcessVersions.keySet().iterator().next()).get(0);	
 			SimilaritySearchController similaritySearchC = 
-				new SimilaritySearchController(this. mainC, this, processId, versionName);
+				new SimilaritySearchController(this. mainC, this, process, version);
 		} else if (selectedProcessVersions.size()==0) {
 			this.mainC.displayMessage("No process version selected, should be exactly one.");
 		} else {

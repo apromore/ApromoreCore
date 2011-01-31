@@ -88,7 +88,7 @@ public class SimpleSearchController extends Window {
 			message += " process.";
 		}
 		this.mainC.displayMessage(message);
-		this.mainC.displayProcessSummaries (processSummaries);
+		this.mainC.displayProcessSummaries (processSummaries,false, null, null);
 		/**
 		 *Keeps search history up to date
 		 */

@@ -35,16 +35,16 @@ public class SimilaritySearchController extends Window {
 	private Row subnweight;
 	private Button OKbutton;
 	private Button CancelButton;
-	private String versionName;
-	private Integer processId;
+	private ProcessSummaryType process;
+	private VersionSummaryType version;
 	
 	public SimilaritySearchController (MainController mainC, MenuController menuC, 
-			Integer processId, String versionName) 
+			ProcessSummaryType process, VersionSummaryType version) 
 	throws SuspendNotAllowedException, InterruptedException {
 		this.mainC = mainC;
 		this.menuC = menuC;
-		this.versionName = versionName;
-		this.processId = processId;
+		this.version = version;
+		this.process = process;
 		this.similaritySearchW = (Window) Executions.createComponents("macros/similaritysearch.zul", null, null);
 		
 		this.algoChoiceR = (Row) this.similaritySearchW.getFellow("similaritySearchAlgoChoice");
@@ -112,7 +112,7 @@ public class SimilaritySearchController extends Window {
 		try {
 			RequestToManager request = new RequestToManager();
 			ProcessSummariesType result = request.searchForSimilarProcesses(
-					this.processId, this.versionName,
+					process.getId(), version.getName(),
 					this.algosLB.getSelectedItem().getLabel(),
 					((Doublebox) this.modelthreshold.getFirstChild().getNextSibling()).getValue(),
 					((Doublebox) this.labelthreshold.getFirstChild().getNextSibling()).getValue(),
@@ -127,7 +127,7 @@ public class SimilaritySearchController extends Window {
 			} else {
 				message += " process.";
 			}
-			mainC.displayProcessSummaries(result);
+			mainC.displayProcessSummaries(result, true, process, version);
 		} catch (Exception e) {
 			message = "Search failed (" + e.getMessage() + ")";
 		}
