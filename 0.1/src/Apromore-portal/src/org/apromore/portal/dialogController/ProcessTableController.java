@@ -46,7 +46,29 @@ import org.zkoss.zul.Toolbarbutton;
 public class ProcessTableController {
 
 
-	/**
+	/** the structure of queryGrid
+	 * grid									queryGrid unvisible unless specified
+	 * 	columns
+	 * 		column
+	 * 			
+	 * 		column
+	 * 	rows
+	 *  --> one row for a query (process)
+	 *  	row
+	 *  		detail
+	 *  			grid
+	 *  				columns
+	 *  				/columns
+	 *                  rows
+	 *  					--> one version only
+	 *                  	row
+	 *                  	/row
+	 *                  /rows
+	 *  			/grid
+	 *  		/detail
+	 *  	/row	
+	 *  /rows
+	 * /grid
 	 * the structure of processSummariesGrid is:
 	 * grid									processSummariesGrid
 	 * 	columns
@@ -94,7 +116,7 @@ public class ProcessTableController {
 	private Integer latestVersionPos ;						// position of label latest version in row of process summary
 	private Integer processTbPos;							// position of toolbarbuttons associated with process names in rows of process summary
 	private Integer processSummaryCBPos;					// position of checkbox associated with process summary
-	
+
 	private Hbox pagingAndButtons;							// hbox which contains paging ang button components
 	private Hbox buttons;
 	private Paging pg;
@@ -104,6 +126,25 @@ public class ProcessTableController {
 	private Button refreshB;
 	private Column columnName;								// column to display process name
 	private Column columnRanking; 							// column to display process ranking
+
+	private Boolean isQueryResult;							// says whether the data to be displayed have been produced by a query
+
+	private Grid queryGrid;									// the grid to display the query, visible only when applicable
+	private Rows queryRows;									// the rows (only one) for process query
+	private Row processQueryR;
+	private Detail processQueryD;
+	private Label processQueryName;
+	private Label processIdLb;
+	private Label processOriginalLanguage ;
+	private Label processDomain;
+	private Label processRankingValue ;
+	private Label processLatestVersion ;
+	private Label processOwner ;
+	private Hbox processQueryRankingHB;
+
+	private ProcessSummaryType processQ;
+	private VersionSummaryType versionQ;
+
 	public ProcessTableController(MainController mainController) throws Exception {
 
 		/**
@@ -123,16 +164,51 @@ public class ProcessTableController {
 		this.columnName = (Column) this.processSummariesGrid.getFellow("columnName");
 		this.columnRanking = (Column) this.processSummariesGrid.getFellow("columnRanking");
 
+		//part dedicated to the query (visible only when applicable)
+		this.isQueryResult = false;
+		this.queryGrid = (Grid) this.mainC.getFellow("queryGrid");
+		this.queryRows = (Rows) this.queryGrid.getFellow("queryRows");
+		this.processQueryR = new Row();
+		this.processQueryD = new Detail();
+		this.processQueryName = new Label();
+		this.processQueryD.setOpen(true);
+		this.queryRows.appendChild(processQueryR);
+		this.processIdLb = new Label();
+		this.processOriginalLanguage = new Label();
+		this.processDomain = new Label();
+		this.processRankingValue = new Label();
+		this.processLatestVersion = new Label();
+		this.processOwner = new Label();
+		this.processQueryRankingHB = new Hbox();
+		this.processQueryR.appendChild(this.processQueryD);
+		this.processQueryR.appendChild(this.processIdLb);
+		this.processQueryR.appendChild(this.processQueryName);
+		this.processQueryR.appendChild(this.processOriginalLanguage);
+		this.processQueryR.appendChild(this.processDomain);
+		this.processQueryR.appendChild(this.processQueryRankingHB);
+		this.processQueryR.appendChild(this.processRankingValue);
+		this.processQueryR.appendChild(this.processLatestVersion);
+		this.processQueryR.appendChild(this.processOwner);
+		((Columns) this.queryGrid.getFirstChild()).setStyle("background:#FFCC66");
+		this.processQueryR.setStyle("background:#FFFF66");
+		// click on "+" to get process details
+		this.processQueryD.addEventListener("onOpen", new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				Detail processQueryD = (Detail) event.getTarget();
+				displayQueryVersionSummary (processQueryD);
+			}
+		});
+
 		ProcessNameColComparator asc1 = new ProcessNameColComparator(true),
-			dsc1 = new ProcessNameColComparator(false);
+		dsc1 = new ProcessNameColComparator(false);
 		this.columnName.setSortAscending(asc1);
 		this.columnName.setSortDescending(dsc1);
 
 		ProcessRankingColComparator asc2 = new ProcessRankingColComparator(true),
-			dsc2 = new ProcessRankingColComparator(false);
+		dsc2 = new ProcessRankingColComparator(false);
 		this.columnRanking.setSortAscending(asc2);
 		this.columnRanking.setSortDescending(dsc2);
-		
+
 		// if change grid layouts modify value accordingly
 		this.latestVersionPos = 8;
 		this.processTbPos = 3;
@@ -185,7 +261,7 @@ public class ProcessTableController {
 		RequestToManager request = new RequestToManager();
 		ProcessSummariesType processSummaries = request.ReadProcessSummariesType("");
 		this.mainC.displayMessage(processSummaries.getProcessSummary().size() + " processes.");
-		displayProcessSummaries (processSummaries);
+		displayProcessSummaries (processSummaries, false, null, null);
 	}
 
 	protected void reloadData() throws Exception {
@@ -241,7 +317,39 @@ public class ProcessTableController {
 
 	}
 
-	public void displayProcessSummaries(ProcessSummariesType processSummaries) {
+	/**
+	 * Display process versions given in processSummaries. If isQueryResult this results from
+	 * a search whose query is versionQ, given processQ
+	 * @param processSummaries
+	 * @param isQueryResult
+	 * @param processQ
+	 * @param versionQ
+	 * @throws IllegalAccessException 
+	 * @throws InstantiationException 
+	 * @throws ClassNotFoundException 
+	 */
+	public void displayProcessSummaries(ProcessSummariesType processSummaries, 
+			Boolean isQueryResult,
+			ProcessSummaryType processQ, VersionSummaryType versionQ) 
+	throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+		this.isQueryResult = isQueryResult;
+		this.processQ = processQ;
+		this.versionQ = versionQ;
+		if (isQueryResult) {
+			this.queryGrid.setVisible(true);
+			this.processQueryName.setValue(processQ.getName());
+			this.processIdLb.setValue(processQ.getId().toString());
+			this.processOriginalLanguage.setValue(processQ.getOriginalNativeType());
+			this.processDomain.setValue(processQ.getDomain());
+			if (processQ.getRanking()!=null && processQ.getRanking().toString().compareTo("")!=0) {
+				displayRanking(this.processQueryRankingHB, processQ.getRanking());
+			}
+			this.processLatestVersion.setValue(processQ.getLastVersion()) ;
+			this.processOwner.setValue(processQ.getOwner()) ;
+			displayQueryVersionSummary (this.processQueryD);
+		} else {
+			this.queryGrid.setVisible(false);
+		}
 		for (int i=0;i<processSummaries.getProcessSummary().size();i++){
 			ProcessSummaryType process = processSummaries.getProcessSummary().get(i);
 			displayOneProcess (process);		
@@ -331,6 +439,9 @@ public class ProcessTableController {
 			versionHeads.setSizable(true);
 			Column checkboxes = new Column();
 			checkboxes.setWidth("0px");		
+			Column headScore = new Column("Score");
+			headScore.setSort("auto");
+			headScore.setVisible(this.isQueryResult);
 			Column headVersionName = new Column("Version name");
 			headVersionName.setSort("auto");
 			Column headCreationDate = new Column("Creation date");
@@ -342,14 +453,16 @@ public class ProcessTableController {
 			Column headRanking  = new Column("Ranking");
 			headRanking.setSort("auto");
 
+			headScore.setWidth("10%");
 			headVersionName.setWidth("15%");
 			headCreationDate.setWidth("25%");
 			headLastUpdate.setWidth("25%");
-			headAnnotation.setWidth("30%");
+			headAnnotation.setWidth("25%");
 			headRanking.setWidth("15%");
 
 			processVersionG.appendChild(versionHeads);
 			versionHeads.appendChild(checkboxes);
+			versionHeads.appendChild(headScore);
 			versionHeads.appendChild(headVersionName);
 			versionHeads.appendChild(headCreationDate);
 			versionHeads.appendChild(headLastUpdate);
@@ -373,6 +486,9 @@ public class ProcessTableController {
 				versionCB.setVisible(false);
 				versionCB.setId(process.getId().toString() + "/" + version.getName());
 
+				Label scoreL = new Label();
+				//scoreL.setValue(version.getScore().toString());
+				scoreL.setValue("test");
 				Toolbarbutton versionName = new Toolbarbutton (version.getName());
 				versionName.setStyle(Constants.TOOLBARBUTTON_STYLE);
 				Label versionCreationDate = new Label();
@@ -402,9 +518,10 @@ public class ProcessTableController {
 						annotationsI.setLabel(annotationName + " (" + language + ")");
 					}
 				}
-				
+
 				processVersionsR.appendChild(versionR);
 				versionR.appendChild(versionCB);
+				versionR.appendChild(scoreL);
 				versionR.appendChild(versionName);
 				versionR.appendChild(versionCreationDate);
 				versionR.appendChild(versionLastUpdate);
@@ -427,6 +544,88 @@ public class ProcessTableController {
 					}
 				});
 			}
+		}
+	}
+
+	protected void displayQueryVersionSummary (Detail processSummaryD) 
+	throws ClassNotFoundException, InstantiationException, IllegalAccessException {
+
+		VersionSummaryType versionQ = this.versionQ;
+		/* details might have been already build, in this case the Detail processSummaryD has at least
+		 * on children.
+		 */
+		if (processSummaryD.getChildren().size()==0) {
+			// the grid for process versions
+			Grid processVersionG = new Grid();
+			processVersionG.setVflex(true);
+			Columns versionHeads = new Columns();
+			versionHeads.setSizable(true);
+			versionHeads.setStyle("background:#FFCC66");
+			Column headVersionName = new Column("Version name");
+			headVersionName.setSort("auto");
+			Column headCreationDate = new Column("Creation date");
+			headCreationDate.setSort("auto");
+			Column headLastUpdate = new Column("Last update");
+			headLastUpdate.setSort("auto");
+			Column headAnnotation = new Column("Annotation(s)");
+			headAnnotation.setSort("auto");
+			Column headRanking  = new Column("Ranking");
+			headRanking.setSort("auto");
+
+			headVersionName.setWidth("15%");
+			headCreationDate.setWidth("25%");
+			headLastUpdate.setWidth("25%");
+			headAnnotation.setWidth("25%");
+			headRanking.setWidth("15%");
+
+			processVersionG.appendChild(versionHeads);
+			versionHeads.appendChild(headVersionName);
+			versionHeads.appendChild(headCreationDate);
+			versionHeads.appendChild(headLastUpdate);
+			versionHeads.appendChild(headAnnotation);
+			versionHeads.appendChild(headRanking);
+
+			processSummaryD.appendChild(processVersionG);
+			Rows processVersionsR = new Rows();
+			processVersionG.appendChild(processVersionsR);
+
+			Row versionR = new Row();
+			versionR.setStyle("background:#FFFF66");
+			Label versionName = new Label(versionQ.getName());
+			Label versionCreationDate = new Label(versionQ.getCreationDate());
+			if (versionQ.getCreationDate()!= null) {
+				versionCreationDate.setValue(versionQ.getCreationDate().toString());
+			}
+			Label versionLastUpdate = new Label();
+			if (versionQ.getLastUpdate()!= null) {
+				versionLastUpdate.setValue(versionQ.getLastUpdate().toString());
+			}
+			Hbox versionRanking = new Hbox ();
+			if (versionQ.getRanking()!=null && versionQ.getRanking().toString().compareTo("")!=0) {
+				displayRanking(versionRanking, versionQ.getRanking());
+			} 
+			// build drop down list of annotations: one line for each associated native type,
+			// and for each of which the list of existing annotations
+			Listbox annotationLB = new Listbox();
+			annotationLB.setMold("select");
+			annotationLB.setRows(1);
+			annotationLB.setStyle("background:#FFFF66");
+			for(int i=0;i<versionQ.getAnnotations().size();i++){
+				String language = versionQ.getAnnotations().get(i).getNativeType();
+				for(int k=0;k<versionQ.getAnnotations().get(i).getAnnotationName().size();k++) {
+					Listitem annotationsI = new Listitem();
+					annotationLB.appendChild(annotationsI);
+					String annotationName = versionQ.getAnnotations().get(i).getAnnotationName().get(k);
+					annotationsI.setLabel(annotationName + " (" + language + ")");
+				}
+			}
+
+			processVersionsR.appendChild(versionR);
+			versionR.appendChild(versionName);
+			versionR.appendChild(versionCreationDate);
+			versionR.appendChild(versionLastUpdate);
+			versionR.appendChild(annotationLB);
+			versionR.appendChild(versionRanking);
 		}
 	}
 
@@ -560,7 +759,7 @@ public class ProcessTableController {
 		Detail versionD = (Detail) versionsR.getParent().getParent(); 		// detail (related to the process)
 		Row processR = (Row) versionD.getParent(); 							// process 
 
-		Checkbox versionCB = (Checkbox) versionNameB.getPreviousSibling();	// checkbox associated with the version
+		Checkbox versionCB = (Checkbox) versionNameB.getPreviousSibling().getPreviousSibling();	// checkbox associated with the version
 		Checkbox processCB = (Checkbox) processR.getChildren().get(1);		// checkbox associated with the process
 
 		/*
@@ -595,7 +794,7 @@ public class ProcessTableController {
 
 		String selected = Constants.SELECTED_VERSION ;
 		String unselected = Constants.UNSELECTED_VERSION;
-		Listbox annotations = (Listbox) versionR.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getNextSibling();
+		Listbox annotations = (Listbox) versionR.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getNextSibling().getNextSibling();
 		if (highlighted) {
 			versionR.setStyle(selected);	// highlight version
 			ColorFont (versionR, "#FFFFFF");
@@ -846,12 +1045,12 @@ public class ProcessTableController {
 		}
 	}
 	private void ColorFont(HtmlBasedComponent v, String color) {
-	
-//		Iterator<HtmlBasedComponent> itV = v.getChildren().iterator();
-//		while (itV.hasNext()) {
-//			HtmlBasedComponent child = (HtmlBasedComponent) itV.next();
-//			child.setStyle("color:"+color + ";" + Constants.TOOLBARBUTTON_STYLE);
-//		}
+
+		//		Iterator<HtmlBasedComponent> itV = v.getChildren().iterator();
+		//		while (itV.hasNext()) {
+		//			HtmlBasedComponent child = (HtmlBasedComponent) itV.next();
+		//			child.setStyle("color:"+color + ";" + Constants.TOOLBARBUTTON_STYLE);
+		//		}
 	}
 
 	public HashMap<Checkbox, VersionSummaryType> getProcessVersionsHM() {
@@ -885,5 +1084,13 @@ public class ProcessTableController {
 
 	public void setPg(Paging pg) {
 		this.pg = pg;
+	}
+
+	public Boolean getIsQueryResult() {
+		return isQueryResult;
+	}
+	public void setIsQueryResult(Boolean isQueryResult) {
+		this.isQueryResult = isQueryResult;
+		this.queryGrid.setVisible(this.isQueryResult);
 	}
 }
