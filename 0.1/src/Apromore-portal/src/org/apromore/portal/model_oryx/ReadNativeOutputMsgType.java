@@ -2,7 +2,6 @@
 package org.apromore.portal.model_oryx;
 
 import javax.activation.DataHandler;
-import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -39,21 +38,16 @@ import javax.xml.bind.annotation.XmlType;
     "nativeType",
     "editionType"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ReadNativeOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ResultType result;
     @XmlElement(name = "Native", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected DataHandler _native;
     @XmlElement(name = "NativeType", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String nativeType;
     @XmlElement(name = "EditionType", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String editionType;
 
     /**
@@ -64,7 +58,6 @@ public class ReadNativeOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ResultType getResult() {
         return result;
     }
@@ -77,7 +70,6 @@ public class ReadNativeOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -90,7 +82,6 @@ public class ReadNativeOutputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public DataHandler getNative() {
         return _native;
     }
@@ -103,7 +94,6 @@ public class ReadNativeOutputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setNative(DataHandler value) {
         this._native = value;
     }
@@ -116,7 +106,6 @@ public class ReadNativeOutputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getNativeType() {
         return nativeType;
     }
@@ -129,7 +118,6 @@ public class ReadNativeOutputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setNativeType(String value) {
         this.nativeType = value;
     }
@@ -142,7 +130,6 @@ public class ReadNativeOutputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getEditionType() {
         return editionType;
     }
@@ -155,7 +142,6 @@ public class ReadNativeOutputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setEditionType(String value) {
         this.editionType = value;
     }

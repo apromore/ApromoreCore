@@ -45,75 +45,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link WriteNewProcessOutputMsgType }
+     * Create an instance of {@link WriteProcessOutputMsgType }
      * 
      */
-    public WriteNewProcessOutputMsgType createWriteNewProcessOutputMsgType() {
-        return new WriteNewProcessOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ResultType }
-     * 
-     */
-    public ResultType createResultType() {
-        return new ResultType();
-    }
-
-    /**
-     * Create an instance of {@link WriteAnnotationInputMsgType }
-     * 
-     */
-    public WriteAnnotationInputMsgType createWriteAnnotationInputMsgType() {
-        return new WriteAnnotationInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ReadNativeOutputMsgType }
-     * 
-     */
-    public ReadNativeOutputMsgType createReadNativeOutputMsgType() {
-        return new ReadNativeOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link WriteNewProcessInputMsgType }
-     * 
-     */
-    public WriteNewProcessInputMsgType createWriteNewProcessInputMsgType() {
-        return new WriteNewProcessInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link WriteAnnotationOutputMsgType }
-     * 
-     */
-    public WriteAnnotationOutputMsgType createWriteAnnotationOutputMsgType() {
-        return new WriteAnnotationOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link WriteNewAnnotationInputMsgType }
-     * 
-     */
-    public WriteNewAnnotationInputMsgType createWriteNewAnnotationInputMsgType() {
-        return new WriteNewAnnotationInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link WriteNewAnnotationOutputMsgType }
-     * 
-     */
-    public WriteNewAnnotationOutputMsgType createWriteNewAnnotationOutputMsgType() {
-        return new WriteNewAnnotationOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link CloseSessionOutputMsgType }
-     * 
-     */
-    public CloseSessionOutputMsgType createCloseSessionOutputMsgType() {
-        return new CloseSessionOutputMsgType();
+    public WriteProcessOutputMsgType createWriteProcessOutputMsgType() {
+        return new WriteProcessOutputMsgType();
     }
 
     /**
@@ -122,6 +58,14 @@ public class ObjectFactory {
      */
     public ReadNativeInputMsgType createReadNativeInputMsgType() {
         return new ReadNativeInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link WriteNewProcessOutputMsgType }
+     * 
+     */
+    public WriteNewProcessOutputMsgType createWriteNewProcessOutputMsgType() {
+        return new WriteNewProcessOutputMsgType();
     }
 
     /**
@@ -141,11 +85,67 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link WriteProcessOutputMsgType }
+     * Create an instance of {@link WriteAnnotationOutputMsgType }
      * 
      */
-    public WriteProcessOutputMsgType createWriteProcessOutputMsgType() {
-        return new WriteProcessOutputMsgType();
+    public WriteAnnotationOutputMsgType createWriteAnnotationOutputMsgType() {
+        return new WriteAnnotationOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link WriteNewAnnotationInputMsgType }
+     * 
+     */
+    public WriteNewAnnotationInputMsgType createWriteNewAnnotationInputMsgType() {
+        return new WriteNewAnnotationInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link CloseSessionOutputMsgType }
+     * 
+     */
+    public CloseSessionOutputMsgType createCloseSessionOutputMsgType() {
+        return new CloseSessionOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link WriteNewAnnotationOutputMsgType }
+     * 
+     */
+    public WriteNewAnnotationOutputMsgType createWriteNewAnnotationOutputMsgType() {
+        return new WriteNewAnnotationOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ReadNativeOutputMsgType }
+     * 
+     */
+    public ReadNativeOutputMsgType createReadNativeOutputMsgType() {
+        return new ReadNativeOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link WriteNewProcessInputMsgType }
+     * 
+     */
+    public WriteNewProcessInputMsgType createWriteNewProcessInputMsgType() {
+        return new WriteNewProcessInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link WriteAnnotationInputMsgType }
+     * 
+     */
+    public WriteAnnotationInputMsgType createWriteAnnotationInputMsgType() {
+        return new WriteAnnotationInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ResultType }
+     * 
+     */
+    public ResultType createResultType() {
+        return new ResultType();
     }
 
     /**

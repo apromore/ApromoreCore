@@ -1,7 +1,6 @@
 
 package org.apromore.portal.model_oryx;
 
-import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlType;
@@ -30,17 +29,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "CloseSessionInputMsgType", propOrder = {
     "code"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class CloseSessionInputMsgType {
 
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected int code;
 
     /**
      * Gets the value of the code property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public int getCode() {
         return code;
     }
@@ -49,7 +45,6 @@ public class CloseSessionInputMsgType {
      * Sets the value of the code property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-19T05:05:59+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setCode(int value) {
         this.code = value;
     }
