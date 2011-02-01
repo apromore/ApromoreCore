@@ -69,7 +69,7 @@ import de.epml.TypeEPML;
                       serviceName = "CanoniserManagerService",
                       portName = "CanoniserManager",
                       targetNamespace = "http://www.apromore.org/canoniser/service_manager",
-                      wsdlLocation = "http://localhost:8080/Apromore-canoniser/services/CanoniserManager?wsdl",
+                      wsdlLocation = "http://localhost:8081/Apromore-canoniser/services/CanoniserManager?wsdl",
                       endpointInterface = "org.apromore.canoniser.service_manager.CanoniserManagerPortType")
 
 		public class CanoniserManagerPortTypeImpl implements CanoniserManagerPortType {
