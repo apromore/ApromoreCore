@@ -47,7 +47,7 @@ import org.apromore.data_access.model_canoniser.WriteAnnotationOutputMsgType;
                       serviceName = "DACanoniserService",
                       portName = "DACanoniser",
                       targetNamespace = "http://www.apromore.org/data_access/service_canoniser",
-                      wsdlLocation = "http://localhost:8080/Apromore-dataAccess/services/DACanoniser?wsdl",
+                      wsdlLocation = "http://localhost:8081/Apromore-dataAccess/services/DACanoniser?wsdl",
                       endpointInterface = "org.apromore.data_access.service_canoniser.DACanoniserPortType")
 
 		public class DACanoniserPortTypeImpl implements DACanoniserPortType {
