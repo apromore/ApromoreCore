@@ -46,7 +46,7 @@ import org.apromore.data_access.model_toolbox.StoreCpfOutputMsgType;
                       serviceName = "DAToolboxService",
                       portName = "DAToolbox",
                       targetNamespace = "http://www.apromore.org/data_access/service_toolbox",
-                      wsdlLocation = "http://localhost:8080/Apromore-dataAccess/services/DAToolbox?wsdl",
+                      wsdlLocation = "http://localhost:8081/Apromore-dataAccess/services/DAToolbox?wsdl",
                       endpointInterface = "org.apromore.data_access.service_toolbox.DAToolboxPortType")
                       
 public class DAToolboxPortTypeImpl implements DAToolboxPortType {
