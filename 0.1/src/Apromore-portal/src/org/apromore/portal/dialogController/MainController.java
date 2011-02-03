@@ -133,7 +133,6 @@ public class MainController extends Window {
 		int activePage = this.processtable.getPg().getActivePage();
 		this.processtable.emptyProcessSummaries();
 		this.processtable.newPaging();
-		this.processtable.setIsQueryResult(isQueryResult);
 		this.processtable.displayProcessSummaries(processSummaries, isQueryResult, process, version);
 		int lastPage = this.processtable.getPg().getPageCount()-1;
 		if (lastPage<activePage) {
