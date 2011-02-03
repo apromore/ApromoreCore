@@ -47,7 +47,7 @@ public class ProcessTableController {
 
 
 	/** the structure of queryGrid
-	 
+
 	 * the structure of processSummariesGrid is:
 	 * grid									processSummariesGrid
 	 * 	columns
@@ -107,7 +107,6 @@ public class ProcessTableController {
 	private Column columnRanking; 							// column to display process ranking
 
 	private Boolean isQueryResult;							// says whether the data to be displayed have been produced by a query
-
 	private ProcessSummaryType processQ;
 	private VersionSummaryType versionQ;
 
@@ -266,7 +265,7 @@ public class ProcessTableController {
 		this.isQueryResult = isQueryResult;
 		this.processQ = processQ;
 		this.versionQ = versionQ;
-		
+
 		for (int i=0;i<processSummaries.getProcessSummary().size();i++){
 			ProcessSummaryType process = processSummaries.getProcessSummary().get(i);
 			displayOneProcess (process);		
@@ -313,7 +312,7 @@ public class ProcessTableController {
 		processSummaryR.appendChild(processRankingValue);
 		processSummaryR.appendChild(processLatestVersion);
 		processSummaryR.appendChild(processOwner);
-
+		highlightP(processSummaryR, false);
 		// click on process name to select it
 		processName.addEventListener("onClick", new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -444,6 +443,8 @@ public class ProcessTableController {
 				versionR.appendChild(versionLastUpdate);
 				versionR.appendChild(annotationLB);
 				versionR.appendChild(versionRanking);
+
+				highlightV(versionR, false);
 				/* the process might has been already selected, thus its latest version has to be marked as 
 				 * selected too.
 				 */
@@ -711,18 +712,33 @@ public class ProcessTableController {
 
 		String selected = Constants.SELECTED_VERSION ;
 		String unselected = Constants.UNSELECTED_VERSION;
+		String querySelected = "background-color:#CC6633" + ";" + Constants.TOOLBARBUTTON_STYLE;
+		String queryUnSelected = "background-color:#FFCC99" + ";" + Constants.TOOLBARBUTTON_STYLE;
 		Listbox annotations = (Listbox) versionR.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getNextSibling().getNextSibling();
+		String pId_versionName = versionR.getFirstChild().getId();
 		if (highlighted) {
-			versionR.setStyle(selected);	// highlight version
+			if (this.isQueryResult && pId_versionName.compareTo(this.processQ.getId().toString() + "/" + this.versionQ.getName())==0) {
+				versionR.setStyle(querySelected);	// highlight version
+				// highlight drop down list box
+				annotations.setStyle(querySelected);
+			} else {
+				versionR.setStyle(selected);	// highlight version
+				// highlight drop down list box
+				annotations.setStyle(selected);
+			}
 			ColorFont (versionR, "#FFFFFF");
-			// highlight drop down list box
-			annotations.setStyle(selected);
 			ColorFont (annotations, "#FFFFFF");
 		} else {
-			versionR.setStyle(unselected);
+			if (this.isQueryResult && pId_versionName.compareTo(this.processQ.getId().toString() + "/" + this.versionQ.getName())==0) {
+				versionR.setStyle(queryUnSelected);	// highlight version
+				// highlight drop down list box
+				annotations.setStyle(queryUnSelected);
+			} else {
+				versionR.setStyle(unselected);
+				// highlight drop down list box
+				annotations.setStyle(unselected);
+			}
 			ColorFont (versionR, "#000000");
-			// highlight drop down list box
-			annotations.setStyle(unselected);
 			ColorFont (annotations, "#000000");
 		}
 
@@ -738,23 +754,41 @@ public class ProcessTableController {
 		// #000000 is black
 
 		String selected = Constants.SELECTED_PROCESS ;
+		String queryUnselected = "background-color:#FFCC99" + ";" + Constants.TOOLBARBUTTON_STYLE;
 		String unselectedEven = Constants.UNSELECTED_EVEN;
 		String unselectedOdd = Constants.UNSELECTED_ODD;
+		String querySelected = "background-color:#FF9900" + ";" + Constants.TOOLBARBUTTON_STYLE;
 		Integer index = processR.getParent().getChildren().indexOf(processR);
 		Detail processD = (Detail) processR.getFirstChild();
+		Integer processId = Integer.parseInt(processD.getId());
 		if (highlighted) {
-			processR.setStyle(selected);
-			processD.setStyle(selected);
+			if (this.isQueryResult && processId == this.processQ.getId()) {
+				processR.setStyle(querySelected);
+				processD.setStyle(querySelected);
+			} else {
+				processR.setStyle(selected);
+				processD.setStyle(selected);
+			}
 			ColorFont (processR, "#FFFFFF");
 		} else {
 			if (index % 2 == 0) {
 				//index is even
-				processR.setStyle(unselectedEven);
-				processD.setStyle(unselectedEven);
+				if (this.isQueryResult && processId == this.processQ.getId()) {
+					processR.setStyle(queryUnselected);
+					processD.setStyle(queryUnselected);
+				} else {
+					processR.setStyle(unselectedEven);
+					processD.setStyle(unselectedEven);
+				}
 			} else {
 				//index is odd
-				processR.setStyle(unselectedOdd);
-				processD.setStyle(unselectedOdd);
+				if (this.isQueryResult && processId == this.processQ.getId()) {
+					processR.setStyle(queryUnselected);
+					processD.setStyle(queryUnselected);
+				} else {
+					processR.setStyle(unselectedOdd);
+					processD.setStyle(unselectedOdd);
+				}
 			}
 			ColorFont (processR, "#000000");
 		}
