@@ -47,28 +47,7 @@ public class ProcessTableController {
 
 
 	/** the structure of queryGrid
-	 * grid									queryGrid unvisible unless specified
-	 * 	columns
-	 * 		column
-	 * 			
-	 * 		column
-	 * 	rows
-	 *  --> one row for a query (process)
-	 *  	row
-	 *  		detail
-	 *  			grid
-	 *  				columns
-	 *  				/columns
-	 *                  rows
-	 *  					--> one version only
-	 *                  	row
-	 *                  	/row
-	 *                  /rows
-	 *  			/grid
-	 *  		/detail
-	 *  	/row	
-	 *  /rows
-	 * /grid
+	 
 	 * the structure of processSummariesGrid is:
 	 * grid									processSummariesGrid
 	 * 	columns
@@ -129,19 +108,6 @@ public class ProcessTableController {
 
 	private Boolean isQueryResult;							// says whether the data to be displayed have been produced by a query
 
-	private Grid queryGrid;									// the grid to display the query, visible only when applicable
-	private Rows queryRows;									// the rows (only one) for process query
-	private Row processQueryR;
-	private Detail processQueryD;
-	private Label processQueryName;
-	private Label processIdLb;
-	private Label processOriginalLanguage ;
-	private Label processDomain;
-	private Label processRankingValue ;
-	private Label processLatestVersion ;
-	private Label processOwner ;
-	private Hbox processQueryRankingHB;
-
 	private ProcessSummaryType processQ;
 	private VersionSummaryType versionQ;
 
@@ -163,41 +129,6 @@ public class ProcessTableController {
 		this.refreshB = (Button) this.processSummariesGrid.getFellow("refreshB");
 		this.columnName = (Column) this.processSummariesGrid.getFellow("columnName");
 		this.columnRanking = (Column) this.processSummariesGrid.getFellow("columnRanking");
-
-		//part dedicated to the query (visible only when applicable)
-		this.isQueryResult = false;
-		this.queryGrid = (Grid) this.mainC.getFellow("queryGrid");
-		this.queryRows = (Rows) this.queryGrid.getFellow("queryRows");
-		this.processQueryR = new Row();
-		this.processQueryD = new Detail();
-		this.processQueryName = new Label();
-		this.processQueryD.setOpen(true);
-		this.queryRows.appendChild(processQueryR);
-		this.processIdLb = new Label();
-		this.processOriginalLanguage = new Label();
-		this.processDomain = new Label();
-		this.processRankingValue = new Label();
-		this.processLatestVersion = new Label();
-		this.processOwner = new Label();
-		this.processQueryRankingHB = new Hbox();
-		this.processQueryR.appendChild(this.processQueryD);
-		this.processQueryR.appendChild(this.processIdLb);
-		this.processQueryR.appendChild(this.processQueryName);
-		this.processQueryR.appendChild(this.processOriginalLanguage);
-		this.processQueryR.appendChild(this.processDomain);
-		this.processQueryR.appendChild(this.processQueryRankingHB);
-		this.processQueryR.appendChild(this.processRankingValue);
-		this.processQueryR.appendChild(this.processLatestVersion);
-		this.processQueryR.appendChild(this.processOwner);
-		((Columns) this.queryGrid.getFirstChild()).setStyle("background:#FFCC66");
-		this.processQueryR.setStyle("background:#FFFF66");
-		// click on "+" to get process details
-		this.processQueryD.addEventListener("onOpen", new EventListener() {
-			public void onEvent(Event event) throws Exception {
-				Detail processQueryD = (Detail) event.getTarget();
-				displayQueryVersionSummary (processQueryD);
-			}
-		});
 
 		ProcessNameColComparator asc1 = new ProcessNameColComparator(true),
 		dsc1 = new ProcessNameColComparator(false);
@@ -335,21 +266,7 @@ public class ProcessTableController {
 		this.isQueryResult = isQueryResult;
 		this.processQ = processQ;
 		this.versionQ = versionQ;
-		if (isQueryResult) {
-			this.queryGrid.setVisible(true);
-			this.processQueryName.setValue(processQ.getName());
-			this.processIdLb.setValue(processQ.getId().toString());
-			this.processOriginalLanguage.setValue(processQ.getOriginalNativeType());
-			this.processDomain.setValue(processQ.getDomain());
-			if (processQ.getRanking()!=null && processQ.getRanking().toString().compareTo("")!=0) {
-				displayRanking(this.processQueryRankingHB, processQ.getRanking());
-			}
-			this.processLatestVersion.setValue(processQ.getLastVersion()) ;
-			this.processOwner.setValue(processQ.getOwner()) ;
-			displayQueryVersionSummary (this.processQueryD);
-		} else {
-			this.queryGrid.setVisible(false);
-		}
+		
 		for (int i=0;i<processSummaries.getProcessSummary().size();i++){
 			ProcessSummaryType process = processSummaries.getProcessSummary().get(i);
 			displayOneProcess (process);		
@@ -1088,9 +1005,5 @@ public class ProcessTableController {
 
 	public Boolean getIsQueryResult() {
 		return isQueryResult;
-	}
-	public void setIsQueryResult(Boolean isQueryResult) {
-		this.isQueryResult = isQueryResult;
-		this.queryGrid.setVisible(this.isQueryResult);
 	}
 }
