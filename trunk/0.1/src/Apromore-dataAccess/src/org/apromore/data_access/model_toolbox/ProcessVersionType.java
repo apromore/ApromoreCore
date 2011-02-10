@@ -19,6 +19,7 @@ import javax.xml.bind.annotation.XmlType;
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
  *       &lt;attribute name="ProcessId" type="{http://www.w3.org/2001/XMLSchema}int" />
  *       &lt;attribute name="VersionName" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="Score" type="{http://www.w3.org/2001/XMLSchema}double" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -28,15 +29,18 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ProcessVersionType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:28:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ProcessVersionType {
 
     @XmlAttribute(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:28:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Integer processId;
     @XmlAttribute(name = "VersionName")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:28:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String versionName;
+    @XmlAttribute(name = "Score")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:28:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    protected Double score;
 
     /**
      * Gets the value of the processId property.
@@ -46,7 +50,7 @@ public class ProcessVersionType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:28:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Integer getProcessId() {
         return processId;
     }
@@ -59,7 +63,7 @@ public class ProcessVersionType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:28:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessId(Integer value) {
         this.processId = value;
     }
@@ -72,7 +76,7 @@ public class ProcessVersionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:28:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getVersionName() {
         return versionName;
     }
@@ -85,9 +89,35 @@ public class ProcessVersionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:28:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setVersionName(String value) {
         this.versionName = value;
+    }
+
+    /**
+     * Gets the value of the score property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Double }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:28:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public Double getScore() {
+        return score;
+    }
+
+    /**
+     * Sets the value of the score property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Double }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:28:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public void setScore(Double value) {
+        this.score = value;
     }
 
 }

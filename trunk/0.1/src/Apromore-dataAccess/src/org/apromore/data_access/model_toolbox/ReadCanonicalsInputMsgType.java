@@ -33,11 +33,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ReadCanonicalsInputMsgType", propOrder = {
     "processVersion"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:28:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ReadCanonicalsInputMsgType {
 
     @XmlElement(name = "ProcessVersion")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:28:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<ProcessVersionType> processVersion;
 
     /**
@@ -62,7 +62,7 @@ public class ReadCanonicalsInputMsgType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-28T03:08:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:28:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<ProcessVersionType> getProcessVersion() {
         if (processVersion == null) {
             processVersion = new ArrayList<ProcessVersionType>();
