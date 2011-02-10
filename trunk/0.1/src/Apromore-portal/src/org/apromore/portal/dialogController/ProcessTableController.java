@@ -403,8 +403,7 @@ public class ProcessTableController {
 				versionCB.setId(process.getId().toString() + "/" + version.getName());
 
 				Label scoreL = new Label();
-				//scoreL.setValue(version.getScore().toString());
-				scoreL.setValue("test");
+				if (version.getScore()!=null) scoreL.setValue(version.getScore().toString());
 				Toolbarbutton versionName = new Toolbarbutton (version.getName());
 				versionName.setStyle(Constants.TOOLBARBUTTON_STYLE);
 				Label versionCreationDate = new Label();
