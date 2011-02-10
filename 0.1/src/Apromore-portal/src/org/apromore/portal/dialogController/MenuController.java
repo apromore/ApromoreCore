@@ -1,6 +1,7 @@
 package org.apromore.portal.dialogController;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -163,7 +164,10 @@ public class MenuController extends Menubar {
 			getSelectedProcessVersions();
 		this.mainC.eraseMessage();
 
-		if (selectedProcessVersions.size() > 1) {
+		Iterator<List<VersionSummaryType>> selectedVersions = selectedProcessVersions.values().iterator();
+		// At least 2 process versions must be selected. Not necessarily of different processes
+		if (selectedProcessVersions.size()==1 && selectedVersions.next().size()>1 
+				|| selectedProcessVersions.size() > 1) {
 			try {
 				new ProcessMergeController(this.mainC, this,
 						selectedProcessVersions);
