@@ -66,6 +66,7 @@ public class RequestToToolbox {
 					versionP.setLastUpdate(versionT.getLastUpdate());
 					versionP.setName(versionT.getName());
 					versionP.setRanking(versionT.getRanking());
+					versionP.setScore(versionT.getScore());
 					for (org.apromore.manager.model_toolbox.AnnotationsType annotT:
 						versionT.getAnnotations()) {
 						org.apromore.manager.model_portal.AnnotationsType annotP =
