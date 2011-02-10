@@ -16,7 +16,6 @@ import org.apromore.toolbox.exception.ExceptionReadCanonicals;
 import org.apromore.toolbox.exception.ExceptionReadProcessSummaries;
 import org.apromore.toolbox.exception.ExceptionStoreCpf;
 import org.apromore.toolbox.model_da.CanonicalType;
-import org.apromore.toolbox.model_da.CanonicalsType;
 import org.apromore.toolbox.model_da.ProcessSummariesType;
 import org.apromore.toolbox.model_da.ProcessSummaryType;
 import org.apromore.toolbox.model_da.ProcessVersionsType;
