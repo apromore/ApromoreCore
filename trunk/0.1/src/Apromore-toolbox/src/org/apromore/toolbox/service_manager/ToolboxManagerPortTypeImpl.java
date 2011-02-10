@@ -27,6 +27,8 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.toolbox.da.RequestToDA;
+import org.apromore.toolbox.exception.ExceptionComputeSimilarity;
+import org.apromore.toolbox.exception.ExceptionReadCanonicals;
 import org.apromore.toolbox.model_da.CanonicalType;
 import org.apromore.toolbox.model_da.ProcessVersionType;
 import org.apromore.toolbox.model_da.ProcessVersionsType;
@@ -80,7 +82,7 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 				}
 			}
 			if (search == null) {
-				throw new Exception("Canonical not found.");
+				throw new ExceptionReadCanonicals("Canonical not found.");
 			}
 			// show also the search model in the resultset?
 //			allCanonicals.remove(search);
@@ -139,11 +141,11 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 						ProcessVersionType processVersion = new ProcessVersionType();
 						processVersion.setProcessId(canonical.getProcessId());
 						processVersion.setVersionName(canonical.getVersionName());
+						processVersion.setScore(similarity);
 						similarProcesses.getProcessVersion().add(processVersion);
 					}
 				} catch (Exception e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					throw new ExceptionComputeSimilarity(e.getMessage());
 				}
 				
 			}
@@ -170,6 +172,7 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 					vM.setLastUpdate(vDA.getLastUpdate());
 					vM.setName(vDA.getName());
 					vM.setRanking(vDA.getRanking());
+					vM.setScore(vDA.getScore());
 					for (org.apromore.toolbox.model_da.AnnotationsType aDA: vDA.getAnnotations()) {
 						org.apromore.toolbox.model_manager.AnnotationsType aM =
 							new AnnotationsType();
