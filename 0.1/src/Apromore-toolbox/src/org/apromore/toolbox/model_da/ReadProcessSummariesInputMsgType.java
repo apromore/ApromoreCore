@@ -31,11 +31,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ReadProcessSummariesInputMsgType", propOrder = {
     "processVersions"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:41:37+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:27:13+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ReadProcessSummariesInputMsgType {
 
     @XmlElement(name = "ProcessVersions", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:41:37+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:27:13+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ProcessVersionsType processVersions;
 
     /**
@@ -46,7 +46,7 @@ public class ReadProcessSummariesInputMsgType {
      *     {@link ProcessVersionsType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:41:37+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:27:13+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ProcessVersionsType getProcessVersions() {
         return processVersions;
     }
@@ -59,7 +59,7 @@ public class ReadProcessSummariesInputMsgType {
      *     {@link ProcessVersionsType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-27T03:41:37+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:27:13+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessVersions(ProcessVersionsType value) {
         this.processVersions = value;
     }
