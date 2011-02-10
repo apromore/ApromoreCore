@@ -94,6 +94,7 @@
 		<attribute name="name" type="string" />
 		<attribute name="last_update" type="string" />
 		<attribute name="creation_date" type="string" />
+		<attribute name="Score" type="double"/>
 	</complexType>
 
 	<complexType name="AnnotationsType">
@@ -121,6 +122,7 @@
 	<complexType name="ProcessVersionType">
 		<attribute name="ProcessId" type="int" />
 		<attribute name="VersionName" type="string" />
+		<attribute name="Score" type="double"/>
 	</complexType>
 
 	<complexType name="ReadProcessSummariesOutputMsgType">
