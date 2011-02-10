@@ -1867,19 +1867,19 @@ public class ProcessDao extends BasicDao {
 	}
 	/**
 	 * Returns a list of process summaries whose id are in processIds. For each of which only versions in versionNames
-	 * are returned.
+	 * are returned, given score is associated with summary.
 	 * @param processIds
 	 * @param versionNames
 	 * @return
 	 * @throws ExceptionDao 
 	 */
 	public org.apromore.data_access.model_toolbox.ProcessSummariesType getProcessSummaries(
-			List<Integer> processIds, List<String> versionNames) throws ExceptionDao {
+			List<Integer> processIds, List<String> versionNames, List<Double> scores) throws ExceptionDao {
 
 		org.apromore.data_access.model_toolbox.ProcessSummariesType toReturn = 
 			new org.apromore.data_access.model_toolbox.ProcessSummariesType();
 
-		if(processIds.size()!=0 && versionNames.size()!=0) {
+		if(processIds.size()!=0 && versionNames.size()==processIds.size() && scores.size()==processIds.size() ) {
 			Connection conn = null;
 			Statement stmt = null, stmtV = null, stmtA = null, stmtB = null;
 			ResultSet rs = null, rsV = null, rsA = null, rsB = null;
@@ -1927,6 +1927,7 @@ public class ProcessDao extends BasicDao {
 						processSummary.setOwner(rs.getString(6));
 						stmtV = conn.createStatement();
 						query = " select " + ConstantDB.ATTR_VERSION_NAME + ", "
+						+ ConstantDB.ATTR_PROCESSID + ","
 						//+ "date_format(" + ConstantDB.ATTR_CREATION_DATE + ", '%d/%c/%Y %k:%i:%f')" + ",  "
 						//+ "date_format(" + ConstantDB.ATTR_LAST_UPDATE  + ", '%d/%c/%Y %k:%i:%f')" + ",  "
 						+ ConstantDB.ATTR_CREATION_DATE + ", "
@@ -1942,11 +1943,19 @@ public class ProcessDao extends BasicDao {
 						while (rsV.next()){
 							org.apromore.data_access.model_toolbox.VersionSummaryType version = 
 								new org.apromore.data_access.model_toolbox.VersionSummaryType();
-							version.setName(rsV.getString(1));
-							lastVersion = version.getName();
-							version.setCreationDate(rsV.getString(2));
-							version.setLastUpdate(rsV.getString(3));
-							version.setRanking(rsV.getString(4));
+							String vName = rsV.getString(1);
+							version.setName(vName);
+							Integer pId = rsV.getInt(2);
+							lastVersion = vName;
+							version.setCreationDate(rsV.getString(3));
+							version.setLastUpdate(rsV.getString(4));
+							version.setRanking(rsV.getString(5));
+							// retrieve score associated with <pId, vName> in scores
+							for (int i=0; i<scores.size(); i++) {
+								if(processIds.get(i)==pId && vName.compareTo(versionNames.get(i))==0) {
+									version.setScore(scores.get(i));
+								}
+							}
 							processSummary.getVersionSummaries().add(version);
 							// for each version (a canonical process), retrieve for each of its native process
 							// the list of corresponding annotations

@@ -39,46 +39,6 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ReadCanonicalsOutputMsgType }
-     * 
-     */
-    public ReadCanonicalsOutputMsgType createReadCanonicalsOutputMsgType() {
-        return new ReadCanonicalsOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ProcessSummaryType }
-     * 
-     */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
-    }
-
-    /**
-     * Create an instance of {@link ReadCanonicalsInputMsgType }
-     * 
-     */
-    public ReadCanonicalsInputMsgType createReadCanonicalsInputMsgType() {
-        return new ReadCanonicalsInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link StoreCpfOutputMsgType }
-     * 
-     */
-    public StoreCpfOutputMsgType createStoreCpfOutputMsgType() {
-        return new StoreCpfOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ProcessVersionsType }
-     * 
-     */
-    public ProcessVersionsType createProcessVersionsType() {
-        return new ProcessVersionsType();
-    }
-
-    /**
      * Create an instance of {@link CanonicalsType }
      * 
      */
@@ -87,35 +47,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ResultType }
+     * Create an instance of {@link ReadCanonicalsOutputMsgType }
      * 
      */
-    public ResultType createResultType() {
-        return new ResultType();
-    }
-
-    /**
-     * Create an instance of {@link ProcessSummariesType }
-     * 
-     */
-    public ProcessSummariesType createProcessSummariesType() {
-        return new ProcessSummariesType();
-    }
-
-    /**
-     * Create an instance of {@link ReadProcessSummariesOutputMsgType }
-     * 
-     */
-    public ReadProcessSummariesOutputMsgType createReadProcessSummariesOutputMsgType() {
-        return new ReadProcessSummariesOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link AnnotationsType }
-     * 
-     */
-    public AnnotationsType createAnnotationsType() {
-        return new AnnotationsType();
+    public ReadCanonicalsOutputMsgType createReadCanonicalsOutputMsgType() {
+        return new ReadCanonicalsOutputMsgType();
     }
 
     /**
@@ -127,6 +63,22 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ProcessSummariesType }
+     * 
+     */
+    public ProcessSummariesType createProcessSummariesType() {
+        return new ProcessSummariesType();
+    }
+
+    /**
+     * Create an instance of {@link AnnotationsType }
+     * 
+     */
+    public AnnotationsType createAnnotationsType() {
+        return new AnnotationsType();
+    }
+
+    /**
      * Create an instance of {@link CanonicalType }
      * 
      */
@@ -135,11 +87,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link StoreCpfInputMsgType }
+     * Create an instance of {@link ProcessVersionType }
      * 
      */
-    public StoreCpfInputMsgType createStoreCpfInputMsgType() {
-        return new StoreCpfInputMsgType();
+    public ProcessVersionType createProcessVersionType() {
+        return new ProcessVersionType();
     }
 
     /**
@@ -151,11 +103,59 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ProcessVersionType }
+     * Create an instance of {@link StoreCpfOutputMsgType }
      * 
      */
-    public ProcessVersionType createProcessVersionType() {
-        return new ProcessVersionType();
+    public StoreCpfOutputMsgType createStoreCpfOutputMsgType() {
+        return new StoreCpfOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ResultType }
+     * 
+     */
+    public ResultType createResultType() {
+        return new ResultType();
+    }
+
+    /**
+     * Create an instance of {@link ReadProcessSummariesOutputMsgType }
+     * 
+     */
+    public ReadProcessSummariesOutputMsgType createReadProcessSummariesOutputMsgType() {
+        return new ReadProcessSummariesOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ReadCanonicalsInputMsgType }
+     * 
+     */
+    public ReadCanonicalsInputMsgType createReadCanonicalsInputMsgType() {
+        return new ReadCanonicalsInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessSummaryType }
+     * 
+     */
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link StoreCpfInputMsgType }
+     * 
+     */
+    public StoreCpfInputMsgType createStoreCpfInputMsgType() {
+        return new StoreCpfInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessVersionsType }
+     * 
+     */
+    public ProcessVersionsType createProcessVersionsType() {
+        return new ProcessVersionsType();
     }
 
     /**
