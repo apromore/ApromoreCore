@@ -679,7 +679,7 @@ public class ProcessTableController {
 		Detail processD = (Detail) processR.getFirstChild();
 		Integer processId = Integer.parseInt(processD.getId());
 		if (highlighted) {
-			if (this.isQueryResult && processId == this.processQ.getId()) {
+			if (this.isQueryResult && processId.equals(this.processQ.getId())) {
 				processR.setStyle(querySelected);
 				processD.setStyle(querySelected);
 			} else {
@@ -690,7 +690,7 @@ public class ProcessTableController {
 		} else {
 			if (index % 2 == 0) {
 				//index is even
-				if (this.isQueryResult && processId == this.processQ.getId()) {
+				if (this.isQueryResult && processId.equals(this.processQ.getId())) {
 					processR.setStyle(queryUnselected);
 					processD.setStyle(queryUnselected);
 				} else {
