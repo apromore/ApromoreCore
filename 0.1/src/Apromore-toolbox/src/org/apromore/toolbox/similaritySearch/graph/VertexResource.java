@@ -57,10 +57,21 @@ public class VertexResource {
 	}
 
 	public void addModels(HashSet<String> labels) {
-		this.models.addAll(labels);
+		for (String l : labels) {
+			addModel(l);
+		}
 	}
 
 	public void addModel(String label) {
-		models.add(label);
+		if (!models.contains(label)) {
+			models.add(label);
+		}
 	}	
+	
+	public boolean canMerge(VertexResource other) {
+		return this.name != null && other.name != null && 
+					this.name.trim().toLowerCase().replaceAll("\n", " ").replaceAll("\r", "").replaceAll("\\s+", " ").equals(other.name.trim().toLowerCase().replaceAll("\n", " ").replaceAll("\r", "").replaceAll("\\s+", " ")) 
+				&& (this.type == null && other.type == null || 
+						this.type != null && other.type != null && this.type.equals(other.type));
+	}
 }
