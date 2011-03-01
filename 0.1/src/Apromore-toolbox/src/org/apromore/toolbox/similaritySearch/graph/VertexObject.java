@@ -56,10 +56,21 @@ public class VertexObject {
 	}
 
 	public void addModels(HashSet<String> labels) {
-		this.models.addAll(labels);
+		for (String l : labels) {
+			addModel(l);
+		}
 	}
 
 	public void addModel(String label) {
-		models.add(label);
-	}	
+		if (!models.contains(label)) {
+			models.add(label);
+		}
+	}		
+	
+	public boolean canMerge(VertexObject other) {
+		return this.name != null && other.name != null 
+					&& this.name.trim().toLowerCase().replaceAll("\n", " ").replaceAll("\r", "").replaceAll("\\s+", " ").equals(other.name.trim().toLowerCase().replaceAll("\n", " ").replaceAll("\r", "").replaceAll("\\s+", " ")) 
+				&& (this.softhard == null && other.softhard == null || 
+						this.softhard != null && other.softhard != null && this.softhard.equals(other.softhard));
+	}
 }

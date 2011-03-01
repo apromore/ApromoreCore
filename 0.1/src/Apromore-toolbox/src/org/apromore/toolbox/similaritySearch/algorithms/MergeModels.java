@@ -1,6 +1,9 @@
 package org.apromore.toolbox.similaritySearch.algorithms;
 
 
+import java.math.BigInteger;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
@@ -14,6 +17,10 @@ import org.apromore.toolbox.similaritySearch.graph.Graph;
 import org.apromore.toolbox.similaritySearch.graph.Vertex;
 import org.apromore.toolbox.similaritySearch.graph.Vertex.GWType;
 import org.apromore.toolbox.similaritySearch.graph.Vertex.Type;
+import org.apromore.toolbox.similaritySearch.graph.VertexObject;
+import org.apromore.toolbox.similaritySearch.graph.VertexObjectRef;
+import org.apromore.toolbox.similaritySearch.graph.VertexResource;
+import org.apromore.toolbox.similaritySearch.graph.VertexResourceRef;
 import org.apromore.toolbox.similaritySearch.planarGraphMathing.PlanarGraphMathing.MappingRegions;
 
 
@@ -26,6 +33,8 @@ public class MergeModels {
 			String algortithm, 
 			double ...param) {
 		
+		HashMap<BigInteger, BigInteger> objectresourceIDMap = new HashMap<BigInteger, BigInteger>();
+
 		Graph merged = new Graph();
 		merged.setIdGenerator(idGenerator);
 		long startTime = System.currentTimeMillis();
@@ -35,11 +44,13 @@ public class MergeModels {
 		merged.addVertices(g2.getVertices());
 		merged.addEdges(g2.getEdges());
 		
-		// add resources and objects
+		// add all resources from the first models
 		merged.getResources().putAll(g1.getResources());
-		merged.getResources().putAll(g2.getResources());
+		// and then look if something represent the same thing 
+		// do not try to merge objects in one model
+		mergeResources(g2.getResources().values(), objectresourceIDMap, merged);
 		merged.getObjects().putAll(g1.getObjects());
-		merged.getObjects().putAll(g2.getObjects());
+		mergeObjects(g2.getObjects().values(), objectresourceIDMap, merged);
 		
 		LinkedList<VertexPair> mapping = new LinkedList<VertexPair>();
 		
@@ -117,37 +128,45 @@ public class MergeModels {
 			for (VertexPair vp : region) {
 				Vertex mappingRight = vp.getRight();
 				vp.getLeft().addAnnotations(mappingRight.getAnnotationMap());
-				vp.getLeft().objectRefs.addAll(mappingRight.objectRefs);
-				vp.getLeft().resourceRefs.addAll(mappingRight.resourceRefs);
 				
-//				// just in case the annotations in the xml file were incorrect
-//				// or missing - in case the model was not configurable
-//				// if you are messing with annotations, this is your own fault
-//				// that things are not working
-//				if (mappingRight.getType().equals(Vertex.Type.gateway)) {
-//					if (Graph.isJoin(mappingRight)) {
-//						HashSet<String> labels = merged.getEdgeLabels(mappingRight.getID(), mappingRight.getChildren().get(0).getID());
-//						vp.getLeft().addAnnotations(labels, mappingRight.getLabel());
-//					} 
-//					else {
-//						System.out.println("dfjhjsdfh "+ mappingRight.getID()+ " " + mappingRight.getGWType()+" " + mappingRight.getParents().size() 
-//								+ " parents "+ mappingRight.getParents().size() + " children ? "+ mappingRight.getChildren().size() + "is splitt???" 
-//								);
-//						HashSet<String> labels = merged.getEdgeLabels(mappingRight.getID(), mappingRight.getParents().get(0).getID());
-//						vp.getLeft().addAnnotations(labels, mappingRight.getLabel());
-//					}
-//				} else {
-//					// not a leaf
-//					if (mappingRight.getChildren().size() > 0) {
-//						HashSet<String> labels = merged.getEdgeLabels(mappingRight.getID(), mappingRight.getChildren().get(0).getID());
-//						vp.getLeft().addAnnotations(labels, mappingRight.getLabel());
-//					} else if (mappingRight.getParents().size() > 0) {
-//						HashSet<String> labels = merged.getEdgeLabels(mappingRight.getID(), mappingRight.getParents().get(0).getID());
-//						vp.getLeft().addAnnotations(labels, mappingRight.getLabel());
-//					}
-//				}
+				// merge object references
+				for (VertexObjectRef o : mappingRight.objectRefs) {
+					boolean mergedO = false;
+					for (VertexObjectRef vo : vp.getLeft().objectRefs) {
+						if ((vo.getObjectID().equals(o.getObjectID()) || 
+								objectresourceIDMap.get(o.getObjectID()) != null &&
+								objectresourceIDMap.get(o.getObjectID()).equals(vo.getObjectID())) &&
+							o.canMerge(vo)) {
+							vo.addModels(o.getModels());
+							mergedO = true;
+							break;
+						}
+					}
+					if (!mergedO) {
+						vp.getLeft().objectRefs.add(o);
+					}
+				}
+				
+				// merge resource references
+				for (VertexResourceRef o : mappingRight.resourceRefs) {
+					boolean mergedO = false;
+					for (VertexResourceRef vo : vp.getLeft().resourceRefs) {
+						if ((vo.getresourceID().equals(o.getresourceID()) || 
+								objectresourceIDMap.get(o.getresourceID()) != null &&
+								objectresourceIDMap.get(o.getresourceID()).equals(vo.getresourceID())) &&
+							o.canMerge(vo)) {
+							vo.addModels(o.getModels());
+							mergedO = true;
+							break;
+						}
+					}
+					if (!mergedO) {
+						vp.getLeft().resourceRefs.add(o);
+					}
+				}
 			}
 		}
+		
 		LinkedList<Vertex> toRemove = new LinkedList<Vertex>();
 		// check if some vertices must be removed
 		for (Vertex v : merged.getVertices()) {
@@ -293,6 +312,54 @@ public class MergeModels {
 		merged.ID = String.valueOf(idGenerator.getNextId());
 		
 		return merged;
+	}
+
+	private static void mergeResources(Collection<VertexResource> existing,
+			HashMap<BigInteger, BigInteger> objectresourceIDMap, Graph merged) {
+		// add resources and objects
+		for (VertexResource v : existing) {
+			boolean mergedResource = false;
+			for (VertexResource mv : merged.getResources().values()) {
+				if (mv.canMerge(v)) {
+					objectresourceIDMap.put(v.getId(), mv.getId());
+					
+					if (v.isConfigurable()) {
+						mv.setConfigurable(true);
+					}
+					mv.addModels(v.getModels());
+					mergedResource = true;
+					break;
+				} 
+			}
+			// this resource must be added
+			if (!mergedResource) {
+				merged.getResources().put(v.getId(), v);
+			}
+		}
+	}
+	
+	private static void mergeObjects(Collection<VertexObject> existing,
+			HashMap<BigInteger, BigInteger> objectresourceIDMap, Graph merged) {
+		// add resources and objects
+		for (VertexObject v : existing) {
+			boolean mergedResource = false;
+			for (VertexObject mv : merged.getObjects().values()) {
+				if (mv.canMerge(v)) {
+					objectresourceIDMap.put(v.getId(), mv.getId());
+					
+					if (v.isConfigurable()) {
+						mv.setConfigurable(true);
+					}
+					mv.addModels(v.getModels());
+					mergedResource = true;
+					break;
+				} 
+			}
+			// this resource must be added
+			if (!mergedResource) {
+				merged.getObjects().put(v.getId(), v);
+			}
+		}
 	}
 	
 	@SuppressWarnings("unused")
