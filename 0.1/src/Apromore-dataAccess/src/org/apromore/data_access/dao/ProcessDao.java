@@ -1955,7 +1955,7 @@ public class ProcessDao extends BasicDao {
 							version.setRanking(rsV.getString(5));
 							// retrieve score associated with <pId, vName> in scores
 							for (int i=0; i<scores.size(); i++) {
-								if(processIds.get(i)==pId && vName.compareTo(versionNames.get(i))==0) {
+								if(processIds.get(i).equals(pId) && vName.compareTo(versionNames.get(i))==0) {
 									version.setScore(scores.get(i));
 								}
 							}
