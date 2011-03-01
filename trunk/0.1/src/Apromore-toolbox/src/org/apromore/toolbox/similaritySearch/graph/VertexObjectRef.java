@@ -76,4 +76,11 @@ public class VertexObjectRef {
 		this.consumed = consumed;
 	}
 
+	public boolean canMerge(VertexObjectRef other) {
+		return this.optional == other.optional &&
+			   this.consumed == other.consumed &&
+			   (this.inputOutput == null && other.inputOutput == null ||
+					   this.inputOutput != null && other.inputOutput != null && 
+					   this.inputOutput.equals(other.inputOutput));
+	}
 }

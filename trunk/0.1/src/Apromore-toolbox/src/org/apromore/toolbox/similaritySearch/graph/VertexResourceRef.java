@@ -12,7 +12,6 @@ public class VertexResourceRef {
 	
 	public VertexResourceRef(boolean optional, BigInteger resourceID,
 			String qualifier, HashSet<String> models) {
-		super();
 		this.optional = optional;
 		this.resourceID = resourceID;
 		this.qualifier = qualifier;
@@ -53,5 +52,11 @@ public class VertexResourceRef {
 
 	public String getQualifier() {
 		return qualifier;
+	}
+	
+	public boolean canMerge(VertexResourceRef other) {
+		return this.optional == other.optional &&
+			   (this.qualifier == null && other.qualifier == null ||
+					   this.qualifier != null && other.qualifier != null && this.qualifier.equals(other.qualifier));
 	}
 }
