@@ -33,11 +33,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ProcessVersion_idsType", propOrder = {
     "processVersionId"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-31T07:14:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-01T01:42:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ProcessVersionIdsType {
 
     @XmlElement(name = "ProcessVersion_id", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-31T07:14:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-01T01:42:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<ProcessVersionIdType> processVersionId;
 
     /**
@@ -62,7 +62,7 @@ public class ProcessVersionIdsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-31T07:14:03+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-01T01:42:20+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<ProcessVersionIdType> getProcessVersionId() {
         if (processVersionId == null) {
             processVersionId = new ArrayList<ProcessVersionIdType>();
