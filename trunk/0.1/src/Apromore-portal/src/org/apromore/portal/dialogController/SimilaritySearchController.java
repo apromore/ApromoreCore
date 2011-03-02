@@ -127,12 +127,13 @@ public class SimilaritySearchController extends Window {
 			} else {
 				message += " process.";
 			}
-			// Sort result, and add <process, version> in first position
+			// Sort result
 			ProcessSummariesType resultToDisplay = sort(result);
-			// add query in the result (1rst position)
+			// add query with fake id.
+			process.setId(-process.getId());
 			process.getVersionSummaries().clear();
 			process.getVersionSummaries().add(version);
-			resultToDisplay.getProcessSummary().add(0,process);
+			resultToDisplay.getProcessSummary().add(0, process); 
 			mainC.displayProcessSummaries(resultToDisplay, true, process, version);
 		} catch (Exception e) {
 			message = "Search failed (" + e.getMessage() + ")";
