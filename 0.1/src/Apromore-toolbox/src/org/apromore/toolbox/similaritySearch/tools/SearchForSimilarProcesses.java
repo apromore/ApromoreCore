@@ -39,7 +39,7 @@ public class SearchForSimilarProcesses {
 			CanonicalProcessType search, CanonicalProcessType d,
 			String algortithm, double... param) {
 
-	System.out.println(">> SIMILARITY " + search.getName() + " <> "+ d.getName() + " id: "+d.getRootId());
+	//System.out.println(">> SIMILARITY " + search.getName() + " <> "+ d.getName() + " id: "+d.getRootId());
 		
 		if (search.getNet().size() == 0 || d.getNet().size() == 0) {
 			return 0;
