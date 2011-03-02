@@ -34,7 +34,7 @@ public class FindModelSimilarity {
 			LinkedList<VertexPair> mapping = AssingmentProblem.getMappingsVetrexUsingNodeMapping(g1, g2, param[0], param[1]);
 			double weight = 0.0;
 			for (VertexPair vp : mapping) {
-				System.out.println(vp.getLeft() + " <> "+ vp.getRight()+" -> "+ vp.getWeight());
+				//System.out.println(vp.getLeft() + " <> "+ vp.getRight()+" -> "+ vp.getWeight());
 				weight += vp.getWeight();
 			}
 			return (weight/Math.max(g1.getVertices().size(), g2.getVertices().size()));

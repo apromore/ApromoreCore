@@ -50,11 +50,11 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
  */
 
 @javax.jws.WebService(
-                      serviceName = "ToolboxManagerService",
-                      portName = "ToolboxManager",
-                      targetNamespace = "http://www.apromore.org/toolbox/service_manager",
-                      wsdlLocation = "http://localhost:8080/Apromore-toolbox/services/ToolboxManager?wsdl",
-                      endpointInterface = "org.apromore.toolbox.service_manager.ToolboxManagerPortType")
+		serviceName = "ToolboxManagerService",
+		portName = "ToolboxManager",
+		targetNamespace = "http://www.apromore.org/toolbox/service_manager",
+		wsdlLocation = "http://localhost:8080/Apromore-toolbox/services/ToolboxManager?wsdl",
+		endpointInterface = "org.apromore.toolbox.service_manager.ToolboxManagerPortType")
 
 		public class ToolboxManagerPortTypeImpl implements ToolboxManagerPortType {
 
@@ -76,7 +76,7 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 			CanonicalType search = null;
 			for (int i=0;i<allCanonicals.size();i++) {
 				if (allCanonicals.get(i).getProcessId() == payload.getProcessId() 
-					&& allCanonicals.get(i).getVersionName().compareTo(payload.getVersionName())==0) {
+						&& allCanonicals.get(i).getVersionName().compareTo(payload.getVersionName())==0) {
 					search = allCanonicals.get(i);
 					break;
 				}
@@ -85,7 +85,7 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 				throw new ExceptionReadCanonicals("Canonical not found.");
 			}
 			// show also the search model in the resultset? yes, so don't remove it from search
-//			allCanonicals.remove(search);
+			allCanonicals.remove(search);
 			JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
 			Unmarshaller u = jc.createUnmarshaller();
 
@@ -122,8 +122,8 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 			org.apromore.toolbox.model_da.ProcessVersionsType similarProcesses = 
 				new ProcessVersionsType();
 			double similarity;
-			for (int j=0;j<allCanonicals.size();j++) {
-				
+			ProcessVersionType processVersion = null;
+			for (int j=0;j<allCanonicals.size();j++) {				
 				try {
 					// the similarity search might fail on a canonical. This latter is ignored so
 					// the search is not interrupted
@@ -138,7 +138,7 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 							searchCpf, documentCpf, algorithm, labelthreshold, contextthreshold, 
 							skipnweight, subnweight, skipeweight); 
 					if (similarity >= modelthreshold) {
-						ProcessVersionType processVersion = new ProcessVersionType();
+						processVersion = new ProcessVersionType();
 						processVersion.setProcessId(canonical.getProcessId());
 						processVersion.setVersionName(canonical.getVersionName());
 						processVersion.setScore(similarity);
@@ -147,7 +147,6 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 				} catch (Exception e) {
 					throw new ExceptionComputeSimilarity(e.getMessage());
 				}
-				
 			}
 			// Send a message to DA to get process summary of similar process
 			org.apromore.toolbox.model_da.ProcessSummariesType processSummariesDA = request.ReadProcessSummaries(similarProcesses);
@@ -193,9 +192,6 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 		return res;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.apromore.toolbox.service_manager.ToolboxManagerPortType#mergeProcesses(org.apromore.toolbox.model_manager.MergeProcessesInputMsgType  payload )*
-	 */
 
 	public org.apromore.toolbox.model_manager.MergeProcessesOutputMsgType 
 	mergeProcesses(org.apromore.toolbox.model_manager.MergeProcessesInputMsgType payload) { 
@@ -220,11 +216,11 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 				idDa.setProcessId(cpf.getProcessId());
 				idDa.setVersionName(cpf.getVersionName()); 
 			}
-			
+
 			// Send message to DA to get selected canonicals
 			RequestToDA request = new RequestToDA();
 			List<CanonicalType> canonicals = request.ReadCanonicals (idsDa);
-			
+
 			// Process merge of returned canonicals
 			String algorithm = payload.getAlgorithm();
 			boolean removeEntanglements = false;
@@ -271,12 +267,12 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 						modelthreshold, labelthreshold, contextthreshold, skipnweight, subnweight, skipeweight);
 
 			//        	System.out.println("merged "+ merged);
-            Marshaller m = jc.createMarshaller();
-            m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
-            JAXBElement<CanonicalProcessType> rootcpf = new org.apromore.cpf.ObjectFactory().createCanonicalProcess(merged);
-            ByteArrayOutputStream cpf_xml = new ByteArrayOutputStream();
-            m.marshal(rootcpf, cpf_xml);
-            InputStream cpf_is = new ByteArrayInputStream(cpf_xml.toByteArray());
+			Marshaller m = jc.createMarshaller();
+			m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+			JAXBElement<CanonicalProcessType> rootcpf = new org.apromore.cpf.ObjectFactory().createCanonicalProcess(merged);
+			ByteArrayOutputStream cpf_xml = new ByteArrayOutputStream();
+			m.marshal(rootcpf, cpf_xml);
+			InputStream cpf_is = new ByteArrayInputStream(cpf_xml.toByteArray());
 
 			// Send message to DA to save merged process
 			org.apromore.toolbox.model_da.ProcessSummaryType process = 

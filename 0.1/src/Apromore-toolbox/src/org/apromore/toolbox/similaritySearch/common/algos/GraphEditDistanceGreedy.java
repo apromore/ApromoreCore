@@ -142,12 +142,12 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
 //			long s1 = System.currentTimeMillis();
 //			System.out.println("step : "+stepn + " ; "+ openCouples.size());
 			for (TwoVertices couple: openCouples){
-				System.out.println(">> PROCESSING COUPLE : " + sg1.getVertexMap().get(couple.v1)+ " <> "+ sg2.getVertexMap().get(couple.v2));
+//				System.out.println(">> PROCESSING COUPLE : " + sg1.getVertexMap().get(couple.v1)+ " <> "+ sg2.getVertexMap().get(couple.v2));
 
 //				long t1 = System.currentTimeMillis();
 				double newEditDistance = this.editDistance(mapping, couple); 
 				
-				System.out.println("\t edit distance : " + newEditDistance + " ; shortest " + shortestEditDistance);
+//				System.out.println("\t edit distance : " + newEditDistance + " ; shortest " + shortestEditDistance);
 
 //				long t2 = System.currentTimeMillis();
 //				System.out.println((t2-t1)+ " ms: openpair "+sg1.getLabel(couple.v1) + " "+ sg2.getLabel(couple.v2) + " "+newEditDistance+ " "+mapping.size());
@@ -193,7 +193,7 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
 				Vertex v1 = sg1.getVertexMap().get(pair.v1);
 				Vertex v2 = sg2.getVertexMap().get(pair.v2);
 				
-				System.out.println(v1 + " <> "+ v2 + " " + NodeSimilarity.findNodeSimilarity(v1, v2, ledcutoff));
+//				System.out.println(v1 + " <> "+ v2 + " " + NodeSimilarity.findNodeSimilarity(v1, v2, ledcutoff));
 	
 			}
 		}
