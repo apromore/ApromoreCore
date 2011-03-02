@@ -699,7 +699,7 @@ public class ProcessTableController {
 				}
 			} else {
 				//index is odd
-				if (this.isQueryResult && processId == this.processQ.getId()) {
+				if (this.isQueryResult && processId.equals(this.processQ.getId())) {
 					processR.setStyle(queryUnselected);
 					processD.setStyle(queryUnselected);
 				} else {
