@@ -293,6 +293,7 @@ public class ProcessTableController {
 		Label processIdLb = new Label(process.getId().toString());
 		Toolbarbutton processName = new Toolbarbutton(process.getName());
 		processName.setStyle(Constants.TOOLBARBUTTON_STYLE);
+		processName.setDisabled(process.getId()<0);
 		Label processOriginalLanguage = new Label(process.getOriginalNativeType());
 		Label processDomain = new Label(process.getDomain());
 		Hbox processRankingHB = new Hbox();
@@ -406,6 +407,7 @@ public class ProcessTableController {
 				if (version.getScore()!=null) scoreL.setValue(version.getScore().toString());
 				Toolbarbutton versionName = new Toolbarbutton (version.getName());
 				versionName.setStyle(Constants.TOOLBARBUTTON_STYLE);
+				versionName.setDisabled(process.getId()<0);
 				Label versionCreationDate = new Label();
 				if (version.getCreationDate()!= null) {
 					versionCreationDate.setValue(version.getCreationDate().toString());
