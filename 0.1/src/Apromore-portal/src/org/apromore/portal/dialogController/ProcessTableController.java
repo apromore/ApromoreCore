@@ -21,6 +21,7 @@ import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummariesType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
+import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.HtmlBasedComponent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
@@ -291,9 +292,15 @@ public class ProcessTableController {
 		List<Checkbox> listV = new ArrayList<Checkbox>();
 		this.mapProcessVersions.put(processCB, listV);
 		Label processIdLb = new Label(process.getId().toString());
-		Toolbarbutton processName = new Toolbarbutton(process.getName());
-		processName.setStyle(Constants.TOOLBARBUTTON_STYLE);
-		processName.setDisabled(process.getId()<0);
+		// as the process might be a query to be displayed, its name doesn't behave
+		// as a toolbarbutton
+		Component processName = null;
+		if (process.getId()<0) {
+			processName = new Label(process.getName());
+		} else {
+			processName = new Toolbarbutton(process.getName());
+			((Toolbarbutton) processName).setStyle(Constants.TOOLBARBUTTON_STYLE);
+		}
 		Label processOriginalLanguage = new Label(process.getOriginalNativeType());
 		Label processDomain = new Label(process.getDomain());
 		Hbox processRankingHB = new Hbox();
@@ -315,11 +322,13 @@ public class ProcessTableController {
 		processSummaryR.appendChild(processOwner);
 		highlightP(processSummaryR, false);
 		// click on process name to select it
-		processName.addEventListener("onClick", new EventListener() {
-			public void onEvent(Event event) throws Exception {
-				maintainSelectedProcesses (event);
-			}
-		});
+		if(processName.getClass().getName().equals("org.zkoss.zul.Toolbarbutton")) {
+			processName.addEventListener("onClick", new EventListener() {
+				public void onEvent(Event event) throws Exception {
+					maintainSelectedProcesses (event);
+				}
+			});
+		}
 		// click on "+" to get process details
 		processSummaryD.addEventListener("onOpen", new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -405,9 +414,15 @@ public class ProcessTableController {
 
 				Label scoreL = new Label();
 				if (version.getScore()!=null) scoreL.setValue(version.getScore().toString());
-				Toolbarbutton versionName = new Toolbarbutton (version.getName());
-				versionName.setStyle(Constants.TOOLBARBUTTON_STYLE);
-				versionName.setDisabled(process.getId()<0);
+				// as the version might be a query to be displayed, its name doesn't behave
+				// as a toolbarbutton
+				Component versionName = null;
+				if (process.getId()<0) {
+					versionName = new Label(version.getName());
+				} else {
+					versionName = new Toolbarbutton(version.getName());
+					((Toolbarbutton) versionName).setStyle(Constants.TOOLBARBUTTON_STYLE);
+				}
 				Label versionCreationDate = new Label();
 				if (version.getCreationDate()!= null) {
 					versionCreationDate.setValue(version.getCreationDate().toString());
@@ -457,11 +472,13 @@ public class ProcessTableController {
 				/*
 				 * click on version name
 				 */
-				versionName.addEventListener("onClick", new EventListener() {
-					public void onEvent(Event event) throws Exception {
-						revertProcessVersion (event);
-					}
-				});
+				if(versionName.getClass().getName().equals("org.zkoss.zul.Toolbarbutton")){
+					versionName.addEventListener("onClick", new EventListener() {
+						public void onEvent(Event event) throws Exception {
+							revertProcessVersion (event);
+						}
+					});
+				}
 			}
 		}
 	}
@@ -631,8 +648,8 @@ public class ProcessTableController {
 
 		String selected = Constants.SELECTED_VERSION ;
 		String unselected = Constants.UNSELECTED_VERSION;
-		String querySelected = "background-color:#CC6633" + ";" + Constants.TOOLBARBUTTON_STYLE;
-		String queryUnSelected = "background-color:#FFCC99" + ";" + Constants.TOOLBARBUTTON_STYLE;
+		String querySelected = "background-color:#CC6633" + ";" + Constants.TOOLBARBUTTON_STYLE ;
+		String queryUnSelected = "background-color:#FFCC99" + ";" + Constants.TOOLBARBUTTON_STYLE ;
 		Listbox annotations = (Listbox) versionR.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getNextSibling().getNextSibling();
 		String pId_versionName = versionR.getFirstChild().getId();
 		if (highlighted) {
