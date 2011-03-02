@@ -1,6 +1,6 @@
 package org.apromore.portal.dialogController;
 
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apromore.portal.manager.RequestToManager;
@@ -37,7 +37,7 @@ public class SimilaritySearchController extends Window {
 	private Button CancelButton;
 	private ProcessSummaryType process;
 	private VersionSummaryType version;
-	
+
 	public SimilaritySearchController (MainController mainC, MenuController menuC, 
 			ProcessSummaryType process, VersionSummaryType version) 
 	throws SuspendNotAllowedException, InterruptedException {
@@ -46,13 +46,13 @@ public class SimilaritySearchController extends Window {
 		this.version = version;
 		this.process = process;
 		this.similaritySearchW = (Window) Executions.createComponents("macros/similaritysearch.zul", null, null);
-		
+
 		this.algoChoiceR = (Row) this.similaritySearchW.getFellow("similaritySearchAlgoChoice");
 		this.buttonsR = (Row) this.similaritySearchW.getFellow("similaritySearchButtons");
 
 		this.OKbutton = (Button) this.similaritySearchW.getFellow("similaritySearchOKbutton");
 		this.CancelButton = (Button) this.similaritySearchW.getFellow("similaritySearchCancelbutton");
-		
+
 		// get parameter rows
 		this.modelthreshold = (Row) this.similaritySearchW.getFellow("modelthreshold");
 		this.labelthreshold = (Row) this.similaritySearchW.getFellow("labelthreshold");
@@ -61,20 +61,20 @@ public class SimilaritySearchController extends Window {
 		this.subeweight = (Row) this.similaritySearchW.getFellow("subeweight");
 		this.skipnweight = (Row) this.similaritySearchW.getFellow("skipnweight");
 		this.subnweight = (Row) this.similaritySearchW.getFellow("subnweight");
-		
+
 		this.algosLB = (Listbox) this.algoChoiceR.getFirstChild().getNextSibling();
 		// build the listbox to choose algo
 		Listitem listItem = new Listitem();
 		listItem.setLabel("Greedy");
 		this.algosLB.appendChild(listItem);
 		listItem.setSelected(true);
-		
+
 		listItem = new Listitem();
 		listItem.setLabel("Hungarian");
 		this.algosLB.appendChild(listItem);
-		
+
 		updateActions();
-		
+
 		this.algosLB.addEventListener("onSelect",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -99,10 +99,10 @@ public class SimilaritySearchController extends Window {
 				cancel();
 			}
 		});
-		
+
 		this.similaritySearchW.doModal();
 	}
-	
+
 	protected void cancel()   {
 		this.similaritySearchW.detach();
 	}
@@ -127,13 +127,78 @@ public class SimilaritySearchController extends Window {
 			} else {
 				message += " process.";
 			}
-			mainC.displayProcessSummaries(result, true, process, version);
+			// Sort result, and add <process, version> in first position
+			ProcessSummariesType resultToDisplay = sort(result);
+			// add query in the result (1rst position)
+			process.getVersionSummaries().clear();
+			process.getVersionSummaries().add(version);
+			resultToDisplay.getProcessSummary().add(0,process);
+			mainC.displayProcessSummaries(resultToDisplay, true, process, version);
 		} catch (Exception e) {
 			message = "Search failed (" + e.getMessage() + ")";
 		}
 		this.similaritySearchW.detach();
 		mainC.displayMessage(message);
 	}
+
+	/**
+	 * Sort processes given in listToBeSorted: let p1 and p2 being 2 processes. p1 < p2 iff
+	 * among p1 versions, the best one got a score < then the score obtained by the best of p2
+	 * @param listToBeSorted
+	 * @return sortedList
+	 */
+	private ProcessSummariesType sort(ProcessSummariesType listToBeSorted) {
+		ProcessSummariesType res = new ProcessSummariesType();
+
+		for (int i=0; i<listToBeSorted.getProcessSummary().size();i++){
+			sortInsertion(SortVersions (listToBeSorted.getProcessSummary().get(i)), res);
+		}
+		return res;
+	}
+
+	private ProcessSummaryType SortVersions(
+			ProcessSummaryType process) {
+		ProcessSummaryType res = new ProcessSummaryType();
+		res.setDomain(process.getDomain());
+		res.setId(process.getId());
+		res.setLastVersion(process.getLastVersion());
+		res.setName(process.getName());
+		res.setOriginalNativeType(process.getOriginalNativeType());
+		res.setOwner(process.getOwner());
+		res.setRanking(process.getRanking());
+		List<VersionSummaryType> versions = new ArrayList<VersionSummaryType>();
+
+		for (int j=0; j<process.getVersionSummaries().size();j++) {
+			int i = 0 ;
+			while (i<versions.size() && 
+					versions.get(i).getScore().doubleValue()
+					> process.getVersionSummaries().get(j).getScore().doubleValue()) {
+				i++;
+			}
+			versions.add(process.getVersionSummaries().get(j));
+		}
+		res.getVersionSummaries().addAll(versions);
+		return res;
+	}
+
+	/**
+	 * Insert process in sortedList which is kept ordered on best score got by versions
+	 * @param process
+	 * @param sortedList
+	 */
+	private void sortInsertion(ProcessSummaryType process, ProcessSummariesType sortedList){
+		int i = 0;
+		while (i<sortedList.getProcessSummary().size()
+				&&
+				sortedList.getProcessSummary().get(i).getVersionSummaries().get(0).getScore().doubleValue()
+				>
+		process.getVersionSummaries().get(0).getScore().doubleValue()) {
+			i++;
+		}
+		sortedList.getProcessSummary().add(i, process);
+	}
+
+
 
 	protected void updateActions() {
 		this.OKbutton.setDisabled(false);
