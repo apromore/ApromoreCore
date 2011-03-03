@@ -27,11 +27,11 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ReadProcessSummariesInputMsgType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-31T07:05:54+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:08:48+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ReadProcessSummariesInputMsgType {
 
     @XmlAttribute(name = "SearchExpression")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-31T07:05:54+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:08:48+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String searchExpression;
 
     /**
@@ -42,7 +42,7 @@ public class ReadProcessSummariesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-31T07:05:54+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:08:48+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getSearchExpression() {
         return searchExpression;
     }
@@ -55,7 +55,7 @@ public class ReadProcessSummariesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-01-31T07:05:54+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:08:48+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setSearchExpression(String value) {
         this.searchExpression = value;
     }

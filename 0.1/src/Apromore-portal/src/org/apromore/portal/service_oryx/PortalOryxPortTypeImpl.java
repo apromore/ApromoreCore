@@ -6,31 +6,21 @@
 
 package org.apromore.portal.service_oryx;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.apromore.portal.common.Constants;
-import org.apromore.portal.common.Utils;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.exception.ExceptionReadEditSession;
 import org.apromore.portal.exception.ExceptionUpdateProcess;
@@ -277,7 +267,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			}
 			// import native for corresponding process version
 			ProcessSummaryType newProcess = request.importProcess(username, nativeType, new_processName, new_versionName, native_is, 
-					domain, documentation, created, lastupdate);
+					domain, documentation, created, lastupdate, false);
 			// delete edit session
 			request.DeleteEditionSession(code);
 			// request a new session code for the new process and return it to Oryx

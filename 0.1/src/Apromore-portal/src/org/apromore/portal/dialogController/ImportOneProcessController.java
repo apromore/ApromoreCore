@@ -1,7 +1,5 @@
 package org.apromore.portal.dialogController;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -9,10 +7,8 @@ import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
-import org.apromore.portal.common.Utils;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.manager.RequestToManager;
@@ -26,12 +22,12 @@ import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
-
-import de.epml.TypeEPML;
 
 public class ImportOneProcessController extends Window {
 
@@ -46,6 +42,10 @@ public class ImportOneProcessController extends Window {
 	private Textbox versionName;
 	private Row domainR;
 	private SelectDynamicListController domainCB;
+	private Row fakeEventsR;
+	private Radiogroup fakeEventsRG;
+	private Radio fakeEventsNoR;
+	private Radio fakeEventsYesR;
 	private InputStream nativeProcess; // the input stream read from uploaded file
 	private String nativeType;
 	private Button okButton;
@@ -68,10 +68,12 @@ public class ImportOneProcessController extends Window {
 		Row processNameR = (Row) rows.getFirstChild();
 		Row versionNameR = (Row) processNameR.getNextSibling();
 		this.domainR = (Row) versionNameR.getNextSibling();
-		Div buttonsD = (Div) this.domainR.getNextSibling().getNextSibling().getFirstChild();
 		this.processName = (Textbox) processNameR.getFirstChild().getNextSibling();
 		this.versionName = (Textbox) versionNameR.getFirstChild().getNextSibling();
-		
+		this.fakeEventsR = (Row) this.domainR.getNextSibling();
+		this.fakeEventsNoR = (Radio) this.fakeEventsR.getFirstChild().getNextSibling().getFirstChild();
+		this.fakeEventsYesR = (Radio) this.fakeEventsNoR.getNextSibling();
+		Div buttonsD = (Div) this.fakeEventsR.getNextSibling().getNextSibling().getFirstChild();
 		this.okButton = (Button) buttonsD.getFirstChild();
 		this.okForAllButton = (Button) buttonsD.getFirstChild().getNextSibling();
 		this.cancelButton = (Button) buttonsD.getFirstChild().getNextSibling().getNextSibling();
@@ -227,7 +229,7 @@ public class ImportOneProcessController extends Window {
 				ProcessSummaryType res= 
 					request.importProcess(this.mainC.getCurrentUser().getUsername(), this.nativeType, this.processName.getValue(), 
 							this.versionName.getValue(), this.nativeProcess, domain,
-							this.documentation, this.created, this.lastUpdate);
+							this.documentation, this.created, this.lastUpdate, this.fakeEventsYesR.isChecked());
 				// process successfully imported
 				this.importProcessesC.getImportedList().add(this);
 				this.mainC.displayNewProcess(res);
@@ -298,5 +300,8 @@ public class ImportOneProcessController extends Window {
 		return nativeProcess;
 	}
 
-
+	public Radio getFakeEventsYesR() {
+		return fakeEventsYesR;
+	}
+	
 }
