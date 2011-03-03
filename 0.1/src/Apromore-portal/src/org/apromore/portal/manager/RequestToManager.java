@@ -322,7 +322,7 @@ public class RequestToManager {
 
 	public ProcessSummaryType importProcess (String username, String nativeType, String processName, 
 			String versionName, InputStream xml_process, String domain, 
-			String documentation, String created, String lastUpdate) 
+			String documentation, String created, String lastUpdate, Boolean addFakeEvents) 
 	throws IOException, ExceptionImport {
 
 		ImportProcessInputMsgType payload = new ImportProcessInputMsgType();
@@ -336,6 +336,7 @@ public class RequestToManager {
 		payload.setDocumentation(documentation);
 		payload.setCreationDate(created);
 		payload.setLastUpdate(lastUpdate);
+		payload.setAddFakeEvents(addFakeEvents);
 		ImportProcessOutputMsgType res = this.port.importProcess(payload);
 		ResultType result = res.getResult();
 		if (result.getCode() == -1) {

@@ -279,7 +279,8 @@ public class ImportListProcessesController extends Window {
 				String processName = importOneProcess.getFileName().split("\\.")[0];
 				res = request.importProcess(this.mainC.getCurrentUser().getUsername(), importOneProcess.getNativeType(), processName, 
 						version, importOneProcess.getNativeProcess(), domain,
-						importOneProcess.getDocumentation(), importOneProcess.getCreated(), importOneProcess.getLastUpdate());
+						importOneProcess.getDocumentation(), importOneProcess.getCreated(), importOneProcess.getLastUpdate(), 
+						importOneProcess.getFakeEventsYesR().isChecked());
 				// process successfully imported
 				this.mainC.displayNewProcess(res);
 				this.getImportedList().add(importOneProcess);

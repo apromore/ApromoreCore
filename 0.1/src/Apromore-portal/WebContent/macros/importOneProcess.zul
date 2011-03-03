@@ -22,6 +22,10 @@
 						tooltiptext="optional" />
 					<!-- combobox implemented in SelectDynamicListController -->
 				</row>
+				<row spans="1,2">
+					<label value="Add fake events" width="100%" />
+					<radiogroup><radio label="yes"/><radio label="no" checked="true"/></radiogroup>
+				</row>
 				<row spans="3">
 					<label value="*: mandatory fields." />
 				</row>
