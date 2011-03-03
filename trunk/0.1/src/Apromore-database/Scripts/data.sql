@@ -13,6 +13,8 @@ insert into users  (firstname, username, passwd) values ("Anne", "anne", "");
 insert into users  (firstname, username, passwd) values ("icsoc 2010", "icsoc", "Macri");
 insert into users  (firstname, username, passwd) values ("guest", "guest", "");
 insert into users  (firstname, username, passwd) values ("Reina", "reina", "");
+insert into users  (firstname, username, passwd) values ("Inam", "inam", "");
+insert into users  (firstname, username, passwd) values ("Naiad", "naiad", "");
 insert into users (lastname,firstname,email,username,passwd) values ("Alrashed","Fahad","fahadakr@gmail.com","fahad", null);
 insert into users  (firstname, username, passwd) values ("Public", "public", "");
 insert into native_types values ("EPML 2.0","epml");
