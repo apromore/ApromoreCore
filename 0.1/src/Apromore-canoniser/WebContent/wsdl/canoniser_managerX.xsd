@@ -49,6 +49,7 @@
 		<attribute name="Documentation" type="string" />
 		<attribute name="last_update" type="string" />
 		<attribute name="creation_date" type="string" />
+		<attribute name="AddFakeEvents" type="boolean"/>
 	</complexType>
 
 	<complexType name="CanoniseProcessOutputMsgType">
