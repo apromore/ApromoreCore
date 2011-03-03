@@ -55,7 +55,8 @@ public class RequestToCanoniser {
 	 */
 	public org.apromore.manager.model_portal.ProcessSummaryType 
 	CanoniseProcess(String username, String processName, String cpfURI, 
-			String versionName, String nativeType, InputStream cpf, String domain, String documentation, String created, String lastupdate) 
+			String versionName, String nativeType, InputStream cpf, String domain, String documentation, 
+			String created, String lastupdate, Boolean addFakeEvents) 
 	throws IOException, ExceptionImport {
 		org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType payload = new CanoniseProcessInputMsgType();
 		payload.setUsername(username);
@@ -67,6 +68,7 @@ public class RequestToCanoniser {
 		payload.setCreationDate(created);
 		payload.setLastUpdate(lastupdate);
 		payload.setCpfUri(cpfURI);
+		payload.setAddFakeEvents(addFakeEvents);
 		DataSource source = new ByteArrayDataSource(cpf, "text/xml"); 
 		payload.setProcessDescription(new DataHandler(source));
 		org.apromore.manager.model_canoniser.CanoniseProcessOutputMsgType res = this.port.canoniseProcess(payload);

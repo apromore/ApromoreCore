@@ -230,6 +230,7 @@
 		<attribute name="Last_update" type="string" />
 		<attribute name="Creation_date" type="string" />
 		<attribute name="Documentation" type="string" />
+		<attribute name="AddFakeEvents" type="boolean" />
 	</complexType>
 
 	<complexType name="ImportProcessOutputMsgType">
