@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+	targetNamespace="http://www.apromore.org/toolbox/model_manager"
+	xmlns:tns="http://www.apromore.org/toolbox/model_manager">
+
+	<element name="SearchForSimilarProcessesInputMsg" type="tns:SearchForSimilarProcessesInputMsgType" />
+	<element name="SearchForSimilarProcessesOutputMsg" type="tns:SearchForSimilarProcessesOutputMsgType" />
+	<element name="MergeProcessesInputMsg" type="tns:MergeProcessesInputMsgType" />
+	<element name="MergeProcessesOutputMsg" type="tns:MergeProcessesOutputMsgType" />
+
+	<complexType name="ResultType">
+		<attribute name="message" type="string" />
+		<attribute name="code" type="int" />
+	</complexType>
+
+	<complexType name="SearchForSimilarProcessesInputMsgType">
+		<sequence>
+			<element name="ProcessId" type="int" />
+			<element name="VersionName" type="string" />
+			<element name="Algorithm" type="string" />
+			<element name="Parameters" type="tns:ParametersType" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ParametersType">
+		<sequence>
+			<element name="Parameter" type="tns:ParameterType" minOccurs="1"
+				maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ParameterType">
+		<sequence>
+			<element name="Name" type="string" />
+			<element name="Value" type="double" />
+		</sequence>
+	</complexType>
+
+	<complexType name="SearchForSimilarProcessesOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+			<element name="ProcessSummaries" type="tns:ProcessSummariesType" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ProcessSummariesType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="ProcessSummary"
+				type="tns:ProcessSummaryType" />
+		</sequence>
+	</complexType>
+
+	<complexType name="MergeProcessesInputMsgType">
+		<sequence>
+			<element name="ProcessVersion_ids" type="tns:ProcessVersion_idsType" />
+			<element name="Parameters" type="tns:ParametersType" />
+		</sequence>
+		<attribute name="ProcessName" type="string" />
+		<attribute name="VersionName" type="string" />
+		<attribute name="Domain" type="string" />
+		<attribute name="Username" type="string" />
+		<attribute name="Cpf_uri" type="string" />
+		<attribute name="Algorithm" type="string" />
+	</complexType>
+
+	<complexType name="ProcessVersion_idsType">
+		<sequence>
+			<element minOccurs="1" maxOccurs="unbounded" name="ProcessVersion_id"
+				type="tns:ProcessVersion_idType" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ProcessVersion_idType">
+		<attribute name="ProcessId" type="int" />
+		<attribute name="VersionName" type="string" />
+	</complexType>
+
+	<complexType name="MergeProcessesOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+			<element name="ProcessSummary" type="tns:ProcessSummaryType"
+				minOccurs="0" maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ProcessSummaryType">
+		<sequence>
+			<element minOccurs="1" maxOccurs="unbounded" name="VersionSummaries"
+				type="tns:VersionSummaryType" />
+		</sequence>
+		<attribute name="original_native_type" type="string" />
+		<attribute name="name" type="string" />
+		<attribute name="id" type="int" />
+		<attribute name="domain" type="string" />
+		<attribute name="ranking" type="string" />
+		<attribute name="last_version" type="string" />
+		<attribute name="owner" type="string" />
+	</complexType>
+
+	<complexType name="VersionSummaryType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="Annotations"
+				type="tns:AnnotationsType" />
+		</sequence>
+		<attribute name="ranking" type="string" />
+		<attribute name="name" type="string" />
+		<attribute name="last_update" type="string" />
+		<attribute name="creation_date" type="string" />
+		<attribute name="score" type="double" />
+	</complexType>
+
+	<complexType name="AnnotationsType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="AnnotationName"
+				type="string" />
+		</sequence>
+		<attribute name="NativeType" type="string" />
+	</complexType>
+
+</schema>
