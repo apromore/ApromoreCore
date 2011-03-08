@@ -1,0 +1,19 @@
+<panel id="navigationPanel" width="100%">
+	<panelchildren>
+		<hbox>
+			<listbox id="treeChoice" rows="1" mold="select">
+				<listitem label="Domain" />
+				<listitem label="Language" />
+				<listitem label="Author" />
+			</listbox>
+		</hbox>
+		<window id="treeW" sizable="true">
+			<tree id="tree" rows="5" vflex="true" width="100%"
+				zclass="z-dottree">
+				<treecols sizable="true">
+					<treecol label="" />
+				</treecols>
+			</tree>
+		</window>
+	</panelchildren>
+</panel>
