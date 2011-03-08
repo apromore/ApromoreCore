@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0">
+    <Pools>
+        <Pool Id="MainPool" Name="Main Pool" Orientation="HORIZONTAL" Process="19" BoundaryVisible="false" MainPool="true"/>
+    </Pools>
+    <Associations/>
+    <Artifacts/>
+    <WorkflowProcesses>
+        <WorkflowProcess Id="19">
+            <Activities>
+                <Activity Id="1" Name="E1">
+                    <Event>
+                        <StartEvent Trigger="None"/>
+                    </Event>
+                </Activity>
+                <Activity Id="4" Name="E4">
+                    <Event>
+                        <EndEvent Result="None"/>
+                    </Event>
+                </Activity>
+                <Activity Id="5" Name="F1">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                </Activity>
+                <Activity Id="6" Name="F2">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                </Activity>
+                <Activity Id="7" Name="F3">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                </Activity>
+                <Activity Id="8">
+                    <Route GatewayType="Inclusive"/>
+                    <TransitionRestrictions>
+                        <TransitionRestriction>
+                            <Split Type="Inclusive">
+<TransitionRefs>
+    <TransitionRef Id="12"/>
+    <TransitionRef Id="13"/>
+</TransitionRefs>
+                            </Split>
+                        </TransitionRestriction>
+                    </TransitionRestrictions>
+                </Activity>
+                <Activity Id="9">
+                    <Route GatewayType="Inclusive"/>
+                    <TransitionRestrictions>
+                        <TransitionRestriction>
+                            <Join Type="Inclusive"/>
+                        </TransitionRestriction>
+                    </TransitionRestrictions>
+                </Activity>
+            </Activities>
+            <Transitions>
+                <Transition Id="10" From="1" To="5"/>
+                <Transition Id="11" From="5" To="8"/>
+                <Transition Id="12" From="8" To="6"/>
+                <Transition Id="13" From="8" To="7"/>
+                <Transition Id="16" From="6" To="9"/>
+                <Transition Id="17" From="7" To="9"/>
+                <Transition Id="18" From="9" To="4"/>
+            </Transitions>
+        </WorkflowProcess>
+    </WorkflowProcesses>
+</Package>
