@@ -1,0 +1,319 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+	targetNamespace="http://www.apromore.org/data_access/model_manager"
+	xmlns:tns="http://www.apromore.org/data_access/model_manager">
+
+	<element name="ReadProcessSummariesInputMsg" type="tns:ReadProcessSummariesInputMsgType" />
+	<element name="ReadProcessSummariesOutputMsg" type="tns:ReadProcessSummariesOutputMsgType" />
+	<element name="EditProcessDataInputMsg" type="tns:EditProcessDataInputMsgType" />
+	<element name="EditProcessDataOutputMsg" type="tns:EditProcessDataOutputMsgType" />
+	<element name="ReadDomainsInputMsg" type="tns:ReadDomainsInputMsgType" />
+	<element name="ReadDomainsOutputMsg" type="tns:ReadDomainsOutputMsgType" />
+	<element name="ReadNativeTypesInputMsg" type="tns:ReadNativeTypesInputMsgType" />
+	<element name="ReadNativeTypesOutputMsg" type="tns:ReadNativeTypesOutputMsgType" />
+	<element name="ReadUserInputMsg" type="tns:ReadUserInputMsgType" />
+	<element name="ReadUserOutputMsg" type="tns:ReadUserOutputMsgType" />
+	<element name="ReadAllUsersInputMsg" type="tns:ReadAllUsersInputMsgType" />
+	<element name="ReadAllUsersOutputMsg" type="tns:ReadAllUsersOutputMsgType" />
+	<element name="WriteUserInputMsg" type="tns:WriteUserInputMsgType" />
+	<element name="WriteUserOutputMsg" type="tns:WriteUserOutputMsgType" />
+	<element name="ReadFormatInputMsg" type="tns:ReadFormatInputMsgType" />
+	<element name="ReadFormatOutputMsg" type="tns:ReadFormatOutputMsgType" />
+	<element name="ReadCanonicalAnfInputMsg" type="tns:ReadCanonicalAnfInputMsgType" />
+	<element name="ReadCanonicalAnfOutputMsg" type="tns:ReadCanonicalAnfOutputMsgType" />
+	<element name="WriteEditSessionInputMsg" type="tns:WriteEditSessionInputMsgType" />
+	<element name="WriteEditSessionOutputMsg" type="tns:WriteEditSessionOutputMsgType" />
+	<element name="ReadEditSessionInputMsg" type="tns:ReadEditSessionInputMsgType" />
+	<element name="ReadEditSessionOutputMsg" type="tns:ReadEditSessionOutputMsgType" />
+	<element name="DeleteEditSessionInputMsg" type="tns:DeleteEditSessionInputMsgType" />
+	<element name="DeleteEditSessionOutputMsg" type="tns:DeleteEditSessionOutputMsgType" />
+	<element name="DeleteProcessVersionsInputMsg" type="tns:DeleteProcessVersionsInputMsgType" />
+	<element name="DeleteProcessVersionsOutputMsg" type="tns:DeleteProcessVersionsOutputMsgType" />
+
+	<complexType name="ReadCanonicalAnfInputMsgType">
+		<attribute name="processId" type="int" />
+		<attribute name="version" type="string" />
+		<attribute name="withAnnotation" type="boolean" />		
+		<attribute name="annotationName" type="string" />
+	</complexType>
+
+	<complexType name="ReadCanonicalAnfOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+			<element name="cpf" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" minOccurs="1"
+				maxOccurs="1" />
+			<element name="anf" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" minOccurs="0"
+				maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ReadFormatInputMsgType">
+		<attribute name="processId" type="int" />
+		<attribute name="version" type="string" />
+		<attribute name="format" type="string" />
+	</complexType>
+
+	<complexType name="ReadFormatOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+			<element name="Native" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ReadProcessSummariesInputMsgType">
+		<attribute name="SearchExpression" type="string" />
+	</complexType>
+
+	<complexType name="ReadProcessSummariesOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+			<element name="ProcessSummaries" type="tns:ProcessSummariesType"
+				minOccurs="1" maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<complexType name="EditProcessDataOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<complexType name="EditProcessDataInputMsgType">
+		<attribute name="processName" type="string" />
+		<attribute name="id" type="int" />
+		<attribute name="domain" type="string" />
+		<attribute name="owner" type="string" />
+		<attribute name="ranking" type="string" />
+		<attribute name="newName" type="string" />
+		<attribute name="preName" type="string" />
+	</complexType>
+
+	<complexType name="ProcessSummariesType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="ProcessSummary"
+				type="tns:ProcessSummaryType" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ProcessSummaryType">
+		<sequence>
+			<element minOccurs="1" maxOccurs="unbounded" name="VersionSummaries"
+				type="tns:VersionSummaryType" />
+		</sequence>
+		<attribute name="original_native_type" type="string" />
+		<attribute name="name" type="string" />
+		<attribute name="id" type="int" />
+		<attribute name="domain" type="string" />
+		<attribute name="ranking" type="string" />
+		<attribute name="last_version" type="string" />
+		<attribute name="owner" type="string" />
+	</complexType>
+
+	<complexType name="VersionSummaryType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="Annotations"
+				type="tns:AnnotationsType" />
+		</sequence>
+		<attribute name="ranking" type="string" />
+		<attribute name="name" type="string" />
+		<attribute name="last_update" type="string" />
+		<attribute name="creation_date" type="string" />
+	</complexType>
+	
+		<complexType name="AnnotationsType">
+		<sequence>
+			<element minOccurs="0" maxOccurs="unbounded" name="AnnotationName"
+				type="string" />
+		</sequence>
+		<attribute name="NativeType" type="string" />
+	</complexType>
+	
+	<complexType name="ReadDomainsInputMsgType">
+		<attribute name="Empty" type="string" use="optional" />
+	</complexType>
+
+	<complexType name="ReadDomainsOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+			<element name="Domains" type="tns:DomainsType" minOccurs="1"
+				maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ReadNativeTypesInputMsgType">
+		<attribute name="Empty" type="string" use="optional" />
+	</complexType>
+
+	<complexType name="ReadNativeTypesOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+			<element name="NativeTypes" type="tns:NativeTypesType" minOccurs="1"
+				maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<complexType name="NativeTypesType">
+		<sequence>
+			<element name="NativeType" minOccurs="0" maxOccurs="unbounded"
+				type="tns:FormatType" />
+		</sequence>
+	</complexType>
+
+	<complexType name="FormatType">
+		<attribute name="format" type="string" />
+		<attribute name="extension" type="string" />
+	</complexType>
+
+	<complexType name="ResultType">
+		<attribute name="message" type="string" />
+		<attribute name="code" type="int" />
+	</complexType>
+	
+	<complexType name="ReadAllUsersInputMsgType">
+		<attribute name="Empty" type="string" use="optional" />
+	</complexType>
+
+	<complexType name="ReadAllUsersOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+			<element name="Usernames" type="tns:UsernamesType" minOccurs="1"
+				maxOccurs="1" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="UsernamesType">
+		<sequence>
+			<element name="Username" type="string" minOccurs="1"
+				maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="ReadUserInputMsgType">
+		<attribute name="username" type="string" />
+	</complexType>
+
+	<complexType name="ReadUserOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+			<element name="User" type="tns:UserType" minOccurs="1"
+				maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<complexType name="WriteUserInputMsgType">
+		<sequence>
+			<element name="User" type="tns:UserType" />
+		</sequence>
+	</complexType>
+
+	<complexType name="WriteUserOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" minOccurs="1"
+				maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<complexType name="DomainsType">
+		<sequence>
+			<element name="Domain" type="string" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+
+	<complexType name="UserType">
+		<sequence>
+			<element name="SearchHistories" type="tns:SearchHistoriesType"
+				minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="firstname" type="string" />
+		<attribute name="lastname" type="string" />
+		<attribute name="email" type="string" />
+		<attribute name="username" type="string" />
+		<attribute name="passwd" type="string" />
+	</complexType>
+
+	<complexType name="SearchHistoriesType">
+		<attribute name="search" type="string" />
+		<attribute name="num" type="int" />
+	</complexType>
+
+	<complexType name="EditSessionType">
+		<attribute name="username" type="string" />
+		<attribute name="nativeType" type="string" />
+		<attribute name="processId" type="int" />
+		<attribute name="processName" type="string" />
+		<attribute name="versionName" type="string" />
+		<attribute name="domain" type="string" />
+		<attribute name="WithAnnotation" type="boolean" />
+		<attribute name="Annotation" type="string" />
+	</complexType>
+
+	<complexType name="WriteEditSessionInputMsgType">
+		<sequence>
+			<element name="EditSession" type="tns:EditSessionType"
+				minOccurs="1" maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<complexType name="WriteEditSessionOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+		</sequence>
+		<attribute name="EditSessionCode" type="int" />
+	</complexType>
+
+	<complexType name="ReadEditSessionInputMsgType">
+		<attribute name="EditSessionCode" type="int" />
+	</complexType>
+
+	<complexType name="ReadEditSessionOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+			<element name="Native" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+			<element name="EditSession" type="tns:EditSessionType"
+				minOccurs="1" maxOccurs="1" />
+		</sequence>
+	</complexType>
+
+	<complexType name="DeleteEditSessionInputMsgType">
+		<attribute name="EditSessionCode" type="int" />
+	</complexType>
+	<complexType name="DeleteEditSessionOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+		</sequence>
+	</complexType>
+
+	<complexType name="DeleteProcessVersionsInputMsgType">
+		<sequence>
+			<element name="ProcessVersionIdentifier" type="tns:ProcessVersionIdentifierType"
+				minOccurs="1" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+
+	<complexType name="ProcessVersionIdentifierType">
+		<sequence>
+			<element name="VersionName" type="string" minOccurs="1"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="Processid" type="int" />
+	</complexType>
+
+	<complexType name="DeleteProcessVersionsOutputMsgType">
+		<sequence>
+			<element name="Result" type="tns:ResultType" />
+		</sequence>
+	</complexType>
+</schema>
