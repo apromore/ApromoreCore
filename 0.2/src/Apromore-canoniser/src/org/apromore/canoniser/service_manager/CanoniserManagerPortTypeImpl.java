@@ -336,7 +336,6 @@ import de.epml.TypeEPML;
 			Unmarshaller u = jc1.createUnmarshaller();
 			JAXBElement<TypeEPML> rootElement = (JAXBElement<TypeEPML>) u.unmarshal(process_xml);
 			TypeEPML epml = rootElement.getValue();
-			// TODO get epml process URI...
 			EPML2Canonical epml2canonical = new EPML2Canonical(epml,  Long.parseLong(cpf_uri));
 
 			jc1 = JAXBContext.newInstance(Constants.JAXB_CONTEXT_ANF);
