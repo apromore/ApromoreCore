@@ -4,6 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigInteger;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -15,6 +16,7 @@ import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
+import javax.xml.namespace.QName;
 
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.common.Utils;
@@ -45,6 +47,11 @@ import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
+import de.epml.TypeAttrType;
+import de.epml.TypeAttrTypes;
+import de.epml.TypeCoordinates;
+import de.epml.TypeDirectory;
+import de.epml.TypeEPC;
 import de.epml.TypeEPML;
 
 public class CreateProcessController {
@@ -206,10 +213,21 @@ public class CreateProcessController {
 					nativeProcess = new ByteArrayInputStream(xpdl_xml.toByteArray());
 
 				} else if ("EPML 2.0".compareTo(nativeType)==0) {
-					// as epml doesn't support process, version, etc. nothing else to do
+					// create an empty epml process (see issue 129)
 					// then just creation an empty process.
 					TypeEPML epml = new TypeEPML();
-				
+					TypeCoordinates coordinates = new TypeCoordinates();
+					coordinates.setXOrigin("leftToRight");
+					coordinates.setYOrigin("topToBottom");
+					epml.setCoordinates(coordinates);
+					TypeDirectory directory = new TypeDirectory();
+					directory.setName("Root");
+					epml.getDirectory().add(directory);
+					TypeEPC epc = new TypeEPC();
+					epc.setEpcId(new BigInteger("1"));
+					epc.setName("");
+					directory.getEpcOrDirectory().add(epc);
+					
 					JAXBContext jc = JAXBContext.newInstance("de.epml");
 					Marshaller m = jc.createMarshaller();
 					m.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
