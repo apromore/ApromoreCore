@@ -6,10 +6,12 @@
 
 package org.apromore.portal.service_oryx;
 
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
@@ -318,6 +320,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			// request native to be exported in format nativeType
 			InputStream native_is = 
 				request.ExportFormat(processId, processName, version, nativeType, annotation, withAnnotation, owner);
+			
 			DataSource sourceNative = new ByteArrayDataSource(native_is, "text/xml"); 
 			res.setNative(new DataHandler(sourceNative));
 			res.setEditionType(nativeType);
