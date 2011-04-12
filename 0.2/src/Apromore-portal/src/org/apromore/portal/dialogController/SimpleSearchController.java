@@ -56,7 +56,7 @@ public class SimpleSearchController extends Window {
 		this.previoussearchesCB.setWidth("85%");
 		this.previoussearchesCB.setHeight("100%");
 		this.previoussearchesCB.setAttribute("hflex", "1");
-		this.previoussearchesCB.setVisible(false);
+		//this.previoussearchesCB.setVisible(false);
 		this.previoussearchesCB.setTooltiptext("list of keywords separated by ',' (and semantic) or/and by " +
 				"';' (or semantic). Brackets allowed.");
 		this.previoussearchesH.appendChild(previoussearchesCB);
