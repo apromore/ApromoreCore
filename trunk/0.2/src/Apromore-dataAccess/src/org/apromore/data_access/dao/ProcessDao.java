@@ -1047,31 +1047,31 @@ public class ProcessDao extends BasicDao {
 			}
 		} catch (SQLException e) {
 			e.printStackTrace();
-			conn.rollback();
+			if (conn!=null) conn.rollback();
 			throw new ExceptionDao ("SQL error: " + e.getMessage());
 		} catch (ExceptionSyncNPF e) {
 			e.printStackTrace();
-			conn.rollback();
+			if (conn!=null) conn.rollback();
 			throw new ExceptionSyncNPF (e.getMessage());
 		} catch (ExceptionStoreVersion e) {
 			e.printStackTrace();
-			conn.rollback();
+			if (conn!=null) conn.rollback();
 			throw new ExceptionStoreVersion (e.getMessage());
 		} catch (ExceptionDao e) {
 			e.printStackTrace();
-			conn.rollback();
+			if (conn!=null) conn.rollback();
 			throw new ExceptionDao ("SQL error: " + e.getMessage());
 		} catch (JAXBException e) {
 			e.printStackTrace();
-			conn.rollback();
+			if (conn!=null) conn.rollback();
 			throw new ExceptionDao ("JAXB error: " + e.getMessage());
 		} catch (IOException e) {
 			e.printStackTrace();
-			conn.rollback();
+			if (conn!=null) conn.rollback();
 			throw new ExceptionDao ("IO error: " + e.getMessage());
 		} catch (Exception e) {
 			e.printStackTrace();
-			conn.rollback();
+			if (conn!=null) conn.rollback();
 			throw new ExceptionDao ("SQL error: " + e.getMessage());
 		} finally {
 			Release(conn, stmt, rs);
