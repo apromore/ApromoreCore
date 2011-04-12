@@ -47,7 +47,7 @@ public class SearchHistoriesController extends Combobox {
 	 */
 	public void refresh(String val) {
 		if (this.mainC.getCurrentUser() != null) {
-			this.previousSearches = this.mainC.getCurrentUser().getSearchHistories();
+			this.previousSearches = this.mainC.getSearchHistory();
 		//	int j = this.previousSearches.indexOf(val); //Arrays.binarySearch(this.previousSearches, val);
 			int j = 0;
 			while (j < this.previousSearches.size() 
@@ -78,7 +78,7 @@ public class SearchHistoriesController extends Combobox {
 	 */
 	public void addSearchHist(String query) {
 
-		List<SearchHistoriesType> searchHist = this.mainC.getCurrentUser().getSearchHistories();
+		List<SearchHistoriesType> searchHist = this.mainC.getSearchHistory();
 		// if maxSearches reached, remove the oldest search
 		if (searchHist.size() == Constants.maxSearches) {
 			// find the oldest search to remove: the one whose num is the smallest

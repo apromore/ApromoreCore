@@ -1,6 +1,7 @@
 package org.apromore.portal.dialogController;
 
 import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -23,6 +24,7 @@ import org.apromore.portal.model_manager.EditSessionType;
 import org.apromore.portal.model_manager.NativeTypesType;
 import org.apromore.portal.model_manager.ProcessSummariesType;
 import org.apromore.portal.model_manager.ProcessSummaryType;
+import org.apromore.portal.model_manager.SearchHistoriesType;
 import org.apromore.portal.model_manager.UserType;
 import org.apromore.portal.model_manager.UsernamesType;
 import org.apromore.portal.model_manager.VersionSummaryType;
@@ -55,6 +57,7 @@ public class MainController extends Window {
 	private String OryxEndPoint_epml;
 	private Logger LOG;
 	private String msgWhenClose;
+	private List<SearchHistoriesType> searchHistory;
 
 	// uncomment when ready
 	//private NavigationController navigation;
@@ -89,6 +92,7 @@ public class MainController extends Window {
 			//this.navigation = new NavigationController (this);
 
 			this.currentUser = null;
+			this.searchHistory = new ArrayList<SearchHistoriesType>();
 			this.msgWhenClose = null;
 			// read Oryx access point in properties
 			InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);;  
@@ -142,12 +146,11 @@ public class MainController extends Window {
 		}
 	}
 
+	// disable/enable features depending on user status
 	public void updateActions (){
 
 		Boolean connected = this.currentUser != null ;
 
-		this.simplesearch.getPrevioussearchesCB().setVisible(connected);
-		this.simplesearch.getSimplesearchesBu().setVisible(connected);
 		// disable/enable menu items in menu bar
 		Iterator<Component> itC = this.menu.getMenuB().getFellows().iterator();
 		while (itC.hasNext()) {
@@ -342,6 +345,7 @@ public class MainController extends Window {
 			this.msgWhenClose = null;
 		} else {
 			this.msgWhenClose = Constants.MSG_WHEN_CLOSE;
+			this.searchHistory = this.currentUser.getSearchHistories();
 		}
 	}
 
@@ -375,6 +379,10 @@ public class MainController extends Window {
 
 	public String getHost() {
 		return host;
+	}
+
+	public List<SearchHistoriesType> getSearchHistory() {
+		return searchHistory;
 	}
 
 	/**
