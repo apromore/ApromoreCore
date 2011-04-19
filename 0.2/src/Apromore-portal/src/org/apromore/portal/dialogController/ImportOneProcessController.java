@@ -9,6 +9,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import org.apromore.portal.common.Utils;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.manager.RequestToManager;
@@ -38,6 +39,7 @@ public class ImportOneProcessController extends Window {
 	private String documentation;
 	private String lastUpdate;
 	private String created;
+	private String author;
 	private Textbox processName;
 	private Textbox versionName;
 	private Row domainR;
@@ -94,8 +96,9 @@ public class ImportOneProcessController extends Window {
 		String readVersionName = "0.1"; // default value for versionName if not found
 		String readProcessName = processName ; // default value if not found
 		String readDocumentation = "" ; 
-		String readCreated = "";
+		String readCreated = Utils.getDateTime(); // default value for creationDate if not found
 		String readLastupdate = "";
+		String readAuthor = this.mainC.getCurrentUser().getUsername();
 		// check properties in xml_process: process name, version name, documentation, creation date, last update
 		// if native format is xpdl, extract information from xml file
 		if (nativeType.compareTo("XPDL 2.1")==0) {
@@ -105,6 +108,13 @@ public class ImportOneProcessController extends Window {
 			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(this.nativeProcess);
 			PackageType pkg = rootElement.getValue();
 			this.nativeProcess.reset();
+			try {// get process author if defined
+				if (pkg.getRedefinableHeader().getAuthor().getValue().trim().compareTo("")!=0) {
+					readAuthor = pkg.getRedefinableHeader().getAuthor().getValue().trim();
+				}
+			} catch (NullPointerException e) {
+				// default value
+			}
 			try {// get process name if defined
 				if (pkg.getName().trim().compareTo("")!=0) {
 					readProcessName = pkg.getName().trim();
@@ -152,7 +162,7 @@ public class ImportOneProcessController extends Window {
 		this.documentation = readDocumentation;
 		this.created = readCreated ;
 		this.lastUpdate = readLastupdate;
-
+		this.author = readAuthor;
 		this.okButton.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
