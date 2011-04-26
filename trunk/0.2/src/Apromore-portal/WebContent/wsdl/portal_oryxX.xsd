@@ -11,8 +11,6 @@
 	<element name="WriteNewAnnotationOutputMsg" type="tns:WriteNewAnnotationOutputMsgType"/>
 	<element name="WriteAnnotationInputMsg" type="tns:WriteAnnotationInputMsgType"/>
 	<element name="WriteAnnotationOutputMsg" type="tns:WriteAnnotationOutputMsgType"/>
-	<element name="CloseSessionInputMsg" type="tns:CloseSessionInputMsgType"/>
-	<element name="CloseSessionOutputMsg" type="tns:CloseSessionOutputMsgType"/>
 
 	<complexType name="ReadNativeInputMsgType">
 		<attribute name="EditSessionCode" type="int"/>
@@ -89,17 +87,4 @@
 		<attribute name="message" type="string"/>
 		<attribute name="code" type="int"/>
 	</complexType>
-
-	<complexType name="CloseSessionInputMsgType">
-		<sequence>
-			<element name="code" type="int"/>
-		</sequence>
-	</complexType>
-
-	<complexType name="CloseSessionOutputMsgType">
-		<sequence>
-			<element name="Result" type="tns:ResultType"/>
-		</sequence>
-	</complexType>
-
 </schema>

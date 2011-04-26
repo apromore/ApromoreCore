@@ -222,7 +222,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			String nativeType = editSession.getNativeType();
 			String domain = editSession.getDomain();
 			/* process name, version name, creation date, last update and documentation
-			 * must be read read native_is
+			 * must be read from native_is
 			 */
 			String new_processName = null;
 			String new_versionName = null;

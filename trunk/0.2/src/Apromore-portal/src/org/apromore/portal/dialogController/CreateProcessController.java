@@ -168,7 +168,6 @@ public class CreateProcessController {
 	}
 
 	protected void createProcess() throws Exception  {
-		RequestToManager request = new RequestToManager();
 		try {
 			if (this.processNameT.getValue().compareTo("")==0
 					|| this.nativeTypesLB.getSelectedItem() == null
@@ -237,6 +236,7 @@ public class CreateProcessController {
 					nativeProcess = new ByteArrayInputStream(epml_xml.toByteArray());
 				}
 				// documentation and lastupdate are set to null, addFakeEvent is set to false
+				RequestToManager request = new RequestToManager();
 				ProcessSummaryType process = 
 					request.importProcess(owner, nativeType, processName, versionName, 
 							nativeProcess, domain, null, creationDate, null, false);
