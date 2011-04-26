@@ -18,10 +18,6 @@
 		<part name="payload" element="tnsx:ReadNativeInputMsg">
 		</part>
 	</message>
-	<message name="CloseSessionOutputMsg">
-		<part name="payload" element="tnsx:CloseSessionOutputMsg">
-		</part>
-	</message>
 	<message name="WriteProcessInputMsg">
 		<part name="payload" element="tnsx:WriteProcessInputMsg">
 		</part>
@@ -44,10 +40,6 @@
 	</message>
 	<message name="WriteNewAnnotationOutputMsg">
 		<part name="payload" element="tnsx:WriteNewAnnotationOutputMsg">
-		</part>
-	</message>
-	<message name="CloseSessionInputMsg">
-		<part name="payload" element="tnsx:CloseSessionInputMsg">
 		</part>
 	</message>
 	<message name="ReadNativeOutputMsg">
@@ -83,12 +75,6 @@
 			<input name="WriteAnnotationRequest" message="tns:WriteAnnotationInputMsg">
 			</input>
 			<output name="WriteAnnotationResponse" message="tns:WriteAnnotationOutputMsg">
-			</output>
-		</operation>
-		<operation name="CloseSession">
-			<input name="CloseSessionRequest" message="tns:CloseSessionInputMsg">
-			</input>
-			<output name="CloseSessionResponse" message="tns:CloseSessionOutputMsg">
 			</output>
 		</operation>
 	</portType>
@@ -137,15 +123,6 @@
 				<soap:body use="literal" />
 			</input>
 			<output name="WriteAnnotationResponse">
-				<soap:body use="literal" />
-			</output>
-		</operation>
-		<operation name="CloseSession">
-			<soap:operation style="document" />
-			<input name="CloseSessionRequest">
-				<soap:body use="literal" />
-			</input>
-			<output name="CloseSessionResponse">
 				<soap:body use="literal" />
 			</output>
 		</operation>
