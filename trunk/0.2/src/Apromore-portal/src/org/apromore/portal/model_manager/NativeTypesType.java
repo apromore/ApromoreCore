@@ -33,11 +33,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "NativeTypesType", propOrder = {
     "nativeType"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:08:48+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:34:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class NativeTypesType {
 
     @XmlElement(name = "NativeType")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:08:48+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:34:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<FormatType> nativeType;
 
     /**
@@ -62,7 +62,7 @@ public class NativeTypesType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:08:48+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:34:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<FormatType> getNativeType() {
         if (nativeType == null) {
             nativeType = new ArrayList<FormatType>();

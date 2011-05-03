@@ -213,7 +213,7 @@ public class CreateProcessController {
 
 				} else if ("EPML 2.0".compareTo(nativeType)==0) {
 					// create an empty epml process (see issue 129)
-					// then just creation an empty process.
+					// then just creation of an empty process.
 					TypeEPML epml = new TypeEPML();
 					TypeCoordinates coordinates = new TypeCoordinates();
 					coordinates.setXOrigin("leftToRight");

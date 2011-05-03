@@ -1,6 +1,7 @@
 
 package org.apromore.portal.model_oryx;
 
+import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
@@ -26,9 +27,11 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ReadNativeInputMsgType")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T04:04:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ReadNativeInputMsgType {
 
     @XmlAttribute(name = "EditSessionCode")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T04:04:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Integer editSessionCode;
 
     /**
@@ -39,6 +42,7 @@ public class ReadNativeInputMsgType {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T04:04:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Integer getEditSessionCode() {
         return editSessionCode;
     }
@@ -51,6 +55,7 @@ public class ReadNativeInputMsgType {
      *     {@link Integer }
      *     
      */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T04:04:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setEditSessionCode(Integer value) {
         this.editSessionCode = value;
     }
