@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+<schema xmlns="http://www.w3.org/2001/XMLSchema" 
+    xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
 	targetNamespace="http://www.apromore.org/data_access/model_toolbox"
 	xmlns:tns="http://www.apromore.org/data_access/model_toolbox">
 
