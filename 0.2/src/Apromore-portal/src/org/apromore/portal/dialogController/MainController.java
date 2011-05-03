@@ -248,10 +248,11 @@ public class MainController extends Window {
  * @param domain
  * @param annotation
  * @param readOnly
+ * @throws InterruptedException 
  * @throws Exception
  */
 	public void editProcess(Integer processId, String processName, String version, 
-			String nativeType, String domain, String annotation, String readOnly) throws Exception {
+			String nativeType, String domain, String annotation, String readOnly) throws InterruptedException {
 
 		String instruction="", url=getHost();
 		int offsetH = 100, offsetV=200;
@@ -288,7 +289,7 @@ public class MainController extends Window {
 			+ ",height=600,width=800,scrollbars=1,resizable=1'); ";
 			// Send http post to Oryx
 			Clients.evalJavaScript(instruction);
-		} catch (ExceptionWriteEditSession e) {
+		} catch (Exception e) {
 			Messagebox.show("Cannot edit " + processName + " (" 
 					+e.getMessage()+")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
