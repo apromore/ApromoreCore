@@ -255,6 +255,8 @@
 		<attribute name="processName" type="string" />
 		<attribute name="versionName" type="string" />
 		<attribute name="domain" type="string" />
+		<attribute name="creationDate" type="string" />
+		<attribute name="lastupdate" type="string" />
 		<attribute name="WithAnnotation" type="boolean" />
 		<attribute name="Annotation" type="string" />
 	</complexType>
