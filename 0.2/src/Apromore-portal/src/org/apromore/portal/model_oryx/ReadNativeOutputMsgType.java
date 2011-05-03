@@ -2,6 +2,7 @@
 package org.apromore.portal.model_oryx;
 
 import javax.activation.DataHandler;
+import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlElement;
@@ -21,8 +22,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element name="Result" type="{http://www.apromore.org/portal/model_oryx}ResultType"/>
  *         &lt;element name="Native" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
- *         &lt;element name="NativeType" type="{http://www.w3.org/2001/XMLSchema}string"/>
- *         &lt;element name="EditionType" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="EditSession" type="{http://www.apromore.org/portal/model_oryx}EditSessionType"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
  *   &lt;/complexContent>
@@ -35,20 +35,21 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ReadNativeOutputMsgType", propOrder = {
     "result",
     "_native",
-    "nativeType",
-    "editionType"
+    "editSession"
 })
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T04:04:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ReadNativeOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T04:04:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ResultType result;
     @XmlElement(name = "Native", required = true)
     @XmlMimeType("application/octet-stream")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T04:04:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected DataHandler _native;
-    @XmlElement(name = "NativeType", required = true)
-    protected String nativeType;
-    @XmlElement(name = "EditionType", required = true)
-    protected String editionType;
+    @XmlElement(name = "EditSession", required = true)
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T04:04:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    protected EditSessionType editSession;
 
     /**
      * Gets the value of the result property.
@@ -58,6 +59,7 @@ public class ReadNativeOutputMsgType {
      *     {@link ResultType }
      *     
      */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T04:04:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ResultType getResult() {
         return result;
     }
@@ -70,6 +72,7 @@ public class ReadNativeOutputMsgType {
      *     {@link ResultType }
      *     
      */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T04:04:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -82,6 +85,7 @@ public class ReadNativeOutputMsgType {
      *     {@link DataHandler }
      *     
      */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T04:04:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public DataHandler getNative() {
         return _native;
     }
@@ -94,56 +98,35 @@ public class ReadNativeOutputMsgType {
      *     {@link DataHandler }
      *     
      */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T04:04:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setNative(DataHandler value) {
         this._native = value;
     }
 
     /**
-     * Gets the value of the nativeType property.
+     * Gets the value of the editSession property.
      * 
      * @return
      *     possible object is
-     *     {@link String }
+     *     {@link EditSessionType }
      *     
      */
-    public String getNativeType() {
-        return nativeType;
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T04:04:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public EditSessionType getEditSession() {
+        return editSession;
     }
 
     /**
-     * Sets the value of the nativeType property.
+     * Sets the value of the editSession property.
      * 
      * @param value
      *     allowed object is
-     *     {@link String }
+     *     {@link EditSessionType }
      *     
      */
-    public void setNativeType(String value) {
-        this.nativeType = value;
-    }
-
-    /**
-     * Gets the value of the editionType property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
-     */
-    public String getEditionType() {
-        return editionType;
-    }
-
-    /**
-     * Sets the value of the editionType property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
-     */
-    public void setEditionType(String value) {
-        this.editionType = value;
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T04:04:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public void setEditSession(EditSessionType value) {
+        this.editSession = value;
     }
 
 }
