@@ -284,14 +284,16 @@
 	</complexType>
 
 	<complexType name="EditSessionType">
-		<attribute name="Username" type="string" />
-		<attribute name="NativeType" type="string" />
-		<attribute name="ProcessId" type="int" />
-		<attribute name="ProcessName" type="string" />
-		<attribute name="VersionName" type="string" />
-		<attribute name="Domain" type="string" />
-		<attribute name="WithAnnotation" type="boolean" />
-		<attribute name="Annotation" type="string" />
+		<attribute name="username" type="string" />
+		<attribute name="nativeType" type="string" />
+		<attribute name="processId" type="int" />
+		<attribute name="processName" type="string" />
+		<attribute name="versionName" type="string" />
+		<attribute name="domain" type="string" />
+		<attribute name="creationDate" type="string" />
+		<attribute name="lastUpdate" type="string" />
+		<attribute name="withAnnotation" type="boolean" />
+		<attribute name="annotation" type="string" />
 	</complexType>
 
 	<complexType name="WriteEditSessionInputMsgType">
