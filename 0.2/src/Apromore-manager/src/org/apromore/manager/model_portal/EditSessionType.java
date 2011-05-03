@@ -17,14 +17,16 @@ import javax.xml.bind.annotation.XmlType;
  * &lt;complexType name="EditSessionType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="Username" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="NativeType" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="ProcessId" type="{http://www.w3.org/2001/XMLSchema}int" />
- *       &lt;attribute name="ProcessName" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="VersionName" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="Domain" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="WithAnnotation" type="{http://www.w3.org/2001/XMLSchema}boolean" />
- *       &lt;attribute name="Annotation" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="username" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="nativeType" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="processId" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="processName" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="versionName" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="domain" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="creationDate" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="lastUpdate" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="withAnnotation" type="{http://www.w3.org/2001/XMLSchema}boolean" />
+ *       &lt;attribute name="annotation" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -34,32 +36,38 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "EditSessionType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class EditSessionType {
 
-    @XmlAttribute(name = "Username")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @XmlAttribute(name = "username")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String username;
-    @XmlAttribute(name = "NativeType")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @XmlAttribute(name = "nativeType")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String nativeType;
-    @XmlAttribute(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @XmlAttribute(name = "processId")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Integer processId;
-    @XmlAttribute(name = "ProcessName")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @XmlAttribute(name = "processName")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String processName;
-    @XmlAttribute(name = "VersionName")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @XmlAttribute(name = "versionName")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String versionName;
-    @XmlAttribute(name = "Domain")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @XmlAttribute(name = "domain")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String domain;
-    @XmlAttribute(name = "WithAnnotation")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @XmlAttribute(name = "creationDate")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    protected String creationDate;
+    @XmlAttribute(name = "lastUpdate")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    protected String lastUpdate;
+    @XmlAttribute(name = "withAnnotation")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Boolean withAnnotation;
-    @XmlAttribute(name = "Annotation")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @XmlAttribute(name = "annotation")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String annotation;
 
     /**
@@ -70,7 +78,7 @@ public class EditSessionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getUsername() {
         return username;
     }
@@ -83,7 +91,7 @@ public class EditSessionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setUsername(String value) {
         this.username = value;
     }
@@ -96,7 +104,7 @@ public class EditSessionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getNativeType() {
         return nativeType;
     }
@@ -109,7 +117,7 @@ public class EditSessionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setNativeType(String value) {
         this.nativeType = value;
     }
@@ -122,7 +130,7 @@ public class EditSessionType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Integer getProcessId() {
         return processId;
     }
@@ -135,7 +143,7 @@ public class EditSessionType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessId(Integer value) {
         this.processId = value;
     }
@@ -148,7 +156,7 @@ public class EditSessionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getProcessName() {
         return processName;
     }
@@ -161,7 +169,7 @@ public class EditSessionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessName(String value) {
         this.processName = value;
     }
@@ -174,7 +182,7 @@ public class EditSessionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getVersionName() {
         return versionName;
     }
@@ -187,7 +195,7 @@ public class EditSessionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setVersionName(String value) {
         this.versionName = value;
     }
@@ -200,7 +208,7 @@ public class EditSessionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getDomain() {
         return domain;
     }
@@ -213,9 +221,61 @@ public class EditSessionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setDomain(String value) {
         this.domain = value;
+    }
+
+    /**
+     * Gets the value of the creationDate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public String getCreationDate() {
+        return creationDate;
+    }
+
+    /**
+     * Sets the value of the creationDate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public void setCreationDate(String value) {
+        this.creationDate = value;
+    }
+
+    /**
+     * Gets the value of the lastUpdate property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public String getLastUpdate() {
+        return lastUpdate;
+    }
+
+    /**
+     * Sets the value of the lastUpdate property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public void setLastUpdate(String value) {
+        this.lastUpdate = value;
     }
 
     /**
@@ -226,7 +286,7 @@ public class EditSessionType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Boolean isWithAnnotation() {
         return withAnnotation;
     }
@@ -239,7 +299,7 @@ public class EditSessionType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setWithAnnotation(Boolean value) {
         this.withAnnotation = value;
     }
@@ -252,7 +312,7 @@ public class EditSessionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getAnnotation() {
         return annotation;
     }
@@ -265,7 +325,7 @@ public class EditSessionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:17:31+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setAnnotation(String value) {
         this.annotation = value;
     }
