@@ -25,6 +25,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import javax.xml.namespace.QName;
 
@@ -89,9 +90,10 @@ public class Canonical2EPML {
 	Map<BigInteger, EdgeType> edgeRefMap = new HashMap<BigInteger, EdgeType>();
 	Map<BigInteger, Object> epcRefMap = new HashMap<BigInteger, Object>();
 	Map<BigInteger, ObjectRefType> objectRefMap = new HashMap<BigInteger, ObjectRefType>();
+	Map<BigInteger, ResourceTypeType> resourceTypeMap = new HashMap<BigInteger, ResourceTypeType>();
 	List<TEpcElement> eventFuncList = new LinkedList<TEpcElement>();
 	List<BigInteger> object_res_list = new LinkedList<BigInteger>();
-	Map<BigInteger, List<BigInteger>> role_map = new HashMap<BigInteger, List<BigInteger>>();
+	Map<BigInteger, BigInteger> role_map = new HashMap<BigInteger, BigInteger>();
 	List<TypeFunction> subnet_list = new LinkedList<TypeFunction>();
 	List<TypeProcessInterface> pi_list = new LinkedList<TypeProcessInterface>();
 	List<Object> temp_list = new LinkedList<Object>();
@@ -520,6 +522,7 @@ public class Canonical2EPML {
 				if(object_res_list.contains(resT.getId()))
 					translateResource(resT,epc);
 			}
+			processRoles(epc);
 			createRelationArc(epc,net);
 			object_res_list.clear();
 			if(addFakes)
@@ -547,13 +550,11 @@ public class Canonical2EPML {
 				{
 					object_res_list.add(ref.getObjectId());
 				}
-				List<BigInteger> ll = new LinkedList<BigInteger>();
 				for(ResourceTypeRefType ref : ((WorkType)node).getResourceTypeRef())
 				{
 					object_res_list.add(ref.getResourceTypeId());
-					ll.add(ref.getResourceTypeId());
+					role_map.put(((WorkType)node).getId(),ref.getResourceTypeId());
 				}
-				role_map.put(epc.getEpcId(),ll);
 				
 			} else if (node instanceof RoutingType) {
 				translateGateway(epc, node);
@@ -635,7 +636,7 @@ public class Canonical2EPML {
 					}
 				}
 				
-				for(ResourceTypeRefType ref:((WorkType)node).getResourceTypeRef())
+				/*for(ResourceTypeRefType ref:((WorkType)node).getResourceTypeRef())
 				{
 					if(ref.getResourceTypeId() != null)
 					{
@@ -648,7 +649,7 @@ public class Canonical2EPML {
 						arc.setRelation(rel);
 						epc.getEventOrFunctionOrRole().add(arc);
 					}
-				}
+				}*/
 			}
 		}
 	}
@@ -702,15 +703,46 @@ public class Canonical2EPML {
 		epcRefMap.put(object.getId(), object);
 	}
 	
+	private void processRoles(TypeEPC epc)
+	{	
+		List<TypeArc> arcs_list = new LinkedList<TypeArc>();
+		for (Entry<BigInteger, BigInteger> entry : role_map.entrySet()) {
+		    BigInteger key = entry.getKey();
+		    BigInteger value = entry.getValue();
+		    
+		    TypeRole role = new TypeRole();
+			//id_map.put(resT.getId(), BigInteger.valueOf(ids));
+			role.setId(BigInteger.valueOf(ids++));
+			role.setName(resourceTypeMap.get(value).getName());
+			role.setDefRef(find_def_id("role",role.getName()));
+			epc.getEventOrFunctionOrRole().add(role);
+			
+			TypeArc arc1 = new TypeArc();
+			TypeRelation rel = new TypeRelation();
+			rel.setTarget(role.getId());
+			rel.setSource(id_map.get(key));
+			rel.setType("role");
+			arc1.setRelation(rel);
+			arcs_list.add(arc1);
+		    
+		}
+		
+		for(TypeArc arc: arcs_list)
+			epc.getEventOrFunctionOrRole().add(arc);
+	}
+	
 	private void translateResource(ResourceTypeType resT, TypeEPC epc)
 	{
+		resourceTypeMap.put(resT.getId(), resT);
+		
+		/*
 		TypeRole role = new TypeRole();
 		id_map.put(resT.getId(), BigInteger.valueOf(ids));
 		role.setId(BigInteger.valueOf(ids++));
 		role.setName(resT.getName());
 		role.setDefRef(find_def_id("role",role.getName()));
 		epc.getEventOrFunctionOrRole().add(role);
-		
+		//
 		// Linking the related element
 		
 		List<TypeArc> arcs_list = new LinkedList<TypeArc>();
@@ -719,15 +751,15 @@ public class Canonical2EPML {
 		{
 			List<BigInteger> ll = new LinkedList<BigInteger>();
 			if(obj instanceof TypeArc)
-				ll = role_map.get(((TypeArc)obj).getId());
-			else
-				ll = role_map.get(((TEpcElement)obj).getId());
+				ll.add(role_map.get(((TypeArc)obj).getId()));
+			//else
+				//ll = role_map.get(((TEpcElement)obj).getId());
 			
 			if(ll != null)
 			{
-				
 				if(obj instanceof TypeFunction)
 				{
+					
 					if(ll.contains(resT.getId()))
 					{
 						TypeArc arc1 = new TypeArc();
@@ -738,24 +770,12 @@ public class Canonical2EPML {
 						arcs_list.add(arc1);
 					}
 				}
-				/*else if(obj instanceof TypeEvent)
-				{
-					if(ll.contains(resT.getId()))
-					{
-						TypeArc arc2 = new TypeArc();
-						TypeRelation rel = new TypeRelation();
-						rel.setSource(role.getId());
-						rel.setTarget(((TypeEvent)obj).getId());
-						arc2.setRelation(rel);
-						arcs_list.add(arc2);
-					}
-				}*/
 			}
 		}
 		
 		for(TypeArc arc: arcs_list)
 			epc.getEventOrFunctionOrRole().add(arc);
-		
+		*/
 	}
 	
 	private void translateGateway(TypeEPC epc, NodeType node)
