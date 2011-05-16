@@ -749,7 +749,22 @@ public class EPML2Canonical{
 					}
 				} 
 				else if(node.getId().equals(id_map.get(arc.getRelation().getTarget()))){
-					
+					if(arc.getRelation().getType() != null && arc.getRelation().getType().equals("role"))
+					{
+						ResourceTypeRefType ref = new ResourceTypeRefType();
+						TypeAttribute att = new TypeAttribute();
+						id_map.put(arc.getId(), BigInteger.valueOf(ids));
+						att.setTypeRef("RefID");
+						att.setValue(String.valueOf(ids++));
+						ref.getAttribute().add(att);
+						ref.setResourceTypeId(id_map.get(arc.getRelation().getTarget()));
+						if (role_ref.get(arc.getRelation().getSource()) != null) {
+							ref.setOptional(role_ref.get(arc.getRelation().getSource()).isOptional());
+							ref.setQualifier(role_ref.get(arc.getRelation().getSource()).getDescription()); /// update
+						}
+						((WorkType)node).getResourceTypeRef().add(ref);
+					}
+					else {
 						ObjectRefType ref = new ObjectRefType();
 						TypeAttribute att = new TypeAttribute();
 						id_map.put(arc.getId(), BigInteger.valueOf(ids));
@@ -762,7 +777,7 @@ public class EPML2Canonical{
 						//ref.setOptional(obj_ref.get(arc.getRelation().getSource()).isOptional());
 						//ref.setConsumed(obj_ref.get(arc.getRelation().getSource()).isConsumed());
 						((WorkType)node).getObjectRef().add(ref);
-
+					}
 				}
 			}
 		}
