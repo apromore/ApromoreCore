@@ -40,32 +40,32 @@ import javax.xml.bind.annotation.XmlType;
     "processVersionIds",
     "parameters"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class MergeProcessesInputMsgType {
 
     @XmlElement(name = "ProcessVersion_ids", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ProcessVersionIdsType processVersionIds;
     @XmlElement(name = "Parameters", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ParametersType parameters;
     @XmlAttribute(name = "ProcessName")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String processName;
     @XmlAttribute(name = "VersionName")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String versionName;
     @XmlAttribute(name = "Domain")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String domain;
     @XmlAttribute(name = "Username")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String username;
     @XmlAttribute(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Integer processId;
     @XmlAttribute(name = "Algorithm")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String algorithm;
 
     /**
@@ -76,7 +76,7 @@ public class MergeProcessesInputMsgType {
      *     {@link ProcessVersionIdsType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ProcessVersionIdsType getProcessVersionIds() {
         return processVersionIds;
     }
@@ -89,7 +89,7 @@ public class MergeProcessesInputMsgType {
      *     {@link ProcessVersionIdsType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessVersionIds(ProcessVersionIdsType value) {
         this.processVersionIds = value;
     }
@@ -102,7 +102,7 @@ public class MergeProcessesInputMsgType {
      *     {@link ParametersType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ParametersType getParameters() {
         return parameters;
     }
@@ -115,7 +115,7 @@ public class MergeProcessesInputMsgType {
      *     {@link ParametersType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setParameters(ParametersType value) {
         this.parameters = value;
     }
@@ -128,7 +128,7 @@ public class MergeProcessesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getProcessName() {
         return processName;
     }
@@ -141,7 +141,7 @@ public class MergeProcessesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessName(String value) {
         this.processName = value;
     }
@@ -154,7 +154,7 @@ public class MergeProcessesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getVersionName() {
         return versionName;
     }
@@ -167,7 +167,7 @@ public class MergeProcessesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setVersionName(String value) {
         this.versionName = value;
     }
@@ -180,7 +180,7 @@ public class MergeProcessesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getDomain() {
         return domain;
     }
@@ -193,7 +193,7 @@ public class MergeProcessesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setDomain(String value) {
         this.domain = value;
     }
@@ -206,7 +206,7 @@ public class MergeProcessesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getUsername() {
         return username;
     }
@@ -219,7 +219,7 @@ public class MergeProcessesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setUsername(String value) {
         this.username = value;
     }
@@ -232,7 +232,7 @@ public class MergeProcessesInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public Integer getProcessId() {
         return processId;
     }
@@ -245,7 +245,7 @@ public class MergeProcessesInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setProcessId(Integer value) {
         this.processId = value;
     }
@@ -258,7 +258,7 @@ public class MergeProcessesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public String getAlgorithm() {
         return algorithm;
     }
@@ -271,7 +271,7 @@ public class MergeProcessesInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setAlgorithm(String value) {
         this.algorithm = value;
     }

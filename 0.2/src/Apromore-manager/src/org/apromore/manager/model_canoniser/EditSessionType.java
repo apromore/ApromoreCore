@@ -1,35 +1,32 @@
 
 package org.apromore.manager.model_canoniser;
 
-import java.util.ArrayList;
-import java.util.List;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ProcessSummaryType complex type.
+ * <p>Java class for EditSessionType complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ProcessSummaryType">
+ * &lt;complexType name="EditSessionType">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;sequence>
- *         &lt;element name="VersionSummaries" type="{http://www.apromore.org/canoniser/model_manager}VersionSummaryType" maxOccurs="unbounded"/>
- *       &lt;/sequence>
- *       &lt;attribute name="original_native_type" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="name" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="id" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="username" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="nativeType" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="processId" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="processName" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="versionName" type="{http://www.w3.org/2001/XMLSchema}string" />
  *       &lt;attribute name="domain" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="ranking" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="last_version" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="owner" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="creationDate" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="lastUpdate" type="{http://www.w3.org/2001/XMLSchema}string" />
+ *       &lt;attribute name="withAnnotation" type="{http://www.w3.org/2001/XMLSchema}boolean" />
+ *       &lt;attribute name="annotation" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -38,69 +35,43 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ProcessSummaryType", propOrder = {
-    "versionSummaries"
-})
+@XmlType(name = "EditSessionType")
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-public class ProcessSummaryType {
+public class EditSessionType {
 
-    @XmlElement(name = "VersionSummaries", required = true)
+    @XmlAttribute(name = "username")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected List<VersionSummaryType> versionSummaries;
-    @XmlAttribute(name = "original_native_type")
+    protected String username;
+    @XmlAttribute(name = "nativeType")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String originalNativeType;
-    @XmlAttribute(name = "name")
+    protected String nativeType;
+    @XmlAttribute(name = "processId")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String name;
-    @XmlAttribute(name = "id")
+    protected Integer processId;
+    @XmlAttribute(name = "processName")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected Integer id;
+    protected String processName;
+    @XmlAttribute(name = "versionName")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    protected String versionName;
     @XmlAttribute(name = "domain")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String domain;
-    @XmlAttribute(name = "ranking")
+    @XmlAttribute(name = "creationDate")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String ranking;
-    @XmlAttribute(name = "last_version")
+    protected String creationDate;
+    @XmlAttribute(name = "lastUpdate")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String lastVersion;
-    @XmlAttribute(name = "owner")
+    protected String lastUpdate;
+    @XmlAttribute(name = "withAnnotation")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    protected String owner;
+    protected Boolean withAnnotation;
+    @XmlAttribute(name = "annotation")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    protected String annotation;
 
     /**
-     * Gets the value of the versionSummaries property.
-     * 
-     * <p>
-     * This accessor method returns a reference to the live list,
-     * not a snapshot. Therefore any modification you make to the
-     * returned list will be present inside the JAXB object.
-     * This is why there is not a <CODE>set</CODE> method for the versionSummaries property.
-     * 
-     * <p>
-     * For example, to add a new item, do as follows:
-     * <pre>
-     *    getVersionSummaries().add(newItem);
-     * </pre>
-     * 
-     * 
-     * <p>
-     * Objects of the following type(s) are allowed in the list
-     * {@link VersionSummaryType }
-     * 
-     * 
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public List<VersionSummaryType> getVersionSummaries() {
-        if (versionSummaries == null) {
-            versionSummaries = new ArrayList<VersionSummaryType>();
-        }
-        return this.versionSummaries;
-    }
-
-    /**
-     * Gets the value of the originalNativeType property.
+     * Gets the value of the username property.
      * 
      * @return
      *     possible object is
@@ -108,12 +79,12 @@ public class ProcessSummaryType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getOriginalNativeType() {
-        return originalNativeType;
+    public String getUsername() {
+        return username;
     }
 
     /**
-     * Sets the value of the originalNativeType property.
+     * Sets the value of the username property.
      * 
      * @param value
      *     allowed object is
@@ -121,12 +92,12 @@ public class ProcessSummaryType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setOriginalNativeType(String value) {
-        this.originalNativeType = value;
+    public void setUsername(String value) {
+        this.username = value;
     }
 
     /**
-     * Gets the value of the name property.
+     * Gets the value of the nativeType property.
      * 
      * @return
      *     possible object is
@@ -134,12 +105,12 @@ public class ProcessSummaryType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getName() {
-        return name;
+    public String getNativeType() {
+        return nativeType;
     }
 
     /**
-     * Sets the value of the name property.
+     * Sets the value of the nativeType property.
      * 
      * @param value
      *     allowed object is
@@ -147,12 +118,12 @@ public class ProcessSummaryType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setName(String value) {
-        this.name = value;
+    public void setNativeType(String value) {
+        this.nativeType = value;
     }
 
     /**
-     * Gets the value of the id property.
+     * Gets the value of the processId property.
      * 
      * @return
      *     possible object is
@@ -160,12 +131,12 @@ public class ProcessSummaryType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public Integer getId() {
-        return id;
+    public Integer getProcessId() {
+        return processId;
     }
 
     /**
-     * Sets the value of the id property.
+     * Sets the value of the processId property.
      * 
      * @param value
      *     allowed object is
@@ -173,8 +144,60 @@ public class ProcessSummaryType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setId(Integer value) {
-        this.id = value;
+    public void setProcessId(Integer value) {
+        this.processId = value;
+    }
+
+    /**
+     * Gets the value of the processName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public String getProcessName() {
+        return processName;
+    }
+
+    /**
+     * Sets the value of the processName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public void setProcessName(String value) {
+        this.processName = value;
+    }
+
+    /**
+     * Gets the value of the versionName property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public String getVersionName() {
+        return versionName;
+    }
+
+    /**
+     * Sets the value of the versionName property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link String }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public void setVersionName(String value) {
+        this.versionName = value;
     }
 
     /**
@@ -204,7 +227,7 @@ public class ProcessSummaryType {
     }
 
     /**
-     * Gets the value of the ranking property.
+     * Gets the value of the creationDate property.
      * 
      * @return
      *     possible object is
@@ -212,12 +235,12 @@ public class ProcessSummaryType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getRanking() {
-        return ranking;
+    public String getCreationDate() {
+        return creationDate;
     }
 
     /**
-     * Sets the value of the ranking property.
+     * Sets the value of the creationDate property.
      * 
      * @param value
      *     allowed object is
@@ -225,12 +248,12 @@ public class ProcessSummaryType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setRanking(String value) {
-        this.ranking = value;
+    public void setCreationDate(String value) {
+        this.creationDate = value;
     }
 
     /**
-     * Gets the value of the lastVersion property.
+     * Gets the value of the lastUpdate property.
      * 
      * @return
      *     possible object is
@@ -238,12 +261,12 @@ public class ProcessSummaryType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getLastVersion() {
-        return lastVersion;
+    public String getLastUpdate() {
+        return lastUpdate;
     }
 
     /**
-     * Sets the value of the lastVersion property.
+     * Sets the value of the lastUpdate property.
      * 
      * @param value
      *     allowed object is
@@ -251,12 +274,38 @@ public class ProcessSummaryType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setLastVersion(String value) {
-        this.lastVersion = value;
+    public void setLastUpdate(String value) {
+        this.lastUpdate = value;
     }
 
     /**
-     * Gets the value of the owner property.
+     * Gets the value of the withAnnotation property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public Boolean isWithAnnotation() {
+        return withAnnotation;
+    }
+
+    /**
+     * Sets the value of the withAnnotation property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    public void setWithAnnotation(Boolean value) {
+        this.withAnnotation = value;
+    }
+
+    /**
+     * Gets the value of the annotation property.
      * 
      * @return
      *     possible object is
@@ -264,12 +313,12 @@ public class ProcessSummaryType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public String getOwner() {
-        return owner;
+    public String getAnnotation() {
+        return annotation;
     }
 
     /**
-     * Sets the value of the owner property.
+     * Sets the value of the annotation property.
      * 
      * @param value
      *     allowed object is
@@ -277,8 +326,8 @@ public class ProcessSummaryType {
      *     
      */
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:38:44+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
-    public void setOwner(String value) {
-        this.owner = value;
+    public void setAnnotation(String value) {
+        this.annotation = value;
     }
 
 }

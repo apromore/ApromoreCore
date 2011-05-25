@@ -221,16 +221,34 @@
 		<sequence>
 			<element name="ProcessDescription" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
+			<element name="EditSession" type="tns:EditSessionType"
+				minOccurs="1" maxOccurs="1" />
 		</sequence>
-		<attribute name="ProcessName" type="string" />
-		<attribute name="VersionName" type="string" />
-		<attribute name="NativeType" type="string" />
-		<attribute name="Domain" type="string" />
-		<attribute name="Username" type="string" />
-		<attribute name="Last_update" type="string" />
-		<attribute name="Creation_date" type="string" />
-		<attribute name="Documentation" type="string" />
 		<attribute name="AddFakeEvents" type="boolean" />
+	</complexType>
+	
+	<complexType name="UpdateProcessInputMsgType">
+		<sequence>
+			<element name="Native" type="base64Binary"
+				xmime:expectedContentTypes="application/octet-stream" />
+			<element name="EditSession" type="tns:EditSessionType"
+				minOccurs="1" maxOccurs="1" />
+		</sequence>
+		<attribute name="EditSessionCode" type="int" />
+		<attribute name="PreVersion" type="string" />
+	</complexType>
+	
+	<complexType name="EditSessionType">
+		<attribute name="username" type="string" />
+		<attribute name="nativeType" type="string" />
+		<attribute name="processId" type="int" />
+		<attribute name="processName" type="string" />
+		<attribute name="versionName" type="string" />
+		<attribute name="domain" type="string" />
+		<attribute name="creationDate" type="string" />
+		<attribute name="lastUpdate" type="string" />
+		<attribute name="withAnnotation" type="boolean" />
+		<attribute name="annotation" type="string" />
 	</complexType>
 
 	<complexType name="ImportProcessOutputMsgType">
@@ -283,19 +301,6 @@
 		<attribute name="num" type="int" />
 	</complexType>
 
-	<complexType name="EditSessionType">
-		<attribute name="username" type="string" />
-		<attribute name="nativeType" type="string" />
-		<attribute name="processId" type="int" />
-		<attribute name="processName" type="string" />
-		<attribute name="versionName" type="string" />
-		<attribute name="domain" type="string" />
-		<attribute name="creationDate" type="string" />
-		<attribute name="lastUpdate" type="string" />
-		<attribute name="withAnnotation" type="boolean" />
-		<attribute name="annotation" type="string" />
-	</complexType>
-
 	<complexType name="WriteEditSessionInputMsgType">
 		<sequence>
 			<element name="EditSession" type="tns:EditSessionType"
@@ -331,19 +336,6 @@
 		<sequence>
 			<element name="Result" type="tns:ResultType" />
 		</sequence>
-	</complexType>
-
-	<complexType name="UpdateProcessInputMsgType">
-		<sequence>
-			<element name="Native" type="base64Binary"
-				xmime:expectedContentTypes="application/octet-stream" />
-		</sequence>
-		<attribute name="EditSessionCode" type="int" />
-		<attribute name="Username" type="string" />
-		<attribute name="NativeType" type="string" />
-		<attribute name="ProcessId" type="int" />
-		<attribute name="Domain" type="string" />
-		<attribute name="PreVersion" type="string" />
 	</complexType>
 
 	<complexType name="UpdateProcessOutputMsgType">
@@ -395,7 +387,7 @@
 		</sequence>
 	</complexType>
 
-<complexType name="SearchForSimilarProcessesOutputMsgType">
+	<complexType name="SearchForSimilarProcessesOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" />
 			<element name="ProcessSummaries" type="tns:ProcessSummariesType" />
