@@ -14,6 +14,7 @@ import org.apromore.canoniser.exception.ExceptionAnnotation;
 import org.apromore.canoniser.exception.ExceptionCpfUri;
 import org.apromore.canoniser.exception.ExceptionStore;
 import org.apromore.canoniser.exception.ExceptionVersion;
+import org.apromore.canoniser.model_da.EditSessionType;
 import org.apromore.canoniser.model_da.GetCpfUriInputMsgType;
 import org.apromore.canoniser.model_da.GetCpfUriOutputMsgType;
 import org.apromore.canoniser.model_da.StoreNativeCpfInputMsgType;
@@ -48,14 +49,15 @@ public class RequestToDA {
 			new ProcessSummaryType();
 		StoreNativeCpfInputMsgType payload = new StoreNativeCpfInputMsgType();
 		payload.setCpfURI(cpfURI);
-		payload.setUsername(username);
-		payload.setNativeType(nativeType);
-		payload.setProcessName(processName);
-		payload.setDomain(domain);
-		payload.setVersionName(versionName);
-		payload.setDocumentation(documentation);
-		payload.setCreationDate(created);
-		payload.setLastUpdate(lastupdate);
+		EditSessionType editSession = new EditSessionType();
+		editSession.setUsername(username);
+		editSession.setNativeType(nativeType);
+		editSession.setProcessName(processName);
+		editSession.setDomain(domain);
+		editSession.setVersionName(versionName);
+		editSession.setCreationDate(created);
+		editSession.setLastUpdate(lastupdate);
+		payload.setEditSession(editSession);
 		DataSource source_proc = new ByteArrayDataSource(process_xml, "text/xml"); 
 		payload.setNative(new DataHandler(source_proc));
 		DataSource source_cpf = new ByteArrayDataSource(cpf_xml, "text/xml"); 
@@ -113,16 +115,17 @@ public class RequestToDA {
 		}
 	}
 
-	public void StoreVersion(int editSessionCode, int processId, String preVersion, 
+	public void StoreVersion(int editSessionCode, int processId, 
 			String cpfURI, String nativeType, 
 			InputStream native_is, InputStream anf_xml_is,
 			InputStream cpf_xml_is) throws IOException, ExceptionStore, ExceptionVersion {
 
 		StoreVersionInputMsgType payload = new StoreVersionInputMsgType();
 		payload.setCpfURI(cpfURI);
-		payload.setNativeType(nativeType);
-		payload.setProcessId(processId);
-		payload.setPreVersion(preVersion);
+		EditSessionType editSession = new EditSessionType();
+		editSession.setNativeType(nativeType);
+		editSession.setProcessId(processId);
+		payload.setEditSession(editSession);
 		payload.setEditSessionCode(editSessionCode);
 		DataSource source_proc = new ByteArrayDataSource(native_is, "text/xml"); 
 		payload.setNative(new DataHandler(source_proc));
