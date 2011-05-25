@@ -328,14 +328,15 @@ public class RequestToManager {
 		ImportProcessInputMsgType payload = new ImportProcessInputMsgType();
 		DataSource source = new ByteArrayDataSource(xml_process, "text/xml"); 
 		payload.setProcessDescription(new DataHandler(source));
-		payload.setUsername(username);
-		payload.setNativeType(nativeType);
-		payload.setProcessName(processName);
-		payload.setVersionName(versionName);
-		payload.setDomain(domain);
-		payload.setDocumentation(documentation);
-		payload.setCreationDate(created);
-		payload.setLastUpdate(lastUpdate);
+		EditSessionType editSession = new EditSessionType();
+		payload.setEditSession(editSession);
+		editSession.setUsername(username);
+		editSession.setNativeType(nativeType);
+		editSession.setProcessName(processName);
+		editSession.setVersionName(versionName);
+		editSession.setDomain(domain);
+		editSession.setCreationDate(created);
+		editSession.setLastUpdate(lastUpdate);
 		payload.setAddFakeEvents(addFakeEvents);
 		ImportProcessOutputMsgType res = this.port.importProcess(payload);
 		ResultType result = res.getResult();
@@ -403,15 +404,20 @@ public class RequestToManager {
 		}
 	}
 
-	public void UpdateProcess(int sessionCode, String username, String format,
-			int processId, String preVersion, InputStream native_is) 
+	public void UpdateProcess(int sessionCode, String username, String nativeType,
+			int processId, String domain, String processName, String new_versionName, String preVersion, InputStream native_is) 
 	throws IOException, ExceptionUpdateProcess, ExceptionVersion {
 
 		UpdateProcessInputMsgType payload = new UpdateProcessInputMsgType();
 		payload.setEditSessionCode(sessionCode);
-		payload.setNativeType(format);
-		payload.setProcessId(processId);
-		payload.setUsername(username);
+
+		EditSessionType editSession = new EditSessionType();
+		payload.setEditSession(editSession);
+		editSession.setUsername(username);
+		editSession.setNativeType(nativeType);
+		editSession.setProcessName(processName);
+		editSession.setVersionName(new_versionName);
+		editSession.setDomain(domain);
 		payload.setPreVersion(preVersion);
 		DataSource sourceNat = new ByteArrayDataSource(native_is, "text/xml"); 
 		payload.setNative(new DataHandler(sourceNat));
