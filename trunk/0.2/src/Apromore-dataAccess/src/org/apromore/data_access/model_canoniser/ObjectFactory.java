@@ -43,91 +43,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ProcessSummaryType }
-     * 
-     */
-    public ProcessSummaryType createProcessSummaryType() {
-        return new ProcessSummaryType();
-    }
-
-    /**
-     * Create an instance of {@link StoreNativeInputMsgType }
-     * 
-     */
-    public StoreNativeInputMsgType createStoreNativeInputMsgType() {
-        return new StoreNativeInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ResultType }
-     * 
-     */
-    public ResultType createResultType() {
-        return new ResultType();
-    }
-
-    /**
-     * Create an instance of {@link StoreNativeCpfOutputMsgType }
-     * 
-     */
-    public StoreNativeCpfOutputMsgType createStoreNativeCpfOutputMsgType() {
-        return new StoreNativeCpfOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link WriteAnnotationInputMsgType }
-     * 
-     */
-    public WriteAnnotationInputMsgType createWriteAnnotationInputMsgType() {
-        return new WriteAnnotationInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link GetCpfUriOutputMsgType }
-     * 
-     */
-    public GetCpfUriOutputMsgType createGetCpfUriOutputMsgType() {
-        return new GetCpfUriOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link WriteAnnotationOutputMsgType }
-     * 
-     */
-    public WriteAnnotationOutputMsgType createWriteAnnotationOutputMsgType() {
-        return new WriteAnnotationOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link StoreNativeOutputMsgType }
-     * 
-     */
-    public StoreNativeOutputMsgType createStoreNativeOutputMsgType() {
-        return new StoreNativeOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link StoreVersionInputMsgType }
-     * 
-     */
-    public StoreVersionInputMsgType createStoreVersionInputMsgType() {
-        return new StoreVersionInputMsgType();
-    }
-
-    /**
      * Create an instance of {@link StoreNativeCpfInputMsgType }
      * 
      */
     public StoreNativeCpfInputMsgType createStoreNativeCpfInputMsgType() {
         return new StoreNativeCpfInputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link GetCpfUriInputMsgType }
-     * 
-     */
-    public GetCpfUriInputMsgType createGetCpfUriInputMsgType() {
-        return new GetCpfUriInputMsgType();
     }
 
     /**
@@ -139,6 +59,46 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link WriteAnnotationOutputMsgType }
+     * 
+     */
+    public WriteAnnotationOutputMsgType createWriteAnnotationOutputMsgType() {
+        return new WriteAnnotationOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link EditSessionType }
+     * 
+     */
+    public EditSessionType createEditSessionType() {
+        return new EditSessionType();
+    }
+
+    /**
+     * Create an instance of {@link StoreNativeInputMsgType }
+     * 
+     */
+    public StoreNativeInputMsgType createStoreNativeInputMsgType() {
+        return new StoreNativeInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessSummaryType }
+     * 
+     */
+    public ProcessSummaryType createProcessSummaryType() {
+        return new ProcessSummaryType();
+    }
+
+    /**
+     * Create an instance of {@link ResultType }
+     * 
+     */
+    public ResultType createResultType() {
+        return new ResultType();
+    }
+
+    /**
      * Create an instance of {@link VersionSummaryType }
      * 
      */
@@ -147,11 +107,59 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link GetCpfUriOutputMsgType }
+     * 
+     */
+    public GetCpfUriOutputMsgType createGetCpfUriOutputMsgType() {
+        return new GetCpfUriOutputMsgType();
+    }
+
+    /**
      * Create an instance of {@link StoreVersionOutputMsgType }
      * 
      */
     public StoreVersionOutputMsgType createStoreVersionOutputMsgType() {
         return new StoreVersionOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link StoreNativeOutputMsgType }
+     * 
+     */
+    public StoreNativeOutputMsgType createStoreNativeOutputMsgType() {
+        return new StoreNativeOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link WriteAnnotationInputMsgType }
+     * 
+     */
+    public WriteAnnotationInputMsgType createWriteAnnotationInputMsgType() {
+        return new WriteAnnotationInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link StoreVersionInputMsgType }
+     * 
+     */
+    public StoreVersionInputMsgType createStoreVersionInputMsgType() {
+        return new StoreVersionInputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link StoreNativeCpfOutputMsgType }
+     * 
+     */
+    public StoreNativeCpfOutputMsgType createStoreNativeCpfOutputMsgType() {
+        return new StoreNativeCpfOutputMsgType();
+    }
+
+    /**
+     * Create an instance of {@link GetCpfUriInputMsgType }
+     * 
+     */
+    public GetCpfUriInputMsgType createGetCpfUriInputMsgType() {
+        return new GetCpfUriInputMsgType();
     }
 
     /**

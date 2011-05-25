@@ -29,14 +29,14 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "sizeType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:39:06+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:54:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class SizeType {
 
     @XmlAttribute(name = "width")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:39:06+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:54:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected BigDecimal width;
     @XmlAttribute(name = "height")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:39:06+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:54:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected BigDecimal height;
 
     /**
@@ -47,7 +47,7 @@ public class SizeType {
      *     {@link BigDecimal }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:39:06+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:54:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public BigDecimal getWidth() {
         return width;
     }
@@ -60,7 +60,7 @@ public class SizeType {
      *     {@link BigDecimal }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:39:06+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:54:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setWidth(BigDecimal value) {
         this.width = value;
     }
@@ -73,7 +73,7 @@ public class SizeType {
      *     {@link BigDecimal }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:39:06+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:54:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public BigDecimal getHeight() {
         return height;
     }
@@ -86,7 +86,7 @@ public class SizeType {
      *     {@link BigDecimal }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:39:06+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:54:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setHeight(BigDecimal value) {
         this.height = value;
     }
