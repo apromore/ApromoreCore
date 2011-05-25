@@ -33,14 +33,14 @@ import javax.xml.bind.annotation.XmlType;
     "result",
     "user"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:34:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class ReadUserOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:34:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ResultType result;
     @XmlElement(name = "User", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:34:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected UserType user;
 
     /**
@@ -51,7 +51,7 @@ public class ReadUserOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:34:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ResultType getResult() {
         return result;
     }
@@ -64,7 +64,7 @@ public class ReadUserOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:34:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -77,7 +77,7 @@ public class ReadUserOutputMsgType {
      *     {@link UserType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:34:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public UserType getUser() {
         return user;
     }
@@ -90,7 +90,7 @@ public class ReadUserOutputMsgType {
      *     {@link UserType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:34:41+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setUser(UserType value) {
         this.user = value;
     }
