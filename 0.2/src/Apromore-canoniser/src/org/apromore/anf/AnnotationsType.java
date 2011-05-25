@@ -37,18 +37,18 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "AnnotationsType", propOrder = {
     "annotation"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:50:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class AnnotationsType {
 
     @XmlElement(name = "Annotation", required = true)
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:50:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<AnnotationType> annotation;
     @XmlAttribute(name = "uri", required = true)
     @XmlSchemaType(name = "anyURI")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:50:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String uri;
     @XmlAttribute(name = "name")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:50:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected String name;
 
     /**
@@ -73,7 +73,7 @@ public class AnnotationsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:50:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public List<AnnotationType> getAnnotation() {
         if (annotation == null) {
             annotation = new ArrayList<AnnotationType>();
@@ -89,7 +89,7 @@ public class AnnotationsType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:50:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public String getUri() {
         return uri;
     }
@@ -102,7 +102,7 @@ public class AnnotationsType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:50:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setUri(String value) {
         this.uri = value;
     }
@@ -115,7 +115,7 @@ public class AnnotationsType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:50:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public String getName() {
         return name;
     }
@@ -128,7 +128,7 @@ public class AnnotationsType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:50:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setName(String value) {
         this.name = value;
     }

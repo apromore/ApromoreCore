@@ -35,15 +35,15 @@ import javax.xml.bind.annotation.XmlType;
     "result",
     "nativeDescription"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:23:40+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:43:54+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class DeCanoniseProcessOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:23:40+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:43:54+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected ResultType result;
     @XmlElement(name = "NativeDescription", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:23:40+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:43:54+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected DataHandler nativeDescription;
 
     /**
@@ -54,7 +54,7 @@ public class DeCanoniseProcessOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:23:40+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:43:54+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public ResultType getResult() {
         return result;
     }
@@ -67,7 +67,7 @@ public class DeCanoniseProcessOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:23:40+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:43:54+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -80,7 +80,7 @@ public class DeCanoniseProcessOutputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:23:40+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:43:54+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public DataHandler getNativeDescription() {
         return nativeDescription;
     }
@@ -93,7 +93,7 @@ public class DeCanoniseProcessOutputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-03-03T02:23:40+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:43:54+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public void setNativeDescription(DataHandler value) {
         this.nativeDescription = value;
     }

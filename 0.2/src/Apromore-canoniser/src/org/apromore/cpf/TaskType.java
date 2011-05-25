@@ -30,17 +30,17 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "TaskType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:50:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class TaskType
     extends WorkType
 {
 
     @XmlAttribute(name = "subnetId")
     @XmlSchemaType(name = "positiveInteger")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:50:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected BigInteger subnetId;
     @XmlAttribute(name = "external")
-	@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+	@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:50:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected Boolean external;
 
     /**
@@ -51,7 +51,7 @@ public class TaskType
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:50:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public BigInteger getSubnetId() {
         return subnetId;
     }
@@ -64,7 +64,7 @@ public class TaskType
      *     {@link BigInteger }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:50:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setSubnetId(BigInteger value) {
         this.subnetId = value;
     }
@@ -77,7 +77,7 @@ public class TaskType
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:50:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public boolean isExternal() {
         if (external == null) {
             return false;
@@ -94,7 +94,7 @@ public class TaskType
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:42:28+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:50:40+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 	public void setExternal(Boolean value) {
         this.external = value;
     }
