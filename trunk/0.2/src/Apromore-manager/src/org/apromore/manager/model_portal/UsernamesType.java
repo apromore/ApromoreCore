@@ -33,11 +33,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "UsernamesType", propOrder = {
     "username"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class UsernamesType {
 
     @XmlElement(name = "Username", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     protected List<String> username;
 
     /**
@@ -62,7 +62,7 @@ public class UsernamesType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-03T11:29:25+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
     public List<String> getUsername() {
         if (username == null) {
             username = new ArrayList<String>();

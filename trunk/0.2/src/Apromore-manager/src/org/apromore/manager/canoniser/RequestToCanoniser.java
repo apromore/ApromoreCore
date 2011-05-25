@@ -19,6 +19,7 @@ import org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType;
 import org.apromore.manager.model_canoniser.CanoniseVersionInputMsgType;
 import org.apromore.manager.model_canoniser.CanoniseVersionOutputMsgType;
 import org.apromore.manager.model_canoniser.DeCanoniseProcessInputMsgType;
+import org.apromore.manager.model_canoniser.EditSessionType;
 import org.apromore.manager.model_canoniser.GenerateAnnotationInputMsgType;
 import org.apromore.manager.model_canoniser.GenerateAnnotationOutputMsgType;
 import org.apromore.manager.model_portal.AnnotationsType;
@@ -59,14 +60,15 @@ public class RequestToCanoniser {
 			String created, String lastupdate, Boolean addFakeEvents) 
 	throws IOException, ExceptionImport {
 		org.apromore.manager.model_canoniser.CanoniseProcessInputMsgType payload = new CanoniseProcessInputMsgType();
-		payload.setUsername(username);
-		payload.setNativeType(nativeType);
-		payload.setProcessName(processName);
-		payload.setVersionName(versionName);
-		payload.setDomain(domain);
-		payload.setDocumentation(documentation);
-		payload.setCreationDate(created);
-		payload.setLastUpdate(lastupdate);
+		org.apromore.manager.model_canoniser.EditSessionType editSession = new EditSessionType();
+		editSession.setUsername(username);
+		editSession.setNativeType(nativeType);
+		editSession.setProcessName(processName);
+		editSession.setVersionName(versionName);
+		editSession.setDomain(domain);
+		editSession.setCreationDate(created);
+		editSession.setLastUpdate(lastupdate);
+		payload.setEditSession(editSession);
 		payload.setCpfUri(cpfURI);
 		payload.setAddFakeEvents(addFakeEvents);
 		DataSource source = new ByteArrayDataSource(cpf, "text/xml"); 
@@ -138,16 +140,16 @@ public class RequestToCanoniser {
 	}
 
 	public void 
-	CanoniseVersion(Integer editSessionCode, Integer processId, String cpfURI, String preVersion,
+	CanoniseVersion(Integer editSessionCode, Integer processId, String cpfURI,
 			String nativeType, InputStream native_is) 
 	throws IOException, ExceptionCanoniseVersion, ExceptionVersion {
 		CanoniseVersionInputMsgType payload = new CanoniseVersionInputMsgType();
 		DataSource source = new ByteArrayDataSource(native_is, "text/xml");
 		payload.setEditSessionCode(editSessionCode);
 		payload.setNative(new DataHandler(source));
-		payload.setNativeType(nativeType);
-		payload.setProcessId(processId);
-		payload.setPreVersion(preVersion);
+		EditSessionType editSession = new EditSessionType();
+		editSession.setNativeType(nativeType);
+		editSession.setProcessId(processId);
 		payload.setCpfUri(cpfURI);
 		// send request to canoniser
 		CanoniseVersionOutputMsgType res = this.port.canoniseVersion(payload);
