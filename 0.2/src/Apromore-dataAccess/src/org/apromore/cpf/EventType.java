@@ -30,7 +30,7 @@ import javax.xml.bind.annotation.XmlType;
     TimerType.class,
     MessageType.class
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2010-12-05T10:39:06+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:54:42+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
 public class EventType
     extends WorkType
 {
