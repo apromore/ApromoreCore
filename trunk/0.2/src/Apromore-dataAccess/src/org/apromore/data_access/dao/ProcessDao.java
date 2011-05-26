@@ -900,17 +900,15 @@ public class ProcessDao extends BasicDao {
 		}
 	}
 	/**
-	 * Store in the database a new version for the process identified by 
-	 * processId whose type is nativeType. This call is correlated with the
+	 * Store in the database a new version for the process whose meta date are in editSession. 
+	 * This call is correlated with the
 	 * edit session whose code is editSessionCode.
 	 * Data associated with the version are in the NPF inputstream.
 	 * If the version does not exist already the new version is derived from the 
 	 * version preVersion, for the same process, otherwise previous values
 	 * are overridden.
 	 * @param editSessionCode
-	 * @param processId
-	 * @param nativeType
-	 * @param domain
+	 * @param editSession
 	 * @param npf_is
 	 * @param cpf_is
 	 * @param apf_is
