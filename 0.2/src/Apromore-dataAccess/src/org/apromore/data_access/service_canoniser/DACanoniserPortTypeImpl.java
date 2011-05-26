@@ -24,6 +24,7 @@ import org.apromore.data_access.exception.ExceptionAnntotationName;
 import org.apromore.data_access.exception.ExceptionDao;
 import org.apromore.data_access.exception.ExceptionStoreVersion;
 import org.apromore.data_access.exception.ExceptionSyncNPF;
+import org.apromore.data_access.model_canoniser.EditSessionType;
 import org.apromore.data_access.model_canoniser.GetCpfUriOutputMsgType;
 import org.apromore.data_access.model_canoniser.ProcessSummaryType;
 import org.apromore.data_access.model_canoniser.ResultType;
@@ -122,8 +123,16 @@ import org.apromore.data_access.model_canoniser.WriteAnnotationOutputMsgType;
 		StoreVersionOutputMsgType res = new StoreVersionOutputMsgType();
 		ResultType result = new ResultType();
 		res.setResult(result);
-		int processId = payload.getEditSession().getProcessId();
-		String nativeType = payload.getEditSession().getNativeType();
+		EditSessionType editSession = new EditSessionType();
+		editSession.setProcessId(payload.getEditSession().getProcessId());
+		editSession.setCreationDate(payload.getEditSession().getCreationDate());
+		editSession.setAnnotation(payload.getEditSession().getAnnotation());
+		editSession.setDomain(payload.getEditSession().getDomain());
+		editSession.setLastUpdate(payload.getEditSession().getLastUpdate());
+		editSession.setNativeType(payload.getEditSession().getNativeType());
+		editSession.setProcessName(payload.getEditSession().getProcessName());
+		editSession.setUsername(payload.getEditSession().getUsername());
+		editSession.setVersionName(payload.getEditSession().getVersionName());
 		int editSessionCode = payload.getEditSessionCode();
 		String cpf_uri = payload.getCpfURI();
 		try {
@@ -136,7 +145,7 @@ import org.apromore.data_access.model_canoniser.WriteAnnotationOutputMsgType;
 			DataHandler handleranf = payload.getAnf();
 			InputStream anf_is = handleranf.getInputStream();
 			ProcessDao.getInstance().storeVersion 
-			(editSessionCode, processId, cpf_uri, nativeType, native_is, cpf_is, anf_is);
+			(editSessionCode, editSession, cpf_uri, native_is, cpf_is, anf_is);
 			result.setCode(0);
 			result.setMessage("");
 		} catch (ExceptionDao ex) {
