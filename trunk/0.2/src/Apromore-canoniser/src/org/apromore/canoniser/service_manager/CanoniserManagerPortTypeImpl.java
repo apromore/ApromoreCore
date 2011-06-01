@@ -254,9 +254,18 @@ import de.epml.TypeEPML;
 			DataHandler handler = payload.getNative();
 			InputStream process_xml = handler.getInputStream();
 			int editSessionCode = payload.getEditSessionCode();
-			EditSessionType editSession = payload.getEditSession();
-			int processId = editSession.getProcessId();
-			String nativeType = editSession.getNativeType();
+			org.apromore.canoniser.model_manager.EditSessionType editSessionM = payload.getEditSession();
+			org.apromore.canoniser.model_da.EditSessionType editSessionDA = new org.apromore.canoniser.model_da.EditSessionType();
+			String nativeType = editSessionM.getNativeType();
+			editSessionDA.setProcessId(editSessionM.getProcessId());
+			editSessionDA.setNativeType(editSessionM.getNativeType());
+			editSessionDA.setAnnotation(editSessionM.getAnnotation());
+			editSessionDA.setCreationDate(editSessionM.getCreationDate());
+			editSessionDA.setLastUpdate(editSessionM.getLastUpdate());
+			editSessionDA.setProcessName(editSessionM.getProcessName());
+			editSessionDA.setUsername(editSessionM.getUsername());
+			editSessionDA.setVersionName(editSessionM.getVersionName());
+			
 			String cpfURI = payload.getCpfUri();
 			ByteArrayOutputStream anf_xml = new ByteArrayOutputStream(), 
 			cpf_xml = new ByteArrayOutputStream();
@@ -264,7 +273,7 @@ import de.epml.TypeEPML;
 			InputStream anf_is = new ByteArrayInputStream(anf_xml.toByteArray());
 			InputStream cpf_is = new ByteArrayInputStream(cpf_xml.toByteArray());
 			RequestToDA request = new RequestToDA();
-			request.StoreVersion (editSessionCode, processId, cpfURI, nativeType, 
+			request.StoreVersion (editSessionCode, editSessionDA, cpfURI, 
 					handler.getInputStream(), anf_is, cpf_is);
 			result.setCode(0);
 			result.setMessage("");
