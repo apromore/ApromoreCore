@@ -115,16 +115,13 @@ public class RequestToDA {
 		}
 	}
 
-	public void StoreVersion(int editSessionCode, int processId, 
-			String cpfURI, String nativeType, 
+	public void StoreVersion(int editSessionCode, EditSessionType editSession, 
+			String cpfURI,
 			InputStream native_is, InputStream anf_xml_is,
 			InputStream cpf_xml_is) throws IOException, ExceptionStore, ExceptionVersion {
 
 		StoreVersionInputMsgType payload = new StoreVersionInputMsgType();
 		payload.setCpfURI(cpfURI);
-		EditSessionType editSession = new EditSessionType();
-		editSession.setNativeType(nativeType);
-		editSession.setProcessId(processId);
 		payload.setEditSession(editSession);
 		payload.setEditSessionCode(editSessionCode);
 		DataSource source_proc = new ByteArrayDataSource(native_is, "text/xml"); 
