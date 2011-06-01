@@ -140,16 +140,14 @@ public class RequestToCanoniser {
 	}
 
 	public void 
-	CanoniseVersion(Integer editSessionCode, Integer processId, String cpfURI,
-			String nativeType, InputStream native_is) 
+	CanoniseVersion(Integer editSessionCode, EditSessionType editSession, String cpfURI,
+			InputStream native_is) 
 	throws IOException, ExceptionCanoniseVersion, ExceptionVersion {
 		CanoniseVersionInputMsgType payload = new CanoniseVersionInputMsgType();
 		DataSource source = new ByteArrayDataSource(native_is, "text/xml");
 		payload.setEditSessionCode(editSessionCode);
 		payload.setNative(new DataHandler(source));
-		EditSessionType editSession = new EditSessionType();
-		editSession.setNativeType(nativeType);
-		editSession.setProcessId(processId);
+		payload.setEditSession(editSession);
 		payload.setCpfUri(cpfURI);
 		// send request to canoniser
 		CanoniseVersionOutputMsgType res = this.port.canoniseVersion(payload);
