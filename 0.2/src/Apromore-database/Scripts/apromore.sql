@@ -130,7 +130,9 @@ constraint fk__edit_session_mappings1 foreign key (username) references users(us
 on delete cascade on update cascade,
 constraint fk__edit_session_mappings2 foreign key (processId,version_name)
    references canonicals(processId,version_name)
-on delete cascade on update cascade
+on delete cascade on update cascade,
+constraint fk_edit_session_mappings3 foreign key (processId) references processes(processId)
+    	on delete cascade on update cascade
 ) engine=InnoDB;
 show warnings ;
 
