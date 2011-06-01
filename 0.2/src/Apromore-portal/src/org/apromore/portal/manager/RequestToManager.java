@@ -418,6 +418,7 @@ public class RequestToManager {
 		editSession.setProcessName(processName);
 		editSession.setVersionName(new_versionName);
 		editSession.setDomain(domain);
+		editSession.setProcessId(processId);
 		payload.setPreVersion(preVersion);
 		DataSource sourceNat = new ByteArrayDataSource(native_is, "text/xml"); 
 		payload.setNative(new DataHandler(sourceNat));
