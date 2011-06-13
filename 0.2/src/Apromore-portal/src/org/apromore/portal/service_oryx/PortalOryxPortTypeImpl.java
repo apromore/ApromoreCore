@@ -152,7 +152,6 @@ import org.wfmc._2008.xpdl2.PackageType;
 			DataHandler handler = payload.getNative();
 			InputStream native_is = handler.getInputStream();
 			int code = payload.getEditSessionCode();
-			RequestToManager request = new RequestToManager();
 			// request details associated with edit session
 			org.apromore.portal.model_oryx.EditSessionType editSession = payload.getEditSession();
 			int processId = editSession.getProcessId();
@@ -166,6 +165,7 @@ import org.wfmc._2008.xpdl2.PackageType;
 			String documentation = "";
 			String preVersion = payload.getPreVersion();
 			// update process: create new version whose meta data are in editSession
+			RequestToManager request = new RequestToManager();
 			request.UpdateProcess (code, username, nativeType, processId, domain, processName, new_versionName, preVersion, native_is);
 			result.setCode(0);
 			result.setMessage("");

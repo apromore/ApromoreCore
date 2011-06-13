@@ -16,15 +16,14 @@ import java.util.Set;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
-import javax.xml.namespace.QName;
 
 import org.apromore.portal.common.Constants;
-import org.apromore.portal.common.Utils;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummaryType;
+import org.apromore.portal.model_manager.VersionSummaryType;
 import org.wfmc._2008.xpdl2.Author;
 import org.wfmc._2008.xpdl2.Created;
 import org.wfmc._2008.xpdl2.PackageHeader;
@@ -47,8 +46,6 @@ import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-import de.epml.TypeAttrType;
-import de.epml.TypeAttrTypes;
 import de.epml.TypeCoordinates;
 import de.epml.TypeDirectory;
 import de.epml.TypeEPC;
@@ -266,15 +263,12 @@ public class CreateProcessController {
 
 	protected void editProcess(ProcessSummaryType process) throws Exception {
 		Listitem cbi = this.nativeTypesLB.getSelectedItem();
-		Integer processId = process.getId();
-		String processName = process.getName();
 		// normally, only one version...
-		String version = process.getVersionSummaries().get(0).getName();
+		VersionSummaryType version = process.getVersionSummaries().get(0);
 		String nativeType = cbi.getLabel();
-		String domain = process.getDomain();
 		String annotation = Constants.INITIAL_ANNOTATION;
 		String readOnly = "false";
-		this.mainC.editProcess(processId, processName, version, nativeType, domain, annotation, readOnly);
+		this.mainC.editProcess(process, version, nativeType, annotation, readOnly);
 		cancel();
 	}
 	protected void cancel() throws Exception {

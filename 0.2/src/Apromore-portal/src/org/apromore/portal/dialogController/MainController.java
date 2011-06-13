@@ -251,19 +251,21 @@ public class MainController extends Window {
  * @throws InterruptedException 
  * @throws Exception
  */
-	public void editProcess(Integer processId, String processName, String version, 
-			String nativeType, String domain, String annotation, String readOnly) throws InterruptedException {
+	public void editProcess(ProcessSummaryType process, VersionSummaryType version, 
+			String nativeType, String annotation, String readOnly) throws InterruptedException {
 
 		String instruction="", url=getHost();
 		int offsetH = 100, offsetV=200;
 		int editSessionCode;
 		EditSessionType editSession = new EditSessionType();
-		editSession.setDomain(domain);
+		editSession.setDomain(process.getDomain());
 		editSession.setNativeType(nativeType);
-		editSession.setProcessId(processId);
-		editSession.setProcessName(processName);
+		editSession.setProcessId(process.getId());
+		editSession.setProcessName(process.getName());
 		editSession.setUsername(this.getCurrentUser().getUsername());
-		editSession.setVersionName(version);
+		editSession.setVersionName(version.getName());
+		editSession.setCreationDate(version.getCreationDate());
+		editSession.setLastUpdate(version.getLastUpdate());
 		if (annotation==null) {
 			editSession.setWithAnnotation(false);
 		} else {
@@ -290,7 +292,7 @@ public class MainController extends Window {
 			// Send http post to Oryx
 			Clients.evalJavaScript(instruction);
 		} catch (Exception e) {
-			Messagebox.show("Cannot edit " + processName + " (" 
+			Messagebox.show("Cannot edit " + process.getName() + " (" 
 					+e.getMessage()+")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		}
