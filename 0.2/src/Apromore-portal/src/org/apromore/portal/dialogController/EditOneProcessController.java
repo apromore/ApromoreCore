@@ -48,7 +48,7 @@ public class EditOneProcessController extends Window {
 
 
 		this.chooseNativeW = (Window) Executions.createComponents("macros/choosenative.zul", null, null);
-		this.chooseNativeW.setTitle("Edit process " + process.getName() + ", " + version.getName() + ", choose a native type.");
+		this.chooseNativeW.setTitle("Edit process " + process.getName() + ", " + version.getName() + ".");
 		Rows rows = (Rows) this.chooseNativeW.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
 		Row nativeTypesR = (Row) rows.getFirstChild();
 		Row annotationR = (Row) nativeTypesR.getNextSibling();
@@ -179,13 +179,8 @@ public class EditOneProcessController extends Window {
 			Messagebox.show("Please select a native type.", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
 		} else {
-			Listitem cbi = this.nativeTypesLB.getSelectedItem();		
-			Integer processId = this.process.getId();
-			String processName = this.process.getName();
-			// normally, only one version...
-			String version = this.version.getName();
+			Listitem cbi = this.nativeTypesLB.getSelectedItem();	
 			String nativeType = cbi.getLabel();
-			String domain = this.process.getDomain();
 			String annotation = null;
 			String readOnly = "false";
 			if (this.annotationsLB.getSelectedItem() != null
@@ -198,7 +193,7 @@ public class EditOneProcessController extends Window {
 				readOnly = "false";
 			}
 			// editProcess is hosted by main controller as it is called by others.
-			this.mainC.editProcess(processId, processName, version, nativeType, domain, annotation, readOnly);
+			this.mainC.editProcess(this.process, this.version, nativeType, annotation, readOnly);
 			// delete process from the list of processes still to be edited
 			this.editListProcessesC.deleteFromToBeEdited(this);
 			closePopup();
