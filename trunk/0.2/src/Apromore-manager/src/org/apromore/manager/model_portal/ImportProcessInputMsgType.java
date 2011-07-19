@@ -37,18 +37,18 @@ import javax.xml.bind.annotation.XmlType;
     "processDescription",
     "editSession"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
 public class ImportProcessInputMsgType {
 
     @XmlElement(name = "ProcessDescription", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected DataHandler processDescription;
     @XmlElement(name = "EditSession", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected EditSessionType editSession;
     @XmlAttribute(name = "AddFakeEvents")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected Boolean addFakeEvents;
 
     /**
@@ -59,7 +59,7 @@ public class ImportProcessInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public DataHandler getProcessDescription() {
         return processDescription;
     }
@@ -72,7 +72,7 @@ public class ImportProcessInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setProcessDescription(DataHandler value) {
         this.processDescription = value;
     }
@@ -85,7 +85,7 @@ public class ImportProcessInputMsgType {
      *     {@link EditSessionType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public EditSessionType getEditSession() {
         return editSession;
     }
@@ -98,7 +98,7 @@ public class ImportProcessInputMsgType {
      *     {@link EditSessionType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setEditSession(EditSessionType value) {
         this.editSession = value;
     }
@@ -111,7 +111,7 @@ public class ImportProcessInputMsgType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public Boolean isAddFakeEvents() {
         return addFakeEvents;
     }
@@ -124,7 +124,7 @@ public class ImportProcessInputMsgType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:24:56+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setAddFakeEvents(Boolean value) {
         this.addFakeEvents = value;
     }
