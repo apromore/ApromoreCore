@@ -1,7 +1,6 @@
 /**
- * Controller for view processtable.zul
+ * Controller for view in index.zul
  */
-
 package org.apromore.portal.dialogController;
 
 import java.text.ParseException;
@@ -14,8 +13,11 @@ import java.util.Set;
 import javax.xml.bind.JAXBException;
 
 import org.apromore.portal.common.Constants;
+import org.apromore.portal.common.ProcessIdColComparator;
 import org.apromore.portal.common.ProcessNameColComparator;
 import org.apromore.portal.common.ProcessRankingColComparator;
+import org.apromore.portal.common.VersionNameColComparator;
+import org.apromore.portal.common.VersionRankingColComparator;
 import org.apromore.portal.exception.ExceptionDao;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummariesType;
@@ -106,6 +108,7 @@ public class ProcessTableController {
 	private Button refreshB;
 	private Column columnName;								// column to display process name
 	private Column columnRanking; 							// column to display process ranking
+	private Column columnId; 								// column to display process Id
 
 	private Boolean isQueryResult;							// says whether the data to be displayed have been produced by a query
 	private ProcessSummaryType processQ;
@@ -129,7 +132,10 @@ public class ProcessTableController {
 		this.refreshB = (Button) this.processSummariesGrid.getFellow("refreshB");
 		this.columnName = (Column) this.processSummariesGrid.getFellow("columnName");
 		this.columnRanking = (Column) this.processSummariesGrid.getFellow("columnRanking");
-
+		this.columnId = (Column) this.processSummariesGrid.getFellow("columnId");
+		
+		// create comparators for rows according to items corresponding to
+		// Name, Ranking and Id of a process (as these items are not of a comparable type)
 		ProcessNameColComparator asc1 = new ProcessNameColComparator(true),
 		dsc1 = new ProcessNameColComparator(false);
 		this.columnName.setSortAscending(asc1);
@@ -139,7 +145,14 @@ public class ProcessTableController {
 		dsc2 = new ProcessRankingColComparator(false);
 		this.columnRanking.setSortAscending(asc2);
 		this.columnRanking.setSortDescending(dsc2);
+		
+		ProcessIdColComparator asc3 = new ProcessIdColComparator(true),
+		dsc3 = new ProcessIdColComparator(false);
+		this.columnId.setSortAscending(asc3);
+		this.columnId.setSortDescending(dsc3);
 
+		
+		
 		// if change grid layouts modify value accordingly
 		this.latestVersionPos = 8;
 		this.processTbPos = 3;
@@ -375,10 +388,22 @@ public class ProcessTableController {
 			Column headLastUpdate = new Column("Last update");
 			headLastUpdate.setSort("auto");
 			Column headAnnotation = new Column("Annotation(s)");
-			headAnnotation.setSort("auto");
 			Column headRanking  = new Column("Ranking");
 			headRanking.setSort("auto");
 
+			// create comparators for rows according to items corresponding to
+			// Name and Ranking of a version
+			VersionNameColComparator asc1 = new VersionNameColComparator(true),
+			dsc1 = new VersionNameColComparator(false);
+			headVersionName.setSortAscending(asc1);
+			headVersionName.setSortDescending(dsc1);
+
+			VersionRankingColComparator asc2 = new VersionRankingColComparator(true),
+			dsc2 = new VersionRankingColComparator(false);
+			headRanking.setSortAscending(asc2);
+			headRanking.setSortDescending(dsc2);
+			
+			
 			headScore.setWidth("10%");
 			headVersionName.setWidth("15%");
 			headCreationDate.setWidth("25%");
@@ -435,6 +460,8 @@ public class ProcessTableController {
 				if (version.getRanking()!=null && version.getRanking().toString().compareTo("")!=0) {
 					displayRanking(versionRanking, version.getRanking());
 				} 
+				Label versionRankingValue = new Label(version.getRanking());
+				
 				// build drop down list of annotations: one line for each associated native type,
 				// and for each of which the list of existing annotations
 				Listbox annotationLB = new Listbox();
@@ -459,6 +486,7 @@ public class ProcessTableController {
 				versionR.appendChild(versionLastUpdate);
 				versionR.appendChild(annotationLB);
 				versionR.appendChild(versionRanking);
+				versionR.appendChild(versionRankingValue);
 
 				highlightV(versionR, false);
 				/* the process might has been already selected, thus its latest version has to be marked as 

@@ -5,9 +5,13 @@ import java.util.List;
 
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.model_manager.SearchHistoriesType;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.InputEvent;
+import org.zkoss.zul.Button;
 import org.zkoss.zul.Combobox;
 import org.zkoss.zul.Comboitem;
+import org.zkoss.zul.Window;
 
 
 /**
@@ -19,9 +23,11 @@ public class SearchHistoriesController extends Combobox {
 
 	private MainController mainC ;
 	private List<SearchHistoriesType> previousSearches;
+	private SimpleSearchController caller;
 
-	public SearchHistoriesController(MainController mainC) {
+	public SearchHistoriesController(MainController mainC, SimpleSearchController caller) {
 		this.mainC = mainC;
+		this.caller = caller;
 		refresh(""); //init the child comboitems
 	}
 	public SearchHistoriesController(MainController mainC, String value) {
