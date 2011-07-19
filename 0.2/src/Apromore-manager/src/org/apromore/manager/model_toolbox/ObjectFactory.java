@@ -61,11 +61,11 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link VersionSummaryType }
+     * Create an instance of {@link MergeProcessesOutputMsgType }
      * 
      */
-    public VersionSummaryType createVersionSummaryType() {
-        return new VersionSummaryType();
+    public MergeProcessesOutputMsgType createMergeProcessesOutputMsgType() {
+        return new MergeProcessesOutputMsgType();
     }
 
     /**
@@ -77,11 +77,19 @@ public class ObjectFactory {
     }
 
     /**
-     * Create an instance of {@link ProcessSummariesType }
+     * Create an instance of {@link ParameterType }
      * 
      */
-    public ProcessSummariesType createProcessSummariesType() {
-        return new ProcessSummariesType();
+    public ParameterType createParameterType() {
+        return new ParameterType();
+    }
+
+    /**
+     * Create an instance of {@link VersionSummaryType }
+     * 
+     */
+    public VersionSummaryType createVersionSummaryType() {
+        return new VersionSummaryType();
     }
 
     /**
@@ -93,35 +101,19 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link ProcessSummariesType }
+     * 
+     */
+    public ProcessSummariesType createProcessSummariesType() {
+        return new ProcessSummariesType();
+    }
+
+    /**
      * Create an instance of {@link ProcessVersionIdsType }
      * 
      */
     public ProcessVersionIdsType createProcessVersionIdsType() {
         return new ProcessVersionIdsType();
-    }
-
-    /**
-     * Create an instance of {@link ProcessVersionIdType }
-     * 
-     */
-    public ProcessVersionIdType createProcessVersionIdType() {
-        return new ProcessVersionIdType();
-    }
-
-    /**
-     * Create an instance of {@link MergeProcessesOutputMsgType }
-     * 
-     */
-    public MergeProcessesOutputMsgType createMergeProcessesOutputMsgType() {
-        return new MergeProcessesOutputMsgType();
-    }
-
-    /**
-     * Create an instance of {@link ParameterType }
-     * 
-     */
-    public ParameterType createParameterType() {
-        return new ParameterType();
     }
 
     /**
@@ -138,6 +130,14 @@ public class ObjectFactory {
      */
     public ResultType createResultType() {
         return new ResultType();
+    }
+
+    /**
+     * Create an instance of {@link ProcessVersionIdType }
+     * 
+     */
+    public ProcessVersionIdType createProcessVersionIdType() {
+        return new ProcessVersionIdType();
     }
 
     /**
