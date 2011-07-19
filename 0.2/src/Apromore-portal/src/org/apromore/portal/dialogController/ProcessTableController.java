@@ -151,8 +151,6 @@ public class ProcessTableController {
 		this.columnId.setSortAscending(asc3);
 		this.columnId.setSortDescending(dsc3);
 
-		
-		
 		// if change grid layouts modify value accordingly
 		this.latestVersionPos = 8;
 		this.processTbPos = 3;
@@ -286,7 +284,6 @@ public class ProcessTableController {
 		}
 	}
 
-
 	public void displayOneProcess (ProcessSummaryType process) {
 		// one row for each process
 		Row processSummaryR = new Row();
@@ -351,7 +348,6 @@ public class ProcessTableController {
 		});
 	}
 
-
 	/**
 	 * Build grid to display version details of the corresponding process
 	 * If process selected, highlight latest version
@@ -364,7 +360,6 @@ public class ProcessTableController {
 	 */
 	protected void displayVersionsSummaries (Detail processSummaryD) 
 	throws ClassNotFoundException, InstantiationException, IllegalAccessException, ExceptionDao, JAXBException {
-
 		/* details might have been already build, in this case the Detail processSummaryD has at least
 		 * on children.
 		 */
@@ -402,7 +397,6 @@ public class ProcessTableController {
 			dsc2 = new VersionRankingColComparator(false);
 			headRanking.setSortAscending(asc2);
 			headRanking.setSortDescending(dsc2);
-			
 			
 			headScore.setWidth("10%");
 			headVersionName.setWidth("15%");
@@ -477,7 +471,6 @@ public class ProcessTableController {
 						annotationsI.setLabel(annotationName + " (" + language + ")");
 					}
 				}
-
 				processVersionsR.appendChild(versionR);
 				versionR.appendChild(versionCB);
 				versionR.appendChild(scoreL);
@@ -588,7 +581,8 @@ public class ProcessTableController {
 					// Update the data structures
 					// processVersionHM, mapProcessVersions
 					this.processVersionsHM.remove(versionCB);
-					this.mapProcessVersions.get(processCB).remove((this.mapProcessVersions.get(processCB).indexOf(versionCB)));
+					this.mapProcessVersions.get(processCB).remove(
+							(this.mapProcessVersions.get(processCB).indexOf(versionCB)));
 				}
 			}
 			for (int i=0;i<toBeDeleted.size();i++){
@@ -712,8 +706,8 @@ public class ProcessTableController {
 
 	private void highlightP(Row processR, Boolean highlighted) {
 
-		// #E8C2C1 is pink
-		// #598DCA is blue
+		// #FFCC99 is orange
+		// #FF9900 is orange
 		// #FFFFFF is white
 		// #000000 is black
 

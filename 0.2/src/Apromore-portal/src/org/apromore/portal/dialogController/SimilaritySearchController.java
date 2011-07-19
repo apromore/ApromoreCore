@@ -130,10 +130,10 @@ public class SimilaritySearchController extends Window {
 			// Sort result
 			ProcessSummariesType resultToDisplay = sort(result);
 			// add query with fake id.
-			process.setId(-process.getId());
-			process.getVersionSummaries().clear();
-			process.getVersionSummaries().add(version);
-			resultToDisplay.getProcessSummary().add(0, process); 
+			// process.setId(-process.getId());
+			// process.getVersionSummaries().clear();
+			// process.getVersionSummaries().add(version);
+			// resultToDisplay.getProcessSummary().add(0, process); 
 			mainC.displayProcessSummaries(resultToDisplay, true, process, version);
 		} catch (Exception e) {
 			message = "Search failed (" + e.getMessage() + ")";

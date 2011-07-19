@@ -124,7 +124,8 @@ public class MainController extends Window {
 	}
 
 	/**
-	 * Call for refreshing display of data: if isQueryResult, the query is given by version of process
+	 * Display version processes in processSummaries: if isQueryResult, the query 
+	 * is given by version of process
 	 * @param processSummaries
 	 * @param isQueryResult
 	 * @param process
