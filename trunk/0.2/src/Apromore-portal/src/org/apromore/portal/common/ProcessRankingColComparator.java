@@ -13,12 +13,12 @@ public class ProcessRankingColComparator implements Comparator {
 	}
 	public int compare(Object o1, Object o2) {
 
-		//o1 and o2 are rows to be compared according to their ranking value (8th children)
+		//o1 and o2 are rows to be compared according to their ranking value (9th children)
 		Row r1 = (Row) o1, 
 		r2 = (Row) o2;
 
-		Label l1 = (Label) r1.getChildren().get(7),
-		l2 = (Label) r2.getChildren().get(7);
+		Label l1 = (Label) r1.getChildren().get(8),
+		l2 = (Label) r2.getChildren().get(8);
 
 		String s1 = l1.getValue(), s2 = l2.getValue();
 		if (s1.length()==0 && s2.length()==0) {

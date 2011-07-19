@@ -165,6 +165,7 @@ public class RequestToManager {
 	public org.apromore.portal.model_manager.ProcessSummariesType searchForSimilarProcesses(
 			int processId, String versionName, 
 			String method, 
+			Boolean latestVersions,
 			double modelthreshold, 
 			double labelthreshold, 
 			double contextthreshold, 
@@ -176,6 +177,7 @@ public class RequestToManager {
 		payload.setAlgorithm(method);
 		payload.setProcessId(processId);
 		payload.setVersionName(versionName);
+		payload.setLatestVersions(latestVersions);
 		ParametersType params = new ParametersType();
 		// modelthreshold
 		ParameterType p = new ParameterType();
