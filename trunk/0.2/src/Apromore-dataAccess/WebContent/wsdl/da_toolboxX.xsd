@@ -21,6 +21,7 @@
 			<element minOccurs="0" maxOccurs="unbounded" name="ProcessVersion"
 				type="tns:ProcessVersionType" />
 		</sequence>
+		<attribute name="LatestVersions" type="boolean"/>
 	</complexType>
 
 	<complexType name="ReadCanonicalsOutputMsgType">
