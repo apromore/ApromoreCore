@@ -49,44 +49,6 @@ import org.zkoss.zul.Toolbarbutton;
 public class ProcessTableController {
 
 
-	/** the structure of queryGrid
-
-	 * the structure of processSummariesGrid is:
-	 * grid									processSummariesGrid
-	 * 	columns
-	 * 		column
-	 * 			empty
-	 * 		column
-	 * 			checkbox					processSummaryCB
-	 * 	rows								processSummariesRow
-	 * --> one row for each process
-	 * 		row
-	 * 			detail
-	 * 				grid
-	 * 					columns
-	 * 						column
-	 * 						column
-	 * 					/columns
-	 * 					rows
-	 * 					--> on row for each version
-	 * 						row
-	 * 							checkbox	<processVersionId>
-	 * 							....
-	 * 					/rows
-	 * 				/grid
-	 * 			/detail
-	 * 			label
-	 * 			label 						<processId>
-	 * 			toolbarbutton				<processId
-	 * 			label
-	 * 			label
-	 * 			label
-	 * 		row
-	 * 	rows
-	 * grid
-	 */
-
-
 	private MainController mainC; 							// the main controller
 	private Grid processSummariesGrid; 						// the grid for process summaries
 	private Rows processSummariesRows; 						// the rows for process summaries
@@ -106,6 +68,8 @@ public class ProcessTableController {
 	private Button selectAllB;
 	private Button unselectAllB;
 	private Button refreshB;
+	private Column columnScore;								// column to display process score 
+															// for the purpose of answering query
 	private Column columnName;								// column to display process name
 	private Column columnRanking; 							// column to display process ranking
 	private Column columnId; 								// column to display process Id
@@ -115,7 +79,6 @@ public class ProcessTableController {
 	private VersionSummaryType versionQ;
 
 	public ProcessTableController(MainController mainController) throws Exception {
-
 		/**
 		 * get components of the process version table part 
 		 */
@@ -133,6 +96,7 @@ public class ProcessTableController {
 		this.columnName = (Column) this.processSummariesGrid.getFellow("columnName");
 		this.columnRanking = (Column) this.processSummariesGrid.getFellow("columnRanking");
 		this.columnId = (Column) this.processSummariesGrid.getFellow("columnId");
+		this.columnScore = (Column) this.processSummariesGrid.getFellow("columnScore");
 		
 		// create comparators for rows according to items corresponding to
 		// Name, Ranking and Id of a process (as these items are not of a comparable type)
@@ -152,8 +116,8 @@ public class ProcessTableController {
 		this.columnId.setSortDescending(dsc3);
 
 		// if change grid layouts modify value accordingly
-		this.latestVersionPos = 8;
-		this.processTbPos = 3;
+		this.latestVersionPos = 9;
+		this.processTbPos = 4;
 		this.processSummaryCBPos = 1;
 
 		// initialize hashmaps
@@ -277,7 +241,7 @@ public class ProcessTableController {
 		this.isQueryResult = isQueryResult;
 		this.processQ = processQ;
 		this.versionQ = versionQ;
-
+		this.columnScore.setVisible(isQueryResult);
 		for (int i=0;i<processSummaries.getProcessSummary().size();i++){
 			ProcessSummaryType process = processSummaries.getProcessSummary().get(i);
 			displayOneProcess (process);		
@@ -301,16 +265,21 @@ public class ProcessTableController {
 		this.processHM.put(processCB, process);
 		List<Checkbox> listV = new ArrayList<Checkbox>();
 		this.mapProcessVersions.put(processCB, listV);
-		Label processIdLb = new Label(process.getId().toString());
-		// as the process might be a query to be displayed, its name doesn't behave
-		// as a toolbarbutton
-		Component processName = null;
-		if (process.getId()<0) {
-			processName = new Label(process.getName());
-		} else {
-			processName = new Toolbarbutton(process.getName());
-			((Toolbarbutton) processName).setStyle(Constants.TOOLBARBUTTON_STYLE);
+		Label processScoreLb = new Label();
+		List<VersionSummaryType> processVersions = process.getVersionSummaries();
+		int i=0;
+		while(i<processVersions.size() 
+				&& processVersions.get(i).getName().compareTo(process.getLastVersion())!=0) {
+			i++;
 		}
+		// Each process has at least one version. So i has a legal value which
+		// is the index of the process latest version
+		if (processVersions.get(i).getScore() != null)
+			processScoreLb.setValue(processVersions.get(i).getScore().toString());
+		Label processIdLb = new Label(process.getId().toString());
+		Component processName = null;
+		processName = new Toolbarbutton(process.getName());
+		((Toolbarbutton) processName).setStyle(Constants.TOOLBARBUTTON_STYLE);
 		Label processOriginalLanguage = new Label(process.getOriginalNativeType());
 		Label processDomain = new Label(process.getDomain());
 		Hbox processRankingHB = new Hbox();
@@ -322,6 +291,7 @@ public class ProcessTableController {
 		Label processOwner = new Label(process.getOwner());
 		processSummaryR.appendChild(processSummaryD);
 		processSummaryR.appendChild(processCB);
+		processSummaryR.appendChild(processScoreLb);
 		processSummaryR.appendChild(processIdLb);
 		processSummaryR.appendChild(processName);
 		processSummaryR.appendChild(processOriginalLanguage);
@@ -670,7 +640,7 @@ public class ProcessTableController {
 
 		String selected = Constants.SELECTED_VERSION ;
 		String unselected = Constants.UNSELECTED_VERSION;
-		String querySelected = "background-color:#CC6633" + ";" + Constants.TOOLBARBUTTON_STYLE ;
+		String querySelected = "background-color:#FF9900" + ";" + Constants.TOOLBARBUTTON_STYLE ;
 		String queryUnSelected = "background-color:#FFCC99" + ";" + Constants.TOOLBARBUTTON_STYLE ;
 		Listbox annotations = (Listbox) versionR.getFirstChild().getNextSibling().getNextSibling().getNextSibling().getNextSibling().getNextSibling();
 		String pId_versionName = versionR.getFirstChild().getId();

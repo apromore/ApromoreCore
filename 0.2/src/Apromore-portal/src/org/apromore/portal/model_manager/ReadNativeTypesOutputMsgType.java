@@ -33,14 +33,14 @@ import javax.xml.bind.annotation.XmlType;
     "result",
     "nativeTypes"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
 public class ReadNativeTypesOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected ResultType result;
     @XmlElement(name = "NativeTypes", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected NativeTypesType nativeTypes;
 
     /**
@@ -51,7 +51,7 @@ public class ReadNativeTypesOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public ResultType getResult() {
         return result;
     }
@@ -64,7 +64,7 @@ public class ReadNativeTypesOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setResult(ResultType value) {
         this.result = value;
     }
@@ -77,7 +77,7 @@ public class ReadNativeTypesOutputMsgType {
      *     {@link NativeTypesType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public NativeTypesType getNativeTypes() {
         return nativeTypes;
     }
@@ -90,7 +90,7 @@ public class ReadNativeTypesOutputMsgType {
      *     {@link NativeTypesType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setNativeTypes(NativeTypesType value) {
         this.nativeTypes = value;
     }
