@@ -30,7 +30,7 @@ public class RequestToToolbox {
 
 
 	public org.apromore.manager.model_portal.ProcessSummariesType SearchForSimilarProcesses(
-			int processId, String versionName,
+			int processId, String versionName, Boolean latestVersions,
 			String method, ParametersType params) throws ExceptionSearchForSimilar {
 		org.apromore.manager.model_toolbox.SearchForSimilarProcessesInputMsgType payload =
 			new SearchForSimilarProcessesInputMsgType();
@@ -38,6 +38,7 @@ public class RequestToToolbox {
 		payload.setProcessId(processId);
 		payload.setParameters(params);
 		payload.setVersionName(versionName);
+		payload.setLatestVersions(latestVersions);
 		org.apromore.manager.model_toolbox.SearchForSimilarProcessesOutputMsgType res =
 			this.port.searchForSimilarProcesses(payload);
 		ResultType result = res.getResult();
