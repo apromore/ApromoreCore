@@ -65,29 +65,6 @@
 					</hbox>
 					<!-- the grid controller is ProcessTableController
 						This results from a work around to deal with vertical flexibility -->
-					<grid id="queryGrid" visible="false">
-						<columns sizable="true">
-							<column width="3.5%"></column>
-							<column label="Id" sort="auto" width="3%" />
-							<column id="querycolumnName" label="Name"
-								width="15%" />
-							<column sort="auto"
-								label="Original language" width="15%" />
-							<column sort="auto" label="Domain"
-								width="15%" />
-							<column id="querycolumnRanking" label="Ranking"
-								width="15%" />
-							<column id="querycolumnRankingValue"
-								visible="false" width="0%" />
-							<column sort="auto" label="Latest version"
-								width="10%" />
-							<column sort="auto" label="Owner"
-								width="10%" />
-						</columns>
-						<rows id="queryRows">
-
-						</rows>
-					</grid>
 					<grid id="processSummariesGrid" vflex="true"
 						autopaging="true" mold="paging" paginal="${pg}">
 						<columns sizable="true" >
@@ -96,21 +73,22 @@
 								<checkbox id="processSummaryCB"
 									visible="false" />
 							</column>
-							<column Id="columnId" label="Id" sort="auto" width="3%" />
+							<column id="columnScore" label="Score" sort="auto" width="8%" visible="false"/>
+							<column id="columnId" label="Id" sort="auto" width="3%" />
 							<column id="columnName" label="Name"
 								width="15%" />
 							<column sort="auto"
-								label="Original language" width="15%" />
+								label="Original language" width="13%" />
 							<column sort="auto" label="Domain"
-								width="15%" />
+								width="13%" />
 							<column id="columnRanking" label="Ranking"
-								width="15%" />
+								width="13%" />
 							<column id="columnRankingValue"
 								visible="false" width="0%" />
 							<column sort="auto" label="Latest version"
 								width="10%" />
 							<column sort="auto" label="Owner"
-								width="10%" />
+								width="8%" />
 						</columns>
 						<rows id="processSummariesRows">
 

@@ -41,6 +41,12 @@
 					<label value="Sub-n weight" width="100%" />
 					<doublebox value="1" width="100%" />	
 				</row>
+				<row spans="2">
+					<radiogroup id="allVersionsChoiceRG">
+						<radio id="latestVersions" label="Search latest versions only" checked="true"/>
+						<radio id="allVersions" label="Search all versions"/>
+					</radiogroup>
+				</row>
 				<row id="similaritySearchButtons" spans="2">
 					<div align="center">
 						<button id="similaritySearchOKbutton" label="OK" image="img/ok.png" disabled="true"></button>

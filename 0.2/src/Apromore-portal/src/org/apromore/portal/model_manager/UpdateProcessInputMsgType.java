@@ -38,21 +38,21 @@ import javax.xml.bind.annotation.XmlType;
     "_native",
     "editSession"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
 public class UpdateProcessInputMsgType {
 
     @XmlElement(name = "Native", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected DataHandler _native;
     @XmlElement(name = "EditSession", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected EditSessionType editSession;
     @XmlAttribute(name = "EditSessionCode")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected Integer editSessionCode;
     @XmlAttribute(name = "PreVersion")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected String preVersion;
 
     /**
@@ -63,7 +63,7 @@ public class UpdateProcessInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public DataHandler getNative() {
         return _native;
     }
@@ -76,7 +76,7 @@ public class UpdateProcessInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setNative(DataHandler value) {
         this._native = value;
     }
@@ -89,7 +89,7 @@ public class UpdateProcessInputMsgType {
      *     {@link EditSessionType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public EditSessionType getEditSession() {
         return editSession;
     }
@@ -102,7 +102,7 @@ public class UpdateProcessInputMsgType {
      *     {@link EditSessionType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setEditSession(EditSessionType value) {
         this.editSession = value;
     }
@@ -115,7 +115,7 @@ public class UpdateProcessInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public Integer getEditSessionCode() {
         return editSessionCode;
     }
@@ -128,7 +128,7 @@ public class UpdateProcessInputMsgType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setEditSessionCode(Integer value) {
         this.editSessionCode = value;
     }
@@ -141,7 +141,7 @@ public class UpdateProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public String getPreVersion() {
         return preVersion;
     }
@@ -154,7 +154,7 @@ public class UpdateProcessInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-05-24T06:17:50+02:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:04:27+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setPreVersion(String value) {
         this.preVersion = value;
     }

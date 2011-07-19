@@ -15,6 +15,8 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Radio;
+import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Window;
 
@@ -35,6 +37,7 @@ public class SimilaritySearchController extends Window {
 	private Row subnweight;
 	private Button OKbutton;
 	private Button CancelButton;
+	private Radiogroup allVersionsChoiceRG;
 	private ProcessSummaryType process;
 	private VersionSummaryType version;
 
@@ -53,6 +56,8 @@ public class SimilaritySearchController extends Window {
 		this.OKbutton = (Button) this.similaritySearchW.getFellow("similaritySearchOKbutton");
 		this.CancelButton = (Button) this.similaritySearchW.getFellow("similaritySearchCancelbutton");
 
+		this.allVersionsChoiceRG = (Radiogroup) this.similaritySearchW.getFellow("allVersionsChoiceRG");
+		
 		// get parameter rows
 		this.modelthreshold = (Row) this.similaritySearchW.getFellow("modelthreshold");
 		this.labelthreshold = (Row) this.similaritySearchW.getFellow("labelthreshold");
@@ -111,9 +116,11 @@ public class SimilaritySearchController extends Window {
 		String message = null;
 		try {
 			RequestToManager request = new RequestToManager();
+			Boolean latestVersions = "latestVersions".compareTo(allVersionsChoiceRG.getSelectedItem().getId())==0;
 			ProcessSummariesType result = request.searchForSimilarProcesses(
-					process.getId(), version.getName(),
-					this.algosLB.getSelectedItem().getLabel(),
+					process.getId(), version.getName(), 
+					this.allVersionsChoiceRG.getSelectedItem().getId(),
+					latestVersions,
 					((Doublebox) this.modelthreshold.getFirstChild().getNextSibling()).getValue(),
 					((Doublebox) this.labelthreshold.getFirstChild().getNextSibling()).getValue(),
 					((Doublebox)  this.contextthreshold.getFirstChild().getNextSibling()).getValue(),
