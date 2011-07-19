@@ -18,6 +18,7 @@
 			<element name="ProcessId" type="int" />
 			<element name="VersionName" type="string" />
 			<element name="Algorithm" type="string" />
+			<element name="LatestVersions" type="boolean" />
 			<element name="Parameters" type="tns:ParametersType" />
 		</sequence>
 	</complexType>
