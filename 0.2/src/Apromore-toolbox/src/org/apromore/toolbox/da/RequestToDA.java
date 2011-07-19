@@ -35,9 +35,12 @@ public class RequestToDA {
 		this.port = ss.getDAToolbox();
 	}
 
-	public List<CanonicalType> ReadCanonicals(ProcessVersionsType ids) throws ExceptionReadCanonicals {
+	public List<CanonicalType> ReadCanonicals(
+			ProcessVersionsType ids, Boolean latestVersions) 
+	throws ExceptionReadCanonicals {
 		org.apromore.toolbox.model_da.ReadCanonicalsInputMsgType payload =
 			new ReadCanonicalsInputMsgType();
+		payload.setLatestVersions(latestVersions);
 		payload.getProcessVersion().addAll(ids.getProcessVersion());
 		org.apromore.toolbox.model_da.ReadCanonicalsOutputMsgType res =
 			this.port.readCanonicals(payload);
