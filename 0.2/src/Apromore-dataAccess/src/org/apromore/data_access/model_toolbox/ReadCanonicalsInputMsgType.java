@@ -6,6 +6,7 @@ import java.util.List;
 import javax.annotation.Generated;
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlType;
 
@@ -22,6 +23,7 @@ import javax.xml.bind.annotation.XmlType;
  *       &lt;sequence>
  *         &lt;element name="ProcessVersion" type="{http://www.apromore.org/data_access/model_toolbox}ProcessVersionType" maxOccurs="unbounded" minOccurs="0"/>
  *       &lt;/sequence>
+ *       &lt;attribute name="LatestVersions" type="{http://www.w3.org/2001/XMLSchema}boolean" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -33,12 +35,15 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ReadCanonicalsInputMsgType", propOrder = {
     "processVersion"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:28:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
 public class ReadCanonicalsInputMsgType {
 
     @XmlElement(name = "ProcessVersion")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:28:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected List<ProcessVersionType> processVersion;
+    @XmlAttribute(name = "LatestVersions")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    protected Boolean latestVersions;
 
     /**
      * Gets the value of the processVersion property.
@@ -62,12 +67,38 @@ public class ReadCanonicalsInputMsgType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-02-10T05:28:18+01:00", comments = "JAXB RI vhudson-jaxb-ri-2.1-2")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public List<ProcessVersionType> getProcessVersion() {
         if (processVersion == null) {
             processVersion = new ArrayList<ProcessVersionType>();
         }
         return this.processVersion;
+    }
+
+    /**
+     * Gets the value of the latestVersions property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link Boolean }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    public Boolean isLatestVersions() {
+        return latestVersions;
+    }
+
+    /**
+     * Sets the value of the latestVersions property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link Boolean }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    public void setLatestVersions(Boolean value) {
+        this.latestVersions = value;
     }
 
 }
