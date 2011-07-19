@@ -43,7 +43,7 @@ public class SimpleSearchController extends Window {
 		this.previoussearchesH = (Hbox) this.simpleSearchW.getFellow("previoussearcheshbox");
 		
 		// the combobox itself
-		this.previoussearchesCB = new SearchHistoriesController(this.mainC);
+		this.previoussearchesCB = new SearchHistoriesController(this.mainC,this);
 		
 		// its associated button
 		this.simplesearchesBu = (Button) this.previoussearchesH.getFellow("previoussearchesbutton");
@@ -68,7 +68,6 @@ public class SimpleSearchController extends Window {
 		};
 		this.simplesearchesBu.addEventListener("onClick", this.searchEventListener);
 		this.previoussearchesCB.addEventListener("onOK", this.searchEventListener);
-
 	}
 
 	/**
