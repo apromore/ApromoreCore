@@ -1753,7 +1753,9 @@ public class ProcessDao extends BasicDao {
 	 * @return
 	 * @throws ExceptionDao
 	 */
-	public List<CanonicalType> getCanonicals (List<ProcessVersionType> pvIds) throws ExceptionDao {
+	public List<CanonicalType> getCanonicals (
+			List<ProcessVersionType> pvIds, Boolean latestVersions) 
+	throws ExceptionDao {
 		Connection conn = null;
 		Statement stmt = null;
 		ResultSet rs = null;
@@ -1762,17 +1764,30 @@ public class ProcessDao extends BasicDao {
 		try {
 			conn = this.getConnection();
 			stmt = conn.createStatement();
-			query = " select " + ConstantDB.ATTR_PROCESSID +", "+ 
+			query = " select " + ConstantDB.ATTR_PROCESSID + ", " + 
 			ConstantDB.ATTR_VERSION_NAME + ", "+ ConstantDB.ATTR_CONTENT
-			+ " from " + ConstantDB.TABLE_CANONICALS;
+			+ " from " + ConstantDB.TABLE_CANONICALS 
+			+ " where true ";
 			if (pvIds.size()>0) {
-				String condition = " where " + ConstantDB.ATTR_PROCESSID + " = " + pvIds.get(0).getProcessId();
+				String condition = " and " + ConstantDB.ATTR_PROCESSID + " = " + pvIds.get(0).getProcessId();
 				condition += " and " + ConstantDB.ATTR_VERSION_NAME + " = " + pvIds.get(0).getVersionName();
 				for(int i=1;i<pvIds.size();i++){
 					condition += " or " + ConstantDB.ATTR_PROCESSID + " = " + pvIds.get(i).getProcessId();
 					condition += " and " + ConstantDB.ATTR_VERSION_NAME + " = " + pvIds.get(i).getVersionName();
 				}
 				query += condition;
+			}
+			if (latestVersions) {
+				query += " and "
+						+ "(" + ConstantDB.ATTR_PROCESSID + ", "
+						+ ConstantDB.ATTR_VERSION_NAME + ","
+						+ ConstantDB.ATTR_CREATION_DATE + ") in " 
+						+ " (select " + ConstantDB.ATTR_PROCESSID + ", "
+						+ ConstantDB.ATTR_VERSION_NAME + ","
+						+ "max(" + ConstantDB.ATTR_CREATION_DATE +")"
+						+ " from " + ConstantDB.TABLE_CANONICALS 
+						+ " group by " + ConstantDB.ATTR_PROCESSID + ", "
+						+ ConstantDB.ATTR_VERSION_NAME +")" ;
 			}
 			rs = stmt.executeQuery(query);
 			while (rs.next()) {
