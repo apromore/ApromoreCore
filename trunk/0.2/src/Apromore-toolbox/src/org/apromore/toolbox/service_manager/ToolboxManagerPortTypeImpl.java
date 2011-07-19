@@ -85,11 +85,12 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 				throw new ExceptionReadCanonicals("Canonical not found.");
 			}
 			// show also the search model in the resultset? yes, so don't remove it from search
-			allCanonicals.remove(search);
-			JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
-			Unmarshaller u = jc.createUnmarshaller();
+			// allCanonicals.remove(search);
+			
 
 			// search canonical model
+			JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
+			Unmarshaller u = jc.createUnmarshaller();
 			DataHandler search_cpf = search.getCpf();
 			InputStream search_is = search_cpf.getInputStream();
 			JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u.unmarshal(search_is);
