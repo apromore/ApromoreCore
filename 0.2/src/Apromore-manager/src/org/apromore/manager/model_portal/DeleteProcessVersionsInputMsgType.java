@@ -33,11 +33,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "DeleteProcessVersionsInputMsgType", propOrder = {
     "processVersionIdentifier"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T01:47:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
 public class DeleteProcessVersionsInputMsgType {
 
     @XmlElement(name = "ProcessVersionIdentifier", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T01:47:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected List<ProcessVersionIdentifierType> processVersionIdentifier;
 
     /**
@@ -62,7 +62,7 @@ public class DeleteProcessVersionsInputMsgType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T01:47:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public List<ProcessVersionIdentifierType> getProcessVersionIdentifier() {
         if (processVersionIdentifier == null) {
             processVersionIdentifier = new ArrayList<ProcessVersionIdentifierType>();
