@@ -31,11 +31,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "DeleteEditSessionOutputMsgType", propOrder = {
     "result"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T01:47:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
 public class DeleteEditSessionOutputMsgType {
 
     @XmlElement(name = "Result", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T01:47:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected ResultType result;
 
     /**
@@ -46,7 +46,7 @@ public class DeleteEditSessionOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T01:47:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public ResultType getResult() {
         return result;
     }
@@ -59,7 +59,7 @@ public class DeleteEditSessionOutputMsgType {
      *     {@link ResultType }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:06:01+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T01:47:00+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setResult(ResultType value) {
         this.result = value;
     }

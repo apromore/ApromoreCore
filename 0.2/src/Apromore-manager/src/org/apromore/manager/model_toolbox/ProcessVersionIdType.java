@@ -28,14 +28,14 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ProcessVersion_idType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:12:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:43:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
 public class ProcessVersionIdType {
 
     @XmlAttribute(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:12:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:43:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected Integer processId;
     @XmlAttribute(name = "VersionName")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:12:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:43:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected String versionName;
 
     /**
@@ -46,7 +46,7 @@ public class ProcessVersionIdType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:12:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:43:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public Integer getProcessId() {
         return processId;
     }
@@ -59,7 +59,7 @@ public class ProcessVersionIdType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:12:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:43:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setProcessId(Integer value) {
         this.processId = value;
     }
@@ -72,7 +72,7 @@ public class ProcessVersionIdType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:12:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:43:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public String getVersionName() {
         return versionName;
     }
@@ -85,7 +85,7 @@ public class ProcessVersionIdType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:12:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:43:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setVersionName(String value) {
         this.versionName = value;
     }
