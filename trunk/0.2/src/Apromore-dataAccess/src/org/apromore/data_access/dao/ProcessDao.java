@@ -1766,8 +1766,8 @@ public class ProcessDao extends BasicDao {
 			stmt = conn.createStatement();
 			query = " select " + ConstantDB.ATTR_PROCESSID + ", " + 
 			ConstantDB.ATTR_VERSION_NAME + ", "+ ConstantDB.ATTR_CONTENT
-			+ " from " + ConstantDB.TABLE_CANONICALS ;
-			//+ " where true ";
+			+ " from " + ConstantDB.TABLE_CANONICALS
+			+ " where true ";
 			if (pvIds.size()>0) {
 				String condition = " and " + ConstantDB.ATTR_PROCESSID + " = " + pvIds.get(0).getProcessId();
 				condition += " and " + ConstantDB.ATTR_VERSION_NAME + " = " + pvIds.get(0).getVersionName();
