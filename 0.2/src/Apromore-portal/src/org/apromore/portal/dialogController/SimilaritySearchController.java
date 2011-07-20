@@ -43,7 +43,7 @@ public class SimilaritySearchController extends Window {
 
 	public SimilaritySearchController (MainController mainC, MenuController menuC, 
 			ProcessSummaryType process, VersionSummaryType version) 
-	throws SuspendNotAllowedException, InterruptedException {
+					throws SuspendNotAllowedException, InterruptedException {
 		this.mainC = mainC;
 		this.menuC = menuC;
 		this.version = version;
@@ -57,7 +57,7 @@ public class SimilaritySearchController extends Window {
 		this.CancelButton = (Button) this.similaritySearchW.getFellow("similaritySearchCancelbutton");
 
 		this.allVersionsChoiceRG = (Radiogroup) this.similaritySearchW.getFellow("allVersionsChoiceRG");
-		
+
 		// get parameter rows
 		this.modelthreshold = (Row) this.similaritySearchW.getFellow("modelthreshold");
 		this.labelthreshold = (Row) this.similaritySearchW.getFellow("labelthreshold");
@@ -119,7 +119,7 @@ public class SimilaritySearchController extends Window {
 			Boolean latestVersions = "latestVersions".compareTo(allVersionsChoiceRG.getSelectedItem().getId())==0;
 			ProcessSummariesType result = request.searchForSimilarProcesses(
 					process.getId(), version.getName(), 
-					this.allVersionsChoiceRG.getSelectedItem().getId(),
+					this.algosLB.getSelectedItem().getLabel(),
 					latestVersions,
 					((Doublebox) this.modelthreshold.getFirstChild().getNextSibling()).getValue(),
 					((Doublebox) this.labelthreshold.getFirstChild().getNextSibling()).getValue(),
@@ -135,7 +135,7 @@ public class SimilaritySearchController extends Window {
 				message += " process.";
 			}
 			// Sort result
-			ProcessSummariesType resultToDisplay = sort(result);
+			ProcessSummariesType resultToDisplay = sort(process, result);
 			// add query with fake id.
 			// process.setId(-process.getId());
 			// process.getVersionSummaries().clear();
@@ -151,16 +151,26 @@ public class SimilaritySearchController extends Window {
 
 	/**
 	 * Sort processes given in listToBeSorted: let p1 and p2 being 2 processes. p1 < p2 iff
-	 * among p1 versions, the best one got a score < then the score obtained by the best of p2
-	 * @param listToBeSorted
+	 * the p1 latest version got a score less the score got by the p2 latest version.
+	 * The query (process) is put at rank 1
+	 * @param version2 
+	 * @param process2 
+	 * @param toBeSorted
 	 * @return sortedList
 	 */
-	private ProcessSummariesType sort(ProcessSummariesType listToBeSorted) {
+	private ProcessSummariesType sort(
+			ProcessSummaryType process, 
+			ProcessSummariesType toBeSorted) {
 		ProcessSummariesType res = new ProcessSummariesType();
-
-		for (int i=0; i<listToBeSorted.getProcessSummary().size();i++){
-			sortInsertion(SortVersions (listToBeSorted.getProcessSummary().get(i)), res);
+		ProcessSummaryType query = null;
+		for (int i=0; i<toBeSorted.getProcessSummary().size();i++){
+			if (toBeSorted.getProcessSummary().get(i).getId().equals(process.getId())){
+				query = toBeSorted.getProcessSummary().get(i);
+			} else {
+				sortInsertion(SortVersions (toBeSorted.getProcessSummary().get(i)), res);
+			}
 		}
+		res.getProcessSummary().add(0, query);
 		return res;
 	}
 
