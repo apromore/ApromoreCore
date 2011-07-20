@@ -29,17 +29,17 @@ import javax.xml.bind.annotation.XmlType;
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "ProcessVersionType")
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:29:30+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
 public class ProcessVersionType {
 
     @XmlAttribute(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:29:30+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected Integer processId;
     @XmlAttribute(name = "VersionName")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:29:30+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected String versionName;
     @XmlAttribute(name = "Score")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:29:30+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected Double score;
 
     /**
@@ -50,7 +50,7 @@ public class ProcessVersionType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:29:30+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public Integer getProcessId() {
         return processId;
     }
@@ -63,7 +63,7 @@ public class ProcessVersionType {
      *     {@link Integer }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:29:30+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setProcessId(Integer value) {
         this.processId = value;
     }
@@ -76,7 +76,7 @@ public class ProcessVersionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:29:30+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public String getVersionName() {
         return versionName;
     }
@@ -89,7 +89,7 @@ public class ProcessVersionType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:29:30+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setVersionName(String value) {
         this.versionName = value;
     }
@@ -102,7 +102,7 @@ public class ProcessVersionType {
      *     {@link Double }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:29:30+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public Double getScore() {
         return score;
     }
@@ -115,7 +115,7 @@ public class ProcessVersionType {
      *     {@link Double }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:29:30+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setScore(Double value) {
         this.score = value;
     }
