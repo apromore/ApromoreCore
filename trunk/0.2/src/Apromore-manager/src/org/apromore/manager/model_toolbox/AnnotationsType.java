@@ -35,14 +35,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "AnnotationsType", propOrder = {
     "annotationName"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:12:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:43:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
 public class AnnotationsType {
 
     @XmlElement(name = "AnnotationName")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:12:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:43:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected List<String> annotationName;
     @XmlAttribute(name = "NativeType")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:12:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:43:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected String nativeType;
 
     /**
@@ -67,7 +67,7 @@ public class AnnotationsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:12:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:43:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public List<String> getAnnotationName() {
         if (annotationName == null) {
             annotationName = new ArrayList<String>();
@@ -83,7 +83,7 @@ public class AnnotationsType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:12:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:43:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public String getNativeType() {
         return nativeType;
     }
@@ -96,7 +96,7 @@ public class AnnotationsType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:12:21+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:43:26+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setNativeType(String value) {
         this.nativeType = value;
     }

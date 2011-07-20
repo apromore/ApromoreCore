@@ -36,6 +36,7 @@ public class RequestToToolbox {
 			new SearchForSimilarProcessesInputMsgType();
 		payload.setAlgorithm(method);
 		payload.setProcessId(processId);
+		payload.setLatestVersions(latestVersions);
 		payload.setParameters(params);
 		payload.setVersionName(versionName);
 		payload.setLatestVersions(latestVersions);
