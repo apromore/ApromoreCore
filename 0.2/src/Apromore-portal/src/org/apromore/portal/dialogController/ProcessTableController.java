@@ -269,11 +269,13 @@ public class ProcessTableController {
 		List<VersionSummaryType> processVersions = process.getVersionSummaries();
 		int i=0;
 		while(i<processVersions.size() 
+				&& processVersions.get(i).getName() != null
 				&& processVersions.get(i).getName().compareTo(process.getLastVersion())!=0) {
 			i++;
 		}
-		// Each process has at least one version. So i has a legal value which
-		// is the index of the process latest version
+		// Each process should have at least one version. So it should have a legal value which
+		// is the index of the process latest version.
+		// But some are faulty!!!
 		if (processVersions.get(i).getScore() != null)
 			processScoreLb.setValue(processVersions.get(i).getScore().toString());
 		Label processIdLb = new Label(process.getId().toString());
