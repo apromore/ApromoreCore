@@ -82,13 +82,10 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 					break;
 				}
 			}
-			if (search == null) {
-				throw new ExceptionReadCanonicals("Canonical not found.");
+			if (search != null) {
+				allCanonicals.remove(search);
 			}
-			// show also the search model in the resultset? yes, so don't remove it from search
-			// allCanonicals.remove(search);
 			
-
 			// search canonical model
 			JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
 			Unmarshaller u = jc.createUnmarshaller();
