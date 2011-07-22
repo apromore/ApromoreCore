@@ -1780,14 +1780,12 @@ public class ProcessDao extends BasicDao {
 			if (latestVersions) {
 				query += " and "
 						+ "(" + ConstantDB.ATTR_PROCESSID + ", "
-						+ ConstantDB.ATTR_VERSION_NAME + ","
 						+ ConstantDB.ATTR_CREATION_DATE + ") in " 
 						+ " (select " + ConstantDB.ATTR_PROCESSID + ", "
-						+ ConstantDB.ATTR_VERSION_NAME + ","
 						+ "max(" + ConstantDB.ATTR_CREATION_DATE +")"
 						+ " from " + ConstantDB.TABLE_CANONICALS 
-						+ " group by " + ConstantDB.ATTR_PROCESSID + ", "
-						+ ConstantDB.ATTR_VERSION_NAME +")" ;
+						+ " group by " + ConstantDB.ATTR_PROCESSID + ")" 
+						;
 			}
 			rs = stmt.executeQuery(query);
 			while (rs.next()) {
