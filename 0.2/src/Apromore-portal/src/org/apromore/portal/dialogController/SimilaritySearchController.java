@@ -136,11 +136,11 @@ public class SimilaritySearchController extends Window {
 			}
 			// Sort result
 			ProcessSummariesType resultToDisplay = sort(process, result);
-			// add query with fake id.
-			// process.setId(-process.getId());
-			// process.getVersionSummaries().clear();
-			// process.getVersionSummaries().add(version);
-			// resultToDisplay.getProcessSummary().add(0, process); 
+			// add query
+			process.getVersionSummaries().clear();
+			process.getVersionSummaries().add(version);
+			version.setScore(1.0);
+			resultToDisplay.getProcessSummary().add(0, process); 
 			mainC.displayProcessSummaries(resultToDisplay, true, process, version);
 		} catch (Exception e) {
 			message = "Search failed (" + e.getMessage() + ")";
@@ -170,7 +170,7 @@ public class SimilaritySearchController extends Window {
 				sortInsertion(SortVersions (toBeSorted.getProcessSummary().get(i)), res);
 			}
 		}
-		res.getProcessSummary().add(0, query);
+		//res.getProcessSummary().add(0, query);
 		return res;
 	}
 
