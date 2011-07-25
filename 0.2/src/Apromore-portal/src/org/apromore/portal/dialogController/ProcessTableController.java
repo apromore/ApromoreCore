@@ -267,6 +267,8 @@ public class ProcessTableController {
 		this.mapProcessVersions.put(processCB, listV);
 		Label processScoreLb = new Label();
 		List<VersionSummaryType> processVersions = process.getVersionSummaries();
+		// find the score of the latest version, if any: this a one which will be displayed
+		// with the process
 		int i=0;
 		while(i<processVersions.size() 
 				&& processVersions.get(i).getName() != null
@@ -276,8 +278,11 @@ public class ProcessTableController {
 		// Each process should have at least one version. So it should have a legal value which
 		// is the index of the process latest version.
 		// But some are faulty!!!
-		if (processVersions.get(i).getScore() != null)
+		if (i<processVersions.size() && processVersions.get(i).getScore() != null){
 			processScoreLb.setValue(processVersions.get(i).getScore().toString());
+		} else {
+			processScoreLb.setValue("1.0");
+		}
 		Label processIdLb = new Label(process.getId().toString());
 		Component processName = null;
 		processName = new Toolbarbutton(process.getName());
