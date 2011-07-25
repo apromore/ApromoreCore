@@ -150,6 +150,7 @@ public class ToolboxManagerPortTypeImpl implements ToolboxManagerPortType {
 
 			org.apromore.toolbox.model_da.ProcessVersionsType similarProcesses = 
 					new ProcessVersionsType();
+			similarProcesses.getProcessVersion().clear();
 			double similarity;
 			ProcessVersionType processVersion = null;
 			for (int j=0;j<allCanonicals.size();j++) {				
@@ -177,8 +178,11 @@ public class ToolboxManagerPortTypeImpl implements ToolboxManagerPortType {
 					throw new ExceptionComputeSimilarity(e.getMessage());
 				}
 			}
+			if (similarProcesses.getProcessVersion().size()==0)
+				throw new ExceptionComputeSimilarity("Process model probably faulty");
 			// Send a message to DA to get process summary of similar process
-			org.apromore.toolbox.model_da.ProcessSummariesType processSummariesDA = request.ReadProcessSummaries(similarProcesses);
+			org.apromore.toolbox.model_da.ProcessSummariesType processSummariesDA = 
+					request.ReadProcessSummaries(similarProcesses);
 			org.apromore.toolbox.model_manager.ProcessSummariesType processSummariesM = 
 					new org.apromore.toolbox.model_manager.ProcessSummariesType();
 			for (org.apromore.toolbox.model_da.ProcessSummaryType pDA: processSummariesDA.getProcessSummary()) {
