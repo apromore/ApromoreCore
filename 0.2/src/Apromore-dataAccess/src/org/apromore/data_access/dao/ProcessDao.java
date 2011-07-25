@@ -1787,6 +1787,8 @@ public class ProcessDao extends BasicDao {
 						+ " group by " + ConstantDB.ATTR_PROCESSID + ")" 
 						;
 			}
+			query += " order by " + ConstantDB.ATTR_PROCESSID + ", " + 
+					ConstantDB.ATTR_VERSION_NAME;
 			rs = stmt.executeQuery(query);
 			while (rs.next()) {
 				CanonicalType cpf = new CanonicalType();
