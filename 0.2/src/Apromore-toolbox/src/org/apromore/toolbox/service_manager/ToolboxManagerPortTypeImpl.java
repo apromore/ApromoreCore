@@ -50,13 +50,13 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
  */
 
 @javax.jws.WebService(
-                      serviceName = "ToolboxManagerService",
-                      portName = "ToolboxManager",
-                      targetNamespace = "http://www.apromore.org/toolbox/service_manager",
-                      wsdlLocation = "http://localhost:8080/Apromore-toolbox/services/ToolboxManager?wsdl",
-                      endpointInterface = "org.apromore.toolbox.service_manager.ToolboxManagerPortType")
+		serviceName = "ToolboxManagerService",
+		portName = "ToolboxManager",
+		targetNamespace = "http://www.apromore.org/toolbox/service_manager",
+		wsdlLocation = "http://localhost:8080/Apromore-toolbox/services/ToolboxManager?wsdl",
+		endpointInterface = "org.apromore.toolbox.service_manager.ToolboxManagerPortType")
 
-		public class ToolboxManagerPortTypeImpl implements ToolboxManagerPortType {
+public class ToolboxManagerPortTypeImpl implements ToolboxManagerPortType {
 
 	private static final Logger LOG = Logger.getLogger(ToolboxManagerPortTypeImpl.class.getName());
 
@@ -64,7 +64,7 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 	searchForSimilarProcesses(org.apromore.toolbox.model_manager.SearchForSimilarProcessesInputMsgType payload) { 
 		LOG.info("Executing operation searchForSimilarProcesses");
 		org.apromore.toolbox.model_manager.SearchForSimilarProcessesOutputMsgType res =
-			new org.apromore.toolbox.model_manager.SearchForSimilarProcessesOutputMsgType();
+				new org.apromore.toolbox.model_manager.SearchForSimilarProcessesOutputMsgType();
 		org.apromore.toolbox.model_manager.ResultType result = new org.apromore.toolbox.model_manager.ResultType();
 		res.setResult(result);
 		try {
@@ -74,22 +74,52 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 					new ProcessVersionsType();
 			// idsDa is an empty list of processVersion, thus ReadCanonicals will return all
 			List<CanonicalType> allCanonicals = request.ReadCanonicals(idsDa,latestVersions);
-			CanonicalType search = null;
-			for (int i=0;i<allCanonicals.size();i++) {
-				if (allCanonicals.get(i).getProcessId() == payload.getProcessId() 
-						&& allCanonicals.get(i).getVersionName().compareTo(payload.getVersionName())==0) {
-					search = allCanonicals.get(i);
-					break;
+			// among allCanonicals, which one is the query?
+			// allCanonicals is a list of tuples <pid, version, content> ordered on processId
+			// If latestVersions, then query might not be present in allCanonicals 
+			// (this is the case when the query is not a latest version)
+			// but the latest version of the same process might be in allCanonicals
+			CanonicalType query = null;
+			int i=0;
+			while (i<allCanonicals.size() 
+					&& allCanonicals.get(i).getProcessId() < payload.getProcessId()) {
+				i++;
+			}
+			if (i<allCanonicals.size()) {
+				// processId found, look for the version
+				while (i<allCanonicals.size() 
+						&& allCanonicals.get(i).getProcessId() ==  payload.getProcessId()
+						&& (allCanonicals.get(i).getVersionName().compareTo(payload.getVersionName())!=0)) {
+					i++;
 				}
 			}
-			if (search != null) {
-				allCanonicals.remove(search);
+			if (i<allCanonicals.size()
+					&& allCanonicals.get(i).getProcessId() ==  payload.getProcessId()
+					&& (allCanonicals.get(i).getVersionName().compareTo(payload.getVersionName())==0)) {
+				// version found
+				query = allCanonicals.get(i);
+				// ??????
+				// not necessary to have query in the collection to be searched
+				// allCanonicals.remove(query);
+			} else {
+
+				// query process not found, latestVersions should be true
+				if (!latestVersions) throw new ExceptionReadCanonicals ("Couldn't read canonicals.");
+				ProcessVersionType queryId = new ProcessVersionType();
+				queryId.setProcessId(payload.getProcessId());
+				queryId.setVersionName(payload.getVersionName());
+				idsDa.getProcessVersion().clear();
+				idsDa.getProcessVersion().add(queryId);
+				List<CanonicalType> queryCanonical = request.ReadCanonicals(idsDa,false);
+				// if 0 or more then 1 result occurs, there is something wrong..
+				if (queryCanonical.size()!=1) throw new ExceptionReadCanonicals ("Couldn't read canonicals.");
+				allCanonicals.add(0,queryCanonical.get(0));
+				query = queryCanonical.get(0);
 			}
-			
 			// search canonical model
 			JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
 			Unmarshaller u = jc.createUnmarshaller();
-			DataHandler search_cpf = search.getCpf();
+			DataHandler search_cpf = query.getCpf();
 			InputStream search_is = search_cpf.getInputStream();
 			JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u.unmarshal(search_is);
 			CanonicalProcessType searchCpf = rootElement.getValue();
@@ -119,7 +149,7 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 			}
 
 			org.apromore.toolbox.model_da.ProcessVersionsType similarProcesses = 
-				new ProcessVersionsType();
+					new ProcessVersionsType();
 			double similarity;
 			ProcessVersionType processVersion = null;
 			for (int j=0;j<allCanonicals.size();j++) {				
@@ -131,7 +161,7 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 					DataHandler document_cpf = canonical.getCpf();
 					InputStream document_is = document_cpf.getInputStream();
 					JAXBElement<CanonicalProcessType> documentRootElement = 
-						(JAXBElement<CanonicalProcessType>) u.unmarshal(document_is);
+							(JAXBElement<CanonicalProcessType>) u.unmarshal(document_is);
 					CanonicalProcessType documentCpf = documentRootElement.getValue();
 					similarity = SearchForSimilarProcesses.findProcessesSimilarity(
 							searchCpf, documentCpf, algorithm, labelthreshold, contextthreshold, 
@@ -150,10 +180,10 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 			// Send a message to DA to get process summary of similar process
 			org.apromore.toolbox.model_da.ProcessSummariesType processSummariesDA = request.ReadProcessSummaries(similarProcesses);
 			org.apromore.toolbox.model_manager.ProcessSummariesType processSummariesM = 
-				new org.apromore.toolbox.model_manager.ProcessSummariesType();
+					new org.apromore.toolbox.model_manager.ProcessSummariesType();
 			for (org.apromore.toolbox.model_da.ProcessSummaryType pDA: processSummariesDA.getProcessSummary()) {
 				org.apromore.toolbox.model_manager.ProcessSummaryType pM =
-					new ProcessSummaryType();
+						new ProcessSummaryType();
 				processSummariesM.getProcessSummary().add(pM);
 				pM.setDomain(pDA.getDomain());
 				pM.setId(pDA.getId());
@@ -164,7 +194,7 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 				pM.setRanking(pDA.getRanking());
 				for (org.apromore.toolbox.model_da.VersionSummaryType vDA: pDA.getVersionSummaries()) {
 					org.apromore.toolbox.model_manager.VersionSummaryType vM =
-						new VersionSummaryType();
+							new VersionSummaryType();
 					pM.getVersionSummaries().add(vM);
 					vM.setCreationDate(vDA.getCreationDate());
 					vM.setLastUpdate(vDA.getLastUpdate());
@@ -173,7 +203,7 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 					vM.setScore(vDA.getScore());
 					for (org.apromore.toolbox.model_da.AnnotationsType aDA: vDA.getAnnotations()) {
 						org.apromore.toolbox.model_manager.AnnotationsType aM =
-							new AnnotationsType();
+								new AnnotationsType();
 						vM.getAnnotations().add(aM);
 						aM.setNativeType(aDA.getNativeType());
 						aM.getAnnotationName().addAll(aDA.getAnnotationName());
@@ -197,9 +227,9 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 		LOG.info("Executing operation mergeProcesses");
 		System.out.println(payload);
 		org.apromore.toolbox.model_manager.MergeProcessesOutputMsgType res =
-			new MergeProcessesOutputMsgType();
+				new MergeProcessesOutputMsgType();
 		org.apromore.toolbox.model_manager.ResultType result =
-			new ResultType();
+				new ResultType();
 		res.setResult(result);
 		try {
 			String processName = payload.getProcessName();
@@ -210,7 +240,7 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 			for (org.apromore.toolbox.model_manager.ProcessVersionIdType cpf: 
 				payload.getProcessVersionIds().getProcessVersionId()) {
 				org.apromore.toolbox.model_da.ProcessVersionType idDa = 
-					new ProcessVersionType();
+						new ProcessVersionType();
 				idsDa.getProcessVersion().add(idDa);
 				idDa.setProcessId(cpf.getProcessId());
 				idDa.setVersionName(cpf.getVersionName()); 
@@ -256,14 +286,14 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 				DataHandler document_cpf = canonical.getCpf();
 				InputStream document_is = document_cpf.getInputStream();
 				JAXBElement<CanonicalProcessType> documentRootElement = 
-					(JAXBElement<CanonicalProcessType>) u.unmarshal(document_is);
+						(JAXBElement<CanonicalProcessType>) u.unmarshal(document_is);
 				CanonicalProcessType documentCpf = documentRootElement.getValue();
 				toMerge.add(documentCpf);
 			}
 			CanonicalProcessType merged = 
-				MergeProcesses.mergeProcesses(
-						toMerge, removeEntanglements, algorithm, 
-						modelthreshold, labelthreshold, contextthreshold, skipnweight, subnweight, skipeweight);
+					MergeProcesses.mergeProcesses(
+							toMerge, removeEntanglements, algorithm, 
+							modelthreshold, labelthreshold, contextthreshold, skipnweight, subnweight, skipeweight);
 
 			//        	System.out.println("merged "+ merged);
 			Marshaller m = jc.createMarshaller();
@@ -275,11 +305,11 @@ import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 
 			// Send message to DA to save merged process
 			org.apromore.toolbox.model_da.ProcessSummaryType process = 
-				request.StoreCpf(processName, versionName, domain, userName, cpf_is);
+					request.StoreCpf(processName, versionName, domain, userName, cpf_is);
 			org.apromore.toolbox.model_manager.ProcessSummaryType processM =
-				new ProcessSummaryType();
+					new ProcessSummaryType();
 			org.apromore.toolbox.model_manager.VersionSummaryType versionM =
-				new VersionSummaryType();
+					new VersionSummaryType();
 			processM.getVersionSummaries().add(versionM);
 			// the returned process has one version, no annotations
 			processM.setId(process.getId());
