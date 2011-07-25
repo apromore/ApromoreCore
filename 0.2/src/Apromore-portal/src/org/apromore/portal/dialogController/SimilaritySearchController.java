@@ -15,7 +15,6 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
-import org.zkoss.zul.Radio;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Window;
@@ -136,11 +135,11 @@ public class SimilaritySearchController extends Window {
 			}
 			// Sort result
 			ProcessSummariesType resultToDisplay = sort(process, result);
-			// add query
-			process.getVersionSummaries().clear();
-			process.getVersionSummaries().add(version);
-			version.setScore(1.0);
-			resultToDisplay.getProcessSummary().add(0, process); 
+			// add query, so it is displayed
+//			process.getVersionSummaries().clear();
+//			process.getVersionSummaries().add(version);
+//			version.setScore(1.0);
+//			resultToDisplay.getProcessSummary().add(0, process); 
 			mainC.displayProcessSummaries(resultToDisplay, true, process, version);
 		} catch (Exception e) {
 			message = "Search failed (" + e.getMessage() + ")";
@@ -170,7 +169,7 @@ public class SimilaritySearchController extends Window {
 				sortInsertion(SortVersions (toBeSorted.getProcessSummary().get(i)), res);
 			}
 		}
-		//res.getProcessSummary().add(0, query);
+		res.getProcessSummary().add(0, query);
 		return res;
 	}
 
