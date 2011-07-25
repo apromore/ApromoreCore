@@ -44,11 +44,12 @@
 				</row>
 				<row spans="2">
 					<hbox width="100%">
-						<radiogroup id="allVersionsChoiceRG" />
+						<radiogroup id="allVersionsChoiceRG" >
 						<radio id="latestVersions"
 							label="Search latest versions only" checked="true" />
 						<radio id="allVersions"
 							label="Search all versions" />
+							</radiogroup>
 					</hbox>
 				</row>
 				<row id="similaritySearchButtons" spans="2">
