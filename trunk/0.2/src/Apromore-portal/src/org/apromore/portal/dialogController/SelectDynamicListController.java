@@ -81,7 +81,7 @@ public class SelectDynamicListController extends Combobox {
 	}
 
 	public void addItem(String item) {
-		// insert the domain. Keep the list ordered, with elements pairwise distinct
+		// insert an item. Keep the list ordered, with elements pairwise distinct
 		int i = 0;
 		while (i < this.references.size() && this.references.get(i).compareTo(item) < 0) i++;
 		if (i == this.references.size()) {
