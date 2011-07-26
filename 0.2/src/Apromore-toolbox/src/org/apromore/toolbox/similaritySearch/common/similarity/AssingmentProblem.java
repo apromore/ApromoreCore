@@ -119,9 +119,10 @@ public class AssingmentProblem {
 			for (int i = 0; i < g1Vertices_fe.size(); i++) {
 				for (int j = 0; j < g2Vertices_fe.size(); j++) {
 					double edScore = 0;
-					if (g1Vertices_fe.get(i).getType().equals(g2Vertices_fe.get(j).getType())) {
+					if (g1Vertices_fe.get(i).getType().equals(g2Vertices_fe.get(j).getType())
+							&& g1Vertices_fe.get(i).getLabel() != null 
+							&& g2Vertices_fe.get(j).getLabel() != null) {
 						edScore = LabelEditDistance.edTokensWithStemming(g1Vertices_fe
-//							LabelEditDistance.edTokensWithStemmingWordnet(g1Vertices_fe
 								.get(i).getLabel(), g2Vertices_fe.get(j).getLabel(),
 								Settings.STRING_DELIMETER, stemmer, true);
 					}
