@@ -14,6 +14,7 @@ import java.util.zip.ZipInputStream;
 import javax.xml.bind.JAXBException;
 
 import org.apromore.portal.exception.DialogException;
+import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.manager.RequestToManager;
@@ -201,7 +202,7 @@ public class ImportListProcessesController extends Window {
 
 	private void importProcess (MainController mainC, ImportListProcessesController importC, InputStream xml_is,  
 			String processName, String nativeType, String filename) 
-	throws SuspendNotAllowedException, InterruptedException, JAXBException, IOException, ExceptionDomains {
+	throws SuspendNotAllowedException, InterruptedException, JAXBException, IOException, ExceptionDomains, ExceptionAllUsers {
 
 		ImportOneProcessController oneImport = 
 			new ImportOneProcessController (mainC, importC, xml_is, processName, 
