@@ -10,8 +10,10 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.apromore.portal.common.Utils;
+import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
+import org.apromore.portal.exception.ExceptionImportAllMissing;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.wfmc._2008.xpdl2.PackageType;
@@ -22,9 +24,9 @@ import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Div;
+import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radio;
-import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
@@ -36,133 +38,169 @@ public class ImportOneProcessController extends Window {
 	private ImportListProcessesController importProcessesC;
 	private Window importOneProcessWindow;
 	private String fileName;
-	private String documentation;
-	private String lastUpdate;
-	private String created;
-	private String author;
-	private Textbox processName;
-	private Textbox versionName;
-	private Row domainR;
+	private Label defaultOwner;
+	private Textbox documentationTb;
+	private Textbox lastUpdateTb;
+	private Textbox creationDateTb;
+	private Textbox processNameTb;
+	private Textbox versionNameTb;
 	private SelectDynamicListController domainCB;
-	private Row fakeEventsR;
-	private Radiogroup fakeEventsRG;
+	private SelectDynamicListController ownerCB;
 	private Radio fakeEventsNoR;
 	private Radio fakeEventsYesR;
 	private InputStream nativeProcess; // the input stream read from uploaded file
 	private String nativeType;
+	private Button resetButton;
 	private Button okButton;
 	private Button okForAllButton;
 	private Button cancelButton;
 	private Button cancelAllButton;
 
+	private String processName;
+	private String readVersionName ;
+	private String readProcessName ;
+	private String readDocumentation ;
+	private String readCreated ;
+	private String readLastupdate;
+	private String readAuthor;
+	
 	public ImportOneProcessController (MainController mainC, ImportListProcessesController importProcessesC, InputStream xml_is, 
 			String processName, String nativeType, String fileName) 
-	throws SuspendNotAllowedException, InterruptedException, JAXBException, IOException, ExceptionDomains {
+					throws SuspendNotAllowedException, InterruptedException, JAXBException, IOException, ExceptionDomains, ExceptionAllUsers {
 
 		this.importProcessesC = importProcessesC;
 		this.mainC = mainC;
 		this.fileName = fileName;
+		this.processName = processName;
 		this.nativeProcess = xml_is;
 		this.nativeType = nativeType;
 		this.importOneProcessWindow = (Window) Executions.createComponents("macros/importOneProcess.zul", null, null);
 		this.importOneProcessWindow.setTitle(this.importOneProcessWindow.getTitle() + " (file: " + this.fileName + ")");
 		Rows rows = (Rows) this.importOneProcessWindow.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
-		Row processNameR = (Row) rows.getFirstChild();
-		Row versionNameR = (Row) processNameR.getNextSibling();
-		this.domainR = (Row) versionNameR.getNextSibling();
-		this.processName = (Textbox) processNameR.getFirstChild().getNextSibling();
-		this.versionName = (Textbox) versionNameR.getFirstChild().getNextSibling();
-		this.fakeEventsR = (Row) this.domainR.getNextSibling();
-		this.fakeEventsNoR = (Radio) this.fakeEventsR.getFirstChild().getNextSibling().getFirstChild();
+		Row processNameR = (Row) rows.getChildren().get(0);
+		Row versionNameR = (Row) rows.getChildren().get(1);
+		Row ownerR = (Row) rows.getChildren().get(2);
+		Row creationDateR = (Row) rows.getChildren().get(3);
+		Row lastUpdateR = (Row) rows.getChildren().get(4);
+		Row documentationR = (Row) rows.getChildren().get(5);
+		Row domainR = (Row) rows.getChildren().get(6);
+		Row fakeEventsR = (Row)rows.getChildren().get(7);
+
+		this.processNameTb = (Textbox) processNameR.getChildren().get(1);
+		this.versionNameTb = (Textbox) versionNameR.getChildren().get(1);
+		this.creationDateTb = (Textbox) creationDateR.getChildren().get(1);
+		this.lastUpdateTb = (Textbox) lastUpdateR.getChildren().get(1);
+		this.documentationTb = (Textbox) documentationR.getChildren().get(1);
+		this.fakeEventsNoR = (Radio) fakeEventsR.getFirstChild().getNextSibling().getFirstChild();
 		this.fakeEventsYesR = (Radio) this.fakeEventsNoR.getNextSibling();
-		Div buttonsD = (Div) this.fakeEventsR.getNextSibling().getNextSibling().getFirstChild();
+		Div buttonsD = (Div) fakeEventsR.getNextSibling().getNextSibling().getFirstChild();
 		this.okButton = (Button) buttonsD.getFirstChild();
-		this.okForAllButton = (Button) buttonsD.getFirstChild().getNextSibling();
-		this.cancelButton = (Button) buttonsD.getFirstChild().getNextSibling().getNextSibling();
-		this.cancelAllButton = (Button) buttonsD.getFirstChild().getNextSibling().getNextSibling().getNextSibling();
+		this.okForAllButton = (Button) buttonsD.getChildren().get(1);
+		this.cancelButton = (Button) buttonsD.getChildren().get(2);
+		this.cancelAllButton = (Button) buttonsD.getChildren().get(3);
+		this.resetButton = (Button) buttonsD.getChildren().get(4);
+
+		List<String> ownerNames = this.mainC.getUsers();
+		this.defaultOwner = (Label) ownerR.getChildren().get(1);
+		this.ownerCB = new SelectDynamicListController(ownerNames);
+		this.ownerCB.setReference(ownerNames);
+		this.ownerCB.setAutodrop(true);
+		this.ownerCB.setWidth("85%");
+		this.ownerCB.setHeight("100%");
+		this.ownerCB.setAttribute("hflex", "1");
+		ownerR.appendChild(ownerCB);
 
 		List<String> domains = this.mainC.getDomains();
 		this.domainCB = new SelectDynamicListController(domains);
 		this.domainCB.setReference(domains);
-		this.domainCB.setId(fileName);
 		this.domainCB.setAutodrop(true);
 		this.domainCB.setWidth("85%");
 		this.domainCB.setHeight("100%");
 		this.domainCB.setAttribute("hflex", "1");
-		this.domainR.appendChild(domainCB);
+		domainR.appendChild(domainCB);
 
 		this.cancelAllButton.setVisible(this.importProcessesC.getToImportList().size()>0);
 		this.okForAllButton.setVisible(this.importProcessesC.getToImportList().size()>0);
-		String readVersionName = "0.1"; // default value for versionName if not found
-		String readProcessName = processName ; // default value if not found
-		String readDocumentation = "" ; 
-		String readCreated = Utils.getDateTime(); // default value for creationDate if not found
-		String readLastupdate = "";
-		String readAuthor = this.mainC.getCurrentUser().getUsername();
-		// check properties in xml_process: process name, version name, documentation, creation date, last update
-		// if native format is xpdl, extract information from xml file
-		if (nativeType.compareTo("XPDL 2.1")==0) {
+		reset();
+		// check properties in npf_process: process name, version name, documentation, creation date,
+		// last update, and author. Ask the user to give those which are missing
+		// if native format is xpdl, these informations might exist in npf
+		try {
+			if (nativeType.compareTo("XPDL 2.1")==0) {
+				JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
+				Unmarshaller u = jc.createUnmarshaller();
+				JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(this.nativeProcess);
+				PackageType pkg = rootElement.getValue();
+				this.nativeProcess.reset();
+				try {// get process author if defined
+					if (pkg.getRedefinableHeader().getAuthor().getValue().trim().compareTo("")!=0) {
+						readAuthor = pkg.getRedefinableHeader().getAuthor().getValue().trim();
+					}
+				} catch (NullPointerException e) {
+					// do nothing
+				}
+				try {// get process name if defined
+					if (pkg.getName().trim().compareTo("")!=0) {
+						readProcessName = pkg.getName().trim();
+					} 
+				} catch (NullPointerException e) {
+					// do nothing
+				}
+				try {//get version name if defined
+					if (pkg.getRedefinableHeader().getVersion().getValue().trim().compareTo("")!=0) {
+						readVersionName = pkg.getRedefinableHeader().getVersion().getValue().trim();
+					} 
+				} catch (NullPointerException e) {
+					// do nothing
+				}
+				try {//get documentation if defined
+					if (pkg.getPackageHeader().getDocumentation().getValue().trim().compareTo("")!=0) {
+						readDocumentation = pkg.getPackageHeader().getDocumentation().getValue().trim();
+					} 
+				} catch (NullPointerException e) {
+					// do nothing
+				}
+				try {//get creation date if defined
+					if (pkg.getPackageHeader().getCreated().getValue().trim().compareTo("")!=0) {
+						readCreated = pkg.getPackageHeader().getCreated().getValue().trim();
+						//readCreated = Utils.xpdlDate2standardDate(readCreated);
+					} 
+				} catch (NullPointerException e) {
+					// do nothing
+				}
+				try {//get lastupdate date if defined
+					if (pkg.getPackageHeader().getModificationDate().getValue().trim().compareTo("")!=0) {
+						readLastupdate = pkg.getPackageHeader().getModificationDate().getValue().trim();
+						//readLastupdate = Utils.xpdlDate2standardDate(readLastupdate);
+					} 
+				} catch (NullPointerException e) {
+					// do nothing
+				}
+			} else if (nativeType.compareTo("EPML 2.0")==0) {
+				// as epml doesn't support process name, version, etc..
+				// everything missing
+				throw new ExceptionImportAllMissing();			
+			}
+		} catch (ExceptionImportAllMissing e) {
 
-			JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
-			Unmarshaller u = jc.createUnmarshaller();
-			JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(this.nativeProcess);
-			PackageType pkg = rootElement.getValue();
-			this.nativeProcess.reset();
-			try {// get process author if defined
-				if (pkg.getRedefinableHeader().getAuthor().getValue().trim().compareTo("")!=0) {
-					readAuthor = pkg.getRedefinableHeader().getAuthor().getValue().trim();
-				}
-			} catch (NullPointerException e) {
-				// default value
-			}
-			try {// get process name if defined
-				if (pkg.getName().trim().compareTo("")!=0) {
-					readProcessName = pkg.getName().trim();
-				}
-			} catch (NullPointerException e) {
-				// default value
-			}
-			try {//get version name if defined
-				if (pkg.getRedefinableHeader().getVersion().getValue().trim().compareTo("")!=0) {
-					readVersionName = pkg.getRedefinableHeader().getVersion().getValue().trim();
-				}
-			} catch (NullPointerException e) {
-				// default value
-			}
-			try {//get documentation if defined
-				if (pkg.getPackageHeader().getDocumentation().getValue().trim().compareTo("")!=0) {
-					readDocumentation = pkg.getPackageHeader().getDocumentation().getValue().trim();
-				}
-			} catch (NullPointerException e) {
-				// default value
-			}
-			try {//get creation date if defined
-				if (pkg.getPackageHeader().getCreated().getValue().trim().compareTo("")!=0) {
-					readCreated = pkg.getPackageHeader().getCreated().getValue().trim();
-					//readCreated = Utils.xpdlDate2standardDate(readCreated);
-				}
-			} catch (NullPointerException e) {
-				// default value
-			}
-			try {//get lastupdate date if defined
-				if (pkg.getPackageHeader().getModificationDate().getValue().trim().compareTo("")!=0) {
-					readLastupdate = pkg.getPackageHeader().getModificationDate().getValue().trim();
-					//readLastupdate = Utils.xpdlDate2standardDate(readLastupdate);
-				}
-			} catch (NullPointerException e) {
-				// default value
-			}
-		} else if (nativeType.compareTo("EPML 2.0")==0) {
-			// as epml doesn't support process name, version, etc..
-			// there is nothing much to do: leave values to default.
-			
 		}
-		this.processName.setValue(readProcessName);
-		this.versionName.setValue(readVersionName);
-		this.documentation = readDocumentation;
-		this.created = readCreated ;
-		this.lastUpdate = readLastupdate;
-		this.author = readAuthor;
+		this.processNameTb.setValue(readProcessName);
+		this.versionNameTb.setValue(readVersionName);
+		this.documentationTb.setValue(readDocumentation);
+		this.creationDateTb.setValue(readCreated);
+		this.lastUpdateTb.setValue(readLastupdate);
+		if (ownerNames.contains(readAuthor)) {
+			defaultOwner.setValue(readAuthor);
+		}
+
+		this.ownerCB.addEventListener("onChange",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				SelectDynamicListController cb = (SelectDynamicListController) event.getTarget();
+				updateOwner(cb.getValue());
+			}
+		});			
+		
 		this.okButton.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -195,9 +233,35 @@ public class ImportOneProcessController extends Window {
 				cancelAll();
 			}
 		});	
+		this.resetButton.addEventListener("onClick",
+				new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				reset();
+			}
+		});	
 		this.importOneProcessWindow.doModal();
 	}
 
+	private void updateOwner (String owner) {
+		this.defaultOwner.setValue(owner);
+	}
+	
+	private void reset() {
+		this.readVersionName = "0.1"; // default value for versionName if not found
+		this.readProcessName = this.processName ; // default value if not found
+		this.readDocumentation = "" ; 
+		this.readCreated = Utils.getDateTime(); // default value for creationDate if not found
+		this.readLastupdate = "";
+		this.readAuthor = this.mainC.getCurrentUser().getUsername();
+		this.fakeEventsNoR.setChecked(true);
+		this.fakeEventsYesR.setChecked(false);
+		this.processNameTb.setValue(readProcessName);
+		this.versionNameTb.setValue(readVersionName);
+		this.documentationTb.setValue(readDocumentation);
+		this.creationDateTb.setValue(readCreated);
+		this.lastUpdateTb.setValue(readLastupdate);
+		this.defaultOwner.setValue(readAuthor);
+	}
 	private void cancel() throws InterruptedException, IOException{
 		// delete process from the list of processes still to be imported
 		this.importProcessesC.deleteFromToBeImported(this);
@@ -230,16 +294,18 @@ public class ImportOneProcessController extends Window {
 	private void  importProcess() throws InterruptedException, IOException  {
 		RequestToManager request = new RequestToManager();
 		try {
-			if (this.processName.getValue().compareTo("")==0
-					|| this.versionName.getValue().compareTo("")==0) {
+			if (this.processNameTb.getValue().compareTo("")==0
+					|| this.versionNameTb.getValue().compareTo("")==0) {
 				Messagebox.show("Please enter a value for each field.", "Attention", Messagebox.OK,
 						Messagebox.EXCLAMATION);
 			} else {
 				String domain = this.domainCB.getValue();
+				String owner = this.ownerCB.getValue();
 				ProcessSummaryType res= 
-					request.importProcess(this.mainC.getCurrentUser().getUsername(), this.nativeType, this.processName.getValue(), 
-							this.versionName.getValue(), this.nativeProcess, domain,
-							this.documentation, this.created, this.lastUpdate, this.fakeEventsYesR.isChecked());
+						request.importProcess(owner, this.nativeType, this.processNameTb.getValue(), 
+								this.versionNameTb.getValue(), this.nativeProcess, domain,
+								this.documentationTb.getValue(), this.creationDateTb.getValue().toString(), 
+								this.lastUpdateTb.getValue().toString(), this.fakeEventsYesR.isChecked());
 				// process successfully imported
 				this.importProcessesC.getImportedList().add(this);
 				this.mainC.displayNewProcess(res);
@@ -274,12 +340,12 @@ public class ImportOneProcessController extends Window {
 	 * @throws WrongValueException 
 	 */
 	protected void importAllProcess() throws ExceptionImport, WrongValueException, InterruptedException, IOException {
-		if (this.processName.getValue().compareTo("")==0
-				|| this.versionName.getValue().compareTo("")==0) {
+		if (this.processNameTb.getValue().compareTo("")==0
+				|| this.versionNameTb.getValue().compareTo("")==0) {
 			Messagebox.show("Please enter a value for each field.", "Attention", Messagebox.OK,
 					Messagebox.EXCLAMATION);
 		} else {
-			this.importProcessesC.importAllProcess(this.versionName.getValue(), this.domainCB.getValue());
+			this.importProcessesC.importAllProcess(this.versionNameTb.getValue(), this.domainCB.getValue());
 		}
 	}
 	public Window getImportOneProcessWindow() {
@@ -291,7 +357,7 @@ public class ImportOneProcessController extends Window {
 	}
 
 	public String getDocumentation() {
-		return documentation;
+		return documentationTb.getValue();
 	}
 
 	public String getNativeType() {
@@ -299,11 +365,11 @@ public class ImportOneProcessController extends Window {
 	}
 
 	public String getLastUpdate() {
-		return lastUpdate;
+		return lastUpdateTb.getValue();
 	}
 
 	public String getCreated() {
-		return created;
+		return creationDateTb.getValue();
 	}
 
 	public InputStream getNativeProcess() {
@@ -313,5 +379,5 @@ public class ImportOneProcessController extends Window {
 	public Radio getFakeEventsYesR() {
 		return fakeEventsYesR;
 	}
-	
+
 }
