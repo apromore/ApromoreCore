@@ -35,4 +35,5 @@ public final class Constants {
 	public static final String ANNOTATIONS_ONLY = "notationsOnly";
 	
 	public static final String INITIAL_VERSION = "0.1";
+	public static final String dateFormat = "yyyy/MM/dd hh:mm a";
 }
