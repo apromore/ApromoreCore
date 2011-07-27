@@ -9,16 +9,12 @@ package org.apromore.toolbox.service_manager;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
-import javax.jws.WebMethod;
-import javax.jws.WebParam;
-import javax.jws.WebResult;
-import javax.jws.WebService;
-import javax.jws.soap.SOAPBinding;
-import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.activation.DataHandler;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -35,7 +31,6 @@ import org.apromore.toolbox.model_da.ProcessVersionsType;
 import org.apromore.toolbox.model_manager.AnnotationsType;
 import org.apromore.toolbox.model_manager.MergeProcessesOutputMsgType;
 import org.apromore.toolbox.model_manager.ParameterType;
-import org.apromore.toolbox.model_manager.ProcessSummariesType;
 import org.apromore.toolbox.model_manager.ProcessSummaryType;
 import org.apromore.toolbox.model_manager.ResultType;
 import org.apromore.toolbox.model_manager.VersionSummaryType;
@@ -285,6 +280,9 @@ public class ToolboxManagerPortTypeImpl implements ToolboxManagerPortType {
 
 			JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
 			Unmarshaller u = jc.createUnmarshaller();
+			// mergedSources will be given to DA
+			Map<Integer,String> mergedSources = new HashMap<Integer, String>();
+			
 			for (CanonicalType canonical : canonicals) {
 				// search canonical model
 				DataHandler document_cpf = canonical.getCpf();
@@ -293,6 +291,7 @@ public class ToolboxManagerPortTypeImpl implements ToolboxManagerPortType {
 						(JAXBElement<CanonicalProcessType>) u.unmarshal(document_is);
 				CanonicalProcessType documentCpf = documentRootElement.getValue();
 				toMerge.add(documentCpf);
+				mergedSources.put(canonical.getProcessId(), canonical.getVersionName());
 			}
 			CanonicalProcessType merged = 
 					MergeProcesses.mergeProcesses(
@@ -309,7 +308,8 @@ public class ToolboxManagerPortTypeImpl implements ToolboxManagerPortType {
 
 			// Send message to DA to save merged process
 			org.apromore.toolbox.model_da.ProcessSummaryType process = 
-					request.StoreCpf(processName, versionName, domain, userName, cpf_is);
+					request.StoreCpf(processName, versionName, domain, 
+							userName, cpf_is, mergedSources);
 			org.apromore.toolbox.model_manager.ProcessSummaryType processM =
 					new ProcessSummaryType();
 			org.apromore.toolbox.model_manager.VersionSummaryType versionM =

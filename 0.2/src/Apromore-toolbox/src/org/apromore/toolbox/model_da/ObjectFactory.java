@@ -87,6 +87,14 @@ public class ObjectFactory {
     }
 
     /**
+     * Create an instance of {@link MergedSources }
+     * 
+     */
+    public MergedSources createMergedSources() {
+        return new MergedSources();
+    }
+
+    /**
      * Create an instance of {@link VersionSummaryType }
      * 
      */
@@ -148,6 +156,14 @@ public class ObjectFactory {
      */
     public CanonicalType createCanonicalType() {
         return new CanonicalType();
+    }
+
+    /**
+     * Create an instance of {@link MergedSource }
+     * 
+     */
+    public MergedSource createMergedSource() {
+        return new MergedSource();
     }
 
     /**
