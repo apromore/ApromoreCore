@@ -37,25 +37,25 @@ import javax.xml.bind.annotation.XmlType;
     "versionName",
     "cpf"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
 public class CanonicalType {
 
     @XmlElement(name = "ProcessId")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected int processId;
     @XmlElement(name = "VersionName", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected String versionName;
     @XmlElement(name = "Cpf", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected DataHandler cpf;
 
     /**
      * Gets the value of the processId property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public int getProcessId() {
         return processId;
     }
@@ -64,7 +64,7 @@ public class CanonicalType {
      * Sets the value of the processId property.
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setProcessId(int value) {
         this.processId = value;
     }
@@ -77,7 +77,7 @@ public class CanonicalType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public String getVersionName() {
         return versionName;
     }
@@ -90,7 +90,7 @@ public class CanonicalType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setVersionName(String value) {
         this.versionName = value;
     }
@@ -103,7 +103,7 @@ public class CanonicalType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public DataHandler getCpf() {
         return cpf;
     }
@@ -116,7 +116,7 @@ public class CanonicalType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setCpf(DataHandler value) {
         this.cpf = value;
     }

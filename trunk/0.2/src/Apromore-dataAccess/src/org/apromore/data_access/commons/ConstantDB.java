@@ -65,6 +65,13 @@ public final class ConstantDB {
 
 	public static final String TABLE_HEAD_VERSIONS = "head_versions";
 
+	public static final String TABLE_MERGED_VERSIONS = " merged_versions";
+	public static final String ATTR_URI_MERGED = "uri_merged";
+	public static final String ATTR_URI_SOURCE = "uri_source";
+	
+	
+	
+
 	public static final int ERROR_UNIQUE = 1062;
 }
 
