@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlType;
  *         &lt;element name="version" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="domain" type="{http://www.w3.org/2001/XMLSchema}string"/>
  *         &lt;element name="username" type="{http://www.w3.org/2001/XMLSchema}string"/>
+ *         &lt;element name="sources" type="{http://www.apromore.org/data_access/model_toolbox}MergedSources"/>
  *         &lt;element name="Cpf" type="{http://www.w3.org/2001/XMLSchema}base64Binary"/>
  *       &lt;/sequence>
  *     &lt;/restriction>
@@ -39,26 +40,30 @@ import javax.xml.bind.annotation.XmlType;
     "version",
     "domain",
     "username",
+    "sources",
     "cpf"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
 public class StoreCpfInputMsgType {
 
     @XmlElement(required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected String processName;
     @XmlElement(required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected String version;
     @XmlElement(required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected String domain;
     @XmlElement(required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected String username;
+    @XmlElement(required = true)
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    protected MergedSources sources;
     @XmlElement(name = "Cpf", required = true)
     @XmlMimeType("application/octet-stream")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected DataHandler cpf;
 
     /**
@@ -69,7 +74,7 @@ public class StoreCpfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public String getProcessName() {
         return processName;
     }
@@ -82,7 +87,7 @@ public class StoreCpfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setProcessName(String value) {
         this.processName = value;
     }
@@ -95,7 +100,7 @@ public class StoreCpfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public String getVersion() {
         return version;
     }
@@ -108,7 +113,7 @@ public class StoreCpfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setVersion(String value) {
         this.version = value;
     }
@@ -121,7 +126,7 @@ public class StoreCpfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public String getDomain() {
         return domain;
     }
@@ -134,7 +139,7 @@ public class StoreCpfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setDomain(String value) {
         this.domain = value;
     }
@@ -147,7 +152,7 @@ public class StoreCpfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public String getUsername() {
         return username;
     }
@@ -160,9 +165,35 @@ public class StoreCpfInputMsgType {
      *     {@link String }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setUsername(String value) {
         this.username = value;
+    }
+
+    /**
+     * Gets the value of the sources property.
+     * 
+     * @return
+     *     possible object is
+     *     {@link MergedSources }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    public MergedSources getSources() {
+        return sources;
+    }
+
+    /**
+     * Sets the value of the sources property.
+     * 
+     * @param value
+     *     allowed object is
+     *     {@link MergedSources }
+     *     
+     */
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    public void setSources(MergedSources value) {
+        this.sources = value;
     }
 
     /**
@@ -173,7 +204,7 @@ public class StoreCpfInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public DataHandler getCpf() {
         return cpf;
     }
@@ -186,7 +217,7 @@ public class StoreCpfInputMsgType {
      *     {@link DataHandler }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setCpf(DataHandler value) {
         this.cpf = value;
     }

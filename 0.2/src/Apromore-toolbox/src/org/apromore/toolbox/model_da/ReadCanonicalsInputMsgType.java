@@ -35,14 +35,14 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "ReadCanonicalsInputMsgType", propOrder = {
     "processVersion"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
 public class ReadCanonicalsInputMsgType {
 
     @XmlElement(name = "ProcessVersion")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected List<ProcessVersionType> processVersion;
     @XmlAttribute(name = "LatestVersions")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected Boolean latestVersions;
 
     /**
@@ -67,7 +67,7 @@ public class ReadCanonicalsInputMsgType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public List<ProcessVersionType> getProcessVersion() {
         if (processVersion == null) {
             processVersion = new ArrayList<ProcessVersionType>();
@@ -83,7 +83,7 @@ public class ReadCanonicalsInputMsgType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public Boolean isLatestVersions() {
         return latestVersions;
     }
@@ -96,7 +96,7 @@ public class ReadCanonicalsInputMsgType {
      *     {@link Boolean }
      *     
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-20T02:51:15+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:47:56+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setLatestVersions(Boolean value) {
         this.latestVersions = value;
     }
