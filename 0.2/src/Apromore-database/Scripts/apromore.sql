@@ -114,6 +114,17 @@ create table derived_versions (
 ) engine=InnoDB;
 show warnings ;
 
+create table merged_versions (
+    uri_merged       varchar(40),
+    uri_source       varchar(40),
+    constraint pk_merged_versions primary key (uri_merged, uri_source),
+    constraint fk_merged_version1 foreign key (uri_merged) references canonicals(uri) 
+    on delete cascade on update cascade,
+    constraint fk_merged_version2 foreign key (uri_source) references canonicals(uri) 
+    on delete cascade on update cascade
+) engine=InnoDB;
+show warnings ;
+
 create table edit_session_mappings (
        code int auto_increment,
        recordTime datetime,
@@ -137,21 +148,21 @@ constraint fk_edit_session_mappings3 foreign key (processId) references processe
 show warnings ;
 
 create table temp_versions (
-	code int,
-	recordTime datetime,
-	processId int,
-	pre_version varchar(40),
-	new_version varchar(40),
-    nat_type varchar(20),
-	creation_date varchar(35),
-	last_update varchar(35),
-	ranking varchar(10),
-	documentation text,
-    name 		varchar(40),
-	cpf longtext,
-	apf longtext,
-	npf longtext,
-	constraint pk_temp_versions primary key (code, processId, new_version)
+code int,
+recordTime datetime,
+processId int,
+pre_version varchar(40),
+new_version varchar(40),
+nat_type varchar(20),
+creation_date varchar(35),
+last_update varchar(35),
+ranking varchar(10),
+documentation text,
+name varchar(40),
+cpf longtext,
+apf longtext,
+npf longtext,
+constraint pk_temp_versions primary key (code, processId, new_version)
 ) engine=InnoDB;
 show warnings ;
 
