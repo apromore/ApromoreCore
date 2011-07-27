@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<schema xmlns="http://www.w3.org/2001/XMLSchema" 
-    xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
 	targetNamespace="http://www.apromore.org/data_access/model_toolbox"
 	xmlns:tns="http://www.apromore.org/data_access/model_toolbox">
 
@@ -21,7 +20,7 @@
 			<element minOccurs="0" maxOccurs="unbounded" name="ProcessVersion"
 				type="tns:ProcessVersionType" />
 		</sequence>
-		<attribute name="LatestVersions" type="boolean"/>
+		<attribute name="LatestVersions" type="boolean" />
 	</complexType>
 
 	<complexType name="ReadCanonicalsOutputMsgType">
@@ -53,11 +52,21 @@
 			<element name="version" type="string" />
 			<element name="domain" type="string" />
 			<element name="username" type="string" />
+			<element name="sources" type="tns:MergedSources" />
 			<element name="Cpf" type="base64Binary"
 				xmime:expectedContentTypes="application/octet-stream" />
 		</sequence>
 	</complexType>
-
+	<complexType name="MergedSources">
+		<sequence>
+			<element name="mergedSource" type="tns:MergedSource"
+				minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+	<complexType name="MergedSource">
+		<attribute name="processId" type="int" />
+		<attribute name="versionName" type="string" />
+	</complexType>
 	<complexType name="StoreCpfOutputMsgType">
 		<sequence>
 			<element name="Result" type="tns:ResultType" />
@@ -96,7 +105,7 @@
 		<attribute name="name" type="string" />
 		<attribute name="last_update" type="string" />
 		<attribute name="creation_date" type="string" />
-		<attribute name="Score" type="double"/>
+		<attribute name="Score" type="double" />
 	</complexType>
 
 	<complexType name="AnnotationsType">
@@ -120,11 +129,11 @@
 				type="tns:ProcessVersionType" />
 		</sequence>
 	</complexType>
-	
+
 	<complexType name="ProcessVersionType">
 		<attribute name="ProcessId" type="int" />
 		<attribute name="VersionName" type="string" />
-		<attribute name="Score" type="double"/>
+		<attribute name="Score" type="double" />
 	</complexType>
 
 	<complexType name="ReadProcessSummariesOutputMsgType">

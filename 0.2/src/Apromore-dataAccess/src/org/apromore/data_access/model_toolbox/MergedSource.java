@@ -9,17 +9,16 @@ import javax.xml.bind.annotation.XmlType;
 
 
 /**
- * <p>Java class for ProcessVersionType complex type.
+ * <p>Java class for MergedSource complex type.
  * 
  * <p>The following schema fragment specifies the expected content contained within this class.
  * 
  * <pre>
- * &lt;complexType name="ProcessVersionType">
+ * &lt;complexType name="MergedSource">
  *   &lt;complexContent>
  *     &lt;restriction base="{http://www.w3.org/2001/XMLSchema}anyType">
- *       &lt;attribute name="ProcessId" type="{http://www.w3.org/2001/XMLSchema}int" />
- *       &lt;attribute name="VersionName" type="{http://www.w3.org/2001/XMLSchema}string" />
- *       &lt;attribute name="Score" type="{http://www.w3.org/2001/XMLSchema}double" />
+ *       &lt;attribute name="processId" type="{http://www.w3.org/2001/XMLSchema}int" />
+ *       &lt;attribute name="versionName" type="{http://www.w3.org/2001/XMLSchema}string" />
  *     &lt;/restriction>
  *   &lt;/complexContent>
  * &lt;/complexType>
@@ -28,19 +27,16 @@ import javax.xml.bind.annotation.XmlType;
  * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
-@XmlType(name = "ProcessVersionType")
+@XmlType(name = "MergedSource")
 @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
-public class ProcessVersionType {
+public class MergedSource {
 
-    @XmlAttribute(name = "ProcessId")
+    @XmlAttribute(name = "processId")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected Integer processId;
-    @XmlAttribute(name = "VersionName")
+    @XmlAttribute(name = "versionName")
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected String versionName;
-    @XmlAttribute(name = "Score")
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
-    protected Double score;
 
     /**
      * Gets the value of the processId property.
@@ -92,32 +88,6 @@ public class ProcessVersionType {
     @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public void setVersionName(String value) {
         this.versionName = value;
-    }
-
-    /**
-     * Gets the value of the score property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Double }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
-    public Double getScore() {
-        return score;
-    }
-
-    /**
-     * Sets the value of the score property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Double }
-     *     
-     */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
-    public void setScore(Double value) {
-        this.score = value;
     }
 
 }

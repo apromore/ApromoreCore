@@ -33,11 +33,11 @@ import javax.xml.bind.annotation.XmlType;
 @XmlType(name = "CanonicalsType", propOrder = {
     "canonical"
 })
-@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+@Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
 public class CanonicalsType {
 
     @XmlElement(name = "Canonical", required = true)
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     protected List<CanonicalType> canonical;
 
     /**
@@ -62,7 +62,7 @@ public class CanonicalsType {
      * 
      * 
      */
-    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-19T05:30:55+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
+    @Generated(value = "com.sun.tools.xjc.Driver", date = "2011-07-27T04:27:54+10:00", comments = "JAXB RI vhudson-jaxb-ri-2.2-27")
     public List<CanonicalType> getCanonical() {
         if (canonical == null) {
             canonical = new ArrayList<CanonicalType>();
