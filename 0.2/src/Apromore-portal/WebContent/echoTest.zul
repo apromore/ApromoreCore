@@ -1,0 +1,17 @@
+<?page title="echotest" contentType="text/html;charset=UTF-8"?>
+<zk>
+<window id="w" width="200px" title="Test echoEvent" border="normal">
+  <attribute name="onLater">
+  Thread.sleep(5000);
+  Clients.showBusy(null, false);
+  new Label("Done.").setParent(w);
+  </attribute>
+ 
+  <button label="Echo Event">
+  <attribute name="onClick">
+  Clients.showBusy("Execute... (about 5 sec.)", true);
+  Events.echoEvent("onLater", w, null);
+  </attribute>
+  </button>
+</window>
+</zk>

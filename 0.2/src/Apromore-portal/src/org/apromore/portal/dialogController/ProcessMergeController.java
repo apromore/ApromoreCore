@@ -1,13 +1,12 @@
 package org.apromore.portal.dialogController;
 
-import java.util.HashMap;
-import java.util.LinkedList;
+
 import java.util.List;
+import java.util.Map;
 
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
-import org.apromore.portal.exception.ExceptionProcess;
 import org.apromore.portal.manager.RequestToManager;
 import org.apromore.portal.model_manager.ProcessSummaryType;
 import org.apromore.portal.model_manager.VersionSummaryType;
@@ -55,10 +54,10 @@ public class ProcessMergeController extends Window {
 	private Row mergeDomainR;
 	private SelectDynamicListController domainCB;
 	
-	HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions;
+	private Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions;
 
 	public ProcessMergeController (MainController mainC, MenuController menuC, 
-			HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) 
+			Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) 
 	throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
 		this.mainC = mainC;
 		this.menuC = menuC;

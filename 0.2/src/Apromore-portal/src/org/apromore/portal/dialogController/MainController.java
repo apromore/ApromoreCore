@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
@@ -212,7 +213,7 @@ public class MainController extends Window {
 	 * @throws ClassNotFoundException 
 	 */
 	public void deleteProcessVersions(
-			HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) 
+			Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) 
 	throws InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException, ExceptionDao, JAXBException {
 		RequestToManager request = new RequestToManager();
 		try {
