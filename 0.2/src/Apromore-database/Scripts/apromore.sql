@@ -115,13 +115,13 @@ create table derived_versions (
 show warnings ;
 
 create table merged_versions (
-    uri_merged       varchar(40),
-    uri_source       varchar(40),
-    constraint pk_merged_versions primary key (uri_merged, uri_source),
-    constraint fk_merged_version1 foreign key (uri_merged) references canonicals(uri) 
-    on delete cascade on update cascade,
-    constraint fk_merged_version2 foreign key (uri_source) references canonicals(uri) 
-    on delete cascade on update cascade
+uri_merged varchar(40),
+uri_source varchar(40),
+constraint pk_merged_versions primary key (uri_merged, uri_source),
+constraint fk_merged_version1 foreign key (uri_merged) references canonicals(uri) 
+on delete cascade on update cascade,
+constraint fk_merged_version2 foreign key (uri_source) references canonicals(uri) 
+on delete cascade on update cascade
 ) engine=InnoDB;
 show warnings ;
 
