@@ -6,6 +6,7 @@ import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
@@ -229,7 +230,7 @@ public class RequestToManager {
 	}
 
 	public ProcessSummaryType mergeProcesses(
-			HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions, 
+			Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions, 
 			String mergedProcessname,
 			String mergedversionName,
 			String mergedDomain,
@@ -436,7 +437,7 @@ public class RequestToManager {
 	}
 
 	public void DeleteProcessVersions(
-			HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws ExceptionDeleteProcess {
+			Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws ExceptionDeleteProcess {
 
 		DeleteProcessVersionsInputMsgType payload = new DeleteProcessVersionsInputMsgType();
 		Set<ProcessSummaryType> keys = processVersions.keySet();

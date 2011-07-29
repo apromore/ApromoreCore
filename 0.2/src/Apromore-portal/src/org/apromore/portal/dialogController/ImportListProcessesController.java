@@ -24,7 +24,9 @@ import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
 import org.zkoss.zk.ui.event.UploadEvent;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Label;
 import org.zkoss.zul.Messagebox;
@@ -63,7 +65,6 @@ public class ImportListProcessesController extends Window {
 			this.uploadButton = (Button) this.importProcessesWindow.getFellow("uploadButton");
 			this.cancelButton = (Button) this.importProcessesWindow.getFellow("cancelButtonImportProcesses");
 			this.filenameLabel = (Label) this.importProcessesWindow.getFellow("filenameLabel");
-			this.uploadButton.setAttribute("onUpload", "importModel(event)");
 			this.supportedExtL = (Label) this.importProcessesWindow.getFellow("supportedExt");
 			// build the list of supported extensions to display
 			String supportedExtS = "zip";
@@ -74,16 +75,22 @@ public class ImportListProcessesController extends Window {
 			}
 			this.supportedExtL.setValue(supportedExtS);
 			// event listeners
+			importProcessesWindow.addEventListener("onLater", new EventListener() {
+				public void onEvent(Event event) throws Exception {
+					extractArchiveOrFile();
+					Clients.clearBusy();
+				}
+			});
 			uploadButton.addEventListener("onUpload", new EventListener() {
 				public void onEvent(Event event) throws Exception {
 					uploadFile ((UploadEvent) event);	
 				}
 			});
-
 			okButton.addEventListener("onClick",
 					new EventListener() {
 				public void onEvent(Event event) throws Exception {
-					extractArchiveOrFile();
+					Clients.showBusy("Processing...");
+					Events.echoEvent("onLater", importProcessesWindow, null);
 				}
 			});	
 			cancelButton.addEventListener("onClick",
@@ -197,7 +204,7 @@ public class ImportListProcessesController extends Window {
 		} catch (Exception e) {
 			Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
 					Messagebox.ERROR);
-		} 
+		}
 	}
 
 	private void importProcess (MainController mainC, ImportListProcessesController importC, InputStream xml_is,  
@@ -263,34 +270,19 @@ public class ImportListProcessesController extends Window {
 		this.mainC.displayMessage(report);
 	}
 
-	/*
+	/* Import all remaining files. Called from ImportOneProcessController after user clicked "OK all"
 	 * Apply default values to all file still to be imported:
-	 * - file name as process name
 	 * - version name
 	 * - domain
 	 */
 	public void importAllProcess(String version, String domain) throws InterruptedException, IOException {
-		RequestToManager request = new RequestToManager();
 		List<ImportOneProcessController> importAll = new ArrayList<ImportOneProcessController>();
 		importAll.addAll(this.toImportList);
 		for (int i=0; i<importAll.size();i++) {
 			ImportOneProcessController importOneProcess = importAll.get(i);
-			ProcessSummaryType res = null;
 			try {
-				String processName = importOneProcess.getFileName().split("\\.")[0];
-				res = request.importProcess(this.mainC.getCurrentUser().getUsername(), importOneProcess.getNativeType(), processName, 
-						version, importOneProcess.getNativeProcess(), domain,
-						importOneProcess.getDocumentation(), importOneProcess.getCreated(), importOneProcess.getLastUpdate(), 
-						importOneProcess.getFakeEventsYesR().isChecked());
+				importOneProcess.importProcess(domain, this.mainC.getCurrentUser().getUsername());
 				// process successfully imported
-				this.mainC.displayNewProcess(res);
-				this.getImportedList().add(importOneProcess);
-				this.deleteFromToBeImported(importOneProcess);
-				importOneProcess.getImportOneProcessWindow().detach();
-			} catch (ExceptionImport e) {
-				e.printStackTrace();
-				Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
-						Messagebox.ERROR);
 			} catch (IOException e) {
 				e.printStackTrace();
 				Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,

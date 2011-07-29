@@ -22,6 +22,7 @@ public final class Constants {
 	public static final String INITIAL_ANNOTATION = "Initial";
 	public static final String ANNOTATIONS = "Annotations";
 	public static final String CANONICAL = "Canonical";
+	public static final String CANONICAL_EXT = "cpf";
 	
 	public static final String RELEASE_NOTES = "http://code.google.com/p/apromore/wiki/ReleaseNotes";
 	public static final String MORE_INFO = "http://code.google.com/p/apromore";
@@ -36,4 +37,5 @@ public final class Constants {
 	
 	public static final String INITIAL_VERSION = "0.1";
 	public static final String dateFormat = "yyyy/MM/dd hh:mm a";
+
 }

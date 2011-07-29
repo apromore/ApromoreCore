@@ -94,14 +94,29 @@ public class ExportOneNativeController extends Window {
 		cbi.setLabel(Constants.CANONICAL);
 		cbi.setValue(Constants.CANONICAL);
 		// - Annotations associated with the process version
-		for (int i=0;i<annotations.size();i++) {
-			String nat_type = annotations.get(i).getNativeType();
+		Listitem cba = new Listitem();
+		cba = new Listitem();
+		cba.setLabel(Constants.NO_ANNOTATIONS);
+		cba.setValue(Constants.NO_ANNOTATIONS);
+		this.annotationsLB.appendChild(cba);
+
+		for (int i=0;i<this.annotations.size();i++) {
+			String nat_type = this.annotations.get(i).getNativeType();
 			for (int k=0; k<annotations.get(i).getAnnotationName().size();k++) {
 				cbi = new Listitem();
 				this.formatsLB.appendChild(cbi);
 				cbi.setLabel(Constants.ANNOTATIONS + " - " + annotations.get(i).getAnnotationName().get(k) 
 						+ " (" + nat_type + ")");
 				cbi.setValue(Constants.ANNOTATIONS + " - " + annotations.get(i).getAnnotationName().get(k));
+
+				cba = new Listitem();
+				this.annotationsLB.appendChild(cba);
+				cba.setLabel(this.annotations.get(i).getAnnotationName().get(k) 
+						+ " (" + nat_type + ")");
+				cba.setValue(this.annotations.get(i).getAnnotationName().get(k));
+				if (Constants.INITIAL_ANNOTATION.compareTo(this.annotations.get(i).getAnnotationName().get(k))==0) {
+					cba.setSelected(true);
+				}
 			}
 		}
 		// - Available native formats
@@ -115,25 +130,6 @@ public class ExportOneNativeController extends Window {
 			cbi.setValue(this.formats_ext.get(nat_format));
 		}
 		this.formatsLB.setSelectedItem((Listitem) this.formatsLB.getFirstChild());
-
-		// Build list of annotations associated with the process version
-		cbi = new Listitem();
-		cbi.setLabel(Constants.NO_ANNOTATIONS);
-		this.annotationsLB.appendChild(cbi);
-		for (int i=0; i<this.annotations.size(); i++){
-			String native_type = this.annotations.get(i).getNativeType();
-			for (int k=0;k<this.annotations.get(i).getAnnotationName().size();k++){
-				cbi = new Listitem();
-				this.annotationsLB.appendChild(cbi);
-				cbi.setLabel(this.annotations.get(i).getAnnotationName().get(k) 
-						+ " (" + native_type + ")");
-				cbi.setValue(this.annotations.get(i).getAnnotationName().get(k));
-				if (Constants.INITIAL_ANNOTATION.compareTo(this.annotations.get(i).getAnnotationName().get(k))==0) {
-					cbi.setSelected(true);
-				}
-			}
-		}
-
 		this.formatsLB.addEventListener("onSelect",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {

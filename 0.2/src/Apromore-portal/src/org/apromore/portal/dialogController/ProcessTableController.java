@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import javax.xml.bind.JAXBException;
@@ -526,7 +527,7 @@ public class ProcessTableController {
 	 * @throws InstantiationException 
 	 * @throws ClassNotFoundException 
 	 */
-	public void unDisplay(HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions) 
+	public void unDisplay(Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) 
 	throws ClassNotFoundException, InstantiationException, IllegalAccessException, ExceptionDao, JAXBException {
 		// Update the table
 		Set<ProcessSummaryType> keySet = processVersions.keySet();
