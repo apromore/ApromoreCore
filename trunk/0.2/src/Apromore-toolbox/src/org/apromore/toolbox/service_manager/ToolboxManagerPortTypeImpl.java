@@ -170,7 +170,9 @@ public class ToolboxManagerPortTypeImpl implements ToolboxManagerPortType {
 						similarProcesses.getProcessVersion().add(processVersion);
 					}
 				} catch (Exception e) {
-					throw new ExceptionComputeSimilarity(e.getMessage());
+					LOG.info("Operation searchForSimilarProcesses failed. See process: " 
+				+ processVersion.getProcessId() + ", version: " + processVersion.getVersionName());
+					// throw new ExceptionComputeSimilarity(e.getMessage());
 				}
 			}
 			if (similarProcesses.getProcessVersion().size()==0)
