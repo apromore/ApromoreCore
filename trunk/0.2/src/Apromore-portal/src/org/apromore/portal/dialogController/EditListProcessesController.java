@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apromore.portal.exception.ExceptionFormats;
@@ -17,12 +18,12 @@ public class EditListProcessesController extends Window {
 	private MainController mainC ;		// the main controller
 	private MenuController menuC ;		// the menu controller which made the call
 	// the 
-	private HashMap<ProcessSummaryType,List<VersionSummaryType>> processVersions;
+	private Map<ProcessSummaryType,List<VersionSummaryType>> processVersions;
 	private List<EditOneProcessController> toEditList; // list of edits to do
 	private List<EditOneProcessController> editedList; //list of edits sent to editor
 	
 	public EditListProcessesController (MainController mainC, MenuController menuC, 
-			HashMap<ProcessSummaryType,List<VersionSummaryType>> processVersions) 
+			Map<ProcessSummaryType,List<VersionSummaryType>> processVersions) 
 	throws SuspendNotAllowedException, InterruptedException, ExceptionFormats {
 
 		//this.emptynative = (Listitem) win.getFellow("emptynative");

@@ -1,9 +1,9 @@
 package org.apromore.portal.dialogController;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import org.apromore.portal.exception.ExceptionAllUsers;
@@ -16,7 +16,7 @@ public class EditListProcessDataController {
 
 	private MainController mainC ;	// the main controller 
 	private MenuController menuC ; 	// the menu controller which called edit feature
-	private HashMap<ProcessSummaryType,List<VersionSummaryType>> processVersions;
+	private Map<ProcessSummaryType,List<VersionSummaryType>> processVersions;
 									// the selected process versions to be edited
 
 	// list of controllers associated with editions still to be done
@@ -28,7 +28,7 @@ public class EditListProcessDataController {
 	public EditListProcessDataController(
 			MainController mainC,
 			MenuController menuController,
-			HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) 
+			Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) 
 	throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {	
 
 		this.menuC = menuController;

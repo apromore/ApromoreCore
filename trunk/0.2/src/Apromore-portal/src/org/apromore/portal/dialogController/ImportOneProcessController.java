@@ -22,6 +22,8 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
+import org.zkoss.zk.ui.event.Events;
+import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Div;
@@ -57,6 +59,7 @@ public class ImportOneProcessController extends Window {
 	private Button cancelButton;
 	private Button cancelAllButton;
 
+	private String username;
 	private String processName;
 	private String readVersionName ;
 	private String readProcessName ;
@@ -71,6 +74,7 @@ public class ImportOneProcessController extends Window {
 
 		this.importProcessesC = importProcessesC;
 		this.mainC = mainC;
+		this.username = this.mainC.getCurrentUser().getUsername();
 		this.fileName = fileName;
 		this.processName = processName;
 		this.nativeProcess = xml_is;
@@ -194,6 +198,13 @@ public class ImportOneProcessController extends Window {
 			defaultOwner.setValue(readAuthor);
 		}
 
+		this.importOneProcessWindow.addEventListener("onLater", new EventListener() {
+			public void onEvent(Event event) throws Exception {
+				importAllProcess();
+				Clients.clearBusy();
+			}
+	    });
+		
 		this.ownerCB.addEventListener("onChange",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
@@ -205,21 +216,28 @@ public class ImportOneProcessController extends Window {
 		this.okButton.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
-				importProcess();
+				importProcess(domainCB.getValue(), username);
 			}
 		});			
 
 		this.okForAllButton.addEventListener("onClick",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
-				importAllProcess();
+				Clients.showBusy("Processing...");
+				Events.echoEvent("onLater", importOneProcessWindow, null);
 			}
 		});	
 
 		this.importOneProcessWindow.addEventListener("onOK",
 				new EventListener() {
 			public void onEvent(Event event) throws Exception {
-				importProcess();
+				if (processNameTb.getValue().compareTo("")==0
+						|| versionNameTb.getValue().compareTo("")==0) {
+					Messagebox.show("Please enter a value for each field.", "Attention", Messagebox.OK,
+							Messagebox.EXCLAMATION);
+				} else {
+					importProcess(domainCB.getValue(), username);
+				}
 			}
 		});	
 		this.cancelButton.addEventListener("onClick",
@@ -281,27 +299,9 @@ public class ImportOneProcessController extends Window {
 		this.importProcessesC.cancelAll();
 	}
 
-	/**
-	 * @throws IOException 
-	 * @throws InterruptedException 
-	 * @throws IOException 
-	 * @throws JAXBException 
-	 * @throws InterruptedException 
-	 * Import process whose details are given in the class variable:
-	 * username, nativeType, processName, versionName, domain and xml process
-	 * @return name of imported process
-	 * @exception
-	 **/
-	private void  importProcess() throws InterruptedException, IOException  {
+	public void  importProcess(String domain, String owner) throws InterruptedException, IOException  {
 		RequestToManager request = new RequestToManager();
 		try {
-			if (this.processNameTb.getValue().compareTo("")==0
-					|| this.versionNameTb.getValue().compareTo("")==0) {
-				Messagebox.show("Please enter a value for each field.", "Attention", Messagebox.OK,
-						Messagebox.EXCLAMATION);
-			} else {
-				String domain = this.domainCB.getValue();
-				String owner = this.ownerCB.getValue();
 				ProcessSummaryType res= 
 						request.importProcess(owner, this.nativeType, this.processNameTb.getValue(), 
 								this.versionNameTb.getValue(), this.nativeProcess, domain,
@@ -314,7 +314,6 @@ public class ImportOneProcessController extends Window {
 				this.domainCB.addItem(domain);
 				// delete process from the list of processes still to be imported
 				this.importProcessesC.deleteFromToBeImported(this);
-			}
 		} catch (WrongValueException e) {
 			e.printStackTrace();
 			Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
