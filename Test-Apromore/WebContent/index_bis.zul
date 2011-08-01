@@ -1,0 +1,71 @@
+<?page title="Test - Apromore"?>
+<?component name="Header" macroURI="macros/header.zul" ?>
+<?component name="Menu" macroURI="macros/menu.zul" ?>
+<?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
+<?component name="Navigation" macroURI="macros/navigation.zul" ?>
+<?component name="SimpleSearch" macroURI="macros/simplesearch.zul" ?>
+<?component name="RefinedSearch" macroURI="macros/refinedsearch.zul" ?>
+<?component name="Table" macroURI="macros/processtable_test.zul" ?>
+
+<zk>
+
+	<style dynamic="true">
+		.z-label {font-size: ${fontSizeMS}} .z-list-item {font-size:
+		${fontSizeMS}} .z-list-item a {font-size: ${fontSizeMS}}
+		.z-list-item a:visited {font-size: ${fontSizeMS}}
+	</style>
+	<window id="mainW" border="none" width="100%" vflex="1">
+		<Header id="headercomp" />
+
+		<borderlayout vflex="1">
+			<west title="Key word filter" size="20%" collapsible="true"
+				flex="true" splittable="true">
+				<borderlayout>
+					<north flex="true">
+						<SimpleSearch id="simplesearchcomp" />
+					</north>
+					<center title="Tree..." flex="true">
+						<Navigation id="navigationcomp" />
+					</center>
+					<south title="Refined filter" size="30%"
+						collapsible="true" splittable="true" flex="true">
+						<RefinedSearch id="refinedsearchcomp" />
+					</south>
+				</borderlayout>
+			</west>
+			<center flex="true">
+				<div vflex="true">
+					<Menu id="menucomp" />
+					<hbox id="pagingandbuttons"
+						style="background:#DAF4FF" width="100%">
+						<paging id="pg" />
+						<hbox id="buttons">
+							<button id="revertSelectionB" label=""
+								image="img/revertSelection.png"
+								style="background: transparent; border:none"
+								tooltiptext="Revert selection" />
+							<button id="selectAllB" label=""
+								style="background: transparent; border:none"
+								image="img/selectAll.png" tooltiptext="Select all" />
+							<button id="unselectAllB" label=""
+								style="background: transparent; border:none"
+								image="img/unselectAll.png" tooltiptext="Unselect all" />
+							<button id="refreshB" label=""
+								style="background: transparent; border:none"
+								image="img/reload.png" tooltiptext="Reload data" />
+							<div style="float:right" height="25px"
+								width="400px">
+								<toolbarbutton id="table2graphic"
+									visible="true" label="Change view" />
+								<toolbarbutton id="graphic2table"
+									visible="false" label="Change view" />
+							</div>
+						</hbox>
+					</hbox>
+					<Table id="tablecomp" />
+				</div>
+			</center>
+		</borderlayout>
+		<ShortMessages id="shortmessagescomp" />
+	</window>
+</zk>
