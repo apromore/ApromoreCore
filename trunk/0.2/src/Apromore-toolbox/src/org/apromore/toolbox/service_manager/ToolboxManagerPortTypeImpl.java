@@ -324,6 +324,7 @@ public class ToolboxManagerPortTypeImpl implements ToolboxManagerPortType {
 			processM.setId(process.getId());
 			processM.setLastVersion(process.getLastVersion());
 			processM.setName(process.getName());
+			processM.setDomain(process.getDomain());
 			processM.setOwner(process.getOwner());
 			versionM.setCreationDate(process.getVersionSummaries().get(0).getCreationDate());
 			versionM.setLastUpdate(process.getVersionSummaries().get(0).getLastUpdate());
