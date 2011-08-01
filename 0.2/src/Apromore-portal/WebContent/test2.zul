@@ -1,5 +1,5 @@
 <?page title="test grid-detail-grid with component" contentType="text/html;charset=UTF-8"?>
-<?component name="ProcessTable" macroURI="macros/processtable_bis.zul" ?>
+<?component name="ProcessTable" macroURI="macros/processtable_test.zul" ?>
 
 <zk>
 	<window id="mainW" border="none" width="100%" vflex="1">
