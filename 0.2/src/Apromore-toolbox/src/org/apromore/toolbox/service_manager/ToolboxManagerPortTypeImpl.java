@@ -176,7 +176,10 @@ public class ToolboxManagerPortTypeImpl implements ToolboxManagerPortType {
 				}
 			}
 			if (similarProcesses.getProcessVersion().size()==0)
-				throw new ExceptionComputeSimilarity("Process model probably faulty");
+				throw new ExceptionComputeSimilarity("Process model " + query.getProcessId() 
+						+ " version " + query.getVersionName() + " probably faulty");
+			
+			
 			// Send a message to DA to get process summary of similar process
 			org.apromore.toolbox.model_da.ProcessSummariesType processSummariesDA = 
 					request.ReadProcessSummaries(similarProcesses);
