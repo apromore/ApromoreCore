@@ -15,6 +15,7 @@ import org.zkoss.zul.Button;
 import org.zkoss.zul.Doublebox;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Listitem;
+import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Radiogroup;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Window;
@@ -111,7 +112,7 @@ public class SimilaritySearchController extends Window {
 		this.similaritySearchW.detach();
 	}
 
-	protected void searchSimilarProcesses() {
+	protected void searchSimilarProcesses() throws InterruptedException {
 		String message = null;
 		try {
 			RequestToManager request = new RequestToManager();
@@ -141,11 +142,15 @@ public class SimilaritySearchController extends Window {
 //			version.setScore(1.0);
 //			resultToDisplay.getProcessSummary().add(0, process); 
 			mainC.displayProcessSummaries(resultToDisplay, true, process, version);
+			mainC.displayMessage(message);
+			
 		} catch (Exception e) {
 			message = "Search failed (" + e.getMessage() + ")";
+			Messagebox.show(message, "Attention", Messagebox.OK,
+					Messagebox.ERROR);
+		} finally {
+			this.similaritySearchW.detach();
 		}
-		this.similaritySearchW.detach();
-		mainC.displayMessage(message);
 	}
 
 	/**
