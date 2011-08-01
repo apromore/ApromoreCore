@@ -1645,6 +1645,7 @@ public class ProcessDao extends BasicDao {
 			process.setId(processId);
 			process.setName(processName);
 			process.setOwner(username);
+			process.setDomain(domain);
 			process.setLastVersion(versionName);
 			first_version.setName(versionName);
 			first_version.setLastUpdate(lastUpdate);
