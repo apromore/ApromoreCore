@@ -37,7 +37,6 @@
 					<Menu id="menucomp" />
 					<hbox id="pagingandbuttons"
 						style="background:#DAF4FF" width="100%">
-						<paging id="pg" />
 						<hbox id="buttons">
 							<button id="revertSelectionB" label=""
 								image="img/revertSelection.png"
@@ -61,8 +60,7 @@
 							</div>
 						</hbox>
 					</hbox>
-					<grid id="processSummariesGrid" vflex="true"  paginal="${pg}"
-					mold="paging" autopaging="true">
+					<grid id="processSummariesGrid" vflex="true">
 						<columns sizable="true">
 							<column width="3.5%"></column>
 							<column width="0">
