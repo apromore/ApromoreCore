@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0">
-    <Pools/>
-    <Associations/>
-    <Artifacts/>
-    <WorkflowProcesses/>
-</Package>
