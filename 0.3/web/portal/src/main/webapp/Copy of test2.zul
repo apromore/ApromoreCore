@@ -1,0 +1,40 @@
+<?page title="test grid-detail-grid with component" contentType="text/html;charset=UTF-8"?>
+<?component name="Header" macroURI="macros/header.zul" ?>
+<?component name="Menu" macroURI="macros/menu.zul" ?>
+<?component name="ProcessTable" macroURI="macros/processtable_bis.zul" ?>
+<?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
+<?component name="Navigation" macroURI="macros/navigation.zul" ?>
+<?component name="SimpleSearch" macroURI="macros/simplesearch.zul" ?>
+<?component name="RefinedSearch" macroURI="macros/refinedsearch.zul" ?>
+
+<zk>
+	<window id="mainW" border="none" width="100%" vflex="1">
+		<Header id="headercomp" />
+
+		<borderlayout vflex="1">
+			<west title="Filter" size="20%" collapsible="true"
+				flex="true" splittable="true">
+				<borderlayout>
+					<north flex="true">
+						<SimpleSearch id="simplesearchcomp" />
+					</north>
+					<center title="Tree..." flex="true">
+						<Navigation id="navigationcomp" />
+					</center>
+					<south title="Refined filter" size="30%"
+						collapsible="true" splittable="true" flex="true">
+						<RefinedSearch id="refinedsearchcomp" />
+					</south>
+				</borderlayout>
+			</west>
+			<center flex="true">
+				<div vflex="true">
+					<Menu id="menucomp" />
+					<ProcessTable id="processtablecomp" />
+				</div>
+			</center>
+		</borderlayout>
+		<ShortMessages id="shortmessagescomp" />
+	</window>
+
+</zk>

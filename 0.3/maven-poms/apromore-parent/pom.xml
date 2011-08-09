@@ -1,0 +1,576 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>org.apromore</groupId>
+    <artifactId>apromore-parent</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0-SNAPSHOT</version>
+    <url>http://code.google.com/p/apromore/</url>
+    <name>Advanced Process Model Repository</name>
+    <description>Apromore is an open and extensible repository to store and disclose business process models of a
+        variety of types and languages, and beyond that, to build on top of existing tools and techniques, to provide
+        state-of-the-art features for model presentation, analysis, integration, contextualization, improvement, and
+        re-use.
+    </description>
+
+    <issueManagement>
+        <system>Google Code</system>
+        <url>http://code.google.com/p/apromore/wiki/IssueTracker</url>
+    </issueManagement>
+
+    <scm>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/base-pom</developerConnection>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/base-pom</connection>
+        <url>http://code.google.com/p/apromore/source/browse/base-pom/</url>
+    </scm>
+
+    <ciManagement>
+        <system>Hudson</system>
+        <url>http://localhost:8180/view/apromore</url>
+    </ciManagement>
+
+    <distributionManagement>
+        <site>
+            <id>website</id>
+            <url>dav:http://localhost:8180/projects/apromore</url>
+        </site>
+        <!--
+        <repository>
+            <id>apromore.googlecode.com</id>
+            <url>svn:https://apromore.googlecode.com/svn/m2/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>apromore.googlecode.com</id>
+            <url>svn:https://apromore.googlecode.com/svn/m2/snapshots</url>
+        </snapshotRepository>
+        -->
+    </distributionManagement>
+
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
+
+    <inceptionYear>2010</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v3</name>
+            <distribution>repo</distribution>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>QUT</name>
+        <url>http://www.qut.edu.au</url>
+    </organization>
+
+    <mailingLists>
+        <mailingList>
+            <name>Apromore Forum</name>
+            <post>apromore-rm@googlegroups.com</post>
+            <unsubscribe>apromore-rm+unsubscribe@googlegroups.com</unsubscribe>
+        </mailingList>
+    </mailingLists>
+
+    <developers>
+        <developer>
+            <id>u312978</id>
+            <name>Cameron James</name>
+            <email>cameron.james@suncorp.com.au</email>
+            <organization>Suncorp</organization>
+            <organizationUrl>http://www.suncorp.com.au/</organizationUrl>
+            <roles>
+                <role>Active User</role>
+            </roles>
+            <timezone>+10</timezone>
+        </developer>
+    </developers>
+
+    <repositories>
+        <repository>
+            <id>central</id>
+            <name>Maven Repository Switchboard</name>
+            <layout>default</layout>
+            <url>http://repo1.maven.org/maven2</url>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
+        <!--<repository>-->
+        <!--<id>apromore.googlecode.com</id>-->
+        <!--<url>http://apromore.googlecode.com/svn/m2/releases</url>-->
+        <!--</repository>-->
+    </repositories>
+
+    <reporting>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jxr-plugin</artifactId>
+                <version>${maven-jxr-plugin.version}</version>
+                <inherited>true</inherited>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-pmd-plugin</artifactId>
+                <version>${maven-pmd-plugin.version}</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <targetJdk>${pmd.target.jdk}</targetJdk>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-report-plugin</artifactId>
+                <version>${maven-surefire-report-plugin.version}</version>
+                <inherited>true</inherited>
+            </plugin>
+            <plugin>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>${maven-javadoc-plugin.version}</version>
+                <inherited>true</inherited>
+            </plugin>
+            <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <enableRulesSummary>false</enableRulesSummary>
+                    <configLocation>${checkstyle.config.location}</configLocation>
+                    <headerLocation>${checkstyle.header.location}</headerLocation>
+                    <suppressionsLocation>${checkstyle.suppressions.location}</suppressionsLocation>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>${cobertura-maven-plugin.version}</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <formats>
+                        <format>html</format>
+                        <format>xml</format>
+                    </formats>
+                    <check/>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>findbugs-maven-plugin</artifactId>
+                <version>${findbugs-maven-plugin.version}</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <xmlOutput>true</xmlOutput>
+                    <xmlOutputDirectory>${basedir}/target/site</xmlOutputDirectory>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>javancss-maven-plugin</artifactId>
+                <version>${javancss-maven-plugin.version}</version>
+                <inherited>true</inherited>
+            </plugin>
+        </plugins>
+    </reporting>
+
+    <build>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+                <includes>
+                    <include>**/*</include>
+                </includes>
+            </resource>
+            <resource>
+                <directory>${basedir}/target/generated-sources/src/main/java</directory>
+                <includes>
+                    <include>**/*.java</include>
+                </includes>
+            </resource>
+        </resources>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>${maven-compiler-plugin.version}</version>
+                <configuration>
+                    <source>${java.source.version}</source>
+                    <target>${java.target.version}</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <version>${maven-resources-plugin.version}</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <delimiters>
+                        <delimiter>${*}</delimiter>
+                    </delimiters>
+                    <useDefaultDelimiters>false</useDefaultDelimiters>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>${maven-checkstyle-plugin.version}</version>
+                <inherited>true</inherited>
+                <executions>
+                    <execution>
+                        <phase>verify</phase>
+                        <goals>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <configLocation>${checkstyle.config.location}</configLocation>
+                    <headerLocation>${checkstyle.header.location}</headerLocation>
+                    <skip>${checkstyle.skip}</skip>
+                    <cacheFile>${checkstyle.cacheFile}</cacheFile>
+                    <consoleOutput>${checkstyle.consoleOutput}</consoleOutput>
+                    <failOnViolation>${checkstyle.failOnViolation}</failOnViolation>
+                    <failsOnError>${checkstyle.failsOnError}</failsOnError>
+                    <includes>${checkstyle.includes}</includes>
+                    <excludes>${checkstyle.excludes}</excludes>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>${maven-surefire-plugin.version}</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <excludes>
+                        <exclude>**/${integration.test.package}/**</exclude>
+                        <exclude>**/*${integration.test.suffix}</exclude>
+                        <exclude>**/*${ignored.test.suffix}</exclude>
+                    </excludes>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>integration-test</id>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                        <phase>integration-test</phase>
+                        <configuration>
+                            <excludes>
+                                <exclude>**/*${ignored.test.suffix}</exclude>
+                            </excludes>
+                            <includes>
+                                <include>**/${integration.test.package}/**/*Test.java</include>
+                                <include>**/${integration.test.package}/**/*TestCase.java</include>
+                                <include>**/*${integration.test.suffix}</include>
+                            </includes>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+                <version>${cobertura-maven-plugin.version}</version>
+                <inherited>true</inherited>
+                <configuration>
+                    <instrumentation>
+                        <excludes>
+                            <exclude>**/boundary/**/*</exclude>
+                        </excludes>
+                    </instrumentation>
+                    <check>
+                        <totalBranchRate>${cobertura.total-branch-rate}</totalBranchRate>
+                        <totalLineRate>${cobertura.total-line-rate}</totalLineRate>
+                        <haltOnFailure>${cobertura.halt-on-failure}</haltOnFailure>
+                    </check>
+                </configuration>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>clean</goal>
+                            <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <extensions>
+            <extension>
+                <groupId>org.apromore</groupId>
+                <artifactId>apromore-tools</artifactId>
+                <version>${apromore-tools.version}</version>
+            </extension>
+        </extensions>
+    </build>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- Logging -->
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-classic</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>ch.qos.logback</groupId>
+                <artifactId>logback-core</artifactId>
+                <version>${logback.version}</version>
+            </dependency>
+
+            <!-- Commons -->
+            <dependency>
+                <groupId>commons-lang</groupId>
+                <artifactId>commons-lang</artifactId>
+                <version>${commons-lang.version}</version>
+            </dependency>
+
+            <!-- Hibernate framework -->
+            <dependency>
+                <groupId>org.hibernate.java-persistence</groupId>
+                <artifactId>jpa-api</artifactId>
+                <version>${hibernate-jpa.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-entitymanager</artifactId>
+                <version>${hibernate.entity.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-annotations</artifactId>
+                <version>${hibernate.annotation.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-commons-annotations</artifactId>
+                <version>${hibernate.commons.annotation.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-cglib-repack</artifactId>
+                <version>${hibernate.cglib.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-c3p0</artifactId>
+                <version>${hibernate.c3p0.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-ehcache</artifactId>
+                <version>${hibernate.ehcache.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>net.sf.ehcache</groupId>
+                <artifactId>ehcache-core</artifactId>
+                <version>${ehcache.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>backport-util-concurrent</groupId>
+                <artifactId>backport-util-concurrent</artifactId>
+                <version>${backport.util.version}</version>
+            </dependency>
+
+            <!-- Spring -->
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-core</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-beans</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-context-support</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-tx</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.springframework</groupId>
+                <artifactId>spring-orm</artifactId>
+                <version>${spring.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>cglib</groupId>
+                <artifactId>cglib-nodep</artifactId>
+                <version>${cglib.version}</version>
+            </dependency>
+
+            <!-- DB -->
+            <dependency>
+                <groupId>mysql</groupId>
+                <artifactId>mysql-connector-java</artifactId>
+                <version>${mysql.connector.version}</version>
+            </dependency>
+
+            <!-- CXF -->
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-frontend-jaxws</artifactId>
+                <version>${cxf.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-rt-transports-http</artifactId>
+                <version>${cxf.version}</version>
+            </dependency>
+
+            <!-- JAXB Settings -->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${jaxb-impl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-xjc</artifactId>
+                <version>${jaxb-xjc.version}</version>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <java.source.version>1.6</java.source.version>
+        <java.target.version>${java.source.version}</java.target.version>
+        <pmd.target.jdk>${java.target.version}</pmd.target.jdk>
+
+        <!-- **** Versions used for all projects **** -->
+        <web-parent.version>1.0.0-SNAPSHOT</web-parent.version>
+        <common-parent.version>1.0.0-SNAPSHOT</common-parent.version>
+
+        <apromore-tools.version>1.0.0-SNAPSHOT</apromore-tools.version>
+        <canoniser-client.version>1.0.0-SNAPSHOT</canoniser-client.version>
+        <canoniser-service.version>1.0.0-SNAPSHOT</canoniser-service.version>
+        <dataAccess-client.version>1.0.0-SNAPSHOT</dataAccess-client.version>
+        <dataAccess-service.version>1.0.0-SNAPSHOT</dataAccess-service.version>
+        <manager-client.version>1.0.0-SNAPSHOT</manager-client.version>
+        <manager-service.version>1.0.0-SNAPSHOT</manager-service.version>
+        <portal-service.version>1.0.0-SNAPSHOT</portal-service.version>
+        <toolbox-client.version>1.0.0-SNAPSHOT</toolbox-client.version>
+        <toolbox-service.version>1.0.0-SNAPSHOT</toolbox-service.version>
+
+        <anf-schema.version>1.0.0-SNAPSHOT</anf-schema.version>
+        <cpf-schema.version>1.0.0-SNAPSHOT</cpf-schema.version>
+        <xpml-schema.version>1.0.0-SNAPSHOT</xpml-schema.version>
+        <yawl-schema.version>1.0.0-SNAPSHOT</yawl-schema.version>
+        <rlf-schema.version>1.0.0-SNAPSHOT</rlf-schema.version>
+        <xpdl-schema.version>1.0.0-SNAPSHOT</xpdl-schema.version>
+        <epml-schema.version>1.0.0-SNAPSHOT</epml-schema.version>
+
+        <canoniser-web.version>1.0.0-SNAPSHOT</canoniser-web.version>
+        <dataAccess-web.version>1.0.0-SNAPSHOT</dataAccess-web.version>
+        <portal-web.version>1.0.0-SNAPSHOT</portal-web.version>
+        <toolbox-web.version>1.0.0-SNAPSHOT</toolbox-web.version>
+        <manager-web.version>1.0.0-SNAPSHOT</manager-web.version>
+
+        <!-- Logging versions -->
+        <slf4j.version>1.6.1</slf4j.version>
+        <logback.version>0.9.28</logback.version>
+
+        <!-- Commons versions -->
+        <commons-lang.version>2.4</commons-lang.version>
+        <common-io.version>1.3.1</common-io.version>
+
+        <!-- Spring Version -->
+        <spring.version>3.0.5.RELEASE</spring.version>
+        <cglib.version>2.2</cglib.version>
+        <aspectj.version>1.6.9</aspectj.version>
+
+        <!-- Hibernate Verisons -->
+        <hibernate-jpa.version>2.0-cr-1</hibernate-jpa.version>
+        <hibernate.version>3.3.1.GA</hibernate.version>
+        <hibernate.entity.version>3.4.0.GA</hibernate.entity.version>
+        <hibernate.ehcache.version>3.3.2.GA</hibernate.ehcache.version>
+        <hibernate.c3p0.version>3.3.2.GA</hibernate.c3p0.version>
+        <hibernate.cglib.version>2.1_3</hibernate.cglib.version>
+        <hibernate.annotation.version>3.4.0.GA</hibernate.annotation.version>
+        <hibernate.commons.annotation.version>3.3.0.ga</hibernate.commons.annotation.version>
+        <ehcache.version>2.4.0</ehcache.version>
+        <backport.util.version>3.1</backport.util.version>
+
+        <!-- Web -->
+        <servlet-api.version>2.5</servlet-api.version>
+        <zk.version>5.0.7.1</zk.version>
+
+        <!-- DB version -->
+        <mysql.connector.version>5.1.15</mysql.connector.version>
+
+        <!-- WebService Tech versions -->
+        <cxf.version>2.4.0</cxf.version>
+        <jaxb-api.version>2.2.4</jaxb-api.version>
+        <jaxb-xjc.version>2.2.4-1</jaxb-xjc.version>
+        <jaxb-impl.version>2.2.4-1</jaxb-impl.version>
+
+
+        <!-- **** Settings for the building of the projects **** -->
+        <!-- Plugins used by the Build process -->
+        <cobertura-maven-plugin.version>2.5.1</cobertura-maven-plugin.version>
+        <findbugs-maven-plugin.version>2.3.2</findbugs-maven-plugin.version>
+        <javancss-maven-plugin.version>2.0-beta-2</javancss-maven-plugin.version>
+        <exec-maven-plugin.version>1.2</exec-maven-plugin.version>
+
+        <maven-jaxb2-plugin.version>0.8.0</maven-jaxb2-plugin.version>
+        <maven-bundle-plugin.version>2.3.4</maven-bundle-plugin.version>
+        <maven-assembly-plugin.version>2.2-beta-1</maven-assembly-plugin.version>
+        <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+        <maven-jxr-plugin.version>2.3</maven-jxr-plugin.version>
+        <maven-checkstyle-plugin.version>2.6</maven-checkstyle-plugin.version>
+        <maven-javadoc-plugin.version>2.7</maven-javadoc-plugin.version>
+        <maven-pmd-plugin.version>2.5</maven-pmd-plugin.version>
+        <maven-surefire-plugin.version>2.7.2</maven-surefire-plugin.version>
+        <maven-surefire-report-plugin.version>2.7.2</maven-surefire-report-plugin.version>
+        <maven-resources-plugin.version>2.5</maven-resources-plugin.version>
+        <maven-war-plugin.version>2.1</maven-war-plugin.version>
+
+        <!-- Checkstyle Settings -->
+        <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
+        <checkstyle.header.location>header.txt</checkstyle.header.location>
+        <checkstyle.suppressions.location>checkstyle-suppressions.xml</checkstyle.suppressions.location>
+        <checkstyle.skip>false</checkstyle.skip>
+        <checkstyle.consoleOutput>true</checkstyle.consoleOutput>
+        <checkstyle.cacheFile>${project.build.directory}/checkstyle.cache</checkstyle.cacheFile>
+        <checkstyle.failOnViolation>false</checkstyle.failOnViolation>
+        <checkstyle.failsOnError>false</checkstyle.failsOnError>
+        <checkstyle.includes>**/*.java</checkstyle.includes>
+        <checkstyle.excludes>**/generated/**/*</checkstyle.excludes>
+
+        <!-- Cobertura Settings -->
+        <cobertura.total-branch-rate>70</cobertura.total-branch-rate>
+        <cobertura.total-line-rate>70</cobertura.total-line-rate>
+        <cobertura.halt-on-failure>false</cobertura.halt-on-failure>
+
+        <!-- Testing Settings -->
+        <integration.test.package>itest</integration.test.package>
+        <integration.test.suffix>IntgTest.java</integration.test.suffix>
+        <ignored.test.suffix>ManualTest.java</ignored.test.suffix>
+    </properties>
+</project>
