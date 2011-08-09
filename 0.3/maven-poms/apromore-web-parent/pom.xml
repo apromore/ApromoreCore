@@ -23,14 +23,6 @@
         re-use.
     </description>
 
-    <modules>
-        <module>canoniser</module>
-        <module>dataAccess</module>
-        <module>manager</module>
-        <module>portal</module>
-        <module>toolbox</module>
-    </modules>
-
     <issueManagement>
         <system>Google Code</system>
         <url>http://code.google.com/p/apromore/wiki/IssueTracker</url>
