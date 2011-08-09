@@ -1,0 +1,77 @@
+<!-- importOneProcessWindow window has ImportOneProcessController as a controller -->
+<!-- as many instances of this window might be created at once, components are
+	not given an id, instead, there are retrieve by their position by controller 
+	importOneProcessWindow -->
+<window position="center" title="Process model details" visible="true"
+	sizable="true" width="550px">
+	<vbox vflex="1">
+		<grid>
+			<columns sizable="true">
+				<column width="25%"></column>
+				<column width="35%"></column>
+				<column width="35%"></column>
+			</columns>
+			<rows>
+				<row spans="1,2">
+					<label value="Process name*" width="100%" />
+					<textbox width="100%" />
+				</row>
+				<row spans="1,2">
+					<label value="Initial version name*" width="100%" />
+					<textbox width="100%" />
+				</row>
+				<row spans="1,1,1">
+					<label value="Owner*" width="100%" />
+					<label width="100%" tooltiptext="default value" />
+					<!-- combobox implemented in SelectDynamicListController -->
+				</row>
+				<row spans="1,2">
+					<label value="Creation date*" width="100%" />
+					<textbox width="100%" />
+				</row>
+				<row spans="1,2">
+					<label value="Last update" width="100%"
+						tooltiptext="optional" />
+					<textbox width="100%" />
+				</row>
+				<row spans="1,2">
+					<label value="Documentation" width="100%"
+						tooltiptext="optional" />
+					<textbox width="100%" rows="4" />
+				</row>
+				<row spans="1,2">
+					<label value="Domain" width="100%"
+						tooltiptext="optional" />
+					<!-- combobox implemented in SelectDynamicListController -->
+				</row>
+				<row spans="1,2">
+					<label value="Add fake events" width="100%" />
+					<radiogroup>
+						<radio label="yes" />
+						<radio label="no" checked="true" />
+					</radiogroup>
+				</row>
+				<row spans="3">
+					<label value="*: mandatory fields." />
+				</row>
+				<row spans="3">
+					<div align="center">
+						<button label="OK" image="img/ok.png"></button>
+						<button label="OK for all" image="img/ok.png"
+							tooltiptext="Default values for process and version name, and given value for domain will apply for all
+						remaining process models to import.">
+						</button>
+						<button label="Cancel"
+							image="img/cancel2.png">
+						</button>
+						<button label="Cancel all"
+							image="img/cancel2.png"
+							tooltiptext="Cancel import of all remaining process models.">
+						</button>
+						<button label="Reset" image="img/reset.png"></button>
+					</div>
+				</row>
+			</rows>
+		</grid>
+	</vbox>
+</window>

@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+    
+    <groupId>org.apromore</groupId>
+    <artifactId>apromore-master</artifactId>
+    <packaging>pom</packaging>
+    <version>1.0.0-SNAPSHOT</version>
+    
+    <url>http://code.google.com/p/apromore/</url>
+    <name>Apromore</name>
+    <description>Apromore is an open and extensible repository to store and disclose business process models of a
+        variety of types and languages, and beyond that, to build on top of existing tools and techniques, to provide
+        state-of-the-art features for model presentation, analysis, integration, contextualization, improvement, and
+        re-use.
+    </description>
+
+    <modules>
+        <module>maven-poms\apromore-tools</module>
+        <module>maven-poms\apromore-parent</module>
+        
+        <module>common</module>
+        
+        <module>services\dataAccess\dataAccess-client</module>
+        <module>services\toolBox\toolBox-client</module>
+        <module>services\canoniser\canoniser-client</module>
+        <module>services\manager\manager-client</module>
+        
+        <module>services\dataAccess\dataAccess-service</module>
+        <module>services\toolBox\toolBox-service</module>
+        <module>services\canoniser\canoniser-service</module>
+        <module>services\manager\manager-service</module>
+        <module>services\portal\portal-service</module>
+        
+        <module>web</module>
+    </modules>
+
+</project>

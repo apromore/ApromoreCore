@@ -1,0 +1,56 @@
+<configuration>
+
+    <!-- Just used while running in process while developing -->
+    <appender name="STDOUT"
+              class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>
+                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- This is just for contents of web service operations and can get quite large -->
+    <appender name="WSLOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.home}/logs/mpw-message-trace.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${catalina.home}/logs/mpw-message-trace.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>
+                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <!-- Used for application logging to which when deployed is quite terse and restricted to warnings typically -->
+    <appender name="APPLOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${catalina.home}/logs/mpw.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <!-- daily rollover -->
+            <fileNamePattern>${catalina.home}/logs/mpw.%d{yyyy-MM-dd}.log</fileNamePattern>
+        </rollingPolicy>
+        <encoder>
+            <pattern>
+                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n
+            </pattern>
+        </encoder>
+    </appender>
+
+    <logger name="org.apache.cxf" level="INFO"/>
+    <logger name="org.springframework" level="INFO"/>
+
+    <!-- Set additivity to false when deployed -->
+    <logger name="org.apache.cxf.interceptor" additivity="true">
+        <appender-ref ref="WSLOGFILE"/>
+      </logger>
+
+    <root level="INFO">
+        <!-- STDOUT is normally this is removed when deployed as it ends up in tomcat server logs -->
+        <appender-ref ref="STDOUT"/>
+        <appender-ref ref="APPLOGFILE"/>
+    </root>
+
+</configuration>
+
