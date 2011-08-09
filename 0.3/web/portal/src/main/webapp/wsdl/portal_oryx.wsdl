@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="http://www.apromore.org/portal/service_oryx"
+	xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tnsx="http://www.apromore.org/portal/model_oryx"
+	xmlns:tns="http://www.apromore.org/portal/service_oryx" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+	<import namespace="http://www.apromore.org/portal/model_oryx"
+		location="portal_oryxX.xsd">
+	</import>
+	<message name="WriteNewProcessInputMsg">
+		<part name="payload" element="tnsx:WriteNewProcessInputMsg">
+		</part>
+	</message>
+	<message name="WriteNewProcessOutputMsg">
+		<part name="payload" element="tnsx:WriteNewProcessOutputMsg">
+		</part>
+	</message>
+	<message name="ReadNativeInputMsg">
+		<part name="payload" element="tnsx:ReadNativeInputMsg">
+		</part>
+	</message>
+	<message name="WriteProcessInputMsg">
+		<part name="payload" element="tnsx:WriteProcessInputMsg">
+		</part>
+	</message>
+	<message name="WriteProcessOutputMsg">
+		<part name="payload" element="tnsx:WriteProcessOutputMsg">
+		</part>
+	</message>
+	<message name="WriteAnnotationInputMsg">
+		<part name="payload" element="tnsx:WriteAnnotationInputMsg">
+		</part>
+	</message>
+	<message name="WriteAnnotationOutputMsg">
+		<part name="payload" element="tnsx:WriteAnnotationOutputMsg">
+		</part>
+	</message>
+	<message name="WriteNewAnnotationInputMsg">
+		<part name="payload" element="tnsx:WriteNewAnnotationInputMsg">
+		</part>
+	</message>
+	<message name="WriteNewAnnotationOutputMsg">
+		<part name="payload" element="tnsx:WriteNewAnnotationOutputMsg">
+		</part>
+	</message>
+	<message name="ReadNativeOutputMsg">
+		<part name="payload" element="tnsx:ReadNativeOutputMsg">
+		</part>
+	</message>
+	<portType name="PortalOryxPortType">
+		<operation name="ReadNative">
+			<input name="ReadNativeRequest" message="tns:ReadNativeInputMsg">
+			</input>
+			<output name="ReadNativeResponse" message="tns:ReadNativeOutputMsg">
+			</output>
+		</operation>
+		<operation name="WriteNewProcess">
+			<input name="WriteNewProcessRequest" message="tns:WriteNewProcessInputMsg">
+			</input>
+			<output name="WriteNewProcessResponse" message="tns:WriteNewProcessOutputMsg">
+			</output>
+		</operation>
+		<operation name="WriteProcess">
+			<input name="WriteProcessRequest" message="tns:WriteProcessInputMsg">
+			</input>
+			<output name="WriteProcessResponse" message="tns:WriteProcessOutputMsg">
+			</output>
+		</operation>
+		<operation name="WriteNewAnnotation">
+			<input name="WriteNewAnnotationRequest" message="tns:WriteNewAnnotationInputMsg">
+			</input>
+			<output name="WriteNewAnnotationResponse" message="tns:WriteNewAnnotationOutputMsg">
+			</output>
+		</operation>
+		<operation name="WriteAnnotation">
+			<input name="WriteAnnotationRequest" message="tns:WriteAnnotationInputMsg">
+			</input>
+			<output name="WriteAnnotationResponse" message="tns:WriteAnnotationOutputMsg">
+			</output>
+		</operation>
+	</portType>
+	<binding name="PortalOryxBinding" type="tns:PortalOryxPortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="ReadNative">
+			<soap:operation style="document" />
+			<input name="ReadNativeRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="ReadNativeResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="WriteNewProcess">
+			<soap:operation style="document" />
+			<input name="WriteNewProcessRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="WriteNewProcessResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="WriteProcess">
+			<soap:operation style="document" />
+			<input name="WriteProcessRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="WriteProcessResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="WriteNewAnnotation">
+			<soap:operation style="document" />
+			<input name="WriteNewAnnotationRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="WriteNewAnnotationResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="WriteAnnotation">
+			<soap:operation style="document" />
+			<input name="WriteAnnotationRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="WriteAnnotationResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="PortalOryxService">
+		<port name="PortalOryx" binding="tns:PortalOryxBinding">
+			<soap:address location="http://localhost:8080/Apromore-portal/services" />
+		</port>
+	</service>
+</definitions>

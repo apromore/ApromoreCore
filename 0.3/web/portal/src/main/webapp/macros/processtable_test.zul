@@ -1,0 +1,799 @@
+
+	<grid id="processSummariesGrid" height="90%" vflex="true">
+		<columns sizable="true">
+			<column width="3.5%">
+				<button id="revertSelectionB" image="img/flag-10x10.png"
+					style="background:transparent;border:none"
+					tooltiptext="click here to revert selection" />
+			</column>
+			<column width="0">
+				<checkbox id="processSummaryCB" visible="false" />
+			</column>
+			<column id="columnId" label="Id" width="3%" />
+			<column id="columnName" label="Name" width="15%" />
+			<column sort="auto" label="Original language" width="15%" />
+			<column sort="auto" label="Domain" width="15%" />
+			<column sort="auto" label="Ranking" width="15%" />
+			<column sort="auto" label="Latest version" width="10%" />
+			<column sort="auto" label="Owner" width="10%" />
+		</columns>
+		<rows id="processSummariesRows">
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.3" />
+								<label value="333333" />
+								<label value="333333" />
+								<label value="333333" />
+								<label value="333333" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="1" />
+				<label value="Claim" />
+				<label value="EPML" />
+				<label value="Insurance" />
+				<hbox> <image src="/img/selectAll-12.png"/> <image src="/img/unselectAll-12.png"/></hbox>
+				<label value="0.3" />
+				<label value="larosa" />
+			</row>
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.3" />
+								<label value="333333" />
+								<label value="333333" />
+								<label value="333333" />
+								<label value="333333" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="1" />
+				<label value="Claim" />
+				<label value="EPML" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.3" />
+				<label value="larosa" />
+			</row>
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.3" />
+								<label value="333333" />
+								<label value="333333" />
+								<label value="333333" />
+								<label value="333333" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="1" />
+				<label value="Claim" />
+				<label value="EPML" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.3" />
+				<label value="larosa" />
+			</row>
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.3" />
+								<label value="333333" />
+								<label value="333333" />
+								<label value="333333" />
+								<label value="333333" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="1" />
+				<label value="Claim" />
+				<label value="EPML" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.3" />
+				<label value="larosa" />
+			</row>
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.3" />
+								<label value="333333" />
+								<label value="333333" />
+								<label value="333333" />
+								<label value="333333" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="1" />
+				<label value="Claim" />
+				<label value="EPML" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.3" />
+				<label value="larosa" />
+			</row>
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.3" />
+								<label value="333333" />
+								<label value="333333" />
+								<label value="333333" />
+								<label value="333333" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="1" />
+				<label value="Claim" />
+				<label value="EPML" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.3" />
+				<label value="larosa" />
+			</row>
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.3" />
+								<label value="333333" />
+								<label value="333333" />
+								<label value="333333" />
+								<label value="333333" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="1" />
+				<label value="Claim" />
+				<label value="EPML" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.3" />
+				<label value="larosa" />
+			</row>
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="2" />
+				<label value="Claim-2" />
+				<label value="XPDL" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.2" />
+				<label value="fauvet" />
+			</row>
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="2" />
+				<label value="Claim-2" />
+				<label value="XPDL" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.2" />
+				<label value="fauvet" />
+			</row>
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="2" />
+				<label value="Claim-2" />
+				<label value="XPDL" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.2" />
+				<label value="fauvet" />
+			</row>
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="2" />
+				<label value="Claim-2" />
+				<label value="XPDL" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.2" />
+				<label value="fauvet" />
+			</row>
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="2" />
+				<label value="Claim-2" />
+				<label value="XPDL" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.2" />
+				<label value="fauvet" />
+			</row>
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="2" />
+				<label value="Claim-2" />
+				<label value="XPDL" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.2" />
+				<label value="fauvet" />
+			</row>
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="2" />
+				<label value="Claim-2" />
+				<label value="XPDL" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.2" />
+				<label value="fauvet" />
+			</row>
+
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="2" />
+				<label value="Claim-2" />
+				<label value="XPDL" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.2" />
+				<label value="fauvet" />
+			</row>
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="2" />
+				<label value="Claim-2" />
+				<label value="XPDL" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.2" />
+				<label value="fauvet" />
+			</row>
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="2" />
+				<label value="Claim-2" />
+				<label value="XPDL" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.2" />
+				<label value="fauvet" />
+			</row>
+			<row>
+				<detail>
+					<grid vflex="true">
+						<columns>
+							<column label="" width="0px" />
+							<column label="version name" />
+							<column label="creation date" />
+							<column label="last update" />
+							<column label="documentation" />
+							<column label="ranking" />
+						</columns>
+						<rows>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.1" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+								<label value="1111111" />
+							</row>
+							<row>
+								<checkbox />
+								<toolbarbutton label="0.2" />
+								<label value="22222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+								<label value="2222222222" />
+							</row>
+						</rows>
+					</grid>
+				</detail>
+				<checkbox />
+				<label value="2" />
+				<label value="Last Claim-2" />
+				<label value="XPDL" />
+				<label value="Insurance" />
+				<label value="1" />
+				<label value="0.2" />
+				<label value="fauvet" />
+			</row>
+		</rows>
+	</grid>

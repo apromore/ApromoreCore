@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>canoniser-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.apromore</groupId>
+    <artifactId>canoniser-service</artifactId>
+    <packaging>jar</packaging>
+    <version>${canoniser-service.version}</version>
+
+    <url>http://code.google.com/p/apromore/</url>
+    <name>Apromore Canoniser Service</name>
+    <description>Apromore is an open and extensible repository to store and disclose business process models of a
+        variety of types and languages, and beyond that, to build on top of existing tools and techniques, to provide
+        state-of-the-art features for model presentation, analysis, integration, contextualization, improvement, and
+        re-use.
+    </description>
+
+    <issueManagement>
+        <system>Google Code</system>
+        <url>http://code.google.com/p/apromore/wiki/IssueTracker</url>
+    </issueManagement>
+
+    <scm>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/base-pom</developerConnection>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/base-pom</connection>
+        <url>http://code.google.com/p/apromore/source/browse/base-pom/</url>
+    </scm>
+
+    <ciManagement>
+        <system>Hudson</system>
+        <url>http://localhost:8180/view/apromore</url>
+    </ciManagement>
+
+    <distributionManagement>
+        <site>
+            <id>website</id>
+            <url>dav:http://localhost:8180/projects/apromore</url>
+        </site>
+        <!--
+        <repository>
+            <id>apromore.googlecode.com</id>
+            <url>svn:https://apromore.googlecode.com/svn/m2/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>apromore.googlecode.com</id>
+            <url>svn:https://apromore.googlecode.com/svn/m2/snapshots</url>
+        </snapshotRepository>
+        -->
+    </distributionManagement>
+
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
+
+    <inceptionYear>2010</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v3</name>
+            <distribution>repo</distribution>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>QUT</name>
+        <url>http://www.qut.edu.au</url>
+    </organization>
+
+    <mailingLists>
+        <mailingList>
+            <name>Apromore Forum</name>
+            <post>apromore-rm@googlegroups.com</post>
+            <unsubscribe>apromore-rm+unsubscribe@googlegroups.com</unsubscribe>
+        </mailingList>
+    </mailingLists>
+
+    <developers>
+        <developer>
+            <id>u312978</id>
+            <name>Cameron James</name>
+            <email>cameron.james@suncorp.com.au</email>
+            <organization>Suncorp</organization>
+            <organizationUrl>http://www.suncorp.com.au/</organizationUrl>
+            <roles>
+                <role>Active User</role>
+            </roles>
+            <timezone>+10</timezone>
+        </developer>
+    </developers>
+
+    <repositories>
+        <repository>
+            <id>apromore.googlecode.com</id>
+            <url>http://apromore.googlecode.com/svn/m2/releases</url>
+        </repository>
+    </repositories>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>anf-schema</artifactId>
+            <version>${anf-schema.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>cpf-schema</artifactId>
+            <version>${cpf-schema.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>epml-schema</artifactId>
+            <version>${epml-schema.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>rlf-schema</artifactId>
+            <version>${rlf-schema.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>yawl-schema</artifactId>
+            <version>${yawl-schema.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>xpdl-schema</artifactId>
+            <version>${xpdl-schema.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>dataAccess-client</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- Name of the generated WAR file -->
+        <finalName>canoniser-service</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-codegen-plugin</artifactId>
+                <version>${cxf.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <sourceRoot>${basedir}/target/generated-sources/src/main/java</sourceRoot>
+                            <wsdlOptions>
+                                <wsdlOption>
+                                    <wsdl>${basedir}/../src/main/wsdl/canoniser_manager.wsdl</wsdl>
+                                </wsdlOption>
+                            </wsdlOptions>
+                        </configuration>
+                        <goals>
+                            <goal>wsdl2java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Require-Bundle>org.apache.cxf.bundle,org.springframework.beans</Require-Bundle>
+                        <Export-Package>org.apromore</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${basedir}/target/generated-sources/src/main/java</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>${maven-bundle-plugin.version}</version>
+                    <extensions>true</extensions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+</project>

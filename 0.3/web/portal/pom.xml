@@ -1,0 +1,192 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore-web-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.apromore</groupId>
+    <artifactId>portal-web</artifactId>
+    <packaging>war</packaging>
+    <version>${portal-web.version}</version>
+
+    <url>http://code.google.com/p/apromore/</url>
+    <name>Apromore Portal Web App</name>
+    <description>Apromore is an open and extensible repository to store and disclose business process models of a
+        variety of types and languages, and beyond that, to build on top of existing tools and techniques, to provide
+        state-of-the-art features for model presentation, analysis, integration, contextualization, improvement, and
+        re-use.
+    </description>
+
+    <issueManagement>
+        <system>Google Code</system>
+        <url>http://code.google.com/p/apromore/wiki/IssueTracker</url>
+    </issueManagement>
+
+    <scm>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/base-pom</developerConnection>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/base-pom</connection>
+        <url>http://code.google.com/p/apromore/source/browse/base-pom/</url>
+    </scm>
+
+    <ciManagement>
+        <system>Hudson</system>
+        <url>http://localhost:8180/view/apromore</url>
+    </ciManagement>
+
+    <distributionManagement>
+        <site>
+            <id>website</id>
+            <url>dav:http://localhost:8180/projects/apromore</url>
+        </site>
+        <!--
+        <repository>
+            <id>apromore.googlecode.com</id>
+            <url>svn:https://apromore.googlecode.com/svn/m2/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>apromore.googlecode.com</id>
+            <url>svn:https://apromore.googlecode.com/svn/m2/snapshots</url>
+        </snapshotRepository>
+        -->
+    </distributionManagement>
+
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
+
+    <inceptionYear>2010</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v3</name>
+            <distribution>repo</distribution>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>QUT</name>
+        <url>http://www.qut.edu.au</url>
+    </organization>
+
+    <mailingLists>
+        <mailingList>
+            <name>Apromore Forum</name>
+            <post>apromore-rm@googlegroups.com</post>
+            <unsubscribe>apromore-rm+unsubscribe@googlegroups.com</unsubscribe>
+        </mailingList>
+    </mailingLists>
+
+    <developers>
+        <developer>
+            <id>u312978</id>
+            <name>Cameron James</name>
+            <email>cameron.james@suncorp.com.au</email>
+            <organization>Suncorp</organization>
+            <organizationUrl>http://www.suncorp.com.au/</organizationUrl>
+            <roles>
+                <role>Active User</role>
+            </roles>
+            <timezone>+10</timezone>
+        </developer>
+    </developers>
+
+    <repositories>
+        <repository>
+            <id>apromore.googlecode.com</id>
+            <url>http://apromore.googlecode.com/svn/m2/releases</url>
+        </repository>
+        <repository>
+            <id>ZK EE Evaluation</id>
+            <url>http://mavensync.zkoss.org/zk/ee-eval</url>
+        </repository>
+        <!--<repository>-->
+        <!--<id>ZK EE</id>-->
+        <!--<url>https://maven.zkoss.org/repo/zk/ee</url>-->
+        <!--</repository>-->
+    </repositories>
+
+    <build>
+        <finalName>Apromore-portal</finalName>
+    </build>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>portal-service</artifactId>
+            <version>${portal-service.version}</version>
+        </dependency>
+
+        <!-- CXF -->
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-frontend-jaxws</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+            <version>${cxf.version}</version>
+        </dependency>
+
+        <!-- JAXB Settings -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+            <version>${jaxb-api.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+            <version>${jaxb-impl.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <version>${jaxb-xjc.version}</version>
+        </dependency>
+
+        <!-- ZK Libraries -->
+        <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>${common-io.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+            <version>${commons-lang.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.theme</groupId>
+            <artifactId>breeze</artifactId>
+            <version>${zk.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zkmax</artifactId>
+            <version>${zk.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zkplus</artifactId>
+            <version>${zk.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zhtml</artifactId>
+            <version>${zk.version}</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+</project>
