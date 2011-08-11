@@ -66,7 +66,7 @@
 					<!-- the grid controller is ProcessTableController
 						This results from a work around to deal with vertical flexibility -->
 					<grid id="processSummariesGrid" vflex="true"
-						autopaging="true" mold="paging">
+						autopaging="true" mold="paging" paginal="${pg}">
 						<columns sizable="true" >
 							<column width="3.5%"></column>
 							<column width="0">
