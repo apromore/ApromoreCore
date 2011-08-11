@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="http://www.apromore.org/data_access/service_canoniser"
+	xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tnsx="http://www.apromore.org/data_access/model_canoniser"
+	xmlns:tns="http://www.apromore.org/data_access/service_canoniser"
+	xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+	<import namespace="http://www.apromore.org/data_access/model_canoniser"
+		location="da_canoniserX.xsd">
+	</import>
+
+	<message name="StoreNativeCpfOutputMsg">
+		<part name="payload" element="tnsx:StoreNativeCpfOutputMsg">
+		</part>
+	</message>
+	<message name="StoreNativeCpfInputMsg">
+		<part name="payload" element="tnsx:StoreNativeCpfInputMsg">
+		</part>
+	</message>
+
+	<message name="StoreNativeOutputMsg">
+		<part name="payload" element="tnsx:StoreNativeOutputMsg">
+		</part>
+	</message>
+	<message name="StoreNativeInputMsg">
+		<part name="payload" element="tnsx:StoreNativeInputMsg">
+		</part>
+	</message>
+	<message name="StoreVersionOutputMsg">
+		<part name="payload" element="tnsx:StoreVersionOutputMsg">
+		</part>
+	</message>
+	<message name="StoreVersionInputMsg">
+		<part name="payload" element="tnsx:StoreVersionInputMsg">
+		</part>
+	</message>
+	<message name="WriteAnnotationOutputMsg">
+		<part name="payload" element="tnsx:WriteAnnotationOutputMsg">
+		</part>
+	</message>
+	<message name="WriteAnnotationInputMsg">
+		<part name="payload" element="tnsx:WriteAnnotationInputMsg">
+		</part>
+	</message>
+	<message name="GetCpfUriOutputMsg">
+		<part name="payload" element="tnsx:GetCpfUriOutputMsg">
+		</part>
+	</message>
+	<message name="GetCpfUriInputMsg">
+		<part name="payload" element="tnsx:GetCpfUriInputMsg">
+		</part>
+	</message>
+
+
+	<portType name="DACanoniserPortType">
+		<operation name="StoreNativeCpf">
+			<input name="StoreNativeCpfRequest" message="tns:StoreNativeCpfInputMsg">
+			</input>
+			<output name="StoreNativeCpfResponse" message="tns:StoreNativeCpfOutputMsg">
+			</output>
+		</operation>
+		<operation name="StoreNative">
+			<input name="StoreNativeRequest" message="tns:StoreNativeInputMsg">
+			</input>
+			<output name="StoreNativeResponse" message="tns:StoreNativeOutputMsg">
+			</output>
+		</operation>
+		<operation name="StoreVersion">
+			<input name="StoreVersionRequest" message="tns:StoreVersionInputMsg">
+			</input>
+			<output name="StoreVersionResponse" message="tns:StoreVersionOutputMsg">
+			</output>
+		</operation>
+		<operation name="WriteAnnotation">
+			<input name="WriteAnnotationRequest" message="tns:WriteAnnotationInputMsg">
+			</input>
+			<output name="WriteAnnotationResponse" message="tns:WriteAnnotationOutputMsg">
+			</output>
+		</operation>
+		<operation name="GetCpfUri">
+			<input name="GetCpfUriRequest" message="tns:GetCpfUriInputMsg">
+			</input>
+			<output name="GetCpfUriResponse" message="tns:GetCpfUriOutputMsg">
+			</output>
+		</operation>
+	</portType>
+
+	<binding name="DACanoniserBinding" type="tns:DACanoniserPortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="StoreNativeCpf">
+			<soap:operation style="document" />
+			<input name="StoreNativeCpfRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="StoreNativeCpfResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="StoreNative">
+			<soap:operation style="document" />
+			<input name="StoreNativeRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="StoreNativeResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="StoreVersion">
+			<soap:operation style="document" />
+			<input name="StoreVersionRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="StoreVersionResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="WriteAnnotation">
+			<soap:operation style="document" />
+			<input name="WriteAnnotationRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="WriteAnnotationResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="GetCpfUri">
+			<soap:operation style="document" />
+			<input name="GetCpfUriRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="GetCpfUriResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="DACanoniserService">
+		<port name="DACanoniser" binding="tns:DACanoniserBinding">
+			<soap:address
+				location="http://localhost:8080/Apromore-dataAccess/services/DACanoniser" />
+		</port>
+	</service>
+</definitions>

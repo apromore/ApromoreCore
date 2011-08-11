@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions targetNamespace="http://www.apromore.org/toolbox/service_manager"
+	xmlns="http://schemas.xmlsoap.org/wsdl/" xmlns:tnsx="http://www.apromore.org/toolbox/model_manager"
+	xmlns:tns="http://www.apromore.org/toolbox/service_manager" xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/">
+	<import namespace="http://www.apromore.org/toolbox/model_manager"
+		location="toolbox_managerX.xsd">
+	</import>
+	<message name="SearchForSimilarProcessesInputMsg">
+		<part name="payload" element="tnsx:SearchForSimilarProcessesInputMsg">
+		</part>
+	</message>
+	<message name="SearchForSimilarProcessesOutputMsg">
+		<part name="payload" element="tnsx:SearchForSimilarProcessesOutputMsg">
+		</part>
+	</message>
+
+	<message name="MergeProcessesInputMsg">
+		<part name="payload" element="tnsx:MergeProcessesInputMsg">
+		</part>
+	</message>
+	<message name="MergeProcessesOutputMsg">
+		<part name="payload" element="tnsx:MergeProcessesOutputMsg">
+		</part>
+	</message>
+	<portType name="ToolboxManagerPortType">
+		<operation name="SearchForSimilarProcesses">
+			<input name="SearchForSimilarProcessesRequest" message="tns:SearchForSimilarProcessesInputMsg">
+			</input>
+			<output name="SearchForSimilarProcessesResponse" message="tns:SearchForSimilarProcessesOutputMsg">
+			</output>
+		</operation>
+		<operation name="MergeProcesses">
+			<input name="MergeProcessesRequest" message="tns:MergeProcessesInputMsg">
+			</input>
+			<output name="MergeProcessesResponse" message="tns:MergeProcessesOutputMsg">
+			</output>
+		</operation>
+	</portType>
+	<binding name="ToolboxManagerBinding" type="tns:ToolboxManagerPortType">
+		<soap:binding style="document"
+			transport="http://schemas.xmlsoap.org/soap/http" />
+		<operation name="SearchForSimilarProcesses">
+			<soap:operation style="document" />
+			<input name="SearchForSimilarProcessesRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="SearchForSimilarProcessesResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+		<operation name="MergeProcesses">
+			<soap:operation style="document" />
+			<input name="MergeProcessesRequest">
+				<soap:body use="literal" />
+			</input>
+			<output name="MergeProcessesResponse">
+				<soap:body use="literal" />
+			</output>
+		</operation>
+	</binding>
+	<service name="ToolboxManagerService">
+		<port name="ToolboxManager" binding="tns:ToolboxManagerBinding">
+			<soap:address
+				location="http://localhost:8080/Apromore-toolbox/services/ToolboxManager" />
+		</port>
+	</service>
+</definitions>
