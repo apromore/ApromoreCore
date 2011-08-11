@@ -26,8 +26,14 @@
     <modules>
         <module>maven-poms\apromore-tools</module>
         <module>maven-poms\apromore-parent</module>
+        <module>maven-poms\apromore-web-parent</module>
         
-        <module>common</module>
+        <module>common\anf</module>
+        <module>common\cpf</module>
+        <module>common\epml</module>
+        <module>common\rlf</module>
+        <module>common\xpdl</module>
+        <module>common\yawl</module>
         
         <module>services\dataAccess\dataAccess-client</module>
         <module>services\toolBox\toolBox-client</module>
@@ -40,7 +46,11 @@
         <module>services\manager\manager-service</module>
         <module>services\portal\portal-service</module>
         
-        <module>web</module>
+        <module>web\canoniser</module>
+        <module>web\dataAccess</module>
+        <module>web\manager</module>
+        <module>web\portal</module>
+        <module>web\toolBox</module>
     </modules>
 
 </project>
