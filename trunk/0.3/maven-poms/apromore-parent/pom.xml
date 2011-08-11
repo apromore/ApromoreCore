@@ -465,7 +465,7 @@
 
         <!-- **** Versions used for all projects **** -->
         <web-parent.version>1.0.0-SNAPSHOT</web-parent.version>
-        <common-parent.version>1.0.0-SNAPSHOT</common-parent.version>
+        <service-parent.version>1.0.0-SNAPSHOT</service-parent.version>
 
         <apromore-tools.version>1.0.0-SNAPSHOT</apromore-tools.version>
         <canoniser-client.version>1.0.0-SNAPSHOT</canoniser-client.version>

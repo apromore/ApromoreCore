@@ -35,16 +35,16 @@
         <module>common\xpdl</module>
         <module>common\yawl</module>
         
-        <module>services\dataAccess\dataAccess-client</module>
-        <module>services\toolBox\toolBox-client</module>
-        <module>services\canoniser\canoniser-client</module>
-        <module>services\manager\manager-client</module>
+        <module>clients\dataAccess-client</module>
+        <module>clients\toolBox-client</module>
+        <module>clients\canoniser-client</module>
+        <module>clients\manager-client</module>
         
-        <module>services\dataAccess\dataAccess-service</module>
-        <module>services\toolBox\toolBox-service</module>
-        <module>services\canoniser\canoniser-service</module>
-        <module>services\manager\manager-service</module>
-        <module>services\portal\portal-service</module>
+        <module>services\dataAccess-service</module>
+        <module>services\toolBox-service</module>
+        <module>services\canoniser-service</module>
+        <module>services\manager-service</module>
+        <module>services\portal-service</module>
         
         <module>web\canoniser</module>
         <module>web\dataAccess</module>
