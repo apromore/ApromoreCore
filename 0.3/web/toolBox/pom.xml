@@ -111,7 +111,7 @@
     <dependencies>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>toolbox-service</artifactId>
+            <artifactId>toolBox-service</artifactId>
             <version>${toolbox-service.version}</version>
         </dependency>
 
