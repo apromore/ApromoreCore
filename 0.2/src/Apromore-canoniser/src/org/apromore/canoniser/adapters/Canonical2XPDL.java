@@ -6,6 +6,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javax.xml.namespace.QName;
+
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
@@ -191,6 +193,8 @@ public class Canonical2XPDL {
 			int size, count = 1;
 			size = xpdl.getWorkflowProcesses().getWorkflowProcess().size();
 			for (ProcessType bpmnproc : xpdl.getWorkflowProcesses().getWorkflowProcess()) {
+				// Add the ProcessHeader (to the anytype)
+                bpmnproc.getOtherAttributes().put(new QName("ProcessHeader"), "");
 				for (Object obj: bpmnproc.getContent()) {
 					if (obj instanceof Activities)
 						activities = ((Activities)obj).getActivity();
@@ -618,7 +622,7 @@ public class Canonical2XPDL {
 					if(cGraphInfo.getPosition() != null)
 					{
 						try {
-							coords.setXCoordinate(cGraphInfo.getPosition().get(0).getX().doubleValue());
+						    coords.setXCoordinate(cGraphInfo.getPosition().get(0).getX().doubleValue());
 							coords.setYCoordinate(cGraphInfo.getPosition().get(0).getY().doubleValue());
 							info.setCoordinates(coords);
 						} catch (IndexOutOfBoundsException e) {
