@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<Context path="/ApromoreDB" docBase="ApromoreDB" debug="5" reloadable="true" crossContext="true">
+<Context path="/Apromore-dataAccess" docBase="Apromore-dataAccess" debug="5" reloadable="true" crossContext="true">
     <Resource name="jdbc/ApromoreDB" auth="Container" type="javax.sql.DataSource"
     driverClassName="com.mysql.jdbc.Driver"
     url="jdbc:mysql://localhost/apromore?autoReconnect=true" username="apromore" password="MAcri" maxActive="300" 
