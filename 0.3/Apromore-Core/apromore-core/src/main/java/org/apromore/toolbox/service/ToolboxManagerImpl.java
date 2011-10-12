@@ -21,7 +21,6 @@ import org.apromore.toolbox.da.ToolboxDataAccessClient;
 import org.apromore.toolbox.similaritySearch.tools.MergeProcesses;
 import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import javax.activation.DataHandler;

@@ -15,7 +15,6 @@ import org.apromore.model.SearchForSimilarProcessesOutputMsgType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.toolbox.service.ToolboxManager;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Component;
 
 public class ManagerToolboxClient {

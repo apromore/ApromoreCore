@@ -1,6 +1,5 @@
 package org.apromore.toolbox.similaritySearch.common.similarity;
 
-import java.util.HashSet;
 import java.util.LinkedList;
 
 import org.apromore.toolbox.similaritySearch.common.Settings;
@@ -9,7 +8,6 @@ import org.apromore.toolbox.similaritySearch.common.VertexPair;
 import org.apromore.toolbox.similaritySearch.common.stemmer.SnowballStemmer;
 import org.apromore.toolbox.similaritySearch.graph.Graph;
 import org.apromore.toolbox.similaritySearch.graph.Vertex;
-import org.apromore.toolbox.similaritySearch.graph.Vertex.GWType;
 import org.apromore.toolbox.similaritySearch.graph.Vertex.Type;
 
 
