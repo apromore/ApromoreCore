@@ -1,9 +1,6 @@
 package org.apromore.toolbox.similaritySearch.tools;
 
 
-import java.util.LinkedList;
-import java.util.List;
-
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.toolbox.similaritySearch.algorithms.FindModelSimilarity;
 import org.apromore.toolbox.similaritySearch.common.CPFModelParser;
