@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore-clients</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.apromore</groupId>
+    <artifactId>manager-client</artifactId>
+    <packaging>jar</packaging>
+    <version>${manager-client.version}</version>
+
+    <url>http://code.google.com/p/apromore/</url>
+    <name>Apromore Manager Client</name>
+    <description>Apromore is an open and extensible repository to store and disclose business process models of a
+        variety of types and languages, and beyond that, to build on top of existing tools and techniques, to provide
+        state-of-the-art features for model presentation, analysis, integration, contextualization, improvement, and
+        re-use.
+    </description>
+
+    <dependencies>
+        <!-- JAXB -->
+        <dependency>
+            <groupId>javax.xml.bind</groupId>
+            <artifactId>jaxb-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-impl</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.jvnet.jaxb2_commons</groupId>
+            <artifactId>jaxb2-basics-runtime</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>manager-client</finalName>
+        <plugins>
+            <!--<plugin>-->
+                <!--<groupId>org.jvnet.jaxb2.maven2</groupId>-->
+                <!--<artifactId>maven-jaxb2-plugin</artifactId>-->
+                <!--<version>${maven-jaxb2-plugin.version}</version>-->
+                <!--<executions>-->
+                    <!--<execution>-->
+                        <!--<goals>-->
+                            <!--<goal>generate</goal>-->
+                        <!--</goals>-->
+                    <!--</execution>-->
+                <!--</executions>-->
+                <!--<configuration>-->
+                    <!--<schemaIncludes>-->
+                        <!--<schemaInclude>**/*.xsd</schemaInclude>-->
+                    <!--</schemaIncludes>-->
+                    <!--<generatePackage>org.apromore.model</generatePackage>-->
+                    <!--<readOnly>true</readOnly>-->
+                    <!--<strict>true</strict>-->
+                    <!--<verbose>true</verbose>-->
+                    <!--<args>-->
+                        <!--<arg>-XtoString</arg>-->
+                        <!--<arg>-Xequals</arg>-->
+                        <!--<arg>-XhashCode</arg>-->
+                    <!--</args>-->
+                    <!--<plugins>-->
+                        <!--<plugin>-->
+                            <!--<groupId>org.jvnet.jaxb2_commons</groupId>-->
+                            <!--<artifactId>jaxb2-basics</artifactId>-->
+                        <!--</plugin>-->
+                    <!--</plugins>-->
+                <!--</configuration>-->
+            <!--</plugin>-->
+            <plugin>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-codegen-plugin</artifactId>
+                <version>${cxf.version}</version>
+                <executions>
+                    <execution>
+                        <id>generate-sources</id>
+                        <phase>generate-sources</phase>
+                        <configuration>
+                            <sourceRoot>${basedir}/target/generated-sources/src/main/java</sourceRoot>
+                            <wsdlOptions>
+                                <wsdlOption>
+                                    <wsdl>${basedir}/src/main/resources/manager.wsdl</wsdl>
+                                    <extraargs>
+                                        <extraarg>-client</extraarg>
+                                        <extraarg>-fe</extraarg><extraarg>jaxws</extraarg>
+                                        <extraarg>-db</extraarg><extraarg>jaxb</extraarg>
+                                        <extraarg>-wv</extraarg><extraarg>1.1</extraarg>
+                                        <extraarg>-sn</extraarg><extraarg>ManagerService</extraarg>
+                                        <extraarg>-wsdlLocation</extraarg><extraarg>http://localhost:8080/Apromore/services/manager.wsdl</extraarg>
+                                        <extraarg>-p</extraarg><extraarg>http://www.apromore.org/manager/service_portal=org.apromore.portal.manager</extraarg>
+                                        <extraarg>-p</extraarg><extraarg>urn:qut-edu-au:schema:apromore:manager=org.apromore.model</extraarg>
+                                        <extraarg>-impl</extraarg>
+                                        <extraarg>-verbose</extraarg>
+                                        <extraarg>-xjc-mark-generated</extraarg>
+                                    </extraargs>
+                                </wsdlOption>
+                            </wsdlOptions>
+                        </configuration>
+                        <goals>
+                            <goal>wsdl2java</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${basedir}/target/generated-sources/xjc</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+
+    <properties>
+        <!-- Cobertura -->
+        <cobertura.total-branch-rate>0</cobertura.total-branch-rate>
+        <cobertura.total-line-rate>0</cobertura.total-line-rate>
+
+        <!-- Checkstyle -->
+        <checkstyle.skip>true</checkstyle.skip>
+
+        <!-- Versions -->
+        <cxf.version>2.4.0</cxf.version>
+        <maven-jaxb2-plugin.version>0.7.1</maven-jaxb2-plugin.version>
+    </properties>
+
+</project>
