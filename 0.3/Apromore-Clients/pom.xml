@@ -16,7 +16,7 @@
     <version>1.0.0-SNAPSHOT</version>
 
     <url>http://code.google.com/p/apromore/</url>
-    <name>Apromore</name>
+    <name>Apromore Clients Parent</name>
     <description>Apromore is an open and extensible repository to store and disclose business process models of a
         variety of types and languages, and beyond that, to build on top of existing tools and techniques, to provide
         state-of-the-art features for model presentation, analysis, integration, contextualization, improvement, and
