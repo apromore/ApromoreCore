@@ -7,7 +7,6 @@ import java.util.Random;
 import java.util.Set;
 import java.util.Vector;
 
-import org.apromore.toolbox.similaritySearch.common.Settings;
 import org.apromore.toolbox.similaritySearch.common.similarity.AssingmentProblem;
 import org.apromore.toolbox.similaritySearch.common.similarity.NodeSimilarity;
 import org.apromore.toolbox.similaritySearch.graph.Graph;
