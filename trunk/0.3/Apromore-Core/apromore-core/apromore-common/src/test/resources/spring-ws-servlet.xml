@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:sws="http://www.springframework.org/schema/web-services" xmlns:p="http://www.springframework.org/schema/p"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services-2.0.xsd
+            http://www.springframework.org/schema/util     http://www.springframework.org/schema/util/spring-util-3.0.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
+
+    <!-- ************************** WebServices ************************** -->
+
+    <sws:annotation-driven/>
+
+    <sws:dynamic-wsdl id="manager" portTypeName="manager" locationUri="http://localhost:8080/Apromore/services/manager">
+        <sws:xsd location="classpath:/manager.xsd"/>
+    </sws:dynamic-wsdl>
+
+    <sws:interceptors>
+        <bean class="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor"/>
+        <bean class="org.springframework.ws.soap.server.endpoint.interceptor.SoapEnvelopeLoggingInterceptor"
+            p:logRequest="true" p:logResponse="true"/>
+       <bean id="validatingInterceptor"  class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor"
+            p:schemas-ref="schemasList" p:validateRequest="true" p:validateResponse="true"/>
+    </sws:interceptors>
+
+    <!-- JAXB marshelling -->
+    <bean id="marshallingMethodProcessor" class="org.springframework.ws.server.endpoint.adapter.method.MarshallingPayloadMethodProcessor"
+        p:marshaller-ref="jaxb2Marshaller" p:unmarshaller-ref="jaxb2Marshaller"/>
+
+    <bean id="defaultMethodEndpointAdapter" class="org.springframework.ws.server.endpoint.adapter.DefaultMethodEndpointAdapter">
+        <property name="methodArgumentResolvers">
+            <list>
+                <ref bean="marshallingMethodProcessor"/>
+            </list>
+        </property>
+        <property name="methodReturnValueHandlers">
+            <list>
+                <ref bean="marshallingMethodProcessor"/>
+            </list>
+        </property>
+    </bean>
+
+    <bean id="jaxb2Marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="schemas" ref="schemasList" />
+        <property name="contextPaths">
+            <list>
+                <value>org.apromore.model</value>
+            </list>
+        </property>
+    </bean>
+
+    <util:list id="schemasList">
+        <value>classpath:/manager.xsd</value>
+    </util:list>
+
+
+    <bean id="managerPortalEndpoint" class="org.apromore.manager.service.ManagerPortalEndpoint"
+          p:daClient-ref="managerDataAccessClient" p:caClient-ref="managerCanoniserClient" p:tbClient-ref="managerToolboxClient" />
+
+
+    <!-- ************************** Non WebServices ************************** -->
+
+    <bean id="dataAccessCanoniserManager" class="org.apromore.dao.service.DataAccessCanoniserManagerImpl" />
+    <bean id="dataAccessManagerManager" class="org.apromore.dao.service.DataAccessManagerManagerImpl" />
+    <bean id="dataAccessToolboxManager" class="org.apromore.dao.service.DataAccessToolboxManagerImpl" />
+
+    <bean id="canoniserDataAccessClient" class="org.apromore.canoniser.da.CanoniserDataAccessClient" p:manager-ref="dataAccessCanoniserManager" />
+    <bean id="toolboxDataAccessClient" class="org.apromore.toolbox.da.ToolboxDataAccessClient" p:manager-ref="dataAccessToolboxManager" />
+    <bean id="managerDataAccessClient" class="org.apromore.manager.da.ManagerDataAccessClient" p:manager-ref="dataAccessManagerManager" />
+    <bean id="managerCanoniserClient" class="org.apromore.manager.canoniser.ManagerCanoniserClient" p:manager-ref="canoniserManager" />
+    <bean id="managerToolboxClient" class="org.apromore.manager.toolbox.ManagerToolboxClient" p:manager-ref="toolboxManager" />
+
+    <bean id="canoniserManager" class="org.apromore.canoniser.service.CanoniserManagerImpl" p:client-ref="canoniserDataAccessClient" />
+    <bean id="toolboxManager" class="org.apromore.toolbox.service.ToolboxManagerImpl" p:client-ref="toolboxDataAccessClient" />
+
+</beans>
