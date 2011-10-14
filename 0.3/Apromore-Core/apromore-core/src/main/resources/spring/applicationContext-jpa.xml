@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
+            http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+        <!-- Hibernate Config -->
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
+    <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+
+    <bean id="dbcpDataSource" class="com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource" destroy-method="close"
+            p:connectionCachingEnabled="true" p:URL="${jdbc.url}" p:user="${jdbc.username}"
+            p:password="${jdbc.password}">
+        <property name="connectionCacheProperties">
+            <props>
+                <prop key="InitialLimit">1</prop>                 <!-- Initial Pool Size -->
+                <prop key="MinLimit">1</prop>                     <!-- Minimum Pool Size -->
+                <prop key="MaxLimit">10</prop>                    <!-- Maximum Pool Size -->
+                <prop key="ValidateConnection">true</prop>        <!-- Verify connection before returning to caller -->
+                <prop key="PropertyCheckInterval">300</prop>      <!-- Time interval for daemon thread to enforce timeouts = 5 mins -->
+                <prop key="ConnectionWaitTimeout">120</prop>      <!-- Time limit to wait for a new connection request = 2 mins -->
+                <prop key="InactivityTimeout">1800</prop>         <!-- Time a non-checked out connection can remain idle = 30 mins -->
+                <prop key="TimeToLiveTimeout">900</prop>          <!-- Time a checked out connection can remain idle = 15 mins -->
+                <prop key="AbandonedConnectionTimeout">900</prop> <!-- Time a checked out connection can remain unused (no sql activity) = 15 mins -->
+            </props>
+        </property>
+    </bean>
+
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
+          p:persistence-xml-location="classpath:META-INF/persistence.xml" p:data-source-ref="dbcpDataSource">
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
+                  p:databasePlatform="${jpa.database}" p:showSql="${jpa.showSql}" p:generateDdl="false"/>
+        </property>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">${jpa.database}</prop>
+                <prop key="hibernate.format_sql">${jpa.showSql}</prop>
+                <prop key="hibernate.show_sql">${jpa.showSql}</prop>
+                <prop key="hibernate.query.substitutions">${hibernate.query.substitutions}</prop>
+                <prop key="hibernate.dbcp.ps.maxIdle">${hibernate.dbcp.ps.maxIdle}</prop>
+                <prop key="hibernate.statement_cache.size">${hibernate.statement_cache.size}</prop>
+                <prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
+                <prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop>
+                <prop key="net.sf.ehcache.configurationResourceName">${net.sf.ehcache.configurationResourceName}</prop>
+            </props>
+        </property>
+    </bean>
+
+    <bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
+          p:entityManagerFactory-ref="entityManagerFactory"/>
+
+    <tx:annotation-driven transaction-manager="jpaTransactionManager" proxy-target-class="true"/>
+
+
+    <!-- =================================================================== -->
+    <!-- Hibernate JPA DAO implementation                                    -->
+    <!-- =================================================================== -->
+
+    <bean id="abstractDao" abstract="true" p:entityManagerFactory-ref="entityManagerFactory"/>
+
+    <bean id="UserDaoJpa" class="org.apromore.dao.jpa.UserDaoJpa" parent="abstractDao" />
+
+</beans>

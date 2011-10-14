@@ -28,7 +28,7 @@ import static org.powermock.api.easymock.PowerMock.verify;
  * Test the Read User method on the Manager Portal Endpoint WebService.
  */
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration("classpath:spring-ws-servlet.xml")
+@ContextConfiguration("classpath:META-INF/spring/applicationContext-services-TEST.xml")
 public class ReadUserEndpointTest {
 
     private ManagerPortalEndpoint endpoint;
