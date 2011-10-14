@@ -6,12 +6,11 @@
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd">
 
     <context:property-placeholder location="**/apromore.properties"/>
+    <context:property-placeholder location="**/datasource.properties"/>
 
     <context:annotation-config/>
 
-    <!--<import resource="applicationContext-jpa.xml.old" />-->
+    <import resource="applicationContext-jpa.xml" />
     <import resource="applicationContext-services.xml" />
-    <!--<import resource="applicationContext-security.xml" />-->
-    <!--<import resource="applicationContext-mvc-servlet.xml" />-->
 
 </beans>

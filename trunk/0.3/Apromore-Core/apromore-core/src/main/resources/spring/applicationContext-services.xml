@@ -14,7 +14,6 @@
 
     <sws:annotation-driven />
 
-    <!--<sws:static-wsdl id="manager" location="/WEB-INF/wsdl/manager.wsdl"/>-->
     <sws:dynamic-wsdl id="manager" portTypeName="Manager" locationUri="/services/manager/" targetNamespace="http://www.apromore.org/manager/service_portal">
         <sws:xsd location="classpath:manager.xsd"/>
     </sws:dynamic-wsdl>

@@ -26,6 +26,7 @@
     <modules>
         <module>Apromore-Parent</module>
         <module>Apromore-Tools</module>
+        <module>Apromore-Testing-Tools</module>
         <module>Apromore-Schema</module>
         <module>Apromore-Clients</module>
         <module>Apromore-Core</module>
