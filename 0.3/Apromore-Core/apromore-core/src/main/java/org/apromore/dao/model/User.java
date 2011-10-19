@@ -176,7 +176,7 @@ public class User implements Serializable {
      * Set the editSessionMappings for the Object.
      * @param newEditSessionMappings The editSessionMappings to set.
      */
-    public void setEditSessionMappingses(final Set<EditSessionMapping> newEditSessionMappings) {
+    public void setEditSessionMappings(final Set<EditSessionMapping> newEditSessionMappings) {
         this.editSessionMappings = newEditSessionMappings;
     }
 
