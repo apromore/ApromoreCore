@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * Stores the process in apromore.
@@ -20,14 +24,16 @@ import java.io.Serializable;
  */
 @Entity
 @Table(name = "users",
-       uniqueConstraints = {@UniqueConstraint(columnNames = { "username" }) }
+       uniqueConstraints = {
+               @UniqueConstraint(columnNames = { "username" })
+       }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NamedQueries( {
         @NamedQuery(name = User.FIND_USER, query = "SELECT usr FROM User usr WHERE usr.username = :username"),
         @NamedQuery(name = User.FIND_ALL_USERS, query = "SELECT usr FROM User usr")
 })
-@Configurable("users")
+@Configurable("user")
 public class User implements Serializable {
 
     public static final String FIND_USER = "usr.findUser";
@@ -40,7 +46,12 @@ public class User implements Serializable {
     private String firstname;
     private String lastname;
     private String email;
-    private String password;
+    private String passwd;
+
+     private Set<Process> processes = new HashSet<Process>(0);
+     private Set<EditSessionMapping> editSessionMappings = new HashSet<EditSessionMapping>(0);
+     private Set<SearchHistory> searchHistories = new HashSet<SearchHistory>(0);
+
 
     /**
      * Default Constructor.
@@ -70,7 +81,7 @@ public class User implements Serializable {
      * Get the firstname for the Object.
      * @return Returns the firstname.
      */
-    @Column(name = "firstname", unique = true, nullable = true, length = 40)
+    @Column(name = "firstname", unique = false, nullable = true, length = 40)
     public String getFirstname() {
         return firstname;
     }
@@ -87,7 +98,7 @@ public class User implements Serializable {
      * Get the lastname for the Object.
      * @return Returns the lastname.
      */
-    @Column(name = "lastname", unique = true, nullable = true, length = 40)
+    @Column(name = "lastname", unique = false, nullable = true, length = 40)
     public String getLastname() {
         return lastname;
     }
@@ -121,16 +132,68 @@ public class User implements Serializable {
      * Get the password for the Object.
      * @return Returns the password.
      */
-    @Column(name = "passwd", unique = true, nullable = false, length = 80)
-    public String getPassword() {
-        return password;
+    @Column(name = "passwd", unique = false, nullable = false, length = 80)
+    public String getPasswd() {
+        return passwd;
     }
 
     /**
      * Set the password for the Object.
      * @param newPassword The password to set.
      */
-    public void setPassword(final String newPassword) {
-        this.password = newPassword;
+    public void setPasswd(final String newPassword) {
+        this.passwd = newPassword;
+    }
+
+
+    /**
+     * Get the processes for the Object.
+     * @return Returns the processes.
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    public Set<Process> getProcesses() {
+        return this.processes;
+    }
+
+    /**
+     * Set the processes for the Object.
+     * @param newProcesses The processes to set.
+     */
+    public void setProcesses(final Set<Process> newProcesses) {
+        this.processes = newProcesses;
+    }
+
+    /**
+     * Get the editSessionMappings for the Object.
+     * @return Returns the editSessionMappings.
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    public Set<EditSessionMapping> getEditSessionMappings() {
+        return this.editSessionMappings;
+    }
+
+    /**
+     * Set the editSessionMappings for the Object.
+     * @param newEditSessionMappings The editSessionMappings to set.
+     */
+    public void setEditSessionMappingses(final Set<EditSessionMapping> newEditSessionMappings) {
+        this.editSessionMappings = newEditSessionMappings;
+    }
+
+    /**
+     * Get the searchHistories for the Object.
+     * @return Returns the searchHistories.
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
+    public Set<SearchHistory> getSearchHistories() {
+        return this.searchHistories;
+    }
+
+    /**
+     * Set the searchHistories for the Object.
+     * @param newSearchHistories The searchHistories to set.
+     */
+    public void setSearchHistories(final Set<SearchHistory> newSearchHistories) {
+        this.searchHistories = newSearchHistories;
     }
 }

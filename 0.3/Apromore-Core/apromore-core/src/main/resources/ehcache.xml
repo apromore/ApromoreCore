@@ -14,7 +14,7 @@
     <cache name="org.hibernate.cache.StandardQueryCache" maxElementsInMemory="1000" eternal="false" timeToLiveSeconds="120" overflowToDisk="true" />
     <cache name="org.hibernate.cache.UpdateTimestampsCache" maxElementsInMemory="5000" eternal="true" overflowToDisk="true" />
 
-    <cache name="org.apromore.dao.model.Processes" maxElementsInMemory="200" eternal="false" overflowToDisk="true" timeToIdleSeconds="600"/>
+    <cache name="org.apromore.dao.model.Process" maxElementsInMemory="200" eternal="false" overflowToDisk="true" timeToIdleSeconds="600"/>
     <cache name="org.apromore.dao.model.User" maxElementsInMemory="100" eternal="false" overflowToDisk="true" timeToIdleSeconds="600"/>
 
     <defaultCache maxElementsInMemory="10000" eternal="false" overflowToDisk="true" timeToIdleSeconds="120" timeToLiveSeconds="120" diskPersistent="false" diskExpiryThreadIntervalSeconds="120"/>

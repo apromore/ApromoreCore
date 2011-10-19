@@ -147,7 +147,7 @@ public class UserDaoJpaUnitTest {
         usr.setFirstname("test");
         usr.setLastname("user");
         usr.setEmail("test@apromore.com");
-        usr.setPassword("password");
+        usr.setPasswd("password");
 
         return usr;
     }

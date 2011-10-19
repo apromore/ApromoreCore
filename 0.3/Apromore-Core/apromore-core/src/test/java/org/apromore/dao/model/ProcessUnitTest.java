@@ -4,14 +4,14 @@ import org.apromore.test.heuristic.JavaBeanHeuristic;
 import org.junit.Test;
 
 /**
- * Test the Processes POJO.
+ * Test the Process POJO.
  *  @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class ProcessesUnitTest {
+public class ProcessUnitTest {
 
     @Test
     public void testLikeJavaBean() {
-        JavaBeanHeuristic.assertLooksLikeJavaBean(Processes.class);
+        JavaBeanHeuristic.assertLooksLikeJavaBean(Process.class);
     }
 
 }
