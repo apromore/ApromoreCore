@@ -34,6 +34,12 @@
             <artifactId>jaxb-xjc</artifactId>
         </dependency>
 
+        <!-- Commons -->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+
         <!-- Hibernate dependencies -->
         <dependency>
             <groupId>org.hibernate.java-persistence</groupId>
