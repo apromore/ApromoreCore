@@ -1,0 +1,188 @@
+package org.apromore.dao.model;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.beans.factory.annotation.Configurable;
+
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+/**
+ * Stores the process in apromore.
+ *
+ * @author Cameron James
+ */
+@Entity
+@Table(name = "processes",
+       uniqueConstraints = {
+               @UniqueConstraint(columnNames = { "processId" })
+       }
+)
+@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@NamedQueries( {
+        @NamedQuery(name = Process.GET_PROCESSES, query = "SELECT pr FROM Process pr")
+})
+@Configurable("process")
+public class Process implements Serializable {
+
+    public static final String GET_PROCESSES = "pr.getProcesses";
+
+    /** Hard coded for interoperability. */
+    private static final long serialVersionUID = -2353656404638485548L;
+
+    private long processId;
+    private String name;
+    private String domain;
+
+    private User user;
+    private NativeType nativeType;
+
+    private Set<EditSessionMapping> editSessionMappings = new HashSet<EditSessionMapping>(0);
+    private Set<Canonical> canonicals = new HashSet<Canonical>(0);
+
+    /**
+     * Default constructor.
+     */
+    public Process() {
+        super();
+    }
+
+
+    /**
+     * Get the Primary Key for the Object.
+     * @return Returns the Id.
+     */
+    @Id @Column(name = "processId", unique = true, nullable = false, precision = 11, scale = 0)
+    public long getProcessId() {
+        return processId;
+    }
+
+    /**
+     * Set the Primary Key for the Object.
+     * @param newProcessId The id to set.
+     */
+    public void setProcessId(long newProcessId) {
+        this.processId = newProcessId;
+    }
+
+
+    /**
+     * Get the Name for the Object.
+     * @return Returns the name.
+     */
+    @Column(name = "name", unique = false, nullable = false, length = 100)
+    public String getName() {
+        return name;
+    }
+
+    /**
+     * Set the Name for the Object.
+     * @param newName The name to set.
+     */
+    public void setName(final String newName) {
+        this.name = newName;
+    }
+
+    /**
+     * Get the User for the Object.
+     * @return Returns the domain.
+     */
+    @Column(name = "domain", unique = false, nullable = false, length = 40)
+    public String getDomain() {
+        return domain;
+    }
+
+    /**
+     * Set the domain for the Object.
+     * @param newDomain The domain to set.
+     */
+    public void setDomain(final String newDomain) {
+        this.domain = newDomain;
+    }
+
+
+    /**
+     * Get the nativeType for the Object.
+     * @return Returns the nativeType.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "original_type")
+    public NativeType getNativeType() {
+        return this.nativeType;
+    }
+
+    /**
+     * Set the nativeType for the Object.
+     * @param newNativeType The nativeType to set.
+     */
+    public void setNativeType(final NativeType newNativeType) {
+        this.nativeType = newNativeType;
+    }
+
+    /**
+     * Get the nativeType for the Object.
+     * @return Returns the nativeType.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "owner")
+    public User getUser() {
+        return this.user;
+    }
+
+    /**
+     * Set the user for the Object.
+     * @param newUser The user to set.
+     */
+    public void setUser(final User newUser) {
+        this.user = newUser;
+    }
+
+
+    /**
+     * Get the editSessionMappings for the Object.
+     * @return Returns the editSessionMappings.
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "process")
+    public Set<EditSessionMapping> getEditSessionMappings() {
+        return this.editSessionMappings;
+    }
+
+    /**
+     * Set the editSessionMappings for the Object.
+     * @param newEditSessionMappings The editSessionMappings to set.
+     */
+    public void setEditSessionMappings(final Set<EditSessionMapping> newEditSessionMappings) {
+        this.editSessionMappings = newEditSessionMappings;
+    }
+
+    /**
+     * Get the canonicals for the Object.
+     * @return Returns the canonicals.
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "process")
+    public Set<Canonical> getCanonicals() {
+        return this.canonicals;
+    }
+
+    /**
+     * Set the canonicals for the Object.
+     * @param newCanonicals The canonicals to set.
+     */
+    public void setCanonicals(final Set<Canonical> newCanonicals) {
+        this.canonicals = newCanonicals;
+    }
+}

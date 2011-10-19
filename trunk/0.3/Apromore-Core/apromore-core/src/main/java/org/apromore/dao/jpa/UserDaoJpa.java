@@ -56,7 +56,7 @@ public class UserDaoJpa extends JpaTemplate implements UserDao {
 
 
     /**
-     * Save a Log Event.
+     * Save a User.
      * @see org.apromore.dao.UserDao#save(org.apromore.dao.model.User)
      * {@inheritDoc}
      */
@@ -66,7 +66,7 @@ public class UserDaoJpa extends JpaTemplate implements UserDao {
     }
 
     /**
-     * Update a Log Event.
+     * Update a User.
      * @see org.apromore.dao.UserDao#update(org.apromore.dao.model.User)
      * {@inheritDoc}
      */
@@ -76,7 +76,7 @@ public class UserDaoJpa extends JpaTemplate implements UserDao {
     }
 
     /**
-     * Remove the log event.
+     * Remove the User.
      * @see org.apromore.dao.UserDao#delete(org.apromore.dao.model.User)
      * {@inheritDoc}
      */
