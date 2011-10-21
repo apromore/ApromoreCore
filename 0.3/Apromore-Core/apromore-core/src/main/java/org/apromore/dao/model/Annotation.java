@@ -6,7 +6,10 @@ import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
@@ -38,12 +41,11 @@ public class Annotation implements Serializable {
     private static final long serialVersionUID = -2353376324638485548L;
 
     private int uri;
-    private int natve;
     private String canonical;
     private String name;
     private String contents;
 
-    // Foreign Key to Natives
+    private Native natve;
 
     /**
      * Default Constructor.
@@ -66,23 +68,6 @@ public class Annotation implements Serializable {
      */
     public void setUri(final int newUri) {
         this.uri = newUri;
-    }
-
-    /**
-     * Get the native format for the Object.
-     * @return Returns the native format.
-     */
-    @Column(name = "native", unique = true, nullable = true, precision = 11, scale = 0)
-    public int getNatve() {
-        return natve;
-    }
-
-    /**
-     * Set the native format for the Object.
-     * @param newNative The native format to set.
-     */
-    public void setNatve(final int newNative) {
-        this.natve = newNative;
     }
 
 
@@ -137,6 +122,25 @@ public class Annotation implements Serializable {
      */
     public void setContents(final String newContents) {
         this.contents = newContents;
+    }
+
+
+    /**
+     * Get the native format for the Object.
+     * @return Returns the native format.
+     */
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "native")
+    public Native getNatve() {
+        return this.natve;
+    }
+
+    /**
+     * Set the native format for the Object.
+     * @param newNative The native format to set.
+     */
+    public void setNatve(Native newNative) {
+        this.natve = newNative;
     }
 
 }

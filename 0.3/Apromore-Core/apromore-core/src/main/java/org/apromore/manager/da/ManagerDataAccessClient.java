@@ -127,69 +127,69 @@ public class ManagerDataAccessClient {
 
 	}
 
-	public UsernamesType ReadAllUsers() throws ExceptionAllUsers {
-		ReadAllUsersInputMsgType payload = new ReadAllUsersInputMsgType();
-		ReadAllUsersOutputMsgType res = manager.readAllUsers(payload);
-		ResultType result = res.getResult();
-		if (result.getCode() == -1) {
-			throw new ExceptionAllUsers (result.getMessage()); 
-		} else {
-			UsernamesType allUsersDA = res.getUsernames();
-			UsernamesType allUsersP = new UsernamesType();
-			allUsersP.getUsername().addAll(allUsersDA.getUsername());
-			return allUsersP;
-		}
-	}
+//	public UsernamesType ReadAllUsers() throws ExceptionAllUsers {
+//		ReadAllUsersInputMsgType payload = new ReadAllUsersInputMsgType();
+//		ReadAllUsersOutputMsgType res = manager.readAllUsers(payload);
+//		ResultType result = res.getResult();
+//		if (result.getCode() == -1) {
+//			throw new ExceptionAllUsers (result.getMessage());
+//		} else {
+//			UsernamesType allUsersDA = res.getUsernames();
+//			UsernamesType allUsersP = new UsernamesType();
+//			allUsersP.getUsername().addAll(allUsersDA.getUsername());
+//			return allUsersP;
+//		}
+//	}
 
 	
-	public void WriteUser(UserType userP) throws ExceptionWriteUser {
-		WriteUserInputMsgType payload = new WriteUserInputMsgType();
-		UserType userM = new UserType();
-		userM.setEmail(userP.getEmail());
-		userM.setFirstname(userP.getFirstname());
-		userM.setLastname(userP.getLastname());
-		userM.setPasswd(userP.getPasswd());
-		userM.setUsername(userP.getUsername());
-		for (int i=0;i<userP.getSearchHistories().size();i++) {
-			SearchHistoriesType sht = new SearchHistoriesType();
-			sht.setNum(userP.getSearchHistories().get(i).getNum());
-			sht.setSearch(userP.getSearchHistories().get(i).getSearch());
-			userM.getSearchHistories().add(sht);
-		}
-		payload.setUser(userM);
+//	public void WriteUser(UserType userP) throws ExceptionWriteUser {
+//		WriteUserInputMsgType payload = new WriteUserInputMsgType();
+//		UserType userM = new UserType();
+//		userM.setEmail(userP.getEmail());
+//		userM.setFirstname(userP.getFirstname());
+//		userM.setLastname(userP.getLastname());
+//		userM.setPasswd(userP.getPasswd());
+//		userM.setUsername(userP.getUsername());
+//		for (int i=0;i<userP.getSearchHistories().size();i++) {
+//			SearchHistoriesType sht = new SearchHistoriesType();
+//			sht.setNum(userP.getSearchHistories().get(i).getNum());
+//			sht.setSearch(userP.getSearchHistories().get(i).getSearch());
+//			userM.getSearchHistories().add(sht);
+//		}
+//		payload.setUser(userM);
+//
+//		WriteUserOutputMsgType res = manager.writeUser(payload);
+//		ResultType result = res.getResult();
+//		if (result.getCode() == -1) {
+//			throw new ExceptionWriteUser (result.getMessage());
+//		}
+//	}
 
-		WriteUserOutputMsgType res = manager.writeUser(payload);
-		ResultType result = res.getResult();
-		if (result.getCode() == -1) {
-			throw new ExceptionWriteUser (result.getMessage()); 
-		}
-	}
-
-	public UserType ReadUser(String username) throws ExceptionReadUser {
-		ReadUserInputMsgType payload = new ReadUserInputMsgType();
-		payload.setUsername(username);
-		ReadUserOutputMsgType res = manager.readUser(payload);
-		ResultType result = res.getResult();
-
-		if (result.getCode() == -1) {
-			throw new ExceptionReadUser (result.getMessage()); 
-		} else {
-			UserType user = new UserType();
-			user.setEmail(res.getUser().getEmail());
-			user.setFirstname(res.getUser().getFirstname());
-			user.setLastname(res.getUser().getLastname());
-			user.setPasswd(res.getUser().getPasswd());
-			user.setUsername(res.getUser().getUsername());
-			for (int i=0; i<res.getUser().getSearchHistories().size(); i++) {
-				SearchHistoriesType sht = new SearchHistoriesType();
-				sht.setNum(res.getUser().getSearchHistories().get(i).getNum());
-				sht.setSearch(res.getUser().getSearchHistories().get(i).getSearch());
-				user.getSearchHistories().add(sht);
-			}
-			return user;
-		}
-
-	}
+//	public UserType ReadUser(String username) throws ExceptionReadUser {
+//		ReadUserInputMsgType payload = new ReadUserInputMsgType();
+//		payload.setUsername(username);
+//		ReadUserOutputMsgType res = manager.readUser(payload);
+//		ResultType result = res.getResult();
+//
+//		if (result.getCode() == -1) {
+//			throw new ExceptionReadUser (result.getMessage());
+//		} else {
+//			UserType user = new UserType();
+//			user.setEmail(res.getUser().getEmail());
+//			user.setFirstname(res.getUser().getFirstname());
+//			user.setLastname(res.getUser().getLastname());
+//			user.setPasswd(res.getUser().getPasswd());
+//			user.setUsername(res.getUser().getUsername());
+//			for (int i=0; i<res.getUser().getSearchHistories().size(); i++) {
+//				SearchHistoriesType sht = new SearchHistoriesType();
+//				sht.setNum(res.getUser().getSearchHistories().get(i).getNum());
+//				sht.setSearch(res.getUser().getSearchHistories().get(i).getSearch());
+//				user.getSearchHistories().add(sht);
+//			}
+//			return user;
+//		}
+//
+//	}
 
 
 	public ProcessSummariesType ReadProcessSummaries(String searchExpression) throws ExceptionReadProcessSummaries {

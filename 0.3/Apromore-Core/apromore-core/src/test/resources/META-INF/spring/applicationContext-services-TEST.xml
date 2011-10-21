@@ -73,4 +73,6 @@
     <bean id="canoniserManager" class="org.apromore.canoniser.service.CanoniserManagerImpl" p:client-ref="canoniserDataAccessClient" />
     <bean id="toolboxManager" class="org.apromore.toolbox.service.ToolboxManagerImpl" p:client-ref="toolboxDataAccessClient" />
 
+    <bean id="userService" class="org.apromore.service.impl.UserServiceImpl" />
+
 </beans>
