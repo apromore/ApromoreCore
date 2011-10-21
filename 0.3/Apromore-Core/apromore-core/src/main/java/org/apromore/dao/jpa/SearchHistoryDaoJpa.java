@@ -30,7 +30,7 @@ public class SearchHistoryDaoJpa extends JpaTemplate implements SearchHistoryDao
      * {@inheritDoc}
      */
     @Override
-    public final void save(SearchHistory searchHistory) {
+    public void save(final SearchHistory searchHistory) {
         persist(searchHistory);
     }
 
@@ -40,7 +40,7 @@ public class SearchHistoryDaoJpa extends JpaTemplate implements SearchHistoryDao
      * {@inheritDoc}
      */
     @Override
-    public final void update(SearchHistory searchHistory) {
+    public void update(final SearchHistory searchHistory) {
         merge(searchHistory);
     }
 
@@ -50,7 +50,7 @@ public class SearchHistoryDaoJpa extends JpaTemplate implements SearchHistoryDao
      * {@inheritDoc}
      */
     @Override
-    public void delete(SearchHistory searchHistory) {
+    public void delete(final SearchHistory searchHistory) {
         remove(searchHistory);
     }
 

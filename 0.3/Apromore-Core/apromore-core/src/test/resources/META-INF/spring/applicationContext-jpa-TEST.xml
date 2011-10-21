@@ -15,8 +15,9 @@
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
-    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource" destroy-method="close"
-          p:driverClass="${jdbc.driverClassName}" p:jdbcUrl="${jdbc.url}" p:user="${jdbc.username}" p:password="${jdbc.password}"/>
+    <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
+          p:driverClassName="${jdbc.driverClassName}" p:url="${jdbc.url}" p:username="${jdbc.username}"
+          p:password="${jdbc.password}"/>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
           p:persistence-xml-location="classpath:META-INF/persistence.xml" p:data-source-ref="dataSource">

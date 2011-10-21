@@ -49,6 +49,7 @@ public class EditSessionMapping implements Serializable {
     private String lastUpdate;
 
     private User user;
+    private Canonical canonical;
     private Process process;
 
 
@@ -58,8 +59,8 @@ public class EditSessionMapping implements Serializable {
     public EditSessionMapping() { }
 
 
-    @Id @GeneratedValue(strategy=IDENTITY)
-    @Column(name="code", unique=true, nullable=false)
+    @Id @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "code", unique = true, nullable = false)
     public Integer getCode() {
         return this.code;
     }
@@ -68,8 +69,8 @@ public class EditSessionMapping implements Serializable {
         this.code = code;
     }
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="username")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "username")
     public User getUser() {
         return this.user;
     }
@@ -78,8 +79,8 @@ public class EditSessionMapping implements Serializable {
         this.user = user;
     }
 
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="processId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "processId")
     public Process getProcess() {
         return this.process;
     }
@@ -88,8 +89,18 @@ public class EditSessionMapping implements Serializable {
         this.process = process;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "uri", nullable = false)
+    public Canonical getCanonical() {
+        return this.canonical;
+    }
+
+    public void setCanonical(final Canonical newCanonical) {
+        this.canonical = newCanonical;
+    }
+
     @Temporal(TemporalType.TIMESTAMP)
-    @Column(name="recordTime", length=19)
+    @Column(name = "recordTime", length = 19)
     public Date getRecordTime() {
         return this.recordTime;
     }
@@ -98,7 +109,7 @@ public class EditSessionMapping implements Serializable {
         this.recordTime = recordTime;
     }
     
-    @Column(name="version_name", length=40)
+    @Column(name = "version_name", length = 40)
     public String getVersionName() {
         return this.versionName;
     }
@@ -107,7 +118,7 @@ public class EditSessionMapping implements Serializable {
         this.versionName = versionName;
     }
     
-    @Column(name="nat_type", length=20)
+    @Column(name = "nat_type", length = 20)
     public String getNatType() {
         return this.natType;
     }
@@ -116,7 +127,7 @@ public class EditSessionMapping implements Serializable {
         this.natType = natType;
     }
     
-    @Column(name="annotation", length=40)
+    @Column(name = "annotation", length = 40)
     public String getAnnotation() {
         return this.annotation;
     }
@@ -125,7 +136,7 @@ public class EditSessionMapping implements Serializable {
         this.annotation = annotation;
     }
     
-    @Column(name="remove_fake_events")
+    @Column(name = "remove_fake_events")
     public Boolean getRemoveFakeEvents() {
         return this.removeFakeEvents;
     }
@@ -134,7 +145,7 @@ public class EditSessionMapping implements Serializable {
         this.removeFakeEvents = removeFakeEvents;
     }
     
-    @Column(name="creation_date", length=35)
+    @Column(name = "creation_date", length = 35)
     public String getCreationDate() {
         return this.creationDate;
     }
@@ -151,9 +162,6 @@ public class EditSessionMapping implements Serializable {
     public void setLastUpdate(String lastUpdate) {
         this.lastUpdate = lastUpdate;
     }
-
-
-
 
 }
 

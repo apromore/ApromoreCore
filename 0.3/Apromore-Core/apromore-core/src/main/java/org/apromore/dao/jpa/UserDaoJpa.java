@@ -61,7 +61,7 @@ public class UserDaoJpa extends JpaTemplate implements UserDao {
      * {@inheritDoc}
      */
     @Override
-    public final void save(User user) {
+    public void save(final User user) {
         persist(user);
     }
 
@@ -71,7 +71,7 @@ public class UserDaoJpa extends JpaTemplate implements UserDao {
      * {@inheritDoc}
      */
     @Override
-    public final void update(User user) {
+    public void update(final User user) {
         merge(user);
     }
 
@@ -81,7 +81,7 @@ public class UserDaoJpa extends JpaTemplate implements UserDao {
      * {@inheritDoc}
      */
     @Override
-    public void delete(User user) {
+    public void delete(final User user) {
         remove(user);
     }
 

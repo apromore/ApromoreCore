@@ -67,10 +67,19 @@
 
     <!-- ************************** Non WebServices ************************** -->
 
-    <bean id="canoniserDataAccessClient" class="org.apromore.canoniser.da.CanoniserDataAccessClient"  />
-    <bean id="toolboxDataAccessClient" class="org.apromore.toolbox.da.ToolboxDataAccessClient"  />
-    <bean id="managerDataAccessClient" class="org.apromore.manager.da.ManagerDataAccessClient"  />
-    <bean id="managerCanoniserClient" class="org.apromore.manager.canoniser.ManagerCanoniserClient"/>
-    <bean id="managerToolboxClient" class="org.apromore.manager.toolbox.ManagerToolboxClient" />
+    <bean id="dataAccessCanoniserManager" class="org.apromore.dao.service.DataAccessCanoniserManagerImpl" />
+    <bean id="dataAccessManagerManager" class="org.apromore.dao.service.DataAccessManagerManagerImpl" />
+    <bean id="dataAccessToolboxManager" class="org.apromore.dao.service.DataAccessToolboxManagerImpl" />
+
+    <bean id="canoniserDataAccessClient" class="org.apromore.canoniser.da.CanoniserDataAccessClient" p:manager-ref="dataAccessCanoniserManager" />
+    <bean id="toolboxDataAccessClient" class="org.apromore.toolbox.da.ToolboxDataAccessClient" p:manager-ref="dataAccessToolboxManager" />
+    <bean id="managerDataAccessClient" class="org.apromore.manager.da.ManagerDataAccessClient" p:manager-ref="dataAccessManagerManager" />
+    <bean id="managerCanoniserClient" class="org.apromore.manager.canoniser.ManagerCanoniserClient" p:manager-ref="canoniserManager" />
+    <bean id="managerToolboxClient" class="org.apromore.manager.toolbox.ManagerToolboxClient" p:manager-ref="toolboxManager" />
+
+    <bean id="canoniserManager" class="org.apromore.canoniser.service.CanoniserManagerImpl" p:client-ref="canoniserDataAccessClient" />
+    <bean id="toolboxManager" class="org.apromore.toolbox.service.ToolboxManagerImpl" p:client-ref="toolboxDataAccessClient" />
+
+    <bean id="userService" class="org.apromore.service.impl.UserServiceImpl" />
 
 </beans>
