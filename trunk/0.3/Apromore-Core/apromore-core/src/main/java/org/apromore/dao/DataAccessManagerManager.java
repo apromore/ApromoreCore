@@ -34,7 +34,7 @@ public interface DataAccessManagerManager {
 
     public DeleteProcessVersionsOutputMsgType deleteProcessVersions(DeleteProcessVersionsInputMsgType payload);
 
-    public WriteUserOutputMsgType writeUser(WriteUserInputMsgType payload);
+//    public WriteUserOutputMsgType writeUser(WriteUserInputMsgType payload);
 
     public ReadNativeTypesOutputMsgType readNativeTypes(ReadNativeTypesInputMsgType payload);
 
@@ -46,11 +46,11 @@ public interface DataAccessManagerManager {
 
     public WriteEditSessionOutputMsgType writeEditSession(WriteEditSessionInputMsgType payload);
 
-    public ReadAllUsersOutputMsgType readAllUsers(ReadAllUsersInputMsgType payload);
+//    public ReadAllUsersOutputMsgType readAllUsers(ReadAllUsersInputMsgType payload);
 
     public ReadCanonicalAnfOutputMsgType readCanonicalAnf(ReadCanonicalAnfInputMsgType payload);
 
-    public ReadUserOutputMsgType readUser(ReadUserInputMsgType payload);
+//    public ReadUserOutputMsgType readUser(ReadUserInputMsgType payload);
 
     public ReadFormatOutputMsgType readFormat(ReadFormatInputMsgType payload);
 

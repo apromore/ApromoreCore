@@ -135,7 +135,7 @@ public class Native implements Serializable {
      * Get the annotations for the Object.
      * @return Returns the annotations.
      */
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "natives")
+	@OneToMany(fetch = FetchType.LAZY, mappedBy = "natve")
 	public Set<Annotation> getAnnotations() {
 		return this.annotations;
 	}

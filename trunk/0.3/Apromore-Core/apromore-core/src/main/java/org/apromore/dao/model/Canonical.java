@@ -55,11 +55,12 @@ public class Canonical implements Serializable {
 
     private Process process;
 	private Set<Native> natives = new HashSet<Native>(0);
+    private Set<EditSessionMapping> editSessionMappings = new HashSet<EditSessionMapping>(0);
 
 	private Set<Canonical> canonicalsForUriSource = new HashSet<Canonical>(0);
 	private Set<Canonical> canonicalsForUriMerged = new HashSet<Canonical>(0);
-//	private Set<Canonical> canonicalsForFkDerivedVersion1 = new HashSet<Canonical>(0);
-//	private Set<Canonical> canonicalsForFkDerivedVersion2 = new HashSet<Canonical>(0);
+    private Set<Canonical> canonicalsForUriDerivedVersion = new HashSet<Canonical>(0);
+    private Set<Canonical> canonicalsForUriSourceVersion = new HashSet<Canonical>(0);
 
 
     /**
@@ -195,7 +196,7 @@ public class Canonical implements Serializable {
      * Get the process for the Object.
      * @return Returns the process.
      */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "canonicals")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "canonical")
 	public Set<Native> getNatives() {
 		return this.natives;
 	}
@@ -203,6 +204,16 @@ public class Canonical implements Serializable {
 	public void setNatives(final Set<Native> newNatives) {
 		this.natives = newNatives;
 	}
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "canonical")
+    public Set<EditSessionMapping> getEditSessionMappings() {
+        return this.editSessionMappings;
+    }
+
+    public void setEditSessionMappings(final Set<EditSessionMapping> newEditSessionMappings) {
+        this.editSessionMappings = newEditSessionMappings;
+    }
+
 
     /**
      * Get the process for the Object.
@@ -239,30 +250,37 @@ public class Canonical implements Serializable {
 	}
 
 
-//    /**
-//     * Get the process for the Object.
-//     * @return Returns the process.
-//     */
-//    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "unresolved")
-//	public Set<Canonical> getCanonicalsForFkDerivedVersion1() {
-//		return this.canonicalsForFkDerivedVersion1;
-//	}
-//
-//	public void setCanonicalsForFkDerivedVersion1(final Set<Canonical> newCanonicalsForFkDerivedVersion1) {
-//		this.canonicalsForFkDerivedVersion1 = newCanonicalsForFkDerivedVersion1;
-//	}
-//
-//    /**
-//     * Get the process for the Object.
-//     * @return Returns the process.
-//     */
-//    @ManyToMany(fetch = FetchType.LAZY, mappedBy = "unresolved")
-//	public Set<Canonical> getCanonicalsForFkDerivedVersion2() {
-//		return this.canonicalsForFkDerivedVersion2;
-//	}
-//
-//	public void setCanonicalsForFkDerivedVersion2(final  Set<Canonical> newCanonicalsForFkDerivedVersion2) {
-//		this.canonicalsForFkDerivedVersion2 = newCanonicalsForFkDerivedVersion2;
-//	}
+    /**
+     * Get the Source Version Canonicals for the Object.
+     * @return Returns the Source Version Canonicals.
+     */
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "derived_versions",
+            joinColumns = { @JoinColumn(name = "uri_derived_version", nullable = false, updatable = false) },
+            inverseJoinColumns = { @JoinColumn(name = "uri_source_version", nullable = false, updatable = false) }
+    )
+    public Set<Canonical> getCanonicalsForUriSourceVersion() {
+        return this.canonicalsForUriSourceVersion;
+    }
+
+    public void setCanonicalsForUriSourceVersion(final Set<Canonical> newCanonicalsForUriSourceVersion) {
+        this.canonicalsForUriSourceVersion = newCanonicalsForUriSourceVersion;
+    }
+
+    /**
+     * Get the Derived Version Canonicals for the Object.
+     * @return Returns the Derived Version Canonicals.
+     */
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "derived_versions",
+            joinColumns = { @JoinColumn(name = "uri_source_version", nullable = false, updatable = false) },
+            inverseJoinColumns = { @JoinColumn(name = "uri_derived_version", nullable = false, updatable = false) })
+    public Set<Canonical> getCanonicalsForUriDerivedVersion() {
+        return this.canonicalsForUriDerivedVersion;
+    }
+
+    public void setCanonicalsForUriDerivedVersion(final Set<Canonical> newCanonicalsForUriDerivedVersion) {
+        this.canonicalsForUriDerivedVersion = newCanonicalsForUriDerivedVersion;
+    }
 
 }

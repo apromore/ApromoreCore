@@ -2,6 +2,8 @@ package org.apromore.manager.service;
 
 import de.epml.TypeEPML;
 import org.apromore.common.Constants;
+import org.apromore.mapper.UserMapper;
+import org.apromore.dao.model.User;
 import org.apromore.exception.ExceptionCanoniseVersion;
 import org.apromore.exception.ExceptionDeCanonise;
 import org.apromore.exception.ExceptionReadCanonicalAnf;
@@ -58,6 +60,7 @@ import org.apromore.model.WriteEditSessionInputMsgType;
 import org.apromore.model.WriteEditSessionOutputMsgType;
 import org.apromore.model.WriteUserInputMsgType;
 import org.apromore.model.WriteUserOutputMsgType;
+import org.apromore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -103,6 +106,9 @@ public class ManagerPortalEndpoint {
     private static final Logger LOG = Logger.getLogger(ManagerPortalEndpoint.class.getName());
 
     private static final String NAMESPACE = "urn:qut-edu-au:schema:apromore:manager";
+
+    @Autowired
+    private UserService userSrv;
 
     @Autowired
     private ManagerDataAccessClient daClient;
@@ -260,7 +266,7 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         try {
-            UsernamesType allUsers = daClient.ReadAllUsers();
+            UsernamesType allUsers = UserMapper.convertUsernameTypes(userSrv.findAllUsers());
             res.setUsernames(allUsers);
             result.setCode(0);
             result.setMessage("");
@@ -562,9 +568,9 @@ public class ManagerPortalEndpoint {
         WriteUserOutputMsgType res = new WriteUserOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
-        UserType user = payload.getUser();
         try {
-            daClient.WriteUser(user);
+            userSrv.writeUser(UserMapper.convertFromUserType(payload.getUser()));
+            //daClient.WriteUser(user);
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {
@@ -635,7 +641,8 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         try {
-            UserType user = daClient.ReadUser(payload.getUsername());
+            UserType user = UserMapper.convertUserTypes(userSrv.findUser(payload.getUsername()));
+//            UserType user = daClient.ReadUser(payload.getUsername());
             result.setCode(0);
             result.setMessage("");
             res.setUser(user);
@@ -813,5 +820,9 @@ public class ManagerPortalEndpoint {
 
     public void setCaClient(ManagerCanoniserClient caClient) {
         this.caClient = caClient;
+    }
+
+    public void setUserSrv(UserService userService) {
+        this.userSrv = userService;
     }
 }
