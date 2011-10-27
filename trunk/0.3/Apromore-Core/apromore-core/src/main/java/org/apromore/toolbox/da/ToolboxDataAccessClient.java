@@ -32,7 +32,6 @@ import java.util.Map.Entry;
 
 public class ToolboxDataAccessClient {
 
-    @Autowired
 	private DataAccessToolboxManager manager;
 
 	public List<CanonicalType> ReadCanonicals(ProcessVersionsType ids, Boolean latestVersions) throws ExceptionReadCanonicals {

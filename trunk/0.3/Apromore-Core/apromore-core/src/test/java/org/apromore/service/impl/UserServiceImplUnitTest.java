@@ -46,7 +46,7 @@ public class UserServiceImplUnitTest {
     public final void setUp() throws Exception {
         usrServiceImpl = new UserServiceImpl();
         usrDAOJpa = createMock(UserDaoJpa.class);
-        usrServiceImpl.setUserDAO(usrDAOJpa);
+        usrServiceImpl.setUserDao(usrDAOJpa);
     }
 
     @Test

@@ -19,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 public class ManagerToolboxClient {
 
-    @Autowired
     private ToolboxManager manager;
 
 

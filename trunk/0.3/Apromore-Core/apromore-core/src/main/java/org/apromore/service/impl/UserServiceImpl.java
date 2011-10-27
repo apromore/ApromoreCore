@@ -63,7 +63,7 @@ public class UserServiceImpl implements UserService {
      * Set the User DAO object for this class. Mainly for spring tests.
      * @param usrDAOJpa the user Dao.
      */
-    public void setUserDAO(UserDaoJpa usrDAOJpa) {
+    public void setUserDao(UserDaoJpa usrDAOJpa) {
         usrDao = usrDAOJpa;
     }
 }

@@ -392,6 +392,11 @@
             </dependency>
             <dependency>
                 <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-c3p0</artifactId>
+                 <version>${hibernate.c3p0.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-ehcache</artifactId>
                 <version>${hibernate.ehcache.version}</version>
             </dependency>

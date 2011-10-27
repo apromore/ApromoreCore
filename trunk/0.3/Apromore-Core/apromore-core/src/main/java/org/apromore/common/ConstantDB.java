@@ -2,11 +2,8 @@ package org.apromore.common;
 
 public final class ConstantDB {
 
-	public static final String CONTEXT = "java:comp/env/jdbc/ApromoreDB";
-
 	public static final String TABLE_CANONICALS = "canonicals";
 	public static final String TABLE_ANNOTATIONS = "annotations";
-    public static final String TABLE_VERSIONS = "process_versions";
 
 	public static final String ATTR_NATIVE = "native";
 	public static final String ATTR_PROCESSID = "processId";
@@ -32,18 +29,8 @@ public final class ConstantDB {
 	
 	public static final String TABLE_NATIVE_TYPES = "native_types";
 	public static final String ATTR_EXTENSION = "extension";
-	
-	public static final String TABLE_SEARCH_HISTORIES = "search_histories";
-	public static final String ATTR_SEARCH = "search";
-	public static final String ATTR_NUM = "num" ;
 
-	public static final String TABLE_USERS = "users";
-    public static final String ATTR_USERID = "userId" ;
-	public static final String ATTR_LASTNAME = "lastname" ;
-	public static final String ATTR_FIRSTNAME = "firstname" ;
-	public static final String ATTR_EMAIL = "email" ;
 	public static final String ATTR_USERNAME = "username" ;
-	public static final String ATTR_PASSWD = "passwd" ;	
 
 	public static final String TABLE_EDIT_SESSIONS = "edit_session_mappings";
 	public static final String ATTR_CODE = "code";
@@ -55,8 +42,6 @@ public final class ConstantDB {
 
 	public static final String VIEW_KEYWORDS = "keywords";
 	public static final String ATTR_WORD = "word";
-	
-	public static final String VIEW_HEAD_VERSIONS = "head_versions";
 
 	public static final String TABLE_TEMP_VERSIONS = "temp_versions";
 	public static final String ATTR_RECORD_TIME = "recordTime";
@@ -66,13 +51,9 @@ public final class ConstantDB {
 	public static final String ATTR_PRE_VERSION_NAME = "pre_version";
 	public static final String ATTR_NEW_VERSION_NAME = "new_version";
 
-	public static final String TABLE_HEAD_VERSIONS = "head_versions";
-
 	public static final String TABLE_MERGED_VERSIONS = " merged_versions";
 	public static final String ATTR_URI_MERGED = "uri_merged";
 	public static final String ATTR_URI_SOURCE = "uri_source";
-	
-	
 	
 
 	public static final int ERROR_UNIQUE = 1062;

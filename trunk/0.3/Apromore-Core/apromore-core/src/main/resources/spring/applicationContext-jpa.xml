@@ -1,20 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
        xmlns:p="http://www.springframework.org/schema/p" xmlns:tx="http://www.springframework.org/schema/tx"
-       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
-            http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context.xsd
             http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
 
-        <!-- Hibernate Config -->
+    <!-- Hibernate Config -->
     <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
 
-    <bean id="dbcpDataSource" class="com.mysql.jdbc.jdbc2.optional.MysqlConnectionPoolDataSource" destroy-method="close"
-            p:connectionCachingEnabled="true" p:URL="${jdbc.url}" p:user="${jdbc.username}"
+    <bean id="dataSource" class="com.mchange.v2.c3p0.ComboPooledDataSource" destroy-method="close"
+            p:driverClass="${jdbc.driver}" p:jdbcUrl="${jdbc.url}" p:user="${jdbc.username}"
             p:password="${jdbc.password}">
-        <property name="connectionCacheProperties">
+        <property name="properties">
             <props>
                 <prop key="InitialLimit">1</prop>                 <!-- Initial Pool Size -->
                 <prop key="MinLimit">1</prop>                     <!-- Minimum Pool Size -->
@@ -30,7 +28,7 @@
     </bean>
 
     <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean"
-          p:persistence-xml-location="classpath:META-INF/persistence.xml" p:data-source-ref="dbcpDataSource">
+          p:persistence-xml-location="classpath:META-INF/persistence.xml" p:data-source-ref="dataSource">
         <property name="jpaVendorAdapter">
             <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"
                   p:databasePlatform="${jpa.database}" p:showSql="${jpa.showSql}" p:generateDdl="false"/>
@@ -62,6 +60,12 @@
 
     <bean id="abstractDao" abstract="true" p:entityManagerFactory-ref="entityManagerFactory"/>
 
-    <bean id="UserDaoJpa" class="org.apromore.dao.jpa.UserDaoJpa" parent="abstractDao" />
+    <bean id="AnnotationDao" class="org.apromore.dao.jpa.AnnotationDaoJpa" parent="abstractDao" />
+    <bean id="CanonicalDao" class="org.apromore.dao.jpa.CanonicalDaoJpa" parent="abstractDao" />
+    <bean id="NativeDao" class="org.apromore.dao.jpa.NativeDaoJpa" parent="abstractDao" />
+    <bean id="NativeTypeDao" class="org.apromore.dao.jpa.NativeTypeDaoJpa" parent="abstractDao" />
+    <bean id="ProcessDao" class="org.apromore.dao.jpa.ProcessDaoJpa" parent="abstractDao" />
+    <bean id="SearchHistoryDao" class="org.apromore.dao.jpa.SearchHistoryDaoJpa" parent="abstractDao" />
+    <bean id="UserDao" class="org.apromore.dao.jpa.UserDaoJpa" parent="abstractDao" />
 
 </beans>

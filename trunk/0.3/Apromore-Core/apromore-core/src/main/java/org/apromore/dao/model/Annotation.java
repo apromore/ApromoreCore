@@ -4,11 +4,13 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.persistence.Basic;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
@@ -30,12 +32,12 @@ import java.io.Serializable;
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NamedQueries( {
-        @NamedQuery(name = Annotation.FIND_ALL, query = "SELECT usr FROM User usr WHERE usr.username = :username")
+        @NamedQuery(name = Annotation.FIND_BY_URI, query = "SELECT a FROM Annotation a WHERE a.natve.uri = :uri")
 })
 @Configurable("annotation")
 public class Annotation implements Serializable {
 
-    public static final String FIND_ALL = "ann.findAll";
+    public static final String FIND_BY_URI = "annotation.findByUrl";
 
     /** Hard coded for interoperability. */
     private static final long serialVersionUID = -2353376324638485548L;
@@ -43,7 +45,7 @@ public class Annotation implements Serializable {
     private int uri;
     private String canonical;
     private String name;
-    private String contents;
+    private String content;
 
     private Native natve;
 
@@ -111,17 +113,18 @@ public class Annotation implements Serializable {
      * Get the contents for the Object.
      * @return Returns the contents.
      */
-    @Column(name = "contents", unique = false, nullable = true, length = 4000)
-    public String getContents() {
-        return contents;
+    @Lob
+    @Column(name = "content", nullable = true)
+    public String getContent() {
+        return content;
     }
 
     /**
      * Set the contents for the Object.
-     * @param newContents The contents to set.
+     * @param newContent The contents to set.
      */
-    public void setContents(final String newContents) {
-        this.contents = newContents;
+    public void setContent(final String newContent) {
+        this.content = newContent;
     }
 
 
