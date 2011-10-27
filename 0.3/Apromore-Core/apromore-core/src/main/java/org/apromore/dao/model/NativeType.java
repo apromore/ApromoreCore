@@ -1,7 +1,9 @@
 package org.apromore.dao.model;
 
+import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIConversion;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.omg.CORBA.PRIVATE_MEMBER;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.Column;
@@ -9,6 +11,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
 import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import java.io.Serializable;
@@ -24,11 +27,12 @@ import java.util.Set;
 @Table(name = "native_types")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NamedQueries( {
-//        @NamedQuery(name = User.FIND_USER, query = "SELECT usr FROM User usr WHERE usr.username = :username"),
-//        @NamedQuery(name = User.FIND_ALL_USERS, query = "SELECT usr FROM User usr")
+    @NamedQuery(name = NativeType.FIND_FORMATS, query = "SELECT n FROM NativeType n")
 })
 @Configurable("nativeTypes")
 public class NativeType implements Serializable {
+
+    public final static String FIND_FORMATS = "nativeType.getFormats";
 
     /** Hard coded for interoperability. */
     private static final long serialVersionUID = -2353311738938485548L;

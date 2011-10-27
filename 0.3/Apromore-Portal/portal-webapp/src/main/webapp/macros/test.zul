@@ -1,9 +1,0 @@
-<window>
-	<borderlayout height="500px">
-		<north title="north" size="20%" splittable="true" collapsible="true" />
-		<east title="east" size="20%" splittable="true" collapsible="true" />
-		<center title="center"  border="normal" />
-		<west title="west" size="20%" splittable="true" collapsible="true" />
-		<south title="south" size="30%" border="normal" splittable="true" collapsible="true" />
-	</borderlayout>
-</window>

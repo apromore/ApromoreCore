@@ -52,6 +52,12 @@
 
     <bean id="abstractDao" abstract="true" p:entityManagerFactory-ref="entityManagerFactory" />
 
-    <bean id="UserDaoJpa" class="org.apromore.dao.jpa.UserDaoJpa" parent="abstractDao" />
+    <bean id="AnnotationDao" class="org.apromore.dao.jpa.AnnotationDaoJpa" parent="abstractDao" />
+    <bean id="CanonicalDao" class="org.apromore.dao.jpa.CanonicalDaoJpa" parent="abstractDao" />
+    <bean id="NativeDao" class="org.apromore.dao.jpa.NativeDaoJpa" parent="abstractDao" />
+    <bean id="NativeTypeDao" class="org.apromore.dao.jpa.NativeTypeDaoJpa" parent="abstractDao" />
+    <bean id="ProcessDao" class="org.apromore.dao.jpa.ProcessDaoJpa" parent="abstractDao" />
+    <bean id="SearchHistoryDao" class="org.apromore.dao.jpa.SearchHistoryDaoJpa" parent="abstractDao" />
+    <bean id="UserDao" class="org.apromore.dao.jpa.UserDaoJpa" parent="abstractDao" />
 
 </beans>

@@ -3,9 +3,9 @@
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence">
 
     <persistence-unit name="TESTApromore" transaction-type="RESOURCE_LOCAL">
-        <properties>
-            <property name="hibernate.hbm2ddl.auto" value="create-drop"/>
-        </properties>
+        <!--<properties>-->
+            <!--<property name="hibernate.hbm2ddl.auto" value="create-drop"/>-->
+        <!--</properties>-->
 
         <!-- Tables -->
         <class>org.apromore.dao.model.Annotation</class>
@@ -20,6 +20,10 @@
         <class>org.apromore.dao.model.User</class>
 
         <!-- Views -->
+        <class>org.apromore.dao.model.HeadVersion</class>
+        <class>org.apromore.dao.model.HeadVersionId</class>
+        <class>org.apromore.dao.model.HeadVersion0</class>
+        <class>org.apromore.dao.model.HeadVersion0Id</class>
         <class>org.apromore.dao.model.Keyword</class>
         <class>org.apromore.dao.model.KeywordId</class>
         <class>org.apromore.dao.model.ProcessRanking</class>

@@ -2,6 +2,8 @@ package org.apromore.manager.service;
 
 import de.epml.TypeEPML;
 import org.apromore.common.Constants;
+import org.apromore.mapper.DomainMapper;
+import org.apromore.mapper.NativeTypeMapper;
 import org.apromore.mapper.UserMapper;
 import org.apromore.dao.model.User;
 import org.apromore.exception.ExceptionCanoniseVersion;
@@ -60,6 +62,9 @@ import org.apromore.model.WriteEditSessionInputMsgType;
 import org.apromore.model.WriteEditSessionOutputMsgType;
 import org.apromore.model.WriteUserInputMsgType;
 import org.apromore.model.WriteUserOutputMsgType;
+import org.apromore.service.DomainService;
+import org.apromore.service.FormatService;
+import org.apromore.service.ProcessService;
 import org.apromore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
@@ -109,6 +114,12 @@ public class ManagerPortalEndpoint {
 
     @Autowired
     private UserService userSrv;
+    @Autowired
+    private ProcessService procSrv;
+    @Autowired
+    private FormatService frmSrv;
+    @Autowired
+    private DomainService domSrv;
 
     @Autowired
     private ManagerDataAccessClient daClient;
@@ -116,6 +127,7 @@ public class ManagerPortalEndpoint {
     private ManagerCanoniserClient caClient;
     @Autowired
     private ManagerToolboxClient tbClient;
+
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "EditProcessDataRequest")
     @ResponsePayload
@@ -570,7 +582,6 @@ public class ManagerPortalEndpoint {
         res.setResult(result);
         try {
             userSrv.writeUser(UserMapper.convertFromUserType(payload.getUser()));
-            //daClient.WriteUser(user);
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {
@@ -591,7 +602,7 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         try {
-            NativeTypesType formats = daClient.ReadNativeTypes();
+            NativeTypesType formats = NativeTypeMapper.convertFromNativeType(frmSrv.findAllFormats());
             result.setCode(0);
             result.setMessage("");
             res.setNativeTypes(formats);
@@ -617,7 +628,7 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         try {
-            DomainsType domains = daClient.ReadDomains();
+            DomainsType domains = DomainMapper.convertFromDomains(domSrv.findAllDomains());
             result.setCode(0);
             result.setMessage("");
             res.setDomains(domains);
@@ -642,7 +653,6 @@ public class ManagerPortalEndpoint {
         res.setResult(result);
         try {
             UserType user = UserMapper.convertUserTypes(userSrv.findUser(payload.getUsername()));
-//            UserType user = daClient.ReadUser(payload.getUsername());
             result.setCode(0);
             result.setMessage("");
             res.setUser(user);
@@ -670,7 +680,8 @@ public class ManagerPortalEndpoint {
         res.setResult(result);
 
         try {
-            ProcessSummariesType processes = daClient.ReadProcessSummaries(payload.getSearchExpression());
+            // TODO: CONVERT TO use mappers
+            ProcessSummariesType processes = procSrv.readProcessSummaries(payload.getSearchExpression());
             result.setCode(0);
             result.setMessage("");
             res.setProcessSummaries(processes);
@@ -824,5 +835,17 @@ public class ManagerPortalEndpoint {
 
     public void setUserSrv(UserService userService) {
         this.userSrv = userService;
+    }
+
+    public void setProcSrv(ProcessService procService) {
+        this.procSrv = procService;
+    }
+
+    public void setFrmSrv(FormatService formatService) {
+        this.frmSrv = formatService;
+    }
+
+    public void setDomSrv(DomainService domainService) {
+        this.domSrv = domainService;
     }
 }
