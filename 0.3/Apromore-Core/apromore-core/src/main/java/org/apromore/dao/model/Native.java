@@ -35,11 +35,13 @@ import static javax.persistence.GenerationType.IDENTITY;
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NamedQueries( {
-//        @NamedQuery(name = User.FIND_USER, query = "SELECT usr FROM User usr WHERE usr.username = :username"),
+    @NamedQuery(name = Native.FIND_NATIVE_TYPES, query = "SELECT n FROM Native n, Canonical c WHERE c.process.processId = :processId")
 //        @NamedQuery(name = User.FIND_ALL_USERS, query = "SELECT usr FROM User usr")
 })
 @Configurable("native")
 public class Native implements Serializable {
+
+    public static final String FIND_NATIVE_TYPES = "native.findNativeTypes";
 
     /** Hard coded for interoperability. */
     private static final long serialVersionUID = -235332908738485548L;

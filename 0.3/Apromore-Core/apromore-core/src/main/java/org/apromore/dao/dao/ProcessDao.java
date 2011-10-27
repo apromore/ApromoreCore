@@ -1,5 +1,35 @@
 package org.apromore.dao.dao;
 
+import de.epml.TypeEPML;
+import org.apromore.common.ConstantDB;
+import org.apromore.common.Constants;
+import org.apromore.exception.ExceptionAnntotationName;
+import org.apromore.exception.ExceptionDao;
+import org.apromore.exception.ExceptionStoreVersion;
+import org.apromore.exception.ExceptionSyncNPF;
+import org.apromore.model.AnnotationsType;
+import org.apromore.model.CanonicalType;
+import org.apromore.model.EditSessionType;
+import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.ProcessVersionType;
+import org.apromore.model.VersionSummaryType;
+import org.wfmc._2008.xpdl2.Author;
+import org.wfmc._2008.xpdl2.Created;
+import org.wfmc._2008.xpdl2.Documentation;
+import org.wfmc._2008.xpdl2.ModificationDate;
+import org.wfmc._2008.xpdl2.PackageHeader;
+import org.wfmc._2008.xpdl2.PackageType;
+import org.wfmc._2008.xpdl2.RedefinableHeader;
+import org.wfmc._2008.xpdl2.Version;
+
+import javax.activation.DataHandler;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -20,38 +50,6 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.Vector;
-
-import javax.activation.DataHandler;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-
-import org.apromore.common.ConstantDB;
-import org.apromore.common.Constants;
-import org.apromore.exception.ExceptionAnntotationName;
-import org.apromore.exception.ExceptionDao;
-import org.apromore.exception.ExceptionStoreVersion;
-import org.apromore.exception.ExceptionSyncNPF;
-import org.apromore.model.EditSessionType;
-import org.apromore.model.AnnotationsType;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
-import org.apromore.model.CanonicalType;
-import org.apromore.model.ProcessVersionType;
-import org.wfmc._2008.xpdl2.Author;
-import org.wfmc._2008.xpdl2.Created;
-import org.wfmc._2008.xpdl2.Documentation;
-import org.wfmc._2008.xpdl2.ModificationDate;
-import org.wfmc._2008.xpdl2.PackageHeader;
-import org.wfmc._2008.xpdl2.PackageType;
-import org.wfmc._2008.xpdl2.RedefinableHeader;
-import org.wfmc._2008.xpdl2.Version;
-
-import de.epml.TypeEPML;
 
 public class ProcessDao extends BasicDao {
 
@@ -74,141 +72,6 @@ public class ProcessDao extends BasicDao {
         return instance;
     }
 
-    /**
-     * returns process version summaries which match at least one of the keywords
-     *
-     * @param keywordssearch of the form "a , b ; c ; (d,n)"
-     * @return ProcessSummariesType
-     */
-    public ProcessSummariesType getProcessSummaries(String keywordssearch) throws Exception {
-        /** built the search condition */
-        String condition = "";
-        if (keywordssearch != null && keywordssearch.compareTo("") != 0) {
-            // map search expression into a list of terms
-            // example: (yawl;protos),invoicing => [(,yawl,or,protos,),and,invoicing]
-            Vector<String> expression = mapQuery(keywordssearch);
-            for (int i = 0; i < expression.size(); i++) {
-                String current = expression.elementAt(i);
-                if (current.compareTo(" and ") == 0 || current.compareTo(" or ") == 0 ||
-                        current.compareTo(" ) ") == 0 || current.compareTo(" ( ") == 0) {
-                    condition += current;
-                } else {
-                    condition += ConstantDB.ATTR_PROCESSID + " in (select " + ConstantDB.ATTR_PROCESSID
-                            + " from " + ConstantDB.VIEW_KEYWORDS
-                            + " where " + ConstantDB.ATTR_WORD + " like '%" + current + "%' )";
-                }
-            }
-        }
-        // if keywordssearch empty thus condition = ""
-        ProcessSummariesType processSummaries = new ProcessSummariesType();
-        Connection conn = null;
-        Statement stmtP = null;
-        ResultSet rsP = null;
-        String query = null;
-        Statement stmtA = null;
-        ResultSet rsA = null;
-        Statement stmtV = null;
-        ResultSet rsV = null;
-        Statement stmtO = null;
-        ResultSet rsO = null;
-        String requeteV = null;
-        try {
-            conn = this.getConnection();
-            stmtP = conn.createStatement();
-            /* query returns, for each process version which satisfies the search condition, 
-                * the process Id, process name, domain, original type, ranking, owner and
-                * latest version name (the latest version is the one associated by the more
-                * recent creation date.
-                */
-            query = "SELECT distinct " + ConstantDB.ATTR_PROCESSID + ","
-                    + ConstantDB.ATTR_NAME + ", "
-                    + ConstantDB.ATTR_DOMAIN + ","
-                    + ConstantDB.ATTR_ORIGINAL_TYPE + ","
-                    + " coalesce(R." + ConstantDB.ATTR_RANKING + ",''),"
-                    + ConstantDB.ATTR_OWNER
-                    + " FROM " + ConstantDB.TABLE_PROCESSES
-                    + " natural join " + ConstantDB.TABLE_CANONICALS + " C "
-                    + "    join " + ConstantDB.VIEW_PROCESS_RANKING + " R using (" + ConstantDB.ATTR_PROCESSID + ")";
-
-            if (condition.compareTo("") != 0) {
-                query += " where " + condition;
-            }
-            query += " order by " + ConstantDB.ATTR_PROCESSID;
-            String ranking = null;
-            rsP = stmtP.executeQuery(query);
-            while (rsP.next()) {
-                int processId = rsP.getInt(1);
-                ProcessSummaryType processSummary = new ProcessSummaryType();
-                processSummaries.getProcessSummary().add(processSummary);
-                processSummary.setId(processId);
-                processSummary.setName(rsP.getString(2));
-                processSummary.setDomain(rsP.getString(3));
-                processSummary.setOriginalNativeType(rsP.getString(4));
-                processSummary.setRanking(rsP.getString(5));
-                processSummary.setOwner(rsP.getString(6));
-
-                stmtV = conn.createStatement();
-                requeteV = " select " + ConstantDB.ATTR_VERSION_NAME + ", "
-                        //+ "date_format(" + ConstantDB.ATTR_CREATION_DATE + ", '%d/%c/%Y %k:%i:%f')" + ",  "
-                        //+ "date_format(" + ConstantDB.ATTR_LAST_UPDATE  + ", '%d/%c/%Y %k:%i:%f')" + ",  "
-                        + ConstantDB.ATTR_CREATION_DATE + ", "
-                        + ConstantDB.ATTR_LAST_UPDATE + ", "
-                        + " coalesce(" + ConstantDB.ATTR_RANKING + ",''),"
-                        + ConstantDB.ATTR_DOCUMENTATION
-                        + " from " + ConstantDB.TABLE_CANONICALS
-                        + " where  " + ConstantDB.ATTR_PROCESSID + " = " + processId
-                        + " order by  " + ConstantDB.ATTR_CREATION_DATE;
-                rsV = stmtV.executeQuery(requeteV);
-                String lastVersion = "";
-                while (rsV.next()) {
-                    VersionSummaryType version = new VersionSummaryType();
-                    version.setName(rsV.getString(1));
-                    lastVersion = version.getName();
-                    version.setCreationDate(rsV.getString(2));
-                    version.setLastUpdate(rsV.getString(3));
-                    version.setRanking(rsV.getString(4));
-                    processSummary.getVersionSummaries().add(version);
-                    // for each version (a canonical process), retrieve for each of its native process
-                    // the list of corresponding annotations
-                    query = " select " + "N." + ConstantDB.ATTR_URI + ", N." + ConstantDB.ATTR_NAT_TYPE
-                            + " from " + ConstantDB.TABLE_CANONICALS + " C "
-                            + " join " + ConstantDB.TABLE_NATIVES + " N "
-                            + " on (" + "C." + ConstantDB.ATTR_URI + "=" + "N." + ConstantDB.ATTR_CANONICAL + ")"
-                            + " where " + "C." + ConstantDB.ATTR_PROCESSID + " = " + processId
-                            + "  and " + "C." + ConstantDB.ATTR_VERSION_NAME + " = '" + rsV.getString(1) + "'";
-                    stmtA = conn.createStatement();
-                    rsA = stmtA.executeQuery(query);
-                    while (rsA.next()) {
-                        // For each native, retrieve annotations
-                        AnnotationsType annotations = new AnnotationsType();
-                        version.getAnnotations().add(annotations);
-                        annotations.setNativeType(rsA.getString(2));
-                        query = " select " + ConstantDB.ATTR_NAME
-                                + " from " + ConstantDB.TABLE_ANNOTATIONS
-                                + " where " + ConstantDB.ATTR_NATIVE + " = " + rsA.getInt(1);
-                        stmtO = conn.createStatement();
-                        rsO = stmtO.executeQuery(query);
-                        while (rsO.next()) {
-                            annotations.getAnnotationName().add(rsO.getString(1));
-                        }
-                        rsO.close();
-                        stmtO.close();
-                    }
-                    rsA.close();
-                    stmtA.close();
-                }
-                processSummary.setLastVersion(lastVersion);
-                rsV.close();
-                stmtV.close();
-            }
-            conn.commit();
-        } catch (SQLException e) {
-            throw new ExceptionDao("Error: ProcessDao " + e.getMessage() + "\n");
-        } finally {
-            Release(conn, stmtP, rsP);
-        }
-        return processSummaries;
-    }
 
     /**
      * Interpretation of the query received by customer

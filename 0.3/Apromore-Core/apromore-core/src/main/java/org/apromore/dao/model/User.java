@@ -24,12 +24,12 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "users",
-       uniqueConstraints = {
-               @UniqueConstraint(columnNames = { "username" })
-       }
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"username"})
+        }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@NamedQueries( {
+@NamedQueries({
         @NamedQuery(name = User.FIND_USER, query = "SELECT usr FROM User usr WHERE usr.username = :username"),
         @NamedQuery(name = User.FIND_ALL_USERS, query = "SELECT usr FROM User usr")
 })
@@ -39,7 +39,9 @@ public class User implements Serializable {
     public static final String FIND_USER = "usr.findUser";
     public static final String FIND_ALL_USERS = "usr.findAllUsers";
 
-    /** Hard coded for interoperability. */
+    /**
+     * Hard coded for interoperability.
+     */
     private static final long serialVersionUID = -2353314404638485548L;
 
     private String username;
@@ -48,28 +50,32 @@ public class User implements Serializable {
     private String email;
     private String passwd;
 
-     private Set<Process> processes = new HashSet<Process>(0);
-     private Set<EditSessionMapping> editSessionMappings = new HashSet<EditSessionMapping>(0);
-     private Set<SearchHistory> searchHistories = new HashSet<SearchHistory>(0);
+    private Set<Process> processes = new HashSet<Process>(0);
+    private Set<EditSessionMapping> editSessionMappings = new HashSet<EditSessionMapping>(0);
+    private Set<SearchHistory> searchHistories = new HashSet<SearchHistory>(0);
 
 
     /**
      * Default Constructor.
      */
-    public User() { }
+    public User() {
+    }
 
 
     /**
      * Get the Primary Key for the Object.
+     *
      * @return Returns the Id.
      */
-    @Id @Column(name = "username", unique = true, nullable = false, length = 10)
+    @Id
+    @Column(name = "username", unique = true, nullable = false, length = 10)
     public String getUsername() {
         return username;
     }
 
     /**
      * Set the Primary Key for the Object.
+     *
      * @param newUsername The id to set.
      */
     public void setUsername(final String newUsername) {
@@ -79,6 +85,7 @@ public class User implements Serializable {
 
     /**
      * Get the firstname for the Object.
+     *
      * @return Returns the firstname.
      */
     @Column(name = "firstname", unique = false, nullable = true, length = 40)
@@ -88,6 +95,7 @@ public class User implements Serializable {
 
     /**
      * Set the firstname for the Object.
+     *
      * @param newFirstname The firstname to set.
      */
     public void setFirstname(final String newFirstname) {
@@ -96,6 +104,7 @@ public class User implements Serializable {
 
     /**
      * Get the lastname for the Object.
+     *
      * @return Returns the lastname.
      */
     @Column(name = "lastname", unique = false, nullable = true, length = 40)
@@ -105,6 +114,7 @@ public class User implements Serializable {
 
     /**
      * Set the lastname for the Object.
+     *
      * @param newLastname The lastname to set.
      */
     public void setLastname(final String newLastname) {
@@ -113,6 +123,7 @@ public class User implements Serializable {
 
     /**
      * Get the email for the Object.
+     *
      * @return Returns the email.
      */
     @Column(name = "email", unique = true, nullable = true, length = 80)
@@ -122,6 +133,7 @@ public class User implements Serializable {
 
     /**
      * Set the Email for the Object.
+     *
      * @param newEmail The Email to set.
      */
     public void setEmail(final String newEmail) {
@@ -130,6 +142,7 @@ public class User implements Serializable {
 
     /**
      * Get the password for the Object.
+     *
      * @return Returns the password.
      */
     @Column(name = "passwd", unique = false, nullable = false, length = 80)
@@ -139,6 +152,7 @@ public class User implements Serializable {
 
     /**
      * Set the password for the Object.
+     *
      * @param newPassword The password to set.
      */
     public void setPasswd(final String newPassword) {
@@ -148,6 +162,7 @@ public class User implements Serializable {
 
     /**
      * Get the processes for the Object.
+     *
      * @return Returns the processes.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
@@ -157,6 +172,7 @@ public class User implements Serializable {
 
     /**
      * Set the processes for the Object.
+     *
      * @param newProcesses The processes to set.
      */
     public void setProcesses(final Set<Process> newProcesses) {
@@ -165,6 +181,7 @@ public class User implements Serializable {
 
     /**
      * Get the editSessionMappings for the Object.
+     *
      * @return Returns the editSessionMappings.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
@@ -174,6 +191,7 @@ public class User implements Serializable {
 
     /**
      * Set the editSessionMappings for the Object.
+     *
      * @param newEditSessionMappings The editSessionMappings to set.
      */
     public void setEditSessionMappings(final Set<EditSessionMapping> newEditSessionMappings) {
@@ -182,6 +200,7 @@ public class User implements Serializable {
 
     /**
      * Get the searchHistories for the Object.
+     *
      * @return Returns the searchHistories.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
@@ -191,6 +210,7 @@ public class User implements Serializable {
 
     /**
      * Set the searchHistories for the Object.
+     *
      * @param newSearchHistories The searchHistories to set.
      */
     public void setSearchHistories(final Set<SearchHistory> newSearchHistories) {

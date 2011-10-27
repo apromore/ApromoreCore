@@ -29,8 +29,7 @@ import java.util.Iterator;
 
 public class ManagerCanoniserClient {
 
-    @Autowired
-	private CanoniserManager manager;
+    private CanoniserManager manager;
 
 
 	/**

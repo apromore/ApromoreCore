@@ -30,7 +30,6 @@ import java.util.Iterator;
 
 public class CanoniserDataAccessClient {
 
-    @Autowired
 	private DataAccessCanoniserManager manager;
 
 

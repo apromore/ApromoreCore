@@ -18,6 +18,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
+import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -29,17 +30,18 @@ import javax.persistence.UniqueConstraint;
  */
 @Entity
 @Table(name = "canonicals",
-       uniqueConstraints = {
-               @UniqueConstraint(columnNames = { "processId", "version_name" })
-       }
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "processId", "version_name" })
+    }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NamedQueries( {
-//        @NamedQuery(name = User.FIND_USER, query = "SELECT usr FROM User usr WHERE usr.username = :username"),
-//        @NamedQuery(name = User.FIND_ALL_USERS, query = "SELECT usr FROM User usr")
+    @NamedQuery(name = Canonical.FIND_BY_PROCESS_ID, query = "SELECT c FROM Canonical c WHERE c.process.processId = :processId")
 })
 @Configurable("canonical")
 public class Canonical implements Serializable {
+
+    public static final String FIND_BY_PROCESS_ID = "canonical.findByProcessId";
 
     /** Hard coded for interoperability. */
     private static final long serialVersionUID = -9072538404638485548L;

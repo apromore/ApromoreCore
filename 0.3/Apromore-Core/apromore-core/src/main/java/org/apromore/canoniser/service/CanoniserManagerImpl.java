@@ -49,7 +49,6 @@ public class CanoniserManagerImpl implements CanoniserManager {
 
     private static final Logger LOG = Logger.getLogger(CanoniserManagerImpl.class.getName());
 
-    @Autowired
     private CanoniserDataAccessClient client;
 
     public DeCanoniseProcessOutputMsgType deCanoniseProcess(DeCanoniseProcessInputMsgType payload) {

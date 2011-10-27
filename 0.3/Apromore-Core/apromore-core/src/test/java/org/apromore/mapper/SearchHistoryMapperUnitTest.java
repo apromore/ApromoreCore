@@ -46,11 +46,6 @@ public class SearchHistoryMapperUnitTest {
 
         Set<SearchHistory> searches = mapper.convertFromSearchHistoriesType(srhTypes);
         assertThat(searches.size(), equalTo(srhTypes.size()));
-
-        SearchHistory[] objs = new SearchHistory[searches.size()];
-        objs = searches.toArray(objs);
-        assertThat(objs[0].getNum(), equalTo(srhTypes.get(0).getNum()));
-        assertThat(objs[0].getSearch(), equalTo(srhTypes.get(0).getSearch()));
 	}
 
 }

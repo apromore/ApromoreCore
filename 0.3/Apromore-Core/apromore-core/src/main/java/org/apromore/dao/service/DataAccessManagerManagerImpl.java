@@ -11,45 +11,25 @@ import javax.mail.util.ByteArrayDataSource;
 
 import org.apromore.common.Constants;
 import org.apromore.dao.DataAccessManagerManager;
-import org.apromore.dao.dao.DomainDao;
 import org.apromore.dao.dao.EditSessionDao;
-import org.apromore.dao.dao.FormatDao;
 import org.apromore.dao.dao.ProcessDao;
-import org.apromore.dao.dao.UserDao;
 import org.apromore.model.DeleteEditSessionInputMsgType;
 import org.apromore.model.DeleteEditSessionOutputMsgType;
 import org.apromore.model.DeleteProcessVersionsInputMsgType;
 import org.apromore.model.DeleteProcessVersionsOutputMsgType;
-import org.apromore.model.DomainsType;
 import org.apromore.model.EditProcessDataInputMsgType;
 import org.apromore.model.EditProcessDataOutputMsgType;
 import org.apromore.model.EditSessionType;
-import org.apromore.model.NativeTypesType;
-import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessVersionIdentifierType;
-import org.apromore.model.ReadAllUsersInputMsgType;
-import org.apromore.model.ReadAllUsersOutputMsgType;
 import org.apromore.model.ReadCanonicalAnfInputMsgType;
 import org.apromore.model.ReadCanonicalAnfOutputMsgType;
-import org.apromore.model.ReadDomainsInputMsgType;
-import org.apromore.model.ReadDomainsOutputMsgType;
 import org.apromore.model.ReadEditSessionInputMsgType;
 import org.apromore.model.ReadEditSessionOutputMsgType;
 import org.apromore.model.ReadFormatInputMsgType;
 import org.apromore.model.ReadFormatOutputMsgType;
-import org.apromore.model.ReadNativeTypesInputMsgType;
-import org.apromore.model.ReadNativeTypesOutputMsgType;
-import org.apromore.model.ReadProcessSummariesInputMsgType;
-import org.apromore.model.ReadProcessSummariesOutputMsgType;
-import org.apromore.model.ReadUserInputMsgType;
-import org.apromore.model.ReadUserOutputMsgType;
 import org.apromore.model.ResultType;
-import org.apromore.model.UserType;
-import org.apromore.model.UsernamesType;
 import org.apromore.model.WriteEditSessionInputMsgType;
 import org.apromore.model.WriteEditSessionOutputMsgType;
-import org.apromore.model.WriteUserInputMsgType;
-import org.apromore.model.WriteUserOutputMsgType;
 import org.springframework.stereotype.Service;
 
 /**
@@ -59,26 +39,6 @@ import org.springframework.stereotype.Service;
 public class DataAccessManagerManagerImpl implements DataAccessManagerManager {
 
     private static final Logger LOG = Logger.getLogger(DataAccessManagerManagerImpl.class.getName());
-//
-//    public ReadAllUsersOutputMsgType readAllUsers(ReadAllUsersInputMsgType payload) {
-//        LOG.info("Executing operation readAllUsers");
-//        System.out.println(payload);
-//        ReadAllUsersOutputMsgType res = new ReadAllUsersOutputMsgType();
-//        ResultType result = new ResultType();
-//        res.setResult(result);
-//        UsernamesType allUsers;
-//        try {
-//            allUsers = UserDao.getInstance().getAllUsers();
-//            res.setUsernames(allUsers);
-//            result.setCode(0);
-//            result.setMessage("");
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            result.setCode(-1);
-//            result.setMessage(ex.getMessage());
-//        }
-//        return res;
-//    }
 
     public ReadFormatOutputMsgType readFormat(ReadFormatInputMsgType payload) {
         LOG.info("Executing operation readNative");
@@ -252,123 +212,5 @@ public class DataAccessManagerManagerImpl implements DataAccessManagerManager {
         }
         return res;
     }
-
-    public ReadNativeTypesOutputMsgType readNativeTypes(ReadNativeTypesInputMsgType payload) {
-        LOG.info("(DA)Executing operation readFormats");
-        System.out.println(payload);
-        ReadNativeTypesOutputMsgType res = new ReadNativeTypesOutputMsgType();
-        ResultType result = new ResultType();
-        NativeTypesType formats;
-        res.setResult(result);
-        try {
-            formats = ((FormatDao) FormatDao.getInstance()).getFormats();
-            res.setNativeTypes(formats);
-            result.setCode(0);
-            result.setMessage("");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        }
-        return res;
-    }
-
-//    /* (non-Javadoc)
-//      * @see org.apromore.dataaccess.service.DataAccessManager#writeUser(org.apromore.dataaccess.model_manager.WriteUserInputMsgType  payload )*
-//      */
-//    public WriteUserOutputMsgType writeUser(WriteUserInputMsgType payload) {
-//        LOG.info("Executing operation writeUser");
-//        System.out.println(payload);
-//
-//        WriteUserOutputMsgType res = new WriteUserOutputMsgType();
-//        ResultType result = new ResultType();
-//        res.setResult(result);
-//        UserType user = payload.getUser();
-//        try {
-//            UserDao.getInstance().writeUser(user);
-//            result.setCode(0);
-//            result.setMessage("");
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            result.setCode(-1);
-//            result.setMessage(ex.getMessage());
-//        }
-//        return res;
-//    }
-
-    /* (non-Javadoc)
-      * @see org.apromore.dataaccess.service.DataAccessManager#readProcessSummaries(org.apromore.dataaccess.model_manager.ReadProcessSummariesInputMsgType  payload )*
-      */
-    public ReadProcessSummariesOutputMsgType readProcessSummaries(ReadProcessSummariesInputMsgType payload) {
-        LOG.info("Executing operation readProcessSummaries");
-        System.out.println(payload);
-        ReadProcessSummariesOutputMsgType res = new ReadProcessSummariesOutputMsgType();
-        ResultType result = new ResultType();
-        ProcessSummariesType processSummaries;
-        res.setResult(result);
-        String searchExp = payload.getSearchExpression();
-
-        try {
-            processSummaries = ((ProcessDao) ProcessDao.getInstance()).getProcessSummaries(searchExp);
-            res.setProcessSummaries(processSummaries);
-            result.setCode(0);
-            result.setMessage("");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        }
-        return res;
-    }
-
-    /* (non-Javadoc)
-      * @see org.apromore.dataaccess.service.DataAccessManager#readDomains(org.apromore.dataaccess.model_manager.ReadDomainsInputMsgType  payload )*
-      */
-    public ReadDomainsOutputMsgType readDomains(ReadDomainsInputMsgType payload) {
-        LOG.info("Executing operation readDomains");
-        System.out.println(payload);
-
-        ReadDomainsOutputMsgType res = new ReadDomainsOutputMsgType();
-        ResultType result = new ResultType();
-        DomainsType domains;
-        res.setResult(result);
-        try {
-            domains = ((DomainDao) DomainDao.getInstance()).getDomains();
-            res.setDomains(domains);
-            result.setCode(0);
-            result.setMessage("");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        }
-        return res;
-    }
-
-//    /* (non-Javadoc)
-//      * @see org.apromore.dataaccess.service.DataAccessManager#readUser(org.apromore.dataaccess.model_manager.ReadUserInputMsgType  payload )*
-//      */
-//    public ReadUserOutputMsgType readUser(ReadUserInputMsgType payload) {
-//        LOG.info("Executing operation readUser");
-//        System.out.println(payload);
-//
-//        String username = payload.getUsername();
-//        ReadUserOutputMsgType res = new ReadUserOutputMsgType();
-//        ResultType result = new ResultType();
-//        UserType user;
-//        res.setResult(result);
-//
-//        try {
-//            user = ((UserDao) UserDao.getInstance()).readUser(username);
-//            res.setUser(user);
-//            result.setCode(0);
-//            result.setMessage("");
-//        } catch (Exception ex) {
-//            ex.printStackTrace();
-//            result.setCode(-1);
-//            result.setMessage(ex.getMessage());
-//        }
-//        return res;
-//    }
 
 }

@@ -47,7 +47,6 @@ public class ToolboxManagerImpl implements ToolboxManager {
 
     private static final Logger LOG = Logger.getLogger(ToolboxManagerImpl.class.getName());
 
-    @Autowired
     private ToolboxDataAccessClient client;
 
     /**

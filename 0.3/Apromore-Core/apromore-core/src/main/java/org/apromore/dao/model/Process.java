@@ -28,18 +28,20 @@ import java.util.Set;
  */
 @Entity
 @Table(name = "processes",
-       uniqueConstraints = {
-               @UniqueConstraint(columnNames = { "processId" })
-       }
+    uniqueConstraints = {
+        @UniqueConstraint(columnNames = { "processId" })
+    }
 )
-@Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NamedQueries( {
-        @NamedQuery(name = Process.GET_PROCESSES, query = "SELECT pr FROM Process pr")
+    @NamedQuery(name = Process.GET_ALL_PROCESSES, query = "SELECT p, coalesce(r.id.ranking, 0) FROM Process p, ProcessRanking r WHERE p.processId = r.id.processId ORDER by p.processId"),
+    @NamedQuery(name = Process.GET_All_DOMAINS, query = "SELECT DISTINCT new list(p.domain) FROM Process p ORDER by p.domain")
 })
 @Configurable("process")
 public class Process implements Serializable {
 
-    public static final String GET_PROCESSES = "pr.getProcesses";
+    public static final String GET_ALL_PROCESSES = "pr.getAllProcesses";
+    public static final String GET_All_DOMAINS = "pr.getAllDomains";
 
     /** Hard coded for interoperability. */
     private static final long serialVersionUID = -2353656404638485548L;
