@@ -35,12 +35,7 @@ public class ProcessDaoJpa extends JpaTemplate implements ProcessDao {
             @SuppressWarnings("unchecked")
             public List<Object[]> doInJpa(EntityManager em) {
                 Query query = em.createNamedQuery(Process.GET_ALL_PROCESSES);
-                List<Object[]> processes = query.getResultList();
-                if (processes.isEmpty()) {
-                    return null;
-                } else {
-                    return processes;
-                }
+                return query.getResultList();
             }
         });
     }
@@ -57,12 +52,7 @@ public class ProcessDaoJpa extends JpaTemplate implements ProcessDao {
             @SuppressWarnings("unchecked")
             public List<Object> doInJpa(EntityManager em) {
                 Query query = em.createNamedQuery(Process.GET_All_DOMAINS);
-                List<Object> processes = query.getResultList();
-                if (processes.isEmpty()) {
-                    return null;
-                } else {
-                    return processes;
-                }
+                return query.getResultList();
             }
         });
     }

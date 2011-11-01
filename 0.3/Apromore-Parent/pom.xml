@@ -330,6 +330,11 @@
                 <version>${slf4j.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>jcl-over-slf4j</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>ch.qos.logback</groupId>
                 <artifactId>logback-classic</artifactId>
                 <version>${logback.version}</version>
@@ -716,9 +721,10 @@
             </dependency>
             <dependency>
                 <groupId>org.springframework.ws</groupId>
-                <artifactId>spring-ws-test</artifactId>
-                <version>${spring-ws.version}</version>
+                <artifactId>spring-ws-core</artifactId>
+                <version>${spring-ws-tests.version}</version>
                 <scope>test</scope>
+                <classifier>tests</classifier>
             </dependency>
         </dependencies>
     </dependencyManagement>
@@ -781,7 +787,7 @@
         <manager-web.version>1.0.0-SNAPSHOT</manager-web.version>
 
         <!-- Logging versions -->
-        <slf4j.version>1.6.1</slf4j.version>
+        <slf4j.version>1.6.3</slf4j.version>
         <logback.version>0.9.28</logback.version>
 
         <!-- Commons versions -->
@@ -792,6 +798,7 @@
         <!-- Spring Version -->
         <spring.version>3.0.5.RELEASE</spring.version>
         <spring-ws.version>2.0.2.RELEASE</spring-ws.version>
+        <spring-ws-tests.version>2.0.0.RELEASE</spring-ws-tests.version>
 
         <!-- Hibernate Verisons -->
         <hibernate-jpa.version>2.0-cr-1</hibernate-jpa.version>

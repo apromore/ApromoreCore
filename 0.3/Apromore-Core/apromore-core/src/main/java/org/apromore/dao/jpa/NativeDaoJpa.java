@@ -27,11 +27,11 @@ public class NativeDaoJpa extends JpaTemplate implements NativeDao {
 
     /**
      * Returns list of natives.
-     * @see org.apromore.dao.NativeDao#findNativeByCanonical(int, String)
+     * @see org.apromore.dao.NativeDao#findNativeByCanonical(long, String)
      * {@inheritDoc}
      */
     @Override
-    public List<Native> findNativeByCanonical(final int processId, final String versionName) {
+    public List<Native> findNativeByCanonical(final long processId, final String versionName) {
         return execute(new JpaCallback<List<Native>>() {
 
             @SuppressWarnings("unchecked")
@@ -39,12 +39,7 @@ public class NativeDaoJpa extends JpaTemplate implements NativeDao {
                 Query query = em.createNamedQuery(Native.FIND_NATIVE_TYPES);
                 query.setParameter("processId", processId);
                 query.setParameter("versionName", versionName);
-                List<Native> natives = query.getResultList();
-                if (natives.isEmpty()) {
-                    return null;
-                } else {
-                    return natives;
-                }
+                return query.getResultList();
             }
         });
     }

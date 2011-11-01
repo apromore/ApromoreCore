@@ -5,6 +5,8 @@ import org.apromore.dao.jpa.ProcessDaoJpa;
 import org.apromore.service.DomainService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +17,7 @@ import java.util.List;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class DomainServiceImpl implements DomainService {
 
     @Autowired
@@ -28,6 +31,7 @@ public class DomainServiceImpl implements DomainService {
      * NOTE: This might need to convert (or allow for) to the models used in the webservices.
      */
     @Override
+    @Transactional(readOnly = true)
     public List<String> findAllDomains() {
         List<Object> domains = procDao.getAllDomains();
         List<String> doms = new ArrayList<String>();

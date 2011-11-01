@@ -106,7 +106,7 @@ public class UserDaoJpaUnitTest {
 
         List<User> userList = usrJpa.findAllUsers();
         verify(query);
-        assertThat(null, equalTo(userList));
+        assertThat(users, equalTo(userList));
     }
 
 

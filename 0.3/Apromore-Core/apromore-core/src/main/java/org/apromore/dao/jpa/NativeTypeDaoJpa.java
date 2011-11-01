@@ -35,12 +35,7 @@ public class NativeTypeDaoJpa extends JpaTemplate implements NativeTypeDao {
             @SuppressWarnings("unchecked")
             public List<NativeType> doInJpa(EntityManager em) {
                 Query query = em.createNamedQuery(NativeType.FIND_FORMATS);
-                List<NativeType> natives = query.getResultList();
-                if (natives.isEmpty()) {
-                    return null;
-                } else {
-                    return natives;
-                }
+                return query.getResultList();
             }
         });
     }

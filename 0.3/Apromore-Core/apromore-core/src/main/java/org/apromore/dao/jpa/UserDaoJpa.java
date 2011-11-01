@@ -44,12 +44,7 @@ public class UserDaoJpa extends JpaTemplate implements UserDao {
             @SuppressWarnings("unchecked")
             public List<User> doInJpa(EntityManager em) {
                 Query query = em.createNamedQuery(User.FIND_ALL_USERS);
-                List<User> users = query.getResultList();
-                if (users.isEmpty()) {
-                    return null;
-                } else {
-                    return users;
-                }
+                return query.getResultList();
             }
         });
     }

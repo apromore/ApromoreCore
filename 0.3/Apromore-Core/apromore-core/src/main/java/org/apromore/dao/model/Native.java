@@ -35,8 +35,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NamedQueries( {
-    @NamedQuery(name = Native.FIND_NATIVE_TYPES, query = "SELECT n FROM Native n, Canonical c WHERE c.process.processId = :processId")
-//        @NamedQuery(name = User.FIND_ALL_USERS, query = "SELECT usr FROM User usr")
+    @NamedQuery(name = Native.FIND_NATIVE_TYPES, query = "SELECT n FROM Native n, Canonical c WHERE n.canonical.uri = c.uri AND c.process.processId = :processId AND c.versionName = :versionName")
 })
 @Configurable("native")
 public class Native implements Serializable {

@@ -19,7 +19,7 @@ public interface NativeDao {
      * @param versionName the version name
      * @return the native, a list of them for all the different canonical versions.
      */
-    public List<Native> findNativeByCanonical(final int processId, final String versionName);
+    public List<Native> findNativeByCanonical(final long processId, final String versionName);
 
 
     /**

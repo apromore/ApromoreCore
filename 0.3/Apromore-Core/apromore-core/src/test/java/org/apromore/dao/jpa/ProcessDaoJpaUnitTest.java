@@ -69,9 +69,11 @@ public class ProcessDaoJpaUnitTest {
 
     @Test
     public final void testGetAllProcessesNonFound() {
+        List<Object[]> procs = new ArrayList<Object[]>(0);
+
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(Process.GET_ALL_PROCESSES)).andReturn(query);
-        expect(query.getResultList()).andReturn(new ArrayList<Process>(0));
+        expect(query.getResultList()).andReturn(procs);
 
         replay(manager, query);
 
@@ -79,7 +81,7 @@ public class ProcessDaoJpaUnitTest {
 
         verify(manager, query);
 
-        assertThat(processes, equalTo(null));
+        assertThat(processes, equalTo(procs));
     }
 
     @Test
@@ -104,9 +106,11 @@ public class ProcessDaoJpaUnitTest {
 
     @Test
     public final void testGetAllDomainsNonFound() {
+        List<Object> doms = new ArrayList<Object>(0);
+
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(Process.GET_All_DOMAINS)).andReturn(query);
-        expect(query.getResultList()).andReturn(new ArrayList<Object>(0));
+        expect(query.getResultList()).andReturn(doms);
 
         replay(manager, query);
 
@@ -114,7 +118,7 @@ public class ProcessDaoJpaUnitTest {
 
         verify(manager, query);
 
-        assertThat(domains, equalTo(null));
+        assertThat(domains, equalTo(doms));
     }
 
 

@@ -1,6 +1,7 @@
 package org.apromore.service;
 
 import org.apromore.dao.model.User;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.model.UserType;
 
 import java.util.List;
@@ -23,8 +24,9 @@ public interface UserService {
      * Find a particular User.
      * @param username the username of the user we are searching for.
      * @return the Found User
+     * @throws UserNotFoundException when the user can not be found in the system
      */
-    User findUser (String username);
+    User findUser (String username) throws UserNotFoundException;
 
     /**
      * Currently only refreshes the users search history. Needs to do more in the future.

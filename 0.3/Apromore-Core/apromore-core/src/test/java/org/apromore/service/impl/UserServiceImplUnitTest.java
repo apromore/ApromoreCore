@@ -3,8 +3,11 @@ package org.apromore.service.impl;
 import org.apromore.dao.jpa.UserDaoJpa;
 import org.apromore.dao.model.EditSessionMapping;
 import org.apromore.dao.model.User;
+import org.apromore.exception.UserNotFoundException;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,6 +40,9 @@ import static org.powermock.api.easymock.PowerMock.verify;
 @PrepareForTest({ UserDaoJpa.class })
 public class UserServiceImplUnitTest {
 
+    @Rule
+	public ExpectedException exception = ExpectedException.none();
+
     @Autowired
     private UserDaoJpa usrDAOJpa;
 
@@ -62,7 +68,7 @@ public class UserServiceImplUnitTest {
     }
 
     @Test
-    public void getUser() {
+    public void getUser() throws Exception {
         String username = "jaybob";
         User usr = new User();
 
@@ -72,6 +78,19 @@ public class UserServiceImplUnitTest {
         User serviceUsr = usrServiceImpl.findUser(username);
         verify(usrDAOJpa);
         assertThat(serviceUsr, equalTo(usr));
+    }
+
+    @Test
+    public void getUserNotFound() throws Exception {
+        String username = "jaybob";
+
+        expect(usrDAOJpa.findUser(username)).andReturn(null);
+        replay(usrDAOJpa);
+
+        exception.expect(UserNotFoundException.class);
+        usrServiceImpl.findUser(username);
+
+        verify(usrDAOJpa);
     }
 
 
