@@ -641,8 +641,8 @@ public class ManagerPortalEndpoint {
     }
 
     /* (non-Javadoc)
-      * @see org.apromore.manager.service.ManagerPortalPortType#readUser(ReadUserInputMsgType  payload )*
-      */
+     * @see org.apromore.manager.service.ManagerPortalPortType#readUser(ReadUserInputMsgType  payload )
+     */
     @PayloadRoot(localPart = "ReadUserRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ReadUserOutputMsgType> readUser(@RequestPayload ReadUserInputMsgType payload) {
