@@ -19,6 +19,8 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.service.ProcessService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -28,6 +30,7 @@ import java.util.List;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class ProcessServiceImpl implements ProcessService {
 
     @Autowired
@@ -45,6 +48,7 @@ public class ProcessServiceImpl implements ProcessService {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = true)
     public ProcessSummariesType readProcessSummaries(String searchExpression) {
         ProcessSummariesType processSummaries = new ProcessSummariesType();
 
@@ -72,9 +76,13 @@ public class ProcessServiceImpl implements ProcessService {
             processSummary.setId(Long.valueOf(process.getProcessId()).intValue());
             processSummary.setName(process.getName());
             processSummary.setDomain(process.getDomain());
-            processSummary.setOriginalNativeType(process.getNativeType().getNatType());
             processSummary.setRanking(proc[1].toString());
-            processSummary.setOwner(process.getUser().getUsername());
+            if (process.getNativeType() != null) {
+                processSummary.setOriginalNativeType(process.getNativeType().getNatType());
+            }
+            if (process.getUser() != null) {
+                processSummary.setOwner(process.getUser().getUsername());
+            }
             buildVersionSummaryTypeList(processSummary);
 
             processSummaries.getProcessSummary().add(processSummary);
@@ -85,8 +93,8 @@ public class ProcessServiceImpl implements ProcessService {
      * Builds the list of version Summaries for a process.
      */
     private void buildVersionSummaryTypeList(ProcessSummaryType processSummary) {
-        VersionSummaryType versionSummary = null;
-        List<Canonical> canonicals = canDao.findByProcessId(processSummary.getId());
+        VersionSummaryType versionSummary;
+        List<Canonical> canonicals = canDao.findByProcessId((long) processSummary.getId());
 
         for (Canonical canonical : canonicals) {
             versionSummary = new VersionSummaryType();
@@ -95,7 +103,7 @@ public class ProcessServiceImpl implements ProcessService {
             versionSummary.setCreationDate(canonical.getCreationDate());
             versionSummary.setLastUpdate(canonical.getLastUpdate());
             versionSummary.setRanking(canonical.getRanking());
-            buildNativeSummaryList(processSummary.getId(), versionSummary);
+            buildNativeSummaryList((long) processSummary.getId(), versionSummary);
 
             processSummary.getVersionSummaries().add(versionSummary);
             processSummary.setLastVersion(versionSummary.getName());
@@ -105,14 +113,16 @@ public class ProcessServiceImpl implements ProcessService {
     /**
      * Builds the list of Native Summaries for a version summary.
      */
-    private void buildNativeSummaryList(Integer id, VersionSummaryType versionSummary) {
+    private void buildNativeSummaryList(long id, VersionSummaryType versionSummary) {
         AnnotationsType annotation;
         List<Native> natives = natDao.findNativeByCanonical(id, versionSummary.getName());
 
         for (Native nat : natives) {
             annotation = new AnnotationsType();
 
-            annotation.setNativeType(nat.getNativeType().getNatType());
+            if (nat.getNativeType() != null) {
+                annotation.setNativeType(nat.getNativeType().getNatType());
+            }
             buildAnnotationNames(nat, annotation);
 
             versionSummary.getAnnotations().add(annotation);

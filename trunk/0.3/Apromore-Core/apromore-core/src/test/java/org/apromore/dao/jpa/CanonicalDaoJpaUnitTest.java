@@ -50,7 +50,7 @@ public class CanonicalDaoJpaUnitTest {
 
     @Test
     public final void testGetAllProcesses() {
-        int processId = 123;
+        long processId = 123;
         List<Canonical> cans = new ArrayList<Canonical>();
         cans.add(createCanonical());
 
@@ -70,7 +70,7 @@ public class CanonicalDaoJpaUnitTest {
 
     @Test
     public final void testGetAllProcessesNonFound() {
-        int processId = 123;
+        long processId = 123;
         List<Canonical> cans = new ArrayList<Canonical>();
 
         Query query = createMock(Query.class);
@@ -84,7 +84,7 @@ public class CanonicalDaoJpaUnitTest {
 
         verify(manager, query);
 
-        assertThat(canonicals, equalTo(null));
+        assertThat(canonicals, equalTo(cans));
     }
 
 

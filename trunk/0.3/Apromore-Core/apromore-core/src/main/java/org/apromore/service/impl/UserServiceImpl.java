@@ -3,10 +3,13 @@ package org.apromore.service.impl;
 import org.apromore.dao.UserDao;
 import org.apromore.dao.jpa.UserDaoJpa;
 import org.apromore.dao.model.User;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.model.UserType;
 import org.apromore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -16,6 +19,7 @@ import java.util.List;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Service
+@Transactional(propagation = Propagation.REQUIRED)
 public class UserServiceImpl implements UserService {
 
     @Autowired
@@ -29,6 +33,7 @@ public class UserServiceImpl implements UserService {
      * NOTE: This might need to convert (or allow for) to the models used in the webservices.
      */
     @Override
+    @Transactional(readOnly = true)
     public List<User> findAllUsers() {
         return usrDao.findAllUsers();
     }
@@ -36,19 +41,21 @@ public class UserServiceImpl implements UserService {
     /**
      * @see org.apromore.service.UserService#findUser(String)
      * {@inheritDoc}
-     *
-     * NOTE: This might need to convert (or allow for) to the models used in the webservices.
      */
     @Override
-    public User findUser(String username) {
-        return usrDao.findUser(username);
+    @Transactional(readOnly = true)
+    public User findUser(String username) throws UserNotFoundException {
+        User user = usrDao.findUser(username);
+        if (user != null) {
+            return user;
+        } else {
+            throw new UserNotFoundException("User with username (" + username + ") could not be found.");
+        }
     }
 
     /**
      * @see org.apromore.service.UserService#writeUser(org.apromore.dao.model.User)
      * {@inheritDoc}
-     *
-     * NOTE: We might need two of these methods, one for the Dao model and another for the WebService models.
      */
     @Override
     public void writeUser(User user) {

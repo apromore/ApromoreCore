@@ -86,7 +86,7 @@ public class AnnotationDaoJpaUnitTest {
 
         verify(manager, query);
 
-        assertThat(annotations, equalTo(null));
+        assertThat(annotations, equalTo(anns));
     }
 
     @Test

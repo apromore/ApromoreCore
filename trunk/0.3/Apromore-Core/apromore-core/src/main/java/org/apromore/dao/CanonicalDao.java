@@ -18,7 +18,7 @@ public interface CanonicalDao {
      * Find the canoncial record by it's process id.
      * @return the canonical process, a list of them for all the different versions.
      */
-    List<Canonical> findByProcessId(final int processId);
+    List<Canonical> findByProcessId(final long processId);
 
 
 

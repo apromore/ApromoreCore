@@ -19,9 +19,8 @@
     </sws:dynamic-wsdl>
 
     <sws:interceptors>
-        <bean class="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor"/>
-        <bean class="org.springframework.ws.soap.server.endpoint.interceptor.SoapEnvelopeLoggingInterceptor"
-            p:logRequest="false" p:logResponse="false" />
+        <bean class="org.apromore.util.spring.LoggingInterceptor"
+            p:logRequest="true" p:logResponse="true"/>
         <bean id="validatingInterceptor"  class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor"
             p:xsdSchemaCollection-ref="schemaCollection" p:validateRequest="false" p:validateResponse="false"/>
     </sws:interceptors>
@@ -81,9 +80,9 @@
     <bean id="toolboxManager" class="org.apromore.toolbox.service.ToolboxManagerImpl" p:client-ref="toolboxDataAccessClient" />
 
 
-    <bean id="domainService" class="org.apromore.service.impl.DomainServiceImpl" />
-    <bean id="formatService" class="org.apromore.service.impl.FormatServiceImpl" />
-    <bean id="userService" class="org.apromore.service.impl.UserServiceImpl" />
-    <bean id="processService" class="org.apromore.service.impl.ProcessServiceImpl" />
+    <!--<bean id="domainService" class="org.apromore.service.impl.DomainServiceImpl" />-->
+    <!--<bean id="formatService" class="org.apromore.service.impl.FormatServiceImpl" />-->
+    <!--<bean id="userService" class="org.apromore.service.impl.UserServiceImpl" />-->
+    <!--<bean id="processService" class="org.apromore.service.impl.ProcessServiceImpl" />-->
 
 </beans>

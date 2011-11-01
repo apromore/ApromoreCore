@@ -29,23 +29,18 @@ public class CanonicalDaoJpa extends JpaTemplate implements CanonicalDao {
 
     /**
      * Returns a Canonical
-     * @see org.apromore.dao.CanonicalDao#findByProcessId(int)
+     * @see org.apromore.dao.CanonicalDao#findByProcessId(long)
      * {@inheritDoc}
      */
     @Override
-    public List<Canonical> findByProcessId(final int processId) {
+    public List<Canonical> findByProcessId(final long processId) {
         return execute(new JpaCallback<List<Canonical>>() {
 
             @SuppressWarnings("unchecked")
             public List<Canonical> doInJpa(EntityManager em) {
                 Query query = em.createNamedQuery(Canonical.FIND_BY_PROCESS_ID);
                 query.setParameter("processId", processId);
-                List<Canonical> canonicals = query.getResultList();
-                if (canonicals.isEmpty()) {
-                    return null;
-                } else {
-                    return canonicals;
-                }
+                return query.getResultList();
             }
         });
     }

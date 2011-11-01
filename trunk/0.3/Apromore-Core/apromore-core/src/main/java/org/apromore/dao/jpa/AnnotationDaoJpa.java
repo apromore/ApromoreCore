@@ -37,12 +37,7 @@ public class AnnotationDaoJpa extends JpaTemplate implements AnnotationDao {
             public List<Annotation> doInJpa(EntityManager em) {
                 Query query = em.createNamedQuery(Annotation.FIND_BY_URI);
                 query.setParameter("uri", nativeUri);
-                List<Annotation> annotations = query.getResultList();
-                if (annotations.isEmpty()) {
-                    return null;
-                } else {
-                    return annotations;
-                }
+                return query.getResultList();
             }
         });
     }

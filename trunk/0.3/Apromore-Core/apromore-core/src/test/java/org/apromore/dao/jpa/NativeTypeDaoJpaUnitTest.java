@@ -85,7 +85,7 @@ public class NativeTypeDaoJpaUnitTest {
 
         verify(manager, query);
 
-        assertThat(natives, equalTo(null));
+        assertThat(natives, equalTo(nats));
     }
 
     @Test

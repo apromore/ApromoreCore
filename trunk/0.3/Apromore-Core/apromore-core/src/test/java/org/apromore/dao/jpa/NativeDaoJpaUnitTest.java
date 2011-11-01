@@ -55,7 +55,7 @@ public class NativeDaoJpaUnitTest {
 
     @Test
     public final void testGetAllProcesses() {
-        int processId = 123;
+        long processId = 123;
         String versionName = "123";
         List<Native> nats = new ArrayList<Native>();
         nats.add(createNative());
@@ -78,7 +78,7 @@ public class NativeDaoJpaUnitTest {
 
     @Test
     public final void testGetAllProcessesNonFound() {
-        int processId = 123;
+        long processId = 123;
         String versionName = "123";
         List<Native> nats = new ArrayList<Native>();
 
@@ -94,7 +94,7 @@ public class NativeDaoJpaUnitTest {
 
         verify(manager, query);
 
-        assertThat(natives, equalTo(null));
+        assertThat(natives, equalTo(nats));
     }
 
     @Test
