@@ -13,7 +13,7 @@
     <groupId>org.apromore</groupId>
     <artifactId>epml-schema</artifactId>
     <packaging>jar</packaging>
-    <version>${epml-schema.version}</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <url>http://code.google.com/p/apromore/</url>
     <name>Apromore Common EPML Generated Code</name>
@@ -108,8 +108,18 @@
                     </execution>
                 </executions>
                 <configuration>
+                    <verbose>false</verbose>
+                    <strict>true</strict>
+                    <extension>false</extension>
+                    <forceRegenerate>true</forceRegenerate>
                     <schemaDirectory>${basedir}/src/main/xsd</schemaDirectory>
-                    <generateDirectory>${basedir}/target/generated-sources/src/main/java</generateDirectory>
+                    <generateDirectory>${basedir}/target/generated-sources/src</generateDirectory>
+                    <schemaIncludes>
+                        <schemaInclude>EPML_2.0.xsd</schemaInclude>
+                    </schemaIncludes>
+                    <!--<bindingIncludes>-->
+                        <!--<bindingInclude>bindings.xml</bindingInclude>-->
+                    <!--</bindingIncludes>-->
                 </configuration>
             </plugin>
             <plugin>
@@ -124,7 +134,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${basedir}/target/generated-sources/src/main/java</source>
+                                <source>${basedir}/target/generated-sources/src</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -141,7 +151,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/generated-sources/src/main/java/de/epml/</outputDirectory>
+                            <outputDirectory>${basedir}/target/generated-sources/src/de/epml/</outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>
