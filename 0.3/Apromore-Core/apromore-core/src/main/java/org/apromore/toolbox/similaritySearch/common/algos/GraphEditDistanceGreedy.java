@@ -26,16 +26,13 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
 		Set<TwoVertices> result = new HashSet<TwoVertices>();
 		for (Vertex ea: a){
 			for (Vertex eb: b){
-//				System.out.println(">> " + ea+ " <> "+ eb);
 				double similarity = NodeSimilarity.findNodeSimilarity(ea, eb, labelTreshold);
 				if (ea.getType().equals(Vertex.Type.gateway) && eb.getType().equals(Vertex.Type.gateway) 
 						&& similarity >= cedcutoff) {
-//					System.out.println(">> " + ea+ " <> "+ eb + " -> "+ similarity);
 					result.add(new TwoVertices(ea.getID(), eb.getID(), 1 - similarity));
 				} else if ((ea.getType().equals(Vertex.Type.event) && eb.getType().equals(Vertex.Type.event) 
 						|| ea.getType().equals(Vertex.Type.function) && eb.getType().equals(Vertex.Type.function)) &&
 						AssingmentProblem.canMap(ea, eb) && similarity >= ledcutoff){
-//					System.out.println(">> " + ea+ " <> "+ eb + " -> "+ similarity);
 					result.add(new TwoVertices(ea.getID(), eb.getID(), 1 - similarity));
 				}
 			}
@@ -59,26 +56,14 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
 			stepn++;
 			Vector<TwoVertices> bestCandidates = new Vector<TwoVertices>();
 			double newShortestEditDistance = shortestEditDistance;
-//			long s1 = System.currentTimeMillis();
-//			System.out.println("step : "+stepn + " ; "+ openCouples.size());
 			for (TwoVertices couple: openCouples){
-//				System.out.println(">> PROCESSING COUPLE : " + sg1.getVertexMap().get(couple.v1)+ " <> "+ sg2.getVertexMap().get(couple.v2));
-
-//				long t1 = System.currentTimeMillis();
-				double newEditDistance = this.editDistance(mapping, couple); 
-//				System.out.println("\t edit distance : " + newEditDistance + " ; shortest " + shortestEditDistance);
-
-//				long t2 = System.currentTimeMillis();
-//				System.out.println((t2-t1)+ " ms: openpair "+sg1.getLabel(couple.v1) + " "+ sg2.getLabel(couple.v2) + " "+newEditDistance+ " "+mapping.size());
+				double newEditDistance = this.editDistance(mapping, couple);
 				if (newEditDistance < newShortestEditDistance){
 					bestCandidates = new Vector<TwoVertices>();
 					bestCandidates.add(couple);
-//					System.out.println("\t>> ADD COUPLE to bestcandidates(clean bestcand) : " + sg1.getVertexMap().get(couple.v1)+ " <> "+ sg2.getVertexMap().get(couple.v2));
 					newShortestEditDistance = newEditDistance;
 				}else if (newEditDistance == newShortestEditDistance){
 					bestCandidates.add(couple);
-//					System.out.println("\t>> ADD COUPLE to bestcandidates : " + sg1.getVertexMap().get(couple.v1)+ " <> "+ sg2.getVertexMap().get(couple.v2));
-
 				}
 			}
 
@@ -88,32 +73,18 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
 
 				Set<TwoVertices> newOpenCouples = new HashSet<TwoVertices>();
 				for (TwoVertices p: openCouples){
-//					System.out.println("\t\t\t<><>openCouples : " + sg1.getVertexMap().get(p.v1)+ " <> "+ sg2.getVertexMap().get(p.v2));
 					if (!p.v1.equals(couple.v1) && !p.v2.equals(couple.v2)){
 						newOpenCouples.add(p);
-//						System.out.println("\t\t\t\tADDING TO NEW MAPPP!!!");
 					}
 				}
 				openCouples = newOpenCouples;
 
 				mapping.addPair(couple);
-//				System.out.println("<><>MAPPING ADD COUPLE : " + sg1.getVertexMap().get(couple.v1)+ " <> "+ sg2.getVertexMap().get(couple.v2));
 				shortestEditDistance = newShortestEditDistance;
 				doStep = true;
 			}
-//			long s2 = System.currentTimeMillis();
-//			System.out.println("step took time : "+(s2-s1));
 		}
 		
-//		for (TwoVertices pair : mapping.getMapping()) {
-//			Vertex v1 = sg1.getVertexMap().get(pair.v1);
-//			Vertex v2 = sg2.getVertexMap().get(pair.v2);
-//			System.out.println(v1 + " <> "+ v2 + " " + (1-pair.weight));
-//		}
-//		
-//		System.out.println("substitutedV "+ mapping.getMapping().size() + " ; substituedEdges "+ mapping.nrMappedEdges + " similarity "+ (1-shortestEditDistance));
-
-//		System.out.println("shortest ed : "+shortestEditDistance);
 		//Return the smallest edit distance
 		return mapping.mapping;
 	}
@@ -138,27 +109,15 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
 			stepn++;
 			Vector<TwoVertices> bestCandidates = new Vector<TwoVertices>();
 			double newShortestEditDistance = shortestEditDistance;
-//			long s1 = System.currentTimeMillis();
-//			System.out.println("step : "+stepn + " ; "+ openCouples.size());
 			for (TwoVertices couple: openCouples){
-//				System.out.println(">> PROCESSING COUPLE : " + sg1.getVertexMap().get(couple.v1)+ " <> "+ sg2.getVertexMap().get(couple.v2));
-
-//				long t1 = System.currentTimeMillis();
-				double newEditDistance = this.editDistance(mapping, couple); 
+				double newEditDistance = this.editDistance(mapping, couple);
 				
-//				System.out.println("\t edit distance : " + newEditDistance + " ; shortest " + shortestEditDistance);
-
-//				long t2 = System.currentTimeMillis();
-//				System.out.println((t2-t1)+ " ms: openpair "+sg1.getLabel(couple.v1) + " "+ sg2.getLabel(couple.v2) + " "+newEditDistance+ " "+mapping.size());
 				if (newEditDistance < newShortestEditDistance){
 					bestCandidates = new Vector<TwoVertices>();
 					bestCandidates.add(couple);
-//					System.out.println("\t>> ADD COUPLE to bestcandidates(clean bestcand) : " + sg1.getVertexMap().get(couple.v1)+ " <> "+ sg2.getVertexMap().get(couple.v2));
 					newShortestEditDistance = newEditDistance;
 				}else if (newEditDistance == newShortestEditDistance){
 					bestCandidates.add(couple);
-//					System.out.println("\t>> ADD COUPLE to bestcandidates : " + sg1.getVertexMap().get(couple.v1)+ " <> "+ sg2.getVertexMap().get(couple.v2));
-
 				}
 			}
 
@@ -168,21 +127,16 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
 
 				Set<TwoVertices> newOpenCouples = new HashSet<TwoVertices>();
 				for (TwoVertices p: openCouples){
-//					System.out.println("\t\t\t<><>openCouples : " + sg1.getVertexMap().get(p.v1)+ " <> "+ sg2.getVertexMap().get(p.v2));
 					if (!p.v1.equals(couple.v1) && !p.v2.equals(couple.v2)){
 						newOpenCouples.add(p);
-//						System.out.println("\t\t\t\tADDING TO NEW MAPPP!!!");
 					}
 				}
 				openCouples = newOpenCouples;
 
 				mapping.addPair(couple);
-//				System.out.println("<><>MAPPING ADD COUPLE : " + sg1.getVertexMap().get(couple.v1)+ " <> "+ sg2.getVertexMap().get(couple.v2));
 				shortestEditDistance = newShortestEditDistance;
 				doStep = true;
 			}
-//			long s2 = System.currentTimeMillis();
-//			System.out.println("step took time : "+(s2-s1));
 		}
 		
 		nrSubstitudedVertices = mapping.size();
@@ -191,13 +145,8 @@ public class GraphEditDistanceGreedy extends DistanceAlgoAbstr implements Distan
 			for (TwoVertices pair : mapping.getMapping()) {
 				Vertex v1 = sg1.getVertexMap().get(pair.v1);
 				Vertex v2 = sg2.getVertexMap().get(pair.v2);
-				
-//				System.out.println(v1 + " <> "+ v2 + " " + NodeSimilarity.findNodeSimilarity(v1, v2, ledcutoff));
-	
 			}
 		}
-//		System.out.println("substitutedV "+ mapping.getMapping().size() + " ; substituedEdges "+ mapping.nrMappedEdges);
-//		System.out.println("shortest ed : "+shortestEditDistance);
 		//Return the smallest edit distance
 		return shortestEditDistance;
 	}

@@ -19,8 +19,8 @@
     </sws:dynamic-wsdl>
 
     <sws:interceptors>
-        <bean class="org.apromore.util.spring.LoggingInterceptor"
-            p:logRequest="true" p:logResponse="true"/>
+        <bean class="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor"
+            p:logRequest="false" p:logResponse="false" />
         <bean id="validatingInterceptor"  class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor"
             p:xsdSchemaCollection-ref="schemaCollection" p:validateRequest="false" p:validateResponse="false"/>
     </sws:interceptors>
@@ -63,6 +63,9 @@
     <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
     <bean id="messageReceiver" class="org.springframework.ws.soap.server.SoapMessageDispatcher"/>
 
+    <!-- ************************** For marshaling / un-marshaling ************************** -->
+
+
 
     <!-- ************************** Non WebServices ************************** -->
 
@@ -80,6 +83,7 @@
     <bean id="toolboxManager" class="org.apromore.toolbox.service.ToolboxManagerImpl" p:client-ref="toolboxDataAccessClient" />
 
 
+    <!--<bean id="canoniserService" class="org.apromore.service.impl.CanoniserServiceImpl" />-->
     <!--<bean id="domainService" class="org.apromore.service.impl.DomainServiceImpl" />-->
     <!--<bean id="formatService" class="org.apromore.service.impl.FormatServiceImpl" />-->
     <!--<bean id="userService" class="org.apromore.service.impl.UserServiceImpl" />-->

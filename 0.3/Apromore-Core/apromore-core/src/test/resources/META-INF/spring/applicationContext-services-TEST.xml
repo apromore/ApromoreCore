@@ -74,6 +74,7 @@
     <bean id="toolboxManager" class="org.apromore.toolbox.service.ToolboxManagerImpl" p:client-ref="toolboxDataAccessClient" />
 
 
+    <bean id="canoniserService" class="org.apromore.service.impl.CanoniserServiceImpl" />
     <bean id="domainService" class="org.apromore.service.impl.DomainServiceImpl" />
     <bean id="formatService" class="org.apromore.service.impl.FormatServiceImpl" />
     <bean id="userService" class="org.apromore.service.impl.UserServiceImpl" />

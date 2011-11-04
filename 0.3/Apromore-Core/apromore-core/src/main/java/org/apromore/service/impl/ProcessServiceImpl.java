@@ -1,5 +1,6 @@
 package org.apromore.service.impl;
 
+import org.apromore.common.Constants;
 import org.apromore.dao.AnnotationDao;
 import org.apromore.dao.CanonicalDao;
 import org.apromore.dao.NativeDao;
@@ -10,18 +11,27 @@ import org.apromore.dao.jpa.NativeDaoJpa;
 import org.apromore.dao.jpa.ProcessDaoJpa;
 import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.Canonical;
+import org.apromore.service.model.Format;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.Process;
+import org.apromore.exception.AnnotationNotFoundException;
+import org.apromore.exception.CanonicalFormatNotFoundException;
+import org.apromore.exception.ExportFormatException;
 import org.apromore.model.AnnotationsType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.service.ProcessService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.activation.DataSource;
+import javax.mail.util.ByteArrayDataSource;
+import java.io.IOException;
 import java.util.List;
 
 /**
@@ -32,6 +42,8 @@ import java.util.List;
 @Service
 @Transactional(propagation = Propagation.REQUIRED)
 public class ProcessServiceImpl implements ProcessService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessServiceImpl.class);
 
     @Autowired
     private ProcessDao prsDao;
@@ -58,6 +70,61 @@ public class ProcessServiceImpl implements ProcessService {
         buildProcessSummaryList(processSummaries);
 
         return processSummaries;
+    }
+
+    /**
+     * @see org.apromore.service.ProcessService#exportFormat(long, String, String)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public DataSource exportFormat(final long processId, final String version, final String format) throws ExportFormatException {
+        String read;
+        DataSource dataSource;
+        try {
+            if (Constants.CANONICAL.compareTo(format) == 0) {
+                read = canDao.getCanonical(processId, version);
+            } else if (format.startsWith(Constants.ANNOTATIONS)) {
+                String type = format.substring(Constants.ANNOTATIONS.length() + 3, format.length());
+                read = annDao.getAnnotation(processId, version, type);
+            } else {
+                read = natDao.getNative(processId, version, format);
+            }
+            dataSource = new ByteArrayDataSource(read, "text/xml");
+        } catch (Exception e) {
+            throw new ExportFormatException(e.getMessage(), e.getCause());
+        }
+        return dataSource;
+    }
+
+    /**
+     * Returns the Canonical format as XML.
+     * @see org.apromore.service.ProcessService#getCanonicalAnf(long, String, boolean, String)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Format getCanonicalAnf(final long processId, final String version, final boolean withAnn, final String annName)
+            throws ExportFormatException {
+        Format result = new Format();
+        try {
+
+            String annotation = "";
+            String canonical = canDao.getCanonical(processId, version);
+            if (withAnn) {
+                annotation = annDao.getAnnotation(processId, version, annName);
+                result.setAnf(new ByteArrayDataSource(annotation, "text/xml"));
+            }
+            result.setCpf(new ByteArrayDataSource(canonical, "text/xml"));
+
+        } catch (CanonicalFormatNotFoundException cfnfe) {
+            throw new ExportFormatException(cfnfe.getMessage(), cfnfe.getCause());
+        } catch (AnnotationNotFoundException afnfe) {
+            throw new ExportFormatException(afnfe.getMessage(), afnfe.getCause());
+        } catch (IOException e) {
+            throw new ExportFormatException(e.getMessage(), e.getCause());
+        }
+        return result;
     }
 
 

@@ -1,6 +1,8 @@
 package org.apromore.portal.dialogController;
 
 import org.apromore.model.ProcessSummariesType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zul.Listbox;
 import org.zkoss.zul.Panel;
@@ -8,6 +10,8 @@ import org.zkoss.zul.Tree;
 import org.zkoss.zul.Window;
 
 public class NavigationController extends Window {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(NavigationController.class.getName());
 
     private MainController mainC;
     private Panel navigationP;
@@ -30,14 +34,12 @@ public class NavigationController extends Window {
 
     }
 
+
+    /**
+     * process of domains associated with opened branches are selected
+     */
     protected void displayProcessRowDetails(Event event) throws Exception {
-
-        /**
-         * process of domains associated with opened branches are selected
-         */
-
-        System.out.println(this.tree.getSelectedItem().getLabel());
-
+        LOGGER.debug(this.tree.getSelectedItem().getLabel());
     }
 /*
 	private void buildDomainIndex(ProcessSummariesType processSummaries) {

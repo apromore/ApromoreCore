@@ -1,11 +1,9 @@
 package org.apromore.dao.jpa;
 
-import org.apromore.dao.model.Canonical;
-import org.apromore.dao.model.NativeType;
-import org.apromore.dao.model.Process;
-import org.apromore.dao.model.User;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.annotation.Rollback;
 import org.springframework.test.context.ContextConfiguration;
@@ -13,9 +11,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Test the Process DAO JPA class.
@@ -30,6 +26,8 @@ import java.util.Set;
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ProcessDaoJpaIntgTest {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDaoJpaIntgTest.class);
+
     @Autowired
     private ProcessDaoJpa dao;
 
@@ -38,7 +36,7 @@ public class ProcessDaoJpaIntgTest {
     public void getProcessSummariesNoSearchExpression() {
         List<Object[]> processes = dao.getAllProcesses();
         for (Object[] process : processes) {
-           System.out.println(process[0].toString() + " - " + process[1].toString());
+           LOGGER.debug(process[0].toString() + " - " + process[1].toString());
         }
     }
 

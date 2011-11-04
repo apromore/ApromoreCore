@@ -20,7 +20,8 @@ import org.apromore.model.VersionSummaryType;
 import org.apromore.toolbox.da.ToolboxDataAccessClient;
 import org.apromore.toolbox.similaritySearch.tools.MergeProcesses;
 import org.apromore.toolbox.similaritySearch.tools.SearchForSimilarProcesses;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.activation.DataHandler;
@@ -35,7 +36,6 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 /**
  * ToolBox Service.
@@ -45,7 +45,7 @@ import java.util.logging.Logger;
 @Service("ToolboxManager")
 public class ToolboxManagerImpl implements ToolboxManager {
 
-    private static final Logger LOG = Logger.getLogger(ToolboxManagerImpl.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ToolboxManagerImpl.class.getName());
 
     private ToolboxDataAccessClient client;
 
@@ -56,7 +56,7 @@ public class ToolboxManagerImpl implements ToolboxManager {
      * @return the result either with data or an error message.
      */
     public SearchForSimilarProcessesOutputMsgType searchForSimilarProcesses(SearchForSimilarProcessesInputMsgType payload) {
-        LOG.info("Executing operation searchForSimilarProcesses");
+        LOGGER.info("Executing operation searchForSimilarProcesses");
         SearchForSimilarProcessesOutputMsgType res = new SearchForSimilarProcessesOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -161,7 +161,7 @@ public class ToolboxManagerImpl implements ToolboxManager {
                         similarProcesses.getProcessVersion().add(processVersion);
                     }
                 } catch (Exception e) {
-                    LOG.info("Operation searchForSimilarProcesses failed. See process: "
+                    LOGGER.info("Operation searchForSimilarProcesses failed. See process: "
                             + processVersion.getProcessId() + ", version: " + processVersion.getVersionName());
                     // throw new ExceptionComputeSimilarity(e.getMessage());
                 }
@@ -213,12 +213,10 @@ public class ToolboxManagerImpl implements ToolboxManager {
 
 
     public MergeProcessesOutputMsgType mergeProcesses(MergeProcessesInputMsgType payload) {
-        LOG.info("Executing operation mergeProcesses");
-        System.out.println(payload);
+        LOGGER.info("Executing operation mergeProcesses");
         MergeProcessesOutputMsgType res = new MergeProcessesOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
-
         try {
             String processName = payload.getProcessName();
             String versionName = payload.getVersionName();

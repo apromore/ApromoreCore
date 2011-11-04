@@ -134,138 +134,12 @@ public abstract class DistanceAlgoAbstr implements DistanceAlgo {
 			}else{
 				double eskip = (skippedEdges / (1.0 * totalNrEdges)); 
 				editDistance = ((weightSkippedVertex * vskip) + (weightSubstitutedVertex * vsubs) + (weightSkippedEdge * eskip))/(weightSkippedVertex+weightSubstitutedVertex+weightSkippedEdge); 			
-//				System.out.println(">>>> "+ editDistance+ " ((" + weightSkippedVertex + " * " + vskip + ") + (" + weightSubstitutedVertex + " * " + vsubs + ") + (" + weightSkippedEdge + " * " + eskip+ ")) / (" +weightSkippedVertex+ " + " +weightSubstitutedVertex+ " + " +weightSkippedEdge+ " ))");
 			}
 			return editDistance;
 		}		
 	}
 	
-//	protected double editDistance(Set<TwoVertices> m){
-//		Set<String> verticesFrom1Used = new HashSet<String>();
-//		Set<String> verticesFrom2Used = new HashSet<String>();
-//
-//		double epsilonSkippedVertices = 0.0;
-//		double epsilonInsertedVertices = 0.0;
-//		double epsilonDeletedVertices = 0.0;
-//		double epsilonSkippedEdges = 0.0;
-//		
-//		//vid1tovid2 = m, but it is a mapping, so we can more efficiently find the 
-//		//counterpart of a node in Graph1.
-//		Map<String, String> vid1tovid2 = new HashMap<String, String>();
-//		Map<String, String> vid2tovid1 = new HashMap<String, String>();
-//
-//		//Substituted vertices are vertices that >are< mapped.
-//		//Their distance is 1.0 - string-edit similarity of their labels.
-//		double substitutedVertices = 0.0;
-//		for (TwoVertices pair: m) {
-//			if (((pair.v1) != null) && (pair.v2 != null)){
-//				double substitutionDistance;
-//				
-//				verticesFrom1Used.add(pair.v1);
-//				verticesFrom2Used.add(pair.v2);
-//			
-//				//Score the substitution
-//				substitutionDistance = 1.0 - NodeSimilarity.findNodeSimilarity(sg1.getVertexMap().get(pair.v1), 
-//						sg2.getVertexMap().get(pair.v2)); 
-////				
-////				System.out.println(sg1.getVertexMap().get(pair.v1)+ " <> " + sg2.getVertexMap().get(pair.v2)  + " " + substitutionDistance);
-//				
-//				if (sg1.getVertexMap().get(pair.v1).getType().equals(Type.gateway) 
-//						&& sg2.getVertexMap().get(pair.v2).getType().equals(Type.gateway) 
-//						&& substitutionDistance <= Settings.MERGE_CONTEXT_THRESHOLD) {
-//				}
-//				else if (substitutionDistance <= Settings.MERGE_THRESHOLD) {
-//				}
-////				System.out.println("*** ED: substitutionDistance: "+ 
-////						substitutionDistance + " -> " + 
-////						sg1.getVertexMap().get(pair.v1) + " <> "+ 
-////						sg2.getVertexMap().get(pair.v2));
-//				
-//				substitutedVertices += substitutionDistance;
-//			}else{
-//				if (pair.v1 == null){
-//					epsilonInsertedVertices += 1.0;
-////					System.out.println("*** ED: epsilonInsertedVertices += 1.0");
-//				}else{
-//					epsilonDeletedVertices += 1.0;				
-////					System.out.println("*** ED: epsilonDeletedVertices += 1.0");
-//				}
-//				epsilonSkippedVertices += 1.0;
-////				System.out.println("*** ED: epsilonSkippedVertices += 1.0");
-//			}
-//			
-//			//make each pair \in m also a pair \in vid1tovid2, 
-//			//such that in the end vid1tovid2 = m.
-//			vid1tovid2.put(pair.v1, pair.v2);
-//			vid2tovid1.put(pair.v2, pair.v1);
-//		}
-//
-//		//Substituted edges are edges that are not mapped.
-//		//First, create the set of all edges in Graph 2.
-//		List<Edge> edgesIn1 = sg1.getEdges();
-//		List<Edge> edgesIn2 = sg2.getEdges();
-//
-//		//Second, create the set of all edges in Graph 1,
-//		//but translate it into an edge on vertices from Graph 2.
-//		//I.e.: if (v1,v2) \in <Edges from Graph 1> and
-//		//v1 is mapped onto v1' and v2 is mapped onto v2', then
-//		//(v1',v2') \in <Translated edges from Graph 1>.
-//		Set<Edge> translatedEdgesIn1 = new HashSet<Edge>();
-//		for (Vertex i: sg1.getVertices()){
-//			for (Vertex j: i.getChildren()){
-//				if (vid1tovid2.containsKey(i.getID()) 
-//						&& vid1tovid2.containsKey(j.getID())){
-//					String srcMap = vid1tovid2.get(i.getID());
-//					String tgtMap = vid1tovid2.get(j.getID());
-//					if ((srcMap != null) && (tgtMap != null)){
-//						translatedEdgesIn1.add(new Edge(srcMap, tgtMap));
-//					}else{
-//						epsilonSkippedEdges += 1.0;
-////						System.out.println("*** ED: epsilonSkippedEdges += 1.0");
-//					}
-//				}
-//			}
-//		}	
-//		
-//		if (translatedEdgesIn1.size() > 0)
-//			edgesIn2.removeAll(translatedEdgesIn1); //Edges that are skipped remain
-//		
-//		Set<Edge> translatedEdgesIn2 = new HashSet<Edge>();
-//		for (Vertex i: sg2.getVertices()){
-//			for (Vertex j: i.getChildren()){
-//				if (vid2tovid1.containsKey(i.getID()) 
-//						&& vid2tovid1.containsKey(j.getID())){
-//					String srcMap = vid2tovid1.get(i.getID());
-//					String tgtMap = vid2tovid1.get(j.getID());
-//					if ((srcMap != null) && (tgtMap != null)){					
-//						translatedEdgesIn2.add(new Edge(srcMap, tgtMap));							
-//					}else{
-//						epsilonSkippedEdges += 1.0;
-////						System.out.println("*** ED: epsilonSkippedEdges += 1.0");
-//					}
-//				}
-//			}
-//		}		
-//		
-////		System.out.println(edgesIn1 + " "+ translatedEdgesIn2);
-//
-//		if (translatedEdgesIn2.size() > 0) {
-//			edgesIn1.removeAll(translatedEdgesIn2); //Edges that are skipped remain
-//		}
-//		
-//		double skippedEdges = 1.0*edgesIn1.size() + 1.0*edgesIn2.size();
-//		double skippedVertices = sg1.getVertices().size() + sg2.getVertices().size() - verticesFrom1Used.size() - verticesFrom2Used.size();
-//		
-//		if (useepsilon){
-//			skippedEdges = epsilonSkippedEdges;
-//			skippedVertices = epsilonSkippedVertices;
-//		}
-////		System.out.println("*** ED: skippedEdges: " + skippedEdges +"(" + edgesIn1.size() +", "+ edgesIn2.size()+ ") skippedVertices: " + skippedVertices +
-////				" substitutedVertices: "+ substitutedVertices);
-//		return computeScore(skippedEdges, skippedVertices, substitutedVertices, 0.0, 0.0);
-//	}
 	protected double editDistance(BestMapping bestMapping, TwoVertices addedPair){
-
 		//Substituted vertices are vertices that >are< mapped.
 		//Their distance is 1.0 - string-edit similarity of their labels.
 		double substitutedVertices = bestMapping.substitutedVerticesCost + addedPair.weight;
@@ -275,13 +149,6 @@ public abstract class DistanceAlgoAbstr implements DistanceAlgo {
 		double skippedEdges = sg1.getEdges().size() + sg2.getEdges().size() - (2 * addedbyMapping);
 		double skippedVertices = sg1.getVertices().size() + sg2.getVertices().size() - (2 * (bestMapping.size() + 1));
 		
-		// TODO find the logic if needed
-//		if (useepsilon){
-//			skippedEdges = epsilonSkippedEdges;
-//			skippedVertices = epsilonSkippedVertices;
-//		}
-//		System.out.println("*** ED: skippedEdges: " + skippedEdges +"(" + edgesIn1.size() +", "+ edgesIn2.size()+ ") skippedVertices: " + skippedVertices +
-//				" substitutedVertices: "+ substitutedVertices);
 		return computeScore(skippedEdges, skippedVertices, substitutedVertices, 0.0, 0.0);
 	}
 

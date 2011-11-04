@@ -22,13 +22,6 @@ public class Digest {
 		// modelass more or equal as the frequency given
 		for (Edge e : merged.getEdges()) {
 			if (e.getLabels().size() >= freq) {
-//				System.out.println("adding edge to digest "+e.getFromVertex() + " "+ e.getToVertex());
-//				for (Entry<String, Vertex> entries : merged.getVertexMap().entrySet()) {
-//					System.out.println(entries.getKey() + " : "+ entries.getValue());
-//				}
-//				
-//				System.out.println("**********************");
-//				
 				digest.addEdge(e);
 				Vertex fromVertex = digest.getVertexMap().get(e.getFromVertex());
 				Vertex toVertex = digest.getVertexMap().get(e.getToVertex());
@@ -48,12 +41,7 @@ public class Digest {
 				toVertex.addParent(fromVertex);
 			}
 		}
-		
-//		for (Entry<String, Vertex> entries : digested.getVertexMap().entrySet()) {
-//			System.out.println(entries.getKey() + " : "+ entries.getValue());
-//		}
-//		System.out.println("**********************");
-		
+
 		HashSet<Vertex> lessParents = new HashSet<Vertex>();
 		HashSet<Vertex> lessChildren = new HashSet<Vertex>();
 		

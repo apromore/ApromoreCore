@@ -18,13 +18,14 @@ import org.apromore.model.StoreVersionInputMsgType;
 import org.apromore.model.StoreVersionOutputMsgType;
 import org.apromore.model.WriteAnnotationInputMsgType;
 import org.apromore.model.WriteAnnotationOutputMsgType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import javax.activation.DataHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.SQLException;
-import java.util.logging.Logger;
 
 /**
  *
@@ -32,12 +33,11 @@ import java.util.logging.Logger;
 @Service
 public class DataAccessCanoniserManagerImpl implements DataAccessCanoniserManager {
 
-    private static final Logger LOG = Logger.getLogger(DataAccessCanoniserManagerImpl.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataAccessCanoniserManagerImpl.class.getName());
 
 
     public GetCpfUriOutputMsgType getCpfUri(org.apromore.model.GetCpfUriInputMsgType payload) {
-        LOG.info("Executing operation getCpfUri");
-        System.out.println(payload);
+        LOGGER.info("Executing operation getCpfUri");
         GetCpfUriOutputMsgType res = new GetCpfUriOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -57,8 +57,7 @@ public class DataAccessCanoniserManagerImpl implements DataAccessCanoniserManage
 
 
     public WriteAnnotationOutputMsgType writeAnnotation(WriteAnnotationInputMsgType payload) {
-        LOG.info("Executing operation writeAnnotation");
-        System.out.println(payload);
+        LOGGER.info("Executing operation writeAnnotation");
         WriteAnnotationOutputMsgType res = new WriteAnnotationOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -93,8 +92,7 @@ public class DataAccessCanoniserManagerImpl implements DataAccessCanoniserManage
 
 
     public StoreVersionOutputMsgType storeVersion(StoreVersionInputMsgType payload) {
-        LOG.info("Executing operation storeVersion");
-        System.out.println(payload);
+        LOGGER.info("Executing operation storeVersion");
         StoreVersionOutputMsgType res = new StoreVersionOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -143,8 +141,7 @@ public class DataAccessCanoniserManagerImpl implements DataAccessCanoniserManage
 
 
     public StoreNativeOutputMsgType storeNative(StoreNativeInputMsgType payload) {
-        LOG.info("Executing operation storeNative");
-        System.out.println(payload);
+        LOGGER.info("Executing operation storeNative");
         StoreNativeOutputMsgType res = new StoreNativeOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -175,9 +172,7 @@ public class DataAccessCanoniserManagerImpl implements DataAccessCanoniserManage
       * @see org.apromore.dao.DataAccessCanoniserManager#storeNativeCpf(org.apromore.model.StoreNativeCpfInputMsgType  payload )*
       */
     public StoreNativeCpfOutputMsgType storeNativeCpf(StoreNativeCpfInputMsgType payload) {
-        LOG.info("Executing operation storeNativeCpf");
-        System.out.println(payload);
-
+        LOGGER.info("Executing operation storeNativeCpf");
         StoreNativeCpfOutputMsgType res = new StoreNativeCpfOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);

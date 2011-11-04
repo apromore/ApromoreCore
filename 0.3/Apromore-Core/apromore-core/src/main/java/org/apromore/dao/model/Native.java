@@ -35,12 +35,14 @@ import static javax.persistence.GenerationType.IDENTITY;
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NamedQueries( {
-    @NamedQuery(name = Native.FIND_NATIVE_TYPES, query = "SELECT n FROM Native n, Canonical c WHERE n.canonical.uri = c.uri AND c.process.processId = :processId AND c.versionName = :versionName")
+    @NamedQuery(name = Native.FIND_NATIVE_TYPES, query = "SELECT n FROM Native n, Canonical c WHERE n.canonical.uri = c.uri AND c.process.processId = :processId AND c.versionName = :versionName"),
+    @NamedQuery(name = Native.GET_NATIVE, query = "SELECT n FROM Native n, Canonical c WHERE n.canonical.uri = c.uri AND c.process.processId = :processId AND c.versionName = :versionName AND n.nativeType.natType = :nativeType")
 })
 @Configurable("native")
 public class Native implements Serializable {
 
     public static final String FIND_NATIVE_TYPES = "native.findNativeTypes";
+    public static final String GET_NATIVE = "pr.getNative";
 
     /** Hard coded for interoperability. */
     private static final long serialVersionUID = -235332908738485548L;

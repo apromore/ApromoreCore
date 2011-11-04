@@ -68,7 +68,6 @@ public class HungarianAlgorithm{
         int[][] retval = new int[matrix.length][];
         for (int i = 0; i < starsByCol.length;  i++) {
             retval[i] = new int[]{starsByCol[i],i};
-//            System.out.println("result : t"+ starsByCol[i]+ " "+i);
         }
         return retval;
 

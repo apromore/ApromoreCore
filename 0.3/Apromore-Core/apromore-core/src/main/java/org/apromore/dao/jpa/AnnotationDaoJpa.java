@@ -2,7 +2,7 @@ package org.apromore.dao.jpa;
 
 import org.apromore.dao.AnnotationDao;
 import org.apromore.dao.model.Annotation;
-import org.apromore.dao.model.Canonical;
+import org.apromore.exception.AnnotationNotFoundException;
 import org.springframework.orm.jpa.JpaCallback;
 import org.springframework.orm.jpa.JpaTemplate;
 import org.springframework.stereotype.Repository;
@@ -41,6 +41,33 @@ public class AnnotationDaoJpa extends JpaTemplate implements AnnotationDao {
             }
         });
     }
+
+
+    /**
+     * Returns the Annotation as XML.
+     * @see org.apromore.dao.AnnotationDao#getAnnotation(long, String, String)
+     * {@inheritDoc}
+     */
+    @Override
+    public String getAnnotation(final long processId, final String version, final String name) throws AnnotationNotFoundException {
+         String result = execute(new JpaCallback<String>() {
+            @SuppressWarnings("unchecked")
+            public String doInJpa(EntityManager em) {
+                Query query = em.createNamedQuery(Annotation.GET_ANNOTATION);
+                query.setParameter("processId", processId);
+                query.setParameter("versionName", version);
+                query.setParameter("name", name);
+                return (String) query.getSingleResult();
+            }
+        });
+        if (result == null) {
+            throw new AnnotationNotFoundException("The Annotation for Process (" + processId + "," + version + ") cannot be found.");
+        }
+        return result;
+    }
+
+
+
 
 
     /**

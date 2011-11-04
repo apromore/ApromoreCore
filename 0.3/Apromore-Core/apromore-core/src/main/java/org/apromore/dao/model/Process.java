@@ -43,6 +43,7 @@ public class Process implements Serializable {
     public static final String GET_ALL_PROCESSES = "pr.getAllProcesses";
     public static final String GET_All_DOMAINS = "pr.getAllDomains";
 
+
     /** Hard coded for interoperability. */
     private static final long serialVersionUID = -2353656404638485548L;
 

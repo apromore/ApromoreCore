@@ -437,7 +437,6 @@ public class XPDL2Canonical {
 	}
 
 	private void translateProcess(NetType net, ProcessType bpmnproc, ResourceTypeRefType ref) throws ExceptionAdapters {
-		////System.out.println(bpmnproc.getName());
 		for (Object obj: bpmnproc.getContent()) {
 			if (obj instanceof Activities)
 				activities = ((Activities)obj).getActivity();
@@ -484,12 +483,9 @@ public class XPDL2Canonical {
 		Condition cond = flow.getCondition();
 		//Expression condE = cond.getContent();
 		if (csrc instanceof TaskType && cond != null && !cond.getContent().isEmpty()) {
-			//System.out.println("Condition type: " + cond.getType());
-	
 				NodeType split = implicitORSplit.get(csrc);
 				if (split == null) {
 					split = new ORSplitType();
-					//System.out.println("OR SPLIT GENERATED");
 					split.setId(BigInteger.valueOf(cpfId++));
 					implicitORSplit.put(csrc, split);
 					net.getNode().add(split);
@@ -517,7 +513,6 @@ public class XPDL2Canonical {
 	
 			EdgeType edge = addEdge(net, csrc, ctgt);
 			if(cond != null && cond.getExpression() != null)
-				//System.out.println(cond.getExpression());
 				edge.setCondition(cond.getExpression());
 	
 			edgeMap.put(flow, edge);
@@ -557,18 +552,15 @@ public class XPDL2Canonical {
 				trests = (TransitionRestrictions) obj;
 		if (route != null ){
 			node = translateGateway(net, act, route, trests);
-			//System.out.println("Gateway: " + route.getGatewayType());
 		} else if (event != null) {
 			node = translateEvent(net, act, event);
 			if(ref != null)
 				((EventType)node).getResourceTypeRef().add(ref);
-			//System.out.println("Event: " + act.getName());
 		} else {
 			// TODO: Subprocesses ...
 			node = translateTask(net, act);
 			if(ref != null)
 				((TaskType)node).getResourceTypeRef().add(ref);
-			//System.out.println("Activity: " + act.getName());
 		}
 
 		node.setId(BigInteger.valueOf(cpfId++));
@@ -596,14 +588,12 @@ public class XPDL2Canonical {
 			NodeType split = new ANDSplitType();
 			split.setId(BigInteger.valueOf(cpfId++));
 			net.getNode().add(split);
-			//System.out.println("Implicit split");
 		}
 
 		if (isJoin){
 			NodeType join = new XORJoinType();
 			join.setId(BigInteger.valueOf(cpfId++));
 			net.getNode().add(join);			
-			//System.out.println("Implicit join");
 		}
 		node.setName(act.getName());
 		return node;

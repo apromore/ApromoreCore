@@ -1,6 +1,5 @@
 package org.apromore.dao.model;
 
-import com.sun.tools.xjc.reader.xmlschema.bindinfo.BIConversion;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.omg.CORBA.PRIVATE_MEMBER;

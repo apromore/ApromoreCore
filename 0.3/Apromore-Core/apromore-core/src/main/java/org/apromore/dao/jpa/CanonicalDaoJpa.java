@@ -1,9 +1,10 @@
 package org.apromore.dao.jpa;
 
 import org.apromore.dao.CanonicalDao;
-import org.apromore.dao.ProcessDao;
 import org.apromore.dao.model.Canonical;
-import org.apromore.dao.model.Process;
+import org.apromore.exception.CanonicalFormatNotFoundException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.orm.jpa.JpaCallback;
 import org.springframework.orm.jpa.JpaTemplate;
 import org.springframework.stereotype.Repository;
@@ -11,6 +12,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceException;
 import javax.persistence.Query;
 import java.util.List;
 
@@ -21,10 +23,10 @@ import java.util.List;
  * @since 1.0
  */
 @Repository(value = "CanonicalDao")
-
 @Transactional(propagation = Propagation.REQUIRED)
 public class CanonicalDaoJpa extends JpaTemplate implements CanonicalDao {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(CanonicalDaoJpa.class);
 
 
     /**
@@ -33,6 +35,7 @@ public class CanonicalDaoJpa extends JpaTemplate implements CanonicalDao {
      * {@inheritDoc}
      */
     @Override
+    @Transactional(readOnly = true)
     public List<Canonical> findByProcessId(final long processId) {
         return execute(new JpaCallback<List<Canonical>>() {
 
@@ -44,6 +47,32 @@ public class CanonicalDaoJpa extends JpaTemplate implements CanonicalDao {
             }
         });
     }
+
+
+    /**
+     * Returns the Canonical format as XML.
+     * @see org.apromore.dao.CanonicalDao#getCanonical(long, String)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public String getCanonical(final long processId, final String version) throws CanonicalFormatNotFoundException {
+        String result = execute(new JpaCallback<String>() {
+            @SuppressWarnings("unchecked")
+            public String doInJpa(EntityManager em) throws PersistenceException {
+                Query query = em.createNamedQuery(Canonical.GET_CANONICAL);
+                query.setParameter("processId", processId);
+                query.setParameter("versionName", version);
+                return (String) query.getSingleResult();
+            }
+        });
+        if (result == null) {
+            throw new CanonicalFormatNotFoundException("The Canonical Process Model for Process (" + processId + "," + version +
+                    ") cannot be found.");
+        }
+        return result;
+    }
+
 
 
     /**

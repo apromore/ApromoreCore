@@ -60,10 +60,6 @@ public class LabelEditDistance {
 			int ed = ed(aTokens.get(i), bTokens.get(j));
 			edScore = ed == 0 ? 1 : 
 						(1 - ed/(Double.valueOf(Math.max(aTokens.get(i).length(), bTokens.get(j).length())))); 
-					
-//				System.out.println("edScore "+ edScore );
-//					edScore = ed;
-
 				costFunc[i][j] = edScore > 0 ? (-1)*edScore : edScore;
 			}
 		}
@@ -80,11 +76,6 @@ public class LabelEditDistance {
 		int[][] result = HungarianAlgorithm.computeAssignments(costFuncCopy);
 		
 		for(int i = 0; i < result.length; i++) {
-//			if (result[i][0] < aTokens.size()
-//			&& result[i][1] < bTokens.size()) {
-//				System.out.println(aTokens.get(result[i][0]) + 
-//				" "+ bTokens.get(result[i][1]) + " "+ (-1)*costFunc[result[i][0]][result[i][1]]);
-//			}
 			mappedWeightFunc += (-1)*costFunc[result[i][0]][result[i][1]];
 		}
 
@@ -99,7 +90,6 @@ public class LabelEditDistance {
 		else {
 			mappingScore = mappedWeight*2 / (aTokens.size() + bTokens.size());
 		}
-//		System.out.println("score:  "+mappingScore);
 		return mappingScore;
 	}
 

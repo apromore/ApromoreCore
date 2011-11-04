@@ -27,7 +27,6 @@ public interface ProcessDao {
     List<Object> getAllDomains();
 
 
-
     /**
      * Save the process.
      * @param process the process to persist

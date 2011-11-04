@@ -19,7 +19,5 @@ public interface CanoniserManager {
 
     public CanoniseProcessOutputMsgType canoniseProcess(CanoniseProcessInputMsgType payload);
 
-    public DeCanoniseProcessOutputMsgType deCanoniseProcess(DeCanoniseProcessInputMsgType payload);
-
     public CanoniseVersionOutputMsgType canoniseVersion(CanoniseVersionInputMsgType payload);
 }

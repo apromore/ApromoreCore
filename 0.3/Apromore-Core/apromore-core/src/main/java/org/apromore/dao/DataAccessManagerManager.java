@@ -40,9 +40,9 @@ public interface DataAccessManagerManager {
 
     public WriteEditSessionOutputMsgType writeEditSession(WriteEditSessionInputMsgType payload);
 
-    public ReadCanonicalAnfOutputMsgType readCanonicalAnf(ReadCanonicalAnfInputMsgType payload);
-
-    public ReadFormatOutputMsgType readFormat(ReadFormatInputMsgType payload);
+//    public ReadCanonicalAnfOutputMsgType readCanonicalAnf(ReadCanonicalAnfInputMsgType payload);
+//
+//    public ReadFormatOutputMsgType readFormat(ReadFormatInputMsgType payload);
 
     public EditProcessDataOutputMsgType editProcessData(EditProcessDataInputMsgType payload);
 

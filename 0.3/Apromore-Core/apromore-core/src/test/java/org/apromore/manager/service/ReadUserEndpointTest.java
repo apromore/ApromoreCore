@@ -1,13 +1,12 @@
 package org.apromore.manager.service;
 
 import org.apromore.dao.model.User;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
 import org.apromore.manager.da.ManagerDataAccessClient;
 import org.apromore.manager.toolbox.ManagerToolboxClient;
-import org.apromore.model.ObjectFactory;
 import org.apromore.model.ReadUserInputMsgType;
 import org.apromore.model.ReadUserOutputMsgType;
-import org.apromore.model.UserType;
 import org.apromore.service.UserService;
 import org.apromore.service.impl.UserServiceImpl;
 import org.junit.Assert;
@@ -85,5 +84,20 @@ public class ReadUserEndpointTest {
         verify(userSrv);
     }
 
+    @Test
+    public void testInvokeReadUserThrowsException() throws Exception {
+        ReadUserInputMsgType msg = new ReadUserInputMsgType();
+        msg.setUsername("someone");
+
+        expect(userSrv.findUser(msg.getUsername())).andThrow(new UserNotFoundException());
+
+        replay(userSrv);
+
+        JAXBElement<ReadUserOutputMsgType> response = endpoint.readUser(msg);
+        Assert.assertNotNull(response.getValue().getResult());
+        Assert.assertEquals("Result Code Doesn't Match", response.getValue().getResult().getCode().intValue(), -1);
+
+        verify(userSrv);
+    }
 }
 
