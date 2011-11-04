@@ -105,7 +105,6 @@ public class Canonical2XPDL {
 	 */
 	@SuppressWarnings("unchecked")
 	public Canonical2XPDL(CanonicalProcessType cpf) {
-
 		this.xpdl = new PackageType();
 		this.xpdl.setWorkflowProcesses(new WorkflowProcesses());
 		this.xpdl.setPools(new Pools());
@@ -131,17 +130,17 @@ public class Canonical2XPDL {
 	/**
 	 * de-canonize data (canonical) into xpdl using anf data
 	 * @param anf
-	 * @throws org.apromore.canoniser.exception.ExceptionAdapters
+	 * @throws org.apromore.exception.ExceptionAdapters
 	 */
 	@SuppressWarnings("unchecked")
 	public Canonical2XPDL(CanonicalProcessType cpf, AnnotationsType anf) throws ExceptionAdapters {
-		
-		this.EPML_flag = false;
-		for(TypeAttribute att: cpf.getAttribute())
-		{
-			if(att.getTypeRef().equals("IntialFormat"))
-				if(att.getValue().equals("EPML"))
+        this.EPML_flag = false;
+		for (TypeAttribute att: cpf.getAttribute()) {
+			if (att.getTypeRef().equals("IntialFormat")) {
+				if (att.getValue().equals("EPML")) {
 					this.EPML_flag = true;
+                }
+            }
 		}
 		
 		this.xpdl = new PackageType();
@@ -156,24 +155,19 @@ public class Canonical2XPDL {
 			bpmnproc.setId(net.getId().toString());
 			translateNet(bpmnproc, net, anf);
 			translateResources(bpmnproc, cpf);
-			if(split_process)
-			{
+			if (split_process) {
 				split(bpmnproc);
 			}
 			this.xpdl.getWorkflowProcesses().getWorkflowProcess().add(bpmnproc);
 		}
 		
-		if(EPML_flag)
-		{
+		if (EPML_flag) {
 			enhance_annotation();
 			resize_lanes();
 		}
 	}
 
-	private void resize_lanes() {
-			
-		
-	}
+	private void resize_lanes() { }
 
 
 	/**
@@ -720,7 +714,6 @@ public class Canonical2XPDL {
 											&& coor.getYCoordinate() >= annData.oldY
 											&& coor.getYCoordinate() <= annData.oldY+annData.oldH)
 										{
-											//System.out.println("Edge is set: " + flow.getId());
 											coor.setXCoordinate( annData.newX+annData.newH/2);
 											coor.setYCoordinate( annData.newY+annData.newH/2);
 										}

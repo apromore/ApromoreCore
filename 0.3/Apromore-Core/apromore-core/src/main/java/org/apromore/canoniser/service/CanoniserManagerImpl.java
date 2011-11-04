@@ -23,6 +23,8 @@ import org.apromore.model.GenerateAnnotationInputMsgType;
 import org.apromore.model.GenerateAnnotationOutputMsgType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ResultType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.wfmc._2008.xpdl2.PackageType;
@@ -39,7 +41,6 @@ import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.logging.Logger;
 
 /**
  *
@@ -47,100 +48,15 @@ import java.util.logging.Logger;
 @Service("CanoniserManager")
 public class CanoniserManagerImpl implements CanoniserManager {
 
-    private static final Logger LOG = Logger.getLogger(CanoniserManagerImpl.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CanoniserManagerImpl.class);
 
     private CanoniserDataAccessClient client;
-
-    public DeCanoniseProcessOutputMsgType deCanoniseProcess(DeCanoniseProcessInputMsgType payload) {
-        LOG.info("Executing operation deCanoniseProcess");
-        System.out.println(payload);
-        DeCanoniseProcessOutputMsgType res = new DeCanoniseProcessOutputMsgType();
-        ResultType result = new ResultType();
-        res.setResult(result);
-        try {
-            InputStream cpf_is = null, anf_is = null;
-            AnnotationsType anf = null;
-            DataHandler handler_cpf = payload.getCpf();
-            DataHandler handler_anf = payload.getAnf();
-            String nativeType = payload.getNativeType();
-            int processId = payload.getProcessId();
-            String version = payload.getVersion();
-
-            JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
-            Unmarshaller u = jc.createUnmarshaller();
-            cpf_is = handler_cpf.getInputStream();
-            JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u.unmarshal(cpf_is);
-            CanonicalProcessType cpf = rootElement.getValue();
-            if (handler_anf != null) {
-                anf_is = handler_anf.getInputStream();
-                jc = JAXBContext.newInstance("org.apromore.anf");
-                u = jc.createUnmarshaller();
-                JAXBElement<AnnotationsType> rootAnf = (JAXBElement<AnnotationsType>) u.unmarshal(anf_is);
-                anf = rootAnf.getValue();
-            }
-
-            ByteArrayOutputStream native_xml = new ByteArrayOutputStream();
-
-            /**
-             * native type must be supported by apromore.
-             * At the moment: XPDL 2.1 and EPML 2.0
-             */
-            if (nativeType.compareTo("XPDL 2.1") == 0 || nativeType.compareTo("EPML 2.0") == 0) {
-                if (nativeType.compareTo("XPDL 2.1") == 0) {
-                    Canonical2XPDL canonical2xpdl;
-                    if (anf == null) {
-                        canonical2xpdl = new Canonical2XPDL(cpf);
-                    } else {
-                        canonical2xpdl = new Canonical2XPDL(cpf, anf);
-                    }
-                    jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
-                    Marshaller m = jc.createMarshaller();
-                    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-                    JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl.getXpdl());
-                    m.marshal(rootxpdl, native_xml);
-
-                } else if (nativeType.compareTo("EPML 2.0") == 0) {
-                    Canonical2EPML canonical2epml;
-                    if (anf == null) {
-                        canonical2epml = new Canonical2EPML(cpf);
-                    } else {
-                        canonical2epml = new Canonical2EPML(cpf, anf);
-                    }
-                    jc = JAXBContext.newInstance("de.epml");
-                    Marshaller m = jc.createMarshaller();
-                    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-                    JAXBElement<TypeEPML> rootepml = new de.epml.ObjectFactory().createEpml(canonical2epml.getEPML());
-                    m.marshal(rootepml, native_xml);
-                }
-
-                InputStream native_xml_is = new ByteArrayInputStream(native_xml.toByteArray());
-                //client.StoreNative(processId, version, nativeType, native_xml_is);
-                //native_xml_is = new ByteArrayInputStream(native_xml.toByteArray());
-                DataSource native_ds = new ByteArrayDataSource(native_xml_is, "text/xml");
-                res.setNativeDescription(new DataHandler(native_ds));
-
-                result.setCode(0);
-                result.setMessage("");
-
-            } else {
-                result.setCode(-1);
-                result.setMessage("Native type not supported.");
-            }
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            result.setCode(-1);
-            result.setMessage("De-canonisation failed: " + ex.getMessage());
-        }
-        return res;
-    }
-
 
     /* (non-Javadoc)
       * @see org.apromore.canoniser.service.CanoniserManager#canoniseProcess(org.apromore.canoniser.model_manager.CanoniseProcessInputMsgType  payload )*
       */
     public CanoniseProcessOutputMsgType canoniseProcess(CanoniseProcessInputMsgType payload) {
-        LOG.info("Executing operation canoniseProcess");
-        System.out.println(payload);
+        LOGGER.info("Executing operation canoniseProcess");
         CanoniseProcessOutputMsgType res = new CanoniseProcessOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -178,8 +94,7 @@ public class CanoniserManagerImpl implements CanoniserManager {
     }
 
     public GenerateAnnotationOutputMsgType generateAnnotation(GenerateAnnotationInputMsgType payload) {
-        LOG.info("Executing operation generateAnnotation");
-        System.out.println(payload);
+        LOGGER.info("Executing operation generateAnnotation");
         GenerateAnnotationOutputMsgType res = new GenerateAnnotationOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -214,8 +129,7 @@ public class CanoniserManagerImpl implements CanoniserManager {
     }
 
     public CanoniseVersionOutputMsgType canoniseVersion(CanoniseVersionInputMsgType payload) {
-        LOG.info("Executing operation canoniseVersion");
-        System.out.println(payload);
+        LOGGER.info("Executing operation canoniseVersion");
         CanoniseVersionOutputMsgType res = new CanoniseVersionOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);

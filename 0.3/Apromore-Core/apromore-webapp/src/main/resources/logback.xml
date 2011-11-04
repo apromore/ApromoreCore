@@ -39,7 +39,7 @@
     <logger name="org.hibernate" level="INFO" />
     <logger name="org.springframework" level="INFO" />
 
-    <logger name="org.apromore.util.spring.LoggingInterceptor" level="DEBUG" additivity="false">
+    <logger name="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor" level="DEBUG" additivity="false">
         <appender-ref ref="WSLOGFILE"/>
     </logger>
 

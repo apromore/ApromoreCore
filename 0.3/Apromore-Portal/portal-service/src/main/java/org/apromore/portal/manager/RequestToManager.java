@@ -62,6 +62,8 @@ import org.apromore.portal.exception.ExceptionUpdateProcess;
 import org.apromore.portal.exception.ExceptionUser;
 import org.apromore.portal.exception.ExceptionVersion;
 import org.apromore.portal.exception.ExceptionWriteEditSession;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -77,6 +79,8 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public class RequestToManager {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(RequestToManager.class.getName());
 
     private static final QName SERVICE_NAME = new QName("http://www.apromore.org/manager/service_portal", "ManagerService");
 
@@ -161,7 +165,7 @@ public class RequestToManager {
                 return res.getProcessSummaries();
             }
         } catch (Exception e) {
-            System.out.println(e);
+            LOGGER.debug(e.toString());
         }
         return null;
     }

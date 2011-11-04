@@ -3,7 +3,11 @@ package org.apromore.dao.jpa;
 import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.Canonical;
 import org.apromore.dao.model.Native;
+import org.apromore.exception.AnnotationNotFoundException;
+import org.apromore.exception.CanonicalFormatNotFoundException;
 import org.apromore.test.heuristic.JavaBeanHeuristic;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -88,6 +92,53 @@ public class AnnotationDaoJpaUnitTest {
 
         assertThat(annotations, equalTo(anns));
     }
+
+    @Test
+    public final void testGetAnnotation() throws Exception {
+        long processId = 123;
+        String versionName = "123";
+        String name = "annName";
+
+        String annotationXML = "<XML/>";
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(Annotation.GET_ANNOTATION)).andReturn(query);
+        expect(query.setParameter("processId", processId)).andReturn(query);
+        expect(query.setParameter("versionName", versionName)).andReturn(query);
+        expect(query.setParameter("name", name)).andReturn(query);
+        expect(query.getSingleResult()).andReturn(annotationXML);
+
+        replay(manager, query);
+
+        String annotationStr = dao.getAnnotation(processId, versionName, name);
+
+        verify(manager, query);
+
+        MatcherAssert.assertThat(annotationXML, Matchers.equalTo(annotationStr));
+    }
+
+    @Test(expected = AnnotationNotFoundException.class)
+    public final void testGetAnnotationNotFound() throws Exception {
+        long processId = 123;
+        String versionName = "123";
+        String name = "annName";
+
+        String annotationXML = null;
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(Annotation.GET_ANNOTATION)).andReturn(query);
+        expect(query.setParameter("processId", processId)).andReturn(query);
+        expect(query.setParameter("versionName", versionName)).andReturn(query);
+        expect(query.setParameter("name", name)).andReturn(query);
+        expect(query.getSingleResult()).andReturn(annotationXML);
+
+        replay(manager, query);
+
+        dao.getAnnotation(processId, versionName, name);
+
+        verify(manager, query);
+    }
+
 
     @Test
     public final void testSaveAnnotation() {

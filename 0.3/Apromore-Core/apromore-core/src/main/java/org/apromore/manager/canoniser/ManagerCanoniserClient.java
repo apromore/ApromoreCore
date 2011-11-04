@@ -91,29 +91,6 @@ public class ManagerCanoniserClient {
 		}
 	}
 
-	public InputStream DeCanonise(int processId, String version, String nativeType, InputStream cpf_is, InputStream anf_is)
-	        throws IOException, ExceptionDeCanonise {
-		DeCanoniseProcessInputMsgType payload = new DeCanoniseProcessInputMsgType();
-		DataSource source_cpf = new ByteArrayDataSource(cpf_is, "text/xml");
-		payload.setProcessId(processId);
-		payload.setVersion(version);
-		payload.setNativeType(nativeType);
-		payload.setCpf(new DataHandler(source_cpf));
-		if (anf_is != null) {
-			// given annotation must be used
-			DataSource source_anf = new ByteArrayDataSource(anf_is, "text/xml");
-			payload.setAnf(new DataHandler(source_anf));
-		}
-		DeCanoniseProcessOutputMsgType res = manager.deCanoniseProcess(payload);
-		if (res.getResult().getCode() == -1) {
-			throw new ExceptionDeCanonise (res.getResult().getMessage());
-		} else {
-			DataHandler handler = res.getNativeDescription();
-			InputStream is = handler.getInputStream();
-			return is;
-		}
-	}
-
 	public void CanoniseVersion(Integer editSessionCode, EditSessionType editSession, String cpfURI,
 			InputStream native_is) throws IOException, ExceptionCanoniseVersion, ExceptionVersion {
 		CanoniseVersionInputMsgType payload = new CanoniseVersionInputMsgType();

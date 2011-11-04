@@ -36,12 +36,14 @@ import javax.persistence.UniqueConstraint;
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NamedQueries( {
-    @NamedQuery(name = Canonical.FIND_BY_PROCESS_ID, query = "SELECT c FROM Canonical c WHERE c.process.processId = :processId")
+    @NamedQuery(name = Canonical.FIND_BY_PROCESS_ID, query = "SELECT c FROM Canonical c WHERE c.process.processId = :processId"),
+    @NamedQuery(name = Canonical.GET_CANONICAL, query = "SELECT c FROM Canonical c WHERE c.process.processId = :processId AND c.versionName = :versionName")
 })
 @Configurable("canonical")
 public class Canonical implements Serializable {
 
     public static final String FIND_BY_PROCESS_ID = "canonical.findByProcessId";
+    public static final String GET_CANONICAL = "pr.getCanonical";
 
     /** Hard coded for interoperability. */
     private static final long serialVersionUID = -9072538404638485548L;

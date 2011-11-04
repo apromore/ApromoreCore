@@ -4,17 +4,12 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.apromore</groupId>
-        <artifactId>apromore-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
-    </parent>
-    
+
     <groupId>org.apromore</groupId>
     <artifactId>apromore-master</artifactId>
     <packaging>pom</packaging>
     <version>1.0.0-SNAPSHOT</version>
-    
+
     <url>http://code.google.com/p/apromore/</url>
     <name>Advanced Process Model Repository</name>
     <description>Apromore is an open and extensible repository to store and disclose business process models of a
@@ -24,9 +19,12 @@
     </description>
 
     <modules>
-        <module>Apromore-Parent</module>
+        <!-- These Need to be build first, Apromore Needs them -->
         <module>Apromore-Tools</module>
         <module>Apromore-Testing-Tools</module>
+
+        <!-- Apromore project, includes the above -->
+        <module>Apromore-Parent</module>
         <module>Apromore-Schema</module>
         <module>Apromore-Clients</module>
         <module>Apromore-Core</module>

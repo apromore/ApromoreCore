@@ -1,6 +1,7 @@
 package org.apromore.dao;
 
 import org.apromore.dao.model.Native;
+import org.apromore.exception.NativeFormatNotFoundException;
 
 import java.util.List;
 
@@ -20,6 +21,16 @@ public interface NativeDao {
      * @return the native, a list of them for all the different canonical versions.
      */
     public List<Native> findNativeByCanonical(final long processId, final String versionName);
+
+    /**
+     * Get the Canonical format. this is just a string but contains the xml Canonical Format.
+     * @param processId the processId of the Canonical format.
+     * @param version the version of the canonical format
+     * @param nativeType the native type (XPDL, BPMN)
+     * @return the XML as a string
+     * @throws NativeFormatNotFoundException if the record can not be found.
+     */
+    String getNative(final long processId, final String version, final String nativeType) throws NativeFormatNotFoundException;
 
 
     /**

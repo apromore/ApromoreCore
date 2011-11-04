@@ -24,6 +24,12 @@
     </reporting>
 
     <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <java.source.version>1.6</java.source.version>
+        <java.target.version>${java.source.version}</java.target.version>
+
+        <!-- Plugins -->
         <maven-change-plugin.version>2.6</maven-change-plugin.version>
     </properties>
 
