@@ -1,10 +1,15 @@
 package org.apromore.dao.jpa;
 
 import org.apromore.dao.model.Canonical;
+import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.User;
+import org.apromore.exception.CanonicalFormatNotFoundException;
+import org.apromore.exception.NativeFormatNotFoundException;
 import org.apromore.test.heuristic.JavaBeanHeuristic;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -87,6 +92,47 @@ public class CanonicalDaoJpaUnitTest {
         assertThat(canonicals, equalTo(cans));
     }
 
+    @Test
+    public final void testGetCanonical() throws Exception {
+        long processId = 123;
+        String versionName = "123";
+
+        String canonicalXML = "<XML/>";
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(Canonical.GET_CANONICAL)).andReturn(query);
+        expect(query.setParameter("processId", processId)).andReturn(query);
+        expect(query.setParameter("versionName", versionName)).andReturn(query);
+        expect(query.getSingleResult()).andReturn(canonicalXML);
+
+        replay(manager, query);
+
+        String canonicalStr = dao.getCanonical(processId, versionName);
+
+        verify(manager, query);
+
+        MatcherAssert.assertThat(canonicalXML, Matchers.equalTo(canonicalStr));
+    }
+
+    @Test(expected = CanonicalFormatNotFoundException.class)
+    public final void testGetCanonicalNotFound() throws Exception {
+        long processId = 123;
+        String versionName = "123";
+
+        String canonicalXML = null;
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(Canonical.GET_CANONICAL)).andReturn(query);
+        expect(query.setParameter("processId", processId)).andReturn(query);
+        expect(query.setParameter("versionName", versionName)).andReturn(query);
+        expect(query.getSingleResult()).andReturn(canonicalXML);
+
+        replay(manager, query);
+
+        dao.getCanonical(processId, versionName);
+
+        verify(manager, query);
+    }
 
 
 

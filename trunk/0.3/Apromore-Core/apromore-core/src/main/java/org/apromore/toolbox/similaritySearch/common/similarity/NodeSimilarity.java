@@ -29,7 +29,6 @@ public class NodeSimilarity {
 				return 0;
 			}
 			double sim =  SemanticSimilarity.getSemanticSimilarity(n, m, labelTreshold);
-//			System.out.println(">Similarity : "+sim);
 			return sim;
 		}
 		return 0;

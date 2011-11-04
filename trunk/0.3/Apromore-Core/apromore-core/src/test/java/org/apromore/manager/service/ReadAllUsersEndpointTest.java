@@ -7,17 +7,12 @@ import org.apromore.manager.toolbox.ManagerToolboxClient;
 import org.apromore.model.ObjectFactory;
 import org.apromore.model.ReadAllUsersInputMsgType;
 import org.apromore.model.ReadAllUsersOutputMsgType;
-import org.apromore.model.ReadUserInputMsgType;
-import org.apromore.model.ReadUserOutputMsgType;
-import org.apromore.model.UserType;
-import org.apromore.model.UsernamesType;
 import org.apromore.service.UserService;
 import org.apromore.service.impl.UserServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
@@ -25,7 +20,6 @@ import org.w3c.dom.Document;
 import javax.xml.bind.JAXBElement;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -92,5 +86,22 @@ public class ReadAllUsersEndpointTest {
 
         verify(userSrv);
     }
+
+//    @Test
+//    public void testInvokeReadAllUsersThrowsException() throws Exception {
+//        ReadAllUsersInputMsgType msg = new ReadAllUsersInputMsgType();
+//        msg.setEmpty("");
+//        JAXBElement<ReadAllUsersInputMsgType> request = new ObjectFactory().createReadAllUsersRequest(msg);
+//
+//        expect(userSrv.findAllUsers()).andThrow(new Exception());
+//
+//        replay(userSrv);
+//
+//        JAXBElement<ReadAllUsersOutputMsgType> response = endpoint.readAllUsers(request);
+//        Assert.assertNotNull(response.getValue().getResult());
+//        Assert.assertEquals("Result Code Doesn't Match", response.getValue().getResult().getCode().intValue(), -1);
+//
+//        verify(userSrv);
+//    }
 
 }

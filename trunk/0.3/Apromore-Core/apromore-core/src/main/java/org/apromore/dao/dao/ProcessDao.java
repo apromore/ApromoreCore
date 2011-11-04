@@ -550,8 +550,7 @@ public class ProcessDao extends BasicDao {
             stmt = conn.createStatement();
             query = " select " + "A." + ConstantDB.ATTR_CONTENT
                     + " from " + ConstantDB.TABLE_NATIVES + " A "
-                    + " join "
-                    + ConstantDB.TABLE_CANONICALS + " C "
+                    + " join " + ConstantDB.TABLE_CANONICALS + " C "
                     + " on (" + "A." + ConstantDB.ATTR_CANONICAL + " = " + "C." + ConstantDB.ATTR_URI + ")"
                     + " where " + ConstantDB.ATTR_PROCESSID + " = " + processId.toString()
                     + " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + version + "'"
@@ -1390,8 +1389,8 @@ public class ProcessDao extends BasicDao {
 
                     m = jc.createMarshaller();
                     m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-                    JAXBElement<TypeEPML> rootnpf = new de.epml.ObjectFactory().createEpml(npf_o);
-                    m.marshal(rootnpf, npf_xml);
+//                    JAXBElement<TypeEPML> rootnpf = new de.epml.ObjectFactory().createEpml(npf_o);
+//                    m.marshal(rootnpf, npf_xml);
                 }
                 query = " update " + ConstantDB.TABLE_NATIVES
                         + " set " + ConstantDB.ATTR_CONTENT + " = ? "

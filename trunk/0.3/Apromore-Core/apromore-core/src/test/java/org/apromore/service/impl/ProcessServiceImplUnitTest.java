@@ -6,15 +6,24 @@ import org.apromore.dao.jpa.NativeDaoJpa;
 import org.apromore.dao.jpa.ProcessDaoJpa;
 import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
+import org.apromore.exception.ExportFormatException;
+import org.apromore.exception.NativeFormatNotFoundException;
+import org.apromore.exception.UserNotFoundException;
 import org.apromore.model.ProcessSummariesType;
+import org.apromore.service.model.Format;
+import org.hamcrest.MatcherAssert;
+import org.hamcrest.Matchers;
 import org.junit.Before;
+import org.junit.Rule;
 import org.junit.Test;
+import org.junit.rules.ExpectedException;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.activation.DataSource;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,7 +32,9 @@ import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.powermock.api.easymock.PowerMock.createMock;
 import static org.powermock.api.easymock.PowerMock.replay;
+import static org.powermock.api.easymock.PowerMock.replayAll;
 import static org.powermock.api.easymock.PowerMock.verify;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 /**
  * Unit test the UserService Implementation.
@@ -37,6 +48,9 @@ import static org.powermock.api.easymock.PowerMock.verify;
 })
 @PrepareForTest({ ProcessDaoJpa.class, CanonicalDaoJpa.class, NativeDaoJpa.class, AnnotationDaoJpa.class })
 public class ProcessServiceImplUnitTest {
+
+    @Rule
+	public ExpectedException exception = ExpectedException.none();
 
     @Autowired
     private ProcessDaoJpa proDao;
@@ -208,11 +222,11 @@ public class ProcessServiceImplUnitTest {
         expect(natDao.findNativeByCanonical(Long.valueOf(process.getProcessId()).intValue(), "version")).andReturn(natives);
         expect(annDao.findByUri(1234)).andReturn(annotations);
 
-        replay(proDao, canDao, natDao, annDao);
+        replayAll();
 
         ProcessSummariesType processSummary = service.readProcessSummaries(searchExpression);
 
-        verify(proDao, canDao, natDao, annDao);
+        verifyAll();
 
         assertThat(processSummary.getProcessSummary().size(), equalTo(processes.size()));
         assertThat(processSummary.getProcessSummary().get(0).getName(), equalTo("name"));
@@ -221,6 +235,125 @@ public class ProcessServiceImplUnitTest {
         assertThat(processSummary.getProcessSummary().get(0).getVersionSummaries().get(0).getAnnotations().get(0).getAnnotationName().get(0), equalTo("name1"));
     }
 
+
+    @Test
+    public void testExportFormatGetCanonical() throws Exception {
+        long processId = 123;
+        String version = "1.2";
+        String format = "Canonical";
+
+        String canonicalXML = "<xml/>";
+
+        expect(canDao.getCanonical(processId, version)).andReturn(canonicalXML);
+
+        replayAll();
+
+        DataSource data = service.exportFormat(processId, version, format);
+
+        verifyAll();
+
+        MatcherAssert.assertThat(data, Matchers.notNullValue());
+    }
+
+    @Test
+    public void testExportFormatGetAnnotation() throws Exception {
+        long processId = 123;
+        String version = "1.2";
+        String format = "Annotations-BPMN";
+        String subStr = "MN";
+
+        String canonicalXML = "<xml/>";
+
+        expect(annDao.getAnnotation(processId, version, subStr)).andReturn(canonicalXML);
+
+        replayAll();
+
+        DataSource data = service.exportFormat(processId, version, format);
+
+        verifyAll();
+
+        MatcherAssert.assertThat(data, Matchers.notNullValue());
+    }
+
+    @Test
+    public void testExportFormatGetNative() throws Exception {
+        long processId = 123;
+        String version = "1.2";
+        String format = "WHATEVER";
+
+        String canonicalXML = "<xml/>";
+
+        expect(natDao.getNative(processId, version, format)).andReturn(canonicalXML);
+
+        replayAll();
+
+        DataSource data = service.exportFormat(processId, version, format);
+
+        verifyAll();
+
+        MatcherAssert.assertThat(data, Matchers.notNullValue());
+    }
+
+    @Test(expected = ExportFormatException.class)
+    public void testExportFormatWithException() throws Exception {
+        long processId = 123;
+        String version = "1.2";
+        String format = "WHATEVER";
+
+        expect(natDao.getNative(processId, version, format)).andThrow(new NativeFormatNotFoundException());
+
+        replayAll();
+
+        service.exportFormat(processId, version, format);
+
+        verifyAll();
+    }
+
+    @Test
+    public void testReadCanonicalAnfWithAnnotation() throws Exception {
+        long processId = 123;
+        String version = "1.2";
+        String name = "Canonical";
+        boolean isWith = true;
+
+        String canonicalXML = "<xml/>";
+        String annotationXML = "<XML/>";
+
+        expect(canDao.getCanonical(processId, version)).andReturn(canonicalXML);
+        expect(annDao.getAnnotation(processId, version, name)).andReturn(annotationXML);
+
+        replayAll();
+
+        Format data = service.getCanonicalAnf(processId, version, isWith, name);
+
+        verifyAll();
+
+        MatcherAssert.assertThat(data, Matchers.notNullValue());
+        MatcherAssert.assertThat(data.getCpf(), Matchers.notNullValue());
+        MatcherAssert.assertThat(data.getAnf(), Matchers.notNullValue());
+    }
+
+    @Test
+    public void testReadCanonicalAnfWithOutAnnotation() throws Exception {
+        long processId = 123;
+        String version = "1.2";
+        String name = "Canonical";
+        boolean isWith = false;
+
+        String canonicalXML = "<xml/>";
+
+        expect(canDao.getCanonical(processId, version)).andReturn(canonicalXML);
+
+        replayAll();
+
+        Format data = service.getCanonicalAnf(processId, version, isWith, name);
+
+        verifyAll();
+
+        MatcherAssert.assertThat(data, Matchers.notNullValue());
+        MatcherAssert.assertThat(data.getCpf(), Matchers.notNullValue());
+        MatcherAssert.assertThat(data.getAnf(), Matchers.nullValue());
+    }
 
 
     private Process createProcess() {

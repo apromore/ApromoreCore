@@ -2,14 +2,11 @@ package org.apromore.manager.service;
 
 import de.epml.TypeEPML;
 import org.apromore.common.Constants;
+import org.apromore.exception.ExportFormatException;
 import org.apromore.mapper.DomainMapper;
 import org.apromore.mapper.NativeTypeMapper;
 import org.apromore.mapper.UserMapper;
-import org.apromore.dao.model.User;
 import org.apromore.exception.ExceptionCanoniseVersion;
-import org.apromore.exception.ExceptionDeCanonise;
-import org.apromore.exception.ExceptionReadCanonicalAnf;
-import org.apromore.exception.ExceptionReadNative;
 import org.apromore.exception.ExceptionVersion;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
 import org.apromore.manager.da.ManagerDataAccessClient;
@@ -62,10 +59,14 @@ import org.apromore.model.WriteEditSessionInputMsgType;
 import org.apromore.model.WriteEditSessionOutputMsgType;
 import org.apromore.model.WriteUserInputMsgType;
 import org.apromore.model.WriteUserOutputMsgType;
+import org.apromore.service.CanoniserService;
 import org.apromore.service.DomainService;
 import org.apromore.service.FormatService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.UserService;
+import org.apromore.service.model.Format;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
@@ -82,7 +83,6 @@ import org.wfmc._2008.xpdl2.Version;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -98,7 +98,6 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Logger;
 
 /**
  * The WebService Endpoint Used by the Portal.
@@ -108,18 +107,20 @@ import java.util.logging.Logger;
 @Endpoint
 public class ManagerPortalEndpoint {
 
-    private static final Logger LOG = Logger.getLogger(ManagerPortalEndpoint.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ManagerPortalEndpoint.class.getName());
 
     private static final String NAMESPACE = "urn:qut-edu-au:schema:apromore:manager";
 
     @Autowired
-    private UserService userSrv;
+    private CanoniserService canSrv;
     @Autowired
     private ProcessService procSrv;
     @Autowired
     private FormatService frmSrv;
     @Autowired
     private DomainService domSrv;
+    @Autowired
+    private UserService userSrv;
 
     @Autowired
     private ManagerDataAccessClient daClient;
@@ -132,9 +133,8 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(namespace = NAMESPACE, localPart = "EditProcessDataRequest")
     @ResponsePayload
     public JAXBElement<EditProcessDataOutputMsgType> editProcessData(@RequestPayload JAXBElement<EditProcessDataInputMsgType> req) {
-        LOG.info("Executing operation editDataProcess");
+        LOGGER.info("Executing operation editDataProcess");
         EditProcessDataInputMsgType payload = req.getValue();
-        System.out.println(payload);
         EditProcessDataOutputMsgType res = new EditProcessDataOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -160,9 +160,8 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "MergeProcessesRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<MergeProcessesOutputMsgType> mergeProcesses(@RequestPayload JAXBElement<MergeProcessesInputMsgType> req) {
-        LOG.info("Executing operation mergeProcesses");
+        LOGGER.info("Executing operation mergeProcesses");
         MergeProcessesInputMsgType payload = req.getValue();
-        System.out.println(payload);
         MergeProcessesOutputMsgType res = new MergeProcessesOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -209,9 +208,8 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<SearchForSimilarProcessesOutputMsgType> searchForSimilarProcesses(
             @RequestPayload JAXBElement<SearchForSimilarProcessesInputMsgType> req) {
-        LOG.info("Executing operation searchForSimilarProcesses");
+        LOGGER.info("Executing operation searchForSimilarProcesses");
         SearchForSimilarProcessesInputMsgType payload = req.getValue();
-        System.out.println(payload);
         SearchForSimilarProcessesOutputMsgType res = new SearchForSimilarProcessesOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -242,9 +240,8 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "WriteAnnotationRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<WriteAnnotationOutputMsgType> writeAnnotation(@RequestPayload JAXBElement<WriteAnnotationInputMsgType> req) {
-        LOG.info("Executing operation writeAnnotation");
+        LOGGER.info("Executing operation writeAnnotation");
         WriteAnnotationInputMsgType payload = req.getValue();
-        System.out.println(payload);
         WriteAnnotationOutputMsgType res = new WriteAnnotationOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -271,31 +268,23 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(namespace = NAMESPACE, localPart = "ReadAllUsersRequest")
     @ResponsePayload
     public JAXBElement<ReadAllUsersOutputMsgType> readAllUsers(@RequestPayload final JAXBElement<ReadAllUsersInputMsgType> message) {
-        LOG.info("Executing operation readAllUsers");
+        LOGGER.info("Executing operation readAllUsers");
         ReadAllUsersInputMsgType payload = message.getValue();
-        System.out.println(payload);
         ReadAllUsersOutputMsgType res = new ReadAllUsersOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
-        try {
-            UsernamesType allUsers = UserMapper.convertUsernameTypes(userSrv.findAllUsers());
-            res.setUsernames(allUsers);
-            result.setCode(0);
-            result.setMessage("");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        }
+        UsernamesType allUsers = UserMapper.convertUsernameTypes(userSrv.findAllUsers());
+        res.setUsernames(allUsers);
+        result.setCode(0);
+        result.setMessage("");
         return new ObjectFactory().createReadAllUsersResponse(res);
     }
 
     @PayloadRoot(localPart = "DeleteEditSessionRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<DeleteEditSessionOutputMsgType> deleteEditSession(@RequestPayload JAXBElement<DeleteEditSessionInputMsgType> req) {
-        LOG.info("Executing operation deleteEditSession");
+        LOGGER.info("Executing operation deleteEditSession");
         DeleteEditSessionInputMsgType payload = req.getValue();
-        System.out.println(payload);
         DeleteEditSessionOutputMsgType res = new DeleteEditSessionOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -316,9 +305,8 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<DeleteProcessVersionsOutputMsgType> deleteProcessVersions(
             @RequestPayload JAXBElement<DeleteProcessVersionsInputMsgType> req) {
-        LOG.info("Executing operation deleteProcessVersions");
+        LOGGER.info("Executing operation deleteProcessVersions");
         DeleteProcessVersionsInputMsgType payload = req.getValue();
-        System.out.println(payload);
         DeleteProcessVersionsOutputMsgType res = new DeleteProcessVersionsOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -348,9 +336,8 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "UpdateProcessRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<UpdateProcessOutputMsgType> updateProcess(@RequestPayload JAXBElement<UpdateProcessInputMsgType> req) {
-        LOG.info("Executing operation updateProcess");
+        LOGGER.info("Executing operation updateProcess");
         UpdateProcessInputMsgType payload = req.getValue();
-        System.out.println(payload);
         UpdateProcessOutputMsgType res = new UpdateProcessOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -388,9 +375,8 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ReadEditSessionRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ReadEditSessionOutputMsgType> readEditSession(@RequestPayload JAXBElement<ReadEditSessionInputMsgType> req) {
-        LOG.info("Executing operation readEditSession");
+        LOGGER.info("Executing operation readEditSession");
         ReadEditSessionInputMsgType payload = req.getValue();
-        System.out.println(payload);
         ReadEditSessionOutputMsgType res = new ReadEditSessionOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -422,9 +408,8 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "WriteEditSessionRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<WriteEditSessionOutputMsgType> writeEditSession(@RequestPayload JAXBElement<WriteEditSessionInputMsgType> req) {
-        LOG.info("Executing operation writeEditSession");
+        LOGGER.info("Executing operation writeEditSession");
         WriteEditSessionInputMsgType payload = req.getValue();
-        System.out.println(payload);
         WriteEditSessionOutputMsgType res = new WriteEditSessionOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -457,87 +442,53 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ExportFormatRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ExportFormatOutputMsgType> exportFormat(@RequestPayload JAXBElement<ExportFormatInputMsgType> req) {
-        LOG.info("Executing operation exportFormat");
-        ExportFormatInputMsgType payload = req.getValue();
-        System.out.println(payload);
-        ExportFormatOutputMsgType res = new ExportFormatOutputMsgType();
+        LOGGER.info("Executing operation exportFormat");
+
         ResultType result = new ResultType();
-        res.setResult(result);
-        int processId = payload.getProcessId();
-        String processname = payload.getProcessName();
-        String version = payload.getVersionName();
-        String annotationName = payload.getAnnotationName();
-        String format = payload.getFormat();
-        Boolean withAnnotations = payload.isWithAnnotations();
-        String owner = payload.getOwner();
+        ExportFormatInputMsgType payload = req.getValue();
+        ExportFormatOutputMsgType res = new ExportFormatOutputMsgType();
+
+        // Search for Native
         try {
-            // Get native from the database, only if initial annotations are to be used
-            // or if format is Constants.CANONICAL or Constants.ANNOTATION
-            if ((withAnnotations && annotationName.compareTo(Constants.INITIAL_ANNOTATIONS) == 0)
-                    || Constants.CANONICAL.compareTo(format) == 0
-                    || format.startsWith(Constants.ANNOTATIONS)) {
-                InputStream native_xml = daClient.ReadFormat(processId, version, format);
-                DataSource source = new ByteArrayDataSource(native_xml, "text/xml");
-                res.setNative(new DataHandler(source));
-                result.setCode(0);
-                result.setMessage("");
+            DataSource source = null;
+            long processId = payload.getProcessId();
+            String version = payload.getVersionName();
+            String format = payload.getFormat();
+            String annName = payload.getAnnotationName();
+            boolean withAnn = payload.isWithAnnotations();
+
+            if ((withAnn && annName.equals(Constants.INITIAL_ANNOTATIONS))
+                        || format.equals(Constants.CANONICAL)
+                        || format.startsWith(Constants.ANNOTATIONS)) {
+                source = procSrv.exportFormat(processId, version, format);
             } else {
-                // native not found or native found but Initial annotations not to be used
-                // or no annotations to be used
-                throw new ExceptionReadNative("");
-            }
-        } catch (ExceptionReadNative ex) {
-            try {
-                // native not found, request canonical
-                daClient.ReadCanonicalAnf(processId, version, withAnnotations, annotationName);
-                InputStream cpf_is = daClient.getCpf();
-                InputStream anf_is = daClient.getAnf();
-                // TODO temporary to test de-canoniser with and without annotations
-                // TODO: annotations might be unavailable!
-                InputStream native_xml;
-                if (withAnnotations) {
-                    native_xml = caClient.DeCanonise(processId, version, format, cpf_is, anf_is);
+                Format canFormat = procSrv.getCanonicalAnf(processId, version, withAnn, annName);
+                if (withAnn) {
+                    source = canSrv.DeCanonise(processId, version, format, canFormat.getCpf(), canFormat.getAnf());
                 } else {
-                    native_xml = caClient.DeCanonise(processId, version, format, cpf_is, null);
+                    source = canSrv.DeCanonise(processId, version, format, canFormat.getCpf(), null);
                 }
-                // record meta data in native_xml: process and version names
-                InputStream native_xml_sync =
-                        copyParam2NPF(native_xml, format, processname, version, owner, null, null);
-                DataSource source = new ByteArrayDataSource(native_xml_sync, "text/xml");
                 res.setNative(new DataHandler(source));
-                result.setCode(0);
-                result.setMessage("");
-            } catch (ExceptionDeCanonise e) {
-                e.printStackTrace();
-                result.setCode(-1);
-                result.setMessage(e.getMessage());
-            } catch (ExceptionReadCanonicalAnf e) {
-                e.printStackTrace();
-                result.setCode(-1);
-                result.setMessage(e.getMessage());
-            } catch (IOException e) {
-                e.printStackTrace();
-                result.setCode(-1);
-                result.setMessage(e.getMessage());
-            } catch (JAXBException e) {
-                e.printStackTrace();
-                result.setCode(-1);
-                result.setMessage(e.getMessage());
             }
-        } catch (Exception e) {
-            e.printStackTrace();
+
+            res.setNative(new DataHandler(source));
+            result.setCode(0);
+            result.setMessage("");
+        } catch (ExportFormatException efe) {
+            LOGGER.error("ExportFormat failed: " + efe.toString());
             result.setCode(-1);
-            result.setMessage(e.getMessage());
+            result.setMessage(efe.getMessage());
         }
+
+        res.setResult(result);
         return new ObjectFactory().createExportFormatResponse(res);
     }
 
     @PayloadRoot(localPart = "ImportProcessRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ImportProcessOutputMsgType> importProcess(@RequestPayload JAXBElement<ImportProcessInputMsgType> req) {
-        LOG.info("Executing operation importProcess");
+        LOGGER.info("Executing operation importProcess");
         ImportProcessInputMsgType payload = req.getValue();
-        System.out.println(payload);
         ImportProcessOutputMsgType res = new ImportProcessOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -573,10 +524,8 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "WriteUserRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<WriteUserOutputMsgType> writeUser(@RequestPayload JAXBElement<WriteUserInputMsgType> req) {
-        LOG.info("Executing operation writeUser");
+        LOGGER.info("Executing operation writeUser");
         WriteUserInputMsgType payload = req.getValue();
-        System.out.println(payload);
-
         WriteUserOutputMsgType res = new WriteUserOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -595,9 +544,8 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ReadNativeTypesRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ReadNativeTypesOutputMsgType> readNativeTypes(@RequestPayload JAXBElement<ReadNativeTypesInputMsgType> req) {
-        LOG.info("Executing operation readFormats");
+        LOGGER.info("Executing operation readFormats");
         ReadNativeTypesInputMsgType payload = req.getValue();
-        System.out.println(payload);
         ReadNativeTypesOutputMsgType res = new ReadNativeTypesOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -620,10 +568,8 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ReadDomainsRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ReadDomainsOutputMsgType> readDomains(@RequestPayload JAXBElement<ReadDomainsInputMsgType> req) {
-        LOG.info("Executing operation readDomains");
+        LOGGER.info("Executing operation readDomains");
         ReadDomainsInputMsgType payload = req.getValue();
-        System.out.println(payload);
-
         ReadDomainsOutputMsgType res = new ReadDomainsOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -646,8 +592,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ReadUserRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ReadUserOutputMsgType> readUser(@RequestPayload ReadUserInputMsgType payload) {
-        LOG.info("Executing operation readUser");
-        System.out.println(payload);
+        LOGGER.info("Executing operation readUser");
         ReadUserOutputMsgType res = new ReadUserOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -671,16 +616,13 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<ReadProcessSummariesOutputMsgType> readProcessSummaries(
             @RequestPayload JAXBElement<ReadProcessSummariesInputMsgType> req) {
-        LOG.info("Executing operation readProcessSummaries");
+        LOGGER.info("Executing operation readProcessSummaries");
         ReadProcessSummariesInputMsgType payload = req.getValue();
-        System.out.println(payload);
-
         ReadProcessSummariesOutputMsgType res = new ReadProcessSummariesOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
 
         try {
-            // TODO: CONVERT TO use mappers
             ProcessSummariesType processes = procSrv.readProcessSummaries(payload.getSearchExpression());
             result.setCode(0);
             result.setMessage("");
@@ -730,14 +672,11 @@ public class ManagerPortalEndpoint {
             JAXBElement<TypeEPML> rootElement = (JAXBElement<TypeEPML>) u.unmarshal(process_xml);
             TypeEPML epml = rootElement.getValue();
 
-            // TODO
-
             Marshaller m = jc.createMarshaller();
             m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
             m.marshal(rootElement, xpdl_xml);
             res = new ByteArrayInputStream(xpdl_xml.toByteArray());
-
         }
         return res;
     }
@@ -831,6 +770,11 @@ public class ManagerPortalEndpoint {
 
     public void setCaClient(ManagerCanoniserClient caClient) {
         this.caClient = caClient;
+    }
+
+
+    public void setCanServ(CanoniserService canService) {
+        this.canSrv = canService;
     }
 
     public void setUserSrv(UserService userService) {

@@ -32,12 +32,14 @@ import java.io.Serializable;
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NamedQueries( {
-        @NamedQuery(name = Annotation.FIND_BY_URI, query = "SELECT a FROM Annotation a WHERE a.natve.uri = :uri")
+        @NamedQuery(name = Annotation.FIND_BY_URI, query = "SELECT a FROM Annotation a WHERE a.natve.uri = :uri"),
+        @NamedQuery(name = Annotation.GET_ANNOTATION, query = "SELECT a FROM Annotation a, Canonical c WHERE a.canonical.uri = c.uri AND c.process.processId = :processId AND c.versionName = :versionName AND a.name = :name")
 })
 @Configurable("annotation")
 public class Annotation implements Serializable {
 
     public static final String FIND_BY_URI = "annotation.findByUrl";
+    public static final String GET_ANNOTATION = "annotation.getAnnotation";
 
     /** Hard coded for interoperability. */
     private static final long serialVersionUID = -2353376324638485548L;

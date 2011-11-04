@@ -4,6 +4,7 @@ import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.Canonical;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
+import org.apromore.exception.NativeFormatNotFoundException;
 import org.apromore.test.heuristic.JavaBeanHeuristic;
 import org.junit.Before;
 import org.junit.Test;
@@ -96,6 +97,54 @@ public class NativeDaoJpaUnitTest {
 
         assertThat(natives, equalTo(nats));
     }
+
+    @Test
+    public final void testGetNative() throws Exception {
+        long processId = 123;
+        String versionName = "123";
+        String nativeType = "BPMN";
+
+        String nativeXML = "<XML/>";
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(Native.GET_NATIVE)).andReturn(query);
+        expect(query.setParameter("processId", processId)).andReturn(query);
+        expect(query.setParameter("versionName", versionName)).andReturn(query);
+        expect(query.setParameter("nativeType", nativeType)).andReturn(query);
+        expect(query.getSingleResult()).andReturn(nativeXML);
+
+        replay(manager, query);
+
+        String nativeStr = dao.getNative(processId, versionName, nativeType);
+
+        verify(manager, query);
+
+        assertThat(nativeXML, equalTo(nativeStr));
+    }
+
+    @Test(expected = NativeFormatNotFoundException.class)
+    public final void testGetNativeNotFound() throws Exception {
+        long processId = 123;
+        String versionName = "123";
+        String nativeType = "BPMN";
+
+        String nativeXML = null;
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(Native.GET_NATIVE)).andReturn(query);
+        expect(query.setParameter("processId", processId)).andReturn(query);
+        expect(query.setParameter("versionName", versionName)).andReturn(query);
+        expect(query.setParameter("nativeType", nativeType)).andReturn(query);
+        expect(query.getSingleResult()).andReturn(nativeXML);
+
+        replay(manager, query);
+
+        dao.getNative(processId, versionName, nativeType);
+
+        verify(manager, query);
+    }
+
+
 
     @Test
     public final void testSaveNative() {

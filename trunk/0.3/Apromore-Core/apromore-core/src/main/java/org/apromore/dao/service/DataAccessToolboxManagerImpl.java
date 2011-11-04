@@ -8,7 +8,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import javax.activation.DataHandler;
 
@@ -27,6 +26,8 @@ import org.apromore.model.ReadProcessSummaryInputMsgType;
 import org.apromore.model.ResultType;
 import org.apromore.model.StoreCpfInputMsgType;
 import org.apromore.model.StoreCpfOutputMsgType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 /**
@@ -35,12 +36,11 @@ import org.springframework.stereotype.Service;
 @Service
 public class DataAccessToolboxManagerImpl implements DataAccessToolboxManager {
 
-    private static final Logger LOG = Logger.getLogger(DataAccessToolboxManagerImpl.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataAccessToolboxManagerImpl.class.getName());
 
 
 	public ReadProcessSummariesOutputMsgType readProcessSummaries(ReadProcessSummaryInputMsgType payload) {
-        LOG.info("Executing operation readProcessSummaries");
-        System.out.println(payload);
+        LOGGER.info("Executing operation readProcessSummaries");
         ResultType result = new ResultType();
         ReadProcessSummariesOutputMsgType res = new ReadProcessSummariesOutputMsgType();
         res.setResult(result);
@@ -68,7 +68,7 @@ public class DataAccessToolboxManagerImpl implements DataAccessToolboxManager {
      * @see org.apromore.dao.DataAccessToolboxManager#readCanonicals(ReadCanonicalsInputMsgType  payload )*
      */
     public ReadCanonicalsOutputMsgType readCanonicals(ReadCanonicalsInputMsgType payload) {
-        LOG.info("Executing operation readCanonicals");
+        LOGGER.info("Executing operation readCanonicals");
         ReadCanonicalsOutputMsgType res = new ReadCanonicalsOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -92,7 +92,7 @@ public class DataAccessToolboxManagerImpl implements DataAccessToolboxManager {
      * @see org.apromore.dao.DataAccessToolboxManager#storeCpf(StoreCpfInputMsgType  payload )*
      */
     public StoreCpfOutputMsgType storeCpf(StoreCpfInputMsgType payload) {
-        LOG.info("Executing operation storeCpf");
+        LOGGER.info("Executing operation storeCpf");
         StoreCpfOutputMsgType res = new StoreCpfOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);

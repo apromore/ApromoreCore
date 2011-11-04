@@ -1,15 +1,5 @@
 package org.apromore.dao.service;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.logging.Logger;
-
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.util.ByteArrayDataSource;
-
-import org.apromore.common.Constants;
 import org.apromore.dao.DataAccessManagerManager;
 import org.apromore.dao.dao.EditSessionDao;
 import org.apromore.dao.dao.ProcessDao;
@@ -21,16 +11,18 @@ import org.apromore.model.EditProcessDataInputMsgType;
 import org.apromore.model.EditProcessDataOutputMsgType;
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ProcessVersionIdentifierType;
-import org.apromore.model.ReadCanonicalAnfInputMsgType;
-import org.apromore.model.ReadCanonicalAnfOutputMsgType;
 import org.apromore.model.ReadEditSessionInputMsgType;
 import org.apromore.model.ReadEditSessionOutputMsgType;
-import org.apromore.model.ReadFormatInputMsgType;
-import org.apromore.model.ReadFormatOutputMsgType;
 import org.apromore.model.ResultType;
 import org.apromore.model.WriteEditSessionInputMsgType;
 import org.apromore.model.WriteEditSessionOutputMsgType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 
 /**
  *
@@ -38,45 +30,42 @@ import org.springframework.stereotype.Service;
 @Service
 public class DataAccessManagerManagerImpl implements DataAccessManagerManager {
 
-    private static final Logger LOG = Logger.getLogger(DataAccessManagerManagerImpl.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(DataAccessManagerManagerImpl.class.getName());
 
-    public ReadFormatOutputMsgType readFormat(ReadFormatInputMsgType payload) {
-        LOG.info("Executing operation readNative");
-        System.out.println(payload);
-        ReadFormatOutputMsgType res = new ReadFormatOutputMsgType();
-        ResultType result = new ResultType();
-        res.setResult(result);
-        try {
-            Integer processId = payload.getProcessId();
-            String version = payload.getVersion();
-            String read = null;
-            String format = payload.getFormat();
-
-            if (Constants.CANONICAL.compareTo(format) == 0) {
-                read = ProcessDao.getInstance().getCanonical(processId, version);
-            } else if (format.startsWith(Constants.ANNOTATIONS)) {
-                // format starts with Constants.ANNOTATIONS + " - "
-                format = format.substring(Constants.ANNOTATIONS.length() + 3, format.length());
-                read = ProcessDao.getInstance().getAnnotation(processId, version, format);
-            } else {
-                read = ProcessDao.getInstance().getNative(processId, version, format);
-            }
-            DataSource source = new ByteArrayDataSource(read, "text/xml");
-            res.setNative(new DataHandler(source));
-            result.setCode(0);
-            result.setMessage("");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        }
-        return res;
-    }
+//    public ReadFormatOutputMsgType readFormat(ReadFormatInputMsgType payload) {
+//        LOGGER.info("Executing operation readNative");
+//        ReadFormatOutputMsgType res = new ReadFormatOutputMsgType();
+//        ResultType result = new ResultType();
+//        res.setResult(result);
+//        try {
+//            Integer processId = payload.getProcessId();
+//            String version = payload.getVersion();
+//            String read = null;
+//            String format = payload.getFormat();
+//
+//            if (Constants.CANONICAL.compareTo(format) == 0) {
+//                read = ProcessDao.getInstance().getCanonical(processId, version);
+//            } else if (format.startsWith(Constants.ANNOTATIONS)) {
+//                format = format.substring(Constants.ANNOTATIONS.length() + 3, format.length());
+//                read = ProcessDao.getInstance().getAnnotation(processId, version, format);
+//            } else {
+//                read = ProcessDao.getInstance().getNative(processId, version, format);
+//            }
+//            DataSource source = new ByteArrayDataSource(read, "text/xml");
+//            res.setNative(new DataHandler(source));
+//            result.setCode(0);
+//            result.setMessage("");
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            result.setCode(-1);
+//            result.setMessage(ex.getMessage());
+//        }
+//        return res;
+//    }
 
 
     public EditProcessDataOutputMsgType editProcessData(EditProcessDataInputMsgType payload) {
-        LOG.info("Executing operation EditDataProcesses");
-        System.out.println(payload);
+        LOGGER.info("Executing operation EditDataProcesses");
         EditProcessDataOutputMsgType res = new EditProcessDataOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -100,8 +89,7 @@ public class DataAccessManagerManagerImpl implements DataAccessManagerManager {
     }
 
     public DeleteProcessVersionsOutputMsgType deleteProcessVersions(DeleteProcessVersionsInputMsgType payload) {
-        LOG.info("Executing operation deleteProcessVersions");
-        System.out.println(payload);
+        LOGGER.info("Executing operation deleteProcessVersions");
         DeleteProcessVersionsOutputMsgType res = new DeleteProcessVersionsOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -127,8 +115,7 @@ public class DataAccessManagerManagerImpl implements DataAccessManagerManager {
 
 
     public DeleteEditSessionOutputMsgType deleteEditSession(DeleteEditSessionInputMsgType payload) {
-        LOG.info("Executing operation deleteEditSession");
-        System.out.println(payload);
+        LOGGER.info("Executing operation deleteEditSession");
         DeleteEditSessionOutputMsgType res = new DeleteEditSessionOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -146,8 +133,7 @@ public class DataAccessManagerManagerImpl implements DataAccessManagerManager {
     }
 
     public ReadEditSessionOutputMsgType readEditSession(ReadEditSessionInputMsgType payload) {
-        LOG.info("Executing operation readEditSession");
-        System.out.println(payload);
+        LOGGER.info("Executing operation readEditSession");
         ReadEditSessionOutputMsgType res = new ReadEditSessionOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -167,8 +153,7 @@ public class DataAccessManagerManagerImpl implements DataAccessManagerManager {
 
 
     public WriteEditSessionOutputMsgType writeEditSession(WriteEditSessionInputMsgType payload) {
-        LOG.info("Executing operation writeEditSession");
-        System.out.println(payload);
+        LOGGER.info("Executing operation writeEditSession");
         WriteEditSessionOutputMsgType res = new WriteEditSessionOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -186,31 +171,30 @@ public class DataAccessManagerManagerImpl implements DataAccessManagerManager {
         return res;
     }
 
-    public ReadCanonicalAnfOutputMsgType readCanonicalAnf(ReadCanonicalAnfInputMsgType payload) {
-        LOG.info("Executing operation readCanonicalAnf");
-        System.out.println(payload);
-        ReadCanonicalAnfOutputMsgType res = new ReadCanonicalAnfOutputMsgType();
-        ResultType result = new ResultType();
-        res.setResult(result);
-        try {
-            String canonical = ProcessDao.getInstance().getCanonical(payload.getProcessId(), payload.getVersion());
-            DataSource sourceCpf = new ByteArrayDataSource(canonical, "text/xml");
-            res.setCpf(new DataHandler(sourceCpf));
-            Boolean withAnnotation = payload.isWithAnnotation();
-            String anf = null;
-            if (withAnnotation) {
-                anf = ProcessDao.getInstance().getAnnotation(payload.getProcessId(), payload.getVersion(), payload.getAnnotationName());
-                DataSource sourceAnf = new ByteArrayDataSource(anf, "text/xml");
-                res.setAnf(new DataHandler(sourceAnf));
-            }
-            result.setCode(0);
-            result.setMessage("");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        }
-        return res;
-    }
+//    public ReadCanonicalAnfOutputMsgType readCanonicalAnf(ReadCanonicalAnfInputMsgType payload) {
+//        LOGGER.info("Executing operation readCanonicalAnf");
+//        ReadCanonicalAnfOutputMsgType res = new ReadCanonicalAnfOutputMsgType();
+//        ResultType result = new ResultType();
+//        res.setResult(result);
+//        try {
+//            String canonical = ProcessDao.getInstance().getCanonical(payload.getProcessId(), payload.getVersion());
+//            DataSource sourceCpf = new ByteArrayDataSource(canonical, "text/xml");
+//            res.setCpf(new DataHandler(sourceCpf));
+//            Boolean withAnnotation = payload.isWithAnnotation();
+//            String anf = null;
+//            if (withAnnotation) {
+//                anf = ProcessDao.getInstance().getAnnotation(payload.getProcessId(), payload.getVersion(), payload.getAnnotationName());
+//                DataSource sourceAnf = new ByteArrayDataSource(anf, "text/xml");
+//                res.setAnf(new DataHandler(sourceAnf));
+//            }
+//            result.setCode(0);
+//            result.setMessage("");
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            result.setCode(-1);
+//            result.setMessage(ex.getMessage());
+//        }
+//        return res;
+//    }
 
 }

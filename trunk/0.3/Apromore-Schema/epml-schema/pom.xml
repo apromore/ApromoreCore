@@ -108,18 +108,8 @@
                     </execution>
                 </executions>
                 <configuration>
-                    <verbose>false</verbose>
-                    <strict>true</strict>
-                    <extension>false</extension>
-                    <forceRegenerate>true</forceRegenerate>
                     <schemaDirectory>${basedir}/src/main/xsd</schemaDirectory>
                     <generateDirectory>${basedir}/target/generated-sources/src</generateDirectory>
-                    <schemaIncludes>
-                        <schemaInclude>EPML_2.0.xsd</schemaInclude>
-                    </schemaIncludes>
-                    <!--<bindingIncludes>-->
-                        <!--<bindingInclude>bindings.xml</bindingInclude>-->
-                    <!--</bindingIncludes>-->
                 </configuration>
             </plugin>
             <plugin>

@@ -217,14 +217,6 @@ public class AssingmentProblem {
 
 				for (int i = 0; i < result.length; i++) {
 					double pairCost = (-1) * costs[result[i][0]][result[i][1]];
-//					if (result[i][0] < g1Vertices.size()
-//							&& result[i][1] < g2Vertices.size()) {
-//						System.out.println(g1Vertices.get(result[i][0]).getLabel() + 
-//								" "+ g2Vertices.get(result[i][1]).getLabel() + " " + pairCost + " "+
-//								AssingmentProblem.canMap(g1Vertices
-//										.get(result[i][0]), g2Vertices
-//										.get(result[i][1])));
-//					}
 					if (result[i][0] < g1Vertices.size()
 							&& result[i][1] < g2Vertices.size()
 							&& pairCost > 0

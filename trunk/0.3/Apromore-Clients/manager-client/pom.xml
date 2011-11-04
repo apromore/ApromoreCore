@@ -13,7 +13,7 @@
     <groupId>org.apromore</groupId>
     <artifactId>manager-client</artifactId>
     <packaging>jar</packaging>
-    <version>${manager-client.version}</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <url>http://code.google.com/p/apromore/</url>
     <name>Apromore Manager Client</name>
@@ -83,7 +83,7 @@
                         <id>generate-sources</id>
                         <phase>generate-sources</phase>
                         <configuration>
-                            <sourceRoot>${basedir}/target/generated-sources/src/main/java</sourceRoot>
+                            <sourceRoot>${basedir}/target/generated-sources/src</sourceRoot>
                             <wsdlOptions>
                                 <wsdlOption>
                                     <wsdl>${basedir}/src/main/resources/manager.wsdl</wsdl>
@@ -121,7 +121,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${basedir}/target/generated-sources/xjc</source>
+                                <source>${basedir}/target/generated-sources/src</source>
                             </sources>
                         </configuration>
                     </execution>

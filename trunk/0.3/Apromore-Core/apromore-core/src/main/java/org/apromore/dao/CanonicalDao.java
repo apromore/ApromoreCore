@@ -1,6 +1,7 @@
 package org.apromore.dao;
 
 import org.apromore.dao.model.Canonical;
+import org.apromore.exception.CanonicalFormatNotFoundException;
 
 import java.util.List;
 
@@ -19,6 +20,15 @@ public interface CanonicalDao {
      * @return the canonical process, a list of them for all the different versions.
      */
     List<Canonical> findByProcessId(final long processId);
+
+    /**
+     * Get the Canonical format. this is just a string but contains the xml Canonical Format.
+     * @param processId the processId of the Canonical format.
+     * @param version the version of the canonical format
+     * @return the XML as a string
+     * @throws org.apromore.exception.CanonicalFormatNotFoundException if the process model can not be found.
+     */
+    String getCanonical(final long processId, final String version) throws CanonicalFormatNotFoundException;
 
 
 

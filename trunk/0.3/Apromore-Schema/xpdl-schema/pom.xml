@@ -13,7 +13,7 @@
     <groupId>org.apromore</groupId>
     <artifactId>xpdl-schema</artifactId>
     <packaging>jar</packaging>
-    <version>${xpdl-schema.version}</version>
+    <version>1.0.0-SNAPSHOT</version>
 
     <url>http://code.google.com/p/apromore/</url>
     <name>Apromore Common XPDL Generated Code</name>
@@ -109,7 +109,7 @@
                 </executions>
                 <configuration>
                     <schemaDirectory>${basedir}/src/main/xsd</schemaDirectory>
-                    <generateDirectory>${basedir}/target/generated-sources/src/main/java</generateDirectory>
+                    <generateDirectory>${basedir}/target/generated-sources/src</generateDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -124,7 +124,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${basedir}/target/generated-sources/src/main/java</source>
+                                <source>${basedir}/target/generated-sources/src</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -141,7 +141,7 @@
                             <goal>copy-resources</goal>
                         </goals>
                         <configuration>
-                            <outputDirectory>${basedir}/target/generated-sources/src/main/java/org/wfmc/_2008/xpdl2/</outputDirectory>
+                            <outputDirectory>${basedir}/target/generated-sources/src/org/wfmc/_2008/xpdl2/</outputDirectory>
                             <overwrite>true</overwrite>
                             <resources>
                                 <resource>

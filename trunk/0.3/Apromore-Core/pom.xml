@@ -32,39 +32,38 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>manager-client</artifactId>
-            <version>${manager-client.version}</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>anf-schema</artifactId>
-            <version>${anf-schema.version}</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>cpf-schema</artifactId>
-            <version>${cpf-schema.version}</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>epml-schema</artifactId>
-            <version>${epml-schema.version}</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>rlf-schema</artifactId>
-            <version>${rlf-schema.version}</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>yawl-schema</artifactId>
-            <version>${yawl-schema.version}</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>xpdl-schema</artifactId>
-            <version>${xpdl-schema.version}</version>
+            <version>1.0.0-SNAPSHOT</version>
         </dependency>
     </dependencies>
-
 </project>

@@ -74,12 +74,7 @@ public class MergeModels {
 		} else if (algortithm.equals("Hungarian")) {
 			mapping = AssingmentProblem.getMappingsVetrexUsingNodeMapping(g1, g2, param[0], param[1]);
 		}
-		
-//		for (VertexPair vp : mapping) {
-//			System.out.println(vp.getLeft() + " <> "+ vp.getRight() + " -> "+vp.getWeight());
-//		}
-//		System.out.print("**********************************\n");
-		
+
 		// clean mappings from mappings that conflict
 		// TODO uncomment
 //		removeNonDominanceMappings(mapping);
@@ -91,16 +86,7 @@ public class MergeModels {
 		}
 		
 		MappingRegions mappingRegions = findMaximumCommonRegions(g1, g2, mapping);
-		
-//		for (LinkedList<VertexPair> mapping1 : mappingRegions.getRegions()) {
-//			System.out.println("-------------------------------------");
-//			for (VertexPair vp : mapping1) {
-//				System.out.println(vp.getLeft().getLabel()+" ("+vp.getLeft().getID()+") "+ " <> "+ vp.getRight().getLabel()+" ("+vp.getRight().getID()+") " + " "+vp.getLeft().getChildren().size() + " "+vp.getRight().getChildren().size());
-//			}
-//			System.out.print(mapping1.size()+"\t");
-//		}
-//		System.out.print("\n");
-		
+
 		for (LinkedList<VertexPair> region : mappingRegions.getRegions()) {
 			for (VertexPair vp : region) {
 				LinkedList<Vertex> nodesToProcess = new LinkedList<Vertex>();
@@ -286,14 +272,12 @@ public class MergeModels {
 		}
 
 		int[] gwInf = merged.getNrOfConfigGWs();
-//		System.out.println(gwInf[4]+"\t"+gwInf[0]);
-		
+
 		long mergeTime = System.currentTimeMillis();
 		merged.cleanGraph();
 		
 		gwInf = merged.getNrOfConfigGWs();
-//		System.out.println(gwInf[4]+"\t"+gwInf[0]);
-		
+
 		// labels for all edges should be added to the modelass
 		for (Edge e : merged.getEdges()) {
 			e.addLabelToModel();
@@ -384,13 +368,9 @@ public class MergeModels {
 				boolean dominanceInG1 = containsInDownwardsPath(vp.getLeft(), vp1.getLeft());
 				boolean dominanceInG2 = containsInDownwardsPath(vp.getRight(), vp1.getRight());
 				
-//				System.out.println(vp.getLeft().getID() +" <> "+ vp.getRight().getID() + " : "+dominanceInG1 + " "+vp1.getLeft().getID() +" <> "+ vp1.getRight().getID()+" : "+ dominanceInG2);
-				// dominance rule is broken 
+				// dominance rule is broken
 				if (dominanceInG1 && !dominanceInG2 || !dominanceInG1 && dominanceInG2) {
 					// remove 2 pairs from the pairs list and start with the new pair
-//					System.out.println(">>*REMOVING MAPPINGS");
-//					System.out.println(vp.getLeft().getID() +" <> "+ vp.getRight().getID());
-//					System.out.println(vp1.getLeft().getID() +" <> "+ vp1.getRight().getID());
 					removeList.add(vp);
 					removeList.add(vp1);
 					break;
@@ -432,9 +412,6 @@ public class MergeModels {
 					|| vp1.getLeft().dominance.contains(vp.getLeft().getID()) 
 						&& vp.getRight().dominance.contains(vp1.getRight().getID())) {
 					// remove 2 pairs from the pairs list and start with the new pair
-					System.out.println(">>*REMOVING MAPPINGS");
-//					System.out.println(vp.getLeft() +" <> "+ vp.getRight());
-//					System.out.println(vp1.getLeft() +" <> "+ vp1.getRight());
 					removeList.add(vp);
 					removeList.add(vp1);
 					break;
@@ -486,9 +463,6 @@ public class MergeModels {
 						&& !(vp.getLeft().dominance.contains(vp1.getLeft().getID()) 
 								|| vp1.getRight().dominance.contains(vp.getRight().getID())))) {
 					// remove 2 pairs from the pairs list and start with the new pair
-//					System.out.println(">>*REMOVING MAPPINGS");
-					System.out.println(">>*REMOVING MAPPINGS" + vp.getLeft() +" <> "+ vp.getRight());
-					System.out.println(">>*REMOVING MAPPINGS" + vp1.getLeft() +" <> "+ vp1.getRight());
 					removeList.add(vp);
 					removeList.add(vp1);
 					break;
@@ -595,7 +569,6 @@ public class MergeModels {
 	}
 	
 	public static MappingRegions findMaximumCommonRegions(Graph g1, Graph g2, LinkedList<VertexPair> mapping) {
-//		System.out.println("FINDING REGIONS");
 		MappingRegions map = new MappingRegions();
 		LinkedList<VertexPair> visited = new LinkedList<VertexPair>();
 		
@@ -610,7 +583,6 @@ public class MergeModels {
 			toVisit.add(c);
 			while (toVisit.size() > 0) {
 				c = toVisit.removeFirst();
-//				System.out.println(">>> process: "+c.getLeft().getLabel()+" ("+c.getLeft().getID()+") "+ " <> "+ c.getRight().getLabel()+" ("+c.getRight().getID()+") ");
 				mapRegion.add(c);
 				
 				visited.add(c);
@@ -619,9 +591,7 @@ public class MergeModels {
 						VertexPair pairMap = containsMapping(mapping, pLeft, pRight);
 						VertexPair containsMap = containsMapping(visited, pLeft, pRight);
 						VertexPair containsMap1 = containsMapping(toVisit, pLeft, pRight);
-//						System.out.println("\tp: add to visit???: "+pLeft.getLabel()+" ("+pLeft.getID()+") "+ " <> "+ pRight.getLabel()+" ("+pRight.getID()+") ");
 						if (pairMap != null && containsMap == null && containsMap1 == null) {
-//							System.out.println("\t\t adding to visit: "+pairMap.getLeft().getLabel()+" ("+pairMap.getLeft().getID()+") "+ " <> "+ pairMap.getRight().getLabel()+" ("+pairMap.getRight().getID()+") ");
 							toVisit.add(pairMap);
 						}
 					}
@@ -632,10 +602,7 @@ public class MergeModels {
 						VertexPair pairMap = containsMapping(mapping, pLeft, pRight);
 						VertexPair containsMap = containsMapping(visited, pLeft, pRight);
 						VertexPair containsMap1 = containsMapping(toVisit, pLeft, pRight);
-//						System.out.println("\tc: add to visit???: "+pLeft.getLabel()+" ("+pLeft.getID()+") "+ " <> "+ pRight.getLabel()+" ("+pRight.getID()+") ");
 						if (pairMap != null && containsMap == null && containsMap1 == null) {
-//							System.out.println("\t\t adding to visit: "+pairMap.getLeft().getLabel()+" ("+pairMap.getLeft().getID()+") "+ " <> "+ pairMap.getRight().getLabel()+" ("+pairMap.getRight().getID()+") ");
-
 							toVisit.add(pairMap);
 						}
 					}
@@ -651,7 +618,6 @@ public class MergeModels {
 	}
 	
 	public static boolean containsVertex(LinkedList<VertexPair> mapping, Vertex v){
-		
 		for (VertexPair vp : mapping) {
 			if (vp.getLeft().getID() == v.getID() || vp.getRight().getID() == v.getID()) {
 				
@@ -662,7 +628,6 @@ public class MergeModels {
 	}
 	
 	public static Vertex getMappingPair(LinkedList<VertexPair> mapping, Vertex v){
-		
 		for (VertexPair vp : mapping) {
 			if (vp.getLeft().getID() == v.getID()) {
 				return vp.getRight();

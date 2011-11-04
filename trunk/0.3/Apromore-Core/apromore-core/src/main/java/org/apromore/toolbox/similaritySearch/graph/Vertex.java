@@ -252,10 +252,8 @@ public class Vertex {
 
 		
 		for (Vertex v : parentNodes) {
-//			System.out.println("\t????parentlist add "+ v.getLabel()+ " "+v.getType());
 			if(v.getType().equals(Type.function) || (Settings.considerEvents && v.getType().equals(Type.event))
 					|| (Settings.considerGateways && v.getType().equals(Type.gateway))) {
-//				System.out.println("\tparentlist add "+v.getLabel());
 				result.add(v);
 			}
 		}
@@ -287,14 +285,7 @@ public class Vertex {
 	}
 	
 	public boolean equals(Vertex v2) {
-//		System.out.println("\t\tID "+this.ID +" : "+ v2.getID()+"  type:  "+
-//				this.vertexType.ordinal() +" : "+ v2.getType().ordinal() +
-//				" label "+ this.label +" : "+v2.getLabel() + " (equals = "+this.label.equals(v2.getLabel())+" ) "+
-//				" type " +  this.gwType +" : "+ v2.getGWType());
 		if (this.ID.equals(v2.getID())
-//				&& this.vertexType.ordinal() == v2.getType().ordinal()
-//				&& this.label.equals(v2.getLabel())
-//				&& (this.gwType == null && v2.getGWType() == null ||  this.gwType.ordinal() == v2.getGWType().ordinal())
 				){
 			return true;
 		}

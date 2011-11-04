@@ -2,6 +2,7 @@ package org.apromore.dao;
 
 import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.Canonical;
+import org.apromore.exception.AnnotationNotFoundException;
 
 import java.util.List;
 
@@ -19,6 +20,16 @@ public interface AnnotationDao {
      * @return the annotation, a list of them for all the different canoncials.
      */
     public List<Annotation> findByUri(final int nativeUri);
+
+    /**
+     * Get the Canonical format. this is just a string but contains the xml Canonical Format.
+     * @param processId the processId of the Canonical format.
+     * @param version the version of the canonical format
+     * @param annotationName the name of the annotation to get
+     * @return the XML as a string
+     * @throws AnnotationNotFoundException if the annotation can not be found
+     */
+    String getAnnotation(long processId, String version, String annotationName) throws AnnotationNotFoundException;
 
 
     /**
