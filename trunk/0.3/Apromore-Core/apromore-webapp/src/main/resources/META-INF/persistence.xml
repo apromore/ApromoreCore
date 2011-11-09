@@ -15,6 +15,24 @@
         <class>org.apromore.dao.model.TempVersionId</class>
         <class>org.apromore.dao.model.User</class>
 
+        <!-- Version control tables -->
+        <class>org.apromore.dao.model.Contents</class>
+        <class>org.apromore.dao.model.CurrentIds</class>
+        <class>org.apromore.dao.model.Edges</class>
+        <class>org.apromore.dao.model.Fragments</class>
+        <class>org.apromore.dao.model.FragmentVersionDag</class>
+        <class>org.apromore.dao.model.FragmentVersionDagId</class>
+        <class>org.apromore.dao.model.FragmentVersions</class>
+        <class>org.apromore.dao.model.IssuedContentIds</class>
+        <class>org.apromore.dao.model.IssuedFragmentVersionIds</class>
+        <class>org.apromore.dao.model.IssuedVertexIds</class>
+        <class>org.apromore.dao.model.NonPocketVertices</class>
+        <class>org.apromore.dao.model.ProcessBranches</class>
+        <class>org.apromore.dao.model.Processes</class>
+        <class>org.apromore.dao.model.ProcessFragmentMap</class>
+        <class>org.apromore.dao.model.ProcessModelVersions</class>
+        <class>org.apromore.dao.model.Vertices</class>
+
         <!-- Views -->
         <class>org.apromore.dao.model.HeadVersion</class>
         <class>org.apromore.dao.model.HeadVersionId</class>

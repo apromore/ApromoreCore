@@ -9,7 +9,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 
 /**
- * Test the Annotation POJO.
+ * Test the Head Version 0 Id POJO.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 public class HeadVersion0IdUnitTest {

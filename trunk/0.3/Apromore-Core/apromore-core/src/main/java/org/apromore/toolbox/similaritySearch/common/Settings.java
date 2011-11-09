@@ -4,7 +4,6 @@ import java.util.StringTokenizer;
 
 import org.apromore.toolbox.similaritySearch.common.stemmer.SnowballStemmer;
 
-
 public class Settings {
 	public static String STRING_DELIMETER = " ,.:;&/?!#()";
 
@@ -21,9 +20,9 @@ public class Settings {
 		
 		return englishStemmer;
 	}
-	
+
+    @SuppressWarnings("rawtypes")
 	public static SnowballStemmer getStemmer(String language){
-		@SuppressWarnings("rawtypes")
 		Class stemClass;
 		SnowballStemmer stemmer;
 
