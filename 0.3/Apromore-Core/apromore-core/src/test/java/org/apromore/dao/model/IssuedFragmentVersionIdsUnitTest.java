@@ -4,14 +4,14 @@ import org.apromore.test.heuristic.JavaBeanHeuristic;
 import org.junit.Test;
 
 /**
- * Test the Canonical POJO.
+ * Test the Issued Fragment Version Ids POJO.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class CanonicalUnitTest {
+public class IssuedFragmentVersionIdsUnitTest {
 
     @Test
     public void testLikeJavaBean() {
-        JavaBeanHeuristic.assertLooksLikeJavaBean(Canonical.class);
+        JavaBeanHeuristic.assertLooksLikeJavaBean(IssuedFragmentVersionIds.class);
     }
 
 }

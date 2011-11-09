@@ -149,12 +149,6 @@
                 <version>${javancss-maven-plugin.version}</version>
                 <inherited>true</inherited>
             </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-changelog-plugin</artifactId>
-                <version>${changelog-maven-plugin.version}</version>
-                <inherited>true</inherited>
-            </plugin>
         </plugins>
     </reporting>
 
@@ -754,7 +748,6 @@
         <findbugs-maven-plugin.version>2.3.2</findbugs-maven-plugin.version>
         <javancss-maven-plugin.version>2.0-beta-2</javancss-maven-plugin.version>
         <exec-maven-plugin.version>1.2</exec-maven-plugin.version>
-        <changelog-maven-plugin.version>2.2</changelog-maven-plugin.version>
 
         <maven-bundle-plugin.version>2.3.5</maven-bundle-plugin.version>
         <maven-checkstyle-plugin.version>2.6</maven-checkstyle-plugin.version>

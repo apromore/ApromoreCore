@@ -36,13 +36,13 @@ public class CanoniserServiceImplUnitTest {
     }
 
     @Test
-    public void DeCanoniseWithoutAnnotationsFailure() throws Exception {
+    public void deCanoniseWithoutAnnotationsFailure() throws Exception {
         long processId = 123;
         String version = "1.2";
         String name = "Canonical";
         DataSource cpf = new ByteArrayDataSource("<XML/>", "text/xml");
 
-        DataSource data = service.DeCanonise(processId, version, name, cpf, null);
+        DataSource data = service.deCanonise(processId, version, name, cpf, null);
 
         MatcherAssert.assertThat(data, Matchers.nullValue());
     }
@@ -54,7 +54,7 @@ public class CanoniserServiceImplUnitTest {
         String name = "Canonical";
         DataSource cpf = new ByteArrayDataSource(CanonicalNoAnnotationModel.CANONICAL_XML, "text/xml");
 
-        DataSource data = service.DeCanonise(processId, version, name, cpf, null);
+        DataSource data = service.deCanonise(processId, version, name, cpf, null);
 
         MatcherAssert.assertThat(data, Matchers.notNullValue());
     }
@@ -66,7 +66,7 @@ public class CanoniserServiceImplUnitTest {
         String name = "XPDL 2.1";
         DataSource cpf = new ByteArrayDataSource(CanonicalNoAnnotationModel.CANONICAL_XML, "text/xml");
 
-        DataSource data = service.DeCanonise(processId, version, name, cpf, null);
+        DataSource data = service.deCanonise(processId, version, name, cpf, null);
 
         MatcherAssert.assertThat(data, Matchers.notNullValue());
     }
@@ -79,7 +79,7 @@ public class CanoniserServiceImplUnitTest {
         DataSource cpf = new ByteArrayDataSource(CanonicalWithAnnotationModel.CANONICAL_XML, "text/xml");
         DataSource anf = new ByteArrayDataSource(CanonicalWithAnnotationModel.ANNOTATION_XML, "text/xml");
 
-        DataSource data = service.DeCanonise(processId, version, name, cpf, anf);
+        DataSource data = service.deCanonise(processId, version, name, cpf, anf);
 
         MatcherAssert.assertThat(data, Matchers.notNullValue());
     }
@@ -95,7 +95,7 @@ public class CanoniserServiceImplUnitTest {
         String name = "EPML 2.0";
         DataSource cpf = new ByteArrayDataSource(CanonicalNoAnnotationModel.CANONICAL_XML, "text/xml");
 
-        DataSource data = service.DeCanonise(processId, version, name, cpf, null);
+        DataSource data = service.deCanonise(processId, version, name, cpf, null);
 
         MatcherAssert.assertThat(data, Matchers.notNullValue());
     }
@@ -111,7 +111,7 @@ public class CanoniserServiceImplUnitTest {
         DataSource cpf = new ByteArrayDataSource(CanonicalWithAnnotationModel.CANONICAL_XML, "text/xml");
         DataSource anf = new ByteArrayDataSource(CanonicalWithAnnotationModel.ANNOTATION_XML, "text/xml");
 
-        DataSource data = service.DeCanonise(processId, version, name, cpf, anf);
+        DataSource data = service.deCanonise(processId, version, name, cpf, anf);
 
         MatcherAssert.assertThat(data, Matchers.notNullValue());
     }

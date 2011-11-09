@@ -39,12 +39,12 @@ public class CanoniserServiceImpl implements CanoniserService {
     private static final Logger LOGGER = LoggerFactory.getLogger(CanoniserServiceImpl.class);
 
     /**
-     * @see org.apromore.service.CanoniserService#DeCanonise(long, String, String, javax.activation.DataSource, javax.activation.DataSource)
+     * @see org.apromore.service.CanoniserService#deCanonise(long, String, String, javax.activation.DataSource, javax.activation.DataSource)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public DataSource DeCanonise(final long processId, final String version, final String nativeType, final DataSource cpf, final DataSource anf) {
+    public DataSource deCanonise(final long processId, final String version, final String nativeType, final DataSource cpf, final DataSource anf) {
         AnnotationsType annType = null;
         DataSource native_ds = null;
 

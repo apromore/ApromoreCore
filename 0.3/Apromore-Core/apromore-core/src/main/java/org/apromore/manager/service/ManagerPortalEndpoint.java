@@ -464,9 +464,9 @@ public class ManagerPortalEndpoint {
             } else {
                 Format canFormat = procSrv.getCanonicalAnf(processId, version, withAnn, annName);
                 if (withAnn) {
-                    source = canSrv.DeCanonise(processId, version, format, canFormat.getCpf(), canFormat.getAnf());
+                    source = canSrv.deCanonise(processId, version, format, canFormat.getCpf(), canFormat.getAnf());
                 } else {
-                    source = canSrv.DeCanonise(processId, version, format, canFormat.getCpf(), null);
+                    source = canSrv.deCanonise(processId, version, format, canFormat.getCpf(), null);
                 }
                 res.setNative(new DataHandler(source));
             }
