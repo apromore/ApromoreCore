@@ -20,6 +20,6 @@ public interface CanoniserService {
      * @param anf_is the annotation inputStream
      * @return the DeCanonised model inputStream
      */
-    DataSource DeCanonise(final long processId, final String version, final String nativeType, final DataSource cpf_is, final DataSource anf_is);
+    DataSource deCanonise(final long processId, final String version, final String nativeType, final DataSource cpf_is, final DataSource anf_is);
 
 }
