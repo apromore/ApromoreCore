@@ -23,6 +23,29 @@
         re-use.
     </description>
 
+    <issueManagement>
+        <system>Google Code</system>
+        <url>http://code.google.com/p/apromore/wiki/IssueTracker</url>
+    </issueManagement>
+
+    <scm>
+        <developerConnection>scm:svn:http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Clients/manager-client/</developerConnection>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Clients/manager-client/</connection>
+        <url>http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Clients/manager-client/</url>
+    </scm>
+
+    <ciManagement>
+        <system>Hudson</system>
+        <url>http://131.181.88.5:8080/jenkins/view/Clients/</url>
+    </ciManagement>
+
+    <distributionManagement>
+        <site>
+            <id>website</id>
+            <url>dav:http://localhost:8080/projects/ApromoreManagerClient</url>
+        </site>
+    </distributionManagement>
+
     <dependencies>
         <!-- JAXB -->
         <dependency>
