@@ -86,13 +86,6 @@
         </developer>
     </developers>
 
-    <repositories>
-        <repository>
-            <id>apromore.googlecode.com</id>
-            <url>http://apromore.googlecode.com/svn/m2/releases</url>
-        </repository>
-    </repositories>
-
     <dependencies>
         <!-- Generated Schemas -->
         <dependency>
