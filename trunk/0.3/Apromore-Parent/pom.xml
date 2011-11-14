@@ -33,6 +33,14 @@
     </ciManagement>
 
     <distributionManagement>
+        <repository>
+            <id>inhouse</id>
+            <url>scp://131.181.88.5:8080/archiva/repository/releases</url>
+        </repository>
+        <snapshotRepository>
+            <id>inhouse.shapshot</id>
+            <url>scp://131.181.88.5:8080/archiva/repository/snapshots</url>
+        </snapshotRepository>
         <site>
             <id>website</id>
             <url>dav:http://131.181.88.5:9000/projects/apromore</url>

@@ -85,10 +85,6 @@
 
     <repositories>
         <repository>
-            <id>apromore.googlecode.com</id>
-            <url>http://apromore.googlecode.com/svn/m2/releases</url>
-        </repository>
-        <repository>
             <id>ZK EE Evaluation</id>
             <url>http://mavensync.zkoss.org/zk/ee-eval</url>
         </repository>
