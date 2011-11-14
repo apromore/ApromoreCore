@@ -32,13 +32,13 @@
 
     <ciManagement>
         <system>Hudson</system>
-        <url>http://localhost:8180/view/apromore</url>
+        <url>http://131.181.88.5:8080/view/apromore</url>
     </ciManagement>
 
     <distributionManagement>
         <site>
             <id>website</id>
-            <url>dav:http://localhost:8180/projects/apromore</url>
+            <url>dav:http://131.181.88.5:9000/projects/apromore</url>
         </site>
     </distributionManagement>
 

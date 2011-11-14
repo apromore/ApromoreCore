@@ -16,6 +16,77 @@
     <version>1.0.0-SNAPSHOT</version>
     <name>Apromore WebApp</name>
 
+    <issueManagement>
+        <system>Google Code</system>
+        <url>http://code.google.com/p/apromore/wiki/IssueTracker</url>
+    </issueManagement>
+
+    <scm>
+        <developerConnection>scm:svn:http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Core/apromore-webapp/</developerConnection>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Core/apromore-webapp/</connection>
+        <url>http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Core/apromore-webapp/</url>
+    </scm>
+
+    <ciManagement>
+        <system>Hudson</system>
+        <url>http://131.181.88.5:8080/view/apromore</url>
+    </ciManagement>
+
+    <distributionManagement>
+        <site>
+            <id>website</id>
+            <url>dav:http://131.181.88.5:9000/projects/apromore</url>
+        </site>
+    </distributionManagement>
+
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
+
+    <inceptionYear>2010</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v3</name>
+            <distribution>repo</distribution>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>QUT</name>
+        <url>http://www.qut.edu.au</url>
+    </organization>
+
+    <mailingLists>
+        <mailingList>
+            <name>Apromore Forum</name>
+            <post>apromore-rm@googlegroups.com</post>
+            <unsubscribe>apromore-rm+unsubscribe@googlegroups.com</unsubscribe>
+        </mailingList>
+    </mailingLists>
+
+    <developers>
+        <developer>
+            <id>u312978</id>
+            <name>Cameron James</name>
+            <email>cam.james@gmail.com</email>
+            <organization>Suncorp</organization>
+            <organizationUrl>http://www.suncorp.com.au/</organizationUrl>
+            <roles>
+                <role>Active User</role>
+            </roles>
+            <timezone>+10</timezone>
+        </developer>
+    </developers>
+
+    <repositories>
+        <repository>
+            <id>apromore.googlecode.com</id>
+            <url>http://apromore.googlecode.com/svn/m2/releases</url>
+        </repository>
+    </repositories>
+
     <build>
         <finalName>Apromore</finalName>
         <plugins>
@@ -101,16 +172,6 @@
         <dependency>
             <groupId>org.springframework.ws</groupId>
             <artifactId>spring-ws-support</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.ws</groupId>
-            <artifactId>spring-ws-security</artifactId>
-            <exclusions>
-                <exclusion>
-                    <groupId>org.apache.ws.security</groupId>
-                    <artifactId>wss4j</artifactId>
-                </exclusion>
-            </exclusions>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
