@@ -723,6 +723,7 @@
         <xom.version>1.1</xom.version>
         <stax-api.version>1.0-2</stax-api.version>
         <wsdl4j.version>1.6.1</wsdl4j.version>
+        <cxf.version>2.4.0</cxf.version>
 
         <jaxb-xjc.version>2.0.1</jaxb-xjc.version>
         <jaxb-impl.version>2.0.1</jaxb-impl.version>
