@@ -25,10 +25,17 @@
 
         <!-- Apromore project, includes the above -->
         <module>Apromore-Parent</module>
-        <module>Apromore-Schema</module>
-        <module>Apromore-Clients</module>
-        <module>Apromore-Core</module>
-        <module>Apromore-Portal</module>
+        <module>Apromore-Schema/anf-schema</module>
+        <module>Apromore-Schema/cpf-schema</module>
+        <module>Apromore-Schema/epml-schema</module>
+        <module>Apromore-Schema/rlf-schema</module>
+        <module>Apromore-Schema/xpdl-schema</module>
+        <module>Apromore-Schema/yawl-schema</module>
+        <module>Apromore-Clients/manager-client</module>
+        <module>Apromore-Core/apromore-core</module>
+        <module>Apromore-Core/apromore-webapp</module>
+        <module>Apromore-Portal/portal-service</module>
+        <module>Apromore-Portal/portal-webapp</module>
     </modules>
 
 </project>

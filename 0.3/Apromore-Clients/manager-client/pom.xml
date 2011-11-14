@@ -6,7 +6,7 @@
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>org.apromore</groupId>
-        <artifactId>apromore-clients</artifactId>
+        <artifactId>apromore-parent</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
 
@@ -28,52 +28,23 @@
         <dependency>
             <groupId>javax.xml.bind</groupId>
             <artifactId>jaxb-api</artifactId>
+            <version>${jaxb-api.version}</version>
         </dependency>
         <dependency>
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-impl</artifactId>
+            <version>${jaxb-impl.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jvnet.jaxb2_commons</groupId>
             <artifactId>jaxb2-basics-runtime</artifactId>
+            <version>${jaxb2-basics-runtime.version}</version>
         </dependency>
     </dependencies>
 
     <build>
         <finalName>manager-client</finalName>
         <plugins>
-            <!--<plugin>-->
-                <!--<groupId>org.jvnet.jaxb2.maven2</groupId>-->
-                <!--<artifactId>maven-jaxb2-plugin</artifactId>-->
-                <!--<version>${maven-jaxb2-plugin.version}</version>-->
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<goals>-->
-                            <!--<goal>generate</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-                <!--<configuration>-->
-                    <!--<schemaIncludes>-->
-                        <!--<schemaInclude>**/*.xsd</schemaInclude>-->
-                    <!--</schemaIncludes>-->
-                    <!--<generatePackage>org.apromore.model</generatePackage>-->
-                    <!--<readOnly>true</readOnly>-->
-                    <!--<strict>true</strict>-->
-                    <!--<verbose>true</verbose>-->
-                    <!--<args>-->
-                        <!--<arg>-XtoString</arg>-->
-                        <!--<arg>-Xequals</arg>-->
-                        <!--<arg>-XhashCode</arg>-->
-                    <!--</args>-->
-                    <!--<plugins>-->
-                        <!--<plugin>-->
-                            <!--<groupId>org.jvnet.jaxb2_commons</groupId>-->
-                            <!--<artifactId>jaxb2-basics</artifactId>-->
-                        <!--</plugin>-->
-                    <!--</plugins>-->
-                <!--</configuration>-->
-            <!--</plugin>-->
             <plugin>
                 <groupId>org.apache.cxf</groupId>
                 <artifactId>cxf-codegen-plugin</artifactId>
