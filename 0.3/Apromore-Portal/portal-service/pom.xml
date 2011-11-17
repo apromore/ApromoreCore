@@ -16,16 +16,7 @@
 
     <url>http://code.google.com/p/apromore/</url>
     <name>Apromore Portal Service</name>
-    <description>Apromore is an open and extensible repository to store and disclose business process models of a
-        variety of types and languages, and beyond that, to build on top of existing tools and techniques, to provide
-        state-of-the-art features for model presentation, analysis, integration, contextualization, improvement, and
-        re-use.
-    </description>
-
-    <issueManagement>
-        <system>Google Code</system>
-        <url>http://code.google.com/p/apromore/wiki/IssueTracker</url>
-    </issueManagement>
+    <description>The portal service is Apromore own web based Modelling GUI.</description>
 
     <scm>
         <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/0.3/Apromore-Portal/portal-service/</developerConnection>
@@ -35,56 +26,15 @@
 
     <ciManagement>
         <system>Jenkins</system>
-        <url>http://131.181.88.205:8080/view/apromore</url>
+        <url>http://131.181.88.5:8080/jenkins/Services</url>
     </ciManagement>
 
     <distributionManagement>
         <site>
             <id>website</id>
-            <url>dav:http://131.181.88.205:8000/projects/apromore</url>
+            <url>dav:http://131.181.88.5:80/projects/portalService</url>
         </site>
     </distributionManagement>
-
-    <prerequisites>
-        <maven>2.2.1</maven>
-    </prerequisites>
-
-    <inceptionYear>2010</inceptionYear>
-
-    <licenses>
-        <license>
-            <name>GNU General Public License v3</name>
-            <distribution>repo</distribution>
-            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
-        </license>
-    </licenses>
-
-    <organization>
-        <name>QUT</name>
-        <url>http://www.qut.edu.au</url>
-    </organization>
-
-    <mailingLists>
-        <mailingList>
-            <name>Apromore Forum</name>
-            <post>apromore-rm@googlegroups.com</post>
-            <unsubscribe>apromore-rm+unsubscribe@googlegroups.com</unsubscribe>
-        </mailingList>
-    </mailingLists>
-
-    <developers>
-        <developer>
-            <id>u312978</id>
-            <name>Cameron James</name>
-            <email>cam.james@gmail.com</email>
-            <organization>Suncorp</organization>
-            <organizationUrl>http://www.suncorp.com.au/</organizationUrl>
-            <roles>
-                <role>Active User</role>
-            </roles>
-            <timezone>+10</timezone>
-        </developer>
-    </developers>
 
     <dependencies>
         <!-- Generated Schemas -->
