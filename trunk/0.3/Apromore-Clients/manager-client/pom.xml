@@ -30,7 +30,7 @@
     </scm>
 
     <ciManagement>
-        <system>Hudson</system>
+        <system>Jenkins</system>
         <url>http://131.181.88.5:8080/jenkins/view/Clients</url>
     </ciManagement>
 
