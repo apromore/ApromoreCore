@@ -4,6 +4,11 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
 
     <groupId>org.apromore</groupId>
     <artifactId>apromore-testing-tools</artifactId>
@@ -18,20 +23,28 @@
     </issueManagement>
 
     <scm>
-        <developerConnection>scm:svn:http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Testing-Tools/</developerConnection>
-        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Testing-Tools/</connection>
-        <url>http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Testing-Tools/</url>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/0.3/Apromore-Testing-Tools</developerConnection>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Testing-Tools</connection>
+        <url>http://code.google.com/p/apromore/source/browse/trunk/0.3/Apromore-Testing-Tools</url>
     </scm>
 
     <ciManagement>
-        <system>Hudson</system>
-        <url>http://131.181.88.5:8080/view/apromore</url>
+        <system>Jenkins</system>
+        <url>http://131.181.88.156:8080/jenkins/view/Tools/</url>
     </ciManagement>
 
     <distributionManagement>
+        <repository>
+            <id>inhouse</id>
+            <url>dav:http://131.181.88.5:9000/archiva/repository/internal/</url>
+        </repository>
+        <snapshotRepository>
+            <id>inhouse.snapshot</id>
+            <url>dav:http://131.181.88.5:9000/archiva/repository/snapshots/</url>
+        </snapshotRepository>
         <site>
             <id>website</id>
-            <url>dav:http://131.181.88.5:9000/projects/apromore</url>
+            <url>dav:http://131.181.88.5:80/projects/Apromore-Testing-Tools</url>
         </site>
     </distributionManagement>
 
