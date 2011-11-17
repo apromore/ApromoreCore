@@ -11,7 +11,7 @@
     </parent>
 
     <groupId>org.apromore</groupId>
-    <artifactId>apromore-web-webapp</artifactId>
+    <artifactId>apromore-webapp</artifactId>
     <packaging>war</packaging>
     <version>1.0.0-SNAPSHOT</version>
 
@@ -52,7 +52,7 @@
         <!-- Application -->
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>apromore-common</artifactId>
+            <artifactId>apromore-core</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
