@@ -34,14 +34,14 @@
     </scm>
 
     <ciManagement>
-        <system>Hudson</system>
-        <url>http://131.181.88.5:8080/view/apromore</url>
+        <system>Jenkins</system>
+        <url>http://131.181.88.205:8080/view/apromore</url>
     </ciManagement>
 
     <distributionManagement>
         <site>
             <id>website</id>
-            <url>dav:http://131.181.88.5:9000/projects/apromore</url>
+            <url>dav:http://131.181.88.205:8000/projects/apromore</url>
         </site>
     </distributionManagement>
 
