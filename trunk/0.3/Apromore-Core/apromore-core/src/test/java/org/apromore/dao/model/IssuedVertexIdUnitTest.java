@@ -4,14 +4,14 @@ import org.apromore.test.heuristic.JavaBeanHeuristic;
 import org.junit.Test;
 
 /**
- * Test the Process Branches POJO.
+ * Test the Issued Vertex Ids POJO.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class ProcessBranchesUnitTest {
+public class IssuedVertexIdUnitTest {
 
     @Test
     public void testLikeJavaBean() {
-        JavaBeanHeuristic.assertLooksLikeJavaBean(ProcessBranches.class);
+        JavaBeanHeuristic.assertLooksLikeJavaBean(IssuedVertexId.class);
     }
 
 }

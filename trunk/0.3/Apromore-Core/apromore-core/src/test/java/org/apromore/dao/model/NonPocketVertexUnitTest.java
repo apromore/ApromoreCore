@@ -4,14 +4,14 @@ import org.apromore.test.heuristic.JavaBeanHeuristic;
 import org.junit.Test;
 
 /**
- * Test the Fragment Versions POJO.
+ * Test the Non Pocket Vertex POJO.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class FragmentVersionsUnitTest {
+public class NonPocketVertexUnitTest {
 
     @Test
     public void testLikeJavaBean() {
-        JavaBeanHeuristic.assertLooksLikeJavaBean(FragmentVersions.class);
+        JavaBeanHeuristic.assertLooksLikeJavaBean(NonPocketVertex.class);
     }
 
 }

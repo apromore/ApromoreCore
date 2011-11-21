@@ -21,7 +21,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "fragment_version_dag")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Configurable("fragment_version_dag")
+@Configurable("fragmentVersionDag")
 public class FragmentVersionDag implements Serializable {
 
     /**
@@ -30,7 +30,7 @@ public class FragmentVersionDag implements Serializable {
     private static final long serialVersionUID = -9072539074338485548L;
 
     private FragmentVersionDagId id;
-    private FragmentVersions fragmentVersions;
+    private FragmentVersion fragmentVersion;
 
 
     public FragmentVersionDag() { }
@@ -45,18 +45,18 @@ public class FragmentVersionDag implements Serializable {
         return this.id;
     }
 
-    public void setId(FragmentVersionDagId id) {
-        this.id = id;
+    public void setId(final FragmentVersionDagId newId) {
+        this.id = newId;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fragment_version_id", nullable = false, insertable = false, updatable = false)
-    public FragmentVersions getFragmentVersions() {
-        return this.fragmentVersions;
+    public FragmentVersion getFragmentVersion() {
+        return this.fragmentVersion;
     }
 
-    public void setFragmentVersions(FragmentVersions fragmentVersions) {
-        this.fragmentVersions = fragmentVersions;
+    public void setFragmentVersion(final FragmentVersion newFragmentVersion) {
+        this.fragmentVersion = newFragmentVersion;
     }
 
 }

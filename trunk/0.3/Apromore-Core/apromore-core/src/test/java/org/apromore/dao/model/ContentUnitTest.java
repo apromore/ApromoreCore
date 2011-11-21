@@ -4,14 +4,14 @@ import org.apromore.test.heuristic.JavaBeanHeuristic;
 import org.junit.Test;
 
 /**
- * Test the Issued Fragment Version Ids POJO.
+ * Test the Content POJO.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class IssuedFragmentVersionIdsUnitTest {
+public class ContentUnitTest {
 
     @Test
     public void testLikeJavaBean() {
-        JavaBeanHeuristic.assertLooksLikeJavaBean(IssuedFragmentVersionIds.class);
+        JavaBeanHeuristic.assertLooksLikeJavaBean(Content.class);
     }
 
 }
