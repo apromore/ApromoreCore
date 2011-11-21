@@ -16,22 +16,22 @@
         <class>org.apromore.dao.model.User</class>
 
         <!-- Version control tables -->
-        <class>org.apromore.dao.model.Contents</class>
-        <class>org.apromore.dao.model.CurrentIds</class>
-        <class>org.apromore.dao.model.Edges</class>
-        <class>org.apromore.dao.model.Fragments</class>
+        <class>org.apromore.dao.model.Content</class>
+        <class>org.apromore.dao.model.CurrentId</class>
+        <class>org.apromore.dao.model.Edge</class>
+        <class>org.apromore.dao.model.Fragment</class>
         <class>org.apromore.dao.model.FragmentVersionDag</class>
         <class>org.apromore.dao.model.FragmentVersionDagId</class>
-        <class>org.apromore.dao.model.FragmentVersions</class>
-        <class>org.apromore.dao.model.IssuedContentIds</class>
-        <class>org.apromore.dao.model.IssuedFragmentVersionIds</class>
-        <class>org.apromore.dao.model.IssuedVertexIds</class>
-        <class>org.apromore.dao.model.NonPocketVertices</class>
-        <class>org.apromore.dao.model.ProcessBranches</class>
+        <class>org.apromore.dao.model.FragmentVersion</class>
+        <class>org.apromore.dao.model.IssuedContentId</class>
+        <class>org.apromore.dao.model.IssuedFragmentVersionId</class>
+        <class>org.apromore.dao.model.IssuedVertexId</class>
+        <class>org.apromore.dao.model.NonPocketVertex</class>
+        <class>org.apromore.dao.model.ProcessBranch</class>
         <class>org.apromore.dao.model.Processes</class>
         <class>org.apromore.dao.model.ProcessFragmentMap</class>
-        <class>org.apromore.dao.model.ProcessModelVersions</class>
-        <class>org.apromore.dao.model.Vertices</class>
+        <class>org.apromore.dao.model.ProcessModelVersion</class>
+        <class>org.apromore.dao.model.Vertex</class>
 
         <!-- Views -->
         <class>org.apromore.dao.model.HeadVersion</class>

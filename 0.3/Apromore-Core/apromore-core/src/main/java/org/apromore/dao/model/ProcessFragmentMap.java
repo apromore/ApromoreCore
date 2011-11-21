@@ -23,7 +23,7 @@ import java.io.Serializable;
 @Entity
 @Table(name = "process_fragment_map")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Configurable("process_fragment_map")
+@Configurable("processFragmentMap")
 public class ProcessFragmentMap implements Serializable {
 
     /**
@@ -32,8 +32,8 @@ public class ProcessFragmentMap implements Serializable {
     private static final long serialVersionUID = -9072538487638485548L;
 
     private Integer mappingId;
-    private FragmentVersions fragmentVersions;
-    private ProcessModelVersions processModelVersions;
+    private FragmentVersion fragmentVersion;
+    private ProcessModelVersion processModelVersion;
 
 
     public ProcessFragmentMap() { }
@@ -53,22 +53,22 @@ public class ProcessFragmentMap implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fragment_version_id")
-    public FragmentVersions getFragmentVersions() {
-        return this.fragmentVersions;
+    public FragmentVersion getFragmentVersion() {
+        return this.fragmentVersion;
     }
 
-    public void setFragmentVersions(FragmentVersions fragmentVersions) {
-        this.fragmentVersions = fragmentVersions;
+    public void setFragmentVersion(final FragmentVersion newFragmentVersion) {
+        this.fragmentVersion = newFragmentVersion;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "process_model_version_id")
-    public ProcessModelVersions getProcessModelVersions() {
-        return this.processModelVersions;
+    public ProcessModelVersion getProcessModelVersion() {
+        return this.processModelVersion;
     }
 
-    public void setProcessModelVersions(ProcessModelVersions processModelVersions) {
-        this.processModelVersions = processModelVersions;
+    public void setProcessModelVersion(final ProcessModelVersion newProcessModelVersion) {
+        this.processModelVersion = newProcessModelVersion;
     }
 
 }

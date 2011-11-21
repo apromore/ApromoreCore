@@ -28,7 +28,7 @@ public class Processes implements Serializable {
 
     private String processId;
     private String processName;
-    private Set<ProcessBranches> processBrancheses = new HashSet<ProcessBranches>(0);
+    private Set<ProcessBranch> processBrancheses = new HashSet<ProcessBranch>(0);
 
 
     public Processes() { }
@@ -55,11 +55,11 @@ public class Processes implements Serializable {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "processes")
-    public Set<ProcessBranches> getProcessBrancheses() {
+    public Set<ProcessBranch> getProcessBrancheses() {
         return this.processBrancheses;
     }
 
-    public void setProcessBrancheses(Set<ProcessBranches> processBrancheses) {
+    public void setProcessBrancheses(Set<ProcessBranch> processBrancheses) {
         this.processBrancheses = processBrancheses;
     }
 
