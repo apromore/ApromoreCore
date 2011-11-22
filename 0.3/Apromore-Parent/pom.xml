@@ -34,14 +34,6 @@
     </ciManagement>
 
     <distributionManagement>
-        <!-- <repository>
-            <id>inhouse</id>
-            <url>dav:http://131.181.88.5:9000/archiva/repository/internal/</url>
-        </repository>
-        <snapshotRepository>
-            <id>inhouse.snapshot</id>
-            <url>dav:http://131.181.88.5:9000/archiva/repository/snapshots/</url>
-        </snapshotRepository> -->
         <site>
             <id>website</id>
             <url>dav:http://131.181.88.5:80/projects/Apromore-Parent</url>
