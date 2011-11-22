@@ -611,7 +611,17 @@ create table current_id (
     current_id    			int,
     constraint pk_current_id primary key (id_type)
 ) engine=InnoDB;
-    
+
+DROP TABLE IF EXISTS `subcluster`;
+CREATE TABLE  `subcluster` (
+  `fragment_version_id` varchar(40) NOT NULL DEFAULT '',
+  `fragment_size` int(11) DEFAULT NULL,
+  `parent_cluster_id` varchar(80) NOT NULL DEFAULT '',
+  `subcluster_id` varchar(80) DEFAULT NULL,
+  PRIMARY KEY (`fragment_version_id`,`parent_cluster_id`),
+  constraint fk_subcluster foreign key (fragment_version_id) references fragment_version (fragment_version_id)
+) ENGINE=InnoDB;
+
 
 
 --
