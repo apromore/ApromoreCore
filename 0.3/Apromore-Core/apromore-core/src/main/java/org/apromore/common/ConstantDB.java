@@ -2,8 +2,8 @@ package org.apromore.common;
 
 public final class ConstantDB {
 
-	public static final String TABLE_CANONICALS = "canonicals";
-	public static final String TABLE_ANNOTATIONS = "annotations";
+	public static final String TABLE_CANONICALS = "canonical";
+	public static final String TABLE_ANNOTATIONS = "annotation";
 
 	public static final String ATTR_NATIVE = "native";
 	public static final String ATTR_PROCESSID = "processId";
@@ -14,36 +14,36 @@ public final class ConstantDB {
 	public static final String ATTR_RANKING = "ranking";
 	public static final String ATTR_DOCUMENTATION = "documentation";
 
-	public static final String TABLE_PROCESSES = "processes";
+	public static final String TABLE_PROCESSES = "process";
 	public static final String ATTR_NAME = "name";
 	public static final String ATTR_DOMAIN = "domain";
 	public static final String ATTR_OWNER = "owner";
 	public static final String ATTR_ORIGINAL_TYPE = "original_type";
 
-	public static final String TABLE_NATIVES = "natives";
+	public static final String TABLE_NATIVES = "native";
 	public static final String ATTR_URI = "uri";
 	public static final String ATTR_CONTENT = "content";
 	public static final String ATTR_NAT_TYPE = "nat_type";
 	public static final String ATTR_ANNOTATION = "annotation";
 
 	
-	public static final String TABLE_NATIVE_TYPES = "native_types";
+	public static final String TABLE_NATIVE_TYPES = "native_type";
 	public static final String ATTR_EXTENSION = "extension";
 
 	public static final String ATTR_USERNAME = "username" ;
 
-	public static final String TABLE_EDIT_SESSIONS = "edit_session_mappings";
+	public static final String TABLE_EDIT_SESSIONS = "edit_session_mapping";
 	public static final String ATTR_CODE = "code";
 
-	public static final String TABLE_DERIVED_VERSIONS = "derived_versions";
+	public static final String TABLE_DERIVED_VERSIONS = "derived_version";
 	public static final String ATTR_DERIVED_VERSION = "derived_version";
 	public static final String ATTR_VERSION = "version";
 	public static final String VIEW_PROCESS_RANKING = "process_ranking";
 
-	public static final String VIEW_KEYWORDS = "keywords";
+	public static final String VIEW_KEYWORDS = "keyword";
 	public static final String ATTR_WORD = "word";
 
-	public static final String TABLE_TEMP_VERSIONS = "temp_versions";
+	public static final String TABLE_TEMP_VERSIONS = "temp_version";
 	public static final String ATTR_RECORD_TIME = "recordTime";
 	public static final String ATTR_NPF = "npf";
 	public static final String ATTR_CPF = "cpf";
@@ -51,7 +51,7 @@ public final class ConstantDB {
 	public static final String ATTR_PRE_VERSION_NAME = "pre_version";
 	public static final String ATTR_NEW_VERSION_NAME = "new_version";
 
-	public static final String TABLE_MERGED_VERSIONS = " merged_versions";
+	public static final String TABLE_MERGED_VERSIONS = " merged_version";
 	public static final String ATTR_URI_MERGED = "uri_merged";
 	public static final String ATTR_URI_SOURCE = "uri_source";
 	

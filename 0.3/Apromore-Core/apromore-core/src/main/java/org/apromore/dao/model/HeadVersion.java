@@ -12,7 +12,7 @@ import java.io.Serializable;
  *
  */
 @Entity
-@Table(name = "head_versions")
+@Table(name = "head_version")
 public class HeadVersion implements Serializable {
 
 

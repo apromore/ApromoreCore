@@ -19,7 +19,7 @@ import java.io.Serializable;
  * @author Cameron James
  */
 @Entity
-@Table(name = "keywords")
+@Table(name = "keyword")
 @Cache(usage = CacheConcurrencyStrategy.READ_ONLY)
 @NamedQueries( {
 //        @NamedQuery(name = User.FIND_USER, query = "SELECT usr FROM User usr WHERE usr.username = :username"),

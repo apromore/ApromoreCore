@@ -23,7 +23,7 @@ import java.util.Set;
  * @author Cameron James
  */
 @Entity
-@Table(name = "users",
+@Table(name = "user",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"username"})
         }

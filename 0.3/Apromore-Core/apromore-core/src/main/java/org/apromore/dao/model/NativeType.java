@@ -23,12 +23,12 @@ import java.util.Set;
  * @author Cameron James
  */
 @Entity
-@Table(name = "native_types")
+@Table(name = "native_type")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NamedQueries( {
     @NamedQuery(name = NativeType.FIND_FORMATS, query = "SELECT n FROM NativeType n")
 })
-@Configurable("nativeTypes")
+@Configurable("nativeType")
 public class NativeType implements Serializable {
 
     public final static String FIND_FORMATS = "nativeType.getFormats";

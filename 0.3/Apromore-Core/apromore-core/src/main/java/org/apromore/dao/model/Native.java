@@ -28,7 +28,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  * @author Cameron James
  */
 @Entity
-@Table(name = "natives",
+@Table(name = "native",
         uniqueConstraints = {
                @UniqueConstraint(columnNames = { "canonical", "nat_type" })
        }

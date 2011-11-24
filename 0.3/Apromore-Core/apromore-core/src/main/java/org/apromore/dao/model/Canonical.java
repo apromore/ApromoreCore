@@ -29,7 +29,7 @@ import javax.persistence.UniqueConstraint;
  * @author Cameron James
  */
 @Entity
-@Table(name = "canonicals",
+@Table(name = "canonical",
     uniqueConstraints = {
         @UniqueConstraint(columnNames = { "processId", "version_name" })
     }
@@ -224,7 +224,7 @@ public class Canonical implements Serializable {
      * @return Returns the process.
      */
     @ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "merged_versions",
+	@JoinTable(name = "merged_version",
             joinColumns = { @JoinColumn(name = "uri_merged", nullable = false, updatable = false) },
             inverseJoinColumns = { @JoinColumn(name = "uri_source", nullable = false, updatable = false) }
     )
@@ -241,7 +241,7 @@ public class Canonical implements Serializable {
      * @return Returns the process.
      */
     @ManyToMany(fetch = FetchType.LAZY)
-	@JoinTable(name = "merged_versions",
+	@JoinTable(name = "merged_version",
             joinColumns = { @JoinColumn(name = "uri_source", nullable = false, updatable = false) },
             inverseJoinColumns = { @JoinColumn(name = "uri_merged", nullable = false, updatable = false) }
     )
@@ -259,7 +259,7 @@ public class Canonical implements Serializable {
      * @return Returns the Source Version Canonicals.
      */
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "derived_versions",
+    @JoinTable(name = "derived_version",
             joinColumns = { @JoinColumn(name = "uri_derived_version", nullable = false, updatable = false) },
             inverseJoinColumns = { @JoinColumn(name = "uri_source_version", nullable = false, updatable = false) }
     )
@@ -276,7 +276,7 @@ public class Canonical implements Serializable {
      * @return Returns the Derived Version Canonicals.
      */
     @ManyToMany(fetch = FetchType.LAZY)
-    @JoinTable(name = "derived_versions",
+    @JoinTable(name = "derived_version",
             joinColumns = { @JoinColumn(name = "uri_source_version", nullable = false, updatable = false) },
             inverseJoinColumns = { @JoinColumn(name = "uri_derived_version", nullable = false, updatable = false) })
     public Set<Canonical> getCanonicalsForUriDerivedVersion() {
