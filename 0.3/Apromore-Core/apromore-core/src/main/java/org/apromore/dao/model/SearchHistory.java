@@ -23,7 +23,7 @@ import static javax.persistence.GenerationType.IDENTITY;
  * @author Cameron James
  */
 @Entity
-@Table(name = "search_histories",
+@Table(name = "search_history",
         uniqueConstraints = {
                 @UniqueConstraint(columnNames = {"username", "search"})
         }

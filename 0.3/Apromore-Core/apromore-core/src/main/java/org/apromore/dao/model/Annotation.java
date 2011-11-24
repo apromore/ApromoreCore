@@ -24,7 +24,7 @@ import java.io.Serializable;
  * @author Cameron James
  */
 @Entity
-@Table(name = "annotations",
+@Table(name = "annotation",
        uniqueConstraints = {
                @UniqueConstraint(columnNames = { "canonical", "name" }),
                @UniqueConstraint(columnNames = { "native" })

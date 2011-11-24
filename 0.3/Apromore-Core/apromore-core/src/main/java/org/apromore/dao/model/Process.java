@@ -27,7 +27,7 @@ import java.util.Set;
  * @author Cameron James
  */
 @Entity
-@Table(name = "processes",
+@Table(name = "process",
     uniqueConstraints = {
         @UniqueConstraint(columnNames = { "processId" })
     }
@@ -54,6 +54,7 @@ public class Process implements Serializable {
     private User user;
     private NativeType nativeType;
 
+    private Set<ProcessBranch> processBranches = new HashSet<ProcessBranch>(0);
     private Set<EditSessionMapping> editSessionMappings = new HashSet<EditSessionMapping>(0);
     private Set<Canonical> canonicals = new HashSet<Canonical>(0);
 
@@ -187,5 +188,22 @@ public class Process implements Serializable {
      */
     public void setCanonicals(final Set<Canonical> newCanonicals) {
         this.canonicals = newCanonicals;
+    }
+
+    /**
+     * Get the process branches for the Object.
+     * @return Returns the process branches.
+     */
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "process")
+    public Set<ProcessBranch> getProcessBranches() {
+        return this.processBranches;
+    }
+
+    /**
+     * Set the process Branches for the Object.
+     * @param newProcessBranches The process Branches to set.
+     */
+    public void setProcessBranches(final Set<ProcessBranch> newProcessBranches) {
+        this.processBranches = newProcessBranches;
     }
 }

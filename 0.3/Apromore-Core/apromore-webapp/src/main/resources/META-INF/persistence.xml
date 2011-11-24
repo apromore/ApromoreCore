@@ -17,18 +17,18 @@
 
         <!-- Version control tables -->
         <class>org.apromore.dao.model.Content</class>
-        <class>org.apromore.dao.model.CurrentId</class>
+        <!--<class>org.apromore.dao.model.CurrentId</class>-->
         <class>org.apromore.dao.model.Edge</class>
         <class>org.apromore.dao.model.Fragment</class>
         <class>org.apromore.dao.model.FragmentVersionDag</class>
         <class>org.apromore.dao.model.FragmentVersionDagId</class>
         <class>org.apromore.dao.model.FragmentVersion</class>
-        <class>org.apromore.dao.model.IssuedContentId</class>
-        <class>org.apromore.dao.model.IssuedFragmentVersionId</class>
-        <class>org.apromore.dao.model.IssuedVertexId</class>
+        <!--<class>org.apromore.dao.model.IssuedContentId</class>-->
+        <!--<class>org.apromore.dao.model.IssuedFragmentVersionId</class>-->
+        <!--<class>org.apromore.dao.model.IssuedVertexId</class>-->
         <class>org.apromore.dao.model.NonPocketVertex</class>
         <class>org.apromore.dao.model.ProcessBranch</class>
-        <class>org.apromore.dao.model.Processes</class>
+        <class>org.apromore.dao.model.Process</class>
         <class>org.apromore.dao.model.ProcessFragmentMap</class>
         <class>org.apromore.dao.model.ProcessModelVersion</class>
         <class>org.apromore.dao.model.Vertex</class>

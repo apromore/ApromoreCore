@@ -22,7 +22,7 @@ import java.util.Date;
  * @author Cameron James
  */
 @Entity
-@Table(name = "temp_versions")
+@Table(name = "temp_version")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NamedQueries( {
         //@NamedQuery(name = TempVersion.FIND_USER, query = "SELECT usr FROM User usr WHERE usr.username = :username"),
