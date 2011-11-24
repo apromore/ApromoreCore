@@ -31,7 +31,7 @@ public class ProcessBranch implements Serializable {
     private static final long serialVersionUID = -9072538404478485548L;
 
     private String branchId;
-    private Processes processes;
+    private Process process;
     private String branchName;
     private ProcessModelVersion processModelVersionsByCurrentProcessModelVersionId;
     private ProcessModelVersion processModelVersionsBySourceProcessModelVersionId;
@@ -73,12 +73,12 @@ public class ProcessBranch implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "process_id")
-    public Processes getProcesses() {
-        return this.processes;
+    public Process getProcess() {
+        return this.process;
     }
 
-    public void setProcesses(final Processes newProcesses) {
-        this.processes = newProcesses;
+    public void setProcess(final Process newProcess) {
+        this.process = newProcess;
     }
 
 
