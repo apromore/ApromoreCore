@@ -19,23 +19,69 @@
     <name>Apromore Portal Web App</name>
     <description>Apromore Portal is the User Interface of the Apromore Application.</description>
 
+    <issueManagement>
+        <system>Google Code</system>
+        <url>http://code.google.com/p/apromore/wiki/IssueTracker</url>
+    </issueManagement>
+
     <scm>
-        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/0.3/Apromore-Portal/portal-webapp/</developerConnection>
-        <connection>scm:svn:http://apromore.googlecode.com/svn/svn/trunk/0.3/Apromore-Portal/portal-webapp/</connection>
-        <url>http://code.google.com/p/apromore/source/browse/svn/trunk/0.3/Apromore-Portal/portal-webapp/</url>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/base-pom</developerConnection>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/base-pom</connection>
+        <url>http://code.google.com/p/apromore/source/browse/base-pom/</url>
     </scm>
 
     <ciManagement>
-        <system>Jenkins</system>
-        <url>http://131.181.88.5:8080/jenkins/Web%20Apps</url>
+        <system>Hudson</system>
+        <url>http://131.181.88.5:8080/view/apromore</url>
     </ciManagement>
 
     <distributionManagement>
         <site>
             <id>website</id>
-            <url>dav:http://131.181.88.5:80/projects/portalWebApp</url>
+            <url>dav:http://131.181.88.5:9000/projects/apromore</url>
         </site>
     </distributionManagement>
+
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
+
+    <inceptionYear>2010</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v3</name>
+            <distribution>repo</distribution>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>QUT</name>
+        <url>http://www.qut.edu.au</url>
+    </organization>
+
+    <mailingLists>
+        <mailingList>
+            <name>Apromore Forum</name>
+            <post>apromore-rm@googlegroups.com</post>
+            <unsubscribe>apromore-rm+unsubscribe@googlegroups.com</unsubscribe>
+        </mailingList>
+    </mailingLists>
+
+    <developers>
+        <developer>
+            <id>u312978</id>
+            <name>Cameron James</name>
+            <email>cam.james@gmail.com</email>
+            <organization>Suncorp</organization>
+            <organizationUrl>http://www.suncorp.com.au/</organizationUrl>
+            <roles>
+                <role>Active User</role>
+            </roles>
+            <timezone>+10</timezone>
+        </developer>
+    </developers>
 
     <repositories>
         <repository>
@@ -52,6 +98,11 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>portal-service</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>manager-client</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
 
@@ -82,16 +133,9 @@
             <version>${logback.version}</version>
         </dependency>
 
-        <!-- CXF -->
         <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-frontend-jaxws</artifactId>
-            <version>${cxf.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.cxf</groupId>
-            <artifactId>cxf-rt-transports-http</artifactId>
-            <version>${cxf.version}</version>
+            <groupId>org.apache.ws.commons.schema</groupId>
+            <artifactId>XmlSchema</artifactId>
         </dependency>
 
         <!-- JAXB Settings -->
@@ -109,6 +153,12 @@
             <groupId>com.sun.xml.bind</groupId>
             <artifactId>jaxb-xjc</artifactId>
             <version>${jaxb-xjc.version}</version>
+        </dependency>
+
+        <!-- Commons Libraries -->
+        <dependency>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
         </dependency>
 
         <!-- ZK Libraries -->
@@ -144,6 +194,12 @@
             <groupId>org.zkoss.zk</groupId>
             <artifactId>zhtml</artifactId>
             <version>${zk.version}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.zkoss.zk</groupId>
+            <artifactId>zkspring-core</artifactId>
+            <version>${zk.spring.version}</version>
             <scope>provided</scope>
         </dependency>
 

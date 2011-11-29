@@ -1,12 +1,13 @@
 package org.apromore.portal.dialogController;
 
+import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.common.Utils;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.exception.ExceptionImportAllMissing;
-import org.apromore.portal.manager.RequestToManager;
 import org.apromore.model.ProcessSummaryType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.wfmc._2008.xpdl2.PackageType;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
@@ -33,7 +34,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
 
-public class ImportOneProcessController extends Window {
+public class ImportOneProcessController extends BaseController {
 
     private MainController mainC;
     private ImportListProcessesController importProcessesC;
@@ -299,10 +300,9 @@ public class ImportOneProcessController extends Window {
     }
 
     public void importProcess(String domain, String owner) throws InterruptedException, IOException {
-        RequestToManager request = new RequestToManager();
         try {
             ProcessSummaryType res =
-                    request.importProcess(owner, this.nativeType, this.processNameTb.getValue(),
+                    getService().importProcess(owner, this.nativeType, this.processNameTb.getValue(),
                             this.versionNameTb.getValue(), this.nativeProcess, domain,
                             this.documentationTb.getValue(), this.creationDateTb.getValue().toString(),
                             this.lastUpdateTb.getValue().toString(), this.fakeEventsYesR.isChecked());
@@ -317,14 +317,14 @@ public class ImportOneProcessController extends Window {
             e.printStackTrace();
             Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
                     Messagebox.ERROR);
-        } catch (ExceptionImport e) {
+        } catch (Exception e) {
             e.printStackTrace();
             Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
                     Messagebox.ERROR);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
-                    Messagebox.ERROR);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Messagebox.show("Import failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
+//                    Messagebox.ERROR);
         } finally {
             closePopup();
         }

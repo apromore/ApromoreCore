@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.apromore.org/portal/model_oryx"
+	   xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
+	   targetNamespace="http://www.apromore.org/portal/model_oryx"
+	   elementFormDefault="qualified" attributeFormDefault="unqualified" version="5.0">
+
+    <xs:element name="ReadNativeRequest" type="tns:ReadNativeInputMsgType"/>
+    <xs:element name="ReadNativeResponse" type="tns:ReadNativeOutputMsgType"/>
+    <xs:element name="WriteNewProcessRequest" type="tns:WriteNewProcessInputMsgType"/>
+    <xs:element name="WriteNewProcessResponse" type="tns:WriteNewProcessOutputMsgType"/>
+    <xs:element name="WriteProcessRequest" type="tns:WriteProcessInputMsgType"/>
+    <xs:element name="WriteProcessResponse" type="tns:WriteProcessOutputMsgType"/>
+    <xs:element name="WriteNewAnnotationRequest" type="tns:WriteNewAnnotationInputMsgType"/>
+    <xs:element name="WriteNewAnnotationResponse" type="tns:WriteNewAnnotationOutputMsgType"/>
+    <xs:element name="WriteAnnotationRequest" type="tns:WriteAnnotationInputMsgType"/>
+    <xs:element name="WriteAnnotationResponse" type="tns:WriteAnnotationOutputMsgType"/>
+
+    <xs:complexType  name="ReadNativeInputMsgType">
+        <xs:attribute name="EditSessionCode" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType  name="EditSessionType">
+        <xs:attribute name="username" type="xs:string"/>
+        <xs:attribute name="nativeType" type="xs:string"/>
+        <xs:attribute name="processId" type="xs:int"/>
+        <xs:attribute name="processName" type="xs:string"/>
+        <xs:attribute name="versionName" type="xs:string"/>
+        <xs:attribute name="domain" type="xs:string"/>
+        <xs:attribute name="creationDate" type="xs:string"/>
+        <xs:attribute name="lastUpdate" type="xs:string"/>
+        <xs:attribute name="withAnnotation" type="xs:boolean"/>
+        <xs:attribute name="annotation" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType  name="ReadNativeOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType"/>
+            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+            <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType  name="WriteNewProcessInputMsgType">
+        <xs:sequence>
+            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+            <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="EditSessionCode" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType  name="WriteNewProcessOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType"/>
+        </xs:sequence>
+        <xs:attribute name="EditSessionCode" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType  name="WriteProcessInputMsgType">
+        <xs:sequence>
+            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+            <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1"/>
+        </xs:sequence>
+        <xs:attribute name="EditSessionCode" type="xs:int"/>
+        <xs:attribute name="PreVersion" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType  name="WriteProcessOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType name="WriteNewAnnotationInputMsgType">
+        <xs:sequence>
+            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+        </xs:sequence>
+        <xs:attribute name="EditSessionCode" type="xs:int"/>
+        <xs:attribute name="AnnotationName" type="xs:string"/>
+    </xs:complexType>
+
+    <xs:complexType name="WriteNewAnnotationOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType"/>
+        </xs:sequence>
+        <xs:attribute name="EditSessionCode" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType  name="WriteAnnotationInputMsgType">
+        <xs:sequence>
+            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+        </xs:sequence>
+        <xs:attribute name="EditSessionCode" type="xs:int"/>
+    </xs:complexType>
+
+    <xs:complexType  name="WriteAnnotationOutputMsgType">
+        <xs:sequence>
+            <xs:element name="Result" type="tns:ResultType"/>
+        </xs:sequence>
+    </xs:complexType>
+
+    <xs:complexType  name="ResultType">
+        <xs:attribute name="message" type="xs:string"/>
+        <xs:attribute name="code" type="xs:int"/>
+    </xs:complexType>
+</xs:schema>

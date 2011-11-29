@@ -12,7 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class EditListProcessDataController {
+public class EditListProcessDataController extends BaseController {
 
     private MainController mainC;    // the main controller
     private MenuController menuC;     // the menu controller which called edit feature

@@ -1,10 +1,11 @@
 package org.apromore.portal.dialogController;
 
+import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.exception.ExceptionDao;
-import org.apromore.portal.manager.RequestToManager;
 import org.apromore.model.NativeTypesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zul.Datebox;
 import org.zkoss.zul.Image;
 import org.zkoss.zul.Label;
@@ -19,7 +20,7 @@ import java.text.ParseException;
 import java.util.Date;
 import java.util.Vector;
 
-public class ProcessDetailsController extends Window {
+public class ProcessDetailsController extends BaseController {
 
 
     private MainController mainC;                    // the main controller
@@ -104,11 +105,7 @@ public class ProcessDetailsController extends Window {
         lastUpdateH = new Vector<HistoryElement>();
         rankingH = new Vector<HistoryElement>();
 
-        /**
-         * get list of formats to built export option list
-         */
-        RequestToManager request = new RequestToManager();
-        NativeTypesType formats = request.ReadNativeTypes();
+        NativeTypesType formats = getService().readNativeTypes();
         for (int i = 0; i < formats.getNativeType().size(); i++) {
             Listitem format = new Listitem();
             format.setLabel(formats.getNativeType().get(i).getFormat());

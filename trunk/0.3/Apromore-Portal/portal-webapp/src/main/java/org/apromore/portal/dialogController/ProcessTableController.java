@@ -1,6 +1,3 @@
-/**
- * Controller for view in index.zul
- */
 package org.apromore.portal.dialogController;
 
 import org.apromore.portal.common.Constants;
@@ -10,7 +7,6 @@ import org.apromore.portal.common.ProcessRankingColComparator;
 import org.apromore.portal.common.VersionNameColComparator;
 import org.apromore.portal.common.VersionRankingColComparator;
 import org.apromore.portal.exception.ExceptionDao;
-import org.apromore.portal.manager.RequestToManager;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
@@ -44,8 +40,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class ProcessTableController {
-
+public class ProcessTableController extends BaseController {
 
     private MainController mainC;                             // the main controller
     private Grid processSummariesGrid;                         // the grid for process summaries
@@ -162,8 +157,7 @@ public class ProcessTableController {
          * for each process: a row in the main grid with detail (grid inside)
          * no keywords given
          */
-        RequestToManager request = new RequestToManager();
-        ProcessSummariesType processSummaries = request.ReadProcessSummariesType("");
+        ProcessSummariesType processSummaries = getService().readProcessSummaries("");
         this.mainC.displayMessage(processSummaries.getProcessSummary().size() + " processes.");
         displayProcessSummaries(processSummaries, false, null, null);
     }
@@ -985,4 +979,7 @@ public class ProcessTableController {
     public Boolean getIsQueryResult() {
         return isQueryResult;
     }
+
+
+
 }

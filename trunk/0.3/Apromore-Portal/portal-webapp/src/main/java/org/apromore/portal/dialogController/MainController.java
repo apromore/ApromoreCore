@@ -3,11 +3,9 @@ package org.apromore.portal.dialogController;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDao;
-import org.apromore.portal.exception.ExceptionDeleteProcess;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.portal.exception.ExceptionWriteEditSession;
-import org.apromore.portal.manager.RequestToManager;
 import org.apromore.model.DomainsType;
 import org.apromore.model.EditSessionType;
 import org.apromore.model.NativeTypesType;
@@ -40,7 +38,7 @@ import java.util.logging.Logger;
 * Controller for the window index.zul
 *
 */
-public class MainController extends Window {
+public class MainController extends BaseController {
 
     private Window mainW;
     private HeaderController header;
@@ -166,8 +164,7 @@ public class MainController extends Window {
     }
 
     public void reloadProcessSummaries() throws Exception {
-        RequestToManager request = new RequestToManager();
-        ProcessSummariesType processSummaries = request.ReadProcessSummariesType("");
+        ProcessSummariesType processSummaries = managerService.readProcessSummaries("");
         String message = null;
         if (processSummaries.getProcessSummary().size() > 1) {
             message = " processes.";
@@ -219,9 +216,8 @@ public class MainController extends Window {
     public void deleteProcessVersions(
             Map<ProcessSummaryType, List<VersionSummaryType>> processVersions)
             throws InterruptedException, ClassNotFoundException, InstantiationException, IllegalAccessException, ExceptionDao, JAXBException {
-        RequestToManager request = new RequestToManager();
         try {
-            request.DeleteProcessVersions(processVersions);
+            getService().deleteProcessVersions(processVersions);
             this.processtable.unDisplay(processVersions);
             int nb = 0; // to count how many process version(s) deleted
             Set<ProcessSummaryType> keySet = processVersions.keySet();
@@ -236,7 +232,7 @@ public class MainController extends Window {
                 message = " One process version deleted.";
             }
             displayMessage(message);
-        } catch (ExceptionDeleteProcess e) {
+        } catch (Exception e) {
             e.printStackTrace();
             Messagebox.show("Deletion failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
                     Messagebox.ERROR);
@@ -279,8 +275,7 @@ public class MainController extends Window {
         }
         try {
             // create and store an edit session
-            RequestToManager request = new RequestToManager();
-            editSessionCode = request.WriteEditSession(editSession);
+            editSessionCode = getService().writeEditSession(editSession);
             if ("XPDL 2.1".compareTo(nativeType) == 0) {
                 url += getOryxEndPoint_xpdl() + Constants.SESSION_CODE;
             } else if ("EPML 2.0".compareTo(nativeType) == 0) {
@@ -398,9 +393,8 @@ public class MainController extends Window {
      * get list of domains
      */
     public List<String> getDomains() throws ExceptionDomains {
-        RequestToManager request = new RequestToManager();
         DomainsType domainsType;
-        domainsType = request.ReadDomains();
+        domainsType = managerService.readDomains();
         return domainsType.getDomain();
     }
 
@@ -412,8 +406,7 @@ public class MainController extends Window {
      *
      */
     public List<String> getUsers() throws ExceptionAllUsers {
-        RequestToManager request = new RequestToManager();
-        UsernamesType usernames = request.ReadAllUsers();
+        UsernamesType usernames = getService().readAllUsers();
         return usernames.getUsername();
     }
 
@@ -426,12 +419,12 @@ public class MainController extends Window {
      */
     public HashMap<String, String> getNativeTypes() throws ExceptionFormats {
         HashMap<String, String> formats = new HashMap<String, String>();
-        RequestToManager request = new RequestToManager();
-        NativeTypesType nativeTypesDB = request.ReadNativeTypes();
+        NativeTypesType nativeTypesDB = getService().readNativeTypes();
         for (int i = 0; i < nativeTypesDB.getNativeType().size(); i++) {
             formats.put(nativeTypesDB.getNativeType().get(i).getExtension(),
                     nativeTypesDB.getNativeType().get(i).getFormat());
         }
         return formats;
     }
+
 }
