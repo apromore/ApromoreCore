@@ -11,7 +11,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class ExportListNativeController {
+public class ExportListNativeController extends BaseController {
     private MainController mainC;        // the main controller
     private MenuController menuC;        // the menu controller which made the call
     private HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions;

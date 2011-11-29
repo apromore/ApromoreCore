@@ -1,12 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<!--
-	Created by ZK Studio
--->
-
 <zk>
-	<device-config>
-		<device-type>ajax</device-type>
-		<timeout-uri>/timeout.zul</timeout-uri><!-- An empty URL can cause the browser to reload the same URL -->
-	</device-config>
+    <log>
+        <log-base>org.zkoss</log-base>
+    </log>
+
+    <listener>
+        <description>Monitor the statistic</description>
+        <listener-class>org.apromore.portal.statistics.Statistic</listener-class>
+    </listener>
+
+    <device-config>
+        <device-type>ajax</device-type>
+        <timeout-uri>/timeout.zul</timeout-uri>
+        <!-- An empty URL can cause the browser to reload the same URL -->
+    </device-config>
 </zk>

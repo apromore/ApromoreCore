@@ -1,8 +1,9 @@
 package org.apromore.portal.dialogController;
 
+import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.exception.DialogException;
-import org.apromore.portal.manager.RequestToManager;
 import org.apromore.model.UserType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -12,7 +13,7 @@ import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-public class SigninController extends Window {
+public class SigninController extends BaseController {
 
     private HeaderController headerC;
     private Window headerW;
@@ -88,9 +89,7 @@ public class SigninController extends Window {
         try {
             String username = this.username.getValue();
             String passwd = this.passwd.getValue();
-            // TODO: check credentials
-            RequestToManager request = new RequestToManager();
-            UserType user = request.ReadUser(username);
+            UserType user = getService().readUser(username);
             this.user = user;
             this.headerC.userConnected(user);
             this.mainC.updateActions();

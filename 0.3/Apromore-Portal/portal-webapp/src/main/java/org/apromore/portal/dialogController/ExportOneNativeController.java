@@ -1,9 +1,10 @@
 package org.apromore.portal.dialogController;
 
+import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionExport;
-import org.apromore.portal.manager.RequestToManager;
 import org.apromore.model.AnnotationsType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -26,7 +27,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class ExportOneNativeController extends Window {
+public class ExportOneNativeController extends BaseController {
 
     private Window exportNativeW;
     private MainController mainC;
@@ -226,24 +227,20 @@ public class ExportOneNativeController extends Window {
                 } else {
                     withAnnotation = false;
                 }
-                RequestToManager request = new RequestToManager();
-                InputStream native_is =
-                        request.ExportFormat(this.processId, processname, this.versionName, format, annotation, withAnnotation,
+                InputStream native_is = getService().exportFormat(this.processId, processname, this.versionName, format, annotation, withAnnotation,
                                 this.mainC.getCurrentUser().getUsername());
                 Filedownload.save(native_is, "text.xml", filename);
             }
         } catch (InterruptedException e) {
             e.printStackTrace();
-            Messagebox.show("Export failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
-                    Messagebox.ERROR);
-        } catch (ExceptionExport e) {
+            Messagebox.show("Export failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        } catch (Exception e) {
             e.printStackTrace();
-            Messagebox.show("Export failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
-                    Messagebox.ERROR);
-        } catch (IOException e) {
-            e.printStackTrace();
-            Messagebox.show("Export failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
-                    Messagebox.ERROR);
+            Messagebox.show("Export failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//            Messagebox.show("Export failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
+//                    Messagebox.ERROR);
         } finally {
             cancel();
         }

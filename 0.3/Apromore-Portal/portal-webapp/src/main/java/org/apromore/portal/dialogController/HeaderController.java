@@ -1,9 +1,10 @@
 package org.apromore.portal.dialogController;
 
+import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.DialogException;
-import org.apromore.portal.manager.RequestToManager;
 import org.apromore.model.UserType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.util.Clients;
@@ -14,7 +15,7 @@ import org.zkoss.zul.Window;
 /**
  * @author fauvet
  */
-public class HeaderController extends Window {
+public class HeaderController extends BaseController {
 
     private MainController mainC;
     private SigninController signinC;
@@ -105,12 +106,7 @@ public class HeaderController extends Window {
     }
 
     private void signout() throws Exception {
-
-        /**
-         * send back to the repository the new search histories
-         */
-        RequestToManager request = new RequestToManager();
-        request.WriteUser(this.mainC.getCurrentUser());
+        getService().writeUser(this.mainC.getCurrentUser());
 
         this.consultAccountButton.setVisible(false);
         this.signinButton.setVisible(true);

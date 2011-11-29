@@ -23,6 +23,11 @@
         re-use.
     </description>
 
+    <issueManagement>
+        <system>Google Code</system>
+        <url>http://code.google.com/p/apromore/wiki/IssueTracker</url>
+    </issueManagement>
+
     <scm>
         <developerConnection>scm:svn:http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Clients/manager-client/</developerConnection>
         <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Clients/manager-client/</connection>
@@ -30,18 +35,91 @@
     </scm>
 
     <ciManagement>
-        <system>Jenkins</system>
-        <url>http://131.181.88.5:8080/jenkins/view/Clients</url>
+        <system>Hudson</system>
+        <url>http://131.181.88.5:8080/view/apromore</url>
     </ciManagement>
 
     <distributionManagement>
         <site>
             <id>website</id>
-            <url>dav:http://131.181.88.5:80/projects/managerClient</url>
+            <url>dav:http://131.181.88.5:9000/projects/apromore</url>
         </site>
     </distributionManagement>
 
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
+
+    <inceptionYear>2010</inceptionYear>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v3</name>
+            <distribution>repo</distribution>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>QUT</name>
+        <url>http://www.qut.edu.au</url>
+    </organization>
+
+    <mailingLists>
+        <mailingList>
+            <name>Apromore Forum</name>
+            <post>apromore-rm@googlegroups.com</post>
+            <unsubscribe>apromore-rm+unsubscribe@googlegroups.com</unsubscribe>
+        </mailingList>
+    </mailingLists>
+
+    <developers>
+        <developer>
+            <id>u312978</id>
+            <name>Cameron James</name>
+            <email>cam.james@gmail.com</email>
+            <organization>Suncorp</organization>
+            <organizationUrl>http://www.suncorp.com.au/</organizationUrl>
+            <roles>
+                <role>Active User</role>
+            </roles>
+            <timezone>+10</timezone>
+        </developer>
+    </developers>
+
     <dependencies>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+        </dependency>
+
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-access</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
         <!-- JAXB -->
         <dependency>
             <groupId>javax.xml.bind</groupId>
@@ -58,43 +136,54 @@
             <artifactId>jaxb2-basics-runtime</artifactId>
             <version>${jaxb2-basics-runtime.version}</version>
         </dependency>
+
+        <!-- Spring-WS dependencies -->
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>spring-xml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>spring-ws-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>spring-ws-support</artifactId>
+            <scope>runtime</scope>
+        </dependency>
     </dependencies>
 
     <build>
         <finalName>manager-client</finalName>
         <plugins>
             <plugin>
-                <groupId>org.apache.cxf</groupId>
-                <artifactId>cxf-codegen-plugin</artifactId>
-                <version>${cxf.version}</version>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
+                <version>0.8.0</version>
                 <executions>
                     <execution>
-                        <id>generate-sources</id>
-                        <phase>generate-sources</phase>
-                        <configuration>
-                            <sourceRoot>${basedir}/target/generated-sources/src</sourceRoot>
-                            <wsdlOptions>
-                                <wsdlOption>
-                                    <wsdl>${basedir}/src/main/resources/manager.wsdl</wsdl>
-                                    <extraargs>
-                                        <extraarg>-client</extraarg>
-                                        <extraarg>-fe</extraarg><extraarg>jaxws</extraarg>
-                                        <extraarg>-db</extraarg><extraarg>jaxb</extraarg>
-                                        <extraarg>-wv</extraarg><extraarg>1.1</extraarg>
-                                        <extraarg>-sn</extraarg><extraarg>ManagerService</extraarg>
-                                        <extraarg>-wsdlLocation</extraarg><extraarg>http://localhost:8080/Apromore/services/manager.wsdl</extraarg>
-                                        <extraarg>-p</extraarg><extraarg>http://www.apromore.org/manager/service_portal=org.apromore.portal.manager</extraarg>
-                                        <extraarg>-p</extraarg><extraarg>urn:qut-edu-au:schema:apromore:manager=org.apromore.model</extraarg>
-                                        <extraarg>-impl</extraarg>
-                                        <extraarg>-verbose</extraarg>
-                                        <extraarg>-xjc-mark-generated</extraarg>
-                                    </extraargs>
-                                </wsdlOption>
-                            </wsdlOptions>
-                        </configuration>
+                        <id>New Model</id>
                         <goals>
-                            <goal>wsdl2java</goal>
+                            <goal>generate</goal>
                         </goals>
+                        <configuration>
+                            <schemaIncludes>
+                                <schemaInclude>**/*.xsd</schemaInclude>
+                            </schemaIncludes>
+                            <generatePackage>org.apromore.model</generatePackage>
+                            <args>
+                                <arg>-XtoString</arg>
+                                <arg>-Xequals</arg>
+                                <arg>-XhashCode</arg>
+                            </args>
+                            <plugins>
+                                <plugin>
+                                    <groupId>org.jvnet.jaxb2_commons</groupId>
+                                    <artifactId>jaxb2-basics</artifactId>
+                                    <version>${jaxb2-basics.version}</version>
+                                </plugin>
+                            </plugins>
+                        </configuration>
                     </execution>
                 </executions>
             </plugin>
@@ -110,7 +199,7 @@
                         </goals>
                         <configuration>
                             <sources>
-                                <source>${basedir}/target/generated-sources/src</source>
+                                <source>${basedir}/target/generated-sources/xjc</source>
                             </sources>
                         </configuration>
                     </execution>
@@ -128,7 +217,6 @@
         <checkstyle.skip>true</checkstyle.skip>
 
         <!-- Versions -->
-        <cxf.version>2.4.0</cxf.version>
         <maven-jaxb2-plugin.version>0.7.1</maven-jaxb2-plugin.version>
     </properties>
 

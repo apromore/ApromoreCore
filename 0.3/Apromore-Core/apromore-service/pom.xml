@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.apromore</groupId>
+    <artifactId>apromore-service</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
+
+    <url>http://code.google.com/p/apromore/</url>
+    <name>Apromore Common component</name>
+    <description>Apromore's core component. This is the guts of apromore which performs all the processing.</description>
+
+    <scm>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/0.3/Apromore-Core/apromore-core</developerConnection>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Core/apromore-core</connection>
+        <url>http://code.google.com/p/apromore/source/browse/trunk/0.3/Apromore-Core/apromore-core</url>
+    </scm>
+
+    <ciManagement>
+        <system>Jenkins</system>
+        <url>http://131.181.88.5:8080/jenkins/view/Services</url>
+    </ciManagement>
+
+    <distributionManagement>
+        <site>
+            <id>website</id>
+            <url>dav:http://131.181.88.5:80/projects/apromoreCore</url>
+        </site>
+    </distributionManagement>
+
+    <dependencies>
+        <!-- Clients -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>manager-client</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>anf-schema</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>cpf-schema</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>epml-schema</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>rlf-schema</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>xpdl-schema</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>yawl-schema</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+
+        <!-- Commons -->
+        <dependency>
+            <groupId>commons-lang</groupId>
+            <artifactId>commons-lang</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>jcl-over-slf4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.schema</groupId>
+            <artifactId>XmlSchema</artifactId>
+        </dependency>
+
+        <!-- Hibernate dependencies -->
+        <dependency>
+            <groupId>org.hibernate.java-persistence</groupId>
+            <artifactId>jpa-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-entitymanager</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-commons-annotations</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-cglib-repack</artifactId>
+        </dependency>
+		<dependency>
+			<groupId>org.hibernate</groupId>
+			<artifactId>hibernate-c3p0</artifactId>
+		</dependency>
+        <dependency>
+            <groupId>org.hibernate</groupId>
+            <artifactId>hibernate-ehcache</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>net.sf.ehcache</groupId>
+            <artifactId>ehcache-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>backport-util-concurrent</groupId>
+            <artifactId>backport-util-concurrent</artifactId>
+        </dependency>
+
+        <!-- Spring-WS dependencies -->
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>spring-xml</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>spring-ws-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>spring-ws-support</artifactId>
+            <scope>runtime</scope>
+        </dependency>
+
+        <!-- Spring dependencies -->
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-web</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-webmvc</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-oxm</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aspects</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-aop</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-tx</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+        </dependency>
+
+        <!-- JEE dependencies -->
+        <dependency>
+            <groupId>javax.servlet</groupId>
+            <artifactId>servlet-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>javax.mail</groupId>
+            <artifactId>mail</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>javax.persistence</groupId>
+            <artifactId>persistence-api</artifactId>
+        </dependency>
+
+        <!-- O/R Mapping dependencies -->
+        <dependency>
+            <groupId>mysql</groupId>
+            <artifactId>mysql-connector-java</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>hsqldb</groupId>
+            <artifactId>hsqldb</artifactId>
+            <scope>test</scope>
+        </dependency>
+
+        <!-- Test Scope Dependencies -->
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymockclassextension</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-core</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-api-easymock</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.powermock</groupId>
+            <artifactId>powermock-module-junit4-rule-agent</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.hamcrest</groupId>
+            <artifactId>hamcrest-all</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-test</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.ws</groupId>
+            <artifactId>spring-ws-core</artifactId>
+            <scope>test</scope>
+            <classifier>tests</classifier>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>apromore-testing-tools</artifactId>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>apromore-common</finalName>
+    </build>
+
+</project>

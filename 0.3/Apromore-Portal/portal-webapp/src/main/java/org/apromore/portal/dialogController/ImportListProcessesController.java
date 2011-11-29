@@ -29,7 +29,7 @@ import java.util.Set;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 
-public class ImportListProcessesController extends Window {
+public class ImportListProcessesController extends BaseController {
 
     private MenuController menuC;
     private MainController mainC;

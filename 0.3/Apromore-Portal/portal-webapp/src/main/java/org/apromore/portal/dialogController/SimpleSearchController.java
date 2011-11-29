@@ -1,8 +1,9 @@
 package org.apromore.portal.dialogController;
 
+import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.exception.ExceptionDao;
-import org.apromore.portal.manager.RequestToManager;
 import org.apromore.model.ProcessSummariesType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;
@@ -12,7 +13,7 @@ import org.zkoss.zul.Window;
 import javax.xml.bind.JAXBException;
 import java.io.UnsupportedEncodingException;
 
-public class SimpleSearchController extends Window {
+public class SimpleSearchController extends BaseController {
 
     private MainController mainC;                // the main controller
     private Window simpleSearchW;                // the window that includes simple search features
@@ -75,8 +76,7 @@ public class SimpleSearchController extends Window {
      */
     protected void processSearch() throws Exception {
         String query = this.previoussearchesCB.getValue();
-        RequestToManager request = new RequestToManager();
-        ProcessSummariesType processSummaries = request.ReadProcessSummariesType(query);
+        ProcessSummariesType processSummaries = getService().readProcessSummaries(query);
         int nbAnswers = processSummaries.getProcessSummary().size();
         String message = "Search returned " + nbAnswers;
         if (nbAnswers > 1) {

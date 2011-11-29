@@ -21,7 +21,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Set;
 
-public class EditOneProcessController extends Window {
+public class EditOneProcessController extends BaseController {
 
     private Window chooseNativeW;
     private Button okB;

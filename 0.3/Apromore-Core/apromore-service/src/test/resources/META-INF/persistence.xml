@@ -1,0 +1,49 @@
+<persistence xmlns="http://java.sun.com/xml/ns/persistence"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xsi:schemaLocation="http://java.sun.com/xml/ns/persistence">
+
+    <persistence-unit name="TESTApromore" transaction-type="RESOURCE_LOCAL">
+        <!--<properties>-->
+            <!--<property name="hibernate.hbm2ddl.auto" value="create-drop"/>-->
+        <!--</properties>-->
+
+        <!-- Tables -->
+        <class>org.apromore.dao.model.Annotation</class>
+        <class>org.apromore.dao.model.Canonical</class>
+        <class>org.apromore.dao.model.EditSessionMapping</class>
+        <class>org.apromore.dao.model.Native</class>
+        <class>org.apromore.dao.model.NativeType</class>
+        <class>org.apromore.dao.model.Process</class>
+        <class>org.apromore.dao.model.SearchHistory</class>
+        <class>org.apromore.dao.model.TempVersion</class>
+        <class>org.apromore.dao.model.TempVersionId</class>
+        <class>org.apromore.dao.model.User</class>
+
+        <!-- Version control tables -->
+        <class>org.apromore.dao.model.Content</class>
+        <class>org.apromore.dao.model.Edge</class>
+        <class>org.apromore.dao.model.Fragment</class>
+        <class>org.apromore.dao.model.FragmentVersionDag</class>
+        <class>org.apromore.dao.model.FragmentVersionDagId</class>
+        <class>org.apromore.dao.model.FragmentVersion</class>
+        <class>org.apromore.dao.model.NonPocketVertex</class>
+        <class>org.apromore.dao.model.ProcessBranch</class>
+        <class>org.apromore.dao.model.Process</class>
+        <class>org.apromore.dao.model.ProcessFragmentMap</class>
+        <class>org.apromore.dao.model.ProcessModelVersion</class>
+        <class>org.apromore.dao.model.Subcluster</class>
+        <class>org.apromore.dao.model.SubclusterId</class>
+        <class>org.apromore.dao.model.Vertex</class>
+
+        <!-- Views -->
+        <class>org.apromore.dao.model.HeadVersion</class>
+        <class>org.apromore.dao.model.HeadVersionId</class>
+        <class>org.apromore.dao.model.HeadVersion0</class>
+        <class>org.apromore.dao.model.HeadVersion0Id</class>
+        <class>org.apromore.dao.model.Keyword</class>
+        <class>org.apromore.dao.model.KeywordId</class>
+        <class>org.apromore.dao.model.ProcessRanking</class>
+        <class>org.apromore.dao.model.ProcessRankingId</class>
+    </persistence-unit>
+
+</persistence>
