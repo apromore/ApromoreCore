@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jalopy>
+    <general>
+        <compliance>
+            <version>14</version>
+        </compliance>
+        <style>
+            <description>Sun Java Coding Convention</description>
+            <name>Sun</name>
+
+        </style>
+    </general>
+    <internal>
+        <version>6</version>
+    </internal>
+    <printer>
+        <comments>
+            <javadoc>
+
+                <check>
+                    <innerclass>false</innerclass>
+                    <tags>true</tags>
+                    <throwsTags>true</throwsTags>
+                </check>
+                <fieldsShort>true</fieldsShort>
+                <generate>
+
+                    <class>5</class>
+                    <constructor>5</constructor>
+                    <field>5</field>
+                    <method>5</method>
+                </generate>
+                <parseComments>true</parseComments>
+
+                <tags>
+                    <in-line />
+                    <standard />
+                </tags>
+                <templates>
+                    <method>
+                        <bottom> */</bottom>
+                        <exception> * @throws $exceptionType$ DOCUMENT ME!</exception>
+
+                        <param> * @param $paramType$ DOCUMENT ME!</param>
+                        <return> * @return DOCUMENT ME!</return>
+                        <top>/**| * DOCUMENT ME!</top>
+                    </method>
+                    <variable>/** DOCUMENT ME! */</variable>
+                </templates>
+
+            </javadoc>
+        </comments>
+    </printer>
+</jalopy>
+

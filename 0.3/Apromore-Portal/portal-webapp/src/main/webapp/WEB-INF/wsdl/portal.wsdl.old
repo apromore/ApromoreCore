@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<wsdl:definitions xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:sch="http://www.apromore.org/portal/service_oryx"
+                  xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/"
+                  xmlns:tns="http://www.apromore.org/portal/service_oryx"
+                  targetNamespace="http://www.apromore.org/portal/service_oryx">
+    <wsdl:types>
+        <xs:schema xmlns:xmime="http://www.w3.org/2005/05/xmlmime" xmlns:xs="http://www.w3.org/2001/XMLSchema"
+                   attributeFormDefault="unqualified" elementFormDefault="qualified"
+                   targetNamespace="http://www.apromore.org/portal/service_oryx">
+
+            <xs:element name="ReadNativeRequest" type="tns:ReadNativeInputMsgType"/>
+            <xs:element name="ReadNativeResponse" type="tns:ReadNativeOutputMsgType"/>
+            <xs:element name="WriteNewProcessRequest" type="tns:WriteNewProcessInputMsgType"/>
+            <xs:element name="WriteNewProcessResponse" type="tns:WriteNewProcessOutputMsgType"/>
+            <xs:element name="WriteProcessRequest" type="tns:WriteProcessInputMsgType"/>
+            <xs:element name="WriteProcessResponse" type="tns:WriteProcessOutputMsgType"/>
+            <xs:element name="WriteNewAnnotationRequest" type="tns:WriteNewAnnotationInputMsgType"/>
+            <xs:element name="WriteNewAnnotationResponse" type="tns:WriteNewAnnotationOutputMsgType"/>
+            <xs:element name="WriteAnnotationRequest" type="tns:WriteAnnotationInputMsgType"/>
+            <xs:element name="WriteAnnotationResponse" type="tns:WriteAnnotationOutputMsgType"/>
+
+            <xs:complexType name="ReadNativeInputMsgType">
+                <xs:attribute name="EditSessionCode" type="xs:int"/>
+            </xs:complexType>
+
+            <xs:complexType name="EditSessionType">
+                <xs:attribute name="username" type="xs:string"/>
+                <xs:attribute name="nativeType" type="xs:string"/>
+                <xs:attribute name="processId" type="xs:int"/>
+                <xs:attribute name="processName" type="xs:string"/>
+                <xs:attribute name="versionName" type="xs:string"/>
+                <xs:attribute name="domain" type="xs:string"/>
+                <xs:attribute name="creationDate" type="xs:string"/>
+                <xs:attribute name="lastUpdate" type="xs:string"/>
+                <xs:attribute name="withAnnotation" type="xs:boolean"/>
+                <xs:attribute name="annotation" type="xs:string"/>
+            </xs:complexType>
+
+            <xs:complexType name="ReadNativeOutputMsgType">
+                <xs:sequence>
+                    <xs:element name="Result" type="tns:ResultType"/>
+                    <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+                    <xs:element name="EditSession" type="tns:EditSessionType"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="WriteNewProcessInputMsgType">
+                <xs:sequence>
+                    <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+                    <xs:element name="EditSession" type="tns:EditSessionType"/>
+                </xs:sequence>
+                <xs:attribute name="EditSessionCode" type="xs:int"/>
+            </xs:complexType>
+
+            <xs:complexType name="WriteNewProcessOutputMsgType">
+                <xs:sequence>
+                    <xs:element name="Result" type="tns:ResultType"/>
+                </xs:sequence>
+                <xs:attribute name="EditSessionCode" type="xs:int"/>
+            </xs:complexType>
+
+            <xs:complexType name="WriteProcessInputMsgType">
+                <xs:sequence>
+                    <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+                    <xs:element name="EditSession" type="tns:EditSessionType"/>
+                </xs:sequence>
+                <xs:attribute name="EditSessionCode" type="xs:int"/>
+                <xs:attribute name="PreVersion" type="xs:string"/>
+            </xs:complexType>
+
+            <xs:complexType name="WriteProcessOutputMsgType">
+                <xs:sequence>
+                    <xs:element name="Result" type="tns:ResultType"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="WriteNewAnnotationInputMsgType">
+                <xs:sequence>
+                    <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+                </xs:sequence>
+                <xs:attribute name="EditSessionCode" type="xs:int"/>
+                <xs:attribute name="AnnotationName" type="xs:string"/>
+            </xs:complexType>
+
+            <xs:complexType name="WriteNewAnnotationOutputMsgType">
+                <xs:sequence>
+                    <xs:element name="Result" type="tns:ResultType"/>
+                </xs:sequence>
+                <xs:attribute name="EditSessionCode" type="xs:int"/>
+            </xs:complexType>
+
+            <xs:complexType name="WriteAnnotationInputMsgType">
+                <xs:sequence>
+                    <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+                </xs:sequence>
+                <xs:attribute name="EditSessionCode" type="xs:int"/>
+            </xs:complexType>
+
+            <xs:complexType name="WriteAnnotationOutputMsgType">
+                <xs:sequence>
+                    <xs:element name="Result" type="tns:ResultType"/>
+                </xs:sequence>
+            </xs:complexType>
+
+            <xs:complexType name="ResultType">
+                <xs:attribute name="message" type="xs:string"/>
+                <xs:attribute name="code" type="xs:int"/>
+            </xs:complexType>
+
+        </xs:schema>
+    </wsdl:types>
+
+    <wsdl:message name="WriteNewAnnotationRequest">
+        <wsdl:part element="tns:WriteNewAnnotationRequest" name="WriteNewAnnotationRequest"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="WriteNewProcessRequest">
+        <wsdl:part element="tns:WriteNewProcessRequest" name="WriteNewProcessRequest"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="WriteProcessResponse">
+        <wsdl:part element="tns:WriteProcessResponse" name="WriteProcessResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="WriteAnnotationRequest">
+        <wsdl:part element="tns:WriteAnnotationRequest" name="WriteAnnotationRequest"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="WriteNewProcessResponse">
+        <wsdl:part element="tns:WriteNewProcessResponse" name="WriteNewProcessResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="WriteProcessRequest">
+        <wsdl:part element="tns:WriteProcessRequest" name="WriteProcessRequest"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="WriteAnnotationResponse">
+        <wsdl:part element="tns:WriteAnnotationResponse" name="WriteAnnotationResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="WriteNewAnnotationResponse">
+        <wsdl:part element="tns:WriteNewAnnotationResponse" name="WriteNewAnnotationResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="ReadNativeResponse">
+        <wsdl:part element="tns:ReadNativeResponse" name="ReadNativeResponse"></wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="ReadNativeRequest">
+        <wsdl:part element="tns:ReadNativeRequest" name="ReadNativeRequest"></wsdl:part>
+    </wsdl:message>
+
+    <wsdl:portType name="PortalOryxPortType">
+        <wsdl:operation name="WriteNewAnnotation">
+            <wsdl:input message="tns:WriteNewAnnotationRequest" name="WriteNewAnnotationRequest"></wsdl:input>
+            <wsdl:output message="tns:WriteNewAnnotationResponse" name="WriteNewAnnotationResponse"></wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="WriteNewProcess">
+            <wsdl:input message="tns:WriteNewProcessRequest" name="WriteNewProcessRequest"></wsdl:input>
+            <wsdl:output message="tns:WriteNewProcessResponse" name="WriteNewProcessResponse"></wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="WriteProcess">
+            <wsdl:input message="tns:WriteProcessRequest" name="WriteProcessRequest"></wsdl:input>
+            <wsdl:output message="tns:WriteProcessResponse" name="WriteProcessResponse"></wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="WriteAnnotation">
+            <wsdl:input message="tns:WriteAnnotationRequest" name="WriteAnnotationRequest"></wsdl:input>
+            <wsdl:output message="tns:WriteAnnotationResponse" name="WriteAnnotationResponse"></wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ReadNative">
+            <wsdl:input message="tns:ReadNativeRequest" name="ReadNativeRequest"></wsdl:input>
+            <wsdl:output message="tns:ReadNativeResponse" name="ReadNativeResponse"></wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+
+    <wsdl:binding name="PortalOryx" type="tns:PortalOryxPortType">
+        <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="WriteNewAnnotation">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="WriteNewAnnotationRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="WriteNewAnnotationResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="WriteNewProcess">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="WriteNewProcessRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="WriteNewProcessResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="WriteProcess">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="WriteProcessRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="WriteProcessResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="WriteAnnotation">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="WriteAnnotationRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="WriteAnnotationResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+        <wsdl:operation name="ReadNative">
+            <soap:operation soapAction=""/>
+            <wsdl:input name="ReadNativeRequest">
+                <soap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="ReadNativeResponse">
+                <soap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+
+    <wsdl:service name="PortalOryxService">
+        <wsdl:port binding="tns:PortalOryx" name="PortalOryx">
+            <soap:address location="http://127.0.0.1:8080/Apromore-portal/services/PortalOryx/"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>

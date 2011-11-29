@@ -3,7 +3,7 @@
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder>
             <pattern>
-                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n
+                %d{HH:mm:ss.SSS} [%thread] %-8level %-40logger{40} - %msg%n
             </pattern>
         </encoder>
     </appender>
@@ -16,7 +16,7 @@
         </rollingPolicy>
         <encoder>
             <pattern>
-                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n
+                %d{HH:mm:ss.SSS} [%thread] %-8level %-40logger - %msg%n
             </pattern>
         </encoder>
     </appender>
@@ -25,11 +25,11 @@
     <appender name="APPLOGFILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
         <file>${catalina.home}/logs/apromore.log</file>
         <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
-            <fileNamePattern>${catalina.home}/logs/mpw.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <fileNamePattern>${catalina.home}/logs/apromore.%d{yyyy-MM-dd}.log</fileNamePattern>
         </rollingPolicy>
         <encoder>
             <pattern>
-                %d{HH:mm:ss.SSS} [%thread] %-5level %logger{5} - %msg%n
+                %d{HH:mm:ss.SSS} [%thread] %-8level %-40logger - %msg%n
             </pattern>
         </encoder>
     </appender>
@@ -39,11 +39,15 @@
     <logger name="org.hibernate" level="INFO" />
     <logger name="org.springframework" level="INFO" />
 
+    <logger name="httpclient.wire" level="DEBUG" additivity="false">
+        <appender-ref ref="WSLOGFILE"/>
+    </logger>
     <logger name="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor" level="DEBUG" additivity="false">
         <appender-ref ref="WSLOGFILE"/>
     </logger>
 
-    <root level="DEBUG">
+
+    <root level="INFO">
         <appender-ref ref="APPLOGFILE"/>
         <appender-ref ref="STDOUT"/>
     </root>

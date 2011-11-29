@@ -1,9 +1,10 @@
 package org.apromore.portal.dialogController;
 
+import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.exception.ExceptionDao;
-import org.apromore.portal.manager.RequestToManager;
 import org.apromore.model.DomainsType;
 import org.apromore.model.NativeTypesType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -24,7 +25,7 @@ import java.io.InputStream;
 import java.util.Iterator;
 import java.util.List;
 
-public class FileController extends Window {
+public class FileController extends BaseController {
 
     private MainController mainC;        // the main controller
     private MenuController menuC;        // the menu controller which created this
@@ -64,8 +65,7 @@ public class FileController extends Window {
             this.modelCancelB = (Button) this.modelW.getFellow("modelCancelB");
 
             // build list of native languages to choose in
-            RequestToManager request = new RequestToManager();
-            NativeTypesType formats = request.ReadNativeTypes();
+            NativeTypesType formats = getService().readNativeTypes();
 
             for (int i = 0; i < formats.getNativeType().size(); i++) {
                 Listitem format = new Listitem();
@@ -74,7 +74,7 @@ public class FileController extends Window {
             }
 
             // build combobox of existing domains
-            DomainsType domains = request.ReadDomains();
+            DomainsType domains = getService().readDomains();
             List<String> domainList = domains.getDomain();
 
             this.modelDomainCB = new AutoComplete(domainList);
@@ -103,9 +103,9 @@ public class FileController extends Window {
         } catch (InterruptedException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
-        } catch (ExceptionDao e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
+//        } catch (ExceptionDao e) {
+//            // TODO Auto-generated catch block
+//            e.printStackTrace();
         }
 
     }

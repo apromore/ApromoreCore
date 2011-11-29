@@ -1,9 +1,10 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.portal.manager.RequestToManager;
+import org.apromore.manager.client.ManagerService;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -20,7 +21,7 @@ import org.zkoss.zul.Window;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SimilaritySearchController extends Window {
+public class SimilaritySearchController extends BaseController {
 
     private MainController mainC;
     private MenuController menuC;
@@ -115,9 +116,8 @@ public class SimilaritySearchController extends Window {
     protected void searchSimilarProcesses() throws InterruptedException {
         String message = null;
         try {
-            RequestToManager request = new RequestToManager();
             Boolean latestVersions = "latestVersions".compareTo(allVersionsChoiceRG.getSelectedItem().getId()) == 0;
-            ProcessSummariesType result = request.searchForSimilarProcesses(
+            ProcessSummariesType result = getService().searchForSimilarProcesses(
                     process.getId(), version.getName(),
                     this.algosLB.getSelectedItem().getLabel(),
                     latestVersions,

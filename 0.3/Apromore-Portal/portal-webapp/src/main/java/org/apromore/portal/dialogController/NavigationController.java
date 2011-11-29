@@ -9,7 +9,7 @@ import org.zkoss.zul.Panel;
 import org.zkoss.zul.Tree;
 import org.zkoss.zul.Window;
 
-public class NavigationController extends Window {
+public class NavigationController extends BaseController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NavigationController.class.getName());
 

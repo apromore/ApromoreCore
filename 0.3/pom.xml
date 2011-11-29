@@ -20,7 +20,6 @@
 
     <modules>
         <!-- These Need to be build first, Apromore Needs them -->
-        <module>Apromore-Tools</module>
         <module>Apromore-Testing-Tools</module>
 
         <!-- Apromore project, includes the above -->
@@ -32,7 +31,7 @@
         <module>Apromore-Schema/xpdl-schema</module>
         <module>Apromore-Schema/yawl-schema</module>
         <module>Apromore-Clients/manager-client</module>
-        <module>Apromore-Core/apromore-core</module>
+        <module>Apromore-Core/apromore-service</module>
         <module>Apromore-Core/apromore-webapp</module>
         <module>Apromore-Portal/portal-service</module>
         <module>Apromore-Portal/portal-webapp</module>

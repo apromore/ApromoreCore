@@ -1,11 +1,12 @@
 package org.apromore.portal.dialogController;
 
+import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
-import org.apromore.portal.manager.RequestToManager;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -22,11 +23,8 @@ import org.zkoss.zul.Window;
 import java.util.List;
 import java.util.Map;
 
-public class ProcessMergeController extends Window {
+public class ProcessMergeController extends BaseController {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 1L;
     private MainController mainC;
     private MenuController menuC;
@@ -54,6 +52,7 @@ public class ProcessMergeController extends Window {
     private SelectDynamicListController domainCB;
 
     private Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions;
+
 
     public ProcessMergeController(MainController mainC, MenuController menuC,
                                   Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions)
@@ -161,8 +160,7 @@ public class ProcessMergeController extends Window {
         if ("".compareTo(this.processNameT.getValue()) != 0 &&
                 "".compareTo(this.versionNameT.getValue()) != 0) {
             try {
-                RequestToManager request = new RequestToManager();
-                ProcessSummaryType result = request.mergeProcesses(
+                ProcessSummaryType result = getService().mergeProcesses(
                         selectedProcessVersions, this.processNameT.getValue(),
                         this.versionNameT.getValue(), this.domainCB.getValue(),
                         this.mainC.getCurrentUser().getUsername(), this.algosLB

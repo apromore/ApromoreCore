@@ -4,13 +4,14 @@ import de.epml.TypeCoordinates;
 import de.epml.TypeDirectory;
 import de.epml.TypeEPC;
 import de.epml.TypeEPML;
+import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
-import org.apromore.portal.manager.RequestToManager;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.wfmc._2008.xpdl2.Author;
 import org.wfmc._2008.xpdl2.Created;
 import org.wfmc._2008.xpdl2.PackageHeader;
@@ -69,6 +70,10 @@ public class CreateProcessController {
 
     private SelectDynamicListController ownerCB;
     private SelectDynamicListController domainCB;
+
+    @Autowired
+    ManagerService mgr;
+
 
     public CreateProcessController(MainController mainC, HashMap<String, String> formats_ext)
             throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
@@ -231,9 +236,7 @@ public class CreateProcessController {
                     nativeProcess = new ByteArrayInputStream(epml_xml.toByteArray());
                 }
                 // documentation and lastupdate are set to null, addFakeEvent is set to false
-                RequestToManager request = new RequestToManager();
-                ProcessSummaryType process =
-                        request.importProcess(owner, nativeType, processName, versionName,
+                ProcessSummaryType process = mgr.importProcess(owner, nativeType, processName, versionName,
                                 nativeProcess, domain, null, creationDate, null, false);
 
                 this.mainC.displayNewProcess(process);
@@ -246,16 +249,13 @@ public class CreateProcessController {
             }
         } catch (WrongValueException e) {
             e.printStackTrace();
-            Messagebox.show("Creation failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
-                    Messagebox.ERROR);
+            Messagebox.show("Creation failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         } catch (ExceptionImport e) {
             e.printStackTrace();
-            Messagebox.show("Creation failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
-                    Messagebox.ERROR);
+            Messagebox.show("Creation failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         } catch (IOException e) {
             e.printStackTrace();
-            Messagebox.show("Creation failed (" + e.getMessage() + ")", "Attention", Messagebox.OK,
-                    Messagebox.ERROR);
+            Messagebox.show("Creation failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 

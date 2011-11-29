@@ -1,10 +1,11 @@
 package org.apromore.portal.dialogController;
 
+import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
-import org.apromore.portal.manager.RequestToManager;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -21,7 +22,7 @@ import org.zkoss.zul.Window;
 
 import java.util.List;
 
-public class EditOneProcessDataController {
+public class EditOneProcessDataController extends BaseController {
 
     private Window editDataWindow;
 
@@ -160,8 +161,7 @@ public class EditOneProcessDataController {
             Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK,
                     Messagebox.ERROR);
         } else {
-            RequestToManager request = new RequestToManager();
-            request.EditProcessesData(processId, processName, domain, username, preVersion, newVersion, ranking);
+            getService().editProcessData(processId, processName, domain, username, preVersion, newVersion, ranking);
             this.editDataListProcessesC.getEditedList().add(this);
             this.editDataListProcessesC.deleteFromToBeEdited(this);
             closePopup();
