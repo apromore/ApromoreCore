@@ -29,7 +29,7 @@
 
     <ciManagement>
         <system>Jenkins</system>
-        <url>http://131.181.88.156:8080/jenkins/view/Tools/</url>
+        <url>http://fastyawl01.qut.edu.au:8080/jenkins/view/Tools/</url>
     </ciManagement>
 
     <reporting>
