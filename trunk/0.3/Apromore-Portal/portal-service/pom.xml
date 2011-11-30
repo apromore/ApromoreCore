@@ -35,13 +35,13 @@
 
     <ciManagement>
         <system>Hudson</system>
-        <url>http://131.181.88.5:8080/view/apromore</url>
+        <url>http://fastyawl01.qut.edu.au:8080/view/apromore</url>
     </ciManagement>
 
     <distributionManagement>
         <site>
             <id>website</id>
-            <url>dav:http://131.181.88.5:9000/projects/apromore</url>
+            <url>dav:http://fastyawl01.qut.edu.au:8080/projects/apromore</url>
         </site>
     </distributionManagement>
 
