@@ -62,22 +62,41 @@
 
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
-        <module name="JavadocMethod"/>
-        <module name="JavadocType"/>
-        <module name="JavadocVariable"/>
-        <module name="JavadocStyle"/>
+        <module name="JavadocMethod">
+            <property name="scope" value="protected" />
+            <property name="allowUndeclaredRTE" value="true" />
+            <property name="allowThrowsTagsForSubclasses" value="true" />
+        </module>
+        <module name="JavadocType" >
+            <property name="scope" value="protected" />
+            <property name="authorFormat" value="&lt;a href=&quot;mailto:.*@.*&quot;&gt;.*&lt;/a&gt;" />
+        </module>
+        <module name="JavadocVariable">
+            <property name="scope" value="protected" />
+        </module>
+        <module name="JavadocStyle">
+            <property name="scope" value="protected" />
+        </module>
 
 
         <!-- Checks for Naming Conventions.                  -->
         <!-- See http://checkstyle.sf.net/config_naming.html -->
-        <module name="ConstantName"/>
         <module name="LocalFinalVariableName"/>
         <module name="LocalVariableName"/>
-        <module name="MemberName"/>
+        <module name="ConstantName">
+            <property name="format" value="^[A-Z]([A-Z0-9_]*[A-Z0-9])?$" />
+        </module>
+        <module name="MemberName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="StaticVariableName">
+            <property name="format" value="^[a-z][a-zA-Z0-9]*$"/>
+        </module>
+        <module name="PackageName">
+            <property name="format" value="^[a-z]+(\.[a-z][a-z0-9]*)*$"/>
+        </module>
         <module name="MethodName"/>
         <module name="PackageName"/>
-        <module name="ParameterName"/>
-        <module name="StaticVariableName"/>
         <module name="TypeName"/>
 
 
@@ -102,9 +121,13 @@
         <!-- Checks for imports                              -->
         <!-- See http://checkstyle.sf.net/config_import.html -->
         <module name="AvoidStarImport"/>
-        <module name="IllegalImport"/> <!-- defaults to sun.* packages -->
+        <module name="IllegalImport"/>
         <module name="RedundantImport"/>
         <module name="UnusedImports"/>
+        <module name="ImportOrder" >
+            <property name="groups" value="java,javax" />
+            <property name="ordered" value="false" />
+        </module>
 
 
         <!-- Checks for Size Violations.                    -->
@@ -113,22 +136,40 @@
             <property name="max" value="140"/>
             <property name="ignorePattern" value="^ *\* *[^ ]+$"/>
         </module>
-        <module name="MethodLength"/>
+        <module name="MethodLength">
+            <property name="max" value="150"/>
+            <property name="tokens" value="METHOD_DEF"/>
+            <property name="countEmpty" value="false"/>
+        </module>
         <module name="ParameterNumber"/>
 
 
         <!-- Checks for whitespace                               -->
         <!-- See http://checkstyle.sf.net/config_whitespace.html -->
-        <module name="EmptyForIteratorPad"/>
+        <module name="EmptyForIteratorPad" >
+            <property name="option" value="space" />
+        </module>
+        <module name="NoWhitespaceAfter" >
+            <property name="tokens" value="BNOT, DEC, DOT, INC, LNOT, UNARY_MINUS, UNARY_PLUS" />
+            <property name="allowLineBreaks" value="false" />
+        </module>
+        <module name="NoWhitespaceBefore" >
+            <property name="allowLineBreaks" value="false" />
+        </module>
+        <module name="OperatorWrap" >
+            <property name="option" value="eol" />
+            <property name="tokens" value="BAND, BOR, BSR, BXOR, DIV, EQUAL, GE, GT, LAND, LE, LITERAL_INSTANCEOF, LOR, LT, MINUS, MOD, NOT_EQUAL, PLUS, QUESTION, SL, SR, STAR" />
+        </module>
+        <module name="OperatorWrap" >
+            <property name="option" value="nl" />
+            <property name="tokens" value="COLON" />
+        </module>
+        <module name="ParenPad" />
+        <module name="TypecastParenPad" />
+        <module name="WhitespaceAfter" />
+        <module name="WhitespaceAround" />
         <module name="GenericWhitespace"/>
         <module name="MethodParamPad"/>
-        <module name="NoWhitespaceAfter"/>
-        <module name="NoWhitespaceBefore"/>
-        <module name="OperatorWrap"/>
-        <module name="ParenPad"/>
-        <module name="TypecastParenPad"/>
-        <module name="WhitespaceAfter"/>
-        <module name="WhitespaceAround"/>
 
 
         <!-- Modifier Checks                                    -->
@@ -153,21 +194,50 @@
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
         <module name="HiddenField"/>
-        <module name="IllegalInstantiation"/>
+        <module name="IllegalInstantiation">
+            <property name="classes" value="java.lang.Boolean"/>
+        </module>
         <module name="InnerAssignment"/>
         <module name="MagicNumber"/>
         <module name="MissingSwitchDefault"/>
         <module name="RedundantThrows"/>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
+        <module name="StringLiteralEquality" />
+        <module name="NestedIfDepth" >
+            <property name="max" value="1" />
+        </module>
+        <module name="NestedTryDepth" >
+            <property name="max" value="1" />
+        </module>
+        <module name="SuperClone" />
+        <module name="SuperFinalize" />
+        <module name="PackageDeclaration" />
+        <module name="JUnitTestCase" />
+        <module name="ReturnCount" >
+          <property name="max" value="4" />
+        </module>
+        <module name="IllegalType" />
+        <module name="ParameterAssignment" />
 
         <!-- Checks for class design                         -->
         <!-- See http://checkstyle.sf.net/config_design.html -->
         <module name="DesignForExtension"/>
         <module name="FinalClass"/>
         <module name="HideUtilityClassConstructor"/>
-        <module name="InterfaceIsType"/>
+        <module name="InterfaceIsType">
+            <property name="allowMarkerInterfaces" value="true" />
+        </module>
         <module name="VisibilityModifier"/>
+        <module name="MutableException" />
+        <module name="ThrowsCount" >
+            <property name="max" value="3" />
+        </module>
+
+        <!-- Complexity checks -->
+        <module name="CyclomaticComplexity" >
+            <property name="max" value="14" />
+        </module>
 
 
         <!-- Miscellaneous other checks.                   -->
