@@ -9,6 +9,7 @@ import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
 import org.apromore.model.VersionSummaryType;
 
+import javax.activation.DataHandler;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.List;
@@ -124,7 +125,7 @@ public interface ManagerService {
      * @throws Exception ... change to be something more relevant
      * TODO: Fix Exception
      */
-    InputStream exportFormat(int processId, String processName, String versionName, String nativeType, String annotationName,
+    DataHandler exportFormat(int processId, String processName, String versionName, String nativeType, String annotationName,
                              Boolean withAnnotations, String owner) throws IOException, Exception;
 
     /**
