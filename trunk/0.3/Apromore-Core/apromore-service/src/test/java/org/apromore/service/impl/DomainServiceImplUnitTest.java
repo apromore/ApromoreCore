@@ -48,7 +48,7 @@ public class DomainServiceImplUnitTest {
 
     @Test
     public void getAllDomains() {
-        List<Object> processes = new ArrayList<Object>();
+        List<String> processes = new ArrayList<String>();
         processes.add("test1");
         processes.add("test2");
 

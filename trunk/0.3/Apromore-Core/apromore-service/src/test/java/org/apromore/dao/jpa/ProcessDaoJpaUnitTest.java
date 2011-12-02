@@ -96,7 +96,7 @@ public class ProcessDaoJpaUnitTest {
 
         replay(manager, query);
 
-        List<Object> domains = prsJpa.getAllDomains();
+        List<String> domains = prsJpa.getAllDomains();
 
         verify(manager, query);
 
@@ -106,7 +106,7 @@ public class ProcessDaoJpaUnitTest {
 
     @Test
     public final void testGetAllDomainsNonFound() {
-        List<Object> doms = new ArrayList<Object>(0);
+        List<String> doms = new ArrayList<String>(0);
 
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(Process.GET_All_DOMAINS)).andReturn(query);
@@ -114,7 +114,7 @@ public class ProcessDaoJpaUnitTest {
 
         replay(manager, query);
 
-        List<Object> domains = prsJpa.getAllDomains();
+        List<String> domains = prsJpa.getAllDomains();
 
         verify(manager, query);
 

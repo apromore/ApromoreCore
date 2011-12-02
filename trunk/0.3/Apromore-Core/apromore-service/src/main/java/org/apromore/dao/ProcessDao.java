@@ -24,7 +24,7 @@ public interface ProcessDao {
      * Returns the distinct list of domains.
      * @return the list of domains.
      */
-    List<Object> getAllDomains();
+    List<String> getAllDomains();
 
 
     /**
