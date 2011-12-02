@@ -228,7 +228,7 @@ public class ExportOneNativeController extends BaseController {
                     withAnnotation = false;
                 }
                 InputStream native_is = getService().exportFormat(this.processId, processname, this.versionName, format, annotation, withAnnotation,
-                                this.mainC.getCurrentUser().getUsername());
+                                this.mainC.getCurrentUser().getUsername()).getInputStream();
                 Filedownload.save(native_is, "text.xml", filename);
             }
         } catch (InterruptedException e) {
