@@ -16,6 +16,7 @@ import org.apromore.portal.model.WriteNewProcessInputMsgType;
 import org.apromore.portal.model.WriteNewProcessOutputMsgType;
 import org.apromore.portal.model.WriteProcessInputMsgType;
 import org.apromore.portal.model.WriteProcessOutputMsgType;
+import org.apromore.portal.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -235,12 +236,10 @@ public class PortalOryxEndpoint {
             String creationDate = editSessionP.getCreationDate();
             String lastUpdate = editSessionP.getLastUpdate();
 
-            InputStream native_is = mgr.exportFormat(processId, processName, version, nativeType, annotation, withAnnotation, owner);
+            DataHandler nativeDH = mgr.exportFormat(processId, processName, version, nativeType, annotation, withAnnotation, owner);
+            LOGGER.info(StreamUtil.convertStreamToString(nativeDH));
 
-            DataSource sourceNative = new ByteArrayDataSource(native_is, "text/xml");
-            res.setNative(new DataHandler(sourceNative));
             org.apromore.portal.model.EditSessionType editSessionO = new org.apromore.portal.model.EditSessionType();
-            res.setEditSession(editSessionO);
             editSessionO.setAnnotation(annotation);
             editSessionO.setCreationDate(creationDate);
             editSessionO.setDomain(domain);
@@ -251,6 +250,9 @@ public class PortalOryxEndpoint {
             editSessionO.setUsername(owner);
             editSessionO.setVersionName(version);
             editSessionO.setWithAnnotation(withAnnotation);
+
+            res.setNative(nativeDH);
+            res.setEditSession(editSessionO);
 
             result.setCode(0);
             result.setMessage("");
