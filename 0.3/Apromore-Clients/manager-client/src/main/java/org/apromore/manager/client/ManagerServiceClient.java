@@ -3,6 +3,7 @@ package org.apromore.manager.client;
 import org.apromore.manager.client.helper.DeleteProcessVersionHelper;
 import org.apromore.manager.client.helper.MergeProcessesHelper;
 import org.apromore.manager.client.helper.SearchForSimilarProcessesHelper;
+import org.apromore.manager.client.util.StreamUtil;
 import org.apromore.model.DeleteEditSessionInputMsgType;
 import org.apromore.model.DeleteEditSessionOutputMsgType;
 import org.apromore.model.DeleteProcessVersionsInputMsgType;
@@ -32,7 +33,6 @@ import org.apromore.model.ReadProcessSummariesInputMsgType;
 import org.apromore.model.ReadProcessSummariesOutputMsgType;
 import org.apromore.model.ReadUserInputMsgType;
 import org.apromore.model.ReadUserOutputMsgType;
-import org.apromore.model.ResultType;
 import org.apromore.model.SearchForSimilarProcessesInputMsgType;
 import org.apromore.model.SearchForSimilarProcessesOutputMsgType;
 import org.apromore.model.UpdateProcessInputMsgType;
@@ -52,7 +52,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.ws.client.core.WebServiceTemplate;
 
 import javax.activation.DataHandler;
-import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
 import java.io.IOException;
@@ -241,7 +240,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
-    public InputStream exportFormat(int processId, String processName, String versionName, String nativeType, String annotationName,
+    public DataHandler exportFormat(int processId, String processName, String versionName, String nativeType, String annotationName,
             Boolean withAnnotations, String owner) throws IOException, Exception {
         LOGGER.debug("Preparing ExportFormatRequest.....");
 
@@ -260,7 +259,8 @@ public class ManagerServiceClient implements ManagerService {
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         } else {
-            return response.getValue().getNative().getInputStream();
+            LOGGER.info(StreamUtil.convertStreamToString(response.getValue().getNative()));
+            return response.getValue().getNative();
         }
     }
 
