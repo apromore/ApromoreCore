@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:util="http://www.springframework.org/schema/util"
+       xsi:schemaLocation="
+            http://www.springframework.org/schema/util     http://www.springframework.org/schema/util/spring-util-3.0.xsd
+            http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd">
+
+    <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory">
+        <property name="soapVersion">
+            <util:constant static-field="org.springframework.ws.soap.SoapVersion.SOAP_11" />
+        </property>
+    </bean>
+
+    <bean id="serviceMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
+        <property name="contextPath" value="org.apromore.portal.model" />
+    </bean>
+
+    <bean id="portalServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate">
+        <constructor-arg ref="messageFactory" />
+        <property name="marshaller" ref="serviceMarshaller" />
+        <property name="unmarshaller" ref="serviceMarshaller" />
+        <property name="messageSender">
+            <bean class="org.springframework.ws.transport.http.CommonsHttpMessageSender" />
+        </property>
+        <property name="defaultUri" value="http://localhost:8080/Apromore-portal/services/portal" />
+    </bean>
+
+    <bean id="portalClient" class="org.apromore.portal.client.PortalServiceClient">
+        <constructor-arg type="org.springframework.ws.client.core.WebServiceTemplate" ref="portalServiceTemplate" />
+    </bean>
+    
+</beans>
