@@ -33,14 +33,7 @@ public class DomainServiceImpl implements DomainService {
     @Override
     @Transactional(readOnly = true)
     public List<String> findAllDomains() {
-        List<Object> domains = procDao.getAllDomains();
-        List<String> doms = new ArrayList<String>();
-
-        for (Object obj : domains) {
-            doms.add((String) obj);
-        }
-
-        return doms;
+        return procDao.getAllDomains();
     }
 
 

@@ -11,7 +11,6 @@ import org.apromore.dao.jpa.NativeDaoJpa;
 import org.apromore.dao.jpa.ProcessDaoJpa;
 import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.Canonical;
-import org.apromore.service.model.Format;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.Process;
 import org.apromore.exception.AnnotationNotFoundException;
@@ -22,6 +21,8 @@ import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.service.ProcessService;
+import org.apromore.service.model.Format;
+import org.apromore.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -57,7 +58,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * @see org.apromore.service.ProcessService#readProcessSummaries(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -74,7 +75,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * @see org.apromore.service.ProcessService#exportFormat(long, String, String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -94,13 +95,15 @@ public class ProcessServiceImpl implements ProcessService {
         } catch (Exception e) {
             throw new ExportFormatException(e.getMessage(), e.getCause());
         }
+        LOGGER.info(StreamUtil.convertStreamToString(dataSource));
         return dataSource;
     }
 
     /**
      * Returns the Canonical format as XML.
+     *
      * @see org.apromore.service.ProcessService#getCanonicalAnf(long, String, boolean, String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -207,10 +210,9 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
 
-
-
     /**
      * Set the Process DAO object for this class. Mainly for spring tests.
+     *
      * @param prsDAOJpa the process Dao.
      */
     public void setProcessDao(ProcessDaoJpa prsDAOJpa) {
@@ -219,6 +221,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * Set the Canonical DAO object for this class. Mainly for spring tests.
+     *
      * @param canDAOJpa the Canonical Dao.
      */
     public void setCanonicalDao(CanonicalDaoJpa canDAOJpa) {
@@ -227,6 +230,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * Set the Native DAO object for this class. Mainly for spring tests.
+     *
      * @param natDAOJpa the Native Dao.
      */
     public void setNativeDao(NativeDaoJpa natDAOJpa) {
@@ -235,6 +239,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * Set the Annotation DAO object for this class. Mainly for spring tests.
+     *
      * @param annDAOJpa the Annotation Dao.
      */
     public void setAnnotationDao(AnnotationDaoJpa annDAOJpa) {

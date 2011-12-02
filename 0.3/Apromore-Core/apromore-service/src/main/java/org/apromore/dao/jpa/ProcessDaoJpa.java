@@ -46,11 +46,11 @@ public class ProcessDaoJpa extends JpaTemplate implements ProcessDao {
      * {@inheritDoc}
      */
     @Override
-    public List<Object> getAllDomains() {
-        return execute(new JpaCallback<List<Object>>() {
+    public List<String> getAllDomains() {
+        return execute(new JpaCallback<List<String>>() {
 
             @SuppressWarnings("unchecked")
-            public List<Object> doInJpa(EntityManager em) {
+            public List<String> doInJpa(EntityManager em) {
                 Query query = em.createNamedQuery(Process.GET_All_DOMAINS);
                 return query.getResultList();
             }

@@ -65,6 +65,7 @@ import org.apromore.service.FormatService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.UserService;
 import org.apromore.service.model.Format;
+import org.apromore.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -378,9 +379,9 @@ public class ManagerPortalEndpoint {
         LOGGER.info("Executing operation readEditSession");
         ReadEditSessionInputMsgType payload = req.getValue();
         ReadEditSessionOutputMsgType res = new ReadEditSessionOutputMsgType();
+        int code = payload.getEditSessionCode();
         ResultType result = new ResultType();
         res.setResult(result);
-        int code = payload.getEditSessionCode();
         try {
             EditSessionType editSessionDA = daClient.ReadEditSession(code);
             EditSessionType editSessionP = new EditSessionType();
@@ -468,9 +469,9 @@ public class ManagerPortalEndpoint {
                 } else {
                     source = canSrv.deCanonise(processId, version, format, canFormat.getCpf(), null);
                 }
-                res.setNative(new DataHandler(source));
             }
 
+            LOGGER.info(StreamUtil.convertStreamToString(source));
             res.setNative(new DataHandler(source));
             result.setCode(0);
             result.setMessage("");
