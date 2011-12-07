@@ -22,7 +22,9 @@ public class DomainMapper {
      */
     public static DomainsType convertFromDomains(List<String> domains) {
         DomainsType types = new DomainsType();
-        types.getDomain().addAll(domains);
+        for (String domain : domains) {
+            types.getDomain().add(domain);
+        }
         return types;
     }
 

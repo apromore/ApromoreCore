@@ -16,8 +16,8 @@
     <packaging>jar</packaging>
 
     <url>http://code.google.com/p/apromore/</url>
-    <name>Apromore Common component</name>
-    <description>Apromore's core component. This is the guts of apromore which performs all the processing.</description>
+    <name>Apromore Service</name>
+    <description>Apromore's Service. This is the guts of Apromore which performs all the processing.</description>
 
     <scm>
         <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/0.3/Apromore-Core/apromore-core</developerConnection>
@@ -44,6 +44,8 @@
             <artifactId>manager-client</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
+
+        <!-- Schema -->
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>anf-schema</artifactId>
@@ -256,6 +258,7 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>apromore-testing-tools</artifactId>
+            <version>${apromore-testing-tools.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

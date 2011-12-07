@@ -133,7 +133,7 @@ public class ManagerPortalEndpoint {
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "EditProcessDataRequest")
     @ResponsePayload
-    public JAXBElement<EditProcessDataOutputMsgType> editProcessData(@RequestPayload JAXBElement<EditProcessDataInputMsgType> req) {
+    public JAXBElement<EditProcessDataOutputMsgType> editProcessData(@RequestPayload final JAXBElement<EditProcessDataInputMsgType> req) {
         LOGGER.info("Executing operation editDataProcess");
         EditProcessDataInputMsgType payload = req.getValue();
         EditProcessDataOutputMsgType res = new EditProcessDataOutputMsgType();
@@ -160,7 +160,7 @@ public class ManagerPortalEndpoint {
 
     @PayloadRoot(localPart = "MergeProcessesRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<MergeProcessesOutputMsgType> mergeProcesses(@RequestPayload JAXBElement<MergeProcessesInputMsgType> req) {
+    public JAXBElement<MergeProcessesOutputMsgType> mergeProcesses(@RequestPayload final JAXBElement<MergeProcessesInputMsgType> req) {
         LOGGER.info("Executing operation mergeProcesses");
         MergeProcessesInputMsgType payload = req.getValue();
         MergeProcessesOutputMsgType res = new MergeProcessesOutputMsgType();
@@ -208,7 +208,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "SearchForSimilarProcessesRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<SearchForSimilarProcessesOutputMsgType> searchForSimilarProcesses(
-            @RequestPayload JAXBElement<SearchForSimilarProcessesInputMsgType> req) {
+            @RequestPayload final JAXBElement<SearchForSimilarProcessesInputMsgType> req) {
         LOGGER.info("Executing operation searchForSimilarProcesses");
         SearchForSimilarProcessesInputMsgType payload = req.getValue();
         SearchForSimilarProcessesOutputMsgType res = new SearchForSimilarProcessesOutputMsgType();
@@ -240,7 +240,7 @@ public class ManagerPortalEndpoint {
 
     @PayloadRoot(localPart = "WriteAnnotationRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<WriteAnnotationOutputMsgType> writeAnnotation(@RequestPayload JAXBElement<WriteAnnotationInputMsgType> req) {
+    public JAXBElement<WriteAnnotationOutputMsgType> writeAnnotation(@RequestPayload final JAXBElement<WriteAnnotationInputMsgType> req) {
         LOGGER.info("Executing operation writeAnnotation");
         WriteAnnotationInputMsgType payload = req.getValue();
         WriteAnnotationOutputMsgType res = new WriteAnnotationOutputMsgType();
@@ -283,7 +283,7 @@ public class ManagerPortalEndpoint {
 
     @PayloadRoot(localPart = "DeleteEditSessionRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<DeleteEditSessionOutputMsgType> deleteEditSession(@RequestPayload JAXBElement<DeleteEditSessionInputMsgType> req) {
+    public JAXBElement<DeleteEditSessionOutputMsgType> deleteEditSession(@RequestPayload final JAXBElement<DeleteEditSessionInputMsgType> req) {
         LOGGER.info("Executing operation deleteEditSession");
         DeleteEditSessionInputMsgType payload = req.getValue();
         DeleteEditSessionOutputMsgType res = new DeleteEditSessionOutputMsgType();
@@ -305,7 +305,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "DeleteProcessVersionsRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<DeleteProcessVersionsOutputMsgType> deleteProcessVersions(
-            @RequestPayload JAXBElement<DeleteProcessVersionsInputMsgType> req) {
+            @RequestPayload final JAXBElement<DeleteProcessVersionsInputMsgType> req) {
         LOGGER.info("Executing operation deleteProcessVersions");
         DeleteProcessVersionsInputMsgType payload = req.getValue();
         DeleteProcessVersionsOutputMsgType res = new DeleteProcessVersionsOutputMsgType();
@@ -336,7 +336,7 @@ public class ManagerPortalEndpoint {
 
     @PayloadRoot(localPart = "UpdateProcessRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<UpdateProcessOutputMsgType> updateProcess(@RequestPayload JAXBElement<UpdateProcessInputMsgType> req) {
+    public JAXBElement<UpdateProcessOutputMsgType> updateProcess(@RequestPayload final JAXBElement<UpdateProcessInputMsgType> req) {
         LOGGER.info("Executing operation updateProcess");
         UpdateProcessInputMsgType payload = req.getValue();
         UpdateProcessOutputMsgType res = new UpdateProcessOutputMsgType();
@@ -375,7 +375,7 @@ public class ManagerPortalEndpoint {
 
     @PayloadRoot(localPart = "ReadEditSessionRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<ReadEditSessionOutputMsgType> readEditSession(@RequestPayload JAXBElement<ReadEditSessionInputMsgType> req) {
+    public JAXBElement<ReadEditSessionOutputMsgType> readEditSession(@RequestPayload final JAXBElement<ReadEditSessionInputMsgType> req) {
         LOGGER.info("Executing operation readEditSession");
         ReadEditSessionInputMsgType payload = req.getValue();
         ReadEditSessionOutputMsgType res = new ReadEditSessionOutputMsgType();
@@ -408,7 +408,7 @@ public class ManagerPortalEndpoint {
 
     @PayloadRoot(localPart = "WriteEditSessionRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<WriteEditSessionOutputMsgType> writeEditSession(@RequestPayload JAXBElement<WriteEditSessionInputMsgType> req) {
+    public JAXBElement<WriteEditSessionOutputMsgType> writeEditSession(@RequestPayload final JAXBElement<WriteEditSessionInputMsgType> req) {
         LOGGER.info("Executing operation writeEditSession");
         WriteEditSessionInputMsgType payload = req.getValue();
         WriteEditSessionOutputMsgType res = new WriteEditSessionOutputMsgType();
@@ -442,7 +442,7 @@ public class ManagerPortalEndpoint {
 
     @PayloadRoot(localPart = "ExportFormatRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<ExportFormatOutputMsgType> exportFormat(@RequestPayload JAXBElement<ExportFormatInputMsgType> req) {
+    public JAXBElement<ExportFormatOutputMsgType> exportFormat(@RequestPayload final JAXBElement<ExportFormatInputMsgType> req) {
         LOGGER.info("Executing operation exportFormat");
 
         ResultType result = new ResultType();
@@ -487,7 +487,7 @@ public class ManagerPortalEndpoint {
 
     @PayloadRoot(localPart = "ImportProcessRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<ImportProcessOutputMsgType> importProcess(@RequestPayload JAXBElement<ImportProcessInputMsgType> req) {
+    public JAXBElement<ImportProcessOutputMsgType> importProcess(@RequestPayload final JAXBElement<ImportProcessInputMsgType> req) {
         LOGGER.info("Executing operation importProcess");
         ImportProcessInputMsgType payload = req.getValue();
         ImportProcessOutputMsgType res = new ImportProcessOutputMsgType();
@@ -524,7 +524,7 @@ public class ManagerPortalEndpoint {
 
     @PayloadRoot(localPart = "WriteUserRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<WriteUserOutputMsgType> writeUser(@RequestPayload JAXBElement<WriteUserInputMsgType> req) {
+    public JAXBElement<WriteUserOutputMsgType> writeUser(@RequestPayload final JAXBElement<WriteUserInputMsgType> req) {
         LOGGER.info("Executing operation writeUser");
         WriteUserInputMsgType payload = req.getValue();
         WriteUserOutputMsgType res = new WriteUserOutputMsgType();
@@ -544,7 +544,7 @@ public class ManagerPortalEndpoint {
 
     @PayloadRoot(localPart = "ReadNativeTypesRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<ReadNativeTypesOutputMsgType> readNativeTypes(@RequestPayload JAXBElement<ReadNativeTypesInputMsgType> req) {
+    public JAXBElement<ReadNativeTypesOutputMsgType> readNativeTypes(@RequestPayload final JAXBElement<ReadNativeTypesInputMsgType> req) {
         LOGGER.info("Executing operation readFormats");
         ReadNativeTypesInputMsgType payload = req.getValue();
         ReadNativeTypesOutputMsgType res = new ReadNativeTypesOutputMsgType();
@@ -568,7 +568,7 @@ public class ManagerPortalEndpoint {
       */
     @PayloadRoot(localPart = "ReadDomainsRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<ReadDomainsOutputMsgType> readDomains(@RequestPayload JAXBElement<ReadDomainsInputMsgType> req) {
+    public JAXBElement<ReadDomainsOutputMsgType> readDomains(@RequestPayload final JAXBElement<ReadDomainsInputMsgType> req) {
         LOGGER.info("Executing operation readDomains");
         ReadDomainsInputMsgType payload = req.getValue();
         ReadDomainsOutputMsgType res = new ReadDomainsOutputMsgType();
@@ -592,8 +592,9 @@ public class ManagerPortalEndpoint {
      */
     @PayloadRoot(localPart = "ReadUserRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<ReadUserOutputMsgType> readUser(@RequestPayload ReadUserInputMsgType payload) {
+    public JAXBElement<ReadUserOutputMsgType> readUser(@RequestPayload final JAXBElement<ReadUserInputMsgType> req) {
         LOGGER.info("Executing operation readUser");
+        ReadUserInputMsgType payload = req.getValue();
         ReadUserOutputMsgType res = new ReadUserOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -616,7 +617,7 @@ public class ManagerPortalEndpoint {
     @PayloadRoot(localPart = "ReadProcessSummariesRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ReadProcessSummariesOutputMsgType> readProcessSummaries(
-            @RequestPayload JAXBElement<ReadProcessSummariesInputMsgType> req) {
+            @RequestPayload final JAXBElement<ReadProcessSummariesInputMsgType> req) {
         LOGGER.info("Executing operation readProcessSummaries");
         ReadProcessSummariesInputMsgType payload = req.getValue();
         ReadProcessSummariesOutputMsgType res = new ReadProcessSummariesOutputMsgType();
