@@ -53,4 +53,24 @@ public interface PortalService {
      */
     WriteNewAnnotationOutputMsgType writeNewAnnotation(String nativeProcess, Integer sessionCode, String annotationName) throws IOException;
 
+
+    /* **************************************************************************************** */
+    /* Support Methods Used by Oryx and Apromore to share information                           */
+    /* **************************************************************************************** */
+
+    /**
+     * From the Session code find out the Process Version.
+     * @param sessionCode the session code
+     * @return the version number of that process
+     * @throws IOException if the lookup fails
+     */
+    String getProcessVersion(String sessionCode) throws IOException;
+
+    /**
+     * From the Session code find out the Process Name.
+     * @param sessionCode the session code
+     * @return the name of that process
+     * @throws IOException if the lookup fails
+     */
+    String getProcessName(String sessionCode) throws IOException;
 }

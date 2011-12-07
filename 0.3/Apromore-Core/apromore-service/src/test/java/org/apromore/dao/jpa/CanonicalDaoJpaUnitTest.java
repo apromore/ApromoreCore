@@ -1,12 +1,7 @@
 package org.apromore.dao.jpa;
 
 import org.apromore.dao.model.Canonical;
-import org.apromore.dao.model.Native;
-import org.apromore.dao.model.NativeType;
-import org.apromore.dao.model.Process;
-import org.apromore.dao.model.User;
 import org.apromore.exception.CanonicalFormatNotFoundException;
-import org.apromore.exception.NativeFormatNotFoundException;
 import org.apromore.test.heuristic.JavaBeanHeuristic;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -24,9 +19,7 @@ import java.util.List;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.powermock.api.easymock.PowerMock.createMock;
-import static org.powermock.api.easymock.PowerMock.replay;
-import static org.powermock.api.easymock.PowerMock.verify;
+import static org.powermock.api.easymock.PowerMock.*;
 
 /**
  * Test the Canonical DAO JPA class.

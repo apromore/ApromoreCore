@@ -46,7 +46,7 @@ public class PortalServiceClient implements PortalService {
         LOGGER.debug("Invoking Read native process for session code " + sessionCode);
 
         ReadNativeInputMsgType msg = new ReadNativeInputMsgType();
-        msg.setEditSessionCode(Integer.valueOf(sessionCode));
+        msg.setEditSessionCode(sessionCode);
 
         JAXBElement<ReadNativeInputMsgType> request = WS_CLIENT_FACTORY.createReadNativeRequest(msg);
         JAXBElement<ReadNativeOutputMsgType> response = (JAXBElement<ReadNativeOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
@@ -134,6 +134,26 @@ public class PortalServiceClient implements PortalService {
         JAXBElement<WriteNewAnnotationOutputMsgType> response = (JAXBElement<WriteNewAnnotationOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
 
 		return response.getValue();
+    }
+
+    @Override
+    public String getProcessVersion(String sessionCode) throws IOException {
+        int sessionCodeInt = Integer.parseInt(sessionCode);
+        EditSessionType editSession = EditSessionHolder.getEditSession(sessionCodeInt);
+        if (editSession == null) {
+            return null;
+        }
+        return editSession.getVersionName();
+    }
+
+    @Override
+    public String getProcessName(String sessionCode) throws IOException {
+        int sessionCodeInt = Integer.parseInt(sessionCode);
+        EditSessionType editSession = EditSessionHolder.getEditSession(sessionCodeInt);
+        if (editSession == null) {
+            return null;
+        }
+        return editSession.getProcessName();
     }
 
 

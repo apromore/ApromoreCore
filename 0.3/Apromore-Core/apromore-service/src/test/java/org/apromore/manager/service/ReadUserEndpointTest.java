@@ -5,6 +5,7 @@ import org.apromore.exception.UserNotFoundException;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
 import org.apromore.manager.da.ManagerDataAccessClient;
 import org.apromore.manager.toolbox.ManagerToolboxClient;
+import org.apromore.model.ObjectFactory;
 import org.apromore.model.ReadUserInputMsgType;
 import org.apromore.model.ReadUserOutputMsgType;
 import org.apromore.service.UserService;
@@ -69,13 +70,14 @@ public class ReadUserEndpointTest {
     public void testInvokeReadUser() throws Exception {
         ReadUserInputMsgType msg = new ReadUserInputMsgType();
         msg.setUsername("someone");
+        JAXBElement<ReadUserInputMsgType> request = new ObjectFactory().createReadUserRequest(msg);
 
         User user = new User();
         expect(userSrv.findUser(msg.getUsername())).andReturn(user);
 
         replay(userSrv);
 
-        JAXBElement<ReadUserOutputMsgType> response = endpoint.readUser(msg);
+        JAXBElement<ReadUserOutputMsgType> response = endpoint.readUser(request);
         Assert.assertNotNull(response.getValue().getResult());
         Assert.assertNotNull(response.getValue().getUser());
         Assert.assertEquals("Result Code Doesn't Match", response.getValue().getResult().getCode().intValue(), 0);
@@ -88,12 +90,13 @@ public class ReadUserEndpointTest {
     public void testInvokeReadUserThrowsException() throws Exception {
         ReadUserInputMsgType msg = new ReadUserInputMsgType();
         msg.setUsername("someone");
+        JAXBElement<ReadUserInputMsgType> request = new ObjectFactory().createReadUserRequest(msg);
 
         expect(userSrv.findUser(msg.getUsername())).andThrow(new UserNotFoundException());
 
         replay(userSrv);
 
-        JAXBElement<ReadUserOutputMsgType> response = endpoint.readUser(msg);
+        JAXBElement<ReadUserOutputMsgType> response = endpoint.readUser(request);
         Assert.assertNotNull(response.getValue().getResult());
         Assert.assertEquals("Result Code Doesn't Match", response.getValue().getResult().getCode().intValue(), -1);
 

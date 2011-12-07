@@ -10,6 +10,7 @@
         <param-value>
             classpath:spring/applicationContext.xml
             classpath:spring/applicationContext-services.xml
+            classpath:spring/applicationContext-managerClient.xml
         </param-value>
     </context-param>
 
@@ -18,13 +19,12 @@
         <display-name>ZK Session cleaner</display-name>
         <listener-class>org.zkoss.zk.ui.http.HttpSessionListener</listener-class>
     </listener>
-
     <listener>
         <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
     </listener>
-    <listener>
-        <listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>
-    </listener>
+    <!--<listener>-->
+        <!--<listener-class>org.springframework.web.context.request.RequestContextListener</listener-class>-->
+    <!--</listener>-->
 
 
     <servlet>
@@ -38,17 +38,17 @@
         <load-on-startup>1</load-on-startup>
     </servlet>
     <servlet>
+        <description>The asynchronous update engine for ZK</description>
+        <servlet-name>auEngine</servlet-name>
+        <servlet-class>org.zkoss.zk.au.http.DHtmlUpdateServlet</servlet-class>
+    </servlet>
+    <servlet>
         <servlet-name>spring-ws</servlet-name>
         <servlet-class>org.springframework.ws.transport.http.MessageDispatcherServlet</servlet-class>
         <init-param>
             <param-name>transformWsdlLocations</param-name>
             <param-value>true</param-value>
         </init-param>
-    </servlet>
-    <servlet>
-        <description>The asynchronous update engine for ZK</description>
-        <servlet-name>auEngine</servlet-name>
-        <servlet-class>org.zkoss.zk.au.http.DHtmlUpdateServlet</servlet-class>
     </servlet>
 
 
@@ -80,7 +80,6 @@
 
     <session-config>
         <session-timeout>60</session-timeout>
-        <timeout-uri>/timeout.zul</timeout-uri>
     </session-config>
 
     <welcome-file-list>

@@ -14,8 +14,7 @@
 
     <sws:annotation-driven />
 
-    <!--<sws:static-wsdl id="PortalOryx" location="classpath:portal.wsdl" />-->
-    <sws:dynamic-wsdl id="portal" portTypeName="PortalOryx" serviceName="PortalOryxService" locationUri="/services/portal/" targetNamespace="http://www.apromore.org/portal/service_oryx">
+    <sws:dynamic-wsdl id="portal" portTypeName="Portal" locationUri="/services/portal/" targetNamespace="urn:qut-edu-au:schema:apromore:portal">
         <sws:xsd location="classpath:portal.xsd"/>
     </sws:dynamic-wsdl>
 
@@ -56,36 +55,11 @@
     </util:list>
 
     <bean id="schemaCollection" class="org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection">
-        <description>This bean wrap the messages.xsd (which imports types.xsd), and inlines them as a one.</description>
         <property name="xsds" value="/WEB-INF/wsdl/portal.xsd"/>
         <property name="inline" value="true"/>
     </bean>
 
-
-    <!-- ************************** Clients ************************** -->
-
-    <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory">
-        <property name="soapVersion">
-            <util:constant static-field="org.springframework.ws.soap.SoapVersion.SOAP_11" />
-        </property>
-    </bean>
-
-    <bean id="serviceMarshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="contextPath" value="org.apromore.model" />
-    </bean>
-
-    <bean id="managerServiceTemplate" class="org.springframework.ws.client.core.WebServiceTemplate">
-        <constructor-arg ref="messageFactory" />
-        <property name="marshaller" ref="serviceMarshaller" />
-        <property name="unmarshaller" ref="serviceMarshaller" />
-        <property name="messageSender">
-            <bean class="org.springframework.ws.transport.http.CommonsHttpMessageSender" />
-        </property>
-        <property name="defaultUri" value="http://localhost:8080/Apromore/services/manager" />
-    </bean>
-
-    <bean id="managerClient" class="org.apromore.manager.client.ManagerServiceClient">
-        <constructor-arg type="org.springframework.ws.client.core.WebServiceTemplate" ref="managerServiceTemplate" />
-    </bean>
+    <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
+    <bean id="messageReceiver" class="org.springframework.ws.soap.server.SoapMessageDispatcher"/>
 
 </beans>

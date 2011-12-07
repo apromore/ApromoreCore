@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://www.apromore.org/portal/model_oryx"
+<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" xmlns:tns="urn:qut-edu-au:schema:apromore:portal"
 	   xmlns:xmime="http://www.w3.org/2005/05/xmlmime"
-	   targetNamespace="http://www.apromore.org/portal/model_oryx"
+	   targetNamespace="urn:qut-edu-au:schema:apromore:portal"
 	   elementFormDefault="qualified" attributeFormDefault="unqualified" version="5.0">
 
     <xs:element name="ReadNativeRequest" type="tns:ReadNativeInputMsgType"/>

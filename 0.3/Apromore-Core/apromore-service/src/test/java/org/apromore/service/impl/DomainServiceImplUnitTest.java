@@ -2,7 +2,6 @@ package org.apromore.service.impl;
 
 import org.apromore.dao.jpa.NativeTypeDaoJpa;
 import org.apromore.dao.jpa.ProcessDaoJpa;
-import org.apromore.dao.model.NativeType;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -17,9 +16,7 @@ import java.util.List;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.powermock.api.easymock.PowerMock.createMock;
-import static org.powermock.api.easymock.PowerMock.replay;
-import static org.powermock.api.easymock.PowerMock.verify;
+import static org.powermock.api.easymock.PowerMock.*;
 
 /**
  * Unit test the UserService Implementation.
