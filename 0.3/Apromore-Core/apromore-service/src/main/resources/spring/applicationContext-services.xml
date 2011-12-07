@@ -55,16 +55,12 @@
     </util:list>
 
     <bean id="schemaCollection" class="org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection">
-        <description>This bean wrap the messages.xsd (which imports types.xsd), and inlines them as a one.</description>
         <property name="xsds" value="/WEB-INF/wsdl/manager.xsd"/>
         <property name="inline" value="true"/>
     </bean>
 
     <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
     <bean id="messageReceiver" class="org.springframework.ws.soap.server.SoapMessageDispatcher"/>
-
-    <!-- ************************** For marshaling / un-marshaling ************************** -->
-
 
 
     <!-- ************************** Non WebServices ************************** -->
@@ -81,12 +77,5 @@
 
     <bean id="canoniserManager" class="org.apromore.canoniser.service.CanoniserManagerImpl" p:client-ref="canoniserDataAccessClient" />
     <bean id="toolboxManager" class="org.apromore.toolbox.service.ToolboxManagerImpl" p:client-ref="toolboxDataAccessClient" />
-
-
-    <!--<bean id="canoniserService" class="org.apromore.service.impl.CanoniserServiceImpl" />-->
-    <!--<bean id="domainService" class="org.apromore.service.impl.DomainServiceImpl" />-->
-    <!--<bean id="formatService" class="org.apromore.service.impl.FormatServiceImpl" />-->
-    <!--<bean id="userService" class="org.apromore.service.impl.UserServiceImpl" />-->
-    <!--<bean id="processService" class="org.apromore.service.impl.ProcessServiceImpl" />-->
 
 </beans>

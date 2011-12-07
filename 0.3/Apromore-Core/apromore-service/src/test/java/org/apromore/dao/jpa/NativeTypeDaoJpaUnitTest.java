@@ -1,8 +1,5 @@
 package org.apromore.dao.jpa;
 
-import org.apromore.dao.model.Annotation;
-import org.apromore.dao.model.Canonical;
-import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
 import org.apromore.test.heuristic.JavaBeanHeuristic;
 import org.junit.Before;
@@ -14,16 +11,12 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.powermock.api.easymock.PowerMock.createMock;
-import static org.powermock.api.easymock.PowerMock.replay;
-import static org.powermock.api.easymock.PowerMock.verify;
+import static org.powermock.api.easymock.PowerMock.*;
 
 /**
  * Test the Native DAO JPA class.

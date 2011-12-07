@@ -18,8 +18,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.*;
 import static org.easymock.EasyMock.expectLastCall;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;

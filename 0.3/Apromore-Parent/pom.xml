@@ -668,16 +668,6 @@
             <groupId>org.springframework</groupId>
             <artifactId>spring-beans</artifactId>
         </dependency>
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-            <scope>test</scope>
-        </dependency>
     </dependencies>
 
     <properties>
@@ -689,6 +679,7 @@
 
         <!-- **** Versions used for all projects **** -->
         <apromore-tools.version>1.0.0-SNAPSHOT</apromore-tools.version>
+        <apromore-testing-tools.version>1.0.0-SNAPSHOT</apromore-testing-tools.version>
 
         <!-- Logging versions -->
         <slf4j.version>1.6.3</slf4j.version>
@@ -699,6 +690,8 @@
         <commons-io.version>1.3.1</commons-io.version>
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <commons-logging.version>1.1.1</commons-logging.version>
+        <json.version>20090211</json.version>
+        <xmappr.version>0.9.3</xmappr.version>
 
         <!-- Spring Version -->
         <spring.version>3.0.5.RELEASE</spring.version>
@@ -756,7 +749,6 @@
         <easymock.version>3.0</easymock.version>
         <powermock.version>1.4.10</powermock.version>
         <hamcrest.version>1.1</hamcrest.version>
-        <apromore-testing-tools.version>1.0.0-SNAPSHOT</apromore-testing-tools.version>
 
         <!-- **** Settings for the building of the projects **** -->
         <!-- Plugins used by the Build process -->

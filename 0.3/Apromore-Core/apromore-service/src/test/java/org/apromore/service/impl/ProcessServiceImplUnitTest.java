@@ -8,7 +8,6 @@ import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.NativeFormatNotFoundException;
-import org.apromore.exception.UserNotFoundException;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.service.model.Format;
 import org.hamcrest.MatcherAssert;
@@ -30,11 +29,7 @@ import java.util.List;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.powermock.api.easymock.PowerMock.createMock;
-import static org.powermock.api.easymock.PowerMock.replay;
-import static org.powermock.api.easymock.PowerMock.replayAll;
-import static org.powermock.api.easymock.PowerMock.verify;
-import static org.powermock.api.easymock.PowerMock.verifyAll;
+import static org.powermock.api.easymock.PowerMock.*;
 
 /**
  * Unit test the UserService Implementation.
