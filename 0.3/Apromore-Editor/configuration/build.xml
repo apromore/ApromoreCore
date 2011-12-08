@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Signavio Configuration" default="com.signavio.configuration.copy">
+
+	<!--<xmlproperty file="version.xml" collapseattributes="true" />-->
+
+	<target name="com.signavio.configuration.createVersionFile">
+		<mkdir dir="build" />
+		<echo file="build/version.js">if(!Signavio){ var Signavio = {} };
+	if (!Signavio.Core) { Signavio.Core = {} };
+	Signavio.Core.Version = "${version}";
+			</echo>
+	</target>
+
+	<target name="com.signavio.configuration.copy.editor" depends="com.signavio.configuration.createVersionFile">
+		<copy file="${configuration}/editor/plugins.xml" tofile="../editor/src/scripts/Plugins/plugins.xml" overwrite="true" />
+		<copy file="${configuration}/editor/stencilsets.json" tofile="../editor/data/stencilsets/stencilsets.json" overwrite="true" />
+		<copy file="${configuration}/editor/extensions.json" tofile="../editor/data/stencilsets/extensions/extensions.json" overwrite="true" />
+		<copy file="build/version.js" todir="../editor/src/scripts/Plugins/" overwrite="true" />
+	</target>
+
+	<target name="com.signavio.configuration.copy.explorer" depends="com.signavio.configuration.createVersionFile">
+		<copy todir="../explorer/src" overwrite="true" failonerror="false">
+			<fileset dir="${configuration}/skin">
+				<include name="**/*.*" />
+			</fileset>
+		</copy>
+	</target>
+
+	<target name="com.signavio.configuration.copy.platform">
+		<copy file="${configuration}/editor/plugins.xml" tofile="../platform/WebContent/WEB-INF/xml/editor/plugins.xml" overwrite="true" />
+		<copy file="${configuration}/editor/stencilsets.json" tofile="../platform/WebContent/WEB-INF/json/stencilsets.json" overwrite="true" />
+		<copy file="${configuration}/editor/extensions.json" tofile="../platform/WebContent/WEB-INF/json/extensions.json" overwrite="true" />
+		<echo file="../platform/conf/classpath/configuration.properties">
+			host = ${host}
+			fileSystemRootDirectory = ${fileSystemRootDirectory}
+		</echo>
+	</target>
+
+	<target name="com.signavio.configuration.copy" depends="com.signavio.configuration.copy.editor, com.signavio.configuration.copy.explorer, com.signavio.configuration.copy.platform">
+		<echo>
+	    	Configuration: ${configuration}
+		</echo>
+	</target>
+</project>

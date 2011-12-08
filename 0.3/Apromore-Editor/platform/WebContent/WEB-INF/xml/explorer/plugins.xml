@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<config>
+	
+	<plugins>
+		
+		<!-- Functional Plugins -->
+		<plugin source="functionalPlugins/new.js" name="Signavio.Plugins.New" />		
+		
+		<plugin source="functionalPlugins/update.js" name="Signavio.Plugins.Update" />	
+		<plugin source="functionalPlugins/delete.js" name="Signavio.Plugins.Delete" />	
+		<plugin source="functionalPlugins/move.js" name="Signavio.Plugins.Move" />
+		
+		<!-- Component Plugins -->
+		<plugin source="componentPlugins/folder.js" name="Signavio.Plugins.Folder" />	
+		<plugin source="componentPlugins/toolbar.js" name="Signavio.Plugins.Toolbar" />
+		<plugin source="componentPlugins/message.js" name="Signavio.Plugins.Message" />	
+		
+		<!-- View Plugins -->
+		<plugin source="viewPlugins/breadcrumb.js" name="Signavio.Plugins.Breadcrumb" />	
+		<plugin source="viewPlugins/iconview.js" name="Signavio.Plugins.IconView" />	
+		
+		<!-- Context Plugins -->
+		<plugin source="contextPlugins/info.js" name="Signavio.Plugins.Info" />	
+	</plugins>
+		
+</config>

@@ -1,0 +1,52 @@
+[
+		{
+            "title":"BPMN 1.2",
+            "namespace":"http://b3mn.org/stencilset/bpmn1.1#",
+            "description":"BPMN 1.2 stencil set specification.",
+            "uri":"/bpmn1.1/bpmn1.1.json",
+            "icon_url":"/diagrams/bpmn-22x22.png",
+            "visible":false,
+			"extensions":["http://oryx-editor.org/stencilsets/extensions/bpmn1.1basicsubset#"]
+        }, {
+            "title":"Business Process Diagram (BPMN 2.0)",
+			"title_de":"Prozessdiagramm (BPMN 2.0)",
+            "namespace":"http://b3mn.org/stencilset/bpmn2.0#",
+            "description":"BPMN 2.0 stencil set specification for processes.",
+            "uri":"/bpmn2.0/bpmn2.0.json",
+            "icon_url":"/diagrams/bpmn-22x22.png",
+            "visible":true,
+			"extensions":["http://oryx-editor.org/stencilsets/extensions/bpmn2.0basicsubset#"]
+        },
+		{
+            "title":"Conversation Diagram (BPMN 2.0)",
+			"title_de":"Konversationsdiagramm (BPMN 2.0)",
+            "namespace":"http://b3mn.org/stencilset/bpmn2.0conversation#",
+            "description":"BPMN 2.0 Conversation stencil set specification for processes.",
+            "uri":"/bpmn2.0/bpmn2.0conversation.json",
+            "icon_url":"/diagrams/bpmn.conversation-22x22.png",
+            "visible":true
+        },
+		{
+            "title":"Choreography Diagram (BPMN 2.0)",
+			"title_de":"Choreographiediagramm (BPMN 2.0)",
+            "namespace":"http://b3mn.org/stencilset/bpmn2.0choreography#",
+            "description":"BPMN 2.0 Choreography stencil set specification for choreographies.",
+            "basestencilset":"http://b3mn.org/stencilset/bpmn2.0#",
+			"extensionstointegrate":["http://oryx-editor.org/stencilsets/extensions/bpmn2.0choreography#"],
+			"uri":"/bpmn2.0chor/bpmn2.0chor.json",
+            "icon_url":"/diagrams/bpmn.choreography-22x22.png",
+            "visible":true,
+			"extensions":["http://oryx-editor.org/stencilsets/extensions/bpmn2.0basicsubset/choreography#"]
+        },
+        {
+            "title":"JBoss jBPM Process (jPDL 4)",
+            "title_de":"JBoss jBPM-Prozess (jPDL 4)",
+            "namespace":"http://b3mn.org/stencilset/jbpm4#",
+            "description":"A subset of BPMN 1.2 for execution with jPDL 4",
+            "basestencilset":"http://b3mn.org/stencilset/bpmn1.1#",
+			"extensionstointegrate":["http://oryx-editor.org/stencilsets/extensions/jbpm#"],
+			"uri":"/jbpm4/jbpm4.json",
+            "icon_url":"/diagrams/bpmn-22x22.png",
+            "visible":true
+        }
+]

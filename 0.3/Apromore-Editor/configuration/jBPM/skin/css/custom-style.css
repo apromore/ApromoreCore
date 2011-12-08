@@ -1,0 +1,20 @@
+
+
+#signavio_repository_header #signavio_repository_logo, #oryx_editor_header a {
+	height:58px !important;
+	top:2px !important;
+	width:110px !important;
+}
+
+.x-toolbar.north_view {
+	padding-left:260px;
+}
+
+.x-panel-editor-north .x-toolbar {
+	padding-left:140px;
+	background-position: 0px -36px;
+}
+
+#oryx_editor_header .openid {
+	display: none;	
+}

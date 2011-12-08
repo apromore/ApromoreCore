@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Signavio Libs" default="com.signavio.libs.deploy">
+    <!-- PROPERTIES -->
+    <property file="build.properties"/>
+    <property file="VERSION"/>
+    
+    <property name="target" value="target"/>
+	<property name="lib" value="libs"/>
+  
+    <!-- TARGETS (alphabetized) -->
+    
+ 
+    <target name="com.signavio.libs.clean">
+		<delete dir="${target}"/>
+	</target>
+    
+    <target name="com.signavio.libs.deploy" depends="com.signavio.libs.war">
+        <copy file="${target}/${file-war}.war" todir="${dir-tomcat-webapps}"/>
+    </target>
+    
+    <target name="com.signavio.libs.undeploy">
+        <delete file="${dir-tomcat-webapps}/${file-war}.war"/>
+    </target>
+    
+    
+    <target name="com.signavio.libs.war">
+        <mkdir dir="${target}"/>
+		<war destfile="${target}/libs.war"
+		webxml="web.xml"
+		 update="true">
+            <fileset dir="${lib}" />
+        </war>
+    </target>
+</project>
