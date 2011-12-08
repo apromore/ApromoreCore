@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="conf/classpath"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
+	<classpathentry exported="true" kind="lib" path="lib/el-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jasper-el.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jasper-jdt.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jasper.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/jsp-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/servlet-api.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/tomcat-coyote.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/tomcat-dbcp.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/tomcat-i18n-es.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/tomcat-i18n-fr.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/tomcat-i18n-ja.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/antlr-2.7.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/bsh-2.0b1.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/commons-logging-1.0.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/concurrent-1.3.2.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/connector.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/ehcache-1.2.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/jaas.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/jboss-cache.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/jboss-common.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/jboss-jmx.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/jboss-system.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/jgroups-2.2.8.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/jtidy-r8-20060801.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/oscache-2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/swarmcache-1.0rc2.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/junit-4.6.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/serializer.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/activation.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/platform-extension-syntaxchecker.jar"/>
+	<classpathentry exported="true" kind="con" path="org.eclipse.jdt.junit.JUNIT_CONTAINER/4"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/org.json.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/commons-collections-2.1.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/javassist.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/jta.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/dom4j-1.6.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/log4j-1.2.15.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-anim.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-awt-util.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-bridge.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-codec.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-css.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-dom.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-ext.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-extension.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-gui-util.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-gvt.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-parser.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-rasterizer-ext.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-rasterizer.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-script.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-svg-dom.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-svggen.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-svgpp.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-swing.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-transcoder.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-util.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik-xml.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/batik.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/js.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/xml-apis-ext.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/xml-apis.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/filters-2.0.235.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-codec-1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-httpclient-3.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-io-1.4.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/cssparser-0.9.5.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/nekohtml-1.9.12.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/sac-1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/commons-collections-3.2.1.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/pdf-transcoder.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/catalina-ant.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/catalina-ha.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/catalina-tribes.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/catalina.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/xalan.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/xercesImpl.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/serializer.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/platform-extension-diagram.jar"/>
+	<classpathentry exported="true" kind="lib" path="WebContent/WEB-INF/lib/jaxb-impl.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/platform-extension-jpdl.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/platform-extension-bpmn2_0.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/activation-1.1.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jaxb-api.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/jsr173_1.0_api.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/stax-api-1.0-2.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/xalan-2.7.0.jar"/>
+	<classpathentry kind="lib" path="WebContent/WEB-INF/lib/commons-lang-2.4.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classloading xmlns="urn:jboss:classloading:1.0"
+	name="signavio.war"
+	domain="signaviodomain"
+	export-all="NON_EMPTY"
+	import-all="false"> 	
+</classloading>

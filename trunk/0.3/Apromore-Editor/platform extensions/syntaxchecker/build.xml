@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="Platform Extension - Syntaxchecker" default="com.signavio.extension.copy2Platform">
+	<!-- PROPERTIES -->
+	<property name="target" value="target" />
+	<property name="src" value="src" />
+	<property name="build" value="build" />
+	<property name="platform-lib" value="../../platform/WebContent/WEB-INF/lib" />
+
+	<!-- SPECIFY A UNIQUE NAME FOR YOUR EXTENSION -->
+	<property name="jar-file" value="platform-extension-syntaxchecker" />
+
+	<!-- Clean up project (remove temporary folders) -->
+	<target name="com.signavio.extension.clean">
+		<delete dir="${target}" />
+		<delete dir="${build}" />
+	</target>
+
+	<!-- Compile the Java classes -->
+	<target name="com.signavio.extension.compile" depends="com.signavio.extension.clean">
+		<mkdir dir="${build}" />
+		<javac srcdir="${src}" destdir="${build}" debug="on"  target="1.5">
+			<classpath id="libs">
+				<fileset dir="${platform-lib}">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- Generate the JAR file -->
+	<target name="com.signavio.extension.jar" depends="com.signavio.extension.compile">
+		<mkdir dir="${target}" />
+		<jar destfile="${target}/${jar-file}.jar" update="false">
+
+			<fileset dir="${build}">
+			</fileset>
+
+		</jar>
+	</target>
+
+	<!-- Copy the JAR file into the Platform's lib folder -->
+	<target name="com.signavio.extension.copy2Platform" depends="com.signavio.extension.jar">
+		<copy file="${target}/${jar-file}.jar" todir="${platform-lib}" />
+	</target>
+</project>

@@ -1,0 +1,12 @@
+{
+	"extensions": [
+		{
+			"title":"jBPM Stencils",
+			"namespace":"http://oryx-editor.org/stencilsets/extensions/jbpm#",
+			"description":"A subset of BPMN 1.2 for execution with jBPM",
+			"definition":"jbpm/jbpm.json",
+			"extends":"http://b3mn.org/stencilset/bpmn1.1#"
+		}
+	],
+	"perspectives": []
+}

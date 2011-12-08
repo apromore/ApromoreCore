@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Signavio Core Components - Editor" default="com.signavio.editor.war">
+
+	<!-- Editor properties *************************************************** -->
+	<property name="root" value="." />
+	<property name="src" value="${root}/src" />
+	<property name="data" value="${root}/data" />
+	<property name="buildroot" value="build" />
+	<property name="build" value="${buildroot}/editor" />
+	<property name="jsdoc-toolkit" value="jsdoc-toolkit" />
+	<property name="target" value="target" />
+
+	<!-- parses plugin xml-->
+	<xmlproperty file="${src}/scripts/Plugins/plugins.xml" collapseAttributes="true" />
+
+	<!-- Targets for oryx javascript documentation ****************************************************** -->
+	<path id="jsdoc.classpath">
+		<fileset file="${jsdoc-toolkit}/js.jar" />
+		<fileset file="${jsdoc-toolkit}/jsrun.jar" />
+		<fileset file="${jsdoc-toolkit}/jsdoctoolkit-ant-task-1.0.jar" />
+	</path>
+
+	<taskdef name="jsdoctoolkit" classname="uk.co.darrenhurley.ant.tasks.JsDocToolkit" classpathref="jsdoc.classpath" />
+
+	<target name="com.signavio.editor.jsdoc">
+		<mkdir dir="doc/editor/client" />
+		<jsdoctoolkit jsdochome="jsdoc-toolkit/" template="jsdoc" outputdir="doc/editor" inputdir="src/scripts" depth="2">
+		</jsdoctoolkit>
+	</target>
+
+	<!-- BuildApps *********************************************************************-->
+	<target name="com.signavio.editor.buildApps.compile">
+		<mkdir dir="buildApps/bin" />
+		<javac srcdir="buildApps/src" destdir="buildApps/bin" debug="on">
+			<classpath>
+				<fileset dir="buildApps/lib">
+					<include name="*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+
+	<!-- Main targets ****************************************************** -->
+	<target name="com.signavio.editor.clean">
+		<delete dir="${target}" />
+		<delete dir="${buildroot}" />
+		<delete dir="buildApps/bin" />
+	</target>
+
+	<target name="com.signavio.editor.copy.staticressources">
+
+		<copy todir='${build}' file="${src}/scripts/Plugins/plugins.xml" />
+
+		<copy todir='${build}/css'>
+			<fileset dir="${src}/css" />
+		</copy>
+
+		<copy todir='${build}/images'>
+			<fileset dir="${src}/images" />
+		</copy>
+
+		<copy todir='${build}/i18n'>
+			<fileset dir="${data}/i18n" />
+		</copy>
+	</target>
+
+	<target name="com.signavio.editor.js.concat">
+
+		<concat destfile='${build}/oryx.debug.js'>
+			<filelist id="coresourcefiles" dir="${src}">
+				<file name='scripts/utils.js' />
+				<file name='scripts/kickstart.js' />
+				<file name='scripts/erdfparser.js' />
+				<file name='scripts/datamanager.js' />
+				<file name='scripts/clazz.js' />
+				<file name='scripts/server.js' />
+				<file name='scripts/config.js' />
+				<file name='scripts/editor.js' />
+				<file name='scripts/Core/SVG/editpathhandler.js' />
+				<file name='scripts/Core/SVG/minmaxpathhandler.js' />
+				<file name='scripts/Core/SVG/pointspathhandler.js' />
+				<file name='scripts/Core/SVG/svgmarker.js' />
+				<file name='scripts/Core/SVG/svgshape.js' />
+				<file name='scripts/Core/SVG/label.js' />
+				<file name='scripts/Core/Math/math.js' />
+				<file name='scripts/Core/StencilSet/stencil.js' />
+				<file name='scripts/Core/StencilSet/property.js' />
+				<file name='scripts/Core/StencilSet/propertyitem.js' />
+				<file name='scripts/Core/StencilSet/complexpropertyitem.js' />
+				<file name='scripts/Core/StencilSet/rules.js' />
+				<file name='scripts/Core/StencilSet/stencilset.js' />
+				<file name='scripts/Core/StencilSet/stencilsets.js' />
+				<file name='scripts/Core/command.js' />
+				<file name='scripts/Core/bounds.js' />
+				<file name='scripts/Core/uiobject.js' />
+				<file name='scripts/Core/abstractshape.js' />
+				<file name='scripts/Core/canvas.js' />
+				<file name='scripts/Core/main.js' />
+				<file name='scripts/Core/svgDrag.js' />
+				<file name='scripts/Core/shape.js' />
+				<file name='scripts/Core/Controls/control.js' />
+				<file name='scripts/Core/Controls/docker.js' />
+				<file name='scripts/Core/Controls/magnet.js' />
+				<file name='scripts/Core/node.js' />
+				<file name='scripts/Core/edge.js' />
+				<file name='scripts/Core/abstractPlugin.js' />
+				<file name='scripts/Core/abstractLayouter.js' />
+			</filelist>
+			<!-- load all sources from plugins defined in the plugins.xml-->
+			<filelist dir="${src}/scripts/Plugins/" files="${config.plugins.plugin.source}" />
+		</concat>
+	</target>
+
+	<target name='com.signavio.editor.js.compress' depends="com.signavio.editor.js.concat">
+
+		<tempfile property="compress.temp" suffix=".js" prefix="compressed" destDir="${build}" />
+
+		<java dir="${build}" jar="${root}/lib/yuicompressor-2.4.2.jar" fork="true" failonerror="true" output='${compress.temp}'>
+			<arg file='${build}/oryx.debug.js' />
+		</java>
+
+		<concat destfile='${build}/oryx.js'>
+			<fileset file="LICENSE" />
+			<fileset file="${compress.temp}" />
+		</concat>
+
+		<delete file='${compress.temp}' />
+
+	</target>
+
+	<target name="com.signavio.editor.build.stencilsets" depends='com.signavio.editor.buildApps.compile'>
+		<copy todir='${build}/stencilsets'>
+			<fileset dir="${root}/data/stencilsets" />
+		</copy>
+
+		<java dir="${build}" classpath="buildApps/bin" classname="com.signavio.buildapps.sscompress.SSCompressor" fork="true" failonerror="true">
+			<classpath>
+				<fileset dir="buildApps/lib" />
+			</classpath>
+			<arg file="${build}/stencilsets" />
+		</java>
+	</target>
+	
+	<target name="com.signavio.editor.build" depends="com.signavio.editor.clean, com.signavio.editor.copy.staticressources, com.signavio.editor.js.concat, com.signavio.editor.js.compress, com.signavio.editor.build.stencilsets">
+			
+	</target>
+
+	<target name='com.signavio.editor.web'>
+		<copy todir='${build}'>
+			<fileset dir="WebContent" />
+		</copy>
+	</target>
+
+	<target name="com.signavio.editor.war" depends="com.signavio.editor.build, com.signavio.editor.web">
+		<mkdir dir="${target}" />
+
+		<war destfile="${target}/editor.war" webxml="${build}/WEB-INF/web.xml">
+			<fileset dir="${build}" />
+		</war>
+	</target>
+	
+</project>
