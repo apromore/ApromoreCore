@@ -16,9 +16,10 @@ public interface ProcessDao {
 
     /**
      * Returns all the processes in the system. Also there rankings.
+     * @param conditions the conditions that might need to be added to the query.
      * @return the list of processes.
      */
-    List<Object[]> getAllProcesses();
+    List<Object[]> getAllProcesses(String conditions);
 
     /**
      * Returns the distinct list of domains.
