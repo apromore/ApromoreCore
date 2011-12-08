@@ -1,5 +1,6 @@
 package org.apromore.service.impl;
 
+import org.apromore.common.ConstantDB;
 import org.apromore.common.Constants;
 import org.apromore.dao.AnnotationDao;
 import org.apromore.dao.CanonicalDao;
@@ -22,6 +23,7 @@ import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.apromore.service.ProcessService;
 import org.apromore.service.model.Format;
+import org.apromore.service.search.SearchExpressionBuilder;
 import org.apromore.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,7 +35,9 @@ import org.springframework.transaction.annotation.Transactional;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.List;
+import java.util.Vector;
 
 /**
  * Implementation of the UserService Contract.
@@ -64,14 +68,22 @@ public class ProcessServiceImpl implements ProcessService {
     @Transactional(readOnly = true)
     public ProcessSummariesType readProcessSummaries(String searchExpression) {
         ProcessSummariesType processSummaries = new ProcessSummariesType();
+        
+        try {
+            // Firstly, do we need to use the searchExpression
+            SearchExpressionBuilder seb = new SearchExpressionBuilder();
+            String conditions = seb.buildSearchConditions(searchExpression);
+            LOGGER.debug("Search Expression Builder output: " + conditions);
 
-        // Firstly, do we need to use the searchExpression
-
-        // Now... Build the Object tree from this list of processes.
-        buildProcessSummaryList(processSummaries);
+            // Now... Build the Object tree from this list of processes.
+            buildProcessSummaryList(conditions, processSummaries);
+        } catch (UnsupportedEncodingException usee) {
+            LOGGER.error("Failed to get Process Sumamries: " + usee.toString());
+        }
 
         return processSummaries;
     }
+
 
     /**
      * @see org.apromore.service.ProcessService#exportFormat(long, String, String)
@@ -95,7 +107,6 @@ public class ProcessServiceImpl implements ProcessService {
         } catch (Exception e) {
             throw new ExportFormatException(e.getMessage(), e.getCause());
         }
-        LOGGER.info(StreamUtil.convertStreamToString(dataSource));
         return dataSource;
     }
 
@@ -112,10 +123,9 @@ public class ProcessServiceImpl implements ProcessService {
         Format result = new Format();
         try {
 
-            String annotation = "";
             String canonical = canDao.getCanonical(processId, version).getContent();
             if (withAnn) {
-                annotation = annDao.getAnnotation(processId, version, annName).getContent();
+                String annotation = annDao.getAnnotation(processId, version, annName).getContent();
                 result.setAnf(new ByteArrayDataSource(annotation, "text/xml"));
             }
             result.setCpf(new ByteArrayDataSource(canonical, "text/xml"));
@@ -134,10 +144,10 @@ public class ProcessServiceImpl implements ProcessService {
     /*
      * Builds the list of process Summaries and kicks off the versions and annotations.
      */
-    private void buildProcessSummaryList(ProcessSummariesType processSummaries) {
+    private void buildProcessSummaryList(String conditions, ProcessSummariesType processSummaries) {
         Process process;
         ProcessSummaryType processSummary;
-        List<Object[]> processes = prsDao.getAllProcesses();
+        List<Object[]> processes = prsDao.getAllProcesses(conditions);
 
         for (Object[] proc : processes) {
             process = (Process) proc[0];
@@ -182,6 +192,8 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * Builds the list of Native Summaries for a version summary.
+     * @param id the id of the model
+     * @param versionSummary the version summary
      */
     private void buildNativeSummaryList(long id, VersionSummaryType versionSummary) {
         AnnotationsType annotation;
@@ -201,6 +213,8 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * Populate the Annotation names.
+     * @param nat The native type
+     * @param annotation the annotations for this Model
      */
     private void buildAnnotationNames(Native nat, AnnotationsType annotation) {
         List<Annotation> anns = annDao.findByUri(nat.getUri());
@@ -208,6 +222,7 @@ public class ProcessServiceImpl implements ProcessService {
             annotation.getAnnotationName().add(ann.getName());
         }
     }
+
 
 
     /**

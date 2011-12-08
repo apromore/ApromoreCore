@@ -76,7 +76,7 @@ public class ProcessServiceImplUnitTest {
         String searchExpression = "";
         List<Object[]> processes = new ArrayList<Object[]>();
 
-        expect(proDao.getAllProcesses()).andReturn(processes);
+        expect(proDao.getAllProcesses(searchExpression)).andReturn(processes);
         replay(proDao);
 
         ProcessSummariesType processSummary = service.readProcessSummaries(searchExpression);
@@ -101,7 +101,7 @@ public class ProcessServiceImplUnitTest {
         // For the Canonicals
         List<Canonical> canonicals = new ArrayList<Canonical>();
 
-        expect(proDao.getAllProcesses()).andReturn(processes);
+        expect(proDao.getAllProcesses(searchExpression)).andReturn(processes);
         expect(canDao.findByProcessId(Long.valueOf(process.getProcessId()).intValue())).andReturn(canonicals);
 
         replay(proDao, canDao);
@@ -133,7 +133,7 @@ public class ProcessServiceImplUnitTest {
         // For the Natives
         List<Native> natives = new ArrayList<Native>();
 
-        expect(proDao.getAllProcesses()).andReturn(processes);
+        expect(proDao.getAllProcesses(searchExpression)).andReturn(processes);
         expect(canDao.findByProcessId(Long.valueOf(process.getProcessId()).intValue())).andReturn(canonicals);
         expect(natDao.findNativeByCanonical(Long.valueOf(process.getProcessId()).intValue(), "version")).andReturn(natives);
 
@@ -171,7 +171,7 @@ public class ProcessServiceImplUnitTest {
         // For the Annotations
         List<Annotation> annotations = new ArrayList<Annotation>();
 
-        expect(proDao.getAllProcesses()).andReturn(processes);
+        expect(proDao.getAllProcesses(searchExpression)).andReturn(processes);
         expect(canDao.findByProcessId(Long.valueOf(process.getProcessId()).intValue())).andReturn(canonicals);
         expect(natDao.findNativeByCanonical(Long.valueOf(process.getProcessId()).intValue(), "version")).andReturn(natives);
         expect(annDao.findByUri(1234)).andReturn(annotations);
@@ -212,7 +212,7 @@ public class ProcessServiceImplUnitTest {
         List<Annotation> annotations = new ArrayList<Annotation>();
         annotations.add(createAnnotation());
 
-        expect(proDao.getAllProcesses()).andReturn(processes);
+        expect(proDao.getAllProcesses(searchExpression)).andReturn(processes);
         expect(canDao.findByProcessId(Long.valueOf(process.getProcessId()).intValue())).andReturn(canonicals);
         expect(natDao.findNativeByCanonical(Long.valueOf(process.getProcessId()).intValue(), "version")).andReturn(natives);
         expect(annDao.findByUri(1234)).andReturn(annotations);

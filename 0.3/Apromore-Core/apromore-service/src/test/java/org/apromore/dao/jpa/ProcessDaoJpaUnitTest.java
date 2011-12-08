@@ -54,12 +54,12 @@ public class ProcessDaoJpaUnitTest {
         prss.add(createProcess());
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(Process.GET_ALL_PROCESSES)).andReturn(query);
+        expect(manager.createQuery(ProcessDaoJpa.GET_ALL_PROCESSES + ProcessDaoJpa.GET_ALL_PRO_SORT)).andReturn(query);
         expect(query.getResultList()).andReturn(prss);
 
         replay(manager, query);
 
-        List<Object[]> processes = prsJpa.getAllProcesses();
+        List<Object[]> processes = prsJpa.getAllProcesses(null);
 
         verify(manager, query);
 
@@ -72,12 +72,12 @@ public class ProcessDaoJpaUnitTest {
         List<Object[]> procs = new ArrayList<Object[]>(0);
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(Process.GET_ALL_PROCESSES)).andReturn(query);
+        expect(manager.createQuery(ProcessDaoJpa.GET_ALL_PROCESSES + ProcessDaoJpa.GET_ALL_PRO_SORT)).andReturn(query);
         expect(query.getResultList()).andReturn(procs);
 
         replay(manager, query);
 
-        List<Object[]> processes = prsJpa.getAllProcesses();
+        List<Object[]> processes = prsJpa.getAllProcesses(null);
 
         verify(manager, query);
 

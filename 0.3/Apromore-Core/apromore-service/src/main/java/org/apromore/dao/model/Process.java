@@ -1,22 +1,10 @@
 package org.apromore.dao.model;
 
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -34,8 +22,8 @@ import java.util.Set;
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NamedQueries( {
-    @NamedQuery(name = Process.GET_ALL_PROCESSES, query = "SELECT p, coalesce(r.id.ranking, 0) FROM Process p, ProcessRanking r WHERE p.processId = r.id.processId ORDER by p.processId"),
-    @NamedQuery(name = Process.GET_All_DOMAINS, query = "SELECT DISTINCT new list(p.domain) FROM Process p ORDER by p.domain")
+    @NamedQuery(name = Process.GET_ALL_PROCESSES, query = "SELECT p, coalesce(r.id.ranking, 0) FROM Process p, ProcessRanking r WHERE p.processId = r.id.processId "),
+    @NamedQuery(name = Process.GET_All_DOMAINS, query = "SELECT DISTINCT p.domain FROM Process p ORDER by p.domain")
 })
 @Configurable("process")
 public class Process implements Serializable {

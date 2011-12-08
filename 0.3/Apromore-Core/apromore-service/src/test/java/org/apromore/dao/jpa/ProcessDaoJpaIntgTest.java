@@ -34,7 +34,7 @@ public class ProcessDaoJpaIntgTest {
     @Test
     @Rollback(true)
     public void getProcessSummariesNoSearchExpression() {
-        List<Object[]> processes = dao.getAllProcesses();
+        List<Object[]> processes = dao.getAllProcesses(null);
         for (Object[] process : processes) {
            LOGGER.debug(process[0].toString() + " - " + process[1].toString());
         }

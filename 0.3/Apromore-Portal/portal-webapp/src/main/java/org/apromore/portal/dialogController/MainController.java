@@ -394,7 +394,7 @@ public class MainController extends BaseController {
      */
     public List<String> getDomains() throws ExceptionDomains {
         DomainsType domainsType;
-        domainsType = managerService.readDomains();
+        domainsType = getService().readDomains();
         return domainsType.getDomain();
     }
 

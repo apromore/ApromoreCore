@@ -2,6 +2,8 @@ package org.apromore.dao.jpa;
 
 import org.apromore.dao.ProcessDao;
 import org.apromore.dao.model.Process;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.orm.jpa.JpaCallback;
 import org.springframework.orm.jpa.JpaTemplate;
 import org.springframework.stereotype.Repository;
@@ -22,19 +24,34 @@ import java.util.List;
 @Transactional(propagation = Propagation.REQUIRED)
 public class ProcessDaoJpa extends JpaTemplate implements ProcessDao {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDaoJpa.class.getName());
 
+    /* This is for complex queries, no point putting in models for these. */
+    public static final String GET_ALL_PROCESSES = "SELECT p, coalesce(r.id.ranking, 0) FROM Process p, ProcessRanking r WHERE p.processId = r.id.processId ";
+    public static final String GET_ALL_PRO_SORT = " ORDER by p.processId";
+    
+    
     /**
      * Returns all the processes.
-     * @see org.apromore.dao.ProcessDao#getAllProcesses()
+     * @see org.apromore.dao.ProcessDao#getAllProcesses(String)
      * {@inheritDoc}
      */
     @Override
-    public List<Object[]> getAllProcesses() {
+    public List<Object[]> getAllProcesses(final String conditions) {
         return execute(new JpaCallback<List<Object[]>>() {
 
             @SuppressWarnings("unchecked")
             public List<Object[]> doInJpa(EntityManager em) {
-                Query query = em.createNamedQuery(Process.GET_ALL_PROCESSES);
+                StringBuffer strQry = new StringBuffer();
+                strQry.append(GET_ALL_PROCESSES);
+                if (conditions != null && conditions.isEmpty()) {
+                    strQry.append(conditions);
+                }
+                strQry.append(GET_ALL_PRO_SORT);
+
+                LOGGER.debug("Query: " + strQry.toString());
+
+                Query query = em.createQuery(strQry.toString());
                 return query.getResultList();
             }
         });
