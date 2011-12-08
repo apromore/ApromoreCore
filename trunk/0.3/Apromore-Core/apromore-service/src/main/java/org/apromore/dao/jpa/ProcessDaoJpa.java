@@ -49,8 +49,6 @@ public class ProcessDaoJpa extends JpaTemplate implements ProcessDao {
                 }
                 strQry.append(GET_ALL_PRO_SORT);
 
-                LOGGER.debug("Query: " + strQry.toString());
-
                 Query query = em.createQuery(strQry.toString());
                 return query.getResultList();
             }
