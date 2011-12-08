@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Signavio SVG API" default="com.signavio.api.deploy">
+    <!-- PROPERTIES -->
+    <property file="build.properties"/>
+    <property file="VERSION"/>
+    
+    <property name="target" value="target"/>
+	<property name="api" value="api"/>
+  
+    <!-- TARGETS (alphabetized) -->
+    
+ 
+    <target name="com.signavio.api.clean">
+		<delete dir="${target}"/>
+	</target>
+    
+    <target name="com.signavio.api.deploy" depends="com.signavio.api.war">
+        <copy file="${target}/${file-war}.war" todir="${dir-tomcat-webapps}"/>
+    </target>
+    
+    <target name="com.signavio.api.undeploy">
+        <delete file="${dir-tomcat-webapps}/${file-war}.war"/>
+    </target>
+    
+    
+    <target name="com.signavio.api.war">
+        <mkdir dir="${target}"/>
+		<war destfile="${target}/api.war"
+		webxml="web.xml"
+		 update="true">
+            <fileset dir="${api}" />
+        </war>
+    </target>
+</project>

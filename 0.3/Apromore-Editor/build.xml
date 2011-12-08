@@ -1,0 +1,196 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Signavio Core Components - Main Build Script">
+	<!-- PROPERTIES -->
+	<property file="build.properties" />
+
+	<property name="build" value="build" />
+	<property name="libs" value="libs" />
+	<property name="editor" value="editor" />
+	<property name="platform" value="platform" />
+	<property name="explorer" value="explorer" />
+	<property name="config" value="configuration" />
+
+	<!-- INTERNAL TARGETS -->
+	<target name="clean">
+		<delete dir="${build}" />
+		<delete dir="${target}" />
+	</target>
+
+	<target name="configure-applications">
+		<ant antfile="build.xml" target="com.signavio.configuration.copy" dir="${config}">
+		</ant>
+	</target>
+
+	<target name="prepare-explorer-for-all-in-one-war" depends="configure-applications">
+		<loadfile property="version.js" srcFile="${config}/build/version.js" />
+
+		<copy file="${explorer}/explorer.js" todir="${build}/explorer" />
+		<loadfile property="explorer.js" srcFile="${explorer}/explorer.js" />
+		<echo file="${build}/explorer/explorer.js">${explorer.js}
+			${version.js}
+			Signavio.Config.EXPLORER_PATH		= '/${war}/explorer';
+			Signavio.Config.EDITOR_PATH			= '/${war}/editor';
+			Signavio.Config.BACKEND_PATH		= '/${war}/p';
+			Signavio.Config.LIBS_PATH			= '/${war}/libs';
+
+			Signavio.Config.DIAGRAMS_IMAGE_PATH = Signavio.Config.EXPLORER_PATH + "/src/img"
+			Signavio.Config.STENCILSET_EXTENSION_PATH = Signavio.Config.EDITOR_PATH + "/stencilsets/extensions/";
+			Signavio.Config.PATH 				= Signavio.Config.EXPLORER_PATH + '/src/javascript';
+			Signavio.Config.PLUGIN_PATH 		= Signavio.Config.EXPLORER_PATH + '/src/javascript/plugins';
+			Signavio.Config.EDITOR_HANDLER_URI 	= Signavio.Config.BACKEND_PATH + "/editor";
+			Signavio.Config.STENCILSET_URI		= Signavio.Config.BACKEND_PATH + "/editor_stencilset";
+			Signavio.Config.PLUGIN_CONFIG 		= Signavio.Config.BACKEND_PATH + "/explorer_plugins";
+			Signavio.Config.USE_CACHE			= false;
+			Signavio.Config.REMOVE_ON_DELETE	= true;
+			Signavio.Config.HIDE_NOTIFICATION	= true;
+		</echo>
+	</target>
+
+
+	<!-- TARGETS FOR ALL-IN-ONE WAR FILE -->
+	<target name="undeploy-all-in-one-war-from-tomcat">
+		<delete file="${dir-tomcat-webapps}/${war}.war" />
+	</target>
+
+	<target name="undeploy-all-in-one-war-from-jboss">
+		<delete dir="${dir-jboss-webapps}/${war}.war" />
+	</target>
+
+	<target name="build-all-in-one-war" depends="clean, configure-applications, prepare-explorer-for-all-in-one-war">
+
+		<mkdir dir="${target}" />
+
+		<!-- Prepare Editor -->
+		<ant antfile="build.xml" target="com.signavio.editor.build" dir="${editor}" inheritall="false">
+		</ant>
+
+		<!-- Prepare Platform -->
+		<ant antfile="build.xml" target="com.signavio.platform.compile" dir="${platform}" inheritall="false" />
+
+		<!-- Build War -->
+		<war destfile="${target}/${war}.war" webxml="${platform}/WebContent/WEB-INF/web.xml" update="true">
+
+			<classes dir="${platform}/target/classes" />
+
+			<webinf dir="${platform}/WebContent/WEB-INF" />
+
+			<metainf dir="${platform}/WebContent/META-INF" />
+
+			<fileset dir="${platform}/WebContent">
+				<exclude name="WEB-INF/" />
+				<exclude name="META-INF/" />
+			</fileset>
+
+			<fileset dir="libs">
+				<include name="libs/**/*" />
+				<exclude name="**/build.properties" />
+				<exclude name="**/*.xml" />
+				<exclude name="**/*.project" />
+			</fileset>
+
+			<fileset dir=".">
+				<include name="explorer/**/*" />
+				<exclude name="**/build.properties" />
+				<exclude name="**/*.xml" />
+				<exclude name="**/*.project" />
+			</fileset>
+
+			<fileset dir="api">
+				<include name="api/**/*" />
+				<exclude name="**/build.properties" />
+				<exclude name="**/*.xml" />
+				<exclude name="**/*.project" />
+			</fileset>
+				
+			<fileset dir="${build}">
+			</fileset>
+
+			<fileset dir="${editor}/build">
+
+			</fileset>
+
+		</war>
+
+	</target>
+
+	<target name="build-and-deploy-all-in-one-war-to-tomcat" depends="undeploy-all-in-one-war-from-tomcat, build-all-in-one-war">
+		<copy file="${target}/${war}.war" todir="${dir-tomcat-webapps}" />
+	</target>
+
+	<target name="build-and-deploy-all-in-one-war-to-jboss" depends="undeploy-all-in-one-war-from-jboss, build-all-in-one-war">
+		<unzip src="${target}/${war}.war" dest="${dir-jboss-webapps}/${war}.war" />
+	</target>
+
+	<!-- TARGETS FOR SEPERATE WAR FILES FOR EACH APPLICATION -->
+	<target name="build-editor-war" depends="configure-applications">
+		<mkdir dir="${target}" />
+		<ant antfile="build.xml" target="com.signavio.editor.war" dir="${editor}" inheritall="false">
+			<property name="target" value="../${target}">
+			</property>
+		</ant>
+	</target>
+
+	<target name="build-explorer-war" depends="prepare-explorer-for-all-in-one-war">
+		<mkdir dir="${target}" />
+		<war destfile="${target}/explorer.war" webxml="${explorer}/web.xml">
+
+			<fileset dir="${explorer}">
+				<include name="**/*" />
+				<exclude name="**/build.properties" />
+				<exclude name="**/*.xml" />
+				<exclude name="**/*.project" />
+			</fileset>
+
+			<fileset dir="${build}">
+			</fileset>
+
+		</war>
+	</target>
+
+	<target name="build-libs-war" depends="configure-applications">
+		<mkdir dir="${target}" />
+		<ant antfile="build.xml" target="com.signavio.libs.war" dir="${libs}" inheritall="false">
+			<property name="target" value="../${target}">
+			</property>
+		</ant>
+	</target>
+
+	<target name="build-api-war" depends="configure-applications">
+		<mkdir dir="${target}" />
+		<ant antfile="build.xml" target="com.signavio.api.war" dir="${api}" inheritall="false">
+			<property name="target" value="../${target}">
+			</property>
+		</ant>
+	</target>
+	
+	<target name="build-platform-war" depends="configure-applications">
+		<mkdir dir="${target}" />
+		<ant antfile="build.xml" target="com.signavio.platform.war" dir="${platform}" inheritall="false">
+			<property name="file-war" value="ROOT" />
+		</ant>
+		<copy file="${platform}/target/ROOT.war" todir="${target}" />
+	</target>
+
+	<target name="build-and-deploy-editor-to-tomcat" depends="build-editor-war">
+		<copy file="${target}/editor.war" todir="${dir-tomcat-webapps}" />
+	</target>
+
+	<target name="build-and-deploy-explorer-to-tomcat" depends="build-explorer-war">
+		<copy file="${target}/explorer.war" todir="${dir-tomcat-webapps}" />
+	</target>
+
+	<target name="build-and-deploy-libs-to-tomcat" depends="build-libs-war">
+		<copy file="${target}/libs.war" todir="${dir-tomcat-webapps}" />
+	</target>
+
+	<target name="build-and-deploy-platform-to-tomcat" depends="build-platform-war">
+		<copy file="${target}/ROOT.war" todir="${dir-tomcat-webapps}" />
+	</target>
+
+	<target name="build-and-deploy-api-to-tomcat" depends="build-api-war">
+		<copy file="${target}/api.war" todir="${dir-tomcat-webapps}" />
+	</target>
+		
+	<target name="build-and-deploy-all-war-files-to-tomcat" depends="build-and-deploy-editor-to-tomcat, build-and-deploy-explorer-to-tomcat, build-and-deploy-libs-to-tomcat, build-and-deploy-platform-to-tomcat, build-and-deploy-api-to-tomcat">
+	</target>
+</project>

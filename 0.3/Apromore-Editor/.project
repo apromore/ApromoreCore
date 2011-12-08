@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<projectDescription>
+	<name>Signavio Core Components</name>
+	<comment>The Signavio Core Components combine a powerful web-based modeling tool with a lightweight file-based storage engine for diagrams.</comment>
+	<projects>
+	</projects>
+	<buildSpec>
+	</buildSpec>
+	<natures>
+	</natures>
+</projectDescription>

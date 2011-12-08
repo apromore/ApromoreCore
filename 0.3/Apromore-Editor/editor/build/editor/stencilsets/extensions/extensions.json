@@ -1,0 +1,73 @@
+{
+	"extensions": [
+		{
+			"title":"jBPM Stencils",
+			"namespace":"http://oryx-editor.org/stencilsets/extensions/jbpm#",
+			"description":"A subset of BPMN 1.2 for execution with jBPM",
+			"definition":"jbpm/jbpm.json",
+			"extends":"http://b3mn.org/stencilset/bpmn1.1#"
+		},
+		{
+			"title" : "Core Elements",
+			"title_de":"Kernelemente",
+			"namespace" : "http://oryx-editor.org/stencilsets/extensions/bpmn2.0basicsubset#",
+			"description":"A basic subset of BPMN 2.0 containing only task, sequence flow, start event, end event, parallel gateway and data-based XOR.",
+			"definition":"bpmn2.0basicsubset/bpmn2.0basicsubset.json",
+			"extends":"http://b3mn.org/stencilset/bpmn2.0#"
+		},	
+		{
+			"title":"Choreographies",
+			"title_de":"Choreographie",
+			"namespace":"http://oryx-editor.org/stencilsets/extensions/bpmn2.0choreography#",
+			"description":"Adds support for Choreography-Diagrams to BPMN 2.0.",
+			"definition":"bpmn2.0choreography/bpmn2.0choreography.json",
+			"extends":"http://b3mn.org/stencilset/bpmn2.0#"
+		},
+		{
+			"title":"Choreographies Core Elements",
+			"title_de":"Choreographie Kernelemente",
+			"namespace":"http://oryx-editor.org/stencilsets/extensions/bpmn2.0basicsubset/choreography#",
+			"description":"Adds support for a basic subset of Choreography-Diagrams to BPMN 2.0.",
+			"definition":"bpmn2.0basicsubset/bpmn2.0basicsubset.choreography.json",
+			"extends":"http://b3mn.org/stencilset/bpmn2.0choreography#"
+		}
+	],
+	"perspectives": [
+		{
+			"title":"BPMN (Core Elements)",
+			"title_de":"BPMN (Kernelemente)",
+			"namespace" : "http://oryx-editor.org/stencilsets/perspectives/beginnerbpmn2#",
+			"description":"BPMN for beginners. Features a basic subset of the standard for a quick start.",
+			"description_de":"BPMN für Einsteiger mit einer sinnvoll eingeschänkten Menge an Modellierungs-Elementen für den einfacheren Einstieg.",
+			"stencilset" : "http://b3mn.org/stencilset/bpmn2.0#",
+			"extensions" : ["http://oryx-editor.org/stencilsets/extensions/bpmn2.0basicsubset#"]
+		},
+		{
+			"title":"BPMN (Complete)",
+			"title_de":"BPMN (Vollständig)",
+			"namespace":"http://oryx-editor.org/stencilsets/perspectives/academicbpmn2#",
+			"description":"BPMN complete. Features the whole standard and all elements from the specification.",
+			"description_de":"BPMN in dem kompletten standardisierten Umfang (sämtliche Modellierungskonstrukte).",
+			"stencilset":"http://b3mn.org/stencilset/bpmn2.0#",
+			"extensions" : []
+		},
+		{
+			"title":"Choreography (Core Elements)",
+			"title_de":"Choreographiediagramm (Kernelemente)",
+			"namespace" : "http://oryx-editor.org/stencilsets/perspectives/beginnerbpmn2chor#",
+			"description":"Choreography diagrams for beginners. Features a basic subset of the standard for a quick start.",
+			"description_de":"Choreographiediagramme für Einsteiger mit einer sinnvoll eingeschänkten Menge an Modellierungs-Elementen für den einfacheren Einstieg.",
+			"stencilset" : "http://b3mn.org/stencilset/bpmn2.0choreography#",
+			"extentions" : ["http://oryx-editor.org/stencilsets/extensions/bpmn2.0basicsubset/choreography#"]
+		},
+		{
+			"title":"Choreography (Complete)",
+			"title_de":"Choreographiediagramm (Vollständig)",
+			"namespace":"http://oryx-editor.org/stencilsets/perspectives/academicbpmn2chor#",
+			"description":"Choreography diagrams complete. Features the whole standard and all elements from the specification.",
+			"description_de":"Choreographiediagramme in dem kompletten standardisierten Umfang (sämtliche Modellierungskonstrukte).",
+			"stencilset":"http://b3mn.org/stencilset/bpmn2.0choreography#",
+			"extensions" : []
+		}
+	]
+}

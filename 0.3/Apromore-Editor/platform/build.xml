@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<project name="Signavio Core Components - Platform" default="com.signavio.platform.war">
+    <!-- PROPERTIES -->
+    <property name="dir-target" value="target"/>
+    <property name="dir-classes" value="${dir-target}/classes"/>
+    <property name="dir-src" value="src"/>
+    <property name="dir-webcontent" value="WebContent"/>
+    <property name="dir-webinf" value="${dir-webcontent}/WEB-INF"/>
+    <property name="dir-metainf" value="${dir-webcontent}/META-INF"/>
+    <property name="dir-lib" value="${dir-webinf}/lib"/>
+    <property name="dir-lib-buildtime" value="lib"/>
+	<property name="dir-conf" value="conf"/>
+	<property name="dir-conf-classpath" value="${dir-conf}/classpath"/>
+      
+    <!-- TARGETS (alphabetized) -->
+    
+	<target name="com.signavio.platform.clean">
+	        <delete dir="${dir-target}"/>
+	</target>
+    
+    <target name="com.signavio.platform.compile" depends="com.signavio.platform.clean">
+        <mkdir dir="${dir-classes}"/>
+		<javac srcdir="${dir-src}" destdir="${dir-classes}" debug="on" target="1.5">
+            <classpath id="libs">
+                <fileset dir="${dir-lib}">
+                    <include name="**/*.jar"/>
+                </fileset>
+                <fileset dir="${dir-lib-buildtime}">
+                    <include name="**/*.jar"/>
+                </fileset>
+            </classpath>
+        </javac>
+		
+		<copy todir="${dir-classes}">
+			<fileset dir="${dir-conf-classpath}" includes="**/*"/>
+		</copy>
+    </target>
+	
+    <target name="com.signavio.platform.war" depends="com.signavio.platform.compile">
+        <war destfile="${dir-target}/${file-war}.war"
+         webxml="${dir-webinf}/web.xml"
+         update="true">
+            
+            <fileset dir="${dir-webcontent}">
+                <exclude name="WEB-INF/"/>
+                <exclude name="META-INF/"/>
+            </fileset>
+            
+			<webinf dir="${dir-webinf}" />
+            
+            <classes dir="${dir-classes}"/>
+            
+            <metainf dir="${dir-metainf}"/>
+            
+        </war>
+    </target>
+</project>
