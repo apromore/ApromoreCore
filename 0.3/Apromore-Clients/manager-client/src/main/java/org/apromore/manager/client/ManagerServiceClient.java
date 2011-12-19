@@ -83,6 +83,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public UserType readUser(String username) {
         LOGGER.debug("Preparing ReadUserRequest.....");
 
@@ -100,6 +101,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public UsernamesType readAllUsers() {
         LOGGER.debug("Preparing ReadAllUsersRequest.....");
 
@@ -118,6 +120,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public DomainsType readDomains() {
         LOGGER.debug("Preparing ReadDomainsRequest.....");
 
@@ -135,6 +138,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public NativeTypesType readNativeTypes() {
         LOGGER.debug("Preparing ReadNativeTypesRequest.....");
 
@@ -152,6 +156,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public EditSessionType readEditSession(int code) {
         LOGGER.debug("Preparing ReadEditSessionRequest.....");
 
@@ -169,6 +174,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public ProcessSummariesType readProcessSummaries(String searchCriteria) {
         LOGGER.debug("Preparing ReadProcessSummariesRequest.....");
 
@@ -189,6 +195,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public ProcessSummariesType searchForSimilarProcesses(int processId, String versionName, String method, Boolean latestVersions,
             double modelThreshold, double labelThreshold, double contextThreshold, double skipnWeight, double subnWeight,
             double skipeWeight) {
@@ -213,6 +220,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public ProcessSummaryType mergeProcesses(Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions,
             String mergedProcessName, String mergedVersionName, String mergedDomain, String mergedUsername, String method,
             boolean removeEntanglements, double mergeThreshold, double labelThreshold, double contextThreshold, double skipnWeight,
@@ -240,6 +248,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public DataHandler exportFormat(int processId, String processName, String versionName, String nativeType, String annotationName,
             Boolean withAnnotations, String owner) throws IOException, Exception {
         LOGGER.debug("Preparing ExportFormatRequest.....");
@@ -269,6 +278,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public ProcessSummaryType importProcess(String username, String nativeType, String processName, String versionName,
             InputStream xml_process, String domain, String documentation, String created, String lastUpdate,
             Boolean addFakeEvents) throws IOException, Exception {
@@ -303,6 +313,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void updateProcess(int sessionCode, String username, String nativeType, int processId, String domain, String processName,
             String new_versionName, String preVersion, InputStream native_is) throws IOException, Exception {
         LOGGER.debug("Preparing UpdateProcessRequest.....");
@@ -337,6 +348,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void editProcessData(Integer processId, String processName, String domain, String username, String preVersion, String newVersion, String ranking) throws Exception {
         LOGGER.debug("Preparing EditProcessDataRequest.....");
 
@@ -365,6 +377,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void writeUser(UserType user) throws Exception {
         LOGGER.debug("Preparing WriteUserRequest.....");
 
@@ -384,6 +397,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void writeAnnotation(Integer editSessionCode, String annName, boolean isNew, Integer processId, String version, String nat_type,
             InputStream native_is) throws IOException, Exception {
         LOGGER.debug("Preparing WriteAnnotationRequest.....");
@@ -411,6 +425,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public int writeEditSession(EditSessionType editSession) throws Exception {
         LOGGER.debug("Preparing WriteEditSessionRequest.....");
 
@@ -428,13 +443,12 @@ public class ManagerServiceClient implements ManagerService {
     }
 
 
-
-
     /**
      * @see ManagerService#deleteEditSession(int)
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void deleteEditSession(int code) throws Exception {
         LOGGER.debug("Preparing DeleteEditionSessionRequest.....");
 
@@ -454,6 +468,7 @@ public class ManagerServiceClient implements ManagerService {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public void deleteProcessVersions(Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws Exception {
         LOGGER.debug("Preparing DeleteProcessVersions.....");
 

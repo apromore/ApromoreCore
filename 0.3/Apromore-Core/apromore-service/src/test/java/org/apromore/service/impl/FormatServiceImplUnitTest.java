@@ -54,4 +54,18 @@ public class FormatServiceImplUnitTest {
         verify(natDAOJpa);
         assertThat(serviceNatTypes, equalTo(natTypes));
     }
+
+    @Test
+    public void getFormat() {
+        String type = "bobType";
+        NativeType natType = new NativeType();
+        natType.setNatType(type);
+
+        expect(natDAOJpa.findNativeType(type)).andReturn(natType);
+        replay(natDAOJpa);
+
+        NativeType serviceNatType = formatServiceImpl.findNativeType(type);
+        verify(natDAOJpa);
+        assertThat(serviceNatType, equalTo(natType));
+    }
 }

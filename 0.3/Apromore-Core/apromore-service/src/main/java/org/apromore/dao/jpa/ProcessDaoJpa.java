@@ -26,6 +26,8 @@ public class ProcessDaoJpa extends JpaTemplate implements ProcessDao {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDaoJpa.class.getName());
 
+    public static final String INITIAL_ANNOTATION = "Initial";
+
     /* This is for complex queries, no point putting in models for these. */
     public static final String GET_ALL_PROCESSES = "SELECT p, coalesce(r.id.ranking, 0) FROM Process p, ProcessRanking r WHERE p.processId = r.id.processId ";
     public static final String GET_ALL_PRO_SORT = " ORDER by p.processId";
@@ -44,7 +46,7 @@ public class ProcessDaoJpa extends JpaTemplate implements ProcessDao {
             public List<Object[]> doInJpa(EntityManager em) {
                 StringBuffer strQry = new StringBuffer();
                 strQry.append(GET_ALL_PROCESSES);
-                if (conditions != null && conditions.isEmpty()) {
+                if (conditions != null && !conditions.isEmpty()) {
                     strQry.append(conditions);
                 }
                 strQry.append(GET_ALL_PRO_SORT);

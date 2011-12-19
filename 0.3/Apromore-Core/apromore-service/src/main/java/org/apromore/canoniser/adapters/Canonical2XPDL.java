@@ -4,63 +4,10 @@ import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
-import org.apromore.exception.ExceptionAdapters;
-import org.apromore.cpf.ANDJoinType;
-import org.apromore.cpf.ANDSplitType;
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.EdgeType;
-import org.apromore.cpf.EventType;
-import org.apromore.cpf.InputOutputType;
+import org.apromore.cpf.*;
 import org.apromore.cpf.MessageType;
-import org.apromore.cpf.NetType;
-import org.apromore.cpf.NodeType;
-import org.apromore.cpf.ORJoinType;
-import org.apromore.cpf.ORSplitType;
-import org.apromore.cpf.ObjectRefType;
-import org.apromore.cpf.ObjectType;
-import org.apromore.cpf.ResourceTypeRefType;
-import org.apromore.cpf.ResourceTypeType;
-import org.apromore.cpf.RoutingType;
-import org.apromore.cpf.TaskType;
-import org.apromore.cpf.TimerType;
-import org.apromore.cpf.TypeAttribute;
-import org.apromore.cpf.XORJoinType;
-import org.apromore.cpf.XORSplitType;
-import org.wfmc._2008.xpdl2.Activities;
-import org.wfmc._2008.xpdl2.Activity;
-import org.wfmc._2008.xpdl2.Artifact;
-import org.wfmc._2008.xpdl2.Artifacts;
-import org.wfmc._2008.xpdl2.Association;
-import org.wfmc._2008.xpdl2.Associations;
-import org.wfmc._2008.xpdl2.Condition;
-import org.wfmc._2008.xpdl2.ConnectorGraphicsInfo;
-import org.wfmc._2008.xpdl2.ConnectorGraphicsInfos;
-import org.wfmc._2008.xpdl2.Coordinates;
-import org.wfmc._2008.xpdl2.DataObject;
-import org.wfmc._2008.xpdl2.EndEvent;
-import org.wfmc._2008.xpdl2.Event;
-import org.wfmc._2008.xpdl2.Implementation;
-import org.wfmc._2008.xpdl2.IntermediateEvent;
-import org.wfmc._2008.xpdl2.Join;
-import org.wfmc._2008.xpdl2.Lane;
-import org.wfmc._2008.xpdl2.Lanes;
-import org.wfmc._2008.xpdl2.NodeGraphicsInfo;
-import org.wfmc._2008.xpdl2.NodeGraphicsInfos;
-import org.wfmc._2008.xpdl2.PackageType;
-import org.wfmc._2008.xpdl2.Pool;
-import org.wfmc._2008.xpdl2.Pools;
-import org.wfmc._2008.xpdl2.ProcessType;
-import org.wfmc._2008.xpdl2.Route;
-import org.wfmc._2008.xpdl2.Split;
-import org.wfmc._2008.xpdl2.StartEvent;
-import org.wfmc._2008.xpdl2.Task;
-import org.wfmc._2008.xpdl2.Transition;
-import org.wfmc._2008.xpdl2.TransitionRef;
-import org.wfmc._2008.xpdl2.TransitionRefs;
-import org.wfmc._2008.xpdl2.TransitionRestriction;
-import org.wfmc._2008.xpdl2.TransitionRestrictions;
-import org.wfmc._2008.xpdl2.Transitions;
-import org.wfmc._2008.xpdl2.WorkflowProcesses;
+import org.apromore.exception.CanoniserException;
+import org.wfmc._2008.xpdl2.*;
 
 import javax.xml.namespace.QName;
 import java.math.BigInteger;
@@ -68,6 +15,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.lang.Object;
 
 public class Canonical2XPDL {
 	Map<NodeType, Activity> canon2xpdl = new HashMap<NodeType, Activity>();
@@ -133,7 +81,7 @@ public class Canonical2XPDL {
 	 * @throws org.apromore.exception.ExceptionAdapters
 	 */
 	@SuppressWarnings("unchecked")
-	public Canonical2XPDL(CanonicalProcessType cpf, AnnotationsType anf) throws ExceptionAdapters {
+	public Canonical2XPDL(CanonicalProcessType cpf, AnnotationsType anf) throws CanoniserException {
         this.EPML_flag = false;
 		for (TypeAttribute att: cpf.getAttribute()) {
 			if (att.getTypeRef().equals("IntialFormat")) {
@@ -404,7 +352,7 @@ public class Canonical2XPDL {
 		completeMapping(bpmnproc, net);
 	}
 	
-	private void translateNet(ProcessType bpmnproc, NetType net,  AnnotationsType annotations) throws ExceptionAdapters {
+	private void translateNet(ProcessType bpmnproc, NetType net,  AnnotationsType annotations) throws CanoniserException {
 		Activities acts = new Activities();
 		Transitions trans = new Transitions();
 		
@@ -488,8 +436,7 @@ public class Canonical2XPDL {
 		}
 	}
 
-	private void mapObjectAnnotations(ProcessType bpmnproc,
-			AnnotationsType annotations) throws ExceptionAdapters {
+	private void mapObjectAnnotations(ProcessType bpmnproc, AnnotationsType annotations) throws CanoniserException {
 		for (AnnotationType annotation: annotations.getAnnotation()) {
 			if (objectMap.containsKey(annotation.getCpfId())) {
 				// TODO: Handle 1-N mappings
@@ -519,12 +466,10 @@ public class Canonical2XPDL {
 							info.setCoordinates(coords);
 						} catch (IndexOutOfBoundsException e) {
 							String msg = "Failed to get coordinates of the Object, Index out.";
-							// log.error(msg, e);
-							throw new ExceptionAdapters(msg, e);
+							throw new CanoniserException(msg, e);
 						} catch (NullPointerException e) {
 							String msg = "Failed to get some attributes when getting coordinates of Object, Null.";
-							// log.error(msg, e);
-							throw new ExceptionAdapters(msg, e);
+							throw new CanoniserException(msg, e);
 						}
 					}
 					
@@ -535,8 +480,7 @@ public class Canonical2XPDL {
 		}
 	}
 	
-	private void mapResourceAnnotations(ProcessType bpmnproc,
-			AnnotationsType annotations) throws ExceptionAdapters {
+	private void mapResourceAnnotations(ProcessType bpmnproc, AnnotationsType annotations) throws CanoniserException {
 		for (AnnotationType annotation: annotations.getAnnotation()) {
 			if (resourceRefMap.containsKey(annotation.getCpfId())) {
 				// TODO: Handle 1-N mappings
@@ -565,12 +509,10 @@ public class Canonical2XPDL {
 							info.setCoordinates(coords);
 						} catch (IndexOutOfBoundsException e) {
 							String msg = "Failed to get coordinates of the Resource Type, Index out.";
-							// log.error(msg, e);
-							throw new ExceptionAdapters(msg, e);
+							throw new CanoniserException(msg, e);
 						} catch (NullPointerException e) {
 							String msg = "Failed to get some attributes when getting coordinates of the Resource Type, Null.";
-							// log.error(msg, e);
-							throw new ExceptionAdapters(msg, e);
+							throw new CanoniserException(msg, e);
 						}
 					}
 					
@@ -585,8 +527,7 @@ public class Canonical2XPDL {
 		}
 	}
 	
-	private void mapNodeAnnotations(ProcessType bpmnproc,
-			AnnotationsType annotations) throws ExceptionAdapters {
+	private void mapNodeAnnotations(ProcessType bpmnproc, AnnotationsType annotations) throws CanoniserException {
 		for (AnnotationType annotation: annotations.getAnnotation()) {
 			if (nodeRefMap.containsKey(annotation.getCpfId())) {
 				// TODO: Handle 1-N mappings
@@ -616,12 +557,10 @@ public class Canonical2XPDL {
 							info.setCoordinates(coords);
 						} catch (IndexOutOfBoundsException e) {
 							String msg = "Failed to get coordinates of the Node, Index out.";
-							// log.error(msg, e);
-							throw new ExceptionAdapters(msg, e);
+							throw new CanoniserException(msg, e);
 						} catch (NullPointerException e) {
 							String msg = "Failed to get some attributes when getting coordinates of the Node, Null.";
-							// log.error(msg, e);
-							throw new ExceptionAdapters(msg, e);
+							throw new CanoniserException(msg, e);
 						}
 					}
 					

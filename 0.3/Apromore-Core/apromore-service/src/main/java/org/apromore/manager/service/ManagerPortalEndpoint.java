@@ -2,68 +2,19 @@ package org.apromore.manager.service;
 
 import de.epml.TypeEPML;
 import org.apromore.common.Constants;
-import org.apromore.exception.ExportFormatException;
-import org.apromore.mapper.DomainMapper;
-import org.apromore.mapper.NativeTypeMapper;
-import org.apromore.mapper.UserMapper;
 import org.apromore.exception.ExceptionCanoniseVersion;
 import org.apromore.exception.ExceptionVersion;
+import org.apromore.exception.ExportFormatException;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
 import org.apromore.manager.da.ManagerDataAccessClient;
 import org.apromore.manager.toolbox.ManagerToolboxClient;
-import org.apromore.model.DeleteEditSessionInputMsgType;
-import org.apromore.model.DeleteEditSessionOutputMsgType;
-import org.apromore.model.DeleteProcessVersionsInputMsgType;
-import org.apromore.model.DeleteProcessVersionsOutputMsgType;
-import org.apromore.model.DomainsType;
-import org.apromore.model.EditProcessDataInputMsgType;
-import org.apromore.model.EditProcessDataOutputMsgType;
-import org.apromore.model.EditSessionType;
-import org.apromore.model.ExportFormatInputMsgType;
-import org.apromore.model.ExportFormatOutputMsgType;
-import org.apromore.model.ImportProcessInputMsgType;
-import org.apromore.model.ImportProcessOutputMsgType;
-import org.apromore.model.MergeProcessesInputMsgType;
-import org.apromore.model.MergeProcessesOutputMsgType;
-import org.apromore.model.NativeTypesType;
+import org.apromore.mapper.DomainMapper;
+import org.apromore.mapper.NativeTypeMapper;
+import org.apromore.mapper.UserMapper;
+import org.apromore.model.*;
 import org.apromore.model.ObjectFactory;
-import org.apromore.model.ParameterType;
-import org.apromore.model.ParametersType;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.ProcessVersionIdType;
-import org.apromore.model.ProcessVersionIdentifierType;
-import org.apromore.model.ProcessVersionIdsType;
-import org.apromore.model.ReadAllUsersInputMsgType;
-import org.apromore.model.ReadAllUsersOutputMsgType;
-import org.apromore.model.ReadDomainsInputMsgType;
-import org.apromore.model.ReadDomainsOutputMsgType;
-import org.apromore.model.ReadEditSessionInputMsgType;
-import org.apromore.model.ReadEditSessionOutputMsgType;
-import org.apromore.model.ReadNativeTypesInputMsgType;
-import org.apromore.model.ReadNativeTypesOutputMsgType;
-import org.apromore.model.ReadProcessSummariesInputMsgType;
-import org.apromore.model.ReadProcessSummariesOutputMsgType;
-import org.apromore.model.ReadUserInputMsgType;
-import org.apromore.model.ReadUserOutputMsgType;
-import org.apromore.model.ResultType;
-import org.apromore.model.SearchForSimilarProcessesInputMsgType;
-import org.apromore.model.SearchForSimilarProcessesOutputMsgType;
-import org.apromore.model.UpdateProcessInputMsgType;
-import org.apromore.model.UpdateProcessOutputMsgType;
-import org.apromore.model.UserType;
-import org.apromore.model.UsernamesType;
-import org.apromore.model.WriteAnnotationInputMsgType;
-import org.apromore.model.WriteAnnotationOutputMsgType;
-import org.apromore.model.WriteEditSessionInputMsgType;
-import org.apromore.model.WriteEditSessionOutputMsgType;
-import org.apromore.model.WriteUserInputMsgType;
-import org.apromore.model.WriteUserOutputMsgType;
-import org.apromore.service.CanoniserService;
-import org.apromore.service.DomainService;
-import org.apromore.service.FormatService;
-import org.apromore.service.ProcessService;
-import org.apromore.service.UserService;
+import org.apromore.service.*;
+import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.Format;
 import org.apromore.util.StreamUtil;
 import org.slf4j.Logger;
@@ -73,22 +24,11 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
-import org.wfmc._2008.xpdl2.Author;
-import org.wfmc._2008.xpdl2.Created;
-import org.wfmc._2008.xpdl2.Documentation;
-import org.wfmc._2008.xpdl2.ModificationDate;
-import org.wfmc._2008.xpdl2.PackageHeader;
-import org.wfmc._2008.xpdl2.PackageType;
-import org.wfmc._2008.xpdl2.RedefinableHeader;
-import org.wfmc._2008.xpdl2.Version;
+import org.wfmc._2008.xpdl2.*;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
+import javax.xml.bind.*;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -471,7 +411,6 @@ public class ManagerPortalEndpoint {
                 }
             }
 
-            LOGGER.info(StreamUtil.convertStreamToString(source));
             res.setNative(new DataHandler(source));
             result.setCode(0);
             result.setMessage("");
@@ -489,10 +428,10 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<ImportProcessOutputMsgType> importProcess(@RequestPayload final JAXBElement<ImportProcessInputMsgType> req) {
         LOGGER.info("Executing operation importProcess");
+
+        ResultType result = new ResultType();
         ImportProcessInputMsgType payload = req.getValue();
         ImportProcessOutputMsgType res = new ImportProcessOutputMsgType();
-        ResultType result = new ResultType();
-        res.setResult(result);
 
         try {
             EditSessionType editSession = payload.getEditSession();
@@ -502,22 +441,26 @@ public class ManagerPortalEndpoint {
             String nativeType = editSession.getNativeType();
             String domain = editSession.getDomain();
             String creationDate = editSession.getCreationDate();
-            String lastupdate = editSession.getLastUpdate();
-            Boolean addFakeEvents = payload.isAddFakeEvents();
+            String lastUpdate = editSession.getLastUpdate();
+
+            //Boolean addFakeEvents = payload.isAddFakeEvents();
             DataHandler handler = payload.getProcessDescription();
-            InputStream is = handler.getInputStream();
-            ProcessSummaryType process =
-                    caClient.CanoniseProcess(username, processName, newCpfURI(),
-                            versionName, nativeType, is, domain, "", creationDate, lastupdate, addFakeEvents);
+
+            //ProcessSummaryType process = caClient.CanoniseProcess(username, processName, newCpfURI(),
+            //        versionName, nativeType, is, domain, "", creationDate, lastUpdate, addFakeEvents);
+            ProcessSummaryType process = procSrv.importProcess(username, processName, newCpfURI(), versionName, nativeType,
+                    handler, domain, "", creationDate, lastUpdate);
+
             res.setProcessSummary(process);
             result.setCode(0);
             result.setMessage("");
-
         } catch (Exception ex) {
             ex.printStackTrace();
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
+
+        res.setResult(result);
         return new ObjectFactory().createImportProcessResponse(res);
     }
 
@@ -546,7 +489,7 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<ReadNativeTypesOutputMsgType> readNativeTypes(@RequestPayload final JAXBElement<ReadNativeTypesInputMsgType> req) {
         LOGGER.info("Executing operation readFormats");
-        ReadNativeTypesInputMsgType payload = req.getValue();
+        //ReadNativeTypesInputMsgType payload = req.getValue();
         ReadNativeTypesOutputMsgType res = new ReadNativeTypesOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -570,7 +513,7 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<ReadDomainsOutputMsgType> readDomains(@RequestPayload final JAXBElement<ReadDomainsInputMsgType> req) {
         LOGGER.info("Executing operation readDomains");
-        ReadDomainsInputMsgType payload = req.getValue();
+        //ReadDomainsInputMsgType payload = req.getValue();
         ReadDomainsOutputMsgType res = new ReadDomainsOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
@@ -752,12 +695,12 @@ public class ManagerPortalEndpoint {
 
     /**
      * Generate a cpf uri for version of processId
+     * @return the new cpf uri
      */
     private static String newCpfURI() {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmsSSS");
         Date date = new Date();
-        String time = dateFormat.format(date);
-        return time;
+        return dateFormat.format(date);
     }
 
 

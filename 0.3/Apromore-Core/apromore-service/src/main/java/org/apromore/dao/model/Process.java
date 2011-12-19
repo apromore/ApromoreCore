@@ -58,7 +58,8 @@ public class Process implements Serializable {
      * Get the Primary Key for the Object.
      * @return Returns the Id.
      */
-    @Id @Column(name = "processId", unique = true, nullable = false, precision = 11, scale = 0)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "processId", unique = true, nullable = false, precision = 11, scale = 0)
     public long getProcessId() {
         return processId;
     }

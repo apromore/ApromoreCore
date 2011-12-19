@@ -33,60 +33,60 @@ public class CanoniserDataAccessClient {
 	private DataAccessCanoniserManager manager;
 
 
-	public ProcessSummaryType storeNativeCpf (String username, String processName, String cpfURI,
-			String domain, String nativeType, String versionName, String documentation, String created, String lastupdate,
-			InputStream process_xml, InputStream cpf_xml, InputStream anf_xml) throws IOException, ExceptionStore {
-
-		ProcessSummaryType processM = new ProcessSummaryType();
-		StoreNativeCpfInputMsgType payload = new StoreNativeCpfInputMsgType();
-		payload.setCpfURI(cpfURI);
-		EditSessionType editSession = new EditSessionType();
-		editSession.setUsername(username);
-		editSession.setNativeType(nativeType);
-		editSession.setProcessName(processName);
-		editSession.setDomain(domain);
-		editSession.setVersionName(versionName);
-		editSession.setCreationDate(created);
-		editSession.setLastUpdate(lastupdate);
-		payload.setEditSession(editSession);
-		DataSource source_proc = new ByteArrayDataSource(process_xml, "text/xml");
-		payload.setNative(new DataHandler(source_proc));
-		DataSource source_cpf = new ByteArrayDataSource(cpf_xml, "text/xml");
-		payload.setCpf(new DataHandler(source_cpf));
-		DataSource source_anf = new ByteArrayDataSource(anf_xml, "text/xml");
-		payload.setAnf(new DataHandler(source_anf));
-		StoreNativeCpfOutputMsgType res = manager.storeNativeCpf(payload);
-		if (res.getResult().getCode() == -1) {
-			throw new ExceptionStore (res.getResult().getMessage());
-		} else {
-			processM.setDomain(res.getProcessSummary().getDomain());
-			processM.setId(res.getProcessSummary().getId());
-			processM.setLastVersion(res.getProcessSummary().getLastVersion());
-			processM.setName(res.getProcessSummary().getName());
-			processM.setOriginalNativeType(res.getProcessSummary().getOriginalNativeType());
-			processM.setRanking(res.getProcessSummary().getRanking());
-			processM.setOwner(res.getProcessSummary().getOwner());
-			processM.getVersionSummaries().clear();
-			Iterator<VersionSummaryType> it = res.getProcessSummary().getVersionSummaries().iterator();
-			// normally, only one... consider many for future needs
-			while (it.hasNext()) {
-				VersionSummaryType first_versionM = new VersionSummaryType();
-				VersionSummaryType versionDa = it.next();
-				first_versionM.setName(versionDa.getName());
-				first_versionM.setRanking(versionDa.getRanking());
-				first_versionM.setCreationDate(versionDa.getCreationDate());
-				first_versionM.setLastUpdate(versionDa.getLastUpdate());
-				for (int i=0; i<versionDa.getAnnotations().size(); i++) {
-					AnnotationsType annotationsM = new AnnotationsType();
-					annotationsM.setNativeType(versionDa.getAnnotations().get(i).getNativeType());
-					annotationsM.getAnnotationName().addAll(versionDa.getAnnotations().get(i).getAnnotationName());
-					first_versionM.getAnnotations().add(annotationsM);
-				}
-				processM.getVersionSummaries().add(first_versionM);
-			}
-			return processM;
-		}
-	}
+//	public ProcessSummaryType storeNativeCpf (String username, String processName, String cpfURI,
+//			String domain, String nativeType, String versionName, String documentation, String created, String lastupdate,
+//			InputStream process_xml, InputStream cpf_xml, InputStream anf_xml) throws IOException, ExceptionStore {
+//
+//		ProcessSummaryType processM = new ProcessSummaryType();
+//		StoreNativeCpfInputMsgType payload = new StoreNativeCpfInputMsgType();
+//		payload.setCpfURI(cpfURI);
+//		EditSessionType editSession = new EditSessionType();
+//		editSession.setUsername(username);
+//		editSession.setNativeType(nativeType);
+//		editSession.setProcessName(processName);
+//		editSession.setDomain(domain);
+//		editSession.setVersionName(versionName);
+//		editSession.setCreationDate(created);
+//		editSession.setLastUpdate(lastupdate);
+//		payload.setEditSession(editSession);
+//		DataSource source_proc = new ByteArrayDataSource(process_xml, "text/xml");
+//		payload.setNative(new DataHandler(source_proc));
+//		DataSource source_cpf = new ByteArrayDataSource(cpf_xml, "text/xml");
+//		payload.setCpf(new DataHandler(source_cpf));
+//		DataSource source_anf = new ByteArrayDataSource(anf_xml, "text/xml");
+//		payload.setAnf(new DataHandler(source_anf));
+//		StoreNativeCpfOutputMsgType res = manager.storeNativeCpf(payload);
+//		if (res.getResult().getCode() == -1) {
+//			throw new ExceptionStore (res.getResult().getMessage());
+//		} else {
+//			processM.setDomain(res.getProcessSummary().getDomain());
+//			processM.setId(res.getProcessSummary().getId());
+//			processM.setLastVersion(res.getProcessSummary().getLastVersion());
+//			processM.setName(res.getProcessSummary().getName());
+//			processM.setOriginalNativeType(res.getProcessSummary().getOriginalNativeType());
+//			processM.setRanking(res.getProcessSummary().getRanking());
+//			processM.setOwner(res.getProcessSummary().getOwner());
+//			processM.getVersionSummaries().clear();
+//			Iterator<VersionSummaryType> it = res.getProcessSummary().getVersionSummaries().iterator();
+//			// normally, only one... consider many for future needs
+//			while (it.hasNext()) {
+//				VersionSummaryType first_versionM = new VersionSummaryType();
+//				VersionSummaryType versionDa = it.next();
+//				first_versionM.setName(versionDa.getName());
+//				first_versionM.setRanking(versionDa.getRanking());
+//				first_versionM.setCreationDate(versionDa.getCreationDate());
+//				first_versionM.setLastUpdate(versionDa.getLastUpdate());
+//				for (int i=0; i<versionDa.getAnnotations().size(); i++) {
+//					AnnotationsType annotationsM = new AnnotationsType();
+//					annotationsM.setNativeType(versionDa.getAnnotations().get(i).getNativeType());
+//					annotationsM.getAnnotationName().addAll(versionDa.getAnnotations().get(i).getAnnotationName());
+//					first_versionM.getAnnotations().add(annotationsM);
+//				}
+//				processM.getVersionSummaries().add(first_versionM);
+//			}
+//			return processM;
+//		}
+//	}
 
 	public void StoreNative (int processId, String version, String nativeType, InputStream process) 
 	        throws IOException, ExceptionStore {

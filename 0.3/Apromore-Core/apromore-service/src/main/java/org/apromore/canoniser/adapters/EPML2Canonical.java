@@ -45,7 +45,8 @@ import org.apromore.anf.GraphicsType;
 import org.apromore.anf.LineType;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SizeType;
-import org.apromore.exception.ExceptionAdapters;
+import org.apromore.exception.CanoniserException;
+import org.apromore.exception.CanoniserException;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -117,21 +118,20 @@ public class EPML2Canonical{
      * is file format for EPC diagrams.
      * 
 
-	@throws org.apromore.canoniser.exception.ExceptionAdapters
+	@throws org.apromore.exception.CanoniserException
                     
 	@since           1.0
      */
-	public EPML2Canonical(TypeEPML epml) throws ExceptionAdapters {
+	public EPML2Canonical(TypeEPML epml) throws CanoniserException {
 		main(epml);
 	}
 	
-	public EPML2Canonical(TypeEPML epml, long id) throws ExceptionAdapters {
+	public EPML2Canonical(TypeEPML epml, long id) throws CanoniserException {
 		this.ids = id;
 		main(epml);
 	}
 
-	void main(TypeEPML epml) throws ExceptionAdapters
-	{
+	void main(TypeEPML epml) throws CanoniserException {
 		epml = removeFakes(epml);
 		
 		TypeAttribute att = new TypeAttribute();
@@ -279,7 +279,7 @@ public class EPML2Canonical{
 	}
 	
 
-	private void translateEpc(NetType net, TypeEPC epc) throws ExceptionAdapters
+	private void translateEpc(NetType net, TypeEPC epc) throws CanoniserException
 	{
 		Map<String, BigInteger> role_names = new HashMap<String, BigInteger>();
 
@@ -494,7 +494,7 @@ public class EPML2Canonical{
 	}
 
 
-	private void addEdgeAnnotation(TypeArc arc) throws ExceptionAdapters {
+	private void addEdgeAnnotation(TypeArc arc) throws CanoniserException {
 		
 		LineType line = new LineType();
 		GraphicsType graph = new GraphicsType();
@@ -604,7 +604,7 @@ public class EPML2Canonical{
 
 	// should be in the end
 	
-	private void processUnrequiredEvents(NetType net, BigInteger id) throws ExceptionAdapters
+	private void processUnrequiredEvents(NetType net, BigInteger id) throws CanoniserException
 	{
 		List<EdgeType> edge_remove_list = new LinkedList<EdgeType>();
 		List<NodeType> node_remove_list = new LinkedList<NodeType>();

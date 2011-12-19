@@ -66,7 +66,6 @@ public class ProcessDaoJpaUnitTest {
         assertThat(prss.size(), equalTo(processes.size()));
     }
 
-
     @Test
     public final void testGetAllProcessesNonFound() {
         List<Object[]> procs = new ArrayList<Object[]>(0);
@@ -78,6 +77,24 @@ public class ProcessDaoJpaUnitTest {
         replay(manager, query);
 
         List<Object[]> processes = prsJpa.getAllProcesses(null);
+
+        verify(manager, query);
+
+        assertThat(processes, equalTo(procs));
+    }
+
+    @Test
+    public final void testGetAllProcessesNonEmptySearch() {
+        String invoicingStr = " and  p.processId in (select k.processId FROM Keyword k WHERE k.word like '%invoicing%' )";
+        List<Object[]> procs = new ArrayList<Object[]>(0);
+
+        Query query = createMock(Query.class);
+        expect(manager.createQuery(ProcessDaoJpa.GET_ALL_PROCESSES + invoicingStr + ProcessDaoJpa.GET_ALL_PRO_SORT)).andReturn(query);
+        expect(query.getResultList()).andReturn(procs);
+
+        replay(manager, query);
+
+        List<Object[]> processes = prsJpa.getAllProcesses(invoicingStr);
 
         verify(manager, query);
 

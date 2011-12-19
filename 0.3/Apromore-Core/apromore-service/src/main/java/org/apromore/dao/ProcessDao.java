@@ -1,7 +1,9 @@
 package org.apromore.dao;
 
 import org.apromore.dao.model.Process;
+import org.apromore.model.ProcessSummaryType;
 
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -26,6 +28,7 @@ public interface ProcessDao {
      * @return the list of domains.
      */
     List<String> getAllDomains();
+
 
 
     /**

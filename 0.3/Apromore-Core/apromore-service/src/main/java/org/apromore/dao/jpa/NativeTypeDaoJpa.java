@@ -34,11 +34,31 @@ public class NativeTypeDaoJpa extends JpaTemplate implements NativeTypeDao {
 
             @SuppressWarnings("unchecked")
             public List<NativeType> doInJpa(EntityManager em) {
-                Query query = em.createNamedQuery(NativeType.FIND_FORMATS);
+                Query query = em.createNamedQuery(NativeType.FIND_FORMAT);
                 return query.getResultList();
             }
         });
     }
+
+    /**
+     * Find a particular Native Type.
+     * @see org.apromore.dao.NativeTypeDao#findAllFormats()
+     * {@inheritDoc}
+     */
+    @Override
+    public NativeType findNativeType(final String nativeType) {
+        return execute(new JpaCallback<NativeType>() {
+
+            @SuppressWarnings("unchecked")
+            public NativeType doInJpa(EntityManager em) {
+                Query query = em.createNamedQuery(NativeType.FIND_FORMATS);
+                query.setParameter("name", nativeType);
+                return (NativeType) query.getSingleResult();
+            }
+        });
+    }
+
+
 
 
     /**
