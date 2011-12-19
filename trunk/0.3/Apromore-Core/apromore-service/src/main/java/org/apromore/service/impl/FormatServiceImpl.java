@@ -29,7 +29,7 @@ public class FormatServiceImpl implements FormatService {
 
 
     /**
-     * @see org.apromore.service.UserService#findAllUsers()
+     * @see org.apromore.service.FormatService#findAllFormats()
      * {@inheritDoc}
      *
      * NOTE: This might need to convert (or allow for) to the models used in the webservices.
@@ -38,6 +38,19 @@ public class FormatServiceImpl implements FormatService {
     @Transactional(readOnly = true)
     public List<NativeType> findAllFormats() {
         return natTypeDao.findAllFormats();
+    }
+
+
+    /**
+     * @see org.apromore.service.FormatService#findNativeType(String)
+     * {@inheritDoc}
+     *
+     * NOTE: This might need to convert (or allow for) to the models used in the webservices.
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public NativeType findNativeType(String nativeType) {
+        return natTypeDao.findNativeType(nativeType);
     }
 
 

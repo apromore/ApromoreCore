@@ -1,10 +1,19 @@
 package org.apromore.service;
 
-import org.apromore.service.model.Format;
-import org.apromore.exception.ExportFormatException;
-import org.apromore.model.ProcessSummariesType;
-
+import java.io.IOException;
+import java.io.InputStream;
+import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.xml.bind.JAXBException;
+
+import org.apromore.dao.model.NativeType;
+import org.apromore.dao.model.User;
+import org.apromore.exception.ExportFormatException;
+import org.apromore.exception.ImportException;
+import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.service.model.CanonisedProcess;
+import org.apromore.service.model.Format;
 
 /**
  * Interface for the Process Service. Defines all the methods that will do the majority of the work for
@@ -43,4 +52,40 @@ public interface ProcessService {
      */
     Format getCanonicalAnf(final long processId, final String version, final boolean withAnn, final String annName)
             throws ExportFormatException;
+
+    /**
+     * Import a Process.
+     * @param username The user doing the importing.
+     * @param processName the name of the process being imported.
+     * @param cpfURI the Canonical URI
+     * @param versionName the version of the Process
+     * @param nativeType the native process format type
+     * @param cpf the dataHandler of the Process to import (the actual process model)
+     * @param domain the domain of the model
+     * @param documentation any documentation that is required
+     * @param created the time created
+     * @param lastUpdate the time last updated
+     * @return the processSummaryType
+     * @throws ImportException if the import process failed for any reason.
+     */
+    ProcessSummaryType importProcess(String username, String processName, String cpfURI, String versionName, String nativeType,
+            DataHandler cpf, String domain, String documentation, String created, String lastUpdate) throws ImportException;
+
+
+    /**
+     * Store the Native and CPF and there annotations in the DB.
+     * @param processName the name of the process being imported.
+     * @param versionName the version of the Process
+     * @param cpfURI the cpf URI
+     * @param cpf the inputStream of the Process to import (the actual process model)
+     * @param domain the domain of the model
+     * @param created the time created
+     * @param lastUpdate the time last updated
+     * @param cp the Canonical Process as InputStream and the annotations
+     * @param user the user doing the updates
+     * @param nativeType the native Type
+     * @throws JAXBException if it fails....
+     */
+    ProcessSummaryType storeNativeAndCpf(String processName, String versionName, String cpfURI, InputStream cpf, String domain,
+            String created, String lastUpdate, CanonisedProcess cp, User user, NativeType nativeType) throws JAXBException;
 }

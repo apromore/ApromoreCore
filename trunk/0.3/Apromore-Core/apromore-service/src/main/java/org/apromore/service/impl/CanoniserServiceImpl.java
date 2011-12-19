@@ -1,19 +1,9 @@
 package org.apromore.service.impl;
 
-import de.epml.TypeEPML;
-import org.apromore.anf.AnnotationsType;
-import org.apromore.canoniser.adapters.Canonical2EPML;
-import org.apromore.canoniser.adapters.Canonical2XPDL;
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.exception.ExceptionAdapters;
-import org.apromore.service.CanoniserService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-import org.wfmc._2008.xpdl2.PackageType;
-
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBContext;
@@ -21,11 +11,23 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
+
+import de.epml.TypeEPML;
+import org.apromore.anf.AnnotationsType;
+import org.apromore.canoniser.adapters.Canonical2EPML;
+import org.apromore.canoniser.adapters.Canonical2XPDL;
+import org.apromore.canoniser.adapters.EPML2Canonical;
+import org.apromore.canoniser.adapters.XPDL2Canonical;
+import org.apromore.common.Constants;
+import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.exception.CanoniserException;
+import org.apromore.service.CanoniserService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
+import org.wfmc._2008.xpdl2.PackageType;
 
 /**
  * Implementation of the Canoniser Service Contract.
@@ -44,17 +46,18 @@ public class CanoniserServiceImpl implements CanoniserService {
      */
     @Override
     @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
     public DataSource deCanonise(final long processId, final String version, final String nativeType, final DataSource cpf, final DataSource anf) {
         AnnotationsType annType = null;
         DataSource native_ds = null;
 
         try {
-            JAXBContext jc = JAXBContext.newInstance("org.apromore.cpf");
+            JAXBContext jc = JAXBContext.newInstance(CPF_CONTEXT);
             Unmarshaller u = jc.createUnmarshaller();
             JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u.unmarshal(cpf.getInputStream());
             CanonicalProcessType canType = rootElement.getValue();
             if (anf != null) {
-                jc = JAXBContext.newInstance("org.apromore.anf");
+                jc = JAXBContext.newInstance(ANF_CONTEXT);
                 u = jc.createUnmarshaller();
                 JAXBElement<AnnotationsType> rootAnf = (JAXBElement<AnnotationsType>) u.unmarshal(anf.getInputStream());
                 annType = rootAnf.getValue();
@@ -62,29 +65,9 @@ public class CanoniserServiceImpl implements CanoniserService {
 
             ByteArrayOutputStream native_xml = new ByteArrayOutputStream();
             if (nativeType.compareTo("XPDL 2.1") == 0) {
-                Canonical2XPDL canonical2xpdl;
-                if (anf == null) {
-                    canonical2xpdl = new Canonical2XPDL(canType);
-                } else {
-                    canonical2xpdl = new Canonical2XPDL(canType, annType);
-                }
-                jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
-                Marshaller m = jc.createMarshaller();
-                m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-                JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl.getXpdl());
-                m.marshal(rootxpdl, native_xml);
+                deCanoniseXPDL(anf, annType, canType, native_xml);
             } else if (nativeType.compareTo("EPML 2.0") == 0) {
-                Canonical2EPML canonical2epml;
-                if (anf == null) {
-                    canonical2epml = new Canonical2EPML(canType);
-                } else {
-                    canonical2epml = new Canonical2EPML(canType, annType);
-                }
-                jc = JAXBContext.newInstance("de.epml");
-                Marshaller m = jc.createMarshaller();
-                m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-                JAXBElement<TypeEPML> rootepml = new de.epml.ObjectFactory().createEpml(canonical2epml.getEPML());
-                m.marshal(rootepml, native_xml);
+                deCanoniseEPML(anf, annType, canType, native_xml);
             }
 
             InputStream native_xml_is = new ByteArrayInputStream(native_xml.toByteArray());
@@ -93,10 +76,111 @@ public class CanoniserServiceImpl implements CanoniserService {
             LOGGER.error("DeCanonisation Failed: " + je.getMessage());
         } catch (IOException ioe) {
             LOGGER.error("DeCanonisation Failed: " + ioe.getMessage());
-        } catch (ExceptionAdapters ae) {
+        } catch (CanoniserException ae) {
             LOGGER.error("DeCanonisation Failed: " + ae.getMessage());
         }
         return native_ds;
+    }
+
+
+    /**
+     * @see org.apromore.service.CanoniserService#canonise(String, InputStream, String, ByteArrayOutputStream, ByteArrayOutputStream)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public void canonise(String cpf_uri, InputStream process_xml, String nativeType, ByteArrayOutputStream anf_xml,
+            ByteArrayOutputStream cpf_xml) throws CanoniserException, IOException, JAXBException {
+        if (nativeType.compareTo("XPDL 2.1") == 0) {
+            canoniseXPDL(cpf_uri, process_xml, anf_xml, cpf_xml);
+        } else if (nativeType.compareTo("EPML 2.0") == 0) {
+            canoniseEPML(cpf_uri, process_xml, anf_xml, cpf_xml);
+        } else {
+            throw new CanoniserException("Native type not supported.");
+        }
+    }
+
+
+
+
+
+    /* Canonise the epml to CPF format */
+    @SuppressWarnings("unchecked")
+    private void canoniseEPML(String cpf_uri, InputStream process_xml, ByteArrayOutputStream anf_xml, ByteArrayOutputStream cpf_xml)
+            throws JAXBException, CanoniserException {
+        JAXBContext jc1 = JAXBContext.newInstance(EPML_CONTEXT);
+        Unmarshaller u = jc1.createUnmarshaller();
+        JAXBElement<TypeEPML> rootElement = (JAXBElement<TypeEPML>) u.unmarshal(process_xml);
+        TypeEPML epml = rootElement.getValue();
+        EPML2Canonical epml2canonical = new EPML2Canonical(epml, Long.parseLong(cpf_uri));
+
+        jc1 = JAXBContext.newInstance(ANF_CONTEXT);
+        Marshaller m_anf = jc1.createMarshaller();
+        m_anf.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        JAXBElement<AnnotationsType> cproc_anf = new org.apromore.anf.ObjectFactory().createAnnotations(epml2canonical.getANF());
+        m_anf.marshal(cproc_anf, anf_xml);
+
+        jc1 = JAXBContext.newInstance(CPF_CONTEXT);
+        Marshaller m_cpf = jc1.createMarshaller();
+        m_cpf.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        JAXBElement<CanonicalProcessType> cproc_cpf = new org.apromore.cpf.ObjectFactory().createCanonicalProcess(epml2canonical.getCPF());
+        m_cpf.marshal(cproc_cpf, cpf_xml);
+    }
+
+    /* DeCanonise the CPF to EPML format */
+    private void deCanoniseEPML(DataSource anf, AnnotationsType annType, CanonicalProcessType canType, ByteArrayOutputStream native_xml)
+            throws JAXBException {
+        JAXBContext jc;Canonical2EPML canonical2epml;
+        if (anf == null) {
+            canonical2epml = new Canonical2EPML(canType);
+        } else {
+            canonical2epml = new Canonical2EPML(canType, annType);
+        }
+        jc = JAXBContext.newInstance(EPML_CONTEXT);
+        Marshaller m = jc.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        JAXBElement<TypeEPML> rootepml = new de.epml.ObjectFactory().createEpml(canonical2epml.getEPML());
+        m.marshal(rootepml, native_xml);
+    }
+
+
+    /* Canonise the XPDL to CPF format */
+    @SuppressWarnings("unchecked")
+    private void canoniseXPDL(String cpf_uri, InputStream process_xml, ByteArrayOutputStream anf_xml, ByteArrayOutputStream cpf_xml)
+            throws JAXBException, CanoniserException {
+        JAXBContext jc1 = JAXBContext.newInstance(Constants.JAXB_CONTEXT_XPDL);
+        Unmarshaller u = jc1.createUnmarshaller();
+        JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
+        PackageType pkg = rootElement.getValue();
+        XPDL2Canonical xpdl2canonical = new XPDL2Canonical(pkg, Long.parseLong(cpf_uri));
+
+        jc1 = JAXBContext.newInstance(ANF_CONTEXT);
+        Marshaller m_anf = jc1.createMarshaller();
+        m_anf.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        JAXBElement<AnnotationsType> cproc_anf = new org.apromore.anf.ObjectFactory().createAnnotations(xpdl2canonical.getAnf());
+        m_anf.marshal(cproc_anf, anf_xml);
+
+        jc1 = JAXBContext.newInstance(CPF_CONTEXT);
+        Marshaller m_cpf = jc1.createMarshaller();
+        m_cpf.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        JAXBElement<CanonicalProcessType> cproc_cpf = new org.apromore.cpf.ObjectFactory().createCanonicalProcess(xpdl2canonical.getCpf());
+        m_cpf.marshal(cproc_cpf, cpf_xml);
+    }
+
+    /* DeCanonise the CPF to XPDL format */
+    private void deCanoniseXPDL(DataSource anf, AnnotationsType annType, CanonicalProcessType canType, ByteArrayOutputStream native_xml)
+            throws JAXBException, CanoniserException {
+        JAXBContext jc;Canonical2XPDL canonical2xpdl;
+        if (anf == null) {
+            canonical2xpdl = new Canonical2XPDL(canType);
+        } else {
+            canonical2xpdl = new Canonical2XPDL(canType, annType);
+        }
+        jc = JAXBContext.newInstance(XPDL2_CONTEXT);
+        Marshaller m = jc.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(canonical2xpdl.getXpdl());
+        m.marshal(rootxpdl, native_xml);
     }
 
 }

@@ -74,124 +74,6 @@ public class ProcessDao extends BasicDao {
 
 
     /**
-     * Interpretation of the query received by customer
-     * "," => and
-     * ";" => or
-     * "(" and ")" remain
-     * each term of the query is an element in the result
-     * a,b;(d,e) => [a, and, b, or, (, a, and, e, )]
-     *
-     * @param keywordssearch keywordssearch
-     * @return Vector<String> : the SQL condition corresponding to keywordssearch
-     * @throws java.io.UnsupportedEncodingException
-     *
-     */
-    private Vector<String> mapQuery(String keywordssearch) throws UnsupportedEncodingException {
-        Vector<String> res = new Vector<String>();
-        String term = "";
-        int state = 1;    // initial state in the recognition automaton
-        String currentChar = "";
-        for (int i = 0; i < keywordssearch.length(); i++) {
-            currentChar = keywordssearch.substring(i, i + 1);
-            if (state == 1) {
-                if (currentChar.compareTo(",") == 0) {
-                    // and
-                    res.add(" and ");
-                } else {
-                    if (currentChar.compareTo(";") == 0) {
-                        // or
-                        res.add(" or ");
-                    } else {
-                        if (currentChar.compareTo(")") == 0) {
-                            res.add(" ) ");
-                        } else {
-                            if (currentChar.compareTo("(") == 0) {
-                                res.add(" ( ");
-                            } else {
-                                if (currentChar.compareTo(" ") != 0) {
-                                    // not an operator, not a space
-                                    term = currentChar;
-                                    state = 2;
-                                }
-                            }
-                        }
-                    }
-                }
-            } else {
-                if (state == 2) {
-                    if (currentChar.compareTo(",") == 0) {
-                        // and
-                        res.add(term);
-                        res.add(" and ");
-                        state = 1;
-                    } else {
-                        if (currentChar.compareTo(";") == 0) {
-                            // or
-                            res.add(term);
-                            res.add(" or ");
-                            state = 1;
-                        } else {
-                            if (currentChar.compareTo(")") == 0) {
-                                res.add(term);
-                                res.add(" ) ");
-                                state = 1;
-                            } else {
-                                if (currentChar.compareTo("(") == 0) {
-                                    res.add(term);
-                                    res.add(" ( ");
-                                    state = 1;
-                                } else {
-                                    if (currentChar.compareTo(" ") != 0) {
-                                        // not an operator, not a space
-                                        term += currentChar;
-                                    } else {
-                                        state = 3;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                } else {
-                    // state = 3
-                    if (currentChar.compareTo(",") == 0) {
-                        // and
-                        res.add(term);
-                        res.add(" and ");
-                        state = 1;
-                    } else {
-                        if (currentChar.compareTo(";") == 0) {
-                            // or
-                            res.add(term);
-                            res.add(" or ");
-                            state = 1;
-                        } else {
-                            if (currentChar.compareTo(")") == 0) {
-                                res.add(term);
-                                res.add(" ) ");
-                                state = 1;
-                            } else {
-                                if (currentChar.compareTo("(") == 0) {
-                                    res.add(term);
-                                    res.add(" ( ");
-                                    state = 1;
-                                } else {
-                                    if (currentChar.compareTo(" ") != 0) {
-                                        // not an operator, not a space
-                                        term += " " + currentChar;
-                                        state = 2;
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        if (state == 2 || state == 3) res.add(term);
-        return res;
-    }
-
-    /**
      * Store in the database the new modelass with name processName and version,
      * whose native description is process_xml in format nativeType,
      * cpf is cpf_xml, anf is anf_xml. This process is owned by the user username,
@@ -210,143 +92,143 @@ public class ProcessDao extends BasicDao {
      * @throws java.sql.SQLException
      * @throws java.io.IOException
      */
-    public ProcessSummaryType
-    storeNativeCpf
-    (String username, String processName, String cpf_uri, String domain,
-     String nativeType, String version, String creationDate, String lastUpdate,
-     InputStream process_xml,
-     InputStream cpf_xml, InputStream anf_xml) throws SQLException, ExceptionDao {
-
-        Connection conn = null;
-        Statement stmt0 = null;
-        PreparedStatement stmtp = null;
-        ResultSet rs0 = null, keys = null;
-        String query = null;
-        String annotationName = Constants.INITIAL_ANNOTATION;
-        ProcessSummaryType process = new ProcessSummaryType();
-        VersionSummaryType first_version = new VersionSummaryType();
-        process.getVersionSummaries().clear();
-        process.getVersionSummaries().add(first_version);
-        try {
-            conn = this.getConnection();
-            // store process details to get processId.
-            query = " insert into " + ConstantDB.TABLE_PROCESSES
-                    + "(" + ConstantDB.ATTR_NAME + ","
-                    + ConstantDB.ATTR_DOMAIN + ","
-                    + ConstantDB.ATTR_OWNER + ","
-                    + ConstantDB.ATTR_ORIGINAL_TYPE + ")"
-                    + " values (?, ?, ?, ?) ";
-            stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            stmtp.setString(1, processName);
-            stmtp.setString(2, domain);
-            stmtp.setString(3, username);
-            stmtp.setString(4, nativeType);
-            int rs1 = stmtp.executeUpdate();
-            keys = stmtp.getGeneratedKeys();
-            if (!keys.next()) {
-                throw new ExceptionDao("Error: cannot retrieve generated key.");
-            }
-            Integer processId = keys.getInt(1);
-            keys.close();
-            stmtp.close();
-
-            // Store informations given as parameters in both NPF and ANF
-            // creationDate might be null or empty. 
-            if (creationDate == null || "".compareTo(creationDate) == 0) {
-                creationDate = now();
-            }
-            if (lastUpdate == null) lastUpdate = "";
-            // copy parameters values in sync_npf
-            InputStream sync_npf = copyParam2NPF(process_xml, nativeType, processName, version,
-                    username, creationDate, lastUpdate);
-            // copy parameter values in sync_cpf
-            InputStream sync_cpf = copyParam2CPF(cpf_xml, cpf_uri, processName, version,
-                    username, creationDate, lastUpdate);
-            String process_string = inputStream2String(sync_npf).trim();
-            String cpf_string = inputStream2String(sync_cpf).trim();
-            String anf_string = inputStream2String(anf_xml).trim();
-            query = " insert into " + ConstantDB.TABLE_CANONICALS
-                    + "(" + ConstantDB.ATTR_URI + ","
-                    + ConstantDB.ATTR_PROCESSID + ","
-                    + ConstantDB.ATTR_VERSION_NAME + ","
-                    + ConstantDB.ATTR_CREATION_DATE + ","
-                    + ConstantDB.ATTR_LAST_UPDATE + ","
-                    + ConstantDB.ATTR_CONTENT + ")"
-                    + " values (?, ?, ?, ?, ?, ?) ";
-            //+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%s'), str_to_date(?,), ?, ?) ";
-            stmtp = conn.prepareStatement(query);
-            stmtp.setString(1, cpf_uri);
-            stmtp.setInt(2, processId);
-            stmtp.setString(3, version);
-            stmtp.setString(4, creationDate);
-            stmtp.setString(5, lastUpdate);
-            stmtp.setString(6, cpf_string);
-            Integer rs2 = stmtp.executeUpdate();
-
-
-            query = " insert into " + ConstantDB.TABLE_NATIVES
-                    + "(" + ConstantDB.ATTR_CONTENT + ","
-                    + ConstantDB.ATTR_NAT_TYPE + ","
-                    + ConstantDB.ATTR_CANONICAL + ")"
-                    + " values (?,?,?) ";
-            stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            stmtp.setString(1, process_string);
-            stmtp.setString(2, nativeType);
-            stmtp.setString(3, cpf_uri);
-            Integer rs6 = stmtp.executeUpdate();
-            keys = stmtp.getGeneratedKeys();
-            if (!keys.next()) {
-                throw new ExceptionDao("Error: cannot retrieve NPF id.");
-            }
-            int natId = keys.getInt(1);
-            keys.close();
-            stmtp.close();
-
-            query = " insert into " + ConstantDB.TABLE_ANNOTATIONS
-                    + "(" + ConstantDB.ATTR_NATIVE + ","
-                    + ConstantDB.ATTR_CANONICAL + ","
-                    + ConstantDB.ATTR_NAME + ","
-                    + ConstantDB.ATTR_CONTENT + ")"
-                    + " values (?,?,?,?) ";
-            stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
-            stmtp.setInt(1, natId);
-            stmtp.setString(2, cpf_uri);
-            stmtp.setString(3, annotationName);
-            stmtp.setString(4, anf_string);
-            stmtp.executeUpdate();
-            stmtp.close();
-
-            process.setDomain(domain);
-            process.setId(processId);
-            process.setLastVersion(version);
-            process.setName(processName);
-            process.setOriginalNativeType(nativeType);
-            process.setRanking("");
-            process.setOwner(username);
-            first_version.setName(version);
-            first_version.setCreationDate(creationDate);
-            first_version.setLastUpdate(lastUpdate);
-            first_version.setRanking("");
-            AnnotationsType annotations =
-                    new AnnotationsType();
-            first_version.getAnnotations().add(annotations);
-            annotations.setNativeType(nativeType);
-            annotations.getAnnotationName().add(Constants.INITIAL_ANNOTATION);
-            conn.commit();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-            conn.rollback();
-            throw new ExceptionDao("SQL error: " + e.getMessage() + "\n");
-        } catch (Exception e) {
-            e.printStackTrace();
-            conn.rollback();
-            throw new ExceptionDao("Error: " + e.getMessage() + "\n");
-        } finally {
-            Release(conn, stmt0, rs0);
-        }
-        return process;
-    }
+//    public ProcessSummaryType
+//    storeNativeCpf
+//    (String username, String processName, String cpf_uri, String domain,
+//     String nativeType, String version, String creationDate, String lastUpdate,
+//     InputStream process_xml,
+//     InputStream cpf_xml, InputStream anf_xml) throws SQLException, ExceptionDao {
+//
+//        Connection conn = null;
+//        Statement stmt0 = null;
+//        PreparedStatement stmtp = null;
+//        ResultSet rs0 = null, keys = null;
+//        String query = null;
+//        String annotationName = Constants.INITIAL_ANNOTATION;
+//        ProcessSummaryType process = new ProcessSummaryType();
+//        VersionSummaryType first_version = new VersionSummaryType();
+//        process.getVersionSummaries().clear();
+//        process.getVersionSummaries().add(first_version);
+//        try {
+//            conn = this.getConnection();
+//            // store process details to get processId.
+//            query = " insert into " + ConstantDB.TABLE_PROCESSES
+//                    + "(" + ConstantDB.ATTR_NAME + ","
+//                    + ConstantDB.ATTR_DOMAIN + ","
+//                    + ConstantDB.ATTR_OWNER + ","
+//                    + ConstantDB.ATTR_ORIGINAL_TYPE + ")"
+//                    + " values (?, ?, ?, ?) ";
+//            stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+//            stmtp.setString(1, processName);
+//            stmtp.setString(2, domain);
+//            stmtp.setString(3, username);
+//            stmtp.setString(4, nativeType);
+//            int rs1 = stmtp.executeUpdate();
+//            keys = stmtp.getGeneratedKeys();
+//            if (!keys.next()) {
+//                throw new ExceptionDao("Error: cannot retrieve generated key.");
+//            }
+//            Integer processId = keys.getInt(1);
+//            keys.close();
+//            stmtp.close();
+//
+//            // Store informations given as parameters in both NPF and ANF
+//            // creationDate might be null or empty.
+//            if (creationDate == null || "".compareTo(creationDate) == 0) {
+//                creationDate = now();
+//            }
+//            if (lastUpdate == null) lastUpdate = "";
+//            // copy parameters values in sync_npf
+//            InputStream sync_npf = copyParam2NPF(process_xml, nativeType, processName, version,
+//                    username, creationDate, lastUpdate);
+//            // copy parameter values in sync_cpf
+//            InputStream sync_cpf = copyParam2CPF(cpf_xml, cpf_uri, processName, version,
+//                    username, creationDate, lastUpdate);
+//            String process_string = inputStream2String(sync_npf).trim();
+//            String cpf_string = inputStream2String(sync_cpf).trim();
+//            String anf_string = inputStream2String(anf_xml).trim();
+//            query = " insert into " + ConstantDB.TABLE_CANONICALS
+//                    + "(" + ConstantDB.ATTR_URI + ","
+//                    + ConstantDB.ATTR_PROCESSID + ","
+//                    + ConstantDB.ATTR_VERSION_NAME + ","
+//                    + ConstantDB.ATTR_CREATION_DATE + ","
+//                    + ConstantDB.ATTR_LAST_UPDATE + ","
+//                    + ConstantDB.ATTR_CONTENT + ")"
+//                    + " values (?, ?, ?, ?, ?, ?) ";
+//            //+ " values (?, ?, str_to_date(?,'%Y-%c-%d %k:%i:%s'), str_to_date(?,), ?, ?) ";
+//            stmtp = conn.prepareStatement(query);
+//            stmtp.setString(1, cpf_uri);
+//            stmtp.setInt(2, processId);
+//            stmtp.setString(3, version);
+//            stmtp.setString(4, creationDate);
+//            stmtp.setString(5, lastUpdate);
+//            stmtp.setString(6, cpf_string);
+//            Integer rs2 = stmtp.executeUpdate();
+//
+//
+//            query = " insert into " + ConstantDB.TABLE_NATIVES
+//                    + "(" + ConstantDB.ATTR_CONTENT + ","
+//                    + ConstantDB.ATTR_NAT_TYPE + ","
+//                    + ConstantDB.ATTR_CANONICAL + ")"
+//                    + " values (?,?,?) ";
+//            stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+//            stmtp.setString(1, process_string);
+//            stmtp.setString(2, nativeType);
+//            stmtp.setString(3, cpf_uri);
+//            Integer rs6 = stmtp.executeUpdate();
+//            keys = stmtp.getGeneratedKeys();
+//            if (!keys.next()) {
+//                throw new ExceptionDao("Error: cannot retrieve NPF id.");
+//            }
+//            int natId = keys.getInt(1);
+//            keys.close();
+//            stmtp.close();
+//
+//            query = " insert into " + ConstantDB.TABLE_ANNOTATIONS
+//                    + "(" + ConstantDB.ATTR_NATIVE + ","
+//                    + ConstantDB.ATTR_CANONICAL + ","
+//                    + ConstantDB.ATTR_NAME + ","
+//                    + ConstantDB.ATTR_CONTENT + ")"
+//                    + " values (?,?,?,?) ";
+//            stmtp = conn.prepareStatement(query, Statement.RETURN_GENERATED_KEYS);
+//            stmtp.setInt(1, natId);
+//            stmtp.setString(2, cpf_uri);
+//            stmtp.setString(3, annotationName);
+//            stmtp.setString(4, anf_string);
+//            stmtp.executeUpdate();
+//            stmtp.close();
+//
+//            process.setDomain(domain);
+//            process.setId(processId);
+//            process.setLastVersion(version);
+//            process.setName(processName);
+//            process.setOriginalNativeType(nativeType);
+//            process.setRanking("");
+//            process.setOwner(username);
+//            first_version.setName(version);
+//            first_version.setCreationDate(creationDate);
+//            first_version.setLastUpdate(lastUpdate);
+//            first_version.setRanking("");
+//            AnnotationsType annotations =
+//                    new AnnotationsType();
+//            first_version.getAnnotations().add(annotations);
+//            annotations.setNativeType(nativeType);
+//            annotations.getAnnotationName().add(Constants.INITIAL_ANNOTATION);
+//            conn.commit();
+//
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            conn.rollback();
+//            throw new ExceptionDao("SQL error: " + e.getMessage() + "\n");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            conn.rollback();
+//            throw new ExceptionDao("Error: " + e.getMessage() + "\n");
+//        } finally {
+//            Release(conn, stmt0, rs0);
+//        }
+//        return process;
+//    }
 
     private String now() throws ExceptionDao {
         Connection conn = null;
@@ -394,44 +276,44 @@ public class ProcessDao extends BasicDao {
         return res;
     }
 
-    /**
-     * Generate a new npf which is the result of writing parameters in process_xml.
-     *
-     * @param process_xml  the given npf to be synchronised
-     * @param nativeType   npf native type
-     * @param processName
-     * @param version
-     * @param username
-     * @param creationDate
-     * @param lastUpdate
-     * @return
-     * @throws javax.xml.bind.JAXBException
-     */
-    private InputStream copyParam2NPF(InputStream process_xml,
-                                      String nativeType, String processName,
-                                      String version, String username, String creationDate,
-                                      String lastUpdate) throws JAXBException {
-
-        InputStream res = null;
-        if (nativeType.compareTo("XPDL 2.1") == 0) {
-            JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
-            Unmarshaller u = jc.createUnmarshaller();
-            JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
-            PackageType pkg = rootElement.getValue();
-            copyParam2xpdl(pkg, processName, version, username, creationDate, lastUpdate);
-
-            Marshaller m = jc.createMarshaller();
-            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
-            m.marshal(rootElement, xpdl_xml);
-            res = new ByteArrayInputStream(xpdl_xml.toByteArray());
-
-        } else if (nativeType.compareTo("EPML 2.0") == 0) {
-            // TODO as epml xschema does not allow any meta data, nothing to do
-            res = process_xml;
-        }
-        return res;
-    }
+//    /**
+//     * Generate a new npf which is the result of writing parameters in process_xml.
+//     *
+//     * @param process_xml  the given npf to be synchronised
+//     * @param nativeType   npf native type
+//     * @param processName
+//     * @param version
+//     * @param username
+//     * @param creationDate
+//     * @param lastUpdate
+//     * @return
+//     * @throws javax.xml.bind.JAXBException
+//     */
+//    private InputStream copyParam2NPF(InputStream process_xml,
+//                                      String nativeType, String processName,
+//                                      String version, String username, String creationDate,
+//                                      String lastUpdate) throws JAXBException {
+//
+//        InputStream res = null;
+//        if (nativeType.compareTo("XPDL 2.1") == 0) {
+//            JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
+//            Unmarshaller u = jc.createUnmarshaller();
+//            JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
+//            PackageType pkg = rootElement.getValue();
+//            copyParam2xpdl(pkg, processName, version, username, creationDate, lastUpdate);
+//
+//            Marshaller m = jc.createMarshaller();
+//            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+//            ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
+//            m.marshal(rootElement, xpdl_xml);
+//            res = new ByteArrayInputStream(xpdl_xml.toByteArray());
+//
+//        } else if (nativeType.compareTo("EPML 2.0") == 0) {
+//            // TODO as epml xschema does not allow any meta data, nothing to do
+//            res = process_xml;
+//        }
+//        return res;
+//    }
 
     /**
      * Return an inputstream which is cpf_xml where attributes are set to parameter values
@@ -531,46 +413,46 @@ public class ProcessDao extends BasicDao {
         if (lastUpdate != null) pkg.getPackageHeader().getModificationDate().setValue(lastUpdate);
     }
 
-    /**
-     * Return the native format for process version identified by <processId, version>
-     * in native type nativeType.
-     *
-     * @param processId
-     * @param version
-     * @param nativeType
-     * @return
-     */
-    public String getNative(Integer processId, String version, String nativeType) throws ExceptionDao {
-        Connection conn = null;
-        Statement stmt = null;
-        ResultSet rs = null;
-        String query = null;
-        try {
-            conn = this.getConnection();
-            stmt = conn.createStatement();
-            query = " select " + "A." + ConstantDB.ATTR_CONTENT
-                    + " from " + ConstantDB.TABLE_NATIVES + " A "
-                    + " join " + ConstantDB.TABLE_CANONICALS + " C "
-                    + " on (" + "A." + ConstantDB.ATTR_CANONICAL + " = " + "C." + ConstantDB.ATTR_URI + ")"
-                    + " where " + ConstantDB.ATTR_PROCESSID + " = " + processId.toString()
-                    + " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + version + "'"
-                    + " and " + ConstantDB.ATTR_NAT_TYPE + " = '" + nativeType + "'";
-            rs = stmt.executeQuery(query);
-            if (rs.next()) {
-                return rs.getString(1);
-            } else {
-                throw new ExceptionDao("Cannot access the native format.");
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-            throw new ExceptionDao("Error: " + e.getMessage() + "\n");
-        } catch (Exception e) {
-            e.printStackTrace();
-            throw new ExceptionDao("Error: " + e.getMessage() + "\n");
-        } finally {
-            Release(conn, stmt, rs);
-        }
-    }
+//    /**
+//     * Return the native format for process version identified by <processId, version>
+//     * in native type nativeType.
+//     *
+//     * @param processId
+//     * @param version
+//     * @param nativeType
+//     * @return
+//     */
+//    public String getNative(Integer processId, String version, String nativeType) throws ExceptionDao {
+//        Connection conn = null;
+//        Statement stmt = null;
+//        ResultSet rs = null;
+//        String query = null;
+//        try {
+//            conn = this.getConnection();
+//            stmt = conn.createStatement();
+//            query = " select " + "A." + ConstantDB.ATTR_CONTENT
+//                    + " from " + ConstantDB.TABLE_NATIVES + " A "
+//                    + " join " + ConstantDB.TABLE_CANONICALS + " C "
+//                    + " on (" + "A." + ConstantDB.ATTR_CANONICAL + " = " + "C." + ConstantDB.ATTR_URI + ")"
+//                    + " where " + ConstantDB.ATTR_PROCESSID + " = " + processId.toString()
+//                    + " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + version + "'"
+//                    + " and " + ConstantDB.ATTR_NAT_TYPE + " = '" + nativeType + "'";
+//            rs = stmt.executeQuery(query);
+//            if (rs.next()) {
+//                return rs.getString(1);
+//            } else {
+//                throw new ExceptionDao("Cannot access the native format.");
+//            }
+//        } catch (SQLException e) {
+//            e.printStackTrace();
+//            throw new ExceptionDao("Error: " + e.getMessage() + "\n");
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//            throw new ExceptionDao("Error: " + e.getMessage() + "\n");
+//        } finally {
+//            Release(conn, stmt, rs);
+//        }
+//    }
 
 
     /**

@@ -168,48 +168,48 @@ public class DataAccessCanoniserManagerImpl implements DataAccessCanoniserManage
         return res;
     }
 
-    /* (non-Javadoc)
-      * @see org.apromore.dao.DataAccessCanoniserManager#storeNativeCpf(org.apromore.model.StoreNativeCpfInputMsgType  payload )*
-      */
-    public StoreNativeCpfOutputMsgType storeNativeCpf(StoreNativeCpfInputMsgType payload) {
-        LOGGER.info("Executing operation storeNativeCpf");
-        StoreNativeCpfOutputMsgType res = new StoreNativeCpfOutputMsgType();
-        ResultType result = new ResultType();
-        res.setResult(result);
-        String username = payload.getEditSession().getUsername();
-        String nativeType = payload.getEditSession().getNativeType();
-        String processName = payload.getEditSession().getProcessName();
-        String domain = payload.getEditSession().getDomain();
-        String version = payload.getEditSession().getVersionName();
-        String created = payload.getEditSession().getCreationDate();
-        String lastupdate = payload.getEditSession().getLastUpdate();
-        String cpf_uri = payload.getCpfURI();
-        try {
-            DataHandler handler = payload.getNative();
-            InputStream process_xml = handler.getInputStream();
-            DataHandler handlercpf = payload.getCpf();
-            InputStream cpf_xml = handlercpf.getInputStream();
-            DataHandler handleranf = payload.getAnf();
-            InputStream anf_xml = handleranf.getInputStream();
-
-            ProcessSummaryType process = ProcessDao.getInstance().storeNativeCpf(
-                    username, processName, cpf_uri, domain,
-                    nativeType, version, created, lastupdate,
-                    process_xml, cpf_xml, anf_xml);
-            res.setProcessSummary(process);
-            result.setCode(0);
-            result.setMessage("");
-        } catch (ExceptionDao ex) {
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        } catch (SQLException ex) {
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        } catch (IOException ex) {
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        }
-        return res;
-    }
+//    /* (non-Javadoc)
+//      * @see org.apromore.dao.DataAccessCanoniserManager#storeNativeCpf(org.apromore.model.StoreNativeCpfInputMsgType  payload )*
+//      */
+//    public StoreNativeCpfOutputMsgType storeNativeCpf(StoreNativeCpfInputMsgType payload) {
+//        LOGGER.info("Executing operation storeNativeCpf");
+//        StoreNativeCpfOutputMsgType res = new StoreNativeCpfOutputMsgType();
+//        ResultType result = new ResultType();
+//        res.setResult(result);
+//        String username = payload.getEditSession().getUsername();
+//        String nativeType = payload.getEditSession().getNativeType();
+//        String processName = payload.getEditSession().getProcessName();
+//        String domain = payload.getEditSession().getDomain();
+//        String version = payload.getEditSession().getVersionName();
+//        String created = payload.getEditSession().getCreationDate();
+//        String lastupdate = payload.getEditSession().getLastUpdate();
+//        String cpf_uri = payload.getCpfURI();
+//        try {
+//            DataHandler handler = payload.getNative();
+//            InputStream process_xml = handler.getInputStream();
+//            DataHandler handlercpf = payload.getCpf();
+//            InputStream cpf_xml = handlercpf.getInputStream();
+//            DataHandler handleranf = payload.getAnf();
+//            InputStream anf_xml = handleranf.getInputStream();
+//
+//            ProcessSummaryType process = ProcessDao.getInstance().storeNativeCpf(
+//                    username, processName, cpf_uri, domain,
+//                    nativeType, version, created, lastupdate,
+//                    process_xml, cpf_xml, anf_xml);
+//            res.setProcessSummary(process);
+//            result.setCode(0);
+//            result.setMessage("");
+//        } catch (ExceptionDao ex) {
+//            result.setCode(-1);
+//            result.setMessage(ex.getMessage());
+//        } catch (SQLException ex) {
+//            result.setCode(-1);
+//            result.setMessage(ex.getMessage());
+//        } catch (IOException ex) {
+//            result.setCode(-1);
+//            result.setMessage(ex.getMessage());
+//        }
+//        return res;
+//    }
 
 }

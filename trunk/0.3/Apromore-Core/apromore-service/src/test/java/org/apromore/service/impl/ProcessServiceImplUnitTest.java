@@ -1,14 +1,39 @@
 package org.apromore.service.impl;
 
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.hamcrest.Matchers.nullValue;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.expectLastCall;
+import static org.powermock.api.easymock.PowerMock.replay;
+import static org.powermock.api.easymock.PowerMock.replayAll;
+import static org.powermock.api.easymock.PowerMock.verify;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
+
+import java.util.ArrayList;
+import java.util.List;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.util.ByteArrayDataSource;
+
+import org.apromore.TestData;
 import org.apromore.dao.jpa.AnnotationDaoJpa;
 import org.apromore.dao.jpa.CanonicalDaoJpa;
 import org.apromore.dao.jpa.NativeDaoJpa;
 import org.apromore.dao.jpa.ProcessDaoJpa;
-import org.apromore.dao.model.*;
+import org.apromore.dao.model.Annotation;
+import org.apromore.dao.model.Canonical;
+import org.apromore.dao.model.Native;
+import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Process;
+import org.apromore.dao.model.User;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.NativeFormatNotFoundException;
 import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.ProcessSummaryType;
 import org.apromore.service.model.Format;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -21,15 +46,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import javax.activation.DataSource;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.easymock.EasyMock.expect;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.powermock.api.easymock.PowerMock.*;
 
 /**
  * Unit test the UserService Implementation.
@@ -44,6 +60,8 @@ import static org.powermock.api.easymock.PowerMock.*;
 @PrepareForTest({ ProcessDaoJpa.class, CanonicalDaoJpa.class, NativeDaoJpa.class, AnnotationDaoJpa.class })
 public class ProcessServiceImplUnitTest {
 
+    private static final String CONDITION = " and  p.processId in (select k.processId FROM Keyword k WHERE k.word like '%invoicing%' )";
+
     @Rule
 	public ExpectedException exception = ExpectedException.none();
 
@@ -56,6 +74,13 @@ public class ProcessServiceImplUnitTest {
     @Autowired
     private AnnotationDaoJpa annDao;
 
+    @Autowired
+    private UserServiceImpl usrSrv;
+    @Autowired
+    private CanoniserServiceImpl canSrv;
+    @Autowired
+    private FormatServiceImpl fmtSrv;
+
     private ProcessServiceImpl service;
 
     @Before
@@ -65,10 +90,16 @@ public class ProcessServiceImplUnitTest {
         canDao = createMock(CanonicalDaoJpa.class);
         natDao = createMock(NativeDaoJpa.class);
         annDao = createMock(AnnotationDaoJpa.class);
+        usrSrv = createMock(UserServiceImpl.class);
+        fmtSrv = createMock(FormatServiceImpl.class);
+        canSrv = new CanoniserServiceImpl();
         service.setProcessDao(proDao);
         service.setCanonicalDao(canDao);
         service.setNativeDao(natDao);
         service.setAnnotationDao(annDao);
+        service.setUserService(usrSrv);
+        service.setFormatService(fmtSrv);
+        service.setCanoniserService(canSrv);
     }
 
     @Test
@@ -84,6 +115,30 @@ public class ProcessServiceImplUnitTest {
         verify(proDao);
 
         assertThat(processSummary.getProcessSummary().size(), equalTo(processes.size()));
+    }
+
+    @Test
+    public void getAllProcessesWithSearchCriteria() {
+        String searchExpression = "invoicing";
+        List<Canonical> canonicals = new ArrayList<Canonical>();
+        List<Object[]> processes = new ArrayList<Object[]>();
+
+        Object[] procSummary = new Object[2];
+        Process process = createProcess();
+        procSummary[0] = process;
+        procSummary[1] = "2.0";
+        processes.add(procSummary);
+
+        expect(proDao.getAllProcesses(CONDITION)).andReturn(processes);
+        expect(canDao.findByProcessId(Long.valueOf(process.getProcessId()).intValue())).andReturn(canonicals);
+        replay(proDao, canDao);
+
+        ProcessSummariesType processSummary = service.readProcessSummaries(searchExpression);
+
+        verify(proDao, canDao);
+
+        assertThat(processSummary.getProcessSummary().size(), equalTo(processes.size()));
+        assertThat(processSummary.getProcessSummary().get(0).getLastVersion(), equalTo(null));
     }
 
     @Test
@@ -103,7 +158,6 @@ public class ProcessServiceImplUnitTest {
 
         expect(proDao.getAllProcesses(searchExpression)).andReturn(processes);
         expect(canDao.findByProcessId(Long.valueOf(process.getProcessId()).intValue())).andReturn(canonicals);
-
         replay(proDao, canDao);
 
         ProcessSummariesType processSummary = service.readProcessSummaries(searchExpression);
@@ -136,7 +190,6 @@ public class ProcessServiceImplUnitTest {
         expect(proDao.getAllProcesses(searchExpression)).andReturn(processes);
         expect(canDao.findByProcessId(Long.valueOf(process.getProcessId()).intValue())).andReturn(canonicals);
         expect(natDao.findNativeByCanonical(Long.valueOf(process.getProcessId()).intValue(), "version")).andReturn(natives);
-
         replay(proDao, canDao, natDao);
 
         ProcessSummariesType processSummary = service.readProcessSummaries(searchExpression);
@@ -175,7 +228,6 @@ public class ProcessServiceImplUnitTest {
         expect(canDao.findByProcessId(Long.valueOf(process.getProcessId()).intValue())).andReturn(canonicals);
         expect(natDao.findNativeByCanonical(Long.valueOf(process.getProcessId()).intValue(), "version")).andReturn(natives);
         expect(annDao.findByUri(1234)).andReturn(annotations);
-
         replay(proDao, canDao, natDao, annDao);
 
         ProcessSummariesType processSummary = service.readProcessSummaries(searchExpression);
@@ -351,11 +403,50 @@ public class ProcessServiceImplUnitTest {
 
         verifyAll();
 
-        MatcherAssert.assertThat(data, Matchers.notNullValue());
-        MatcherAssert.assertThat(data.getCpf(), Matchers.notNullValue());
-        MatcherAssert.assertThat(data.getAnf(), Matchers.nullValue());
+        assertThat(data, notNullValue());
+        assertThat(data.getCpf(), notNullValue());
+        assertThat(data.getAnf(), nullValue());
     }
 
+    
+    @Test
+    public void testImportProcess() throws Exception {
+        String username = "bubba";
+        String processName = "TestProcess";
+        String cpfURI = "112321234";
+        String version = "1.2";
+        String natType = "XPDL 2.1";
+        String domain = "Airport";
+        String created = "12/12/2011";
+        String lastUpdate = "12/12/2011";
+
+        DataHandler stream = new DataHandler(new ByteArrayDataSource(TestData.XPDL.getBytes(), "text/xml"));
+        User user = new User();
+        user.setUsername(username);
+
+        NativeType nativeType = new NativeType();
+        nativeType.setNatType(natType);
+
+        expect(usrSrv.findUser(username)).andReturn(user);
+        expect(fmtSrv.findNativeType(natType)).andReturn(nativeType);
+        proDao.save((Process) anyObject());
+        expectLastCall().atLeastOnce();
+        canDao.save((Canonical) anyObject());
+        expectLastCall().atLeastOnce();
+        natDao.save((Native) anyObject());
+        expectLastCall().atLeastOnce();
+        annDao.save((Annotation) anyObject());
+        expectLastCall().atLeastOnce();
+
+        replayAll();
+
+        ProcessSummaryType procSum = service.importProcess(username, processName, cpfURI, version, natType, stream, domain, "", created, lastUpdate);
+
+        verifyAll();
+
+        assertThat(procSum, notNullValue());
+    }
+    
 
     private Process createProcess() {
         Process process = new Process();

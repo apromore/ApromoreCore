@@ -26,11 +26,13 @@ import java.util.Set;
 @Table(name = "native_type")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @NamedQueries( {
-    @NamedQuery(name = NativeType.FIND_FORMATS, query = "SELECT n FROM NativeType n")
+    @NamedQuery(name = NativeType.FIND_FORMAT, query = "SELECT n FROM NativeType n"),
+    @NamedQuery(name = NativeType.FIND_FORMATS, query = "SELECT n FROM NativeType n where n.natType = :name")
 })
 @Configurable("nativeType")
 public class NativeType implements Serializable {
 
+    public final static String FIND_FORMAT = "nativeType.getFormat";
     public final static String FIND_FORMATS = "nativeType.getFormats";
 
     /** Hard coded for interoperability. */
