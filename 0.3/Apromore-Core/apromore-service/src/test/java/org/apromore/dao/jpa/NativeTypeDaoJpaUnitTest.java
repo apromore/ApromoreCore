@@ -20,6 +20,7 @@ import static org.powermock.api.easymock.PowerMock.*;
 
 /**
  * Test the Native DAO JPA class.
+ *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @RunWith(PowerMockRunner.class)
@@ -51,7 +52,7 @@ public class NativeTypeDaoJpaUnitTest {
         nats.add(createNativeType());
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(NativeType.FIND_FORMATS)).andReturn(query);
+        expect(manager.createNamedQuery(NativeType.FIND_FORMAT)).andReturn(query);
         expect(query.getResultList()).andReturn(nats);
 
         replay(manager, query);
@@ -69,7 +70,7 @@ public class NativeTypeDaoJpaUnitTest {
         List<NativeType> nats = new ArrayList<NativeType>();
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(NativeType.FIND_FORMATS)).andReturn(query);
+        expect(manager.createNamedQuery(NativeType.FIND_FORMAT)).andReturn(query);
         expect(query.getResultList()).andReturn(nats);
 
         replay(manager, query);
@@ -80,6 +81,48 @@ public class NativeTypeDaoJpaUnitTest {
 
         assertThat(natives, equalTo(nats));
     }
+
+
+    @Test
+    public final void testGetNativeType() {
+        String type = "XPDL 2.1";
+        NativeType nat = createNativeType();
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(NativeType.FIND_FORMATS)).andReturn(query);
+        expect(query.setParameter("name", type)).andReturn(query);
+        expect(query.getSingleResult()).andReturn(nat);
+
+        replay(manager, query);
+
+        NativeType natve = dao.findNativeType(type);
+
+        verify(manager, query);
+
+        assertThat(nat, equalTo(natve));
+    }
+
+
+    @Test
+    public final void testGetNativeTypeNonFound() {
+        String type = "XPDL 2.1";
+        NativeType nat = null;
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(NativeType.FIND_FORMATS)).andReturn(query);
+        expect(query.setParameter("name", type)).andReturn(query);
+        expect(query.getSingleResult()).andReturn(nat);
+
+        replay(manager, query);
+
+        NativeType natve = dao.findNativeType(type);
+
+        verify(manager, query);
+
+        assertThat(nat, equalTo(natve));
+    }
+
+
 
     @Test
     public final void testSaveNativeType() {

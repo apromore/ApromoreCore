@@ -1,6 +1,7 @@
 package org.apromore.dao.jpa;
 
 import org.apromore.dao.model.Annotation;
+import org.apromore.dao.model.Canonical;
 import org.apromore.dao.model.Native;
 import org.apromore.exception.AnnotationNotFoundException;
 import org.apromore.test.heuristic.JavaBeanHeuristic;
@@ -168,7 +169,7 @@ public class AnnotationDaoJpaUnitTest {
     private Annotation createAnnotation() {
         Annotation a = new Annotation();
 
-        a.setCanonical("123456");
+        a.setCanonical(new Canonical());
         a.setContent("12345");
         a.setName("newCanonical");
         a.setNatve(new Native());

@@ -1,6 +1,5 @@
 package org.apromore.service.impl;
 
-import org.apromore.common.ConstantDB;
 import org.apromore.common.Constants;
 import org.apromore.dao.AnnotationDao;
 import org.apromore.dao.CanonicalDao;
@@ -10,18 +9,21 @@ import org.apromore.dao.jpa.AnnotationDaoJpa;
 import org.apromore.dao.jpa.CanonicalDaoJpa;
 import org.apromore.dao.jpa.NativeDaoJpa;
 import org.apromore.dao.jpa.ProcessDaoJpa;
-import org.apromore.dao.model.Annotation;
-import org.apromore.dao.model.Canonical;
-import org.apromore.dao.model.Native;
+import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
 import org.apromore.exception.AnnotationNotFoundException;
 import org.apromore.exception.CanonicalFormatNotFoundException;
 import org.apromore.exception.ExportFormatException;
+import org.apromore.exception.ImportException;
 import org.apromore.model.AnnotationsType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.service.CanoniserService;
+import org.apromore.service.FormatService;
 import org.apromore.service.ProcessService;
+import org.apromore.service.UserService;
+import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.Format;
 import org.apromore.service.search.SearchExpressionBuilder;
 import org.apromore.util.StreamUtil;
@@ -32,12 +34,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
-import java.io.IOException;
-import java.io.UnsupportedEncodingException;
+import javax.xml.bind.*;
+import java.io.*;
 import java.util.List;
-import java.util.Vector;
 
 /**
  * Implementation of the UserService Contract.
@@ -50,6 +52,15 @@ public class ProcessServiceImpl implements ProcessService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessServiceImpl.class);
 
+    // Services
+    @Autowired
+    private CanoniserService canSrv;
+    @Autowired
+    private UserService usrSrv;
+    @Autowired
+    private FormatService fmtSrv;
+
+    // Dao's
     @Autowired
     private ProcessDao prsDao;
     @Autowired
@@ -58,6 +69,7 @@ public class ProcessServiceImpl implements ProcessService {
     private NativeDao natDao;
     @Autowired
     private AnnotationDao annDao;
+
 
 
     /**
@@ -141,9 +153,125 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
 
-    /*
-     * Builds the list of process Summaries and kicks off the versions and annotations.
+    /**
+     * @see org.apromore.service.ProcessService#importProcess(String, String, String, String, String, DataHandler, String, String, String, String)
+     * {@inheritDoc}
      */
+    @Override
+    public ProcessSummaryType importProcess(String username, String processName, String cpfURI, String version, String natType,
+            DataHandler cpf, String domain, String documentation, String created, String lastUpdate) throws ImportException {
+        LOGGER.info("Executing operation canoniseProcess");
+
+        CanonisedProcess cp;
+        ProcessSummaryType pro = new ProcessSummaryType();
+        ByteArrayOutputStream anf_xml = new ByteArrayOutputStream();
+        ByteArrayOutputStream cpf_xml = new ByteArrayOutputStream();
+
+        try {
+
+            canSrv.canonise(cpfURI, cpf.getInputStream(), natType, anf_xml, cpf_xml);
+
+            cp = new CanonisedProcess();
+            cp.setAnf(new ByteArrayInputStream(anf_xml.toByteArray()));
+            cp.setCpf(new ByteArrayInputStream(cpf_xml.toByteArray()));
+
+            User user = usrSrv.findUser(username);
+            NativeType nativeType = fmtSrv.findNativeType(natType);
+
+            pro = storeNativeAndCpf(processName, version, cpfURI, cpf.getInputStream(), domain, created, lastUpdate, cp, user, nativeType);
+
+//            process = client.storeNativeCpf(username, processName, cpfURI, domain, nativeType, versionName,
+//                    "", created, lastUpdate, cpf, cpf_is, anf_is);
+        } catch (Exception ex) {
+            LOGGER.error("Canonisation Process Failed: " + ex.toString());
+            throw new ImportException(ex);
+        }
+
+        return pro;
+    }
+
+
+    /**
+     * @see org.apromore.service.ProcessService#storeNativeAndCpf(String, String, String, InputStream, String, String, String, CanonisedProcess, User, NativeType)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = false)
+    public ProcessSummaryType storeNativeAndCpf(String processName, String version, String cpfURI, InputStream cpf, String domain,
+            String created, String lastUpdate, CanonisedProcess cp, User user, NativeType nativeType) throws JAXBException {
+        Process process = new Process();
+        process.setDomain(domain);
+        process.setName(processName);
+        process.setUser(user);
+        process.setNativeType(nativeType);
+        prsDao.save(process);
+
+        String processId = Long.toString(process.getProcessId());
+        InputStream sync_npf = StreamUtil.copyParam2NPF(cpf, nativeType.getNatType(), processName, version, user.getUsername(), created, lastUpdate);
+        InputStream sync_cpf = StreamUtil.copyParam2CPF(cp.getCpf(), processId, processName, version, user.getUsername(), created, lastUpdate);
+
+        String nativeString = StreamUtil.inputStream2String(sync_npf).trim();
+        String cpfString = StreamUtil.inputStream2String(sync_cpf).trim();
+        String anfString = StreamUtil.inputStream2String(cp.getAnf()).trim();
+
+        Canonical canonical = new Canonical();
+        canonical.setUri(cpfURI);
+        canonical.setProcess(process);
+        canonical.setVersionName(version);
+        canonical.setCreationDate(created);
+        canonical.setLastUpdate(lastUpdate);
+        canonical.setContent(cpfString);
+        canDao.save(canonical);
+
+        Native nat = new Native();
+        nat.setNativeType(nativeType);
+        nat.setCanonical(canonical);
+        nat.setContent(nativeString);
+        natDao.save(nat);
+
+        Annotation annotation = new Annotation();
+        annotation.setCanonical(canonical);
+        annotation.setNatve(nat);
+        annotation.setContent(anfString);
+        annotation.setName(Constants.INITIAL_ANNOTATION);
+        annDao.save(annotation);
+
+        return createProcessSummary(processName, processId, version, nativeType.getNatType(), domain, created, lastUpdate, user.getUsername());
+    }
+
+
+    private ProcessSummaryType createProcessSummary(String name, String processId, String version, String nativeType, String domain,
+            String created, String lastUpdate, String username) {
+        ProcessSummaryType proType = new ProcessSummaryType();
+        VersionSummaryType verType = new VersionSummaryType();
+        AnnotationsType annType = new AnnotationsType();
+
+        proType.setDomain(domain);
+        proType.setId(Integer.parseInt(processId));
+        proType.setLastVersion(version);
+        proType.setName(name);
+        proType.setOriginalNativeType(nativeType);
+        proType.setRanking("");
+        proType.setOwner(username);
+
+        verType.setName(version);
+        verType.setCreationDate(created);
+        verType.setLastUpdate(lastUpdate);
+        verType.setRanking("");
+
+        annType.setNativeType(nativeType);
+        annType.getAnnotationName().add(Constants.INITIAL_ANNOTATION);
+
+        verType.getAnnotations().add(annType);
+        proType.getVersionSummaries().clear();
+        proType.getVersionSummaries().add(verType);
+
+        return proType;
+    }
+
+    /*
+    * Builds the list of process Summaries and kicks off the versions and annotations.
+    */
     private void buildProcessSummaryList(String conditions, ProcessSummariesType processSummaries) {
         Process process;
         ProcessSummaryType processSummary;
@@ -225,6 +353,12 @@ public class ProcessServiceImpl implements ProcessService {
 
 
 
+
+
+
+
+
+
     /**
      * Set the Process DAO object for this class. Mainly for spring tests.
      *
@@ -260,4 +394,32 @@ public class ProcessServiceImpl implements ProcessService {
     public void setAnnotationDao(AnnotationDaoJpa annDAOJpa) {
         annDao = annDAOJpa;
     }
+
+    /**
+     * Set the Canoniser Service for this class. Mainly for spring tests.
+     *
+     * @param canSrv the service
+     */
+    public void setCanoniserService(CanoniserService canSrv) {
+        this.canSrv = canSrv;
+    }
+
+    /**
+     * Set the User Service for this class. Mainly for spring tests.
+     *
+     * @param usrSrv the service
+     */
+    public void setUserService(UserService usrSrv) {
+        this.usrSrv = usrSrv;
+    }
+
+    /**
+     * Set the Format Service for this class. Mainly for spring tests.
+     *
+     * @param fmtSrv the service
+     */
+    public void setFormatService(FormatService fmtSrv) {
+        this.fmtSrv = fmtSrv;
+    }
+
 }

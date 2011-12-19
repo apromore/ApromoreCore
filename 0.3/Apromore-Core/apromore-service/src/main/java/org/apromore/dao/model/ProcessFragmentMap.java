@@ -11,6 +11,7 @@ import javax.persistence.GeneratedValue;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -39,8 +40,7 @@ public class ProcessFragmentMap implements Serializable {
     public ProcessFragmentMap() { }
 
 
-    @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "mapping_id", unique = true, nullable = false)
     public Integer getMappingId() {
         return this.mappingId;

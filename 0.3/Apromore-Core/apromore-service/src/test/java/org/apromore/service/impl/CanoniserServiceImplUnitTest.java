@@ -1,6 +1,8 @@
 package org.apromore.service.impl;
 
+import org.apromore.TestData;
 import org.apromore.dao.jpa.CanonicalDaoJpa;
+import org.apromore.exception.CanoniserException;
 import org.apromore.service.impl.models.CanonicalNoAnnotationModel;
 import org.apromore.service.impl.models.CanonicalWithAnnotationModel;
 import org.hamcrest.MatcherAssert;
@@ -12,8 +14,15 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Unit test the UserService Implementation.
@@ -48,7 +57,7 @@ public class CanoniserServiceImplUnitTest {
     }
 
     @Test
-    public void DeCanoniseWithIncorrectType() throws Exception {
+    public void deCanoniseWithIncorrectType() throws Exception {
         long processId = 123;
         String version = "1.2";
         String name = "Canonical";
@@ -60,7 +69,7 @@ public class CanoniserServiceImplUnitTest {
     }
 
     @Test
-    public void DeCanoniseWithoutAnnotationsSuccessXPDL() throws Exception {
+    public void deCanoniseWithoutAnnotationsSuccessXPDL() throws Exception {
         long processId = 123;
         String version = "1.2";
         String name = "XPDL 2.1";
@@ -72,7 +81,7 @@ public class CanoniserServiceImplUnitTest {
     }
 
     @Test
-    public void DeCanoniseWithAnnotationsSuccessXPDL() throws Exception {
+    public void deCanoniseWithAnnotationsSuccessXPDL() throws Exception {
         long processId = 123;
         String version = "1.2";
         String name = "XPDL 2.1";
@@ -89,7 +98,7 @@ public class CanoniserServiceImplUnitTest {
      * doesn't work, shouldn't be null.
      */
     @Test
-    public void DeCanoniseWithoutAnnotationsSuccessEPML() throws Exception {
+    public void deCanoniseWithoutAnnotationsSuccessEPML() throws Exception {
         long processId = 123;
         String version = "1.2";
         String name = "EPML 2.0";
@@ -104,7 +113,7 @@ public class CanoniserServiceImplUnitTest {
      * doesn't work, shouldn't be null.
      */
     @Test
-    public void DeCanoniseWithAnnotationsSuccessEPML() throws Exception {
+    public void deCanoniseWithAnnotationsSuccessEPML() throws Exception {
         long processId = 123;
         String version = "1.2";
         String name = "EPML 2.0";
@@ -113,7 +122,50 @@ public class CanoniserServiceImplUnitTest {
 
         DataSource data = service.deCanonise(processId, version, name, cpf, anf);
 
-        MatcherAssert.assertThat(data, Matchers.notNullValue());
+        assertThat(data, notNullValue());
+    }
+
+
+    @Test(expected = CanoniserException.class)
+    public void canoniseFailureTypeNotFound() throws Exception {
+        String uri = "1234567890";
+        String nativeType = "PPPDL";
+
+        InputStream data = new ByteArrayInputStream(TestData.XPDL.getBytes());
+
+        service.canonise(uri, data, nativeType, null, null);
+    }
+
+    @Test
+    public void canoniseXPDL() throws Exception {
+        String uri = "1234567890";
+        String nativeType = "XPDL 2.1";
+
+        ByteArrayOutputStream anf_xml = new ByteArrayOutputStream();
+        ByteArrayOutputStream cpf_xml = new ByteArrayOutputStream();
+
+        InputStream data = new ByteArrayInputStream(TestData.XPDL.getBytes());
+
+        service.canonise(uri, data, nativeType, anf_xml, cpf_xml);
+
+        assertThat(anf_xml, notNullValue());
+        assertThat(cpf_xml, notNullValue());
+    }
+
+    @Test
+    public void canoniseEPML() throws Exception {
+        String uri = "1234567890";
+        String nativeType = "EPML 2.0";
+
+        ByteArrayOutputStream anf_xml = new ByteArrayOutputStream();
+        ByteArrayOutputStream cpf_xml = new ByteArrayOutputStream();
+
+        InputStream data = new ByteArrayInputStream(TestData.EPML.getBytes());
+
+        service.canonise(uri, data, nativeType, anf_xml, cpf_xml);
+
+        assertThat(anf_xml, notNullValue());
+        assertThat(cpf_xml, notNullValue());
     }
 
 }

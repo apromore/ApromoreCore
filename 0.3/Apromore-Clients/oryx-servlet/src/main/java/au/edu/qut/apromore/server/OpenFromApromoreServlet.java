@@ -116,11 +116,11 @@ public class OpenFromApromoreServlet extends HttpServlet {
             String targetURL = "";
             if (getProcessType(processSource) == ProcessNativeLanguage.XPDL) {
                 if (!ApromoreConfig.TRUE.equalsIgnoreCase(req.getParameter(NOTATIONS_ONLY_PARAMETER_NAME))) //TODO: externalize strings+URLs
-                    targetURL = "/editor;bpmn?stencilset=/stencilsets/bpmn1.1/bpmn1.1.json&";
+                    targetURL = "/p/editor;bpmn?stencilset=/stencilsets/bpmn1.1/bpmn1.1.json&";
                 else
-                    targetURL = "/editor;APROMORE_bpmn_readonly?stencilset=/stencilsets/bpmn1.1_readonly/bpmn1.1.json&";
+                    targetURL = "/p/editor;APROMORE_bpmn_readonly?stencilset=/stencilsets/bpmn1.1_readonly/bpmn1.1.json&";
             } else if (getProcessType(processSource) == ProcessNativeLanguage.EPML) {
-                targetURL = "/editor;epc?stencilset=/stencilsets/epc/epc.json&";
+                targetURL = "/p/editor;epc?stencilset=/stencilsets/epc/epc.json&";
             }
 
             targetURL = req.getContextPath() + targetURL

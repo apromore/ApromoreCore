@@ -1,13 +1,11 @@
 package org.apromore.dao.model;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.beans.factory.annotation.Configurable;
-
-import javax.persistence.Basic;
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
@@ -16,7 +14,10 @@ import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import java.io.Serializable;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Stores the Annotation in apromore.
@@ -45,11 +46,11 @@ public class Annotation implements Serializable {
     private static final long serialVersionUID = -2353376324638485548L;
 
     private int uri;
-    private String canonical;
     private String name;
     private String content;
 
     private Native natve;
+    private Canonical canonical;
 
     /**
      * Default Constructor.
@@ -61,7 +62,8 @@ public class Annotation implements Serializable {
      * Get the Primary Key for the Object.
      * @return Returns the uri.
      */
-    @Id @Column(name = "uri", unique = true, nullable = false, precision = 11, scale = 0)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "uri", unique = true, nullable = false, precision = 11, scale = 0)
     public int getUri() {
         return uri;
     }
@@ -72,24 +74,6 @@ public class Annotation implements Serializable {
      */
     public void setUri(final int newUri) {
         this.uri = newUri;
-    }
-
-
-    /**
-     * Get the canonical format for the Object.
-     * @return Returns the canonical format.
-     */
-    @Column(name = "canonical", unique = false, nullable = true, length = 40)
-    public String getCanonical() {
-        return canonical;
-    }
-
-    /**
-     * Set the Canonical Format for the Object.
-     * @param newCanonical The canonical format to set.
-     */
-    public void setCanonical(final String newCanonical) {
-        this.canonical = newCanonical;
     }
 
 
@@ -144,8 +128,26 @@ public class Annotation implements Serializable {
      * Set the native format for the Object.
      * @param newNative The native format to set.
      */
-    public void setNatve(Native newNative) {
+    public void setNatve(final Native newNative) {
         this.natve = newNative;
+    }
+
+    /**
+     * Get the canonical format for the Object.
+     * @return Returns the canonical format.
+     */
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name = "canonical")
+    public Canonical getCanonical() {
+        return this.canonical;
+    }
+
+    /**
+     * Set the Canonical Format for the Object.
+     * @param newCanonical The canonical format to set.
+     */
+    public void setCanonical(final Canonical newCanonical) {
+        this.canonical = newCanonical;
     }
 
 }

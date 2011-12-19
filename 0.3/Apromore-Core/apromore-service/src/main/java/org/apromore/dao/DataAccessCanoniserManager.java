@@ -18,7 +18,7 @@ public interface DataAccessCanoniserManager {
 
     public GetCpfUriOutputMsgType getCpfUri(GetCpfUriInputMsgType payload);
 
-    public StoreNativeCpfOutputMsgType storeNativeCpf(StoreNativeCpfInputMsgType payload);
+//    public StoreNativeCpfOutputMsgType storeNativeCpf(StoreNativeCpfInputMsgType payload);
 
     public StoreVersionOutputMsgType storeVersion(StoreVersionInputMsgType payload);
 

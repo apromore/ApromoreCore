@@ -17,7 +17,7 @@ public interface CanoniserManager {
 
     public GenerateAnnotationOutputMsgType generateAnnotation(GenerateAnnotationInputMsgType payload);
 
-    public CanoniseProcessOutputMsgType canoniseProcess(CanoniseProcessInputMsgType payload);
+//    public CanoniseProcessOutputMsgType canoniseProcess(CanoniseProcessInputMsgType payload);
 
     public CanoniseVersionOutputMsgType canoniseVersion(CanoniseVersionInputMsgType payload);
 }

@@ -19,4 +19,11 @@ public interface FormatService {
      */
     List<NativeType> findAllFormats();
 
+    /**
+     * Find a particular Native Type.
+     * @param nativeType the type to find
+     * @return the nativeType record
+     */
+    NativeType findNativeType(String nativeType);
+
 }

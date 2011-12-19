@@ -5,6 +5,7 @@ import org.apromore.anf.FillType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SizeType;
+import org.apromore.exception.CanoniserException;
 import org.apromore.exception.ExceptionAdapters;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
@@ -111,16 +112,16 @@ public class XPDL2Canonical {
                     
 @since           1.0
      */
-	public XPDL2Canonical(PackageType pkg) throws ExceptionAdapters {
+	public XPDL2Canonical(PackageType pkg) throws CanoniserException {
 		main(pkg);
 	}
 	
-	public XPDL2Canonical(PackageType pkg, long id) throws ExceptionAdapters {
+	public XPDL2Canonical(PackageType pkg, long id) throws CanoniserException {
 		this.cpfId = id;
 		main(pkg);
 	}
 	
-	void main(PackageType pkg) throws ExceptionAdapters
+	void main(PackageType pkg) throws CanoniserException
 	{
 		this.cpf = new CanonicalProcessType();
 		this.anf = new AnnotationsType();
@@ -232,15 +233,14 @@ public class XPDL2Canonical {
 						}
 					} catch (ClassCastException e) {
 						String msg = "Not Supported: Gateways in Canonical Format don't have a connection with an Object Type.";
-						// Logging the exception
-						throw new ExceptionAdapters(msg,e);
+						throw new CanoniserException(msg,e);
 					}
 				}
 			}
 		}
 	}
 
-	private void process_unrequired_events(NetType net) throws ExceptionAdapters {
+	private void process_unrequired_events(NetType net) throws CanoniserException {
 		List<EdgeType> edge_remove_list = new LinkedList<EdgeType>();
 		BigInteger source_id;
 		try {
@@ -274,8 +274,7 @@ public class XPDL2Canonical {
 			
 		} catch (Exception e) {
 			String msg = "Failed to get some attributes when removing the unrequired events.";
-			// log.error(msg, e);
-			throw new ExceptionAdapters(msg, e);
+			throw new CanoniserException(msg, e);
 		}
 	}
 
@@ -436,7 +435,7 @@ public class XPDL2Canonical {
 		
 	}
 
-	private void translateProcess(NetType net, ProcessType bpmnproc, ResourceTypeRefType ref) throws ExceptionAdapters {
+	private void translateProcess(NetType net, ProcessType bpmnproc, ResourceTypeRefType ref) throws CanoniserException {
 		for (Object obj: bpmnproc.getContent()) {
 			if (obj instanceof Activities)
 				activities = ((Activities)obj).getActivity();
@@ -453,7 +452,7 @@ public class XPDL2Canonical {
 		linkImplicitOrSplits(net);		
 	}
 
-	private void linkImplicitOrSplits(NetType net) throws ExceptionAdapters {
+	private void linkImplicitOrSplits(NetType net) throws CanoniserException {
 		for (NodeType act: implicitORSplit.keySet()) {
 			NodeType andSplit = implicitANDSplit.get(act);
 			NodeType orSplit = implicitORSplit.get(act);
@@ -535,7 +534,7 @@ public class XPDL2Canonical {
 		return edge;
 	}
 
-	private void translateActivity(NetType net, Activity act, ResourceTypeRefType ref) throws ExceptionAdapters {
+	private void translateActivity(NetType net, Activity act, ResourceTypeRefType ref) throws CanoniserException {
 		NodeType node = new NodeType();
 		Route route = null;
 		Event event = null;
@@ -599,7 +598,7 @@ public class XPDL2Canonical {
 		return node;
 	}
 
-	private NodeType translateEvent(NetType net, Activity act, Event event) throws ExceptionAdapters {
+	private NodeType translateEvent(NetType net, Activity act, Event event) throws CanoniserException {
 		NodeType node = null;
 
 		if (event.getStartEvent() != null) {
@@ -612,7 +611,7 @@ public class XPDL2Canonical {
 			else if (startEvent.getTrigger().equals("Timer"))
 				node = new TimerType();
 			else {
-				throw new ExceptionAdapters ("XPDL2Canonical: event type not supported (Start event): " + startEvent.getTrigger());
+				throw new CanoniserException ("XPDL2Canonical: event type not supported (Start event): " + startEvent.getTrigger());
 			}
 		} else if (event.getEndEvent() != null) {
 			EndEvent endEvent = event.getEndEvent();
@@ -626,7 +625,7 @@ public class XPDL2Canonical {
 				node.setName("Cancel");
 			}
 			else {
-				throw new ExceptionAdapters ("XPDL2Canonical: event type not supported (End Event): " + endEvent.getResult());
+				throw new CanoniserException ("XPDL2Canonical: event type not supported (End Event): " + endEvent.getResult());
 			}
 		} else {
 			IntermediateEvent interEvent = event.getIntermediateEvent();
@@ -643,14 +642,14 @@ public class XPDL2Canonical {
 				//TODO : Inform the user that the element has been removed during the process
 			}
 			else {
-				throw new ExceptionAdapters ("XPDL2Canonical: event type not supported: (Intermediate event)" + interEvent.getTrigger());
+				throw new CanoniserException ("XPDL2Canonical: event type not supported: (Intermediate event)" + interEvent.getTrigger());
 			}
 		}
 		node.setName(act.getName());
 		return node;
 	}
 
-	private NodeType translateGateway(NetType net, Activity act, Route route, TransitionRestrictions trests) throws ExceptionAdapters {
+	private NodeType translateGateway(NetType net, Activity act, Route route, TransitionRestrictions trests) throws CanoniserException {
 		boolean isSplit = false;
 		boolean isJoin = false;
 
@@ -687,7 +686,7 @@ public class XPDL2Canonical {
 			node = new StateType();
 		}
 		else {
-			throw new ExceptionAdapters ("XPDL2Canonical: gateway type not supported:[DEPRECATED] " + route.getGatewayType());
+			throw new CanoniserException("XPDL2Canonical: gateway type not supported:[DEPRECATED] " + route.getGatewayType());
 		}
 
 		return node;

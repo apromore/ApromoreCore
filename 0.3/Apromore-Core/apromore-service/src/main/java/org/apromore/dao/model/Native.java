@@ -8,6 +8,7 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
@@ -66,8 +67,8 @@ public class Native implements Serializable {
      * Get the Primary Key for the Object.
      * @return Returns the Id.
      */
-	@Id @Column(name = "uri", unique = true, nullable = false)
-	@GeneratedValue(strategy = IDENTITY)
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "uri", unique = true, nullable = false)
 	public Integer getUri() {
 		return this.uri;
 	}
