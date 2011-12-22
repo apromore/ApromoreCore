@@ -1,0 +1,46 @@
+/* ************************************************************************************************************* */
+    
+    <context-param>
+        <param-name>contextConfigLocation</param-name>
+        <param-value>classpath:spring/applicationContext*.xml</param-value>
+    </context-param>
+    
+    <listener>
+        <listener-class>org.springframework.web.context.ContextLoaderListener</listener-class>
+    </listener>
+    
+    <servlet>
+        <display-name>XPDL Link</display-name>
+        <servlet-name>apromoreXpdl</servlet-name>
+        <servlet-class>au.edu.qut.apromore.server.ApromoreXpdlLinkServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <display-name>EPML Link</display-name>
+        <servlet-name>apromoreEpml</servlet-name>
+        <servlet-class>au.edu.qut.apromore.server.ApromoreEpmlLinkServlet</servlet-class>
+    </servlet>
+
+    <servlet>
+        <display-name>Open Editor</display-name>
+        <servlet-name>OpenFromApromore</servlet-name>
+        <servlet-class>au.edu.qut.apromore.server.OpenFromApromoreServlet</servlet-class>
+    </servlet>
+
+    <servlet-mapping>
+        <servlet-name>apromoreEpml</servlet-name>
+        <url-pattern>/apromoreEpml</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>apromoreXpdl</servlet-name>
+        <url-pattern>/export2apromore</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>OpenFromApromore</servlet-name>
+        <url-pattern>/openFromApromore</url-pattern>
+    </servlet-mapping>
+
+    
+/* ************************************************************************************************************ */
+    
+    
