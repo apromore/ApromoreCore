@@ -693,7 +693,7 @@
         <commons-httpclient.version>3.1</commons-httpclient.version>
         <commons-logging.version>1.1.1</commons-logging.version>
         <json.version>20090211</json.version>
-        <xmappr.version>0.9.3</xmappr.version>
+        <xmappr.version>0.9.2</xmappr.version>
 
         <!-- Spring Version -->
         <spring.version>3.0.5.RELEASE</spring.version>
