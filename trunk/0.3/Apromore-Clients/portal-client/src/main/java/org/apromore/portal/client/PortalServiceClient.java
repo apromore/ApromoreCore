@@ -42,6 +42,7 @@ public class PortalServiceClient implements PortalService {
 
 
     @Override
+    @SuppressWarnings("unchecked")
     public String readNativeProcess(Integer sessionCode) throws IOException {
         LOGGER.debug("Invoking Read native process for session code " + sessionCode);
 
@@ -61,6 +62,7 @@ public class PortalServiceClient implements PortalService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public WriteNewProcessOutputMsgType writeNewProcess(String nativeProcess, Integer sessionCode, String processName, String versionName) throws IOException {
         LOGGER.debug(String.format("Invoking Write new process - ProcessName: %s, VersionName: %s, Native: %s", processName, versionName, nativeProcess.replaceAll("\n", "")));
 
@@ -82,6 +84,7 @@ public class PortalServiceClient implements PortalService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public WriteProcessOutputMsgType writeProcess(String nativeProcess, Integer sessionCode, String processName, String versionName) throws IOException {
         LOGGER.debug(String.format("Invoking Write process - ProcessName: %s, VersionName: %s, Native: %s", processName, versionName, nativeProcess.replaceAll("\n", "")));
 
@@ -102,6 +105,7 @@ public class PortalServiceClient implements PortalService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public WriteAnnotationOutputMsgType writeAnnotation(String nativeProcess, Integer sessionCode) throws IOException {
         LOGGER.debug(String.format("Invoking Write new annotation - Native: %s", nativeProcess.replaceAll("\n", "")));
 
@@ -119,6 +123,7 @@ public class PortalServiceClient implements PortalService {
     }
 
     @Override
+    @SuppressWarnings("unchecked")
     public WriteNewAnnotationOutputMsgType writeNewAnnotation(String nativeProcess, Integer sessionCode, String annotationName) throws IOException {
 		LOGGER.debug(String.format("Invoking Write new annotation - Annotation: %s, Native: %s", annotationName, nativeProcess.replaceAll("\n", "")));
 
@@ -158,11 +163,10 @@ public class PortalServiceClient implements PortalService {
 
 
     /**
-     * creates a String representing the content of the stream
-     *
-     * @param is
-     * @return
-     * @throws IOException
+     * creates a String representing the content of the stream.
+     * @param is the input Stream to convert
+     * @return The Stream as a String.
+     * @throws IOException if the stream is corrupt.
      */
     private String convertStreamToString(InputStream is) throws IOException {
         if (is != null) {
