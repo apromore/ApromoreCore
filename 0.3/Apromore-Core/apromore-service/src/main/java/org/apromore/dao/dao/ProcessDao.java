@@ -1074,23 +1074,20 @@ public class ProcessDao extends BasicDao {
                     } else {
                         stmt.close();
                         rs.close();
-                        throw new ExceptionDao("Version " + v
-                                + " for process " + pId.toString() + " not found. \n");
+                        throw new ExceptionDao("Version " + v + " for process " + pId.toString() + " not found. \n");
                     }
 
                     /* delete process version identified by <p, v>
-                          * retrieve r in derived_versions such as r[processId]=p
-                          */
-                    query = " select " + ConstantDB.ATTR_PROCESSID
+                     * retrieve r in derived_versions such as r[processId]=p */
+                    query = " select uri_source_version"
                             + " from " + ConstantDB.TABLE_DERIVED_VERSIONS
-                            + " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+                            + " where uri_source_version = " + cpf_uri;
                     stmt = conn.createStatement();
                     rs = stmt.executeQuery(query);
                     if (!rs.next()) {
                         /* r doesn't exist: v is the only version that exists for p,
-                               * delete p from processes (thanks to FKs, related tuple in 
-                               * process_versions will be deleted too) 
-                               */
+                         * delete p from processes (thanks to FKs, related tuple in
+                         * process_versions will be deleted too) */
                         query = " delete from " + ConstantDB.TABLE_PROCESSES
                                 + " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
                         stmtp = conn.prepareStatement(query);
@@ -1100,48 +1097,40 @@ public class ProcessDao extends BasicDao {
                         stmt.close();
                     } else {
                         /* r exists: at least two versions exist for p. Derivation tree
-                               * needs to be updated.
-                               * Retrieve parent version of <p,v> if exists (if not, v is root)
-                               * Retrieve r2 in derived_versions such as r2[derived_version,processId] = <v,p>
-                               */
-                        query = " select " + ConstantDB.ATTR_DERIVED_VERSION
+                         * needs to be updated.
+                         * Retrieve parent version of <p,v> if exists (if not, v is root)
+                         * Retrieve r2 in derived_versions such as r2[derived_version,processId] = <v,p> */
+                        query = " select uri_derived_version"
                                 + " from " + ConstantDB.TABLE_DERIVED_VERSIONS
-                                + " where " + ConstantDB.ATTR_VERSION + " = '" + v + "'"
-                                + " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+                                + " where uri_derived_version = " + cpf_uri;
                         stmt = conn.createStatement();
                         rs = stmt.executeQuery(query);
                         if (rs.next()) {
-                            /* <p,v> has children. Delete <p, v> 
-                                    */
+                            /* <p,v> has children. Delete <p, v> */
                             query = " delete from " + ConstantDB.TABLE_DERIVED_VERSIONS
-                                    + " where " + ConstantDB.ATTR_VERSION + " = '" + v + "'"
-                                    + " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+                                    + " where uri_derived_version = " + cpf_uri;
                             stmtp = conn.prepareStatement(query);
                             int r = stmtp.executeUpdate();
                             stmtp.close();
                             /* Update all child versions of <p, v> (if any).
-                                    * Replace, for each r3 in derived_version
-                                    * such as r3[version,processId] = <v,p>, replace v with r2[version]
-                                    */
+                             * Replace, for each r3 in derived_version
+                             * such as r3[version,processId] = <v,p>, replace v with r2[version] */
                             query = " update " + ConstantDB.TABLE_DERIVED_VERSIONS
-                                    + " set " + ConstantDB.ATTR_DERIVED_VERSION + " = '" + rs.getString(1) + "'"
-                                    + " where " + ConstantDB.ATTR_DERIVED_VERSION + " = '" + v + "'"
-                                    + " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+                                    + " set uri_derived_version = '" + rs.getString(1) + "'"
+                                    + " where uri_source_version = " + cpf_uri;
                             stmtp = conn.prepareStatement(query);
                             r = stmtp.executeUpdate();
                             stmtp.close();
                         } else {
                             // <p, v> has no children. Delete <p,v> 
                             query = " delete from " + ConstantDB.TABLE_DERIVED_VERSIONS
-                                    + " where " + ConstantDB.ATTR_DERIVED_VERSION + " = '" + v + "'"
-                                    + " and " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString();
+                                    + " where uri_source_version = " + cpf_uri;
                             stmtp = conn.prepareStatement(query);
                             int r = stmtp.executeUpdate();
                             stmtp.close();
                         }
                         /* delete the process version. Thanks to foreign keys, canonical,
-                               * natives and annotations will be deleted on cascade
-                               */
+                         * natives and annotations will be deleted on cascade */
                         query = " delete from " + ConstantDB.TABLE_CANONICALS
                                 + " where " + ConstantDB.ATTR_PROCESSID + " = " + pId.toString()
                                 + " and " + ConstantDB.ATTR_VERSION_NAME + " = '" + v + "'";

@@ -38,6 +38,8 @@
     <logger name="net.sf.ehcache" level="WARN" />
     <logger name="org.hibernate" level="INFO" />
     <logger name="org.springframework" level="INFO" />
+    <logger name="javax.xml" level="DEBUG" />
+    <logger name="com.sun" level="DEBUG" />
 
     <logger name="httpclient.wire" level="DEBUG" additivity="false">
         <appender-ref ref="WSLOGFILE"/>

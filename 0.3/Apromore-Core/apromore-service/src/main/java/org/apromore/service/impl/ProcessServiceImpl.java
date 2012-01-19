@@ -163,7 +163,7 @@ public class ProcessServiceImpl implements ProcessService {
         LOGGER.info("Executing operation canoniseProcess");
 
         CanonisedProcess cp;
-        ProcessSummaryType pro = new ProcessSummaryType();
+        ProcessSummaryType pro;
         ByteArrayOutputStream anf_xml = new ByteArrayOutputStream();
         ByteArrayOutputStream cpf_xml = new ByteArrayOutputStream();
 
