@@ -13,6 +13,7 @@ import java.util.List;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
+import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlElement;
 import javax.xml.bind.annotation.XmlElements;
 import javax.xml.bind.annotation.XmlType;
@@ -21,9 +22,9 @@ import javax.xml.namespace.QName;
 
 /**
  * <p>Java class for typeEPML complex type.
- * 
+ *
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ *
  * <pre>
  * &lt;complexType name="typeEPML">
  *   &lt;complexContent>
@@ -39,20 +40,20 @@ import javax.xml.namespace.QName;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
+ *
+ *
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "typeEPML", propOrder = {
-    "graphicsDefault",
-    "coordinates",
-    "definitions",
-    "attributeTypes",
-    "directory",
-    "epcs"
+        "graphicsDefault",
+        "coordinates",
+        "definitions",
+        "attributeTypes",
+        "directory",
+        "epcs"
 })
 public class TypeEPML
-    extends TExtensibleElements
+        extends TExtensibleElements
 {
 
     protected TypeGraphicsDefault graphicsDefault;
@@ -62,37 +63,37 @@ public class TypeEPML
     protected List<TypeAttrTypes> attributeTypes;
     @XmlElement(required = true)
     protected List<TypeDirectory> directory;
-    
+
     // modify
     @XmlElements({
-        @XmlElement(name = "epc", type = TypeEPC.class)
+            @XmlElement(name = "epc", type = TypeEPC.class)
     })
     protected List<TypeEPC> epcs;
-    
+
     /**
      * Gets the value of the epc property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the epc property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getEpc().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link TypeEPC }
-     * 
+     *
      */
     public List<TypeEPC> getEpcs()
     {
-    	if (epcs == null) {
+        if (epcs == null) {
             epcs = new ArrayList<TypeEPC>();
         }
         return this.epcs;
@@ -101,11 +102,11 @@ public class TypeEPML
 
     /**
      * Gets the value of the graphicsDefault property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link TypeGraphicsDefault }
-     *     
+     *
      */
     public TypeGraphicsDefault getGraphicsDefault() {
         return graphicsDefault;
@@ -113,11 +114,11 @@ public class TypeEPML
 
     /**
      * Sets the value of the graphicsDefault property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link TypeGraphicsDefault }
-     *     
+     *
      */
     public void setGraphicsDefault(TypeGraphicsDefault value) {
         this.graphicsDefault = value;
@@ -125,11 +126,11 @@ public class TypeEPML
 
     /**
      * Gets the value of the coordinates property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link TypeCoordinates }
-     *     
+     *
      */
     public TypeCoordinates getCoordinates() {
         return coordinates;
@@ -137,11 +138,11 @@ public class TypeEPML
 
     /**
      * Sets the value of the coordinates property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link TypeCoordinates }
-     *     
+     *
      */
     public void setCoordinates(TypeCoordinates value) {
         this.coordinates = value;
@@ -149,11 +150,11 @@ public class TypeEPML
 
     /**
      * Gets the value of the definitions property.
-     * 
+     *
      * @return
      *     possible object is
      *     {@link TypeDefinitions }
-     *     
+     *
      */
     public TypeDefinitions getDefinitions() {
         return definitions;
@@ -161,11 +162,11 @@ public class TypeEPML
 
     /**
      * Sets the value of the definitions property.
-     * 
+     *
      * @param value
      *     allowed object is
      *     {@link TypeDefinitions }
-     *     
+     *
      */
     public void setDefinitions(TypeDefinitions value) {
         this.definitions = value;
@@ -173,25 +174,25 @@ public class TypeEPML
 
     /**
      * Gets the value of the attributeTypes property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the attributeTypes property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getAttributeTypes().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link TypeAttrTypes }
-     * 
-     * 
+     *
+     *
      */
     public List<TypeAttrTypes> getAttributeTypes() {
         if (attributeTypes == null) {
@@ -202,25 +203,25 @@ public class TypeEPML
 
     /**
      * Gets the value of the directory property.
-     * 
+     *
      * <p>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the directory property.
-     * 
+     *
      * <p>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getDirectory().add(newItem);
      * </pre>
-     * 
-     * 
+     *
+     *
      * <p>
      * Objects of the following type(s) are allowed in the list
      * {@link TypeDirectory }
-     * 
-     * 
+     *
+     *
      */
     public List<TypeDirectory> getDirectory() {
         if (directory == null) {
@@ -228,35 +229,35 @@ public class TypeEPML
         }
         return this.directory;
     }
-    
+
     /**
      * Sets the value of the EPML id.
-     * 
+     *
      * @param URI
      *     String
-     *     
+     *
      */
     public void setId(String URI)
     {
-    	QName name1 = new QName("xmlns:apromore");
-		String value1 = "http://www.apromore.org";
-		QName name2 = new QName("apromore:URI");
-		String value2 = URI;
-		this.getOtherAttributes().put(name1, value1);
-		this.getOtherAttributes().put(name2, value2);
+        QName name1 = new QName("xmlns:apromore");
+        String value1 = "http://www.apromore.org";
+        QName name2 = new QName("apromore:URI");
+        String value2 = URI;
+        this.getOtherAttributes().put(name1, value1);
+        this.getOtherAttributes().put(name2, value2);
     }
-    
+
     /**
      * Gets the value of the EPML id.
-     * 
+     *
      * @return URI
      *     String
-     *     
+     *
      */
     public String getId()
     {
-    	QName name = new QName("apromore:URI");
-    	return this.getOtherAttributes().get(name);
+        QName name = new QName("apromore:URI");
+        return this.getOtherAttributes().get(name);
     }
 
 }

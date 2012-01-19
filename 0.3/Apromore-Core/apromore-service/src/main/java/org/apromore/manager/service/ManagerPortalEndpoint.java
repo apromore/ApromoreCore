@@ -448,8 +448,8 @@ public class ManagerPortalEndpoint {
 
             //ProcessSummaryType process = caClient.CanoniseProcess(username, processName, newCpfURI(),
             //        versionName, nativeType, is, domain, "", creationDate, lastUpdate, addFakeEvents);
-            ProcessSummaryType process = procSrv.importProcess(username, processName, newCpfURI(), versionName, nativeType,
-                    handler, domain, "", creationDate, lastUpdate);
+            ProcessSummaryType process = procSrv.importProcess(username, processName, newCpfURI(), versionName,
+                    nativeType, handler, domain, "", creationDate, lastUpdate);
 
             res.setProcessSummary(process);
             result.setCode(0);

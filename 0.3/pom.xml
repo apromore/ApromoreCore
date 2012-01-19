@@ -39,6 +39,9 @@
         <module>Apromore-Core/apromore-webapp</module>
         <module>Apromore-Portal/portal-service</module>
         <module>Apromore-Portal/portal-webapp</module>
+
+        <!-- Editor -->
+        <module>Apromore-Editor</module>
     </modules>
 
 </project>
