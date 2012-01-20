@@ -168,4 +168,20 @@ public class CanoniserServiceImplUnitTest {
         assertThat(cpf_xml, notNullValue());
     }
 
+    @Test
+    public void canoniseEPML2() throws Exception {
+        String uri = "1234567890";
+        String nativeType = "EPML 2.0";
+
+        ByteArrayOutputStream anf_xml = new ByteArrayOutputStream();
+        ByteArrayOutputStream cpf_xml = new ByteArrayOutputStream();
+
+        InputStream data = new ByteArrayInputStream(TestData.EPML2.getBytes());
+
+        service.canonise(uri, data, nativeType, anf_xml, cpf_xml);
+
+        assertThat(anf_xml, notNullValue());
+        assertThat(cpf_xml, notNullValue());
+    }
+
 }
