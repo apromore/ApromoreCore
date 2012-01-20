@@ -251,75 +251,72 @@ public class EPML2Canonical {
     private void translateEpc(NetType net, TypeEPC epc) throws CanoniserException {
         Map<String, BigInteger> role_names = new HashMap<String, BigInteger>();
 
-        //System.out.println(epc.getName());
         for (Object obj : epc.getEventOrFunctionOrRole()) {
-            if (obj instanceof TypeEvent || ((JAXBElement<TypeEvent>)obj).getValue() instanceof TypeEvent) {
-                translateEvent(net, ((JAXBElement<TypeEvent>)obj).getValue());
-                addNodeAnnotations(((JAXBElement<TypeEvent>)obj).getValue());
+            if (obj instanceof TypeEvent) {
+                JAXBElement element = (JAXBElement) obj;
+                if (element.getValue() instanceof TypeEvent) {
+                    translateEvent(net, (TypeEvent) element.getValue());
+                    addNodeAnnotations(element.getValue());
 
-            } else if (obj instanceof TypeFunction || ((JAXBElement<TypeFunction>)obj).getValue() instanceof TypeFunction) {
-                translateFunction(net, ((JAXBElement<TypeFunction>)obj).getValue());
-                addNodeAnnotations(((JAXBElement<TypeFunction>)obj).getValue());
+                } else if (element.getValue() instanceof TypeFunction) {
+                    translateFunction(net, ((JAXBElement<TypeFunction>)obj).getValue());
+                    addNodeAnnotations(element.getValue());
 
-            } else if (obj instanceof TypeAND || ((JAXBElement<TypeAND>)obj).getValue() instanceof TypeAND) {
-                id_map.put((((JAXBElement<TEpcElement>)obj).getValue()).getId(), BigInteger.valueOf(ids));
-                addNodeAnnotations(((JAXBElement<TEpcElement>)obj).getValue());
-                (((JAXBElement<TEpcElement>)obj).getValue()).setId(BigInteger.valueOf(ids++));
-                and_list.add(((JAXBElement<TypeAND>)obj).getValue());
+                } else if (element.getValue() instanceof TypeAND) {
+                    id_map.put(((TEpcElement) element.getValue()).getId(), BigInteger.valueOf(ids));
+                    addNodeAnnotations(element.getValue());
+                    ((TEpcElement) element.getValue()).setId(BigInteger.valueOf(ids++));
+                    and_list.add((TypeAND) element.getValue());
 
-            } else if (obj instanceof TypeOR || ((JAXBElement<TypeOR>)obj).getValue() instanceof TypeOR) {
-                id_map.put((((JAXBElement<TEpcElement>)obj).getValue()).getId(), BigInteger.valueOf(ids));
-                addNodeAnnotations(((JAXBElement<TEpcElement>)obj).getValue());
-                (((JAXBElement<TEpcElement>)obj).getValue()).setId(BigInteger.valueOf(ids++));
-                or_list.add(((JAXBElement<TypeOR>)obj).getValue());
+                } else if (element.getValue() instanceof TypeOR) {
+                    id_map.put(((TEpcElement) element.getValue()).getId(), BigInteger.valueOf(ids));
+                    addNodeAnnotations(element.getValue());
+                    ((TEpcElement) element.getValue()).setId(BigInteger.valueOf(ids++));
+                    or_list.add((TypeOR) element.getValue());
 
-            } else if (obj instanceof TypeXOR || ((JAXBElement<TypeXOR>)obj).getValue() instanceof TypeXOR) {
-                id_map.put((((JAXBElement<TEpcElement>)obj).getValue()).getId(), BigInteger.valueOf(ids));
-                addNodeAnnotations(obj);
-                (((JAXBElement<TEpcElement>)obj).getValue()).setId(BigInteger.valueOf(ids++));
-                xor_list.add(((JAXBElement<TypeXOR>)obj).getValue());
+                } else if (element.getValue() instanceof TypeXOR) {
+                    id_map.put(((TEpcElement) element.getValue()).getId(), BigInteger.valueOf(ids));
+                    addNodeAnnotations(element.getValue());
+                    ((TEpcElement) element.getValue()).setId(BigInteger.valueOf(ids++));
+                    xor_list.add((TypeXOR) element.getValue());
 
-            } else if (obj instanceof TypeRole || ((JAXBElement<TypeRole>)obj).getValue() instanceof TypeRole) {
-                if (!role_names.containsKey((((JAXBElement<TypeRole>)obj).getValue()).getName())) {
-                    translateRole(((JAXBElement<TypeRole>)obj).getValue());
-                    addNodeAnnotations(((JAXBElement<TypeRole>)obj).getValue());
-                    role_names.put((((JAXBElement<TypeRole>)obj).getValue()).getName(), BigInteger.valueOf(ids - 1));
-                } else {
-                    id_map.put((((JAXBElement<TypeRole>)obj).getValue()).getId(),
-                            role_names.get((((JAXBElement<TypeRole>)obj).getValue()).getName()));
-                }
+                } else if (element.getValue() instanceof TypeRole) {
+                    if (!role_names.containsKey(((TypeRole) element.getValue()).getName())) {
+                        translateRole((TypeRole) element.getValue());
+                        addNodeAnnotations(element.getValue());
+                        role_names.put(((TypeRole) element.getValue()).getName(), BigInteger.valueOf(ids - 1));
+                    } else {
+                        id_map.put(((TypeRole) element.getValue()).getId(), role_names.get(((TypeRole) element.getValue()).getName()));
+                    }
 
-            } else if (obj instanceof TypeObject || ((JAXBElement<TypeObject>)obj).getValue() instanceof TypeObject) {
-                translateObject(((JAXBElement<TypeObject>)obj).getValue());
-                addNodeAnnotations(((JAXBElement<TypeObject>)obj).getValue());
+                } else if (element.getValue() instanceof TypeObject) {
+                    translateObject((TypeObject) element.getValue());
+                    addNodeAnnotations(element.getValue());
 
-            } else if (obj instanceof TypeRANGE || ((JAXBElement<TypeRANGE>)obj).getValue() instanceof TypeRANGE) {
-                range_ids.add((((JAXBElement<TypeRANGE>)obj).getValue()).getId());
-                //translateRANGE((TypeRANGE)obj);
-                //addNodeAnnotations(obj);
+                } else if (element.getValue() instanceof TypeRANGE) {
+                    range_ids.add(((TypeRANGE) element.getValue()).getId());
 
-            } else if (obj instanceof TypeProcessInterface || ((JAXBElement<TypeProcessInterface>)obj).getValue() instanceof TypeProcessInterface) {
-                translatePI(net, ((JAXBElement<TypeProcessInterface>)obj).getValue());
-                addNodeAnnotations(((JAXBElement<TypeProcessInterface>)obj).getValue());
-            }
-        }
+                } else if (element.getValue() instanceof TypeProcessInterface) {
+                    translatePI(net, (TypeProcessInterface) element.getValue());
+                    addNodeAnnotations(element.getValue());
 
-
-        for (Object obj : epc.getEventOrFunctionOrRole()) {
-            if (obj instanceof TypeArc) {
-                TypeArc arc = (TypeArc) obj;
-                if (arc.getFlow() != null) {
-                    if (range_ids.contains(arc.getFlow().getSource()) || range_ids.contains(arc.getFlow().getTarget())) {
-                        range_flow.add(arc);
-                    } else
-                        translateArc(net, arc);
-                    addEdgeAnnotation(arc);
-                } else if (arc.getRelation() != null) {
-                    if (range_ids.contains(arc.getRelation().getSource()) || range_ids.contains(arc.getRelation().getTarget())) {
-                        range_relation.add(arc);
-                    } else
-                        translateArc(net, arc);
-                    addEdgeAnnotation(arc);
+                } else if (element.getValue() instanceof TypeArc) {
+                    TypeArc arc = (TypeArc) element.getValue();
+                    if (arc.getFlow() != null) {
+                        if (range_ids.contains(arc.getFlow().getSource()) || range_ids.contains(arc.getFlow().getTarget())) {
+                            range_flow.add(arc);
+                        } else {
+                            translateArc(net, arc);
+                        }
+                        addEdgeAnnotation(arc);
+                    } else if (arc.getRelation() != null) {
+                        if (range_ids.contains(arc.getRelation().getSource()) || range_ids.contains(arc.getRelation().getTarget())) {
+                            range_relation.add(arc);
+                        } else {
+                            translateArc(net, arc);
+                        }
+                        addEdgeAnnotation(arc);
+                    }
                 }
             }
         }
