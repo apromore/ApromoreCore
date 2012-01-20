@@ -1204,4 +1204,174 @@ public interface TestData {
             "  </epc>\n" +
             "  </directory>\n" +
             "</epml:epml>";
+    
+    public static final String EPML2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+            "<ns2:epml xmlns:ns2=\"http://www.epml.de\">\n" +
+            "<directory>\n" +
+            "  <epc epcId=\"1\" name=\"EPC\">\n" +
+            "    <property name=\"BranchName\" value=\"MAIN\"/>\n" +
+            "    <property name=\"RootFragmentId\" value=\"17e69efe-c8a8-4a33-8f3c-df21422217fa\"/>\n" +
+            "    <property name=\"VersionNumber\" value=\"1\"/>\n" +
+            "    <property name=\"ProcessName\" value=\"p1\"/>\n" +
+            "    <property name=\"PMVID\" value=\"0dc7f5d6-8470-46d0-9b50-c7bd8e7941f2\"/>\n" +
+            "    <function id=\"1\">\n" +
+            "      <name>Function_4</name>\n" +
+            "      <graphics>\n" +
+            "        <position height=\"31\" width=\"81\" x=\"665\" y=\"335\"/>\n" +
+            "      </graphics>\n" +
+            "    </function>\n" +
+            "    <xor id=\"4\">\n" +
+            "      <graphics>\n" +
+            "        <position height=\"31\" width=\"31\" x=\"310\" y=\"710\"/>\n" +
+            "      </graphics>\n" +
+            "      <name/>\n" +
+            "    </xor>\n" +
+            "    <function id=\"5\">\n" +
+            "      <name>Function_5</name>\n" +
+            "      <graphics>\n" +
+            "        <position height=\"31\" width=\"81\" x=\"445\" y=\"350\"/>\n" +
+            "      </graphics>\n" +
+            "    </function>\n" +
+            "    <function id=\"6\">\n" +
+            "      <name>Function_3</name>\n" +
+            "      <graphics>\n" +
+            "        <position height=\"31\" width=\"81\" x=\"65\" y=\"405\"/>\n" +
+            "      </graphics>\n" +
+            "    </function>\n" +
+            "    <xor id=\"7\">\n" +
+            "      <graphics>\n" +
+            "        <position height=\"31\" width=\"31\" x=\"85\" y=\"530\"/>\n" +
+            "      </graphics>\n" +
+            "      <name/>\n" +
+            "    </xor>\n" +
+            "    <function id=\"8\">\n" +
+            "      <name>Function_1</name>\n" +
+            "      <graphics>\n" +
+            "        <position height=\"31\" width=\"81\" x=\"305\" y=\"60\"/>\n" +
+            "      </graphics>\n" +
+            "    </function>\n" +
+            "    <xor id=\"9\">\n" +
+            "      <graphics>\n" +
+            "        <position height=\"31\" width=\"31\" x=\"110\" y=\"210\"/>\n" +
+            "      </graphics>\n" +
+            "      <name/>\n" +
+            "    </xor>\n" +
+            "    <function id=\"11\">\n" +
+            "      <name>Function_6</name>\n" +
+            "      <graphics>\n" +
+            "        <position height=\"31\" width=\"81\" x=\"100\" y=\"615\"/>\n" +
+            "      </graphics>\n" +
+            "    </function>\n" +
+            "    <function id=\"12\">\n" +
+            "      <name>Function_2</name>\n" +
+            "      <graphics>\n" +
+            "        <position height=\"31\" width=\"81\" x=\"250\" y=\"395\"/>\n" +
+            "      </graphics>\n" +
+            "    </function>\n" +
+            "    <arc id=\"16\">\n" +
+            "      <graphics>\n" +
+            "        <position x=\"386\" y=\"75\"/>\n" +
+            "        <position x=\"141\" y=\"210\"/>\n" +
+            "      </graphics>\n" +
+            "      <flow source=\"8\" target=\"9\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"19\">\n" +
+            "      <graphics>\n" +
+            "        <position x=\"140\" y=\"615\"/>\n" +
+            "        <position x=\"310\" y=\"710\"/>\n" +
+            "      </graphics>\n" +
+            "      <flow source=\"11\" target=\"4\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"20\">\n" +
+            "      <graphics>\n" +
+            "        <position x=\"141\" y=\"241\"/>\n" +
+            "        <position x=\"485\" y=\"350\"/>\n" +
+            "      </graphics>\n" +
+            "      <flow source=\"9\" target=\"5\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"21\">\n" +
+            "      <graphics>\n" +
+            "        <position x=\"250\" y=\"410\"/>\n" +
+            "        <position x=\"116\" y=\"530\"/>\n" +
+            "      </graphics>\n" +
+            "      <flow source=\"12\" target=\"7\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"22\">\n" +
+            "      <graphics>\n" +
+            "        <position x=\"105\" y=\"405\"/>\n" +
+            "        <position x=\"116\" y=\"530\"/>\n" +
+            "      </graphics>\n" +
+            "      <flow source=\"6\" target=\"7\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"23\">\n" +
+            "      <graphics>\n" +
+            "        <position x=\"746\" y=\"350\"/>\n" +
+            "        <position x=\"341\" y=\"710\"/>\n" +
+            "      </graphics>\n" +
+            "      <flow source=\"1\" target=\"4\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"24\">\n" +
+            "      <graphics>\n" +
+            "        <position x=\"116\" y=\"561\"/>\n" +
+            "        <position x=\"140\" y=\"615\"/>\n" +
+            "      </graphics>\n" +
+            "      <flow source=\"7\" target=\"11\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"28\">\n" +
+            "      <graphics>\n" +
+            "        <position x=\"141\" y=\"241\"/>\n" +
+            "        <position x=\"705\" y=\"335\"/>\n" +
+            "      </graphics>\n" +
+            "      <flow source=\"9\" target=\"1\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"29\">\n" +
+            "      <graphics>\n" +
+            "        <position x=\"110\" y=\"241\"/>\n" +
+            "        <position x=\"105\" y=\"405\"/>\n" +
+            "      </graphics>\n" +
+            "      <flow source=\"9\" target=\"6\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"30\">\n" +
+            "      <graphics>\n" +
+            "        <position x=\"141\" y=\"241\"/>\n" +
+            "        <position x=\"290\" y=\"395\"/>\n" +
+            "      </graphics>\n" +
+            "      <flow source=\"9\" target=\"12\"/>\n" +
+            "    </arc>\n" +
+            "    <function id=\"31\">\n" +
+            "      <graphics>\n" +
+            "        <position height=\"41\" width=\"81\" x=\"325\" y=\"760\"/>\n" +
+            "      </graphics>\n" +
+            "      <name>Function</name>\n" +
+            "    </function>\n" +
+            "    <arc id=\"32\">\n" +
+            "      <graphics>\n" +
+            "        <position x=\"341\" y=\"741\"/>\n" +
+            "        <position x=\"325\" y=\"780\"/>\n" +
+            "      </graphics>\n" +
+            "      <flow source=\"4\" target=\"31\"/>\n" +
+            "    </arc>\n" +
+            "    <function id=\"33\">\n" +
+            "      <graphics>\n" +
+            "        <position height=\"41\" width=\"81\" x=\"360\" y=\"505\"/>\n" +
+            "      </graphics>\n" +
+            "      <name>Function</name>\n" +
+            "    </function>\n" +
+            "    <arc id=\"34\">\n" +
+            "      <graphics>\n" +
+            "        <position x=\"485\" y=\"381\"/>\n" +
+            "        <position x=\"400\" y=\"505\"/>\n" +
+            "      </graphics>\n" +
+            "      <flow source=\"5\" target=\"33\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"35\">\n" +
+            "      <graphics>\n" +
+            "        <position x=\"400\" y=\"546\"/>\n" +
+            "        <position x=\"341\" y=\"710\"/>\n" +
+            "      </graphics>\n" +
+            "      <flow source=\"33\" target=\"4\"/>\n" +
+            "    </arc>\n" +
+            "  </epc>\n" +
+            "</directory>\n" +
+            "</ns2:epml>";
 }
