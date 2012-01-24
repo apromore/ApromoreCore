@@ -40,8 +40,8 @@
         <module>Apromore-Portal/portal-service</module>
         <module>Apromore-Portal/portal-webapp</module>
 
-        <!-- Editor -->
-        <module>Apromore-Editor</module>
+        <!-- Editor
+        <module>Apromore-Editor</module>  -->
     </modules>
 
 </project>
