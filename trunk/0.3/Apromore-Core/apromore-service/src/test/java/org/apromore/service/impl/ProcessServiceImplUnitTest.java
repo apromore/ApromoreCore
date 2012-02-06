@@ -60,7 +60,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 @PrepareForTest({ ProcessDaoJpa.class, CanonicalDaoJpa.class, NativeDaoJpa.class, AnnotationDaoJpa.class })
 public class ProcessServiceImplUnitTest {
 
-    private static final String CONDITION = " and  p.processId in (select k.processId FROM Keyword k WHERE k.word like '%invoicing%' )";
+    private static final String CONDITION = " and  p.processId in (select k.id.processId FROM Keyword k WHERE k.id.word like '%invoicing%' )";
 
     @Rule
 	public ExpectedException exception = ExpectedException.none();
