@@ -14,10 +14,10 @@ import static org.hamcrest.Matchers.equalTo;
  */
 public class SearchExpressionBuilderUnitTest {
 
-    private static final String SEARCH_EXPRESSION_SINGLE = " and  p.processId in (select k.processId FROM Keyword k WHERE k.word like '%invoicing%' )";
-    private static final String SEARCH_EXPRESSION_OR = " and  (  p.processId in (select k.processId FROM Keyword k WHERE k.word like '%yawl%' ) or  p.processId in (select k.processId FROM Keyword k WHERE k.word like '%protos%' ) ) ";
-    private static final String SEARCH_EXPRESSION_AND = " and  p.processId in (select k.processId FROM Keyword k WHERE k.word like '%yawl%' ) and  p.processId in (select k.processId FROM Keyword k WHERE k.word like '%protos%' )";
-    private static final String SEARCH_EXPRESSION_AND_OR = " and  (  p.processId in (select k.processId FROM Keyword k WHERE k.word like '%yawl%' ) or  p.processId in (select k.processId FROM Keyword k WHERE k.word like '%protos%' ) )  and  p.processId in (select k.processId FROM Keyword k WHERE k.word like '%invoicing%' )";
+    private static final String SEARCH_EXPRESSION_SINGLE = " and  p.processId in (select k.id.processId FROM Keyword k WHERE k.id.word like '%invoicing%' )";
+    private static final String SEARCH_EXPRESSION_OR = " and  (  p.processId in (select k.id.processId FROM Keyword k WHERE k.id.word like '%yawl%' ) or  p.processId in (select k.id.processId FROM Keyword k WHERE k.id.word like '%protos%' ) ) ";
+    private static final String SEARCH_EXPRESSION_AND = " and  p.processId in (select k.id.processId FROM Keyword k WHERE k.id.word like '%yawl%' ) and  p.processId in (select k.id.processId FROM Keyword k WHERE k.id.word like '%protos%' )";
+    private static final String SEARCH_EXPRESSION_AND_OR = " and  (  p.processId in (select k.id.processId FROM Keyword k WHERE k.id.word like '%yawl%' ) or  p.processId in (select k.id.processId FROM Keyword k WHERE k.id.word like '%protos%' ) )  and  p.processId in (select k.id.processId FROM Keyword k WHERE k.id.word like '%invoicing%' )";
     
     private String expression;
     private SearchExpressionBuilder seb;
@@ -44,7 +44,7 @@ public class SearchExpressionBuilderUnitTest {
     @Test
     public void buildExpressionWithRealData() throws Exception {
         expression = seb.buildSearchConditions("invoicing");
-        assertThat(expression, containsString("k.word like '%invoicing%'"));
+        assertThat(expression, containsString("k.id.word like '%invoicing%'"));
         assertThat(expression, equalTo(SEARCH_EXPRESSION_SINGLE));
 
         expression = seb.buildSearchConditions("(yawl;protos)");

@@ -22,7 +22,7 @@ public class SearchExpressionBuilder {
                         current.compareTo(" ) ") == 0 || current.compareTo(" ( ") == 0) {
                     condition += current;
                 } else {
-                    condition += " p.processId in (select k.processId FROM Keyword k WHERE k.word like '%" + current + "%' )";
+                    condition += " p.processId in (select k.id.processId FROM Keyword k WHERE k.id.word like '%" + current + "%' )";
                 }
             }
         }
