@@ -1203,22 +1203,22 @@ public class ProcessDao extends BasicDao {
             stmtp.executeUpdate();
             stmtp.close();
 
-            // update derived_versions
-            query = " update " + ConstantDB.TABLE_DERIVED_VERSIONS
-                    + " set " + ConstantDB.ATTR_VERSION + " = ? "
-                    + " where " + ConstantDB.ATTR_VERSION + " = ? ";
-            stmtp = conn.prepareStatement(query);
-            stmtp.setString(1, newVersion);
-            stmtp.setString(2, preVersion);
-            stmtp.executeUpdate();
-            stmtp.close();
-            query = " update " + ConstantDB.TABLE_DERIVED_VERSIONS
-                    + " set " + ConstantDB.ATTR_DERIVED_VERSION + " = ? "
-                    + " where " + ConstantDB.ATTR_DERIVED_VERSION + " = ? ";
-            stmtp = conn.prepareStatement(query);
-            stmtp.setString(1, newVersion);
-            stmtp.setString(2, preVersion);
-            stmtp.executeUpdate();
+//            // update derived_versions
+//            query = " update " + ConstantDB.TABLE_DERIVED_VERSIONS
+//                    + " set " + ConstantDB.ATTR_VERSION + " = ? "
+//                    + " where " + ConstantDB.ATTR_VERSION + " = ? ";
+//            stmtp = conn.prepareStatement(query);
+//            stmtp.setString(1, newVersion);
+//            stmtp.setString(2, preVersion);
+//            stmtp.executeUpdate();
+//            stmtp.close();
+//            query = " update " + ConstantDB.TABLE_DERIVED_VERSIONS
+//                    + " set " + ConstantDB.ATTR_DERIVED_VERSION + " = ? "
+//                    + " where " + ConstantDB.ATTR_DERIVED_VERSION + " = ? ";
+//            stmtp = conn.prepareStatement(query);
+//            stmtp.setString(1, newVersion);
+//            stmtp.setString(2, preVersion);
+//            stmtp.executeUpdate();
 
             // synchronise with all npf associated with the process version, if any
             query = " select " + "N." + ConstantDB.ATTR_CONTENT + "," + "N." + ConstantDB.ATTR_URI
