@@ -6,7 +6,7 @@ Don't edit any content between SEC and SEC_E comments.
 .z-menubar-hor .z-menu-btn{
 	font-family : arial; /*PRO*/
 	color : #28697E; /*PRO*/
-	font-size : 14px; /*PRO*/
+	font-size : 12px; /*PRO*/
 	font-weight : bold; /*PRO*/
 }
 	
@@ -15,7 +15,7 @@ Don't edit any content between SEC and SEC_E comments.
 .z-menubar-hor .z-menu-item-btn{
 	font-family : arial; /*PRO*/
 	color : #28697E; /*PRO*/
-	font-size : 14px; /*PRO*/
+	font-size : 12px; /*PRO*/
 	font-weight : bold; /*PRO*/
 }
 	
@@ -28,7 +28,7 @@ Don't edit any content between SEC and SEC_E comments.
 .z-button .z-button-cm{
 	font-family : arial; /*PRO*/
 	color : #28697E; /*PRO*/
-	font-size : 14px; /*PRO*/
+	font-size : 12px; /*PRO*/
 	font-weight : bold; /*PRO*/
 }
 /*RULE_E*/
@@ -37,7 +37,7 @@ Don't edit any content between SEC and SEC_E comments.
 .z-toolbar .z-toolbar-button {
 	font-family : arial;  /*PRO*/
 	color : #28697E;  /*PRO*/
-	font-size : 14px;  /*PRO*/
+	font-size : 12px;  /*PRO*/
 	font-weight : bold;  /*PRO*/
 }
 	
@@ -47,21 +47,21 @@ Don't edit any content between SEC and SEC_E comments.
 .z-border-layout .z-north-header{
 	font-family : arial; /*PRO*/
 	color : #28697E; /*PRO*/
-	font-size : 14px; /*PRO*/
+	font-size : 12px; /*PRO*/
 	font-weight : bold; /*PRO*/
 }
 /*RULE_E*//*RULE:SOUTH-HEADER*/
 .z-border-layout .z-south-header{
 	font-family : arial; /*PRO*/
 	color : #28697E; /*PRO*/
-	font-size : 14px; /*PRO*/
+	font-size : 12px; /*PRO*/
 	font-weight : bold; /*PRO*/
 }
 /*RULE_E*//*RULE:WEST-HEADER*/
 .z-border-layout .z-west-header{
 	font-family : arial; /*PRO*/
 	color : #28697E; /*PRO*/
-	font-size : 14px; /*PRO*/
+	font-size : 12px; /*PRO*/
 	font-weight : bold; /*PRO*/
 }
 /*RULE_E*/
@@ -70,7 +70,7 @@ Don't edit any content between SEC and SEC_E comments.
 .z-label {
 	font-family : arial; /*PRO*/
 	color : #28697E; /*PRO*/
-	font-size : 14px; /*PRO*/
+	font-size : 12px; /*PRO*/
 	font-weight : normal; /*PRO*/
 }
 /*RULE_E*/
@@ -79,7 +79,7 @@ Don't edit any content between SEC and SEC_E comments.
 div.z-grid .z-column-cnt{
 	font-family : arial; /*PRO*/
 	color : #28697E; /*PRO*/
-	font-size : 14px; /*PRO*/
+	font-size : 12px; /*PRO*/
 	font-weight : bold; /*PRO*/
 	text-align : center; /*PRO*/
 }
