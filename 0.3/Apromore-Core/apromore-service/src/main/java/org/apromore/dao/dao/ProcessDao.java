@@ -55,7 +55,6 @@ public class ProcessDao extends BasicDao {
 
     public ProcessDao() throws Exception {
         super();
-        // TODO Auto-generated constructor stub
     }
 
     private static ProcessDao instance;
@@ -65,8 +64,7 @@ public class ProcessDao extends BasicDao {
             try {
                 instance = new ProcessDao();
             } catch (Exception e) {
-                throw new ExceptionDao(
-                        "Error: not able to get instance for DAO: " + e.getMessage() + "\n");
+                throw new ExceptionDao("Error: not able to get instance for DAO: " + e.getMessage() + "\n");
             }
         }
         return instance;
