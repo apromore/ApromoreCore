@@ -50,7 +50,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class CreateProcessController {
+public class CreateProcessController extends BaseController {
 
     private Window createProcessW;
 
@@ -70,9 +70,6 @@ public class CreateProcessController {
 
     private SelectDynamicListController ownerCB;
     private SelectDynamicListController domainCB;
-
-    @Autowired
-    ManagerService mgr;
 
 
     public CreateProcessController(MainController mainC, HashMap<String, String> formats_ext)
@@ -236,7 +233,7 @@ public class CreateProcessController {
                     nativeProcess = new ByteArrayInputStream(epml_xml.toByteArray());
                 }
                 // documentation and lastupdate are set to null, addFakeEvent is set to false
-                ProcessSummaryType process = mgr.importProcess(owner, nativeType, processName, versionName,
+                ProcessSummaryType process = getService().importProcess(owner, nativeType, processName, versionName,
                                 nativeProcess, domain, null, creationDate, null, false);
 
                 this.mainC.displayNewProcess(process);
