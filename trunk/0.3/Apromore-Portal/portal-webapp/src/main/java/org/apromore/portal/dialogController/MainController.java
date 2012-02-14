@@ -26,6 +26,7 @@ import org.zkoss.zul.Window;
 import javax.xml.bind.JAXBException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -219,13 +220,14 @@ public class MainController extends BaseController {
         try {
             getService().deleteProcessVersions(processVersions);
             this.processtable.unDisplay(processVersions);
-            int nb = 0; // to count how many process version(s) deleted
-            Set<ProcessSummaryType> keySet = processVersions.keySet();
-            Iterator it = keySet.iterator();
-            while (it.hasNext()) {
-                nb += processVersions.get(it.next()).size();
-            }
             String message;
+            int nb = 0;
+
+            // to count how many process version(s) deleted
+            Collection<List<VersionSummaryType>> sumTypes = processVersions.values();
+            for (List<VersionSummaryType> sumType : sumTypes) {
+                nb += sumType.size();
+            }
             if (nb > 1) {
                 message = nb + " process versions deleted.";
             } else {
