@@ -165,7 +165,7 @@ public class MainController extends BaseController {
     }
 
     public void reloadProcessSummaries() throws Exception {
-        ProcessSummariesType processSummaries = managerService.readProcessSummaries("");
+        ProcessSummariesType processSummaries = getService().readProcessSummaries("");
         String message = null;
         if (processSummaries.getProcessSummary().size() > 1) {
             message = " processes.";

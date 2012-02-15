@@ -16,7 +16,7 @@ public class BaseController extends Window {
 
     public static final String MANAGER_SERVICE = "managerClient";
 
-    public ManagerService managerService;
+    private ManagerService managerService;
 
 
     public ManagerService getService() {
