@@ -1,4 +1,43 @@
+DROP TABLE IF EXISTS `merged_version`;
+DROP TABLE IF EXISTS `derived_version`;
+DROP TABLE IF EXISTS `search_history`;
+DROP TABLE IF EXISTS `temp_version`;
+
+DROP TABLE IF EXISTS `annotation`;
+DROP TABLE IF EXISTS `native`;
+DROP TABLE IF EXISTS `edit_session_mapping`;
+DROP TABLE IF EXISTS `fragment_version_dag`;
+DROP TABLE IF EXISTS `process_fragment_map`;
+DROP TABLE IF EXISTS `subcluster`;
+DROP TABLE IF EXISTS `non_pocket_vertex`;
+DROP TABLE IF EXISTS `vertex`;
+DROP TABLE IF EXISTS `edge`;
+DROP TABLE IF EXISTS `fragment_version`;
+DROP TABLE IF EXISTS `fragment`;
+DROP TABLE IF EXISTS `content`;
+DROP TABLE IF EXISTS `canonical`;
+
+ALTER TABLE `native_type` DISABLE KEYS;
+SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `native_type`;
+
+ALTER TABLE `user` DISABLE KEYS;
+SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS `user`;
+
+ALTER TABLE `process` DISABLE KEYS;
+SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS `process`;
+
+ALTER TABLE `process_branch` DISABLE KEYS;
+SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS `process_branch`;
+
+ALTER TABLE `process_model_version` DISABLE KEYS;
+SET FOREIGN_KEY_CHECKS=0;
+DROP TABLE IF EXISTS `process_model_version`;
+
+
 CREATE TABLE `native_type` (
   `nat_type` varchar(20) NOT NULL DEFAULT '',
   `extension` varchar(10) DEFAULT NULL,
@@ -6,7 +45,6 @@ CREATE TABLE `native_type` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user` (
   `lastname`        varchar(40) DEFAULT NULL,
   `firstname`       varchar(40) DEFAULT NULL,
@@ -17,7 +55,6 @@ CREATE TABLE `user` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 ROW_FORMAT=DYNAMIC;
 
 
-DROP TABLE IF EXISTS `process`;
 CREATE TABLE `process` (
   `processId`       int(11) NOT NULL AUTO_INCREMENT,
   `name`            varchar(100) DEFAULT NULL,
@@ -30,7 +67,6 @@ CREATE TABLE `process` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-DROP TABLE IF EXISTS `canonical`;
 CREATE TABLE `canonical` (
   `uri`             varchar(40) NOT NULL DEFAULT '',
   `processId`       int(11) DEFAULT NULL,
@@ -47,7 +83,6 @@ CREATE TABLE `canonical` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-DROP TABLE IF EXISTS `native`;
 CREATE TABLE `native` (
   `uri`             int(11) NOT NULL AUTO_INCREMENT,
   `content`         longtext,
@@ -60,7 +95,6 @@ CREATE TABLE `native` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-DROP TABLE IF EXISTS `annotation`;
 CREATE TABLE `annotation` (
   `uri`             int(11) NOT NULL AUTO_INCREMENT,
   `native`          int(11) DEFAULT NULL,
@@ -74,7 +108,6 @@ CREATE TABLE `annotation` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-DROP TABLE IF EXISTS `derived_version`;
 CREATE TABLE `derived_version` (
   `uri_source_version`      varchar(40) NOT NULL DEFAULT '',
   `uri_derived_version`     varchar(40) NOT NULL DEFAULT '',
@@ -84,7 +117,6 @@ CREATE TABLE `derived_version` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-DROP TABLE IF EXISTS `edit_session_mapping`;
 CREATE TABLE `edit_session_mapping` (
   `code`                int(11) NOT NULL AUTO_INCREMENT,
   `recordTime`          datetime DEFAULT NULL,
@@ -104,7 +136,6 @@ CREATE TABLE `edit_session_mapping` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-DROP TABLE IF EXISTS `merged_version`;
 CREATE TABLE `merged_version` (
   `uri_merged`      varchar(40) NOT NULL DEFAULT '',
   `uri_source`      varchar(40) NOT NULL DEFAULT '',
@@ -114,7 +145,6 @@ CREATE TABLE `merged_version` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-DROP TABLE IF EXISTS `search_history`;
 CREATE TABLE `search_history` (
   `username`        varchar(10) DEFAULT NULL,
   `search`          varchar(200) DEFAULT NULL,
@@ -125,7 +155,6 @@ CREATE TABLE `search_history` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-DROP TABLE IF EXISTS `temp_version`;
 CREATE TABLE `temp_version` (
   `code`            int(11) NOT NULL DEFAULT '0',
   `recordTime`      datetime DEFAULT NULL,
@@ -145,7 +174,6 @@ CREATE TABLE `temp_version` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-DROP TABLE IF EXISTS `process_branch`;
 CREATE TABLE `process_branch` (
     `branch_id`    			                varchar(40),
     `branch_name`    			              varchar(1000),
@@ -157,7 +185,6 @@ CREATE TABLE `process_branch` (
 )  engine=InnoDB;
    
    
-DROP TABLE IF EXISTS `process_model_version`;
 CREATE TABLE `process_model_version` (
     `process_model_version_id`    	varchar(40),
     `branch_id`    			            varchar(40),
@@ -177,7 +204,6 @@ ALTER TABLE `process_branch` add constraint `fk_source_version` foreign key (`so
 ALTER TABLE `process_branch` add constraint `fk_current_version` foreign key (`current_process_model_version_id`) references `process_model_version` (`process_model_version_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 
-DROP TABLE IF EXISTS `content`;
 CREATE TABLE `content` (
     `content_id`      			varchar(40),
     `boundary_s`      			varchar(40),
@@ -187,7 +213,6 @@ CREATE TABLE `content` (
 )  engine=InnoDB;    
 
  
-DROP TABLE IF EXISTS `fragment`;
 CREATE TABLE `fragment` (
     `fragment_id`    			      varchar(40),
     `propagation_policy`    		int,
@@ -195,7 +220,6 @@ CREATE TABLE `fragment` (
 )  engine=InnoDB;
 
 
-DROP TABLE IF EXISTS `fragment_version`;
 CREATE TABLE `fragment_version` (
     `fragment_version_id`    	varchar(40),
     `fragment_id`    			    varchar(40),
@@ -214,7 +238,6 @@ CREATE TABLE `fragment_version` (
 )  engine=InnoDB;
 
 
-DROP TABLE IF EXISTS `process_fragment_map`;
 CREATE TABLE `process_fragment_map` (
     `mapping_id`    			        int auto_increment,
     `process_model_version_id`   	varchar(40),
@@ -225,7 +248,6 @@ CREATE TABLE `process_fragment_map` (
 )  engine=InnoDB;
 
 
-DROP TABLE IF EXISTS `fragment_version_dag`;
 CREATE TABLE `fragment_version_dag` (
     `fragment_version_id`    		    varchar(40),
     `child_fragment_version_id`   	varchar(40),
@@ -236,7 +258,6 @@ CREATE TABLE `fragment_version_dag` (
 )  engine=InnoDB;
 
 
-DROP TABLE IF EXISTS `vertex`;
 CREATE TABLE `vertex` (
     `vid`    				          varchar(40),
     `content_id` 			  	    varchar(40),
@@ -249,14 +270,12 @@ CREATE TABLE `vertex` (
 )  engine=InnoDB;
 
 
-DROP TABLE IF EXISTS `non_pocket_vertex`;
 CREATE TABLE `non_pocket_vertex` (
     `vid`    				          varchar(40),
     constraint `pk_non_pocket_vertex` primary key (`vid`)
 )  engine=InnoDB;
 
 
-DROP TABLE IF EXISTS `edge`;
 CREATE TABLE `edge` (
     `edge_id`    				    int auto_increment,
     `content_id`    			  varchar(40),
@@ -269,7 +288,6 @@ CREATE TABLE `edge` (
 )  engine=InnoDB;
 
 
-DROP TABLE IF EXISTS `subcluster`;
 CREATE TABLE  `subcluster` (
   `fragment_version_id` varchar(40) NOT NULL DEFAULT '',
   `fragment_size` int(11) DEFAULT NULL,
@@ -281,6 +299,11 @@ CREATE TABLE  `subcluster` (
 
 
 DROP VIEW IF EXISTS `head_version0`;
+DROP VIEW IF EXISTS `head_version`;
+DROP VIEW IF EXISTS `keyword`;
+DROP VIEW IF EXISTS `process_ranking`;
+
+
 CREATE VIEW `head_version0` AS
   select `canonical`.`processId` AS `processId`,
          `canonical`.`version_name` AS `version`
@@ -292,7 +315,6 @@ CREATE VIEW `head_version0` AS
   );
 
 
-DROP VIEW IF EXISTS `head_version`;
 CREATE VIEW `head_version` AS
   select `head_version0`.`processid` AS `processId`,
          `head_version0`.`version` AS `version`
@@ -308,7 +330,6 @@ CREATE VIEW `head_version` AS
         );
 
 
-DROP VIEW IF EXISTS `keyword`;
 CREATE VIEW `keyword` AS 
   select `process`.`processId` AS `processId`,`process`.`name` AS `word` 
   from `process` 
@@ -329,7 +350,6 @@ CREATE VIEW `keyword` AS
   from `canonical`;
 
 
-DROP VIEW IF EXISTS `process_ranking`;
 CREATE VIEW `process_ranking` AS 
   select `canonical`.`processId` AS `processId`, avg(`canonical`.`ranking`) AS `ranking` 
   from `canonical` 
