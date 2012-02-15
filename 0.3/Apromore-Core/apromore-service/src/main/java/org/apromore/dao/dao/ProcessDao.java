@@ -703,9 +703,14 @@ public class ProcessDao extends BasicDao {
                 // if preVersion = newVersion
                 // check whether preVersion is leaf in the derivation tree
                 // if yes, override its previous values, otherwise raise an exception
-                query = " select * from " + ConstantDB.TABLE_DERIVED_VERSIONS
-                        + " where " + ConstantDB.ATTR_PROCESSID + " = " + processId
-                        + " and " + ConstantDB.ATTR_VERSION + " = '" + preVersion + "'";
+                //query = " select * from " + ConstantDB.TABLE_DERIVED_VERSIONS
+                //        + " where " + ConstantDB.ATTR_PROCESSID + " = " + processId
+                //        + " and " + ConstantDB.ATTR_VERSION + " = '" + preVersion + "'";
+                query = " select * from " + ConstantDB.TABLE_DERIVED_VERSIONS + " d, "
+                        + ConstantDB.TABLE_CANONICALS + " c "
+                        + " where d.uri_source_version = " + cpf_uri
+                        + " and d.uri_source_version = c.uri "
+                        + " and c.version_name = " + preVersion;
                 stmt = conn.createStatement();
                 rs = stmt.executeQuery(query);
                 if (rs.next()) {
@@ -888,11 +893,12 @@ public class ProcessDao extends BasicDao {
                                String newVersion, String nativeType, InputStream npf_is, InputStream cpf_is,
                                InputStream apf_is, int editSessionCode, String creationDate)
             throws ExceptionDao, SQLException, ExceptionStoreVersion, IOException {
-        Connection conn = null, conn1 = null;
-        Statement stmt0 = null, stmt1 = null;
+        Connection conn = null, conn1 = null, conn2 = null;
+        Statement stmt0 = null, stmt1 = null, stmt2 = null;
+        ResultSet rs0 = null, rs1 = null, rs2 = null;
         PreparedStatement stmtp = null;
-        ResultSet rs0 = null, rs1 = null;
         String query = null;
+        String originalURI = null;
         String annotation = Constants.INITIAL_ANNOTATION;
         String npf_string = inputStream2String(npf_is);
         String apf_string = inputStream2String(apf_is);
@@ -933,7 +939,7 @@ public class ProcessDao extends BasicDao {
                 stmtp.setString(8, cpf_string);
                 stmtp.setString(9, apf_string);
                 stmtp.setString(10, npf_string);
-                Integer rs2 = stmtp.executeUpdate();
+                stmtp.executeUpdate();
                 stmtp.close();
                 conn1.commit();
                 throw new ExceptionStoreVersion("Version " + newVersion + " already exists.");
@@ -953,7 +959,7 @@ public class ProcessDao extends BasicDao {
                 stmtp.setInt(2, processId);
                 stmtp.setString(3, newVersion);
                 stmtp.setString(4, cpf_string);
-                Integer rs2 = stmtp.executeUpdate();
+                stmtp.executeUpdate();
                 stmtp.close();
 
                 String query5 = " insert into " + ConstantDB.TABLE_NATIVES
@@ -966,7 +972,7 @@ public class ProcessDao extends BasicDao {
                 stmtp.setString(1, npf_string);
                 stmtp.setString(2, nativeType);
                 stmtp.setString(3, cpf_uri);
-                Integer rs6 = stmtp.executeUpdate();
+                stmtp.executeUpdate();
                 ResultSet keys = stmtp.getGeneratedKeys();
                 if (!keys.next()) {
                     throw new ExceptionDao("Error: cannot retrieve generated key.");
@@ -986,20 +992,36 @@ public class ProcessDao extends BasicDao {
                 stmtp.setString(2, cpf_uri);
                 stmtp.setString(3, annotation);
                 stmtp.setString(4, apf_string);
-                Integer rs5 = stmtp.executeUpdate();
+                stmtp.executeUpdate();
                 stmtp.close();
 
-                query2 = " insert into " + ConstantDB.TABLE_DERIVED_VERSIONS
-                        + "(" + ConstantDB.ATTR_PROCESSID + ","
-                        + ConstantDB.ATTR_VERSION + ","
-                        + ConstantDB.ATTR_DERIVED_VERSION + ")"
-                        + " values (?,?,?)";
-                stmtp = conn.prepareStatement(query2);
-                stmtp.setInt(1, processId);
-                stmtp.setString(2, preVersion);
-                stmtp.setString(3, newVersion);
-                rs2 = stmtp.executeUpdate();
-                stmtp.close();
+                conn2 = getConnection();
+                query5 = " SELECT " + ConstantDB.ATTR_URI
+                        + " FROM " + ConstantDB.TABLE_CANONICALS
+                        + " where " + ConstantDB.ATTR_PROCESSID + " = " + processId
+                        + " group by " + ConstantDB.ATTR_PROCESSID
+                        + " having min(" + ConstantDB.ATTR_CREATION_DATE + ")";
+                stmt2 = conn.createStatement();
+                rs2 = stmt2.executeQuery(query5);
+                if (rs2.next()) {
+                    originalURI = rs2.getString(ConstantDB.ATTR_URI);
+                    stmt2.close();
+
+                    query2 = " insert into " + ConstantDB.TABLE_DERIVED_VERSIONS
+                            + "(uri_source_version, uri_derived_version)"
+                            + " values (?,?)";
+                    stmtp = conn.prepareStatement(query2);
+                    stmtp.setString(1, originalURI);
+                    stmtp.setString(2, cpf_uri);
+                    stmtp.executeUpdate();
+                    stmtp.close();
+                }
+//                query2 = " insert into " + ConstantDB.TABLE_DERIVED_VERSIONS
+//                        + "(" + ConstantDB.ATTR_PROCESSID + ","
+//                        + ConstantDB.ATTR_VERSION + ","
+//                        + ConstantDB.ATTR_DERIVED_VERSION + ")"
+//                        + " values (?,?,?)";
+
 
                 // modify version name in edit session
                 query = "update " + ConstantDB.TABLE_EDIT_SESSIONS
@@ -1008,7 +1030,7 @@ public class ProcessDao extends BasicDao {
                 stmtp = conn.prepareStatement(query);
                 stmtp.setString(1, newVersion);
                 stmtp.setInt(2, editSessionCode);
-                rs2 = stmtp.executeUpdate();
+                stmtp.executeUpdate();
                 stmtp.close();
                 conn.commit();
             }
@@ -1027,6 +1049,7 @@ public class ProcessDao extends BasicDao {
         } finally {
             Release(conn, stmt0, rs0);
             Release(conn1, stmt1, rs1);
+            Release(conn2, stmt2, rs2);
         }
     }
 
