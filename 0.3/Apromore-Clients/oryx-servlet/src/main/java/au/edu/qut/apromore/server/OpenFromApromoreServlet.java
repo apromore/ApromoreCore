@@ -97,18 +97,20 @@ public class OpenFromApromoreServlet extends HttpServlet {
                     processVersion = portalService.getProcessVersion(sessionCode);
                     processName = portalService.getProcessName(sessionCode);
 
-                    if (!NEW_PROCESS_TEMP_VERSION.equals(xpdlModel.getRedefinableHeader().getVersion().getContent().trim()) && // check if version is not 0.0 and there are no pools
-                            (xpdlModel.getPools() == null || xpdlModel.getPools().getPools() == null || xpdlModel.getPools().getPools().size() == 0)) {
+                    if (xpdlModel.getRedefinableHeader() != null) {
+                        if (!NEW_PROCESS_TEMP_VERSION.equals(xpdlModel.getRedefinableHeader().getVersion().getContent().trim()) && // check if version is not 0.0 and there are no pools
+                                (xpdlModel.getPools() == null || xpdlModel.getPools().getPools() == null || xpdlModel.getPools().getPools().size() == 0)) {
 
-                        XPDLPools xpdlPools = new XPDLPools();
-                        xpdlModel.setPools(xpdlPools);
-                        if (xpdlModel.getPools().getPools() == null || xpdlModel.getPools().getPools().size() == 0) {
-                            XPDLPool pool = new XPDLPool();
-                            pool.setBoundaryVisible(false);
-                            pool.setMainPool(true);
-                            xpdlPools.add(pool);
+                            XPDLPools xpdlPools = new XPDLPools();
+                            xpdlModel.setPools(xpdlPools);
+                            if (xpdlModel.getPools().getPools() == null || xpdlModel.getPools().getPools().size() == 0) {
+                                XPDLPool pool = new XPDLPool();
+                                pool.setBoundaryVisible(false);
+                                pool.setMainPool(true);
+                                xpdlPools.add(pool);
+                            }
+                            //xpdlModel.setNeedsAutolayout(true);
                         }
-                        //xpdlModel.setNeedsAutolayout(true);
                     }
                 }
             }
@@ -116,11 +118,11 @@ public class OpenFromApromoreServlet extends HttpServlet {
             String targetURL = "";
             if (getProcessType(processSource) == ProcessNativeLanguage.XPDL) {
                 if (!ApromoreConfig.TRUE.equalsIgnoreCase(req.getParameter(NOTATIONS_ONLY_PARAMETER_NAME))) //TODO: externalize strings+URLs
-                    targetURL = "/p/editor;bpmn?stencilset=/stencilsets/bpmn1.1/bpmn1.1.json&";
+                    targetURL = "/editor;bpmn?stencilset=/stencilsets/bpmn1.1/bpmn1.1.json&";
                 else
-                    targetURL = "/p/editor;APROMORE_bpmn_readonly?stencilset=/stencilsets/bpmn1.1_readonly/bpmn1.1.json&";
+                    targetURL = "/editor;APROMORE_bpmn_readonly?stencilset=/stencilsets/bpmn1.1_readonly/bpmn1.1.json&";
             } else if (getProcessType(processSource) == ProcessNativeLanguage.EPML) {
-                targetURL = "/p/editor;epc?stencilset=/stencilsets/epc/epc.json&";
+                targetURL = "/editor;epc?stencilset=/stencilsets/epc/epc.json&";
             }
 
             targetURL = req.getContextPath() + targetURL
