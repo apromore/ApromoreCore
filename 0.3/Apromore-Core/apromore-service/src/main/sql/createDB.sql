@@ -1,8 +1,9 @@
+SET FOREIGN_KEY_CHECKS=0;
+
 DROP TABLE IF EXISTS `merged_version`;
 DROP TABLE IF EXISTS `derived_version`;
 DROP TABLE IF EXISTS `search_history`;
 DROP TABLE IF EXISTS `temp_version`;
-
 DROP TABLE IF EXISTS `annotation`;
 DROP TABLE IF EXISTS `native`;
 DROP TABLE IF EXISTS `edit_session_mapping`;
@@ -16,27 +17,11 @@ DROP TABLE IF EXISTS `fragment_version`;
 DROP TABLE IF EXISTS `fragment`;
 DROP TABLE IF EXISTS `content`;
 DROP TABLE IF EXISTS `canonical`;
-
-ALTER TABLE `native_type` DISABLE KEYS;
-SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `native_type`;
-
-ALTER TABLE `user` DISABLE KEYS;
-SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `user`;
-
-ALTER TABLE `process` DISABLE KEYS;
-SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `process`;
-
-ALTER TABLE `process_branch` DISABLE KEYS;
-SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `process_branch`;
-
-ALTER TABLE `process_model_version` DISABLE KEYS;
-SET FOREIGN_KEY_CHECKS=0;
 DROP TABLE IF EXISTS `process_model_version`;
-
 
 CREATE TABLE `native_type` (
   `nat_type` varchar(20) NOT NULL DEFAULT '',
@@ -354,3 +339,5 @@ CREATE VIEW `process_ranking` AS
   select `canonical`.`processId` AS `processId`, avg(`canonical`.`ranking`) AS `ranking` 
   from `canonical` 
   group by `canonical`.`processId`;
+  
+SET FOREIGN_KEY_CHECKS=1;
