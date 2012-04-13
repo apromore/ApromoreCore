@@ -2,10 +2,7 @@ package org.apromore.canoniser.service;
 
 import de.epml.TypeEPML;
 import org.apromore.anf.AnnotationsType;
-import org.apromore.canoniser.adapters.Canonical2EPML;
-import org.apromore.canoniser.adapters.Canonical2XPDL;
-import org.apromore.canoniser.adapters.EPML2Canonical;
-import org.apromore.canoniser.adapters.XPDL2Canonical;
+import org.apromore.canoniser.adapters.*;
 import org.apromore.canoniser.da.CanoniserDataAccessClient;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
@@ -24,6 +21,7 @@ import org.apromore.model.GenerateAnnotationInputMsgType;
 import org.apromore.model.GenerateAnnotationOutputMsgType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ResultType;
+import org.apromore.pnml.PnmlType;
 import org.apromore.service.CanoniserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -246,6 +244,27 @@ public class CanoniserManagerImpl implements CanoniserManager {
             m_cpf.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             JAXBElement<CanonicalProcessType> cproc_cpf =
                     new org.apromore.cpf.ObjectFactory().createCanonicalProcess(epml2canonical.getCPF());
+            m_cpf.marshal(cproc_cpf, cpf_xml);
+
+        } else if (nativeType.compareTo("PNML 1.3.2")==0) {
+            JAXBContext jc1 = JAXBContext.newInstance(CanoniserService.PNML_CONTEXT);
+            Unmarshaller u = jc1.createUnmarshaller();
+            JAXBElement<PnmlType> rootElement = (JAXBElement<PnmlType>) u.unmarshal(process_xml);
+            PnmlType pnml = rootElement.getValue();
+            PNML2Canonical pnml2canonical = new PNML2Canonical(pnml, Long.parseLong(cpf_uri));
+
+            jc1 = JAXBContext.newInstance(Constants.JAXB_CONTEXT_ANF);
+            Marshaller m_anf = jc1.createMarshaller();
+            m_anf.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+            JAXBElement<AnnotationsType> cproc_anf =
+                    new org.apromore.anf.ObjectFactory().createAnnotations(pnml2canonical.getANF());
+            m_anf.marshal(cproc_anf, anf_xml);
+
+            jc1 = JAXBContext.newInstance(Constants.JAXB_CONTEXT_CPF);
+            Marshaller m_cpf = jc1.createMarshaller();
+            m_cpf.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE );
+            JAXBElement<CanonicalProcessType> cproc_cpf =
+                    new org.apromore.cpf.ObjectFactory().createCanonicalProcess(pnml2canonical.getCPF());
             m_cpf.marshal(cproc_cpf, cpf_xml);
 
         } else {

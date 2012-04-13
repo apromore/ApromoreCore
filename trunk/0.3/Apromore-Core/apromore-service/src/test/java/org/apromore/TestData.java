@@ -1,5 +1,7 @@
 package org.apromore;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
+
 /**
  * Data used in tests.
  */
@@ -1374,4 +1376,169 @@ public interface TestData {
             "  </epc>\n" +
             "</directory>\n" +
             "</ns2:epml>";
+    
+    public final static String PNML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<pnml>\n" +
+            "  <net type=\"http://www.informatik.hu-berlin.de/top/pntd/ptNetb\" id=\"noID\">\n" +
+            "    <place id=\"p1\">\n" +
+            "      <name>\n" +
+            "        <text>black</text>\n" +
+            "        <graphics>\n" +
+            "          <offset x=\"250\" y=\"170\"/>\n" +
+            "        </graphics>\n" +
+            "      </name>\n" +
+            "      <graphics>\n" +
+            "        <position x=\"222\" y=\"134\"/>\n" +
+            "        <dimension x=\"40\" y=\"40\"/>\n" +
+            "      </graphics>\n" +
+            "      <initialMarking>\n" +
+            "        <text>1</text>\n" +
+            "      </initialMarking>\n" +
+            "    </place>\n" +
+            "    <place id=\"p0\">\n" +
+            "      <name>\n" +
+            "        <text>red</text>\n" +
+            "        <graphics>\n" +
+            "          <offset x=\"70\" y=\"170\"/>\n" +
+            "        </graphics>\n" +
+            "      </name>\n" +
+            "      <graphics>\n" +
+            "        <position x=\"72\" y=\"134\"/>\n" +
+            "        <dimension x=\"40\" y=\"40\"/>\n" +
+            "      </graphics>\n" +
+            "      <initialMarking>\n" +
+            "        <text>2</text>\n" +
+            "      </initialMarking>\n" +
+            "    </place>\n" +
+            "    <transition id=\"t2\">\n" +
+            "      <name>\n" +
+            "        <text>bb</text>\n" +
+            "        <graphics>\n" +
+            "          <offset x=\"220\" y=\"270\"/>\n" +
+            "        </graphics>\n" +
+            "      </name>\n" +
+            "      <graphics>\n" +
+            "        <position x=\"222\" y=\"234\"/>\n" +
+            "        <dimension x=\"40\" y=\"40\"/>\n" +
+            "      </graphics>\n" +
+            "      <toolspecific tool=\"WoPeD\" version=\"1.0\">\n" +
+            "        <time>0</time>\n" +
+            "        <timeUnit>1</timeUnit>\n" +
+            "        <orientation>1</orientation>\n" +
+            "      </toolspecific>\n" +
+            "    </transition>\n" +
+            "    <transition id=\"t1\">\n" +
+            "      <name>\n" +
+            "        <text>br</text>\n" +
+            "        <graphics>\n" +
+            "          <offset x=\"140\" y=\"80\"/>\n" +
+            "        </graphics>\n" +
+            "      </name>\n" +
+            "      <graphics>\n" +
+            "        <position x=\"142\" y=\"44\"/>\n" +
+            "        <dimension x=\"40\" y=\"40\"/>\n" +
+            "      </graphics>\n" +
+            "      <toolspecific tool=\"WoPeD\" version=\"1.0\">\n" +
+            "        <time>0</time>\n" +
+            "        <timeUnit>1</timeUnit>\n" +
+            "        <orientation>1</orientation>\n" +
+            "      </toolspecific>\n" +
+            "    </transition>\n" +
+            "    <transition id=\"t0\">\n" +
+            "      <name>\n" +
+            "        <text>rr</text>\n" +
+            "        <graphics>\n" +
+            "          <offset x=\"70\" y=\"270\"/>\n" +
+            "        </graphics>\n" +
+            "      </name>\n" +
+            "      <graphics>\n" +
+            "        <position x=\"72\" y=\"234\"/>\n" +
+            "        <dimension x=\"40\" y=\"40\"/>\n" +
+            "      </graphics>\n" +
+            "      <toolspecific tool=\"WoPeD\" version=\"1.0\">\n" +
+            "        <time>0</time>\n" +
+            "        <timeUnit>1</timeUnit>\n" +
+            "        <orientation>1</orientation>\n" +
+            "      </toolspecific>\n" +
+            "    </transition>\n" +
+            "    <arc id=\"a1\" source=\"p1\" target=\"t1\">\n" +
+            "      <inscription>\n" +
+            "        <text>1</text>\n" +
+            "      </inscription>\n" +
+            "      <graphics/>\n" +
+            "      <toolspecific tool=\"WoPeD\" version=\"1.0\">\n" +
+            "        <probability>1.0</probability>\n" +
+            "        <displayProbabilityOn>false</displayProbabilityOn>\n" +
+            "        <displayProbabilityPosition x=\"500.0\" y=\"0.0\"/>\n" +
+            "      </toolspecific>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"a2\" source=\"p1\" target=\"t2\">\n" +
+            "      <inscription>\n" +
+            "        <text>1</text>\n" +
+            "      </inscription>\n" +
+            "      <graphics/>\n" +
+            "      <toolspecific tool=\"WoPeD\" version=\"1.0\">\n" +
+            "        <probability>1.0</probability>\n" +
+            "        <displayProbabilityOn>false</displayProbabilityOn>\n" +
+            "        <displayProbabilityPosition x=\"500.0\" y=\"0.0\"/>\n" +
+            "      </toolspecific>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"a3\" source=\"t0\" target=\"p1\">\n" +
+            "      <inscription>\n" +
+            "        <text>1</text>\n" +
+            "      </inscription>\n" +
+            "      <graphics/>\n" +
+            "      <toolspecific tool=\"WoPeD\" version=\"1.0\">\n" +
+            "        <probability>1.0</probability>\n" +
+            "        <displayProbabilityOn>false</displayProbabilityOn>\n" +
+            "        <displayProbabilityPosition x=\"500.0\" y=\"0.0\"/>\n" +
+            "      </toolspecific>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"a4\" source=\"p0\" target=\"t1\">\n" +
+            "      <inscription>\n" +
+            "        <text>1</text>\n" +
+            "      </inscription>\n" +
+            "      <graphics/>\n" +
+            "      <toolspecific tool=\"WoPeD\" version=\"1.0\">\n" +
+            "        <probability>1.0</probability>\n" +
+            "        <displayProbabilityOn>false</displayProbabilityOn>\n" +
+            "        <displayProbabilityPosition x=\"500.0\" y=\"0.0\"/>\n" +
+            "      </toolspecific>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"a5\" source=\"p0\" target=\"t0\">\n" +
+            "      <inscription>\n" +
+            "        <text>1</text>\n" +
+            "      </inscription>\n" +
+            "      <graphics/>\n" +
+            "      <toolspecific tool=\"WoPeD\" version=\"1.0\">\n" +
+            "        <probability>1.0</probability>\n" +
+            "        <displayProbabilityOn>false</displayProbabilityOn>\n" +
+            "        <displayProbabilityPosition x=\"500.0\" y=\"0.0\"/>\n" +
+            "      </toolspecific>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"a6\" source=\"t1\" target=\"p0\">\n" +
+            "      <inscription>\n" +
+            "        <text>1</text>\n" +
+            "      </inscription>\n" +
+            "      <graphics/>\n" +
+            "      <toolspecific tool=\"WoPeD\" version=\"1.0\">\n" +
+            "        <probability>1.0</probability>\n" +
+            "        <displayProbabilityOn>false</displayProbabilityOn>\n" +
+            "        <displayProbabilityPosition x=\"500.0\" y=\"0.0\"/>\n" +
+            "      </toolspecific>\n" +
+            "    </arc>\n" +
+            "    <toolspecific tool=\"WoPeD\" version=\"1.0\">\n" +
+            "      <bounds>\n" +
+            "        <position x=\"2\" y=\"25\"/>\n" +
+            "        <dimension x=\"376\" y=\"345\"/>\n" +
+            "      </bounds>\n" +
+            "      <treeWidth>1</treeWidth>\n" +
+            "      <verticalLayout>false</verticalLayout>\n" +
+            "      <resources/>\n" +
+            "      <simulations/>\n" +
+            "      <partnerLinks/>\n" +
+            "      <variables/>\n" +
+            "    </toolspecific>\n" +
+            "  </net>\n" +
+            "</pnml>";
 }

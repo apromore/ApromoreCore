@@ -94,8 +94,8 @@ public class StreamUtil {
      * @throws javax.xml.bind.JAXBException if it fails
      */
     @SuppressWarnings("unchecked")
-    public static InputStream copyParam2CPF(InputStream cpf_xml, String cpf_uri, String processName, String version, String username,
-            String creationDate, String lastUpdate) throws JAXBException {
+    public static InputStream copyParam2CPF(InputStream cpf_xml, String cpf_uri, String processName, String version,
+            String username, String creationDate, String lastUpdate) throws JAXBException {
         InputStream res;
 
         JAXBContext jc = JAXBContext.newInstance(CPF_URI);
@@ -149,6 +149,8 @@ public class StreamUtil {
             m.marshal(rootElement, xml);
             res = new ByteArrayInputStream(xml.toByteArray());
         } else if (nativeType.compareTo("EPML 2.0") == 0) {
+            res = process_xml;
+        } else if (nativeType.compareTo("PNML 1.3.2") == 0) {
             res = process_xml;
         }
         return res;
