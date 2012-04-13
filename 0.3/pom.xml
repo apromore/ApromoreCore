@@ -28,7 +28,7 @@
         <module>Apromore-Schema/anf-schema</module>
         <module>Apromore-Schema/cpf-schema</module>
         <module>Apromore-Schema/epml-schema</module>
-        <module>Apromore-Schema/pmnl-schema</module>
+        <module>Apromore-Schema/pnml-schema</module>
         <module>Apromore-Schema/rlf-schema</module>
         <module>Apromore-Schema/xpdl-schema</module>
         <module>Apromore-Schema/yawl-schema</module>

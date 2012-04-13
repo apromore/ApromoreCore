@@ -63,6 +63,11 @@
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
+            <artifactId>pnml-schema</artifactId>
+            <version>1.0.0-SNAPSHOT</version>
+        </dependency>
+        <dependency>
+            <groupId>org.apromore</groupId>
             <artifactId>rlf-schema</artifactId>
             <version>1.0.0-SNAPSHOT</version>
         </dependency>
