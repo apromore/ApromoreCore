@@ -10,12 +10,12 @@ import org.apromore.exception.CanoniserException;
 import org.wfmc._2008.xpdl2.*;
 
 import javax.xml.namespace.QName;
+import java.lang.Object;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-import java.lang.Object;
 
 public class Canonical2XPDL {
 	Map<NodeType, Activity> canon2xpdl = new HashMap<NodeType, Activity>();

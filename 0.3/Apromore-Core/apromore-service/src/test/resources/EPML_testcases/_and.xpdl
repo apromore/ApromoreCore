@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0">
+    <Pools>
+        <Pool Id="MainPool" Name="Main Pool" Orientation="HORIZONTAL" Process="13" BoundaryVisible="false" MainPool="true"/>
+    </Pools>
+    <Associations/>
+    <Artifacts/>
+    <WorkflowProcesses>
+        <WorkflowProcess Id="13">
+            <Activities>
+                <Activity Id="1" Name="E1">
+                    <Event>
+                        <StartEvent Trigger="None"/>
+                    </Event>
+                </Activity>
+                <Activity Id="2" Name="E2">
+                    <Event>
+                        <EndEvent Result="None"/>
+                    </Event>
+                </Activity>
+                <Activity Id="3" Name="F1">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                </Activity>
+                <Activity Id="4" Name="F2">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                </Activity>
+                <Activity Id="5">
+                    <Route GatewayType="Parallel"/>
+                    <TransitionRestrictions>
+                        <TransitionRestriction>
+                            <Split Type="Parallel">
+<TransitionRefs>
+    <TransitionRef Id="8"/>
+    <TransitionRef Id="9"/>
+</TransitionRefs>
+                            </Split>
+                        </TransitionRestriction>
+                    </TransitionRestrictions>
+                </Activity>
+                <Activity Id="6">
+                    <Route GatewayType="Parallel"/>
+                    <TransitionRestrictions>
+                        <TransitionRestriction>
+                            <Join Type="Parallel"/>
+                        </TransitionRestriction>
+                    </TransitionRestrictions>
+                </Activity>
+            </Activities>
+            <Transitions>
+                <Transition Id="7" From="1" To="5"/>
+                <Transition Id="8" From="5" To="3"/>
+                <Transition Id="9" From="5" To="4"/>
+                <Transition Id="10" From="4" To="6"/>
+                <Transition Id="11" From="3" To="6"/>
+                <Transition Id="12" From="6" To="2"/>
+            </Transitions>
+        </WorkflowProcess>
+    </WorkflowProcesses>
+</Package>

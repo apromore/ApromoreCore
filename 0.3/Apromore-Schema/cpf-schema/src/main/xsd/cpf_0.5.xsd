@@ -14,7 +14,6 @@
      v0.2 - added 'version' attribute to both this document and type 'CanonicalProcessType'
      v0.3 - added extensible 'attribute' to all super-types
      v0.4 - added process meta-data (author, creationDate...), changed type of attribute 'value' to 'anySimpleType'
-     v0.5 - added 'id' attribute to 'objectRefType' and 'resourceTypeRefType', boolean external property to 'TaskType'
 
 -->
 
@@ -22,7 +21,7 @@
         xmlns:cpf="http://www.apromore.org/CPF"
         targetNamespace="http://www.apromore.org/CPF"
         attributeFormDefault="unqualified" elementFormDefault="unqualified"
-        version="0.5">
+        version="0.4">
 
   <element name="CanonicalProcess" type="cpf:CanonicalProcessType">
     <unique name="nIdUn"><!-- all net ids must be different -->
@@ -100,6 +99,7 @@
    	  <element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded"/>
    	</sequence>
     <attribute name="id" type="positiveInteger" use="required"/>
+	<attribute name="originalID" type="string" use="optional"/>
   </complexType>              
        
   <complexType name="EdgeType">
@@ -111,6 +111,7 @@
     <attribute name="default" type="boolean" use="optional" default="true"/>
     <attribute name="sourceId" type="positiveInteger" use="required"/>
     <attribute name="targetId" type="positiveInteger" use="required"/>
+	<attribute name="originalID" type="string" use="optional"/>
   </complexType>
   
   <complexType name="NodeType">
@@ -120,6 +121,7 @@
    	  <element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded"/>
    	</sequence>
     <attribute name="id" type="positiveInteger" use="required"/>
+	<attribute name="originalID" type="string" use="optional"/>
   </complexType>
   
   <complexType name="WorkType">
@@ -137,7 +139,6 @@
    	<sequence>
   	  <element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded"/>
     </sequence>
-    <attribute name="id" type="positiveInteger"/>
 	<attribute name="resourceTypeId" type="positiveInteger"/>
 	<attribute name="optional" type="boolean" default="false" use="optional"/>
 	<attribute name="qualifier" type="string" use="optional"/>
@@ -147,18 +148,17 @@
    	<sequence>
   	  <element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded"/>
     </sequence>
-    <attribute name="id" type="positiveInteger"/>
 	<attribute name="objectId" type="positiveInteger"/>
 	<attribute name="type" type="cpf:InputOutputType"/>
 	<attribute name="optional" type="boolean" default="false" use="optional"/>
 	<attribute name="consumed" type="boolean" default="false" use="optional"/>
+	<attribute name="originalID" type="string" use="optional"/>
   </complexType>
   
   <complexType name="TaskType">
   	<complexContent>
 	  <extension base="cpf:WorkType">
         <attribute name="subnetId" type="positiveInteger"/>
-        <attribute name="external" type="boolean" default="false" use="optional"/>
       </extension>
     </complexContent>
   </complexType>
@@ -249,6 +249,7 @@
    	</sequence>
     <attribute name="id" type="positiveInteger" use="required"/>
     <attribute name="specializationIds" type="cpf:IdListType"/>
+	<attribute name="originalID" type="string" use="optional"/>
   </complexType>
   
   <complexType name="HumanType">

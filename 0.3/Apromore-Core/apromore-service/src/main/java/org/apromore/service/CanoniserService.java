@@ -5,6 +5,7 @@ import org.apromore.exception.ExceptionImport;
 import org.apromore.exception.ImportException;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.service.model.CanonisedProcess;
+import org.xml.sax.SAXException;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -25,6 +26,7 @@ public interface CanoniserService {
     public static final String CPF_CONTEXT = "org.apromore.cpf";
     public static final String XPDL2_CONTEXT = "org.wfmc._2008.xpdl2";
     public static final String EPML_CONTEXT = "de.epml";
+    public static final String PNML_CONTEXT = "org.apromore.pnml";
 
     /**
      * DeCanonise a process.
@@ -48,5 +50,5 @@ public interface CanoniserService {
      * @throws org.apromore.exception.CanoniserException something failed
      */
     public void canonise(String cpf_uri, InputStream process_xml, String nativeType, ByteArrayOutputStream anf_xml,
-            ByteArrayOutputStream cpf_xml) throws CanoniserException, IOException, JAXBException;
+            ByteArrayOutputStream cpf_xml) throws CanoniserException, IOException, JAXBException, SAXException;
 }

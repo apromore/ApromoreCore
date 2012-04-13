@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF">
+    <Net id="1323860935895">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1323860935896">
+            <name>E1</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1323860935897">
+            <name>E2</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1323860935898">
+            <name>F1</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="1323860935899">
+            <name>F2</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="1323860935900">
+            <name>E3</name>
+        </Node>
+        <Edge id="1323860935901" sourceId="1323860935896" targetId="1323860935898"/>
+        <Edge id="1323860935902" sourceId="1323860935898" targetId="1323860935897"/>
+        <Edge id="1323860935903" sourceId="1323860935897" targetId="1323860935899"/>
+        <Edge id="1323860935904" sourceId="1323860935899" targetId="1323860935900"/>
+    </Net>
+    <ResourceType id="1323860935892">
+        <name>R1</name>
+    </ResourceType>
+    <ResourceType id="1323860935893">
+        <name>R2</name>
+    </ResourceType>
+    <ResourceType id="1323860935891" specializationIds="1323860935892 1323860935893"/>
+</ns2:CanonicalProcess>

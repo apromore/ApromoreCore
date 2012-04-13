@@ -184,4 +184,19 @@ public class CanoniserServiceImplUnitTest {
         assertThat(cpf_xml, notNullValue());
     }
 
+    @Test
+    public void canonisePNML() throws Exception {
+        String uri = "1234567890";
+        String nativeType = "PNML 1.3.2";
+
+        ByteArrayOutputStream anf_xml = new ByteArrayOutputStream();
+        ByteArrayOutputStream cpf_xml = new ByteArrayOutputStream();
+
+        InputStream data = new ByteArrayInputStream(TestData.PNML.getBytes());
+
+        service.canonise(uri, data, nativeType, anf_xml, cpf_xml);
+
+        assertThat(anf_xml, notNullValue());
+        assertThat(cpf_xml, notNullValue());
+    }
 }

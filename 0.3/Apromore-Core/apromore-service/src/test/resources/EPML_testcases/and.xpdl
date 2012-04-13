@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0">
+    <Pools>
+        <Pool Id="MainPool" Name="Main Pool" Orientation="HORIZONTAL" Process="13" BoundaryVisible="false" MainPool="true"/>
+    </Pools>
+    <Associations/>
+    <Artifacts/>
+    <WorkflowProcesses>
+        <WorkflowProcess Id="13">
+            <Activities>
+                <Activity Id="1" Name="E1">
+                    <Event>
+                        <StartEvent Trigger="None"/>
+                    </Event>
+                    <NodeGraphicsInfos>
+                        <NodeGraphicsInfo Height="41.0" Width="81.0">
+                            <Coordinates XCoordinate="170.0" YCoordinate="220.0"/>
+                        </NodeGraphicsInfo>
+                    </NodeGraphicsInfos>
+                </Activity>
+                <Activity Id="2" Name="E2">
+                    <Event>
+                        <EndEvent Result="None"/>
+                    </Event>
+                    <NodeGraphicsInfos>
+                        <NodeGraphicsInfo Height="41.0" Width="81.0">
+                            <Coordinates XCoordinate="475.0" YCoordinate="220.0"/>
+                        </NodeGraphicsInfo>
+                    </NodeGraphicsInfos>
+                </Activity>
+                <Activity Id="3" Name="F1">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                    <NodeGraphicsInfos>
+                        <NodeGraphicsInfo Height="41.0" Width="81.0">
+                            <Coordinates XCoordinate="325.0" YCoordinate="155.0"/>
+                        </NodeGraphicsInfo>
+                    </NodeGraphicsInfos>
+                </Activity>
+                <Activity Id="4" Name="F2">
+                    <Implementation>
+                        <Task/>
+                    </Implementation>
+                    <NodeGraphicsInfos>
+                        <NodeGraphicsInfo Height="41.0" Width="81.0">
+                            <Coordinates XCoordinate="330.0" YCoordinate="295.0"/>
+                        </NodeGraphicsInfo>
+                    </NodeGraphicsInfos>
+                </Activity>
+                <Activity Id="5">
+                    <Route GatewayType="Parallel"/>
+                    <TransitionRestrictions>
+                        <TransitionRestriction>
+                            <Split Type="Parallel">
+<TransitionRefs>
+    <TransitionRef Id="8"/>
+    <TransitionRef Id="9"/>
+</TransitionRefs>
+                            </Split>
+                        </TransitionRestriction>
+                    </TransitionRestrictions>
+                    <NodeGraphicsInfos>
+                        <NodeGraphicsInfo Height="21.0" Width="21.0">
+                            <Coordinates XCoordinate="285.0" YCoordinate="230.0"/>
+                        </NodeGraphicsInfo>
+                    </NodeGraphicsInfos>
+                </Activity>
+                <Activity Id="6">
+                    <Route GatewayType="Parallel"/>
+                    <TransitionRestrictions>
+                        <TransitionRestriction>
+                            <Join Type="Parallel"/>
+                        </TransitionRestriction>
+                    </TransitionRestrictions>
+                    <NodeGraphicsInfos>
+                        <NodeGraphicsInfo Height="21.0" Width="21.0">
+                            <Coordinates XCoordinate="430.0" YCoordinate="230.0"/>
+                        </NodeGraphicsInfo>
+                    </NodeGraphicsInfos>
+                </Activity>
+            </Activities>
+            <Transitions>
+                <Transition Id="7" From="1" To="5">
+                    <ConnectorGraphicsInfos>
+                        <ConnectorGraphicsInfo>
+                            <Coordinates XCoordinate="251.0" YCoordinate="240.0"/>
+                            <Coordinates XCoordinate="285.0" YCoordinate="240.0"/>
+                        </ConnectorGraphicsInfo>
+                    </ConnectorGraphicsInfos>
+                </Transition>
+                <Transition Id="8" From="5" To="3">
+                    <ConnectorGraphicsInfos>
+                        <ConnectorGraphicsInfo>
+                            <Coordinates XCoordinate="306.0" YCoordinate="230.0"/>
+                            <Coordinates XCoordinate="325.0" YCoordinate="175.0"/>
+                        </ConnectorGraphicsInfo>
+                    </ConnectorGraphicsInfos>
+                </Transition>
+                <Transition Id="9" From="5" To="4">
+                    <ConnectorGraphicsInfos>
+                        <ConnectorGraphicsInfo>
+                            <Coordinates XCoordinate="306.0" YCoordinate="251.0"/>
+                            <Coordinates XCoordinate="330.0" YCoordinate="315.0"/>
+                        </ConnectorGraphicsInfo>
+                    </ConnectorGraphicsInfos>
+                </Transition>
+                <Transition Id="10" From="4" To="6">
+                    <ConnectorGraphicsInfos>
+                        <ConnectorGraphicsInfo>
+                            <Coordinates XCoordinate="411.0" YCoordinate="315.0"/>
+                            <Coordinates XCoordinate="430.0" YCoordinate="251.0"/>
+                        </ConnectorGraphicsInfo>
+                    </ConnectorGraphicsInfos>
+                </Transition>
+                <Transition Id="11" From="3" To="6">
+                    <ConnectorGraphicsInfos>
+                        <ConnectorGraphicsInfo>
+                            <Coordinates XCoordinate="406.0" YCoordinate="175.0"/>
+                            <Coordinates XCoordinate="430.0" YCoordinate="230.0"/>
+                        </ConnectorGraphicsInfo>
+                    </ConnectorGraphicsInfos>
+                </Transition>
+                <Transition Id="12" From="6" To="2">
+                    <ConnectorGraphicsInfos>
+                        <ConnectorGraphicsInfo>
+                            <Coordinates XCoordinate="451.0" YCoordinate="240.0"/>
+                            <Coordinates XCoordinate="475.0" YCoordinate="240.0"/>
+                        </ConnectorGraphicsInfo>
+                    </ConnectorGraphicsInfos>
+                </Transition>
+            </Transitions>
+        </WorkflowProcess>
+    </WorkflowProcesses>
+</Package>
