@@ -263,7 +263,7 @@ public class EditorHandler extends BasisHandler {
       	  	+ "<!-- libraries -->\n"
     	  	+ "<script src=\"" + libsUri + "/prototype-1.5.1.js\" type=\"text/javascript\" />\n"
     	  	+ "<script src=\"" + libsUri + "/path_parser.js\" type=\"text/javascript\" />\n"
-    	  	+ "<script src=\"" + libsUri + "/ext-2.0.2/adapters/ext/ext-base.js\" type=\"text/javascript\" />\n"
+    	  	+ "<script src=\"" + libsUri + "/ext-2.0.2/adapter/ext/ext-base.js\" type=\"text/javascript\" />\n"
     	  	+ "<script src=\"" + libsUri + "/ext-2.0.2/ext-all.js\" type=\"text/javascript\" />\n"
     	  	+ "<script src=\"" + libsUri + "/ext-2.0.2/color-field.js\" type=\"text/javascript\" />\n"
       	  	
