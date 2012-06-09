@@ -670,6 +670,9 @@ ORYX.Core.Canvas = ORYX.Core.AbstractShape.extend({
 			if(!href.match("^(http|https)://")) {
 				href = window.location.protocol + "//" + window.location.host + href;
 				elem.setAttributeNS("http://www.w3.org/1999/xlink", "href", href);
+				// FM, 22.05.2012
+				// Bugfix ImageRenderer is expecting "xlink:href" instead of "href"
+				elem.setAttributeNS("http://www.w3.org/1999/xlink", "xlink:href", href);				
 			}
 		});
 		

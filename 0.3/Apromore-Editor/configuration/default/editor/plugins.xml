@@ -86,6 +86,16 @@
 		</plugin>		
 		
 		<!-- End: BPMN2.0 specific plugins -->
+		
+		<!-- The following Plugin is needed for YAWL 2.2 Stencil Set -->
+		<plugin source="yawlSupport.js" name="ORYX.Plugins.YAWLSupport">
+  			<requires namespace="http://b3mn.org/stencilset/yawl2.2#"/>  
+		</plugin>
+		
+		<!-- The following Plugin is needed for EPC Stencil Set -->
+		<plugin source="epcSupport.js" name="ORYX.Plugins.EPCSupport">
+			<requires namespace="http://b3mn.org/stencilset/epc#"/>
+		</plugin>		
 	</plugins>
 	
 	<properties>

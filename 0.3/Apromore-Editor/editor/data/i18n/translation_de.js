@@ -386,3 +386,37 @@ ORYX.I18N.SyntaxChecker.COMMUNICATION_AT_LEAST_TWO_PARTICIPANTS = "Die Kommunika
 ORYX.I18N.SyntaxChecker.MESSAGEFLOW_START_MUST_BE_PARTICIPANT = "Die Nachrichtenflussquelle muss ein Teilnehmer sein.";
 ORYX.I18N.SyntaxChecker.MESSAGEFLOW_END_MUST_BE_PARTICIPANT = "Das Nachrichtenflussziel muss ein Teilnehmer sein.";
 ORYX.I18N.SyntaxChecker.CONV_LINK_CANNOT_CONNECT_CONV_NODES = "Der Konversationslink muss eine Kommunikation oder Sub-Konversation mit einem Teilnehmer verbinden.";
+
+/** New Language Properties 24.04.2012 - YAWL Extension */
+/** YAWL Plugin **/
+if(!ORYX.I18N.YAWL) ORYX.I18N.YAWL = {};
+ORYX.I18N.YAWL.importName = "YAWL importieren";
+ORYX.I18N.YAWL.importDesc = "";
+ORYX.I18N.YAWL.importGroup = "Export";
+ORYX.I18N.YAWL.exportName = "YAWL exportieren";
+ORYX.I18N.YAWL.exportDesc = "";
+ORYX.I18N.YAWL.exportGroup = "Export";
+ORYX.I18N.YAWL.selectFileText = "Eine YAWL Spezifikation über eine Datei auswählen (.yawl) oder in das Textfeld eingeben!"
+ORYX.I18N.YAWL.fileText = "Datei: "
+ORYX.I18N.YAWL.importTitle = "Importiere YAWL Spezifikation"
+ORYX.I18N.YAWL.importButtonText = "Importieren"
+ORYX.I18N.YAWL.importProgress = "Importiere YAWL Spezifikation..."
+ORYX.I18N.YAWL.importFailed = "Der Import der YAWL Spezifikation ist fehlgeschlagen!"
+ORYX.I18N.YAWL.importFinished = 'Import abgeschlossen!';
+ORYX.I18N.YAWL.importFinishedText = 'You will be redirected to the just saved root net.';
+ORYX.I18N.YAWL.closeButtonText = "Schließen"
+ORYX.I18N.YAWL.yawlGroup = "YAWL";
+ORYX.I18N.YAWL.cancelationSetName = "Cancelation Set hervorheben";
+ORYX.I18N.YAWL.cancelationSetDesc = "";
+ORYX.I18N.YAWL.messageGetIDofNet = "Getting ID of Net ";
+ORYX.I18N.YAWL.messageInsertSubnetUrls = "Inserting URLs of Subnets to Decomposite Tasks";
+ORYX.I18N.YAWL.messageSavingNet = "Saving net ";
+ORYX.I18N.YAWL.messageConversionFailed = "Konvertierung fehlgeschlagen! \n";
+ORYX.I18N.YAWL.messageConversionWarnings = "Konvertierung mit Warnungen abgeschlossen: \n";	
+ORYX.I18N.YAWL.unfoldMenuNewSubnet = "neues Subnetz";
+ORYX.I18N.YAWL.unfoldMenu = ".. bestehendes Subnetz";
+ORYX.I18N.YAWL.unfoldMenuChooseSubnet = "Wähle ein Subnetz:";
+ORYX.I18N.YAWL.unfoldMenuSuccess = "Unfold to net";
+ORYX.I18N.YAWL.unfoldMenuSuccessText = "Unfolded to: ";	
+ORYX.I18N.YAWL.unfoldExistingMenuFailure = "Could not retrieve possible subnets from backend!";
+ORYX.I18N.YAWL.unfoldNewMenuFailure = "Could not save new subnet";
