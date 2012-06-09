@@ -48,5 +48,21 @@
 			"uri":"/jbpm4/jbpm4.json",
             "icon_url":"/diagrams/bpmn-22x22.png",
             "visible":true
-        }
+        },
+		{
+            "title":"EPC",
+            "namespace":"http://b3mn.org/stencilset/epc#",
+            "description":"Event-driven Process Chain specification.",
+            "uri":"/epc/epc.json",
+            "icon_url":"/diagrams/epc-22x22.png",
+            "visible":true
+        },        
+        {
+            "title":"YAWL Workflow (YAWL 2.2)",
+            "namespace":"http://b3mn.org/stencilset/yawl2.2#",
+            "description":"Stencil Set to create YAWL 2.2 workflows",
+            "uri":"/yawl/yawl.json",
+            "icon_url":"/diagrams/yawl.png",
+            "visible":true
+        }   
 ]

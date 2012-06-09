@@ -388,3 +388,57 @@ ORYX.I18N.SyntaxChecker.COMMUNICATION_AT_LEAST_TWO_PARTICIPANTS = "The communica
 ORYX.I18N.SyntaxChecker.MESSAGEFLOW_START_MUST_BE_PARTICIPANT = "The message flow's source must be a participant.";
 ORYX.I18N.SyntaxChecker.MESSAGEFLOW_END_MUST_BE_PARTICIPANT = "The message flow's target must be a participant.";
 ORYX.I18N.SyntaxChecker.CONV_LINK_CANNOT_CONNECT_CONV_NODES = "The conversation link must connect a communication or sub conversation node with a participant.";
+
+
+/** New Language Properties 24.04.2012 - YAWL Extension */
+/** YAWL Plugin **/
+if(!ORYX.I18N.YAWL) ORYX.I18N.YAWL = {};
+ORYX.I18N.YAWL.importName = "Import from YAWL";
+ORYX.I18N.YAWL.importDesc = "";
+ORYX.I18N.YAWL.importGroup = "Export"; /** for some reason this have to be the same group as export **/
+ORYX.I18N.YAWL.exportName = "Export to YAWL";
+ORYX.I18N.YAWL.exportDesc = "";
+ORYX.I18N.YAWL.exportGroup = "Export";
+ORYX.I18N.YAWL.selectFileText = "Select a YAWL (.yawl) specification file or type in the YAWL specification to import it!";
+ORYX.I18N.YAWL.fileText = "File: ";
+ORYX.I18N.YAWL.importTitle = "Import YAWL Specification";
+ORYX.I18N.YAWL.importButtonText = "Import";
+ORYX.I18N.YAWL.importProgress = "Importing YAWL specification ...";
+ORYX.I18N.YAWL.importFailed = "Importing the YAWL specification failed!";
+ORYX.I18N.YAWL.importFinished = 'Import finished!';
+ORYX.I18N.YAWL.importFinishedText = 'You will be redirected to the just saved root net.';
+ORYX.I18N.YAWL.closeButtonText = "Close";
+ORYX.I18N.YAWL.yawlGroup = "YAWL";
+ORYX.I18N.YAWL.cancelationSetName = "Higlight Cancelation Set";
+ORYX.I18N.YAWL.cancelationSetDesc = "";
+ORYX.I18N.YAWL.messageGetIDofNet = "Getting ID of Net ";
+ORYX.I18N.YAWL.messageInsertSubnetUrls = "Inserting URLs of Subnets to Decomposite Tasks";
+ORYX.I18N.YAWL.messageSavingNet = "Saving net ";
+ORYX.I18N.YAWL.messageConversionFailed = "Conversion Failed! \n";
+ORYX.I18N.YAWL.messageConversionWarnings = "Conversion completed with Warnings: \n";	
+ORYX.I18N.YAWL.unfoldMenuNewSubnet = "new subnet";
+ORYX.I18N.YAWL.unfoldMenuExistingSubnet = ".. existing subnet";
+ORYX.I18N.YAWL.unfoldMenuChooseSubnet = "Choose a Subnet below:";
+ORYX.I18N.YAWL.unfoldMenuSuccess = "Unfold to net";
+ORYX.I18N.YAWL.unfoldMenuSuccessText = "Unfolded to: ";
+ORYX.I18N.YAWL.unfoldExistingMenuFailure = "Could not retrieve possible subnets from backend!";
+ORYX.I18N.YAWL.unfoldNewMenuFailure = "Could not save new subnet";
+
+
+/** New Language Properties 22.05.2012 - EPC Extension */
+/** EPC Plugin **/
+if(!ORYX.I18N.EPCSupport) ORYX.I18N.EPCSupport = {};
+
+ORYX.I18N.EPCSupport.group = "EPC";
+ORYX.I18N.EPCSupport.exp = "Export EPC";
+ORYX.I18N.EPCSupport.expDesc = "Export diagram to EPML";
+ORYX.I18N.EPCSupport.imp = "Import EPC";
+ORYX.I18N.EPCSupport.impDesc = "Import an EPML file";
+ORYX.I18N.EPCSupport.progressExp = "Exporting model";
+ORYX.I18N.EPCSupport.selectFile = "Select an EPML (.empl) file to import.";
+ORYX.I18N.EPCSupport.file = "File";
+ORYX.I18N.EPCSupport.impPanel = "Import EPML File";
+ORYX.I18N.EPCSupport.impBtn = "Import";
+ORYX.I18N.EPCSupport.close = "Close";
+ORYX.I18N.EPCSupport.error = "Error";
+ORYX.I18N.EPCSupport.progressImp = "Import...";
