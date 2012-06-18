@@ -1,9 +1,8 @@
 package org.apromore.dao.jpa;
 
+import org.apromore.dao.NamedQueries;
 import org.apromore.dao.model.Annotation;
-import org.apromore.dao.model.Canonical;
-import org.apromore.dao.model.Native;
-import org.apromore.exception.AnnotationNotFoundException;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.test.heuristic.JavaBeanHeuristic;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
@@ -11,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -21,13 +21,16 @@ import java.util.List;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.powermock.api.easymock.PowerMock.*;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replay;
+import static org.powermock.api.easymock.PowerMock.verify;
 
 /**
  * Test the Annotation DAO JPA class.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @RunWith(PowerMockRunner.class)
+@Transactional
 public class AnnotationDaoJpaUnitTest {
 
     private AnnotationDaoJpa dao;
@@ -39,14 +42,14 @@ public class AnnotationDaoJpaUnitTest {
         dao = new AnnotationDaoJpa();
         EntityManagerFactory factory = createMock(EntityManagerFactory.class);
         manager = createMock(EntityManager.class);
-        dao.setEntityManagerFactory(factory);
+        dao.setEntityManager(manager);
         expect(factory.createEntityManager()).andReturn(manager).anyTimes();
         replay(factory);
     }
 
     @Test
     public final void testIsAPOJO() {
-        JavaBeanHeuristic.assertLooksLikeJavaBean(AnnotationDaoJpa.class);
+        JavaBeanHeuristic.assertLooksLikeJavaBean(AnnotationDaoJpa.class, "em");
     }
 
 
@@ -57,7 +60,7 @@ public class AnnotationDaoJpaUnitTest {
         anns.add(createAnnotation());
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(Annotation.FIND_BY_URI)).andReturn(query);
+        expect(manager.createNamedQuery(NamedQueries.GET_ANNOTATION_BY_URI)).andReturn(query);
         expect(query.setParameter("uri", uri)).andReturn(query);
         expect(query.getResultList()).andReturn(anns);
 
@@ -76,7 +79,7 @@ public class AnnotationDaoJpaUnitTest {
         List<Annotation> anns = new ArrayList<Annotation>();
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(Annotation.FIND_BY_URI)).andReturn(query);
+        expect(manager.createNamedQuery(NamedQueries.GET_ANNOTATION_BY_URI)).andReturn(query);
         expect(query.setParameter("uri", uri)).andReturn(query);
         expect(query.getResultList()).andReturn(anns);
 
@@ -91,7 +94,7 @@ public class AnnotationDaoJpaUnitTest {
 
     @Test
     public final void testGetAnnotation() throws Exception {
-        long processId = 123;
+        Integer processId = 123;
         String versionName = "123";
         String name = "annName";
 
@@ -99,7 +102,7 @@ public class AnnotationDaoJpaUnitTest {
         annotation.setContent("<XML/>");
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(Annotation.GET_ANNOTATION)).andReturn(query);
+        expect(manager.createNamedQuery(NamedQueries.GET_ANNOTATION)).andReturn(query);
         expect(query.setParameter("processId", processId)).andReturn(query);
         expect(query.setParameter("versionName", versionName)).andReturn(query);
         expect(query.setParameter("name", name)).andReturn(query);
@@ -114,16 +117,16 @@ public class AnnotationDaoJpaUnitTest {
         MatcherAssert.assertThat(annotation, Matchers.equalTo(annotationObj));
     }
 
-    @Test(expected = AnnotationNotFoundException.class)
+    @Test
     public final void testGetAnnotationNotFound() throws Exception {
-        long processId = 123;
+        Integer processId = 123;
         String versionName = "123";
         String name = "annName";
 
         String annotationXML = null;
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(Annotation.GET_ANNOTATION)).andReturn(query);
+        expect(manager.createNamedQuery(NamedQueries.GET_ANNOTATION)).andReturn(query);
         expect(query.setParameter("processId", processId)).andReturn(query);
         expect(query.setParameter("versionName", versionName)).andReturn(query);
         expect(query.setParameter("name", name)).andReturn(query);
@@ -169,11 +172,10 @@ public class AnnotationDaoJpaUnitTest {
     private Annotation createAnnotation() {
         Annotation a = new Annotation();
 
-        a.setCanonical(new Canonical());
         a.setContent("12345");
         a.setName("newCanonical");
-        a.setNatve(new Native());
         a.setUri(12425535);
+        a.setProcessModelVersion(new ProcessModelVersion());
 
         return a;
     }

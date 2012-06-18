@@ -4,10 +4,21 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 /**
  * Stores the process in apromore.
@@ -21,21 +32,13 @@ import java.util.Set;
     }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@NamedQueries( {
-    @NamedQuery(name = Process.GET_ALL_PROCESSES, query = "SELECT p, coalesce(r.id.ranking, 0) FROM Process p, ProcessRanking r WHERE p.processId = r.id.processId "),
-    @NamedQuery(name = Process.GET_All_DOMAINS, query = "SELECT DISTINCT p.domain FROM Process p ORDER by p.domain")
-})
 @Configurable("process")
 public class Process implements Serializable {
-
-    public static final String GET_ALL_PROCESSES = "pr.getAllProcesses";
-    public static final String GET_All_DOMAINS = "pr.getAllDomains";
-
 
     /** Hard coded for interoperability. */
     private static final long serialVersionUID = -2353656404638485548L;
 
-    private long processId;
+    private Integer processId;
     private String name;
     private String domain;
 
@@ -44,7 +47,6 @@ public class Process implements Serializable {
 
     private Set<ProcessBranch> processBranches = new HashSet<ProcessBranch>(0);
     private Set<EditSessionMapping> editSessionMappings = new HashSet<EditSessionMapping>(0);
-    private Set<Canonical> canonicals = new HashSet<Canonical>(0);
 
     /**
      * Default constructor.
@@ -58,9 +60,10 @@ public class Process implements Serializable {
      * Get the Primary Key for the Object.
      * @return Returns the Id.
      */
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "processId", unique = true, nullable = false, precision = 11, scale = 0)
-    public long getProcessId() {
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "processId", unique = true, nullable = false)
+    public Integer getProcessId() {
         return processId;
     }
 
@@ -68,7 +71,7 @@ public class Process implements Serializable {
      * Set the Primary Key for the Object.
      * @param newProcessId The id to set.
      */
-    public void setProcessId(long newProcessId) {
+    public void setProcessId(Integer newProcessId) {
         this.processId = newProcessId;
     }
 
@@ -160,23 +163,6 @@ public class Process implements Serializable {
      */
     public void setEditSessionMappings(final Set<EditSessionMapping> newEditSessionMappings) {
         this.editSessionMappings = newEditSessionMappings;
-    }
-
-    /**
-     * Get the canonicals for the Object.
-     * @return Returns the canonicals.
-     */
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "process")
-    public Set<Canonical> getCanonicals() {
-        return this.canonicals;
-    }
-
-    /**
-     * Set the canonicals for the Object.
-     * @param newCanonicals The canonicals to set.
-     */
-    public void setCanonicals(final Set<Canonical> newCanonicals) {
-        this.canonicals = newCanonicals;
     }
 
     /**

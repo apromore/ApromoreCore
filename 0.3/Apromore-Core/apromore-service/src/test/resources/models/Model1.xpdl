@@ -1,0 +1,366 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:ns2="http://www.wfmc.org/2002/XPDL1.0" Id="d1e1" Name="model1">
+  <PackageHeader>
+    <XPDLVersion/>
+    <Vendor/>
+    <Created>2011/07/26 16:04:05</Created>
+    <ModificationDate/>
+    <Documentation/>
+  </PackageHeader>
+  <RedefinableHeader>
+    <Author>arthur</Author>
+    <Version>0.1</Version>
+  </RedefinableHeader>
+  <Participants/>
+  <Pages>
+    <Page Id="1"/>
+  </Pages>
+  <Pools>
+    <Pool Id="1" Process="oryx_4ce9ebfc-9195-469a-a624-30a53d75bb7d" BoundaryVisible="false">
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo PageId="1">
+          <Coordinates XCoordinate="0.0" YCoordinate="0.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Pool>
+  </Pools>
+  <WorkflowProcesses>
+    <WorkflowProcess Id="oryx_4ce9ebfc-9195-469a-a624-30a53d75bb7d" Name="">
+      <ProcessHeader/>
+      <ActivitySets/>
+      <Activities>
+        <Activity Id="oryx_FE775337-5EE3-424B-8DA6-9296E112FFCB" Name="">
+          <Route GatewayType="Exclusive" ExclusiveType="Data"/>
+          <TransitionRestrictions>
+            <TransitionRestriction>
+              <Split Type="Exclusive" ExclusiveType="Data">
+                <TransitionRefs>
+                  <TransitionRef Id="oryx_10418198-F1DF-46C7-BAAE-6840FB81196C"/>
+                  <TransitionRef Id="oryx_A949455D-C743-49D4-836B-AB0CD7C8F47B"/>
+                </TransitionRefs>
+              </Split>
+            </TransitionRestriction>
+          </TransitionRestrictions>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo PageId="1" Height="40.0" Width="40.0">
+              <Coordinates XCoordinate="254.0" YCoordinate="198.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_6BB2DF9B-04C1-47B7-886F-CE20E0FC9B16" Name="">
+          <Route GatewayType="Exclusive" ExclusiveType="Data"/>
+          <TransitionRestrictions>
+            <TransitionRestriction>
+              <Split Type="Exclusive" ExclusiveType="Data">
+                <TransitionRefs>
+                  <TransitionRef Id="oryx_D3AEDDBE-B88C-4793-8E90-40D4B2DE3109"/>
+                  <TransitionRef Id="oryx_1C34477B-4817-407C-9960-F5E5B793726B"/>
+                </TransitionRefs>
+              </Split>
+            </TransitionRestriction>
+          </TransitionRestrictions>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo PageId="1" Height="40.0" Width="40.0">
+              <Coordinates XCoordinate="469.0" YCoordinate="385.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_BB5F4CD7-B62E-42AE-9F08-612D57AB3C82" Name="">
+          <Route GatewayType="Exclusive" ExclusiveType="Data"/>
+          <TransitionRestrictions>
+            <TransitionRestriction>
+              <Split Type="Exclusive" ExclusiveType="Data">
+                <TransitionRefs>
+                  <TransitionRef Id="oryx_D7B67508-7D96-4E31-9BBA-8063F468FD62"/>
+                  <TransitionRef Id="oryx_2C676B5F-634A-4F5D-8E8E-6AD9B7F85AE9"/>
+                </TransitionRefs>
+              </Split>
+            </TransitionRestriction>
+          </TransitionRestrictions>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo PageId="1" Height="40.0" Width="40.0">
+              <Coordinates XCoordinate="680.0" YCoordinate="460.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_4A2FB57D-9013-4767-9C0F-9B67328F5BB9" Name="">
+          <Route GatewayType="Exclusive" ExclusiveType="Data"/>
+          <TransitionRestrictions>
+            <TransitionRestriction>
+              <Join Type="Exclusive" ExclusiveType="Data"/>
+            </TransitionRestriction>
+          </TransitionRestrictions>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo PageId="1" Height="40.0" Width="40.0">
+              <Coordinates XCoordinate="1055.0" YCoordinate="198.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_BDD2BA15-9E61-4FBC-B9BA-FBCBF64589B5" Name="">
+          <Route GatewayType="Parallel"/>
+          <TransitionRestrictions>
+            <TransitionRestriction>
+              <Split Type="Parallel">
+                <TransitionRefs>
+                  <TransitionRef Id="oryx_F185F3BA-275F-464D-9BDF-0C24EB127CCC"/>
+                  <TransitionRef Id="oryx_9587BCB1-E14B-4F5A-99E3-D9AAC7C38124"/>
+                </TransitionRefs>
+              </Split>
+            </TransitionRestriction>
+          </TransitionRestrictions>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo PageId="1" Height="40.0" Width="40.0">
+              <Coordinates XCoordinate="785.0" YCoordinate="460.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_280C4660-BB87-4D41-A5B9-E53730E410BC" Name="">
+          <Route GatewayType="Parallel"/>
+          <TransitionRestrictions>
+            <TransitionRestriction>
+              <Join Type="Parallel"/>
+            </TransitionRestriction>
+          </TransitionRestrictions>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo PageId="1" Height="40.0" Width="40.0">
+              <Coordinates XCoordinate="960.0" YCoordinate="460.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_9BC492F2-EA7B-4E10-A112-8807B41F37D8" Name="Phone call">
+          <Event>
+            <StartEvent Trigger="Message"/>
+          </Event>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo PageId="1" Height="30.0" Width="30.0">
+              <Coordinates XCoordinate="34.0" YCoordinate="203.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_6FD853AF-5570-42EB-9CAC-21B6303D2EEC" Name="">
+          <Event>
+            <EndEvent Result="None"/>
+          </Event>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo PageId="1" Height="28.0" Width="28.0">
+              <Coordinates XCoordinate="1140.0" YCoordinate="204.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_E7B4AAE5-ED32-437F-9160-9441F2C70D27" Name="Check if sufficient information is available">
+          <Implementation>
+            <Task>
+              <TaskUser Implementation="WebService"/>
+            </Task>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo PageId="1" Height="80.0" Width="100.0">
+              <Coordinates XCoordinate="109.0" YCoordinate="178.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_4A517CDD-2A0B-4B60-B5C1-B8BA3B328E2E" Name="Register claim">
+          <Implementation>
+            <Task>
+              <TaskUser Implementation="WebService"/>
+            </Task>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo PageId="1" Height="80.0" Width="100.0">
+              <Coordinates XCoordinate="324.0" YCoordinate="245.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_47F8DEDC-D0BA-49BA-B72C-9067A07EBD6E" Name="Determine likelihood of claim">
+          <Implementation>
+            <Task>
+              <TaskUser Implementation="WebService"/>
+            </Task>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo PageId="1" Height="80.0" Width="100.0">
+              <Coordinates XCoordinate="324.0" YCoordinate="365.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_6DD21F58-5385-428A-95E6-F859476C5FC2" Name="Assess claim">
+          <Implementation>
+            <Task>
+              <TaskUser Implementation="WebService"/>
+            </Task>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo PageId="1" Height="80.0" Width="100.0">
+              <Coordinates XCoordinate="535.0" YCoordinate="440.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_7DB02C3B-7CB0-420D-B89A-4646676DC5FE" Name="Advice claimant on reimbursement">
+          <Implementation>
+            <Task>
+              <TaskUser Implementation="WebService"/>
+            </Task>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo PageId="1" Height="80.0" Width="100.0">
+              <Coordinates XCoordinate="840.0" YCoordinate="380.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_216E5980-81CE-4723-AE13-1573466A49CD" Name="Initiate payment">
+          <Implementation>
+            <Task>
+              <TaskUser Implementation="WebService"/>
+            </Task>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo PageId="1" Height="80.0" Width="100.0">
+              <Coordinates XCoordinate="840.0" YCoordinate="500.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_F12F1095-32AC-4504-8239-8BEED8B82781" Name="Close claim">
+          <Implementation>
+            <Task>
+              <TaskUser Implementation="WebService"/>
+            </Task>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo PageId="1" Height="80.0" Width="100.0">
+              <Coordinates XCoordinate="1025.0" YCoordinate="440.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+      </Activities>
+      <Transitions>
+        <Transition Id="oryx_16FF3237-173A-4AC7-AA2C-7D25E5266BD8" From="oryx_9BC492F2-EA7B-4E10-A112-8807B41F37D8" To="oryx_E7B4AAE5-ED32-437F-9160-9441F2C70D27" Name="">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1"/>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_5C4A544D-E03D-4394-BB6E-16ACD1E2696C" From="oryx_E7B4AAE5-ED32-437F-9160-9441F2C70D27" To="oryx_FE775337-5EE3-424B-8DA6-9296E112FFCB" Name="">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1"/>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_10418198-F1DF-46C7-BAAE-6840FB81196C" From="oryx_FE775337-5EE3-424B-8DA6-9296E112FFCB" To="oryx_4A517CDD-2A0B-4B60-B5C1-B8BA3B328E2E" Name="">
+          <Condition Type="CONDITION">
+            <Expression>Information available</Expression>
+          </Condition>
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1">
+              <Coordinates XCoordinate="274.5" YCoordinate="285.0"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_ED90D255-4BB0-46A4-A62A-46C1B00C8893" From="oryx_4A517CDD-2A0B-4B60-B5C1-B8BA3B328E2E" To="oryx_47F8DEDC-D0BA-49BA-B72C-9067A07EBD6E" Name="">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1"/>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_BD85A480-4B67-4425-9CD3-B70153C43F95" From="oryx_47F8DEDC-D0BA-49BA-B72C-9067A07EBD6E" To="oryx_6BB2DF9B-04C1-47B7-886F-CE20E0FC9B16" Name="">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1"/>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_D3AEDDBE-B88C-4793-8E90-40D4B2DE3109" From="oryx_6BB2DF9B-04C1-47B7-886F-CE20E0FC9B16" To="oryx_6DD21F58-5385-428A-95E6-F859476C5FC2" Name="">
+          <Condition Type="CONDITION">
+            <Expression>liable</Expression>
+          </Condition>
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1">
+              <Coordinates XCoordinate="489.5" YCoordinate="480.0"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_D8ECA95C-AD29-4DBF-93A9-B091CA65018E" From="oryx_6DD21F58-5385-428A-95E6-F859476C5FC2" To="oryx_BB5F4CD7-B62E-42AE-9F08-612D57AB3C82" Name="">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1"/>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_D7B67508-7D96-4E31-9BBA-8063F468FD62" From="oryx_BB5F4CD7-B62E-42AE-9F08-612D57AB3C82" To="oryx_BDD2BA15-9E61-4FBC-B9BA-FBCBF64589B5" Name="">
+          <Condition Type="CONDITION">
+            <Expression>Claim							accepted</Expression>
+          </Condition>
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1"/>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_F185F3BA-275F-464D-9BDF-0C24EB127CCC" From="oryx_BDD2BA15-9E61-4FBC-B9BA-FBCBF64589B5" To="oryx_7DB02C3B-7CB0-420D-B89A-4646676DC5FE" Name="">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1">
+              <Coordinates XCoordinate="805.5" YCoordinate="420.0"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_9587BCB1-E14B-4F5A-99E3-D9AAC7C38124" From="oryx_BDD2BA15-9E61-4FBC-B9BA-FBCBF64589B5" To="oryx_216E5980-81CE-4723-AE13-1573466A49CD" Name="">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1">
+              <Coordinates XCoordinate="805.5" YCoordinate="540.0"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_44BD7C06-0C5E-4731-ABA6-0EE9CA89C1FE" From="oryx_216E5980-81CE-4723-AE13-1573466A49CD" To="oryx_280C4660-BB87-4D41-A5B9-E53730E410BC" Name="">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1">
+              <Coordinates XCoordinate="980.5" YCoordinate="540.0"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_9F5C4A04-5F8B-4A03-9671-A6DE2F2EF191" From="oryx_7DB02C3B-7CB0-420D-B89A-4646676DC5FE" To="oryx_280C4660-BB87-4D41-A5B9-E53730E410BC" Name="">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1">
+              <Coordinates XCoordinate="980.0" YCoordinate="420.0"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_200CB054-04C2-4315-8908-D8C5FA6AFD4B" From="oryx_280C4660-BB87-4D41-A5B9-E53730E410BC" To="oryx_F12F1095-32AC-4504-8239-8BEED8B82781" Name="">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1"/>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_A949455D-C743-49D4-836B-AB0CD7C8F47B" From="oryx_FE775337-5EE3-424B-8DA6-9296E112FFCB" To="oryx_4A2FB57D-9013-4767-9C0F-9B67328F5BB9" Name="">
+          <Condition Type="CONDITION">
+            <Expression>Not enough information</Expression>
+          </Condition>
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1">
+              <Coordinates XCoordinate="274.5" YCoordinate="147.0"/>
+              <Coordinates XCoordinate="1075.5" YCoordinate="147.0"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_5A7F6547-59D6-460A-B01D-29FBBE8A3119" From="oryx_F12F1095-32AC-4504-8239-8BEED8B82781" To="oryx_4A2FB57D-9013-4767-9C0F-9B67328F5BB9" Name="">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1"/>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_8BD7A717-F0AE-47A2-B786-32D6CC2CF236" From="oryx_4A2FB57D-9013-4767-9C0F-9B67328F5BB9" To="oryx_6FD853AF-5570-42EB-9CAC-21B6303D2EEC" Name="">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1"/>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_2C676B5F-634A-4F5D-8E8E-6AD9B7F85AE9" From="oryx_BB5F4CD7-B62E-42AE-9F08-612D57AB3C82" To="oryx_4A2FB57D-9013-4767-9C0F-9B67328F5BB9" Name="">
+          <Condition Type="CONDITION">
+            <Expression>Claim rejected</Expression>
+          </Condition>
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1">
+              <Coordinates XCoordinate="700.5" YCoordinate="228.0"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+        </Transition>
+        <Transition Id="oryx_1C34477B-4817-407C-9960-F5E5B793726B" From="oryx_6BB2DF9B-04C1-47B7-886F-CE20E0FC9B16" To="oryx_4A2FB57D-9013-4767-9C0F-9B67328F5BB9" Name="">
+          <Condition Type="CONDITION">
+            <Expression>non liable</Expression>
+          </Condition>
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo PageId="1">
+              <Coordinates XCoordinate="489.5" YCoordinate="206.9454273038391"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+        </Transition>
+      </Transitions>
+    </WorkflowProcess>
+  </WorkflowProcesses>
+</Package>

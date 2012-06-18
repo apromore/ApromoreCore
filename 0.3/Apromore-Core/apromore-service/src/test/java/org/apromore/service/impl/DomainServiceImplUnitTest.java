@@ -1,5 +1,6 @@
 package org.apromore.service.impl;
 
+import org.apromore.dao.ProcessDao;
 import org.apromore.dao.jpa.NativeTypeDaoJpa;
 import org.apromore.dao.jpa.ProcessDaoJpa;
 import org.junit.Before;
@@ -7,6 +8,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -32,14 +34,14 @@ import static org.powermock.api.easymock.PowerMock.*;
 public class DomainServiceImplUnitTest {
 
     @Autowired
-    private ProcessDaoJpa procDAOJpa;
+    private ProcessDao procDAOJpa;
 
     private DomainServiceImpl domainServiceImpl;
 
     @Before
     public final void setUp() throws Exception {
         domainServiceImpl = new DomainServiceImpl();
-        procDAOJpa = createMock(ProcessDaoJpa.class);
+        procDAOJpa = createMock(ProcessDao.class);
         domainServiceImpl.setProcDao(procDAOJpa);
     }
 

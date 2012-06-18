@@ -1,13 +1,11 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.common.Utils;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
 import org.apromore.portal.exception.ExceptionImportAllMissing;
 import org.apromore.model.ProcessSummaryType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.wfmc._2008.xpdl2.PackageType;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;

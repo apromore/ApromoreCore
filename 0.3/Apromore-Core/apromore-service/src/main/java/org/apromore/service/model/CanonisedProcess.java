@@ -1,5 +1,8 @@
 package org.apromore.service.model;
 
+import org.apromore.anf.AnnotationsType;
+import org.apromore.cpf.CanonicalProcessType;
+
 import java.io.InputStream;
 
 /**
@@ -12,12 +15,15 @@ import java.io.InputStream;
  */
 public class CanonisedProcess {
 
-    private InputStream anf;
     private InputStream cpf;
+    private CanonicalProcessType cpt;
+
+    private InputStream anf;
+    private AnnotationsType ant;
 
     /**
-     * Public Constructor.
-     */
+    * Public Constructor.
+    */
     public CanonisedProcess() { }
 
 
@@ -35,6 +41,22 @@ public class CanonisedProcess {
      */
     public void setAnf(InputStream anf) {
         this.anf = anf;
+    }
+
+    public CanonicalProcessType getCpt() {
+        return cpt;
+    }
+
+    public void setCpt(CanonicalProcessType cpt) {
+        this.cpt = cpt;
+    }
+
+    public AnnotationsType getAnt() {
+        return ant;
+    }
+
+    public void setAnt(AnnotationsType ant) {
+        this.ant = ant;
     }
 
     /**

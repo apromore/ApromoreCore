@@ -1,10 +1,10 @@
 package org.apromore.dao.jpa;
 
+import org.apromore.dao.NamedQueries;
 import org.apromore.dao.model.Annotation;
-import org.apromore.dao.model.Canonical;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
-import org.apromore.exception.NativeFormatNotFoundException;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.test.heuristic.JavaBeanHeuristic;
 import org.junit.Before;
 import org.junit.Test;
@@ -13,6 +13,7 @@ import org.powermock.modules.junit4.PowerMockRunner;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
+import javax.persistence.NoResultException;
 import javax.persistence.Query;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -22,7 +23,9 @@ import java.util.Set;
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
-import static org.powermock.api.easymock.PowerMock.*;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replay;
+import static org.powermock.api.easymock.PowerMock.verify;
 
 /**
  * Test the Native DAO JPA class.
@@ -40,27 +43,27 @@ public class NativeDaoJpaUnitTest {
         dao = new NativeDaoJpa();
         EntityManagerFactory factory = createMock(EntityManagerFactory.class);
         manager = createMock(EntityManager.class);
-        dao.setEntityManagerFactory(factory);
+        dao.setEntityManager(manager);
         expect(factory.createEntityManager()).andReturn(manager).anyTimes();
         replay(factory);
     }
 
     @Test
     public final void testIsAPOJO() {
-        JavaBeanHeuristic.assertLooksLikeJavaBean(NativeDaoJpa.class);
+        JavaBeanHeuristic.assertLooksLikeJavaBean(NativeDaoJpa.class, "em");
     }
 
 
     @Test
     public final void testGetAllProcesses() {
-        long processId = 123;
+        Integer processId = 123;
         String versionName = "123";
         List<Native> nats = new ArrayList<Native>();
         nats.add(createNative());
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(Native.FIND_NATIVE_TYPES)).andReturn(query);
-        expect(query.setParameter("processId", processId)).andReturn(query);
+        expect(manager.createNamedQuery(NamedQueries.GET_NATIVE_TYPES)).andReturn(query);
+        expect(query.setParameter("branchId", processId)).andReturn(query);
         expect(query.setParameter("versionName", versionName)).andReturn(query);
         expect(query.getResultList()).andReturn(nats);
 
@@ -76,13 +79,13 @@ public class NativeDaoJpaUnitTest {
 
     @Test
     public final void testGetAllProcessesNonFound() {
-        long processId = 123;
+        Integer processId = 123;
         String versionName = "123";
         List<Native> nats = new ArrayList<Native>();
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(Native.FIND_NATIVE_TYPES)).andReturn(query);
-        expect(query.setParameter("processId", processId)).andReturn(query);
+        expect(manager.createNamedQuery(NamedQueries.GET_NATIVE_TYPES)).andReturn(query);
+        expect(query.setParameter("branchId", processId)).andReturn(query);
         expect(query.setParameter("versionName", versionName)).andReturn(query);
         expect(query.getResultList()).andReturn(nats);
 
@@ -97,7 +100,7 @@ public class NativeDaoJpaUnitTest {
 
     @Test
     public final void testGetNative() throws Exception {
-        long processId = 123;
+        Integer processId = 123;
         String versionName = "123";
         String nativeType = "BPMN";
 
@@ -105,8 +108,8 @@ public class NativeDaoJpaUnitTest {
         natve.setContent("<XML/>");
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(Native.GET_NATIVE)).andReturn(query);
-        expect(query.setParameter("processId", processId)).andReturn(query);
+        expect(manager.createNamedQuery(NamedQueries.GET_NATIVE)).andReturn(query);
+        expect(query.setParameter("branchId", processId)).andReturn(query);
         expect(query.setParameter("versionName", versionName)).andReturn(query);
         expect(query.setParameter("nativeType", nativeType)).andReturn(query);
         expect(query.getSingleResult()).andReturn(natve);
@@ -120,20 +123,20 @@ public class NativeDaoJpaUnitTest {
         assertThat(nativeObj, equalTo(natve));
     }
 
-    @Test(expected = NativeFormatNotFoundException.class)
+    @Test
     public final void testGetNativeNotFound() throws Exception {
-        long processId = 123;
+        Integer processId = 123;
         String versionName = "123";
         String nativeType = "BPMN";
 
-        String nativeXML = null;
+        Native natve = null;
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(Native.GET_NATIVE)).andReturn(query);
-        expect(query.setParameter("processId", processId)).andReturn(query);
+        expect(manager.createNamedQuery(NamedQueries.GET_NATIVE)).andReturn(query);
+        expect(query.setParameter("branchId", processId)).andReturn(query);
         expect(query.setParameter("versionName", versionName)).andReturn(query);
         expect(query.setParameter("nativeType", nativeType)).andReturn(query);
-        expect(query.getSingleResult()).andReturn(nativeXML);
+        expect(query.getSingleResult()).andReturn(natve);
 
         replay(manager, query);
 
@@ -178,13 +181,11 @@ public class NativeDaoJpaUnitTest {
 
         n.setContent("12345");
         n.setUri(12425535);
-        n.setCanonical(new Canonical());
         n.setNativeType(new NativeType());
+        n.setProcessModelVersion(new ProcessModelVersion());
 
         Set<Annotation> anns = new HashSet<Annotation>();
         anns.add(new Annotation());
-
-        n.setAnnotations(anns);
 
         return n;
     }

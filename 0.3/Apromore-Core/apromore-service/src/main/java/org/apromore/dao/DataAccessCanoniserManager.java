@@ -2,8 +2,6 @@ package org.apromore.dao;
 
 import org.apromore.model.GetCpfUriInputMsgType;
 import org.apromore.model.GetCpfUriOutputMsgType;
-import org.apromore.model.StoreNativeCpfInputMsgType;
-import org.apromore.model.StoreNativeCpfOutputMsgType;
 import org.apromore.model.StoreNativeInputMsgType;
 import org.apromore.model.StoreNativeOutputMsgType;
 import org.apromore.model.StoreVersionInputMsgType;

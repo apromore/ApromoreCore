@@ -1,14 +1,14 @@
 package org.apromore.dao.jpa;
 
+import org.apromore.dao.NamedQueries;
 import org.apromore.dao.NativeTypeDao;
-import org.apromore.dao.model.NativeType;
-import org.springframework.orm.jpa.JpaCallback;
-import org.springframework.orm.jpa.JpaTemplate;
+import org.apromore.dao.model.*;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
@@ -18,9 +18,13 @@ import java.util.List;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  * @since 1.0
  */
-@Repository(value = "NativeDao")
+@Repository
 @Transactional(propagation = Propagation.REQUIRED)
-public class NativeTypeDaoJpa extends JpaTemplate implements NativeTypeDao {
+public class NativeTypeDaoJpa implements NativeTypeDao {
+
+    @PersistenceContext
+    private EntityManager em;
+
 
 
     /**
@@ -30,64 +34,34 @@ public class NativeTypeDaoJpa extends JpaTemplate implements NativeTypeDao {
      */
     @Override
     public List<NativeType> findAllFormats() {
-        return execute(new JpaCallback<List<NativeType>>() {
-
-            @SuppressWarnings("unchecked")
-            public List<NativeType> doInJpa(EntityManager em) {
-                Query query = em.createNamedQuery(NativeType.FIND_FORMAT);
-                return query.getResultList();
-            }
-        });
+        Query query = em.createNamedQuery(NamedQueries.GET_NATIVE_TYPE_FORMAT);
+        return query.getResultList();
     }
 
     /**
-     * Find a particular Native Type.
      * @see org.apromore.dao.NativeTypeDao#findAllFormats()
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public NativeType findNativeType(final String nativeType) {
-        return execute(new JpaCallback<NativeType>() {
-
-            @SuppressWarnings("unchecked")
-            public NativeType doInJpa(EntityManager em) {
-                Query query = em.createNamedQuery(NativeType.FIND_FORMATS);
-                query.setParameter("name", nativeType);
-                return (NativeType) query.getSingleResult();
-            }
-        });
+        Query query = em.createNamedQuery(NamedQueries.GET_NATIVE_TYPE_FORMATS);
+        query.setParameter("name", nativeType);
+        List<NativeType> result = query.getResultList();
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return result.get(0);
+        }
     }
-
-
 
 
     /**
-     * Remove the NativeType.
-     * @see org.apromore.dao.NativeTypeDao#delete(org.apromore.dao.model.NativeType)
-     * {@inheritDoc}
+     * Sets the Entity Manager. No way around this to get Unit Testing working
+     * @param em the entitymanager
      */
-    @Override
-    public void save(NativeType nativeType) {
-        persist(nativeType);
+    public void setEntityManager(EntityManager em) {
+        this.em = em;
     }
 
-    /**
-     * Remove the NativeType.
-     * @see org.apromore.dao.NativeTypeDao#delete(org.apromore.dao.model.NativeType)
-     * {@inheritDoc}
-     */
-    @Override
-    public void update(NativeType nativeType) {
-        merge(nativeType);
-    }
-
-    /**
-     * Remove the NativeType.
-     * @see org.apromore.dao.NativeTypeDao#delete(org.apromore.dao.model.NativeType)
-     * {@inheritDoc}
-     */
-    @Override
-    public void delete(NativeType nativeType) {
-         remove(nativeType);
-    }
 }

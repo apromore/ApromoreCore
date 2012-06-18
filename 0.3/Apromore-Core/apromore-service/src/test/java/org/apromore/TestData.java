@@ -411,6 +411,75 @@ public interface TestData {
             "        <name>Boarding pass</name>\n" +
             "    </Object>\n" +
             "</ns2:CanonicalProcess>";
+
+    public static final String CPF2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+            "<ns2:CanonicalProcess xmlns:ns2=\"http://www.apromore.org/CPF\">\n" +
+            "    <Net id=\"1288089387836\">\n" +
+            "        <Node xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:EventType\" id=\"1288089387823\">\n" +
+            "            <name>E1</name>\n" +
+            "        </Node>\n" +
+            "        <Node xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:EventType\" id=\"1288089387824\">\n" +
+            "            <name>E2</name>\n" +
+            "        </Node>\n" +
+            "        <Node xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:TaskType\" id=\"1288089387825\">\n" +
+            "            <name>F1</name>\n" +
+            "            <resourceTypeRef resourceTypeId=\"1288089387826\">\n" +
+            "                <attribute typeRef=\"RefID\" value=\"1288089387834\"/>\n" +
+            "            </resourceTypeRef>\n" +
+            "        </Node>\n" +
+            "        <Node xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:TaskType\" id=\"1288089387827\">\n" +
+            "            <name>F2</name>\n" +
+            "            <resourceTypeRef resourceTypeId=\"1288089387829\">\n" +
+            "                <attribute typeRef=\"RefID\" value=\"1288089387835\"/>\n" +
+            "            </resourceTypeRef>\n" +
+            "        </Node>\n" +
+            "        <Node xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:EventType\" id=\"1288089387828\">\n" +
+            "            <name>E3</name>\n" +
+            "        </Node>\n" +
+            "        <Edge id=\"1288089387830\" sourceId=\"1288089387823\" targetId=\"1288089387825\"/>\n" +
+            "        <Edge id=\"1288089387831\" sourceId=\"1288089387825\" targetId=\"1288089387824\"/>\n" +
+            "        <Edge id=\"1288089387832\" sourceId=\"1288089387824\" targetId=\"1288089387827\"/>\n" +
+            "        <Edge id=\"1288089387833\" sourceId=\"1288089387827\" targetId=\"1288089387828\"/>\n" +
+            "    </Net>\n" +
+            "    <ResourceType xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:HumanType\" id=\"1288089387826\">\n" +
+            "        <name>R1</name>\n" +
+            "    </ResourceType>\n" +
+            "    <ResourceType xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:HumanType\" id=\"1288089387829\">\n" +
+            "        <name>R2</name>\n" +
+            "    </ResourceType>\n" +
+            "    <attribute typeRef=\"IntialFormat\" value=\"EPML\"/>\n" +
+            "</ns2:CanonicalProcess>\n";
+
+
+    public static final String CPF3 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
+            "<ns2:CanonicalProcess xmlns:ns2=\"http://www.apromore.org/CPF\">\n" +
+            "    <Net id=\"19\">\n" +
+            "        <Node xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:EventType\" id=\"1\">\n" +
+            "            <name>E1</name>\n" +
+            "        </Node>\n" +
+            "        <Node xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:EventType\" id=\"4\">\n" +
+            "            <name>E4</name>\n" +
+            "        </Node>\n" +
+            "        <Node xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:TaskType\" id=\"5\">\n" +
+            "            <name>F1</name>\n" +
+            "        </Node>\n" +
+            "        <Node xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:TaskType\" id=\"6\">\n" +
+            "            <name>F2</name>\n" +
+            "        </Node>\n" +
+            "        <Node xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:TaskType\" id=\"7\">\n" +
+            "            <name>F3</name>\n" +
+            "        </Node>\n" +
+            "        <Node xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:ORSplitType\" id=\"8\"/>\n" +
+            "        <Node xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:ORJoinType\" id=\"9\"/>\n" +
+            "        <Edge id=\"10\" sourceId=\"1\" targetId=\"5\"/>\n" +
+            "        <Edge id=\"11\" sourceId=\"5\" targetId=\"8\"/>\n" +
+            "        <Edge id=\"12\" condition=\"E2\" sourceId=\"8\" targetId=\"6\"/>\n" +
+            "        <Edge id=\"13\" condition=\"E3\" sourceId=\"8\" targetId=\"7\"/>\n" +
+            "        <Edge id=\"16\" sourceId=\"6\" targetId=\"9\"/>\n" +
+            "        <Edge id=\"17\" sourceId=\"7\" targetId=\"9\"/>\n" +
+            "        <Edge id=\"18\" sourceId=\"9\" targetId=\"4\"/>\n" +
+            "    </Net>\n" +
+            "</ns2:CanonicalProcess>";
     
     
     public static final String XPDL = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +

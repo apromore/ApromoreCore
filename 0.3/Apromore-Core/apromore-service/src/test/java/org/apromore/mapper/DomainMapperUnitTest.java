@@ -1,8 +1,6 @@
 package org.apromore.mapper;
 
-import org.apromore.dao.model.NativeType;
 import org.apromore.model.DomainsType;
-import org.apromore.model.NativeTypesType;
 import org.junit.Before;
 import org.junit.Test;
 

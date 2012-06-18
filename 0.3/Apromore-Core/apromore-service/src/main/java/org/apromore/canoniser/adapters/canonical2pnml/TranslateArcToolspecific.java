@@ -1,13 +1,13 @@
 package org.apromore.canoniser.adapters.canonical2pnml;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
-//import org.apromore.anf.AdditionalEdgeInformationType;
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.SimulationType;
 import org.apromore.pnml.ArcType;
 import org.apromore.pnml.PositionType;
+
+import java.math.BigDecimal;
+
+//import org.apromore.anf.AdditionalEdgeInformationType;
 
 public class TranslateArcToolspecific {
 	DataHandler data;
@@ -16,7 +16,7 @@ public class TranslateArcToolspecific {
 		this.data = data;
 	}
 
-	public void translate(AnnotationType annotation, BigInteger cid) {
+	public void translate(AnnotationType annotation, String cid) {
 		if (annotation instanceof SimulationType) {
 			SimulationType simu = (SimulationType) annotation;
 			org.apromore.pnml.ArcToolspecificType pnmlArcToolspecific = new org.apromore.pnml.ArcToolspecificType();

@@ -1,15 +1,16 @@
 package org.apromore.dao.jpa;
 
 import org.apromore.dao.AnnotationDao;
+import org.apromore.dao.NamedQueries;
 import org.apromore.dao.model.Annotation;
-import org.apromore.exception.AnnotationNotFoundException;
-import org.springframework.orm.jpa.JpaCallback;
-import org.springframework.orm.jpa.JpaTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
@@ -19,27 +20,23 @@ import java.util.List;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  * @since 1.0
  */
-@Repository(value = "AnnotationDao")
+@Repository
 @Transactional(propagation = Propagation.REQUIRED)
-public class AnnotationDaoJpa extends JpaTemplate implements AnnotationDao {
+public class AnnotationDaoJpa implements AnnotationDao {
+
+    @PersistenceContext
+    private EntityManager em;
 
 
     /**
-     * Returns list of annotations.
      * @see org.apromore.dao.AnnotationDao#findByUri(int)
      * {@inheritDoc}
      */
     @Override
-    public List<Annotation> findByUri(final int nativeUri) {
-        return execute(new JpaCallback<List<Annotation>>() {
-
-            @SuppressWarnings("unchecked")
-            public List<Annotation> doInJpa(EntityManager em) {
-                Query query = em.createNamedQuery(Annotation.FIND_BY_URI);
-                query.setParameter("uri", nativeUri);
-                return query.getResultList();
-            }
-        });
+    public List<Annotation> findByUri(final Integer nativeUri) {
+        Query query = em.createNamedQuery(NamedQueries.GET_ANNOTATION_BY_URI);
+        query.setParameter("uri", nativeUri);
+        return query.getResultList();
     }
 
 
@@ -49,54 +46,52 @@ public class AnnotationDaoJpa extends JpaTemplate implements AnnotationDao {
      * {@inheritDoc}
      */
     @Override
-    public Annotation getAnnotation(final long processId, final String version, final String name) throws AnnotationNotFoundException {
-         Annotation result = execute(new JpaCallback<Annotation>() {
-            @SuppressWarnings("unchecked")
-            public Annotation doInJpa(EntityManager em) {
-                Query query = em.createNamedQuery(Annotation.GET_ANNOTATION);
-                query.setParameter("processId", processId);
-                query.setParameter("versionName", version);
-                query.setParameter("name", name);
-                return (Annotation) query.getSingleResult();
-            }
-        });
-        if (result == null) {
-            throw new AnnotationNotFoundException("The Annotation for Process (" + processId + "," + version + ") cannot be found.");
-        }
-        return result;
+    public Annotation getAnnotation(final Integer processId, final String version, final String name)
+            throws NoResultException, NonUniqueResultException {
+        Query query = em.createNamedQuery(NamedQueries.GET_ANNOTATION);
+        query.setParameter("processId", processId);
+        query.setParameter("versionName", version);
+        query.setParameter("name", name);
+        return (Annotation) query.getSingleResult();
     }
 
 
 
-
-
     /**
-     * Remove the annotation.
      * @see org.apromore.dao.AnnotationDao#delete(Annotation)
      * {@inheritDoc}
      */
     @Override
     public void save(Annotation annotation) {
-        persist(annotation);
+        em.persist(annotation);
     }
 
     /**
-     * Remove the annotation.
      * @see org.apromore.dao.AnnotationDao#delete(Annotation)
      * {@inheritDoc}
      */
     @Override
-    public void update(Annotation annotation) {
-        merge(annotation);
+    public Annotation update(Annotation annotation) {
+        return em.merge(annotation);
     }
 
     /**
-     * Remove the annotation.
      * @see org.apromore.dao.AnnotationDao#delete(Annotation)
      * {@inheritDoc}
      */
     @Override
     public void delete(Annotation annotation) {
-         remove(annotation);
+         em.remove(annotation);
     }
+
+
+
+    /**
+     * Sets the Entity Manager. No way around this to get Unit Testing working
+     * @param em the entitymanager
+     */
+    public void setEntityManager(EntityManager em) {
+        this.em = em;
+    }
+
 }

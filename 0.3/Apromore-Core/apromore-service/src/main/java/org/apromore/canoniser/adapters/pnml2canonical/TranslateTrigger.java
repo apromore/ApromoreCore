@@ -1,14 +1,13 @@
 package org.apromore.canoniser.adapters.pnml2canonical;
 
-import java.math.BigInteger;
-import java.util.List;
-
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.MessageType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TimerType;
 import org.apromore.pnml.TransitionToolspecificType;
 import org.apromore.pnml.TransitionType;
+
+import java.util.List;
 
 public class TranslateTrigger {
 
@@ -35,18 +34,18 @@ public class TranslateTrigger {
 							MessageType msg = new MessageType();
 
 							data.put_objectmap(String.valueOf(ids), msg);
-							msg.setId(BigInteger.valueOf(ids++));
+							msg.setId(String.valueOf(ids++));
 							if (tran.getName() != null) {
 								msg.setName(tran.getName().getText());
 							}
 							TaskType msgtask = new TaskType();
-							msgtask.setId(BigInteger.valueOf(ids++));
+							msgtask.setId(String.valueOf(ids++));
 							if (tran.getName() != null) {
 								msgtask.setName(tran.getName().getText());
 							}
 							msgtask.setOriginalID(tran.getId());
 							EdgeType msgedge = new EdgeType();
-							msgedge.setId(BigInteger.valueOf(ids++));
+							msgedge.setId(String.valueOf(ids++));
 							msgedge.setSourceId(msg.getId());
 							msgedge.setTargetId(msgtask.getId());
 
@@ -62,18 +61,18 @@ public class TranslateTrigger {
 							TimerType time = new TimerType();
 
 							data.put_objectmap(String.valueOf(ids), time);
-							time.setId(BigInteger.valueOf(ids++));
+							time.setId(String.valueOf(ids++));
 							if (tran.getName() != null) {
 								time.setName(tran.getName().getText());
 							}
 							TaskType timetask = new TaskType();
-							timetask.setId(BigInteger.valueOf(ids++));
+							timetask.setId(String.valueOf(ids++));
 							if (tran.getName() != null) {
 								timetask.setName(tran.getName().getText());
 							}
 							timetask.setOriginalID(tran.getId());
 							EdgeType timeedge = new EdgeType();
-							timeedge.setId(BigInteger.valueOf(ids++));
+							timeedge.setId(String.valueOf(ids++));
 							timeedge.setSourceId(time.getId());
 							timeedge.setTargetId(timetask.getId());
 

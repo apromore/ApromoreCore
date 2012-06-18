@@ -1,19 +1,18 @@
 package org.apromore.toolbox.similaritySearch.tools;
 
 
-import java.util.LinkedList;
-
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.toolbox.similaritySearch.algorithms.MergeModels;
 import org.apromore.toolbox.similaritySearch.common.CPFModelParser;
 import org.apromore.toolbox.similaritySearch.common.IdGeneratorHelper;
 import org.apromore.toolbox.similaritySearch.graph.Graph;
 
+import java.util.ArrayList;
 
 
 public class MergeProcesses {
 	
-	public static CanonicalProcessType mergeProcesses(LinkedList<CanonicalProcessType> models, 
+	public static CanonicalProcessType mergeProcesses(ArrayList<CanonicalProcessType> models,
 												boolean removeEnt,
 												String algortithm, 
 												double threshold,

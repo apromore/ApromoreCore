@@ -7,6 +7,7 @@ import static org.powermock.api.easymock.PowerMock.createMock;
 import static org.powermock.api.easymock.PowerMock.replay;
 import static org.powermock.api.easymock.PowerMock.verify;
 
+import org.apromore.dao.NamedQueries;
 import org.apromore.dao.model.User;
 import org.apromore.test.heuristic.JavaBeanHeuristic;
 import org.junit.Before;
@@ -27,22 +28,22 @@ import java.util.List;
 @RunWith(PowerMockRunner.class)
 public class UserDaoJpaUnitTest {
 
-    private UserDaoJpa usrJpa;
+    private UserDaoJpa dao;
     private EntityManager manager;
 
     @Before
     public final void setUp() throws Exception {
-        usrJpa = new UserDaoJpa();
+        dao = new UserDaoJpa();
         EntityManagerFactory factory = createMock(EntityManagerFactory.class);
         manager = createMock(EntityManager.class);
-        usrJpa.setEntityManagerFactory(factory);
+        dao.setEntityManager(manager);
         expect(factory.createEntityManager()).andReturn(manager).anyTimes();
         replay(factory);
     }
 
     @Test
     public final void testIsAPOJO() {
-        JavaBeanHeuristic.assertLooksLikeJavaBean(UserDaoJpa.class);
+        JavaBeanHeuristic.assertLooksLikeJavaBean(UserDaoJpa.class, "em");
     }
 
     @Test
@@ -54,7 +55,7 @@ public class UserDaoJpaUnitTest {
 
         replay(manager);
 
-        User usr = usrJpa.findUser(username);
+        User usr = dao.findUser(username);
         verify(manager);
         assertThat(user, equalTo(usr));
     }
@@ -68,7 +69,7 @@ public class UserDaoJpaUnitTest {
 
         replay(manager);
 
-        User usr = usrJpa.findUser(username);
+        User usr = dao.findUser(username);
         verify(manager);
         assertThat(user, equalTo(usr));
     }
@@ -77,7 +78,7 @@ public class UserDaoJpaUnitTest {
     public final void testFindAllUsersSomeFound() {
         Query query = createMock(Query.class);
 
-        expect(manager.createNamedQuery(User.FIND_ALL_USERS)).andReturn(query);
+        expect(manager.createNamedQuery(NamedQueries.GET_ALL_USERS)).andReturn(query);
 
         List<User> users = new ArrayList<User>();
         User usr = createUser();
@@ -87,7 +88,7 @@ public class UserDaoJpaUnitTest {
         replay(manager);
         replay(query);
 
-        List<User> userList = usrJpa.findAllUsers();
+        List<User> userList = dao.findAllUsers();
         verify(query);
         assertThat(users, equalTo(userList));
     }
@@ -96,7 +97,7 @@ public class UserDaoJpaUnitTest {
     public final void testFindAllUsersNoOneFound() {
         Query query = createMock(Query.class);
 
-        expect(manager.createNamedQuery(User.FIND_ALL_USERS)).andReturn(query);
+        expect(manager.createNamedQuery(NamedQueries.GET_ALL_USERS)).andReturn(query);
 
         List<User> users = new ArrayList<User>();
         expect(query.getResultList()).andReturn(users);
@@ -104,7 +105,7 @@ public class UserDaoJpaUnitTest {
         replay(manager);
         replay(query);
 
-        List<User> userList = usrJpa.findAllUsers();
+        List<User> userList = dao.findAllUsers();
         verify(query);
         assertThat(users, equalTo(userList));
     }
@@ -116,7 +117,7 @@ public class UserDaoJpaUnitTest {
         User usr = createUser();
         manager.persist(usr);
         replay(manager);
-        usrJpa.save(usr);
+        dao.save(usr);
         verify(manager);
     }
 
@@ -125,7 +126,7 @@ public class UserDaoJpaUnitTest {
         User usr = createUser();
         expect(manager.merge(usr)).andReturn(usr);
         replay(manager);
-        usrJpa.update(usr);
+        dao.update(usr);
         verify(manager);
     }
 
@@ -135,7 +136,7 @@ public class UserDaoJpaUnitTest {
         User usr = createUser();
         manager.remove(usr);
         replay(manager);
-        usrJpa.delete(usr);
+        dao.delete(usr);
         verify(manager);
     }
 

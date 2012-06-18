@@ -1,6 +1,5 @@
 package org.apromore.toolbox.similaritySearch.graph;
 
-import java.math.BigInteger;
 import java.util.HashSet;
 
 
@@ -9,10 +8,10 @@ public class VertexObject {
 	private String name;
 	private Boolean configurable;
 	private SoftHart softhard;
-	private BigInteger id;
+	private String id;
 	private HashSet<String> models = new HashSet<String>();
 	
-	public VertexObject(BigInteger id, String name, Boolean configurable, SoftHart softhard) {
+	public VertexObject(String id, String name, Boolean configurable, SoftHart softhard) {
 		this.name = name;
 		this.configurable = configurable == null ? false : configurable;
 		this.softhard = softhard;
@@ -38,10 +37,10 @@ public class VertexObject {
 		this.softhard = softhard;
 	}
 
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
 

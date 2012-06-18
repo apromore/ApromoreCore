@@ -28,8 +28,7 @@ public class NodeSimilarity {
 					|| Graph.isSplit(m) && Graph.isJoin(n)) {
 				return 0;
 			}
-			double sim =  SemanticSimilarity.getSemanticSimilarity(n, m, labelTreshold);
-			return sim;
+            return SemanticSimilarity.getSemanticSimilarity(n, m, labelTreshold);
 		}
 		return 0;
 	}

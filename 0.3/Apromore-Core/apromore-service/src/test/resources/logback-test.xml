@@ -3,20 +3,34 @@
 <configuration>
     <contextName>Apromore</contextName>
 
-    <turboFilter class="ch.qos.logback.classic.turbo.DuplicateMessageFilter"/>
-
     <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
         <encoder class="ch.qos.logback.core.encoder.LayoutWrappingEncoder">
             <Pattern>%d{HH:mm:ss.SSS} %logger{36} - %msg%n</Pattern>
         </encoder>
     </appender>
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>c:\Development\logs\apromore.log</file>
+        <append>true</append>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>c:\Development\logs\apromore.log-%d{yyyy-MM-dd}.%i.txt</fileNamePattern>
+            <maxHistory>5</maxHistory>
+            <timeBasedFileNamingAndTriggeringPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedFNATP">
+                <maxFileSize>5MB</maxFileSize>
+            </timeBasedFileNamingAndTriggeringPolicy>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss,SSS} - [%t] %-5p %30c - %m%n</pattern>
+        </encoder>
+    </appender>
 
-    <logger name="org.hibernate" level="DEBUG"/>
-    <logger name="org.springframework.security" level="DEBUG"/>
-    <logger name="org.springframework.transaction" level="DEBUG"/>
-    <logger name="org.springframework.security" level="DEBUG"/>
+    <logger name="org.hibernate" level="INFO"/>
+    <logger name="org.springframework" level="INFO"/>
+    <logger name="org.springframework.beans.factory" level="DEBUG" />
+    <logger name="net.sf.ehcache" level="ERROR"/>
+    <logger name="org.hibernate.type" level="TRACE"/>
 
-    <root level="TRACE">
+    <root level="DEBUG">
+        <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
     </root>
 

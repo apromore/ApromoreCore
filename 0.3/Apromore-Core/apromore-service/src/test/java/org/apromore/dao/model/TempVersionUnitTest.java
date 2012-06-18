@@ -4,8 +4,8 @@ import org.apromore.test.heuristic.JavaBeanHeuristic;
 import org.junit.Test;
 
 /**
- * Test the Annotation POJO.
- * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
+ * Test the Temp Version POJO.
+ *  @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 public class TempVersionUnitTest {
 

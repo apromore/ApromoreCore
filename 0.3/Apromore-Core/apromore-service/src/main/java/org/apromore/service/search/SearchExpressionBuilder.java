@@ -52,8 +52,6 @@ public class SearchExpressionBuilder {
                     res.add(" and ");
                 } else if (currentChar.compareTo(";") == 0) {
                     res.add(" or ");
-                //} else if (currentChar.compareTo(")") == 0) {
-                //    res.add(" ) ");
                 } else if (currentChar.compareTo("(") == 0) {
                     res.add(" ( ");
                 } else if (currentChar.compareTo(" ") != 0) {
@@ -73,10 +71,6 @@ public class SearchExpressionBuilder {
                     res.add(term);
                     res.add(" ) ");
                     state = 1;
-                //} else if (currentChar.compareTo("(") == 0) {
-                //    res.add(term);
-                //    res.add(" ( ");
-                //    state = 1;
                 } else if (currentChar.compareTo(" ") != 0) {
                     term += currentChar;
                 }
@@ -87,18 +81,5 @@ public class SearchExpressionBuilder {
         }
         return res;
     }
-
-//
-//    public static void main(String[] args) throws Exception {
-//        SearchExpressionBuilder sb = new SearchExpressionBuilder();
-//        System.out.println(ProcessDaoJpa.GET_ALL_PROCESSES + sb.buildSearchConditions("(yawl;protos),invoicing") + ProcessDaoJpa.GET_ALL_PRO_SORT);
-//        System.out.println(ProcessDaoJpa.GET_ALL_PROCESSES + sb.buildSearchConditions("invoicing") + ProcessDaoJpa.GET_ALL_PRO_SORT);
-//
-//        System.out.println("");
-//        List<String> expression = sb.mapQuery("a;b,b;c;(d,e),(a,f)");
-//        for (String obj : expression) {
-//            System.out.print(obj);
-//        }
-//    }
 
 }

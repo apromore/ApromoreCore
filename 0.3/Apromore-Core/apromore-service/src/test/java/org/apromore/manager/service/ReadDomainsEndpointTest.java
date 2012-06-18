@@ -1,19 +1,11 @@
 package org.apromore.manager.service;
 
-import org.apromore.dao.model.User;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
 import org.apromore.manager.da.ManagerDataAccessClient;
-import org.apromore.manager.toolbox.ManagerToolboxClient;
 import org.apromore.model.ObjectFactory;
-import org.apromore.model.ReadAllUsersInputMsgType;
-import org.apromore.model.ReadAllUsersOutputMsgType;
 import org.apromore.model.ReadDomainsInputMsgType;
 import org.apromore.model.ReadDomainsOutputMsgType;
-import org.apromore.model.ReadUserInputMsgType;
-import org.apromore.model.ReadUserOutputMsgType;
 import org.apromore.service.DomainService;
-import org.apromore.service.UserService;
-import org.apromore.service.impl.UserServiceImpl;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +17,6 @@ import org.w3c.dom.Document;
 import javax.xml.bind.JAXBElement;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -49,7 +40,6 @@ public class ReadDomainsEndpointTest {
     private Document responseDocument;
     private ManagerDataAccessClient daMock;
     private ManagerCanoniserClient caMock;
-    private ManagerToolboxClient tbMock;
 
     private DomainService domSrv;
 
@@ -63,11 +53,9 @@ public class ReadDomainsEndpointTest {
         responseDocument = documentBuilder.newDocument();
         daMock = createMock(ManagerDataAccessClient.class);
         caMock = createMock(ManagerCanoniserClient.class);
-        tbMock = createMock(ManagerToolboxClient.class);
         domSrv = createMock(DomainService.class);
         endpoint = new ManagerPortalEndpoint();
         endpoint.setCaClient(caMock);
-        endpoint.setTbClient(tbMock);
         endpoint.setDaClient(daMock);
         endpoint.setDomSrv(domSrv);
     }

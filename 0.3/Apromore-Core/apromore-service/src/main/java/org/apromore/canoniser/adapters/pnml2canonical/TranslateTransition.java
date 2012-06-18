@@ -1,12 +1,11 @@
 package org.apromore.canoniser.adapters.pnml2canonical;
 
-import java.math.BigInteger;
-import java.util.List;
-
 import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.TaskType;
 import org.apromore.pnml.TransitionToolspecificType;
 import org.apromore.pnml.TransitionType;
+
+import java.util.List;
 
 public class TranslateTransition {
 	DataHandler data;
@@ -27,7 +26,7 @@ public class TranslateTransition {
 			TaskType task = new TaskType();
 
 			data.put_objectmap(String.valueOf(ids), task);
-			task.setId(BigInteger.valueOf(ids++));
+			task.setId(String.valueOf(ids++));
 			if (tran.getName() != null) {
 				task.setName(tran.getName().getText());
 			}

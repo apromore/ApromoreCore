@@ -1,12 +1,6 @@
 package org.apromore.toolbox.similaritySearch.algorithms;
 
 
-import java.math.BigInteger;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.LinkedList;
-
 import org.apromore.toolbox.similaritySearch.common.IdGeneratorHelper;
 import org.apromore.toolbox.similaritySearch.common.VertexPair;
 import org.apromore.toolbox.similaritySearch.common.algos.GraphEditDistanceGreedy;
@@ -23,6 +17,11 @@ import org.apromore.toolbox.similaritySearch.graph.VertexResource;
 import org.apromore.toolbox.similaritySearch.graph.VertexResourceRef;
 import org.apromore.toolbox.similaritySearch.planarGraphMathing.PlanarGraphMathing.MappingRegions;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedList;
+
 
 
 public class MergeModels {
@@ -33,7 +32,7 @@ public class MergeModels {
 			String algortithm, 
 			double ...param) {
 		
-		HashMap<BigInteger, BigInteger> objectresourceIDMap = new HashMap<BigInteger, BigInteger>();
+		HashMap<String, String> objectresourceIDMap = new HashMap<String, String>();
 
 		Graph merged = new Graph();
 		merged.setIdGenerator(idGenerator);
@@ -299,7 +298,7 @@ public class MergeModels {
 	}
 
 	private static void mergeResources(Collection<VertexResource> existing,
-			HashMap<BigInteger, BigInteger> objectresourceIDMap, Graph merged) {
+			HashMap<String, String> objectresourceIDMap, Graph merged) {
 		// add resources and objects
 		for (VertexResource v : existing) {
 			boolean mergedResource = false;
@@ -323,7 +322,7 @@ public class MergeModels {
 	}
 	
 	private static void mergeObjects(Collection<VertexObject> existing,
-			HashMap<BigInteger, BigInteger> objectresourceIDMap, Graph merged) {
+			HashMap<String, String> objectresourceIDMap, Graph merged) {
 		// add resources and objects
 		for (VertexObject v : existing) {
 			boolean mergedResource = false;

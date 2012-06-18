@@ -208,13 +208,6 @@
             <scope>provided</scope>
         </dependency>
 
-        <!-- javaMelody-core -->
-        <dependency>
-            <groupId>net.bull.javamelody</groupId>
-            <artifactId>javamelody-core</artifactId>
-            <version>${javamelody.version}</version>
-        </dependency>
-
         <!-- itext, option to add PDF export -->
         <dependency>
             <groupId>com.lowagie</groupId>
