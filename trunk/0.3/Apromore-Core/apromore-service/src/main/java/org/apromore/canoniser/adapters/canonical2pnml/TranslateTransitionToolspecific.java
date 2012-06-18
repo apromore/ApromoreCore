@@ -14,8 +14,7 @@ public class TranslateTransitionToolspecific {
 		this.data = data;
 	}
 
-	public void translate(AnnotationType annotation, BigInteger cid) {
-
+	public void translate(AnnotationType annotation, String cid) {
 		Object obj = data.get_pnmlRefMap_value(data.get_id_map_value(cid));
 		if (obj instanceof TransitionType) {
 			SimulationType simu = (SimulationType) annotation;

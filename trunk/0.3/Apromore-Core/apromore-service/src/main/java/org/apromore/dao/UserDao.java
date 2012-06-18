@@ -37,7 +37,7 @@ public interface UserDao {
      * Update the user.
      * @param user the user to update
      */
-    void update(User user);
+    User update(User user);
 
     /**
      * Remove the user.

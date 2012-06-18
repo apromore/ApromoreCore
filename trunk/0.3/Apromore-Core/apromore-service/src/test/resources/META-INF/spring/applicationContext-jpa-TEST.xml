@@ -9,11 +9,12 @@
 
     <context:property-placeholder location="**/datasource.properties"/>
 
-    <context:annotation-config/>
+    <context:annotation-config />
+    <context:spring-configured />
 
     <!-- Hibernate Config -->
-    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
     <bean class="org.springframework.dao.annotation.PersistenceExceptionTranslationPostProcessor"/>
+    <bean class="org.springframework.orm.jpa.support.PersistenceAnnotationBeanPostProcessor"/>
 
     <bean id="dataSource" class="org.springframework.jdbc.datasource.DriverManagerDataSource"
           p:driverClassName="${jdbc.driverClassName}" p:url="${jdbc.url}" p:username="${jdbc.username}"
@@ -34,30 +35,38 @@
                 <prop key="hibernate.dbcp.ps.maxIdle">${hibernate.dbcp.ps.maxIdle}</prop>
                 <prop key="hibernate.statement_cache.size">${hibernate.statement_cache.size}</prop>
                 <prop key="hibernate.jdbc.batch_size">${hibernate.jdbc.batch_size}</prop>
-                <prop key="hibernate.cache.provider_class">${hibernate.cache.provider_class}</prop>
+                <prop key="hibernate.cache.use_second_level_cache">${hibernate.cache.use_second_level_cache}</prop>
+                <prop key="hibernate.cache.use_query_cache">${hibernate.cache.use_query_cache}</prop>
+                <prop key="hibernate.cache.region.factory_class">${hibernate.cache.region.factory_class}</prop>
                 <prop key="net.sf.ehcache.configurationResourceName">${net.sf.ehcache.configurationResourceName}</prop>
             </props>
         </property>
     </bean>
 
-    <bean id="jpaTransactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager"
           p:entityManagerFactory-ref="entityManagerFactory"/>
 
-    <tx:annotation-driven transaction-manager="jpaTransactionManager" proxy-target-class="true" />
+    <tx:annotation-driven proxy-target-class="true" />
 
 
     <!-- =================================================================== -->
     <!-- Hibernate JPA DAO implementation                                    -->
     <!-- =================================================================== -->
+    <bean id="AnnotationDao" class="org.apromore.dao.jpa.AnnotationDaoJpa" />
+    <bean id="NativeDao" class="org.apromore.dao.jpa.NativeDaoJpa" />
+    <bean id="NativeTypeDao" class="org.apromore.dao.jpa.NativeTypeDaoJpa" />
+    <bean id="SearchHistoryDao" class="org.apromore.dao.jpa.SearchHistoryDaoJpa" />
+    <bean id="UserDao" class="org.apromore.dao.jpa.UserDaoJpa" />
 
-    <bean id="abstractDao" abstract="true" p:entityManagerFactory-ref="entityManagerFactory" />
-
-    <bean id="AnnotationDao" class="org.apromore.dao.jpa.AnnotationDaoJpa" parent="abstractDao" />
-    <bean id="CanonicalDao" class="org.apromore.dao.jpa.CanonicalDaoJpa" parent="abstractDao" />
-    <bean id="NativeDao" class="org.apromore.dao.jpa.NativeDaoJpa" parent="abstractDao" />
-    <bean id="NativeTypeDao" class="org.apromore.dao.jpa.NativeTypeDaoJpa" parent="abstractDao" />
-    <bean id="ProcessDao" class="org.apromore.dao.jpa.ProcessDaoJpa" parent="abstractDao" />
-    <bean id="SearchHistoryDao" class="org.apromore.dao.jpa.SearchHistoryDaoJpa" parent="abstractDao" />
-    <bean id="UserDao" class="org.apromore.dao.jpa.UserDaoJpa" parent="abstractDao" />
+    <bean id="ContentDao" class="org.apromore.dao.jpa.ContentDaoJpa" />
+    <bean id="ProcessDao" class="org.apromore.dao.jpa.ProcessDaoJpa" />
+    <bean id="ProcessBranchDao" class="org.apromore.dao.jpa.ProcessBranchDaoJpa" />
+    <bean id="ProcessFragmentMapDao" class="org.apromore.dao.jpa.ProcessFragmentMapDaoJpa" />
+    <bean id="ProcessModelVersionDao" class="org.apromore.dao.jpa.ProcessModelVersionDaoJpa" />
+    <bean id="FragmentVersionDao" class="org.apromore.dao.jpa.FragmentVersionDaoJpa" />
+    <bean id="FragmentVersionDagDao" class="org.apromore.dao.jpa.FragmentVersionDagDaoJpa" />
+    <bean id="EdgeDao" class="org.apromore.dao.jpa.EdgeDaoJpa" />
+    <bean id="NodeDao" class="org.apromore.dao.jpa.NodeDaoJpa" />
+    <bean id="NonPocketNodeDao" class="org.apromore.dao.jpa.NonPocketNodeDaoJpa" />
 
 </beans>

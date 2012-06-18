@@ -1,5 +1,7 @@
 package org.apromore.dao.jpa;
 
+import org.apromore.dao.ProcessDao;
+import org.apromore.dao.model.Process;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.slf4j.Logger;
@@ -13,15 +15,15 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+import static org.hamcrest.CoreMatchers.notNullValue;
+import static org.junit.Assert.assertThat;
+
 /**
  * Test the Process DAO JPA class.
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-@ContextConfiguration(locations = {
-        "classpath:META-INF/spring/applicationContext-jpa-TEST.xml"
-       ,"classpath:META-INF/spring/applicationContext-services-TEST.xml"
-		})
-@TransactionConfiguration(transactionManager = "jpaTransactionManager", defaultRollback = true)
+@ContextConfiguration(locations = { "classpath:META-INF/spring/applicationContext-jpa-TEST.xml" })
+@TransactionConfiguration(transactionManager = "transactionManager", defaultRollback = true)
 @Transactional
 @RunWith(SpringJUnit4ClassRunner.class)
 public class ProcessDaoJpaIntgTest {
@@ -29,15 +31,22 @@ public class ProcessDaoJpaIntgTest {
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessDaoJpaIntgTest.class);
 
     @Autowired
-    private ProcessDaoJpa dao;
+    private ProcessDao dao;
 
     @Test
     @Rollback(true)
     public void getProcessSummariesNoSearchExpression() {
-        List<Object[]> processes = dao.getAllProcesses(null);
-        for (Object[] process : processes) {
-           LOGGER.debug(process[0].toString() + " - " + process[1].toString());
+        List<Process> processes = dao.getAllProcesses(null);
+        for (Process process : processes) {
+            LOGGER.debug(process.toString());
         }
+    }
+
+    @Test
+    @Rollback(true)
+    public void getAllDomains() {
+        List<String> domain = dao.getAllDomains();
+        assertThat(domain, notNullValue());
     }
 
 //    private void createProcesses() {

@@ -1,9 +1,5 @@
 package org.apromore.canoniser.adapters.pnml2canonical;
 
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apromore.cpf.HumanType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.pnml.NetToolspecificType;
@@ -12,6 +8,9 @@ import org.apromore.pnml.ResourceMappingType;
 import org.apromore.pnml.ResourceType;
 import org.apromore.pnml.ResourcesType;
 import org.apromore.pnml.RoleType;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class TranslateHumanResources {
 	DataHandler data;
@@ -37,7 +36,7 @@ public class TranslateHumanResources {
 							HumanType ht = new HumanType();
 							ht.setName(humanres.getName());
 							resid = data.getResourceID();
-							ht.setId(BigInteger.valueOf(resid++));
+							ht.setId(String.valueOf(resid++));
 							data.setResourceID(resid);
 							hmap.put(ht.getName(), ht);
 							data.getCanonicalProcess().getResourceType()

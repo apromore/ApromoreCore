@@ -7,16 +7,63 @@ import org.apromore.exception.ExceptionVersion;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
 import org.apromore.manager.da.ManagerDataAccessClient;
-import org.apromore.manager.toolbox.ManagerToolboxClient;
 import org.apromore.mapper.DomainMapper;
 import org.apromore.mapper.NativeTypeMapper;
 import org.apromore.mapper.UserMapper;
-import org.apromore.model.*;
+import org.apromore.model.DeleteEditSessionInputMsgType;
+import org.apromore.model.DeleteEditSessionOutputMsgType;
+import org.apromore.model.DeleteProcessVersionsInputMsgType;
+import org.apromore.model.DeleteProcessVersionsOutputMsgType;
+import org.apromore.model.DomainsType;
+import org.apromore.model.EditProcessDataInputMsgType;
+import org.apromore.model.EditProcessDataOutputMsgType;
+import org.apromore.model.EditSessionType;
+import org.apromore.model.ExportFormatInputMsgType;
+import org.apromore.model.ExportFormatOutputMsgType;
+import org.apromore.model.ImportProcessInputMsgType;
+import org.apromore.model.ImportProcessOutputMsgType;
+import org.apromore.model.MergeProcessesInputMsgType;
+import org.apromore.model.MergeProcessesOutputMsgType;
+import org.apromore.model.NativeTypesType;
 import org.apromore.model.ObjectFactory;
-import org.apromore.service.*;
-import org.apromore.service.model.CanonisedProcess;
-import org.apromore.service.model.Format;
-import org.apromore.util.StreamUtil;
+import org.apromore.model.ParameterType;
+import org.apromore.model.ParametersType;
+import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.ProcessVersionIdType;
+import org.apromore.model.ProcessVersionIdentifierType;
+import org.apromore.model.ProcessVersionIdsType;
+import org.apromore.model.ReadAllUsersInputMsgType;
+import org.apromore.model.ReadAllUsersOutputMsgType;
+import org.apromore.model.ReadDomainsInputMsgType;
+import org.apromore.model.ReadDomainsOutputMsgType;
+import org.apromore.model.ReadEditSessionInputMsgType;
+import org.apromore.model.ReadEditSessionOutputMsgType;
+import org.apromore.model.ReadNativeTypesInputMsgType;
+import org.apromore.model.ReadNativeTypesOutputMsgType;
+import org.apromore.model.ReadProcessSummariesInputMsgType;
+import org.apromore.model.ReadProcessSummariesOutputMsgType;
+import org.apromore.model.ReadUserInputMsgType;
+import org.apromore.model.ReadUserOutputMsgType;
+import org.apromore.model.ResultType;
+import org.apromore.model.SearchForSimilarProcessesInputMsgType;
+import org.apromore.model.SearchForSimilarProcessesOutputMsgType;
+import org.apromore.model.UpdateProcessInputMsgType;
+import org.apromore.model.UpdateProcessOutputMsgType;
+import org.apromore.model.UserType;
+import org.apromore.model.UsernamesType;
+import org.apromore.model.WriteAnnotationInputMsgType;
+import org.apromore.model.WriteAnnotationOutputMsgType;
+import org.apromore.model.WriteEditSessionInputMsgType;
+import org.apromore.model.WriteEditSessionOutputMsgType;
+import org.apromore.model.WriteUserInputMsgType;
+import org.apromore.model.WriteUserOutputMsgType;
+import org.apromore.service.DomainService;
+import org.apromore.service.FormatService;
+import org.apromore.service.MergeService;
+import org.apromore.service.ProcessService;
+import org.apromore.service.SimilarityService;
+import org.apromore.service.UserService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,11 +71,22 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
-import org.wfmc._2008.xpdl2.*;
+import org.wfmc._2008.xpdl2.Author;
+import org.wfmc._2008.xpdl2.Created;
+import org.wfmc._2008.xpdl2.Documentation;
+import org.wfmc._2008.xpdl2.ModificationDate;
+import org.wfmc._2008.xpdl2.PackageHeader;
+import org.wfmc._2008.xpdl2.PackageType;
+import org.wfmc._2008.xpdl2.RedefinableHeader;
+import org.wfmc._2008.xpdl2.Version;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.xml.bind.*;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -53,8 +111,6 @@ public class ManagerPortalEndpoint {
     private static final String NAMESPACE = "urn:qut-edu-au:schema:apromore:manager";
 
     @Autowired
-    private CanoniserService canSrv;
-    @Autowired
     private ProcessService procSrv;
     @Autowired
     private FormatService frmSrv;
@@ -62,13 +118,16 @@ public class ManagerPortalEndpoint {
     private DomainService domSrv;
     @Autowired
     private UserService userSrv;
+    @Autowired
+    private SimilarityService simSrv;
+    @Autowired
+    private MergeService merSrv;
 
     @Autowired
     private ManagerDataAccessClient daClient;
     @Autowired
     private ManagerCanoniserClient caClient;
-    @Autowired
-    private ManagerToolboxClient tbClient;
+
 
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "EditProcessDataRequest")
@@ -129,7 +188,8 @@ public class ManagerPortalEndpoint {
                 id.setVersionName(t.getVersionName());
                 ids.getProcessVersionId().add(id);
             }
-            ProcessSummaryType respFromToolbox = tbClient.MergeProcesses(processName, version, domain, username, algo, parameters, ids);
+            ProcessSummaryType respFromToolbox = merSrv.mergeProcesses(processName, version, domain, username, algo, parameters, ids);
+            //ProcessSummaryType respFromToolbox = tbClient.MergeProcesses(processName, version, domain, username, algo, parameters, ids);
             res.setProcessSummary(respFromToolbox);
             result.setCode(0);
             result.setMessage("");
@@ -166,7 +226,7 @@ public class ManagerPortalEndpoint {
                 paramT.setName(p.getName());
                 paramT.setValue(p.getValue());
             }
-            ProcessSummariesType processes = tbClient.SearchForSimilarProcesses(processId, versionName, latestVersions, algo, paramsT);
+            ProcessSummariesType processes = simSrv.SearchForSimilarProcesses(processId, versionName, latestVersions, algo, paramsT);
             res.setProcessSummaries(processes);
             result.setCode(0);
             result.setMessage("");
@@ -391,25 +451,15 @@ public class ManagerPortalEndpoint {
 
         // Search for Native
         try {
-            DataSource source = null;
-            long processId = payload.getProcessId();
+            DataSource source;
+            Integer processId = payload.getProcessId();
+            String name = payload.getProcessName();
             String version = payload.getVersionName();
             String format = payload.getFormat();
             String annName = payload.getAnnotationName();
             boolean withAnn = payload.isWithAnnotations();
 
-            if ((withAnn && annName.equals(Constants.INITIAL_ANNOTATIONS))
-                        || format.equals(Constants.CANONICAL)
-                        || format.startsWith(Constants.ANNOTATIONS)) {
-                source = procSrv.exportFormat(processId, version, format);
-            } else {
-                Format canFormat = procSrv.getCanonicalAnf(processId, version, withAnn, annName);
-                if (withAnn) {
-                    source = canSrv.deCanonise(processId, version, format, canFormat.getCpf(), canFormat.getAnf());
-                } else {
-                    source = canSrv.deCanonise(processId, version, format, canFormat.getCpf(), null);
-                }
-            }
+            source = procSrv.exportFormat(name, processId, version, format, annName, withAnn);
 
             res.setNative(new DataHandler(source));
             result.setCode(0);
@@ -598,7 +648,7 @@ public class ManagerPortalEndpoint {
                                       String lastUpdate, String documentation) throws JAXBException {
 
         InputStream res = null;
-        if (nativeType.compareTo("XPDL 2.1") == 0) {
+        if (nativeType.compareTo(Constants.XPDL_2_1) == 0) {
             JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
             Unmarshaller u = jc.createUnmarshaller();
             JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
@@ -611,7 +661,7 @@ public class ManagerPortalEndpoint {
             m.marshal(rootElement, xpdl_xml);
             res = new ByteArrayInputStream(xpdl_xml.toByteArray());
 
-        } else if (nativeType.compareTo("EPML 2.0") == 0) {
+        } else if (nativeType.compareTo(Constants.EPML_2_0) == 0) {
             JAXBContext jc = JAXBContext.newInstance("de.epml");
             Unmarshaller u = jc.createUnmarshaller();
             JAXBElement<TypeEPML> rootElement = (JAXBElement<TypeEPML>) u.unmarshal(process_xml);
@@ -693,10 +743,7 @@ public class ManagerPortalEndpoint {
         if (documentation != null) pkg.getPackageHeader().getDocumentation().setValue(documentation);
     }
 
-    /**
-     * Generate a cpf uri for version of processId
-     * @return the new cpf uri
-     */
+    /* Generate a cpf uri for version of processId */
     private static String newCpfURI() {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmsSSS");
         Date date = new Date();
@@ -705,12 +752,10 @@ public class ManagerPortalEndpoint {
 
 
 
+
+
     public void setDaClient(ManagerDataAccessClient daClient) {
         this.daClient = daClient;
-    }
-
-    public void setTbClient(ManagerToolboxClient tbClient) {
-        this.tbClient = tbClient;
     }
 
     public void setCaClient(ManagerCanoniserClient caClient) {
@@ -718,9 +763,6 @@ public class ManagerPortalEndpoint {
     }
 
 
-    public void setCanServ(CanoniserService canService) {
-        this.canSrv = canService;
-    }
 
     public void setUserSrv(UserService userService) {
         this.userSrv = userService;
@@ -736,5 +778,13 @@ public class ManagerPortalEndpoint {
 
     public void setDomSrv(DomainService domainService) {
         this.domSrv = domainService;
+    }
+
+    public void setSimSrv(SimilarityService similarityService) {
+        this.simSrv = similarityService;
+    }
+
+    public void setMerSrv(MergeService mergeService) {
+        this.merSrv = mergeService;
     }
 }

@@ -104,7 +104,7 @@ public class StreamUtilUnitTest {
 
     @Test
     public void testCopyParam2CPF() throws Exception {
-        String uri = "urn:to:be:done:later";
+        Integer uri = 12345;
         String name = "bob2";
         String version = "999.9";
         String username = "Osama";
@@ -115,7 +115,7 @@ public class StreamUtilUnitTest {
         InputStream stream2 = StreamUtil.copyParam2CPF(stream, uri, name, version, username, created, updated);
         String result = StreamUtil.convertStreamToString(stream2);
 
-        assertThat(result, containsString(uri));
+        assertThat(result, containsString(String.valueOf(uri)));
         assertThat(result, containsString(name));
         assertThat(result, containsString(version));
         assertThat(result, containsString(username));

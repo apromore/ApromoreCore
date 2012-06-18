@@ -8,8 +8,6 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.Id;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -29,15 +27,8 @@ import java.util.Set;
         }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@NamedQueries({
-        @NamedQuery(name = User.FIND_USER, query = "SELECT usr FROM User usr WHERE usr.username = :username"),
-        @NamedQuery(name = User.FIND_ALL_USERS, query = "SELECT usr FROM User usr")
-})
 @Configurable("user")
 public class User implements Serializable {
-
-    public static final String FIND_USER = "usr.findUser";
-    public static final String FIND_ALL_USERS = "usr.findAllUsers";
 
     /**
      * Hard coded for interoperability.

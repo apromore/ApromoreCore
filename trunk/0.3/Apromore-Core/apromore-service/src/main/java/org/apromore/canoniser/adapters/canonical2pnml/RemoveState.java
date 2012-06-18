@@ -1,17 +1,16 @@
 package org.apromore.canoniser.adapters.canonical2pnml;
 
-import java.math.BigInteger;
+import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.EdgeType;
+import org.apromore.cpf.EventType;
+import org.apromore.cpf.NetType;
+import org.apromore.cpf.NodeType;
+import org.apromore.cpf.StateType;
+
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
-
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.EdgeType;
-import org.apromore.cpf.EventType;
-import org.apromore.cpf.StateType;
-import org.apromore.cpf.NetType;
-import org.apromore.cpf.NodeType;
 
 public class RemoveState {
 	DataHandler data;
@@ -26,8 +25,8 @@ public class RemoveState {
 	public void remove() {
 
 		Map<String, NodeType> nodemap = new HashMap<String, NodeType>();
-		Map<BigInteger, EdgeType> joinmap = new HashMap<BigInteger, EdgeType>();
-		Map<BigInteger, EdgeType> splitmap = new HashMap<BigInteger, EdgeType>();
+		Map<String, EdgeType> joinmap = new HashMap<String, EdgeType>();
+		Map<String, EdgeType> splitmap = new HashMap<String, EdgeType>();
 		List<NodeType> removenodes = new LinkedList<NodeType>();
 		List<EdgeType> removeedges = new LinkedList<EdgeType>();
 

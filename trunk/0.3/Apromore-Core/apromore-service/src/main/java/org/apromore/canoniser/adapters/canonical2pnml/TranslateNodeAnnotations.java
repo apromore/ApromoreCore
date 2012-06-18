@@ -1,8 +1,5 @@
 package org.apromore.canoniser.adapters.canonical2pnml;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.pnml.AnnotationGraphisType;
@@ -20,6 +17,8 @@ import org.apromore.pnml.TransitionResourceType;
 import org.apromore.pnml.TransitionType;
 import org.apromore.pnml.TriggerType;
 
+import java.math.BigDecimal;
+
 public class TranslateNodeAnnotations {
 	DataHandler data;
 
@@ -27,7 +26,7 @@ public class TranslateNodeAnnotations {
 		this.data = data;
 	}
 
-	public void translate(AnnotationType annotation, BigInteger cid) {
+	public void translate(AnnotationType annotation, String cid) {
 		GraphicsType cGraphInfo = (GraphicsType) annotation;
 		GraphicsNodeType graphics = new GraphicsNodeType();
 		GraphicsArcType lines = new GraphicsArcType();

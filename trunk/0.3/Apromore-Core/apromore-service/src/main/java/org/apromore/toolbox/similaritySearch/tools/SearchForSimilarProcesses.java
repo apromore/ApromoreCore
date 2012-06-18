@@ -9,10 +9,7 @@ import org.apromore.toolbox.similaritySearch.graph.Graph;
 public class SearchForSimilarProcesses {
 
 	
-	public static double findProcessesSimilarity(
-			CanonicalProcessType search, CanonicalProcessType d,
-			String algortithm, double... param) {
-
+	public static double findProcessesSimilarity(CanonicalProcessType search, CanonicalProcessType d, String algortithm, double... param) {
 		if (search.getNet().size() == 0 || d.getNet().size() == 0) {
 			return 0;
 		}

@@ -5,28 +5,21 @@ import org.apromore.exception.ExceptionAnnotation;
 import org.apromore.exception.ExceptionCpfUri;
 import org.apromore.exception.ExceptionStore;
 import org.apromore.exception.ExceptionVersion;
-import org.apromore.model.AnnotationsType;
 import org.apromore.model.EditSessionType;
 import org.apromore.model.GetCpfUriInputMsgType;
 import org.apromore.model.GetCpfUriOutputMsgType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.StoreNativeCpfInputMsgType;
-import org.apromore.model.StoreNativeCpfOutputMsgType;
 import org.apromore.model.StoreNativeInputMsgType;
 import org.apromore.model.StoreNativeOutputMsgType;
 import org.apromore.model.StoreVersionInputMsgType;
 import org.apromore.model.StoreVersionOutputMsgType;
-import org.apromore.model.VersionSummaryType;
 import org.apromore.model.WriteAnnotationInputMsgType;
 import org.apromore.model.WriteAnnotationOutputMsgType;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 
 public class CanoniserDataAccessClient {
 

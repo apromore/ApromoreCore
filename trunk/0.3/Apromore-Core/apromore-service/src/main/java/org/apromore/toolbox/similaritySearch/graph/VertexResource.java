@@ -1,6 +1,5 @@
 package org.apromore.toolbox.similaritySearch.graph;
 
-import java.math.BigInteger;
 import java.util.HashSet;
 
 public class VertexResource {
@@ -11,13 +10,13 @@ public class VertexResource {
 		Other
 	}
 	
-	private BigInteger id;
+	private String id;
 	private Type type;
 	private String name;
 	private boolean configurable;
 	private HashSet<String> models = new HashSet<String>();;
 
-	public VertexResource(BigInteger id, String name,
+	public VertexResource(String id, String name,
 			Boolean configurable, Type type) {
 		this.id = id;
 		this.type = type;
@@ -29,10 +28,10 @@ public class VertexResource {
 		return type;
 	}
 	
-	public BigInteger getId() {
+	public String getId() {
 		return id;
 	}
-	public void setId(BigInteger id) {
+	public void setId(String id) {
 		this.id = id;
 	}
 

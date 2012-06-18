@@ -1,11 +1,5 @@
 package org.apromore.canoniser.adapters.canonical2pnml;
 
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
@@ -20,549 +14,548 @@ import org.apromore.pnml.TransitionResourceType;
 import org.apromore.pnml.TransitionType;
 import org.apromore.pnml.TriggerType;
 
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 public class DataHandler {
-	Map<BigInteger, BigInteger> id_map = new HashMap<BigInteger, BigInteger>();
-	Map<BigInteger, String> originalid_map = new HashMap<BigInteger, String>();
-	Map<String, TriggerType> triggermap = new HashMap<String, TriggerType>();
-	Map<String, ResourceTypeType> resourcemap = new HashMap<String, ResourceTypeType>();
-	Map<String, TransitionResourceType> resourcepositionmap = new HashMap<String, TransitionResourceType>();
-	Map<BigInteger, NodeType> nodeRefMap = new HashMap<BigInteger, NodeType>();
-	Map<String, TransitionType> dupjoinMap = new HashMap<String, TransitionType>();
-	Map<String, TransitionType> dupsplitMap = new HashMap<String, TransitionType>();
-	Map<BigInteger, Integer> xorremoveMap = new HashMap<BigInteger, Integer>();
-	Map<BigInteger, TransitionType> xorrefMap = new HashMap<BigInteger, TransitionType>();
-	Map<BigInteger, EdgeType> edgeRefMap = new HashMap<BigInteger, EdgeType>();
-	Map<String, ArcType> duparcjoinMap = new HashMap<String, ArcType>();
-	Map<String, ArcType> duparcsplitMap = new HashMap<String, ArcType>();
-	Map<BigInteger, Object> pnmlRefMap = new HashMap<BigInteger, Object>();
-	Map<BigInteger, Object> duppnmlRefMap = new HashMap<BigInteger, Object>();
-	Map<String, String> anno_string = new HashMap<String, String>();
-	Map<String, Object> temp_map = new HashMap<String, Object>();
-	Map<String, Integer> operatortype = new HashMap<String, Integer>();
-	Map<String, NodeType> specialoperators = new HashMap<String, NodeType>();
-	Map<String, Integer> specialoperatorscount = new HashMap<String, Integer>();
-	Map<String, ANDSplitType> andsplits = new HashMap<String, ANDSplitType>();
-	Map<String, ANDJoinType> andjoins = new HashMap<String, ANDJoinType>();
-	Map<String, XORSplitType> xorsplits = new HashMap<String, XORSplitType>();
-	Map<String, XORJoinType> xorjoins = new HashMap<String, XORJoinType>();
-
-	List<String> targetvalues = new LinkedList<String>();
-	List<String> sourcevalues = new LinkedList<String>();
-	List<String> output = new LinkedList<String>();
-	List<String> input = new LinkedList<String>();
-	List<TransitionType> subnets = new LinkedList<TransitionType>();
-	List<String> units = new LinkedList<String>();
-	List<String> roles = new LinkedList<String>();
-	List<NodeType> xorconnectors = new LinkedList<NodeType>();
-	org.apromore.pnml.NetType subnet = new org.apromore.pnml.NetType();
-	String inputnode = "start";
-	String outputnode = "end";
-	PnmlType pnml = new PnmlType();
-	org.apromore.pnml.NetType net = new org.apromore.pnml.NetType();
-	long ids = System.currentTimeMillis();;
-	String filename;
-	AnnotationsType anno = new AnnotationsType();
-	List<org.apromore.pnml.NodeType> xors = new LinkedList<org.apromore.pnml.NodeType>();
-	List<ArcType> xorarcs = new LinkedList<ArcType>();
-	String initialType;
+    Map<String, String> id_map = new HashMap<String, String>();
+    Map<BigInteger, String> originalid_map = new HashMap<BigInteger, String>();
+    Map<String, TriggerType> triggermap = new HashMap<String, TriggerType>();
+    Map<String, ResourceTypeType> resourcemap = new HashMap<String, ResourceTypeType>();
+    Map<String, TransitionResourceType> resourcepositionmap = new HashMap<String, TransitionResourceType>();
+    Map<String, NodeType> nodeRefMap = new HashMap<String, NodeType>();
+    Map<String, TransitionType> dupjoinMap = new HashMap<String, TransitionType>();
+    Map<String, TransitionType> dupsplitMap = new HashMap<String, TransitionType>();
+    Map<BigInteger, Integer> xorremoveMap = new HashMap<BigInteger, Integer>();
+    Map<BigInteger, TransitionType> xorrefMap = new HashMap<BigInteger, TransitionType>();
+    Map<String, EdgeType> edgeRefMap = new HashMap<String, EdgeType>();
+    Map<String, ArcType> duparcjoinMap = new HashMap<String, ArcType>();
+    Map<String, ArcType> duparcsplitMap = new HashMap<String, ArcType>();
+    Map<String, Object> pnmlRefMap = new HashMap<String, Object>();
+    Map<BigInteger, Object> duppnmlRefMap = new HashMap<BigInteger, Object>();
+    Map<String, String> anno_string = new HashMap<String, String>();
+    Map<String, Object> temp_map = new HashMap<String, Object>();
+    Map<String, Integer> operatortype = new HashMap<String, Integer>();
+    Map<String, NodeType> specialoperators = new HashMap<String, NodeType>();
+    Map<String, Integer> specialoperatorscount = new HashMap<String, Integer>();
+    Map<String, ANDSplitType> andsplits = new HashMap<String, ANDSplitType>();
+    Map<String, ANDJoinType> andjoins = new HashMap<String, ANDJoinType>();
+    Map<String, XORSplitType> xorsplits = new HashMap<String, XORSplitType>();
+    Map<String, XORJoinType> xorjoins = new HashMap<String, XORJoinType>();
+
+    List<String> targetvalues = new LinkedList<String>();
+    List<String> sourcevalues = new LinkedList<String>();
+    List<String> output = new LinkedList<String>();
+    List<String> input = new LinkedList<String>();
+    List<TransitionType> subnets = new LinkedList<TransitionType>();
+    List<String> units = new LinkedList<String>();
+    List<String> roles = new LinkedList<String>();
+    List<NodeType> xorconnectors = new LinkedList<NodeType>();
+    org.apromore.pnml.NetType subnet = new org.apromore.pnml.NetType();
+    String inputnode = "start";
+    String outputnode = "end";
+    PnmlType pnml = new PnmlType();
+    org.apromore.pnml.NetType net = new org.apromore.pnml.NetType();
+    long ids = System.currentTimeMillis();
+    String filename;
+    AnnotationsType anno = new AnnotationsType();
+    List<org.apromore.pnml.NodeType> xors = new LinkedList<org.apromore.pnml.NodeType>();
+    List<ArcType> xorarcs = new LinkedList<ArcType>();
+    String initialType;
+
+    public void put_id_map(String key, String value) {
+        id_map.put(key, value);
+    }
+
+    public String get_id_map_value(String key) {
+        return (id_map.get(key));
+    }
+
+    public Map<String, String> get_id_map() {
+
+        return id_map;
+    }
+
+    public void put_originalid_map(BigInteger key, String value) {
+        originalid_map.put(key, value);
+    }
+
+    public String get_originalid_map_value(BigInteger key) {
+
+        return (originalid_map.get(key));
+    }
+
+    public Map<BigInteger, String> get_originalid_map() {
+
+        return originalid_map;
+    }
+
+    public void put_triggermap(String key, TriggerType value) {
+        triggermap.put(key, value);
+    }
 
-	public void put_id_map(BigInteger key, BigInteger value) {
-		id_map.put(key, value);
-	}
+    public TriggerType get_triggermap_value(String key) {
+
+        return (triggermap.get(key));
+    }
 
-	public BigInteger get_id_map_value(BigInteger key) {
+    public Map<String, TriggerType> get_triggermap() {
 
-		return (id_map.get(key));
-	}
+        return triggermap;
+    }
 
-	public Map<BigInteger, BigInteger> get_id_map() {
+    public void put_resourcemap(String key, ResourceTypeType value) {
+        resourcemap.put(key, value);
+    }
 
-		return id_map;
-	}
+    public ResourceTypeType get_resourcemap_value(String key) {
 
-	public void put_originalid_map(BigInteger key, String value) {
-		originalid_map.put(key, value);
-	}
+        return (resourcemap.get(key));
+    }
 
-	public String get_originalid_map_value(BigInteger key) {
+    public Map<String, ResourceTypeType> get_resourcemap() {
 
-		return (originalid_map.get(key));
-	}
+        return resourcemap;
+    }
 
-	public Map<BigInteger, String> get_originalid_map() {
+    public void put_resourcepositionmap(String key, TransitionResourceType value) {
+        resourcepositionmap.put(key, value);
+    }
 
-		return originalid_map;
-	}
+    public TransitionResourceType get_resourcepositionmap_value(String key) {
 
-	public void put_triggermap(String key, TriggerType value) {
-		triggermap.put(key, value);
-	}
+        return (resourcepositionmap.get(key));
+    }
 
-	public TriggerType get_triggermap_value(String key) {
+    public Map<String, TransitionResourceType> get_resourcepositionmap() {
 
-		return (triggermap.get(key));
-	}
+        return resourcepositionmap;
+    }
 
-	public Map<String, TriggerType> get_triggermap() {
+    public void put_nodeRefMap(String key, NodeType value) {
+        nodeRefMap.put(key, value);
+    }
 
-		return triggermap;
-	}
+    public NodeType get_nodeRefMap_value(String key) {
+        return (nodeRefMap.get(key));
+    }
 
-	public void put_resourcemap(String key, ResourceTypeType value) {
-		resourcemap.put(key, value);
-	}
+    public Map<String, NodeType> get_nodeRefMap() {
+        return nodeRefMap;
+    }
 
-	public ResourceTypeType get_resourcemap_value(String key) {
+    public void put_edgeRefMap(String key, EdgeType value) {
+        edgeRefMap.put(key, value);
+    }
 
-		return (resourcemap.get(key));
-	}
+    public EdgeType get_edgeRefMap_value(BigInteger key) {
+        return (edgeRefMap.get(key));
+    }
 
-	public Map<String, ResourceTypeType> get_resourcemap() {
+    public Map<String, EdgeType> get_edgeRefMap() {
+        return edgeRefMap;
+    }
 
-		return resourcemap;
-	}
+    public void put_pnmlRefMap(String key, Object value) {
+        pnmlRefMap.put(key, value);
+    }
 
-	public void put_resourcepositionmap(String key, TransitionResourceType value) {
-		resourcepositionmap.put(key, value);
-	}
+    public Object get_pnmlRefMap_value(String key) {
+        return (pnmlRefMap.get(key));
+    }
 
-	public TransitionResourceType get_resourcepositionmap_value(String key) {
+    public Map<String, Object> get_pnmlRefMap() {
+        return pnmlRefMap;
+    }
 
-		return (resourcepositionmap.get(key));
-	}
+    public void put_annostring(String key, String value) {
+        anno_string.put(key, value);
+    }
 
-	public Map<String, TransitionResourceType> get_resourcepositionmap() {
+    public String get_annostring_value(String key) {
 
-		return resourcepositionmap;
-	}
+        return (anno_string.get(key));
+    }
 
-	public void put_nodeRefMap(BigInteger key, NodeType value) {
-		nodeRefMap.put(key, value);
-	}
+    public Map<String, String> get_annostring() {
 
-	public NodeType get_nodeRefMap_value(BigInteger key) {
+        return anno_string;
+    }
 
-		return (nodeRefMap.get(key));
-	}
+    public void put_operatortype(String key, Integer value) {
+        operatortype.put(key, value);
+    }
 
-	public Map<BigInteger, NodeType> get_nodeRefMap() {
+    public Integer get_operatortype_value(String key) {
 
-		return nodeRefMap;
-	}
+        return (operatortype.get(key));
+    }
 
-	public void put_edgeRefMap(BigInteger key, EdgeType value) {
-		edgeRefMap.put(key, value);
-	}
+    public Map<String, Integer> get_operatortype() {
 
-	public EdgeType get_edgeRefMap_value(BigInteger key) {
+        return operatortype;
+    }
 
-		return (edgeRefMap.get(key));
-	}
+    public void put_tempmap(String key, Object value) {
+        temp_map.put(key, value);
+    }
 
-	public Map<BigInteger, EdgeType> get_edgeRefMap() {
+    public Object get_tempmap_value(String key) {
 
-		return edgeRefMap;
-	}
+        return (temp_map.get(key));
+    }
 
-	public void put_pnmlRefMap(BigInteger key, Object value) {
-		pnmlRefMap.put(key, value);
-	}
+    public Map<String, Object> get_tempmap() {
 
-	public Object get_pnmlRefMap_value(BigInteger key) {
+        return temp_map;
+    }
 
-		return (pnmlRefMap.get(key));
-	}
+    public void addsourcevalues(String value) {
+        sourcevalues.add(value);
+    }
 
-	public Map<BigInteger, Object> get_pnmlRefMap() {
+    public List<String> getsourcevalues() {
 
-		return pnmlRefMap;
-	}
+        return sourcevalues;
+    }
 
-	public void put_annostring(String key, String value) {
-		anno_string.put(key, value);
-	}
+    public void addtargetvalues(String value) {
+        targetvalues.add(value);
+    }
 
-	public String get_annostring_value(String key) {
+    public List<String> gettargetvalues() {
 
-		return (anno_string.get(key));
-	}
+        return targetvalues;
+    }
 
-	public Map<String, String> get_annostring() {
+    public void addoutput(String value) {
+        output.add(value);
+    }
 
-		return anno_string;
-	}
+    public List<String> getoutput() {
 
-	public void put_operatortype(String key, Integer value) {
-		operatortype.put(key, value);
-	}
+        return output;
+    }
 
-	public Integer get_operatortype_value(String key) {
+    public void addinput(String value) {
+        input.add(value);
+    }
 
-		return (operatortype.get(key));
-	}
+    public List<String> getinput() {
 
-	public Map<String, Integer> get_operatortype() {
+        return input;
+    }
 
-		return operatortype;
-	}
+    public void setInputnode(String node) {
+        inputnode = node;
+    }
 
-	public void put_tempmap(String key, Object value) {
-		temp_map.put(key, value);
-	}
+    public String getInputnode() {
+        if (inputnode == null) {
+            inputnode = "start";
+            return inputnode;
+        } else {
+            return inputnode;
+        }
+    }
 
-	public Object get_tempmap_value(String key) {
+    public void setOutputnode(String node) {
+        outputnode = node;
+    }
 
-		return (temp_map.get(key));
-	}
+    public String getOutputnode() {
+        if (outputnode == null) {
+            outputnode = "end";
+            return outputnode;
+        } else {
+            return outputnode;
+        }
+    }
 
-	public Map<String, Object> get_tempmap() {
+    public void addunit(String value) {
+        units.add(value);
+    }
 
-		return temp_map;
-	}
+    public List<String> getunit() {
 
-	public void addsourcevalues(String value) {
-		sourcevalues.add(value);
-	}
+        return units;
+    }
 
-	public List<String> getsourcevalues() {
+    public void addroles(String value) {
+        roles.add(value);
+    }
 
-		return sourcevalues;
-	}
+    public List<String> getroles() {
 
-	public void addtargetvalues(String value) {
-		targetvalues.add(value);
-	}
+        return roles;
+    }
 
-	public List<String> gettargetvalues() {
+    public void setPnml(PnmlType pnmlt) {
+        pnml = pnmlt;
+    }
 
-		return targetvalues;
-	}
+    public PnmlType getPnml() {
+        return pnml;
+    }
 
-	public void addoutput(String value) {
-		output.add(value);
-	}
+    public void setNet(org.apromore.pnml.NetType nett) {
+        net = nett;
+    }
 
-	public List<String> getoutput() {
+    public org.apromore.pnml.NetType getNet() {
+        return net;
+    }
 
-		return output;
-	}
+    public void addsubnet(org.apromore.pnml.NetType value) {
+        subnet = value;
+    }
 
-	public void addinput(String value) {
-		input.add(value);
-	}
+    public org.apromore.pnml.NetType getsubnet() {
 
-	public List<String> getinput() {
+        return subnet;
+    }
 
-		return input;
-	}
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
 
-	public void setInputnode(String node) {
-		inputnode = node;
-	}
+    public String getFilename() {
+        return filename;
+    }
 
-	public String getInputnode() {
-		if (inputnode == null) {
-			inputnode = "start";
-			return inputnode;
-		} else {
-			return inputnode;
-		}
-	}
+    public void addxors(org.apromore.pnml.NodeType value) {
+        xors.add(value);
+    }
 
-	public void setOutputnode(String node) {
-		outputnode = node;
-	}
+    public List<org.apromore.pnml.NodeType> getxors() {
 
-	public String getOutputnode() {
-		if (outputnode == null) {
-			outputnode = "end";
-			return outputnode;
-		} else {
-			return outputnode;
-		}
-	}
+        return xors;
+    }
 
-	public void addunit(String value) {
-		units.add(value);
-	}
+    public void addxorarcs(ArcType value) {
+        xorarcs.add(value);
+    }
 
-	public List<String> getunit() {
+    public List<ArcType> getxorarcs() {
 
-		return units;
-	}
+        return xorarcs;
+    }
 
-	public void addroles(String value) {
-		roles.add(value);
-	}
+    public void addxorconnectors(NodeType value) {
+        xorconnectors.add(value);
+    }
 
-	public List<String> getroles() {
+    public List<NodeType> getxorconnectors() {
 
-		return roles;
-	}
+        return xorconnectors;
+    }
 
-	public void setPnml(PnmlType pnmlt) {
-		pnml = pnmlt;
-	}
+    public void setAnno(AnnotationsType anno) {
+        this.anno = anno;
+    }
 
-	public PnmlType getPnml() {
-		return pnml;
-	}
+    public AnnotationsType getAnno() {
+        return anno;
+    }
 
-	public void setNet(org.apromore.pnml.NetType nett) {
-		net = nett;
-	}
+    public void put_dupjoinMap(String key, TransitionType value) {
+        dupjoinMap.put(key, value);
+    }
 
-	public org.apromore.pnml.NetType getNet() {
-		return net;
-	}
+    public TransitionType get_dupjoinMap_value(String key) {
 
-	public void addsubnet(org.apromore.pnml.NetType value) {
-		subnet = value;
-	}
+        return (dupjoinMap.get(key));
+    }
 
-	public org.apromore.pnml.NetType getsubnet() {
+    public Map<String, TransitionType> get_dupjoinMap() {
 
-		return subnet;
-	}
+        return dupjoinMap;
+    }
 
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
+    public void put_dupsplitMap(String key, TransitionType value) {
+        dupsplitMap.put(key, value);
+    }
 
-	public String getFilename() {
-		return filename;
-	}
+    public TransitionType get_dupsplitMap_value(String key) {
 
-	public void addxors(org.apromore.pnml.NodeType value) {
-		xors.add(value);
-	}
+        return (dupsplitMap.get(key));
+    }
 
-	public List<org.apromore.pnml.NodeType> getxors() {
+    public Map<String, TransitionType> get_dupsplitMap() {
 
-		return xors;
-	}
+        return dupsplitMap;
+    }
 
-	public void addxorarcs(ArcType value) {
-		xorarcs.add(value);
-	}
+    public void put_duparcjoinMap(String key, ArcType value) {
+        duparcjoinMap.put(key, value);
+    }
 
-	public List<ArcType> getxorarcs() {
+    public ArcType get_duparcjoinMap_value(String key) {
 
-		return xorarcs;
-	}
+        return (duparcjoinMap.get(key));
+    }
 
-	public void addxorconnectors(NodeType value) {
-		xorconnectors.add(value);
-	}
+    public Map<String, ArcType> get_duparcjoinMap() {
 
-	public List<NodeType> getxorconnectors() {
+        return duparcjoinMap;
+    }
 
-		return xorconnectors;
-	}
+    public void put_duparcsplitMap(String key, ArcType value) {
+        duparcsplitMap.put(key, value);
+    }
 
-	public void setAnno(AnnotationsType anno) {
-		this.anno = anno;
-	}
+    public ArcType get_duparcsplitMap_value(String key) {
 
-	public AnnotationsType getAnno() {
-		return anno;
-	}
+        return (duparcsplitMap.get(key));
+    }
 
-	public void put_dupjoinMap(String key, TransitionType value) {
-		dupjoinMap.put(key, value);
-	}
+    public Map<String, ArcType> get_duparcsplitMap() {
 
-	public TransitionType get_dupjoinMap_value(String key) {
+        return duparcsplitMap;
+    }
 
-		return (dupjoinMap.get(key));
-	}
+    public void put_specialoperators(String key, NodeType value) {
+        specialoperators.put(key, value);
+    }
 
-	public Map<String, TransitionType> get_dupjoinMap() {
+    public NodeType get_specialoperators_value(String key) {
 
-		return dupjoinMap;
-	}
+        return (specialoperators.get(key));
+    }
 
-	public void put_dupsplitMap(String key, TransitionType value) {
-		dupsplitMap.put(key, value);
-	}
+    public Map<String, NodeType> get_specialoperators() {
 
-	public TransitionType get_dupsplitMap_value(String key) {
+        return specialoperators;
+    }
 
-		return (dupsplitMap.get(key));
-	}
+    public void put_specialoperatorscount(String key, Integer value) {
+        specialoperatorscount.put(key, value);
+    }
 
-	public Map<String, TransitionType> get_dupsplitMap() {
+    public Integer get_specialoperatorscount_value(String key) {
 
-		return dupsplitMap;
-	}
+        return (specialoperatorscount.get(key));
+    }
 
-	public void put_duparcjoinMap(String key, ArcType value) {
-		duparcjoinMap.put(key, value);
-	}
+    public Map<String, Integer> get_specialoperatorscount() {
 
-	public ArcType get_duparcjoinMap_value(String key) {
+        return specialoperatorscount;
+    }
 
-		return (duparcjoinMap.get(key));
-	}
+    public void put_duppnmlRefMap(BigInteger key, Object value) {
+        duppnmlRefMap.put(key, value);
+    }
 
-	public Map<String, ArcType> get_duparcjoinMap() {
+    public Object get_duppnmlRefMap_value(BigInteger key) {
 
-		return duparcjoinMap;
-	}
+        return (duppnmlRefMap.get(key));
+    }
 
-	public void put_duparcsplitMap(String key, ArcType value) {
-		duparcsplitMap.put(key, value);
-	}
+    public Map<BigInteger, Object> get_duppnmlRefMap() {
 
-	public ArcType get_duparcsplitMap_value(String key) {
+        return duppnmlRefMap;
+    }
 
-		return (duparcsplitMap.get(key));
-	}
+    public void put_xorremoveMap(BigInteger key, Integer value) {
+        xorremoveMap.put(key, value);
+    }
 
-	public Map<String, ArcType> get_duparcsplitMap() {
+    public Integer get_xorremoveMap_value(BigInteger key) {
 
-		return duparcsplitMap;
-	}
+        return (xorremoveMap.get(key));
+    }
 
-	public void put_specialoperators(String key, NodeType value) {
-		specialoperators.put(key, value);
-	}
+    public Map<BigInteger, Integer> get_xorremoveMap() {
 
-	public NodeType get_specialoperators_value(String key) {
+        return xorremoveMap;
+    }
 
-		return (specialoperators.get(key));
-	}
+    public void put_xorrefMap(BigInteger key, TransitionType value) {
+        xorrefMap.put(key, value);
+    }
 
-	public Map<String, NodeType> get_specialoperators() {
+    public TransitionType get_xorrefMap_value(BigInteger key) {
 
-		return specialoperators;
-	}
+        return (xorrefMap.get(key));
+    }
 
-	public void put_specialoperatorscount(String key, Integer value) {
-		specialoperatorscount.put(key, value);
-	}
+    public Map<BigInteger, TransitionType> get_xorrefMap() {
 
-	public Integer get_specialoperatorscount_value(String key) {
+        return xorrefMap;
+    }
 
-		return (specialoperatorscount.get(key));
-	}
+    public void put_andjoinmap(String key, ANDJoinType value) {
+        andjoins.put(key, value);
+    }
 
-	public Map<String, Integer> get_specialoperatorscount() {
+    public ANDJoinType get_andjoinmap_value(String key) {
 
-		return specialoperatorscount;
-	}
+        return (andjoins.get(key));
+    }
 
-	public void put_duppnmlRefMap(BigInteger key, Object value) {
-		duppnmlRefMap.put(key, value);
-	}
+    public Map<String, ANDJoinType> get_andjoinmap() {
 
-	public Object get_duppnmlRefMap_value(BigInteger key) {
+        return andjoins;
+    }
 
-		return (duppnmlRefMap.get(key));
-	}
+    public void put_andsplitmap(String key, ANDSplitType value) {
+        andsplits.put(key, value);
+    }
 
-	public Map<BigInteger, Object> get_duppnmlRefMap() {
+    public ANDSplitType get_andsplitmap_value(String key) {
 
-		return duppnmlRefMap;
-	}
+        return (andsplits.get(key));
+    }
 
-	public void put_xorremoveMap(BigInteger key, Integer value) {
-		xorremoveMap.put(key, value);
-	}
+    public Map<String, ANDSplitType> get_andsplitmap() {
 
-	public Integer get_xorremoveMap_value(BigInteger key) {
+        return andsplits;
+    }
 
-		return (xorremoveMap.get(key));
-	}
+    public void put_xorjoinmap(String key, XORJoinType value) {
+        xorjoins.put(key, value);
+    }
 
-	public Map<BigInteger, Integer> get_xorremoveMap() {
+    public XORJoinType get_xorjoinmap_value(String key) {
 
-		return xorremoveMap;
-	}
+        return (xorjoins.get(key));
+    }
 
-	public void put_xorrefMap(BigInteger key, TransitionType value) {
-		xorrefMap.put(key, value);
-	}
+    public Map<String, XORJoinType> get_xorjoinmap() {
 
-	public TransitionType get_xorrefMap_value(BigInteger key) {
+        return xorjoins;
+    }
 
-		return (xorrefMap.get(key));
-	}
+    public void put_xorsplitmap(String key, XORSplitType value) {
+        xorsplits.put(key, value);
+    }
 
-	public Map<BigInteger, TransitionType> get_xorrefMap() {
+    public XORSplitType get_xorsplitmap_value(String key) {
 
-		return xorrefMap;
-	}
+        return (xorsplits.get(key));
+    }
 
-	public void put_andjoinmap(String key, ANDJoinType value) {
-		andjoins.put(key, value);
-	}
+    public Map<String, XORSplitType> get_xorsplitmap() {
 
-	public ANDJoinType get_andjoinmap_value(String key) {
+        return xorsplits;
+    }
 
-		return (andjoins.get(key));
-	}
+    public void setSubnet(TransitionType tran) {
+        subnets.add(tran);
+    }
 
-	public Map<String, ANDJoinType> get_andjoinmap() {
+    public List<TransitionType> getSubnet() {
+        return subnets;
+    }
 
-		return andjoins;
-	}
+    public void setInitialType(String initialType) {
+        this.initialType = initialType;
+    }
 
-	public void put_andsplitmap(String key, ANDSplitType value) {
-		andsplits.put(key, value);
-	}
-
-	public ANDSplitType get_andsplitmap_value(String key) {
-
-		return (andsplits.get(key));
-	}
-
-	public Map<String, ANDSplitType> get_andsplitmap() {
-
-		return andsplits;
-	}
-
-	public void put_xorjoinmap(String key, XORJoinType value) {
-		xorjoins.put(key, value);
-	}
-
-	public XORJoinType get_xorjoinmap_value(String key) {
-
-		return (xorjoins.get(key));
-	}
-
-	public Map<String, XORJoinType> get_xorjoinmap() {
-
-		return xorjoins;
-	}
-
-	public void put_xorsplitmap(String key, XORSplitType value) {
-		xorsplits.put(key, value);
-	}
-
-	public XORSplitType get_xorsplitmap_value(String key) {
-
-		return (xorsplits.get(key));
-	}
-
-	public Map<String, XORSplitType> get_xorsplitmap() {
-
-		return xorsplits;
-	}
-
-	public void setSubnet(TransitionType tran) {
-		subnets.add(tran);
-	}
-
-	public List<TransitionType> getSubnet() {
-		return subnets;
-	}
-
-	public void setInitialType(String initialType) {
-		this.initialType = initialType;
-	}
-
-	public String getInitialType() {
-		return initialType;
-	}
+    public String getInitialType() {
+        return initialType;
+    }
 }

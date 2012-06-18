@@ -1,5 +1,7 @@
 package org.apromore.dao.jpa;
 
+import org.apromore.common.Constants;
+import org.apromore.dao.NamedQueries;
 import org.apromore.dao.model.NativeType;
 import org.apromore.test.heuristic.JavaBeanHeuristic;
 import org.junit.Before;
@@ -35,14 +37,14 @@ public class NativeTypeDaoJpaUnitTest {
         dao = new NativeTypeDaoJpa();
         EntityManagerFactory factory = createMock(EntityManagerFactory.class);
         manager = createMock(EntityManager.class);
-        dao.setEntityManagerFactory(factory);
+        dao.setEntityManager(manager);
         expect(factory.createEntityManager()).andReturn(manager).anyTimes();
         replay(factory);
     }
 
     @Test
     public final void testIsAPOJO() {
-        JavaBeanHeuristic.assertLooksLikeJavaBean(NativeTypeDaoJpa.class);
+        JavaBeanHeuristic.assertLooksLikeJavaBean(NativeTypeDaoJpa.class, "em");
     }
 
 
@@ -52,7 +54,7 @@ public class NativeTypeDaoJpaUnitTest {
         nats.add(createNativeType());
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(NativeType.FIND_FORMAT)).andReturn(query);
+        expect(manager.createNamedQuery(NamedQueries.GET_NATIVE_TYPE_FORMAT)).andReturn(query);
         expect(query.getResultList()).andReturn(nats);
 
         replay(manager, query);
@@ -70,7 +72,7 @@ public class NativeTypeDaoJpaUnitTest {
         List<NativeType> nats = new ArrayList<NativeType>();
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(NativeType.FIND_FORMAT)).andReturn(query);
+        expect(manager.createNamedQuery(NamedQueries.GET_NATIVE_TYPE_FORMAT)).andReturn(query);
         expect(query.getResultList()).andReturn(nats);
 
         replay(manager, query);
@@ -85,33 +87,36 @@ public class NativeTypeDaoJpaUnitTest {
 
     @Test
     public final void testGetNativeType() {
-        String type = "XPDL 2.1";
-        NativeType nat = createNativeType();
+        String type = Constants.XPDL_2_1;
+
+        List<NativeType> types = new ArrayList<NativeType>(0);
+        types.add(createNativeType());
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(NativeType.FIND_FORMATS)).andReturn(query);
+        expect(manager.createNamedQuery(NamedQueries.GET_NATIVE_TYPE_FORMATS)).andReturn(query);
         expect(query.setParameter("name", type)).andReturn(query);
-        expect(query.getSingleResult()).andReturn(nat);
+        expect(query.getResultList()).andReturn(types);
 
         replay(manager, query);
 
-        NativeType natve = dao.findNativeType(type);
+        dao.findNativeType(type);
 
         verify(manager, query);
 
-        assertThat(nat, equalTo(natve));
+        assertThat(types.size(), equalTo(1));
     }
 
 
     @Test
     public final void testGetNativeTypeNonFound() {
-        String type = "XPDL 2.1";
+        String type = Constants.XPDL_2_1;
         NativeType nat = null;
+        List<NativeType> types = new ArrayList<NativeType>(0);
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(NativeType.FIND_FORMATS)).andReturn(query);
+        expect(manager.createNamedQuery(NamedQueries.GET_NATIVE_TYPE_FORMATS)).andReturn(query);
         expect(query.setParameter("name", type)).andReturn(query);
-        expect(query.getSingleResult()).andReturn(nat);
+        expect(query.getResultList()).andReturn(types);
 
         replay(manager, query);
 
@@ -119,38 +124,9 @@ public class NativeTypeDaoJpaUnitTest {
 
         verify(manager, query);
 
-        assertThat(nat, equalTo(natve));
+        assertThat(natve, equalTo(nat));
     }
 
-
-
-    @Test
-    public final void testSaveNativeType() {
-        NativeType ann = createNativeType();
-        manager.persist(ann);
-        replay(manager);
-        dao.save(ann);
-        verify(manager);
-    }
-
-    @Test
-    public final void testUpdateNativeType() {
-        NativeType ann = createNativeType();
-        expect(manager.merge(ann)).andReturn(ann);
-        replay(manager);
-        dao.update(ann);
-        verify(manager);
-    }
-
-
-    @Test
-    public final void testDeleteNativeType() {
-        NativeType ann = createNativeType();
-        manager.remove(ann);
-        replay(manager);
-        dao.delete(ann);
-        verify(manager);
-    }
 
 
     private NativeType createNativeType() {

@@ -28,8 +28,6 @@ import org.apromore.cpf.TypeAttribute;
 import org.apromore.exception.CanoniserException;
 import org.apromore.pnml.PnmlType;
 
-import java.math.BigInteger;
-
 public class PNML2Canonical {
 
     private long ids = System.currentTimeMillis(); // Change to 6121980 when
@@ -94,7 +92,7 @@ public class PNML2Canonical {
                     ids = tpn.getIds();
                     data.put_id_map(pnet.getId(), String.valueOf(ids));
                     data.setRootId(ids);
-                    data.getNet().setId(BigInteger.valueOf(ids++));
+                    data.getNet().setId(String.valueOf(ids++));
 
                     // data.getCanonicalProcess().setVersion(pnet.getType());
                     data.getCanonicalProcess().getNet().add(data.getNet());

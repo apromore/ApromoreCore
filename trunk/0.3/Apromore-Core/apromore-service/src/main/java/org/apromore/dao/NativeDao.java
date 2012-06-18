@@ -20,7 +20,7 @@ public interface NativeDao {
      * @param versionName the version name
      * @return the native, a list of them for all the different canonical versions.
      */
-    public List<Native> findNativeByCanonical(final long processId, final String versionName);
+    public List<Native> findNativeByCanonical(final Integer processId, final String versionName);
 
     /**
      * Get the Canonical format. this is just a string but contains the xml Canonical Format.
@@ -30,7 +30,7 @@ public interface NativeDao {
      * @return the XML as a string
      * @throws NativeFormatNotFoundException if the record can not be found.
      */
-    Native getNative(final long processId, final String version, final String nativeType) throws NativeFormatNotFoundException;
+    Native getNative(final Integer processId, final String version, final String nativeType) throws NativeFormatNotFoundException;
 
 
     /**
@@ -43,7 +43,7 @@ public interface NativeDao {
      * Update the Native.
      * @param natve the Native to update
      */
-    void update(Native natve);
+    Native update(Native natve);
 
     /**
      * Remove the Native.

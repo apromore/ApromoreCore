@@ -1,0 +1,1060 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Package xmlns="http://www.wfmc.org/2008/XPDL2.1" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.wfmc.org/2008/XPDL2.1 bpmnxpdl_31.xsd" Language="English" Id="ec5783be-d860-48dc-918d-74d5f2412162" Name="F3 International Departure Passport Control">
+  <PackageHeader>
+    <XPDLVersion>2.1</XPDLVersion>
+    <Vendor>Hasso Plattner Institute    </Vendor>
+    <Created>2010-02-16T20:32:14.9813338+10:00</Created>
+    <ModificationDate>2011-07-22T15-49-02</ModificationDate>
+    <Description>FRA3 International Departure Passport Control    </Description>
+  </PackageHeader>
+  <RedefinableHeader>
+    <Author>fauvet</Author>
+    <Version>0.2 </Version>
+    <Countrykey>CO</Countrykey>
+  </RedefinableHeader>
+  <ConformanceClass GraphConformance="NON_BLOCKED" BPMNModelPortabilityConformance="STANDARD"/>
+  <Artifacts>
+    <Artifact ArtifactType="Annotation" TextAnnotation="Iris&#13;&#10;identification&#13;&#10;system" Id="oryx_15A841E8-F88B-4DFE-9FA6-3EE33CD6CC9A">
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo FillColor="-2763307" Height="54.0" Width="93.0" BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="554.0" YCoordinate="1119.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Artifact>
+    <Artifact ArtifactType="DataObject" Id="oryx_CBDABD1E-D246-4F78-A086-E47998AC8F39">
+      <DataObject ProducedAtCompletion="false" RequiredForStart="false"/>
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo FillColor="-986896" Height="50.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="45.0" YCoordinate="1523.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Artifact>
+    <Artifact ArtifactType="DataObject" Id="oryx_BAF06881-2E0B-4BAD-A293-2F413DF158EA">
+      <DataObject ProducedAtCompletion="false" RequiredForStart="false"/>
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo FillColor="-986896" Height="50.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="45.0" YCoordinate="1843.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Artifact>
+    <Artifact ArtifactType="DataObject" Id="oryx_F9ECA394-0220-4F99-91FB-9B17D663B55C">
+      <DataObject ProducedAtCompletion="false" RequiredForStart="false"/>
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo FillColor="-986896" Height="50.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="45.0" YCoordinate="1363.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Artifact>
+    <Artifact ArtifactType="DataObject" Id="oryx_60C0DA73-E702-44E0-8641-3ED1032A7112">
+      <DataObject ProducedAtCompletion="false" RequiredForStart="false"/>
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo FillColor="-986896" Height="50.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="45.0" YCoordinate="1683.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Artifact>
+    <Artifact ArtifactType="DataObject" Id="oryx_2C3AA324-35D0-4821-927C-CE8C78CAFB80">
+      <DataObject ProducedAtCompletion="false" RequiredForStart="false"/>
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo FillColor="-986896" Height="50.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="45.0" YCoordinate="1121.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Artifact>
+    <Artifact ArtifactType="DataObject" Id="oryx_1F70A701-C92C-4F81-B48E-66942662DFE2">
+      <DataObject ProducedAtCompletion="false" RequiredForStart="false"/>
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo FillColor="-986896" Height="50.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="45.0" YCoordinate="1203.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Artifact>
+    <Artifact ArtifactType="DataObject" Id="oryx_E2611705-89F8-4E51-91CB-1A0EDD86F81D">
+      <DataObject ProducedAtCompletion="false" RequiredForStart="false"/>
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo FillColor="-986896" Height="50.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="1287.0" YCoordinate="1121.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Artifact>
+    <Artifact ArtifactType="DataObject" Id="oryx_3A2B1F8B-2518-4307-B91E-6A328BE58846">
+      <DataObject ProducedAtCompletion="false" RequiredForStart="false"/>
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo FillColor="-986896" Height="50.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="45.0" YCoordinate="1443.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Artifact>
+    <Artifact ArtifactType="DataObject" Id="oryx_2C8CBC61-1069-4203-A182-195AD4EF2F86">
+      <DataObject ProducedAtCompletion="false" RequiredForStart="false"/>
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo FillColor="-986896" Height="50.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="45.0" YCoordinate="1763.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Artifact>
+    <Artifact ArtifactType="DataObject" Id="oryx_B82C9F8B-573C-4FAD-A8B4-1E3A828BC953">
+      <DataObject ProducedAtCompletion="false" RequiredForStart="false"/>
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo FillColor="-986896" Height="50.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="45.0" YCoordinate="1603.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Artifact>
+    <Artifact ArtifactType="DataObject" Id="oryx_0508836D-0A85-4273-BAF9-9C7AF9067BE5">
+      <DataObject ProducedAtCompletion="false" RequiredForStart="false"/>
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo FillColor="-986896" Height="50.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="45.0" YCoordinate="1283.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Artifact>
+  </Artifacts>
+  <Associations>
+    <Association AssociationDirection="None" Source="oryx_CBDABD1E-D246-4F78-A086-E47998AC8F39" Target="oryx_9F9F13FA-232C-4515-87C4-94101D435508" Id="oryx_08283EB0-07A5-41AF-9C8C-4A2FFD448890">
+      <ConnectorGraphicsInfos>
+        <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="65.0" YCoordinate="1548.0"/>
+          <Coordinates XCoordinate="354.5" YCoordinate="178.0"/>
+        </ConnectorGraphicsInfo>
+      </ConnectorGraphicsInfos>
+    </Association>
+    <Association AssociationDirection="None" Source="oryx_7BC80F31-C090-468E-AB18-D6D44BC640AA" Target="oryx_15A841E8-F88B-4DFE-9FA6-3EE33CD6CC9A" Id="oryx_4BC073C9-E052-40BE-A100-E924C7FFDC7D">
+      <ConnectorGraphicsInfos>
+        <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="479.0" YCoordinate="178.0"/>
+          <Coordinates XCoordinate="554.0" YCoordinate="1146.0"/>
+        </ConnectorGraphicsInfo>
+      </ConnectorGraphicsInfos>
+    </Association>
+    <Association AssociationDirection="None" Source="oryx_BAF06881-2E0B-4BAD-A293-2F413DF158EA" Target="oryx_B0DE846C-9B8E-44B8-840F-FBD7A3A001BA" Id="oryx_D611B6DF-943D-4596-96B0-0C1D7AC3137B">
+      <ConnectorGraphicsInfos>
+        <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="65.0" YCoordinate="1868.0"/>
+          <Coordinates XCoordinate="912.0" YCoordinate="302.5"/>
+        </ConnectorGraphicsInfo>
+      </ConnectorGraphicsInfos>
+    </Association>
+    <Association AssociationDirection="None" Source="oryx_F9ECA394-0220-4F99-91FB-9B17D663B55C" Target="oryx_B0DE846C-9B8E-44B8-840F-FBD7A3A001BA" Id="oryx_7D6EEBF3-503D-4838-96C4-441E24396258">
+      <ConnectorGraphicsInfos>
+        <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="65.0" YCoordinate="1388.0"/>
+          <Coordinates XCoordinate="912.0" YCoordinate="302.5"/>
+        </ConnectorGraphicsInfo>
+      </ConnectorGraphicsInfos>
+    </Association>
+    <Association AssociationDirection="None" Source="oryx_9F9F13FA-232C-4515-87C4-94101D435508" Target="oryx_15A841E8-F88B-4DFE-9FA6-3EE33CD6CC9A" Id="oryx_1B641AC9-AE2F-4A52-BE82-AE9D321EBCB0">
+      <ConnectorGraphicsInfos>
+        <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="354.5" YCoordinate="178.0"/>
+          <Coordinates XCoordinate="554.0" YCoordinate="1146.0"/>
+        </ConnectorGraphicsInfo>
+      </ConnectorGraphicsInfos>
+    </Association>
+    <Association AssociationDirection="None" Source="oryx_60C0DA73-E702-44E0-8641-3ED1032A7112" Target="oryx_B0DE846C-9B8E-44B8-840F-FBD7A3A001BA" Id="oryx_F590C75C-0E26-4C32-8A66-6B0F4FA3543D">
+      <ConnectorGraphicsInfos>
+        <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="65.0" YCoordinate="1708.0"/>
+          <Coordinates XCoordinate="912.0" YCoordinate="302.5"/>
+        </ConnectorGraphicsInfo>
+      </ConnectorGraphicsInfos>
+    </Association>
+    <Association AssociationDirection="None" Source="oryx_2C3AA324-35D0-4821-927C-CE8C78CAFB80" Target="oryx_C6A0E858-0112-4947-93DF-CF90CA8A0416" Id="oryx_5A88B177-1697-43E5-8F90-B119DB6570DD">
+      <ConnectorGraphicsInfos>
+        <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="65.0" YCoordinate="1146.0"/>
+          <Coordinates XCoordinate="1522.0" YCoordinate="302.5"/>
+        </ConnectorGraphicsInfo>
+      </ConnectorGraphicsInfos>
+    </Association>
+    <Association AssociationDirection="None" Source="oryx_1F70A701-C92C-4F81-B48E-66942662DFE2" Target="oryx_C6A0E858-0112-4947-93DF-CF90CA8A0416" Id="oryx_6912F287-D682-4125-AAE4-46C224EA2535">
+      <ConnectorGraphicsInfos>
+        <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="65.0" YCoordinate="1228.0"/>
+          <Coordinates XCoordinate="1522.0" YCoordinate="302.5"/>
+        </ConnectorGraphicsInfo>
+      </ConnectorGraphicsInfos>
+    </Association>
+    <Association AssociationDirection="None" Source="oryx_A7FF03E5-08A3-49F0-A1F4-546CE08422B0" Target="oryx_E2611705-89F8-4E51-91CB-1A0EDD86F81D" Id="oryx_3B914E1B-3780-4008-AA71-D051C30C8804">
+      <ConnectorGraphicsInfos>
+        <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="1212.0" YCoordinate="116.5"/>
+          <Coordinates XCoordinate="1307.0" YCoordinate="1146.0"/>
+        </ConnectorGraphicsInfo>
+      </ConnectorGraphicsInfos>
+    </Association>
+    <Association AssociationDirection="None" Source="oryx_B82C9F8B-573C-4FAD-A8B4-1E3A828BC953" Target="oryx_D73E03D7-EAA6-4911-A322-773036D79973" Id="oryx_1CFB9A83-5FA5-49D3-A407-8BEA668A6C64">
+      <ConnectorGraphicsInfos>
+        <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="65.0" YCoordinate="1628.0"/>
+          <Coordinates XCoordinate="1092.0" YCoordinate="116.5"/>
+        </ConnectorGraphicsInfo>
+      </ConnectorGraphicsInfos>
+    </Association>
+    <Association AssociationDirection="None" Source="oryx_2C8CBC61-1069-4203-A182-195AD4EF2F86" Target="oryx_D73E03D7-EAA6-4911-A322-773036D79973" Id="oryx_EFECE2BE-DA45-4347-ACDE-C3AD105A362F">
+      <ConnectorGraphicsInfos>
+        <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="65.0" YCoordinate="1788.0"/>
+          <Coordinates XCoordinate="1092.0" YCoordinate="116.5"/>
+        </ConnectorGraphicsInfo>
+      </ConnectorGraphicsInfos>
+    </Association>
+    <Association AssociationDirection="None" Source="oryx_3A2B1F8B-2518-4307-B91E-6A328BE58846" Target="oryx_D73E03D7-EAA6-4911-A322-773036D79973" Id="oryx_35D32326-72F9-4A4E-9E4C-B141AAD71710">
+      <ConnectorGraphicsInfos>
+        <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="65.0" YCoordinate="1468.0"/>
+          <Coordinates XCoordinate="1092.0" YCoordinate="116.5"/>
+        </ConnectorGraphicsInfo>
+      </ConnectorGraphicsInfos>
+    </Association>
+    <Association AssociationDirection="None" Source="oryx_E2611705-89F8-4E51-91CB-1A0EDD86F81D" Target="oryx_463C2FAA-90F4-4F77-AD3D-971BCE9C7052" Id="oryx_04ED97FA-D1F3-48FE-81B7-1FDF30D5F3CC">
+      <ConnectorGraphicsInfos>
+        <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="1307.0" YCoordinate="1146.0"/>
+          <Coordinates XCoordinate="1402.0" YCoordinate="116.5"/>
+        </ConnectorGraphicsInfo>
+      </ConnectorGraphicsInfos>
+    </Association>
+    <Association AssociationDirection="None" Source="oryx_0508836D-0A85-4273-BAF9-9C7AF9067BE5" Target="oryx_463C2FAA-90F4-4F77-AD3D-971BCE9C7052" Id="oryx_9DF73937-2D39-448C-A86F-77B111BED866">
+      <ConnectorGraphicsInfos>
+        <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="65.0" YCoordinate="1308.0"/>
+          <Coordinates XCoordinate="1402.0" YCoordinate="116.5"/>
+        </ConnectorGraphicsInfo>
+      </ConnectorGraphicsInfos>
+    </Association>
+  </Associations>
+  <MessageFlows>
+    <MessageFlow Source="oryx_2F936687-22E1-4C27-AB98-C1EFE982472A" Target="oryx_E929437D-E903-418F-A3BD-C838EC77FF90" Id="oryx_2F936687-22E1-4C27-AB98-C1EFE982472A" Name="Travel Documents">
+      <ConnectorGraphicsInfos>
+        <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="912.0" YCoordinate="302.5"/>
+          <Coordinates XCoordinate="1002.0" YCoordinate="116.5"/>
+        </ConnectorGraphicsInfo>
+      </ConnectorGraphicsInfos>
+    </MessageFlow>
+    <MessageFlow Source="oryx_88661E92-1C17-40DD-9DE7-CAE1F141656C" Target="oryx_C6A0E858-0112-4947-93DF-CF90CA8A0416" Id="oryx_88661E92-1C17-40DD-9DE7-CAE1F141656C" Name="Travel  documents">
+      <ConnectorGraphicsInfos>
+        <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="1402.0" YCoordinate="116.5"/>
+          <Coordinates XCoordinate="1522.0" YCoordinate="302.5"/>
+        </ConnectorGraphicsInfo>
+      </ConnectorGraphicsInfos>
+    </MessageFlow>
+  </MessageFlows>
+  <Pools>
+    <Pool BoundaryVisible="false" MainPool="false" Process="oryx_05BFD209-9B99-4722-B60D-EA70D63CACF7-process" Orientation="HORIZONTAL" Id="oryx_05BFD209-9B99-4722-B60D-EA70D63CACF7">
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo FillColor="-1" Height="350.0" Width="1712.0" BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="30.0" YCoordinate="746.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Pool>
+    <Pool BoundaryVisible="true" MainPool="false" Process="oryx_180D3BF4-B8FA-429F-889E-C719555D5564-process" Orientation="HORIZONTAL" Id="oryx_180D3BF4-B8FA-429F-889E-C719555D5564" Name="Passenger">
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo FillColor="-1" Height="477.0" Width="1712.0" BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="30.0" YCoordinate="7.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Pool>
+    <Pool BoundaryVisible="false" MainPool="true" Process="MainPool-process" Orientation="HORIZONTAL" Id="MainPool" Name="Main Pool">
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo FillColor="#ffffff" Height="0.0" Width="0.0" BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="0.0" YCoordinate="0.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Pool>
+    <Pool BoundaryVisible="true" MainPool="false" Process="oryx_4D3AE0AB-1397-4D32-8F90-C50B624A767E-process" Orientation="HORIZONTAL" Id="oryx_4D3AE0AB-1397-4D32-8F90-C50B624A767E" Name="Government Agent">
+      <NodeGraphicsInfos>
+        <NodeGraphicsInfo FillColor="-1" Height="232.0" Width="1712.0" BorderColor="#0,0,0" ToolId="Oryx">
+          <Coordinates XCoordinate="30.0" YCoordinate="499.0"/>
+        </NodeGraphicsInfo>
+      </NodeGraphicsInfos>
+    </Pool>
+  </Pools>
+  <WorkflowProcesses>
+    <WorkflowProcess AdhocOrdering="Parallel" ProcessType="None" Status="None" Id="oryx_05BFD209-9B99-4722-B60D-EA70D63CACF7-process"/>
+    <WorkflowProcess AdhocOrdering="Parallel" ProcessType="None" Status="None" Id="oryx_180D3BF4-B8FA-429F-889E-C719555D5564-process">
+      <ProcessHeader/>
+      <Activities>
+        <Activity Id="oryx_9282696E-1E75-4C6B-B40D-74076C5F0A2A">
+          <Route GatewayType="Parallel" MarkerVisible="true"/>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-52" Height="40.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1597.0" YCoordinate="282.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_7BC80F31-C090-468E-AB18-D6D44BC640AA" Name="Look directly at&#13;&#10;lens of Iris&#13;&#10;identification&#13;&#10;system">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="65.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="434.0" YCoordinate="145.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_9F9F13FA-232C-4515-87C4-94101D435508" Name="Place machine&#13;&#10;readable&#13;&#10;passport on&#13;&#10;document reader">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="61.0" Width="99.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="305.0" YCoordinate="147.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_838B5D89-E021-4FAE-8E96-AB73806E8553" Name="Leave Auto&#13;&#10;Control Lane">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="677.0" YCoordinate="148.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity Id="oryx_90B56C16-DE11-47FE-837F-D56AE2214063">
+          <Route GatewayType="Parallel" MarkerVisible="true"/>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-52" Height="40.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="115.0" YCoordinate="158.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_4E5FE6C7-7804-46AA-B03C-DE99E2749C65" Name="Proceed to Auto&#13;&#10;Control Lane">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="61.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="185.0" YCoordinate="23.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_B0DE846C-9B8E-44B8-840F-FBD7A3A001BA" Name="Present travel&#13;&#10;documents ">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="62.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="867.0" YCoordinate="271.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_5C654263-699A-4AB1-AC2C-AD42225F94CB" Name="Queue for&#13;&#10;passport control">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="309.5" YCoordinate="272.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_C6A0E858-0112-4947-93DF-CF90CA8A0416" Name="Collect travel&#13;&#10;documents">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1477.0" YCoordinate="272.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_FF1E63A2-B9B9-4D0B-9790-0F846A8BEE41" Name="Proceed to&#13;&#10;appropriate&#13;&#10;counter">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="185.0" YCoordinate="272.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity Id="oryx_D38C4743-4595-4A00-9555-2660EC23E876" Name="Proceed to boarding">
+          <Event>
+            <IntermediateEvent Trigger="Link">
+              <TriggerResultLink CatchThrow="THROW"/>
+            </IntermediateEvent>
+          </Event>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-66833" Height="30.0" Width="30.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1667.0" YCoordinate="287.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_DE65C081-7604-42CB-A0AD-C97EF2CFE4E3" Name="When gate opens">
+          <Event>
+            <IntermediateEvent Trigger="Timer">
+              <TriggerTimer TimerDate="20/04/09"/>
+            </IntermediateEvent>
+          </Event>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-66833" Height="30.0" Width="30.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="585.5" YCoordinate="163.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_9E95AF15-3FD4-4A06-960A-C53276862F83" Name="Proceed from Security Check">
+          <Event>
+            <IntermediateEvent Trigger="Link">
+              <TriggerResultLink CatchThrow="THROW"/>
+            </IntermediateEvent>
+          </Event>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-66833" Height="30.0" Width="30.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="50.0" YCoordinate="163.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_E39435B2-3951-41E2-AB39-0997375CF368" Name="Acquire exit form from  counter">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-6432178" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="555.5" YCoordinate="394.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity Id="oryx_3608FC4F-3248-40D5-8B55-37A556BE1F13">
+          <Route GatewayType="Parallel" MarkerVisible="true"/>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-52" Height="40.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="459.0" YCoordinate="282.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_91884DC6-D307-48D7-98DC-A44496BB3E3C">
+          <Route GatewayType="Parallel" MarkerVisible="true"/>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-52" Height="40.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="797.0" YCoordinate="282.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_DB90EE8B-F162-4472-8B97-880A06B0DEE4" Name="Fill exit form at counter">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-6432178" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="677.0" YCoordinate="394.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity Id="oryx_9282696E-1E75-4C6B-B40D-74076C5F0A2A">
+          <Route GatewayType="Parallel" MarkerVisible="true"/>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-52" Height="40.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1597.0" YCoordinate="282.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_7BC80F31-C090-468E-AB18-D6D44BC640AA" Name="Look directly at&#13;&#10;lens of Iris&#13;&#10;identification&#13;&#10;system">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="65.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="434.0" YCoordinate="145.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_9F9F13FA-232C-4515-87C4-94101D435508" Name="Place machine&#13;&#10;readable&#13;&#10;passport on&#13;&#10;document reader">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="61.0" Width="99.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="305.0" YCoordinate="147.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_838B5D89-E021-4FAE-8E96-AB73806E8553" Name="Leave Auto&#13;&#10;Control Lane">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="677.0" YCoordinate="148.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity Id="oryx_90B56C16-DE11-47FE-837F-D56AE2214063">
+          <Route GatewayType="Parallel" MarkerVisible="true"/>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-52" Height="40.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="115.0" YCoordinate="158.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_4E5FE6C7-7804-46AA-B03C-DE99E2749C65" Name="Proceed to Auto&#13;&#10;Control Lane">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="61.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="185.0" YCoordinate="23.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_B0DE846C-9B8E-44B8-840F-FBD7A3A001BA" Name="Present travel&#13;&#10;documents ">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="62.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="867.0" YCoordinate="271.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_5C654263-699A-4AB1-AC2C-AD42225F94CB" Name="Queue for&#13;&#10;passport control">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="309.5" YCoordinate="272.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_C6A0E858-0112-4947-93DF-CF90CA8A0416" Name="Collect travel&#13;&#10;documents">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1477.0" YCoordinate="272.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_FF1E63A2-B9B9-4D0B-9790-0F846A8BEE41" Name="Proceed to&#13;&#10;appropriate&#13;&#10;counter">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="185.0" YCoordinate="272.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity Id="oryx_D38C4743-4595-4A00-9555-2660EC23E876" Name="Proceed to boarding">
+          <Event>
+            <IntermediateEvent Trigger="Link">
+              <TriggerResultLink CatchThrow="THROW"/>
+            </IntermediateEvent>
+          </Event>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-66833" Height="30.0" Width="30.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1667.0" YCoordinate="287.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_DE65C081-7604-42CB-A0AD-C97EF2CFE4E3" Name="When gate opens">
+          <Event>
+            <IntermediateEvent Trigger="Timer">
+              <TriggerTimer TimerDate="20/04/09"/>
+            </IntermediateEvent>
+          </Event>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-66833" Height="30.0" Width="30.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="585.5" YCoordinate="163.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_9E95AF15-3FD4-4A06-960A-C53276862F83" Name="Proceed from Security Check">
+          <Event>
+            <IntermediateEvent Trigger="Link">
+              <TriggerResultLink CatchThrow="THROW"/>
+            </IntermediateEvent>
+          </Event>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-66833" Height="30.0" Width="30.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="50.0" YCoordinate="163.0"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_E39435B2-3951-41E2-AB39-0997375CF368" Name="Acquire exit form from  counter">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-6432178" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="555.5" YCoordinate="394.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity Id="oryx_3608FC4F-3248-40D5-8B55-37A556BE1F13">
+          <Route GatewayType="Parallel" MarkerVisible="true"/>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-52" Height="40.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="459.0" YCoordinate="282.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity Id="oryx_91884DC6-D307-48D7-98DC-A44496BB3E3C">
+          <Route GatewayType="Parallel" MarkerVisible="true"/>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-52" Height="40.0" Width="40.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="797.0" YCoordinate="282.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_DB90EE8B-F162-4472-8B97-880A06B0DEE4" Name="Fill exit form at counter">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-6432178" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="677.0" YCoordinate="394.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+      </Activities>
+    </WorkflowProcess>
+    <WorkflowProcess ProcessType="None" Status="None" SuppressJoinFailure="true" Id="MainPool-process" Name="MainProcess">
+      <Transitions>
+        <Transition From="oryx_9E95AF15-3FD4-4A06-960A-C53276862F83" Quantity="1" To="oryx_90B56C16-DE11-47FE-837F-D56AE2214063" Id="oryx_BD7E284C-D76F-4332-BCC8-5B103D18CC8D">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="65.0" YCoordinate="178.0"/>
+              <Coordinates XCoordinate="135.0" YCoordinate="178.0"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_838B5D89-E021-4FAE-8E96-AB73806E8553" Quantity="1" To="oryx_9282696E-1E75-4C6B-B40D-74076C5F0A2A" Id="oryx_295B076C-89F4-4AE4-A025-BA4042E4EAB8">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="722.0" YCoordinate="178.0"/>
+              <Coordinates XCoordinate="1647.0" YCoordinate="185.0"/>
+              <Coordinates XCoordinate="1617.0" YCoordinate="302.5"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_90B56C16-DE11-47FE-837F-D56AE2214063" Quantity="1" To="oryx_4E5FE6C7-7804-46AA-B03C-DE99E2749C65" Id="oryx_A43C770F-A651-43C5-9F81-6A1BE604FF66" Name="Registered for&#13;&#10;automated border &#10;control">
+          <Condition Type="CONDITION"/>
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="135.0" YCoordinate="178.0"/>
+              <Coordinates XCoordinate="165.0" YCoordinate="61.0"/>
+              <Coordinates XCoordinate="230.0" YCoordinate="54.0"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_9F9F13FA-232C-4515-87C4-94101D435508" Quantity="1" To="oryx_7BC80F31-C090-468E-AB18-D6D44BC640AA" Id="oryx_6F9E23D2-91E9-410D-85FB-E79EDADE89F1">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="354.5" YCoordinate="178.0"/>
+              <Coordinates XCoordinate="479.0" YCoordinate="178.0"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_4E5FE6C7-7804-46AA-B03C-DE99E2749C65" Quantity="1" To="oryx_9F9F13FA-232C-4515-87C4-94101D435508" Id="oryx_0C9DF07D-E14E-495A-999C-4C3B3DB86910">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="230.0" YCoordinate="54.0"/>
+              <Coordinates XCoordinate="384.5" YCoordinate="61.0"/>
+              <Coordinates XCoordinate="354.5" YCoordinate="178.0"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_DE65C081-7604-42CB-A0AD-C97EF2CFE4E3" Quantity="1" To="oryx_838B5D89-E021-4FAE-8E96-AB73806E8553" Id="oryx_3257D49F-83C0-41DA-8657-A9490AD39529">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="600.5" YCoordinate="178.0"/>
+              <Coordinates XCoordinate="722.0" YCoordinate="178.0"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_B0DE846C-9B8E-44B8-840F-FBD7A3A001BA" Quantity="1" To="oryx_C6A0E858-0112-4947-93DF-CF90CA8A0416" Id="oryx_AAA31239-1779-4ED3-B19F-9A77FF00D6CB">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="912.0" YCoordinate="302.5"/>
+              <Coordinates XCoordinate="1522.0" YCoordinate="302.5"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_FF1E63A2-B9B9-4D0B-9790-0F846A8BEE41" Quantity="1" To="oryx_5C654263-699A-4AB1-AC2C-AD42225F94CB" Id="oryx_822FBEED-5ACF-457A-BA74-D2772C4DB9B7">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="230.0" YCoordinate="302.5"/>
+              <Coordinates XCoordinate="354.5" YCoordinate="302.5"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_C6A0E858-0112-4947-93DF-CF90CA8A0416" Quantity="1" To="oryx_9282696E-1E75-4C6B-B40D-74076C5F0A2A" Id="oryx_FA8D2DE7-4224-4BE0-BD6B-1806D89421AF">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1522.0" YCoordinate="302.5"/>
+              <Coordinates XCoordinate="1617.0" YCoordinate="302.5"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_90B56C16-DE11-47FE-837F-D56AE2214063" Quantity="1" To="oryx_FF1E63A2-B9B9-4D0B-9790-0F846A8BEE41" Id="oryx_184B0C86-F6DE-4A09-8AB9-D93EA14BDEC4" Name="Not registered for&#13;&#10;automated border &#10;control">
+          <Condition Type="CONDITION"/>
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="135.0" YCoordinate="178.0"/>
+              <Coordinates XCoordinate="165.0" YCoordinate="309.5"/>
+              <Coordinates XCoordinate="230.0" YCoordinate="302.5"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_7BC80F31-C090-468E-AB18-D6D44BC640AA" Quantity="1" To="oryx_DE65C081-7604-42CB-A0AD-C97EF2CFE4E3" Id="oryx_EEA8C5F9-6A3F-4FE8-95F5-F106FDB7099B">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="479.0" YCoordinate="178.0"/>
+              <Coordinates XCoordinate="600.5" YCoordinate="178.0"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_9282696E-1E75-4C6B-B40D-74076C5F0A2A" Quantity="1" To="oryx_D38C4743-4595-4A00-9555-2660EC23E876" Id="oryx_B72A5D34-B298-4CD1-90D2-B74A2726A7FD">
+          <Condition Type="CONDITION"/>
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1617.0" YCoordinate="302.5"/>
+              <Coordinates XCoordinate="1682.0" YCoordinate="302.5"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_3608FC4F-3248-40D5-8B55-37A556BE1F13" Quantity="1" To="oryx_E39435B2-3951-41E2-AB39-0997375CF368" Id="oryx_B186D806-716D-48AD-8CD8-CC5A219D6C7C" Name="Passenger &#10;has no&#10; exit form">
+          <Condition Type="CONDITION"/>
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="479.0" YCoordinate="302.5"/>
+              <Coordinates XCoordinate="509.0" YCoordinate="431.5"/>
+              <Coordinates XCoordinate="600.5" YCoordinate="424.5"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_DB90EE8B-F162-4472-8B97-880A06B0DEE4" Quantity="1" To="oryx_91884DC6-D307-48D7-98DC-A44496BB3E3C" Id="oryx_DDE7C1BB-ECC2-4695-BC98-F8394E6E1EDD">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="722.0" YCoordinate="424.5"/>
+              <Coordinates XCoordinate="847.0" YCoordinate="431.5"/>
+              <Coordinates XCoordinate="817.0" YCoordinate="302.5"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_3608FC4F-3248-40D5-8B55-37A556BE1F13" Quantity="1" To="oryx_91884DC6-D307-48D7-98DC-A44496BB3E3C" Id="oryx_B10CCBE1-0D1F-42AF-9B58-9DD1269A62EA" Name="Passenger has&#10;exit form">
+          <Condition Type="CONDITION"/>
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="479.0" YCoordinate="302.5"/>
+              <Coordinates XCoordinate="817.0" YCoordinate="302.5"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_E39435B2-3951-41E2-AB39-0997375CF368" Quantity="1" To="oryx_DB90EE8B-F162-4472-8B97-880A06B0DEE4" Id="oryx_B6490C58-FF74-4C69-BE2F-67A455E3B1B3">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="600.5" YCoordinate="424.5"/>
+              <Coordinates XCoordinate="722.0" YCoordinate="424.5"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_91884DC6-D307-48D7-98DC-A44496BB3E3C" Quantity="1" To="oryx_B0DE846C-9B8E-44B8-840F-FBD7A3A001BA" Id="oryx_FF456D37-E657-42F2-B051-6506CFFDF7CE">
+          <Condition Type="CONDITION"/>
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="817.0" YCoordinate="302.5"/>
+              <Coordinates XCoordinate="912.0" YCoordinate="302.5"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_5C654263-699A-4AB1-AC2C-AD42225F94CB" Quantity="1" To="oryx_3608FC4F-3248-40D5-8B55-37A556BE1F13" Id="oryx_56958FEC-7B03-47BB-87F5-7D4D79FF4123">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="354.5" YCoordinate="302.5"/>
+              <Coordinates XCoordinate="479.0" YCoordinate="302.5"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_E929437D-E903-418F-A3BD-C838EC77FF90" Quantity="1" To="oryx_D73E03D7-EAA6-4911-A322-773036D79973" Id="oryx_394BD994-B1BE-4590-99F3-ADC87036B7A2">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1002.0" YCoordinate="116.5"/>
+              <Coordinates XCoordinate="1092.0" YCoordinate="116.5"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_D73E03D7-EAA6-4911-A322-773036D79973" Quantity="1" To="oryx_A7FF03E5-08A3-49F0-A1F4-546CE08422B0" Id="oryx_AFEB52BF-062F-4085-8F4F-B634C2734A7D">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1092.0" YCoordinate="116.5"/>
+              <Coordinates XCoordinate="1212.0" YCoordinate="116.5"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_A7FF03E5-08A3-49F0-A1F4-546CE08422B0" Quantity="1" To="oryx_463C2FAA-90F4-4F77-AD3D-971BCE9C7052" Id="oryx_BA68ECC6-DBFB-4B0D-B9AB-D46A25B8BFD3">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1212.0" YCoordinate="116.5"/>
+              <Coordinates XCoordinate="1402.0" YCoordinate="116.5"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+        <Transition From="oryx_463C2FAA-90F4-4F77-AD3D-971BCE9C7052" Quantity="1" To="oryx_A03FC481-565E-4134-A7CE-DBC70E461C75" Id="oryx_AFCC8C84-D836-48C4-8D75-8A7742365B11">
+          <ConnectorGraphicsInfos>
+            <ConnectorGraphicsInfo BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1402.0" YCoordinate="116.5"/>
+              <Coordinates XCoordinate="1522.0" YCoordinate="116.5"/>
+            </ConnectorGraphicsInfo>
+          </ConnectorGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="showdiamondmarker" Value="false"/>
+          </ExtendedAttributes>
+        </Transition>
+      </Transitions>
+    </WorkflowProcess>
+    <WorkflowProcess AdhocOrdering="Parallel" ProcessType="None" Status="None" Id="oryx_4D3AE0AB-1397-4D32-8F90-C50B624A767E-process">
+      <ProcessHeader/>
+      <Activities>
+        <Activity Id="oryx_E929437D-E903-418F-A3BD-C838EC77FF90" Name="Travel documents&#13;&#10;received">
+          <Event>
+            <StartEvent Trigger="Message" Implementation="Web Service"/>
+          </Event>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1638505" Height="30.0" Width="30.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="987.0" YCoordinate="101.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_D73E03D7-EAA6-4911-A322-773036D79973" Name="Verify travel documents">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1047.0" YCoordinate="86.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_A7FF03E5-08A3-49F0-A1F4-546CE08422B0" Name="Stamp passport">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1167.0" YCoordinate="86.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity Id="oryx_A03FC481-565E-4134-A7CE-DBC70E461C75">
+          <Event>
+            <EndEvent Result="None"/>
+          </Event>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1135958" Height="28.0" Width="28.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1508.0" YCoordinate="102.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_463C2FAA-90F4-4F77-AD3D-971BCE9C7052" Name="Return travel documents">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1357.0" YCoordinate="86.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity Id="oryx_E929437D-E903-418F-A3BD-C838EC77FF90" Name="Travel documents&#13;&#10;received">
+          <Event>
+            <StartEvent Trigger="Message" Implementation="Web Service"/>
+          </Event>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1638505" Height="30.0" Width="30.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="987.0" YCoordinate="101.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_D73E03D7-EAA6-4911-A322-773036D79973" Name="Verify travel documents">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1047.0" YCoordinate="86.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_A7FF03E5-08A3-49F0-A1F4-546CE08422B0" Name="Stamp passport">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1167.0" YCoordinate="86.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+        <Activity Id="oryx_A03FC481-565E-4134-A7CE-DBC70E461C75">
+          <Event>
+            <EndEvent Result="None"/>
+          </Event>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1135958" Height="28.0" Width="28.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1508.0" YCoordinate="102.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+        </Activity>
+        <Activity CompletionQuantity="1" StartQuantity="1" Status="None" Id="oryx_463C2FAA-90F4-4F77-AD3D-971BCE9C7052" Name="Return travel documents">
+          <Implementation>
+            <No/>
+          </Implementation>
+          <NodeGraphicsInfos>
+            <NodeGraphicsInfo FillColor="-1249281" Height="60.0" Width="90.0" BorderColor="#0,0,0" ToolId="Oryx">
+              <Coordinates XCoordinate="1357.0" YCoordinate="86.5"/>
+            </NodeGraphicsInfo>
+          </NodeGraphicsInfos>
+          <ExtendedAttributes>
+            <ExtendedAttribute Name="activitytype" Value="Task"/>
+          </ExtendedAttributes>
+        </Activity>
+      </Activities>
+    </WorkflowProcess>
+  </WorkflowProcesses>
+</Package>

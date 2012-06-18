@@ -1,23 +1,22 @@
 package org.apromore.dao.model;
 
-import java.io.Serializable;
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.beans.factory.annotation.Configurable;
+
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
+import java.io.Serializable;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.beans.factory.annotation.Configurable;
+import static javax.persistence.GenerationType.IDENTITY;
 
 /**
  * Stores the Annotation in apromore.
@@ -27,20 +26,13 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Entity
 @Table(name = "annotation",
        uniqueConstraints = {
-               @UniqueConstraint(columnNames = { "canonical", "name" }),
+               @UniqueConstraint(columnNames = { "process_model_version_id", "name" }),
                @UniqueConstraint(columnNames = { "native" })
        }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@NamedQueries( {
-        @NamedQuery(name = Annotation.FIND_BY_URI, query = "SELECT a FROM Annotation a WHERE a.natve.uri = :uri"),
-        @NamedQuery(name = Annotation.GET_ANNOTATION, query = "SELECT a FROM Annotation a, Canonical c WHERE a.canonical.uri = c.uri AND c.process.processId = :processId AND c.versionName = :versionName AND a.name = :name")
-})
 @Configurable("annotation")
 public class Annotation implements Serializable {
-
-    public static final String FIND_BY_URI = "annotation.findByUrl";
-    public static final String GET_ANNOTATION = "annotation.getAnnotation";
 
     /** Hard coded for interoperability. */
     private static final long serialVersionUID = -2353376324638485548L;
@@ -50,7 +42,7 @@ public class Annotation implements Serializable {
     private String content;
 
     private Native natve;
-    private Canonical canonical;
+    private ProcessModelVersion processModelVersion;
 
     /**
      * Default Constructor.
@@ -62,7 +54,8 @@ public class Annotation implements Serializable {
      * Get the Primary Key for the Object.
      * @return Returns the uri.
      */
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "uri", unique = true, nullable = false, precision = 11, scale = 0)
     public int getUri() {
         return uri;
@@ -133,21 +126,21 @@ public class Annotation implements Serializable {
     }
 
     /**
-     * Get the canonical format for the Object.
-     * @return Returns the canonical format.
+     * Get the process Model Version for the Object.
+     * @return Returns the process Model Version.
      */
-    @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name = "canonical")
-    public Canonical getCanonical() {
-        return this.canonical;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "process_model_version_id")
+    public ProcessModelVersion getProcessModelVersion() {
+        return this.processModelVersion;
     }
 
     /**
-     * Set the Canonical Format for the Object.
-     * @param newCanonical The canonical format to set.
+     * Set the process Model Version for the Object.
+     * @param newProcessModelVersion The process Model Version format to set.
      */
-    public void setCanonical(final Canonical newCanonical) {
-        this.canonical = newCanonical;
+    public void setProcessModelVersion(ProcessModelVersion newProcessModelVersion) {
+        this.processModelVersion = newProcessModelVersion;
     }
 
 }

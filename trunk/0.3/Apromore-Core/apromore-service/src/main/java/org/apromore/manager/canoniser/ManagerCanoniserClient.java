@@ -2,30 +2,19 @@ package org.apromore.manager.canoniser;
 
 import org.apromore.canoniser.service.CanoniserManager;
 import org.apromore.exception.ExceptionCanoniseVersion;
-import org.apromore.exception.ExceptionDeCanonise;
 import org.apromore.exception.ExceptionGenerateAnnotation;
-import org.apromore.exception.ExceptionImport;
 import org.apromore.exception.ExceptionVersion;
-import org.apromore.model.AnnotationsType;
-import org.apromore.model.CanoniseProcessInputMsgType;
-import org.apromore.model.CanoniseProcessOutputMsgType;
 import org.apromore.model.CanoniseVersionInputMsgType;
 import org.apromore.model.CanoniseVersionOutputMsgType;
-import org.apromore.model.DeCanoniseProcessInputMsgType;
-import org.apromore.model.DeCanoniseProcessOutputMsgType;
 import org.apromore.model.EditSessionType;
 import org.apromore.model.GenerateAnnotationInputMsgType;
 import org.apromore.model.GenerateAnnotationOutputMsgType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Iterator;
 
 public class ManagerCanoniserClient {
 

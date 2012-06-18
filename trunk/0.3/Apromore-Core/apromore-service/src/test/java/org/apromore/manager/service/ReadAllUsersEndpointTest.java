@@ -3,7 +3,6 @@ package org.apromore.manager.service;
 import org.apromore.dao.model.User;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
 import org.apromore.manager.da.ManagerDataAccessClient;
-import org.apromore.manager.toolbox.ManagerToolboxClient;
 import org.apromore.model.ObjectFactory;
 import org.apromore.model.ReadAllUsersInputMsgType;
 import org.apromore.model.ReadAllUsersOutputMsgType;
@@ -43,7 +42,7 @@ public class ReadAllUsersEndpointTest {
     private Document responseDocument;
     private ManagerDataAccessClient daMock;
     private ManagerCanoniserClient caMock;
-    private ManagerToolboxClient tbMock;
+
 
     private UserService userSrv;
 
@@ -57,11 +56,9 @@ public class ReadAllUsersEndpointTest {
         responseDocument = documentBuilder.newDocument();
         daMock = createMock(ManagerDataAccessClient.class);
         caMock = createMock(ManagerCanoniserClient.class);
-        tbMock = createMock(ManagerToolboxClient.class);
         userSrv = createMock(UserServiceImpl.class);
         endpoint = new ManagerPortalEndpoint();
         endpoint.setCaClient(caMock);
-        endpoint.setTbClient(tbMock);
         endpoint.setDaClient(daMock);
         endpoint.setUserSrv(userSrv);
     }

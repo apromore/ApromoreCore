@@ -1,7 +1,5 @@
 package org.apromore.service;
 
-import org.apromore.dao.model.NativeType;
-
 import java.util.List;
 
 /**

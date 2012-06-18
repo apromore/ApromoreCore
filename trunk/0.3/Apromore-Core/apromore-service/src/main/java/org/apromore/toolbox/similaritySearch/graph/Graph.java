@@ -1,6 +1,9 @@
 package org.apromore.toolbox.similaritySearch.graph;
 
-import java.math.BigInteger;
+import org.apromore.toolbox.similaritySearch.common.IdGeneratorHelper;
+import org.apromore.toolbox.similaritySearch.graph.Vertex.GWType;
+import org.apromore.toolbox.similaritySearch.graph.Vertex.Type;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -8,16 +11,12 @@ import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-import org.apromore.toolbox.similaritySearch.common.IdGeneratorHelper;
-import org.apromore.toolbox.similaritySearch.graph.Vertex.GWType;
-import org.apromore.toolbox.similaritySearch.graph.Vertex.Type;
-
 public class Graph {
 	private List<Edge> edges = new LinkedList<Edge>();
 	private List<Vertex> vertices = new LinkedList<Vertex>();
 	
-	private HashMap<BigInteger, VertexObject> objectMap = new HashMap<BigInteger, VertexObject>();
-	private HashMap<BigInteger, VertexResource> resourceMap = new HashMap<BigInteger, VertexResource>();
+	private HashMap<String, VertexObject> objectMap = new HashMap<String, VertexObject>();
+	private HashMap<String, VertexResource> resourceMap = new HashMap<String, VertexResource>();
 
 	public String name;
 	public String ID;
@@ -54,9 +53,9 @@ public class Graph {
 		}
 	}
 	
-	private HashSet<BigInteger> performFullDominanceSearch(Vertex v) {
+	private HashSet<String> performFullDominanceSearch(Vertex v) {
 		LinkedList<Vertex> toProcess = new LinkedList<Vertex>(v.getChildren());
-		HashSet<BigInteger> domList = new HashSet<BigInteger>();
+		HashSet<String> domList = new HashSet<String>();
 		
 		while (toProcess.size() > 0) {
 			Vertex process = toProcess.removeFirst();
@@ -102,7 +101,7 @@ public class Graph {
 		graphLabels.addAll(graphLabel);
 	}
 
-	private HashMap<BigInteger, Vertex> vertexMap = new HashMap<BigInteger, Vertex>();
+	private HashMap<String, Vertex> vertexMap = new HashMap<String, Vertex>();
 	
 	private static HashMap<String , String> edgeLabelMap  = new HashMap<String, String>();
 	
@@ -327,12 +326,12 @@ public class Graph {
 	}
 	
 	public void reorganizeIDs() {
-		HashMap<BigInteger, BigInteger> idMap = new HashMap<BigInteger,BigInteger>();
-		HashMap<BigInteger, Vertex> vertexMapTmp = new HashMap<BigInteger, Vertex>();
+		HashMap<String, String> idMap = new HashMap<String, String>();
+		HashMap<String, Vertex> vertexMapTmp = new HashMap<String, Vertex>();
 		
 		for(Vertex v : vertices) {
-			BigInteger oldID = v.getID();
-			BigInteger next = idGenerator.getNextId();
+            String oldID = v.getID();
+            String next = idGenerator.getNextId();
 			idMap.put(oldID, next);
 			v.setID(next);
 			
@@ -1072,7 +1071,7 @@ public class Graph {
 		}
 	}
 	
-	public HashMap<BigInteger, Vertex> getVertexMap(){
+	public HashMap<String, Vertex> getVertexMap(){
 		return vertexMap;
 	}
 
@@ -1091,8 +1090,7 @@ public class Graph {
 		}
 	}
 	
-	public Edge containsEdge(BigInteger from, BigInteger to) {
-		
+	public Edge containsEdge(String from, String to) {
 		for (Edge e : edges) {
 			if (from.equals(e.getFromVertex()) && to.equals(e.getToVertex())) {
 				return e;
@@ -1101,7 +1099,7 @@ public class Graph {
 		return null;
 	}
 	
-	public HashSet<String> removeEdge(BigInteger from, BigInteger to) {
+	public HashSet<String> removeEdge(String from, String to) {
 		Edge toremove = containsEdge(from, to);
 		
 		if (toremove == null) {
@@ -1112,7 +1110,7 @@ public class Graph {
 			return toremove.getLabels();
 		}
 	}
-	public HashSet<String> getEdgeLabels(BigInteger from, BigInteger to) {
+	public HashSet<String> getEdgeLabels(String from, String to) {
 		Edge e = containsEdge(from, to);
 		
 		if (e == null) {
@@ -1123,7 +1121,7 @@ public class Graph {
 		}
 	}
 	
-	public void removeVertex(BigInteger id) {
+	public void removeVertex(String id) {
 		Vertex toremove = null;
 		for (Vertex v : vertices) {
 			if (v.getID().equals(id)) {
@@ -1325,7 +1323,7 @@ public class Graph {
 		objectMap.put(o.getId(), o);
 	}
 	
-	public HashMap<BigInteger, VertexObject> getObjects() {
+	public HashMap<String, VertexObject> getObjects() {
 		return objectMap;
 	}
 	
@@ -1337,7 +1335,7 @@ public class Graph {
 		resourceMap.put(v.getId(), v);
 	}
 	
-	public HashMap<BigInteger, VertexResource> getResources() {
+	public HashMap<String, VertexResource> getResources() {
 		return resourceMap;
 	}
 }

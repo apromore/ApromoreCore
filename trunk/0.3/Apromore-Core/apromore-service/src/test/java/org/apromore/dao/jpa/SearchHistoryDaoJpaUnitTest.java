@@ -21,22 +21,22 @@ import static org.powermock.api.easymock.PowerMock.*;
 @RunWith(PowerMockRunner.class)
 public class SearchHistoryDaoJpaUnitTest {
 
-    private SearchHistoryDaoJpa srhJpa;
+    private SearchHistoryDaoJpa dao;
     private EntityManager manager;
 
     @Before
     public final void setUp() throws Exception {
-        srhJpa = new SearchHistoryDaoJpa();
+        dao = new SearchHistoryDaoJpa();
         EntityManagerFactory factory = createMock(EntityManagerFactory.class);
         manager = createMock(EntityManager.class);
-        srhJpa.setEntityManagerFactory(factory);
+        dao.setEntityManager(manager);
         expect(factory.createEntityManager()).andReturn(manager).anyTimes();
         replay(factory);
     }
 
     @Test
     public final void testIsAPOJO() {
-        JavaBeanHeuristic.assertLooksLikeJavaBean(SearchHistoryDaoJpa.class);
+        JavaBeanHeuristic.assertLooksLikeJavaBean(SearchHistoryDaoJpa.class, "em");
     }
 
 
@@ -46,7 +46,7 @@ public class SearchHistoryDaoJpaUnitTest {
         SearchHistory search = createSearchHistory();
         manager.persist(search);
         replay(manager);
-        srhJpa.save(search);
+        dao.save(search);
         verify(manager);
     }
 
@@ -55,7 +55,7 @@ public class SearchHistoryDaoJpaUnitTest {
         SearchHistory search = createSearchHistory();
         expect(manager.merge(search)).andReturn(search);
         replay(manager);
-        srhJpa.update(search);
+        dao.update(search);
         verify(manager);
     }
 
@@ -65,7 +65,7 @@ public class SearchHistoryDaoJpaUnitTest {
         SearchHistory search = createSearchHistory();
         manager.remove(search);
         replay(manager);
-        srhJpa.delete(search);
+        dao.delete(search);
         verify(manager);
     }
 

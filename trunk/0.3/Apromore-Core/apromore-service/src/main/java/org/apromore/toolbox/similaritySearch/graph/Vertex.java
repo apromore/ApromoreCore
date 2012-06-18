@@ -1,17 +1,17 @@
 package org.apromore.toolbox.similaritySearch.graph;
 
+import org.apromore.toolbox.similaritySearch.common.Settings;
+
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 
-import org.apromore.toolbox.similaritySearch.common.Settings;
-
 
 public class Vertex {
 
 	private Graphics graphics;
-	public HashSet<BigInteger> dominance;
+	public HashSet<String> dominance;
 	private HashMap<String, String> annotationMap = new HashMap<String, String>();
 	public HashSet<VertexObjectRef> objectRefs = new HashSet<VertexObjectRef>();
 	public HashSet<VertexResourceRef> resourceRefs = new HashSet<VertexResourceRef>();
@@ -74,7 +74,7 @@ public class Vertex {
 	}
 
 	
-	private BigInteger ID;
+	private String ID;
 	// node type
 	private Type vertexType;
 	// label
@@ -84,7 +84,7 @@ public class Vertex {
 	private LinkedList<Vertex> parentNodes = new LinkedList<Vertex>();
 	boolean isProcessed = false;
 	boolean processedGW = false;
-//	LinkedList<Vertex> toAddConfigurable = new LinkedList<Vertex>();
+//	LinkedList<Node> toAddConfigurable = new LinkedList<Node>();
 	
 //	LinkedList<Edge> toAddEdges = new LinkedList<Edge>();
 	Vertex prevConfVertex = null;
@@ -145,13 +145,13 @@ public class Vertex {
 //		}
 	}
 
-	public Vertex(Type type, String label, BigInteger ID){
+	public Vertex(Type type, String label, String ID){
 		vertexType = type;
 		this.label = label;
 		this.ID = ID;
 	}
 	
-	public Vertex(GWType gwType, BigInteger ID) {
+	public Vertex(GWType gwType, String ID) {
 		vertexType = Type.gateway;
 		this.gwType = gwType;
 		this.ID = ID;
@@ -171,7 +171,7 @@ public class Vertex {
 		childNodes = new LinkedList<Vertex>();
 	}
 	
-	public void removeChild (BigInteger id) {
+	public void removeChild (String id) {
 		Vertex toRemove = null;
 		for (Vertex v : childNodes) {
 			if (v.getID().equals(id)) {
@@ -185,7 +185,7 @@ public class Vertex {
 	}
 
 
-	public void removeParent (BigInteger id) {
+	public void removeParent (String id) {
 		Vertex toRemove = null;
 		for (Vertex v : parentNodes) {
 			if (v.getID().equals(id)) {
@@ -293,7 +293,7 @@ public class Vertex {
 		
 	}
 	
-	public Vertex(String gwTypeString, BigInteger ID) {
+	public Vertex(String gwTypeString, String ID) {
 		vertexType = Type.gateway;
 		if (gwTypeString.equalsIgnoreCase("xor")) {
 			gwType = GWType.xor;
@@ -322,11 +322,11 @@ public class Vertex {
 	}
 
 	
-	public void setID(BigInteger id) {
+	public void setID(String id) {
 		ID = id;
 	}
 
-	public BigInteger getID() {
+	public String getID() {
 		return ID;
 	}
 	
@@ -409,7 +409,7 @@ public class Vertex {
 		} else if (getType().equals(Type.function)) {
 			return "Function("+getID() +", "+getLabel()+")";
 		} else if (getType().equals(Type.gateway)) {
-			return "Gateway("+getID() +", "+getGWType()/*+ "P("+printList(parentNodes)+"), CH("+printList(childNodes)+"))"*/;
+			return "CpfGateway("+getID() +", "+getGWType()/*+ "P("+printList(parentNodes)+"), CH("+printList(childNodes)+"))"*/;
 		}
 		return "Node("+getID() +", "+getLabel()+")";
 	}

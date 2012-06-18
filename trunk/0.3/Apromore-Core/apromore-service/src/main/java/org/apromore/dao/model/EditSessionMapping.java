@@ -2,25 +2,21 @@ package org.apromore.dao.model;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
 import java.io.Serializable;
 import java.util.Date;
-
-import static javax.persistence.GenerationType.IDENTITY;
 
 /**
  * Stores all the edits to the session mappings in apromore.
@@ -30,10 +26,6 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "edit_session_mapping")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@NamedQueries( {
-//        @NamedQuery(name = User.FIND_USER, query = "SELECT usr FROM User usr WHERE usr.username = :username"),
-//        @NamedQuery(name = User.FIND_ALL_USERS, query = "SELECT usr FROM User usr")
-})
 @Configurable("editSessionMapping")
 public class EditSessionMapping implements Serializable {
 
@@ -50,7 +42,6 @@ public class EditSessionMapping implements Serializable {
     private String lastUpdate;
 
     private User user;
-    private Canonical canonical;
     private Process process;
 
 
@@ -60,7 +51,9 @@ public class EditSessionMapping implements Serializable {
     public EditSessionMapping() { }
 
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     @Column(name = "code", unique = true, nullable = false)
     public Integer getCode() {
         return this.code;
@@ -88,16 +81,6 @@ public class EditSessionMapping implements Serializable {
     
     public void setProcess(final Process newProcess) {
         this.process = newProcess;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "uri", nullable = false)
-    public Canonical getCanonical() {
-        return this.canonical;
-    }
-
-    public void setCanonical(final Canonical newCanonical) {
-        this.canonical = newCanonical;
     }
 
     @Temporal(TemporalType.TIMESTAMP)

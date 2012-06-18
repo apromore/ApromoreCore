@@ -1,16 +1,14 @@
 package org.apromore.service;
 
+import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.exception.CanoniserException;
-import org.apromore.exception.ExceptionImport;
-import org.apromore.exception.ImportException;
-import org.apromore.model.ProcessSummaryType;
+import org.apromore.exception.SerializationException;
+import org.apromore.graph.JBPT.CPF;
 import org.apromore.service.model.CanonisedProcess;
 import org.xml.sax.SAXException;
 
-import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.xml.bind.JAXBException;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -22,33 +20,45 @@ import java.io.InputStream;
  */
 public interface CanoniserService {
 
-    public static final String ANF_CONTEXT = "org.apromore.anf";
-    public static final String CPF_CONTEXT = "org.apromore.cpf";
-    public static final String XPDL2_CONTEXT = "org.wfmc._2008.xpdl2";
-    public static final String EPML_CONTEXT = "de.epml";
-    public static final String PNML_CONTEXT = "org.apromore.pnml";
+    /**
+     * Generate cpf and anf from process_xml which is specified in language nativeType.
+     * If cpf_uri is equal to 0, take it from process_xml
+     *
+     * @param nativeType the native type
+     * @param cpf_uri the cpf uri
+     * @param process_xml the processXML to canonise
+     * @return CanonisedProcess populated with the CPF and ANF details.
+     * @throws org.apromore.exception.CanoniserException something failed
+     */
+    CanonisedProcess canonise(String nativeType, String cpf_uri, InputStream process_xml) throws CanoniserException,
+            IOException, JAXBException, SAXException;
 
     /**
      * DeCanonise a process.
      * @param processId the processId of the Canonical format.
      * @param version the version of the canonical format
      * @param nativeType the processes original format
-     * @param cpf_is the Canonical format inputStream
      * @param anf_is the annotation inputStream
      * @return the DeCanonised model inputStream
      */
-    DataSource deCanonise(final long processId, final String version, final String nativeType, final DataSource cpf_is, final DataSource anf_is);
+    DataSource deCanonise(final Integer processId, final String version, final String nativeType,
+            final CanonicalProcessType canType, final DataSource anf_is);
+
 
     /**
-     * Generate cpf_xml and anf_xml from process_xml which is specified in language nativeType.
-     * If cpf_uri is equal to 0, take it from process_xml
-     * @param process_xml the processXML to canonise
-     * @param nativeType the native type
-     * @param anf_xml the anf xml, maybe needed
-     * @param cpf_xml the cpf xml
-     * @param cpf_uri the cpf uri
-     * @throws org.apromore.exception.CanoniserException something failed
+     * Serializes a Graph to a cpf.
+     * @param graph The process Model Graph.
+     * @return the the CPF format of the process Model Graph.
+     * @throws SerializationException if the conversion from a CPF to graph fails.
      */
-    public void canonise(String cpf_uri, InputStream process_xml, String nativeType, ByteArrayOutputStream anf_xml,
-            ByteArrayOutputStream cpf_xml) throws CanoniserException, IOException, JAXBException, SAXException;
+    CanonicalProcessType serializeCPF(CPF graph) throws SerializationException;
+
+    /**
+     * De-serializes a CPF to a Process Model Graph.
+     * @param cpf the CPF Process Model to convert.
+     * @return the process Model Graph of the conversion
+     * @throws SerializationException if the conversion from a CPF to graph fails.
+     */
+    CPF deserializeCPF(CanonicalProcessType cpf) throws SerializationException;
+
 }

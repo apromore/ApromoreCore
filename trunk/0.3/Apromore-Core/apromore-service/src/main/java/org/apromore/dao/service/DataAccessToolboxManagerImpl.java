@@ -39,31 +39,6 @@ public class DataAccessToolboxManagerImpl implements DataAccessToolboxManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(DataAccessToolboxManagerImpl.class.getName());
 
 
-	public ReadProcessSummariesOutputMsgType readProcessSummaries(ReadProcessSummaryInputMsgType payload) {
-        LOGGER.info("Executing operation readProcessSummaries");
-        ResultType result = new ResultType();
-        ReadProcessSummariesOutputMsgType res = new ReadProcessSummariesOutputMsgType();
-        res.setResult(result);
-        try {        
-        	List<Integer> processIds = new ArrayList<Integer>();
-        	List<String> versionNames = new ArrayList<String>();
-        	List<Double> scores = new ArrayList<Double>();
-        	for (ProcessVersionType pv: payload.getProcessVersions().getProcessVersion()) {
-        		processIds.add(pv.getProcessId());
-        		versionNames.add(pv.getVersionName());
-        		scores.add(pv.getScore());
-        	}
-        	ProcessSummariesType processes = ProcessDao.getInstance().getProcessSummaries(processIds, versionNames, scores);
-        	res.setProcessSummaries(processes);
-            result.setCode(0);
-            result.setMessage("");
-        } catch (Exception ex) {
-        	result.setCode(-1);
-        	result.setMessage(ex.getMessage());
-        }
-        return res;
-    }
-
 	/* (non-Javadoc)
      * @see org.apromore.dao.DataAccessToolboxManager#readCanonicals(ReadCanonicalsInputMsgType  payload )*
      */
@@ -125,7 +100,6 @@ public class DataAccessToolboxManagerImpl implements DataAccessToolboxManager {
 	private String newCpfURI() {
 		DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmsSSS");
 		Date date = new Date();
-		String time = dateFormat.format(date);
-		return time;
+		return dateFormat.format(date);
 	}
 }

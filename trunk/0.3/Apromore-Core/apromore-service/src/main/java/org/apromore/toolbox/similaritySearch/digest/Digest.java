@@ -1,14 +1,13 @@
 package org.apromore.toolbox.similaritySearch.digest;
 
 
-import java.math.BigInteger;
-import java.util.HashSet;
-import java.util.LinkedList;
-
 import org.apromore.toolbox.similaritySearch.common.IdGeneratorHelper;
 import org.apromore.toolbox.similaritySearch.graph.Edge;
 import org.apromore.toolbox.similaritySearch.graph.Graph;
 import org.apromore.toolbox.similaritySearch.graph.Vertex;
+
+import java.util.HashSet;
+import java.util.LinkedList;
 
 public class Digest {
 	
@@ -89,7 +88,7 @@ public class Digest {
 	
 	private static boolean hasPath(Vertex mergedP, Vertex mergedCh, Graph digested) {
 		LinkedList<Vertex> toProcess = new LinkedList<Vertex>();
-		HashSet<BigInteger> processed = new HashSet<BigInteger>();
+		HashSet<String> processed = new HashSet<String>();
 		
 		
 		for (Vertex pCh : mergedP.getChildren()) {

@@ -35,8 +35,8 @@ public class DataHandler {
 	List<String> output = new LinkedList<String>();
 	List<String> input = new LinkedList<String>();
 	AnnotationsType annotations = new AnnotationsType();
-	BigInteger inputevent;
-	BigInteger outputstate;
+    String inputevent;
+    String outputstate;
 	CanonicalProcessType cproc = new CanonicalProcessType();
 	EdgeType inputedge;
 	EdgeType outputedge;
@@ -161,12 +161,10 @@ public class DataHandler {
 	}
 
 	public String get_andjoinmap_value(String key) {
-
 		return (andjoinmap.get(key));
 	}
 
 	public Map<String, String> get_andjoinmap() {
-
 		return andjoinmap;
 	}
 
@@ -230,22 +228,19 @@ public class DataHandler {
 
 	}
 
-	public void setOutputState(BigInteger id) {
+	public void setOutputState(String id) {
 		outputstate = id;
 	}
-
-	public BigInteger getOutputState() {
-
+	public String getOutputState() {
 		return outputstate;
 
 	}
 
-	public void setInputEvent(BigInteger id) {
+	public void setInputEvent(String id) {
 		inputevent = id;
 	}
 
-	public BigInteger getInputEvent() {
-
+	public String getInputEvent() {
 		return inputevent;
 
 	}

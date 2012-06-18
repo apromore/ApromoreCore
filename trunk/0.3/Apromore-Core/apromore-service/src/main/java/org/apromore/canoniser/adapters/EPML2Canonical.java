@@ -75,17 +75,17 @@ import java.util.Map;
 
 public class EPML2Canonical {
 
-    Map<BigInteger, BigInteger> id_map = new HashMap<BigInteger, BigInteger>();
-    List<BigInteger> flow_source_id_list = new LinkedList<BigInteger>();
+    Map<BigInteger, String> id_map = new HashMap<BigInteger, String>();
+    List<String> flow_source_id_list = new LinkedList<String>();
     List<TypeAND> and_list = new LinkedList<TypeAND>();
     List<TypeOR> or_list = new LinkedList<TypeOR>();
     List<TypeXOR> xor_list = new LinkedList<TypeXOR>();
-    Map<BigInteger, BigInteger> def_ref = new HashMap<BigInteger, BigInteger>();
+    Map<BigInteger, String> def_ref = new HashMap<BigInteger, String>();
     Map<BigInteger, TypeRole> role_ref = new HashMap<BigInteger, TypeRole>();
     Map<BigInteger, TypeObject> obj_ref = new HashMap<BigInteger, TypeObject>();
     List<TaskType> subnet_list = new LinkedList<TaskType>();
     List<BigInteger> range_ids = new LinkedList<BigInteger>();
-    List<BigInteger> event_ids = new LinkedList<BigInteger>();
+    List<String> event_ids = new LinkedList<String>();
     List<TypeArc> range_flow = new LinkedList<TypeArc>();
     List<TypeArc> range_relation = new LinkedList<TypeArc>();
 
@@ -139,8 +139,8 @@ public class EPML2Canonical {
                     if (epc instanceof TypeEPC) {
                         NetType net = new NetType();
                         translateEpc(net, (TypeEPC) epc);
-                        id_map.put(((TypeEPC) epc).getEpcId(), BigInteger.valueOf(ids));
-                        net.setId(BigInteger.valueOf(ids++));
+                        id_map.put(((TypeEPC) epc).getEpcId(), String.valueOf(ids));
+                        net.setId(String.valueOf(ids++));
                         cproc.getNet().add(net);
                     }
                 }
@@ -153,8 +153,8 @@ public class EPML2Canonical {
             for (TypeEPC epc : epml.getEpcs()) {
                 NetType net = new NetType();
                 translateEpc(net, epc);
-                id_map.put(epc.getEpcId(), BigInteger.valueOf(ids));
-                net.setId(BigInteger.valueOf(ids++));
+                id_map.put(epc.getEpcId(), String.valueOf(ids));
+                net.setId(String.valueOf(ids++));
                 cproc.getNet().add(net);
             }
             for (TaskType task : subnet_list)
@@ -249,7 +249,7 @@ public class EPML2Canonical {
 
     @SuppressWarnings("unchecked")
     private void translateEpc(NetType net, TypeEPC epc) throws CanoniserException {
-        Map<String, BigInteger> role_names = new HashMap<String, BigInteger>();
+        Map<String, String> role_names = new HashMap<String, String>();
 
         for (Object obj : epc.getEventOrFunctionOrRole()) {
             if (obj instanceof TypeEvent) {
@@ -263,19 +263,19 @@ public class EPML2Canonical {
                     addNodeAnnotations(element.getValue());
 
                 } else if (element.getValue() instanceof TypeAND) {
-                    id_map.put(((TEpcElement) element.getValue()).getId(), BigInteger.valueOf(ids));
+                    id_map.put(((TEpcElement) element.getValue()).getId(), String.valueOf(ids));
                     addNodeAnnotations(element.getValue());
                     ((TEpcElement) element.getValue()).setId(BigInteger.valueOf(ids++));
                     and_list.add((TypeAND) element.getValue());
 
                 } else if (element.getValue() instanceof TypeOR) {
-                    id_map.put(((TEpcElement) element.getValue()).getId(), BigInteger.valueOf(ids));
+                    id_map.put(((TEpcElement) element.getValue()).getId(), String.valueOf(ids));
                     addNodeAnnotations(element.getValue());
                     ((TEpcElement) element.getValue()).setId(BigInteger.valueOf(ids++));
                     or_list.add((TypeOR) element.getValue());
 
                 } else if (element.getValue() instanceof TypeXOR) {
-                    id_map.put(((TEpcElement) element.getValue()).getId(), BigInteger.valueOf(ids));
+                    id_map.put(((TEpcElement) element.getValue()).getId(), String.valueOf(ids));
                     addNodeAnnotations(element.getValue());
                     ((TEpcElement) element.getValue()).setId(BigInteger.valueOf(ids++));
                     xor_list.add((TypeXOR) element.getValue());
@@ -284,7 +284,7 @@ public class EPML2Canonical {
                     if (!role_names.containsKey(((TypeRole) element.getValue()).getName())) {
                         translateRole((TypeRole) element.getValue());
                         addNodeAnnotations(element.getValue());
-                        role_names.put(((TypeRole) element.getValue()).getName(), BigInteger.valueOf(ids - 1));
+                        role_names.put(((TypeRole) element.getValue()).getName(), String.valueOf(ids - 1));
                     } else {
                         id_map.put(((TypeRole) element.getValue()).getId(), role_names.get(((TypeRole) element.getValue()).getName()));
                     }
@@ -350,7 +350,7 @@ public class EPML2Canonical {
         for (TypeAND and : and_list) {
             counter = 0;
             BigInteger n = and.getId();
-            for (BigInteger s : flow_source_id_list)
+            for (String s : flow_source_id_list)
                 if (n.equals(s))
                     counter++;
             if (counter <= 1)
@@ -358,7 +358,7 @@ public class EPML2Canonical {
             //the and is joint
             {
                 ANDJoinType andJ = new ANDJoinType();
-                andJ.setId(and.getId());
+                andJ.setId(String.valueOf(and.getId()));
                 andJ.setName(and.getName());
                 net.getNode().add(andJ);
             } else
@@ -366,7 +366,7 @@ public class EPML2Canonical {
             //the and is split, create it
             {
                 ANDSplitType andS = new ANDSplitType();
-                andS.setId(and.getId());
+                andS.setId(String.valueOf(and.getId()));
                 andS.setName(and.getName());
                 net.getNode().add(andS);
             }
@@ -377,7 +377,7 @@ public class EPML2Canonical {
         for (TypeOR or : or_list) {
             counter = 0;
             BigInteger n = or.getId();
-            for (BigInteger s : flow_source_id_list)
+            for (String s : flow_source_id_list)
                 if (n.equals(s))
                     counter++;
             if (counter <= 1)
@@ -385,7 +385,7 @@ public class EPML2Canonical {
             //the or is joint
             {
                 ORJoinType orJ = new ORJoinType();
-                orJ.setId(or.getId());
+                orJ.setId(String.valueOf(or.getId()));
                 orJ.setName(or.getName());
                 net.getNode().add(orJ);
             } else
@@ -393,7 +393,7 @@ public class EPML2Canonical {
             //or is split, create it then remove the events after
             {
                 ORSplitType orS = new ORSplitType();
-                orS.setId(or.getId());
+                orS.setId(String.valueOf(or.getId()));
                 orS.setName(or.getName());
                 net.getNode().add(orS);
                 processUnrequiredEvents(net, or.getId()); // after creating the split node ,, delete the event
@@ -405,7 +405,7 @@ public class EPML2Canonical {
         for (TypeXOR xor : xor_list) {
             counter = 0;
             BigInteger n = xor.getId();
-            for (BigInteger s : flow_source_id_list)
+            for (String s : flow_source_id_list)
                 if (n.equals(s))
                     counter++;
             if (counter <= 1)
@@ -413,14 +413,14 @@ public class EPML2Canonical {
             // xor is joint
             {
                 XORJoinType xorJ = new XORJoinType();
-                xorJ.setId(xor.getId());
+                xorJ.setId(String.valueOf(xor.getId()));
                 xorJ.setName(xor.getName());
                 net.getNode().add(xorJ);
             } else
             //xor is split, create it
             {
                 XORSplitType xorS = new XORSplitType();
-                xorS.setId(xor.getId());
+                xorS.setId(String.valueOf(xor.getId()));
                 xorS.setName(xor.getName());
                 net.getNode().add(xorS);
                 processUnrequiredEvents(net, xor.getId()); // after creating the split node ,, delete the event
@@ -484,7 +484,7 @@ public class EPML2Canonical {
         PositionType pos = new PositionType();
         SizeType size = new SizeType();
         FontType font = new FontType();
-        BigInteger cpfId = null;
+        String cpfId;
 
         //
 
@@ -542,7 +542,7 @@ public class EPML2Canonical {
     private void processUnrequiredEvents(NetType net, BigInteger id) throws CanoniserException {
         List<EdgeType> edge_remove_list = new LinkedList<EdgeType>();
         List<NodeType> node_remove_list = new LinkedList<NodeType>();
-        BigInteger event_id;
+        String event_id;
         boolean found = false;
         for (EdgeType edge : net.getEdge()) {
             if (edge.getSourceId() != null) {
@@ -580,21 +580,21 @@ public class EPML2Canonical {
 
     private void translateEvent(NetType net, TypeEvent event) {
         EventType node = new EventType();
-        id_map.put(event.getId(), BigInteger.valueOf(ids));
-        event_ids.add(BigInteger.valueOf(ids));
-        node.setId(BigInteger.valueOf(ids++));
+        id_map.put(event.getId(), String.valueOf(ids));
+        event_ids.add(String.valueOf(ids));
+        node.setId(String.valueOf(ids++));
         node.setName(event.getName());
         net.getNode().add(node);
     }
 
     private void translateFunction(NetType net, TypeFunction func) {
         TaskType task = new TaskType();
-        id_map.put(func.getId(), BigInteger.valueOf(ids));
-        task.setId(BigInteger.valueOf(ids++));
+        id_map.put(func.getId(), String.valueOf(ids));
+        task.setId(String.valueOf(ids++));
         task.setName(func.getName());
         if (func.getToProcess() != null) {
             if (func.getToProcess().getLinkToEpcId() != null) {
-                task.setSubnetId(func.getToProcess().getLinkToEpcId());
+                task.setSubnetId(String.valueOf(func.getToProcess().getLinkToEpcId()));
                 subnet_list.add(task);
             }
         }
@@ -603,9 +603,9 @@ public class EPML2Canonical {
 
     private void translatePI(NetType net, TypeProcessInterface pi) {
         TaskType task = new TaskType();
-        id_map.put(pi.getId(), BigInteger.valueOf(ids));
-        task.setId(BigInteger.valueOf(ids++));
-        task.setSubnetId(pi.getToProcess().getLinkToEpcId()); // Will be modified later to the ID for Net
+        id_map.put(pi.getId(), String.valueOf(ids));
+        task.setId(String.valueOf(ids++));
+        task.setSubnetId(String.valueOf(pi.getToProcess().getLinkToEpcId())); // Will be modified later to the ID for Net
         subnet_list.add(task);
         net.getNode().add(task);
     }
@@ -616,8 +616,8 @@ public class EPML2Canonical {
                 && id_map.get(arc.getFlow().getTarget()) != null) // if it is null, that's mean the arc is relation
         {
             EdgeType edge = new EdgeType();
-            id_map.put(arc.getId(), BigInteger.valueOf(ids));
-            edge.setId(BigInteger.valueOf(ids++));
+            id_map.put(arc.getId(), String.valueOf(ids));
+            edge.setId(String.valueOf(ids++));
             edge.setSourceId(id_map.get(arc.getFlow().getSource()));
             edge.setTargetId(id_map.get(arc.getFlow().getTarget()));
             net.getEdge().add(edge);
@@ -628,7 +628,7 @@ public class EPML2Canonical {
                     if (arc.getRelation().getType() != null && arc.getRelation().getType().equals("role")) {
                         ResourceTypeRefType ref = new ResourceTypeRefType();
                         TypeAttribute att = new TypeAttribute();
-                        id_map.put(arc.getId(), BigInteger.valueOf(ids));
+                        id_map.put(arc.getId(), String.valueOf(ids));
                         att.setTypeRef("RefID");
                         att.setValue(String.valueOf(ids++));
                         ref.getAttribute().add(att);
@@ -641,7 +641,7 @@ public class EPML2Canonical {
                     } else {
                         ObjectRefType ref = new ObjectRefType();
                         TypeAttribute att = new TypeAttribute();
-                        id_map.put(arc.getId(), BigInteger.valueOf(ids));
+                        id_map.put(arc.getId(), String.valueOf(ids));
                         att.setTypeRef("RefID");
                         att.setValue(String.valueOf(ids++));
                         ref.getAttribute().add(att);
@@ -657,7 +657,7 @@ public class EPML2Canonical {
 
                     ObjectRefType ref = new ObjectRefType();
                     TypeAttribute att = new TypeAttribute();
-                    id_map.put(arc.getId(), BigInteger.valueOf(ids));
+                    id_map.put(arc.getId(), String.valueOf(ids));
                     att.setTypeRef("RefID");
                     att.setValue(String.valueOf(ids++));
                     ref.getAttribute().add(att);
@@ -674,7 +674,7 @@ public class EPML2Canonical {
     }
 
     private void translateGateway(NetType net, Object object) {
-        id_map.put(((TEpcElement) object).getId(), BigInteger.valueOf(ids));
+        id_map.put(((TEpcElement) object).getId(), String.valueOf(ids));
         ((TEpcElement) object).setId(BigInteger.valueOf(ids++));
 
         if (object instanceof TypeAND) {
@@ -691,12 +691,12 @@ public class EPML2Canonical {
             id_map.put(obj.getId(), def_ref.get(obj.getDefRef()));
         } else {
             ObjectType object = new ObjectType();
-            id_map.put(obj.getId(), BigInteger.valueOf(ids));
-            object.setId(BigInteger.valueOf(ids));
+            id_map.put(obj.getId(), String.valueOf(ids));
+            object.setId(String.valueOf(ids));
             object.setName(obj.getName());
             //object.setConfigurable(!obj.getConfigurableObject().equals(null));
             cproc.getObject().add(object);
-            def_ref.put(obj.getDefRef(), BigInteger.valueOf(ids++));
+            def_ref.put(obj.getDefRef(), String.valueOf(ids++));
         }
         obj_ref.put(obj.getId(), obj);
     }
@@ -706,19 +706,19 @@ public class EPML2Canonical {
             id_map.put(role.getId(), def_ref.get(role.getDefRef()));
         } else {
             HumanType obj = new HumanType();
-            id_map.put(role.getId(), BigInteger.valueOf(ids));
-            obj.setId(BigInteger.valueOf(ids));
+            id_map.put(role.getId(), String.valueOf(ids));
+            obj.setId(String.valueOf(ids));
             obj.setName(role.getName());
             cproc.getResourceType().add(obj);
-            def_ref.put(role.getDefRef(), BigInteger.valueOf(ids++));
+            def_ref.put(role.getDefRef(), String.valueOf(ids++));
         }
         role_ref.put(role.getId(), role);
     }
 
     private void translateRANGE(TypeRANGE obj) {
         ObjectType object = new ObjectType();
-        id_map.put(obj.getId(), BigInteger.valueOf(ids));
-        object.setId(BigInteger.valueOf(ids++));
+        id_map.put(obj.getId(), String.valueOf(ids));
+        object.setId(String.valueOf(ids++));
         object.setName(obj.getName());
         cproc.getObject().add(object);
 

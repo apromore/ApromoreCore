@@ -1,9 +1,7 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.model.UserType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;

@@ -1,14 +1,10 @@
 package org.apromore.mapper;
 
 import org.apromore.dao.model.NativeType;
-import org.apromore.dao.model.SearchHistory;
 import org.apromore.model.FormatType;
 import org.apromore.model.NativeTypesType;
-import org.apromore.model.SearchHistoriesType;
 
-import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 /**
  * Mapper helper class to convert from the DAO Model to the Webservice Model.

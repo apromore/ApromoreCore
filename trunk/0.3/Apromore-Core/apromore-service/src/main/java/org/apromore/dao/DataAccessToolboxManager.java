@@ -14,7 +14,5 @@ public interface DataAccessToolboxManager {
 
     public ReadCanonicalsOutputMsgType readCanonicals(ReadCanonicalsInputMsgType payload);
 
-    public ReadProcessSummariesOutputMsgType readProcessSummaries(ReadProcessSummaryInputMsgType payload);
-
     public StoreCpfOutputMsgType storeCpf(StoreCpfInputMsgType payload);
 }

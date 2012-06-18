@@ -34,7 +34,9 @@
 
     <!-- Checks whether files end with a new line.                        -->
     <!-- See http://checkstyle.sf.net/config_misc.html#NewlineAtEndOfFile -->
-    <module name="NewlineAtEndOfFile"/>
+    <module name="NewlineAtEndOfFile">
+        <property name="severity" value="warning"/>
+    </module>
 
     <!-- Checks that property files contain the same keys.         -->
     <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
@@ -58,6 +60,8 @@
     </module>
 
     <module name="TreeWalker">
+        <property name="cacheFile" value="target/checkstyle-cachefile"/>
+        <property name="tabWidth" value="4"/>
 
         <!-- Checks for Javadoc comments.                     -->
         <!-- See http://checkstyle.sf.net/config_javadoc.html -->
@@ -131,16 +135,17 @@
 
         <!-- Checks for Size Violations.                    -->
         <!-- See http://checkstyle.sf.net/config_sizes.html -->
+        <module name="ExecutableStatementCount"/>
+        <module name="ParameterNumber"/>
         <module name="LineLength">
             <property name="max" value="140"/>
-            <property name="ignorePattern" value="^ *\* *[^ ]+$"/>
+            <property name="ignorePattern" value="^\s*\*\s*[^\s]+.+$"/>
         </module>
         <module name="MethodLength">
             <property name="max" value="150"/>
             <property name="tokens" value="METHOD_DEF"/>
             <property name="countEmpty" value="false"/>
         </module>
-        <module name="ParameterNumber"/>
 
 
         <!-- Checks for whitespace                               -->
@@ -179,16 +184,20 @@
 
         <!-- Checks for blocks. You know, those {}'s         -->
         <!-- See http://checkstyle.sf.net/config_blocks.html -->
-        <module name="AvoidNestedBlocks"/>
-        <module name="EmptyBlock"/>
-        <module name="LeftCurly"/>
+        <module name="EmptyBlock">
+            <property name="option" value="text"/>
+        </module>
         <module name="NeedBraces"/>
+        <module name="AvoidNestedBlocks"/>
+        <module name="LeftCurly"/>
         <module name="RightCurly"/>
 
 
         <!-- Checks for common coding problems               -->
         <!-- See http://checkstyle.sf.net/config_coding.html -->
-        <module name="AvoidInlineConditionals"/>
+        <module name="AvoidInlineConditionals">
+            <property name="severity" value="ignore"/>
+        </module>
         <module name="DoubleCheckedLocking"/>
         <module name="EmptyStatement"/>
         <module name="EqualsHashCode"/>
@@ -199,15 +208,18 @@
         <module name="InnerAssignment"/>
         <module name="MagicNumber"/>
         <module name="MissingSwitchDefault"/>
-        <module name="RedundantThrows"/>
+        <module name="RedundantThrows">
+            <property name="allowSubclasses" value="true"/>
+            <property name="allowUnchecked" value="true"/>
+        </module>
         <module name="SimplifyBooleanExpression"/>
         <module name="SimplifyBooleanReturn"/>
         <module name="StringLiteralEquality" />
         <module name="NestedIfDepth" >
-            <property name="max" value="1" />
+            <property name="max" value="2" />
         </module>
         <module name="NestedTryDepth" >
-            <property name="max" value="1" />
+            <property name="max" value="2" />
         </module>
         <module name="SuperClone" />
         <module name="SuperFinalize" />
@@ -221,21 +233,38 @@
 
         <!-- Checks for class design                         -->
         <!-- See http://checkstyle.sf.net/config_design.html -->
-        <module name="DesignForExtension"/>
+        <module name="VisibilityModifier">
+            <property name="protectedAllowed" value="true"/>
+        </module>
         <module name="FinalClass"/>
         <module name="HideUtilityClassConstructor"/>
-        <module name="InterfaceIsType">
-            <property name="allowMarkerInterfaces" value="true" />
+        <module name="InterfaceIsType"/>
+        <module name="MutableException"/>
+        <module name="DesignForExtension">
+            <property name="severity" value="info"/>
         </module>
-        <module name="VisibilityModifier"/>
-        <module name="MutableException" />
-        <module name="ThrowsCount" >
-            <property name="max" value="3" />
+        <module name="ThrowsCount">
+            <property name="max" value="4"/>
         </module>
 
         <!-- Complexity checks -->
         <module name="CyclomaticComplexity" >
-            <property name="max" value="14" />
+            <property name="max" value="8" />
+        </module>
+        <module name="NPathComplexity"/>
+        <module name="JavaNCSS">
+            <!-- Identical to MethodLength. -->
+            <property name="methodMaximum" value="40"/>
+            <!--
+              We assume a file length (FileLength) of 1500. Assuming that at
+              least 500 lines are for comments and we allow only one top-level
+              class per file, this number for NCSS seams reasonable.
+            -->
+            <property name="classMaximum" value="1000"/>
+            <!--
+              We assume a file length (FileLength) of 1500.
+            -->
+            <property name="fileMaximum" value="1500"/>
         </module>
 
 

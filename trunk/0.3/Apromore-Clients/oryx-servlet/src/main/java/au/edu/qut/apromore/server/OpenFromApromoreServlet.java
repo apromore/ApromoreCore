@@ -19,8 +19,6 @@ import de.hpi.bpmn2xpdl.XPDLPackage;
 import de.hpi.bpmn2xpdl.XPDLPool;
 import de.hpi.bpmn2xpdl.XPDLPools;
 import org.apromore.portal.client.PortalService;
-import org.apromore.portal.client.util.EditSessionHolder;
-import org.apromore.portal.model.EditSessionType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;

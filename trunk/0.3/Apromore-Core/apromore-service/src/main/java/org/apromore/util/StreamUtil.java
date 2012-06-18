@@ -1,6 +1,7 @@
 package org.apromore.util;
 
 import org.apromore.anf.AnnotationsType;
+import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.wfmc._2008.xpdl2.*;
 
@@ -94,8 +95,8 @@ public class StreamUtil {
      * @throws javax.xml.bind.JAXBException if it fails
      */
     @SuppressWarnings("unchecked")
-    public static InputStream copyParam2CPF(InputStream cpf_xml, String cpf_uri, String processName, String version,
-            String username, String creationDate, String lastUpdate) throws JAXBException {
+    public static InputStream copyParam2CPF(InputStream cpf_xml, Integer cpf_uri, String processName, String version, String username,
+            String creationDate, String lastUpdate) throws JAXBException {
         InputStream res;
 
         JAXBContext jc = JAXBContext.newInstance(CPF_URI);
@@ -108,7 +109,7 @@ public class StreamUtil {
         cpf.setVersion(version);
         cpf.setCreationDate(creationDate);
         cpf.setModificationDate(lastUpdate);
-        cpf.setUri(cpf_uri);
+        cpf.setUri(String.valueOf(cpf_uri));
 
         Marshaller m = jc.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
@@ -137,7 +138,7 @@ public class StreamUtil {
             String creationDate, String lastUpdate) throws JAXBException {
         InputStream res = null;
 
-        if (nativeType.compareTo("XPDL 2.1") == 0) {
+        if (nativeType.compareTo(Constants.XPDL_2_1) == 0) {
             JAXBContext jc = JAXBContext.newInstance(XPDL_URI);
             Unmarshaller u = jc.createUnmarshaller();
             JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
@@ -148,7 +149,7 @@ public class StreamUtil {
             ByteArrayOutputStream xml = new ByteArrayOutputStream();
             m.marshal(rootElement, xml);
             res = new ByteArrayInputStream(xml.toByteArray());
-        } else if (nativeType.compareTo("EPML 2.0") == 0) {
+        } else if (nativeType.compareTo(Constants.EPML_2_0) == 0) {
             res = process_xml;
         } else if (nativeType.compareTo("PNML 1.3.2") == 0) {
             res = process_xml;
