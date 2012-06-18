@@ -9,7 +9,6 @@ import javax.persistence.AttributeOverrides;
 import javax.persistence.Column;
 import javax.persistence.EmbeddedId;
 import javax.persistence.Entity;
-import javax.persistence.NamedQueries;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
@@ -24,10 +23,6 @@ import java.util.Date;
 @Entity
 @Table(name = "temp_version")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@NamedQueries( {
-        //@NamedQuery(name = TempVersion.FIND_USER, query = "SELECT usr FROM User usr WHERE usr.username = :username"),
-        //@NamedQuery(name = TempVersion.FIND_ALL_USERS, query = "SELECT usr FROM User usr")
-})
 @Configurable("tempVersion")
 public class TempVersion implements Serializable {
 

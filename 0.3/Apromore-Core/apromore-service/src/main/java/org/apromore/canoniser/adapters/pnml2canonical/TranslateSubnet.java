@@ -7,8 +7,6 @@ import org.apromore.cpf.TypeAttribute;
 import org.apromore.exception.CanoniserException;
 import org.apromore.pnml.PnmlType;
 
-import java.math.BigInteger;
-
 public class TranslateSubnet {
 	private long ids = 6121980;
 	DataHandler data = new DataHandler();
@@ -51,10 +49,9 @@ public class TranslateSubnet {
 					ids = tpn.getIds();
 					data.put_id_map(String.valueOf(data.getNet().getId()), String.valueOf(ids));
 					data.setRootId(ids);
-					data.getNet().setId(BigInteger.valueOf(ids++));
+					data.getNet().setId(String.valueOf(ids++));
 					data.getCanonicalProcess().getNet().add(data.getNet());
-					data.getCanonicalProcess()
-							.setRootId(BigInteger.valueOf(id));
+					data.getCanonicalProcess().setRootId(String.valueOf(id));
 
 				}
 			}

@@ -39,8 +39,8 @@
   	<sequence>
 	  <any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded"/><!-- can only be specified as the first element of the sequence in any type extensions -->
 	</sequence>
-    <attribute name="id" type="positiveInteger" use="required"/>
-    <attribute name="cpfId" type="positiveInteger" use="optional"/><!-- when used, the Annotation refers to an element within the canonical model, otherwise it refers to the overall model -->
+    <attribute name="id" type="string" use="required"/>
+    <attribute name="cpfId" type="string" use="optional"/><!-- when used, the Annotation refers to an element within the canonical model, otherwise it refers to the overall model -->
     <anyAttribute namespace="##other" processContents="lax"/>
   </complexType>  
   
@@ -201,13 +201,13 @@
 			<attribute name="InitialMarking" type="string" use="optional"/>
 		</extension>
 	</complexContent>
-</complexType>
- <simpleType name="cpfTypeEnum">
+  </complexType>
+  <simpleType name="cpfTypeEnum">
 	<restriction base="string">
 		<enumeration value="EdgeType"/>
 		<enumeration value="WorkType"/>
 	</restriction>
- </simpleType>
+  </simpleType>
   
     <!-- to be supported once we introduce the page separator as an annotation -->
     <!--complexType name="PageType">

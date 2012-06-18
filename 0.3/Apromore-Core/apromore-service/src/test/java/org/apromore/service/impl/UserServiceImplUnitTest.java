@@ -1,5 +1,6 @@
 package org.apromore.service.impl;
 
+import org.apromore.dao.UserDao;
 import org.apromore.dao.jpa.UserDaoJpa;
 import org.apromore.dao.model.EditSessionMapping;
 import org.apromore.dao.model.User;
@@ -18,8 +19,8 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 
-import static org.easymock.EasyMock.*;
-import static org.easymock.EasyMock.expectLastCall;
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.powermock.api.easymock.PowerMock.createMock;
@@ -43,14 +44,14 @@ public class UserServiceImplUnitTest {
 	public ExpectedException exception = ExpectedException.none();
 
     @Autowired
-    private UserDaoJpa usrDAOJpa;
+    private UserDao usrDAOJpa;
 
     private UserServiceImpl usrServiceImpl;
 
     @Before
     public final void setUp() throws Exception {
         usrServiceImpl = new UserServiceImpl();
-        usrDAOJpa = createMock(UserDaoJpa.class);
+        usrDAOJpa = createMock(UserDao.class);
         usrServiceImpl.setUserDao(usrDAOJpa);
     }
 
@@ -99,7 +100,7 @@ public class UserServiceImplUnitTest {
         User usr = createUser();
 
         expect(usrDAOJpa.findUser(username)).andReturn(usr);
-        usrDAOJpa.update((User) anyObject()); expectLastCall().atLeastOnce();
+        expect(usrDAOJpa.update((User) anyObject())).andReturn(usr);
         replay(usrDAOJpa);
 
         usrServiceImpl.writeUser(usr);

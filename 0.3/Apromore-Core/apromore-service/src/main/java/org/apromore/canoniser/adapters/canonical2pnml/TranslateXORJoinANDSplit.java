@@ -1,8 +1,5 @@
 package org.apromore.canoniser.adapters.canonical2pnml;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import org.apromore.cpf.NodeType;
 import org.apromore.pnml.ArcNameType;
 import org.apromore.pnml.ArcToolspecificType;
@@ -15,6 +12,9 @@ import org.apromore.pnml.PlaceType;
 import org.apromore.pnml.PositionType;
 import org.apromore.pnml.TransitionToolspecificType;
 import org.apromore.pnml.TransitionType;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class TranslateXORJoinANDSplit {
 	DataHandler data;
@@ -30,7 +30,7 @@ public class TranslateXORJoinANDSplit {
 		TransitionToolspecificType trantool = new TransitionToolspecificType();
 		OperatorType op = new OperatorType();
 		NodeNameType test = new NodeNameType();
-		data.put_id_map(node.getId(), BigInteger.valueOf(ids));
+		data.put_id_map(node.getId(), String.valueOf(ids));
 		test.setText(node.getName());
 		tran.setId(String.valueOf(ids++));
 		tran.setName(test);
@@ -90,8 +90,7 @@ public class TranslateXORJoinANDSplit {
 			data.getNet().getArc().add(splitarc);
 		}
 
-		data.put_pnmlRefMap(BigInteger.valueOf(Long.valueOf(tran.getId())),
-				tran);
+		data.put_pnmlRefMap(tran.getId(), tran);
 		data.put_tempmap(tran.getName().getText(), tran);
 		data.put_originalid_map(BigInteger.valueOf(Long.valueOf(tran.getId())),
 				node.getOriginalID());

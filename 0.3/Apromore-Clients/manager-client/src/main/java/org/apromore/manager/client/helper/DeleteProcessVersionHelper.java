@@ -1,11 +1,7 @@
 package org.apromore.manager.client.helper;
 
-import org.apromore.model.ParameterType;
-import org.apromore.model.ParametersType;
 import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.ProcessVersionIdType;
 import org.apromore.model.ProcessVersionIdentifierType;
-import org.apromore.model.ProcessVersionIdsType;
 import org.apromore.model.VersionSummaryType;
 
 import java.util.ArrayList;

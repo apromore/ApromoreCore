@@ -1,13 +1,11 @@
 package org.apromore.toolbox.similaritySearch.common.algos;
 
-import java.math.BigInteger;
-
 public class TwoVertices {
-	public BigInteger v1;
-	public BigInteger v2;
+	public String v1;
+	public String v2;
 	public double weight;
 
-	public TwoVertices(BigInteger v1, BigInteger v2, double weight) {
+	public TwoVertices(String v1, String v2, double weight) {
 		this.v1 = v1;
 		this.v2 = v2;
 		this.weight = weight;

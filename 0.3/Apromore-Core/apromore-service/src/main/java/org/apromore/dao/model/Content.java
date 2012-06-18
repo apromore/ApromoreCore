@@ -2,11 +2,13 @@ package org.apromore.dao.model;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.beans.factory.annotation.Configurable;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -31,9 +33,10 @@ public class Content implements Serializable {
     private String contentId;
     private String boundaryS;
     private String boundaryE;
-    private String contentHash;
+    private String code;
+
     private Set<FragmentVersion> fragmentVersions = new HashSet<FragmentVersion>(0);
-    private Set<Vertex> vertices = new HashSet<Vertex>(0);
+    private Set<Node> vertices = new HashSet<Node>(0);
     private Set<Edge> edges = new HashSet<Edge>(0);
 
 
@@ -42,6 +45,8 @@ public class Content implements Serializable {
 
 
     @Id
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     @Column(name = "content_id", unique = true, nullable = false, length = 40)
     public String getContentId() {
         return this.contentId;
@@ -72,13 +77,13 @@ public class Content implements Serializable {
     }
 
 
-    @Column(name = "content_hash", length = 65535)
-    public String getContentHash() {
-        return this.contentHash;
+    @Column(name = "code", length = 65535)
+    public String getCode() {
+        return this.code;
     }
 
-    public void setContentHash(final String newContentHash) {
-        this.contentHash = newContentHash;
+    public void setCode(final String newContentHash) {
+        this.code = newContentHash;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "content")
@@ -91,11 +96,11 @@ public class Content implements Serializable {
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "content")
-    public Set<Vertex> getVertices() {
+    public Set<Node> getVertices() {
         return this.vertices;
     }
 
-    public void setVertices(final Set<Vertex> newVertices) {
+    public void setVertices(final Set<Node> newVertices) {
         this.vertices = newVertices;
     }
 

@@ -10,9 +10,7 @@ import org.apromore.model.SearchForSimilarProcessesOutputMsgType;
  */
 public interface ToolboxManager {
 
-    public SearchForSimilarProcessesOutputMsgType searchForSimilarProcesses(SearchForSimilarProcessesInputMsgType payload);
-
-    public MergeProcessesOutputMsgType mergeProcesses(MergeProcessesInputMsgType payload);
+//    public MergeProcessesOutputMsgType mergeProcesses(MergeProcessesInputMsgType payload);
 }
 
 

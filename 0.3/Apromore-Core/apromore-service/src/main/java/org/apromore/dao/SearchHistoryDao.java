@@ -23,7 +23,7 @@ public interface SearchHistoryDao {
      *
      * @param searchHistory the searchHistory to update
      */
-    void update(SearchHistory searchHistory);
+    SearchHistory update(SearchHistory searchHistory);
 
     /**
      * Remove the searchHistory.

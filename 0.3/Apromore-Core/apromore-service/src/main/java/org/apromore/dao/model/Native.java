@@ -8,12 +8,9 @@ import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
-import javax.persistence.NamedQuery;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
@@ -31,19 +28,12 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "native",
         uniqueConstraints = {
-               @UniqueConstraint(columnNames = { "canonical", "nat_type" })
+               @UniqueConstraint(columnNames = { "process_model_version_id", "nat_type" })
        }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@NamedQueries( {
-    @NamedQuery(name = Native.FIND_NATIVE_TYPES, query = "SELECT n FROM Native n, Canonical c WHERE n.canonical.uri = c.uri AND c.process.processId = :processId AND c.versionName = :versionName"),
-    @NamedQuery(name = Native.GET_NATIVE, query = "SELECT n FROM Native n, Canonical c WHERE n.canonical.uri = c.uri AND c.process.processId = :processId AND c.versionName = :versionName AND n.nativeType.natType = :nativeType")
-})
 @Configurable("native")
 public class Native implements Serializable {
-
-    public static final String FIND_NATIVE_TYPES = "native.findNativeTypes";
-    public static final String GET_NATIVE = "pr.getNative";
 
     /** Hard coded for interoperability. */
     private static final long serialVersionUID = -235332908738485548L;
@@ -51,10 +41,9 @@ public class Native implements Serializable {
 	private Integer uri;
 	private String content;
 
-    private Canonical canonical;
 	private NativeType nativeType;
-
-	private Set<Annotation> annotations = new HashSet<Annotation>(0);
+    private ProcessModelVersion processModelVersion;
+    private Set<Annotation> annotations = new HashSet<Annotation>(0);
 
 
     /**
@@ -67,7 +56,8 @@ public class Native implements Serializable {
      * Get the Primary Key for the Object.
      * @return Returns the Id.
      */
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "uri", unique = true, nullable = false)
 	public Integer getUri() {
 		return this.uri;
@@ -100,24 +90,6 @@ public class Native implements Serializable {
 	}
 
     /**
-     * Get the canonical for the Object.
-     * @return Returns the canonical.
-     */
-	@ManyToOne(fetch = FetchType.LAZY)
-	@JoinColumn(name = "canonical")
-	public Canonical getCanonical() {
-		return this.canonical;
-	}
-
-    /**
-     * Set the canonical for the Object.
-     * @param newCanonical The canonical to set.
-     */
-    public void setCanonical(final Canonical newCanonical) {
-		this.canonical = newCanonical;
-	}
-
-    /**
      * Get the nativeType for the Object.
      * @return Returns the nativeType.
      */
@@ -136,20 +108,38 @@ public class Native implements Serializable {
 	}
 
     /**
+     * Get the process Model Version for the Object.
+     * @return Returns the process Model Version.
+     */
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="process_model_version_id")
+    public ProcessModelVersion getProcessModelVersion() {
+        return this.processModelVersion;
+    }
+
+    /**
+     * Set the process Model Version for the Object.
+     * @param newProcessModelVersion The process Model Version format to set.
+     */
+    public void setProcessModelVersion(ProcessModelVersion newProcessModelVersion) {
+        this.processModelVersion = newProcessModelVersion;
+    }
+
+    /**
      * Get the annotations for the Object.
      * @return Returns the annotations.
      */
-	@OneToMany(fetch = FetchType.LAZY, mappedBy = "natve")
-	public Set<Annotation> getAnnotations() {
-		return this.annotations;
-	}
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "natve")
+    public Set<Annotation> getAnnotations() {
+        return this.annotations;
+    }
 
     /**
      * Set the annotations for the Object.
      * @param newAnnotations The annotations to set.
      */
     public void setAnnotations(final Set<Annotation> newAnnotations) {
-		this.annotations = newAnnotations;
-	}
+        this.annotations = newAnnotations;
+    }
 
 }

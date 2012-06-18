@@ -2,7 +2,6 @@ package org.apromore.manager.service;
 
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
 import org.apromore.manager.da.ManagerDataAccessClient;
-import org.apromore.manager.toolbox.ManagerToolboxClient;
 import org.apromore.model.ObjectFactory;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ReadProcessSummariesInputMsgType;
@@ -40,7 +39,6 @@ public class ReadProcessSummariesEndpointTest {
     private Document responseDocument;
     private ManagerDataAccessClient daMock;
     private ManagerCanoniserClient caMock;
-    private ManagerToolboxClient tbMock;
 
     private ProcessService processSrv;
 
@@ -54,11 +52,9 @@ public class ReadProcessSummariesEndpointTest {
         responseDocument = documentBuilder.newDocument();
         daMock = createMock(ManagerDataAccessClient.class);
         caMock = createMock(ManagerCanoniserClient.class);
-        tbMock = createMock(ManagerToolboxClient.class);
         processSrv = createMock(ProcessService.class);
         endpoint = new ManagerPortalEndpoint();
         endpoint.setCaClient(caMock);
-        endpoint.setTbClient(tbMock);
         endpoint.setDaClient(daMock);
         endpoint.setProcSrv(processSrv);
     }

@@ -1,8 +1,5 @@
 package org.apromore.canoniser.adapters.canonical2pnml;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-
 import org.apromore.cpf.MessageType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ResourceTypeRefType;
@@ -19,6 +16,9 @@ import org.apromore.pnml.TransitionResourceType;
 import org.apromore.pnml.TransitionToolspecificType;
 import org.apromore.pnml.TransitionType;
 import org.apromore.pnml.TriggerType;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
 
 public class TranslateNode {
 
@@ -37,7 +37,7 @@ public class TranslateNode {
 		TransitionType tran = new TransitionType();
 		boolean isSub = false;
 		NodeNameType test = new NodeNameType();
-		data.put_id_map(task.getId(), BigInteger.valueOf(ids));
+		data.put_id_map(task.getId(), String.valueOf(ids));
 		tran.setId(String.valueOf(ids++));
 		if (task.getName() != null) {
 			test.setText(task.getName());
@@ -123,8 +123,7 @@ public class TranslateNode {
 		}
 
 		data.getNet().getTransition().add(tran);
-		data.put_pnmlRefMap(BigInteger.valueOf(Long.valueOf(tran.getId())),
-				tran);
+		data.put_pnmlRefMap(tran.getId(), tran);
 		if (task.getName() != null) {
 			data.put_tempmap(tran.getName().getText(), tran);
 		}
@@ -137,7 +136,7 @@ public class TranslateNode {
 		if (node instanceof MessageType) {
 			TransitionType tran = new TransitionType();
 			NodeNameType test = new NodeNameType();
-			data.put_id_map(node.getId(), BigInteger.valueOf(ids));
+			data.put_id_map(node.getId(), String.valueOf(ids));
 			tran.setId(String.valueOf(ids++));
 			if (node.getName() != null) {
 				test.setText(node.getName());
@@ -159,8 +158,7 @@ public class TranslateNode {
 			ttt.setTrigger((TransitionToolspecificType.Trigger) tt);
 			tran.getToolspecific().add(ttt);
 			data.getNet().getTransition().add(tran);
-			data.put_pnmlRefMap(BigInteger.valueOf(Long.valueOf(tran.getId())),
-					tran);
+			data.put_pnmlRefMap(tran.getId(), tran);
 			if (node.getName() != null) {
 				data.put_tempmap(tran.getName().getText(), tran);
 			}
@@ -171,7 +169,7 @@ public class TranslateNode {
 		} else if (node instanceof TimerType) {
 			TransitionType tran = new TransitionType();
 			NodeNameType test = new NodeNameType();
-			data.put_id_map(node.getId(), BigInteger.valueOf(ids));
+			data.put_id_map(node.getId(), String.valueOf(ids));
 			tran.setId(String.valueOf(ids++));
 			if (node.getName() != null) {
 				test.setText(node.getName());
@@ -193,7 +191,7 @@ public class TranslateNode {
 			ttt.setTrigger((TransitionToolspecificType.Trigger) tt);
 			tran.getToolspecific().add(ttt);
 			data.getNet().getTransition().add(tran);
-			data.put_pnmlRefMap(BigInteger.valueOf(Long.valueOf(tran.getId())), tran);
+			data.put_pnmlRefMap(tran.getId(), tran);
 			if (node.getName() != null) {
 				data.put_tempmap(tran.getName().getText(), tran);
 			}
@@ -202,15 +200,14 @@ public class TranslateNode {
 		} else {
 			PlaceType place = new PlaceType();
 			NodeNameType test = new NodeNameType();
-			data.put_id_map(node.getId(), BigInteger.valueOf(ids));
+			data.put_id_map(node.getId(), String.valueOf(ids));
 			place.setId(String.valueOf(ids++));
 			if (node.getName() != null) {
 				test.setText(node.getName());
 				place.setName(test);
 			}
 			data.getNet().getPlace().add(place);
-			data.put_pnmlRefMap(
-					BigInteger.valueOf(Long.valueOf(place.getId())), place);
+			data.put_pnmlRefMap(place.getId(), place);
 			if (node.getName() != null) {
 				data.put_tempmap(place.getName().getText(), place);
 			}
@@ -224,15 +221,14 @@ public class TranslateNode {
 
 		PlaceType place = new PlaceType();
 		NodeNameType test = new NodeNameType();
-		data.put_id_map(node.getId(), BigInteger.valueOf(ids));
+		data.put_id_map(node.getId(), String.valueOf(ids));
 		place.setId(String.valueOf(ids++));
 		if (node.getName() != null) {
 			test.setText(node.getName());
 			place.setName(test);
 		}
 		data.getNet().getPlace().add(place);
-		data.put_pnmlRefMap(BigInteger.valueOf(Long.valueOf(place.getId())),
-				place);
+		data.put_pnmlRefMap(place.getId(), place);
 		if (node.getName() != null) {
 			data.put_tempmap(place.getName().getText(), place);
 		}

@@ -4,7 +4,6 @@ import org.apromore.portal.exception.ExceptionFormats;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
-import org.zkoss.zul.Window;
 
 import java.util.ArrayList;
 import java.util.Iterator;

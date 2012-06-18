@@ -6,7 +6,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 public class IdGeneratorHelper {
-	//private BigInteger nextId = BigInteger.ONE;
+
 	private BigInteger nextId;
 	
 	public IdGeneratorHelper() {
@@ -15,11 +15,9 @@ public class IdGeneratorHelper {
 		String time = dateFormat.format(date);
 		this.nextId = new BigInteger(time);
 	}
-	public BigInteger getNextId() {
-//		BigInteger toreturn = new BigInteger(nextId.toString());
+	public String getNextId() {
 		nextId = nextId.add(BigInteger.ONE);
-//		return toreturn;
-	return nextId;
+	    return nextId.toString();
 	}
 
 }

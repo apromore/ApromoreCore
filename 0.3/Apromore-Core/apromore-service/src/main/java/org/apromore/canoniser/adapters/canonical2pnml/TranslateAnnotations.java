@@ -1,11 +1,9 @@
 package org.apromore.canoniser.adapters.canonical2pnml;
 
-import java.math.BigInteger;
-
-import org.apromore.anf.SimulationType;
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
+import org.apromore.anf.SimulationType;
 import org.apromore.pnml.ArcType;
 import org.apromore.pnml.PlaceType;
 import org.apromore.pnml.TransitionType;
@@ -19,11 +17,9 @@ public class TranslateAnnotations {
 
 	public void mapNodeAnnotations(AnnotationsType annotations) {
 		for (AnnotationType annotation : annotations.getAnnotation()) {
-
 			if (data.get_nodeRefMap().containsKey(annotation.getCpfId())
 					|| data.get_edgeRefMap().containsKey(annotation.getCpfId())) {
-
-				BigInteger cid = annotation.getCpfId();
+                String cid = annotation.getCpfId();
 
 				if (annotation instanceof GraphicsType) {
 					TranslateNodeAnnotations tna = new TranslateNodeAnnotations();
@@ -32,8 +28,7 @@ public class TranslateAnnotations {
 
 				}
 				if (annotation instanceof SimulationType) {
-					Object obj = data.get_pnmlRefMap_value(data
-							.get_id_map_value(cid));
+					Object obj = data.get_pnmlRefMap_value(data.get_id_map_value(cid));
 					if (obj instanceof TransitionType) {
 						TranslateTransitionToolspecific ttt = new TranslateTransitionToolspecific();
 						ttt.setValue(data);

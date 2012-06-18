@@ -78,4 +78,26 @@
     <bean id="canoniserManager" class="org.apromore.canoniser.service.CanoniserManagerImpl" p:client-ref="canoniserDataAccessClient" />
     <bean id="toolboxManager" class="org.apromore.toolbox.service.ToolboxManagerImpl" p:client-ref="toolboxDataAccessClient" />
 
+
+
+    <bean id="CanoniserService" class="org.apromore.service.impl.CanoniserServiceImpl" />
+    <bean id="ContentService" class="org.apromore.service.impl.ContentServiceImpl" />
+    <bean id="DomainService" class="org.apromore.service.impl.DomainServiceImpl" />
+    <bean id="FormatService" class="org.apromore.service.impl.FormatServiceImpl" />
+    <bean id="FragmentService" class="org.apromore.service.impl.FragmentServiceImpl" />
+    <bean id="GraphService" class="org.apromore.service.impl.GraphServiceImpl" />
+    <bean id="LockService" class="org.apromore.service.impl.LockServiceImpl" />
+    <bean id="ProcessService" class="org.apromore.service.impl.ProcessServiceImpl" />
+    <bean id="RepositoryService" class="org.apromore.service.impl.RepositoryServiceImpl" />
+    <bean id="SimilarityService" class="org.apromore.service.impl.SimilarityServiceImpl" />
+    <bean id="MergeService" class="org.apromore.service.impl.MergeServiceImpl" />
+    <bean id="UserService" class="org.apromore.service.impl.UserServiceImpl" />
+
+    <bean id="Composer" class="org.apromore.service.impl.Composer" />
+    <bean id="Decomposer" class="org.apromore.service.impl.Decomposer" />
+    <bean id="UIHelper" class="org.apromore.service.helper.UIHelper" />
+    <bean id="BondContentHandler" class="org.apromore.service.helper.BondContentHandler" />
+    <bean id="ChangePropagator" class="org.apromore.service.helper.ChangePropagator" />
+    <bean id="PocketMapper" class="org.apromore.service.helper.PocketMapper" />
+
 </beans>

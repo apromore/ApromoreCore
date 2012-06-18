@@ -1,7 +1,5 @@
 package org.apromore.canoniser.adapters.canonical2pnml;
 
-import java.math.BigInteger;
-
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.SimulationType;
 import org.apromore.pnml.PlaceType;
@@ -13,18 +11,15 @@ public class TranslatePlaceToolspecific {
 		this.data = data;
 	}
 
-	public void translate(AnnotationType annotation, BigInteger cid) {
-
+	public void translate(AnnotationType annotation, String cid) {
 		if (annotation instanceof SimulationType) {
 			SimulationType simu = (SimulationType) annotation;
 			Object obj = data.get_pnmlRefMap_value(data.get_id_map_value(cid));
 			if (obj instanceof PlaceType) {
 				if (simu.getInitialMarking() != null) {
 
-					((PlaceType) obj)
-							.setInitialMarking(new PlaceType.InitialMarking());
-					((PlaceType) obj).getInitialMarking().setText(
-							simu.getInitialMarking());
+					((PlaceType) obj).setInitialMarking(new PlaceType.InitialMarking());
+					((PlaceType) obj).getInitialMarking().setText(simu.getInitialMarking());
 				}
 			}
 

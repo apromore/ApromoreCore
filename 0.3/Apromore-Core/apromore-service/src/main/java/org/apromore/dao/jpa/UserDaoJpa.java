@@ -1,14 +1,14 @@
 package org.apromore.dao.jpa;
 
+import org.apromore.dao.NamedQueries;
 import org.apromore.dao.UserDao;
 import org.apromore.dao.model.User;
-import org.springframework.orm.jpa.JpaCallback;
-import org.springframework.orm.jpa.JpaTemplate;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 import java.util.List;
 
@@ -18,9 +18,13 @@ import java.util.List;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  * @since 1.0
  */
-@Repository(value = "UserDao")
+@Repository
 @Transactional(propagation = Propagation.REQUIRED)
-public class UserDaoJpa extends JpaTemplate implements UserDao {
+public class UserDaoJpa implements UserDao {
+
+    @PersistenceContext
+    private EntityManager em;
+
 
     /**
      * @see org.apromore.dao.UserDao#findUser(String)
@@ -29,7 +33,7 @@ public class UserDaoJpa extends JpaTemplate implements UserDao {
     @Override
     @Transactional(readOnly = true)
     public User findUser(String username) {
-        return find(User.class, username);
+        return em.find(User.class, username);
     }
 
     /**
@@ -39,45 +43,47 @@ public class UserDaoJpa extends JpaTemplate implements UserDao {
     @Override
     @Transactional(readOnly = true)
     public List<User> findAllUsers() {
-        return execute(new JpaCallback<List<User>>() {
-
-            @SuppressWarnings("unchecked")
-            public List<User> doInJpa(EntityManager em) {
-                Query query = em.createNamedQuery(User.FIND_ALL_USERS);
-                return query.getResultList();
-            }
-        });
+        Query query = em.createNamedQuery(NamedQueries.GET_ALL_USERS);
+        return query.getResultList();
     }
 
 
     /**
-     * Save a User.
      * @see org.apromore.dao.UserDao#save(org.apromore.dao.model.User)
      * {@inheritDoc}
      */
     @Override
     public void save(final User user) {
-        persist(user);
+        em.persist(user);
     }
 
     /**
-     * Update a User.
      * @see org.apromore.dao.UserDao#update(org.apromore.dao.model.User)
      * {@inheritDoc}
      */
     @Override
-    public void update(final User user) {
-        merge(user);
+    public User update(final User user) {
+        return em.merge(user);
     }
 
     /**
-     * Remove the User.
      * @see org.apromore.dao.UserDao#delete(org.apromore.dao.model.User)
      * {@inheritDoc}
      */
     @Override
     public void delete(final User user) {
-        remove(user);
+        em.remove(user);
+    }
+
+
+
+
+    /**
+     * Sets the Entity Manager. No way around this to get Unit Testing working
+     * @param em the entitymanager
+     */
+    public void setEntityManager(EntityManager em) {
+        this.em = em;
     }
 
 }

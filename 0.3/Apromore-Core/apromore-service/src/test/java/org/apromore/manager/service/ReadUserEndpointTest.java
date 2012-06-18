@@ -4,7 +4,6 @@ import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
 import org.apromore.manager.da.ManagerDataAccessClient;
-import org.apromore.manager.toolbox.ManagerToolboxClient;
 import org.apromore.model.ObjectFactory;
 import org.apromore.model.ReadUserInputMsgType;
 import org.apromore.model.ReadUserOutputMsgType;
@@ -16,11 +15,8 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.w3c.dom.Document;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
 
 import static org.easymock.EasyMock.expect;
 import static org.powermock.api.easymock.PowerMock.createMock;
@@ -38,29 +34,19 @@ import static org.powermock.api.easymock.PowerMock.verify;
 public class ReadUserEndpointTest {
 
     private ManagerPortalEndpoint endpoint;
-    private Document requestDocument;
-    private Document responseDocument;
     private ManagerDataAccessClient daMock;
     private ManagerCanoniserClient caMock;
-    private ManagerToolboxClient tbMock;
 
     private UserService userSrv;
 
 
     @Before
     public void setUp() throws Exception {
-        DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
-        documentBuilderFactory.setNamespaceAware(true);
-        DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
-        requestDocument = documentBuilder.newDocument();
-        responseDocument = documentBuilder.newDocument();
         daMock = createMock(ManagerDataAccessClient.class);
         caMock = createMock(ManagerCanoniserClient.class);
-        tbMock = createMock(ManagerToolboxClient.class);
         userSrv = createMock(UserServiceImpl.class);
         endpoint = new ManagerPortalEndpoint();
         endpoint.setCaClient(caMock);
-        endpoint.setTbClient(tbMock);
         endpoint.setDaClient(daMock);
         endpoint.setUserSrv(userSrv);
     }

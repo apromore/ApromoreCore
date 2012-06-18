@@ -12,7 +12,6 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.NamedQueries;
 import javax.persistence.Table;
 import java.io.Serializable;
 
@@ -24,10 +23,6 @@ import java.io.Serializable;
 @Entity
 @Table(name = "subcluster")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@NamedQueries({
-        //@NamedQuery(name = TempVersion.FIND_USER, query = "SELECT usr FROM User usr WHERE usr.username = :username"),
-        //@NamedQuery(name = TempVersion.FIND_ALL_USERS, query = "SELECT usr FROM User usr")
-})
 @Configurable("subcluster")
 public class Subcluster implements Serializable {
 

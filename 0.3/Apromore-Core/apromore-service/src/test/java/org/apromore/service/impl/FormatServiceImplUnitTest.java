@@ -1,5 +1,6 @@
 package org.apromore.service.impl;
 
+import org.apromore.dao.NativeTypeDao;
 import org.apromore.dao.jpa.NativeTypeDaoJpa;
 import org.apromore.dao.model.NativeType;
 import org.junit.Before;
@@ -32,7 +33,7 @@ import static org.powermock.api.easymock.PowerMock.*;
 public class FormatServiceImplUnitTest {
 
     @Autowired
-    private NativeTypeDaoJpa natDAOJpa;
+    private NativeTypeDao natDAOJpa;
 
     private FormatServiceImpl formatServiceImpl;
 

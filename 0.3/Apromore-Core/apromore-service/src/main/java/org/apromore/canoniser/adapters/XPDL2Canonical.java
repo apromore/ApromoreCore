@@ -6,7 +6,6 @@ import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SizeType;
 import org.apromore.exception.CanoniserException;
-import org.apromore.exception.ExceptionAdapters;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -81,7 +80,7 @@ public class XPDL2Canonical {
 	List<BigInteger> unrequired_event_list = new LinkedList<BigInteger>();
 	List<NodeType> node_remove_list = new LinkedList<NodeType>();
 	Map<String, ResourceTypeType> pool_resource_map = new HashMap<String, ResourceTypeType>();
-	Map<String, BigInteger> object_map = new HashMap<String, BigInteger>();
+	Map<String, String> object_map = new HashMap<String, String>();
 	
 	long cpfId = System.currentTimeMillis();;
 	long anfId = 1;
@@ -133,15 +132,15 @@ public class XPDL2Canonical {
 				if(pool.isBoundaryVisible())
 				{
 					ResourceTypeType res = new ResourceTypeType();
-					res.setId(BigInteger.valueOf(cpfId++));
+					res.setId(String.valueOf(cpfId++));
 					res.setName(pool.getName());
 					pool_resource_map.put(pool.getProcess(), res);
 					if (pool.getLanes() != null) {
 						for (Lane lane : pool.getLanes().getLane()) {
 							ResourceTypeType r = new ResourceTypeType();
-							r.setId(BigInteger.valueOf(cpfId++));
+							r.setId(String.valueOf(cpfId++));
 							r.setName(lane.getName());
-							res.getSpecializationIds().add(BigInteger.valueOf(cpfId-1));
+							res.getSpecializationIds().add(String.valueOf(cpfId-1));
 							this.cpf.getResourceType().add(r);
 							lanes.add(lane);
 							lane2resourceType.put(lane, r);
@@ -162,7 +161,7 @@ public class XPDL2Canonical {
 							&& arti.getDataObject() != null) {
 						ObjectType ot = new ObjectType();
 						ot.setName(arti.getDataObject().getName());
-						ot.setId(BigInteger.valueOf(cpfId++));
+						ot.setId(String.valueOf(cpfId++));
 						object_map.put(arti.getId(), ot.getId());
 						this.cpf.getObject().add(ot);
 					}
@@ -175,7 +174,7 @@ public class XPDL2Canonical {
 			size = pkg.getWorkflowProcesses().getWorkflowProcess().size();
 			for (ProcessType bpmnproc : pkg.getWorkflowProcesses().getWorkflowProcess()) {
 				NetType net = new NetType();
-				net.setId(BigInteger.valueOf(cpfId++));
+				net.setId(String.valueOf(cpfId++));
 				ResourceTypeType res;
 				res = pool_resource_map.get(bpmnproc.getId());
 				ResourceTypeRefType ref = new ResourceTypeRefType();
@@ -242,7 +241,7 @@ public class XPDL2Canonical {
 
 	private void process_unrequired_events(NetType net) throws CanoniserException {
 		List<EdgeType> edge_remove_list = new LinkedList<EdgeType>();
-		BigInteger source_id;
+        String source_id;
 		try {
 			for(BigInteger id: unrequired_event_list)
 			{
@@ -282,7 +281,7 @@ public class XPDL2Canonical {
 			AnnotationsType annotations) {
 		for (Activity act: activities) {
 			GraphicsType cGraphInfo = new GraphicsType();
-			cGraphInfo.setId(BigInteger.valueOf(anfId++));
+			cGraphInfo.setId(String.valueOf(anfId++));
 			cGraphInfo.setCpfId(xpdl2canon.get(act).getId());
 			for (Object obj: act.getContent()) {
 				if (obj instanceof NodeGraphicsInfos) {
@@ -319,7 +318,7 @@ public class XPDL2Canonical {
 
 		for (Transition trans: transitions) {
 				GraphicsType cGraphInfo = new GraphicsType();
-				cGraphInfo.setId(BigInteger.valueOf(anfId++));
+				cGraphInfo.setId(String.valueOf(anfId++));
 				if(edgeMap.get(trans) != null) {
 					cGraphInfo.setCpfId(edgeMap.get(trans).getId());
 					ConnectorGraphicsInfos infos = trans.getConnectorGraphicsInfos();
@@ -342,7 +341,7 @@ public class XPDL2Canonical {
 		
 		for(Pool pool: pools){
 			GraphicsType cGraphInfo = new GraphicsType();
-			cGraphInfo.setId(BigInteger.valueOf(anfId++));
+			cGraphInfo.setId(String.valueOf(anfId++));
 			cGraphInfo.setCpfId(pool2resourceType.get(pool).getId());
 			NodeGraphicsInfos infos = pool.getNodeGraphicsInfos();
 
@@ -363,10 +362,14 @@ public class XPDL2Canonical {
 				}
 
 				SizeType size = new SizeType();
-				if(xGraphInfo != null){
-					size.setHeight(BigDecimal.valueOf(xGraphInfo.getHeight()));
-					size.setWidth(BigDecimal.valueOf(xGraphInfo.getWidth()));
-				}
+                if (xGraphInfo != null) {
+                    if (xGraphInfo.getHeight() != null) {
+                        size.setHeight(BigDecimal.valueOf(xGraphInfo.getHeight()));
+                    }
+                    if (xGraphInfo.getWidth() != null) {
+                        size.setWidth(BigDecimal.valueOf(xGraphInfo.getWidth()));
+                    }
+                }
 
 				cGraphInfo.setSize(size);
 			}
@@ -376,7 +379,7 @@ public class XPDL2Canonical {
 		
 		for(Lane lane: lanes){
 			GraphicsType cGraphInfo = new GraphicsType();
-			cGraphInfo.setId(BigInteger.valueOf(anfId++));
+			cGraphInfo.setId(String.valueOf(anfId++));
 			cGraphInfo.setCpfId(lane2resourceType.get(lane).getId());
 			NodeGraphicsInfos infos = lane.getNodeGraphicsInfos();
 
@@ -397,9 +400,13 @@ public class XPDL2Canonical {
 				}
 
 				SizeType size = new SizeType();
-				if(xGraphInfo != null){
-					size.setHeight(BigDecimal.valueOf(xGraphInfo.getHeight()));
-					size.setWidth(BigDecimal.valueOf(xGraphInfo.getWidth()));
+				if (xGraphInfo != null) {
+                    if (xGraphInfo.getHeight() != null) {
+					    size.setHeight(BigDecimal.valueOf(xGraphInfo.getHeight()));
+                    }
+                    if (xGraphInfo.getWidth() != null) {
+					    size.setWidth(BigDecimal.valueOf(xGraphInfo.getWidth()));
+                    }
 				}
 
 				cGraphInfo.setSize(size);
@@ -411,19 +418,17 @@ public class XPDL2Canonical {
 
 	private void addRefs(WorkType node, Double xCoordinate, Double yCoordinate) {
 		double x, w, y, h;
-		for(Lane lane: lanes){
-			if(lane.getNodeGraphicsInfos() != null
+		for (Lane lane: lanes) {
+			if (lane.getNodeGraphicsInfos() != null
 					&& lane.getNodeGraphicsInfos().getNodeGraphicsInfo().size() > 0
-					&& lane.getNodeGraphicsInfos().getNodeGraphicsInfo().get(0) != null){
+					&& lane.getNodeGraphicsInfos().getNodeGraphicsInfo().get(0) != null) {
 				NodeGraphicsInfo gi = lane.getNodeGraphicsInfos().getNodeGraphicsInfo().get(0);
-				if(gi.getCoordinates() != null){
+				if (gi.getCoordinates() != null) {
 					x = gi.getCoordinates().getXCoordinate();
 					y = gi.getCoordinates().getYCoordinate();
 					w = gi.getWidth();
 					h = gi.getHeight();
-					if(xCoordinate >= x && xCoordinate <= x+w
-							&& yCoordinate >= y && yCoordinate <= y+h)
-					{
+					if(xCoordinate >= x && xCoordinate <= x+w && yCoordinate >= y && yCoordinate <= y+h) {
 						ResourceTypeRefType ref = new ResourceTypeRefType();
 						ref.setResourceTypeId(lane2resourceType.get(lane).getId());
 						ref.setOptional(false);
@@ -437,17 +442,20 @@ public class XPDL2Canonical {
 
 	private void translateProcess(NetType net, ProcessType bpmnproc, ResourceTypeRefType ref) throws CanoniserException {
 		for (Object obj: bpmnproc.getContent()) {
-			if (obj instanceof Activities)
+			if (obj instanceof Activities) {
 				activities = ((Activities)obj).getActivity();
-			else if (obj instanceof Transitions)
+            } else if (obj instanceof Transitions) {
 				transitions = ((Transitions)obj).getTransition();
+            }
 		}
 
-		for (Activity act: activities)
+		for (Activity act: activities) {
 			translateActivity(net, act, ref);
+        }
 
-		for (Transition flow: transitions)
+		for (Transition flow: transitions) {
 			translateSequenceFlow(net, flow);
+        }
 
 		linkImplicitOrSplits(net);		
 	}
@@ -457,9 +465,9 @@ public class XPDL2Canonical {
 			NodeType andSplit = implicitANDSplit.get(act);
 			NodeType orSplit = implicitORSplit.get(act);
 
-			if (outgoings.get(andSplit) != null && outgoings.get(andSplit).size() > 0)
+			if (outgoings.get(andSplit) != null && outgoings.get(andSplit).size() > 0) {
 				addEdge(net, andSplit, orSplit);
-			else if (outgoings.get(act) != null && orSplit != null){
+            } else if (outgoings.get(act) != null && orSplit != null){
 				EdgeType edge = outgoings.get(act).get(0);
 				edge.setTargetId(orSplit.getId());
 				net.getNode().remove(andSplit);
@@ -475,17 +483,14 @@ public class XPDL2Canonical {
 		NodeType csrc = xpdl2canon.get(xsrc);
 		NodeType ctgt = xpdl2canon.get(xtgt);
 
-		if( csrc != null && ctgt != null)
-		{
-			
-		
-		Condition cond = flow.getCondition();
-		//Expression condE = cond.getContent();
-		if (csrc instanceof TaskType && cond != null && !cond.getContent().isEmpty()) {
+		if (csrc != null && ctgt != null) {
+            Condition cond = flow.getCondition();
+            //Expression condE = cond.getContent();
+            if (csrc instanceof TaskType && cond != null && !cond.getContent().isEmpty()) {
 				NodeType split = implicitORSplit.get(csrc);
 				if (split == null) {
 					split = new ORSplitType();
-					split.setId(BigInteger.valueOf(cpfId++));
+					split.setId(String.valueOf(cpfId++));
 					implicitORSplit.put(csrc, split);
 					net.getNode().add(split);
 				}
@@ -511,8 +516,9 @@ public class XPDL2Canonical {
 			}
 	
 			EdgeType edge = addEdge(net, csrc, ctgt);
-			if(cond != null && cond.getExpression() != null)
+			if (cond != null && cond.getExpression() != null) {
 				edge.setCondition(cond.getExpression());
+            }
 	
 			edgeMap.put(flow, edge);
 		
@@ -521,7 +527,7 @@ public class XPDL2Canonical {
 
 	private EdgeType addEdge(NetType net, NodeType src, NodeType tgt) {
 		EdgeType edge = new EdgeType();
-		edge.setId(BigInteger.valueOf(cpfId++));
+		edge.setId(String.valueOf(cpfId++));
 		edge.setSourceId(src.getId());
 		edge.setTargetId(tgt.getId());
 		List<EdgeType> trans = outgoings.get(src);
@@ -562,7 +568,7 @@ public class XPDL2Canonical {
 				((TaskType)node).getResourceTypeRef().add(ref);
 		}
 
-		node.setId(BigInteger.valueOf(cpfId++));
+		node.setId(String.valueOf(cpfId++));
 		net.getNode().add(node);
 		xpdl2canon.put(act, node);
 		xpdlRefMap.put(act.getId(), act);		
@@ -585,13 +591,13 @@ public class XPDL2Canonical {
 
 		if (isSplit) {
 			NodeType split = new ANDSplitType();
-			split.setId(BigInteger.valueOf(cpfId++));
+			split.setId(String.valueOf(cpfId++));
 			net.getNode().add(split);
 		}
 
 		if (isJoin){
 			NodeType join = new XORJoinType();
-			join.setId(BigInteger.valueOf(cpfId++));
+			join.setId(String.valueOf(cpfId++));
 			net.getNode().add(join);			
 		}
 		node.setName(act.getName());

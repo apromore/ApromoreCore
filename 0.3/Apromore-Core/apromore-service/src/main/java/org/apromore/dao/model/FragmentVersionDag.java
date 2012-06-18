@@ -30,8 +30,8 @@ public class FragmentVersionDag implements Serializable {
     private static final long serialVersionUID = -9072539074338485548L;
 
     private FragmentVersionDagId id;
-    private FragmentVersion fragmentVersion;
-
+    private FragmentVersion fragmentVersionByFragVerId;
+    private FragmentVersion fragmentVersionByChildFragVerId;
 
     public FragmentVersionDag() { }
 
@@ -51,12 +51,21 @@ public class FragmentVersionDag implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "fragment_version_id", nullable = false, insertable = false, updatable = false)
-    public FragmentVersion getFragmentVersion() {
-        return this.fragmentVersion;
+    public FragmentVersion getFragmentVersionByFragVerId() {
+        return this.fragmentVersionByFragVerId;
     }
 
-    public void setFragmentVersion(final FragmentVersion newFragmentVersion) {
-        this.fragmentVersion = newFragmentVersion;
+    public void setFragmentVersionByFragVerId(final FragmentVersion newFragmentVersion) {
+        this.fragmentVersionByFragVerId = newFragmentVersion;
     }
 
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="child_fragment_version_id", nullable=false, insertable=false, updatable=false)
+    public FragmentVersion getFragmentVersionByChildFragVerId() {
+        return this.fragmentVersionByChildFragVerId;
+    }
+
+    public void setFragmentVersionByChildFragVerId(FragmentVersion newChildFragmentVersion) {
+        this.fragmentVersionByChildFragVerId = newChildFragmentVersion;
+    }
 }

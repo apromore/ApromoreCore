@@ -2,16 +2,10 @@ package org.apromore.dao.model;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.GenericGenerator;
 import org.springframework.beans.factory.annotation.Configurable;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
@@ -40,17 +34,17 @@ public class FragmentVersion implements Serializable {
     private String clusterId;
     private String newestNeighbor;
 
-    private Fragment fragment;
     private Content content;
     private Set<ProcessFragmentMap> processFragmentMaps = new HashSet<ProcessFragmentMap>(0);
-    private Set<FragmentVersionDag> fragmentVersionDags = new HashSet<FragmentVersionDag>(0);
-    private Set<FragmentVersionDag> fragmentVersionDags_1 = new HashSet<FragmentVersionDag>(0);
-
+    private Set<FragmentVersionDag> fragmentVersionDagsForFragVerId = new HashSet<FragmentVersionDag>(0);
+    private Set<FragmentVersionDag> fragmentVersionDagsForChildFragVerId = new HashSet<FragmentVersionDag>(0);
 
     public FragmentVersion() { }
 
 
     @Id
+    @GeneratedValue(generator = "system-uuid")
+    @GenericGenerator(name = "system-uuid", strategy = "uuid")
     @Column(name = "fragment_version_id", unique = true, nullable = false, length = 40)
     public String getFragmentVersionId() {
         return this.fragmentVersionId;
@@ -60,15 +54,6 @@ public class FragmentVersion implements Serializable {
         this.fragmentVersionId = fragmentVersionId;
     }
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fragment_id")
-    public Fragment getFragment() {
-        return this.fragment;
-    }
-
-    public void setFragment(final Fragment newFragment) {
-        this.fragment = newFragment;
-    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "content_id")
@@ -169,22 +154,22 @@ public class FragmentVersion implements Serializable {
         this.processFragmentMaps = newProcessFragmentMaps;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fragmentVersion")
-    public Set<FragmentVersionDag> getFragmentVersionDags() {
-        return this.fragmentVersionDags;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fragmentVersionByFragVerId")
+    public Set<FragmentVersionDag> getFragmentVersionDagsForFragVerId() {
+        return this.fragmentVersionDagsForFragVerId;
     }
 
-    public void setFragmentVersionDags(final Set<FragmentVersionDag> newFragmentVersionDags) {
-        this.fragmentVersionDags = newFragmentVersionDags;
+    public void setFragmentVersionDagsForFragVerId(final Set<FragmentVersionDag> newFragmentVersionDags) {
+        this.fragmentVersionDagsForFragVerId = newFragmentVersionDags;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fragmentVersion")
-    public Set<FragmentVersionDag> getFragmentVersionDags_1() {
-        return this.fragmentVersionDags_1;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "fragmentVersionByChildFragVerId")
+    public Set<FragmentVersionDag> getFragmentVersionDagsForChildFragVerId() {
+        return this.fragmentVersionDagsForChildFragVerId;
     }
 
-    public void setFragmentVersionDags_1(final Set<FragmentVersionDag> newFragmentVersionDags_1) {
-        this.fragmentVersionDags_1 = newFragmentVersionDags_1;
+    public void setFragmentVersionDagsForChildFragVerId(final Set<FragmentVersionDag> newFragmentVersionDags) {
+        this.fragmentVersionDagsForChildFragVerId = newFragmentVersionDags;
     }
 
 }

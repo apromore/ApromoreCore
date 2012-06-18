@@ -1,7 +1,5 @@
 package org.apromore.canoniser.adapters.pnml2canonical;
 
-import java.math.BigInteger;
-
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.EdgeType;
@@ -26,18 +24,18 @@ public class TranslateSplitJoins {
 	public void translateAndSplitJoins(TransitionType tra) {
 		TaskType task = new TaskType();
 		data.put_objectmap(String.valueOf(ids), task);
-		andjoin.setId(BigInteger.valueOf(ids++));
+		andjoin.setId(String.valueOf(ids++));
 		andjoin.setName(tra.getName().getText());
-		andsplit.setId(BigInteger.valueOf(ids++));
+		andsplit.setId(String.valueOf(ids++));
 		andsplit.setName(tra.getName().getText());
-		task.setId(BigInteger.valueOf(ids++));
+		task.setId(String.valueOf(ids++));
 		task.setName(tra.getName().getText());
 		EdgeType join = new EdgeType();
-		join.setId(BigInteger.valueOf(ids++));
+		join.setId(String.valueOf(ids++));
 		join.setSourceId(andjoin.getId());
 		join.setTargetId(task.getId());
 		EdgeType split = new EdgeType();
-		split.setId(BigInteger.valueOf(ids++));
+		split.setId(String.valueOf(ids++));
 		split.setSourceId(task.getId());
 		split.setTargetId(andsplit.getId());
 		andjoin.setOriginalID(tra.getId());
@@ -54,18 +52,18 @@ public class TranslateSplitJoins {
 	public void translateXorSplitJoins(TransitionType tra) {
 		TaskType task = new TaskType();
 		data.put_objectmap(String.valueOf(ids), task);
-		xorjoin.setId(BigInteger.valueOf(ids++));
+		xorjoin.setId(String.valueOf(ids++));
 		xorjoin.setName(tra.getName().getText());
-		xorsplit.setId(BigInteger.valueOf(ids++));
+		xorsplit.setId(String.valueOf(ids++));
 		xorsplit.setName(tra.getName().getText());
-		task.setId(BigInteger.valueOf(ids++));
+		task.setId(String.valueOf(ids++));
 		task.setName(tra.getName().getText());
 		EdgeType join = new EdgeType();
-		join.setId(BigInteger.valueOf(ids++));
+		join.setId(String.valueOf(ids++));
 		join.setSourceId(xorjoin.getId());
 		join.setTargetId(task.getId());
 		EdgeType split = new EdgeType();
-		split.setId(BigInteger.valueOf(ids++));
+		split.setId(String.valueOf(ids++));
 		split.setSourceId(task.getId());
 		split.setTargetId(xorsplit.getId());
 
@@ -83,18 +81,18 @@ public class TranslateSplitJoins {
 	public void translateAndJoinXorSplit(TransitionType tra) {
 		TaskType task = new TaskType();
 		data.put_objectmap(String.valueOf(ids), task);
-		andjoin.setId(BigInteger.valueOf(ids++));
+		andjoin.setId(String.valueOf(ids++));
 		andjoin.setName(tra.getName().getText());
-		xorsplit.setId(BigInteger.valueOf(ids++));
+		xorsplit.setId(String.valueOf(ids++));
 		xorsplit.setName(tra.getName().getText());
-		task.setId(BigInteger.valueOf(ids++));
+		task.setId(String.valueOf(ids++));
 		task.setName(tra.getName().getText());
 		EdgeType join = new EdgeType();
-		join.setId(BigInteger.valueOf(ids++));
+		join.setId(String.valueOf(ids++));
 		join.setSourceId(andjoin.getId());
 		join.setTargetId(task.getId());
 		EdgeType split = new EdgeType();
-		split.setId(BigInteger.valueOf(ids++));
+		split.setId(String.valueOf(ids++));
 		split.setSourceId(task.getId());
 		split.setTargetId(xorsplit.getId());
 
@@ -112,18 +110,18 @@ public class TranslateSplitJoins {
 	public void translateXorJoinAndSplit(TransitionType tra) {
 		TaskType task = new TaskType();
 		data.put_objectmap(String.valueOf(ids), task);
-		xorjoin.setId(BigInteger.valueOf(ids++));
+		xorjoin.setId(String.valueOf(ids++));
 		xorjoin.setName(tra.getName().getText());
-		andsplit.setId(BigInteger.valueOf(ids++));
+		andsplit.setId(String.valueOf(ids++));
 		andsplit.setName(tra.getName().getText());
-		task.setId(BigInteger.valueOf(ids++));
+		task.setId(String.valueOf(ids++));
 		task.setName(tra.getName().getText());
 		EdgeType join = new EdgeType();
-		join.setId(BigInteger.valueOf(ids++));
+		join.setId(String.valueOf(ids++));
 		join.setSourceId(xorjoin.getId());
 		join.setTargetId(task.getId());
 		EdgeType split = new EdgeType();
-		split.setId(BigInteger.valueOf(ids++));
+		split.setId(String.valueOf(ids++));
 		split.setSourceId(task.getId());
 		split.setTargetId(andsplit.getId());
 

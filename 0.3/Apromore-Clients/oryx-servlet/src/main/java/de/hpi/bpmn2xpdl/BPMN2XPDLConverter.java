@@ -84,7 +84,6 @@ public class BPMN2XPDLConverter {
 		//Remove schemas
 		String schemaFiltered = nameSpaceFiltered.replaceAll(" xsi=\"[^\"]*\"", "");
 		//Remove starting xml tag
-		String xmlTagFiltered = schemaFiltered.replaceAll("<\\?xml[^\\?]*\\?>\n?", "");
-		return xmlTagFiltered;
+        return schemaFiltered.replaceAll("<\\?xml[^\\?]*\\?>\n?", "");
 	}
 }

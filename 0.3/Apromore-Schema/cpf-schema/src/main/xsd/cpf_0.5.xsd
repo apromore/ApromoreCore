@@ -89,7 +89,7 @@
    	<attribute name="author" type="string"/>
    	<attribute name="creationDate" type="string"/>
    	<attribute name="modificationDate" type="string"/>
-    <attribute name="rootId" type="positiveInteger" use="required"/>
+    <attribute name="rootId" type="string" use="required"/>
   </complexType>    
 
   <complexType name="NetType">
@@ -98,7 +98,7 @@
    	  <element name="Edge" minOccurs="0" maxOccurs="unbounded" type="cpf:EdgeType"/>
    	  <element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded"/>
    	</sequence>
-    <attribute name="id" type="positiveInteger" use="required"/>
+    <attribute name="id" type="string" use="required"/>
 	<attribute name="originalID" type="string" use="optional"/>
   </complexType>              
        
@@ -106,11 +106,11 @@
    	<sequence>
   	  <element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded"/>
     </sequence>
-    <attribute name="id" type="positiveInteger" use="required"/>
+    <attribute name="id" type="string" use="required"/>
     <attribute name="condition" type="string" use="optional"/>
     <attribute name="default" type="boolean" use="optional" default="true"/>
-    <attribute name="sourceId" type="positiveInteger" use="required"/>
-    <attribute name="targetId" type="positiveInteger" use="required"/>
+    <attribute name="sourceId" type="string" use="required"/>
+    <attribute name="targetId" type="string" use="required"/>
 	<attribute name="originalID" type="string" use="optional"/>
   </complexType>
   
@@ -120,7 +120,7 @@
    	  <element name="configurable" type="boolean" default="false" minOccurs="0"/>
    	  <element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded"/>
    	</sequence>
-    <attribute name="id" type="positiveInteger" use="required"/>
+    <attribute name="id" type="string" use="required"/>
 	<attribute name="originalID" type="string" use="optional"/>
   </complexType>
   
@@ -139,7 +139,8 @@
    	<sequence>
   	  <element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded"/>
     </sequence>
-	<attribute name="resourceTypeId" type="positiveInteger"/>
+    <attribute name="id" type="string"/>
+	<attribute name="resourceTypeId" type="string"/>
 	<attribute name="optional" type="boolean" default="false" use="optional"/>
 	<attribute name="qualifier" type="string" use="optional"/>
   </complexType>
@@ -148,7 +149,8 @@
    	<sequence>
   	  <element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded"/>
     </sequence>
-	<attribute name="objectId" type="positiveInteger"/>
+    <attribute name="id" type="string"/>
+	<attribute name="objectId" type="string"/>
 	<attribute name="type" type="cpf:InputOutputType"/>
 	<attribute name="optional" type="boolean" default="false" use="optional"/>
 	<attribute name="consumed" type="boolean" default="false" use="optional"/>
@@ -158,7 +160,7 @@
   <complexType name="TaskType">
   	<complexContent>
 	  <extension base="cpf:WorkType">
-        <attribute name="subnetId" type="positiveInteger"/>
+        <attribute name="subnetId" type="string"/>
       </extension>
     </complexContent>
   </complexType>
@@ -241,13 +243,13 @@
     </complexContent>
   </complexType>
   
-    <complexType name="ResourceTypeType">
+  <complexType name="ResourceTypeType">
   	<sequence>
    	  <element name="name" type="string"/>
    	  <element name="configurable" type="boolean" default="false" minOccurs="0"/>
    	  <element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded"/>
    	</sequence>
-    <attribute name="id" type="positiveInteger" use="required"/>
+    <attribute name="id" type="string" use="required"/>
     <attribute name="specializationIds" type="cpf:IdListType"/>
 	<attribute name="originalID" type="string" use="optional"/>
   </complexType>
@@ -270,7 +272,7 @@
    	  <element name="configurable" type="boolean" default="false" minOccurs="0"/>
    	  <element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded"/>
    	</sequence>
-    <attribute name="id" type="positiveInteger" use="required"/>
+    <attribute name="id" type="string" use="required"/>
   </complexType>
   
   <complexType name="HardType">
@@ -297,7 +299,7 @@
   </simpleType>
   
   <simpleType name="IdListType">
-  	<list itemType="positiveInteger"/>
+  	<list itemType="string"/>
   </simpleType>
    
 </schema>

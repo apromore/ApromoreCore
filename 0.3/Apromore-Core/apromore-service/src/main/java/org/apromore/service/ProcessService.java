@@ -1,19 +1,23 @@
 package org.apromore.service;
 
-import java.io.IOException;
-import java.io.InputStream;
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.xml.bind.JAXBException;
-
 import org.apromore.dao.model.NativeType;
+import org.apromore.dao.model.ProcessBranch;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
+import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.service.model.CanonisedProcess;
-import org.apromore.service.model.Format;
+import org.apromore.service.model.ProcessData;
+
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.xml.bind.JAXBException;
+import java.io.InputStream;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Interface for the Process Service. Defines all the methods that will do the majority of the work for
@@ -33,25 +37,18 @@ public interface ProcessService {
 
     /**
      * Export a BMP Model but in a particular format.
-     * @param processId the process model id
+     * @param name the process model name
+     * @param processId the processId
      * @param version the version of the process model
      * @param nativeType the format of the model
-     * @return the XML but as a datasource object
+     * @param annName the annotation format
+     * @param withAnn do we export annotations as well.
+     * @return the XML but as a dataSource object
      * @throws ExportFormatException if for some reason the process model can not be found.
      */
-    DataSource exportFormat(final long processId, final String version, final String nativeType) throws ExportFormatException;
+    DataSource exportFormat(final String name, final Integer processId, final String version, final String nativeType,
+            final String annName, boolean withAnn) throws ExportFormatException;
 
-    /**
-     * Reads the Canonical (ANF).
-     * @param processId the processId of the Canonical format.
-     * @param version the version of the canonical format
-     * @param withAnn Do we return the Canonical with annotations or not.
-     * @param annName if we do return Annotations, what annotation to return
-     * @return the format VO containing the canonical and annotation if requested
-     * @throws ExportFormatException if for some reason the process model can not be found.
-     */
-    Format getCanonicalAnf(final long processId, final String version, final boolean withAnn, final String annName)
-            throws ExportFormatException;
 
     /**
      * Import a Process.
@@ -67,25 +64,27 @@ public interface ProcessService {
      * @param lastUpdate the time last updated
      * @return the processSummaryType
      * @throws ImportException if the import process failed for any reason.
+     *
+     * Deprecated - Use the insertProcess Instead.
      */
     ProcessSummaryType importProcess(String username, String processName, String cpfURI, String versionName, String nativeType,
             DataHandler cpf, String domain, String documentation, String created, String lastUpdate) throws ImportException;
 
 
     /**
-     * Store the Native and CPF and there annotations in the DB.
-     * @param processName the name of the process being imported.
-     * @param versionName the version of the Process
-     * @param cpfURI the cpf URI
-     * @param cpf the inputStream of the Process to import (the actual process model)
-     * @param domain the domain of the model
-     * @param created the time created
-     * @param lastUpdate the time last updated
-     * @param cp the Canonical Process as InputStream and the annotations
-     * @param user the user doing the updates
-     * @param nativeType the native Type
-     * @throws JAXBException if it fails....
+     * Add a new ProcessModelVersion record into the DB.
+     * @param branch
+     * @param rootFragmentVersionId
+     * @param versionNumber
+     * @param versionName
+     * @param numVertices
+     * @param numEdges
+     * @return
+     * @throws ExceptionDao
      */
-    ProcessSummaryType storeNativeAndCpf(String processName, String versionName, String cpfURI, InputStream cpf, String domain,
-            String created, String lastUpdate, CanonisedProcess cp, User user, NativeType nativeType) throws JAXBException;
+    ProcessModelVersion addProcessModelVersion(ProcessBranch branch, String rootFragmentVersionId, int versionNumber, String versionName,
+            int numVertices, int numEdges) throws ExceptionDao;
+
+
+
 }

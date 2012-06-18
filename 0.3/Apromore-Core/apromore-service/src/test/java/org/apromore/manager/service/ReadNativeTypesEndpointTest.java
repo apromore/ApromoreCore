@@ -3,15 +3,10 @@ package org.apromore.manager.service;
 import org.apromore.dao.model.NativeType;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
 import org.apromore.manager.da.ManagerDataAccessClient;
-import org.apromore.manager.toolbox.ManagerToolboxClient;
 import org.apromore.model.ObjectFactory;
-import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ReadNativeTypesInputMsgType;
 import org.apromore.model.ReadNativeTypesOutputMsgType;
-import org.apromore.model.ReadProcessSummariesInputMsgType;
-import org.apromore.model.ReadProcessSummariesOutputMsgType;
 import org.apromore.service.FormatService;
-import org.apromore.service.ProcessService;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -23,7 +18,6 @@ import org.w3c.dom.Document;
 import javax.xml.bind.JAXBElement;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,7 +41,6 @@ public class ReadNativeTypesEndpointTest {
     private Document responseDocument;
     private ManagerDataAccessClient daMock;
     private ManagerCanoniserClient caMock;
-    private ManagerToolboxClient tbMock;
 
     private FormatService formatSrv;
 
@@ -61,11 +54,9 @@ public class ReadNativeTypesEndpointTest {
         responseDocument = documentBuilder.newDocument();
         daMock = createMock(ManagerDataAccessClient.class);
         caMock = createMock(ManagerCanoniserClient.class);
-        tbMock = createMock(ManagerToolboxClient.class);
         formatSrv = createMock(FormatService.class);
         endpoint = new ManagerPortalEndpoint();
         endpoint.setCaClient(caMock);
-        endpoint.setTbClient(tbMock);
         endpoint.setDaClient(daMock);
         endpoint.setFrmSrv(formatSrv);
     }

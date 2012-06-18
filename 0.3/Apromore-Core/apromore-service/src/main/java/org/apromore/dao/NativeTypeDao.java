@@ -26,24 +26,4 @@ public interface NativeTypeDao {
      */
     NativeType findNativeType(String nativeType);
 
-
-
-    /**
-     * Save the nativeType.
-     * @param nativeType the nativeType to persist
-     */
-    void save(NativeType nativeType);
-
-    /**
-     * Update the nativeType.
-     * @param nativeType the nativeType to update
-     */
-    void update(NativeType nativeType);
-
-    /**
-     * Remove the nativeType.
-     * @param nativeType the nativeType to remove
-     */
-    void delete(NativeType nativeType);
-
 }

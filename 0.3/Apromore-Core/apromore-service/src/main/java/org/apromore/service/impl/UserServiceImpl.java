@@ -1,12 +1,11 @@
 package org.apromore.service.impl;
 
 import org.apromore.dao.UserDao;
-import org.apromore.dao.jpa.UserDaoJpa;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
-import org.apromore.model.UserType;
 import org.apromore.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,11 +17,11 @@ import java.util.List;
  *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-@Service
+@Service("UserService")
 @Transactional(propagation = Propagation.REQUIRED)
 public class UserServiceImpl implements UserService {
 
-    @Autowired
+    @Autowired @Qualifier("UserDao")
     private UserDao usrDao;
 
 
@@ -70,7 +69,7 @@ public class UserServiceImpl implements UserService {
      * Set the User DAO object for this class. Mainly for spring tests.
      * @param usrDAOJpa the user Dao.
      */
-    public void setUserDao(UserDaoJpa usrDAOJpa) {
+    public void setUserDao(UserDao usrDAOJpa) {
         usrDao = usrDAOJpa;
     }
 }

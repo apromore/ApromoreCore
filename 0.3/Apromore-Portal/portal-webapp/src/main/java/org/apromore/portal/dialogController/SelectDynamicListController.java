@@ -63,8 +63,7 @@ public class SelectDynamicListController extends Combobox {
 	}
 
 	public String getValue() {
-		String value = super.getValue();
-		return value;
+        return super.getValue();
 
 	}
 

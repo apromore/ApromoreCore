@@ -1,13 +1,12 @@
 package org.apromore.toolbox.similaritySearch.common.algos;
 
 
-import java.math.BigInteger;
+import org.apromore.toolbox.similaritySearch.graph.Graph;
+import org.apromore.toolbox.similaritySearch.graph.Vertex;
+
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Set;
-
-import org.apromore.toolbox.similaritySearch.graph.Graph;
-import org.apromore.toolbox.similaritySearch.graph.Vertex;
 
 public abstract class DistanceAlgoAbstr implements DistanceAlgo {
 
@@ -161,7 +160,7 @@ public abstract class DistanceAlgoAbstr implements DistanceAlgo {
 		Vertex right = sg2.getVertexMap().get(addedPair.v2);
 		if (bestMapping.size() > 0) { // best mapping contains some vertices already
 			for (Vertex p : left.getParents()) {
-				BigInteger mappingRight = bestMapping.mappingRight.get(p.getID());
+                String mappingRight = bestMapping.mappingRight.get(p.getID());
 				// the parent is also mapped and is parent of mapped node
 				if (mappingRight != null 
 						&& right.getParents().contains(sg2.getVertexMap().get(mappingRight))) {
@@ -169,7 +168,7 @@ public abstract class DistanceAlgoAbstr implements DistanceAlgo {
 				}
 			}
 			for (Vertex ch : left.getChildren()) {
-				BigInteger mappingRight = bestMapping.mappingRight.get(ch.getID());
+                String mappingRight = bestMapping.mappingRight.get(ch.getID());
 				// the parent is also mapped and is parent of mapped node
 				if (mappingRight != null 
 						&& right.getChildren().contains(sg2.getVertexMap().get(mappingRight))) {
@@ -182,7 +181,7 @@ public abstract class DistanceAlgoAbstr implements DistanceAlgo {
 
 	public class BestMapping {
 		public Set<TwoVertices> mapping = new HashSet<TwoVertices>();
-		HashMap<BigInteger, BigInteger> mappingRight = new HashMap<BigInteger, BigInteger>();
+		HashMap<String, String> mappingRight = new HashMap<String, String>();
 		double substitutedVerticesCost = 0;
 		int nrMappedEdges = 0;
 		

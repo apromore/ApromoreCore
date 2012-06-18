@@ -2,7 +2,6 @@ package org.apromore.service;
 
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
-import org.apromore.model.UserType;
 
 import java.util.List;
 

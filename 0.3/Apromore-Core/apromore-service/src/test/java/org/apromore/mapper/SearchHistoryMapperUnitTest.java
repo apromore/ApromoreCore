@@ -1,15 +1,11 @@
 package org.apromore.mapper;
 
 import org.apromore.dao.model.SearchHistory;
-import org.apromore.dao.model.User;
 import org.apromore.model.SearchHistoriesType;
-import org.apromore.model.UserType;
-import org.apromore.model.UsernamesType;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 

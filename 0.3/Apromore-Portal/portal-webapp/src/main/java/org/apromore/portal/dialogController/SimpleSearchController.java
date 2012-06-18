@@ -1,9 +1,7 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.exception.ExceptionDao;
 import org.apromore.model.ProcessSummariesType;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Button;

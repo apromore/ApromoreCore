@@ -73,15 +73,15 @@ import java.util.List;
 import java.util.Map;
 
 public class Canonical2EPML {
-    Map<BigInteger, BigInteger> id_map = new HashMap<BigInteger, BigInteger>();
-    List<BigInteger> event_list = new LinkedList<BigInteger>();
-    Map<BigInteger, NodeType> nodeRefMap = new HashMap<BigInteger, NodeType>();
-    Map<BigInteger, EdgeType> edgeRefMap = new HashMap<BigInteger, EdgeType>();
+    Map<String, BigInteger> id_map = new HashMap<String, BigInteger>();
+    List<String> event_list = new LinkedList<String>();
+    Map<String, NodeType> nodeRefMap = new HashMap<String, NodeType>();
+    Map<String, EdgeType> edgeRefMap = new HashMap<String, EdgeType>();
     Map<BigInteger, Object> epcRefMap = new HashMap<BigInteger, Object>();
-    Map<BigInteger, ObjectRefType> objectRefMap = new HashMap<BigInteger, ObjectRefType>();
+    Map<String, ObjectRefType> objectRefMap = new HashMap<String, ObjectRefType>();
     List<TEpcElement> eventFuncList = new LinkedList<TEpcElement>();
-    List<BigInteger> object_res_list = new LinkedList<BigInteger>();
-    Map<BigInteger, List<BigInteger>> role_map = new HashMap<BigInteger, List<BigInteger>>();
+    List<String> object_res_list = new LinkedList<String>();
+    Map<BigInteger, List<String>> role_map = new HashMap<BigInteger, List<String>>();
     List<TypeFunction> subnet_list = new LinkedList<TypeFunction>();
     List<TypeProcessInterface> pi_list = new LinkedList<TypeProcessInterface>();
     List<Object> temp_list = new LinkedList<Object>();
@@ -466,7 +466,7 @@ public class Canonical2EPML {
                 for (ObjectRefType ref : ((WorkType) node).getObjectRef()) {
                     object_res_list.add(ref.getObjectId());
                 }
-                List<BigInteger> ll = new LinkedList<BigInteger>();
+                List<String> ll = new LinkedList<String>();
                 for (ResourceTypeRefType ref : ((WorkType) node).getResourceTypeRef()) {
                     object_res_list.add(ref.getResourceTypeId());
                     ll.add(ref.getResourceTypeId());
@@ -535,7 +535,7 @@ public class Canonical2EPML {
                         }
                         for (TypeAttribute att : ref.getAttribute())
                             if (att.getTypeRef().equals("RefID")) {
-                                BigInteger l = BigInteger.valueOf(Long.parseLong(att.getValue()));
+                                String l = att.getValue();
                                 objectRefMap.put(l, ref);
                                 id_map.put(l, arc.getId());
                             }
@@ -565,7 +565,7 @@ public class Canonical2EPML {
         if (task.getName() == null && task.getSubnetId() != null) {
             TypeProcessInterface pi = new TypeProcessInterface();
             pi.setToProcess(new TypeToProcess());
-            pi.getToProcess().setLinkToEpcId(task.getSubnetId());
+            pi.getToProcess().setLinkToEpcId(new BigInteger(task.getSubnetId()));
             pi_list.add(pi);
         } else {
             TypeFunction func = new TypeFunction();
@@ -574,7 +574,7 @@ public class Canonical2EPML {
             func.setName(task.getName());
             func.setDefRef(find_def_id("function", func.getName()));
             if (task.getSubnetId() != null) {
-                func.getToProcess().setLinkToEpcId(task.getSubnetId());
+                func.getToProcess().setLinkToEpcId(new BigInteger(task.getSubnetId()));
                 subnet_list.add(func);
             }
             epc.getEventOrFunctionOrRole().add(func);
@@ -617,14 +617,13 @@ public class Canonical2EPML {
         List<TypeArc> arcs_list = new LinkedList<TypeArc>();
 
         for (Object obj : epc.getEventOrFunctionOrRole()) {
-            List<BigInteger> ll = new LinkedList<BigInteger>();
+            List<String> ll;
             if (obj instanceof TypeArc)
                 ll = role_map.get(((TypeArc) obj).getId());
             else
                 ll = role_map.get(((TEpcElement) obj).getId());
 
             if (ll != null) {
-
                 if (obj instanceof TypeFunction) {
                     if (ll.contains(resT.getId())) {
                         TypeArc arc1 = new TypeArc();
@@ -706,7 +705,7 @@ public class Canonical2EPML {
     private void createEvent(TypeEPC epc, NetType net) {
         BigInteger n;
 
-        for (BigInteger id : event_list)
+        for (String id : event_list)
             for (EdgeType edge : net.getEdge()) {
                 if (edge.getSourceId().equals(id)) {
                     //
@@ -751,7 +750,7 @@ public class Canonical2EPML {
         for (AnnotationType annotation : annotations.getAnnotation()) {
             if (nodeRefMap.containsKey(annotation.getCpfId())) {
                 // TODO: Handle 1-N mappings
-                BigInteger cid = annotation.getCpfId();
+                String cid = annotation.getCpfId();
 
                 if (annotation instanceof GraphicsType) {
                     GraphicsType cGraphInfo = (GraphicsType) annotation;
@@ -810,7 +809,7 @@ public class Canonical2EPML {
             if (edgeRefMap.containsKey(annotation.getCpfId())
                     || objectRefMap.containsKey(annotation.getCpfId())) {
                 // TODO: Handle 1-N mappings
-                BigInteger cid = annotation.getCpfId();
+                String cid = annotation.getCpfId();
                 TypeLine line = new TypeLine();
                 TypeFont font = new TypeFont();
 
