@@ -296,43 +296,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>triemax</groupId>
-                <artifactId>jalopy-maven</artifactId>
-                <version>1.9.4-198</version>
-                <configuration>
-                    <compile>true</compile>
-                    <threads>4</threads>
-                    <convention>classpath:jalopy.xml</convention>
-                    <javadoc>false</javadoc>
-                    <logLevel>warn</logLevel>
-                    <environment>
-                        <lead>Cameron James</lead>
-                        <office>Suncorp / QUT</office>
-                    </environment>
-                    <includes>
-                        <include>**/*.java</include>
-                    </includes>
-                    <sources>
-                        <source>/**/main/src/java</source>
-                    </sources>
-                </configuration>
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<phase>process-sources</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>format</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apromore</groupId>
-                        <artifactId>Apromore-Tools</artifactId>
-                        <version>1.0.0-SNAPSHOT</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
         </plugins>
 
         <extensions>
