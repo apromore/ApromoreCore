@@ -3,7 +3,6 @@ LOCK TABLES `native_type` WRITE;
 INSERT INTO `native_type` VALUES (''EPML 2.0'',''epml'');
 INSERT INTO `native_type` VALUES (''XPDL 2.1'',''xpdl'');
 INSERT INTO `native_type` VALUES (''PNML 1.3.2'', ''pnml'');
-INSERT INTO `native_type` VALUES ('PNML 1.3.2', 'pnml');
 /*!40000 ALTER TABLE `native_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
