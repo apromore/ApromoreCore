@@ -15,12 +15,23 @@ DROP TABLE IF EXISTS `node`;
 DROP TABLE IF EXISTS `edge`;
 DROP TABLE IF EXISTS `fragment_version`;
 DROP TABLE IF EXISTS `content`;
-DROP TABLE IF EXISTS `canonical`;
 DROP TABLE IF EXISTS `native_type`;
 DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `process`;
 DROP TABLE IF EXISTS `process_branch`;
 DROP TABLE IF EXISTS `process_model_version`;
+
+DROP TABLE IF EXISTS `process_model_attribute`;
+DROP TABLE IF EXISTS `resource_type_attribute`;
+DROP TABLE IF EXISTS `object_type_attribute`;
+DROP TABLE IF EXISTS `node_attribute`;
+DROP TABLE IF EXISTS `edge_attribute`;
+DROP TABLE IF EXISTS `resource_ref_type`;
+DROP TABLE IF EXISTS `resource_ref_type_attribute`;
+DROP TABLE IF EXISTS `object_ref_type`;
+DROP TABLE IF EXISTS `object_ref_type_attribute`;
+DROP TABLE IF EXISTS `resource_type`;
+DROP TABLE IF EXISTS `object_type`;
 
 
 
@@ -330,9 +341,55 @@ CREATE TABLE `object_ref_type_attribute` (
     CONSTRAINT `fk_objreftyp_att` FOREIGN KEY (`object_ref_type_id`) REFERENCES `object_ref_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE VIEW `process_ranking` AS 
-  select `canonical`.`processId` AS `processId`, avg(`canonical`.`ranking`) AS `ranking` 
-  from `canonical` 
-  group by `canonical`.`processId`;
-  
+
+CREATE TABLE `resource_ref_type` (
+    `id`                       int(11) NOT NULL AUTO_INCREMENT,
+    `resource_type_id`         int(11),
+    `node_id`                  int(11),
+    `optional`                 varchar(1) default '0',
+    `qualifier`                varchar(255),
+    CONSTRAINT `pk_resreftyp` PRIMARY KEY (`id`),
+    CONSTRAINT `fk_resreftyp_pmv` FOREIGN KEY (`resource_type_id`) REFERENCES `resource_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_resreftyp_node` FOREIGN KEY (`node_id`) REFERENCES `node` (`vid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `resource_ref_type_attribute` (
+    `id`                       int(11) NOT NULL AUTO_INCREMENT,
+    `resource_ref_type_id`     int(11),
+    `name`                     varchar(255),
+    `value`                    varchar(255),
+    CONSTRAINT `pk_resreftypeatt` PRIMARY KEY (`id`),
+    CONSTRAINT `fk_resreftype_att` FOREIGN KEY (`resource_ref_type_id`) REFERENCES `resource_ref_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
+CREATE TABLE `node_attribute` (
+    `id`                       int(11) NOT NULL AUTO_INCREMENT,
+    `node_id`                  int(11),
+    `name`                     varchar(255),
+    `value`                    varchar(255),
+    CONSTRAINT `pk_node_resource_attrib` PRIMARY KEY (`id`),
+    CONSTRAINT `fk_node_attributes` FOREIGN KEY (`node_id`) REFERENCES `node` (`vid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `edge_attribute` (
+    `id`                       int(11) NOT NULL AUTO_INCREMENT,
+    `edge_id`                  int(11),
+    `name`                     varchar(255),
+    `value`                    varchar(255),
+    CONSTRAINT `pk_edge_resource_attrib` PRIMARY KEY (`id`),
+    CONSTRAINT `fk_edge_attributes` FOREIGN KEY (`edge_id`) REFERENCES `edge` (`edge_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `process_model_attribute` (
+    `id`                       int(11) NOT NULL AUTO_INCREMENT,
+    `process_model_version_id` int(11),
+    `name`                     varchar(255),
+    `value`                    varchar(255),
+    CONSTRAINT `pk_pmv_att` PRIMARY KEY (`id`),
+    CONSTRAINT `fk_pmv_att_pmv` FOREIGN KEY (`process_model_version_id`) REFERENCES `process_model_version` (`process_model_version_id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
 SET FOREIGN_KEY_CHECKS=1;
