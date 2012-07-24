@@ -1,5 +1,13 @@
 package org.apromore.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+import javax.xml.bind.JAXBException;
+
 import org.apromore.common.Constants;
 import org.apromore.dao.FragmentVersionDagDao;
 import org.apromore.dao.FragmentVersionDao;
@@ -13,7 +21,10 @@ import org.apromore.dao.model.ProcessFragmentMap;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.LockFailedException;
+import org.apromore.exception.RepositoryException;
+import org.apromore.exception.SerializationException;
 import org.apromore.graph.JBPT.CPF;
+import org.apromore.service.CanoniserService;
 import org.apromore.service.FragmentService;
 import org.apromore.service.LockService;
 import org.apromore.service.model.FDNode;
@@ -25,13 +36,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
 
 /**
  * Implementation of the FragmentService Contract.
@@ -53,14 +57,15 @@ public class FragmentServiceImpl implements FragmentService {
     @Autowired @Qualifier("ProcessModelVersionDao")
     private ProcessModelVersionDao pmvDao;
 
+    @Autowired @Qualifier("CanoniserService")
+    private CanoniserService cSrv;
     @Autowired @Qualifier("LockService")
     private LockService lSrv;
 
 
-
     /**
      * @see org.apromore.service.ProcessService#addProcessFragmentMappings(Integer, java.util.List)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void addProcessFragmentMappings(Integer pmvid, List<String> composingFragmentIds) throws ExceptionDao {
@@ -76,7 +81,7 @@ public class FragmentServiceImpl implements FragmentService {
 
     /**
      * @see FragmentService#getFragmentId(Integer, org.apromore.graph.JBPT.CPF, java.util.List)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public String getFragmentId(Integer pmvid, CPF g, List<String> nodes) {
@@ -88,9 +93,25 @@ public class FragmentServiceImpl implements FragmentService {
         return findSmallestContainingFragment(candidateContainingFragments, fdag);
     }
 
+    @Override
+    public String getFragmentAsEPML(String fragmentId) throws RepositoryException {
+        String xml;
+        try {
+            CPF g = getFragment(fragmentId, false);
+            xml = cSrv.CPFtoString(cSrv.serializeCPF(g));
+        } catch (LockFailedException e) {
+            throw new RepositoryException(e);
+        } catch (SerializationException e) {
+            throw new RepositoryException(e);
+        } catch (JAXBException e) {
+            throw new RepositoryException(e);
+        }
+        return xml;
+    }
+
     /**
      * @see FragmentService#getFragment(String, boolean)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public CPF getFragment(String fragmentId, boolean lock) throws LockFailedException {
@@ -123,7 +144,7 @@ public class FragmentServiceImpl implements FragmentService {
 
     /**
      * @see FragmentService#getFragmentVersion(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public FragmentVersion getFragmentVersion(String fragmentVersionId) {
@@ -132,11 +153,11 @@ public class FragmentServiceImpl implements FragmentService {
 
     /**
      * @see FragmentService#addFragmentVersion(org.apromore.dao.model.Content, java.util.Map, String, int, int, int, String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public FragmentVersion addFragmentVersion(Content cid, Map<String, String> childMappings, String derivedFrom,
-            int lockStatus, int lockCount, int originalSize, String fragmentType) {
+                                              int lockStatus, int lockCount, int originalSize, String fragmentType) {
         String childMappingCode = calculateChildMappingCode(childMappings);
 
         FragmentVersion fragVersion = new FragmentVersion();
@@ -156,7 +177,7 @@ public class FragmentServiceImpl implements FragmentService {
 
     /**
      * @see FragmentService#addChildMappings(org.apromore.dao.model.FragmentVersion, java.util.Map)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void addChildMappings(FragmentVersion fragVer, Map<String, String> childMappings) {
@@ -206,9 +227,6 @@ public class FragmentServiceImpl implements FragmentService {
         fragVersion.setDerivedFromFragment(derivedFromFragmentId);
         fvDao.update(fragVersion);
     }
-
-
-
 
 
     private String calculateChildMappingCode(Map<String, String> childMapping) {
@@ -288,7 +306,7 @@ public class FragmentServiceImpl implements FragmentService {
     }
 
     private void findCandidateContainingFragments(String candidateFragment, List<String> containingFragments, FragmentDAG fdag,
-            List<String> candidateContainingFragments) {
+                                                  List<String> candidateContainingFragments) {
         boolean contained = fdag.isIncluded(candidateFragment, containingFragments);
         if (contained) {
             candidateContainingFragments.add(candidateFragment);
@@ -324,10 +342,9 @@ public class FragmentServiceImpl implements FragmentService {
     }
 
 
-
-
     /**
      * Set the Process DAO for this class. Mainly for spring tests.
+     *
      * @param pdao the dao
      */
     public void setProcessDao(ProcessDao pdao) {
@@ -336,6 +353,7 @@ public class FragmentServiceImpl implements FragmentService {
 
     /**
      * Set the fragment Version DAO for this class. Mainly for spring tests.
+     *
      * @param fvdao the dao
      */
     public void setFragmentVersionDao(FragmentVersionDao fvdao) {
@@ -344,6 +362,7 @@ public class FragmentServiceImpl implements FragmentService {
 
     /**
      * Set the fragment Version DAG DAO for this class. Mainly for spring tests.
+     *
      * @param fvddao the dao
      */
     public void setFragmentVersionDagDao(FragmentVersionDagDao fvddao) {
@@ -352,6 +371,7 @@ public class FragmentServiceImpl implements FragmentService {
 
     /**
      * Set the Process Model Version DAO object for this class. Mainly for spring tests.
+     *
      * @param pmvDAOJpa the process model version
      */
     public void setProcessModelVersionDao(ProcessModelVersionDao pmvDAOJpa) {
@@ -359,10 +379,18 @@ public class FragmentServiceImpl implements FragmentService {
     }
 
     /**
-    * Set the Lock Service for this class. Mainly for spring tests.
-    * @param lsrv the Lock service
-    */
+     * Set the Lock Service for this class. Mainly for spring tests.
+     * @param lsrv the Lock service
+     */
     public void setLockService(LockService lsrv) {
         lSrv = lsrv;
+    }
+
+    /**
+     * Set the Canoniser Service for this class. Mainly for spring tests.
+     * @param csrv the Canoniser service
+     */
+    public void setCanoniserService(CanoniserService csrv) {
+        cSrv = csrv;
     }
 }

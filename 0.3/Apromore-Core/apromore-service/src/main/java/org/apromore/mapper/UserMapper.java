@@ -1,12 +1,12 @@
 package org.apromore.mapper;
 
+import java.util.List;
+
 import org.apromore.dao.model.SearchHistory;
 import org.apromore.dao.model.User;
 import org.apromore.model.SearchHistoriesType;
 import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
-
-import java.util.List;
 
 /**
  * Mapper helper class to convert from the DAO Model to the Webservice Model.
@@ -18,6 +18,7 @@ public class UserMapper {
 
     /**
      * Convert the List of Users to a UserNamesType Webservice object.
+     *
      * @param users the list of Users
      * @return the UsernameType object
      */
@@ -31,6 +32,7 @@ public class UserMapper {
 
     /**
      * Convert a user object to a UserType Webservice object.
+     *
      * @param user the DB User Model
      * @return the Webservice UserType
      */
@@ -52,6 +54,7 @@ public class UserMapper {
 
     /**
      * Convert from the WS (UserType) to the DB model (User).
+     *
      * @param userType the userType from the WebService
      * @return the User dao model populated.
      */

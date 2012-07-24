@@ -9,7 +9,6 @@ DROP TABLE IF EXISTS `native`;
 DROP TABLE IF EXISTS `edit_session_mapping`;
 DROP TABLE IF EXISTS `fragment_version_dag`;
 DROP TABLE IF EXISTS `process_fragment_map`;
-DROP TABLE IF EXISTS `subcluster`;
 DROP TABLE IF EXISTS `non_pocket_node`;
 DROP TABLE IF EXISTS `node`;
 DROP TABLE IF EXISTS `edge`;
@@ -20,6 +19,11 @@ DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `process`;
 DROP TABLE IF EXISTS `process_branch`;
 DROP TABLE IF EXISTS `process_model_version`;
+
+DROP TABLE IF EXISTS `subcluster`;
+DROP TABLE IF EXISTS `cluster`;
+DROP TABLE IF EXISTS `cluster_assignment`;
+DROP TABLE IF EXISTS `fragment_distance`;
 
 DROP TABLE IF EXISTS `process_model_attribute`;
 DROP TABLE IF EXISTS `resource_type_attribute`;
@@ -243,6 +247,8 @@ CREATE TABLE `node` (
     `ctype`                     varchar(40),
     `configuration`             varchar(1) DEFAULT '0',
     `original_Id`               varchar(40),
+    `locator_preset`            varchar(2000),
+    `locator_postset`           varchar(2000),
     constraint `pk_node` primary key (`vid`),
     constraint `fk_node_content` foreign key (`content_id`) references `content` (`content_id`) ON DELETE CASCADE ON UPDATE CASCADE,
     constraint `fk_node_subversion` foreign key (`sub_version_id`) references `process_model_version` (`process_model_version_id`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -269,15 +275,6 @@ CREATE TABLE `edge` (
     constraint `fk_target_node` foreign key (`target_vid`) references `node` (`vid`) ON DELETE CASCADE ON UPDATE CASCADE
 )  engine=InnoDB DEFAULT CHARSET=utf8;
 
-
-CREATE TABLE  `subcluster` (
-    `fragment_version_id`      varchar(40) NOT NULL DEFAULT '',
-    `fragment_size`            int(11) DEFAULT NULL,
-    `parent_cluster_id`        varchar(80) NOT NULL DEFAULT '',
-    `subcluster_id`            varchar(80) DEFAULT NULL,
-    constraint `pk_subcluster` PRIMARY KEY (`fragment_version_id`,`parent_cluster_id`),
-    constraint `fk_subcluster` foreign key (fragment_version_id) references fragment_version (fragment_version_id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `object_type` (
@@ -390,6 +387,45 @@ CREATE TABLE `process_model_attribute` (
     CONSTRAINT `pk_pmv_att` PRIMARY KEY (`id`),
     CONSTRAINT `fk_pmv_att_pmv` FOREIGN KEY (`process_model_version_id`) REFERENCES `process_model_version` (`process_model_version_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+CREATE TABLE `cluster` (
+    `cluster_id`         varchar(40),
+    `size`               int,
+    `avg_fragment_size`  float,
+    `medoid_id`          varchar(40),
+    `benifit_cost_ratio` double,
+    `std_effort`         double,
+    `refactoring_gain`   int,
+    CONSTRAINT `pk_clusters` PRIMARY KEY (`cluster_id`)
+) engine=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE  `subcluster` (
+    `fragment_version_id`      varchar(40) NOT NULL DEFAULT '',
+    `fragment_size`            int(11) DEFAULT NULL,
+    `parent_cluster_id`        varchar(80) NOT NULL DEFAULT '',
+    `subcluster_id`            varchar(80) DEFAULT NULL,
+    CONSTRAINT `pk_subcluster` PRIMARY KEY (`fragment_version_id`,`parent_cluster_id`),
+    CONSTRAINT `fk_subcluster` FOREIGN KEY (fragment_version_id) REFERENCES fragment_version (fragment_version_id) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `fragment_distance` (
+    `fid1`      varchar(40),
+    `fid2`      varchar(40),
+    `ged`       double,
+    CONSTRAINT `pk_geds` PRIMARY KEY (`fid1`, `fid2`)
+) engine=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `cluster_assignment` (
+    `fragment_version_id`  varchar(40),
+    `cluster_id`           varchar(80),
+    `clone_id`             varchar(40),
+    `maximal`              boolean,
+    `core_object_nb`       int,
+    CONSTRAINT `pk_cluster_assignments` PRIMARY KEY (`fragment_version_id`, `cluster_id`),
+    CONSTRAINT `fk_frag_version_assignment` FOREIGN KEY (fragment_version_id) REFERENCES fragment_version (fragment_version_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_cluster_assignment` FOREIGN KEY (cluster_id) REFERENCES clusters (cluster_id) ON DELETE CASCADE ON UPDATE CASCADE
+) engine=InnoDB DEFAULT CHARSET=utf8;
 
 
 SET FOREIGN_KEY_CHECKS=1;

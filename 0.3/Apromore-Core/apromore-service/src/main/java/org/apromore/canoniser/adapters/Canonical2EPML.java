@@ -14,6 +14,13 @@
 
 package org.apromore.canoniser.adapters;
 
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import javax.xml.namespace.QName;
+
 import de.epml.TEpcElement;
 import de.epml.TExtensibleElements;
 import de.epml.TypeAND;
@@ -64,13 +71,6 @@ import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
-
-import javax.xml.namespace.QName;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 public class Canonical2EPML {
     Map<String, BigInteger> id_map = new HashMap<String, BigInteger>();

@@ -1,15 +1,15 @@
 package org.apromore.dao.jpa;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.apromore.dao.NamedQueries;
 import org.apromore.dao.ProcessBranchDao;
 import org.apromore.dao.model.ProcessBranch;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
 
 /**
  * Hibernate implementation of the org.apromore.dao.ProcessBranchDao interface.
@@ -27,7 +27,7 @@ public class ProcessBranchDaoJpa implements ProcessBranchDao {
 
     /**
      * @see org.apromore.dao.ProcessBranchDao#findProcessBranch(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -38,7 +38,7 @@ public class ProcessBranchDaoJpa implements ProcessBranchDao {
 
     /**
      * @see org.apromore.dao.ProcessBranchDao#getProcessBranchByProcessBranchName(String, String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -48,12 +48,11 @@ public class ProcessBranchDaoJpa implements ProcessBranchDao {
         query.setParameter("name", branchName);
         return (ProcessBranch) query.getSingleResult();
     }
-    
-    
+
 
     /**
      * @see org.apromore.dao.ProcessBranchDao#save(org.apromore.dao.model.ProcessBranch)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void save(final ProcessBranch branch) {
@@ -62,7 +61,7 @@ public class ProcessBranchDaoJpa implements ProcessBranchDao {
 
     /**
      * @see org.apromore.dao.ProcessBranchDao#update(org.apromore.dao.model.ProcessBranch)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public ProcessBranch update(final ProcessBranch branch) {
@@ -71,7 +70,7 @@ public class ProcessBranchDaoJpa implements ProcessBranchDao {
 
     /**
      * @see org.apromore.dao.ProcessBranchDao#delete(org.apromore.dao.model.ProcessBranch)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void delete(final ProcessBranch branch) {
@@ -81,6 +80,7 @@ public class ProcessBranchDaoJpa implements ProcessBranchDao {
 
     /**
      * Sets the Entity Manager. No way around this to get Unit Testing working
+     *
      * @param em the entitymanager
      */
     public void setEntityManager(EntityManager em) {

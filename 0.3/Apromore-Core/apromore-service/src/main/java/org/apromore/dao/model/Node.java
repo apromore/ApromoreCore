@@ -1,10 +1,8 @@
 package org.apromore.dao.model;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
-import org.springframework.beans.factory.annotation.Configurable;
-
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,9 +12,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -51,7 +51,8 @@ public class Node implements Serializable {
     private Set<NodeAttribute> attributes = new HashSet<NodeAttribute>(0);
 
 
-    public Node() { }
+    public Node() {
+    }
 
 
     @Id
@@ -64,7 +65,6 @@ public class Node implements Serializable {
     public void setVid(final Integer newVid) {
         this.vid = newVid;
     }
-
 
 
     @Column(name = "vname", length = 2000)
@@ -113,7 +113,6 @@ public class Node implements Serializable {
     public void setConfiguration(final Boolean newConfigurable) {
         this.configuration = newConfigurable;
     }
-
 
 
     @ManyToOne(fetch = FetchType.LAZY)

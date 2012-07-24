@@ -1,5 +1,7 @@
 package org.apromore.service.impl;
 
+import java.util.List;
+
 import org.apromore.dao.ProcessDao;
 import org.apromore.service.DomainService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -7,8 +9,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.List;
 
 /**
  * Implementation of the DomainService Contract.
@@ -19,15 +19,16 @@ import java.util.List;
 @Transactional(propagation = Propagation.REQUIRED)
 public class DomainServiceImpl implements DomainService {
 
-    @Autowired @Qualifier("ProcessDao")
+    @Autowired
+    @Qualifier("ProcessDao")
     private ProcessDao procDao;
 
 
     /**
      * @see org.apromore.service.DomainService#findAllDomains()
-     * {@inheritDoc}
-     *
-     * NOTE: This might need to convert (or allow for) to the models used in the webservices.
+     *      {@inheritDoc}
+     *      <p/>
+     *      NOTE: This might need to convert (or allow for) to the models used in the webservices.
      */
     @Override
     @Transactional(readOnly = true)
@@ -36,9 +37,9 @@ public class DomainServiceImpl implements DomainService {
     }
 
 
-
     /**
      * Set the Process DAO object for this class. Mainly for spring tests.
+     *
      * @param processDAOJpa the user Dao.
      */
     public void setProcDao(ProcessDao processDAOJpa) {

@@ -1,5 +1,10 @@
 package org.apromore.service.impl;
 
+import java.io.UnsupportedEncodingException;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.mail.util.ByteArrayDataSource;
+
 import org.apromore.common.Constants;
 import org.apromore.dao.AnnotationDao;
 import org.apromore.dao.NativeDao;
@@ -30,11 +35,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.mail.util.ByteArrayDataSource;
-import java.io.UnsupportedEncodingException;
-
 /**
  * Implementation of the UserService Contract.
  *
@@ -46,28 +46,36 @@ public class ProcessServiceImpl implements ProcessService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessServiceImpl.class);
 
-    @Autowired @Qualifier("AnnotationDao")
+    @Autowired
+    @Qualifier("AnnotationDao")
     private AnnotationDao annDao;
-    @Autowired @Qualifier("NativeDao")
+    @Autowired
+    @Qualifier("NativeDao")
     private NativeDao natDao;
-    @Autowired @Qualifier("ProcessModelVersionDao")
+    @Autowired
+    @Qualifier("ProcessModelVersionDao")
     private ProcessModelVersionDao pmvDao;
 
-    @Autowired @Qualifier("CanoniserService")
+    @Autowired
+    @Qualifier("CanoniserService")
     private CanoniserService canSrv;
-    @Autowired @Qualifier("UserService")
+    @Autowired
+    @Qualifier("UserService")
     private UserService usrSrv;
-    @Autowired @Qualifier("FormatService")
+    @Autowired
+    @Qualifier("FormatService")
     private FormatService fmtSrv;
-    @Autowired @Qualifier("RepositoryService")
+    @Autowired
+    @Qualifier("RepositoryService")
     private RepositoryService rSrv;
-    @Autowired @Qualifier("UIHelper")
+    @Autowired
+    @Qualifier("UIHelper")
     private UIHelper uiSrv;
 
 
     /**
      * @see org.apromore.service.ProcessService#readProcessSummaries(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -92,12 +100,12 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * @see org.apromore.service.ProcessService#exportFormat(String, Integer, String, String, String, boolean)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
     public DataSource exportFormat(final String name, final Integer processId, final String version, final String format,
-            final String annName, boolean withAnn) throws ExportFormatException {
+                                   final String annName, boolean withAnn) throws ExportFormatException {
         DataSource ds;
         try {
             CPF cpf = rSrv.getCurrentProcessModel(name, version, false);
@@ -126,11 +134,11 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * @see org.apromore.service.ProcessService#importProcess(String, String, String, String, String, DataHandler, String, String, String, String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public ProcessSummaryType importProcess(String username, String processName, String cpfURI, String version, String natType,
-            DataHandler cpf, String domain, String documentation, String created, String lastUpdate) throws ImportException {
+                                            DataHandler cpf, String domain, String documentation, String created, String lastUpdate) throws ImportException {
         LOGGER.info("Executing operation canoniseProcess");
         ProcessSummaryType pro;
 
@@ -157,11 +165,11 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * @see org.apromore.service.ProcessService#addProcessModelVersion(ProcessBranch, String, int, String, int, int)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public ProcessModelVersion addProcessModelVersion(ProcessBranch branch, String rootFragmentVersionId, int versionNumber,
-            String versionName, int numVertices, int numEdges) throws ExceptionDao {
+                                                      String versionName, int numVertices, int numEdges) throws ExceptionDao {
         ProcessModelVersion pmv = new ProcessModelVersion();
 
         pmv.setProcessBranch(branch);
@@ -176,14 +184,9 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
 
-
-
-
-
-
-
     /**
      * Set the Annotation DAO object for this class. Mainly for spring tests.
+     *
      * @param annDAOJpa the Annotation Dao.
      */
     public void setAnnotationDao(AnnotationDao annDAOJpa) {
@@ -192,6 +195,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * Set the Process Model Version DAO object for this class. Mainly for spring tests.
+     *
      * @param pmvDAOJpa the process model version
      */
     public void setProcessModelVersionDao(ProcessModelVersionDao pmvDAOJpa) {
@@ -200,6 +204,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * Set the Native DAO object for this class. Mainly for spring tests.
+     *
      * @param natDAOJpa the Native Dao.
      */
     public void setNativeDao(NativeDao natDAOJpa) {
@@ -209,6 +214,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * Set the Canoniser Service for this class. Mainly for spring tests.
+     *
      * @param canSrv the service
      */
     public void setCanoniserService(CanoniserService canSrv) {
@@ -217,6 +223,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * Set the User Service for this class. Mainly for spring tests.
+     *
      * @param usrSrv the service
      */
     public void setUserService(UserService usrSrv) {
@@ -225,6 +232,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * Set the Format Service for this class. Mainly for spring tests.
+     *
      * @param fmtSrv the service
      */
     public void setFormatService(FormatService fmtSrv) {
@@ -233,6 +241,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * Set the Repository Service for this class. Mainly for spring tests.
+     *
      * @param rSrv the service
      */
     public void setRepositoryService(RepositoryService rSrv) {
@@ -241,6 +250,7 @@ public class ProcessServiceImpl implements ProcessService {
 
     /**
      * Set the Repository Service for this class. Mainly for spring tests.
+     *
      * @param newUISrv the service
      */
     public void setUIHelperService(UIHelper newUISrv) {

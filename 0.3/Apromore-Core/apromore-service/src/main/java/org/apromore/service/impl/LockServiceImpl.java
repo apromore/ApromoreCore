@@ -1,5 +1,8 @@
 package org.apromore.service.impl;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apromore.common.Constants;
 import org.apromore.dao.FragmentVersionDagDao;
 import org.apromore.dao.FragmentVersionDao;
@@ -16,9 +19,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * Implementation of the LockService Contract.
  *
@@ -30,18 +30,20 @@ public class LockServiceImpl implements LockService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(LockServiceImpl.class);
 
-    @Autowired @Qualifier("FragmentVersionDao")
+    @Autowired
+    @Qualifier("FragmentVersionDao")
     private FragmentVersionDao fragVersionDao;
-    @Autowired @Qualifier("FragmentVersionDagDao")
+    @Autowired
+    @Qualifier("FragmentVersionDagDao")
     private FragmentVersionDagDao fragVersionDagDao;
-    @Autowired @Qualifier("ProcessModelVersionDao")
+    @Autowired
+    @Qualifier("ProcessModelVersionDao")
     private ProcessModelVersionDao prsModelVersionDao;
-
 
 
     /**
      * @see org.apromore.service.LockService#lockProcessModelVersion(Integer)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public boolean lockProcessModelVersion(Integer processModelVersionId) {
@@ -59,7 +61,7 @@ public class LockServiceImpl implements LockService {
 
     /**
      * @see org.apromore.service.LockService#unlockProcessModelVersion(Integer)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void unlockProcessModelVersion(Integer processModelVersionId) {
@@ -71,7 +73,7 @@ public class LockServiceImpl implements LockService {
 
     /**
      * @see org.apromore.service.LockService#lockFragment(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public boolean lockFragment(String fragmentVersionId) {
@@ -88,7 +90,7 @@ public class LockServiceImpl implements LockService {
 
     /**
      * @see org.apromore.service.LockService#lockSingleFragment(org.apromore.dao.model.FragmentVersion)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public boolean lockSingleFragment(FragmentVersion fragVersion) {
@@ -105,7 +107,7 @@ public class LockServiceImpl implements LockService {
 
     /**
      * @see org.apromore.service.LockService#unlockFragment(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void unlockFragment(String fragmentId) {
@@ -116,7 +118,7 @@ public class LockServiceImpl implements LockService {
 
     /**
      * @see org.apromore.service.LockService#unlockFragment(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void unlockAscendantFragments(String fragmentId) {
@@ -129,7 +131,7 @@ public class LockServiceImpl implements LockService {
 
     /**
      * @see org.apromore.service.LockService#unlockDescendantFragments(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void unlockDescendantFragments(String fragmentId) {
@@ -138,7 +140,7 @@ public class LockServiceImpl implements LockService {
 
     /**
      * @see org.apromore.service.LockService#unlockDescendantFragments(FragmentVersionDag)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void unlockDescendantFragments(FragmentVersionDag fragmentVersionDag) {
@@ -151,7 +153,7 @@ public class LockServiceImpl implements LockService {
 
     /**
      * @see org.apromore.service.LockService#isUsedInCurrentProcessModel(FragmentVersion)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public boolean isUsedInCurrentProcessModel(FragmentVersion fragVersion) {
@@ -173,8 +175,6 @@ public class LockServiceImpl implements LockService {
 
         return usedInCurrentProcessModel;
     }
-
-
 
 
     /* Locks the Ascendant fragments, only pass the id as the object isn't needed. */
@@ -231,7 +231,7 @@ public class LockServiceImpl implements LockService {
     private int lockChildren(String fragmentId) {
         int updated = 0;
         FragmentVersion fd = fragVersionDao.getFragmentData(fragmentId);
-        List<FragmentVersion> frags =  fragVersionDagDao.getChildFragmentsByFragmentVersion(fd.getFragmentVersionId());
+        List<FragmentVersion> frags = fragVersionDagDao.getChildFragmentsByFragmentVersion(fd.getFragmentVersionId());
         for (FragmentVersion frag : frags) {
             if (frag.getLockStatus().equals(Constants.NO_LOCK) || frag.getLockStatus().equals(Constants.DIRECT_LOCK)) {
                 updated++;
@@ -243,7 +243,7 @@ public class LockServiceImpl implements LockService {
     }
 
     private void unlockChildFragments(FragmentVersion fragmentVersion) {
-        List<FragmentVersion> frags =  fragVersionDagDao.getChildFragmentsByFragmentVersion(fragmentVersion.getFragmentVersionId());
+        List<FragmentVersion> frags = fragVersionDagDao.getChildFragmentsByFragmentVersion(fragmentVersion.getFragmentVersionId());
         for (FragmentVersion frag : frags) {
             fragmentVersion.setLockStatus(Constants.NO_LOCK);
             fragVersionDao.update(fragmentVersion);
@@ -251,12 +251,9 @@ public class LockServiceImpl implements LockService {
     }
 
 
-
-
-
-
     /**
      * Set the FragmentVersion DAO object for this class. Mainly for spring tests.
+     *
      * @param fragVersionDAOJpa the FragmentVersion Dao.
      */
     public void setFragVersionDao(FragmentVersionDao fragVersionDAOJpa) {
@@ -265,6 +262,7 @@ public class LockServiceImpl implements LockService {
 
     /**
      * Set the FragmentVersionDag DAO object for this class. Mainly for spring tests.
+     *
      * @param fragVersionDagDAOJpa the FragmentVersionDag Dao.
      */
     public void setFragVersionDagDao(FragmentVersionDagDao fragVersionDagDAOJpa) {
@@ -273,6 +271,7 @@ public class LockServiceImpl implements LockService {
 
     /**
      * Set the Process Model Version DAO object for this class. Mainly for spring tests.
+     *
      * @param prsModelVersionDAOJpa the process model version Dao.
      */
     public void setPrsModelVersionDao(ProcessModelVersionDao prsModelVersionDAOJpa) {

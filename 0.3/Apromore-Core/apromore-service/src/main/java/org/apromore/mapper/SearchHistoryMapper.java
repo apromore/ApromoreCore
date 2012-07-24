@@ -1,11 +1,11 @@
 package org.apromore.mapper;
 
-import org.apromore.dao.model.SearchHistory;
-import org.apromore.model.SearchHistoriesType;
-
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import org.apromore.dao.model.SearchHistory;
+import org.apromore.model.SearchHistoriesType;
 
 /**
  * Mapper helper class to convert from the DAO Model to the Webservice Model.
@@ -17,6 +17,7 @@ public class SearchHistoryMapper {
 
     /**
      * Convert from the WS (SearchHistoriesType) to the DB model (SearchHistory).
+     *
      * @param srhTypes the list of SearchHistoriesType from the WebService
      * @return the set of SearchHistory dao model populated.
      */

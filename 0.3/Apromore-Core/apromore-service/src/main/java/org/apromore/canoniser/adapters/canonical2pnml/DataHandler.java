@@ -1,5 +1,11 @@
 package org.apromore.canoniser.adapters.canonical2pnml;
 
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
@@ -13,12 +19,6 @@ import org.apromore.pnml.PnmlType;
 import org.apromore.pnml.TransitionResourceType;
 import org.apromore.pnml.TransitionType;
 import org.apromore.pnml.TriggerType;
-
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 public class DataHandler {
     Map<String, String> id_map = new HashMap<String, String>();

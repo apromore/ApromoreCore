@@ -1,5 +1,11 @@
 package org.apromore.service.helper;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -39,12 +45,6 @@ import org.apromore.graph.JBPT.ICpfResource;
 import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.FlowNode;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 /**
  * GraphToCPFHelper. Used to help build and deconstruct a Graph from the CPF format.
  *
@@ -53,12 +53,13 @@ import java.util.Map.Entry;
 public class GraphToCPFHelper {
 
     /* Private Constructor so it can't be instantiated */
-    private GraphToCPFHelper() { }
-
+    private GraphToCPFHelper() {
+    }
 
 
     /**
      * Builds a Canonical Format Type from the graph.
+     *
      * @param graph the cpf format from the canoniser.
      * @return the CPF Ty[pe from the Graph
      */
@@ -182,7 +183,7 @@ public class GraphToCPFHelper {
         Collection<FlowNode> nodes = graph.getFlowNodes();
         for (FlowNode node : nodes) {
             if (node instanceof CpfNode) {
-                resources.addAll(((CpfNode)node).getObjects());
+                resources.addAll(((CpfNode) node).getObjects());
             }
         }
         return resources;
@@ -288,7 +289,7 @@ public class GraphToCPFHelper {
     }
 
 
-    private static List<TypeAttribute> buildAttributeList(Map<String,String> attributes) {
+    private static List<TypeAttribute> buildAttributeList(Map<String, String> attributes) {
         TypeAttribute typAtt;
         List<TypeAttribute> atts = new ArrayList<TypeAttribute>(0);
         for (Entry<String, String> e : attributes.entrySet()) {

@@ -10,7 +10,7 @@ import org.apromore.model.WriteAnnotationInputMsgType;
 import org.apromore.model.WriteAnnotationOutputMsgType;
 
 /**
- * 
+ *
  */
 public interface DataAccessCanoniserManager {
 

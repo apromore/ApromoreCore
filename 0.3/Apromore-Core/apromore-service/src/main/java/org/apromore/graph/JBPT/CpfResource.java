@@ -1,12 +1,12 @@
 package org.apromore.graph.JBPT;
 
-import org.jbpt.pm.IResource;
-import org.jbpt.pm.Resource;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.jbpt.pm.IResource;
+import org.jbpt.pm.Resource;
 
 /**
  * Class for CPF Resources.
@@ -31,7 +31,8 @@ public class CpfResource extends Resource implements ICpfResource {
     /**
      * @return a new instance of this class where parent and label are set to <code>null</code>.
      */
-    public CpfResource() { }
+    public CpfResource() {
+    }
 
     /**
      * @param parent of this {@link Resource}
@@ -43,7 +44,7 @@ public class CpfResource extends Resource implements ICpfResource {
 
     /**
      * @param parent of this {@link Resource}
-     * @param label of this {@link Resource}
+     * @param label  of this {@link Resource}
      * @return a new instance of this class where parent and label are set to the given values.
      */
     public CpfResource(IResource parent, String label) {

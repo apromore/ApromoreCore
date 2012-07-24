@@ -11,31 +11,34 @@ public class ImportException extends Exception {
     /**
      * Default Constructor.
      */
-	public ImportException() {
-	}
+    public ImportException() {
+    }
 
     /**
      * Constructor.
+     *
      * @param message the message to put with the exception.
      */
-	public ImportException(String message) {
-		super(message);
-	}
+    public ImportException(String message) {
+        super(message);
+    }
 
     /**
      * Constructor.
+     *
      * @param cause The exception that caused this exception to be thrown.
      */
-	public ImportException(Throwable cause) {
-		super(cause);
-	}
+    public ImportException(Throwable cause) {
+        super(cause);
+    }
 
     /**
      * Constructor.
+     *
      * @param message the message to put with the exception.
-     * @param cause The exception that caused this exception to be thrown.
+     * @param cause   The exception that caused this exception to be thrown.
      */
-	public ImportException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public ImportException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

@@ -12,6 +12,7 @@ public interface LockService {
 
     /**
      * Lock a process Model.
+     *
      * @param processModelVersionId the process model
      * @return if locked successfully or not
      */
@@ -19,12 +20,14 @@ public interface LockService {
 
     /**
      * unLock a previously locked process Model.
+     *
      * @param processModelVersionId the process model
      */
     void unlockProcessModelVersion(Integer processModelVersionId);
 
     /**
      * Lock a fragment.
+     *
      * @param fragmentId the fragment to lock
      * @return if locked successfully or not
      */
@@ -32,6 +35,7 @@ public interface LockService {
 
     /**
      * Locks a single fragment.
+     *
      * @param fragVersion the fragment
      * @return the fragment
      */
@@ -39,24 +43,28 @@ public interface LockService {
 
     /**
      * unLock a previously locked fragment.
+     *
      * @param fragmentId the fragment to unlock
      */
     void unlockFragment(String fragmentId);
 
     /**
      * Unlocks the ascendant fragments ????
+     *
      * @param fragmentId the fragment id.
      */
     void unlockAscendantFragments(String fragmentId);
 
     /**
      * Unlocks the descendant Fragments ????
+     *
      * @param fragmentId the fragmentId.
      */
     void unlockDescendantFragments(String fragmentId);
 
     /**
      * Unlocks the descendant Fragments ????
+     *
      * @param fragmentVersionDag the fragmentVersionDag.
      */
     void unlockDescendantFragments(FragmentVersionDag fragmentVersionDag);
@@ -64,6 +72,7 @@ public interface LockService {
 
     /**
      * Is a model used in the current ProcessModel
+     *
      * @param fragVersion the fragment
      * @return true or false
      */

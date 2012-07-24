@@ -1,9 +1,8 @@
 package org.apromore.dao.model;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.beans.factory.annotation.Configurable;
-
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,9 +12,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -52,7 +52,6 @@ public class ProcessModelVersion implements Serializable {
     private Set<ProcessModelAttribute> processModelAttributes = new HashSet<ProcessModelAttribute>(0);
     private Set<ObjectType> objectTypes = new HashSet<ObjectType>(0);
     private Set<ResourceType> resourceTypes = new HashSet<ResourceType>(0);
-
 
 
     /**
@@ -154,7 +153,7 @@ public class ProcessModelVersion implements Serializable {
     }
 
 
-    @OneToMany(fetch=FetchType.LAZY, mappedBy="processModelVersion")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "processModelVersion")
     public Set<Native> getNatives() {
         return this.natives;
     }
@@ -198,7 +197,6 @@ public class ProcessModelVersion implements Serializable {
     public void setProcessBranchesForSourceProcessModelVersionId(final Set<ProcessBranch> newSourceIds) {
         this.processBranchesForSourceProcessModelVersionId = newSourceIds;
     }
-
 
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "processModelVersion")

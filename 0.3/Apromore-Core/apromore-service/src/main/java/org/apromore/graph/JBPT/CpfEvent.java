@@ -16,5 +16,4 @@ public class CpfEvent extends CpfWork implements ICpfEvent {
     }
 
 
-
 }

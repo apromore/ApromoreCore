@@ -1,8 +1,8 @@
 package org.apromore.dao;
 
-import org.apromore.dao.model.Edge;
-
 import java.util.List;
+
+import org.apromore.dao.model.Edge;
 
 /**
  * Interface domain model Data access object Edge.
@@ -16,6 +16,7 @@ public interface EdgeDao {
 
     /**
      * Returns the Edge records for the ContentId.
+     *
      * @param contentID the content id
      * @return the list of Edges or null.
      */
@@ -23,27 +24,29 @@ public interface EdgeDao {
 
     /**
      * Returns the count of stored edges in the db.
+     *
      * @return the count of edges in the system.
      */
     Integer getStoredEdges();
 
 
-
-
     /**
      * Save the edge.
+     *
      * @param edge the edge to persist
      */
     void save(Edge edge);
 
     /**
      * Update the edge.
+     *
      * @param edge the edge to update
      */
     Edge update(Edge edge);
 
     /**
      * Remove the edge.
+     *
      * @param edge the edge to remove
      */
     void delete(Edge edge);

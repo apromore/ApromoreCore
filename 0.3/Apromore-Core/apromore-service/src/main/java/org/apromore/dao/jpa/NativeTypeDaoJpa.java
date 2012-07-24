@@ -1,16 +1,16 @@
 package org.apromore.dao.jpa;
 
-import org.apromore.dao.NamedQueries;
-import org.apromore.dao.NativeTypeDao;
-import org.apromore.dao.model.*;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.List;
+
+import org.apromore.dao.NamedQueries;
+import org.apromore.dao.NativeTypeDao;
+import org.apromore.dao.model.NativeType;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate implementation of the org.apromore.dao.NativeDao interface.
@@ -26,11 +26,11 @@ public class NativeTypeDaoJpa implements NativeTypeDao {
     private EntityManager em;
 
 
-
     /**
      * Returns list of NativeType.
+     *
      * @see org.apromore.dao.NativeTypeDao#findAllFormats()
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public List<NativeType> findAllFormats() {
@@ -40,7 +40,7 @@ public class NativeTypeDaoJpa implements NativeTypeDao {
 
     /**
      * @see org.apromore.dao.NativeTypeDao#findAllFormats()
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -58,6 +58,7 @@ public class NativeTypeDaoJpa implements NativeTypeDao {
 
     /**
      * Sets the Entity Manager. No way around this to get Unit Testing working
+     *
      * @param em the entitymanager
      */
     public void setEntityManager(EntityManager em) {

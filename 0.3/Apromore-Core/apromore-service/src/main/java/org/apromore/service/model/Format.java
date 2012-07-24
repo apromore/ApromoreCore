@@ -17,11 +17,13 @@ public class Format {
     /**
      * Public Constructor.
      */
-    public Format() { }
+    public Format() {
+    }
 
 
     /**
      * Returns the Canonical process model.
+     *
      * @return the model in canonical format
      */
     public DataSource getCpf() {
@@ -30,6 +32,7 @@ public class Format {
 
     /**
      * Sets the Canonical format.
+     *
      * @param cpf the canonical format
      */
     public void setCpf(DataSource cpf) {
@@ -38,6 +41,7 @@ public class Format {
 
     /**
      * Returns the Annotation.
+     *
      * @return the annotation
      */
     public DataSource getAnf() {
@@ -46,6 +50,7 @@ public class Format {
 
     /**
      * Sets the Annotation.
+     *
      * @param anf the annotation
      */
     public void setAnf(DataSource anf) {

@@ -91,6 +91,16 @@
             <groupId>ee.ut</groupId>
             <artifactId>bpstruct</artifactId>
         </dependency>
+        <dependency>
+            <groupId>tu</groupId>
+            <artifactId>rpsdag</artifactId>
+            <version>0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>tu</groupId>
+            <artifactId>taskmapping</artifactId>
+            <version>0.1</version>
+        </dependency>
 
         <!-- Commons -->
         <dependency>

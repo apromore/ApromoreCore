@@ -26,6 +26,7 @@ public class CpfWork extends CpfNode implements ICpfWork {
 
     /**
      * Add a given {@link ICpfResource} to this {@link IFlowNode}.
+     *
      * @param newResource to add to this {@link IFlowNode}
      */
     @Override
@@ -43,6 +44,7 @@ public class CpfWork extends CpfNode implements ICpfWork {
 
     /**
      * Add a given {@link ICpfObject} to this {@link IFlowNode}.
+     *
      * @param object to add to this {@link IFlowNode}
      */
     @Override

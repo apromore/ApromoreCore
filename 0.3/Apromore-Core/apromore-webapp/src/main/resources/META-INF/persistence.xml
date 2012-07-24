@@ -23,8 +23,14 @@
         <class>org.apromore.dao.model.Process</class>
         <class>org.apromore.dao.model.ProcessFragmentMap</class>
         <class>org.apromore.dao.model.ProcessModelVersion</class>
-        <class>org.apromore.dao.model.Subcluster</class>
         <class>org.apromore.dao.model.Node</class>
+
+        <!-- Clustering tables -->
+        <class>org.apromore.dao.model.Cluster</class>
+        <class>org.apromore.dao.model.ClusterAssignment</class>
+        <class>org.apromore.dao.model.ClusterAssignmentId</class>
+        <class>org.apromore.dao.model.FragmentDistance</class>
+        <class>org.apromore.dao.model.FragmentDistanceId</class>
 
         <class>org.apromore.dao.model.ProcessModelAttribute</class>
         <class>org.apromore.dao.model.ResourceTypeAttribute</class>
@@ -38,8 +44,10 @@
         <class>org.apromore.dao.model.ResourceType</class>
         <class>org.apromore.dao.model.ObjectType</class>
 
+
         <!-- JPQL Named Query XML Definiation Files -->
         <mapping-file>META-INF/jpql/queries.xml</mapping-file>
+        <mapping-file>META-INF/jpql/cluster.xml</mapping-file>
     </persistence-unit>
 
 </persistence>

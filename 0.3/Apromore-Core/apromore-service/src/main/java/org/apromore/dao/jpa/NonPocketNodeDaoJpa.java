@@ -1,13 +1,13 @@
 package org.apromore.dao.jpa;
 
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+
 import org.apromore.dao.NonPocketNodeDao;
 import org.apromore.dao.model.NonPocketNode;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
 
 /**
  * Hibernate implementation of the org.apromore.dao.NonPocketNodeDao interface.
@@ -25,7 +25,7 @@ public class NonPocketNodeDaoJpa implements NonPocketNodeDao {
 
     /**
      * @see org.apromore.dao.NonPocketNodeDao#save(org.apromore.dao.model.NonPocketNode)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void save(final NonPocketNode node) {
@@ -34,7 +34,7 @@ public class NonPocketNodeDaoJpa implements NonPocketNodeDao {
 
     /**
      * @see org.apromore.dao.NonPocketNodeDao#update(org.apromore.dao.model.NonPocketNode)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public NonPocketNode update(final NonPocketNode node) {
@@ -43,7 +43,7 @@ public class NonPocketNodeDaoJpa implements NonPocketNodeDao {
 
     /**
      * @see org.apromore.dao.NonPocketNodeDao#delete(org.apromore.dao.model.NonPocketNode)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void delete(final NonPocketNode node) {
@@ -51,9 +51,9 @@ public class NonPocketNodeDaoJpa implements NonPocketNodeDao {
     }
 
 
-
     /**
      * Sets the Entity Manager. No way around this to get Unit Testing working
+     *
      * @param em the entitymanager
      */
     public void setEntityManager(EntityManager em) {

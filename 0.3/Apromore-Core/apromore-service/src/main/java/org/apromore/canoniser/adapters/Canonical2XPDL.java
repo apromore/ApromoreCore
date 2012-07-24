@@ -1,5 +1,12 @@
 package org.apromore.canoniser.adapters;
 
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import javax.xml.namespace.QName;
+
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
@@ -61,14 +68,6 @@ import org.wfmc._2008.xpdl2.TransitionRestriction;
 import org.wfmc._2008.xpdl2.TransitionRestrictions;
 import org.wfmc._2008.xpdl2.Transitions;
 import org.wfmc._2008.xpdl2.WorkflowProcesses;
-
-import javax.xml.namespace.QName;
-import java.lang.Object;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 public class Canonical2XPDL {
     Map<NodeType, Activity> canon2xpdl = new HashMap<NodeType, Activity>();

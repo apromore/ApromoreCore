@@ -1,8 +1,15 @@
 package org.apromore.manager.client;
 
+import org.apromore.model.ClusterFilterType;
+import org.apromore.model.ClusterSettingsType;
+import org.apromore.model.ClusterSummaryType;
+import org.apromore.model.ClusterType;
+import org.apromore.model.ClusteringSummaryType;
 import org.apromore.model.DomainsType;
 import org.apromore.model.EditSessionType;
+import org.apromore.model.FragmentType;
 import org.apromore.model.NativeTypesType;
+import org.apromore.model.PairDistanceType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.UserType;
@@ -58,13 +65,59 @@ public interface ManagerService {
     EditSessionType readEditSession(int code);
 
     /**
+     * Create a Cluster.
+     * @param settings The settings
+     */
+    void createClusters(ClusterSettingsType settings);
+
+    /**
+     * Get the cluster Summaries.
+     * @param filter the search filter
+     * @return the list of cluster summaries
+     */
+    List<ClusterSummaryType> getClusterSummaries(ClusterFilterType filter);
+
+    /**
+     * Get a Cluster.
+     * @param clusterId the Id of the Cluster we want
+     * @return the found cluster
+     */
+    ClusterType getCluster(String clusterId);
+
+    /**
+     * Get a list of clusters.
+     * @param filter the cluster Filter
+     * @return the found list of clusters
+     */
+    List<ClusterType> getClusters(ClusterFilterType filter);
+
+    /**
+     * the cluster summary.
+     * @return a summary of all clusters
+     */
+    ClusteringSummaryType getClusteringSummary();
+
+    /**
+     * get a Fragment.
+     * @param fragmentId the id of the fragment we want
+     * @return the found fragment
+     */
+    FragmentType getFragment(String fragmentId);
+
+    /**
+     * get the distance between two fragments.
+     * @param fragmentIds the Id's of the fragments want to find the distances.
+     * @return the list of distances
+     */
+    List<PairDistanceType> getPairwiseDistances(List<String> fragmentIds);
+
+    /**
      * Get the Process Summaries from the Apromore Manager.
      *
      * @param searchCriteria the search criteria to restrict the results
      * @return the ProcessSummaryType from the WebService
      */
     ProcessSummariesType readProcessSummaries(String searchCriteria);
-
 
 
     /**

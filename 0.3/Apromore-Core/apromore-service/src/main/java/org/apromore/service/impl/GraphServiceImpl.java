@@ -1,5 +1,7 @@
 package org.apromore.service.impl;
 
+import java.util.List;
+
 import org.apromore.common.Constants;
 import org.apromore.dao.ContentDao;
 import org.apromore.dao.EdgeDao;
@@ -31,8 +33,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 /**
  * Implementation of the GraphService Contract.
  *
@@ -42,17 +42,20 @@ import java.util.List;
 @Transactional(propagation = Propagation.REQUIRED)
 public class GraphServiceImpl implements GraphService {
 
-    @Autowired @Qualifier("ContentDao")
+    @Autowired
+    @Qualifier("ContentDao")
     private ContentDao contentDao;
-    @Autowired @Qualifier("EdgeDao")
+    @Autowired
+    @Qualifier("EdgeDao")
     private EdgeDao edgeDao;
-    @Autowired @Qualifier("NodeDao")
+    @Autowired
+    @Qualifier("NodeDao")
     private NodeDao nDao;
 
 
     /**
      * @see org.apromore.service.GraphService#getContent(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -62,7 +65,7 @@ public class GraphServiceImpl implements GraphService {
 
     /**
      * @see org.apromore.service.GraphService#getContentIds()
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -72,11 +75,11 @@ public class GraphServiceImpl implements GraphService {
 
     /**
      * @see org.apromore.service.GraphService#getGraph(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public CPF getGraph(String contentID){
+    public CPF getGraph(String contentID) {
         CPF g = new CPF();
         fillNodes(g, contentID);
         fillEdges(g, contentID);
@@ -85,7 +88,7 @@ public class GraphServiceImpl implements GraphService {
 
     /**
      * @see org.apromore.service.GraphService#getGraph(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -102,7 +105,7 @@ public class GraphServiceImpl implements GraphService {
 
     /**
      * @see org.apromore.service.GraphService#getGraph(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -114,8 +117,6 @@ public class GraphServiceImpl implements GraphService {
             procModelGraph.addEdge(v1, v2);
         }
     }
-
-
 
 
     /* Build the correct type of Node so we don't loss Information */
@@ -160,7 +161,7 @@ public class GraphServiceImpl implements GraphService {
             addResources((CpfNode) result, node);
             addObjects((CpfNode) result, node);
             addNodeAttributes((CpfNode) result, node);
-        }  else if (node.getCtype().equals(CpfAndGateway.class.getName())) {
+        } else if (node.getCtype().equals(CpfAndGateway.class.getName())) {
             result = new CpfAndGateway(node.getVname());
             result.setId(String.valueOf(node.getVid()));
             addResources((CpfNode) result, node);
@@ -216,10 +217,9 @@ public class GraphServiceImpl implements GraphService {
 //    }
 
 
-
-
     /**
      * Set the Content DAO object for this class. Mainly for spring tests.
+     *
      * @param cntDAOJpa the content Dao.
      */
     public void setContentDao(ContentDao cntDAOJpa) {
@@ -228,6 +228,7 @@ public class GraphServiceImpl implements GraphService {
 
     /**
      * Set the Edge DAO object for this class. Mainly for spring tests.
+     *
      * @param edgeDAOJpa the Edge Dao.
      */
     public void setEdgeDao(EdgeDao edgeDAOJpa) {
@@ -236,6 +237,7 @@ public class GraphServiceImpl implements GraphService {
 
     /**
      * Set the Node DAO object for this class. Mainly for spring tests.
+     *
      * @param nodeDAOJpa the Node Dao.
      */
     public void setNodeDao(NodeDao nodeDAOJpa) {

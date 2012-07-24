@@ -1,4 +1,4 @@
-<panel id="navigationPanel" width="100%">
+<panel id="navigationPanel" vflex="true" hflex="true">
 	<panelchildren>
 		<hbox>
 			<listbox id="treeChoice" rows="1" mold="select">

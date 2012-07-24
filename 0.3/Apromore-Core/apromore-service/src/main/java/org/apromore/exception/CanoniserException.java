@@ -11,31 +11,34 @@ public class CanoniserException extends Exception {
     /**
      * Default Constructor.
      */
-	public CanoniserException() {
-	}
+    public CanoniserException() {
+    }
 
     /**
      * Constructor.
+     *
      * @param message the message to put with the exception.
      */
-	public CanoniserException(String message) {
-		super(message);
-	}
+    public CanoniserException(String message) {
+        super(message);
+    }
 
     /**
      * Constructor.
+     *
      * @param cause The exception that caused this exception to be thrown.
      */
-	public CanoniserException(Throwable cause) {
-		super(cause);
-	}
+    public CanoniserException(Throwable cause) {
+        super(cause);
+    }
 
     /**
      * Constructor.
+     *
      * @param message the message to put with the exception.
-     * @param cause The exception that caused this exception to be thrown.
+     * @param cause   The exception that caused this exception to be thrown.
      */
-	public CanoniserException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public CanoniserException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

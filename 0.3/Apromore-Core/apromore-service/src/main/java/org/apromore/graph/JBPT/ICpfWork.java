@@ -16,6 +16,7 @@ public interface ICpfWork extends ICpfNode {
 
     /**
      * Add a given {@link org.apromore.graph.JBPT.ICpfObject} to this {@link IFlowNode}.
+     *
      * @param object to add to this {@link IFlowNode}
      */
     public void addObject(ICpfObject object);
@@ -27,6 +28,7 @@ public interface ICpfWork extends ICpfNode {
 
     /**
      * Add a given {@link org.apromore.graph.JBPT.ICpfResource} to this {@link IFlowNode}.
+     *
      * @param newResource to add to this {@link IFlowNode}
      */
     public void addResource(ICpfResource newResource);
