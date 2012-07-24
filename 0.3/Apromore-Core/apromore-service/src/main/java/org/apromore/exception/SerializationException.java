@@ -7,7 +7,8 @@ package org.apromore.exception;
  */
 public class SerializationException extends Exception {
 
-    public SerializationException() { }
+    public SerializationException() {
+    }
 
     public SerializationException(String arg0) {
         super(arg0);

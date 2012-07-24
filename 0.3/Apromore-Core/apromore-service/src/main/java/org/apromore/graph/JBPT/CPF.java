@@ -1,14 +1,14 @@
 package org.apromore.graph.JBPT;
 
-import org.jbpt.pm.ControlFlow;
-import org.jbpt.pm.FlowNode;
-import org.jbpt.pm.NonFlowNode;
-import org.jbpt.pm.ProcessModel;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.jbpt.pm.ControlFlow;
+import org.jbpt.pm.FlowNode;
+import org.jbpt.pm.NonFlowNode;
+import org.jbpt.pm.ProcessModel;
 
 /**
  * Implementation of the Canonical Process Format for JBPT.
@@ -69,7 +69,7 @@ public class CPF extends ProcessModel implements ICpf<ControlFlow<FlowNode>, Flo
     }
 
     public String getVertexProperty(String vertexId, String propertyName) {
-        String result  = null;
+        String result = null;
         Map<String, String> properties = vertexProperties.get(vertexId);
         if (properties != null) {
             result = properties.get(propertyName);

@@ -1,5 +1,9 @@
 package org.apromore.service.impl;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
+
 import org.apromore.common.Constants;
 import org.apromore.dao.ContentDao;
 import org.apromore.dao.FragmentVersionDagDao;
@@ -43,10 +47,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-
 /**
  * Implementation of the RepositoryService Contract.
  *
@@ -58,46 +58,59 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryServiceImpl.class);
 
-    @Autowired @Qualifier("ProcessBranchDao")
+    @Autowired
+    @Qualifier("ProcessBranchDao")
     private ProcessBranchDao bDao;
-    @Autowired @Qualifier("ContentDao")
+    @Autowired
+    @Qualifier("ContentDao")
     private ContentDao cDao;
-    @Autowired @Qualifier("ProcessDao")
+    @Autowired
+    @Qualifier("ProcessDao")
     private ProcessDao pDao;
-    @Autowired @Qualifier("ProcessModelVersionDao")
+    @Autowired
+    @Qualifier("ProcessModelVersionDao")
     private ProcessModelVersionDao pmvDao;
-    @Autowired @Qualifier("ProcessFragmentMapDao")
+    @Autowired
+    @Qualifier("ProcessFragmentMapDao")
     private ProcessFragmentMapDao pfmDao;
-    @Autowired @Qualifier("FragmentVersionDao")
+    @Autowired
+    @Qualifier("FragmentVersionDao")
     private FragmentVersionDao fvDao;
-    @Autowired @Qualifier("FragmentVersionDagDao")
+    @Autowired
+    @Qualifier("FragmentVersionDagDao")
     private FragmentVersionDagDao fvdDao;
 
-    @Autowired @Qualifier("UserService")
+    @Autowired
+    @Qualifier("UserService")
     private UserService uSrv;
-    @Autowired @Qualifier("FormatService")
+    @Autowired
+    @Qualifier("FormatService")
     private FormatService fSrv;
-    @Autowired @Qualifier("FragmentService")
+    @Autowired
+    @Qualifier("FragmentService")
     private FragmentService frgSrv;
-    @Autowired @Qualifier("LockService")
+    @Autowired
+    @Qualifier("LockService")
     private LockService lSrv;
 
-    @Autowired @Qualifier("Decomposer")
+    @Autowired
+    @Qualifier("Decomposer")
     private Decomposer decomposer;
-    @Autowired @Qualifier("Composer")
+    @Autowired
+    @Qualifier("Composer")
     private Composer composer;
-    @Autowired @Qualifier("ChangePropagator")
+    @Autowired
+    @Qualifier("ChangePropagator")
     private ChangePropagator cPropagator;
-
 
 
     /**
      * @see RepositoryService#addProcessModel(String, String, String, String, String, String, String, String, String, org.apromore.graph.JBPT.CPF)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public ProcessModelVersion addProcessModel(String processName, String versionName, String username, String cpfURI,
-            String nativeType, String domain, String documentation, String created, String lastUpdated, CPF proModGrap)
+                                               String nativeType, String domain, String documentation, String created, String lastUpdated, CPF proModGrap)
             throws ImportException {
         if (proModGrap == null || proModGrap.getVertices().isEmpty() || proModGrap.getEdges().isEmpty()) {
             LOGGER.error("Process " + processName + " Failed to import correctly.");
@@ -128,7 +141,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * @see RepositoryService#updateProcessModel(org.apromore.graph.JBPT.CPF)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void updateProcessModel(CPF g) {
@@ -158,8 +171,8 @@ public class RepositoryServiceImpl implements RepositoryService {
             ProcessModelVersion pmVersion = pmvDao.getCurrentProcessModelVersion(processName, branchName);
             if (Integer.parseInt(versionNumber) != pmVersion.getVersionNumber()) {
                 String msg = "CONFLICT! The process model " + processName + " - " + branchName
-                    + " has been updated by another user. This process model version number: "
-                    + versionNumber + ", Current process model version number: " + pmVersion.getVersionNumber();
+                        + " has been updated by another user. This process model version number: "
+                        + versionNumber + ", Current process model version number: " + pmVersion.getVersionNumber();
                 LOGGER.error(msg);
             }
 
@@ -173,7 +186,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * @see RepositoryService#updateProcessModel(String, String, org.apromore.graph.JBPT.CPF)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void updateProcessModel(String versionId, String branchId, CPF g) {//
@@ -192,8 +205,8 @@ public class RepositoryServiceImpl implements RepositoryService {
             ProcessModelVersion pmVersion = pmvDao.getCurrentProcessModelVersion(branchId);
             if (Integer.parseInt(versionNumber) != pmVersion.getVersionNumber()) {
                 String msg = "CONFLICT! The process model " + branchId + " - " + versionId + " has been updated by another user." +
-                                     "\nThis process model version number: " + versionNumber +
-                                     "\nCurrent process model version number: " + pmVersion.getVersionNumber();
+                        "\nThis process model version number: " + versionNumber +
+                        "\nCurrent process model version number: " + pmVersion.getVersionNumber();
                 LOGGER.error(msg);
             }
 
@@ -209,7 +222,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * @see RepositoryService#getCanonicalFormat(org.apromore.dao.model.ProcessModelVersion)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public CPF getCanonicalFormat(ProcessModelVersion pmv) {
@@ -221,7 +234,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * @see RepositoryService#getCanonicalFormat(org.apromore.dao.model.ProcessModelVersion, String, String, boolean)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public CPF getCanonicalFormat(ProcessModelVersion pmv, String processName, String branchName, boolean lock) {
@@ -247,7 +260,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * @see RepositoryService#getCurrentProcessModel(String, boolean)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public CPF getCurrentProcessModel(String processName, boolean lock) throws LockFailedException {
@@ -256,7 +269,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * @see RepositoryService#getCurrentProcessModel(String, String, boolean)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public CPF getCurrentProcessModel(String processName, String branchName, boolean lock) throws LockFailedException {
@@ -277,7 +290,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * @see RepositoryService#getProcessModel(String, String, String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public CPF getProcessModel(String processName, String branchName, String versionName) {
@@ -291,7 +304,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * @see RepositoryService#getFragment(org.apromore.graph.JBPT.CPF, java.util.List, boolean)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public CPF getFragment(CPF g, List<String> nodes, boolean lock)
@@ -314,7 +327,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * @see RepositoryService#getFragment(String, boolean)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public CPF getFragment(String fragmentId, boolean lock) throws LockFailedException {
@@ -343,6 +356,7 @@ public class RepositoryServiceImpl implements RepositoryService {
      * Updates the fragment if it doesn't conflict with concurrent modifications
      * to the same fragment. Change will be propagated to all process models
      * with instant change propagation policy.
+     *
      * @param fg ProcessModelGraph containing the updated fragment.
      */
     @Override
@@ -374,9 +388,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     /**
-     *
      * @param processName Name of the process.
-     * @param branchName Name of the branch.
+     * @param branchName  Name of the branch.
      */
     @Override
     public void deleteProcessModel(String processName, String branchName) {
@@ -389,10 +402,6 @@ public class RepositoryServiceImpl implements RepositoryService {
             LOGGER.error(msg, e);
         }
     }
-
-
-
-
 
 
     /* Inserts a new process into the DB. */
@@ -437,7 +446,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /* inserts a new process model into the repository */
     private ProcessModelVersion insertProcessModelVersion(CPF proModGrap, ProcessBranch branch, String rootFragmentVersionId,
-            int numVertices, int numEdges) {
+                                                          int numVertices, int numEdges) {
         ProcessModelVersion process = new ProcessModelVersion();
         ProcessModelVersion pmv = pmvDao.getMaxVersionProcessModel(branch);
 
@@ -529,7 +538,6 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
 
-
     private void deleteProcessModel(Integer pvid) throws ExceptionDao {
         try {
             String rootFragmentVersion = pDao.getRootFragmentVersionId(pvid);
@@ -556,11 +564,9 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
 
-
-
-
     /**
      * Set the Branch DAO object for this class. Mainly for spring tests.
+     *
      * @param brnDAOJpa the branch Dao.
      */
     public void setBranchDao(ProcessBranchDao brnDAOJpa) {
@@ -569,6 +575,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * Set the Content DAO object for this class. Mainly for spring tests.
+     *
      * @param cntDAOJpa the content Dao.
      */
     public void setContentDao(ContentDao cntDAOJpa) {
@@ -577,6 +584,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * Set the Process DAO object for this class. Mainly for spring tests.
+     *
      * @param prsDAOJpa the process Dao.
      */
     public void setProcessDao(ProcessDao prsDAOJpa) {
@@ -585,6 +593,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * Set the Process Model Version DAO object for this class. Mainly for spring tests.
+     *
      * @param pmvDAOJpa the process Model Version Dao.
      */
     public void setProcessModelVersionDao(ProcessModelVersionDao pmvDAOJpa) {
@@ -593,6 +602,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * Set the Process Fragment Map DAO object for this class. Mainly for spring tests.
+     *
      * @param pfmDAOJpa the process Fragment Map Dao.
      */
     public void setProcessFragmentMapDao(ProcessFragmentMapDao pfmDAOJpa) {
@@ -601,6 +611,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * Set the Fragment Version DAO object for this class. Mainly for spring tests.
+     *
      * @param frgDAOJpa the Fragment Version Dao.
      */
     public void setFragmentVersionDao(FragmentVersionDao frgDAOJpa) {
@@ -609,6 +620,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * Set the Fragment Version Dag DAO object for this class. Mainly for spring tests.
+     *
      * @param fvdDAOJpa the Fragment Version Dag Dao.
      */
     public void setFragmentVersionDagDao(FragmentVersionDagDao fvdDAOJpa) {
@@ -617,6 +629,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * Set the User Service for this class. Mainly for spring tests.
+     *
      * @param usrSrv the service
      */
     public void setUserService(UserServiceImpl usrSrv) {
@@ -625,6 +638,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * Set the Format Service for this class. Mainly for spring tests.
+     *
      * @param fmtSrv the service
      */
     public void setFormatService(FormatServiceImpl fmtSrv) {
@@ -633,6 +647,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * Set the Fragment Service for this class. Mainly for spring tests.
+     *
      * @param frgsrv the service
      */
     public void setFragmentService(FragmentService frgsrv) {
@@ -641,6 +656,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * Set the lock Service for this class. Mainly for spring tests.
+     *
      * @param lsrv the service
      */
     public void setLockService(LockService lsrv) {
@@ -649,6 +665,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * Set the Composer for this class. Mainly for spring tests.
+     *
      * @param comp the composer
      */
     public void setComposer(Composer comp) {
@@ -657,6 +674,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * Set the Decomposer for this class. Mainly for spring tests.
+     *
      * @param decomp the Decomposer
      */
     public void setDecomposer(Decomposer decomp) {
@@ -665,6 +683,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /**
      * Set the Change Propagator for this class. Mainly for spring tests.
+     *
      * @param changePropagator the Propagator
      */
     public void setChangePropagator(ChangePropagator changePropagator) {

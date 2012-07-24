@@ -4,7 +4,6 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.adapters.pnml2canonical.NamespaceFilter;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.pnml.PnmlType;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -34,7 +33,7 @@ import java.io.IOException;
 /**
  * Testing the Marshaling of the PNML format.
  */
-@Ignore
+
 public class TestMarshaling {
 
     @Test

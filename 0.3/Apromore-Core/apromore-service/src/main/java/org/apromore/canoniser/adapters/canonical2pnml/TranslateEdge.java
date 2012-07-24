@@ -1,11 +1,11 @@
 package org.apromore.canoniser.adapters.canonical2pnml;
 
+import java.math.BigInteger;
+
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NodeType;
 import org.apromore.pnml.ArcNameType;
 import org.apromore.pnml.ArcType;
-
-import java.math.BigInteger;
 
 public class TranslateEdge {
     DataHandler data;

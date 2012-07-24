@@ -1,8 +1,10 @@
 package org.apromore.portal.dialogController;
 
+import org.apromore.manager.client.ManagerService;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionExport;
 import org.apromore.model.AnnotationsType;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
@@ -18,6 +20,7 @@ import org.zkoss.zul.Rows;
 import org.zkoss.zul.Window;
 import org.zkoss.zul.api.Row;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.Iterator;

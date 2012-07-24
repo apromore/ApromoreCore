@@ -43,7 +43,7 @@ public class TranslateArc {
             edge.setSourceId(((org.apromore.pnml.NodeType) arc.getSource()).getId());
             edge.setTargetId(((org.apromore.pnml.NodeType) arc.getTarget()).getId());
         } else {
-            edge.setSourceId(((org.apromore.pnml.NodeType) arc .getSource()).getId());
+            edge.setSourceId(((org.apromore.pnml.NodeType) arc.getSource()).getId());
             edge.setTargetId(((org.apromore.pnml.NodeType) arc.getTarget()).getId());
         }
         edge.setId(String.valueOf(ids++));

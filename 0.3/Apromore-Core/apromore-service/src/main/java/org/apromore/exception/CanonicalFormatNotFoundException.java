@@ -11,31 +11,34 @@ public class CanonicalFormatNotFoundException extends Exception {
     /**
      * Default Constructor.
      */
-	public CanonicalFormatNotFoundException() {
-	}
+    public CanonicalFormatNotFoundException() {
+    }
 
     /**
      * Constructor.
+     *
      * @param message the message to put with the exception.
      */
-	public CanonicalFormatNotFoundException(String message) {
-		super(message);
-	}
+    public CanonicalFormatNotFoundException(String message) {
+        super(message);
+    }
 
     /**
      * Constructor.
+     *
      * @param cause The exception that caused this exception to be thrown.
      */
-	public CanonicalFormatNotFoundException(Throwable cause) {
-		super(cause);
-	}
+    public CanonicalFormatNotFoundException(Throwable cause) {
+        super(cause);
+    }
 
     /**
      * Constructor.
+     *
      * @param message the message to put with the exception.
-     * @param cause The exception that caused this exception to be thrown.
+     * @param cause   The exception that caused this exception to be thrown.
      */
-	public CanonicalFormatNotFoundException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public CanonicalFormatNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

@@ -1,5 +1,10 @@
 package org.apromore.dao.service;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.sql.SQLException;
+import javax.activation.DataHandler;
+
 import org.apromore.dao.DataAccessCanoniserManager;
 import org.apromore.dao.dao.ProcessDao;
 import org.apromore.exception.ExceptionAnntotationName;
@@ -18,11 +23,6 @@ import org.apromore.model.WriteAnnotationOutputMsgType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import javax.activation.DataHandler;
-import java.io.IOException;
-import java.io.InputStream;
-import java.sql.SQLException;
 
 /**
  *

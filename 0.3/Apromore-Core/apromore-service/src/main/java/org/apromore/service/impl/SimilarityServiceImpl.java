@@ -1,5 +1,8 @@
 package org.apromore.service.impl;
 
+import java.util.List;
+import java.util.Map.Entry;
+
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.ProcessModelVersionDao;
 import org.apromore.dao.model.ProcessModelVersion;
@@ -24,9 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-import java.util.Map.Entry;
-
 /**
  * Implementation of the SimilarityService Contract.
  *
@@ -39,23 +39,27 @@ public class SimilarityServiceImpl implements SimilarityService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimilarityServiceImpl.class);
 
 
-    @Autowired @Qualifier("ProcessModelVersionDao")
+    @Autowired
+    @Qualifier("ProcessModelVersionDao")
     private ProcessModelVersionDao pmvDao;
 
-    @Autowired @Qualifier("CanoniserService")
+    @Autowired
+    @Qualifier("CanoniserService")
     private CanoniserService canSrv;
-    @Autowired @Qualifier("RepositoryService")
+    @Autowired
+    @Qualifier("RepositoryService")
     private RepositoryService rSrv;
-    @Autowired @Qualifier("UIHelper")
+    @Autowired
+    @Qualifier("UIHelper")
     private UIHelper uiSrv;
 
 
     /**
      * @see org.apromore.service.SimilarityService#SearchForSimilarProcesses(Integer, String, Boolean, String, org.apromore.model.ParametersType)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     public ProcessSummariesType SearchForSimilarProcesses(final Integer branchId, final String versionName, final Boolean latestVersions,
-            final String method, final ParametersType params) throws ExceptionSearchForSimilar {
+                                                          final String method, final ParametersType params) throws ExceptionSearchForSimilar {
         ProcessVersionsType similarProcesses = null;
         ProcessModelVersion query = pmvDao.findProcessModelVersionByBranch(branchId, versionName);
         List<ProcessModelVersion> models = pmvDao.getAllProcessModelVersions(latestVersions);
@@ -75,7 +79,6 @@ public class SimilarityServiceImpl implements SimilarityService {
 
         return uiSrv.buildProcessSummaryList("", similarProcesses);
     }
-
 
 
     /* Responsible for getting all the Models and converting them to CPT internal format */
@@ -135,12 +138,9 @@ public class SimilarityServiceImpl implements SimilarityService {
     }
 
 
-
-
-
-
     /**
      * Set the Process Model Version DAO object for this class. Mainly for spring tests.
+     *
      * @param pmvDAOJpa the Process Model Version Dao.
      */
     public void setProcessModelVersionDao(ProcessModelVersionDao pmvDAOJpa) {
@@ -149,6 +149,7 @@ public class SimilarityServiceImpl implements SimilarityService {
 
     /**
      * Set the Canoniser Service for this class. Mainly for spring tests.
+     *
      * @param newCanSrv the service
      */
     public void setCanoniserService(CanoniserService newCanSrv) {
@@ -157,6 +158,7 @@ public class SimilarityServiceImpl implements SimilarityService {
 
     /**
      * Set the Repository Service for this class. Mainly for spring tests.
+     *
      * @param newRSrv the service
      */
     public void setRepositoryService(RepositoryService newRSrv) {
@@ -165,6 +167,7 @@ public class SimilarityServiceImpl implements SimilarityService {
 
     /**
      * Set the Repository Service for this class. Mainly for spring tests.
+     *
      * @param newUISrv the service
      */
     public void setUIHelperService(UIHelper newUISrv) {

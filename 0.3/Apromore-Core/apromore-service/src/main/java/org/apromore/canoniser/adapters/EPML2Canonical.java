@@ -22,6 +22,14 @@
  */
 package org.apromore.canoniser.adapters;
 
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
+
 import de.epml.TEpcElement;
 import de.epml.TExtensibleElements;
 import de.epml.TypeAND;
@@ -44,7 +52,6 @@ import org.apromore.anf.GraphicsType;
 import org.apromore.anf.LineType;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SizeType;
-import org.apromore.exception.CanoniserException;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -64,14 +71,7 @@ import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import org.apromore.exception.CanoniserException;
 
 public class EPML2Canonical {
 
@@ -259,7 +259,7 @@ public class EPML2Canonical {
                     addNodeAnnotations(element.getValue());
 
                 } else if (element.getValue() instanceof TypeFunction) {
-                    translateFunction(net, ((JAXBElement<TypeFunction>)obj).getValue());
+                    translateFunction(net, ((JAXBElement<TypeFunction>) obj).getValue());
                     addNodeAnnotations(element.getValue());
 
                 } else if (element.getValue() instanceof TypeAND) {

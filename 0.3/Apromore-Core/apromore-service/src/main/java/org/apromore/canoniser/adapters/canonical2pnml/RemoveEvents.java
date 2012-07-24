@@ -1,5 +1,11 @@
 package org.apromore.canoniser.adapters.canonical2pnml;
 
+import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -15,12 +21,6 @@ import org.apromore.cpf.TimerType;
 import org.apromore.pnml.DimensionType;
 import org.apromore.pnml.GraphicsSimpleType;
 import org.apromore.pnml.TriggerType;
-
-import java.math.BigDecimal;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
 
 public class RemoveEvents {
     DataHandler data;

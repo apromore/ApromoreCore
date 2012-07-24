@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?page title="Apromore: Similarity Clusters Visualisation"?>
+<zk>
+
+<window xmlns:n="http://www.zkoss.org/2005/zk/native"
+	width="100%" height="100%" id="similarityclustervisualisation"
+	title="Similarity Clusters Visualisation" 
+	use="org.apromore.portal.dialogController.similarityclusters.visualisation.ClusterVisualisationController">
+	
+	<n:style type="text/css">		
+		text {
+			font-family: Verdana;
+		}
+		
+		circle.node {
+			stroke: #000000;
+			stroke-width: 1.5px;
+		}
+		
+		line.link {	
+			stroke: #999999;					
+			stroke-width: 3px;	
+		}
+						
+		circle.fragment {
+		}
+		
+		circle.medoid {
+		}
+		
+		circle.selected {
+			stroke: #FF0000;
+		}
+		
+		line.inter {
+			stroke-opacity: 0.4;
+		}
+		
+		line.intra {
+			stroke-opacity: 0.6;
+		}
+			
+		#similarityclustercanvas {
+			padding: 2px;
+		}	
+		
+		svg {
+			width: 100%; 
+			height: 100%;
+		}
+	</n:style>	
+	
+	<n:script src="../../js/similarityclusters/json2.js"></n:script>
+    <n:script src="../../js/similarityclusters/d3.v2.min.js"></n:script>
+    <n:script src="../../js/similarityclusters/clustervisualisation.js"></n:script>
+   
+    
+    <n:script type="text/javascript">
+    	zk.afterMount(function () {
+	   		var param = {
+	   			doAnimate : true,
+	   			canvasId : 'similarityclustercanvas',  			
+	   			data: '${arg.visualisationJSON}',
+	   			onNodeClick: function(data, onClose) {
+	   				var windowReference = window.open('fragment.zul?fragmentId='+data.id,'ApromoreFragmentWindow'+new Date().getTime(),
+	   				'left=20,top=20,width=500,height=600,toolbar=0,resizable=1,location=0');
+	   				windowReference.onunload = function() {
+	   					if (windowReference.location != 'about:blank') {   					
+	   						onClose();
+	   					}
+	   				}
+	       		},
+	       		onSelectNode: function(selection, size) {
+	       			
+	       			if (size == 1) {
+	       				jq('#btnComputInterMedoid').removeAttr('disabled');
+	       			} else {
+	       				jq('#btnComputInterMedoid').attr('disabled', 'disabled');
+	       			}
+	       			
+	       			if (size > 0) {
+	       				jq('#btnReset').removeAttr('disabled');
+	       				jq('#btnToggleInterMedoid').removeAttr('disabled');
+	       			} else {
+	       				jq('#btnReset').attr('disabled', 'disabled');
+	       				jq('#btnToggleInterMedoid').attr('disabled', 'disabled');
+	       			}
+	       		}
+	   		}    		
+	   		
+	   		clusterVisualisation.visualiseData(param);
+	   		
+	   		jq(window).resize(function(){
+	   			var newWidth = jq("#"+param.canvasId).innerWidth();
+	   			var newHeight = jq("#"+param.canvasId).innerHeight();
+	   			
+	   			var canvas = d3.select('#' + param.canvasId);
+	   			if (canvas.select("svg").size() > 0) {
+					canvas.select("svg").attr("width", newWidth).attr("height", newHeight);
+					clusterVisualisation.resize(newWidth,newHeight);
+	   			} 	   			
+	   		});
+	   		
+	   	});
+	   	
+	   	function showSelection() {	   		   			   	
+	   		var selectedNodes = clusterVisualisation.getSelectedNodes();		   		   	
+	   		zAu.send(new zk.Event(zk.Widget.$(jq("$similarityclustervisualisation")), 'onShowSelection', selectedNodes));	   		
+	   	}
+	   	
+	   	function reset() {
+	   		d3.selectAll("circle.selected").classed("selected",false);
+	   		jq('#btnToggleInterMedoid').attr('disabled', 'disabled');
+	   		showSelection();
+	   	}
+    </n:script>
+    
+    <n:button n:id="btnToggleFragments" n:onClick="clusterVisualisation.toggleFragments();clusterVisualisation.toggleIntra();">Toogle Fragments</n:button>
+    <n:button n:id="btnToggleInterMedoid" n:onClick="clusterVisualisation.toggleInter();" n:disabled="disabled">Toogle Inter-Medoid Lines</n:button>
+    <n:button n:id="btnComputInterMedoid" n:onClick="showSelection();" n:disabled="disabled">Compute Inter-Medoid Distances</n:button>
+	<n:button n:id="btnReset" n:onClick="reset();" n:disabled="disabled">Reset</n:button>        
+	
+	<n:div id="similarityclustercanvas" style="width: 100%; height: 100%"></n:div>
+
+</window>
+</zk>

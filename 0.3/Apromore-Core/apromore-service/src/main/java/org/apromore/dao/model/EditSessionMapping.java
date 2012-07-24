@@ -1,10 +1,7 @@
 package org.apromore.dao.model;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.GenericGenerator;
-import org.springframework.beans.factory.annotation.Configurable;
-
+import java.io.Serializable;
+import java.util.Date;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,8 +12,11 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.Temporal;
 import javax.persistence.TemporalType;
-import java.io.Serializable;
-import java.util.Date;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.GenericGenerator;
+import org.springframework.beans.factory.annotation.Configurable;
 
 /**
  * Stores all the edits to the session mappings in apromore.
@@ -29,7 +29,9 @@ import java.util.Date;
 @Configurable("editSessionMapping")
 public class EditSessionMapping implements Serializable {
 
-    /** Hard coded for interoperability. */
+    /**
+     * Hard coded for interoperability.
+     */
     private static final long serialVersionUID = -7892398704638485548L;
 
     private Integer code;
@@ -48,7 +50,8 @@ public class EditSessionMapping implements Serializable {
     /**
      * Default Constructor.
      */
-    public EditSessionMapping() { }
+    public EditSessionMapping() {
+    }
 
 
     @Id
@@ -58,7 +61,7 @@ public class EditSessionMapping implements Serializable {
     public Integer getCode() {
         return this.code;
     }
-    
+
     public void setCode(final Integer newCode) {
         this.code = newCode;
     }
@@ -68,7 +71,7 @@ public class EditSessionMapping implements Serializable {
     public User getUser() {
         return this.user;
     }
-    
+
     public void setUser(final User newUser) {
         this.user = newUser;
     }
@@ -78,7 +81,7 @@ public class EditSessionMapping implements Serializable {
     public Process getProcess() {
         return this.process;
     }
-    
+
     public void setProcess(final Process newProcess) {
         this.process = newProcess;
     }
@@ -88,61 +91,61 @@ public class EditSessionMapping implements Serializable {
     public Date getRecordTime() {
         return this.recordTime;
     }
-    
+
     public void setRecordTime(final Date newRecordTime) {
         this.recordTime = newRecordTime;
     }
-    
+
     @Column(name = "version_name", length = 40)
     public String getVersionName() {
         return this.versionName;
     }
-    
+
     public void setVersionName(final String newVersionName) {
         this.versionName = newVersionName;
     }
-    
+
     @Column(name = "nat_type", length = 20)
     public String getNatType() {
         return this.natType;
     }
-    
+
     public void setNatType(final String newNatType) {
         this.natType = newNatType;
     }
-    
+
     @Column(name = "annotation", length = 40)
     public String getAnnotation() {
         return this.annotation;
     }
-    
+
     public void setAnnotation(final String newAnnotation) {
         this.annotation = newAnnotation;
     }
-    
+
     @Column(name = "remove_fake_events")
     public Boolean getRemoveFakeEvents() {
         return this.removeFakeEvents;
     }
-    
+
     public void setRemoveFakeEvents(final Boolean newRemoveFakeEvents) {
         this.removeFakeEvents = newRemoveFakeEvents;
     }
-    
+
     @Column(name = "creation_date", length = 35)
     public String getCreationDate() {
         return this.creationDate;
     }
-    
+
     public void setCreationDate(final String newCreationDate) {
         this.creationDate = newCreationDate;
     }
-    
-    @Column(name="last_update", length=35)
+
+    @Column(name = "last_update", length = 35)
     public String getLastUpdate() {
         return this.lastUpdate;
     }
-    
+
     public void setLastUpdate(final String newLastUpdate) {
         this.lastUpdate = newLastUpdate;
     }

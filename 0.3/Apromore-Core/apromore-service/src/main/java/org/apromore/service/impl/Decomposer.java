@@ -1,5 +1,12 @@
 package org.apromore.service.impl;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apromore.dao.ContentDao;
 import org.apromore.dao.model.Content;
 import org.apromore.dao.model.FragmentVersion;
@@ -31,13 +38,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 /**
  * @author Chathura Ekanayake
  */
@@ -45,58 +45,66 @@ import java.util.Set;
 @Transactional(propagation = Propagation.REQUIRED)
 public class Decomposer {
 
-	private static final Logger LOGGER = LoggerFactory.getLogger(Decomposer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Decomposer.class);
 
-    @Autowired @Qualifier("ContentDao")
+    @Autowired
+    @Qualifier("ContentDao")
     private ContentDao cDao;
 
-    @Autowired @Qualifier("ContentService")
+    @Autowired
+    @Qualifier("ContentService")
     private ContentService cSrv;
-    @Autowired @Qualifier("FragmentService")
+    @Autowired
+    @Qualifier("FragmentService")
     private FragmentService fSrv;
 
-    @Autowired @Qualifier("BondContentHandler")
+    @Autowired
+    @Qualifier("BondContentHandler")
     private BondContentHandler bcHandler;
-    @Autowired @Qualifier("PocketMapper")
+    @Autowired
+    @Qualifier("PocketMapper")
     private PocketMapper pMapper;
 
 
-
     /**
      * Decompose the Process Model Graph and save the fragments to the Repository.
      * Why it this here, it should build a list of objects and return to the Repository Service for Persistence?
-     * @param graph  the process model graph
+     *
+     * @param graph       the process model graph
      * @param fragmentIds empty list ready to be populated? why?
      * @return the Root Id.
-     * @throws org.apromore.exception.RepositoryException if something fails while populating the Repository
+     * @throws org.apromore.exception.RepositoryException
+     *          if something fails while populating the Repository
      */
-	public FragmentVersion decompose(CPF graph, List<String> fragmentIds) throws RepositoryException {
-		TreeVisitor visitor = new TreeVisitor();
-		OperationContext op = new OperationContext();
-		op.setGraph(graph);
-		op.setTreeVisitor(visitor);
+    public FragmentVersion decompose(CPF graph, List<String> fragmentIds) throws RepositoryException {
+        TreeVisitor visitor = new TreeVisitor();
+        OperationContext op = new OperationContext();
+        op.setGraph(graph);
+        op.setTreeVisitor(visitor);
 
-		try {
-			RPST rpst = GraphUtil.normalizeGraph(graph);
+        try {
+            RPST rpst = GraphUtil.normalizeGraph(graph);
             FragmentVersion rootFV = decompose(rpst, rpst.getRoot(), op, fragmentIds);
-			fragmentIds.add(rootFV.getFragmentVersionId());
-			return rootFV;
-		} catch (Exception e) {
-			String msg = "Failed to add root fragment version of the process model.";
-			LOGGER.error(msg, e);
-			throw new RepositoryException(msg, e);
-		}
-	}
+            fragmentIds.add(rootFV.getFragmentVersionId());
+            return rootFV;
+        } catch (Exception e) {
+            String msg = "Failed to add root fragment version of the process model.";
+            LOGGER.error(msg, e);
+            throw new RepositoryException(msg, e);
+        }
+    }
 
     /**
      * Decompose the Process Model Graph and save the fragments to the Repository.
      * Why it this here, it should build a list of objects and return to the Repository Service for Persistence?
-     * @param rpst The Refined Process Structure Tree
-     * @param f The Refined Process Structure Tree Node
-     * @param op Operation Context
+     *
+     * @param rpst        The Refined Process Structure Tree
+     * @param f           The Refined Process Structure Tree Node
+     * @param op          Operation Context
      * @param fragmentIds the list of unpopulated Fragment Id's
      * @return the root fragment Id
-     * @throws org.apromore.exception.RepositoryException if something fails while populating the Repository
+     * @throws org.apromore.exception.RepositoryException
+     *          if something fails while populating the Repository
      */
     @SuppressWarnings("unchecked")
     public FragmentVersion decompose(RPST rpst, RPSTNode f, OperationContext op, List<String> fragmentIds)
@@ -145,40 +153,41 @@ public class Decomposer {
 
     /**
      * Deconstructs a Fragment.
-     * @param graph the process model graph
+     *
+     * @param graph       the process model graph
      * @param fragmentIds the fragment Ids
      * @return the root fragment version id
      * @throws org.apromore.exception.RepositoryException
+     *
      */
-	public String decomposeFragment(CPF graph, List<String> fragmentIds) throws RepositoryException {
-		TreeVisitor visitor = new TreeVisitor();
-		OperationContext op = new OperationContext();
-		op.setGraph(graph);
-		op.setTreeVisitor(visitor);
+    public String decomposeFragment(CPF graph, List<String> fragmentIds) throws RepositoryException {
+        TreeVisitor visitor = new TreeVisitor();
+        OperationContext op = new OperationContext();
+        op.setGraph(graph);
+        op.setTreeVisitor(visitor);
 
-		try {
+        try {
             FlowNode entry = FragmentUtil.getFirstVertex(graph.getSourceVertices());
             FlowNode exit = FragmentUtil.getFirstVertex(graph.getSinkVertices());
-			if (graph.getVertices().size() > 2) {
-				RPST<ControlFlow<FlowNode>, FlowNode> rpst = new RPST<ControlFlow<FlowNode>, FlowNode>(graph);
-				RPSTNode rootFragment = rpst.getRoot();
-				FragmentVersion rootFV = decompose(rpst, rootFragment, op, fragmentIds);
-				fragmentIds.add(rootFV.getFragmentVersionId());
-				return rootFV.getFragmentVersionId();
-			} else {
+            if (graph.getVertices().size() > 2) {
+                RPST<ControlFlow<FlowNode>, FlowNode> rpst = new RPST<ControlFlow<FlowNode>, FlowNode>(graph);
+                RPSTNode rootFragment = rpst.getRoot();
+                FragmentVersion rootFV = decompose(rpst, rootFragment, op, fragmentIds);
+                fragmentIds.add(rootFV.getFragmentVersionId());
+                return rootFV.getFragmentVersionId();
+            } else {
                 FragmentVersion rootFV = decomposeSimpleStandaloneFragment(graph, entry, exit, op);
-				fragmentIds.add(rootFV.getFragmentVersionId());
-				return rootFV.getFragmentVersionId();
-			}
-		} catch (Exception e) {
-			String msg = "Failed to add root fragment version.";
-			LOGGER.error(msg, e);
-			throw new RepositoryException(msg, e);
-		}
-	}
+                fragmentIds.add(rootFV.getFragmentVersionId());
+                return rootFV.getFragmentVersionId();
+            }
+        } catch (Exception e) {
+            String msg = "Failed to add root fragment version.";
+            LOGGER.error(msg, e);
+            throw new RepositoryException(msg, e);
+        }
+    }
 
     /**
-     *
      * @param g
      * @param entry
      * @param exit
@@ -188,43 +197,40 @@ public class Decomposer {
      * @throws RepositoryException
      */
     @SuppressWarnings("unchecked")
-	public FragmentVersion decomposeSimpleStandaloneFragment(CPF g, FlowNode entry, FlowNode exit,
-			OperationContext op) throws ExceptionDao, RepositoryException {
-		String keywords = "";
-		int fragmentSize = g.getVertices().size();
-		String nodeType = "P";
+    public FragmentVersion decomposeSimpleStandaloneFragment(CPF g, FlowNode entry, FlowNode exit,
+                                                             OperationContext op) throws ExceptionDao, RepositoryException {
+        String keywords = "";
+        int fragmentSize = g.getVertices().size();
+        String nodeType = "P";
 
-		RPSTNode sNode = new RPSTNode();
-		sNode.getFragment().getVertices().addAll(g.getVertices());
-		sNode.getFragmentEdges().addAll(g.getEdges());
-		sNode.setEntry(entry);
-		sNode.setExit(exit);
+        RPSTNode sNode = new RPSTNode();
+        sNode.getFragment().getVertices().addAll(g.getVertices());
+        sNode.getFragmentEdges().addAll(g.getEdges());
+        sNode.setEntry(entry);
+        sNode.setExit(exit);
 
-		Map<String, String> childMappings = new HashMap<String, String>(0);
+        Map<String, String> childMappings = new HashMap<String, String>(0);
 
-		Set<AbstractDirectedEdge> edges = new HashSet<AbstractDirectedEdge>(g.getEdges());
-		String hash = op.getTreeVisitor().visitSNode(g, edges, entry);
-		String matchingContentId = cSrv.getMatchingContentId(hash);
-		if (matchingContentId == null) {
-			return addFragmentVersion(sNode, hash, childMappings, fragmentSize, nodeType, keywords, op);
-		}
+        Set<AbstractDirectedEdge> edges = new HashSet<AbstractDirectedEdge>(g.getEdges());
+        String hash = op.getTreeVisitor().visitSNode(g, edges, entry);
+        String matchingContentId = cSrv.getMatchingContentId(hash);
+        if (matchingContentId == null) {
+            return addFragmentVersion(sNode, hash, childMappings, fragmentSize, nodeType, keywords, op);
+        }
 
-		FragmentVersion matchingFV = fSrv.getMatchingFragmentVersionId(matchingContentId, childMappings);
-		if (matchingFV != null) {
-			return matchingFV;
-		}
+        FragmentVersion matchingFV = fSrv.getMatchingFragmentVersionId(matchingContentId, childMappings);
+        if (matchingFV != null) {
+            return matchingFV;
+        }
 
         Content cnt = cDao.findContent(matchingContentId);
-		return addFragmentVersion(cnt, childMappings, null, 0, 0, fragmentSize, nodeType, keywords, op);
-	}
-
-
-
+        return addFragmentVersion(cnt, childMappings, null, 0, 0, fragmentSize, nodeType, keywords, op);
+    }
 
 
     /* mapping pocketId -> childId */
     private Map<String, String> mapPocketChildId(RPST rpst, RPSTNode f, OperationContext op, List<String> fragmentIds,
-            Collection<RPSTNode> cs) throws RepositoryException {
+                                                 Collection<RPSTNode> cs) throws RepositoryException {
         Map<String, String> childMappings = new HashMap<String, String>(0);
         for (RPSTNode c : cs) {
             if (TCType.T.equals(c.getType())) {
@@ -241,26 +247,25 @@ public class Decomposer {
     }
 
     /* Adds a fragment version */
-	private FragmentVersion addFragmentVersion(RPSTNode f, String hash, Map<String, String> childMappings, int fragmentSize,
-			String fragmentType, String keywords, OperationContext op)
+    private FragmentVersion addFragmentVersion(RPSTNode f, String hash, Map<String, String> childMappings, int fragmentSize,
+                                               String fragmentType, String keywords, OperationContext op)
             throws RepositoryException {
         Content content = cSrv.addContent(f, hash, op.getGraph());
         return addFragmentVersion(content, childMappings, null, 0, 0, fragmentSize, fragmentType, keywords, op);
-	}
+    }
 
     /* Adds a fragment version */
-	private FragmentVersion addFragmentVersion(Content cid, Map<String, String> childMappings, String derivedFrom,
-			int lockStatus, int lockCount, int originalSize, String fragmentType, String keywords, OperationContext op)
+    private FragmentVersion addFragmentVersion(Content cid, Map<String, String> childMappings, String derivedFrom,
+                                               int lockStatus, int lockCount, int originalSize, String fragmentType, String keywords, OperationContext op)
             throws RepositoryException {
-		op.addProcessedFragmentType(fragmentType);
+        op.addProcessedFragmentType(fragmentType);
         return fSrv.addFragmentVersion(cid, childMappings, derivedFrom, lockStatus, lockCount, originalSize, fragmentType);
-	}
-
-
+    }
 
 
     /**
      * Set the Content DAO object for this class. Mainly for spring tests.
+     *
      * @param cntDAOJpa the content Dao.
      */
     public void setContentDao(ContentDao cntDAOJpa) {
@@ -269,6 +274,7 @@ public class Decomposer {
 
     /**
      * Set the Content Service object for this class. Mainly for spring tests.
+     *
      * @param cService the Content Service.
      */
     public void setContentService(ContentService cService) {
@@ -277,6 +283,7 @@ public class Decomposer {
 
     /**
      * Set the Fragment Service object for this class. Mainly for spring tests.
+     *
      * @param fService the Fragment Service.
      */
     public void setFragmentService(FragmentService fService) {

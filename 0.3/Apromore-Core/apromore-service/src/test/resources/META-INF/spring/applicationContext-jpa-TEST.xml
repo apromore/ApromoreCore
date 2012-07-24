@@ -59,6 +59,7 @@
     <bean id="UserDao" class="org.apromore.dao.jpa.UserDaoJpa" />
 
     <bean id="ContentDao" class="org.apromore.dao.jpa.ContentDaoJpa" />
+    <bean id="ClusteringDao" class="org.apromore.dao.jpa.ClusteringDaoJpa" />
     <bean id="ProcessDao" class="org.apromore.dao.jpa.ProcessDaoJpa" />
     <bean id="ProcessBranchDao" class="org.apromore.dao.jpa.ProcessBranchDaoJpa" />
     <bean id="ProcessFragmentMapDao" class="org.apromore.dao.jpa.ProcessFragmentMapDaoJpa" />

@@ -1,6 +1,5 @@
 package org.apromore.toolbox.similaritySearch.common;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.StringTokenizer;
 
 import org.apromore.toolbox.similaritySearch.common.stemmer.SnowballStemmer;
@@ -25,7 +24,7 @@ public class Settings {
     }
 
     @SuppressWarnings("rawtypes")
-    public static SnowballStemmer getStemmer(String language){
+    public static SnowballStemmer getStemmer(String language) {
         Class stemClass;
         SnowballStemmer stemmer;
 
@@ -45,7 +44,7 @@ public class Settings {
         String result = "";
 
         while (st.hasMoreTokens()) {
-            result += st.nextToken()+ (st.hasMoreTokens() ? " " : "");
+            result += st.nextToken() + (st.hasMoreTokens() ? " " : "");
         }
 
         return result;

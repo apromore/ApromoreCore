@@ -1,9 +1,8 @@
 package org.apromore.dao.model;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.beans.factory.annotation.Configurable;
-
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,9 +13,10 @@ import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -27,15 +27,17 @@ import static javax.persistence.GenerationType.IDENTITY;
  */
 @Entity
 @Table(name = "process",
-    uniqueConstraints = {
-        @UniqueConstraint(columnNames = { "processId" })
-    }
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"processId"})
+        }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Configurable("process")
 public class Process implements Serializable {
 
-    /** Hard coded for interoperability. */
+    /**
+     * Hard coded for interoperability.
+     */
     private static final long serialVersionUID = -2353656404638485548L;
 
     private Integer processId;
@@ -58,6 +60,7 @@ public class Process implements Serializable {
 
     /**
      * Get the Primary Key for the Object.
+     *
      * @return Returns the Id.
      */
     @Id
@@ -69,6 +72,7 @@ public class Process implements Serializable {
 
     /**
      * Set the Primary Key for the Object.
+     *
      * @param newProcessId The id to set.
      */
     public void setProcessId(Integer newProcessId) {
@@ -78,6 +82,7 @@ public class Process implements Serializable {
 
     /**
      * Get the Name for the Object.
+     *
      * @return Returns the name.
      */
     @Column(name = "name", unique = false, nullable = false, length = 100)
@@ -87,6 +92,7 @@ public class Process implements Serializable {
 
     /**
      * Set the Name for the Object.
+     *
      * @param newName The name to set.
      */
     public void setName(final String newName) {
@@ -95,6 +101,7 @@ public class Process implements Serializable {
 
     /**
      * Get the User for the Object.
+     *
      * @return Returns the domain.
      */
     @Column(name = "domain", unique = false, nullable = false, length = 40)
@@ -104,6 +111,7 @@ public class Process implements Serializable {
 
     /**
      * Set the domain for the Object.
+     *
      * @param newDomain The domain to set.
      */
     public void setDomain(final String newDomain) {
@@ -113,6 +121,7 @@ public class Process implements Serializable {
 
     /**
      * Get the nativeType for the Object.
+     *
      * @return Returns the nativeType.
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -123,6 +132,7 @@ public class Process implements Serializable {
 
     /**
      * Set the nativeType for the Object.
+     *
      * @param newNativeType The nativeType to set.
      */
     public void setNativeType(final NativeType newNativeType) {
@@ -131,6 +141,7 @@ public class Process implements Serializable {
 
     /**
      * Get the nativeType for the Object.
+     *
      * @return Returns the nativeType.
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -141,6 +152,7 @@ public class Process implements Serializable {
 
     /**
      * Set the user for the Object.
+     *
      * @param newUser The user to set.
      */
     public void setUser(final User newUser) {
@@ -150,6 +162,7 @@ public class Process implements Serializable {
 
     /**
      * Get the editSessionMappings for the Object.
+     *
      * @return Returns the editSessionMappings.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "process")
@@ -159,6 +172,7 @@ public class Process implements Serializable {
 
     /**
      * Set the editSessionMappings for the Object.
+     *
      * @param newEditSessionMappings The editSessionMappings to set.
      */
     public void setEditSessionMappings(final Set<EditSessionMapping> newEditSessionMappings) {
@@ -167,6 +181,7 @@ public class Process implements Serializable {
 
     /**
      * Get the process branches for the Object.
+     *
      * @return Returns the process branches.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "process")
@@ -176,6 +191,7 @@ public class Process implements Serializable {
 
     /**
      * Set the process Branches for the Object.
+     *
      * @param newProcessBranches The process Branches to set.
      */
     public void setProcessBranches(final Set<ProcessBranch> newProcessBranches) {

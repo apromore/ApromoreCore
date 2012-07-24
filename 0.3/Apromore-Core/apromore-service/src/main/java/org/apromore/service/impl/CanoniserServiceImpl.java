@@ -1,5 +1,19 @@
 package org.apromore.service.impl;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import javax.activation.DataSource;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.PropertyException;
+import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.sax.SAXSource;
+
 import de.epml.TypeEPML;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.adapters.Canonical2EPML;
@@ -19,6 +33,7 @@ import org.apromore.service.CanoniserService;
 import org.apromore.service.helper.CPFtoGraphHelper;
 import org.apromore.service.helper.GraphToCPFHelper;
 import org.apromore.service.model.CanonisedProcess;
+import org.apromore.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -28,19 +43,6 @@ import org.wfmc._2008.xpdl2.PackageType;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
-
-import javax.activation.DataSource;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.transform.sax.SAXSource;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
 /**
  * Implementation of the Canoniser Service Contract.
@@ -53,6 +55,23 @@ public class CanoniserServiceImpl implements CanoniserService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CanoniserServiceImpl.class);
 
+
+    /**
+     * @see org.apromore.service.CanoniserService#CPFtoString(org.apromore.cpf.CanonicalProcessType)
+     * {@inheritDoc}
+     */
+    @Override
+    public String CPFtoString(CanonicalProcessType cpt) throws JAXBException {
+        ByteArrayOutputStream xml = new ByteArrayOutputStream();
+
+        JAXBContext jc = JAXBContext.newInstance(Constants.CPF_CONTEXT);
+        Marshaller cpf = jc.createMarshaller();
+        cpf.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        JAXBElement<CanonicalProcessType> canTyp = new org.apromore.cpf.ObjectFactory().createCanonicalProcess(cpt);
+        cpf.marshal(canTyp, xml);
+
+        return StreamUtil.convertStreamToString(new ByteArrayInputStream(xml.toByteArray()));
+    }
 
     /**
      * @see org.apromore.service.CanoniserService#canonise(String, String, java.io.InputStream)
@@ -77,13 +96,13 @@ public class CanoniserServiceImpl implements CanoniserService {
 
     /**
      * @see org.apromore.service.CanoniserService#deCanonise
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
     public DataSource deCanonise(final Integer processId, final String version, final String nativeType,
-                                 final CanonicalProcessType canType, final DataSource anf) {
+            final CanonicalProcessType canType, final DataSource anf) {
         AnnotationsType annType = null;
         DataSource native_ds = null;
 
@@ -100,7 +119,7 @@ public class CanoniserServiceImpl implements CanoniserService {
                 native_xml = deCanoniseXPDL(anf, annType, canType);
             } else if (nativeType.compareTo(Constants.EPML_2_0) == 0) {
                 native_xml = deCanoniseEPML(anf, annType, canType);
-            }  else if (nativeType.compareTo(Constants.PNML_1_3_2) == 0) {
+            } else if (nativeType.compareTo(Constants.PNML_1_3_2) == 0) {
                 native_xml = deCanonisePNML(anf, annType, canType);
             }
             InputStream native_xml_is = new ByteArrayInputStream(native_xml.toByteArray());
@@ -119,7 +138,7 @@ public class CanoniserServiceImpl implements CanoniserService {
 
     /**
      * @see org.apromore.service.CanoniserService#serializeCPF(org.apromore.graph.JBPT.CPF)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -129,15 +148,13 @@ public class CanoniserServiceImpl implements CanoniserService {
 
     /**
      * @see org.apromore.service.CanoniserService#deserializeCPF(org.apromore.cpf.CanonicalProcessType)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
     public CPF deserializeCPF(CanonicalProcessType cpf) throws SerializationException {
         return CPFtoGraphHelper.createGraph(cpf);
     }
-
-
 
 
     /* Canonise the epml to CPF format */
@@ -288,5 +305,6 @@ public class CanoniserServiceImpl implements CanoniserService {
 
         return native_xml;
     }
+
 
 }

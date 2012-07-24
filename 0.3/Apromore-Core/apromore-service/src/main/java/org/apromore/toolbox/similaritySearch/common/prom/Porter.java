@@ -14,7 +14,7 @@ package org.apromore.toolbox.similaritySearch.common.prom;
 public class Porter {
 
     @SuppressWarnings("static-access")
-	private String Clean(String str) {
+    private String Clean(String str) {
         int last = str.length();
 
         Character ch = new Character(str.charAt(0));
@@ -38,7 +38,7 @@ public class Porter {
         }
         if (suffix.length() > 1) {
             if (word.charAt(word.length() - 2) !=
-                suffix.charAt(suffix.length() - 2)) {
+                    suffix.charAt(suffix.length() - 2)) {
                 return false;
             }
         }
@@ -63,29 +63,29 @@ public class Porter {
 
     private static boolean vowel(char ch, char prev) {
         switch (ch) {
-        case 'a':
-        case 'e':
-        case 'i':
-        case 'o':
-        case 'u':
-            return true;
-        case 'y': {
-
-            switch (prev) {
             case 'a':
             case 'e':
             case 'i':
             case 'o':
             case 'u':
-                return false;
+                return true;
+            case 'y': {
+
+                switch (prev) {
+                    case 'a':
+                    case 'e':
+                    case 'i':
+                    case 'o':
+                    case 'u':
+                        return false;
+
+                    default:
+                        return true;
+                }
+            }
 
             default:
-                return true;
-            }
-        }
-
-        default:
-            return false;
+                return false;
         }
     }
 
@@ -152,9 +152,9 @@ public class Porter {
         }
 
         if ((!vowel(str.charAt(length - 1), str.charAt(length - 2)))
-            && (str.charAt(length - 1) != 'w') &&
-            (str.charAt(length - 1) != 'x') && (str.charAt(length - 1) != 'y')
-            && (vowel(str.charAt(length - 2), str.charAt(length - 3)))) {
+                && (str.charAt(length - 1) != 'w') &&
+                (str.charAt(length - 1) != 'x') && (str.charAt(length - 1) != 'y')
+                && (vowel(str.charAt(length - 2), str.charAt(length - 3)))) {
 
             if (length == 3) {
                 if (!vowel(str.charAt(0), '?')) {
@@ -222,24 +222,23 @@ public class Porter {
                     }
 
                     if ((hasSuffix(str, "at", stem)) ||
-                        (hasSuffix(str, "bl", stem)) ||
-                        (hasSuffix(str, "iz", stem))) {
+                            (hasSuffix(str, "bl", stem)) ||
+                            (hasSuffix(str, "iz", stem))) {
                         str += "e";
 
                     } else {
                         int length = str.length();
                         if ((str.charAt(length - 1) == str.charAt(length - 2))
-                            && (str.charAt(length - 1) != 'l') &&
-                            (str.charAt(length - 1) != 's') &&
-                            (str.charAt(length - 1) != 'z')) {
+                                && (str.charAt(length - 1) != 'l') &&
+                                (str.charAt(length - 1) != 's') &&
+                                (str.charAt(length - 1) != 'z')) {
 
                             tmp = "";
                             for (int i = 0; i < str.length() - 1; i++) {
                                 tmp += str.charAt(i);
                             }
                             str = tmp;
-                        } else
-                        if (measure(str) == 1) {
+                        } else if (measure(str) == 1) {
                             if (cvc(str)) {
                                 str += "e";
                             }
@@ -261,16 +260,16 @@ public class Porter {
         return str;
     }
 
-    private static final String[][] step2_suffixes = { {"ational", "ate"}, {"tional", "tion"}, {"enci",
-                          "ence"}, {"anci", "ance"}, {"izer", "ize"},
-                          {"iser", "ize"}, {"abli", "able"}, {"alli", "al"},
-                          {"entli", "ent"}, {"eli", "e"}, {"ousli", "ous"},
-                          {"ization", "ize"}, {"isation", "ize"}, {"ation",
-                          "ate"}, {"ator", "ate"}, {"alism", "al"},
-                          {"iveness", "ive"}, {"fulness", "ful"},
-                          {"ousness", "ous"}, {"aliti", "al"}, {"iviti",
-                          "ive"}, {"biliti", "ble"}
-};
+    private static final String[][] step2_suffixes = {{"ational", "ate"}, {"tional", "tion"}, {"enci",
+            "ence"}, {"anci", "ance"}, {"izer", "ize"},
+            {"iser", "ize"}, {"abli", "able"}, {"alli", "al"},
+            {"entli", "ent"}, {"eli", "e"}, {"ousli", "ous"},
+            {"ization", "ize"}, {"isation", "ize"}, {"ation",
+            "ate"}, {"ator", "ate"}, {"alism", "al"},
+            {"iveness", "ive"}, {"fulness", "ful"},
+            {"ousness", "ous"}, {"aliti", "al"}, {"iviti",
+            "ive"}, {"biliti", "ble"}
+    };
 
     private String step2(String str) {
 
@@ -288,9 +287,9 @@ public class Porter {
         return str;
     }
 
-    private static final String[][] step3_suffixes = { {"icate", "ic"}, {"ative", ""}, {"alize", "al"},
-                          {"alise", "al"}, {"iciti", "ic"}, {"ical", "ic"},
-                          {"ful", ""}, {"ness", ""}
+    private static final String[][] step3_suffixes = {{"icate", "ic"}, {"ative", ""}, {"alize", "al"},
+            {"alise", "al"}, {"iciti", "ic"}, {"ical", "ic"},
+            {"ful", ""}, {"ness", ""}
     };
 
     private String step3(String str) {
@@ -309,9 +308,9 @@ public class Porter {
     }
 
     private static final String[] step4_suffixes = {"al", "ance", "ence", "er", "ic", "able", "ible",
-                        "ant", "ement", "ment", "ent", "sion", "tion",
-                        "ou", "ism", "ate", "iti", "ous", "ive", "ize",
-                        "ise"};
+            "ant", "ement", "ment", "ent", "sion", "tion",
+            "ou", "ism", "ate", "iti", "ous", "ive", "ize",
+            "ise"};
 
     private String step4(String str) {
 
@@ -334,14 +333,13 @@ public class Porter {
 
         if (str.charAt(str.length() - 1) == 'e') {
             if (measure(str) > 1) {
-                    /* measure(str)==measure(stem) if ends in vowel */
+                /* measure(str)==measure(stem) if ends in vowel */
                 String tmp = "";
                 for (int i = 0; i < str.length() - 1; i++) {
                     tmp += str.charAt(i);
                 }
                 str = tmp;
-            } else
-            if (measure(str) == 1) {
+            } else if (measure(str) == 1) {
                 String stem = "";
                 for (int i = 0; i < str.length() - 1; i++) {
                     stem += str.charAt(i);
@@ -357,9 +355,9 @@ public class Porter {
             return str;
         }
         if ((str.charAt(str.length() - 1) == 'l') &&
-            (str.charAt(str.length() - 2) == 'l') && (measure(str) > 1)) {
+                (str.charAt(str.length() - 2) == 'l') && (measure(str) > 1)) {
             if (measure(str) > 1) {
-                    /* measure(str)==measure(stem) if ends in vowel */
+                /* measure(str)==measure(stem) if ends in vowel */
                 String tmp = "";
                 for (int i = 0; i < str.length() - 1; i++) {
                     tmp += str.charAt(i);
@@ -371,7 +369,7 @@ public class Porter {
     }
 
     private static final String[] prefixes = {"kilo", "micro", "milli", "intra", "ultra", "mega",
-                        "nano", "pico", "pseudo"};
+            "nano", "pico", "pseudo"};
 
 
     private String stripPrefixes(String str) {

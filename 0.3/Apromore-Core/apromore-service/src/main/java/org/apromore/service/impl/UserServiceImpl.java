@@ -1,5 +1,7 @@
 package org.apromore.service.impl;
 
+import java.util.List;
+
 import org.apromore.dao.UserDao;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
@@ -10,8 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 /**
  * Implementation of the UserService Contract.
  *
@@ -21,15 +21,16 @@ import java.util.List;
 @Transactional(propagation = Propagation.REQUIRED)
 public class UserServiceImpl implements UserService {
 
-    @Autowired @Qualifier("UserDao")
+    @Autowired
+    @Qualifier("UserDao")
     private UserDao usrDao;
 
 
     /**
      * @see org.apromore.service.UserService#findAllUsers()
-     * {@inheritDoc}
-     *
-     * NOTE: This might need to convert (or allow for) to the models used in the webservices.
+     *      {@inheritDoc}
+     *      <p/>
+     *      NOTE: This might need to convert (or allow for) to the models used in the webservices.
      */
     @Override
     @Transactional(readOnly = true)
@@ -39,7 +40,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * @see org.apromore.service.UserService#findUser(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -54,7 +55,7 @@ public class UserServiceImpl implements UserService {
 
     /**
      * @see org.apromore.service.UserService#writeUser(org.apromore.dao.model.User)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void writeUser(User user) {
@@ -64,9 +65,9 @@ public class UserServiceImpl implements UserService {
     }
 
 
-
     /**
      * Set the User DAO object for this class. Mainly for spring tests.
+     *
      * @param usrDAOJpa the user Dao.
      */
     public void setUserDao(UserDao usrDAOJpa) {

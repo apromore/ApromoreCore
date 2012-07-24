@@ -2,13 +2,24 @@ package org.apromore.dao;
 
 /**
  * Interface to define all the named queries names in the Persistence setup.
- *
+ * <p/>
  * The format of the names are define as [ENTITY].[QUERY NAME]
  * The Entity could be empty if the query uses joins and doesn't relate to a single entity.
  *
  * @author Cameron James
  */
 public interface NamedQueries {
+
+    public static final String GET_ALL_CLUSTERS = "cluster.getAllClusters";
+    public static final String GET_CLUSTER_BY_ID = "cluster.getClusterById";
+    public static final String GET_FILTERED_CLUSTERS = "cluster.getFilteredClusters";
+    public static final String GET_CLUSTERING_SUMMARY = "clusteringSummary.getClusteringSummary";
+    public static final String GET_FRAGMENTIDS_OF_CLUSTER = "clusterAssignment.getFragmentIdsOfCluster";
+    public static final String GET_FRAGMENTS_OF_CLUSTER = "clusterAssignment.getFragmentsOfCluster";
+    public static final String GET_FRAGMENT_DISTANCE = "fragmentDistance.getDistance";
+    public static final String GET_DISTANCES_BELOW_THRESHOLD = "fragmentDistance.getDistancesBelowThreshold";
+    public static final String GET_UNPROCESSED_FRAGMENTS = "fragmentVersion.getUnprocessedFragments";
+    public static final String GET_UNPROCESSED_FRAGMENTS_OF_PROCESSES = "fragmentVersion.getFragmentsOfProcesses";
 
     public static final String GET_ANNOTATION = "annotation.getAnnotation";
     public static final String GET_ANNOTATION_BY_URI = "annotation.getAnnotationByUrl";
@@ -28,6 +39,7 @@ public interface NamedQueries {
     public static final String GET_CHILD_FRAGMENTS_WITH_TYPE = "fragmentVersion.getChildFragmentsWithType";
     public static final String GET_FRAGMENT_DATA = "fragmentVersion.getFragmentData";
     public static final String GET_FRAGMENT_DATA_OF_PROCESS_MODEL = "fragmentVersion.getFragmentDataOfProcessModel";
+    public static final String GET_ALL_FRAGMENTS_WITH_SIZE = "fragmentVersion.getAllFragmentsWithSize";
     public static final String GET_USED_FRAGMENT_IDS = "fragmentVersion.getUsedFragmentIds";
     public static final String GET_SIMILAR_FRAGMENTS_BY_SIZE = "fragmentVersion.getSimilarFragmentsBySize";
     public static final String GET_SIMILAR_FRAGMENTS_BY_SIZE_AND_TYPE = "fragmentVersion.getSimilarFragmentsBySizeType";
@@ -35,6 +47,7 @@ public interface NamedQueries {
     public static final String GET_PARENT_FRAGMENT_VERSIONS = "fragmentVersionDag.getParentFragmentVersions";
     public static final String GET_CHILD_MAPPINGS = "fragmentVersionDag.getChildMappings";
     public static final String GET_CHILD_FRAGMENTS_BY_FRAGMENT_VERSION = "fragmentVersionDag.getChildFragmentsByFragmentVersion";
+    public static final String GET_ALL_PARENT_CHILD_MAPPINGS = "fragmentVersionDag.getAllParentChildMappings";
 
     public static final String GET_NATIVE = "native.getNative";
     public static final String GET_NATIVE_TYPES = "native.getNativeTypes";
@@ -63,7 +76,7 @@ public interface NamedQueries {
     public static final String GET_CONTAINED_PROCESS_MODEL = "processModelMap.getContainedProcessModel";
 
     public static final String GET_ALL_USERS = "user.getAllUsers";
-    
+
     public static final String GET_CONTENT_IDS = "node.getContentIds";
     public static final String GET_VERTICES_BY_CONTENT = "node.getVerticesByContentId";
     public static final String GET_STORED_VERTICES = "node.getStoredVertices";

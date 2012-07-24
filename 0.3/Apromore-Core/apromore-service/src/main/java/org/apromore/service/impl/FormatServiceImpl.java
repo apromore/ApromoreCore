@@ -1,5 +1,9 @@
 package org.apromore.service.impl;
 
+import java.io.InputStream;
+import java.util.List;
+import javax.xml.bind.JAXBException;
+
 import org.apromore.common.Constants;
 import org.apromore.dao.AnnotationDao;
 import org.apromore.dao.NativeDao;
@@ -18,10 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import javax.xml.bind.JAXBException;
-import java.io.InputStream;
-import java.util.List;
-
 /**
  * Implementation of the FormatService Contract.
  *
@@ -31,19 +31,22 @@ import java.util.List;
 @Transactional(propagation = Propagation.REQUIRED)
 public class FormatServiceImpl implements FormatService {
 
-    @Autowired @Qualifier("AnnotationDao")
+    @Autowired
+    @Qualifier("AnnotationDao")
     private AnnotationDao annDao;
-    @Autowired @Qualifier("NativeDao")
+    @Autowired
+    @Qualifier("NativeDao")
     private NativeDao natDao;
-    @Autowired @Qualifier("NativeTypeDao")
+    @Autowired
+    @Qualifier("NativeTypeDao")
     private NativeTypeDao natTypeDao;
 
 
     /**
      * @see org.apromore.service.FormatService#findAllFormats()
-     * {@inheritDoc}
-     *
-     * NOTE: This might need to convert (or allow for) to the models used in the webservices.
+     *      {@inheritDoc}
+     *      <p/>
+     *      NOTE: This might need to convert (or allow for) to the models used in the webservices.
      */
     @Override
     @Transactional(readOnly = true)
@@ -54,9 +57,9 @@ public class FormatServiceImpl implements FormatService {
 
     /**
      * @see org.apromore.service.FormatService#findNativeType(String)
-     * {@inheritDoc}
-     *
-     * NOTE: This might need to convert (or allow for) to the models used in the webservices.
+     *      {@inheritDoc}
+     *      <p/>
+     *      NOTE: This might need to convert (or allow for) to the models used in the webservices.
      */
     @Override
     @Transactional(readOnly = true)
@@ -66,11 +69,11 @@ public class FormatServiceImpl implements FormatService {
 
     /**
      * @see org.apromore.service.ProcessService#storeNative(String, String, org.apromore.dao.model.ProcessModelVersion, java.io.InputStream, String, String, org.apromore.dao.model.User, org.apromore.dao.model.NativeType, org.apromore.service.model.CanonisedProcess)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void storeNative(String procName, String version, ProcessModelVersion pmv, InputStream cpf, String created, String lastUpdate, User user,
-            NativeType nativeType, CanonisedProcess cp) throws JAXBException {
+                            NativeType nativeType, CanonisedProcess cp) throws JAXBException {
         InputStream sync_npf = StreamUtil.copyParam2NPF(cpf, nativeType.getNatType(), procName, version, user.getUsername(), created, lastUpdate);
         String nativeString = StreamUtil.inputStream2String(sync_npf).trim();
         String annString = StreamUtil.inputStream2String(cp.getAnf()).trim();
@@ -91,10 +94,9 @@ public class FormatServiceImpl implements FormatService {
     }
 
 
-
-
     /**
      * Set the Annotation DAO object for this class. Mainly for spring tests.
+     *
      * @param annDAOJpa the Annotation Dao.
      */
     public void setAnnotationDao(AnnotationDao annDAOJpa) {
@@ -103,6 +105,7 @@ public class FormatServiceImpl implements FormatService {
 
     /**
      * Set the Native DAO object for this class. Mainly for spring tests.
+     *
      * @param natDAOJpa the Native Dao.
      */
     public void setNativeDao(NativeDao natDAOJpa) {
@@ -111,6 +114,7 @@ public class FormatServiceImpl implements FormatService {
 
     /**
      * Set the Native Type DAO object for this class. Mainly for spring tests.
+     *
      * @param nativeTypeDAOJpa the user Dao.
      */
     public void setNativeTypeDao(NativeTypeDao nativeTypeDAOJpa) {

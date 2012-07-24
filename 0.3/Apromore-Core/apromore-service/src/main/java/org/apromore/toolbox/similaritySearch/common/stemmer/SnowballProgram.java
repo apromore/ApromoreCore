@@ -11,7 +11,7 @@ public class SnowballProgram {
     // stopwords
     protected Set<String> stopWords = null;
 
-    protected String mapdir = "lib/similarity/" ;
+    protected String mapdir = "lib/similarity/";
 
     public void setMapDir(String mapDir) {
         mapdir = mapDir;
@@ -26,9 +26,10 @@ public class SnowballProgram {
         return stopWords != null;
     }
 
-    public Set<String> getStopWords (){
+    public Set<String> getStopWords() {
         return stopWords;
     }
+
     /**
      * Set the current string.
      */
@@ -461,7 +462,8 @@ public class SnowballProgram {
             br.close();
             isr.close();
             fis.close();
-        } catch (Exception e) { }
+        } catch (Exception e) {
+        }
         return result;
     }
 

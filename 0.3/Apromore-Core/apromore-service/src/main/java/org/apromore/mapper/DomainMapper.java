@@ -1,8 +1,8 @@
 package org.apromore.mapper;
 
-import org.apromore.model.DomainsType;
-
 import java.util.List;
+
+import org.apromore.model.DomainsType;
 
 /**
  * Mapper helper class to convert from the DAO Model to the Webservice Model.
@@ -14,6 +14,7 @@ public class DomainMapper {
 
     /**
      * Convert from the a list (String) to the WS model (DomainsType).
+     *
      * @param domains the list of SearchHistoriesType from the WebService
      * @return the DomainsType ready for transport to the calling system.
      */

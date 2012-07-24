@@ -1,5 +1,9 @@
 package org.apromore.service.helper;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+
 import org.apromore.common.Constants;
 import org.apromore.dao.AnnotationDao;
 import org.apromore.dao.NativeDao;
@@ -20,10 +24,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Set;
-
 /**
  * Used By the Services to generate the data objects used by the UI.
  *
@@ -33,28 +33,32 @@ import java.util.Set;
 @Transactional(propagation = Propagation.REQUIRED)
 public class UIHelper {
 
-    @Autowired @Qualifier("AnnotationDao")
+    @Autowired
+    @Qualifier("AnnotationDao")
     private AnnotationDao annDao;
-    @Autowired @Qualifier("ProcessDao")
+    @Autowired
+    @Qualifier("ProcessDao")
     private ProcessDao prsDao;
-    @Autowired @Qualifier("NativeDao")
+    @Autowired
+    @Qualifier("NativeDao")
     private NativeDao natDao;
 
 
     /**
      * Create a Process Summary record for the Front UI display.
-     * @param name the process Name
-     * @param processId the process Id
-     * @param version the version number of this model
+     *
+     * @param name       the process Name
+     * @param processId  the process Id
+     * @param version    the version number of this model
      * @param nativeType the native type of this model
-     * @param domain The domain of this model
-     * @param created the Date create
+     * @param domain     The domain of this model
+     * @param created    the Date create
      * @param lastUpdate the Date Last Updated
-     * @param username the user who updated the
+     * @param username   the user who updated the
      * @return the created Process Summary
      */
     public ProcessSummaryType createProcessSummary(String name, Integer processId, String version, String nativeType,
-            String domain, String created, String lastUpdate, String username) {
+                                                   String domain, String created, String lastUpdate, String username) {
         ProcessSummaryType proType = new ProcessSummaryType();
         VersionSummaryType verType = new VersionSummaryType();
         AnnotationsType annType = new AnnotationsType();
@@ -86,7 +90,7 @@ public class UIHelper {
     /**
      * Builds the list of process Summaries and kicks off the versions and annotations.
      *
-     * @param conditions the search conditions
+     * @param conditions       the search conditions
      * @param similarProcesses
      * @return the list of process Summaries
      */
@@ -117,7 +121,6 @@ public class UIHelper {
         }
         return processSummaries;
     }
-
 
 
     /* Builds the list of version Summaries for a process. */
@@ -168,7 +171,7 @@ public class UIHelper {
     private List<Integer> buildProcessIdList(ProcessVersionsType similarProcesses) {
         List<Integer> proIds = new ArrayList<Integer>(0);
         if (similarProcesses != null) {
-            for (ProcessVersionType pvt :similarProcesses.getProcessVersion()) {
+            for (ProcessVersionType pvt : similarProcesses.getProcessVersion()) {
                 proIds.add(pvt.getProcessId());
             }
         }
@@ -176,10 +179,9 @@ public class UIHelper {
     }
 
 
-
-
     /**
      * Set the Annotation DAO object for this class. Mainly for spring tests.
+     *
      * @param annDAOJpa the Annotation Dao.
      */
     public void setAnnotationDao(AnnotationDao annDAOJpa) {
@@ -188,6 +190,7 @@ public class UIHelper {
 
     /**
      * Set the Process DAO object for this class. Mainly for spring tests.
+     *
      * @param prsDAOJpa the process Dao.
      */
     public void setProcessDao(ProcessDao prsDAOJpa) {
@@ -196,6 +199,7 @@ public class UIHelper {
 
     /**
      * Set the Native DAO object for this class. Mainly for spring tests.
+     *
      * @param natDAOJpa the Native Dao.
      */
     public void setNativeDao(NativeDao natDAOJpa) {
