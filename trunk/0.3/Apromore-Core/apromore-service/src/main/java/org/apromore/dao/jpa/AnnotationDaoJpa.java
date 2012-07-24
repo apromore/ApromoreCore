@@ -1,18 +1,18 @@
 package org.apromore.dao.jpa;
 
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import javax.persistence.NonUniqueResultException;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.apromore.dao.AnnotationDao;
 import org.apromore.dao.NamedQueries;
 import org.apromore.dao.model.Annotation;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.NoResultException;
-import javax.persistence.NonUniqueResultException;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.util.List;
 
 /**
  * Hibernate implementation of the org.apromore.dao.AnnotationDao interface.
@@ -30,7 +30,7 @@ public class AnnotationDaoJpa implements AnnotationDao {
 
     /**
      * @see org.apromore.dao.AnnotationDao#findByUri(int)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public List<Annotation> findByUri(final Integer nativeUri) {
@@ -42,8 +42,9 @@ public class AnnotationDaoJpa implements AnnotationDao {
 
     /**
      * Returns the Annotation as XML.
+     *
      * @see org.apromore.dao.AnnotationDao#getAnnotation(long, String, String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public Annotation getAnnotation(final Integer processId, final String version, final String name)
@@ -56,10 +57,9 @@ public class AnnotationDaoJpa implements AnnotationDao {
     }
 
 
-
     /**
      * @see org.apromore.dao.AnnotationDao#delete(Annotation)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void save(Annotation annotation) {
@@ -68,7 +68,7 @@ public class AnnotationDaoJpa implements AnnotationDao {
 
     /**
      * @see org.apromore.dao.AnnotationDao#delete(Annotation)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public Annotation update(Annotation annotation) {
@@ -77,17 +77,17 @@ public class AnnotationDaoJpa implements AnnotationDao {
 
     /**
      * @see org.apromore.dao.AnnotationDao#delete(Annotation)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void delete(Annotation annotation) {
-         em.remove(annotation);
+        em.remove(annotation);
     }
-
 
 
     /**
      * Sets the Entity Manager. No way around this to get Unit Testing working
+     *
      * @param em the entitymanager
      */
     public void setEntityManager(EntityManager em) {

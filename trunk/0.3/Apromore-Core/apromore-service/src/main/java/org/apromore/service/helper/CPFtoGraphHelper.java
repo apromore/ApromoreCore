@@ -1,5 +1,10 @@
 package org.apromore.service.helper;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -37,11 +42,6 @@ import org.apromore.graph.JBPT.ICpfObject;
 import org.apromore.graph.JBPT.ICpfResource;
 import org.jbpt.pm.FlowNode;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 /**
  * GraphToCPFHelper. Used to help build and deconstruct a Graph from the CPF format.
  *
@@ -50,11 +50,13 @@ import java.util.Map;
 public class CPFtoGraphHelper {
 
     /* Private Constructor so it can't be instantiated */
-    private CPFtoGraphHelper() { }
+    private CPFtoGraphHelper() {
+    }
 
 
     /**
      * Builds a graph from the CPF XSD Format.
+     *
      * @param cpf the cpf format from the canoniser.
      * @return the JBpt CPF Graph representation
      */
@@ -134,7 +136,7 @@ public class CPFtoGraphHelper {
 
     /* Build the Node list for a single Net */
     private static Map<String, FlowNode> buildNodeListFromNet(List<NodeType> nodes,
-            List<ICpfResource> res, List<ICpfObject> obj) {
+                                                              List<ICpfResource> res, List<ICpfObject> obj) {
         Map<String, FlowNode> flow = new HashMap<String, FlowNode>(0);
         for (NodeType node : nodes) {
             if (node instanceof MessageType) {

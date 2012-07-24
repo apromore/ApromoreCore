@@ -1,5 +1,9 @@
 package org.apromore.dao.service;
 
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+
 import org.apromore.dao.DataAccessManagerManager;
 import org.apromore.dao.dao.EditSessionDao;
 import org.apromore.dao.dao.ProcessDao;
@@ -19,10 +23,6 @@ import org.apromore.model.WriteEditSessionOutputMsgType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
-
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 /**
  *

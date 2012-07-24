@@ -12,6 +12,7 @@ public interface DomainService {
 
     /**
      * Finds all the unique Domains in the system that are supported.
+     *
      * @return a List of domains in the system.
      */
     List<String> findAllDomains();

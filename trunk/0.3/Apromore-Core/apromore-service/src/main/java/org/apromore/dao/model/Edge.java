@@ -1,10 +1,8 @@
 package org.apromore.dao.model;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.Type;
-import org.springframework.beans.factory.annotation.Configurable;
-
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,9 +12,11 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.hibernate.annotations.Type;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -45,7 +45,8 @@ public class Edge implements Serializable {
     private Set<EdgeAttribute> attributes = new HashSet<EdgeAttribute>(0);
 
 
-    public Edge() { }
+    public Edge() {
+    }
 
 
     @Id
@@ -96,8 +97,6 @@ public class Edge implements Serializable {
     public void setContent(final Content newContent) {
         this.content = newContent;
     }
-
-
 
 
     @ManyToOne(fetch = FetchType.LAZY)

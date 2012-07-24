@@ -1,5 +1,10 @@
 package org.apromore.service.impl;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.ProcessModelVersionDao;
@@ -27,11 +32,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-
 /**
  * Implementation of the MergeService Contract.
  *
@@ -43,25 +43,28 @@ public class MergeServiceImpl implements MergeService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MergeServiceImpl.class);
 
-    @Autowired @Qualifier("ProcessModelVersionDao")
+    @Autowired
+    @Qualifier("ProcessModelVersionDao")
     private ProcessModelVersionDao pmvDao;
 
-    @Autowired @Qualifier("CanoniserService")
+    @Autowired
+    @Qualifier("CanoniserService")
     private CanoniserService canSrv;
-    @Autowired @Qualifier("RepositoryService")
+    @Autowired
+    @Qualifier("RepositoryService")
     private RepositoryService rSrv;
-    @Autowired @Qualifier("UIHelper")
+    @Autowired
+    @Qualifier("UIHelper")
     private UIHelper uiSrv;
 
 
-
     /**
-     * @see org.apromore.service.MergeService#mergeProcesses(String, String, String, String, String, org.apromore.model.ParametersType, org.apromore.model.ProcessVersionIdsType)
-     * {@inheritDoc}
+     * @see org.apromore.service.MergeService#MergeProcesses(String, String, String, String, String, org.apromore.model.ParametersType, org.apromore.model.ProcessVersionIdsType)
+     *      {@inheritDoc}
      */
     @Override
     public ProcessSummaryType mergeProcesses(String processName, String version, String domain, String username, String algo,
-            ParametersType parameters, ProcessVersionIdsType ids) throws ExceptionMergeProcess {
+                                             ParametersType parameters, ProcessVersionIdsType ids) throws ExceptionMergeProcess {
         List<ProcessModelVersion> models = new ArrayList<ProcessModelVersion>(0);
         for (ProcessVersionIdType cpf : ids.getProcessVersionId()) {
             models.add(pmvDao.findProcessModelVersionByBranch(cpf.getProcessId(), cpf.getVersionName()));
@@ -134,12 +137,9 @@ public class MergeServiceImpl implements MergeService {
     }
 
 
-
-
-
-
     /**
      * Set the Process Model Version DAO object for this class. Mainly for spring tests.
+     *
      * @param pmvDAOJpa the Process Model Version Dao.
      */
     public void setProcessModelVersionDao(ProcessModelVersionDao pmvDAOJpa) {
@@ -148,6 +148,7 @@ public class MergeServiceImpl implements MergeService {
 
     /**
      * Set the Canoniser Service for this class. Mainly for spring tests.
+     *
      * @param newCanSrv the service
      */
     public void setCanoniserService(CanoniserService newCanSrv) {
@@ -156,6 +157,7 @@ public class MergeServiceImpl implements MergeService {
 
     /**
      * Set the Repository Service for this class. Mainly for spring tests.
+     *
      * @param newRSrv the service
      */
     public void setRepositoryService(RepositoryService newRSrv) {
@@ -164,6 +166,7 @@ public class MergeServiceImpl implements MergeService {
 
     /**
      * Set the Repository Service for this class. Mainly for spring tests.
+     *
      * @param newUISrv the service
      */
     public void setUIHelperService(UIHelper newUISrv) {

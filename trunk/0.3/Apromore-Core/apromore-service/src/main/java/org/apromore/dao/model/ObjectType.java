@@ -2,10 +2,8 @@ package org.apromore.dao.model;
 // Generated 12/06/2012 2:46:45 PM by Hibernate Tools 3.2.4.GA
 
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.beans.factory.annotation.Configurable;
-
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -15,8 +13,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.util.HashSet;
-import java.util.Set;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -38,7 +38,8 @@ public class ObjectType implements java.io.Serializable {
     private Set<ObjectRefType> objectRefTypes = new HashSet<ObjectRefType>(0);
 
 
-    public ObjectType() { }
+    public ObjectType() {
+    }
 
 
     @Id

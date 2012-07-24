@@ -1,14 +1,30 @@
 package org.apromore.util;
 
+import java.io.BufferedReader;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
+
 import org.apromore.anf.AnnotationsType;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
-import org.wfmc._2008.xpdl2.*;
-
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
-import javax.xml.bind.*;
-import java.io.*;
+import org.wfmc._2008.xpdl2.Author;
+import org.wfmc._2008.xpdl2.Created;
+import org.wfmc._2008.xpdl2.Documentation;
+import org.wfmc._2008.xpdl2.ModificationDate;
+import org.wfmc._2008.xpdl2.PackageHeader;
+import org.wfmc._2008.xpdl2.PackageType;
+import org.wfmc._2008.xpdl2.RedefinableHeader;
+import org.wfmc._2008.xpdl2.Version;
 
 /**
  * Helps with debugging and seeing the data travel between services.
@@ -21,6 +37,7 @@ public class StreamUtil {
 
     /**
      * Convert a InputStream to a String
+     *
      * @param is the inputStream to convert
      * @return the string for that input stream
      */
@@ -30,6 +47,7 @@ public class StreamUtil {
 
     /**
      * Convert a DataHandler to a String
+     *
      * @param dh the DataHandler to convert
      * @return the string for that DataHandler
      */
@@ -43,6 +61,7 @@ public class StreamUtil {
 
     /**
      * Convert a DataHandler to a String
+     *
      * @param ds the DataSource to convert
      * @return the string for that DataSource
      */
@@ -96,7 +115,7 @@ public class StreamUtil {
      */
     @SuppressWarnings("unchecked")
     public static InputStream copyParam2CPF(InputStream cpf_xml, Integer cpf_uri, String processName, String version, String username,
-            String creationDate, String lastUpdate) throws JAXBException {
+                                            String creationDate, String lastUpdate) throws JAXBException {
         InputStream res;
 
         JAXBContext jc = JAXBContext.newInstance(CPF_URI);
@@ -135,7 +154,7 @@ public class StreamUtil {
      */
     @SuppressWarnings("unchecked")
     public static InputStream copyParam2NPF(InputStream process_xml, String nativeType, String processName, String version, String username,
-            String creationDate, String lastUpdate) throws JAXBException {
+                                            String creationDate, String lastUpdate) throws JAXBException {
         InputStream res = null;
 
         if (nativeType.compareTo(Constants.XPDL_2_1) == 0) {
@@ -160,7 +179,7 @@ public class StreamUtil {
     /**
      * Modify pkg (npf of type xpdl) with parameters values if not null.
      *
-     * @param pkg the package to change to
+     * @param pkg          the package to change to
      * @param processName  the process name
      * @param version      the process version
      * @param username     the user doing the change
@@ -228,6 +247,7 @@ public class StreamUtil {
 
     /**
      * Converts an input stream to a string.
+     *
      * @param is the input stream
      * @return the String that was the input stream
      */

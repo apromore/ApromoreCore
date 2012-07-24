@@ -12,16 +12,17 @@ public class CpfTask extends CpfWork implements ICpfTask {
 
 
     public CpfTask() {
-		super();
-	}
+        super();
+    }
 
-	public CpfTask(String name) {
-		super(name);
-	}
+    public CpfTask(String name) {
+        super(name);
+    }
 
 
     /**
      * returns if the task is external or not.
+     *
      * @return if external or not
      */
     @Override
@@ -31,6 +32,7 @@ public class CpfTask extends CpfWork implements ICpfTask {
 
     /**
      * set the Sub net Id
+     *
      * @param newId the sub net id
      */
     @Override
@@ -40,6 +42,7 @@ public class CpfTask extends CpfWork implements ICpfTask {
 
     /**
      * return the sub net Id
+     *
      * @return the sub net Id
      */
     @Override
@@ -49,6 +52,7 @@ public class CpfTask extends CpfWork implements ICpfTask {
 
     /**
      * set if this task is external
+     *
      * @param newExternal either true or false
      */
     @Override

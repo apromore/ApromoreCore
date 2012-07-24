@@ -111,6 +111,11 @@
             AND fv.fragmentSize &lt; :max
             AND fv.fragmentType = :type</query>
     </named-query>
+    <named-query name="fragmentVersion.getAllFragmentsWithSize">
+        <!-- Used FragmentVersionDao -->
+        <query>SELECT fv.fragmentVersionId, fv.fragmentSize
+            FROM FragmentVersion fv</query>
+    </named-query>
 
 
     <named-query name="fragmentVersionDag.getParentFragmentVersions">
@@ -134,6 +139,10 @@
         <query>SELECT fv FROM FragmentVersionDag fvd, FragmentVersion fv
             WHERE fvd.id.childFragmentVersionId = fv.fragmentVersionId
             AND fv.fragmentVersionId = :fragVersionId</query>
+    </named-query>
+    <named-query name="fragmentVersionDag.getAllParentChildMappings">
+        <!-- Used FragmentVersionDagDao -->
+        <query>SELECT fvd FROM FragmentVersionDag fvd</query>
     </named-query>
 
 

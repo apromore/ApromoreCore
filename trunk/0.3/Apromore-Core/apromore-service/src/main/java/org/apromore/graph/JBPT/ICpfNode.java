@@ -1,11 +1,11 @@
 package org.apromore.graph.JBPT;
 
+import java.util.Collection;
+import java.util.Map;
+
 import org.jbpt.hypergraph.abs.IVertex;
 import org.jbpt.pm.IFlowNode;
 import org.jbpt.pm.IResource;
-
-import java.util.Collection;
-import java.util.Map;
 
 /**
  * CPF Work interface
@@ -17,12 +17,14 @@ public interface ICpfNode extends IVertex {
 
     /**
      * Set if this node is configurable.
+     *
      * @param config the config boolean
      */
     void setConfigurable(boolean config);
 
     /**
      * returns if this Node configurable.
+     *
      * @return true or false
      */
     boolean isConfigurable();
@@ -34,6 +36,7 @@ public interface ICpfNode extends IVertex {
 
     /**
      * Add a given {@link IResource} to this {@link IFlowNode}.
+     *
      * @param resource to add to this {@link IFlowNode}
      */
     public void addResource(IResource resource);
@@ -41,19 +44,22 @@ public interface ICpfNode extends IVertex {
 
     /**
      * add an attribute to the {@link ICpfNode}.
-     * @param name the name of the attribute
+     *
+     * @param name  the name of the attribute
      * @param value the value of the attribute
      */
     void addAttribute(String name, String value);
 
     /**
      * Set if this {@link ICpfNode} attributes.
+     *
      * @param attributes the map of attributes
      */
     void setAttributes(Map<String, String> attributes);
 
     /**
      * Returns a single Attribute value for a given key.
+     *
      * @param name the key of the Attribute we are looking for
      * @return the value of the found Attribute, otherwise null is not in the list.
      */
@@ -61,6 +67,7 @@ public interface ICpfNode extends IVertex {
 
     /**
      * Return this {@link ICpfNode} attributes.
+     *
      * @return the attributes
      */
     Map<String, String> getAttributes();
@@ -72,6 +79,7 @@ public interface ICpfNode extends IVertex {
 
     /**
      * Add a given {@link ICpfObject} to this {@link IFlowNode}.
+     *
      * @param object to add to this {@link IFlowNode}
      */
     public void addObject(ICpfObject object);
@@ -83,6 +91,7 @@ public interface ICpfNode extends IVertex {
 
     /**
      * Add a given {@link ICpfResource} to this {@link IFlowNode}.
+     *
      * @param newResource to add to this {@link IFlowNode}
      */
     public void addResource(ICpfResource newResource);

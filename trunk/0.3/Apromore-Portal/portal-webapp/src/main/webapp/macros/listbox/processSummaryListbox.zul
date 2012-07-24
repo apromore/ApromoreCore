@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listbox id="processSummariesListbox" vflex="true" span="true"
+	autopaging="true" mold="paging" multiple="true" checkmark="true">
+	<listhead sizable="true" >	
+		<listheader hflex="min" label="" visible="true" />				
+		<listheader hflex="min" id="columnScore" label="Score" visible="true" />
+		<listheader hflex="min" label="Id" sort="auto(id)" />
+		<listheader hflex="min" label="Name" sort="auto(name)" />
+		<listheader hflex="min" label="Original language" sort="auto(originalNativeType)" />
+		<listheader hflex="min" label="Domain" sort="auto(domain)" />
+		<listheader hflex="min" label="Ranking" sort="auto(ranking)" />
+		<listheader hflex="min" label="Latest version" sort="auto(lastVersion)" />
+		<listheader hflex="min" label="Owner" sort="auto(owner)"  />
+	</listhead>						
+</listbox>

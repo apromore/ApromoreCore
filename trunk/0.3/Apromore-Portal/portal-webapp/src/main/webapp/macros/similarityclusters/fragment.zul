@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?page title="Apromore: Process Fragment ${param.fragmentId}"?>
+<zk>
+
+<window id="win" 
+	xmlns:n="http://www.zkoss.org/2005/zk/native" 
+	use="org.apromore.portal.dialogController.similarityclusters.visualisation.ClusterVisualisationFragmentController">
+	
+	<n:style type="text/css">	
+		#feedback {
+			display: none;
+		}
+		
+		.x-panel-editor-north {
+			display: none;
+		}
+		
+		.x-panel-editor-west {
+			display: none;
+		}
+		
+		.x-layout-split-west {
+			display: none !important; 
+		}		
+	</n:style>
+
+	<n:style media="screen" type="text/css">
+	@import url("/oryx/lib/ext-2.0.2/resources/css/ext-all.css");
+	@import url("/oryx/lib/ext-2.0.2/resources/css/xtheme-gray.css");
+	</n:style>
+	<n:link rel="Stylesheet" media="screen" href="/oryx/css/theme_norm.css" type="text/css" />
+    
+	
+	<n:div id="oryxwrapper" style="display: none">
+		<!--  JavaScript Dependencies of Oryx Process Editor -->
+		<n:script src="/oryx/lib/prototype-1.5.1.js" type="text/javascript"></n:script>
+		<n:script src="/oryx/lib/path_parser.js" type="text/javascript"></n:script>
+		<n:script src="/oryx/lib/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript" ></n:script>
+		<n:script src="/oryx/lib/ext-2.0.2/ext-all.js" type="text/javascript"></n:script>
+		<n:script src="/oryx/lib/ext-2.0.2/color-field.js" type="text/javascript"></n:script>
+		<n:script src="/oryx/i18n/translation_en_us.js" type="text/javascript"></n:script>
+	
+		<!--  Core JavaScript of Oryx Process Editor -->
+		<n:script src="/oryx/profiles/oryx.core.js" type="text/javascript"></n:script>
+	
+		<!--  Plugins JavaScript of Oryx Process Editor -->
+		<n:script src="/oryx/profiles/epcUncompressed.js" type="text/javascript"></n:script>
+		
+		<n:span id="oryxstartupcode">
+			<n:script>	
+			<![CDATA[			
+				if (!ORYX)
+					var ORYX = {};
+				if (!ORYX.CONFIG)
+					ORYX.CONFIG = {};
+		
+				ORYX.CONFIG.PLUGINS_CONFIG = ORYX.CONFIG.PROFILE_PATH
+						+ 'default.xml';
+				ORYX.CONFIG.SSET = ORYX.CONFIG.ROOT_PATH + 'stencilsets/epc/epc.json';
+				ORYX.CONFIG.SSEXTS = [];	
+				
+				ORYX.CONFIG.PANEL_RIGHT_COLLAPSED = true;						
+																
+				// This function is called upon load of all Oryx dependencies
+				window.onOryxResourcesLoaded = function() {
+																				
+					// BEGIN FIX WORD-WRAPPING
+					
+					var labelProt = ORYX.Core.SVG.Label.prototype;
+					labelProt._checkFittingToReferencedElem = function() {
+						try {
+							var tspans = $A(this.node.getElementsByTagNameNS(ORYX.CONFIG.NAMESPACE_SVG, 'tspan'));
+							
+								var newtspans = [];
+								
+								var refNode = this.node.ownerDocument.getElementById(this.fitToElemId);
+								
+								if (refNode) {
+								
+									var refbb = refNode.getBBox();
+									
+									var fontSize = this.getFontSize();
+									
+									for (var j = 0; j < tspans.length; j++) {
+										var tspan = tspans[j];
+										
+										var textLength = this._getRenderedTextLength(tspan, undefined, undefined, fontSize);
+										
+										/* Depending on the rotation of the text element, take
+										 * the width or height as reference respectively. */
+										var refBoxLength = (this._rotate != 0 
+												&& this._rotate % 180 != 0 
+												&& this._rotate % 90 == 0 ? 
+														refbb.height : refbb.width);
+										
+										if (textLength > refBoxLength) {
+											
+											//Replaced Word-Wrapping with a little more sophisticated method
+											var wrappedTextArray = this._wordWrap(tspan.textContent, Math.floor(refBoxLength / fontSize));
+											
+											for (var i = 0; i < 4; i++) {
+												var newtspan = this.node.ownerDocument.createElementNS(ORYX.CONFIG.NAMESPACE_SVG, 'tspan');
+												if ((i==3)&&(wrappedTextArray.length > 4)) {
+													newtspan.textContent = wrappedTextArray[i] + "...";
+												} else {
+													if (wrappedTextArray[i]) {
+														newtspan.textContent = wrappedTextArray[i];
+													} else {
+														newtspan.textContent = "";
+													}													
+												}												
+												newtspan.setAttributeNS(null, 'x', this.invisibleRenderPoint);
+												newtspan.setAttributeNS(null, 'y', this.invisibleRenderPoint);
+												newtspans.push(newtspan);								
+											}	
+											
+											tspan.textContent = "";
+										}						
+										newtspans.push(tspan);
+									}
+									
+									while (this.node.hasChildNodes()) 
+										this.node.removeChild(this.node.childNodes[0]);
+									
+									while (newtspans.length > 0) {
+										this.node.appendChild(newtspans.shift());
+									}
+								}
+
+						} catch (e) {
+
+						}
+						
+						window.setTimeout(this._positionText.bind(this), 0);						
+					};
+					
+					labelProt._wordWrap = function(input, width, cutWords) {
+						// Borrowed from: http://james.padolsey.com/javascript/wordwrap-for-javascript/, No License available
+					    width = width || 75;
+					    cutWords = cutWords || false;
+					 
+					    if (!input) { return input; }
+					 
+					    var regex = '.{1,' +width+ '}(\\s|$)' + (cutWords ? '|.{' +width+ '}|.+$' : '|\\S+?(\\s|$)');
+					 
+					    return input.match( RegExp(regex, 'g') );
+						
+					};
+					
+					// END FIX WORD-WRAPPING
+					
+		
+					var oryxEditor = new ORYX.Editor({
+						id : 'oryx-canvas123',
+						stencilset : {
+							url : '/oryx/stencilsets/epc/epc.json'
+						},
+						fullscreen : true
+					});	
+					
+					// Initially hide SVG
+					Ext.select('svg').setVisible(false);
+																										
+					//Import new process model
+					new Ajax.Request("/Apromore-editor/editor/epmlimport", {
+						  parameters: {'data': '${arg.fragmentData}'},
+					      method: 'POST',
+					      onSuccess: function(transport) {
+					        var editorConfig = Ext.decode(transport.responseText);
+					        oryxEditor.importJSON(editorConfig);					       
+					        
+					        // Call Auto-Layout if everything is available				         	
+					        window.setTimeout(function() {
+								var epcLayouter = oryxEditor.pluginsData.find(function(pluginData) {
+									return pluginData.name === "Layout-EPC";
+								});
+														
+								if (epcLayouter) {									
+									epcLayouter.functionality();
+									// Display Result
+									Ext.select('svg').setVisible(true);
+								} else {
+									alert("Did not find Layouter");
+								}
+								
+								window.onbeforeunload = null;
+																				        
+					        }, 100); 					         					     
+																		
+					      }.bind(this),
+					      onFailure: function(transport) {
+					    	alert("Failed to load process fragment!");
+					      }.bind(this)
+					    });		
+					
+				};
+				]]>
+			</n:script>	
+		</n:span>
+	</n:div>
+	
+	<n:div id="oryx-canvas123"></n:div>
+
+</window>
+</zk>

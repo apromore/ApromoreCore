@@ -4,8 +4,10 @@
 <?component name="Menu" macroURI="macros/menu.zul" ?>
 <?component name="ShortMessages" macroURI="macros/shortmessages.zul" ?>
 <?component name="Navigation" macroURI="macros/navigation.zul" ?>
+<?component name="Filter" macroURI="macros/filter/baseFilter.zul" ?>
 <?component name="SimpleSearch" macroURI="macros/simplesearch.zul" ?>
-<?component name="RefinedSearch" macroURI="macros/refinedsearch.zul" ?>
+<?component name="DetailView" macroURI="macros/detail/baseDetail.zul" ?>
+<?component name="BaseListbox" macroURI="macros/listbox/baseListbox.zul" ?>
 
 <zk>
 
@@ -15,32 +17,39 @@
 		.z-list-item a:visited {font-size: ${fontSizeMS}}
 	</style>
 
-	<window id="mainW" border="none" width="100%" vflex="1" use="org.apromore.portal.dialogController.MainController">
+	<window id="mainW" border="none" width="100%" vflex="true" use="org.apromore.portal.dialogController.MainController">
 		<Header id="headercomp" />
 
-		<borderlayout vflex="1">
-			<west title="Key word filter" size="20%" collapsible="true"
+		<borderlayout vflex="true">
+			<west id="leftPanel" title="Key word filter" size="35%" collapsible="true"
 				flex="true" splittable="true">
-				<borderlayout>
-					<north flex="true">
-						<SimpleSearch id="simplesearchcomp" />
+				<borderlayout vflex="true">
+					<north id="leftNorthPanel" flex="true">
+						<SimpleSearch id="simplesearchcomp"/>
 					</north>
-					<center title="Tree..." flex="true">
-						<Navigation id="navigationcomp" />
+					<center id="leftCenterPanel" flex="true">
+						<borderlayout vflex="true">
+							<center id="leftInnerCenterPanel" title="Tree" flex="true">
+								<Navigation id="navigationcomp"/>
+							</center>
+							<south id="leftInnerSouthPanel" title="Refine Filter" flex="true"
+								splittable="false" collapsible="true" open="false">
+								<Filter id="baseFilter"/>
+							</south>
+						</borderlayout>
 					</center>
-					<south title="Refined filter" size="30%"
-						collapsible="true" splittable="true" flex="true">
-						<RefinedSearch id="refinedsearchcomp" />
+					<south id="leftSouthPanel" title="Process Details" size="30%"
+						collapsible="true" splittable="true">
+						<DetailView id="baseDetail" />
 					</south>
 				</borderlayout>
 			</west>
-			<center flex="true">
+			<center id="mainPanel" flex="true" vflex="true">
 				<div vflex="true">
 					<Menu id="menucomp" />
-					<hbox id="pagingandbuttons"
-						style="background:#DAF4FF" width="100%">
+					<hbox id="pagingandbuttons" width="100%" style="background-color: #F9F9F9" vflex="true">
 						<paging id="pg" />
-						<hbox id="buttons">
+						<hbox id="buttons" align="center" height="100%">
 							<button id="revertSelectionB" label="" image="img/revertSelection.png"
 								style="background: transparent; border:none" tooltiptext="Revert selection" />
 							<button id="selectAllB" label="" style="background: transparent; border:none"
@@ -49,32 +58,12 @@
 								image="img/unselectAll.png" tooltiptext="Unselect all" />
 							<button id="refreshB" label="" style="background: transparent; border:none"
 								image="img/reload.png" tooltiptext="Reload data" />
-							<div style="float:right" height="25px" width="400px">
-								<toolbarbutton id="table2graphic" visible="true" label="Change view" />
-								<toolbarbutton id="graphic2table" visible="false" label="Change view" />
-							</div>
+							<button id="showVisualisation" label="" style="background: transparent; border:none"
+								image="img/wizard.png" tooltiptext="Show Visualisation" />								
 						</hbox>
 					</hbox>
-
-					<!-- the grid controller is ProcessTableController this results from a work around to deal with vertical flexibility -->
-                    <grid id="processSummariesGrid" vflex="true" autopaging="true" mold="paging" paginal="${pg}">
-						<columns sizable="true" >
-							<column width="4%"></column>
-							<column width="0">
-								<checkbox id="processSummaryCB" visible="false" />
-							</column>
-							<column width="0"   id="columnScore" label="Score" sort="auto" visible="false"/>
-							<column width="4%"  id="columnId" label="Id" sort="auto" />
-							<column width="20%" id="columnName" label="Name" />
-							<column width="14%" sort="auto" label="Original language" />
-							<column width="14%" sort="auto" label="Domain" />
-							<column width="14%" id="columnRanking" label="Ranking" />
-							<column width="0"   id="columnRankingValue" visible="false" />
-							<column width="14%" sort="auto" label="Latest version" />
-							<column width="14%"  sort="auto" label="Owner" />
-						</columns>
-						<rows id="processSummariesRows" />
-					</grid>
+					
+					<BaseListbox id="baseListbox" />
 
 				</div>
 			</center>

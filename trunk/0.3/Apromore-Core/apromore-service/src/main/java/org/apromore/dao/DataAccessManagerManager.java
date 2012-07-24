@@ -12,7 +12,7 @@ import org.apromore.model.WriteEditSessionInputMsgType;
 import org.apromore.model.WriteEditSessionOutputMsgType;
 
 /**
- * 
+ *
  */
 public interface DataAccessManagerManager {
 

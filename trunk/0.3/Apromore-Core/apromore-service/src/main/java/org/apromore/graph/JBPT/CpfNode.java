@@ -1,12 +1,12 @@
 package org.apromore.graph.JBPT;
 
-import org.jbpt.pm.Activity;
-
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
+
+import org.jbpt.pm.Activity;
 
 /**
  * CPF Work implementation.
@@ -29,9 +29,9 @@ public class CpfNode extends Activity implements ICpfNode {
     }
 
 
-
     /**
      * Return this {@link org.apromore.graph.JBPT.ICpfNode} attributes.
+     *
      * @return the attributes
      */
     @Override
@@ -41,6 +41,7 @@ public class CpfNode extends Activity implements ICpfNode {
 
     /**
      * Set if this node is configurable.
+     *
      * @param config the config boolean
      */
     @Override
@@ -50,6 +51,7 @@ public class CpfNode extends Activity implements ICpfNode {
 
     /**
      * returns if this Node configurable.
+     *
      * @return true or false
      */
     @Override
@@ -59,25 +61,28 @@ public class CpfNode extends Activity implements ICpfNode {
 
     /**
      * add an attribute to the {@link org.apromore.graph.JBPT.ICpfNode}.
+     *
      * @param name  the name of the attribute
      * @param value the value of the attribute
      */
     @Override
     public void addAttribute(String name, String value) {
-       attributes.put(name, value);
+        attributes.put(name, value);
     }
 
     /**
      * Set if this {@link org.apromore.graph.JBPT.ICpfNode} attributes.
+     *
      * @param newAttributes the map of attributes
      */
     @Override
     public void setAttributes(Map<String, String> newAttributes) {
-       attributes = newAttributes;
+        attributes = newAttributes;
     }
 
     /**
      * Returns a single Attribute value for a given key.
+     *
      * @param name the key of the Attribute we are looking for
      * @return the value of the found Attribute, otherwise null is not in the list.
      */
@@ -88,6 +93,7 @@ public class CpfNode extends Activity implements ICpfNode {
 
     /**
      * Add a given {@link org.apromore.graph.JBPT.ICpfResource} to this {@link IFlowNode}.
+     *
      * @param newResource to add to this {@link IFlowNode}
      */
     @Override
@@ -105,6 +111,7 @@ public class CpfNode extends Activity implements ICpfNode {
 
     /**
      * Add a given {@link org.apromore.graph.JBPT.ICpfObject} to this {@link IFlowNode}.
+     *
      * @param object to add to this {@link IFlowNode}
      */
     @Override

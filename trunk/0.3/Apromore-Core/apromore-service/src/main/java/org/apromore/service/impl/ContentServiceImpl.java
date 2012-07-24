@@ -1,5 +1,8 @@
 package org.apromore.service.impl;
 
+import java.util.Collection;
+import java.util.Map.Entry;
+
 import org.apromore.common.Constants;
 import org.apromore.dao.ContentDao;
 import org.apromore.dao.EdgeDao;
@@ -28,9 +31,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Collection;
-import java.util.Map.Entry;
-
 /**
  * Implementation of the FormatService Contract.
  *
@@ -40,19 +40,23 @@ import java.util.Map.Entry;
 @Transactional(propagation = Propagation.REQUIRED)
 public class ContentServiceImpl implements ContentService {
 
-    @Autowired @Qualifier("ContentDao")
+    @Autowired
+    @Qualifier("ContentDao")
     private ContentDao contentDao;
-    @Autowired @Qualifier("EdgeDao")
+    @Autowired
+    @Qualifier("EdgeDao")
     private EdgeDao edgeDao;
-    @Autowired @Qualifier("NodeDao")
+    @Autowired
+    @Qualifier("NodeDao")
     private NodeDao nDao;
-    @Autowired @Qualifier("NonPocketNodeDao")
+    @Autowired
+    @Qualifier("NonPocketNodeDao")
     private NonPocketNodeDao nonPocketNodeDao;
 
 
     /**
      * @see org.apromore.service.ContentService#getMatchingContentId(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -66,7 +70,7 @@ public class ContentServiceImpl implements ContentService {
 
     /**
      * @see org.apromore.service.ContentService#addContent(org.jbpt.graph.algo.rpst.RPSTNode, String, org.apromore.graph.JBPT.CPF)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -87,7 +91,7 @@ public class ContentServiceImpl implements ContentService {
 
     /**
      * @see org.apromore.service.ContentService#addNodes(org.apromore.dao.model.Content, java.util.Collection, org.apromore.graph.JBPT.CPF)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void addNodes(Content content, Collection<CpfNode> vertices, CPF g) {
@@ -98,12 +102,12 @@ public class ContentServiceImpl implements ContentService {
             if (!"Pocket".equals(type)) {
                 addNonPacketNode(n.getVid());
             }
-        }    
+        }
     }
 
     /**
      * @see org.apromore.service.ContentService#addNode
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public Node addNode(Content content, ICpfNode v, String vtype) {
@@ -126,7 +130,7 @@ public class ContentServiceImpl implements ContentService {
 
     /**
      * @see org.apromore.service.ContentService#addNonPacketNode(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void addNonPacketNode(Integer vid) {
@@ -139,7 +143,7 @@ public class ContentServiceImpl implements ContentService {
 
     /**
      * @see org.apromore.service.ContentService#addEdges(Content, java.util.Collection)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void addEdges(Content content, Collection<AbstractDirectedEdge> edges) {
@@ -152,12 +156,12 @@ public class ContentServiceImpl implements ContentService {
 
     /**
      * @see org.apromore.service.ContentService#addEdge(org.apromore.dao.model.Content, org.jbpt.graph.abs.AbstractDirectedEdge, org.apromore.dao.model.Node, org.apromore.dao.model.Node)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void addEdge(Content content, AbstractDirectedEdge e, Node source, Node target) {
         Edge edge = new Edge();
-        
+
         edge.setContent(content);
         edge.setVerticesBySourceVid(source);
         edge.setVerticesByTargetVid(target);
@@ -170,7 +174,7 @@ public class ContentServiceImpl implements ContentService {
 
     /**
      * @see org.apromore.service.ContentService#deleteContent(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void deleteContent(String contentId) {
@@ -180,7 +184,7 @@ public class ContentServiceImpl implements ContentService {
 
     /**
      * @see org.apromore.service.ContentService#deleteContent(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void deleteEdgesOfContent(String contentId) {
@@ -192,7 +196,7 @@ public class ContentServiceImpl implements ContentService {
 
     /**
      * @see org.apromore.service.ContentService#deleteContent(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void deleteVerticesOfContent(String contentId) {
@@ -201,7 +205,6 @@ public class ContentServiceImpl implements ContentService {
             nDao.delete(node);
         }
     }
-
 
 
     private void addObjects(Node node, ICpfNode v) {
@@ -268,10 +271,9 @@ public class ContentServiceImpl implements ContentService {
     }
 
 
-
-
     /**
      * Set the Content DAO object for this class. Mainly for spring tests.
+     *
      * @param contentDaoJpa the Content Dao.
      */
     public void setContentDao(ContentDao contentDaoJpa) {
@@ -280,6 +282,7 @@ public class ContentServiceImpl implements ContentService {
 
     /**
      * Set the Edge DAO object for this class. Mainly for spring tests.
+     *
      * @param edgeDaoJpa the edge Dao.
      */
     public void setEdgeDao(EdgeDao edgeDaoJpa) {
@@ -288,6 +291,7 @@ public class ContentServiceImpl implements ContentService {
 
     /**
      * Set the Node DAO object for this class. Mainly for spring tests.
+     *
      * @param nodeDaoJpa the Node Dao.
      */
     public void setNodeDao(NodeDao nodeDaoJpa) {
@@ -296,6 +300,7 @@ public class ContentServiceImpl implements ContentService {
 
     /**
      * Set the Non Pocket Node DAO object for this class. Mainly for spring tests.
+     *
      * @param nonPocketNodeDaoJpa the Non Pocket Node Dao.
      */
     public void setNonPocketNodeDao(NonPocketNodeDao nonPocketNodeDaoJpa) {

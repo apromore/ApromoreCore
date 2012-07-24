@@ -1,13 +1,13 @@
 package org.apromore.common;
 
-public class Constants {
+public interface Constants {
 
-	// For the DB JNDI Lookup
+    // For the DB JNDI Lookup
     public static final String CONTEXT = "java:comp/env/jdbc/ApromoreDB";
 
-	public static final String INITIAL_ANNOTATION = "Initial";
-	public static final String ANNOTATIONS = "Annotations";
-	public static final String CANONICAL = "Canonical";
+    public static final String INITIAL_ANNOTATION = "Initial";
+    public static final String ANNOTATIONS = "Annotations";
+    public static final String CANONICAL = "Canonical";
 
     public static final boolean INDEX_CONNECTORS = false;
     public static final String TRUNK_NAME = "MAIN";
@@ -45,4 +45,8 @@ public class Constants {
 
     public static final int MAXIMUM_PROCESS_LOCK_ATTEMPTS = 10;
     public static final int PROCESS_LOCKING_WAITING_TIME = 5000;
+
+    public static final String PHASE1 = "Phase_1";
+    public static final String PHASE2 = "Phase_2";
+    public static final int ROUND_OFF_AMOUNT = 1000000;
 }

@@ -1,9 +1,6 @@
 package org.apromore.dao.model;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.beans.factory.annotation.Configurable;
-
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,7 +11,10 @@ import javax.persistence.Lob;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
-import java.io.Serializable;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -25,16 +25,18 @@ import static javax.persistence.GenerationType.IDENTITY;
  */
 @Entity
 @Table(name = "annotation",
-       uniqueConstraints = {
-               @UniqueConstraint(columnNames = { "process_model_version_id", "name" }),
-               @UniqueConstraint(columnNames = { "native" })
-       }
+        uniqueConstraints = {
+                @UniqueConstraint(columnNames = {"process_model_version_id", "name"}),
+                @UniqueConstraint(columnNames = {"native"})
+        }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Configurable("annotation")
 public class Annotation implements Serializable {
 
-    /** Hard coded for interoperability. */
+    /**
+     * Hard coded for interoperability.
+     */
     private static final long serialVersionUID = -2353376324638485548L;
 
     private int uri;
@@ -47,11 +49,13 @@ public class Annotation implements Serializable {
     /**
      * Default Constructor.
      */
-    public Annotation() { }
+    public Annotation() {
+    }
 
 
     /**
      * Get the Primary Key for the Object.
+     *
      * @return Returns the uri.
      */
     @Id
@@ -63,6 +67,7 @@ public class Annotation implements Serializable {
 
     /**
      * Set the Primary Key for the Object.
+     *
      * @param newUri The uri to set.
      */
     public void setUri(final int newUri) {
@@ -72,6 +77,7 @@ public class Annotation implements Serializable {
 
     /**
      * Get the name for the Object.
+     *
      * @return Returns the name.
      */
     @Column(name = "name", unique = false, nullable = true, length = 40)
@@ -81,6 +87,7 @@ public class Annotation implements Serializable {
 
     /**
      * Set the name for the Object.
+     *
      * @param newName The name to set.
      */
     public void setName(final String newName) {
@@ -90,6 +97,7 @@ public class Annotation implements Serializable {
 
     /**
      * Get the contents for the Object.
+     *
      * @return Returns the contents.
      */
     @Lob
@@ -100,6 +108,7 @@ public class Annotation implements Serializable {
 
     /**
      * Set the contents for the Object.
+     *
      * @param newContent The contents to set.
      */
     public void setContent(final String newContent) {
@@ -109,6 +118,7 @@ public class Annotation implements Serializable {
 
     /**
      * Get the native format for the Object.
+     *
      * @return Returns the native format.
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -119,6 +129,7 @@ public class Annotation implements Serializable {
 
     /**
      * Set the native format for the Object.
+     *
      * @param newNative The native format to set.
      */
     public void setNatve(final Native newNative) {
@@ -127,6 +138,7 @@ public class Annotation implements Serializable {
 
     /**
      * Get the process Model Version for the Object.
+     *
      * @return Returns the process Model Version.
      */
     @ManyToOne(fetch = FetchType.LAZY)
@@ -137,6 +149,7 @@ public class Annotation implements Serializable {
 
     /**
      * Set the process Model Version for the Object.
+     *
      * @param newProcessModelVersion The process Model Version format to set.
      */
     public void setProcessModelVersion(ProcessModelVersion newProcessModelVersion) {

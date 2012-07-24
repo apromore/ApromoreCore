@@ -119,7 +119,8 @@ public class SearchHistoriesController extends Combobox {
     }
 
     public String getValue() {
-        return super.getValue();
+        String value = super.getValue();
+        return value;
 
     }
 }

@@ -1,19 +1,18 @@
 package org.apromore.dao.jpa;
 
-import org.apromore.dao.NamedQueries;
-import org.apromore.dao.NativeDao;
-import org.apromore.dao.model.Native;
-import org.apromore.exception.NativeFormatNotFoundException;
-import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Propagation;
-import org.springframework.transaction.annotation.Transactional;
-
+import java.util.List;
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
-import java.util.List;
+
+import org.apromore.dao.NamedQueries;
+import org.apromore.dao.NativeDao;
+import org.apromore.dao.model.Native;
+import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate implementation of the org.apromore.dao.NativeDao interface.
@@ -31,7 +30,7 @@ public class NativeDaoJpa implements NativeDao {
 
     /**
      * @see org.apromore.dao.NativeDao#findNativeByCanonical(Integer, String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -45,7 +44,7 @@ public class NativeDaoJpa implements NativeDao {
 
     /**
      * @see org.apromore.dao.NativeDao#getNative(Integer, String, String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -59,10 +58,9 @@ public class NativeDaoJpa implements NativeDao {
     }
 
 
-
     /**
      * @see org.apromore.dao.NativeDao#delete(org.apromore.dao.model.Native)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void save(Native natve) {
@@ -71,7 +69,7 @@ public class NativeDaoJpa implements NativeDao {
 
     /**
      * @see org.apromore.dao.NativeDao#delete(org.apromore.dao.model.Native)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public Native update(Native natve) {
@@ -80,16 +78,17 @@ public class NativeDaoJpa implements NativeDao {
 
     /**
      * @see org.apromore.dao.NativeDao#delete(org.apromore.dao.model.Native)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void delete(Native natve) {
-         em.remove(natve);
+        em.remove(natve);
     }
 
 
     /**
      * Sets the Entity Manager. No way around this to get Unit Testing working
+     *
      * @param em the entitymanager
      */
     public void setEntityManager(EntityManager em) {

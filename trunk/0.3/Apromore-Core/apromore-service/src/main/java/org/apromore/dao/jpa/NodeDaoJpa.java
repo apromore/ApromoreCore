@@ -1,16 +1,16 @@
 package org.apromore.dao.jpa;
 
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.apromore.dao.NamedQueries;
 import org.apromore.dao.NodeDao;
 import org.apromore.dao.model.Node;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.util.List;
 
 /**
  * Hibernate implementation of the org.apromore.dao.NodeDao interface.
@@ -28,7 +28,7 @@ public class NodeDaoJpa implements NodeDao {
 
     /**
      * @see org.apromore.dao.NodeDao#findNode(Integer)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -39,7 +39,7 @@ public class NodeDaoJpa implements NodeDao {
 
     /**
      * @see org.apromore.dao.NodeDao#getContentIDs()
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -50,7 +50,7 @@ public class NodeDaoJpa implements NodeDao {
 
     /**
      * @see org.apromore.dao.NodeDao#getVertexByContent(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -62,7 +62,7 @@ public class NodeDaoJpa implements NodeDao {
 
     /**
      * @see org.apromore.dao.NodeDao#getStoredVertices()
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -72,11 +72,9 @@ public class NodeDaoJpa implements NodeDao {
     }
 
 
-
-
     /**
      * @see org.apromore.dao.NodeDao#save(org.apromore.dao.model.Node)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void save(final Node node) {
@@ -85,7 +83,7 @@ public class NodeDaoJpa implements NodeDao {
 
     /**
      * @see org.apromore.dao.NodeDao#update(org.apromore.dao.model.Node)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public Node update(final Node node) {
@@ -94,7 +92,7 @@ public class NodeDaoJpa implements NodeDao {
 
     /**
      * @see org.apromore.dao.NodeDao#delete(org.apromore.dao.model.Node)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void delete(final Node node) {
@@ -104,6 +102,7 @@ public class NodeDaoJpa implements NodeDao {
 
     /**
      * Sets the Entity Manager. No way around this to get Unit Testing working
+     *
      * @param em the entitymanager
      */
     public void setEntityManager(EntityManager em) {

@@ -1,5 +1,11 @@
 package org.apromore.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.apromore.common.Constants;
 import org.apromore.graph.JBPT.CPF;
 import org.apromore.graph.JBPT.CpfNode;
@@ -9,12 +15,6 @@ import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.FlowNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 /**
  * @author Chathura Ekanayake

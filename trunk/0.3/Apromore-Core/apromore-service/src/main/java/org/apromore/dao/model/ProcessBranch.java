@@ -1,9 +1,8 @@
 package org.apromore.dao.model;
 
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.springframework.beans.factory.annotation.Configurable;
-
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -13,9 +12,10 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
+
+import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;
+import org.springframework.beans.factory.annotation.Configurable;
 
 import static javax.persistence.GenerationType.IDENTITY;
 
@@ -45,7 +45,8 @@ public class ProcessBranch implements Serializable {
     private Set<ProcessModelVersion> processModelVersions = new HashSet<ProcessModelVersion>(0);
 
 
-    public ProcessBranch() { }
+    public ProcessBranch() {
+    }
 
 
     @Id
@@ -91,6 +92,7 @@ public class ProcessBranch implements Serializable {
 
     /**
      * Get the process for the Object.
+     *
      * @return Returns the process.
      */
     @Column(name = "creation_date", length = 35)
@@ -104,6 +106,7 @@ public class ProcessBranch implements Serializable {
 
     /**
      * Get the process for the Object.
+     *
      * @return Returns the process.
      */
     @Column(name = "last_update", length = 35)
@@ -117,6 +120,7 @@ public class ProcessBranch implements Serializable {
 
     /**
      * Get the process for the Object.
+     *
      * @return Returns the process.
      */
     @Column(name = "ranking", length = 10)
@@ -127,7 +131,6 @@ public class ProcessBranch implements Serializable {
     public void setRanking(final String newRanking) {
         this.ranking = newRanking;
     }
-
 
 
     @ManyToOne(fetch = FetchType.LAZY)

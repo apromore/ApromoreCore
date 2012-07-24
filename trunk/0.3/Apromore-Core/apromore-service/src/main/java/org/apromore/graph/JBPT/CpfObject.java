@@ -25,7 +25,8 @@ public class CpfObject implements ICpfObject, Cloneable {
     /**
      * @return a new instance of this class where parent and label are set to <code>null</code>.
      */
-    public CpfObject() { }
+    public CpfObject() {
+    }
 
     /**
      * @param newId of this {@link org.jbpt.pm.CpfObject}
@@ -34,7 +35,6 @@ public class CpfObject implements ICpfObject, Cloneable {
     public CpfObject(String newId) {
         this.id = newId;
     }
-
 
 
     @Override
@@ -58,9 +58,9 @@ public class CpfObject implements ICpfObject, Cloneable {
     }
 
 
-
     /**
      * Return this {@link org.apromore.graph.JBPT.ICpfObject} id.
+     *
      * @return the id of the Object
      */
     @Override
@@ -70,6 +70,7 @@ public class CpfObject implements ICpfObject, Cloneable {
 
     /**
      * Set if this {@link org.apromore.graph.JBPT.ICpfObject} Id.
+     *
      * @param Id the id
      */
     @Override
@@ -79,6 +80,7 @@ public class CpfObject implements ICpfObject, Cloneable {
 
     /**
      * Set if this {@link org.apromore.graph.JBPT.ICpfObject} Name.
+     *
      * @param name the name
      */
     public String getName() {
@@ -87,6 +89,7 @@ public class CpfObject implements ICpfObject, Cloneable {
 
     /**
      * Return this {@link org.apromore.graph.JBPT.ICpfObject} name.
+     *
      * @return the name of the Object
      */
     public void setName(String newName) {
@@ -95,6 +98,7 @@ public class CpfObject implements ICpfObject, Cloneable {
 
     /**
      * Return this {@link org.apromore.graph.JBPT.ICpfObject} ObjectId.
+     *
      * @return the ObjectId of the Resource
      */
     @Override
@@ -104,6 +108,7 @@ public class CpfObject implements ICpfObject, Cloneable {
 
     /**
      * Set if this {@link org.apromore.graph.JBPT.ICpfObject} ObjectId.
+     *
      * @param newObjectId the objectId
      */
     @Override

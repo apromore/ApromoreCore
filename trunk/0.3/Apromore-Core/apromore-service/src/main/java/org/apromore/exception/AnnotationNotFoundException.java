@@ -11,31 +11,34 @@ public class AnnotationNotFoundException extends Exception {
     /**
      * Default Constructor.
      */
-	public AnnotationNotFoundException() {
-	}
+    public AnnotationNotFoundException() {
+    }
 
     /**
      * Constructor.
+     *
      * @param message the message to put with the exception.
      */
-	public AnnotationNotFoundException(String message) {
-		super(message);
-	}
+    public AnnotationNotFoundException(String message) {
+        super(message);
+    }
 
     /**
      * Constructor.
+     *
      * @param cause The exception that caused this exception to be thrown.
      */
-	public AnnotationNotFoundException(Throwable cause) {
-		super(cause);
-	}
+    public AnnotationNotFoundException(Throwable cause) {
+        super(cause);
+    }
 
     /**
      * Constructor.
+     *
      * @param message the message to put with the exception.
-     * @param cause The exception that caused this exception to be thrown.
+     * @param cause   The exception that caused this exception to be thrown.
      */
-	public AnnotationNotFoundException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    public AnnotationNotFoundException(String message, Throwable cause) {
+        super(message, cause);
+    }
 }

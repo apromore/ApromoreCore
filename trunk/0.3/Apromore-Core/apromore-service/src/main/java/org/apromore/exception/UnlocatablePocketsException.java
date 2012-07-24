@@ -5,11 +5,11 @@ package org.apromore.exception;
  */
 public class UnlocatablePocketsException extends Exception {
 
-	public UnlocatablePocketsException(String msg) {
-		super(msg);
-	}
-	
-	public UnlocatablePocketsException(String msg, Throwable e) {
-		super(msg, e);
-	}
+    public UnlocatablePocketsException(String msg) {
+        super(msg);
+    }
+
+    public UnlocatablePocketsException(String msg, Throwable e) {
+        super(msg, e);
+    }
 }

@@ -1,5 +1,13 @@
 package org.apromore.dao.jpa;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.apromore.dao.FragmentVersionDagDao;
 import org.apromore.dao.NamedQueries;
 import org.apromore.dao.model.FragmentVersion;
@@ -7,11 +15,6 @@ import org.apromore.dao.model.FragmentVersionDag;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.util.List;
 
 /**
  * Hibernate implementation of the org.apromore.dao.FragmentVersionDagDao interface.
@@ -29,7 +32,7 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDagDao#findFragmentVersionDag(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -40,7 +43,7 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDagDao#getChildMappings(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public List<FragmentVersionDag> getChildMappings(final String fragmentId) {
@@ -49,9 +52,49 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
         return (List<FragmentVersionDag>) query.getResultList();
     }
 
+    @Override
+    public Map<String, List<String>> getAllParentChildMappings() {
+        Query query = em.createNamedQuery(NamedQueries.GET_ALL_PARENT_CHILD_MAPPINGS);
+        List<FragmentVersionDag> mappings = (List<FragmentVersionDag>) query.getResultList();
+
+        Map<String, List<String>> parentChildMap = new HashMap<String, List<String>>();
+        for (FragmentVersionDag mapping : mappings) {
+            String pid = mapping.getId().getFragmentVersionId();
+            String cid = mapping.getId().getChildFragmentVersionId();
+            if (parentChildMap.containsKey(pid)) {
+                parentChildMap.get(pid).add(cid);
+            } else {
+                List<String> childIds = new ArrayList<String>();
+                childIds.add(cid);
+                parentChildMap.put(pid, childIds);
+            }
+        }
+        return parentChildMap;
+    }
+
+    @Override
+    public Map<String, List<String>> getAllChildParentMappings() {
+        Query query = em.createNamedQuery(NamedQueries.GET_ALL_PARENT_CHILD_MAPPINGS);
+        List<FragmentVersionDag> mappings = (List<FragmentVersionDag>) query.getResultList();
+
+        Map<String, List<String>> childParentMap = new HashMap<String, List<String>>();
+        for (FragmentVersionDag mapping : mappings) {
+            String pid = mapping.getId().getFragmentVersionId();
+            String cid = mapping.getId().getChildFragmentVersionId();
+            if (childParentMap.containsKey(cid)) {
+                childParentMap.get(cid).add(pid);
+            } else {
+                List<String> parentIds = new ArrayList<String>();
+                parentIds.add(pid);
+                childParentMap.put(cid, parentIds);
+            }
+        }
+        return childParentMap;
+    }
+
     /**
      * @see org.apromore.dao.FragmentVersionDagDao#getChildFragmentsByFragmentVersion(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public List<FragmentVersion> getChildFragmentsByFragmentVersion(final String fragmentVersionId) {
@@ -63,7 +106,7 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDagDao#save(org.apromore.dao.model.FragmentVersionDag)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void save(final FragmentVersionDag fragmentVersionDag) {
@@ -72,7 +115,7 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDagDao#update(org.apromore.dao.model.FragmentVersionDag)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public FragmentVersionDag update(final FragmentVersionDag fragmentVersionDag) {
@@ -81,7 +124,7 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDagDao#delete(org.apromore.dao.model.FragmentVersionDag)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void delete(final FragmentVersionDag fragmentVersionDag) {
@@ -89,9 +132,9 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
     }
 
 
-
     /**
      * Sets the Entity Manager. No way around this to get Unit Testing working
+     *
      * @param em the entitymanager
      */
     public void setEntityManager(EntityManager em) {

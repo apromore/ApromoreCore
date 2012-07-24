@@ -1,5 +1,5 @@
 <!-- Controller is  MenuController-->
-<menubar id="operationMenu">
+<menubar id="operationMenu" vflex="true">
 	<menu id="process" label="Process">
 		<menupopup>
 			<menuitem id="createProcess" label="Create model" disabled="true"/>
@@ -23,6 +23,8 @@
 	<menu id="filtering" label="Filtering">
 		<menupopup>
 			<menuitem id="similaritySearch" label="Similarity search" disabled="true"/>
+			<menuseparator />
+			<menuitem id="similarityClusters" label="Similarity Clusters" disabled="true"/>
 			<menuseparator />
 			<menuitem id="exactMatching" label="Exact matching" disabled="true" />
 		</menupopup>

@@ -1,5 +1,6 @@
 package org.apromore.portal.dialogController;
 
+import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersController;
 import org.apromore.portal.exception.DialogException;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
@@ -10,6 +11,7 @@ import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Checkbox;
+import org.zkoss.zul.Listitem;
 import org.zkoss.zul.Menu;
 import org.zkoss.zul.Menubar;
 import org.zkoss.zul.Menuitem;
@@ -42,6 +44,7 @@ public class MenuController extends Menubar {
     private Menu evaluationM;
     private Menu filteringM;
     private Menuitem similaritySearchMI;
+    private Menuitem similarityClustersMI;
     private Menuitem exactMatchingMI;
 
     private Menu designM;
@@ -50,7 +53,7 @@ public class MenuController extends Menubar {
     private Menu presentationM;
     private Menuitem evalQualityMI;
     private Menuitem evalCorrectnessMI;
-    private Menuitem evalPerformanceMI;
+    private Menuitem evalPerformanceMI;	
 
     public MenuController(MainController mainController) throws ExceptionFormats {
 
@@ -72,6 +75,7 @@ public class MenuController extends Menubar {
 
         this.filteringM = (Menu) this.menuB.getFellow("filtering");
         this.similaritySearchMI = (Menuitem) this.menuB.getFellow("similaritySearch");
+        this.similarityClustersMI = (Menuitem) this.menuB.getFellow("similarityClusters");
         this.exactMatchingMI = (Menuitem) this.menuB.getFellow("exactMatching");
 
         this.designM = (Menu) this.menuB.getFellow("design");
@@ -124,6 +128,12 @@ public class MenuController extends Menubar {
                         searchSimilarProcesses();
                     }
                 });
+        this.similarityClustersMI.addEventListener("onClick",
+                new EventListener() {
+                    public void onEvent(Event event) throws Exception {
+                        clusterSimilarProcesses();
+                    }
+                });        
         this.mergeMI.addEventListener("onClick",
                 new EventListener() {
                     public void onEvent(Event event) throws Exception {
@@ -132,7 +142,8 @@ public class MenuController extends Menubar {
                 });
     }
 
-    /**
+
+	/**
      * Search for similar processes to the one currently selected
      *
      * @throws SuspendNotAllowedException
@@ -141,7 +152,7 @@ public class MenuController extends Menubar {
     protected void searchSimilarProcesses() throws SuspendNotAllowedException, InterruptedException {
         HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions =
                 getSelectedProcessVersions();
-        this.mainC.eraseMessage();
+        this.mainC.eraseMessage();        
         int processId;
         String versionName;
         if (selectedProcessVersions.size() == 1
@@ -157,6 +168,17 @@ public class MenuController extends Menubar {
         }
 
     }
+    
+
+    /**
+     * Cluster similar processes in the whole repository
+     * @throws InterruptedException 
+     * @throws SuspendNotAllowedException 
+     */
+    protected void clusterSimilarProcesses() throws SuspendNotAllowedException, InterruptedException {
+    	this.mainC.eraseMessage(); 
+    	new SimilarityClustersController(this.mainC);	
+	}    
 
     protected void mergeSelectedProcessVersions() throws InterruptedException, ExceptionDomains {
         HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions =
@@ -257,7 +279,7 @@ public class MenuController extends Menubar {
      * @throws Exception
      */
     protected void deleteSelectedProcessVersions() throws Exception {
-        this.mainC.eraseMessage();
+        this.mainC.eraseMessage();        
         HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions =
                 getSelectedProcessVersions();
         if (selectedProcessVersions.size() != 0) {
@@ -309,36 +331,38 @@ public class MenuController extends Menubar {
      */
     private HashMap<ProcessSummaryType, List<VersionSummaryType>> getSelectedProcessVersions() {
         this.mainC.eraseMessage();
-        /* Build a list of the selected process versions <p, v>
-           */
-        HashMap<Checkbox, VersionSummaryType> processVersionHM = this.mainC.getProcesstable().getProcessVersionsHM();
-        HashMap<Checkbox, ProcessSummaryType> processHM = this.mainC.getProcesstable().getProcessHM();
-        HashMap<Checkbox, List<Checkbox>> mapProcessVersions = this.mainC.getProcesstable().getMapProcessVersions();
+        
+        if (this.mainC.getBaseListboxController() instanceof ProcessListboxController) {
+            Set selectedProcesses = this.mainC.getBaseListboxController().getListModel().getSelection();
 
-        Set<Checkbox> keysCBproc = processHM.keySet(); // set of checkboxes for processes
-        Iterator it = keysCBproc.iterator();
-        // browse process checkboxes to find the first which is selected
-        Checkbox cbProc;
-        Checkbox cbVers;
-
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions =
-                new HashMap<ProcessSummaryType, List<VersionSummaryType>>();
-        while (it.hasNext()) {
-            cbProc = (Checkbox) it.next();
-            if (cbProc.isChecked()) {
-                List<Checkbox> listCbVers = mapProcessVersions.get(cbProc);
-                List<VersionSummaryType> listVersion = new ArrayList<VersionSummaryType>();
-                // if process selected, one version at least is selected too
-                for (int i = 0; i < listCbVers.size(); i++) {
-                    cbVers = listCbVers.get(i);
-                    if (cbVers.isChecked()) {
-                        listVersion.add(processVersionHM.get(cbVers));
-                    }
-                }
-                processVersions.put(processHM.get(cbProc), listVersion);
+            HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions =
+                    new HashMap<ProcessSummaryType, List<VersionSummaryType>>();
+            
+            ProcessVersionDetailController detailController = ((ProcessVersionDetailController)this.mainC.getDetailListbox());
+            VersionSummaryType selectedVersion = detailController.getSelectedVersion();
+          
+            for (Object obj: selectedProcesses) {
+            	ProcessSummaryType selectedProcess = (ProcessSummaryType)obj;            
+              	ArrayList<VersionSummaryType> versionList = new ArrayList<VersionSummaryType>();
+            	if (selectedVersion != null) {                	
+                	versionList.add(selectedVersion);	
+            	} else {
+            		// Add latest Versions only
+            		for (VersionSummaryType summaryType: selectedProcess.getVersionSummaries()) {
+            			if (summaryType.getName().equals(selectedProcess.getLastVersion())) {
+            				versionList.add(summaryType);
+            			}
+            		}
+            		
+            	}            	
+            	processVersions.put(selectedProcess, versionList);
             }
+            
+            return processVersions;
+        } else {
+        	return new HashMap<ProcessSummaryType, List<VersionSummaryType>>();
         }
-        return processVersions;
+
     }
 
     /**

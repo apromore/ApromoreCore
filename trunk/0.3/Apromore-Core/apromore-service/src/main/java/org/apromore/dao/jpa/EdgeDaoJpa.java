@@ -1,16 +1,16 @@
 package org.apromore.dao.jpa;
 
+import java.util.List;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.apromore.dao.EdgeDao;
 import org.apromore.dao.NamedQueries;
 import org.apromore.dao.model.Edge;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.util.List;
 
 /**
  * Hibernate implementation of the org.apromore.dao.EdgeDao interface.
@@ -28,7 +28,7 @@ public class EdgeDaoJpa implements EdgeDao {
 
     /**
      * @see org.apromore.dao.EdgeDao#getEdgesByContent(String)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -41,7 +41,7 @@ public class EdgeDaoJpa implements EdgeDao {
 
     /**
      * @see org.apromore.dao.EdgeDao#getStoredEdges()
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -51,11 +51,9 @@ public class EdgeDaoJpa implements EdgeDao {
     }
 
 
-
-
     /**
      * @see org.apromore.dao.EdgeDao#save(org.apromore.dao.model.Edge)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void save(final Edge edge) {
@@ -64,7 +62,7 @@ public class EdgeDaoJpa implements EdgeDao {
 
     /**
      * @see org.apromore.dao.EdgeDao#update(org.apromore.dao.model.Edge)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public Edge update(final Edge edge) {
@@ -73,7 +71,7 @@ public class EdgeDaoJpa implements EdgeDao {
 
     /**
      * @see org.apromore.dao.EdgeDao#delete(org.apromore.dao.model.Edge)
-     * {@inheritDoc}
+     *      {@inheritDoc}
      */
     @Override
     public void delete(final Edge edge) {
@@ -83,6 +81,7 @@ public class EdgeDaoJpa implements EdgeDao {
 
     /**
      * Sets the Entity Manager. No way around this to get Unit Testing working
+     *
      * @param em the entitymanager
      */
     public void setEntityManager(EntityManager em) {

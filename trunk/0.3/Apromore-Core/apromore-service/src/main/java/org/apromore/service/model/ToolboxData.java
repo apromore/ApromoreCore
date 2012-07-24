@@ -1,10 +1,10 @@
 package org.apromore.service.model;
 
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.dao.model.ProcessModelVersion;
-
 import java.util.HashMap;
 import java.util.Map;
+
+import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.dao.model.ProcessModelVersion;
 
 /**
  * A Data Type that stores the information used by the Similarity Search.
@@ -37,7 +37,6 @@ public class ToolboxData {
     public ToolboxData() {
         model = new HashMap<ProcessModelVersion, CanonicalProcessType>(0);
     }
-
 
 
     public String getAlgorithm() {

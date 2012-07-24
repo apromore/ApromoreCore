@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<entity-mappings version="1.0" xmlns="http://java.sun.com/xml/ns/persistence/orm"
+                 xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                 xsi:schemaLocation="http://java.sun.com/xml/ns/persistence/orm http://java.sun.com/xml/ns/persistence/orm_1_0.xsd ">
+
+    <named-query name="clusteringSummary.getClusteringSummary">
+        <!-- Used ClusteringDao -->
+        <query>SELECT new org.apromore.dao.model.ClusteringSummary(count(c.clusterId), min(c.size), max(c.size),
+            min(c.avgFragmentSize), max(c.avgFragmentSize), min(c.BCR), max(c.BCR))
+            FROM Cluster c
+        </query>
+    </named-query>
+
+    <named-query name="fragmentVersion.getUnprocessedFragments">
+        <!-- Used ClusteringDao -->
+        <query>SELECT f FROM FragmentVersion f</query>
+    </named-query>
+
+    <named-query name="cluster.getClusterById">
+        <!-- Used ClusteringDaoJpa -->
+        <query>SELECT c FROM Cluster c
+            WHERE c.clusterId = :clusterId</query>
+    </named-query>
+
+    <named-query name="cluster.getAllClusters">
+        <!-- Used ClusteringDaoJpa -->
+        <query>SELECT c FROM Cluster c</query>
+    </named-query>
+
+    <named-query name="fragmentDistance.getDistancesBelowThreshold">
+        <!-- Used ClusteringDao -->
+        <query>SELECT fd FROM FragmentDistance fd
+            WHERE fd.distance &lt; :threshold
+        </query>
+    </named-query>
+
+    <named-query name="fragmentDistance.getDistance">
+        <!-- Used ClusteringDao -->
+        <query>SELECT fd.distance FROM FragmentDistance fd
+            WHERE fd.id.fragmentId1 = :fragmentId1
+            AND fd.id.fragmentId2 = :fragmentId2
+        </query>
+    </named-query>
+
+    <named-query name="clusterAssignment.getFragmentIdsOfCluster">
+        <!-- Used ClusteringDao -->
+        <query>SELECT ca.id.fragmentId FROM ClusterAssignment ca
+            WHERE ca.id.clusterId = :clusterId
+        </query>
+    </named-query>
+
+    <named-query name="fragmentVersion.getFragmentsOfProcesses">
+        <!-- Used ClusteringDao -->
+        <query>SELECT f FROM FragmentVersion f, ProcessFragmentMap m, ProcessModelVersion pmv, ProcessBranch b, Process
+            p
+            WHERE f.fragmentVersionId = m.fragmentVersion.fragmentVersionId AND
+            m.processModelVersion.processModelVersionId = pmv.processModelVersionId AND
+            pmv.processBranch.branchId = b.branchId AND b.process.processId = p.processId AND p.processId IN
+            (:processIds)
+        </query>
+    </named-query>
+
+    <named-query name="clusterAssignment.getFragmentsOfCluster">
+        <!-- Used ClusteringDao -->
+        <query>SELECT f FROM FragmentVersion f, ClusterAssignment ca
+            WHERE ca.id.clusterId = :clusterId AND ca.id.fragmentId = f.fragmentVersionId
+        </query>
+    </named-query>
+
+    <named-query name="clusterAssignment.getFragmentsOfCluster2">
+        <!-- Used ClusteringDao -->
+        <query>SELECT f FROM FragmentVersion f, ClusterAssignment ca, ProcessFragmentMap m, ProcessModelVersion pmv
+            WHERE ca.id.clusterId = :clusterId AND ca.id.fragmentId = f.fragmentVersionId
+            AND f.fragmentVersionId = m.fragmentVersion.fragmentVersionId AND
+            m.processModelVersion.processModelVersionId = pmv.processModelVersionId
+        </query>
+    </named-query>
+
+    <named-query name="cluster.getFilteredClusters">
+        <!-- Used ClusteringDaoJpa -->
+        <query>SELECT c FROM Cluster c
+            WHERE (c.size &gt; :minClusterSize OR c.size = :minClusterSize)
+            AND (c.size &lt; :maxClusterSize OR c.size = :maxClusterSize)
+            AND (c.avgFragmentSize &gt; :minAvgFragmentSize OR c.avgFragmentSize = :minAvgFragmentSize)
+            AND (c.avgFragmentSize &lt; :maxAvgFragmentSize OR c.avgFragmentSize = :maxAvgFragmentSize)
+            AND (c.BCR &gt; :minBCR OR c.BCR = :minBCR)
+            AND (c.BCR &lt; :maxBCR OR c.BCR = :maxBCR)
+        </query>
+    </named-query>
+
+</entity-mappings>

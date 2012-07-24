@@ -5,14 +5,15 @@ package org.apromore.service.model;
  */
 public class SharedFragmentVersion {
 
-	private int fragmentVersionid;
-	private int numberOfUses;
+    private int fragmentVersionid;
+    private int numberOfUses;
 
 
     /**
      * Defualt Constructor.
      */
-    public SharedFragmentVersion() { }
+    public SharedFragmentVersion() {
+    }
 
     /**
      * Defualt Constructor.
@@ -30,19 +31,19 @@ public class SharedFragmentVersion {
         this.numberOfUses = num.intValue();
     }
 
-	public int getFragmentVersionid() {
-		return fragmentVersionid;
-	}
-	
-	public void setFragmentVersionid(int fragmentVersionid) {
-		this.fragmentVersionid = fragmentVersionid;
-	}
-	
-	public int getNumberOfUses() {
-		return numberOfUses;
-	}
-	
-	public void setNumberOfUses(int numberOfUses) {
-		this.numberOfUses = numberOfUses;
-	}
+    public int getFragmentVersionid() {
+        return fragmentVersionid;
+    }
+
+    public void setFragmentVersionid(int fragmentVersionid) {
+        this.fragmentVersionid = fragmentVersionid;
+    }
+
+    public int getNumberOfUses() {
+        return numberOfUses;
+    }
+
+    public void setNumberOfUses(int numberOfUses) {
+        this.numberOfUses = numberOfUses;
+    }
 }

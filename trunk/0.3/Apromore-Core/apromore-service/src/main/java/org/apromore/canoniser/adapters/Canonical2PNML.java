@@ -3,9 +3,9 @@
  *  object into a PnmlType object.
  * <p>
  *
- * @author      Martin SInger, Niko Waldow
+ * @author Martin SInger, Niko Waldow
  * @version     %I%, %G%
- * @since       1.0
+ * @since 1.0
  */
 
 package org.apromore.canoniser.adapters;
@@ -115,7 +115,7 @@ public class Canonical2PNML {
 
     /**
      * This main method to be reused by all the constructors for all cases.
-     * <p>
+     * <p/>
      *
      * @since 1.0
      */

@@ -1,7 +1,6 @@
 package org.apromore.canoniser.adapters.pnml2canonical;
 
 import java.io.File;
-import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -17,370 +16,371 @@ import org.apromore.pnml.NodeType;
 import org.apromore.pnml.PlaceType;
 
 public class DataHandler {
-	Map<String, String> id_map = new HashMap<String, String>();
-	Map<String, String> andsplitmap = new HashMap<String, String>();
-	Map<String, String> andjoinmap = new HashMap<String, String>();
-	Map<String, String> andsplitjoinmap = new HashMap<String, String>();
-	Map<String, String> triggermap = new HashMap<String, String>();
-	Map<String, ResourceTypeType> resourcemap = new HashMap<String, ResourceTypeType>();
-	Map<String, String> xorcounter = new HashMap<String, String>();
-	Map<String, Object> objectmap = new HashMap<String, Object>();
-	List<ArcType> centerarcs = new LinkedList<ArcType>();
-	List<ArcType> updatedarcs = new LinkedList<ArcType>();
-	List<NodeType> noderef = new LinkedList<NodeType>();
-	List<Object> annotationobjects = new LinkedList<Object>();
-	List<PlaceType> center = new LinkedList<PlaceType>();
-	List<String> targetvalues = new LinkedList<String>();
-	List<String> sourcevalues = new LinkedList<String>();
-	List<String> output = new LinkedList<String>();
-	List<String> input = new LinkedList<String>();
-	AnnotationsType annotations = new AnnotationsType();
+    Map<String, String> id_map = new HashMap<String, String>();
+    Map<String, String> andsplitmap = new HashMap<String, String>();
+    Map<String, String> andjoinmap = new HashMap<String, String>();
+    Map<String, String> andsplitjoinmap = new HashMap<String, String>();
+    Map<String, String> triggermap = new HashMap<String, String>();
+    Map<String, ResourceTypeType> resourcemap = new HashMap<String, ResourceTypeType>();
+    Map<String, String> xorcounter = new HashMap<String, String>();
+    Map<String, Object> objectmap = new HashMap<String, Object>();
+    List<ArcType> centerarcs = new LinkedList<ArcType>();
+    List<ArcType> updatedarcs = new LinkedList<ArcType>();
+    List<NodeType> noderef = new LinkedList<NodeType>();
+    List<Object> annotationobjects = new LinkedList<Object>();
+    List<PlaceType> center = new LinkedList<PlaceType>();
+    List<String> targetvalues = new LinkedList<String>();
+    List<String> sourcevalues = new LinkedList<String>();
+    List<String> output = new LinkedList<String>();
+    List<String> input = new LinkedList<String>();
+    AnnotationsType annotations = new AnnotationsType();
     String inputevent;
     String outputstate;
-	CanonicalProcessType cproc = new CanonicalProcessType();
-	EdgeType inputedge;
-	EdgeType outputedge;
-	String subnettask;
-	long ids = 6121979;
-	long resourceid = 10000;
-	long rootid;
-	File folder;
-	NetType net;
-	String filename;
-	String inputnode;
-	String outputnode;
+    CanonicalProcessType cproc = new CanonicalProcessType();
+    EdgeType inputedge;
+    EdgeType outputedge;
+    String subnettask;
+    long ids = 6121979;
+    long resourceid = 10000;
+    long rootid;
+    File folder;
+    NetType net;
+    String filename;
+    String inputnode;
+    String outputnode;
 
-	public void put_id_map(String key, String value) {
-		id_map.put(key, value);
-	}
+    public void put_id_map(String key, String value) {
+        id_map.put(key, value);
+    }
 
-	public String get_id_map_value(String key) {
+    public String get_id_map_value(String key) {
 
-		return (id_map.get(key));
-	}
+        return (id_map.get(key));
+    }
 
-	public Map<String, String> get_id_map() {
+    public Map<String, String> get_id_map() {
 
-		return id_map;
-	}
+        return id_map;
+    }
 
-	public void put_objectmap(String key, Object obj) {
-		objectmap.put(key, obj);
-	}
+    public void put_objectmap(String key, Object obj) {
+        objectmap.put(key, obj);
+    }
 
-	public Object get_objectmap_value(String key) {
+    public Object get_objectmap_value(String key) {
 
-		return (objectmap.get(key));
-	}
+        return (objectmap.get(key));
+    }
 
-	public Map<String, Object> get_objectmap() {
+    public Map<String, Object> get_objectmap() {
 
-		return objectmap;
-	}
+        return objectmap;
+    }
 
-	public void put_triggermap(String key, String obj) {
-		triggermap.put(key, obj);
-	}
+    public void put_triggermap(String key, String obj) {
+        triggermap.put(key, obj);
+    }
 
-	public String get_triggermap_value(String key) {
+    public String get_triggermap_value(String key) {
 
-		return (triggermap.get(key));
-	}
+        return (triggermap.get(key));
+    }
 
-	public Map<String, String> get_triggermap() {
+    public Map<String, String> get_triggermap() {
 
-		return triggermap;
-	}
+        return triggermap;
+    }
 
-	public void put_resourcemap(String key, ResourceTypeType obj) {
-		resourcemap.put(key, obj);
-	}
+    public void put_resourcemap(String key, ResourceTypeType obj) {
+        resourcemap.put(key, obj);
+    }
 
-	public ResourceTypeType get_resourcemap_value(String key) {
+    public ResourceTypeType get_resourcemap_value(String key) {
 
-		return (resourcemap.get(key));
-	}
+        return (resourcemap.get(key));
+    }
 
-	public Map<String, ResourceTypeType> get_resourcemap() {
+    public Map<String, ResourceTypeType> get_resourcemap() {
 
-		return resourcemap;
-	}
+        return resourcemap;
+    }
 
-	public void addsourcevalues(String value) {
-		sourcevalues.add(value);
-	}
+    public void addsourcevalues(String value) {
+        sourcevalues.add(value);
+    }
 
-	public List<String> getsourcevalues() {
+    public List<String> getsourcevalues() {
 
-		return sourcevalues;
-	}
+        return sourcevalues;
+    }
 
-	public void addtargetvalues(String value) {
-		targetvalues.add(value);
-	}
+    public void addtargetvalues(String value) {
+        targetvalues.add(value);
+    }
 
-	public List<String> gettargetvalues() {
+    public List<String> gettargetvalues() {
 
-		return targetvalues;
-	}
+        return targetvalues;
+    }
 
-	public void addoutput(String value) {
-		output.add(value);
-	}
+    public void addoutput(String value) {
+        output.add(value);
+    }
 
-	public List<String> getoutput() {
+    public List<String> getoutput() {
 
-		return output;
-	}
+        return output;
+    }
 
-	public void addinput(String value) {
-		input.add(value);
-	}
+    public void addinput(String value) {
+        input.add(value);
+    }
 
-	public List<String> getinput() {
+    public List<String> getinput() {
 
-		return input;
-	}
+        return input;
+    }
 
-	public void put_andsplitmap(String key, String value) {
-		andsplitmap.put(key, value);
-	}
+    public void put_andsplitmap(String key, String value) {
+        andsplitmap.put(key, value);
+    }
 
-	public String get_andsplitmap_value(String key) {
+    public String get_andsplitmap_value(String key) {
 
-		return (andsplitmap.get(key));
-	}
+        return (andsplitmap.get(key));
+    }
 
-	public Map<String, String> get_andsplitmap() {
+    public Map<String, String> get_andsplitmap() {
 
-		return andsplitmap;
-	}
+        return andsplitmap;
+    }
 
-	public void put_andjoinmap(String key, String value) {
-		andjoinmap.put(key, value);
-	}
+    public void put_andjoinmap(String key, String value) {
+        andjoinmap.put(key, value);
+    }
 
-	public String get_andjoinmap_value(String key) {
-		return (andjoinmap.get(key));
-	}
+    public String get_andjoinmap_value(String key) {
+        return (andjoinmap.get(key));
+    }
 
-	public Map<String, String> get_andjoinmap() {
-		return andjoinmap;
-	}
+    public Map<String, String> get_andjoinmap() {
+        return andjoinmap;
+    }
 
-	public void put_andsplitjoinmap(String key, String value) {
-		andsplitjoinmap.put(key, value);
-	}
+    public void put_andsplitjoinmap(String key, String value) {
+        andsplitjoinmap.put(key, value);
+    }
 
-	public String get_andsplitjoinmap_value(String key) {
+    public String get_andsplitjoinmap_value(String key) {
 
-		return (andsplitjoinmap.get(key));
-	}
+        return (andsplitjoinmap.get(key));
+    }
 
-	public Map<String, String> get_andsplitjoinmap() {
+    public Map<String, String> get_andsplitjoinmap() {
 
-		return andsplitjoinmap;
-	}
+        return andsplitjoinmap;
+    }
 
-	public void setInputnode(String node) {
-		inputnode = node;
-	}
+    public void setInputnode(String node) {
+        inputnode = node;
+    }
 
-	public String getInputnode() {
-		if (inputnode == null) {
-			inputnode = "start";
-			return inputnode;
-		} else {
-			return inputnode;
-		}
-	}
+    public String getInputnode() {
+        if (inputnode == null) {
+            inputnode = "start";
+            return inputnode;
+        } else {
+            return inputnode;
+        }
+    }
 
-	public void setOutputnode(String node) {
-		outputnode = node;
-	}
+    public void setOutputnode(String node) {
+        outputnode = node;
+    }
 
-	public String getOutputnode() {
-		if (outputnode == null) {
-			outputnode = "end";
-			return outputnode;
-		} else {
-			return outputnode;
-		}
-	}
+    public String getOutputnode() {
+        if (outputnode == null) {
+            outputnode = "end";
+            return outputnode;
+        } else {
+            return outputnode;
+        }
+    }
 
-	public void setOutputEdge(EdgeType edge) {
-		outputedge = edge;
-	}
+    public void setOutputEdge(EdgeType edge) {
+        outputedge = edge;
+    }
 
-	public EdgeType getOutputEdge() {
+    public EdgeType getOutputEdge() {
 
-		return outputedge;
+        return outputedge;
 
-	}
+    }
 
-	public void setInputEdge(EdgeType edge) {
-		inputedge = edge;
-	}
+    public void setInputEdge(EdgeType edge) {
+        inputedge = edge;
+    }
 
-	public EdgeType getInputEdge() {
+    public EdgeType getInputEdge() {
 
-		return inputedge;
+        return inputedge;
 
-	}
+    }
 
-	public void setOutputState(String id) {
-		outputstate = id;
-	}
-	public String getOutputState() {
-		return outputstate;
+    public void setOutputState(String id) {
+        outputstate = id;
+    }
 
-	}
+    public String getOutputState() {
+        return outputstate;
 
-	public void setInputEvent(String id) {
-		inputevent = id;
-	}
+    }
 
-	public String getInputEvent() {
-		return inputevent;
+    public void setInputEvent(String id) {
+        inputevent = id;
+    }
 
-	}
+    public String getInputEvent() {
+        return inputevent;
 
-	public void setCanonicalProcess(CanonicalProcessType cpt) {
-		cproc = cpt;
-	}
+    }
 
-	public CanonicalProcessType getCanonicalProcess() {
+    public void setCanonicalProcess(CanonicalProcessType cpt) {
+        cproc = cpt;
+    }
 
-		return cproc;
+    public CanonicalProcessType getCanonicalProcess() {
 
-	}
+        return cproc;
 
-	public void setAnnotations(AnnotationsType an) {
-		annotations = an;
-	}
+    }
 
-	public AnnotationsType getAnnotations() {
+    public void setAnnotations(AnnotationsType an) {
+        annotations = an;
+    }
 
-		return annotations;
+    public AnnotationsType getAnnotations() {
 
-	}
+        return annotations;
 
-	public void addNoderef(NodeType an) {
-		noderef.add(an);
-	}
+    }
 
-	public List<NodeType> getNoderef() {
+    public void addNoderef(NodeType an) {
+        noderef.add(an);
+    }
 
-		return noderef;
+    public List<NodeType> getNoderef() {
 
-	}
+        return noderef;
 
-	public void setIds(long lid) {
-		ids = lid;
-	}
+    }
 
-	public long getIds() {
-		return ids;
-	}
+    public void setIds(long lid) {
+        ids = lid;
+    }
 
-	public long countIds() {
-		ids++;
-		return ids;
-	}
+    public long getIds() {
+        return ids;
+    }
 
-	public void addAnnotationObject(Object object) {
-		annotationobjects.add(object);
-	}
+    public long countIds() {
+        ids++;
+        return ids;
+    }
 
-	public List<Object> getAnnotationObjects() {
+    public void addAnnotationObject(Object object) {
+        annotationobjects.add(object);
+    }
 
-		return annotationobjects;
+    public List<Object> getAnnotationObjects() {
 
-	}
+        return annotationobjects;
 
-	public void setRootId(long lid) {
-		rootid = lid;
-	}
+    }
 
-	public long getRootid() {
-		return rootid;
-	}
+    public void setRootId(long lid) {
+        rootid = lid;
+    }
 
-	public void setSubnetTask(String tsub) {
-		subnettask = tsub;
-	}
+    public long getRootid() {
+        return rootid;
+    }
 
-	public String getSubnetTask() {
-		return subnettask;
-	}
+    public void setSubnetTask(String tsub) {
+        subnettask = tsub;
+    }
 
-	public void setFolder(File file) {
-		folder = file;
-	}
+    public String getSubnetTask() {
+        return subnettask;
+    }
 
-	public File getFolder() {
-		return folder;
-	}
+    public void setFolder(File file) {
+        folder = file;
+    }
 
-	public void setFilename(String filename) {
-		this.filename = filename;
-	}
+    public File getFolder() {
+        return folder;
+    }
 
-	public String getFilename() {
-		return filename;
-	}
+    public void setFilename(String filename) {
+        this.filename = filename;
+    }
 
-	public void addupdatedarc(ArcType value) {
-		updatedarcs.add(value);
-	}
+    public String getFilename() {
+        return filename;
+    }
 
-	public List<ArcType> getupdatedarcs() {
-		return updatedarcs;
-	}
+    public void addupdatedarc(ArcType value) {
+        updatedarcs.add(value);
+    }
 
-	public void put_xorcounter(String key, String value) {
-		xorcounter.put(key, value);
-	}
+    public List<ArcType> getupdatedarcs() {
+        return updatedarcs;
+    }
 
-	public String get_xorcounter_value(String key) {
+    public void put_xorcounter(String key, String value) {
+        xorcounter.put(key, value);
+    }
 
-		return (xorcounter.get(key));
-	}
+    public String get_xorcounter_value(String key) {
 
-	public Map<String, String> get_xorcounter() {
+        return (xorcounter.get(key));
+    }
 
-		return xorcounter;
-	}
+    public Map<String, String> get_xorcounter() {
 
-	public void addCenter(PlaceType place) {
-		center.add(place);
-	}
+        return xorcounter;
+    }
 
-	public List<PlaceType> getCenter() {
-		return center;
-	}
+    public void addCenter(PlaceType place) {
+        center.add(place);
+    }
 
-	public void addCenterArc(ArcType arc) {
-		centerarcs.add(arc);
-	}
+    public List<PlaceType> getCenter() {
+        return center;
+    }
 
-	public List<ArcType> getCenterArcs() {
-		return centerarcs;
-	}
+    public void addCenterArc(ArcType arc) {
+        centerarcs.add(arc);
+    }
 
-	public void setNet(NetType net) {
-		this.net = net;
-	}
+    public List<ArcType> getCenterArcs() {
+        return centerarcs;
+    }
 
-	public NetType getNet() {
-		return net;
-	}
+    public void setNet(NetType net) {
+        this.net = net;
+    }
 
-	public long getResourceID() {
-		return resourceid;
-	}
+    public NetType getNet() {
+        return net;
+    }
 
-	public void setResourceID(long id) {
-		resourceid = id;
-	}
+    public long getResourceID() {
+        return resourceid;
+    }
+
+    public void setResourceID(long id) {
+        resourceid = id;
+    }
 }
