@@ -76,7 +76,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <java.source.version>1.6</java.source.version>
+        <java.source.version>1.7</java.source.version>
         <java.target.version>${java.source.version}</java.target.version>
 
         <!-- Logging versions -->
@@ -88,7 +88,7 @@
         <google-guava.version>r08</google-guava.version>
 
         <!-- Plugings -->
-        <maven-compiler-plugin.version>2.3.2</maven-compiler-plugin.version>
+        <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
     </properties>
 
 </project>

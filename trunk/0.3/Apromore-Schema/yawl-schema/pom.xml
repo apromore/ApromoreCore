@@ -45,18 +45,18 @@
         <finalName>yawl-schema</finalName>
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxb2-maven-plugin</artifactId>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>xjc</goal>
+                            <goal>generate</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
                     <schemaDirectory>${basedir}/src/main/xsd</schemaDirectory>
-                    <outputDirectory>${basedir}/target/generated-sources/src</outputDirectory>
+                    <generateDirectory>${basedir}/target/generated-sources/src</generateDirectory>
                 </configuration>
             </plugin>
             <plugin>

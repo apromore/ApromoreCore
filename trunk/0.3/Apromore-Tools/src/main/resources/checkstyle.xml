@@ -18,15 +18,7 @@
   To completely disable a check, just comment it out or delete it from the file.
   Finally, it is worth reading the documentation.
 -->
-
 <module name="Checker">
-    <!--
-        If you set the basedir property below, then all reported file
-        names will be relative to the specified directory. See
-        http://checkstyle.sourceforge.net/5.x/config.html#Checker
-
-        <property name="basedir" value="${basedir}"/>
-    -->
 
     <!-- Checks that property files contain the same keys.         -->
     <!-- See http://checkstyle.sf.net/config_misc.html#Translation -->
@@ -93,16 +85,6 @@
         <module name="TypeName"/>
 
 
-        <!--&lt;!&ndash; Checks for Headers                                &ndash;&gt;-->
-        <!--&lt;!&ndash; See http://checkstyle.sf.net/config_header.html   &ndash;&gt;-->
-        <!--<module name="Header">-->
-            <!--<property name="headerFile" value="${basedir}/checkstyle-header.txt"/>-->
-        <!--</module>-->
-
-        <!--&lt;!&ndash; Following interprets the header file as regular expressions. &ndash;&gt;-->
-        <!--<module name="RegexpHeader"/>-->
-
-
         <!-- Checks for imports                              -->
         <!-- See http://checkstyle.sf.net/config_import.html -->
         <module name="AvoidStarImport"/>
@@ -118,13 +100,16 @@
         <!-- Checks for Size Violations.                    -->
         <!-- See http://checkstyle.sf.net/config_sizes.html -->
         <module name="ExecutableStatementCount"/>
-        <module name="ParameterNumber"/>
+        <module name="ParameterNumber">
+            <property name="max" value="15"/>
+            <property name="tokens" value="METHOD_DEF"/>
+        </module>
         <module name="LineLength">
-            <property name="max" value="140"/>
+            <property name="max" value="150"/>
             <property name="ignorePattern" value="^\s*\*\s*[^\s]+.+$|^\\s*(@.+)$"/>
         </module>
         <module name="MethodLength">
-            <property name="max" value="150"/>
+            <property name="max" value="200"/>
             <property name="tokens" value="METHOD_DEF"/>
             <property name="countEmpty" value="false"/>
         </module>
@@ -202,10 +187,10 @@
         <module name="SimplifyBooleanReturn"/>
         <module name="StringLiteralEquality" />
         <module name="NestedIfDepth" >
-            <property name="max" value="2" />
+            <property name="max" value="3" />
         </module>
         <module name="NestedTryDepth" >
-            <property name="max" value="2" />
+            <property name="max" value="3" />
         </module>
         <module name="SuperClone" />
         <module name="SuperFinalize" />
@@ -226,16 +211,13 @@
         <module name="HideUtilityClassConstructor"/>
         <module name="InterfaceIsType"/>
         <module name="MutableException"/>
-        <!--<module name="DesignForExtension">-->
-            <!--<property name="severity" value="info"/>-->
-        <!--</module>-->
         <module name="ThrowsCount">
             <property name="max" value="4"/>
         </module>
 
         <!-- Complexity checks -->
         <module name="CyclomaticComplexity" >
-            <property name="max" value="8" />
+            <property name="max" value="12" />
         </module>
         <module name="NPathComplexity"/>
         <module name="JavaNCSS">
@@ -258,7 +240,9 @@
         <!-- See http://checkstyle.sf.net/config_misc.html -->
         <module name="ArrayTypeStyle"/>
         <module name="FinalParameters"/>
-        <module name="TodoComment"/>
+        <module name="TodoComment">
+            <property name="format" value="INFO"/>
+        </module>
         <module name="UpperEll"/>
 
     </module>
