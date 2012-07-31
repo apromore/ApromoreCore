@@ -37,6 +37,10 @@
         </site>
     </distributionManagement>
 
+    <build>
+        <finalName>apromore-common</finalName>
+    </build>
+
     <dependencies>
         <!-- Clients -->
         <dependency>
@@ -277,28 +281,5 @@
             <scope>test</scope>
         </dependency>
     </dependencies>
-
-    <profiles>
-        <profile>
-            <id>hudson</id>
-            <activation>
-                <property>
-                    <name>BUILD_NUMBER</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>cobertura-maven-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
-    <build>
-        <finalName>apromore-common</finalName>
-    </build>
 
 </project>

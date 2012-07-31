@@ -109,7 +109,7 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.8</version>
+                <version>${maven-checkstyle-plugin.version}</version>
                 <configuration>
                     <enableRulesSummary>false</enableRulesSummary>
                     <configLocation>${checkstyle.config.location}</configLocation>
@@ -175,9 +175,14 @@
                     <inherited>true</inherited>
                 </plugin>
                 <plugin>
-                    <groupId>org.codehaus.mojo</groupId>
-                    <artifactId>jaxb2-maven-plugin</artifactId>
+                    <groupId>org.jvnet.jaxb2.maven2</groupId>
+                    <artifactId>maven-jaxb2-plugin</artifactId>
                     <version>${maven-jaxb2-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>build-helper-maven-plugin</artifactId>
+                    <version>${maven-build-helper.version}</version>
                 </plugin>
                 <plugin>
                     <groupId>org.codehaus.mojo</groupId>
@@ -296,43 +301,6 @@
                     </execution>
                 </executions>
             </plugin>
-            <plugin>
-                <groupId>triemax</groupId>
-                <artifactId>jalopy-maven</artifactId>
-                <version>1.9.4-198</version>
-                <configuration>
-                    <compile>true</compile>
-                    <threads>4</threads>
-                    <convention>classpath:jalopy.xml</convention>
-                    <javadoc>false</javadoc>
-                    <logLevel>warn</logLevel>
-                    <environment>
-                        <lead>Cameron James</lead>
-                        <office>Suncorp / QUT</office>
-                    </environment>
-                    <includes>
-                        <include>**/*.java</include>
-                    </includes>
-                    <sources>
-                        <source>/**/main/src/java</source>
-                    </sources>
-                </configuration>
-                <!--<executions>-->
-                    <!--<execution>-->
-                        <!--<phase>process-sources</phase>-->
-                        <!--<goals>-->
-                            <!--<goal>format</goal>-->
-                        <!--</goals>-->
-                    <!--</execution>-->
-                <!--</executions>-->
-                <dependencies>
-                    <dependency>
-                        <groupId>org.apromore</groupId>
-                        <artifactId>Apromore-Tools</artifactId>
-                        <version>1.0.0-SNAPSHOT</version>
-                    </dependency>
-                </dependencies>
-            </plugin>
         </plugins>
 
         <extensions>
@@ -380,11 +348,38 @@
                 <version>${logback.version}</version>
             </dependency>
 
+            <!-- JAXB -->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${jaxb-impl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jvnet.jaxb2_commons</groupId>
+                <artifactId>jaxb2-basics-runtime</artifactId>
+                <version>${jaxb2-basics-runtime.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-xjc</artifactId>
+                <version>${jaxb-xjc.version}</version>
+            </dependency>
+
             <!-- Commons -->
             <dependency>
                 <groupId>commons-lang</groupId>
                 <artifactId>commons-lang</artifactId>
                 <version>${commons-lang.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>commons-io</groupId>
+                <artifactId>commons-io</artifactId>
+                <version>${commons-io.version}</version>
             </dependency>
             <dependency>
                 <groupId>commons-httpclient</groupId>
@@ -403,6 +398,11 @@
                 <groupId>org.json</groupId>
                 <artifactId>json</artifactId>
                 <version>${json.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.xmappr</groupId>
+                <artifactId>xmappr</artifactId>
+                <version>${xmappr.version}</version>
             </dependency>
 
             <!-- AOP -->
@@ -780,11 +780,11 @@
         <jaxb2-basics-runtime.version>0.5.3</jaxb2-basics-runtime.version>
 
         <!-- junit/testing settings -->
-        <junit.version>4.8.2</junit.version>
-        <easymock.version>3.0</easymock.version>
-        <powermock.version>1.4.10</powermock.version>
+        <junit.version>4.10</junit.version>
+        <easymock.version>3.1</easymock.version>
+        <powermock.version>1.4.12</powermock.version>
         <hamcrest.version>1.1</hamcrest.version>
-        <contiperf.version>2.1.0</contiperf.version>
+        <contiperf.version>2.2.0</contiperf.version>
 
         <!-- **** Settings for the building of the projects **** -->
         <!-- Plugins used by the Build process -->
@@ -801,7 +801,7 @@
         <maven-dependency-plugin.version>2.3</maven-dependency-plugin.version>
         <maven-install-plugin.version>2.3.1</maven-install-plugin.version>
         <maven-javadoc-plugin.version>2.8.1</maven-javadoc-plugin.version>
-        <maven-jaxb2-plugin.version>1.3</maven-jaxb2-plugin.version>
+        <maven-jaxb2-plugin.version>0.8.2</maven-jaxb2-plugin.version>
         <maven-jaxws-plugin.version>1.10</maven-jaxws-plugin.version>
         <maven-jxr-plugin.version>2.3</maven-jxr-plugin.version>
         <maven-pmd-plugin.version>2.7.1</maven-pmd-plugin.version>
@@ -812,6 +812,7 @@
         <maven-surefire-plugin.version>2.12</maven-surefire-plugin.version>
         <maven-surefire-report-plugin.version>2.12</maven-surefire-report-plugin.version>
         <maven-war-plugin.version>2.1.1</maven-war-plugin.version>
+        <maven-build-helper.version>1.7</maven-build-helper.version>
 
         <!-- Checkstyle Settings -->
         <checkstyle.config.location>checkstyle.xml</checkstyle.config.location>
