@@ -159,7 +159,6 @@
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
                 <artifactId>maven-jaxb2-plugin</artifactId>
-                <version>0.8.0</version>
                 <executions>
                     <execution>
                         <id>New Model</id>
@@ -207,36 +206,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <profiles>
-        <profile>
-            <id>hudson</id>
-            <activation>
-                <property>
-                    <name>BUILD_NUMBER</name>
-                </property>
-            </activation>
-            <build>
-                <plugins>
-                    <plugin>
-                        <groupId>org.codehaus.mojo</groupId>
-                        <artifactId>cobertura-maven-plugin</artifactId>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-
-    <properties>
-        <!-- Cobertura -->
-        <cobertura.total-branch-rate>0</cobertura.total-branch-rate>
-        <cobertura.total-line-rate>0</cobertura.total-line-rate>
-
-        <!-- Checkstyle -->
-        <checkstyle.skip>true</checkstyle.skip>
-
-        <!-- Versions -->
-        <maven-jaxb2-plugin.version>0.7.1</maven-jaxb2-plugin.version>
-    </properties>
 
 </project>
