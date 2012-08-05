@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apromore</groupId>
+        <artifactId>apromore-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <groupId>org.apromore</groupId>
+    <artifactId>bpmn-schema</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+
+    <url>http://code.google.com/p/apromore/</url>
+    <name>Apromore Common BPMN Generated Code</name>
+    <description>Apromore is an open and extensible repository to store and disclose business process models of a
+        variety of types and languages, and beyond that, to build on top of existing tools and techniques, to provide
+        state-of-the-art features for model presentation, analysis, integration, contextualization, improvement, and
+        re-use.
+    </description>
+
+    <scm>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/0.3/Apromore-Schema/bpmn-schema</developerConnection>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/svn/trunk/0.3/Apromore-Schema/bpmn-schema</connection>
+        <url>http://code.google.com/p/apromore/source/browse/svn/trunk/0.3/Apromore-Schema/bpmn-schema</url>
+    </scm>
+
+    <ciManagement>
+        <system>Jenkins</system>
+        <url>http://fastyawl01.qut.edu.au:8080/jenkins/view/schemas</url>
+    </ciManagement>
+
+    <distributionManagement>
+        <site>
+            <id>website</id>
+            <url>dav:http://fastyawl01.qut.edu.au:8080/projects/bpmn-schema</url>
+        </site>
+    </distributionManagement>
+
+    <build>
+    	<!-- Removed as maven-bundle-plugin otherwise fails to embed this correctly
+        <finalName>bpmn-schema</finalName>
+        -->
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>xjc</goal>
+                        </goals>
+                    </execution>
+                </executions>
+                <configuration>
+                    <extension>true</extension>
+                    <schemaDirectory>${basedir}/src/main/xsd</schemaDirectory>
+                    <outputDirectory>${basedir}/target/generated-sources/src</outputDirectory>
+                </configuration>
+            </plugin>
+            <!-- Alternative XJC plugin with Visitor support
+            <plugin>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+		<artifactId>maven-jaxb2-plugin</artifactId>
+		<executions>
+			<execution>
+				<goals>
+					<goal>generate</goal>
+				</goals>
+			</execution>
+		</executions>
+                <configuration>
+                    <extension>true</extension>
+                    <schemaDirectory>${basedir}/src/main/xsd</schemaDirectory>
+                    <outputDirectory>${basedir}/target/generated-sources/src</outputDirectory>
+		    <args>
+			<arg>-Xvisitor</arg>
+			<arg>-Xvisitor-package:com.processconfiguration.bpmn.visitor</arg>
+		    </args>
+		    <plugins>
+			<plugin>
+			    <groupId>com.massfords</groupId>
+			    <artifactId>jaxb-visitor</artifactId>
+			    <version>1.9</version>
+			</plugin>
+		    </plugins>
+                </configuration>
+            </plugin>
+            -->
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>build-helper-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>add-source</id>
+                        <phase>generate-sources</phase>
+                        <goals>
+                            <goal>add-source</goal>
+                        </goals>
+                        <configuration>
+                            <sources>
+                                <source>${basedir}/target/generated-sources/src</source>
+                            </sources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
+    <dependencies>
+        <!-- Test dependencies -->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
+    </dependencies>
+</project>
