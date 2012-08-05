@@ -57,7 +57,7 @@ public class DefinitionsTest {
     /**
      * Test parsing of <a href="{@docRoot}/Test1.bpmn20.xml">Test1.bpmn20.xml</a>.
      */
-    //@Test
+    @Test
     public final void test1() throws FileNotFoundException, JAXBException, SAXException {
 
         // Obtain the test instance
