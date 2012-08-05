@@ -679,7 +679,7 @@
 	<xsd:element name="extensionElements" type="tExtensionElements" /> 
 	<xsd:complexType name="tExtensionElements">
 		<xsd:sequence>
-			<xsd:any namespace="##other" processContents="strict" minOccurs="0" maxOccurs="unbounded" /> 
+			<xsd:any namespace="##other" processContents="lax" minOccurs="0" maxOccurs="unbounded" /> 
 		</xsd:sequence>
 	</xsd:complexType>
 
