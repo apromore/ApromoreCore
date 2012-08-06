@@ -1,14 +1,12 @@
 package org.omg.spec.bpmn._20100524.model;
 
 // Java 2 Standard packages
+
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.FileOutputStream;
 import java.util.Arrays;
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -19,21 +17,21 @@ import javax.xml.bind.util.ValidationEventCollector;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.SchemaFactory;
+
+import org.junit.Before;
+import org.junit.Test;
 import org.xml.sax.SAXException;
 
-// Third party packages
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
 import static org.junit.Assert.assertTrue;
-import org.junit.Before;
-import org.junit.Test;
+
+// Third party packages
 
 /**
  * Test suite for {@link TDefinitions}.
- *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
 public class DefinitionsTest {
@@ -45,13 +43,11 @@ public class DefinitionsTest {
 
     /**
      * Initialize {@link #context}.
-     *
      * This ought to be invoked before each of the test methods.
      */
     @Before
     public void initializeContext() throws JAXBException {
-        context = JAXBContext.newInstance(TDefinitions.class);
-        //context = JAXBContext.newInstance("org.omg.spec.bpmn._20100524.model");
+        context = JAXBContext.newInstance("org.omg.spec.bpmn._20100524.model:org.omg.spec.bpmn._20100524.di:org.omg.spec.dd._20100524.dc:org.omg.spec.dd._20100524.di");
     }
 
     /**
@@ -59,21 +55,18 @@ public class DefinitionsTest {
      */
     @Test
     public final void test1() throws FileNotFoundException, JAXBException, SAXException {
-
         // Obtain the test instance
         Unmarshaller unmarshaller = context.createUnmarshaller();
         JAXBElement<TDefinitions> tDefinitions = unmarshaller.unmarshal(
-            new StreamSource(new FileInputStream("src/test/resources/Test1.bpmn20.xml")),
-            TDefinitions.class
-        );
+                new StreamSource(new FileInputStream("src/test/resources/Test1.bpmn20.xml")),
+                TDefinitions.class);
 
         // Serialize the test instance out again
         Marshaller marshaller = context.createMarshaller();
         ValidationEventCollector vec = new ValidationEventCollector();
         marshaller.setEventHandler(vec);
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
-                                          .newSchema(new File("src/main/xsd/BPMN20.xsd")));
+        marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new File("src/main/xsd/BPMN20.xsd")));
         marshaller.marshal(tDefinitions, new FileOutputStream("target/surefire/Test1.bpmn20.xml"));
         assertFalse(formatValidationEvents(vec), vec.hasEvents());
 
@@ -121,11 +114,11 @@ public class DefinitionsTest {
         assertNotNull(definitions.getBPMNDiagram().get(0).getBPMNPlane());
         assertEquals("sid-69a9f6ba-9421-44ee-a6fb-f50fc5e881e4", definitions.getBPMNDiagram().get(0).getBPMNPlane().getId());
         assertEquals(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "sid-68aefed9-f32a-4503-895c-b26b0ee8dded"),
-                     definitions.getBPMNDiagram().get(0).getBPMNPlane().getBpmnElement());
+                definitions.getBPMNDiagram().get(0).getBPMNPlane().getBpmnElement());
         assertNotNull(definitions.getBPMNDiagram().get(0).getBPMNPlane().getDiagramElement());
 
         // INCORRECT - ought to be 10 diagram elements to match the 10 process elements
-        assertEquals(0, definitions.getBPMNDiagram().get(0).getBPMNPlane().getDiagramElement().size());
+        assertEquals(10, definitions.getBPMNDiagram().get(0).getBPMNPlane().getDiagramElement().size());
     }
 
     /**
@@ -133,12 +126,11 @@ public class DefinitionsTest {
      */
     @Test
     public final void testTrivialGateway() throws FileNotFoundException, JAXBException, SAXException {
-
         // Obtain the test instance
         Unmarshaller unmarshaller = context.createUnmarshaller();
         JAXBElement<TDefinitions> tDefinitions = unmarshaller.unmarshal(
-            new StreamSource(new FileInputStream("src/test/resources/TrivialGateway.bpmn20.xml")),
-            TDefinitions.class
+                new StreamSource(new FileInputStream("src/test/resources/TrivialGateway.bpmn20.xml")),
+                TDefinitions.class
         );
 
         // Serialize the test instance out again
@@ -146,20 +138,17 @@ public class DefinitionsTest {
         ValidationEventCollector vec = new ValidationEventCollector();
         marshaller.setEventHandler(vec);
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
-                                          .newSchema(new File("src/main/xsd/BPMN20.xsd")));
+        marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new File("src/main/xsd/BPMN20.xsd")));
         marshaller.marshal(tDefinitions, new FileOutputStream("target/surefire/TrivialGateway.bpmn20.xml"));
         assertFalse(formatValidationEvents(vec), vec.hasEvents());
     }
 
     /**
      * Produce helpful diagnostic text when the XML output of tests fails XML schema validation.
-     *
-     * @param vec  the collection of validation errors
+     * @param vec the collection of validation errors
      * @return a human-legible error listing in English text
      */
     private static String formatValidationEvents(final ValidationEventCollector vec) {
-
         StringBuilder builder = new StringBuilder("Validation errors:");
 
         for (ValidationEvent event : Arrays.asList(vec.getEvents())) {
@@ -168,10 +157,10 @@ public class DefinitionsTest {
                 builder.append("Global: ");
             } else {
                 builder.append("Line ")
-                       .append(event.getLocator().getLineNumber())
-                       .append(", column ")
-                       .append(event.getLocator().getColumnNumber())
-                       .append(": ");
+                        .append(event.getLocator().getLineNumber())
+                        .append(", column ")
+                        .append(event.getLocator().getColumnNumber())
+                        .append(": ");
             }
             builder.append(event.getMessage());
         }

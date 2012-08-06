@@ -40,56 +40,36 @@
         </site>
     </distributionManagement>
 
+    <dependencies>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+        </dependency>
+    </dependencies>
+
     <build>
-    	<!-- Removed as maven-bundle-plugin otherwise fails to embed this correctly
         <finalName>bpmn-schema</finalName>
-        -->
         <plugins>
             <plugin>
-                <groupId>org.codehaus.mojo</groupId>
-                <artifactId>jaxb2-maven-plugin</artifactId>
+                <groupId>org.jvnet.jaxb2.maven2</groupId>
+                <artifactId>maven-jaxb2-plugin</artifactId>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>xjc</goal>
+                            <goal>generate</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
                     <extension>true</extension>
                     <schemaDirectory>${basedir}/src/main/xsd</schemaDirectory>
-                    <outputDirectory>${basedir}/target/generated-sources/src</outputDirectory>
+                    <generateDirectory>${basedir}/target/generated-sources/src</generateDirectory>
                 </configuration>
             </plugin>
-            <!-- Alternative XJC plugin with Visitor support
-            <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-		<artifactId>maven-jaxb2-plugin</artifactId>
-		<executions>
-			<execution>
-				<goals>
-					<goal>generate</goal>
-				</goals>
-			</execution>
-		</executions>
-                <configuration>
-                    <extension>true</extension>
-                    <schemaDirectory>${basedir}/src/main/xsd</schemaDirectory>
-                    <outputDirectory>${basedir}/target/generated-sources/src</outputDirectory>
-		    <args>
-			<arg>-Xvisitor</arg>
-			<arg>-Xvisitor-package:com.processconfiguration.bpmn.visitor</arg>
-		    </args>
-		    <plugins>
-			<plugin>
-			    <groupId>com.massfords</groupId>
-			    <artifactId>jaxb-visitor</artifactId>
-			    <version>1.9</version>
-			</plugin>
-		    </plugins>
-                </configuration>
-            </plugin>
-            -->
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>build-helper-maven-plugin</artifactId>
@@ -110,15 +90,5 @@
             </plugin>
         </plugins>
     </build>
-    <dependencies>
-        <!-- Test dependencies -->
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.easymock</groupId>
-            <artifactId>easymock</artifactId>
-        </dependency>
-    </dependencies>
+
 </project>
