@@ -35,8 +35,6 @@
       </textAnnotation>
    </process>
    <bpmndi:BPMNDiagram id="sid-1e8bb930-eddd-4c34-aae5-11031669883c">
-      <bpmndi:BPMNPlane bpmnElement="sid-02ad4dc7-03b3-44d5-9b9b-4a6ae8280f31" id="sid-000">
-      </bpmndi:BPMNPlane>
       <bpmndi:BPMNPlane bpmnElement="sid-02ad4dc7-03b3-44d5-9b9b-4a6ae8280f31" id="sid-2e9c9f4c-9918-4dd8-9b2f-fd4fdc7b69e9">
          <bpmndi:BPMNShape bpmnElement="sid-3A72224F-859B-4BA6-BAF8-8BE8F038EDCA" id="sid-3A72224F-859B-4BA6-BAF8-8BE8F038EDCA_gui">
             <omgdc:Bounds height="30.0" width="30.0" x="98.0" y="98.0"/>
