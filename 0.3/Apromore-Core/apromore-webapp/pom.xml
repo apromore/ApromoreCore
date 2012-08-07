@@ -67,11 +67,13 @@
             <artifactId>logback-core</artifactId>
         </dependency>
 
+        <!-- J2EE -->
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
         </dependency>
 
+        <!-- JAXB -->
         <dependency>
             <groupId>org.jvnet.jaxb2_commons</groupId>
             <artifactId>jaxb2-basics-runtime</artifactId>

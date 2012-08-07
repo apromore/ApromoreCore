@@ -32,18 +32,18 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDagDao#findFragmentVersionDag(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public FragmentVersionDag findFragmentVersionDag(String vertexId) {
+    public FragmentVersionDag findFragmentVersionDag(final String vertexId) {
         return em.find(FragmentVersionDag.class, vertexId);
     }
 
 
     /**
      * @see org.apromore.dao.FragmentVersionDagDao#getChildMappings(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public List<FragmentVersionDag> getChildMappings(final String fragmentId) {
@@ -52,6 +52,10 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
         return (List<FragmentVersionDag>) query.getResultList();
     }
 
+    /**
+     * @see org.apromore.dao.FragmentVersionDagDao#getAllParentChildMappings()
+     * {@inheritDoc}
+     */
     @Override
     public Map<String, List<String>> getAllParentChildMappings() {
         Query query = em.createNamedQuery(NamedQueries.GET_ALL_PARENT_CHILD_MAPPINGS);
@@ -72,6 +76,10 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
         return parentChildMap;
     }
 
+    /**
+     * @see org.apromore.dao.FragmentVersionDagDao#getAllChildParentMappings()
+     *  {@inheritDoc}
+     */
     @Override
     public Map<String, List<String>> getAllChildParentMappings() {
         Query query = em.createNamedQuery(NamedQueries.GET_ALL_PARENT_CHILD_MAPPINGS);
@@ -94,7 +102,7 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDagDao#getChildFragmentsByFragmentVersion(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public List<FragmentVersion> getChildFragmentsByFragmentVersion(final String fragmentVersionId) {
@@ -103,10 +111,22 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
         return (List<FragmentVersion>) query.getResultList();
     }
 
+    /**
+     * @see org.apromore.dao.FragmentVersionDagDao#getAllDAGEntries(int)
+     * {@inheritDoc}
+     */
+    @Override
+    public List<FragmentVersionDag> getAllDAGEntries(int minimumChildFragmentSize) {
+        Query query = em.createNamedQuery(NamedQueries.GET_ALL_DAGS_WITH_SIZE);
+        query.setParameter("minSize", minimumChildFragmentSize);
+        return (List<FragmentVersionDag>) query.getResultList();
+    }
+
+
 
     /**
      * @see org.apromore.dao.FragmentVersionDagDao#save(org.apromore.dao.model.FragmentVersionDag)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void save(final FragmentVersionDag fragmentVersionDag) {
@@ -115,7 +135,7 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDagDao#update(org.apromore.dao.model.FragmentVersionDag)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public FragmentVersionDag update(final FragmentVersionDag fragmentVersionDag) {
@@ -124,7 +144,7 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDagDao#delete(org.apromore.dao.model.FragmentVersionDag)
-     *      {@inheritDoc}
+     *  {@inheritDoc}
      */
     @Override
     public void delete(final FragmentVersionDag fragmentVersionDag) {
@@ -133,12 +153,11 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
 
 
     /**
-     * Sets the Entity Manager. No way around this to get Unit Testing working
-     *
-     * @param em the entitymanager
+     * Sets the Entity Manager. No way around this to get Unit Testing working.
+     * @param newEm the entitymanager
      */
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
+    public void setEntityManager(final EntityManager newEm) {
+        this.em = newEm;
     }
 
 }

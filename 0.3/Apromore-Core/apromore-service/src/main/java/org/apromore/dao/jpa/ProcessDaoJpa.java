@@ -27,23 +27,26 @@ public class ProcessDaoJpa implements ProcessDao {
     @PersistenceContext
     private EntityManager em;
 
+    /** The start of the manual search query. */
     public static final String GET_ALL_PROCESSES = "SELECT p FROM Process p ";
+    /** The order by for the manual search query. */
     public static final String GET_ALL_PRO_SORT = " ORDER by p.processId";
 
 
     /**
      * @see org.apromore.dao.ProcessDao#findProcess(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public Process findProcess(String processId) {
+    public Process findProcess(final String processId) {
         return em.find(Process.class, processId);
     }
 
 
     /**
-     * @return the list of processes.
+     * @see org.apromore.dao.ProcessDao#getProcesses()
+     * {@inheritDoc}
      */
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
@@ -54,7 +57,7 @@ public class ProcessDaoJpa implements ProcessDao {
 
     /**
      * @see org.apromore.dao.ProcessDao#getAllProcesses(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -73,7 +76,7 @@ public class ProcessDaoJpa implements ProcessDao {
 
     /**
      * @see org.apromore.dao.ProcessDao#getAllDomains()
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -86,7 +89,7 @@ public class ProcessDaoJpa implements ProcessDao {
 
     /**
      * @see org.apromore.dao.ProcessDao#getProcess(int)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -104,7 +107,7 @@ public class ProcessDaoJpa implements ProcessDao {
 
     /**
      * @see org.apromore.dao.ProcessDao#getProcess(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -122,7 +125,7 @@ public class ProcessDaoJpa implements ProcessDao {
 
     /**
      * @see org.apromore.dao.ProcessDao#getRootFragmentVersionId(Integer)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -135,7 +138,7 @@ public class ProcessDaoJpa implements ProcessDao {
 
     /**
      * @see org.apromore.dao.ProcessDao#getCurrentProcessModels()
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -157,39 +160,38 @@ public class ProcessDaoJpa implements ProcessDao {
 
     /**
      * @see org.apromore.dao.ProcessDao#delete(Process)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public void save(Process process) {
+    public void save(final Process process) {
         em.persist(process);
     }
 
     /**
      * @see org.apromore.dao.ProcessDao#delete(Process)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public Process update(Process process) {
+    public Process update(final Process process) {
         return em.merge(process);
     }
 
     /**
      * @see org.apromore.dao.ProcessDao#delete(Process)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public void delete(Process process) {
+    public void delete(final Process process) {
         em.remove(process);
     }
 
 
     /**
-     * Sets the Entity Manager. No way around this to get Unit Testing working
-     *
-     * @param em the entitymanager
+     * Sets the Entity Manager. No way around this to get Unit Testing working.
+     * @param newEm the entitymanager
      */
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
+    public void setEntityManager(final EntityManager newEm) {
+        this.em = newEm;
     }
 
 }

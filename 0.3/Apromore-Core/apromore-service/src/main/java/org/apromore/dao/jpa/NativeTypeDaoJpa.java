@@ -27,10 +27,8 @@ public class NativeTypeDaoJpa implements NativeTypeDao {
 
 
     /**
-     * Returns list of NativeType.
-     *
      * @see org.apromore.dao.NativeTypeDao#findAllFormats()
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public List<NativeType> findAllFormats() {
@@ -40,7 +38,7 @@ public class NativeTypeDaoJpa implements NativeTypeDao {
 
     /**
      * @see org.apromore.dao.NativeTypeDao#findAllFormats()
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -57,12 +55,11 @@ public class NativeTypeDaoJpa implements NativeTypeDao {
 
 
     /**
-     * Sets the Entity Manager. No way around this to get Unit Testing working
-     *
-     * @param em the entitymanager
+     * Sets the Entity Manager. No way around this to get Unit Testing working.
+     * @param newEm the entitymanager
      */
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
+    public void setEntityManager(final EntityManager newEm) {
+        this.em = newEm;
     }
 
 }

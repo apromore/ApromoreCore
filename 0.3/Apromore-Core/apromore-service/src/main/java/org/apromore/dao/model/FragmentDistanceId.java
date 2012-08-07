@@ -8,7 +8,8 @@ import javax.persistence.Column;
 import javax.persistence.Embeddable;
 
 /**
- * @author Chathura C. Ekanayake
+ * The Fragment Distance Id.
+ * @author <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 @Embeddable
 public class FragmentDistanceId implements Serializable {

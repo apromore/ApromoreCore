@@ -17,7 +17,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 /**
  * Stores the native type in apromore.
  *
- * @author Cameron James
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Entity
 @Table(name = "native_type")

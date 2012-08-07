@@ -6,7 +6,7 @@ DROP TABLE IF EXISTS `search_history`;
 DROP TABLE IF EXISTS `temp_version`;
 DROP TABLE IF EXISTS `annotation`;
 DROP TABLE IF EXISTS `native`;
-DROP TABLE IF EXISTS `edit_session_mapping`;
+DROP TABLE IF EXISTS `edit_session`;
 DROP TABLE IF EXISTS `fragment_version_dag`;
 DROP TABLE IF EXISTS `process_fragment_map`;
 DROP TABLE IF EXISTS `non_pocket_node`;
@@ -80,42 +80,23 @@ CREATE TABLE `native` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
-CREATE TABLE `derived_version` (
-  `uri_source_version`      varchar(40) NOT NULL DEFAULT '',
-  `uri_derived_version`     varchar(40) NOT NULL DEFAULT '',
-  PRIMARY KEY (`uri_source_version`,`uri_derived_version`),
-  CONSTRAINT `fk_derived_version` FOREIGN KEY (`uri_source_version`) REFERENCES `canonical` (`uri`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_derived_version1` FOREIGN KEY (`uri_derived_version`) REFERENCES `canonical` (`uri`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE `edit_session_mapping` (
-  `code`                int(11) NOT NULL AUTO_INCREMENT,
-  `recordTime`          datetime DEFAULT NULL,
-  `username`            varchar(10) DEFAULT NULL,
-  `uri`                 varchar(40) NOT NULL DEFAULT '',
-  `processId`           int(11) DEFAULT NULL,
-  `version_name`        varchar(40) DEFAULT NULL,
-  `nat_type`            varchar(20) DEFAULT NULL,
-  `annotation`          varchar(40) DEFAULT NULL,
-  `remove_fake_events`  tinyint(1) DEFAULT NULL,
-  `creation_date`       varchar(35) DEFAULT NULL,
-  `last_update`         varchar(35) DEFAULT NULL,
+CREATE TABLE `edit_session` (
+  `code`                     int(11) NOT NULL AUTO_INCREMENT,
+  `recordTime`               datetime DEFAULT NULL,
+  `username`                 varchar(10) DEFAULT NULL,
+  `process_model_version_id` int(11) NOT NULL,
+  `processId`                int(11) DEFAULT NULL,
+  `version_name`             varchar(40) DEFAULT NULL,
+  `nat_type`                 varchar(20) DEFAULT NULL,
+  `annotation`               varchar(40) DEFAULT NULL,
+  `remove_fake_events`       tinyint(1) DEFAULT NULL,
+  `creation_date`            varchar(35) DEFAULT NULL,
+  `last_update`              varchar(35) DEFAULT NULL,
   PRIMARY KEY (`code`),
-  CONSTRAINT `fk_edit_session_mapping1` FOREIGN KEY (`username`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_edit_session_mapping2` FOREIGN KEY (`uri`) REFERENCES `canonical` (`uri`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_edit_session_mapping3` FOREIGN KEY (`processId`) REFERENCES `process` (`processId`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_edit_session1` FOREIGN KEY (`username`) REFERENCES `user` (`username`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_edit_session2` FOREIGN KEY (`process_model_version_id`) REFERENCES `process_model_version` (`process_model_version_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_edit_session3` FOREIGN KEY (`processId`) REFERENCES `process` (`processId`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE `merged_version` (
-  `uri_merged`      varchar(40) NOT NULL DEFAULT '',
-  `uri_source`      varchar(40) NOT NULL DEFAULT '',
-  PRIMARY KEY (`uri_merged`,`uri_source`),
-  CONSTRAINT `fk_merged_version1` FOREIGN KEY (`uri_merged`) REFERENCES `canonical` (`uri`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_merged_version2` FOREIGN KEY (`uri_source`) REFERENCES `canonical` (`uri`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 CREATE TABLE `search_history` (
   `username`        varchar(10) DEFAULT NULL,

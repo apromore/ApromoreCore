@@ -26,6 +26,7 @@
         <!-- Apromore project, includes the above -->
         <module>Apromore-Parent</module>
         <module>Apromore-Schema/anf-schema</module>
+        <module>Apromore-Schema/bpmn-schema</module>
         <module>Apromore-Schema/cpf-schema</module>
         <module>Apromore-Schema/epml-schema</module>
         <module>Apromore-Schema/pnml-schema</module>
@@ -40,8 +41,8 @@
         <module>Apromore-Portal/portal-service</module>
         <module>Apromore-Portal/portal-webapp</module>
 
-        <!-- Editor
-        <module>Apromore-Editor</module>  -->
+        <!-- Editor -->
+        <module>Apromore-Editor</module>
     </modules>
 
 </project>

@@ -46,30 +46,22 @@ public class ProcessServiceImpl implements ProcessService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ProcessServiceImpl.class);
 
-    @Autowired
-    @Qualifier("AnnotationDao")
+    @Autowired @Qualifier("AnnotationDao")
     private AnnotationDao annDao;
-    @Autowired
-    @Qualifier("NativeDao")
+    @Autowired @Qualifier("NativeDao")
     private NativeDao natDao;
-    @Autowired
-    @Qualifier("ProcessModelVersionDao")
+    @Autowired @Qualifier("ProcessModelVersionDao")
     private ProcessModelVersionDao pmvDao;
 
-    @Autowired
-    @Qualifier("CanoniserService")
+    @Autowired @Qualifier("CanoniserService")
     private CanoniserService canSrv;
-    @Autowired
-    @Qualifier("UserService")
+    @Autowired @Qualifier("UserService")
     private UserService usrSrv;
-    @Autowired
-    @Qualifier("FormatService")
+    @Autowired @Qualifier("FormatService")
     private FormatService fmtSrv;
-    @Autowired
-    @Qualifier("RepositoryService")
+    @Autowired @Qualifier("RepositoryService")
     private RepositoryService rSrv;
-    @Autowired
-    @Qualifier("UIHelper")
+    @Autowired @Qualifier("UIHelper")
     private UIHelper uiSrv;
 
 

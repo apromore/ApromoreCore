@@ -28,7 +28,7 @@ public class EdgeDaoJpa implements EdgeDao {
 
     /**
      * @see org.apromore.dao.EdgeDao#getEdgesByContent(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -38,10 +38,22 @@ public class EdgeDaoJpa implements EdgeDao {
         return (List<Edge>) query.getResultList();
     }
 
+    /**
+     * @see org.apromore.dao.EdgeDao#getEdgesByFragment(String)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<Edge> getEdgesByFragment(final String fragmentID) {
+        Query query = em.createNamedQuery(NamedQueries.GET_EDGES_BY_FRAGMENT);
+        query.setParameter("fragmentId", fragmentID);
+        return (List<Edge>) query.getResultList();
+    }
+
 
     /**
      * @see org.apromore.dao.EdgeDao#getStoredEdges()
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -53,7 +65,7 @@ public class EdgeDaoJpa implements EdgeDao {
 
     /**
      * @see org.apromore.dao.EdgeDao#save(org.apromore.dao.model.Edge)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void save(final Edge edge) {
@@ -62,7 +74,7 @@ public class EdgeDaoJpa implements EdgeDao {
 
     /**
      * @see org.apromore.dao.EdgeDao#update(org.apromore.dao.model.Edge)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public Edge update(final Edge edge) {
@@ -71,7 +83,7 @@ public class EdgeDaoJpa implements EdgeDao {
 
     /**
      * @see org.apromore.dao.EdgeDao#delete(org.apromore.dao.model.Edge)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void delete(final Edge edge) {
@@ -80,12 +92,11 @@ public class EdgeDaoJpa implements EdgeDao {
 
 
     /**
-     * Sets the Entity Manager. No way around this to get Unit Testing working
-     *
-     * @param em the entitymanager
+     * Sets the Entity Manager. No way around this to get Unit Testing working.
+     * @param newEm the entitymanager
      */
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
+    public void setEntityManager(final EntityManager newEm) {
+        this.em = newEm;
     }
 
 }

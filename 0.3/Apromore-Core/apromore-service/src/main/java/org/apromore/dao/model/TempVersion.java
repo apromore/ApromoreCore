@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 /**
  * The Id of the Temp Version entity.
  *
- * @author Cameron James
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Entity
 @Table(name = "temp_version")

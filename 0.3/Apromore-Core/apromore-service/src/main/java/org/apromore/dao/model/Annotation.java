@@ -21,13 +21,13 @@ import static javax.persistence.GenerationType.IDENTITY;
 /**
  * Stores the Annotation in apromore.
  *
- * @author Cameron James
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Entity
 @Table(name = "annotation",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"process_model_version_id", "name"}),
-                @UniqueConstraint(columnNames = {"native"})
+                @UniqueConstraint(columnNames = { "process_model_version_id", "name" }),
+                @UniqueConstraint(columnNames = { "native" })
         }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -49,8 +49,7 @@ public class Annotation implements Serializable {
     /**
      * Default Constructor.
      */
-    public Annotation() {
-    }
+    public Annotation() { }
 
 
     /**
@@ -152,7 +151,7 @@ public class Annotation implements Serializable {
      *
      * @param newProcessModelVersion The process Model Version format to set.
      */
-    public void setProcessModelVersion(ProcessModelVersion newProcessModelVersion) {
+    public void setProcessModelVersion(final ProcessModelVersion newProcessModelVersion) {
         this.processModelVersion = newProcessModelVersion;
     }
 

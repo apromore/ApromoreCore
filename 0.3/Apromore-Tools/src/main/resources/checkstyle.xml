@@ -94,6 +94,7 @@
         <module name="ImportOrder" >
             <property name="groups" value="java,javax" />
             <property name="ordered" value="false" />
+            <property name="option" value="bottom" />
         </module>
 
 

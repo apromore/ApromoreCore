@@ -27,7 +27,7 @@ public class SearchHistoryDaoJpa implements SearchHistoryDao {
      * Save a Search History.
      *
      * @see org.apromore.dao.SearchHistoryDao#save(org.apromore.dao.model.SearchHistory)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void save(final SearchHistory searchHistory) {
@@ -38,7 +38,7 @@ public class SearchHistoryDaoJpa implements SearchHistoryDao {
      * Update a Search History.
      *
      * @see org.apromore.dao.SearchHistoryDao#update(org.apromore.dao.model.SearchHistory)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public SearchHistory update(final SearchHistory searchHistory) {
@@ -49,7 +49,7 @@ public class SearchHistoryDaoJpa implements SearchHistoryDao {
      * Remove the Search History.
      *
      * @see org.apromore.dao.SearchHistoryDao#delete(org.apromore.dao.model.SearchHistory)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void delete(final SearchHistory searchHistory) {
@@ -58,12 +58,11 @@ public class SearchHistoryDaoJpa implements SearchHistoryDao {
 
 
     /**
-     * Sets the Entity Manager. No way around this to get Unit Testing working
-     *
-     * @param em the entitymanager
+     * Sets the Entity Manager. No way around this to get Unit Testing working.
+     * @param newEm the entitymanager
      */
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
+    public void setEntityManager(final EntityManager newEm) {
+        this.em = newEm;
     }
 
 }

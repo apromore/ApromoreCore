@@ -11,7 +11,11 @@ import org.apromore.common.Constants;
 import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.exception.PocketMappingException;
 import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.JBPT.CpfEvent;
+import org.apromore.graph.JBPT.CpfGateway;
 import org.apromore.graph.JBPT.CpfNode;
+import org.apromore.graph.JBPT.CpfTask;
+import org.apromore.graph.JBPT.ICpfNode;
 import org.jbpt.graph.abs.AbstractDirectedEdge;
 import org.jbpt.graph.algo.rpst.RPST;
 import org.jbpt.graph.algo.rpst.RPSTNode;
@@ -257,4 +261,41 @@ public class FragmentUtil {
         return fs.toString();
     }
 
+    public static String getType(FlowNode node) {
+        String type = null;
+        if (node instanceof CpfTask) {
+            type = Constants.FUNCTION;
+        } else if (node instanceof CpfEvent) {
+            type = Constants.EVENT;
+        } else {
+            if (node instanceof CpfGateway) {
+                type = Constants.CONNECTOR;
+            } else {
+                String nodeName = node.getName();
+                if ("OR".equals(nodeName) || "XOR".equals(nodeName) || "AND".equals(nodeName)) {
+                    type = Constants.CONNECTOR;
+                }
+            }
+        }
+        return type;
+    }
+
+    public static String getType(ICpfNode node) {
+        String type = null;
+        if (node instanceof CpfTask) {
+            type = Constants.FUNCTION;
+        } else if (node instanceof CpfEvent) {
+            type = Constants.EVENT;
+        } else {
+            if (node instanceof CpfGateway) {
+                type = Constants.CONNECTOR;
+            } else {
+                String nodeName = node.getName();
+                if (nodeName.equals("OR") || nodeName.equals("XOR") || nodeName.equals("AND")) {
+                    type = Constants.CONNECTOR;
+                }
+            }
+        }
+        return type;
+    }
 }

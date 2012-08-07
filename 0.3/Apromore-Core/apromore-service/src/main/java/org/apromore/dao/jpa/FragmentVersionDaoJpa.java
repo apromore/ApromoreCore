@@ -30,7 +30,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#findFragmentVersion(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -40,7 +40,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#getAllFragmentVersion()
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -53,7 +53,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#getMatchingFragmentVersionId(String, String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -71,7 +71,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#getUsedProcessModels(String)
-     *      {@inheritDoc}
+     *  {@inheritDoc}
      */
     @Override
     public Integer getUsedProcessModels(final String fvid) {
@@ -87,7 +87,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#getParentFragments(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public List<FragmentVersion> getParentFragments(final String fvid) {
@@ -98,7 +98,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#getLockedParentFragmentIds(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public List<String> getLockedParentFragmentIds(final String fvid) {
@@ -109,7 +109,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#getChildFragmentsWithSize(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public Map<String, Integer> getChildFragmentsWithSize(final String fvid) {
@@ -151,7 +151,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#getContentId(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public String getContentId(final String fvid) {
@@ -162,7 +162,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#getFragmentDataOfProcessModel(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -174,7 +174,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#getFragmentData(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public FragmentVersion getFragmentData(final String fragmentId) {
@@ -183,6 +183,10 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
         return (FragmentVersion) query.getResultList();
     }
 
+    /**
+     * @see org.apromore.dao.FragmentVersionDao#getContainingFragments(java.util.List)
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getContainingFragments(final List<String> nodes) {
         // TODO: Implement as it is used...or should be
@@ -203,7 +207,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#getUsedFragmentIds(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -216,7 +220,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#getSimilarFragmentsBySize(int, int)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -229,7 +233,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#getSimilarFragmentsBySizeAndType(int, int, String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -244,7 +248,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#save(org.apromore.dao.model.FragmentVersion)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void save(final FragmentVersion fragVersion) {
@@ -253,7 +257,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#update(org.apromore.dao.model.FragmentVersion)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public FragmentVersion update(final FragmentVersion fragVersion) {
@@ -262,7 +266,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#delete(org.apromore.dao.model.FragmentVersion)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void delete(final FragmentVersion fragVersion) {
@@ -271,12 +275,11 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
 
     /**
-     * Sets the Entity Manager. No way around this to get Unit Testing working
-     *
-     * @param em the entitymanager
+     * Sets the Entity Manager. No way around this to get Unit Testing working.
+     * @param newEm the entitymanager
      */
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
+    public void setEntityManager(final EntityManager newEm) {
+        this.em = newEm;
     }
 
 }

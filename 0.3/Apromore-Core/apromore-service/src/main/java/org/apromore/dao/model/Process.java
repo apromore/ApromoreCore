@@ -23,7 +23,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 /**
  * Stores the process in apromore.
  *
- * @author Cameron James
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Entity
 @Table(name = "process",
@@ -48,7 +48,7 @@ public class Process implements Serializable {
     private NativeType nativeType;
 
     private Set<ProcessBranch> processBranches = new HashSet<ProcessBranch>(0);
-    private Set<EditSessionMapping> editSessionMappings = new HashSet<EditSessionMapping>(0);
+    private Set<EditSession> editSessions = new HashSet<EditSession>(0);
 
     /**
      * Default constructor.
@@ -161,22 +161,22 @@ public class Process implements Serializable {
 
 
     /**
-     * Get the editSessionMappings for the Object.
+     * Get the editSessions for the Object.
      *
-     * @return Returns the editSessionMappings.
+     * @return Returns the editSessions.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "process")
-    public Set<EditSessionMapping> getEditSessionMappings() {
-        return this.editSessionMappings;
+    public Set<EditSession> getEditSessions() {
+        return this.editSessions;
     }
 
     /**
-     * Set the editSessionMappings for the Object.
+     * Set the editSessions for the Object.
      *
-     * @param newEditSessionMappings The editSessionMappings to set.
+     * @param newEditSessions The editSessions to set.
      */
-    public void setEditSessionMappings(final Set<EditSessionMapping> newEditSessionMappings) {
-        this.editSessionMappings = newEditSessionMappings;
+    public void setEditSessions(final Set<EditSession> newEditSessions) {
+        this.editSessions = newEditSessions;
     }
 
     /**

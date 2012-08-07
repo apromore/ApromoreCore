@@ -28,29 +28,31 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
     @PersistenceContext
     private EntityManager em;
 
-    public static final String GET_ALL_PROCESSES = "SELECT pmv FROM ProcessModelVersion pmv, ProcessBranch pb WHERE pb.branchId = pmv.processBranch.branchId ";
-    public static final String GET_LATEST_PROCESSES = "AND pb.creationDate in (SELECT max(pb2.creationDate) FROM ProcessBranch pb2 WHERE pb2.branchId = pmv.processBranch.branchId GROUP BY pb2.branchId)";
-    public static final String GET_ALL_PRO_SORT = " ORDER by pb.branchId, pb.creationDate ";
+    private static final String GET_ALL_PROCESSES = "SELECT pmv FROM ProcessModelVersion pmv, ProcessBranch pb WHERE pb.branchId = " +
+            "pmv.processBranch.branchId ";
+    private static final String GET_LATEST_PROCESSES = "AND pb.creationDate in (SELECT max(pb2.creationDate) FROM ProcessBranch pb2 WHERE " +
+            "pb2.branchId = pmv.processBranch.branchId GROUP BY pb2.branchId)";
+    private static final String GET_ALL_PRO_SORT = " ORDER by pb.branchId, pb.creationDate ";
 
 
     /**
      * @see org.apromore.dao.ProcessModelVersionDao#findProcessModelVersion(Integer)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public ProcessModelVersion findProcessModelVersion(Integer processModelVersionId) {
+    public ProcessModelVersion findProcessModelVersion(final Integer processModelVersionId) {
         return em.find(ProcessModelVersion.class, processModelVersionId);
     }
 
 
     /**
      * @see org.apromore.dao.ProcessModelVersionDao#findProcessModelVersionByBranch(Integer, String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public ProcessModelVersion findProcessModelVersionByBranch(Integer branchId, String branchName) {
+    public ProcessModelVersion findProcessModelVersionByBranch(final Integer branchId, final String branchName) {
         Query query = em.createNamedQuery(NamedQueries.GET_PROCESS_MODEL_VERSION_BY_BRANCH);
         query.setParameter("id", branchId);
         query.setParameter("name", branchName);
@@ -59,7 +61,7 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
 
     /**
      * @see org.apromore.dao.ProcessModelVersionDao#getCurrentProcessModelVersion(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -70,8 +72,28 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
     }
 
     /**
+     * @see org.apromore.dao.ProcessModelVersionDao#getCurrentVersion(Integer, String)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public ProcessModelVersion getCurrentVersion(Integer processId, String processName) {
+        Query query = em.createNamedQuery(NamedQueries.GET_CURRENT_PROCESS_MODEL);
+        query.setParameter("processId", processId);
+        query.setParameter("versionName", processName);
+
+        List results = query.getResultList();
+        if (results.isEmpty()) {
+            return null;
+        } else if (results.size() == 1) {
+            return (ProcessModelVersion) results.get(0);
+        }
+        throw new NonUniqueResultException();
+    }
+
+    /**
      * @see org.apromore.dao.ProcessModelVersionDao#getCurrentProcessModelVersion(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -83,7 +105,7 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
 
     /**
      * @see org.apromore.dao.ProcessModelVersionDao#getCurrentProcessModelVersion(String, String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -97,7 +119,7 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
 
     /**
      * @see org.apromore.dao.ProcessModelVersionDao#getCurrentProcessModelVersion(String, String, String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -112,7 +134,7 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
 
     /**
      * @see org.apromore.dao.ProcessModelVersionDao#getMaxModelVersions(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -124,7 +146,7 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
 
     /**
      * @see org.apromore.dao.ProcessModelVersionDao#getCurrentModelVersions(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -137,7 +159,7 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
 
     /**
      * @see org.apromore.dao.ProcessModelVersionDao#getMaxVersionProcessModel(org.apromore.dao.model.ProcessBranch)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -156,10 +178,11 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
 
     /**
      * @see org.apromore.dao.ProcessModelVersionDao#getAllProcessModelVersions(boolean)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
     public List<ProcessModelVersion> getAllProcessModelVersions(final boolean isLatestVersion) {
         StringBuilder strQry = new StringBuilder();
         strQry.append(GET_ALL_PROCESSES);
@@ -169,45 +192,53 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
         strQry.append(GET_ALL_PRO_SORT);
 
         Query query = em.createQuery(strQry.toString());
-        return query.getResultList();
+        return (List<ProcessModelVersion>) query.getResultList();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    public List<String> getRootFragments(int minSize) {
+        Query query = em.createNamedQuery(NamedQueries.GET_ROOT_FRAGMENT_IDS_ABOVE_SIZE);
+        query.setParameter("minSize", minSize);
+        return (List<String>) query.getResultList();
     }
 
 
     /**
      * @see org.apromore.dao.ProcessModelVersionDao#delete(org.apromore.dao.model.ProcessModelVersion)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public void save(ProcessModelVersion processModelVersionId) {
+    public void save(final ProcessModelVersion processModelVersionId) {
         em.persist(processModelVersionId);
     }
 
     /**
      * @see org.apromore.dao.ProcessModelVersionDao#delete(org.apromore.dao.model.ProcessModelVersion)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public ProcessModelVersion update(ProcessModelVersion processModelVersionId) {
+    public ProcessModelVersion update(final ProcessModelVersion processModelVersionId) {
         return em.merge(processModelVersionId);
     }
 
     /**
      * @see org.apromore.dao.ProcessModelVersionDao#delete(org.apromore.dao.model.ProcessModelVersion)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public void delete(ProcessModelVersion processModelVersionId) {
+    public void delete(final ProcessModelVersion processModelVersionId) {
         em.remove(processModelVersionId);
     }
 
 
     /**
-     * Sets the Entity Manager. No way around this to get Unit Testing working
-     *
-     * @param em the entitymanager
+     * Sets the Entity Manager. No way around this to get Unit Testing working.
+     * @param newEm the entitymanager
      */
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
+    public void setEntityManager(final EntityManager newEm) {
+        this.em = newEm;
     }
 
 }

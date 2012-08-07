@@ -27,18 +27,18 @@ public class ProcessBranchDaoJpa implements ProcessBranchDao {
 
     /**
      * @see org.apromore.dao.ProcessBranchDao#findProcessBranch(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public ProcessBranch findProcessBranch(String branchId) {
+    public ProcessBranch findProcessBranch(final String branchId) {
         return em.find(ProcessBranch.class, branchId);
     }
 
 
     /**
      * @see org.apromore.dao.ProcessBranchDao#getProcessBranchByProcessBranchName(String, String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -52,7 +52,7 @@ public class ProcessBranchDaoJpa implements ProcessBranchDao {
 
     /**
      * @see org.apromore.dao.ProcessBranchDao#save(org.apromore.dao.model.ProcessBranch)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void save(final ProcessBranch branch) {
@@ -61,7 +61,7 @@ public class ProcessBranchDaoJpa implements ProcessBranchDao {
 
     /**
      * @see org.apromore.dao.ProcessBranchDao#update(org.apromore.dao.model.ProcessBranch)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public ProcessBranch update(final ProcessBranch branch) {
@@ -70,7 +70,7 @@ public class ProcessBranchDaoJpa implements ProcessBranchDao {
 
     /**
      * @see org.apromore.dao.ProcessBranchDao#delete(org.apromore.dao.model.ProcessBranch)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void delete(final ProcessBranch branch) {
@@ -79,12 +79,11 @@ public class ProcessBranchDaoJpa implements ProcessBranchDao {
 
 
     /**
-     * Sets the Entity Manager. No way around this to get Unit Testing working
-     *
-     * @param em the entitymanager
+     * Sets the Entity Manager. No way around this to get Unit Testing working.
+     * @param newEm the entitymanager
      */
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
+    public void setEntityManager(final EntityManager newEm) {
+        this.em = newEm;
     }
 
 }

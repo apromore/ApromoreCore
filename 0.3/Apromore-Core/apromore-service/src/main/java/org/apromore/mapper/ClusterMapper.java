@@ -27,7 +27,7 @@ import org.apromore.toolbox.clustering.algorithms.dbscan.DBSCANClusterSettings;
 import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentPair;
 
 /**
- * @author Chathura C. Ekanayake
+ * <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 public class ClusterMapper {
 

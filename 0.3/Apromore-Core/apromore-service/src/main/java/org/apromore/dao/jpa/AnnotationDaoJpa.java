@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate implementation of the org.apromore.dao.AnnotationDao interface.
- *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  * @since 1.0
  */
@@ -29,8 +28,8 @@ public class AnnotationDaoJpa implements AnnotationDao {
 
 
     /**
-     * @see org.apromore.dao.AnnotationDao#findByUri(int)
-     *      {@inheritDoc}
+     * @see org.apromore.dao.AnnotationDao#findByUri(Integer)
+     * {@inheritDoc}
      */
     @Override
     public List<Annotation> findByUri(final Integer nativeUri) {
@@ -42,9 +41,8 @@ public class AnnotationDaoJpa implements AnnotationDao {
 
     /**
      * Returns the Annotation as XML.
-     *
-     * @see org.apromore.dao.AnnotationDao#getAnnotation(long, String, String)
-     *      {@inheritDoc}
+     * @see org.apromore.dao.AnnotationDao#getAnnotation(Integer, String, String)
+     * {@inheritDoc}
      */
     @Override
     public Annotation getAnnotation(final Integer processId, final String version, final String name)
@@ -59,39 +57,38 @@ public class AnnotationDaoJpa implements AnnotationDao {
 
     /**
      * @see org.apromore.dao.AnnotationDao#delete(Annotation)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public void save(Annotation annotation) {
+    public void save(final Annotation annotation) {
         em.persist(annotation);
     }
 
     /**
      * @see org.apromore.dao.AnnotationDao#delete(Annotation)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public Annotation update(Annotation annotation) {
+    public Annotation update(final Annotation annotation) {
         return em.merge(annotation);
     }
 
     /**
      * @see org.apromore.dao.AnnotationDao#delete(Annotation)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public void delete(Annotation annotation) {
+    public void delete(final Annotation annotation) {
         em.remove(annotation);
     }
 
 
     /**
-     * Sets the Entity Manager. No way around this to get Unit Testing working
-     *
-     * @param em the entitymanager
+     * Sets the Entity Manager. No way around this to get Unit Testing working.
+     * @param newEm the entitymanager
      */
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
+    public void setEntityManager(final EntityManager newEm) {
+        this.em = newEm;
     }
 
 }

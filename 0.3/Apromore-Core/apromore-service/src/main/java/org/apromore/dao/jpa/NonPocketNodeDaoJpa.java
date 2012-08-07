@@ -25,7 +25,7 @@ public class NonPocketNodeDaoJpa implements NonPocketNodeDao {
 
     /**
      * @see org.apromore.dao.NonPocketNodeDao#save(org.apromore.dao.model.NonPocketNode)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void save(final NonPocketNode node) {
@@ -34,7 +34,7 @@ public class NonPocketNodeDaoJpa implements NonPocketNodeDao {
 
     /**
      * @see org.apromore.dao.NonPocketNodeDao#update(org.apromore.dao.model.NonPocketNode)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public NonPocketNode update(final NonPocketNode node) {
@@ -43,7 +43,7 @@ public class NonPocketNodeDaoJpa implements NonPocketNodeDao {
 
     /**
      * @see org.apromore.dao.NonPocketNodeDao#delete(org.apromore.dao.model.NonPocketNode)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void delete(final NonPocketNode node) {
@@ -52,12 +52,11 @@ public class NonPocketNodeDaoJpa implements NonPocketNodeDao {
 
 
     /**
-     * Sets the Entity Manager. No way around this to get Unit Testing working
-     *
-     * @param em the entitymanager
+     * Sets the Entity Manager. No way around this to get Unit Testing working.
+     * @param newEm the entitymanager
      */
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
+    public void setEntityManager(final EntityManager newEm) {
+        this.em = newEm;
     }
 
 }

@@ -25,39 +25,38 @@ public class ProcessFragmentMapDaoJpa implements ProcessFragmentMapDao {
 
     /**
      * @see org.apromore.dao.ProcessFragmentMapDao#delete(org.apromore.dao.model.ProcessFragmentMap)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public void save(ProcessFragmentMap processFragmentMap) {
+    public void save(final ProcessFragmentMap processFragmentMap) {
         em.persist(processFragmentMap);
     }
 
     /**
      * @see org.apromore.dao.ProcessFragmentMapDao#delete(org.apromore.dao.model.ProcessFragmentMap)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public ProcessFragmentMap update(ProcessFragmentMap processFragmentMap) {
+    public ProcessFragmentMap update(final ProcessFragmentMap processFragmentMap) {
         return em.merge(processFragmentMap);
     }
 
     /**
      * @see org.apromore.dao.ProcessFragmentMapDao#delete(org.apromore.dao.model.ProcessFragmentMap)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public void delete(ProcessFragmentMap processFragmentMap) {
+    public void delete(final ProcessFragmentMap processFragmentMap) {
         em.remove(processFragmentMap);
     }
 
 
     /**
-     * Sets the Entity Manager. No way around this to get Unit Testing working
-     *
-     * @param em the entitymanager
+     * Sets the Entity Manager. No way around this to get Unit Testing working.
+     * @param newEm the entitymanager
      */
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
+    public void setEntityManager(final EntityManager newEm) {
+        this.em = newEm;
     }
 
 }

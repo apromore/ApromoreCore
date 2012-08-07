@@ -37,6 +37,7 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
+import de.epml.*;
 import org.apromore.common.converters.epml.context.EPMLConversionContext;
 import org.apromore.common.converters.epml.handler.epml.EPMLHandlerFactory;
 import org.apromore.common.converters.epml.handler.epml.EPMLHandler;
@@ -45,9 +46,6 @@ import org.json.JSONObject;
 import org.oryxeditor.server.diagram.StencilSetReference;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.generic.GenericJSONBuilder;
-
-import de.epml.TypeEPC;
-import de.epml.TypeEPML;
 
 /**
  * Converts a EPML Stream to a Signavio/Oryx JSON Stream
@@ -105,32 +103,20 @@ public class EPMLToJSONConverter {
 		EPMLHandlerFactory converterFactory = new EPMLHandlerFactory(
 				context);
 		context.setConverterFactory(converterFactory);
+        List<TExtensibleElements> extList = epml.getDirectory().get(0).getEpcOrDirectory();
 
-		// TODO
-		// List<TypeDirectory> directoryList = epml.getDirectory();
-
-		// TODO
-		// TypeDefinitions definitions = epml.getDefinitions();
-
-		List<TypeEPC> epcsList = epml.getEpcs();
-		for (TypeEPC epc : epcsList) {
+		for (TExtensibleElements ext : extList) {
+            TypeEPC epc = (TypeEPC) ext;
 			String stencilSetNs = "http://b3mn.org/stencilset/epc#";
 			BasicDiagram diagram = new BasicDiagram(epc.getName(), "Diagram",
 					new StencilSetReference(stencilSetNs));
 			context.addDiagram(diagram);
 			for (Object obj : epc.getEventOrFunctionOrRole()) {
-
-				if (obj instanceof JAXBElement<?>) {
-					JAXBElement<?> element = (JAXBElement<?>) obj;
-
-					EPMLHandler converter = converterFactory
-							.createConverter(element.getValue());
-					if (converter != null) {
-						diagram.addChildShape(converter.convert());
-					}
-
-				}
-
+                EPMLHandler converter = converterFactory
+                        .createConverter(obj);
+                if (converter != null) {
+                    diagram.addChildShape(converter.convert());
+                }
 			}
 			for (JAXBElement<?> element : epc
 					.getConfigurationRequirementOrConfigurationGuidelineOrConfigurationOrder()) {

@@ -1,5 +1,8 @@
 package org.apromore.manager.client.helper;
 
+import java.util.List;
+import java.util.Map;
+
 import org.apromore.model.ParameterType;
 import org.apromore.model.ParametersType;
 import org.apromore.model.ProcessSummaryType;
@@ -7,23 +10,26 @@ import org.apromore.model.ProcessVersionIdType;
 import org.apromore.model.ProcessVersionIdsType;
 import org.apromore.model.VersionSummaryType;
 
-import java.util.List;
-import java.util.Map;
-
 /**
  * Helper class to help construct the client's message to the WebService.
+ *
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class MergeProcessesHelper {
+public final class MergeProcessesHelper {
 
-    public static final String GREEDY_ALGORITHM = "Greedy";
+    private static final String GREEDY_ALGORITHM = "Greedy";
+
+
+    /* Private Constructor */
+    private MergeProcessesHelper() { }
+
 
     /**
      * Sets up the process models that are to be merged.
-     *
      * @param selectedProcessVersions the list of models
      * @return the object to be sent to the Service
      */
-    public static ProcessVersionIdsType setProcessModels(Map<ProcessSummaryType,List<VersionSummaryType>> selectedProcessVersions) {
+    public static ProcessVersionIdsType setProcessModels(final Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) {
         ProcessVersionIdType id;
         ProcessVersionIdsType modelIdList = new ProcessVersionIdsType();
 
@@ -52,8 +58,8 @@ public class MergeProcessesHelper {
      * @param skipeWeight the Skip E weight
      * @return the ParameterType used in the WebService object
      */
-    public static ParametersType setParams(String method, boolean removeEntanglements, double mergeThreshold, double labelThreshold,
-            double contextThreshold, double skipnWeight, double subnWeight, double skipeWeight) {
+    public static ParametersType setParams(final  String method, final boolean removeEntanglements, final double mergeThreshold,
+            final double labelThreshold, final double contextThreshold, final double skipnWeight, final double subnWeight, final double skipeWeight) {
         ParametersType params = new ParametersType();
 
         params.getParameter().add(addParam("removeent", removeEntanglements ? 1 : 0));
@@ -72,7 +78,7 @@ public class MergeProcessesHelper {
 
 
     /* Used to create a parameter object. */
-    private static ParameterType addParam(String name, double value) {
+    private static ParameterType addParam(final String name, final double value) {
         ParameterType p = new ParameterType();
         p.setName(name);
         p.setValue(value);
