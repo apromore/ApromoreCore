@@ -9,6 +9,7 @@ import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.LockFailedException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.graph.JBPT.CPF;
+import org.apromore.service.helper.RPSTNodeCopy;
 
 /**
  * Analysis Service. Used for the Node Usage Analyser and parts of the Repository Analyser.
@@ -78,6 +79,15 @@ public interface FragmentService {
      * @throws ExceptionDao if communications to the DB fails
      */
     void addChildMappings(FragmentVersion fragVer, Map<String, String> childMappings);
+
+    /**
+     * Stores a fragment in the DB.
+     * @param fragmentCode the fragment code
+     * @param fCopy the RPSTNode
+     * @param g the CPF graph
+     * @return the new fragment version
+     */
+    FragmentVersion storeFragment(String fragmentCode, RPSTNodeCopy fCopy, CPF g);
 
     /**
      * Gets the Matching Fragment Versions.

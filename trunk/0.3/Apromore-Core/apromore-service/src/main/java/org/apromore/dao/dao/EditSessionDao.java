@@ -11,16 +11,27 @@ import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.ExceptionEditSession;
 import org.apromore.model.EditSessionType;
 
+/**
+ * Edit Session DAO.
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
+ */
 public class EditSessionDao extends BasicDao {
-
-
-    public EditSessionDao() throws Exception {
-        // TODO Auto-generated constructor stub
-        super();
-    }
 
     private static EditSessionDao instance;
 
+    /**
+     * Default Constructor.
+     * @throws Exception if something fails
+     */
+    public EditSessionDao() throws Exception {
+        super();
+    }
+
+    /**
+     * Get the instance of this DAO.
+     * @return the instance of this dao
+     * @throws ExceptionDao if it failed to create itself.
+     */
     public static EditSessionDao getInstance() throws ExceptionDao {
         if (instance == null) {
             try {
@@ -32,14 +43,19 @@ public class EditSessionDao extends BasicDao {
         return instance;
     }
 
+    /**
+     * Delete a session.
+     * @param code the session code.
+     * @throws Exception if it failed to delete.
+     */
     public void deleteEditSession(int code) throws Exception {
         Connection conn = null;
         PreparedStatement stmt = null;
-        String query = null;
+        String query;
         try {
             query = " delete from " + ConstantDB.TABLE_EDIT_SESSIONS
                     + " where " + ConstantDB.ATTR_CODE + " = " + code;
-            conn = this.getConnection();
+            conn = getConnection();
             stmt = conn.prepareStatement(query);
             stmt.executeUpdate();
             conn.commit();
@@ -51,15 +67,21 @@ public class EditSessionDao extends BasicDao {
         }
     }
 
+    /**
+     * Write a session to the DB.
+     * @param editSession the session code.
+     * @return if it worked or not.
+     * @throws ExceptionEditSession if it failed to save the record
+     * @throws SQLException if there is problem with the db.
+     */
     public int writeEditSession(EditSessionType editSession) throws ExceptionEditSession, SQLException {
-
         Connection conn = null;
         PreparedStatement stmt = null;
         Statement stmt2 = null;
         String query;
         ResultSet key = null;
-        int code = 0;
-        String uri = null;
+        int code;
+        String uri;
         String username = editSession.getUsername();
         int processId = editSession.getProcessId();
         String versionName = editSession.getVersionName();
@@ -125,11 +147,17 @@ public class EditSessionDao extends BasicDao {
         }
     }
 
+    /**
+     * Get a session from the DB.
+     * @param code the session to get.
+     * @return the edit session.
+     * @throws ExceptionEditSession if it failed to find that session in the db.
+     */
     public EditSessionType getEditSession(int code) throws ExceptionEditSession {
         Connection conn = null;
         Statement stmt = null;
         ResultSet rs = null;
-        String query = null;
+        String query;
         EditSessionType editSession = new EditSessionType();
         try {
             conn = this.getConnection();
@@ -174,4 +202,5 @@ public class EditSessionDao extends BasicDao {
             Release(conn, stmt, rs);
         }
     }
+
 }

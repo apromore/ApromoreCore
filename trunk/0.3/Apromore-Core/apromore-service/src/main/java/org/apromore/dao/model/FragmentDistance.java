@@ -16,7 +16,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
- * @author Chathura C. Ekanayake
+ * The Fragment Distance.
+ * @author <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 @Entity
 @Table(name = "fragment_distance")

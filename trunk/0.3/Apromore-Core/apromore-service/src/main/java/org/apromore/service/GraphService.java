@@ -52,4 +52,18 @@ public interface GraphService {
      */
     void fillEdges(CPF procModelGraph, String contentID);
 
+    /**
+     * Populate Nodes by it's Fragment Id.
+     * @param procModelGraph the process model graph
+     * @param fragmentID the fragment Id.
+     */
+    void fillNodesByFragmentId(CPF procModelGraph, String fragmentID);
+
+    /**
+     * Populate Nodes by it's Fragment Id.
+     * @param procModelGraph process model graph
+     * @param fragmentID the fragment id
+     */
+    void fillEdgesByFragmentId(CPF procModelGraph, String fragmentID);
+
 }

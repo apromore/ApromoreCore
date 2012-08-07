@@ -19,7 +19,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
- * @author Chathura C. Ekanayake
+ * The Cluster Assignment.
+ * @author <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 @Entity
 @Table(name = "cluster_assignment")
@@ -34,7 +35,12 @@ public class ClusterAssignment implements Serializable {
     private Boolean maximal;
     private Integer coreObjectNb;
 
+    /**
+     * Public Constructor.
+     */
     public ClusterAssignment() { }
+
+
 
     @EmbeddedId
     @AttributeOverrides({

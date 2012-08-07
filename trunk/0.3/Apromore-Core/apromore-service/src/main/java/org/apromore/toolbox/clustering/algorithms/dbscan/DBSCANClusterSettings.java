@@ -6,7 +6,7 @@ package org.apromore.toolbox.clustering.algorithms.dbscan;
 import org.apromore.service.model.ClusterSettings;
 
 /**
- * @author Chathura C. Ekanayake
+ * <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 public class DBSCANClusterSettings extends ClusterSettings {
 

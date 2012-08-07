@@ -30,7 +30,7 @@ public class NativeDaoJpa implements NativeDao {
 
     /**
      * @see org.apromore.dao.NativeDao#findNativeByCanonical(Integer, String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -44,7 +44,7 @@ public class NativeDaoJpa implements NativeDao {
 
     /**
      * @see org.apromore.dao.NativeDao#getNative(Integer, String, String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -60,39 +60,38 @@ public class NativeDaoJpa implements NativeDao {
 
     /**
      * @see org.apromore.dao.NativeDao#delete(org.apromore.dao.model.Native)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public void save(Native natve) {
+    public void save(final Native natve) {
         em.persist(natve);
     }
 
     /**
      * @see org.apromore.dao.NativeDao#delete(org.apromore.dao.model.Native)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public Native update(Native natve) {
+    public Native update(final Native natve) {
         return em.merge(natve);
     }
 
     /**
      * @see org.apromore.dao.NativeDao#delete(org.apromore.dao.model.Native)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
-    public void delete(Native natve) {
+    public void delete(final Native natve) {
         em.remove(natve);
     }
 
 
     /**
-     * Sets the Entity Manager. No way around this to get Unit Testing working
-     *
-     * @param em the entitymanager
+     * Sets the Entity Manager. No way around this to get Unit Testing working.
+     * @param newEm the entitymanager
      */
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
+    public void setEntityManager(final EntityManager newEm) {
+        this.em = newEm;
     }
 
 }

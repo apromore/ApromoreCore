@@ -5,7 +5,7 @@
     <persistence-unit name="TESTApromore" transaction-type="RESOURCE_LOCAL">
         <!-- Tables -->
         <class>org.apromore.dao.model.Annotation</class>
-        <class>org.apromore.dao.model.EditSessionMapping</class>
+        <class>org.apromore.dao.model.EditSession</class>
         <class>org.apromore.dao.model.Native</class>
         <class>org.apromore.dao.model.NativeType</class>
         <class>org.apromore.dao.model.Process</class>

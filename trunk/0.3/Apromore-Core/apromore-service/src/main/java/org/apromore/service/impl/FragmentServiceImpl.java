@@ -2,6 +2,7 @@ package org.apromore.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -9,14 +10,17 @@ import java.util.Set;
 import javax.xml.bind.JAXBException;
 
 import org.apromore.common.Constants;
+import org.apromore.dao.ContentDao;
 import org.apromore.dao.FragmentVersionDagDao;
 import org.apromore.dao.FragmentVersionDao;
+import org.apromore.dao.NodeDao;
 import org.apromore.dao.ProcessDao;
 import org.apromore.dao.ProcessModelVersionDao;
 import org.apromore.dao.model.Content;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.dao.model.FragmentVersionDagId;
+import org.apromore.dao.model.Node;
 import org.apromore.dao.model.ProcessFragmentMap;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionDao;
@@ -24,11 +28,16 @@ import org.apromore.exception.LockFailedException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.exception.SerializationException;
 import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.JBPT.ICpfNode;
 import org.apromore.service.CanoniserService;
+import org.apromore.service.ContentService;
 import org.apromore.service.FragmentService;
 import org.apromore.service.LockService;
+import org.apromore.service.helper.RPSTNodeCopy;
 import org.apromore.service.model.FDNode;
 import org.apromore.service.model.FragmentDAG;
+import org.apromore.util.FragmentUtil;
+import org.jbpt.graph.abs.AbstractDirectedEdge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,7 +65,13 @@ public class FragmentServiceImpl implements FragmentService {
     private FragmentVersionDagDao fvdDao;
     @Autowired @Qualifier("ProcessModelVersionDao")
     private ProcessModelVersionDao pmvDao;
+    @Autowired @Qualifier("ContentDao")
+    private ContentDao contentDao;
+    @Autowired @Qualifier("NodeDao")
+    private NodeDao nDao;
 
+    @Autowired @Qualifier("ContentService")
+    private ContentService csrv;
     @Autowired @Qualifier("CanoniserService")
     private CanoniserService cSrv;
     @Autowired @Qualifier("LockService")
@@ -64,7 +79,7 @@ public class FragmentServiceImpl implements FragmentService {
 
 
     /**
-     * @see org.apromore.service.ProcessService#addProcessFragmentMappings(Integer, java.util.List)
+     * @see org.apromore.service.FragmentService#addProcessFragmentMappings(Integer, java.util.List)
      *      {@inheritDoc}
      */
     @Override
@@ -157,7 +172,7 @@ public class FragmentServiceImpl implements FragmentService {
      */
     @Override
     public FragmentVersion addFragmentVersion(Content cid, Map<String, String> childMappings, String derivedFrom,
-                                              int lockStatus, int lockCount, int originalSize, String fragmentType) {
+            int lockStatus, int lockCount, int originalSize, String fragmentType) {
         String childMappingCode = calculateChildMappingCode(childMappings);
 
         FragmentVersion fragVersion = new FragmentVersion();
@@ -202,6 +217,49 @@ public class FragmentServiceImpl implements FragmentService {
 
             fvdDao.save(fvd);
         }
+    }
+
+    @Override
+    public FragmentVersion storeFragment(String fragmentCode, RPSTNodeCopy fCopy, CPF g) {
+        Content c = new Content();
+        c.setBoundaryS(fCopy.getEntry().getId());
+        c.setBoundaryE(fCopy.getExit().getId());
+        c.setCode(fragmentCode);
+        contentDao.save(c);
+
+        FragmentVersion f = new FragmentVersion();
+        f.setContent(c);
+        f.setLockStatus(-1);
+        f.setLockCount(-1);
+        f.setFragmentType(fCopy.getReadableNodeType());
+        f.setFragmentSize(fCopy.getSize());
+        fvDao.save(f);
+
+        Map<String, Integer> nodeMappings = new HashMap<String, Integer>();
+
+        for (ICpfNode v : fCopy.getVertices()) {
+            String vtype = FragmentUtil.getType(v);
+
+            Node node = new Node();
+            node.setContent(c);
+            node.setVname(v.getLabel());
+            node.setVtype(vtype);
+            node.setConfiguration(v.isConfigurable());
+            node.setCtype(v.getClass().getName());
+            node.setOriginalId(v.getId());
+            nDao.save(node);
+            v.setId(String.valueOf(node.getVid()));
+
+            nodeMappings.put(v.getId(), node.getVid());
+        }
+
+        for (AbstractDirectedEdge e : fCopy.getEdges()) {
+            Node source = nDao.findNode(Integer.valueOf(e.getSource().getId()));
+            Node target = nDao.findNode(Integer.valueOf(e.getTarget().getId()));
+            csrv.addEdge(c, e, source, target);
+        }
+
+        return f;
     }
 
     @Override

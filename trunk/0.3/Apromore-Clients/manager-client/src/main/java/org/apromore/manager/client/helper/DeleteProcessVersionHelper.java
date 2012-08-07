@@ -1,45 +1,45 @@
 package org.apromore.manager.client.helper;
 
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.ProcessVersionIdentifierType;
-import org.apromore.model.VersionSummaryType;
-
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.ProcessVersionIdentifierType;
+import org.apromore.model.VersionSummaryType;
+
 /**
  * Helper class to help construct the client's message to the WebService.
+ *
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class DeleteProcessVersionHelper {
+public final class DeleteProcessVersionHelper {
 
-    public static final String GREEDY_ALGORITHM = "Greedy";
+    /* Private Constructor */
+    private DeleteProcessVersionHelper() { }
+
 
     /**
      * Sets up the process models that are to be merged.
-     *
-     * @param selectedProcessVersions the list of models
+     * @param selectedProVers the list of models
      * @return the object to be sent to the Service
      */
-    public static Collection<ProcessVersionIdentifierType> setProcessModels(Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions) {
+    public static Collection<ProcessVersionIdentifierType> setProcessModels(final Map<ProcessSummaryType, List<VersionSummaryType>> selectedProVers) {
         ProcessVersionIdentifierType processVersionId;
         List<VersionSummaryType> versionSummaries;
-        Set<ProcessSummaryType> keys = selectedProcessVersions.keySet();
+        Set<ProcessSummaryType> keys = selectedProVers.keySet();
 
         Collection<ProcessVersionIdentifierType> payload = new ArrayList<ProcessVersionIdentifierType>();
 
-        Iterator<ProcessSummaryType> it = keys.iterator();
-        while (it.hasNext()) {
-            ProcessSummaryType processSummary = it.next();
-            versionSummaries = selectedProcessVersions.get(processSummary);
+        for (ProcessSummaryType processSummary : keys) {
+            versionSummaries = selectedProVers.get(processSummary);
 
             processVersionId = new ProcessVersionIdentifierType();
             processVersionId.setProcessid(processSummary.getId());
-            for (int i = 0; i < versionSummaries.size(); i++) {
-                processVersionId.getVersionName().add(versionSummaries.get(i).getName());
+            for (VersionSummaryType versionSummary : versionSummaries) {
+                processVersionId.getVersionName().add(versionSummary.getName());
             }
 
             payload.add(processVersionId);

@@ -1,32 +1,5 @@
 package org.apromore.portal.dialogController;
 
-import org.apromore.portal.common.Constants;
-import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
-import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
-import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
-import org.apromore.portal.exception.ExceptionAllUsers;
-import org.apromore.portal.exception.ExceptionDomains;
-import org.apromore.portal.exception.ExceptionFormats;
-import org.apromore.portal.exception.ExceptionWriteEditSession;
-import org.apromore.model.ClusterFilterType;
-import org.apromore.model.DomainsType;
-import org.apromore.model.EditSessionType;
-import org.apromore.model.NativeTypesType;
-import org.apromore.model.ProcessSummariesType;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.SearchHistoriesType;
-import org.apromore.model.UserType;
-import org.apromore.model.UsernamesType;
-import org.apromore.model.VersionSummaryType;
-import org.zkoss.zk.ui.Component;
-import org.zkoss.zk.ui.Executions;
-import org.zkoss.zk.ui.event.ClientInfoEvent;
-import org.zkoss.zk.ui.util.Clients;
-import org.zkoss.zul.Menuitem;
-import org.zkoss.zul.Messagebox;
-import org.zkoss.zul.South;
-import org.zkoss.zul.Window;
-
 import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -39,534 +12,545 @@ import java.util.Properties;
 import java.util.Set;
 import java.util.logging.Logger;
 
+import org.apromore.model.ClusterFilterType;
+import org.apromore.model.DomainsType;
+import org.apromore.model.EditSessionType;
+import org.apromore.model.NativeTypesType;
+import org.apromore.model.ProcessSummariesType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.SearchHistoriesType;
+import org.apromore.model.UserType;
+import org.apromore.model.UsernamesType;
+import org.apromore.model.VersionSummaryType;
+import org.apromore.portal.common.Constants;
+import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFilterController;
+import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersFragmentsListboxController;
+import org.apromore.portal.dialogController.similarityclusters.SimilarityClustersListboxController;
+import org.apromore.portal.exception.ExceptionAllUsers;
+import org.apromore.portal.exception.ExceptionDomains;
+import org.apromore.portal.exception.ExceptionFormats;
+import org.apromore.portal.exception.ExceptionWriteEditSession;
+import org.zkoss.zk.ui.Component;
+import org.zkoss.zk.ui.Executions;
+import org.zkoss.zk.ui.event.ClientInfoEvent;
+import org.zkoss.zk.ui.util.Clients;
+import org.zkoss.zul.Menuitem;
+import org.zkoss.zul.Messagebox;
+import org.zkoss.zul.South;
+import org.zkoss.zul.Window;
+
+
 /**
  * Main Controller for the whole application, most of the UI state is managed here.
- * It is automatically instantiated as index.zul is loaded!  
- *
+ * It is automatically instantiated as index.zul is loaded!
  */
 public class MainController extends BaseController {
 
-	private static final long serialVersionUID = 5147685906484044300L;
+    private static final long serialVersionUID = 5147685906484044300L;
 
-	private Window mainW;
-	private HeaderController header;
-	private MenuController menu;
-	private SimpleSearchController simplesearch;
-	private UserType currentUser; // the connected user, if any
-	private ShortMessageController shortmessageC;
-	private Window shortmessageW;
-	private String host;
-	private String OryxEndPoint_xpdl;
-	private String OryxEndPoint_epml;
-	private Logger LOG;
-	private String msgWhenClose;
-	private List<SearchHistoriesType> searchHistory;
+    private Window mainW;
+    private Window chooseNativeW;
+    private Window OpenModelInSignavioW;
+    private HeaderController header;
+    private MenuController menu;
+    private SimpleSearchController simplesearch;
+    private UserType currentUser; // the connected user, if any
+    private ShortMessageController shortmessageC;
+    private Window shortmessageW;
+    private String host;
+    private String OryxEndPoint_xpdl;
+    private String OryxEndPoint_epml;
+    private Logger LOG;
+    private String msgWhenClose;
+    private List<SearchHistoriesType> searchHistory;
 
-	private BaseListboxController baseListboxController;
-	private BaseDetailController baseDetailController;
-	private BaseFilterController baseFilterController;
+    private BaseListboxController baseListboxController;
+    private BaseDetailController baseDetailController;
+    private BaseFilterController baseFilterController;
 
-	// uncomment when ready
-	// private NavigationController navigation;
 
-	/**
-	 * onCreate is executed after the main window has been created it is
-	 * responsible for instantiating all necessary controllers (one for each
-	 * window defined in the interface)
-	 * <p/>
-	 * see description in index.zul
-	 * 
-	 * @throws InterruptedException
-	 */
-	public void onCreate() throws InterruptedException {
-		try {
-			// if client browser is not gecko3 based (such as firefox) raise an
-			// exception
-			if (!Executions.getCurrent().isGecko()
-					&& !Executions.getCurrent().isGecko3()) {
-				throw new Exception("Sorry, we currently support firefox only.");
-			}
-			this.LOG = Logger.getLogger(MainController.class.getName());
-			/**
-			 * to get data
-			 */
-			this.mainW = (Window) this.getFellow("mainW");
-			this.shortmessageW = (Window) this.getFellow("shortmessagescomp")
-					.getFellow("shortmessage");
-			this.shortmessageC = new ShortMessageController(shortmessageW);
-			this.header = new HeaderController(this);
-			this.simplesearch = new SimpleSearchController(this);
-			this.menu = new MenuController(this);
+    // uncomment when ready
+    // private NavigationController navigation;
 
-			// this.navigation = new NavigationController (this);
-			switchToProcessSummaryView();
+    /**
+     * onCreate is executed after the main window has been created it is
+     * responsible for instantiating all necessary controllers (one for each
+     * window defined in the interface)
+     * see description in index.zul
+     * @throws InterruptedException
+     */
+    public void onCreate() throws InterruptedException {
+        try {
+            // if client browser is not gecko3 based (such as firefox) raise an exception
+            if (!Executions.getCurrent().isGecko() && !Executions.getCurrent().isGecko3()) {
+                throw new Exception("Sorry, we currently support firefox only.");
+            }
+            this.LOG = Logger.getLogger(MainController.class.getName());
+            /**
+             * to get data
+             */
+            this.mainW = (Window) this.getFellow("mainW");
+            this.shortmessageW = (Window) this.getFellow("shortmessagescomp").getFellow("shortmessage");
+            this.shortmessageC = new ShortMessageController(shortmessageW);
+            this.header = new HeaderController(this);
+            this.simplesearch = new SimpleSearchController(this);
+            this.menu = new MenuController(this);
 
-			this.currentUser = null;
-			this.searchHistory = new ArrayList<SearchHistoriesType>();
-			this.msgWhenClose = null;
-			// read Oryx access point in properties
-			InputStream inputStream = getClass().getClassLoader()
-					.getResourceAsStream(Constants.PROPERTY_FILE);
-			;
-			Properties properties = new Properties();
-			properties.load(inputStream);
-			this.host = properties.getProperty("Host");
-			this.OryxEndPoint_xpdl = properties
-					.getProperty("OryxEndPoint_xpdl");
-			this.OryxEndPoint_epml = properties
-					.getProperty("OryxEndPoint_epml");
+            // this.navigation = new NavigationController (this);
+            switchToProcessSummaryView();
 
-		} catch (Exception e) {
-			String message = null;
-			if (e.getMessage() == null) {
-				message = "Please contact Apromore's administrator";
-			} else {
-				message = e.getMessage();
-			}
-			e.printStackTrace();
-			Messagebox.show("Repository not available (" + message + ")",
-					"Attention", Messagebox.OK, Messagebox.ERROR);
-		}
-	}
+            this.currentUser = null;
+            this.searchHistory = new ArrayList<SearchHistoriesType>();
+            this.msgWhenClose = null;
+            // read Oryx access point in properties
+            InputStream inputStream = getClass().getClassLoader().getResourceAsStream(Constants.PROPERTY_FILE);
 
-	/**
-	 * register an event listener for the clientInfo event (to prevent user to
-	 * close the browser window)
-	 */
-	public void onClientInfo(ClientInfoEvent event) {
-		Clients.confirmClose(Constants.MSG_WHEN_CLOSE);
-	}
+            Properties properties = new Properties();
+            properties.load(inputStream);
+            this.host = properties.getProperty("Host");
+            this.OryxEndPoint_xpdl = properties.getProperty("OryxEndPoint_xpdl");
+            this.OryxEndPoint_epml = properties.getProperty("OryxEndPoint_epml");
 
-	/**
-	 * Display version processes in processSummaries: if isQueryResult, the
-	 * query is given by version of process
-	 * 
-	 * @param processSummaries
-	 * @param isQueryResult
-	 * @param process
-	 * @param version
-	 * @throws Exception
-	 */
-	public void displayProcessSummaries(ProcessSummariesType processSummaries,
-			Boolean isQueryResult, ProcessSummaryType process,
-			VersionSummaryType version) {
+        } catch (Exception e) {
+            String message = null;
+            if (e.getMessage() == null) {
+                message = "Please contact Apromore's administrator";
+            }
+            else {
+                message = e.getMessage();
+            }
+            e.printStackTrace();
+            Messagebox.show("Repository not available (" + message + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
 
-		if (isQueryResult) {
-			clearProcessVersions();
-		}
+    /**
+     * register an event listener for the clientInfo event (to prevent user to
+     * close the browser window)
+     */
+    public void onClientInfo(ClientInfoEvent event) {
+        Clients.confirmClose(Constants.MSG_WHEN_CLOSE);
+    }
 
-		// TODO switch to process query result view
-		switchToProcessSummaryView();
-		((ProcessListboxController) this.baseListboxController)
-				.displayProcessSummaries(processSummaries, isQueryResult,
-						process, version);
-	}
+    /**
+     * Display version processes in processSummaries: if isQueryResult, the
+     * query is given by version of process
+     * @param processSummaries
+     * @param isQueryResult
+     * @param process
+     * @param version
+     * @throws Exception
+     */
+    public void displayProcessSummaries(ProcessSummariesType processSummaries, Boolean isQueryResult,
+            ProcessSummaryType process, VersionSummaryType version) {
+        if (isQueryResult) {
+            clearProcessVersions();
+        }
 
-	// disable/enable features depending on user status
-	public void updateActions() {
+        // TODO switch to process query result view
+        switchToProcessSummaryView();
+        ((ProcessListboxController) this.baseListboxController)
+                .displayProcessSummaries(processSummaries, isQueryResult,
+                        process, version);
+    }
 
-		Boolean connected = this.currentUser != null;
+    // disable/enable features depending on user status
+    public void updateActions() {
 
-		// disable/enable menu items in menu bar
-		Iterator<Component> itC = this.menu.getMenuB().getFellows().iterator();
-		while (itC.hasNext()) {
-			Component C = itC.next();
-			if (C.getClass().getName().compareTo("org.zkoss.zul.Menuitem") == 0) {
-				if (C.getId().compareTo("processMerge") != 0) {
-					((Menuitem) C).setDisabled(!connected);
-				}
-			}
-		}
-	}
+        Boolean connected = this.currentUser != null;
 
-	public void reloadProcessSummaries() {
-		ProcessSummariesType processSummaries = getService()
-				.readProcessSummaries("");
-		String message = null;
-		if (processSummaries.getProcessSummary().size() > 1) {
-			message = " processes.";
-		} else {
-			message = " process.";
-		}
-		this.displayMessage(processSummaries.getProcessSummary().size()
-				+ message);
-		this.simplesearch.clearSearches();
-		this.displayProcessSummaries(processSummaries, false, null, null);
-	}
+        // disable/enable menu items in menu bar
+        Iterator<Component> itC = this.menu.getMenuB().getFellows().iterator();
+        while (itC.hasNext()) {
+            Component C = itC.next();
+            if (C.getClass().getName().compareTo("org.zkoss.zul.Menuitem") == 0) {
+                if (C.getId().compareTo("processMerge") != 0) {
+                    ((Menuitem) C).setDisabled(!connected);
+                }
+            }
+        }
+    }
 
-	/**
-	 * reset displayed informations: - short message - process summaries -
-	 * simple search
-	 * 
-	 * @throws Exception
-	 */
-	public void resetUserInformation() throws Exception {
-		eraseMessage();
-		this.currentUser = null;
-		this.simplesearch.clearSearches();
-	}
+    public void reloadProcessSummaries() {
+        ProcessSummariesType processSummaries = getService()
+                .readProcessSummaries("");
+        String message = null;
+        if (processSummaries.getProcessSummary().size() > 1) {
+            message = " processes.";
+        }
+        else {
+            message = " process.";
+        }
+        this.displayMessage(processSummaries.getProcessSummary().size()
+                + message);
+        this.simplesearch.clearSearches();
+        this.displayProcessSummaries(processSummaries, false, null, null);
+    }
 
-	/**
-	 * Forward to the controller ProcessTableController the request to add the
-	 * process to the table
-	 * 
-	 * @param returnedProcess
-	 */
-	public void displayNewProcess(ProcessSummaryType returnedProcess) {
-		switchToProcessSummaryView();
-		((ProcessListboxController) this.baseListboxController)
-				.displayNewProcess(returnedProcess);
-		this.displayMessage(this.baseListboxController.getListModel().getSize()
-				+ " processes.");
-	}
+    /**
+     * reset displayed informations: - short message - process summaries -
+     * simple search
+     * @throws Exception
+     */
+    public void resetUserInformation() throws Exception {
+        eraseMessage();
+        this.currentUser = null;
+        this.simplesearch.clearSearches();
+    }
 
-	/**
-	 * Send request to Manager: deleted process versions given as parameter
-	 * 
-	 * @param processVersions
-	 * @throws InterruptedException
-	 */
-	public void deleteProcessVersions(
-			Map<ProcessSummaryType, List<VersionSummaryType>> processVersions)
-			throws InterruptedException {
-		try {
-			getService().deleteProcessVersions(processVersions);
-			switchToProcessSummaryView();
-			((ProcessListboxController) this.baseListboxController)
-					.unDisplay(processVersions);
-			String message;
-			int nb = 0;
+    /**
+     * Forward to the controller ProcessTableController the request to add the
+     * process to the table
+     * @param returnedProcess
+     */
+    public void displayNewProcess(ProcessSummaryType returnedProcess) {
+        switchToProcessSummaryView();
+        ((ProcessListboxController) this.baseListboxController)
+                .displayNewProcess(returnedProcess);
+        this.displayMessage(this.baseListboxController.getListModel().getSize()
+                + " processes.");
+    }
 
-			// to count how many process version(s) deleted
-			Collection<List<VersionSummaryType>> sumTypes = processVersions
-					.values();
-			for (List<VersionSummaryType> sumType : sumTypes) {
-				nb += sumType.size();
-			}
-			if (nb > 1) {
-				message = nb + " process versions deleted.";
-			} else {
-				message = " One process version deleted.";
-			}
-			displayMessage(message);
-		} catch (Exception e) {
-			e.printStackTrace();
-			Messagebox.show("Deletion failed (" + e.getMessage() + ")",
-					"Attention", Messagebox.OK, Messagebox.ERROR);
-		}
-	}
+    /**
+     * Send request to Manager: deleted process versions given as parameter
+     * @param processVersions
+     * @throws InterruptedException
+     */
+    public void deleteProcessVersions(
+            Map<ProcessSummaryType, List<VersionSummaryType>> processVersions)
+            throws InterruptedException {
+        try {
+            getService().deleteProcessVersions(processVersions);
+            switchToProcessSummaryView();
+            ((ProcessListboxController) this.baseListboxController)
+                    .unDisplay(processVersions);
+            String message;
+            int nb = 0;
 
-	/**
-	 * Call editor to edit process version whose id is processId, name is
-	 * processName and version name is version. nativeType identifies language
-	 * to be used to edit the process version. If annotation is instantiated, it
-	 * identifies the annotation file to be used. If readOnly=1, annotations
-	 * only are editable.
-	 * 
-	 * @param version
-	 * @param nativeType
-	 * @param annotation
-	 * @param readOnly
-	 * @throws InterruptedException
-	 * @throws Exception
-	 */
-	public void editProcess(ProcessSummaryType process,
-			VersionSummaryType version, String nativeType, String annotation,
-			String readOnly) throws InterruptedException {
+            // to count how many process version(s) deleted
+            Collection<List<VersionSummaryType>> sumTypes = processVersions
+                    .values();
+            for (List<VersionSummaryType> sumType : sumTypes) {
+                nb += sumType.size();
+            }
+            if (nb > 1) {
+                message = nb + " process versions deleted.";
+            }
+            else {
+                message = " One process version deleted.";
+            }
+            displayMessage(message);
+        } catch (Exception e) {
+            e.printStackTrace();
+            Messagebox.show("Deletion failed (" + e.getMessage() + ")",
+                    "Attention", Messagebox.OK, Messagebox.ERROR);
+        }
+    }
 
-		String instruction = "", url = getHost();
-		int offsetH = 100, offsetV = 200;
-		int editSessionCode;
-		EditSessionType editSession = new EditSessionType();
-		editSession.setDomain(process.getDomain());
-		editSession.setNativeType(nativeType);
-		editSession.setProcessId(process.getId());
-		editSession.setProcessName(process.getName());
-		editSession.setUsername(this.getCurrentUser().getUsername());
-		editSession.setVersionName(version.getName());
-		editSession.setCreationDate(version.getCreationDate());
-		editSession.setLastUpdate(version.getLastUpdate());
-		if (annotation == null) {
-			editSession.setWithAnnotation(false);
-		} else {
-			editSession.setWithAnnotation(true);
-			editSession.setAnnotation(annotation);
-		}
-		try {
-			// create and store an edit session
-			editSessionCode = getService().writeEditSession(editSession);
-			if ("XPDL 2.1".compareTo(nativeType) == 0) {
-				url += getOryxEndPoint_xpdl() + Constants.SESSION_CODE;
-			} else if ("EPML 2.0".compareTo(nativeType) == 0) {
-				url += getOryxEndPoint_epml() + Constants.SESSION_CODE;
-			} else {
-				throw new ExceptionWriteEditSession(
-						"Native format not supported.");
-			}
-			url += "=" + editSessionCode;
-			// add one parameter READ_ONLY: value is 1 when user chose to edit
-			// annotations,
-			// otherwise value is 0.
-			url += "&" + Constants.ANNOTATIONS_ONLY + "=" + readOnly;
-			instruction += "window.open('" + url + "','','top=" + offsetH
-					+ ",left=" + offsetV
-					+ ",height=600,width=800,scrollbars=1,resizable=1'); ";
-			// Send http post to Oryx
-			Clients.evalJavaScript(instruction);
-		} catch (Exception e) {
-			Messagebox
-					.show("Cannot edit " + process.getName() + " ("
-							+ e.getMessage() + ")", "Attention", Messagebox.OK,
-							Messagebox.ERROR);
-		}
-	}
+    /**
+     * Call editor to edit process version whose id is processId, name is
+     * processName and version name is version. nativeType identifies language
+     * to be used to edit the process version. If annotation is instantiated, it
+     * identifies the annotation file to be used. If readOnly=1, annotations
+     * only are editable.
+     * @param version
+     * @param nativeType
+     * @param annotation
+     * @param readOnly
+     * @throws InterruptedException
+     * @throws Exception
+     */
+    public void editProcess(ProcessSummaryType process,
+                            VersionSummaryType version, String nativeType, String annotation,
+                            String readOnly) throws InterruptedException {
 
-	public void displayMessage(String mes) {
-		this.shortmessageC.displayMessage(mes);
-	}
+        String instruction = "", url = getHost();
+        int offsetH = 100, offsetV = 200;
+        int editSessionCode;
+        EditSessionType editSession = new EditSessionType();
+        editSession.setDomain(process.getDomain());
+        editSession.setNativeType(nativeType);
+        editSession.setProcessId(process.getId());
+        editSession.setProcessName(process.getName());
+        editSession.setUsername(this.getCurrentUser().getUsername());
+        editSession.setVersionName(version.getName());
+        editSession.setCreationDate(version.getCreationDate());
+        editSession.setLastUpdate(version.getLastUpdate());
+        if (annotation == null) {
+            editSession.setWithAnnotation(false);
+        }
+        else {
+            editSession.setWithAnnotation(true);
+            editSession.setAnnotation(annotation);
+        }
+        try {
+            // create and store an edit session
+            editSessionCode = getService().writeEditSession(editSession);
+            SignavioController.process = process;
+            SignavioController.version = version;
+            SignavioController.annotation = annotation;
+            SignavioController.nativeType = nativeType;
+            SignavioController.mainC = this;
+            url = "macros/OpenModelInSignavio.zul";
+            instruction += "window.open('" + url + "','','top=" + offsetH + ",left=" + offsetV
+                    + ",height=600,width=800,scrollbars=1,resizable=1'); ";
 
-	public void eraseMessage() {
-		this.shortmessageC.eraseMessage();
-	}
+            // Send http post to Oryx
+            Clients.evalJavaScript(instruction);
+        } catch (Exception e) {
+            Messagebox
+                    .show("Cannot edit " + process.getName() + " ("
+                            + e.getMessage() + ")", "Attention", Messagebox.OK,
+                            Messagebox.ERROR);
+        }
+    }
 
-	public HeaderController getHeader() {
-		return header;
-	}
+    public void displayMessage(String mes) {
+        this.shortmessageC.displayMessage(mes);
+    }
 
-	public void setHeader(HeaderController header) {
-		this.header = header;
-	}
+    public void eraseMessage() {
+        this.shortmessageC.eraseMessage();
+    }
 
-	public MenuController getMenu() {
-		return menu;
-	}
+    public HeaderController getHeader() {
+        return header;
+    }
 
-	public void setMenu(MenuController menu) {
-		this.menu = menu;
-	}
+    public void setHeader(HeaderController header) {
+        this.header = header;
+    }
 
-	public BaseListboxController getBaseListboxController() {
-		return baseListboxController;
-	}
+    public MenuController getMenu() {
+        return menu;
+    }
 
-	public BaseDetailController getDetailListbox() {
-		return baseDetailController;
-	}
+    public void setMenu(MenuController menu) {
+        this.menu = menu;
+    }
 
-	public SimpleSearchController getSimplesearch() {
-		return simplesearch;
-	}
+    public BaseListboxController getBaseListboxController() {
+        return baseListboxController;
+    }
 
-	public void setSimplesearch(SimpleSearchController simplesearch) {
-		this.simplesearch = simplesearch;
-	}
+    public BaseDetailController getDetailListbox() {
+        return baseDetailController;
+    }
 
-	public UserType getCurrentUser() {
-		return currentUser;
-	}
+    public SimpleSearchController getSimplesearch() {
+        return simplesearch;
+    }
 
-	public void setCurrentUser(UserType currentUser) {
-		this.currentUser = currentUser;
-		if (currentUser == null) {
-			this.msgWhenClose = null;
-		} else {
-			this.msgWhenClose = Constants.MSG_WHEN_CLOSE;
-			this.searchHistory = this.currentUser.getSearchHistories();
-		}
-	}
+    public void setSimplesearch(SimpleSearchController simplesearch) {
+        this.simplesearch = simplesearch;
+    }
 
-	public ShortMessageController getShortmessageC() {
-		return shortmessageC;
-	}
+    public UserType getCurrentUser() {
+        return currentUser;
+    }
 
-	public void setShortmessageC(ShortMessageController shortmessageC) {
-		this.shortmessageC = shortmessageC;
-	}
+    public void setCurrentUser(UserType currentUser) {
+        this.currentUser = currentUser;
+        if (currentUser == null) {
+            this.msgWhenClose = null;
+        }
+        else {
+            this.msgWhenClose = Constants.MSG_WHEN_CLOSE;
+            this.searchHistory = this.currentUser.getSearchHistories();
+        }
+    }
 
-	public Window getShortmessageW() {
-		return shortmessageW;
-	}
+    public ShortMessageController getShortmessageC() {
+        return shortmessageC;
+    }
 
-	public void setShortmessageW(Window shortmessageW) {
-		this.shortmessageW = shortmessageW;
-	}
+    public void setShortmessageC(ShortMessageController shortmessageC) {
+        this.shortmessageC = shortmessageC;
+    }
 
-	public String getOryxEndPoint_xpdl() {
-		return OryxEndPoint_xpdl;
-	}
+    public Window getShortmessageW() {
+        return shortmessageW;
+    }
 
-	public String getOryxEndPoint_epml() {
-		return OryxEndPoint_epml;
-	}
+    public void setShortmessageW(Window shortmessageW) {
+        this.shortmessageW = shortmessageW;
+    }
 
-	public Logger getLOG() {
-		return LOG;
-	}
+    public String getOryxEndPoint_xpdl() {
+        return OryxEndPoint_xpdl;
+    }
 
-	public String getHost() {
-		return host;
-	}
+    public String getOryxEndPoint_epml() {
+        return OryxEndPoint_epml;
+    }
 
-	public List<SearchHistoriesType> getSearchHistory() {
-		return searchHistory;
-	}
+    public Logger getLOG() {
+        return LOG;
+    }
 
-	/**
-	 * get list of domains
-	 */
-	public List<String> getDomains() throws ExceptionDomains {
-		DomainsType domainsType;
-		domainsType = getService().readDomains();
-		return domainsType.getDomain();
-	}
+    public String getHost() {
+        return host;
+    }
 
-	/**
-	 * get list of users' names
-	 * 
-	 * @return
-	 * @throws org.apromore.portal.exception.ExceptionAllUsers
-	 * 
-	 */
-	public List<String> getUsers() throws ExceptionAllUsers {
-		UsernamesType usernames = getService().readAllUsers();
-		return usernames.getUsername();
-	}
+    public List<SearchHistoriesType> getSearchHistory() {
+        return searchHistory;
+    }
 
-	/**
-	 * get list of formats: <k, v> belongs to getNativeTypes() <=> the file
-	 * extension k is associated with the native type v (<xpdl,XPDL 1.2>)
-	 * 
-	 * @throws org.apromore.portal.exception.ExceptionFormats
-	 * 
-	 */
-	public HashMap<String, String> getNativeTypes() throws ExceptionFormats {
-		HashMap<String, String> formats = new HashMap<String, String>();
-		NativeTypesType nativeTypesDB = getService().readNativeTypes();
-		for (int i = 0; i < nativeTypesDB.getNativeType().size(); i++) {
-			formats.put(nativeTypesDB.getNativeType().get(i).getExtension(),
-					nativeTypesDB.getNativeType().get(i).getFormat());
-		}
-		return formats;
-	}
+    /**
+     * get list of domains
+     */
+    public List<String> getDomains() throws ExceptionDomains {
+        DomainsType domainsType;
+        domainsType = getService().readDomains();
+        return domainsType.getDomain();
+    }
 
-	public void displayProcessVersions(ProcessSummaryType data) {
-		switchToProcessSummaryView();
-		((ProcessVersionDetailController) this.baseDetailController)
-				.displayProcessVersions(data);
-	}
+    /**
+     * get list of users' names
+     * @return
+     * @throws org.apromore.portal.exception.ExceptionAllUsers
+     */
+    public List<String> getUsers() throws ExceptionAllUsers {
+        UsernamesType usernames = getService().readAllUsers();
+        return usernames.getUsername();
+    }
 
-	public void clearProcessVersions() {
-		switchToProcessSummaryView();
-		((ProcessVersionDetailController) this.baseDetailController)
-				.clearProcesVersions();
-	}
+    /**
+     * get list of formats: <k, v> belongs to getNativeTypes() <=> the file
+     * extension k is associated with the native type v (<xpdl,XPDL 1.2>)
+     * @throws org.apromore.portal.exception.ExceptionFormats
+     */
+    public HashMap<String, String> getNativeTypes() throws ExceptionFormats {
+        HashMap<String, String> formats = new HashMap<String, String>();
+        NativeTypesType nativeTypesDB = getService().readNativeTypes();
+        for (int i = 0; i < nativeTypesDB.getNativeType().size(); i++) {
+            formats.put(nativeTypesDB.getNativeType().get(i).getExtension(),
+                    nativeTypesDB.getNativeType().get(i).getFormat());
+        }
+        return formats;
+    }
 
-	public void displaySimilarityClusters(ClusterFilterType filter) {
-		switchToSimilarityClusterView();
-		((SimilarityClustersListboxController) this.baseListboxController)
-				.displaySimilarityClusters(filter);
-	}
-	
-	@SuppressWarnings("unchecked")
-	public Set<ProcessSummaryType> getSelectedProcesses() {
-		if (this.baseListboxController instanceof ProcessListboxController) {
-			ProcessListboxController processController = (ProcessListboxController) getBaseListboxController();
-			//ZK returns untyped Set, but we can assume it is of type ProcessSummaryType here!
-			return processController.getListModel().getSelection();
-		} else {
-			return new HashSet<ProcessSummaryType>();
-		}
-	}
-	
+    public void displayProcessVersions(ProcessSummaryType data) {
+        switchToProcessSummaryView();
+        ((ProcessVersionDetailController) this.baseDetailController)
+                .displayProcessVersions(data);
+    }
 
-	/**
-	 * Removes the currently displayed listbox, detail and filter view
-	 */
-	private void deattachDynamicUI() {
-		getFellow("baseListbox").getFellow("tablecomp").getChildren().clear();
-		getFellow("baseDetail").getFellow("detailcomp").getChildren().clear();
-		getFellow("baseFilter").getFellow("filtercomp").getChildren().clear();
-	}
-	
-	
-	/**
-	 * Attaches the the listbox, detail and filter view
-	 */
-	private void reattachDynamicUI() {
-		getFellow("baseFilter").getFellow("filtercomp").appendChild(
-				this.baseFilterController);
-		getFellow("baseListbox").getFellow("tablecomp").appendChild(
-				this.baseListboxController);
-		getFellow("baseDetail").getFellow("detailcomp").appendChild(
-				this.baseDetailController);
-	}
+    public void clearProcessVersions() {
+        switchToProcessSummaryView();
+        ((ProcessVersionDetailController) this.baseDetailController)
+                .clearProcesVersions();
+    }
 
-	/**
-	 * Switches all dynamic UI elements to the ProcessSummaryView. Affects the
-	 * listbox, detail and filter view
-	 */
-	private void switchToProcessSummaryView() {
+    public void displaySimilarityClusters(ClusterFilterType filter) {
+        switchToSimilarityClusterView();
+        ((SimilarityClustersListboxController) this.baseListboxController)
+                .displaySimilarityClusters(filter);
+    }
 
-		// TODO should replace this with TabBox!! and without all these
-		// instanceof checks!
+    @SuppressWarnings("unchecked")
+    public Set<ProcessSummaryType> getSelectedProcesses() {
+        if (this.baseListboxController instanceof ProcessListboxController) {
+            ProcessListboxController processController = (ProcessListboxController) getBaseListboxController();
+            //ZK returns untyped Set, but we can assume it is of type ProcessSummaryType here!
+            return processController.getListModel().getSelection();
+        }
+        else {
+            return new HashSet<ProcessSummaryType>();
+        }
+    }
 
-		if (this.baseListboxController != null) {
-			if ((this.baseListboxController instanceof ProcessListboxController)) {
-				// Everything is correctly setup
-				return;
-			} else {
-				// Another view is currently displayed
-				deattachDynamicUI();
-			}
-		}
 
-		// Otherwise create new Listbox
-		this.baseListboxController = new ProcessListboxController(this);
-		this.baseDetailController = new ProcessVersionDetailController(this);
-		this.baseFilterController = new BaseFilterController(this);
+    /**
+     * Removes the currently displayed listbox, detail and filter view
+     */
+    private void deattachDynamicUI() {
+        getFellow("baseListbox").getFellow("tablecomp").getChildren().clear();
+        getFellow("baseDetail").getFellow("detailcomp").getChildren().clear();
+        getFellow("baseFilter").getFellow("filtercomp").getChildren().clear();
+    }
 
-		reattachDynamicUI();
 
-		// TODO this should be done in ZUL or elsewhere
-		((South) getFellow("leftSouthPanel")).setTitle("Process Details");
-		((South) getFellow("leftInnerSouthPanel")).setOpen(false);
+    /**
+     * Attaches the the listbox, detail and filter view
+     */
+    private void reattachDynamicUI() {
+        getFellow("baseFilter").getFellow("filtercomp").appendChild(
+                this.baseFilterController);
+        getFellow("baseListbox").getFellow("tablecomp").appendChild(
+                this.baseListboxController);
+        getFellow("baseDetail").getFellow("detailcomp").appendChild(
+                this.baseDetailController);
+    }
 
-		reloadProcessSummaries();
-	}
+    /**
+     * Switches all dynamic UI elements to the ProcessSummaryView. Affects the
+     * listbox, detail and filter view
+     */
+    private void switchToProcessSummaryView() {
 
-	/**
-	 * Switches all dynamic UI elements to the SimilarityClusterView. Affects
-	 * the listbox, detail and filter view
-	 */
-	private void switchToSimilarityClusterView() {
+        // TODO should replace this with TabBox!! and without all these
+        // instanceof checks!
 
-		// TODO should replace this with TabBox!! and without all these
-		// instanceof checks!
+        if (this.baseListboxController != null) {
+            if ((this.baseListboxController instanceof ProcessListboxController)) {
+                // Everything is correctly setup
+                return;
+            }
+            else {
+                // Another view is currently displayed
+                deattachDynamicUI();
+            }
+        }
 
-		if (this.baseListboxController != null) {
-			if ((this.baseListboxController instanceof SimilarityClustersListboxController)) {
-				// Everything is correctly setup
-				return;
-			} else {
-				// Another view is currently displayed
-				deattachDynamicUI();
-			}
-		}
+        // Otherwise create new Listbox
+        this.baseListboxController = new ProcessListboxController(this);
+        this.baseDetailController = new ProcessVersionDetailController(this);
+        this.baseFilterController = new BaseFilterController(this);
 
-		// Otherwise create new Listbox
-		this.baseFilterController = new SimilarityClustersFilterController(this);
-		this.baseDetailController = new SimilarityClustersFragmentsListboxController(
-				this);
-		this.baseListboxController = new SimilarityClustersListboxController(
-				this,
-				(SimilarityClustersFilterController) this.baseFilterController,
-				(SimilarityClustersFragmentsListboxController) this.baseDetailController);
+        reattachDynamicUI();
 
-		reattachDynamicUI();
+        // TODO this should be done in ZUL or elsewhere
+        ((South) getFellow("leftSouthPanel")).setTitle("Process Details");
+        ((South) getFellow("leftInnerSouthPanel")).setOpen(false);
 
-		// TODO this should be done in ZUL or elsewhere
-		((South) getFellow("leftSouthPanel")).setTitle("Cluster Details");
-		((South) getFellow("leftInnerSouthPanel")).setOpen(true);
-	}
+        reloadProcessSummaries();
+    }
+
+    /**
+     * Switches all dynamic UI elements to the SimilarityClusterView. Affects
+     * the listbox, detail and filter view
+     */
+    private void switchToSimilarityClusterView() {
+
+        // TODO should replace this with TabBox!! and without all these
+        // instanceof checks!
+
+        if (this.baseListboxController != null) {
+            if ((this.baseListboxController instanceof SimilarityClustersListboxController)) {
+                // Everything is correctly setup
+                return;
+            }
+            else {
+                // Another view is currently displayed
+                deattachDynamicUI();
+            }
+        }
+
+        // Otherwise create new Listbox
+        this.baseFilterController = new SimilarityClustersFilterController(this);
+        this.baseDetailController = new SimilarityClustersFragmentsListboxController(
+                this);
+        this.baseListboxController = new SimilarityClustersListboxController(
+                this,
+                (SimilarityClustersFilterController) this.baseFilterController,
+                (SimilarityClustersFragmentsListboxController) this.baseDetailController);
+
+        reattachDynamicUI();
+
+        // TODO this should be done in ZUL or elsewhere
+        ((South) getFellow("leftSouthPanel")).setTitle("Cluster Details");
+        ((South) getFellow("leftInnerSouthPanel")).setOpen(true);
+    }
 
 }

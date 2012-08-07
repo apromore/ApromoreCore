@@ -57,7 +57,7 @@
     <bean id="NativeTypeDao" class="org.apromore.dao.jpa.NativeTypeDaoJpa" />
     <bean id="SearchHistoryDao" class="org.apromore.dao.jpa.SearchHistoryDaoJpa" />
     <bean id="UserDao" class="org.apromore.dao.jpa.UserDaoJpa" />
-
+    <bean id="SessionDao" class="org.apromore.dao.jpa.SessionDaoJpa" />
     <bean id="ContentDao" class="org.apromore.dao.jpa.ContentDaoJpa" />
     <bean id="ClusteringDao" class="org.apromore.dao.jpa.ClusteringDaoJpa" />
     <bean id="ProcessDao" class="org.apromore.dao.jpa.ProcessDaoJpa" />

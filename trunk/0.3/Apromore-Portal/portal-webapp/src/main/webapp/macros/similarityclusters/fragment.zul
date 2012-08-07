@@ -2,53 +2,53 @@
 <?page title="Apromore: Process Fragment ${param.fragmentId}"?>
 <zk>
 
-<window id="win" 
-	xmlns:n="http://www.zkoss.org/2005/zk/native" 
-	use="org.apromore.portal.dialogController.similarityclusters.visualisation.ClusterVisualisationFragmentController">
-	
-	<n:style type="text/css">	
-		#feedback {
-			display: none;
-		}
-		
-		.x-panel-editor-north {
-			display: none;
-		}
-		
-		.x-panel-editor-west {
-			display: none;
-		}
-		
-		.x-layout-split-west {
-			display: none !important; 
-		}		
-	</n:style>
+    <window id="win"
+            xmlns:n="http://www.zkoss.org/2005/zk/native"
+            use="org.apromore.portal.dialogController.similarityclusters.visualisation.ClusterVisualisationFragmentController">
 
-	<n:style media="screen" type="text/css">
-	@import url("/oryx/lib/ext-2.0.2/resources/css/ext-all.css");
-	@import url("/oryx/lib/ext-2.0.2/resources/css/xtheme-gray.css");
-	</n:style>
-	<n:link rel="Stylesheet" media="screen" href="/oryx/css/theme_norm.css" type="text/css" />
-    
-	
-	<n:div id="oryxwrapper" style="display: none">
-		<!--  JavaScript Dependencies of Oryx Process Editor -->
-		<n:script src="/oryx/lib/prototype-1.5.1.js" type="text/javascript"></n:script>
-		<n:script src="/oryx/lib/path_parser.js" type="text/javascript"></n:script>
-		<n:script src="/oryx/lib/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript" ></n:script>
-		<n:script src="/oryx/lib/ext-2.0.2/ext-all.js" type="text/javascript"></n:script>
-		<n:script src="/oryx/lib/ext-2.0.2/color-field.js" type="text/javascript"></n:script>
-		<n:script src="/oryx/i18n/translation_en_us.js" type="text/javascript"></n:script>
-	
-		<!--  Core JavaScript of Oryx Process Editor -->
-		<n:script src="/oryx/profiles/oryx.core.js" type="text/javascript"></n:script>
-	
-		<!--  Plugins JavaScript of Oryx Process Editor -->
-		<n:script src="/oryx/profiles/epcUncompressed.js" type="text/javascript"></n:script>
-		
-		<n:span id="oryxstartupcode">
-			<n:script>	
-			<![CDATA[			
+        <n:style type="text/css">
+            #feedback {
+            display: none;
+            }
+
+            .x-panel-editor-north {
+            display: none;
+            }
+
+            .x-panel-editor-west {
+            display: none;
+            }
+
+            .x-layout-split-west {
+            display: none !important;
+            }
+        </n:style>
+
+        <n:style media="screen" type="text/css">
+            @import url("/oryx/lib/ext-2.0.2/resources/css/ext-all.css");
+            @import url("/oryx/lib/ext-2.0.2/resources/css/xtheme-gray.css");
+        </n:style>
+        <n:link rel="Stylesheet" media="screen" href="/oryx/css/theme_norm.css" type="text/css"/>
+
+
+        <n:div id="oryxwrapper" style="display: none">
+            <!--  JavaScript Dependencies of Oryx Process Editor -->
+            <n:script src="/oryx/lib/prototype-1.5.1.js" type="text/javascript"></n:script>
+            <n:script src="/oryx/lib/path_parser.js" type="text/javascript"></n:script>
+            <n:script src="/oryx/lib/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"></n:script>
+            <n:script src="/oryx/lib/ext-2.0.2/ext-all.js" type="text/javascript"></n:script>
+            <n:script src="/oryx/lib/ext-2.0.2/color-field.js" type="text/javascript"></n:script>
+            <n:script src="/oryx/i18n/translation_en_us.js" type="text/javascript"></n:script>
+
+            <!--  Core JavaScript of Oryx Process Editor -->
+            <n:script src="/oryx/profiles/oryx.core.js" type="text/javascript"></n:script>
+
+            <!--  Plugins JavaScript of Oryx Process Editor -->
+            <n:script src="/oryx/profiles/epcUncompressed.js" type="text/javascript"></n:script>
+
+            <n:span id="oryxstartupcode">
+                <n:script>
+                    <![CDATA[
 				if (!ORYX)
 					var ORYX = {};
 				if (!ORYX.CONFIG)
@@ -195,11 +195,11 @@
 					
 				};
 				]]>
-			</n:script>	
-		</n:span>
-	</n:div>
-	
-	<n:div id="oryx-canvas123"></n:div>
+                </n:script>
+            </n:span>
+        </n:div>
 
-</window>
+        <n:div id="oryx-canvas123"></n:div>
+
+    </window>
 </zk>

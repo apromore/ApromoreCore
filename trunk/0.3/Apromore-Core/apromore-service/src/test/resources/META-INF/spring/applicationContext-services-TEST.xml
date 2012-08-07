@@ -80,10 +80,13 @@
     <bean id="RepositoryService" class="org.apromore.service.impl.RepositoryServiceImpl" />
     <bean id="SimilarityService" class="org.apromore.service.impl.SimilarityServiceImpl" />
     <bean id="MergeService" class="org.apromore.service.impl.MergeServiceImpl" />
+    <bean id="SessionService" class="org.apromore.service.impl.SessionServiceImpl" />
     <bean id="UserService" class="org.apromore.service.impl.UserServiceImpl" />
 
     <bean id="Composer" class="org.apromore.service.impl.Composer" />
+    <bean id="ClusteringComposer" class="org.apromore.service.impl.ClusteringComposer" />
     <bean id="Decomposer" class="org.apromore.service.impl.Decomposer" />
+    <bean id="ClusteringDecomposer" class="org.apromore.service.impl.ClusteringDecomposer" />
     <bean id="UIHelper" class="org.apromore.service.helper.UIHelper" />
     <bean id="BondContentHandler" class="org.apromore.service.helper.BondContentHandler" />
     <bean id="ChangePropagator" class="org.apromore.service.helper.ChangePropagator" />
@@ -94,5 +97,8 @@
     <bean id="dbscanClusterer" class="org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryClusterer" />
     <bean id="excludedObjectDbscanClusterer" class="org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryExcludedObjectClusterer" />
     <bean id="dbscanHierarchyFilter" class="org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryHierarchyBasedFilter" />
+    <bean id="DistanceMatrix" class="org.apromore.service.impl.DistanceMatrix" />
+    <bean id="ContainmentRelation" class="org.apromore.clustering.containment.ContainmentRelationImpl" />
+    <bean id="DissimilarityMatrix" class="org.apromore.clustering.hierarchy.HierarchyAwareDissimMatrixGenerator" />
 
 </beans>

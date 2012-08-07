@@ -28,18 +28,18 @@ public class NodeDaoJpa implements NodeDao {
 
     /**
      * @see org.apromore.dao.NodeDao#findNode(Integer)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public Node findNode(Integer nodeId) {
+    public Node findNode(final Integer nodeId) {
         return em.find(Node.class, nodeId);
     }
 
 
     /**
      * @see org.apromore.dao.NodeDao#getContentIDs()
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -50,7 +50,7 @@ public class NodeDaoJpa implements NodeDao {
 
     /**
      * @see org.apromore.dao.NodeDao#getVertexByContent(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -61,8 +61,20 @@ public class NodeDaoJpa implements NodeDao {
     }
 
     /**
+     * @see org.apromore.dao.NodeDao#getVertexByFragment(String)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public List<Node> getVertexByFragment(final String fragmentID) {
+        Query query = em.createNamedQuery(NamedQueries.GET_VERTICES_BY_FRAGMENT);
+        query.setParameter("fragmentId", fragmentID);
+        return (List<Node>) query.getResultList();
+    }
+
+    /**
      * @see org.apromore.dao.NodeDao#getStoredVertices()
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -74,7 +86,7 @@ public class NodeDaoJpa implements NodeDao {
 
     /**
      * @see org.apromore.dao.NodeDao#save(org.apromore.dao.model.Node)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void save(final Node node) {
@@ -83,7 +95,7 @@ public class NodeDaoJpa implements NodeDao {
 
     /**
      * @see org.apromore.dao.NodeDao#update(org.apromore.dao.model.Node)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public Node update(final Node node) {
@@ -92,7 +104,7 @@ public class NodeDaoJpa implements NodeDao {
 
     /**
      * @see org.apromore.dao.NodeDao#delete(org.apromore.dao.model.Node)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void delete(final Node node) {
@@ -101,12 +113,11 @@ public class NodeDaoJpa implements NodeDao {
 
 
     /**
-     * Sets the Entity Manager. No way around this to get Unit Testing working
-     *
-     * @param em the entitymanager
+     * Sets the Entity Manager. No way around this to get Unit Testing working.
+     * @param newEm the entitymanager
      */
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
+    public void setEntityManager(final EntityManager newEm) {
+        this.em = newEm;
     }
 
 }

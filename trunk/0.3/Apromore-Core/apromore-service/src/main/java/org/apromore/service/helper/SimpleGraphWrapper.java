@@ -3,25 +3,27 @@
  */
 package org.apromore.service.helper;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
 import nl.tue.tm.is.graph.SimpleGraph;
+import nl.tue.tm.is.graph.TwoVertices;
 import org.apromore.common.Constants;
 import org.apromore.graph.JBPT.CPF;
 import org.jbpt.pm.FlowNode;
 
 /**
- * @author Chathura C. Ekanayake
+ * A Wrapper for to build a SimpleGraph from a Full Canonical Graph.
+ *
+ * <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 public class SimpleGraphWrapper extends SimpleGraph {
 
     /**
      * Constructor for the Simple Graph Wrapper.
-     * @param pg
+     * @param pg the canonical Graph.
      */
     public SimpleGraphWrapper(CPF pg) {
         super();
@@ -39,6 +41,7 @@ public class SimpleGraphWrapper extends SimpleGraph {
         labels = new HashMap<Integer, String>(0);
         functionLabels = new HashSet<String>(0);
         eventLabels = new HashSet<String>(0);
+        edges = new HashSet<TwoVertices>(0);
 
         int vertexId = 0;
         for (FlowNode n : pg.getVertices()) {
@@ -64,16 +67,16 @@ public class SimpleGraphWrapper extends SimpleGraph {
             FlowNode pgv = pg.getVertex(vertex2nodeId.get(v));
 
             Set<Integer> incomingCurrent = new HashSet<Integer>(0);
-            Collection<FlowNode> preset = pg.getAllPredecessors(pgv);
-            for (FlowNode preV : preset) {
+            for (FlowNode preV : pg.getAllPredecessors(pgv)) {
                 incomingCurrent.add(nodeId2vertex.get(preV.getId()));
             }
             incomingEdges.put(v, incomingCurrent);
 
             Set<Integer> outgoingCurrent = new HashSet<Integer>(0);
-            Collection<FlowNode> postset = pg.getAllSuccessors(pgv);
-            for (FlowNode postV : postset) {
+            for (FlowNode postV : pg.getAllSuccessors(pgv)) {
                 outgoingCurrent.add(nodeId2vertex.get(postV.getId()));
+                TwoVertices edge = new TwoVertices(v, nodeId2vertex.get(postV.getId()));
+                edges.add(edge);
             }
             outgoingEdges.put(v, outgoingCurrent);
         }

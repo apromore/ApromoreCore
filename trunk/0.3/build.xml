@@ -7,44 +7,45 @@
 -->
 <project name="Apromore - Copy and Build all WAR" default="deploy-war">
 
-	<!-- Put the path to your Tomcat webapps folder there -->
-	<property file="build.properties" />
+    <!-- Put the path to your Tomcat webapps folder there -->
+    <property file="build.properties"/>
 
-	<!-- Delete all deployed WAR files -->
-	<target name="clean-war">
-		<delete file="${dir-tomcat-webapps}/Apromore.war" />
-		<delete file="${dir-tomcat-webapps}/Apromore-portal.war" />
-		<delete dir="${dir-tomcat-webapps}/Apromore" />
-		<delete dir="${dir-tomcat-webapps}/Apromore-portal" />
-	</target>
+    <!-- Delete all deployed WAR files -->
+    <target name="clean-war">
+        <delete file="${dir-tomcat-webapps}/Apromore.war"/>
+        <delete file="${dir-tomcat-webapps}/Apromore-portal.war"/>
+        <delete dir="${dir-tomcat-webapps}/Apromore"/>
+        <delete dir="${dir-tomcat-webapps}/Apromore-portal"/>
+    </target>
 
-	<!-- Build all WAR files using ANT and Maven -->
-	<target name="build-war" depends="">
+    <!-- Build all WAR files using ANT and Maven -->
+    <target name="build-war" depends="">
 
-		<!-- Prepare Signavio Editor 
-		<ant antfile="build.xml" 
-			target="build-all-in-one-war" 
-			dir="Apromore-Editor/" 
-			inheritall="false">
-		</ant>-->
-		
-		<!--  Run Apromore Maven -->
-	 	<exec dir="." executable="cmd">
-	        <arg value="/c"/>
-	        <arg value="mvn"/>
-	        <arg line="clean install cobertura:cobertura" />
-	    </exec>		
+        <!-- Prepare Signavio Editor -->
+        <ant antfile="build.xml" target="build-all-in-one-war" dir="Apromore-Editor/" inheritall="false" />
 
-	</target>
+        <!--  Run Apromore Maven -->
+        <exec dir="." executable="cmd">
+            <arg value="/c"/>
+            <arg value="mvn"/>
+            <arg line="clean install cobertura:cobertura"/>
+        </exec>
 
-	<!-- Copy all WAR files to Tomcat -->
-	<target name="copy-war" depends="build-war">
-		<copy file="Apromore-Core/apromore-webapp/target/Apromore.war" todir="${dir-tomcat-webapps}" />
-		<copy file="Apromore-Portal/portal-webapp/target/Apromore-portal.war" todir="${dir-tomcat-webapps}" />
-	</target>
+    </target>
 
-	
-	<target name="deploy-war" depends="copy-war">
-	</target>
-	
+    <!-- Copy all WAR files to Tomcat -->
+    <target name="copy-war" depends="build-war">
+        <copy file="Apromore-Editor/target/Apromore-Editor.war" todir="${dir-tomcat-webapps}"/>
+        <copy file="Apromore-Core/apromore-webapp/target/Apromore.war" todir="${dir-tomcat-webapps}"/>
+        <copy file="Apromore-Portal/portal-webapp/target/Apromore-portal.war" todir="${dir-tomcat-webapps}"/>
+    </target>
+
+    <target name="deploy-war" depends="copy-war" />
+
+    <target name="copy-war-nodep">
+        <copy file="Apromore-Editor/target/Apromore-Editor.war" todir="${dir-tomcat-webapps}"/>
+        <copy file="Apromore-Core/apromore-webapp/target/Apromore.war" todir="${dir-tomcat-webapps}"/>
+        <copy file="Apromore-Portal/portal-webapp/target/Apromore-portal.war" todir="${dir-tomcat-webapps}"/>
+    </target>
+    
 </project>

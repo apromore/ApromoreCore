@@ -18,7 +18,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 /**
  * Stores the process in apromore.
  *
- * @author Cameron James
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Entity
 @Table(name = "user",
@@ -42,7 +42,7 @@ public class User implements Serializable {
     private String passwd;
 
     private Set<Process> processes = new HashSet<Process>(0);
-    private Set<EditSessionMapping> editSessionMappings = new HashSet<EditSessionMapping>(0);
+    private Set<EditSession> editSessions = new HashSet<EditSession>(0);
     private Set<SearchHistory> searchHistories = new HashSet<SearchHistory>(0);
 
 
@@ -171,22 +171,22 @@ public class User implements Serializable {
     }
 
     /**
-     * Get the editSessionMappings for the Object.
+     * Get the editSessions for the Object.
      *
-     * @return Returns the editSessionMappings.
+     * @return Returns the editSessions.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
-    public Set<EditSessionMapping> getEditSessionMappings() {
-        return this.editSessionMappings;
+    public Set<EditSession> getEditSessions() {
+        return this.editSessions;
     }
 
     /**
-     * Set the editSessionMappings for the Object.
+     * Set the editSessions for the Object.
      *
-     * @param newEditSessionMappings The editSessionMappings to set.
+     * @param newEditSessions The editSessions to set.
      */
-    public void setEditSessionMappings(final Set<EditSessionMapping> newEditSessionMappings) {
-        this.editSessionMappings = newEditSessionMappings;
+    public void setEditSessions(final Set<EditSession> newEditSessions) {
+        this.editSessions = newEditSessions;
     }
 
     /**

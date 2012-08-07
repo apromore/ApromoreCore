@@ -14,7 +14,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 /**
  * Hibernate implementation of the org.apromore.dao.ContentDao interface.
- *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  * @since 1.0
  */
@@ -28,18 +27,18 @@ public class ContentDaoJpa implements ContentDao {
 
     /**
      * @see org.apromore.dao.ContentDao#findContent(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public Content findContent(String contentId) {
+    public Content findContent(final String contentId) {
         return em.find(Content.class, contentId);
     }
 
 
     /**
      * @see org.apromore.dao.ContentDao#getContentByFragmentVersion(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -56,7 +55,7 @@ public class ContentDaoJpa implements ContentDao {
 
     /**
      * @see org.apromore.dao.ContentDao#getContentByCode(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -74,7 +73,7 @@ public class ContentDaoJpa implements ContentDao {
 
     /**
      * @see org.apromore.dao.ContentDao#save(org.apromore.dao.model.Content)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void save(final Content content) {
@@ -83,7 +82,7 @@ public class ContentDaoJpa implements ContentDao {
 
     /**
      * @see org.apromore.dao.ContentDao#update(org.apromore.dao.model.Content)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public Content update(final Content content) {
@@ -92,7 +91,7 @@ public class ContentDaoJpa implements ContentDao {
 
     /**
      * @see org.apromore.dao.ContentDao#delete(org.apromore.dao.model.Content)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void delete(final Content content) {
@@ -101,12 +100,11 @@ public class ContentDaoJpa implements ContentDao {
 
 
     /**
-     * Sets the Entity Manager. No way around this to get Unit Testing working
-     *
-     * @param em the entitymanager
+     * Sets the Entity Manager. No way around this to get Unit Testing working.
+     * @param newEm the entitymanager
      */
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
+    public void setEntityManager(final EntityManager newEm) {
+        this.em = newEm;
     }
 
 }

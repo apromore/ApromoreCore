@@ -6,8 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import clustering.dissimilarity.measure.GEDDissimCalc;
 import nl.tue.tm.is.graph.SimpleGraph;
+import org.apromore.clustering.dissimilarity.measure.GEDDissimCalc;
 import org.apromore.dao.ClusteringDao;
 import org.apromore.dao.FragmentVersionDao;
 import org.apromore.dao.model.Cluster;
@@ -47,8 +47,11 @@ public class ClusterServiceImpl implements ClusterService {
     private ClusteringDao clusteringDao;
     @Autowired @Qualifier("FragmentService")
     private FragmentService fragmentService;
+    @Autowired @Qualifier("DistanceMatrix")
+    private DistanceMatrix dmatrix;
     @Autowired
     private InMemoryClusterer dbscanClusterer;
+
 
     /**
      * @see org.apromore.service.ClusterService#assignFragments(java.util.List, String)
@@ -78,7 +81,8 @@ public class ClusterServiceImpl implements ClusterService {
      */
     @Override
     public void cluster(ClusterSettings settings) throws RepositoryException {
-        //clusteringDao.clearClusters();
+        computeDistanceMatrix();
+        clusteringDao.clearClusters();
         dbscanClusterer.clusterRepository(settings);
     }
 
@@ -88,14 +92,7 @@ public class ClusterServiceImpl implements ClusterService {
      */
     @Override
     public ClusteringSummary getClusteringSummary() {
-        ClusteringSummary summary;
-//        try {
-            summary =  clusteringDao.getClusteringSummary();
-//        } catch (Exception e) {
-//            summary = new ClusteringSummary(Long.valueOf(0L), new Integer(0), new Integer(0),
-//                    new Float(0.0F), new Float(0.0F), new Double(0.0D), new Double(0.0D));
-//        }
-        return summary;
+        return clusteringDao.getClusteringSummary();
     }
 
     /**
@@ -239,6 +236,14 @@ public class ClusterServiceImpl implements ClusterService {
     }
 
 
+    /* Computers the fragment distances. */
+    private void computeDistanceMatrix() {
+        try {
+            dmatrix.compute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
 
 

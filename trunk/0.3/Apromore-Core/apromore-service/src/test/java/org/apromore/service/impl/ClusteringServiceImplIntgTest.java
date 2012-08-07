@@ -26,7 +26,7 @@ import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * @author Chathura C. Ekanayake
+ * <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 @ContextConfiguration(locations = {
         "classpath:META-INF/spring/applicationContext-jpa-TEST.xml",
