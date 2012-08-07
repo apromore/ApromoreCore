@@ -18,7 +18,8 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Configurable;
 
 /**
- * @author Chathura C. Ekanayake
+ * The Cluster Data Object.
+ * @author <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 @Entity
 @Table(name = "cluster")
@@ -33,12 +34,14 @@ public class Cluster implements Serializable {
     private float avgFragmentSize = 0;
     private String medoidId = null;
     private double standardizingEffort = 0;
-    private double BCR = 0;
+    private double bcr = 0;
     private int refactoringGain = 0;
 
     private Set<ClusterAssignment> clusterAssignments = new HashSet<ClusterAssignment>(0);
 
-
+    /**
+     * Public Constructor.
+     */
     public Cluster() { }
 
 
@@ -48,7 +51,7 @@ public class Cluster implements Serializable {
         return clusterId;
     }
 
-    public void setClusterId(String newClusterId) {
+    public void setClusterId(final String newClusterId) {
         this.clusterId = newClusterId;
     }
 
@@ -57,7 +60,7 @@ public class Cluster implements Serializable {
         return size;
     }
 
-    public void setSize(int newSize) {
+    public void setSize(final int newSize) {
         this.size = newSize;
     }
 
@@ -66,7 +69,7 @@ public class Cluster implements Serializable {
         return avgFragmentSize;
     }
 
-    public void setAvgFragmentSize(float newAvgFragmentSize) {
+    public void setAvgFragmentSize(final float newAvgFragmentSize) {
         this.avgFragmentSize = newAvgFragmentSize;
     }
 
@@ -75,17 +78,17 @@ public class Cluster implements Serializable {
         return medoidId;
     }
 
-    public void setMedoidId(String newMdoidId) {
+    public void setMedoidId(final String newMdoidId) {
         this.medoidId = newMdoidId;
     }
 
     @Column(name = "benifit_cost_ratio")
     public double getBCR() {
-        return BCR;
+        return bcr;
     }
 
-    public void setBCR(double newBCR) {
-        this.BCR = newBCR;
+    public void setBCR(final double newBCR) {
+        this.bcr = newBCR;
     }
 
     @Column(name = "std_effort")
@@ -93,7 +96,7 @@ public class Cluster implements Serializable {
         return standardizingEffort;
     }
 
-    public void setStandardizingEffort(double newStandardizingEffort) {
+    public void setStandardizingEffort(final double newStandardizingEffort) {
         this.standardizingEffort = newStandardizingEffort;
     }
 
@@ -102,7 +105,7 @@ public class Cluster implements Serializable {
         return refactoringGain;
     }
 
-    public void setRefactoringGain(int newRefactoringGain) {
+    public void setRefactoringGain(final int newRefactoringGain) {
         this.refactoringGain = newRefactoringGain;
     }
 
@@ -112,7 +115,7 @@ public class Cluster implements Serializable {
         return this.clusterAssignments;
     }
 
-    public void setClusterAssignments(Set<ClusterAssignment> newClusterAssignment) {
+    public void setClusterAssignments(final Set<ClusterAssignment> newClusterAssignment) {
         this.clusterAssignments = newClusterAssignment;
     }
 
@@ -120,7 +123,6 @@ public class Cluster implements Serializable {
 
     @Override
     public String toString() {
-        String s = clusterId + " | " + size + " | " + avgFragmentSize + " | " + BCR;
-        return s;
+        return clusterId + " | " + size + " | " + avgFragmentSize + " | " + bcr;
     }
 }

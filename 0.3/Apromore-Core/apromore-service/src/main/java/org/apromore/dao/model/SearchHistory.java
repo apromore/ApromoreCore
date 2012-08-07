@@ -19,7 +19,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 /**
  * Stores the process in apromore.
  *
- * @author Cameron James
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Entity
 @Table(name = "search_history",

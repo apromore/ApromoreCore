@@ -21,8 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRED)
 public class UserServiceImpl implements UserService {
 
-    @Autowired
-    @Qualifier("UserDao")
+    @Autowired @Qualifier("UserDao")
     private UserDao usrDao;
 
 

@@ -5,11 +5,6 @@
         <log-base>org.zkoss</log-base>
     </log>
 
-    <listener>
-        <description>Monitor the statistic</description>
-        <listener-class>org.apromore.portal.statistics.Statistic</listener-class>
-    </listener>
-
     <device-config>
         <device-type>ajax</device-type>
         <timeout-uri>/timeout.zul</timeout-uri>

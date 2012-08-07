@@ -13,6 +13,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
 import javax.persistence.Query;
 
+import org.apache.commons.collections.MapIterator;
+import org.apache.commons.collections.keyvalue.MultiKey;
+import org.apache.commons.collections.map.MultiKeyMap;
 import org.apromore.dao.ClusteringDao;
 import org.apromore.dao.NamedQueries;
 import org.apromore.dao.model.Cluster;
@@ -20,17 +23,20 @@ import org.apromore.dao.model.ClusterAssignment;
 import org.apromore.dao.model.ClusterAssignmentId;
 import org.apromore.dao.model.ClusteringSummary;
 import org.apromore.dao.model.FragmentDistance;
+import org.apromore.dao.model.FragmentDistanceId;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.service.model.ClusterFilter;
 import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentDataObject;
 import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentPair;
 import org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryCluster;
+import org.springframework.orm.jpa.JpaCallback;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 /**
- * @author Chathura C. Ekanayake
+ * IHibernate implementation of the org.apromore.dao.ClusteringDao interface.
+ * @author <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 @Repository
 @Transactional(propagation = Propagation.REQUIRED)
@@ -40,13 +46,20 @@ public class ClusteringDaoJpa implements ClusteringDao {
     private EntityManager em;
 
 
-
+    /**
+     * @see org.apromore.dao.ClusteringDao#getAllClusters()
+     * {@inheritDoc}
+     */
     @Override
     public List<Cluster> getAllClusters() {
         Query query = em.createNamedQuery(NamedQueries.GET_ALL_CLUSTERS);
         return query.getResultList();
     }
 
+    /**
+     * @see org.apromore.dao.ClusteringDao#getClusterSummary(String)
+     * {@inheritDoc}
+     */
     @Override
     public Cluster getClusterSummary(final String clusterId) {
         Query query = em.createNamedQuery(NamedQueries.GET_CLUSTER_BY_ID);
@@ -60,9 +73,10 @@ public class ClusteringDaoJpa implements ClusteringDao {
         }
     }
 
-    /* (non-Javadoc)
-      * @see org.apromore.dao.ClusteringDao#getFilteredClusters(org.apromore.service.model.ClusterFilter)
-      */
+    /**
+     * @see org.apromore.dao.ClusteringDao#getFilteredClusters(org.apromore.service.model.ClusterFilter)
+     * {@inheritDoc}
+     */
     @Override
     public List<Cluster> getFilteredClusters(final ClusterFilter filter) {
         Query query = em.createNamedQuery(NamedQueries.GET_FILTERED_CLUSTERS);
@@ -75,6 +89,10 @@ public class ClusteringDaoJpa implements ClusteringDao {
         return query.getResultList();
     }
 
+    /**
+     * @see org.apromore.dao.ClusteringDao#getClusteringSummary()
+     * {@inheritDoc}
+     */
     @Override
     public ClusteringSummary getClusteringSummary() {
         Query query = em.createNamedQuery(NamedQueries.GET_CLUSTERING_SUMMARY);
@@ -86,8 +104,12 @@ public class ClusteringDaoJpa implements ClusteringDao {
         }
     }
 
+    /**
+     * @see org.apromore.dao.ClusteringDao#getDistance(String, String)
+     * {@inheritDoc}
+     */
     @Override
-    public double getDistance(String fragmentId1, String fragmentId2) {
+    public double getDistance(final String fragmentId1, final String fragmentId2) {
         double distance = getOrderedDistance(fragmentId1, fragmentId2);
         if (distance < 0) {
             distance = getOrderedDistance(fragmentId2, fragmentId1);
@@ -95,18 +117,10 @@ public class ClusteringDaoJpa implements ClusteringDao {
         return distance;
     }
 
-    public double getOrderedDistance(final String fragmentId1, final String fragmentId2) {
-        Query query = em.createNamedQuery(NamedQueries.GET_FRAGMENT_DISTANCE);
-        query.setParameter("fragmentId1", fragmentId1);
-        query.setParameter("fragmentId2", fragmentId2);
-        List results = query.getResultList();
-        if (results == null || results.isEmpty()) {
-            return -1d;
-        } else {
-            return (Double) results.get(0);
-        }
-    }
-
+    /**
+     * @see org.apromore.dao.ClusteringDao#getDistances(double)
+     * {@inheritDoc}
+     */
     @Override
     public Map<FragmentPair, Double> getDistances(final double threshold) {
         Query query = em.createNamedQuery(NamedQueries.GET_DISTANCES_BELOW_THRESHOLD);
@@ -121,6 +135,37 @@ public class ClusteringDaoJpa implements ClusteringDao {
         return fragmentDistances;
     }
 
+    /**
+     * @see org.apromore.dao.ClusteringDao#insertDistances(org.apache.commons.collections.map.MultiKeyMap)
+     * {@inheritDoc}
+     */
+    @Override
+    public void insertDistances(MultiKeyMap dissimmap) {
+        MapIterator mi = dissimmap.mapIterator();
+        while (mi.hasNext()) {
+            Object k = mi.next();
+            Object v = mi.getValue();
+
+            MultiKey fids = (MultiKey) k;
+            String fid1 = (String) fids.getKey(0);
+            String fid2 = (String) fids.getKey(1);
+            Double gedValue = (Double) v;
+
+            FragmentDistance ged = new FragmentDistance();
+            FragmentDistanceId gid = new FragmentDistanceId();
+            gid.setFragmentId1(fid1);
+            gid.setFragmentId2(fid2);
+            ged.setId(gid);
+            ged.setDistance(gedValue);
+
+            em.persist(ged);
+        }
+    }
+
+    /**
+     * @see org.apromore.dao.ClusteringDao#getFragmentIds(String)
+     * {@inheritDoc}
+     */
     @Override
     public List<String> getFragmentIds(final String clusterId) {
         Query query = em.createNamedQuery(NamedQueries.GET_FRAGMENTIDS_OF_CLUSTER);
@@ -128,6 +173,10 @@ public class ClusteringDaoJpa implements ClusteringDao {
         return query.getResultList();
     }
 
+    /**
+     * @see org.apromore.dao.ClusteringDao#getFragments(String)
+     * {@inheritDoc}
+     */
     @Override
     public List<FragmentVersion> getFragments(final String clusterId) {
         Query query = em.createNamedQuery(NamedQueries.GET_FRAGMENTS_OF_CLUSTER);
@@ -135,6 +184,10 @@ public class ClusteringDaoJpa implements ClusteringDao {
         return query.getResultList();
     }
 
+    /**
+     * @see org.apromore.dao.ClusteringDao#getUnprocessedFragments()
+     * {@inheritDoc}
+     */
     @Override
     public List<FragmentDataObject> getUnprocessedFragments() {
         List<FragmentDataObject> fragments = new ArrayList<FragmentDataObject>();
@@ -148,13 +201,12 @@ public class ClusteringDaoJpa implements ClusteringDao {
         return fragments;
     }
 
-    private List<FragmentVersion> getAllFragments() {
-        Query query = em.createNamedQuery(NamedQueries.GET_UNPROCESSED_FRAGMENTS);
-        return query.getResultList();
-    }
-
+    /**
+     * @see org.apromore.dao.ClusteringDao#getUnprocessedFragmentsOfProcesses(java.util.List)
+     * {@inheritDoc}
+     */
     @Override
-    public List<FragmentDataObject> getUnprocessedFragmentsOfProcesses(List<Integer> processIds) {
+    public List<FragmentDataObject> getUnprocessedFragmentsOfProcesses(final List<Integer> processIds) {
         List<FragmentDataObject> fragments = new ArrayList<FragmentDataObject>();
         List<FragmentVersion> fvs = getFragmentsOfProcesses(processIds);
         for (FragmentVersion fv : fvs) {
@@ -166,24 +218,12 @@ public class ClusteringDaoJpa implements ClusteringDao {
         return fragments;
     }
 
-    private List<FragmentVersion> getFragmentsOfProcesses(final List<Integer> processIds) {
-        Query query = em.createNamedQuery(NamedQueries.GET_UNPROCESSED_FRAGMENTS_OF_PROCESSES);
-        query.setParameter("processIds", processIds);
-        return query.getResultList();
-    }
-
-    public void createClusters(Collection<InMemoryCluster> clusters) {
-        List<Cluster> cs = new ArrayList<Cluster>();
-        for (InMemoryCluster cluster : clusters) {
-            Cluster c = new Cluster();
-            c.setClusterId(cluster.getClusterId());
-            cs.add(c);
-        }
-        persistClusters(cs);
-    }
-
+    /**
+     * @see org.apromore.dao.ClusteringDao#persistClusterAssignments(java.util.Collection)
+     * {@inheritDoc}
+     */
     @Override
-    public void persistClusterAssignments(Collection<InMemoryCluster> clusters) {
+    public void persistClusterAssignments(final Collection<InMemoryCluster> clusters) {
         List<ClusterAssignment> cas = new ArrayList<ClusterAssignment>();
         for (InMemoryCluster cluster : clusters) {
             Collection<FragmentDataObject> fs = cluster.getFragments();
@@ -199,26 +239,70 @@ public class ClusteringDaoJpa implements ClusteringDao {
         persistClusterFragmentMappings(cas);
     }
 
-    private void persistClusterFragmentMappings(List<ClusterAssignment> cas) {
-        for (ClusterAssignment ca : cas) {
-            em.persist(ca);
-        }
-    }
-
+    /**
+     * @see org.apromore.dao.ClusteringDao#persistClusters(java.util.Collection)
+     * {@inheritDoc}
+     */
     @Override
-    public void persistClusters(Collection<Cluster> cs) {
+    public void persistClusters(final Collection<Cluster> cs) {
         for (Cluster c : cs) {
             em.persist(c);
         }
     }
 
+    /**
+     * @see org.apromore.dao.ClusteringDao#clearClusters()
+     * {@inheritDoc}
+     */
+    @Override
+    public void clearClusters() {
+        Query query = em.createNamedQuery(NamedQueries.DELETE_ALL_CLUSTERS);
+        query.executeUpdate();
+        query = em.createNamedQuery(NamedQueries.DELETE_ALL_CLUSTER_ASSIGNMENTS);
+        query.executeUpdate();
+    }
+
+
+
+
+
+
+    private void persistClusterFragmentMappings(final List<ClusterAssignment> cas) {
+        for (ClusterAssignment ca : cas) {
+            em.persist(ca);
+        }
+    }
+
+    private List<FragmentVersion> getFragmentsOfProcesses(final List<Integer> processIds) {
+        Query query = em.createNamedQuery(NamedQueries.GET_UNPROCESSED_FRAGMENTS_OF_PROCESSES);
+        query.setParameter("processIds", processIds);
+        return query.getResultList();
+    }
+
+    private List<FragmentVersion> getAllFragments() {
+        Query query = em.createNamedQuery(NamedQueries.GET_UNPROCESSED_FRAGMENTS);
+        return query.getResultList();
+    }
+
+    private double getOrderedDistance(final String fragmentId1, final String fragmentId2) {
+        Query query = em.createNamedQuery(NamedQueries.GET_FRAGMENT_DISTANCE);
+        query.setParameter("fragmentId1", fragmentId1);
+        query.setParameter("fragmentId2", fragmentId2);
+        List results = query.getResultList();
+        if (results == null || results.isEmpty()) {
+            return -1d;
+        } else {
+            return (Double) results.get(0);
+        }
+    }
+
+
 
     /**
-     * Sets the Entity Manager. No way around this to get Unit Testing working
-     *
-     * @param em the entitymanager
+     * Sets the Entity Manager. No way around this to get Unit Testing working.
+     * @param newEm the entitymanager
      */
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
+    public void setEntityManager(final EntityManager newEm) {
+        this.em = newEm;
     }
 }

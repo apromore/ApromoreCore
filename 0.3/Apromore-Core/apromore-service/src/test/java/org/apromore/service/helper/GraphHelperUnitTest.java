@@ -31,7 +31,7 @@ import static org.hamcrest.Matchers.notNullValue;
 /**
  * Unit Test for the GraphToCPFHelper.
  *
- * @author Cameron James
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {

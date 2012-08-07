@@ -44,6 +44,7 @@ public class ProcessModelVersion implements Serializable {
 
     private ProcessBranch processBranch;
     private Set<Native> natives = new HashSet<Native>(0);
+    private Set<EditSession> editSessions = new HashSet<EditSession>(0);
     private Set<Node> parentProcesses = new HashSet<Node>(0);
     private Set<ProcessFragmentMap> processFragmentMaps = new HashSet<ProcessFragmentMap>(0);
     private Set<ProcessBranch> processBranchesForCurrentProcessModelVersionId = new HashSet<ProcessBranch>(0);
@@ -160,6 +161,15 @@ public class ProcessModelVersion implements Serializable {
 
     public void setNatives(Set<Native> natives) {
         this.natives = natives;
+    }
+
+    @OneToMany(fetch=FetchType.LAZY, mappedBy="processModelVersion")
+    public Set<EditSession> getEditSessions() {
+        return this.editSessions;
+    }
+
+    public void setEditSessions(Set<EditSession> editSessions) {
+        this.editSessions = editSessions;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "subVersion")

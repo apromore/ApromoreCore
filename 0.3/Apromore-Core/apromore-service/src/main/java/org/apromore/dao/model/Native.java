@@ -23,7 +23,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 /**
  * Stores the native something in apromore.
  *
- * @author Cameron James
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Entity
 @Table(name = "native",

@@ -88,4 +88,14 @@
         </query>
     </named-query>
 
+    <named-query name="cluster.deleteAllClusters">
+        <!-- Used ClusteringDao -->
+        <query>DELETE FROM Cluster c</query>
+    </named-query>
+
+    <named-query name="clusterAssignment.deleteAllClusterAssignments">
+        <!-- Used ClusteringDao -->
+        <query>DELETE FROM ClusterAssignment ca</query>
+    </named-query>
+
 </entity-mappings>

@@ -1,28 +1,37 @@
 package org.apromore.manager.client.util;
 
-import javax.activation.DataHandler;
-import javax.activation.DataSource;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import javax.activation.DataHandler;
+import javax.activation.DataSource;
 
 /**
  * Helps with debugging and seeing the data travel between services.
+ *
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
-public class StreamUtil {
+public final class StreamUtil {
+
+    /** Private Constructor */
+    private StreamUtil() { }
 
     /**
-     * Convert a InputStream to a String
+     * Convert a InputStream to a String.
+     * @param is the input stream.
+     * @return the input Stream converted to a String
      */
-    public static String convertStreamToString(InputStream is) {
+    public static String convertStreamToString(final InputStream is) {
         return convert(is);
     }
 
     /**
-     * Convert a DataHandler to a String
+     * Convert a DataHandler to a String.
+     * @param dh the input data handler.
+     * @return the input data handler converted to a String
      */
-    public static String convertStreamToString(DataHandler dh) {
+    public static String convertStreamToString(final DataHandler dh) {
         try {
             return convert(dh.getInputStream());
         } catch (IOException e) {
@@ -31,9 +40,11 @@ public class StreamUtil {
     }
 
     /**
-     * Convert a DataHandler to a String
+     * Convert a DataHandler to a String.
+     * @param ds the input data Source.
+     * @return the input data source converted to a String
      */
-    public static String convertStreamToString(DataSource ds) {
+    public static String convertStreamToString(final DataSource ds) {
         try {
             return convert(ds.getInputStream());
         } catch (IOException e) {
@@ -43,16 +54,16 @@ public class StreamUtil {
 
 
     /* Does the work. */
-    private static String convert(InputStream is) {
+    private static String convert(final InputStream is) {
         try {
             if (is != null) {
                 StringBuilder sb = new StringBuilder();
                 try {
                     BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
                     String line;
-
-                        while ((line = reader.readLine()) != null)
-                            sb.append(line).append("\n");
+                    while ((line = reader.readLine()) != null) {
+                        sb.append(line).append("\n");
+                    }
                 } finally {
                     is.close();
                 }
@@ -63,4 +74,5 @@ public class StreamUtil {
         }
         return "";
     }
+
 }

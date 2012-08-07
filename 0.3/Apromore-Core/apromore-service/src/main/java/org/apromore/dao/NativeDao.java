@@ -21,7 +21,7 @@ public interface NativeDao {
      * @param versionName the version name
      * @return the native, a list of them for all the different canonical versions.
      */
-    public List<Native> findNativeByCanonical(final Integer processId, final String versionName);
+    List<Native> findNativeByCanonical(final Integer processId, final String versionName);
 
     /**
      * Get the Canonical format. this is just a string but contains the xml Canonical Format.
@@ -46,6 +46,7 @@ public interface NativeDao {
      * Update the Native.
      *
      * @param natve the Native to update
+     * @return the updated object.
      */
     Native update(Native natve);
 

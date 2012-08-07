@@ -83,6 +83,8 @@ import org.springframework.ws.client.core.WebServiceTemplate;
 
 /**
  * Performance Test for the Apromore Manager Client.
+ *
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 public class ManagerServiceClient implements ManagerService {
 
@@ -93,10 +95,10 @@ public class ManagerServiceClient implements ManagerService {
 
     /**
      * Default Constructor.
-     * @param webServiceTemplate the webservice template
+     * @param newWebServiceTemplate the webservice template
      */
-    public ManagerServiceClient(WebServiceTemplate webServiceTemplate) {
-        this.webServiceTemplate = webServiceTemplate;
+    public ManagerServiceClient(final WebServiceTemplate newWebServiceTemplate) {
+        this.webServiceTemplate = newWebServiceTemplate;
     }
 
 
@@ -106,14 +108,13 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public UserType readUser(String username) {
+    public UserType readUser(final String username) {
         LOGGER.debug("Preparing ReadUserRequest.....");
 
         ReadUserInputMsgType msg = new ReadUserInputMsgType();
         msg.setUsername(username);
 
         JAXBElement<ReadUserInputMsgType> request = WS_CLIENT_FACTORY.createReadUserRequest(msg);
-
         JAXBElement<ReadUserOutputMsgType> response = (JAXBElement<ReadUserOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getUser();
     }
@@ -131,7 +132,6 @@ public class ManagerServiceClient implements ManagerService {
         msg.setEmpty("");
 
         JAXBElement<ReadAllUsersInputMsgType> request = WS_CLIENT_FACTORY.createReadAllUsersRequest(msg);
-
         JAXBElement<ReadAllUsersOutputMsgType> response = (JAXBElement<ReadAllUsersOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getUsernames();
     }
@@ -150,7 +150,6 @@ public class ManagerServiceClient implements ManagerService {
         msg.setEmpty("");
 
         JAXBElement<ReadDomainsInputMsgType> request = WS_CLIENT_FACTORY.createReadDomainsRequest(msg);
-
         JAXBElement<ReadDomainsOutputMsgType> response = (JAXBElement<ReadDomainsOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getDomains();
     }
@@ -168,8 +167,8 @@ public class ManagerServiceClient implements ManagerService {
         msg.setEmpty("");
 
         JAXBElement<ReadNativeTypesInputMsgType> request = WS_CLIENT_FACTORY.createReadNativeTypesRequest(msg);
-
-        JAXBElement<ReadNativeTypesOutputMsgType> response = (JAXBElement<ReadNativeTypesOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        JAXBElement<ReadNativeTypesOutputMsgType> response = (JAXBElement<ReadNativeTypesOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getNativeTypes();
     }
 
@@ -179,15 +178,15 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public EditSessionType readEditSession(int code) {
+    public EditSessionType readEditSession(final int code) {
         LOGGER.debug("Preparing ReadEditSessionRequest.....");
 
         ReadEditSessionInputMsgType msg = new ReadEditSessionInputMsgType();
         msg.setEditSessionCode(code);
 
         JAXBElement<ReadEditSessionInputMsgType> request = WS_CLIENT_FACTORY.createReadEditSessionRequest(msg);
-
-        JAXBElement<ReadEditSessionOutputMsgType> response = (JAXBElement<ReadEditSessionOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        JAXBElement<ReadEditSessionOutputMsgType> response = (JAXBElement<ReadEditSessionOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
         return response.getValue().getEditSession();
     }
 
@@ -198,7 +197,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public FragmentType getFragment(String fragmentId) {
+    public FragmentType getFragment(final String fragmentId) {
         LOGGER.debug("Invoking getFragment method to retreive fragment content...");
 
         GetFragmentRequestType msg = new GetFragmentRequestType();
@@ -215,7 +214,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void createClusters(ClusterSettingsType settings) {
+    public void createClusters(final ClusterSettingsType settings) {
         LOGGER.debug("Invoking create clusters method ...");
 
         CreateClustersInputMsgType msg = new CreateClustersInputMsgType();
@@ -232,7 +231,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<PairDistanceType> getPairwiseDistances(List<String> fragmentIds) {
+    public List<PairDistanceType> getPairwiseDistances(final List<String> fragmentIds) {
         LOGGER.debug("Invoking get pairwise distances method ...");
 
         GetPairwiseDistancesInputMsgType msg = new GetPairwiseDistancesInputMsgType();
@@ -271,7 +270,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<ClusterSummaryType> getClusterSummaries(ClusterFilterType filter) {
+    public List<ClusterSummaryType> getClusterSummaries(final ClusterFilterType filter) {
         LOGGER.debug("Invoking get cluster summaries method ...");
 
         GetClusterSummariesInputMsgType msg = new GetClusterSummariesInputMsgType();
@@ -289,7 +288,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ClusterType getCluster(String clusterId) {
+    public ClusterType getCluster(final String clusterId) {
         LOGGER.debug("Invoking get cluster method ...");
 
         GetClusterInputMsgType msg = new GetClusterInputMsgType();
@@ -306,7 +305,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<ClusterType> getClusters(ClusterFilterType filter) {
+    public List<ClusterType> getClusters(final ClusterFilterType filter) {
         LOGGER.debug("Invoking get clusters method ...");
 
         GetClustersRequestType msg = new GetClustersRequestType();
@@ -323,7 +322,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ProcessSummariesType readProcessSummaries(String searchCriteria) {
+    public ProcessSummariesType readProcessSummaries(final String searchCriteria) {
         LOGGER.debug("Preparing ReadProcessSummariesRequest.....");
 
         ReadProcessSummariesInputMsgType msg = new ReadProcessSummariesInputMsgType();
@@ -344,9 +343,9 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ProcessSummariesType searchForSimilarProcesses(int processId, String versionName, String method, Boolean latestVersions,
-            double modelThreshold, double labelThreshold, double contextThreshold, double skipnWeight, double subnWeight,
-            double skipeWeight) {
+    public ProcessSummariesType searchForSimilarProcesses(final int processId, final String versionName, final String method,
+            final Boolean latestVersions, final double modelThreshold, final double labelThreshold, final double contextThreshold,
+            final double skipnWeight, final double subnWeight, final double skipeWeight) {
         LOGGER.debug("Preparing SearchForSimilarProcessesRequest.....");
 
         SearchForSimilarProcessesInputMsgType msg = new SearchForSimilarProcessesInputMsgType();
@@ -369,10 +368,10 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ProcessSummaryType mergeProcesses(Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions,
-            String mergedProcessName, String mergedVersionName, String mergedDomain, String mergedUsername, String method,
-            boolean removeEntanglements, double mergeThreshold, double labelThreshold, double contextThreshold, double skipnWeight,
-            double subnWeight, double skipeWeight) {
+    public ProcessSummaryType mergeProcesses(final Map<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions,
+            final String mergedProcessName, final String mergedVersionName, final String mergedDomain, final String mergedUsername,
+            final String method, final boolean removeEntanglements, final double mergeThreshold, final double labelThreshold,
+            final double contextThreshold, final double skipnWeight, final double subnWeight, final double skipeWeight) {
         LOGGER.debug("Preparing MergeProcessesRequest.....");
 
         MergeProcessesInputMsgType msg = new MergeProcessesInputMsgType();
@@ -397,8 +396,8 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public DataHandler exportFormat(int processId, String processName, String versionName, String nativeType, String annotationName,
-            Boolean withAnnotations, String owner) throws IOException, Exception {
+    public DataHandler exportFormat(final int processId, final String processName, final String versionName, final String nativeType,
+            final String annotationName, final Boolean withAnnotations, final String owner) throws IOException, Exception {
         LOGGER.debug("Preparing ExportFormatRequest.....");
 
         ExportFormatInputMsgType msg = new ExportFormatInputMsgType();
@@ -426,9 +425,9 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ProcessSummaryType importProcess(String username, String nativeType, String processName, String versionName,
-            InputStream xml_process, String domain, String documentation, String created, String lastUpdate,
-            Boolean addFakeEvents) throws IOException, Exception {
+    public ProcessSummaryType importProcess(final String username, final String nativeType, final String processName, final String versionName,
+            final InputStream xml_process, final String domain, final String documentation, final String created, final String lastUpdate,
+            final Boolean addFakeEvents) throws IOException, Exception {
         LOGGER.debug("Preparing ImportProcessRequest.....");
 
         EditSessionType editSession = new EditSessionType();
@@ -446,7 +445,8 @@ public class ManagerServiceClient implements ManagerService {
         msg.setEditSession(editSession);
 
         JAXBElement<ImportProcessInputMsgType> request = WS_CLIENT_FACTORY.createImportProcessRequest(msg);
-        JAXBElement<ImportProcessOutputMsgType> response = (JAXBElement<ImportProcessOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        JAXBElement<ImportProcessOutputMsgType> response = (JAXBElement<ImportProcessOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         } else {
@@ -460,8 +460,9 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void updateProcess(int sessionCode, String username, String nativeType, int processId, String domain, String processName,
-            String new_versionName, String preVersion, InputStream native_is) throws IOException, Exception {
+    public void updateProcess(final int sessionCode, final String username, final String nativeType, final int processId, final String domain,
+            final String processName, final String new_versionName, final String preVersion, final InputStream native_is)
+            throws IOException, Exception {
         LOGGER.debug("Preparing UpdateProcessRequest.....");
 
         EditSessionType editSession = new EditSessionType();
@@ -479,7 +480,8 @@ public class ManagerServiceClient implements ManagerService {
         msg.setNative(new DataHandler(new ByteArrayDataSource(native_is, "text/xml")));
 
         JAXBElement<UpdateProcessInputMsgType> request = WS_CLIENT_FACTORY.createUpdateProcessRequest(msg);
-        JAXBElement<UpdateProcessOutputMsgType> response = (JAXBElement<UpdateProcessOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
+        JAXBElement<UpdateProcessOutputMsgType> response = (JAXBElement<UpdateProcessOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         }
@@ -494,8 +496,8 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void editProcessData(Integer processId, String processName, String domain, String username, String preVersion, String newVersion,
-            String ranking) throws Exception {
+    public void editProcessData(final Integer processId, final String processName, final String domain, final String username,
+            final String preVersion, final String newVersion, final String ranking) throws Exception {
         LOGGER.debug("Preparing EditProcessDataRequest.....");
 
         EditProcessDataInputMsgType msg = new EditProcessDataInputMsgType();
@@ -524,7 +526,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void writeUser(UserType user) throws Exception {
+    public void writeUser(final UserType user) throws Exception {
         LOGGER.debug("Preparing WriteUserRequest.....");
 
         WriteUserInputMsgType msg = new WriteUserInputMsgType();
@@ -543,8 +545,8 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void writeAnnotation(Integer editSessionCode, String annName, boolean isNew, Integer processId, String version, String nat_type,
-            InputStream native_is) throws IOException, Exception {
+    public void writeAnnotation(final Integer editSessionCode, final String annName, final boolean isNew, final Integer processId,
+            final String version, final String nat_type, final InputStream native_is) throws IOException, Exception {
         LOGGER.debug("Preparing WriteAnnotationRequest.....");
 
         WriteAnnotationInputMsgType msg = new WriteAnnotationInputMsgType();
@@ -571,7 +573,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public int writeEditSession(EditSessionType editSession) throws Exception {
+    public int writeEditSession(final EditSessionType editSession) throws Exception {
         LOGGER.debug("Preparing WriteEditSessionRequest.....");
 
         WriteEditSessionInputMsgType msg = new WriteEditSessionInputMsgType();
@@ -595,7 +597,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void deleteEditSession(int code) throws Exception {
+    public void deleteEditSession(final int code) throws Exception {
         LOGGER.debug("Preparing DeleteEditionSessionRequest.....");
 
         DeleteEditSessionInputMsgType msg = new DeleteEditSessionInputMsgType();
@@ -616,7 +618,7 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public void deleteProcessVersions(Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws Exception {
+    public void deleteProcessVersions(final Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws Exception {
         LOGGER.debug("Preparing DeleteProcessVersions.....");
 
         DeleteProcessVersionsInputMsgType msg = new DeleteProcessVersionsInputMsgType();

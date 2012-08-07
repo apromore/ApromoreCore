@@ -28,17 +28,17 @@ public class UserDaoJpa implements UserDao {
 
     /**
      * @see org.apromore.dao.UserDao#findUser(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public User findUser(String username) {
+    public User findUser(final String username) {
         return em.find(User.class, username);
     }
 
     /**
      * @see org.apromore.dao.UserDao#findAllUsers()
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
@@ -50,7 +50,7 @@ public class UserDaoJpa implements UserDao {
 
     /**
      * @see org.apromore.dao.UserDao#save(org.apromore.dao.model.User)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void save(final User user) {
@@ -59,7 +59,7 @@ public class UserDaoJpa implements UserDao {
 
     /**
      * @see org.apromore.dao.UserDao#update(org.apromore.dao.model.User)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public User update(final User user) {
@@ -68,7 +68,7 @@ public class UserDaoJpa implements UserDao {
 
     /**
      * @see org.apromore.dao.UserDao#delete(org.apromore.dao.model.User)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void delete(final User user) {
@@ -77,12 +77,11 @@ public class UserDaoJpa implements UserDao {
 
 
     /**
-     * Sets the Entity Manager. No way around this to get Unit Testing working
-     *
-     * @param em the entitymanager
+     * Sets the Entity Manager. No way around this to get Unit Testing working.
+     * @param newEm the entitymanager
      */
-    public void setEntityManager(EntityManager em) {
-        this.em = em;
+    public void setEntityManager(final EntityManager newEm) {
+        this.em = newEm;
     }
 
 }

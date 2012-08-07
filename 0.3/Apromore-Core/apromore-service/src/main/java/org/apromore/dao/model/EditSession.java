@@ -15,19 +15,20 @@ import javax.persistence.TemporalType;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 /**
  * Stores all the edits to the session mappings in apromore.
  *
- * @author Cameron James
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Entity
-@Table(name = "edit_session_mapping")
+@Table(name = "edit_session")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-@Configurable("editSessionMapping")
-public class EditSessionMapping implements Serializable {
+@Configurable("editSession")
+public class EditSession implements Serializable {
 
     /**
      * Hard coded for interoperability.
@@ -45,18 +46,17 @@ public class EditSessionMapping implements Serializable {
 
     private User user;
     private Process process;
+    private ProcessModelVersion processModelVersion;
 
 
     /**
      * Default Constructor.
      */
-    public EditSessionMapping() {
-    }
+    public EditSession() { }
 
 
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "code", unique = true, nullable = false)
     public Integer getCode() {
         return this.code;
@@ -74,16 +74,6 @@ public class EditSessionMapping implements Serializable {
 
     public void setUser(final User newUser) {
         this.user = newUser;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "processId")
-    public Process getProcess() {
-        return this.process;
-    }
-
-    public void setProcess(final Process newProcess) {
-        this.process = newProcess;
     }
 
     @Temporal(TemporalType.TIMESTAMP)
@@ -150,6 +140,26 @@ public class EditSessionMapping implements Serializable {
         this.lastUpdate = newLastUpdate;
     }
 
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "processId")
+    public Process getProcess() {
+        return this.process;
+    }
+
+    public void setProcess(final Process newProcess) {
+        this.process = newProcess;
+    }
+
+    @ManyToOne(fetch=FetchType.LAZY)
+    @JoinColumn(name="process_model_version_id", nullable=false)
+    public ProcessModelVersion getProcessModelVersion() {
+        return this.processModelVersion;
+    }
+
+    public void setProcessModelVersion(ProcessModelVersion processModelVersion) {
+        this.processModelVersion = processModelVersion;
+    }
 }
 
 

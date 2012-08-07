@@ -4,7 +4,8 @@
 package org.apromore.dao.model;
 
 /**
- * @author Chathura C. Ekanayake
+ * The Clustering Summary.
+ * @author <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 public class ClusteringSummary {
 

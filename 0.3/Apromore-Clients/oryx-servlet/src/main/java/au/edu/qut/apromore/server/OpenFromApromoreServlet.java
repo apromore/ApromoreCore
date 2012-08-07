@@ -27,7 +27,7 @@ import org.springframework.web.context.support.SpringBeanAutowiringSupport;
 /**
  * this class is responds to newly opened oryx window while edit is selected, portal executes it through a GET call from a url.
  *
- * @author Mehrad Seyed Sadegh
+ * @author <a href="mailto:mehrad1@gmail.com">Mehrad Seyed Sadegh</a>
  */
 public class OpenFromApromoreServlet extends HttpServlet {
 
@@ -36,30 +36,35 @@ public class OpenFromApromoreServlet extends HttpServlet {
 
     private static final long serialVersionUID = 8008133568793009069L;
 
-    private static String SESSION_CODE_PARAMETER_NAME = "sessionCode";
-    private static String PROCESS_VERSION_PARAMETER_NAME = "processVersion";
-    private static String PROCESS_NAME_PARAMETER_NAME = "processName";
-    private static String AUTOLAYOUT_PARAMETER_NAME = "autolayout";
-    private static String NOTATIONS_ONLY_PARAMETER_NAME = "notationsOnly";
+    private static final String SESSION_CODE_PARAMETER_NAME = "sessionCode";
+    private static final String PROCESS_VERSION_PARAMETER_NAME = "processVersion";
+    private static final String PROCESS_NAME_PARAMETER_NAME = "processName";
+    private static final String NOTATIONS_ONLY_PARAMETER_NAME = "notationsOnly";
 
     @Autowired
     private PortalService portalService;
 
     /**
      * Init Servlet.
-     *
-     * @param config
-     * @throws ServletException
+     * @param newConfig the servlet config so we can get some config elements.
+     * @throws ServletException if the servlet wasn't created correctly.
      */
-    public void init(ServletConfig config) throws ServletException {
-        super.init(config);
-        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, config.getServletContext());
+    public void init(ServletConfig newConfig) throws ServletException {
+        super.init(newConfig);
+        SpringBeanAutowiringSupport.processInjectionBasedOnServletContext(this, newConfig.getServletContext());
     }
 
 
+    /**
+     * Handle the HTTP Post request.
+     * @param req the http request
+     * @param res the http response
+     * @throws ServletException if there is something wrong with the servlet
+     * @throws IOException if an communication fails
+     */
     @SuppressWarnings("unchecked")
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
         String sessionCode = req.getParameter(SESSION_CODE_PARAMETER_NAME);
         String processVersion = "";
         String processName = "";
@@ -86,11 +91,6 @@ public class OpenFromApromoreServlet extends HttpServlet {
                 } else if (getProcessType(processSource) == ProcessNativeLanguage.XPDL) {
                     ApromoreBPMN2XPDLConverter converter = new ApromoreBPMN2XPDLConverter();
                     XPDLPackage xpdlModel = converter.getXPDLModel(processSource);
-                    //if (processSource.indexOf("<Vendor>BizAgi") >= 0) {
-                        //xpdlModel.setNeedsAutolayout(true);
-                        //additionalParameters.put(AUTOLAYOUT_PARAMETER_NAME, xpdlModel.getNeedsAutolayout().toString());
-                    //}
-
                     req.getSession().setAttribute(sessionCode, processSource);
                     processVersion = portalService.getProcessVersion(sessionCode);
                     processName = portalService.getProcessName(sessionCode);
@@ -107,7 +107,6 @@ public class OpenFromApromoreServlet extends HttpServlet {
                                 pool.setMainPool(true);
                                 xpdlPools.add(pool);
                             }
-                            //xpdlModel.setNeedsAutolayout(true);
                         }
                     }
                 }
@@ -134,16 +133,23 @@ public class OpenFromApromoreServlet extends HttpServlet {
                 additionalParamsStr += "&" + key + "=" + additionalParameters.get(key);
             }
             targetURL += additionalParamsStr;
-            resp.sendRedirect(targetURL);
+            res.sendRedirect(targetURL);
 
         } catch (Exception e) {
             LOGGER.error("Error in OpenFromApromoreServlet:" + e.getMessage());
-            resp.getWriter().write("<body><b>ERROR in communicating with APROMORE:</b>" + e.getMessage() + "<br/><br/>"
+            res.getWriter().write("<body><b>ERROR in communicating with APROMORE:</b>" + e.getMessage() + "<br/><br/>"
                     + new ArrayList(Arrays.asList(e.getStackTrace())).toString() + "</body>"); //show a human readable exception
         }
     }
 
 
+    /**
+     * Handle the HTTP Get request.
+     * @param req the http request
+     * @param res the http response
+     * @throws ServletException if there is something wrong with the servlet
+     * @throws IOException if an communication fails
+     */
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         doPost(req, resp);

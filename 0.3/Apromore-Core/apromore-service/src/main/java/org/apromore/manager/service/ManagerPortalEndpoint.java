@@ -106,6 +106,7 @@ import org.apromore.service.FormatService;
 import org.apromore.service.FragmentService;
 import org.apromore.service.MergeService;
 import org.apromore.service.ProcessService;
+import org.apromore.service.SessionService;
 import org.apromore.service.SimilarityService;
 import org.apromore.service.UserService;
 import org.apromore.service.model.ClusterFilter;
@@ -157,6 +158,8 @@ public class ManagerPortalEndpoint {
     private SimilarityService simSrv;
     @Autowired @Qualifier("MergeService")
     private MergeService merSrv;
+    @Autowired @Qualifier("SessionService")
+    private SessionService sesSrv;
 
     @Autowired
     private ManagerDataAccessClient daClient;
@@ -355,9 +358,7 @@ public class ManagerPortalEndpoint {
         List<ProcessVersionIdentifierType> processesP = payload.getProcessVersionIdentifier();
         try {
             List<ProcessVersionIdentifierType> processesDa = new ArrayList<ProcessVersionIdentifierType>();
-            Iterator<ProcessVersionIdentifierType> it = processesP.iterator();
-            while (it.hasNext()) {
-                ProcessVersionIdentifierType processP = it.next();
+            for (final ProcessVersionIdentifierType processP : processesP) {
                 ProcessVersionIdentifierType processDa = new ProcessVersionIdentifierType();
                 processDa.setProcessid(processP.getProcessid());
                 processDa.getVersionName().addAll(processP.getVersionName());
@@ -456,20 +457,21 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         EditSessionType editSessionP = payload.getEditSession();
-        EditSessionType editSessionDA = new EditSessionType();
-        editSessionDA.setNativeType(editSessionP.getNativeType());
-        editSessionDA.setProcessId(editSessionP.getProcessId());
-        editSessionDA.setUsername(editSessionP.getUsername());
-        editSessionDA.setVersionName(editSessionP.getVersionName());
-        editSessionDA.setProcessName(editSessionP.getProcessName());
-        editSessionDA.setDomain(editSessionP.getDomain());
-        editSessionDA.setCreationDate(editSessionP.getCreationDate());
-        editSessionDA.setLastUpdate(editSessionP.getLastUpdate());
-        editSessionDA.setWithAnnotation(editSessionP.isWithAnnotation());
-        editSessionDA.setAnnotation(editSessionP.getAnnotation());
-        try {
-            int code = daClient.WriteEditSession(editSessionDA);
 
+        EditSessionType editSessionType = new EditSessionType();
+        editSessionType.setNativeType(editSessionP.getNativeType());
+        editSessionType.setProcessId(editSessionP.getProcessId());
+        editSessionType.setUsername(editSessionP.getUsername());
+        editSessionType.setVersionName(editSessionP.getVersionName());
+        editSessionType.setProcessName(editSessionP.getProcessName());
+        editSessionType.setDomain(editSessionP.getDomain());
+        editSessionType.setCreationDate(editSessionP.getCreationDate());
+        editSessionType.setLastUpdate(editSessionP.getLastUpdate());
+        editSessionType.setWithAnnotation(editSessionP.isWithAnnotation());
+        editSessionType.setAnnotation(editSessionP.getAnnotation());
+
+        try {
+            int code = sesSrv.createSession(editSessionType);
             res.setEditSessionCode(code);
             result.setCode(0);
             result.setMessage("");
@@ -949,5 +951,9 @@ public class ManagerPortalEndpoint {
 
     public void setMerSrv(MergeService mergeService) {
         this.merSrv = mergeService;
+    }
+
+    public void setSesSrv(SessionService sessionService) {
+        this.sesSrv = sessionService;
     }
 }

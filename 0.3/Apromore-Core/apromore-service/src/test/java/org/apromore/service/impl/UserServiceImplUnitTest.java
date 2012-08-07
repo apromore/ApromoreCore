@@ -2,7 +2,7 @@ package org.apromore.service.impl;
 
 import org.apromore.dao.UserDao;
 import org.apromore.dao.jpa.UserDaoJpa;
-import org.apromore.dao.model.EditSessionMapping;
+import org.apromore.dao.model.EditSession;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
 import org.junit.Before;
@@ -114,7 +114,7 @@ public class UserServiceImplUnitTest {
         user.setFirstname("firstname");
         user.setLastname("lastname");
         user.setEmail("email");
-        user.setEditSessionMappings(new HashSet<EditSessionMapping>(1));
+        user.setEditSessions(new HashSet<EditSession>(1));
 
         return user;
     }

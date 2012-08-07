@@ -27,6 +27,8 @@ import org.apromore.graph.JBPT.ICpfObject;
 import org.apromore.graph.JBPT.ICpfResource;
 import org.apromore.service.GraphService;
 import org.jbpt.pm.FlowNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -42,14 +44,13 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRED)
 public class GraphServiceImpl implements GraphService {
 
-    @Autowired
-    @Qualifier("ContentDao")
+    private static final Logger LOGGER = LoggerFactory.getLogger(GraphServiceImpl.class);
+
+    @Autowired @Qualifier("ContentDao")
     private ContentDao contentDao;
-    @Autowired
-    @Qualifier("EdgeDao")
+    @Autowired @Qualifier("EdgeDao")
     private EdgeDao edgeDao;
-    @Autowired
-    @Qualifier("NodeDao")
+    @Autowired @Qualifier("NodeDao")
     private NodeDao nDao;
 
 
@@ -114,9 +115,67 @@ public class GraphServiceImpl implements GraphService {
         for (Edge edge : edges) {
             FlowNode v1 = procModelGraph.getVertex(String.valueOf(edge.getVerticesBySourceVid().getVid()));
             FlowNode v2 = procModelGraph.getVertex(String.valueOf(edge.getVerticesByTargetVid().getVid()));
-            procModelGraph.addEdge(v1, v2);
+            if (v1 != null && v2 != null) {
+                procModelGraph.addEdge(v1, v2);
+            } else {
+                if (v1 == null && v2 != null) {
+                    LOGGER.info("Null source node found for the edge terminating at " + v2.getId() + " = " + v2.getName() + " in content " + contentID);
+                }
+
+                if (v2 == null && v1 != null) {
+                    LOGGER.info("Null target node found for the edge originating at " + v1.getId() + " = " + v1.getName() + " in content " + contentID);
+                }
+
+                if (v1 == null && v2 == null) {
+                    LOGGER.info("Null source and target nodes found for an edge in content " + contentID);
+                }
+            }
         }
     }
+
+    /**
+     * @see org.apromore.service.GraphService#fillNodesByFragmentId(org.apromore.graph.JBPT.CPF, String)
+     * {@inheritDoc}
+     */
+    @Override
+    public void fillNodesByFragmentId(CPF procModelGraph, String fragmentID) {
+        FlowNode v;
+        List<Node> nodes = nDao.getVertexByFragment(fragmentID);
+        for (Node node : nodes) {
+            v = buildNodeByType(node);
+            procModelGraph.addVertex(v);
+            procModelGraph.setVertexProperty(String.valueOf(node.getVid()), Constants.TYPE, node.getVtype());
+        }
+    }
+
+    /**
+     * @see org.apromore.service.GraphService#fillEdgesByFragmentId(org.apromore.graph.JBPT.CPF, String)
+     * {@inheritDoc}
+     */
+    @Override
+    public void fillEdgesByFragmentId(CPF procModelGraph, String fragmentID) {
+        List<Edge> edges = edgeDao.getEdgesByFragment(fragmentID);
+        for (Edge edge : edges) {
+            FlowNode v1 = procModelGraph.getVertex(String.valueOf(edge.getVerticesBySourceVid().getVid()));
+            FlowNode v2 = procModelGraph.getVertex(String.valueOf(edge.getVerticesByTargetVid().getVid()));
+            if (v1 != null && v2 != null) {
+                procModelGraph.addEdge(v1, v2);
+            } else {
+                if (v1 == null && v2 != null) {
+                    LOGGER.info("Null source node found for the edge terminating at " + v2.getId() + " = " + v2.getName() + " in fragment " + fragmentID);
+                }
+
+                if (v2 == null && v1 != null) {
+                    LOGGER.info("Null target node found for the edge originating at " + v1.getId() + " = " + v1.getName() + " in fragment " + fragmentID);
+                }
+
+                if (v1 == null && v2 == null) {
+                    LOGGER.info("Null source and target nodes found for an edge in fragment " + fragmentID);
+                }
+            }
+        }
+    }
+
 
 
     /* Build the correct type of Node so we don't loss Information */

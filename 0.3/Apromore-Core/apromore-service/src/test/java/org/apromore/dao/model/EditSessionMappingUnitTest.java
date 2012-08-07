@@ -11,7 +11,7 @@ public class EditSessionMappingUnitTest {
 
     @Test
     public void testLikeJavaBean() {
-        JavaBeanHeuristic.assertLooksLikeJavaBean(EditSessionMapping.class);
+        JavaBeanHeuristic.assertLooksLikeJavaBean(EditSession.class);
     }
 
 }

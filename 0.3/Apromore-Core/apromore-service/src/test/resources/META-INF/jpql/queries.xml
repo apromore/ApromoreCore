@@ -35,6 +35,12 @@
         <query>SELECT e FROM Edge e
             WHERE e.content.contentId = :contentId</query>
     </named-query>
+    <named-query name="edge.getEdgesByFragmentId">
+        <!-- Used EdgeDao -->
+        <query>SELECT e FROM Edge e, FragmentVersion fv
+            WHERE e.content.contentId = fv.content.contentId
+              AND fv.fragmentVersionId = :fragmentId</query>
+    </named-query>
     <named-query name="edge.getStoredEdges">
         <!-- Used EdgeDao -->
         <query>SELECT count(e) FROM Edge e</query>
@@ -116,6 +122,13 @@
         <query>SELECT fv.fragmentVersionId, fv.fragmentSize
             FROM FragmentVersion fv</query>
     </named-query>
+    <named-query name="fragmentVersion.getRootFragmentIdAboveSize">
+        <!-- Used FragmentVersionDao -->
+        <query>SELECT f.fragmentVersionId
+            FROM FragmentVersion f, ProcessModelVersion pmv
+            WHERE f.fragmentVersionId = pmv.rootFragmentVersionId
+              AND f.fragmentSize &gt; :minSize</query>
+    </named-query>
 
 
     <named-query name="fragmentVersionDag.getParentFragmentVersions">
@@ -143,6 +156,11 @@
     <named-query name="fragmentVersionDag.getAllParentChildMappings">
         <!-- Used FragmentVersionDagDao -->
         <query>SELECT fvd FROM FragmentVersionDag fvd</query>
+    </named-query>
+    <named-query name="fragmentVersionDag.getAllDagsWithSize">
+        <!-- Used FragmentVersionDagDao -->
+        <query>SELECT fvd FROM FragmentVersionDag fvd, FragmentVersion f
+            WHERE fvd.id.childFragmentVersionId = f.fragmentVersionId AND f.fragmentSize &gt; :minSize</query>
     </named-query>
 
 
@@ -317,6 +335,16 @@
                GROUP BY pmv1.processBranch.branchId
         </query>
     </named-query>
+    <named-query name="processModelVersion.getCurrentModel">
+        <!-- Used FragmentVersionDao -->
+        <query>SELECT pmv
+               FROM ProcessModelVersion pmv, Process p, ProcessBranch pb
+               WHERE p.processId = pb.process.processId
+                 AND pb.branchId = pmv.processBranch.branchId
+                 AND p.processId = :processId
+                 AND pmv.versionName = :versionName
+        </query>
+    </named-query>
 
 
     <named-query name="processModelMap.getContainedProcessModel">
@@ -345,6 +373,14 @@
         <query>SELECT v
                FROM Node v
                WHERE v.content.contentId = :contentId
+        </query>
+    </named-query>
+    <named-query name="node.getVerticesByFragmentId">
+        <!-- Used NodeDao -->
+        <query>SELECT v
+            FROM Node v, FragmentVersion fv
+            WHERE v.content.contentId = fv.content.contentId
+              AND fv.fragmentVersionId = :fragmentId
         </query>
     </named-query>
     <named-query name="node.getStoredVertices">

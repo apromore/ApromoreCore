@@ -10,7 +10,7 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 /**
  * The Id of the Temp Version entity.
  *
- * @author Cameron James
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 @Embeddable
 public class TempVersionId implements Serializable {
