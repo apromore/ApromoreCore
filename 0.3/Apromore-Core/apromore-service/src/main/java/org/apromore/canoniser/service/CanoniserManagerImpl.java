@@ -10,12 +10,14 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import javax.xml.transform.stream.StreamSource;
 
 import de.epml.TypeEPML;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.adapters.EPML2Canonical;
 import org.apromore.canoniser.adapters.PNML2Canonical;
 import org.apromore.canoniser.adapters.XPDL2Canonical;
+import org.apromore.canoniser.bpmn.CanoniserDefinitions;
 import org.apromore.canoniser.da.CanoniserDataAccessClient;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
@@ -213,6 +215,34 @@ public class CanoniserManagerImpl implements CanoniserManager {
             m_cpf.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
             JAXBElement<CanonicalProcessType> cproc_cpf =
                     new org.apromore.cpf.ObjectFactory().createCanonicalProcess(pnml2canonical.getCPF());
+            m_cpf.marshal(cproc_cpf, cpf_xml);
+
+        } else if (nativeType.compareTo(Constants.BPMN_2_0) == 0) {
+
+            // Parse the BPMN
+            CanoniserDefinitions definitions =
+                JAXBContext.newInstance(org.apromore.canoniser.bpmn.CanoniserObjectFactory.class,
+                                        org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
+                                        org.omg.spec.dd._20100524.dc.ObjectFactory.class,
+                                        org.omg.spec.dd._20100524.di.ObjectFactory.class)
+                           .createUnmarshaller()
+                           .unmarshal(new StreamSource(process_xml), CanoniserDefinitions.class)
+                           .getValue();
+
+            // Serialize the ANF
+            JAXBContext jc1 = JAXBContext.newInstance(Constants.ANF_CONTEXT);
+            Marshaller m_anf = jc1.createMarshaller();
+            m_anf.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            JAXBElement<AnnotationsType> cproc_anf =
+                    new org.apromore.anf.ObjectFactory().createAnnotations(definitions.getANF());
+            m_anf.marshal(cproc_anf, anf_xml);
+
+            // Serialize the CPF
+            jc1 = JAXBContext.newInstance(Constants.CPF_CONTEXT);
+            Marshaller m_cpf = jc1.createMarshaller();
+            m_cpf.setProperty(javax.xml.bind.Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+            JAXBElement<CanonicalProcessType> cproc_cpf =
+                    new org.apromore.cpf.ObjectFactory().createCanonicalProcess(definitions.getCPF());
             m_cpf.marshal(cproc_cpf, cpf_xml);
 
         } else {
