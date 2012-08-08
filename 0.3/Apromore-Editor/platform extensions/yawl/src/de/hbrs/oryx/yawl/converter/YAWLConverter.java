@@ -1,25 +1,20 @@
 /**
- * Copyright (c) 2011-2012 Felix Mannhardt
+ * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
  * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- * 
- * See: http://www.opensource.org/licenses/mit-license.php
+ * See: http://www.gnu.org/licenses/lgpl-3.0
  * 
  */
 package de.hbrs.oryx.yawl.converter;
@@ -31,6 +26,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.jdom.Element;
 import org.jdom.JDOMException;
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -53,6 +49,7 @@ import de.hbrs.oryx.yawl.converter.handler.HandlerFactoryImpl;
 import de.hbrs.oryx.yawl.converter.handler.oryx.OryxHandler;
 import de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandler;
 import de.hbrs.oryx.yawl.converter.layout.YAWLLayoutConverter;
+import de.hbrs.oryx.yawl.util.YAWLUtils;
 
 /**
  * Validates and converts a YAWL specification to the JSON representation of an
@@ -90,41 +87,18 @@ public class YAWLConverter {
 		 */
 		public BasicDiagram getRootDiagram() {
 			BasicDiagram specDiagram = yawlContext.getSpecificationDiagram();
-			BasicShape rootNet = yawlContext.getRootNet();
-			specDiagram.setBounds(rootNet.getBounds());
-			specDiagram.addChildShape(rootNet);
-			return specDiagram;
+			BasicDiagram rootNet = yawlContext.getRootNet();
+			mergeProperties(specDiagram, rootNet);
+			return rootNet;
 		}
 
-		private BasicDiagram createDiagram(BasicShape net) {
-			// Create Oryx diagram for a net
-			BasicDiagram netDiagram;
-			if (yawlContext.getRootNetId().equals(net.getResourceId())) {
-				// Attach specification only to rootNet
-				netDiagram = yawlContext.getSpecificationDiagram();
-			} else {
-				// Create a new diagram for each subNet
-				netDiagram = createEmptyDiagram("diagram-"
-						+ net.getResourceId());
-				netDiagram.setProperties(yawlContext.getSpecificationDiagram()
-						.getPropertiesReadOnly());
-			}
-			netDiagram.setBounds(net.getBounds());
-			netDiagram.addChildShape(net);
-			return netDiagram;
-		}
-
-		private BasicDiagram createEmptyDiagram(String id) {
-			String stencilSetNs = "http://b3mn.org/stencilset/yawl2.2#";
-			String url = yawlContext.getRootDir()
-					+ "stencilsets/yawl/yawl.json";
-			StencilSetReference stencilSet = new StencilSetReference(stencilSetNs, url);
-
-			BasicDiagram diagram = new BasicDiagram(id, "Diagram", stencilSet);
-			// Set required properties to initial values
-			diagram.setBounds(new Bounds(new Point(0.0, 0.0), new Point(0.0,
-					0.0)));
-			return diagram;
+		private void mergeProperties(BasicDiagram specDiagram, BasicDiagram rootNet) {
+			Map<String, String> netProperties = rootNet.getPropertiesReadOnly();
+			Map<String, String> specProperties = specDiagram.getPropertiesReadOnly();
+			HashMap<String, String> mergedProperties = new HashMap<String, String>();
+			mergedProperties.putAll(netProperties);
+			mergedProperties.putAll(specProperties);
+			rootNet.setProperties(mergedProperties);
 		}
 
 		/**
@@ -134,13 +108,13 @@ public class YAWLConverter {
 		 */
 		public Set<Entry<String, BasicDiagram>> getDiagrams() {
 			Map<String, BasicDiagram> diagramMap = new HashMap<String, BasicDiagram>();
-			for (Entry<String, BasicShape> netEntry : yawlContext.getNetSet()) {
-				diagramMap.put(netEntry.getKey(),
-						createDiagram(netEntry.getValue()));
+			for (Entry<String, BasicDiagram> netEntry : yawlContext.getNetSet()) {
+				mergeProperties(yawlContext.getSpecificationDiagram(), netEntry.getValue());
+				diagramMap.put(netEntry.getKey(), netEntry.getValue());
 			}
 			return diagramMap.entrySet();
 		}
-		
+
 		/**
 		 * @return true if there are warnings during conversion
 		 */
@@ -160,7 +134,7 @@ public class YAWLConverter {
 		 */
 		public List<ConversionException> getWarnings() {
 			return yawlContext.getConversionWarnings();
-		}		
+		}
 
 	}
 
@@ -205,7 +179,13 @@ public class YAWLConverter {
 			if (oryxContext.getConversionError()) {
 				return "";
 			} else {
-				return YMarshal.marshal(oryxContext.getSpecification());
+				String yawlSpec = YMarshal.marshal(oryxContext.getSpecification());
+				return yawlSpec;
+				/*
+				int closingTag = yawlSpec.lastIndexOf("</");
+				Element yawlLayout = oryxContext.getSpecificationLayoutElement();
+				return yawlSpec.substring(0, closingTag) + YAWLUtils.elementToString(yawlLayout) + yawlSpec.substring(closingTag);
+				*/
 			}
 		}
 
@@ -244,9 +224,9 @@ public class YAWLConverter {
 	 * @param rootDir
 	 *            of the editor appplication used to retrieve Stencil Set
 	 */
-	public YAWLConverter(String rootDir, String oryxBackendUrl) {
-		this.yawlContext = new YAWLConversionContext(rootDir);
-		this.oryxContext = new OryxConversionContext(oryxBackendUrl);
+	public YAWLConverter() {
+		this.yawlContext = new YAWLConversionContext();
+		this.oryxContext = new OryxConversionContext();
 		// Handler Factory for both conversion directions
 		this.converterFactory = new HandlerFactoryImpl(yawlContext, oryxContext);
 	}
@@ -273,12 +253,10 @@ public class YAWLConverter {
 	 * @throws IOException
 	 *             in case of an error converting the layout
 	 */
-	public OryxResult convertYAWLToOryx(String specification)
-			throws YSyntaxException, JDOMException, IOException {
+	public OryxResult convertYAWLToOryx(String specification) throws YSyntaxException, JDOMException, IOException {
 
 		// First convert the layout element of the YAWL specification
-		YAWLLayoutConverter yawlLayoutConverter = new YAWLLayoutConverter(
-				specification, yawlContext);
+		YAWLLayoutConverter yawlLayoutConverter = new YAWLLayoutConverter(specification, yawlContext);
 		yawlLayoutConverter.convertLayout();
 		// Now load alle YAWL nets, using the layout information loaded before.
 		loadSpecifications(specification);
@@ -294,13 +272,11 @@ public class YAWLConverter {
 	 * @throws YSyntaxException
 	 *             in case of an invalid specification
 	 */
-	private void loadSpecifications(String specification)
-			throws YSyntaxException {
+	private void loadSpecifications(String specification) throws YSyntaxException {
 
 		// Do not validate YAWL specification as otherwise some YAWL
 		// specification saved by the orgiginal YAWL editor may not load
-		List<YSpecification> specificationList = YMarshal
-				.unmarshalSpecifications(specification, false);
+		List<YSpecification> specificationList = YMarshal.unmarshalSpecifications(specification, false);
 
 		for (YSpecification ySpec : specificationList) {
 
@@ -338,26 +314,21 @@ public class YAWLConverter {
 			JSONArray subDiagramList = jsonObject.getJSONArray("subDiagrams");
 			for (int i = 0; i < subDiagramList.length(); i++) {
 				JSONObject subnetElement = (JSONObject) subDiagramList.get(i);
-				BasicDiagram subnetDiagram = BasicDiagramBuilder
-						.parseJson(subnetElement.getJSONObject("diagram"));
-				oryxContext.addSubnetDiagram(subnetElement.getString("id"),
-						subnetDiagram);
+				BasicDiagram subnetDiagram = BasicDiagramBuilder.parseJson(subnetElement.getJSONObject("diagram"));
+				oryxContext.addSubnetDiagram(subnetElement.getString("id"), subnetDiagram);
 			}
 
 			// Get the Diagram of the Root Net
 			JSONObject rootDiagram = jsonObject.getJSONObject("rootDiagram");
-			BasicDiagram yawlDiagram = BasicDiagramBuilder
-					.parseJson(rootDiagram);
-			                        
-			// Starting converting the Root Net			
-			OryxHandler converter = converterFactory
-					.createOryxConverter(yawlDiagram);
+			BasicDiagram yawlDiagram = BasicDiagramBuilder.parseJson(rootDiagram);
+
+			// Starting converting the Root Net
+			OryxHandler converter = converterFactory.createOryxConverter(yawlDiagram);
 			converter.convert();
 			return new YAWLResult(oryxContext);
 
 		} catch (JSONException e) {
-			oryxContext.addConversionWarnings(
-					"Could not parse Oryx diagram JSON", e);
+			oryxContext.addConversionWarnings("Could not parse Oryx diagram JSON", e);
 			oryxContext.setConversionError(true);
 			return new YAWLResult(oryxContext);
 		}

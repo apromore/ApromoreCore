@@ -1,25 +1,20 @@
 /**
- * Copyright (c) 2011-2012 Felix Mannhardt
+ * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
  * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- * 
- * See: http://www.opensource.org/licenses/mit-license.php
+ * See: http://www.gnu.org/licenses/lgpl-3.0
  * 
  */
 package de.hbrs.oryx.yawl.converter.handler.yawl;
@@ -38,15 +33,14 @@ import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.yawlfoundation.yawl.elements.YSpecification;
 import org.yawlfoundation.yawl.unmarshal.YMetaData;
 
-import de.hbrs.oryx.yawl.YAWLUtils;
 import de.hbrs.oryx.yawl.converter.context.YAWLConversionContext;
+import de.hbrs.oryx.yawl.util.YAWLUtils;
 
 public class SpecificationHandler extends YAWLHandlerImpl {
 
 	YSpecification specification;
 
-	public SpecificationHandler(YAWLConversionContext context,
-			YSpecification ySpec) {
+	public SpecificationHandler(YAWLConversionContext context, YSpecification ySpec) {
 		super(context);
 		this.specification = ySpec;
 	}
@@ -57,8 +51,7 @@ public class SpecificationHandler extends YAWLHandlerImpl {
 
 	@Override
 	public void convert(String parentId) {
-		BasicDiagram specDiagram = createEmptyDiagram("diagram-"
-				+ getSpecification().getURI());
+		BasicDiagram specDiagram = createEmptyDiagram("diagram-" + getSpecification().getURI());
 
 		specDiagram.setProperties(convertProperties());
 
@@ -70,67 +63,54 @@ public class SpecificationHandler extends YAWLHandlerImpl {
 
 		final YSpecification spec = getSpecification();
 		final YMetaData metaData = spec.getMetaData();
-		
+
 		// General Properties
-		
-		props.put("name", convertNullable(spec.getName()));
-		props.put("yawlid", convertNullable(metaData.getUniqueID()));
-		
-		
+
+		props.put("specname", convertNullable(spec.getName()));
+		props.put("specid", convertNullable(metaData.getUniqueID()));
+
 		// Specification Related
 
-		props.put("title", convertNullable(metaData.getTitle()));
+		props.put("spectitle", convertNullable(metaData.getTitle()));
 
 		try {
-			props.put("creators", convertListOfNames(metaData.getCreators()));
+			props.put("speccreators", convertListOfNames(metaData.getCreators()));
 		} catch (JSONException e) {
-			getContext().addConversionWarnings(
-					"Could not convert YAWL specification 'creators'", e);
+			getContext().addConversionWarnings("Could not convert YAWL specification 'creators'", e);
 		}
 
 		try {
-			props.put("subject", convertListOfNames(metaData.getSubjects()));
+			props.put("specsubject", convertListOfNames(metaData.getSubjects()));
 		} catch (JSONException e) {
-			getContext().addConversionWarnings(
-					"Could not convert YAWL specification 'subject'", e);
+			getContext().addConversionWarnings("Could not convert YAWL specification 'subject'", e);
 		}
 
-		props.put("description", convertNullable(metaData.getDescription()));
+		props.put("specdescription", convertNullable(metaData.getDescription()));
 
 		try {
-			props.put("contributor",
-					convertListOfNames(metaData.getContributors()));
+			props.put("speccontributor", convertListOfNames(metaData.getContributors()));
 		} catch (JSONException e) {
-			getContext().addConversionWarnings(
-					"Could not convert YAWL specification 'subject'", e);
+			getContext().addConversionWarnings("Could not convert YAWL specification 'subject'", e);
 		}
 
-		props.put("coverage", convertNullable(metaData.getCoverage()));
+		props.put("speccoverage", convertNullable(metaData.getCoverage()));
 
-		props.put("validFrom",
-				metaData.getValidFrom() != null ? new SimpleDateFormat(
-						YAWLUtils.DATE_FORMAT).format(metaData.getValidFrom())
-						: "");
-		props.put("validUntil",
-				metaData.getValidUntil() != null ? new SimpleDateFormat(
-						YAWLUtils.DATE_FORMAT).format(metaData.getValidUntil())
-						: "");
-		
-		props.put("created",
-				metaData.getCreated() != null ? new SimpleDateFormat(
-						YAWLUtils.DATE_FORMAT).format(metaData.getCreated())
-						: "");		
+		props.put("specvalidfrom",
+				metaData.getValidFrom() != null ? new SimpleDateFormat(YAWLUtils.DATE_FORMAT).format(metaData.getValidFrom()) : "");
+		props.put("specvaliduntil",
+				metaData.getValidUntil() != null ? new SimpleDateFormat(YAWLUtils.DATE_FORMAT).format(metaData.getValidUntil()) : "");
 
-		props.put("version", convertNullable(metaData.getVersion().toString()));
-		
-		props.put("status", convertNullable(metaData.getStatus()));
-		
-		props.put("persistent", new Boolean(metaData.isPersistent()).toString());
-		
-		props.put("uri", spec.getURI());
+		props.put("speccreated", metaData.getCreated() != null ? new SimpleDateFormat(YAWLUtils.DATE_FORMAT).format(metaData.getCreated()) : "");
 
-		props.put("datatypedefinitions", convertNullable(spec
-				.getDataValidator().getSchema()));
+		props.put("specversion", convertNullable(metaData.getVersion().toString()));
+
+		props.put("specstatus", convertNullable(metaData.getStatus()));
+
+		props.put("specpersistent", new Boolean(metaData.isPersistent()).toString());
+
+		props.put("specuri", spec.getURI());
+
+		props.put("specdatatypedefinitions", convertNullable(spec.getDataValidator().getSchema()));
 
 		return props;
 	}
@@ -150,9 +130,7 @@ public class SpecificationHandler extends YAWLHandlerImpl {
 	private BasicDiagram createEmptyDiagram(String id) {
 
 		String stencilSetNs = "http://b3mn.org/stencilset/yawl2.2#";
-		String url = getContext().getRootDir() + "stencilsets/yawl/yawl.json";
-		StencilSetReference stencilSetRef = new StencilSetReference(
-				stencilSetNs, url);
+		StencilSetReference stencilSetRef = new StencilSetReference(stencilSetNs);
 
 		BasicDiagram diagram = new BasicDiagram(id, "Diagram", stencilSetRef);
 		// Set required properties to initial values

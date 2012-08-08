@@ -1,25 +1,20 @@
 /**
- * Copyright (c) 2011-2012 Felix Mannhardt
+ * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
  * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- * 
- * See: http://www.opensource.org/licenses/mit-license.php
+ * See: http://www.gnu.org/licenses/lgpl-3.0
  * 
  */
 package de.hbrs.oryx.yawl.converter.handler.yawl.element;
@@ -27,8 +22,6 @@ package de.hbrs.oryx.yawl.converter.handler.yawl.element;
 import java.util.HashMap;
 
 import org.yawlfoundation.yawl.elements.YCompositeTask;
-import org.yawlfoundation.yawl.elements.YNetElement;
-
 import de.hbrs.oryx.yawl.converter.context.YAWLConversionContext;
 import de.hbrs.oryx.yawl.converter.layout.NetElementLayout;
 
@@ -40,9 +33,8 @@ import de.hbrs.oryx.yawl.converter.layout.NetElementLayout;
  */
 public class CompositeTaskHandler extends TaskHandler {
 
-	public CompositeTaskHandler(YAWLConversionContext context,
-			YNetElement netElement) {
-		super(context, netElement, "CompositeTask");
+	public CompositeTaskHandler(YAWLConversionContext context, YCompositeTask compositeTask) {
+		super(context, compositeTask, "CompositeTask", compositeTask.getDecompositionPrototype());
 	}
 
 	/*
@@ -53,23 +45,11 @@ public class CompositeTaskHandler extends TaskHandler {
 	 * (de.hbrs.oryx.yawl.converter.layout.NetElementLayout)
 	 */
 	@Override
-	protected HashMap<String, String> convertTaskProperties(
-			NetElementLayout layout) {
+	protected HashMap<String, String> convertTaskProperties(NetElementLayout layout) {
 		// First convert all common task properties
-		HashMap<String, String> properties = super
-				.convertTaskProperties(layout);
-		if (getCompositeTask()
-				.getDecompositionPrototype() != null) {
-			properties.put("decomposesto", getCompositeTask()
-					.getDecompositionPrototype().getID());	
-		} else {
-			getContext().addConversionWarnings("Composite Task without Decomposition "+getCompositeTask().getID(), null);
-		}
+		HashMap<String, String> properties = super.convertTaskProperties(layout);
+		properties.putAll(convertDecompositionProperties());
 		return properties;
-	}
-
-	private YCompositeTask getCompositeTask() {
-		return (YCompositeTask) getNetElement();
 	}
 
 }

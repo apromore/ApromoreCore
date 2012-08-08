@@ -19,15 +19,20 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
+@Service("ClusterAnalyzer")
+@Transactional(propagation = Propagation.REQUIRED)
 public class ClusterAnalyzer {
 
     private static final Logger log = LoggerFactory.getLogger(InMemoryClusterer.class);
 
-    @Autowired
+    @Autowired @Qualifier("GEDMatrix")
     private InMemoryGEDMatrix gedMatrix;
     @Autowired @Qualifier("FragmentVersionDao")
     private FragmentVersionDao fragmentVersionDao;

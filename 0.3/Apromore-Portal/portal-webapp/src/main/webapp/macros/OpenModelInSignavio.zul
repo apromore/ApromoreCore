@@ -46,7 +46,7 @@
     },
     fullscreen : true
     });
-    alert('${arg.url}');
+    //alert('${arg.url}');
     //Import new process model
     new Ajax.Request('${arg.importPath}', {
     parameters: {'data': '${arg.jsonData}'},

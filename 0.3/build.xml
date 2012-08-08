@@ -14,13 +14,14 @@
     <target name="clean-war">
         <delete file="${dir-tomcat-webapps}/Apromore.war"/>
         <delete file="${dir-tomcat-webapps}/Apromore-portal.war"/>
+        <delete file="${dir-tomcat-webapps}/Apromore-editor.war"/>
         <delete dir="${dir-tomcat-webapps}/Apromore"/>
         <delete dir="${dir-tomcat-webapps}/Apromore-portal"/>
+        <delete dir="${dir-tomcat-webapps}/Apromore-editor"/>
     </target>
 
     <!-- Build all WAR files using ANT and Maven -->
-    <target name="build-war" depends="">
-
+    <target name="build-war" depends="clean-war">
         <!-- Prepare Signavio Editor -->
         <ant antfile="build.xml" target="build-all-in-one-war" dir="Apromore-Editor/" inheritall="false" />
 
@@ -35,7 +36,7 @@
 
     <!-- Copy all WAR files to Tomcat -->
     <target name="copy-war" depends="build-war">
-        <copy file="Apromore-Editor/target/Apromore-Editor.war" todir="${dir-tomcat-webapps}"/>
+        <copy file="Apromore-Editor/target/Apromore-editor.war" todir="${dir-tomcat-webapps}"/>
         <copy file="Apromore-Core/apromore-webapp/target/Apromore.war" todir="${dir-tomcat-webapps}"/>
         <copy file="Apromore-Portal/portal-webapp/target/Apromore-portal.war" todir="${dir-tomcat-webapps}"/>
     </target>
@@ -43,7 +44,7 @@
     <target name="deploy-war" depends="copy-war" />
 
     <target name="copy-war-nodep">
-        <copy file="Apromore-Editor/target/Apromore-Editor.war" todir="${dir-tomcat-webapps}"/>
+        <copy file="Apromore-Editor/target/Apromore-editor.war" todir="${dir-tomcat-webapps}"/>
         <copy file="Apromore-Core/apromore-webapp/target/Apromore.war" todir="${dir-tomcat-webapps}"/>
         <copy file="Apromore-Portal/portal-webapp/target/Apromore-portal.war" todir="${dir-tomcat-webapps}"/>
     </target>

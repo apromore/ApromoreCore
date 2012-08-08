@@ -307,6 +307,34 @@
 		<url-pattern>/editor/epmlimport</url-pattern>
 	</servlet-mapping>	
 	
+	<!-- Auto Layout for EPC -->
+
+	<servlet>
+		<display-name>EPCLayout</display-name>
+		<servlet-name>EPCLayoutServlet</servlet-name>
+		<servlet-class>org.apromore.common.converters.epml.servlet.EPCLayoutServlet</servlet-class>
+	</servlet>	
+	
+	<servlet-mapping>
+		<servlet-name>EPCLayoutServlet</servlet-name>
+		<url-pattern>/editor/epmllayout</url-pattern>
+	</servlet-mapping>	
+	
 	<!--  Added for EPC Extension -->
 	
+	<!-- Auto Layout for BPMN -->
+	
+	<servlet>
+		<display-name>BPMN Layouter</display-name>
+		<servlet-name>BPMNLayouterServlet</servlet-name>
+		<servlet-class>
+			org.oryxeditor.server.BPMNLayouterServlet
+		</servlet-class>
+	</servlet>	
+	
+	<servlet-mapping>
+		<servlet-name>BPMNLayouterServlet</servlet-name>
+		<url-pattern>/editor/bpmnlayout</url-pattern>
+	</servlet-mapping>
+
 </web-app>

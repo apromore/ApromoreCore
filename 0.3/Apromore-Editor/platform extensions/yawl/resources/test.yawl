@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specificationSet xmlns="http://www.yawlfoundation.org/yawlschema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2" xsi:schemaLocation="http://www.yawlfoundation.org/yawlschema http://www.yawlfoundation.org/yawlschema/YAWL_Schema2.2.xsd">
+  <specification uri="fwe">
+    <metaData>
+      <creator>Felix</creator>
+      <description>No description has been given.</description>
+      <version>0.6</version>
+      <persistent>false</persistent>
+      <identifier>UID_c40ac9b2-cfb8-4219-821c-f10591b555c0</identifier>
+    </metaData>
+    <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+      <xs:complexType name="YDocumentType">
+        <xs:sequence>
+          <xs:element name="id" type="xs:long" minOccurs="0" />
+          <xs:element name="name" type="xs:string" />
+        </xs:sequence>
+      </xs:complexType>
+    </xs:schema>
+    <decomposition id="TestNet" isRootNet="true" xsi:type="NetFactsType">
+      <inputParam>
+        <index>0</index>
+        <name>Test</name>
+        <type>YDocumentType</type>
+        <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+        <logPredicate>
+          <start>OnInput</start>
+          <completion>OnOutput</completion>
+        </logPredicate>
+      </inputParam>
+      <outputParam>
+        <index>0</index>
+        <name>Test</name>
+        <type>YDocumentType</type>
+        <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+        <logPredicate>
+          <start>OnInput</start>
+          <completion>OnOutput</completion>
+        </logPredicate>
+      </outputParam>
+      <processControlElements>
+        <inputCondition id="InputCondition">
+          <flowsInto>
+            <nextElementRef id="Test" />
+          </flowsInto>
+        </inputCondition>
+        <task id="Test">
+          <name>Test</name>
+          <documentation>Test</documentation>
+          <flowsInto>
+            <nextElementRef id="Test_1" />
+          </flowsInto>
+          <join code="xor" />
+          <split code="and" />
+          <configuration>
+            <join>
+              <port value="activated">
+                <flowSource id="InputCondition" />
+              </port>
+            </join>
+            <split>
+              <port value="activated">
+                <flowDestination id="Test_1" />
+              </port>
+            </split>
+          </configuration>
+          <startingMappings>
+            <mapping>
+              <expression query="&lt;Test&gt;test&lt;/Test&gt;" />
+              <mapsTo>Test</mapsTo>
+            </mapping>
+          </startingMappings>
+          <resourcing>
+            <offer initiator="user" />
+            <allocate initiator="user" />
+            <start initiator="user" />
+          </resourcing>
+          <customForm>http://test</customForm>
+          <decomposesTo id="Test" />
+        </task>
+        <task id="Test_1" xsi:type="MultipleInstanceExternalTaskFactsType">
+          <name>Test</name>
+          <flowsInto>
+            <nextElementRef id="unnamed" />
+          </flowsInto>
+          <join code="xor" />
+          <split code="and" />
+          <resourcing>
+            <offer initiator="user" />
+            <allocate initiator="user" />
+            <start initiator="user" />
+          </resourcing>
+          <decomposesTo id="Test" />
+          <minimum>5</minimum>
+          <maximum>10</maximum>
+          <threshold>10</threshold>
+          <creationMode code="dynamic" />
+          <miDataInput>
+            <expression query="AccessorQuery" />
+            <splittingExpression query="true()" />
+            <formalInputParam>Test</formalInputParam>
+          </miDataInput>
+        </task>
+        <task id="unnamed">
+          <flowsInto>
+            <nextElementRef id="unnamed_1" />
+          </flowsInto>
+          <join code="xor" />
+          <split code="and" />
+        </task>
+        <task id="unnamed_1">
+          <flowsInto>
+            <nextElementRef id="OutputCondition" />
+          </flowsInto>
+          <join code="xor" />
+          <split code="and" />
+          <configuration>
+            <join>
+              <port value="activated">
+                <flowSource id="unnamed" />
+              </port>
+            </join>
+            <nofi>
+              <minIncrease>1</minIncrease>
+              <maxDecrease>1</maxDecrease>
+              <thresIncrease>1</thresIncrease>
+              <creationMode>restict</creationMode>
+            </nofi>
+            <split>
+              <port value="activated">
+                <flowDestination id="OutputCondition" />
+              </port>
+            </split>
+          </configuration>
+        </task>
+        <outputCondition id="OutputCondition" />
+      </processControlElements>
+    </decomposition>
+    <decomposition id="Test" xsi:type="WebServiceGatewayFactsType">
+      <outputParam text-above="Test" maxLength="23" optional="true" background-color="#FF6699" length="23" tooltip="Test" text-below="Test">
+        <index>0</index>
+        <name>Test</name>
+        <type>string</type>
+        <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+        <defaultValue>Test</defaultValue>
+        <logPredicate>
+          <completion>OnOutput</completion>
+        </logPredicate>
+      </outputParam>
+      <logPredicate>
+        <start>OnStart</start>
+        <completion>OnCompletion</completion>
+      </logPredicate>
+      <externalInteraction>manual</externalInteraction>
+    </decomposition>
+  </specification>
+  <layout>
+    <locale language="de" country="DE" />
+    <specification id="fwe">
+      <size w="90" h="28" />
+      <net id="TestNet">
+        <bounds x="0" y="0" w="1758" h="682" />
+        <frame x="2" y="25" w="1761" h="685" />
+        <viewport x="0" y="0" w="1761" h="685" />
+        <vertex id="InputCondition">
+          <attributes>
+            <bounds x="36,0" y="424,0" w="32,0" h="32,0" />
+          </attributes>
+        </vertex>
+        <vertex id="OutputCondition">
+          <attributes>
+            <bounds x="576,0" y="424,0" w="32,0" h="32,0" />
+          </attributes>
+        </vertex>
+        <flow source="InputCondition" target="Test">
+          <ports in="13" out="12" />
+          <attributes>
+            <lineStyle>11</lineStyle>
+          </attributes>
+        </flow>
+        <vertex id="unnamed">
+          <attributes>
+            <bounds x="344,0" y="424,0" w="32,0" h="32,0" />
+          </attributes>
+        </vertex>
+        <flow source="Test" target="Test_1">
+          <ports in="13" out="12" />
+          <attributes>
+            <lineStyle>11</lineStyle>
+          </attributes>
+        </flow>
+        <flow source="Test_1" target="unnamed">
+          <ports in="13" out="12" />
+          <attributes>
+            <lineStyle>11</lineStyle>
+          </attributes>
+        </flow>
+        <vertex id="unnamed_1">
+          <attributes>
+            <bounds x="460,0" y="424,0" w="32,0" h="32,0" />
+          </attributes>
+        </vertex>
+        <flow source="unnamed" target="unnamed_1">
+          <ports in="13" out="12" />
+          <attributes>
+            <lineStyle>11</lineStyle>
+          </attributes>
+        </flow>
+        <flow source="unnamed_1" target="OutputCondition">
+          <ports in="13" out="12" />
+          <attributes>
+            <lineStyle>11</lineStyle>
+          </attributes>
+        </flow>
+        <container id="Test">
+          <vertex>
+            <attributes>
+              <bounds x="132,0" y="424,0" w="32,0" h="32,0" />
+            </attributes>
+          </vertex>
+          <label>
+            <attributes>
+              <bounds x="100,0" y="456,0" w="96,0" h="20,0" />
+            </attributes>
+          </label>
+        </container>
+        <container id="Test_1">
+          <vertex>
+            <attributes>
+              <bounds x="244,0" y="424,0" w="32,0" h="32,0" />
+            </attributes>
+          </vertex>
+          <label>
+            <attributes>
+              <bounds x="212,0" y="456,0" w="96,0" h="20,0" />
+            </attributes>
+          </label>
+        </container>
+      </net>
+    </specification>
+  </layout>
+</specificationSet>
+
+

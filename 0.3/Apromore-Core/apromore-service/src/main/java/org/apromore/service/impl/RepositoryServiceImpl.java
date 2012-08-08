@@ -110,7 +110,7 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public ProcessModelVersion addProcessModel(String processName, String versionName, String username, String cpfURI,
-                                               String nativeType, String domain, String documentation, String created, String lastUpdated, CPF proModGrap)
+            String nativeType, String domain, String documentation, String created, String lastUpdated, CPF proModGrap)
             throws ImportException {
         if (proModGrap == null || proModGrap.getVertices().isEmpty() || proModGrap.getEdges().isEmpty()) {
             LOGGER.error("Process " + processName + " Failed to import correctly.");

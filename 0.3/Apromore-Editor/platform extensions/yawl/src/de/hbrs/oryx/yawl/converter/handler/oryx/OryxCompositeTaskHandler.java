@@ -1,36 +1,34 @@
 /**
- * Copyright (c) 2011-2012 Felix Mannhardt
+ * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
  * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- * 
- * See: http://www.opensource.org/licenses/mit-license.php
+ * See: http://www.gnu.org/licenses/lgpl-3.0
  * 
  */
 package de.hbrs.oryx.yawl.converter.handler.oryx;
 
+import org.json.JSONException;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicShape;
 import org.yawlfoundation.yawl.elements.YCompositeTask;
 import org.yawlfoundation.yawl.elements.YDecomposition;
 import org.yawlfoundation.yawl.elements.YNet;
+import org.yawlfoundation.yawl.elements.YTask;
 
 import de.hbrs.oryx.yawl.converter.context.OryxConversionContext;
+import de.hbrs.oryx.yawl.converter.exceptions.ConversionException;
 import de.hbrs.oryx.yawl.converter.exceptions.NoSubnetFoundException;
 
 /**
@@ -41,64 +39,67 @@ import de.hbrs.oryx.yawl.converter.exceptions.NoSubnetFoundException;
  */
 public class OryxCompositeTaskHandler extends OryxTaskHandler {
 
-	public OryxCompositeTaskHandler(OryxConversionContext context,
-			BasicShape shape) {
+	public OryxCompositeTaskHandler(OryxConversionContext context, BasicShape shape) {
 		super(context, shape);
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see de.hbrs.oryx.yawl.converter.handler.oryx.OryxHandler#convert()
+	 * @see
+	 * de.hbrs.oryx.yawl.converter.handler.oryx.OryxTaskHandler#convertDecomposition
+	 * (org.oryxeditor.server.diagram.basic.BasicShape)
 	 */
 	@Override
-	public void convert() {
-		final BasicShape shape = getShape();
-		final YNet parentNet = getContext().getNet(shape.getParent());
-
-		int joinType = convertConnectorType(shape.getProperty("join"));
-		int splitType = convertConnectorType(shape.getProperty("split"));
-
-		YCompositeTask task = new YCompositeTask(convertYawlId(shape),
-				joinType, splitType, parentNet);
+	protected YDecomposition createDecomposition(YDecomposition existingDecomposition) throws JSONException, ConversionException {
 
 		try {
-			task.setDecompositionPrototype(convertDecomposition(shape));
+			BasicDiagram subnetDiagram = retrieveSubnetDiagram(getShape());
+			// Just find the contained subnet and ignore all Diagram properties
+			BasicShape subnet = findSubnetNet(subnetDiagram);
+			// Convert the Subnet with all its childShapes
+			getContext().getHandlerFactory().createOryxConverter(subnet).convert();
+			// Return to just created subnet, that should be already part of the
+			// specification decompositions
+			return super.createDecomposition(getContext().getNet(subnet));
 		} catch (NoSubnetFoundException e) {
-			getContext().addConversionWarnings(
-					"Ignoring composite task " + task.getID(), e);
+			getContext().addConversionWarnings("Could not find decomposition of composite task " + getShape().getProperty("yawlid"), e);
+			return null;
 		}
 
-		parentNet.addNetElement(task);
-
-		// Remember Flows for later conversion
-		rememberOutgoings();
-		rememberIncomings();
-
 	}
 
-	private YDecomposition convertDecomposition(BasicShape shape)
-			throws NoSubnetFoundException {
-		BasicDiagram subnetDiagram = retrieveSubnetDiagram(shape);
-		// Just find the contained subnet and ignore all Diagram properties
-		BasicShape subnet = findSubnetNet(subnetDiagram);
-		// Convert the Subnet with all its childShapes
-		getContext().getHandlerFactory().createOryxConverter(subnet).convert();
-		// Return to just created subnet, that should be already part of the
-		// specification decompositions
-		return getContext().getNet(subnet);
-	}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.hbrs.oryx.yawl.converter.handler.oryx.OryxTaskHandler#createTask(java
+	 * .lang.String, org.yawlfoundation.yawl.elements.YNet,
+	 * org.oryxeditor.server.diagram.basic.BasicShape)
+	 */
+	@Override
+	protected YTask createTask(String taskId, YNet parentNet) throws JSONException, ConversionException {
+		int joinType = convertConnectorType(getShape().getProperty("join"), YTask._XOR);
+		int splitType = convertConnectorType(getShape().getProperty("split"), YTask._AND);
 
-	private BasicShape findSubnetNet(BasicDiagram diagramShape)
-			throws NoSubnetFoundException {
-		for (BasicShape shape : diagramShape.getChildShapesReadOnly()) {
-			if (isSubNet(shape)) {
-				return shape;
+		YCompositeTask task = new YCompositeTask(taskId, joinType, splitType, parentNet);
+
+		if (hasDecomposition()) {
+			YDecomposition decomposition = createDecomposition(new YNet(getDecompositionId(), getContext().getSpecification()));
+			if (decomposition != null) {
+				task.setDecompositionPrototype(decomposition);
 			}
 		}
+
+		return task;
+	}
+
+	private BasicShape findSubnetNet(BasicDiagram diagramShape) throws NoSubnetFoundException {
+		if (isSubNet(diagramShape)) {
+			return diagramShape;
+		}
 		// No subnet found
-		throw new NoSubnetFoundException("Could not find subnet in Diagram "
-				+ diagramShape.getResourceId());
+		throw new NoSubnetFoundException("Could not find subnet in Diagram " + diagramShape.getResourceId());
 	}
 
 	private boolean isSubNet(BasicShape shape) {
@@ -116,16 +117,12 @@ public class OryxCompositeTaskHandler extends OryxTaskHandler {
 	 * @return
 	 * @throws NoSubnetFoundException
 	 */
-	private BasicDiagram retrieveSubnetDiagram(BasicShape shape)
-			throws NoSubnetFoundException {
-		BasicDiagram subnetDiagram = getContext().getSubnetDiagram(
-				shape.getProperty("decomposesto"));
+	private BasicDiagram retrieveSubnetDiagram(BasicShape shape) throws NoSubnetFoundException {
+		BasicDiagram subnetDiagram = getContext().getSubnetDiagram(getDecompositionId());
 		if (subnetDiagram != null) {
 			return subnetDiagram;
 		} else {
-			throw new NoSubnetFoundException(
-					"Could not find a Diagram for Subnet with ID: "
-							+ shape.getProperty("decomposesto"));
+			throw new NoSubnetFoundException("Could not find a Diagram for Subnet with ID: " + shape.getProperty("decomposesto"));
 		}
 	}
 

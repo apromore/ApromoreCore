@@ -1,25 +1,20 @@
 /**
- * Copyright (c) 2011-2012 Felix Mannhardt
+ * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
  * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- * 
- * See: http://www.opensource.org/licenses/mit-license.php
+ * See: http://www.gnu.org/licenses/lgpl-3.0
  * 
  */
 package de.hbrs.oryx.yawl.converter.handler.oryx;
@@ -28,7 +23,9 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
+import org.jdom.Element;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -39,28 +36,29 @@ import org.yawlfoundation.yawl.elements.YSpecification;
 import org.yawlfoundation.yawl.exceptions.YSyntaxException;
 import org.yawlfoundation.yawl.unmarshal.YMetaData;
 
-import de.hbrs.oryx.yawl.YAWLUtils;
 import de.hbrs.oryx.yawl.converter.context.OryxConversionContext;
 import de.hbrs.oryx.yawl.converter.exceptions.NoRootNetFoundException;
 import de.hbrs.oryx.yawl.converter.handler.HandlerFactory;
+import de.hbrs.oryx.yawl.util.YAWLUtils;
 
 /**
  * Converts the Diagram to a YAWL specification
  * 
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University of Applied Sciences)
- *
+ * 
  */
 public class OryxDiagramHandler extends OryxHandlerImpl {
 
 	private final BasicDiagram diagramShape;
 
-	public OryxDiagramHandler(OryxConversionContext context,
-			BasicDiagram diagramShape) {
+	public OryxDiagramHandler(OryxConversionContext context, BasicDiagram diagramShape) {
 		super(context);
 		this.diagramShape = diagramShape;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see de.hbrs.oryx.yawl.converter.handler.oryx.OryxHandler#convert()
 	 */
 	@Override
@@ -77,6 +75,10 @@ public class OryxDiagramHandler extends OryxHandlerImpl {
 			HandlerFactory handlerFactory = getContext().getHandlerFactory();
 			handlerFactory.createOryxConverter(rootNet).convert();
 
+			// Then convert layout using the stored information about net
+			// layouts
+			convertLayout();
+
 		} catch (NoRootNetFoundException e) {
 			getContext().addConversionWarnings(e);
 			// Abort conversion
@@ -85,16 +87,32 @@ public class OryxDiagramHandler extends OryxHandlerImpl {
 
 	}
 
+	private void convertLayout() {
+		Element specLayout = new Element("layout",  YAWLUtils.YAWL_NS);
+		Element locale = new Element("locale",  YAWLUtils.YAWL_NS);
+		locale.setAttribute("language", "en");
+		locale.setAttribute("country", "AU");
+		Element spec = new Element("specification");
+		spec.setAttribute("id", diagramShape.getProperty("specuri"));
+		Element size = new Element("size");
+		specLayout.addContent(locale);
+		specLayout.addContent(spec);
+		specLayout.addContent(size);
+		List<Element> netLayoutList = getContext().getNetLayoutList();
+		specLayout.addContent(netLayoutList);
+		Element labelFontSize = new Element("labelFontSize");
+		labelFontSize.setText("12");
+		specLayout.addContent(labelFontSize);
+		getContext().setSpecificationLayout(specLayout);
+	}
+
 	private BasicShape findRootNet() throws NoRootNetFoundException {
-		for (BasicShape shape : diagramShape.getChildShapesReadOnly()) {
-			if (isRootNet(shape)) {
-				return shape;
-			}
+		if (isRootNet(diagramShape)) {
+			return diagramShape;
 		}
 		// No root net found
-		throw new NoRootNetFoundException(
-				"Could not find root net in this diagram."
-						+ "Please select a diagram containing a root net.");
+		throw new NoRootNetFoundException("Could not find root net in this diagram." 
+				+ "Please select a diagram containing a root net.");
 	}
 
 	private boolean isRootNet(BasicShape shape) {
@@ -106,89 +124,74 @@ public class OryxDiagramHandler extends OryxHandlerImpl {
 	}
 
 	private YSpecification convertSpecification() {
-		YSpecification spec = new YSpecification(
-				diagramShape.getProperty("uri"));
-		
-		spec.setName(diagramShape.getProperty("name"));
-		
+		YSpecification spec = new YSpecification(diagramShape.getProperty("specuri"));
+
+		spec.setName(diagramShape.getProperty("specname"));
+
 		try {
-			spec.setSchema(diagramShape.getProperty("datatypedefinitions"));
+			spec.setSchema(diagramShape.getProperty("specdatatypedefinitions"));
 		} catch (YSyntaxException e) {
 			getContext().addConversionWarnings("Invalid Data Definitions", e);
 		}
-		
+
 		YMetaData metaData = new YMetaData();
-		metaData.setTitle(diagramShape.getProperty("title"));
-		metaData.setUniqueID(convertYawlId(diagramShape));
+		metaData.setTitle(diagramShape.getProperty("spectitle"));
+		metaData.setUniqueID(diagramShape.getProperty("specid") != null ? diagramShape.getProperty("specid") : "id" + UUID.randomUUID().toString());
 		metaData.setDescription(diagramShape.getProperty("description"));
-		
-	
+
 		try {
-			metaData.setVersion(new YSpecVersion(diagramShape
-					.getProperty("version")));
+			metaData.setVersion(new YSpecVersion(diagramShape.getProperty("specversion")));
 		} catch (Exception e) {
-			getContext().addConversionWarnings("Could not convert metadata 'version' of specification",
-					e);
+			getContext().addConversionWarnings("Could not convert metadata 'specversion' of specification", e);
 			metaData.setVersion(new YSpecVersion());
 		}
-		
-		
+
 		try {
-			if (diagramShape.getProperty("validFrom") != null) {
-				metaData.setValidFrom(new SimpleDateFormat(YAWLUtils.DATE_FORMAT).parse(
-						diagramShape.getProperty("validFrom")));
+			if (diagramShape.getProperty("specvalidfrom") != null) {
+				metaData.setValidFrom(new SimpleDateFormat(YAWLUtils.DATE_FORMAT).parse(diagramShape.getProperty("specvalidfrom")));
 			}
 		} catch (ParseException e) {
-			getContext().addConversionWarnings("Invalid Date-Format validFrom",
-					e);
+			getContext().addConversionWarnings("Invalid Date-Format specvalidfrom", e);
 		}
-		
+
 		try {
-			if (diagramShape.getProperty("validUntil") != null) {
-				metaData.setValidUntil(new SimpleDateFormat(YAWLUtils.DATE_FORMAT).parse(
-						diagramShape.getProperty("validUntil")));
+			if (diagramShape.getProperty("specvaliduntil") != null) {
+				metaData.setValidUntil(new SimpleDateFormat(YAWLUtils.DATE_FORMAT).parse(diagramShape.getProperty("specvaliduntil")));
 			}
 		} catch (ParseException e) {
-			getContext()
-					.addConversionWarnings("Invalid Date-Format validTo", e);
+			getContext().addConversionWarnings("Invalid Date-Format validTo", e);
 		}
-		
+
 		try {
-			if (diagramShape.getProperty("created") != null) {
-				metaData.setValidUntil(new SimpleDateFormat(YAWLUtils.DATE_FORMAT).parse(
-						diagramShape.getProperty("created")));
+			if (diagramShape.getProperty("speccreated") != null) {
+				metaData.setValidUntil(new SimpleDateFormat(YAWLUtils.DATE_FORMAT).parse(diagramShape.getProperty("speccreated")));
 			}
 		} catch (ParseException e) {
-			getContext()
-					.addConversionWarnings("Invalid Date-Format validTo", e);
+			getContext().addConversionWarnings("Invalid Date-Format validTo", e);
 		}
-		
-		
+
 		try {
-			metaData.setCreators(convertListOfNames(diagramShape.getPropertyJsonObject("creators")));
+			metaData.setCreators(convertListOfNames(diagramShape.getPropertyJsonObject("speccreators")));
 		} catch (JSONException e) {
-			getContext()
-			.addConversionWarnings("Could not convert metadata 'creators' of specification", e);
+			getContext().addConversionWarnings("Could not convert metadata 'creators' of specification", e);
 		}
-		
+
 		try {
-			metaData.setContributors(convertListOfNames(diagramShape.getPropertyJsonObject("contributor")));
+			metaData.setContributors(convertListOfNames(diagramShape.getPropertyJsonObject("speccontributor")));
 		} catch (JSONException e) {
-			getContext()
-			.addConversionWarnings("Could not convert metadata 'contributor' of specification", e);
-		}	
-		
+			getContext().addConversionWarnings("Could not convert metadata 'contributor' of specification", e);
+		}
+
 		try {
-			metaData.setSubjects(convertListOfNames(diagramShape.getPropertyJsonObject("subject")));
+			metaData.setSubjects(convertListOfNames(diagramShape.getPropertyJsonObject("specsubject")));
 		} catch (JSONException e) {
-			getContext()
-			.addConversionWarnings("Could not convert metadata 'subject' of specification", e);
-		}	
-		
-		metaData.setCoverage(diagramShape.getProperty("coverage"));				
-		metaData.setStatus(diagramShape.getProperty("status"));
-		metaData.setPersistent(diagramShape.getPropertyBoolean("persistent"));
-		
+			getContext().addConversionWarnings("Could not convert metadata 'subject' of specification", e);
+		}
+
+		metaData.setCoverage(diagramShape.getProperty("speccoverage"));
+		metaData.setStatus(diagramShape.getProperty("specstatus"));
+		metaData.setPersistent(diagramShape.getPropertyBoolean("specpersistent"));
+
 		spec.setMetaData(metaData);
 		return spec;
 	}

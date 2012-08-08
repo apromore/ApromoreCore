@@ -22,8 +22,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service("DissimilarityMatrix")
+@Transactional(propagation = Propagation.REQUIRED)
 public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HierarchyAwareDissimMatrixGenerator.class);
@@ -36,8 +39,8 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     private ClusteringComposer composer;
 
     /* Fragment Id -> SimpleGraph object containing all nodes and edges of the fragment. */
-    private Map<String, SimpleGraph> models = new HashMap<String, SimpleGraph>();
-    private List<DissimilarityCalc> chain = new LinkedList<DissimilarityCalc>();
+    private Map<String, SimpleGraph> models = new HashMap<>();
+    private List<DissimilarityCalc> chain = new LinkedList<>();
     private MultiKeyMap dissimmap = null;
     private double dissThreshold;
 
@@ -53,7 +56,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
      */
     public void computeDissimilarity() {
         startedTime = System.currentTimeMillis();
-        List<String> processedFragmentIds = new ArrayList<String>();
+        List<String> processedFragmentIds = new ArrayList<>();
         dissimmap = new MultiKeyMap();
         nfrag = crel.getNumberOfFragments();
         totalPairs = nfrag * (nfrag + 1) / 2;

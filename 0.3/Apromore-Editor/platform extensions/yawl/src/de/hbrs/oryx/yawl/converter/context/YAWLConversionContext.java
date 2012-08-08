@@ -1,25 +1,20 @@
 /**
- * Copyright (c) 2011-2012 Felix Mannhardt
+ * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
  * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- * 
- * See: http://www.opensource.org/licenses/mit-license.php
+ * See: http://www.gnu.org/licenses/lgpl-3.0
  * 
  */
 package de.hbrs.oryx.yawl.converter.context;
@@ -56,7 +51,7 @@ public class YAWLConversionContext extends ConversionContext {
 	/**
 	 * Contains the Oryx shapes of all YAWL nets
 	 */
-	private final HashMap<String, BasicShape> netMap;
+	private final HashMap<String, BasicDiagram> netMap;
 
 	/**
 	 * Layout information for each YAWL (sub)-net. (Net-ID -> Layout)
@@ -69,24 +64,19 @@ public class YAWLConversionContext extends ConversionContext {
 	private final Map<String, BasicShape> shapeMap;
 
 	/**
-	 * Used to retrieve StencilSet to create new Shapes
-	 */
-	private final String rootDir;
-
-	/**
 	 * Identifier of the Root Net
 	 */
 	private String rootNetId;
-	
+
 	/**
-	 * @param rootDir used to retrieve StencilSet to create new Shapes
+	 * @param rootDir
+	 *            used to retrieve StencilSet to create new Shapes
 	 */
-	public YAWLConversionContext(String rootDir) {
+	public YAWLConversionContext() {
 		super();
-		this.rootDir = rootDir;
 		this.layoutMap = new HashMap<String, NetLayout>();
 		this.shapeMap = new HashMap<String, BasicShape>();
-		this.netMap = new HashMap<String, BasicShape>();
+		this.netMap = new HashMap<String, BasicDiagram>();
 	}
 
 	public void setSpecificationDiagram(BasicDiagram specificationDiagram) {
@@ -97,19 +87,15 @@ public class YAWLConversionContext extends ConversionContext {
 		return specificationDiagram;
 	}
 
-	public String getRootDir() {
-		return rootDir;
-	}
-
-	public void addNet(String id, BasicShape shape) {
+	public void addNet(String id, BasicDiagram shape) {
 		netMap.put(id, shape);
 	}
 
-	public BasicShape getNet(String netId) {
+	public BasicDiagram getNet(String netId) {
 		return netMap.get(netId);
 	}
 
-	public Set<Entry<String, BasicShape>> getNetSet() {
+	public Set<Entry<String, BasicDiagram>> getNetSet() {
 		return netMap.entrySet();
 	}
 
@@ -121,7 +107,7 @@ public class YAWLConversionContext extends ConversionContext {
 		return rootNetId;
 	}
 
-	public BasicShape getRootNet() {
+	public BasicDiagram getRootNet() {
 		return netMap.get(getRootNetId());
 	}
 
@@ -146,15 +132,12 @@ public class YAWLConversionContext extends ConversionContext {
 		shapeMap.put(shapeId, shape);
 	}
 
-	public FlowLayout getFlowLayout(String netId, String priorElementID,
-			String nextElementID) {
-		return layoutMap.get(netId).getFlowLayout(
-				priorElementID + "|" + nextElementID);
+	public FlowLayout getFlowLayout(String netId, String priorElementID, String nextElementID) {
+		return layoutMap.get(netId).getFlowLayout(priorElementID + "|" + nextElementID);
 	}
 
 	public void addPostsetFlows(String netId, Set<YFlow> postsetFlows) {
 		layoutMap.get(netId).addFlows(postsetFlows);
 	}
-	
 
 }

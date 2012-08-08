@@ -26,6 +26,12 @@ if (!ORYX)
 if (!ORYX.Plugins) 
 	ORYX.Plugins = new Object();
 
+/**
+ *  Location of Import and Export Servlet
+ *  This was located in config.js in Oryx  
+ **/
+ORYX.CONFIG.BPMN_LAYOUTER = ORYX.CONFIG.ROOT_PATH + "bpmnlayout";
+
 ORYX.Plugins.BpmnLayouter = ORYX.Plugins.AbstractPlugin.extend({
 	facade: undefined,
 	construct: function(facade){
