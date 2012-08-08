@@ -108,12 +108,9 @@ public class EPML2Canonical {
      * the canonical format. The user also will be able to retrieve the annotation
      * element which stores the annotation data for the canonized modelass isolated
      * from the process flow.
-     * <p/>
-     *
      * @param epml the header for an EPML (EPC Markup Language) which
-     *             is file format for EPC diagrams.
+     * is file format for EPC diagrams.
      * @throws org.apromore.exception.CanoniserException
-     *
      * @since 1.0
      */
     public EPML2Canonical(TypeEPML epml) throws CanoniserException {
@@ -144,11 +141,13 @@ public class EPML2Canonical {
                         cproc.getNet().add(net);
                     }
                 }
-                for (TaskType task : subnet_list)
+                for (TaskType task : subnet_list) {
                     task.setSubnetId(id_map.get(task.getSubnetId()));
+                }
                 subnet_list.clear();
             }
-        } else {
+        }
+        else {
             // the epml element doesn't have any directory
             for (TypeEPC epc : epml.getEpcs()) {
                 NetType net = new NetType();
@@ -157,8 +156,9 @@ public class EPML2Canonical {
                 net.setId(String.valueOf(ids++));
                 cproc.getNet().add(net);
             }
-            for (TaskType task : subnet_list)
+            for (TaskType task : subnet_list) {
                 task.setSubnetId(id_map.get(task.getSubnetId()));
+            }
             subnet_list.clear();
         }
     }
@@ -166,8 +166,6 @@ public class EPML2Canonical {
     /**
      * This method for removing the fake functions
      * and events in case the modelass has them.
-     * <p/>
-     *
      * @param epml the header for an EPML
      * @return epml      the header for the EPML modelass after modification
      * @since 1.0
@@ -193,25 +191,30 @@ public class EPML2Canonical {
                         for (TEpcElement element : remove_list) {
                             for (Object arc : ((TypeEPC) epc).getEventOrFunctionOrRole()) {
                                 if (arc instanceof TypeArc) {
-                                    if (((TypeArc) arc).getFlow() != null)
+                                    if (((TypeArc) arc).getFlow() != null) {
                                         if (((TypeArc) arc).getFlow().getSource().equals(element.getId())) {
                                             for (Object arc2 : ((TypeEPC) epc).getEventOrFunctionOrRole()) {
-                                                if (arc2 instanceof TypeArc)
-                                                    if (((TypeArc) arc2).getFlow().getTarget().equals(element.getId()))
+                                                if (arc2 instanceof TypeArc) {
+                                                    if (((TypeArc) arc2).getFlow().getTarget().equals(element.getId())) {
                                                         ((TypeArc) arc2).getFlow().setTarget(((TypeArc) arc).getFlow().getTarget());
+                                                    }
+                                                }
                                             }
                                             arc_remove_list.add((TypeArc) arc);
                                         }
+                                    }
                                 }
                             }
-                            for (TypeArc arc : arc_remove_list)
+                            for (TypeArc arc : arc_remove_list) {
                                 ((TypeEPC) epc).getEventOrFunctionOrRole().remove(arc);
+                            }
                             ((TypeEPC) epc).getEventOrFunctionOrRole().remove(element);
                         }
                     }
                 }
             }
-        } else {
+        }
+        else {
             // the epml element doesn't have any directory
             dir = false;
             for (TypeEPC epc : epml.getEpcs()) {
@@ -226,19 +229,23 @@ public class EPML2Canonical {
                 for (TEpcElement element : remove_list) {
                     for (Object arc : ((TypeEPC) epc).getEventOrFunctionOrRole()) {
                         if (arc instanceof TypeArc) {
-                            if (((TypeArc) arc).getFlow() != null)
+                            if (((TypeArc) arc).getFlow() != null) {
                                 if (((TypeArc) arc).getFlow().getSource().equals(element.getId())) {
                                     for (Object arc2 : ((TypeEPC) epc).getEventOrFunctionOrRole()) {
-                                        if (arc2 instanceof TypeArc)
-                                            if (((TypeArc) arc2).getFlow().getTarget().equals(element.getId()))
+                                        if (arc2 instanceof TypeArc) {
+                                            if (((TypeArc) arc2).getFlow().getTarget().equals(element.getId())) {
                                                 ((TypeArc) arc2).getFlow().setTarget(((TypeArc) arc).getFlow().getTarget());
+                                            }
+                                        }
                                     }
                                     arc_remove_list.add((TypeArc) arc);
                                 }
+                            }
                         }
                     }
-                    for (TypeArc arc : arc_remove_list)
+                    for (TypeArc arc : arc_remove_list) {
                         ((TypeEPC) epc).getEventOrFunctionOrRole().remove(arc);
+                    }
                     ((TypeEPC) epc).getEventOrFunctionOrRole().remove(element);
                 }
             }
@@ -252,67 +259,80 @@ public class EPML2Canonical {
         Map<String, String> role_names = new HashMap<String, String>();
 
         for (Object obj : epc.getEventOrFunctionOrRole()) {
-            if (obj instanceof TypeEvent) {
+            if (obj instanceof JAXBElement) {
                 JAXBElement element = (JAXBElement) obj;
                 if (element.getValue() instanceof TypeEvent) {
                     translateEvent(net, (TypeEvent) element.getValue());
                     addNodeAnnotations(element.getValue());
 
-                } else if (element.getValue() instanceof TypeFunction) {
+                }
+                else if (element.getValue() instanceof TypeFunction) {
                     translateFunction(net, ((JAXBElement<TypeFunction>) obj).getValue());
                     addNodeAnnotations(element.getValue());
 
-                } else if (element.getValue() instanceof TypeAND) {
+                }
+                else if (element.getValue() instanceof TypeAND) {
                     id_map.put(((TEpcElement) element.getValue()).getId(), String.valueOf(ids));
                     addNodeAnnotations(element.getValue());
                     ((TEpcElement) element.getValue()).setId(BigInteger.valueOf(ids++));
                     and_list.add((TypeAND) element.getValue());
 
-                } else if (element.getValue() instanceof TypeOR) {
+                }
+                else if (element.getValue() instanceof TypeOR) {
                     id_map.put(((TEpcElement) element.getValue()).getId(), String.valueOf(ids));
                     addNodeAnnotations(element.getValue());
                     ((TEpcElement) element.getValue()).setId(BigInteger.valueOf(ids++));
                     or_list.add((TypeOR) element.getValue());
 
-                } else if (element.getValue() instanceof TypeXOR) {
+                }
+                else if (element.getValue() instanceof TypeXOR) {
                     id_map.put(((TEpcElement) element.getValue()).getId(), String.valueOf(ids));
                     addNodeAnnotations(element.getValue());
                     ((TEpcElement) element.getValue()).setId(BigInteger.valueOf(ids++));
                     xor_list.add((TypeXOR) element.getValue());
 
-                } else if (element.getValue() instanceof TypeRole) {
+                }
+                else if (element.getValue() instanceof TypeRole) {
                     if (!role_names.containsKey(((TypeRole) element.getValue()).getName())) {
                         translateRole((TypeRole) element.getValue());
                         addNodeAnnotations(element.getValue());
                         role_names.put(((TypeRole) element.getValue()).getName(), String.valueOf(ids - 1));
-                    } else {
+                    }
+                    else {
                         id_map.put(((TypeRole) element.getValue()).getId(), role_names.get(((TypeRole) element.getValue()).getName()));
                     }
 
-                } else if (element.getValue() instanceof TypeObject) {
+                }
+                else if (element.getValue() instanceof TypeObject) {
                     translateObject((TypeObject) element.getValue());
                     addNodeAnnotations(element.getValue());
 
-                } else if (element.getValue() instanceof TypeRANGE) {
+                }
+                else if (element.getValue() instanceof TypeRANGE) {
                     range_ids.add(((TypeRANGE) element.getValue()).getId());
 
-                } else if (element.getValue() instanceof TypeProcessInterface) {
+                }
+                else if (element.getValue() instanceof TypeProcessInterface) {
                     translatePI(net, (TypeProcessInterface) element.getValue());
                     addNodeAnnotations(element.getValue());
 
-                } else if (element.getValue() instanceof TypeArc) {
+                }
+                else if (element.getValue() instanceof TypeArc) {
                     TypeArc arc = (TypeArc) element.getValue();
                     if (arc.getFlow() != null) {
                         if (range_ids.contains(arc.getFlow().getSource()) || range_ids.contains(arc.getFlow().getTarget())) {
                             range_flow.add(arc);
-                        } else {
+                        }
+                        else {
                             translateArc(net, arc);
                         }
                         addEdgeAnnotation(arc);
-                    } else if (arc.getRelation() != null) {
+                    }
+                    else if (arc.getRelation() != null) {
                         if (range_ids.contains(arc.getRelation().getSource()) || range_ids.contains(arc.getRelation().getTarget())) {
                             range_relation.add(arc);
-                        } else {
+                        }
+                        else {
                             translateArc(net, arc);
                         }
                         addEdgeAnnotation(arc);
@@ -350,9 +370,11 @@ public class EPML2Canonical {
         for (TypeAND and : and_list) {
             counter = 0;
             BigInteger n = and.getId();
-            for (String s : flow_source_id_list)
-                if (n.equals(s))
+            for (String s : flow_source_id_list) {
+                if (n.equals(s)) {
                     counter++;
+                }
+            }
             if (counter <= 1)
             //TODO
             //the and is joint
@@ -361,7 +383,8 @@ public class EPML2Canonical {
                 andJ.setId(String.valueOf(and.getId()));
                 andJ.setName(and.getName());
                 net.getNode().add(andJ);
-            } else
+            }
+            else
             //TODO
             //the and is split, create it
             {
@@ -377,9 +400,11 @@ public class EPML2Canonical {
         for (TypeOR or : or_list) {
             counter = 0;
             BigInteger n = or.getId();
-            for (String s : flow_source_id_list)
-                if (n.equals(s))
+            for (String s : flow_source_id_list) {
+                if (n.equals(s)) {
                     counter++;
+                }
+            }
             if (counter <= 1)
             //TODO
             //the or is joint
@@ -388,7 +413,8 @@ public class EPML2Canonical {
                 orJ.setId(String.valueOf(or.getId()));
                 orJ.setName(or.getName());
                 net.getNode().add(orJ);
-            } else
+            }
+            else
             //TODO
             //or is split, create it then remove the events after
             {
@@ -405,9 +431,11 @@ public class EPML2Canonical {
         for (TypeXOR xor : xor_list) {
             counter = 0;
             BigInteger n = xor.getId();
-            for (String s : flow_source_id_list)
-                if (n.equals(s))
+            for (String s : flow_source_id_list) {
+                if (n.equals(s)) {
                     counter++;
+                }
+            }
             if (counter <= 1)
             //TODO
             // xor is joint
@@ -416,7 +444,8 @@ public class EPML2Canonical {
                 xorJ.setId(String.valueOf(xor.getId()));
                 xorJ.setName(xor.getName());
                 net.getNode().add(xorJ);
-            } else
+            }
+            else
             //xor is split, create it
             {
                 XORSplitType xorS = new XORSplitType();
@@ -548,32 +577,37 @@ public class EPML2Canonical {
             if (edge.getSourceId() != null) {
                 if (edge.getSourceId().equals(id) && event_ids.contains(edge.getTargetId())) {
                     event_id = edge.getTargetId();
-                    for (EdgeType edge2 : net.getEdge())
+                    for (EdgeType edge2 : net.getEdge()) {
                         if (edge2.getSourceId() != null && edge2.getSourceId().equals(event_id)) {
                             edge.setTargetId(edge2.getTargetId());
                             edge_remove_list.add(edge2);
                             found = true; // To know in case the event is the last element in the mode
                         }
+                    }
                     // delete the unrequired event and set its name as a condition for the edge
-                    for (NodeType node : net.getNode())
+                    for (NodeType node : net.getNode()) {
                         if (node.getId().equals(event_id)) {
                             if (found) {
                                 edge.setCondition(node.getName());
                                 node_remove_list.add(node);
-                            } else {
+                            }
+                            else {
                                 edge.setCondition(node.getName());
                                 node.setName("");
                             }
                         }
+                    }
                 }
             }
         }
 
-        for (EdgeType edge : edge_remove_list)
+        for (EdgeType edge : edge_remove_list) {
             net.getEdge().remove(edge);
+        }
         edge_remove_list.clear();
-        for (NodeType node : node_remove_list)
+        for (NodeType node : node_remove_list) {
             net.getNode().remove(node);
+        }
         node_remove_list.clear();
 
     }
@@ -622,7 +656,8 @@ public class EPML2Canonical {
             edge.setTargetId(id_map.get(arc.getFlow().getTarget()));
             net.getEdge().add(edge);
             flow_source_id_list.add(edge.getSourceId());
-        } else if (arc.getRelation() != null) {
+        }
+        else if (arc.getRelation() != null) {
             for (NodeType node : net.getNode()) {
                 if (node.getId().equals(id_map.get(arc.getRelation().getSource()))) {
                     if (arc.getRelation().getType() != null && arc.getRelation().getType().equals("role")) {
@@ -638,7 +673,8 @@ public class EPML2Canonical {
                             ref.setQualifier(role_ref.get(arc.getRelation().getSource()).getDescription()); /// update
                         }
                         ((WorkType) node).getResourceTypeRef().add(ref);
-                    } else {
+                    }
+                    else {
                         ObjectRefType ref = new ObjectRefType();
                         TypeAttribute att = new TypeAttribute();
                         id_map.put(arc.getId(), String.valueOf(ids));
@@ -653,7 +689,8 @@ public class EPML2Canonical {
                         }
                         ((WorkType) node).getObjectRef().add(ref);
                     }
-                } else if (node.getId().equals(id_map.get(arc.getRelation().getTarget()))) {
+                }
+                else if (node.getId().equals(id_map.get(arc.getRelation().getTarget()))) {
 
                     ObjectRefType ref = new ObjectRefType();
                     TypeAttribute att = new TypeAttribute();
@@ -679,9 +716,11 @@ public class EPML2Canonical {
 
         if (object instanceof TypeAND) {
             and_list.add((TypeAND) object);
-        } else if (object instanceof TypeOR) {
+        }
+        else if (object instanceof TypeOR) {
             or_list.add((TypeOR) object);
-        } else if (object instanceof TypeXOR) {
+        }
+        else if (object instanceof TypeXOR) {
             xor_list.add((TypeXOR) object);
         }
     }
@@ -689,7 +728,8 @@ public class EPML2Canonical {
     private void translateObject(TypeObject obj) {
         if (obj.getDefRef() != null && def_ref.get(obj.getDefRef()) != null) {
             id_map.put(obj.getId(), def_ref.get(obj.getDefRef()));
-        } else {
+        }
+        else {
             ObjectType object = new ObjectType();
             id_map.put(obj.getId(), String.valueOf(ids));
             object.setId(String.valueOf(ids));
@@ -704,7 +744,8 @@ public class EPML2Canonical {
     private void translateRole(TypeRole role) {
         if (role.getDefRef() != null && def_ref.get(role.getDefRef()) != null) {
             id_map.put(role.getId(), def_ref.get(role.getDefRef()));
-        } else {
+        }
+        else {
             HumanType obj = new HumanType();
             id_map.put(role.getId(), String.valueOf(ids));
             obj.setId(String.valueOf(ids));

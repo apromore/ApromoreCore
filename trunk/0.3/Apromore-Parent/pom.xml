@@ -732,9 +732,10 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 
-        <java.source.version>1.6</java.source.version>
+        <java.source.version>1.7</java.source.version>
         <java.target.version>${java.source.version}</java.target.version>
         <pmd.target.jdk>${java.target.version}</pmd.target.jdk>
+        <jdk.version>1.7.0</jdk.version>
 
         <!-- **** Versions used for all projects **** -->
         <apromore-tools.version>1.0.0-SNAPSHOT</apromore-tools.version>
@@ -761,10 +762,10 @@
 
         <!-- Hibernate Verisons -->
         <hibernate-jpa.version>1.0.1.Final</hibernate-jpa.version>
-        <hibernate.version>4.1.2.Final</hibernate.version>
-        <hibernate.entity.version>4.1.2.Final</hibernate.entity.version>
-        <hibernate.ehcache.version>4.1.2.Final</hibernate.ehcache.version>
-        <hibernate.c3p0.version>4.1.2.Final</hibernate.c3p0.version>
+        <hibernate.version>4.1.5.SP1</hibernate.version>
+        <hibernate.entity.version>4.1.5.SP1</hibernate.entity.version>
+        <hibernate.ehcache.version>4.1.5.SP1</hibernate.ehcache.version>
+        <hibernate.c3p0.version>4.1.5.SP1</hibernate.c3p0.version>
         <hibernate.cglib.version>2.1_3</hibernate.cglib.version>
         <hibernate.annotation.version>3.5.6-Final</hibernate.annotation.version>
         <jta.version>1.1</jta.version>

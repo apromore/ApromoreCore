@@ -20,7 +20,6 @@ DROP TABLE IF EXISTS `process`;
 DROP TABLE IF EXISTS `process_branch`;
 DROP TABLE IF EXISTS `process_model_version`;
 
-DROP TABLE IF EXISTS `subcluster`;
 DROP TABLE IF EXISTS `cluster`;
 DROP TABLE IF EXISTS `cluster_assignment`;
 DROP TABLE IF EXISTS `fragment_distance`;
@@ -371,7 +370,7 @@ CREATE TABLE `process_model_attribute` (
 
 
 CREATE TABLE `cluster` (
-    `cluster_id`         varchar(40),
+    `cluster_id`         int(11) NOT NULL AUTO_INCREMENT,
     `size`               int,
     `avg_fragment_size`  float,
     `medoid_id`          varchar(40),
@@ -381,31 +380,23 @@ CREATE TABLE `cluster` (
     CONSTRAINT `pk_clusters` PRIMARY KEY (`cluster_id`)
 ) engine=InnoDB DEFAULT CHARSET=utf8;
 
-CREATE TABLE  `subcluster` (
-    `fragment_version_id`      varchar(40) NOT NULL DEFAULT '',
-    `fragment_size`            int(11) DEFAULT NULL,
-    `parent_cluster_id`        varchar(80) NOT NULL DEFAULT '',
-    `subcluster_id`            varchar(80) DEFAULT NULL,
-    CONSTRAINT `pk_subcluster` PRIMARY KEY (`fragment_version_id`,`parent_cluster_id`),
-    CONSTRAINT `fk_subcluster` FOREIGN KEY (fragment_version_id) REFERENCES fragment_version (fragment_version_id) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 CREATE TABLE `fragment_distance` (
     `fid1`      varchar(40),
     `fid2`      varchar(40),
     `ged`       double,
-    CONSTRAINT `pk_geds` PRIMARY KEY (`fid1`, `fid2`)
+    CONSTRAINT `pk_geds` PRIMARY KEY (`fid1`, `fid2`),
+    CONSTRAINT `fk_frag_version_1` FOREIGN KEY (`fid1`) REFERENCES `fragment_version` (`fragment_version_id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_frag_version_2` FOREIGN KEY (`fid2`) REFERENCES `fragment_version` (`fragment_version_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) engine=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `cluster_assignment` (
-    `fragment_version_id`  varchar(40),
-    `cluster_id`           varchar(80),
+    `cluster_id`           int(11),
     `clone_id`             varchar(40),
     `maximal`              boolean,
     `core_object_nb`       int,
     CONSTRAINT `pk_cluster_assignments` PRIMARY KEY (`fragment_version_id`, `cluster_id`),
-    CONSTRAINT `fk_frag_version_assignment` FOREIGN KEY (fragment_version_id) REFERENCES fragment_version (fragment_version_id) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `fk_cluster_assignment` FOREIGN KEY (cluster_id) REFERENCES clusters (cluster_id) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `fk_frag_version_assignment` FOREIGN KEY (`fragment_version_id`) REFERENCES `fragment_version` (fragment_version_id) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_cluster_assignment` FOREIGN KEY (`cluster_id`) REFERENCES `cluster` (`cluster_id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) engine=InnoDB DEFAULT CHARSET=utf8;
 
 

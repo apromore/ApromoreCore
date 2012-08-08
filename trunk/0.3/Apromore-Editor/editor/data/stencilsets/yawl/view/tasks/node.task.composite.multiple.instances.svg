@@ -256,46 +256,6 @@
 		<rect id="captionContainer" x="0" y="0" width="56" height="56" stroke="none" fill="none"></rect>		       	 
    		<text id="caption" font-size="12" x="28" y="56" stroke="black" 
    			oryx:align="top center" oryx:fittoelem="captionContainer"></text>   	
-   	<!-- ICONS -->		
-		<image id="iconmanual" oryx:anchors="top bottom left right" x="16" y="16" 
-			height="24" width="24" xlink:href="tasks/icons/Manual.png" />
-		<image id="iconautomatic" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/Automatic.png" />
-		<image id="iconautomaticone" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/AutomaticOne.png" />
-		<image id="iconautomatictwo" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/AutomaticTwo.png" />			 	 
-		<image id="icongroup" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/Group.png" />
-		<image id="iconinspect" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/Inspect.png" />
-		<image id="iconpair" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/Pair.png" />
-		<image id="iconprint" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/Print.png" />
-		<image id="iconvalidate" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/Validate.png" />
-		<image id="iconfile" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/File.png" />
-		<image id="iconblackpda" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/BlackPDA.png" />
-		<image id="icontimer" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/Timer.png" />
-		<image id="iconschedule" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/Schedule.png" />
-		<image id="iconquestionone" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/QuestionOne.png" />
-		<image id="iconquestiontwo" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/QuestionTwo.png" />
-		<image id="iconplugin" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/Plugin.png" />
-		<image id="iconexception" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/Exception.png" />
-		<image id="icondangerous" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/Dangerous.png" />
-		<image id="iconbrokenicon" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/BrokenIcon.png" />			 			 			 			 			 			 			 			 
-		<image id="iconroutingtask" oryx:anchors="top bottom left right" x="16" y="16"
-			 height="24" width="24" xlink:href="tasks/icons/RoutingTask.png" />
+   
    </g>
 </svg>

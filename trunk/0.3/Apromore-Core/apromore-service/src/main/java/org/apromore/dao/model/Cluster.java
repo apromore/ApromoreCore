@@ -9,6 +9,7 @@ import java.util.Set;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -16,6 +17,8 @@ import javax.persistence.Table;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 /**
  * The Cluster Data Object.
@@ -46,6 +49,7 @@ public class Cluster implements Serializable {
 
 
     @Id
+    @GeneratedValue(strategy = IDENTITY)
     @Column(name = "cluster_id")
     public String getClusterId() {
         return clusterId;
@@ -117,6 +121,10 @@ public class Cluster implements Serializable {
 
     public void setClusterAssignments(final Set<ClusterAssignment> newClusterAssignment) {
         this.clusterAssignments = newClusterAssignment;
+    }
+
+    public void addClusterAssignment(final ClusterAssignment newClusterAssignment) {
+        this.clusterAssignments.add(newClusterAssignment);
     }
 
 

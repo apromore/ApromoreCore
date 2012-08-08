@@ -49,7 +49,7 @@ public class ClusterServiceImpl implements ClusterService {
     private FragmentService fragmentService;
     @Autowired @Qualifier("DistanceMatrix")
     private DistanceMatrix dmatrix;
-    @Autowired
+    @Autowired @Qualifier("DBscanClusterer")
     private InMemoryClusterer dbscanClusterer;
 
 

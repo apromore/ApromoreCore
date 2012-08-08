@@ -1,39 +1,40 @@
 /**
- * Copyright (c) 2011-2012 Felix Mannhardt
+ * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
  * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- * 
- * See: http://www.opensource.org/licenses/mit-license.php
+ * See: http://www.gnu.org/licenses/lgpl-3.0
  * 
  */
 package de.hbrs.oryx.yawl.converter.context;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
+import org.jdom.Element;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicEdge;
 import org.oryxeditor.server.diagram.basic.BasicShape;
 import org.yawlfoundation.yawl.elements.YNet;
 import org.yawlfoundation.yawl.elements.YSpecification;
+import org.yawlfoundation.yawl.elements.YTask;
 
 /**
  * Context of a Conversion Oryx -> YAWL
@@ -42,8 +43,6 @@ import org.yawlfoundation.yawl.elements.YSpecification;
  * 
  */
 public class OryxConversionContext extends ConversionContext {
-
-	private final String oryxBackendUrl;
 
 	private YSpecification specification;
 
@@ -56,8 +55,14 @@ public class OryxConversionContext extends ConversionContext {
 	 * Contains all Shapes an their connected Edges
 	 */
 	private Map<BasicShape, Set<BasicEdge>> flowMap;
-	
+
 	private Map<String, BasicDiagram> subnetDiagramMap;
+
+	private Map<YNet, Map<YTask, List<String>>> cancellationSetMap;
+
+	private List<Element> netLayoutList;
+
+	private Element specLayoutElement;
 
 	/**
 	 * Create a new OryxConversionContext used to store information about the
@@ -65,12 +70,13 @@ public class OryxConversionContext extends ConversionContext {
 	 * 
 	 * @param oryxBackendUrl
 	 */
-	public OryxConversionContext(String oryxBackendUrl) {
+	public OryxConversionContext() {
 		super();
-		this.oryxBackendUrl = oryxBackendUrl;
 		this.netMap = new HashMap<BasicShape, YNet>();
 		this.flowMap = new HashMap<BasicShape, Set<BasicEdge>>();
 		this.subnetDiagramMap = new HashMap<String, BasicDiagram>();
+		this.cancellationSetMap = new HashMap<YNet, Map<YTask, List<String>>>();
+		this.netLayoutList = new ArrayList<Element>();
 	}
 
 	public void setSpecification(YSpecification yawlSpec) {
@@ -106,12 +112,8 @@ public class OryxConversionContext extends ConversionContext {
 			// Create empty one
 			Set<BasicEdge> flowSet = new HashSet<BasicEdge>();
 			flowMap.put(shape, flowSet);
-			return flowSet;
+			return Collections.unmodifiableSet(flowSet);
 		}
-	}
-
-	public String getOryxBackendUrl() {
-		return oryxBackendUrl;
 	}
 
 	/**
@@ -129,6 +131,67 @@ public class OryxConversionContext extends ConversionContext {
 
 	public BasicDiagram getSubnetDiagram(String id) {
 		return subnetDiagramMap.get(id);
-	}	
+	}
+
+	/**
+	 * Add the Element with ID to the Elements cancelled by task.
+	 * 
+	 * @param task
+	 *            the Task that cancels the Element
+	 * @param id
+	 *            of the Element to be cancelled
+	 */
+	public void addToCancellationSet(YTask task, String id) {
+		if (!cancellationSetMap.containsKey(task.getNet())) {
+			cancellationSetMap.put(task.getNet(), new HashMap<YTask, List<String>>());
+		}
+
+		Map<YTask, List<String>> cancellationSetForNet = cancellationSetMap.get(task.getNet());
+
+		if (!cancellationSetForNet.containsKey(task)) {
+			cancellationSetForNet.put(task, new ArrayList<String>());
+		}
+
+		cancellationSetForNet.get(task).add(id);
+	}
+
+	/**
+	 * Get a unmodifiable view on the Cancellation Set
+	 * 
+	 * @param net
+	 * 
+	 * @return
+	 */
+	public Set<Entry<YTask, List<String>>> getCancellationSets(YNet net) {
+		if (cancellationSetMap.get(net) != null) {
+			return Collections.unmodifiableSet(cancellationSetMap.get(net).entrySet());
+		} else {
+			return Collections.unmodifiableSet(new HashSet<Entry<YTask, List<String>>>());
+		}
+	}
+
+	public List<String> getCancellationSet(YNet net, YTask task) {
+		if (cancellationSetMap.get(net) != null) {
+			return cancellationSetMap.get(net).get(task);
+		} else {
+			return new ArrayList<String>();
+		}
+	}
+
+	public void addNetLayout(Element netLayoutElement) {
+		netLayoutList.add(netLayoutElement);
+	}
+
+	public List<Element> getNetLayoutList() {
+		return Collections.unmodifiableList(netLayoutList);
+	}
+
+	public void setSpecificationLayout(Element specLayoutElement) {
+		this.specLayoutElement = specLayoutElement;
+	}
+
+	public Element getSpecificationLayoutElement() {
+		return specLayoutElement;
+	}
 
 }

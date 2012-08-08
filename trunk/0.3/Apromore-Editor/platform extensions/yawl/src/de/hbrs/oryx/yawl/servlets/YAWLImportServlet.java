@@ -1,25 +1,20 @@
 /**
- * Copyright (c) 2011-2012 Felix Mannhardt
+ * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
  * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- * 
- * See: http://www.opensource.org/licenses/mit-license.php
+ * See: http://www.gnu.org/licenses/lgpl-3.0
  * 
  */
 package de.hbrs.oryx.yawl.servlets;
@@ -66,18 +61,13 @@ public class YAWLImportServlet extends HttpServlet {
 	 * , javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse res)
-			throws ServletException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException {
 
 		String yawlData = req.getParameter("data");
 
 		/* Transform and return as JSON */
 		try {
-			String oryxBackendUrl = req.getScheme() + req.getServerName() + ":"
-					+ req.getServerPort() + "/backend/poem/model/";
-			String rootDir = "/oryx/";
-			String jsonString = getJsonFromYAWL(yawlData, rootDir,
-					oryxBackendUrl);
+			String jsonString = getJsonFromYAWL(yawlData);
 			res.setContentType("application/json");
 			res.setStatus(200);
 			res.getWriter().print(jsonString);
@@ -99,8 +89,6 @@ public class YAWLImportServlet extends HttpServlet {
 	 * 
 	 * @param yawlXml
 	 *            a valid YAWL specification
-	 * @param oryxBackendUrl
-	 * @param rootDir
 	 * @return a valid Oryx diagram in its JSON representation
 	 * @throws JSONException
 	 *             in case of an invalid JSON conversion
@@ -111,14 +99,12 @@ public class YAWLImportServlet extends HttpServlet {
 	 * @throws JDOMException
 	 *             in case of ?? (error in Loading Layout)
 	 */
-	private String getJsonFromYAWL(String yawlXml, String rootDir,
-			String oryxBackendUrl) throws JSONException, YSyntaxException,
-			JDOMException, IOException {
+	private String getJsonFromYAWL(String yawlXml) throws JSONException, YSyntaxException, JDOMException, IOException {
 
 		// Convert YAWL Model
-		YAWLConverter yawlConverter = new YAWLConverter(rootDir, oryxBackendUrl);
+		YAWLConverter yawlConverter = new YAWLConverter();
 		OryxResult oryxResult = yawlConverter.convertYAWLToOryx(yawlXml);
-		
+
 		String warningMessage = "";
 		for (ConversionException e : oryxResult.getWarnings()) {
 			warningMessage += "- ";
@@ -127,8 +113,9 @@ public class YAWLImportServlet extends HttpServlet {
 				warningMessage += " (" + e.getCause().getMessage();
 			}
 			warningMessage += ")\n";
-		}	
-	
+			e.printStackTrace();
+		}
+
 		// Write Converted Model
 		JSONArray jsonDiagramList = new JSONArray();
 
@@ -141,7 +128,7 @@ public class YAWLImportServlet extends HttpServlet {
 		jsonImportObject.put("diagrams", jsonDiagramList);
 		jsonImportObject.put("rootNetName", oryxResult.getRootNetId());
 		jsonImportObject.put("hasFailed", oryxResult.hasFailed());
-		jsonImportObject.put("hasWarnings", oryxResult.hasWarnings());	
+		jsonImportObject.put("hasWarnings", oryxResult.hasWarnings());
 		jsonImportObject.put("warnings", warningMessage);
 
 		return jsonImportObject.toString();

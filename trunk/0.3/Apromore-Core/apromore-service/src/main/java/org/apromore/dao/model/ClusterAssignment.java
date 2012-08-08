@@ -29,11 +29,13 @@ import org.springframework.beans.factory.annotation.Configurable;
 public class ClusterAssignment implements Serializable {
 
     private ClusterAssignmentId id;
-    private FragmentVersion fragment;
-    private Cluster cluster;
     private String cloneId;
     private Boolean maximal;
     private Integer coreObjectNb;
+
+    private Cluster cluster;
+    private FragmentVersion fragment;
+
 
     /**
      * Public Constructor.
@@ -64,7 +66,7 @@ public class ClusterAssignment implements Serializable {
         this.fragment = newFragment;
     }
 
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "cluster_id", nullable = false, insertable = false, updatable = false)
     public Cluster getCluster() {
         return this.cluster;

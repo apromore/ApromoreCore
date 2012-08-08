@@ -16,10 +16,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Chathura Ekanayake
  */
+@Service("GEDMatrix")
+@Transactional(propagation = Propagation.REQUIRED)
 public class InMemoryGEDMatrix {
 
     private static final Logger log = LoggerFactory.getLogger(InMemoryGEDMatrix.class);

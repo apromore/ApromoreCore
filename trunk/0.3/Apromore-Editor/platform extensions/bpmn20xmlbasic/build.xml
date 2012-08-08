@@ -19,7 +19,7 @@
 	<!-- Compile the Java classes -->
 	<target name="com.signavio.extension.compile" depends="com.signavio.extension.clean">
 		<mkdir dir="${build}" />
-		<javac srcdir="${src}" destdir="${build}" debug="on" target="1.5">
+		<javac srcdir="${src}" destdir="${build}" debug="on" target="1.7">
 			<classpath id="libs">
 				<fileset dir="${platform-lib}">
 					<include name="**/*.jar" />
@@ -46,6 +46,7 @@
 	<target name="com.signavio.extension.copy2Platform.lib" if="lib">
 		<copy todir="${platform-lib}">
 			<fileset dir="${lib}">
+				<exclude name="servlet-api.jar"/>
 			</fileset>
 		</copy>
 	</target>

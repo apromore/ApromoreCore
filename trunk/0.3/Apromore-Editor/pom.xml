@@ -29,7 +29,7 @@
                     <dependency>
                         <groupId>com.sun</groupId>
                         <artifactId>tools</artifactId>
-                        <version>1.7.0</version>
+                        <version>${jdk.version}</version>
                         <scope>system</scope>
                         <systemPath>${java.home}/../lib/tools.jar</systemPath>
                     </dependency>
@@ -45,7 +45,7 @@
                                 <property name="test_classpath" refid="maven.test.classpath"/>
                                 <property name="plugin_classpath" refid="maven.plugin.classpath"/>
 
-                                <ant target="build-all-in-one-war" inheritAll="false" />
+                                <ant target="build-all-in-one-war" inheritall="false" />
                             </target>
                         </configuration>
                         <goals>

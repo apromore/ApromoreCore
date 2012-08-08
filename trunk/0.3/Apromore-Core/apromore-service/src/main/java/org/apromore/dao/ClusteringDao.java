@@ -9,6 +9,7 @@ import java.util.Map;
 
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.apromore.dao.model.Cluster;
+import org.apromore.dao.model.ClusterAssignment;
 import org.apromore.dao.model.ClusteringSummary;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.service.model.ClusterFilter;
@@ -32,6 +33,26 @@ public interface ClusteringDao {
      * @return the list of clusters
      */
     List<Cluster> getAllClusters();
+
+    /**
+     * find a particular Cluster.
+     * @param clusterId the id of the cluster to get.
+     * @return the cluster.
+     */
+    Cluster getCluster(final String clusterId);
+
+    /**
+     * Get the clustering Summary.
+     * @return the clustering summary.
+     */
+    ClusteringSummary getClusteringSummary();
+
+    /**
+     * the cluster summary for a single cluster.
+     * @param clusterId the cluster id
+     * @return the summary for the cluster.
+     */
+    Cluster getClusterSummary(String clusterId);
 
     /**
      * find clusters by a filter.
@@ -88,28 +109,27 @@ public interface ClusteringDao {
      */
     List<FragmentDataObject> getUnprocessedFragmentsOfProcesses(List<Integer> processIds);
 
-    /**
-     * Get the clustering Summary.
-     * @return the clustering summary.
-     */
-    ClusteringSummary getClusteringSummary();
 
     /**
-     * the cluster summary for a single cluster.
-     * @param clusterId the cluster id
-     * @return the summary for the cluster.
-     */
-    Cluster getClusterSummary(String clusterId);
-
-
-    /**
-     * save a list of clusters to the db.
+     * Save a list of clusters to the db.
      * @param clusters the list of clusters.
      */
     void persistClusters(Collection<Cluster> clusters);
 
     /**
-     * save a list of cluster assignments to the db.
+     * Persist a single Cluster.
+     * @param cs the cluster
+     */
+    void persistCluster(final Cluster cs);
+
+    /**
+     * Persist a Cluster Assignment.
+     * @param assignment the cluster assignment.
+     */
+    void persistClusterAssignment(final ClusterAssignment assignment);
+
+    /**
+     * Save a list of cluster assignments to the db.
      * @param values the list of cluster assignments
      */
     void persistClusterAssignments(Collection<InMemoryCluster> values);

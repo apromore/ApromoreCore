@@ -26,6 +26,12 @@ if (!ORYX)
 if (!ORYX.Plugins) 
 	ORYX.Plugins = new Object();
 
+/**
+ *  Location of Import and Export Servlet
+ *  This was located in config.js in Oryx  
+ **/
+ORYX.CONFIG.EPMLLAYOUTURL = ORYX.CONFIG.ROOT_PATH + "epmllayout";
+
 ORYX.Plugins.EPCLayouter = ORYX.Plugins.AbstractPlugin.extend({
 	facade: undefined,
 	construct: function(facade){
@@ -49,7 +55,7 @@ ORYX.Plugins.EPCLayouter = ORYX.Plugins.AbstractPlugin.extend({
         });
 		
 		
-		new Ajax.Request(ORYX.CONFIG.EPC_LAYOUTER, {
+		new Ajax.Request(ORYX.CONFIG.EPMLLAYOUTURL, {
 			method : 'POST',
 			asynchronous : false,
 			parameters : {
