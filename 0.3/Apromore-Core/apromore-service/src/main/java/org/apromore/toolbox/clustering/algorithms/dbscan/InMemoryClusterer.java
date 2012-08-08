@@ -1,6 +1,7 @@
 package org.apromore.toolbox.clustering.algorithms.dbscan;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
@@ -11,7 +12,10 @@ import java.util.Set;
 
 import org.apromore.common.Constants;
 import org.apromore.dao.ClusteringDao;
+import org.apromore.dao.FragmentVersionDao;
 import org.apromore.dao.model.Cluster;
+import org.apromore.dao.model.ClusterAssignment;
+import org.apromore.dao.model.ClusterAssignmentId;
 import org.apromore.exception.RepositoryException;
 import org.apromore.service.model.ClusterSettings;
 import org.apromore.toolbox.clustering.analyzers.ClusterAnalyzer;
@@ -19,66 +23,46 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
+import org.springframework.transaction.annotation.Transactional;
 
 /**
  * @author Chathura Ekanayake
  */
+@Service("DBscanClusterer")
+@Transactional(propagation = Propagation.REQUIRED)
 public class InMemoryClusterer {
 
     private static final Logger log = LoggerFactory.getLogger(InMemoryClusterer.class);
 
-    private int minPoints = 4;
-
-    @Autowired
+    @Autowired @Qualifier("GEDMatrix")
     private InMemoryGEDMatrix gedMatrix;
-    @Autowired
+    @Autowired @Qualifier("ExcludedObjectDbscanClusterer")
     private InMemoryExcludedObjectClusterer inMemoryExcludedObjectClusterer;
-    @Autowired
+    @Autowired @Qualifier("DBscanHierarchyFilter")
     private InMemoryHierarchyBasedFilter inMemoryHierarchyBasedFilter;
-    @Autowired
+    @Autowired @Qualifier("ClusterAnalyzer")
     private ClusterAnalyzer clusterAnalyzer;
+
     @Autowired @Qualifier("ClusteringDao")
     private ClusteringDao clusteringDao;
+    @Autowired @Qualifier("FragmentVersionDao")
+    private FragmentVersionDao fvDao;
 
+    private int minPoints = 4;
     private ClusterSettings settings;
-
     private ClusteringContext cc = null;
     private List<FragmentDataObject> unprocessedFragments;
-
-    /**
-     * Used to constrain clustering to a subset of fragments in the repository
-     * (e.g. fragments of selected process models).
-     */
     private List<String> allowedFragmentIds = null;
-
     private List<FragmentDataObject> ignoredFragments = null;
     private List<FragmentDataObject> noise = null;
     private List<FragmentDataObject> excluded = null;
     private Map<String, InMemoryCluster> clusters = null;
 
-    public InMemoryClusterer() {
 
-    }
+    public InMemoryClusterer() { }
 
-    public void setClusteringDao(ClusteringDao clusteringDao) {
-        this.clusteringDao = clusteringDao;
-    }
-
-    public void setGedMatrix(InMemoryGEDMatrix gedMatrix) {
-        this.gedMatrix = gedMatrix;
-    }
-
-    public void setClusterAnalyzer(ClusterAnalyzer clusterAnalyzer) {
-        this.clusterAnalyzer = clusterAnalyzer;
-    }
-
-    public void setInMemoryExcludedObjectClusterer(InMemoryExcludedObjectClusterer inMemoryExcludedObjectClusterer) {
-        this.inMemoryExcludedObjectClusterer = inMemoryExcludedObjectClusterer;
-    }
-
-    public void setInMemoryHierarchyBasedFilter(InMemoryHierarchyBasedFilter inMemoryHierarchyBasedFilter) {
-        this.inMemoryHierarchyBasedFilter = inMemoryHierarchyBasedFilter;
-    }
 
     public void clusterRepository(ClusterSettings settings) throws RepositoryException {
 
@@ -139,13 +123,47 @@ public class InMemoryClusterer {
             cds.removeAll(toBeRemovedCDs);
         }
 
-        clusteringDao.persistClusters(cds);
-        clusteringDao.persistClusterAssignments(clusters.values());
+        buildClusters(cds, clusters.values());
+        //clusteringDao.persistClusters(buildClusters(cds, clusters.values()));
+        //clusteringDao.persistClusterAssignments(clusters.values());
         long pt2 = System.currentTimeMillis();
         long pduration = pt2 - pt1;
         log.debug("Time for persisting clusters: " + pduration);
 
         log.debug("Cluster persistance completed.");
+    }
+
+    /* TODO: Fix this class and not use this temp method. */
+    private void buildClusters(final List<Cluster> cds, final Collection<InMemoryCluster> values) {
+        Cluster newCluster;
+        ClusterAssignment newClusterAssignment;
+
+        for (Cluster cluster : cds) {
+            for (InMemoryCluster imc : values) {
+                if (cluster.getClusterId().equals(imc.getClusterId())) {
+                    newCluster = new Cluster();
+
+                    newCluster.setAvgFragmentSize(cluster.getAvgFragmentSize());
+                    newCluster.setBCR(cluster.getBCR());
+                    newCluster.setMedoidId(cluster.getMedoidId());
+                    newCluster.setRefactoringGain(cluster.getRefactoringGain());
+                    newCluster.setSize(cluster.getSize());
+                    newCluster.setStandardizingEffort(cluster.getStandardizingEffort());
+
+                    clusteringDao.persistCluster(newCluster);
+
+                    for (FragmentDataObject f : imc.getFragments()) {
+                        newClusterAssignment = new ClusterAssignment();
+                        newClusterAssignment.setId(new ClusterAssignmentId(f.getFragmentId(), newCluster.getClusterId()));
+                        newClusterAssignment.setCluster(newCluster);
+                        newClusterAssignment.setFragment(fvDao.findFragmentVersion(f.getFragmentId()));
+                        newCluster.addClusterAssignment(newClusterAssignment);
+
+                        clusteringDao.persistClusterAssignment(newClusterAssignment);
+                    }
+                }
+            }
+        }
     }
 
     private void initializeForClustering(ClusterSettings settings) throws RepositoryException {
@@ -300,7 +318,7 @@ public class InMemoryClusterer {
     }
 
     /**
-     * @param n2
+     * @param n
      * @param usedHierarchies
      */
     private void removeAll(List<FragmentDataObject> n, Set<String> usedHierarchies) {
@@ -316,8 +334,7 @@ public class InMemoryClusterer {
 
     /**
      * @param newNeighbours
-     * @param pendingClusterFragments
-     * @param con
+     * @param allClusterFragments
      * @return
      * @throws org.apromore.exception.RepositoryException
      *
@@ -386,5 +403,28 @@ public class InMemoryClusterer {
             }
         }
         return new double[]{totalCost, maxDistance};
+    }
+
+
+
+
+    public void setClusteringDao(ClusteringDao clusteringDao) {
+        this.clusteringDao = clusteringDao;
+    }
+
+    public void setGedMatrix(InMemoryGEDMatrix gedMatrix) {
+        this.gedMatrix = gedMatrix;
+    }
+
+    public void setClusterAnalyzer(ClusterAnalyzer clusterAnalyzer) {
+        this.clusterAnalyzer = clusterAnalyzer;
+    }
+
+    public void setInMemoryExcludedObjectClusterer(InMemoryExcludedObjectClusterer inMemoryExcludedObjectClusterer) {
+        this.inMemoryExcludedObjectClusterer = inMemoryExcludedObjectClusterer;
+    }
+
+    public void setInMemoryHierarchyBasedFilter(InMemoryHierarchyBasedFilter inMemoryHierarchyBasedFilter) {
+        this.inMemoryHierarchyBasedFilter = inMemoryHierarchyBasedFilter;
     }
 }

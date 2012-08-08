@@ -1,30 +1,28 @@
 /**
- * Copyright (c) 2011-2012 Felix Mannhardt
+ * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
  * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- * 
- * See: http://www.opensource.org/licenses/mit-license.php
+ * See: http://www.gnu.org/licenses/lgpl-3.0
  * 
  */
 package de.hbrs.oryx.yawl.converter.handler.yawl.decomposition;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 
@@ -32,6 +30,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oryxeditor.server.diagram.Bounds;
+import org.oryxeditor.server.diagram.StencilSetReference;
+import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicNode;
 import org.oryxeditor.server.diagram.basic.BasicShape;
 import org.yawlfoundation.yawl.elements.YDecomposition;
@@ -42,6 +42,7 @@ import org.yawlfoundation.yawl.elements.data.YParameter;
 import org.yawlfoundation.yawl.elements.data.YVariable;
 
 import de.hbrs.oryx.yawl.converter.context.YAWLConversionContext;
+import de.hbrs.oryx.yawl.converter.exceptions.ConversionException;
 import de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandler;
 
 /**
@@ -53,8 +54,7 @@ import de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandler;
  */
 public class NetHandler extends DecompositionHandler {
 
-	public NetHandler(YAWLConversionContext context,
-			YDecomposition decomposition) {
+	public NetHandler(YAWLConversionContext context, YDecomposition decomposition) {
 		super(context, decomposition);
 	}
 
@@ -73,27 +73,28 @@ public class NetHandler extends DecompositionHandler {
 	public void convert(String parentId) {
 
 		final String netId = getNet().getID();
+		
+		String stencilSetNs = "http://b3mn.org/stencilset/yawl2.2#";
+		StencilSetReference stencilSetRef = new StencilSetReference(stencilSetNs);
 
-		final BasicShape netShape = new BasicNode(netId, "Net");
+		final BasicDiagram netShape = new BasicDiagram(netId, "Diagram", stencilSetRef);
+		
 		netShape.setProperties(convertProperties());
 		netShape.setBounds(getNetLayout(getNet()));
 		getContext().addNet(netId, netShape);
 
 		// Convert all children (NetElements) of root net
-		for (Entry<String, YExternalNetElement> netElementEntry : getNet()
-				.getNetElements().entrySet()) {
+		for (Entry<String, YExternalNetElement> netElementEntry : getNet().getNetElements().entrySet()) {
 			YExternalNetElement yElement = netElementEntry.getValue();
 
-			YAWLHandler netElementHandler = getContext().getHandlerFactory()
-					.createYAWLConverter(yElement);
+			YAWLHandler netElementHandler = getContext().getHandlerFactory().createYAWLConverter(yElement);
 			netElementHandler.convert(netId);
 
 		}
 
 		// Convert all flows between the NetElements
 		for (YFlow yFlow : getContext().getNetLayout(netId).getFlowSet()) {
-			YAWLHandler flowHandler = getContext().getHandlerFactory()
-					.createYAWLConverter(yFlow);
+			YAWLHandler flowHandler = getContext().getHandlerFactory().createYAWLConverter(yFlow);
 			flowHandler.convert(netId);
 		}
 
@@ -108,61 +109,76 @@ public class NetHandler extends DecompositionHandler {
 	 */
 	protected HashMap<String, String> convertProperties() {
 		HashMap<String, String> properties = new HashMap<String, String>();
-		properties.put("name", getNet().getName() != null ? getNet().getName()
-				: "");
+		properties.put("name", getNet().getName() != null ? getNet().getName() : "");
 		properties.put("yawlid", getNet().getID());
 		properties.put("isrootnet", "false");
-		try {
-			properties.put("decompositionvariables",
-					convertDecompositionVariables());
-		} catch (JSONException e) {
-			getContext().addConversionWarnings("Could not convert decomposition variables.", e);
-		}
+		properties.put("externaldatagateway", getNet().getExternalDataGateway());
+		properties.putAll(convertDecompositionProperties());
 		return properties;
 	}
 
-	private String convertDecompositionVariables() throws JSONException {
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.hbrs.oryx.yawl.converter.handler.yawl.decomposition.DecompositionHandler
+	 * #convertDecompositionProperties()
+	 */
+	@Override
+	protected HashMap<String, String> convertDecompositionProperties() {
+		HashMap<String, String> properties = super.convertDecompositionProperties();
+		try {
+			properties.put("decompositionvariables", convertDecompositionVariables());
+		} catch (ConversionException e) {
+			getContext().addConversionWarnings("Could not convert decomposition variables.", e);
+		}
+
+		return properties;
+	}
+
+	private String convertDecompositionVariables() throws ConversionException {
 
 		JSONObject variables = new JSONObject();
 		JSONArray items = new JSONArray();
-		final Map<String, YParameter> inputParameters = getNet()
-				.getInputParameters();
-		final Map<String, YParameter> outputParameters = getNet()
-				.getOutputParameters();
 
-		for (YParameter inputParam : inputParameters.values()) {
-			JSONObject inputVariable = new JSONObject();
-			inputVariable.put("name", inputParam.getName());
-			inputVariable.put("type", inputParam.getDataTypeName());
-			if (outputParameters.containsKey(inputParam.getName())) {
-				inputVariable.put("usage", "inputandoutput");
-			} else {
-				inputVariable.put("usage", "input");
+		final Map<String, YParameter> inputParameters = getDecomposition().getInputParameters();
+		List<YParameter> inputParameterList = new ArrayList<YParameter>(inputParameters.values());
+		Collections.sort(inputParameterList);
+
+		final Map<String, YParameter> outputParameters = getDecomposition().getOutputParameters();
+		List<YParameter> outputParameterList = new ArrayList<YParameter>(outputParameters.values());
+		Collections.sort(outputParameterList);
+
+		List<YVariable> variablesList = new ArrayList<YVariable>(getNet().getLocalVariables().values());
+		Collections.sort(variablesList);
+
+		try {
+			for (YParameter inputParam : inputParameterList) {
+				if (outputParameters.containsKey(inputParam.getName())) {
+					items.put(convertParameter(inputParam, "inputandoutput"));
+				} else {
+					items.put(convertParameter(inputParam, "input"));
+				}
 			}
-			items.put(inputVariable);
-		}
-		for (YParameter outputParam : outputParameters.values()) {
-			// Only if not already added as inputandoutput paramter
-			if (!inputParameters.containsKey(outputParam.getName())) {
-				JSONObject outputVariable = new JSONObject();
-				outputVariable.put("name", outputParam.getName());
-				outputVariable.put("type", outputParam.getDataTypeName());
-				outputVariable.put("usage", "output");
-				items.put(outputVariable);
+
+			for (YParameter outputParam : outputParameterList) {
+				// Only if not already added as inputandoutput paramter
+				if (!inputParameters.containsKey(outputParam.getName())) {
+					items.put(convertParameter(outputParam, "output"));
+				}
 			}
-		}
-		for (YVariable localVariables : getNet().getLocalVariables().values()) {
-			// Only if not already added above
-			if (!inputParameters.containsKey(localVariables.getName())
-					&& !outputParameters.containsKey(localVariables.getName())) {
-				JSONObject inputVariable = new JSONObject();
-				inputVariable.put("name", localVariables.getName());
-				inputVariable.put("type", localVariables.getDataTypeName());
-				inputVariable.put("usage", "local");
-				items.put(inputVariable);
+
+			for (YVariable localVariable : variablesList) {
+				// Only if not already added above
+				if (!inputParameters.containsKey(localVariable.getName()) && !outputParameters.containsKey(localVariable.getName())) {
+					items.put(convertParameter(localVariable, "local"));
+				}
 			}
+			variables.put("items", items);
+		} catch (JSONException e) {
+			throw new ConversionException(e);
 		}
-		variables.put("items", items);
+
 		return variables.toString();
 	}
 

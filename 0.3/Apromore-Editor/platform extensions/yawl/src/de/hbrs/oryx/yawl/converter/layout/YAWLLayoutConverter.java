@@ -1,31 +1,28 @@
 /**
- * Copyright (c) 2011-2012 Felix Mannhardt
+ * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
  * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- * 
- * See: http://www.opensource.org/licenses/mit-license.php
+ * See: http://www.gnu.org/licenses/lgpl-3.0
  * 
  */
 package de.hbrs.oryx.yawl.converter.layout;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -38,10 +35,11 @@ import org.jdom.Namespace;
 import org.jdom.input.SAXBuilder;
 import org.oryxeditor.server.diagram.Bounds;
 import org.oryxeditor.server.diagram.Point;
+import org.yawlfoundation.yawl.util.JDOMUtil;
 
-import de.hbrs.oryx.yawl.converter.YAWLMapping;
 import de.hbrs.oryx.yawl.converter.context.YAWLConversionContext;
 import de.hbrs.oryx.yawl.converter.layout.NetElementLayout.DecoratorType;
+import de.hbrs.oryx.yawl.util.YAWLMapping;
 
 /**
  * Converts the layout information stored in a YAWL XML file.
@@ -51,8 +49,7 @@ import de.hbrs.oryx.yawl.converter.layout.NetElementLayout.DecoratorType;
  */
 public class YAWLLayoutConverter {
 
-	private static final Bounds DEFAULT_FLOW_BOUNDS = new Bounds(new Point(0.0,
-			0.0), new Point(0.0, 0.0));
+	private static final Bounds DEFAULT_FLOW_BOUNDS = new Bounds(new Point(0.0, 0.0), new Point(0.0, 0.0));
 
 	/**
 	 * Namespaces of YAWL specification
@@ -94,8 +91,7 @@ public class YAWLLayoutConverter {
 	 * @throws JDOMException
 	 * @throws IOException
 	 */
-	public YAWLLayoutConverter(String specificationString,
-			YAWLConversionContext context) throws JDOMException, IOException {
+	public YAWLLayoutConverter(String specificationString, YAWLConversionContext context) throws JDOMException, IOException {
 		super();
 		this.specificationString = specificationString;
 		this.context = context;
@@ -104,8 +100,7 @@ public class YAWLLayoutConverter {
 
 	private void initXMLReader() throws JDOMException, IOException {
 		SAXBuilder builder = new SAXBuilder();
-		Document document = builder
-				.build(new StringReader(specificationString));
+		Document document = builder.build(new StringReader(specificationString));
 		Element root = document.getRootElement();
 		layout = root.getChild("layout", root.getNamespace());
 		yawlNamespace = layout.getNamespace();
@@ -128,9 +123,7 @@ public class YAWLLayoutConverter {
 		try {
 			return numberFormatter.parse(d).doubleValue();
 		} catch (Exception pe) {
-			context.addConversionWarnings(
-					"Could not convert to Double, returning 1 instead. " + d,
-					pe);
+			context.addConversionWarnings("Could not convert to Double, returning 1 instead. " + d, pe);
 			return 1;
 		}
 	}
@@ -159,24 +152,20 @@ public class YAWLLayoutConverter {
 
 					// Vertexes are Conditions or Tasks of a YAWL Net without a
 					// Label or Decorator
-					for (Object vertexObject : yawlNet.getChildren("vertex",
-							yawlNamespace)) {
+					for (Object vertexObject : yawlNet.getChildren("vertex", yawlNamespace)) {
 						convertVertexLayout(netLayout, (Element) vertexObject);
 					}
 
 					// Containers may be Conditions or Tasks of a YAWL Net
-					for (Object containterObject : yawlNet.getChildren(
-							"container", yawlNamespace)) {
-						convertContainerLayout(netLayout,
-								(Element) containterObject);
+					for (Object containterObject : yawlNet.getChildren("container", yawlNamespace)) {
+						convertContainerLayout(netLayout, (Element) containterObject);
 
 					}
 
 					// Flows for a YAWL Net, should be read as last because it
 					// uses the Join/Split decorator information of the task
 					// containers
-					for (Object flowObject : yawlNet.getChildren("flow",
-							yawlNamespace)) {
+					for (Object flowObject : yawlNet.getChildren("flow", yawlNamespace)) {
 						convertFlowLayout(netLayout, (Element) flowObject);
 					}
 
@@ -204,8 +193,7 @@ public class YAWLLayoutConverter {
 	private NetLayout convertNetLayout(Element yawlNet) {
 		String yawlId = yawlNet.getAttributeValue("id");
 		Element yawlBounds = yawlNet.getChild("bounds", yawlNamespace);
-		Bounds bounds = convertToOryxBounds(fixNetBoundsElement(yawlBounds),
-				0.0, 0.0);
+		Bounds bounds = convertToOryxBounds(fixNetBoundsElement(yawlBounds), 0.0, 0.0);
 		NetLayout netLayout = new NetLayout(bounds);
 		context.putNetLayout(yawlId, netLayout);
 		return netLayout;
@@ -222,14 +210,10 @@ public class YAWLLayoutConverter {
 	 */
 	private Element fixNetBoundsElement(Element boundsElement) {
 		Element clonedElement = (Element) boundsElement.clone();
-		clonedElement.setAttribute("x",
-				fixBoundsAttribute(boundsElement.getAttributeValue("x")));
-		clonedElement.setAttribute("y",
-				fixBoundsAttribute(boundsElement.getAttributeValue("y")));
-		clonedElement.setAttribute("h",
-				fixBoundsAttribute(boundsElement.getAttributeValue("h")));
-		clonedElement.setAttribute("w",
-				fixBoundsAttribute(boundsElement.getAttributeValue("w")));
+		clonedElement.setAttribute("x", fixBoundsAttribute(boundsElement.getAttributeValue("x")));
+		clonedElement.setAttribute("y", fixBoundsAttribute(boundsElement.getAttributeValue("y")));
+		clonedElement.setAttribute("h", fixBoundsAttribute(boundsElement.getAttributeValue("h")));
+		clonedElement.setAttribute("w", fixBoundsAttribute(boundsElement.getAttributeValue("w")));
 		return clonedElement;
 	}
 
@@ -275,8 +259,7 @@ public class YAWLLayoutConverter {
 	 * @param netLayout
 	 * @param yawlContainer
 	 */
-	private void convertContainerLayout(NetLayout netLayout,
-			Element yawlContainer) {
+	private void convertContainerLayout(NetLayout netLayout, Element yawlContainer) {
 
 		Element yawlVertex = yawlContainer.getChild("vertex", yawlNamespace);
 		if (yawlVertex != null) {
@@ -300,19 +283,14 @@ public class YAWLLayoutConverter {
 	 * @param yawlVertex
 	 *            containing the bounds of the condition
 	 */
-	private void convertConditionLayout(NetLayout netLayout,
-			Element yawlContainer, Element yawlVertex) {
-		Element yawlVertexBounds = yawlVertex.getChild("attributes",
-				yawlNamespace).getChild("bounds", yawlNamespace);
+	private void convertConditionLayout(NetLayout netLayout, Element yawlContainer, Element yawlVertex) {
+		Element yawlVertexBounds = yawlVertex.getChild("attributes", yawlNamespace).getChild("bounds", yawlNamespace);
 		NetElementLayout layoutInformation = new NetElementLayout(true);
-		layoutInformation.setBounds(convertToOryxBounds(yawlVertexBounds, 0.0,
-				0.0));
+		layoutInformation.setBounds(convertToOryxBounds(yawlVertexBounds, 0.0, 0.0));
 		if (yawlContainer != null) {
-			netLayout.putVertexLayout(yawlContainer.getAttributeValue("id"),
-					layoutInformation);
+			netLayout.putVertexLayout(yawlContainer.getAttributeValue("id"), layoutInformation);
 		} else {
-			netLayout.putVertexLayout(yawlVertex.getAttributeValue("id"),
-					layoutInformation);
+			netLayout.putVertexLayout(yawlVertex.getAttributeValue("id"), layoutInformation);
 		}
 
 	}
@@ -326,23 +304,18 @@ public class YAWLLayoutConverter {
 	 * @param yawlVertex
 	 *            bounds of the vertex element inside the container
 	 */
-	private void convertTaskLayout(NetLayout netLayout, Element yawlContainer,
-			Element yawlVertex) {
-		Element yawlVertexBounds = yawlVertex.getChild("attributes",
-				yawlNamespace).getChild("bounds", yawlNamespace);
+	private void convertTaskLayout(NetLayout netLayout, Element yawlContainer, Element yawlVertex) {
+		Element yawlVertexBounds = yawlVertex.getChild("attributes", yawlNamespace).getChild("bounds", yawlNamespace);
 		NetElementLayout layoutInformation = new NetElementLayout(false);
 		// Task has to be adjusted to Oryx coordinates,
 		// as the JOIN/SPLIT decorator is part of the BasicShape in Oryx
-		layoutInformation.setBounds(convertToOryxBounds(yawlVertexBounds, 24.0,
-				24.0));
+		layoutInformation.setBounds(convertToOryxBounds(yawlVertexBounds, 24.0, 24.0));
 		layoutInformation.setIconPath(convertIconPath(yawlVertex));
 		if (yawlContainer != null) {
 			convertDecorator(yawlContainer, layoutInformation);
-			netLayout.putVertexLayout(yawlContainer.getAttributeValue("id"),
-					layoutInformation);
+			netLayout.putVertexLayout(yawlContainer.getAttributeValue("id"), layoutInformation);
 		} else {
-			netLayout.putVertexLayout(yawlVertex.getAttributeValue("id"),
-					layoutInformation);
+			netLayout.putVertexLayout(yawlVertex.getAttributeValue("id"), layoutInformation);
 		}
 	}
 
@@ -368,11 +341,9 @@ public class YAWLLayoutConverter {
 	 * @param layoutInformation
 	 *            already converted layout of the YAWL task
 	 */
-	private void convertDecorator(Element yawlContainer,
-			NetElementLayout layoutInformation) {
+	private void convertDecorator(Element yawlContainer, NetElementLayout layoutInformation) {
 		@SuppressWarnings("rawtypes")
-		List yawlDecoratorList = yawlContainer.getChildren("decorator",
-				yawlNamespace);
+		List yawlDecoratorList = yawlContainer.getChildren("decorator", yawlNamespace);
 		if (yawlDecoratorList != null) {
 			for (Object o : yawlDecoratorList) {
 				Element yawlDecorator = (Element) o;
@@ -388,11 +359,9 @@ public class YAWLLayoutConverter {
 	}
 
 	private DecoratorType convertDecoratorType(Element yawlDecorator) {
-		Element decoratorPosition = yawlDecorator.getChild("position",
-				yawlNamespace);
+		Element decoratorPosition = yawlDecorator.getChild("position", yawlNamespace);
 		if (decoratorPosition != null) {
-			return YAWLMapping.DECORATOR_TYPE_MAP.get(Integer
-					.parseInt(decoratorPosition.getText()));
+			return YAWLMapping.DECORATOR_TYPE_MAP.get(Integer.parseInt(decoratorPosition.getText()));
 		}
 		return DecoratorType.NONE;
 	}
@@ -406,10 +375,8 @@ public class YAWLLayoutConverter {
 	 */
 	private boolean isCondition(String id) {
 		return specificationString.contains("<condition id=\"" + id + "\"")
-				|| specificationString.contains("<inputCondition id=\"" + id
-						+ "\"")
-				|| specificationString.contains("<outputCondition id=\"" + id
-						+ "\"");
+				|| specificationString.contains("<inputCondition id=\"" + id + "\"")
+				|| specificationString.contains("<outputCondition id=\"" + id + "\"");
 	}
 
 	/**
@@ -423,8 +390,22 @@ public class YAWLLayoutConverter {
 		layoutInformation.setBounds(DEFAULT_FLOW_BOUNDS);
 		// Flow does need corrects dockers (ports in YAWL)
 		layoutInformation.setDockers(convertFlowDockers(netLayout, yawlFlow));
-		netLayout.putFlowLayout(yawlFlow.getAttributeValue("source") + "|"
-				+ yawlFlow.getAttributeValue("target"), layoutInformation);
+		layoutInformation.setLabel(convertFlowLabel(yawlFlow));
+		netLayout.putFlowLayout(yawlFlow.getAttributeValue("source") + "|" + yawlFlow.getAttributeValue("target"), layoutInformation);
+	}
+	
+	
+	private String convertFlowLabel(Element yawlFlow) {
+		if (yawlFlow.getChild("label", yawlNamespace) != null) {
+			Element labelElement = yawlFlow.getChild("label", yawlNamespace);
+			//TODO why is the label text urlencoded in YAWL?
+			try {
+				return URLDecoder.decode(JDOMUtil.decodeEscapes(labelElement.getText()), "UTF-8");
+			} catch (UnsupportedEncodingException e) {
+				return "";
+			}
+		}
+		return "";
 	}
 
 	/**
@@ -432,8 +413,7 @@ public class YAWLLayoutConverter {
 	 * @param yawlFlow
 	 * @return
 	 */
-	private ArrayList<Point> convertFlowDockers(NetLayout netLayout,
-			Element yawlFlow) {
+	private ArrayList<Point> convertFlowDockers(NetLayout netLayout, Element yawlFlow) {
 
 		Element flowPorts = yawlFlow.getChild("ports", yawlNamespace);
 		Integer inPort = Integer.valueOf(flowPorts.getAttributeValue("in"));
@@ -449,16 +429,14 @@ public class YAWLLayoutConverter {
 		if (netLayout.getVertexLayout(sourceId).isCondition()) {
 			inDocker = YAWLMapping.CONDITION_PORT_MAP.get(inPort);
 		} else {
-			inDocker = convertTaskDocker(netLayout.getVertexLayout(sourceId)
-					.getSplitDecorator(), inPort);
+			inDocker = convertTaskDocker(netLayout.getVertexLayout(sourceId).getSplitDecorator(), inPort);
 		}
 
 		// Target may have a JOIN decorator or may be a condition
 		if (netLayout.getVertexLayout(targetId).isCondition()) {
 			outDocker = YAWLMapping.CONDITION_PORT_MAP.get(outPort);
 		} else {
-			outDocker = convertTaskDocker(netLayout.getVertexLayout(targetId)
-					.getJoinDecorator(), outPort);
+			outDocker = convertTaskDocker(netLayout.getVertexLayout(targetId).getJoinDecorator(), outPort);
 		}
 
 		ArrayList<Point> dockers = new ArrayList<Point>();
@@ -467,8 +445,7 @@ public class YAWLLayoutConverter {
 		dockers.add(inDocker);
 
 		// Add bends from YAWL with coordinates of Diagram
-		Element pointElement = yawlFlow.getChild("attributes", yawlNamespace)
-				.getChild("points", yawlNamespace);
+		Element pointElement = yawlFlow.getChild("attributes", yawlNamespace).getChild("points", yawlNamespace);
 		// points may be omitted in YAWL
 		if (pointElement != null) {
 			@SuppressWarnings("rawtypes")
@@ -534,16 +511,11 @@ public class YAWLLayoutConverter {
 	 *            enlarge the width, without affecting the position
 	 * @return
 	 */
-	private Bounds convertToOryxBounds(Element yawlBounds,
-			double heightAdjusment, double widthAdjustment) {
-		double x = parseDouble(yawlBounds.getAttributeValue("x"))
-				- (widthAdjustment / 2);
-		double y = parseDouble(yawlBounds.getAttributeValue("y"))
-				- (heightAdjusment / 2);
-		double w = parseDouble(yawlBounds.getAttributeValue("w"))
-				+ widthAdjustment;
-		double h = parseDouble(yawlBounds.getAttributeValue("h"))
-				+ heightAdjusment;
+	private Bounds convertToOryxBounds(Element yawlBounds, double heightAdjusment, double widthAdjustment) {
+		double x = parseDouble(yawlBounds.getAttributeValue("x")) - (widthAdjustment / 2);
+		double y = parseDouble(yawlBounds.getAttributeValue("y")) - (heightAdjusment / 2);
+		double w = parseDouble(yawlBounds.getAttributeValue("w")) + widthAdjustment;
+		double h = parseDouble(yawlBounds.getAttributeValue("h")) + heightAdjusment;
 		return new Bounds(new Point(x + w, y + h), new Point(x, y));
 	}
 

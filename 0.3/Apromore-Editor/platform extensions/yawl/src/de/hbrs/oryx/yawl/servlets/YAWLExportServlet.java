@@ -1,25 +1,20 @@
 /**
- * Copyright (c) 2011-2012 Felix Mannhardt
+ * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
  * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- * 
- * See: http://www.opensource.org/licenses/mit-license.php
+ * See: http://www.gnu.org/licenses/lgpl-3.0
  * 
  */
 package de.hbrs.oryx.yawl.servlets;
@@ -50,25 +45,21 @@ public class YAWLExportServlet extends HttpServlet {
 
 	private static final long serialVersionUID = 6881808890572459223L;
 
-	/**
-	 * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest,
-	 *      javax.servlet.http.HttpServletResponse)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest
+	 * , javax.servlet.http.HttpServletResponse)
 	 */
 	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse res)
-			throws ServletException, IOException {
+	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
 		String jsonData = req.getParameter("data");
 
 		/* Transform and return as YAWL XML */
 		try {
-			String oryxBackendUrl = req.getScheme() + "://"
-					+ req.getServerName() + ":" + req.getServerPort()
-					+ "/backend/poem/model/";
-			String rootDir = "/oryx/";
-			;
-			String yawlString = getYAWLfromJSON(jsonData, rootDir,
-					oryxBackendUrl);
+			String yawlString = getYAWLfromJSON(jsonData);
 			res.setContentType("application/xml");
 			res.setStatus(200);
 			res.getWriter().print(yawlString);
@@ -85,11 +76,10 @@ public class YAWLExportServlet extends HttpServlet {
 
 	}
 
-	private String getYAWLfromJSON(String jsonData, String rootDir,
-			String oryxBackendUrl) throws JSONException {
+	private String getYAWLfromJSON(String jsonData) throws JSONException {
 
 		// Convert Oryx Diagram
-		YAWLConverter yawlConverter = new YAWLConverter(rootDir, oryxBackendUrl);
+		YAWLConverter yawlConverter = new YAWLConverter();
 
 		YAWLResult yawlResult = yawlConverter.convertOryxToYAWL(jsonData);
 
@@ -101,6 +91,7 @@ public class YAWLExportServlet extends HttpServlet {
 				warningMessage += " (" + e.getCause().getMessage();
 			}
 			warningMessage += ")\n";
+			e.printStackTrace();
 		}
 
 		// Write Conversion Result:

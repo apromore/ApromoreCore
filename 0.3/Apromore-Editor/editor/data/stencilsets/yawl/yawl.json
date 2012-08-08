@@ -36,7 +36,6 @@
 					"type":"String",
 					"title":"Internal YAWL ID",
 					"value":"",
-					"description":"Unique, internal identifier used by YAWL. If empty on export, an unique identifier will be generated automatically.",
 					"readonly":false,
 					"optional":true,
 					"length":"100"	
@@ -86,18 +85,39 @@
  			"name":"baseSpecification",
  			"properties": [
 				{
-					"id":"title",
+					"id":"specid",
 					"type":"String",
-					"title":"Title",
+					"title":"Specification ID",
+					"value":"",
+					"readonly":false,
+					"optional":true,
+					"length":"100"	
+				}, 			
+				{
+					"id":"specname",
+					"type":"String",
+					"title":"Specification Name",
+					"value":"",
+					"description":"The descriptive name of the YAWL element.",
+					"readonly":false,
+					"optional":true,
+					"length":"100",
+					"wrapLines": true,
+					"refToView":"caption"	
+				}, 			
+				{
+					"id":"spectitle",
+					"type":"String",
+					"title":"Specification Title",
 					"value":"",
 					"description":"",
 					"readonly":false,
 					"optional":true,									
 				},
 				{
-					"id":"creators",
+					"id":"speccreators",
 					"type":"Complex",
-					"title":"Creators",
+					"title":"Specification Creators",
 					"value":"",
 					"description":"This holds the name of the creators of the YAWL specification.",
 					"optional":true,
@@ -113,9 +133,9 @@
 					]					
 				},
 				{
-					"id":"subject",
+					"id":"specsubject",
 					"type":"Complex",
-					"title":"Subject",
+					"title":"Specification Subject",
 					"value":"",
 					"description":"",
 					"optional":true,
@@ -131,9 +151,9 @@
 					]					
 				},
 				{
-					"id":"description",
+					"id":"specdescription",
 					"type":"String",
-					"title":"Description",
+					"title":"Specification Description",
 					"value":"",
 					"description":"",
 					"readonly":false,
@@ -142,9 +162,9 @@
 					"wrapLines":true
 				},
 				{
-					"id":"contributor",
+					"id":"speccontributor",
 					"type":"Complex",
-					"title":"Contributor",
+					"title":"Specification Contributor",
 					"value":"",
 					"description":"",
 					"optional":true,
@@ -160,18 +180,18 @@
 					]					
 				},	
 				{
-					"id":"coverage",
+					"id":"speccoverage",
 					"type":"String",
-					"title":"Coverage",
+					"title":"Specification Coverage",
 					"value":"",
 					"description":"",
 					"optional":true,
 										
 				},							
 				{
-					"id":"validFrom",
+					"id":"specvalidfrom",
 					"type":"Date",
-					"title":"Valid From",
+					"title":"Specification Valid From",
 					"value":"",
 					"description":"",
 					"readonly":false,
@@ -179,9 +199,9 @@
 					"dateFormat":"m/d/y"
 				},				
 				{
-					"id":"validTo",
+					"id":"specvalidto",
 					"type":"Date",
-					"title":"Valid To",
+					"title":"Specification Valid To",
 					"value":"",
 					"description":"",
 					"readonly":false,
@@ -189,9 +209,9 @@
 					"dateFormat":"m/d/y"
 				},
 				{
-					"id":"created",
+					"id":"speccreated",
 					"type":"Date",
-					"title":"Created",
+					"title":"Specification Created",
 					"value":"",
 					"description":"",
 					"readonly":false,
@@ -199,9 +219,9 @@
 					"dateFormat":"m/d/y"
 				},								
 				{
-					"id":"version",
+					"id":"specversion",
 					"type":"String",
-					"title":"Version",
+					"title":"Specification Version",
 					"value":"",
 					"description":"This defines the Version number of the YAWL specification. Should be exactly in the Format (XX.YY)",
 					"readonly":false,
@@ -209,25 +229,25 @@
 					"length":"10"
 				},
 				{
-					"id":"status",
+					"id":"specstatus",
 					"type":"String",
-					"title":"Status",
+					"title":"Specification Status",
 					"value":"",
 					"description":"",
 					"readonly":false,
 					"optional":true
 				},
 				{
-					"id":"persistent",
+					"id":"specpersistent",
 					"type":"Boolean",
-					"title":"Persistent",
+					"title":"Specification Persistent",
 					"value":"",
 					"description":"",
 					"readonly":false,
 					"optional":true
 				},								
 				{
-					"id":"uri",
+					"id":"specuri",
 					"type":"String",
 					"title":"Specification URI",
 					"value":"",
@@ -236,9 +256,9 @@
 					"optional":true
 				},				
 				{
-					"id":"datatypedefinitions",
+					"id":"specdatatypedefinitions",
 					"type":"Text",
-					"title":"Data Type Definitions",
+					"title":"Specification Data Type Definitions",
 					"value":"<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\" />",
 					"description":"XSD Schema document describing the data types that may be used in this YAWL specification.",
 					"readonly":false,
@@ -257,14 +277,69 @@
 					"value":"true",
 					"description":"Whether this net is the starting net of the YAWL specification",
 					"readonly":false,
-					"optional":false,
-					"refToView":"rootnet"
-				}								
+					"optional":false
+				},
+				{
+					"id":"externaldatagateway",
+					"type":"String",
+					"title":"External Data Gateway",
+					"value":"",
+					"description":"Name of the External Data Gateway for this net",
+					"readonly":false,
+					"optional":true
+				}												
  			]
  		},
  		{
  			"name":"baseDecomposition",
- 		    "properties": [ 		 		
+ 		    "properties": [
+				{
+					"id":"decompositionid",
+					"type":"String",
+					"title":"Decomposition ID",
+					"value":"",
+					"description":"ID of the underlying decomposition",
+					"readonly":false,
+					"optional":true
+				},
+				{
+					"id":"decompositionname",
+					"type":"String",
+					"title":"Decomposition Name",
+					"value":"",
+					"description":"Name of the underlying decomposition",
+					"readonly":false,
+					"optional":true
+				},		
+				 				{	
+					"id":"decompositionexternalinteraction",
+					"type":"Choice",
+					"title":"External Interaction",
+					"value":"",
+					"description":"",
+					"readonly":false,
+					"optional":true,
+					"items": [
+						{
+							"title":"Manual",
+							"value":"manual",
+						},
+						{
+							"title":"Automatic",
+							"value":"automated",
+							"refToView":"automatic"
+						}
+					]					
+				},					
+				{
+					"id":"decompositioncodelet",
+					"type":"String",
+					"title":"Codelet",
+					"value":"",
+					"description":"Name of Codelet to execute",
+					"readonly":false,
+					"optional":true
+				},
 				{	
 					"id":"decompositionvariables",
 					"type":"Complex",
@@ -295,7 +370,7 @@
 							"name":"Usage",
 							"type":"Choice",
 							"value":"input",
-							"width":100,
+							"width":50,
 							"optional":false,
 							"items": [
 								{
@@ -319,9 +394,50 @@
 							"value":"",
 							"width":100,
 							"optional":true 
-						}						
+						},
+						{
+							"id":"namespace",
+							"name":"Namespace",
+							"type":"String",
+							"value":"http://www.w3.org/2001/XMLSchema",
+							"width":50,
+							"optional":false 
+						},
+						{
+							"id":"ismandatory",
+							"name":"Is Mandatory",
+							"type":"Boolean",
+							"value":"true",
+							"width":30,
+							"optional":false 
+						},	
+						{
+							"id":"attributes",
+							"name":"Attributes",
+							"type":"String",
+							"value":"",
+							"width":50,
+							"optional":true 
+						},	
+						{
+							"id":"logpredicate",
+							"name":"Log Predicate",
+							"type":"String",
+							"value":"",
+							"width":50,
+							"optional":true 
+						}
 					]
-				} 
+				},
+				{
+					"id":"decompositionlogpredicate",
+					"type":"Text",
+					"title":"Log Predicate",
+					"value":"",
+					"description":"Log Predicate of Decomposition",
+					"readonly":false,
+					"optional":true					
+				}				 
 				
 			]			 		
  		},		
@@ -425,123 +541,10 @@
  		{
  		    "name":"baseTasks",
  		    "properties": [
-				{
-					"id":"icon",
-					"type":"Choice",
-					"title":"Icon",
-					"value":"None",
-					"optional":false,
-					"items": [
-						{
-							"title":"None",
-							"value":"none",
-						},
-						{
-							"title":"Manual",
-							"value":"manual",
-							"refToView":"iconmanual"
-						},
-						{
-							"title":"Automatic",
-							"value":"automatic",
-							"refToView":"iconautomatic"
-						},
-						{
-							"title":"Automatic One",
-							"value":"automaticone",
-							"refToView":"iconautomaticone"
-						},
-						{
-							"title":"Automatic Two",
-							"value":"automatictwo",
-							"refToView":"iconautomatictwo"
-						},
-						{
-							"title":"Group",
-							"value":"group",
-							"refToView":"icongroup"
-						},
-						{
-							"title":"Inspect",
-							"value":"inspect",
-							"refToView":"iconinspect"
-						},
-						{
-							"title":"Pair",
-							"value":"pair",
-							"refToView":"iconpair"
-						},
-						{
-							"title":"Print",
-							"value":"print",
-							"refToView":"iconprint"
-						},
-						{
-							"title":"Validate",
-							"value":"validate",
-							"refToView":"iconvalidate"
-						},
-						{
-							"title":"File",
-							"value":"file",
-							"refToView":"iconfile"
-						},
-						{
-							"title":"Black PDA",
-							"value":"blackpda",
-							"refToView":"iconblackpda"
-						},
-						{
-							"title":"Timer",
-							"value":"timer",
-							"refToView":"icontimer"
-						},
-						{
-							"title":"Schedule",
-							"value":"schedule",
-							"refToView":"iconschedule"
-						},
-						{
-							"title":"Question One",
-							"value":"questionone",
-							"refToView":"iconquestionone"
-						},
-						{
-							"title":"Question Two",
-							"value":"questiontwo",
-							"refToView":"iconquestiontwo"
-						},
-						{
-							"title":"Plugin",
-							"value":"plugin",
-							"refToView":"iconplugin"
-						},
-						{
-							"title":"Exception",
-							"value":"exception",
-							"refToView":"iconexception"
-						},
-						{
-							"title":"Dangerous",
-							"value":"dangerous",
-							"refToView":"icondangerous"
-						},
-						{
-							"title":"Broken Icon",
-							"value":"brokenicon",
-							"refToView":"iconbrokenicon"
-						},
-						{
-							"title":"Routing Task",
-							"value":"routingtask",
-							"refToView":"iconroutingtask"
-						}
-					]
-				},
 				{	
 					"id":"cancelationset",
 					"type":"Complex",
-					"title":"Cancelation Set",
+					"title":"Cancellation Set",
 					"value":"",
 					"description":"Identifiers of the Tasks/Flows that gets canceled, when this task is executed. Flows can be addressed using an Oryx-Only identifier like this: priorTaksID|-|nextTaskID",
 					"readonly":false,
@@ -811,7 +814,7 @@
 					"readonly":false,
 					"optional":true,
 					"wrapLines":true
-				}																
+				}																				
 			]
  		},
  		{
@@ -827,46 +830,130 @@
 					"optional":true,
 					"wrapLines":false
 				},
- 				{	
-					"id":"externalinteraction",
+				{
+					"id":"icon",
 					"type":"Choice",
-					"title":"External Interaction",
-					"value":"",
-					"description":"",
-					"readonly":false,
-					"optional":true,
+					"title":"Icon",
+					"value":"None",
+					"optional":false,
 					"items": [
+						{
+							"title":"None",
+							"value":"none",
+						},
 						{
 							"title":"Manual",
 							"value":"manual",
+							"refToView":"iconmanual"
 						},
 						{
 							"title":"Automatic",
-							"value":"automated",
-							"refToView":"automatic"
+							"value":"automatic",
+							"refToView":"iconautomatic"
+						},
+						{
+							"title":"Automatic One",
+							"value":"automaticone",
+							"refToView":"iconautomaticone"
+						},
+						{
+							"title":"Automatic Two",
+							"value":"automatictwo",
+							"refToView":"iconautomatictwo"
+						},
+						{
+							"title":"Group",
+							"value":"group",
+							"refToView":"icongroup"
+						},
+						{
+							"title":"Inspect",
+							"value":"inspect",
+							"refToView":"iconinspect"
+						},
+						{
+							"title":"Pair",
+							"value":"pair",
+							"refToView":"iconpair"
+						},
+						{
+							"title":"Print",
+							"value":"print",
+							"refToView":"iconprint"
+						},
+						{
+							"title":"Validate",
+							"value":"validate",
+							"refToView":"iconvalidate"
+						},
+						{
+							"title":"File",
+							"value":"file",
+							"refToView":"iconfile"
+						},
+						{
+							"title":"Black PDA",
+							"value":"blackpda",
+							"refToView":"iconblackpda"
+						},
+						{
+							"title":"Timer",
+							"value":"timer",
+							"refToView":"icontimer"
+						},
+						{
+							"title":"Schedule",
+							"value":"schedule",
+							"refToView":"iconschedule"
+						},
+						{
+							"title":"Question One",
+							"value":"questionone",
+							"refToView":"iconquestionone"
+						},
+						{
+							"title":"Question Two",
+							"value":"questiontwo",
+							"refToView":"iconquestiontwo"
+						},
+						{
+							"title":"Plugin",
+							"value":"plugin",
+							"refToView":"iconplugin"
+						},
+						{
+							"title":"Exception",
+							"value":"exception",
+							"refToView":"iconexception"
+						},
+						{
+							"title":"Dangerous",
+							"value":"dangerous",
+							"refToView":"icondangerous"
+						},
+						{
+							"title":"Broken Icon",
+							"value":"brokenicon",
+							"refToView":"iconbrokenicon"
+						},
+						{
+							"title":"Routing Task",
+							"value":"routingtask",
+							"refToView":"iconroutingtask"
 						}
-					]					
-				}									 			
+					]
+				}													 			
  			]
  		}, 	 		
 		{
  			"name":"baseCompositeTasks",
- 			"properties": [
+ 			"properties": [		
 				{
-					"id":"decomposesto",
-					"type":"String",
-					"title":"Unfolds to net (name)",
-					"value":"",
-					"description":"Name of the Subnet that this task unfolds to.",
-					"readonly":false,
-					"optional":true,
-				},
-				{
-					"id":"decomposestolink",
+					"id":"decompositionlink",
 					"type":"DiagramLink",
 					"title":"Unfolds to net (link)",
 					"value":"",
-					"description":"URL of the Subnet in Oryx Backend",
+					"description":"URL of the Subnet in Oryx Backend (Transient attribute only visible in Signavio)",
 					"readonly":false,
 					"optional":true,
 					"refToView":"decompositionlink"											
@@ -993,32 +1080,14 @@
 			],
 			"propertyPackages" :[
 				"baseAttributes",
-				"baseSpecification"
+				"baseSpecification",
+				"baseColor",
+				"baseNet",
+				"baseDecomposition"				
 			],
 			"properties": [
 			]
-		},
-  		{
-			"type": "node",
-			"id":"Net",
-			"title":"Net",
-			"groups":["Nets"],
-			"description":"A (sub)net or the root-net",
-			"view":"node.net.svg",
-			"icon":"node.net.png",
-			"mayBeRoot": false,
-			"layout" : [{"type" : "layout.yawl2.2.net"}],			
-			"roles": [			
-			],
-			"propertyPackages" :[
-				"baseAttributes",
-				"baseColor",
-				"baseNet",
-				"baseDecomposition"	
-			],
-			"properties": [							
-			]
-		},		
+		},	
  		{
 			"id":"AtomicTask",
 			"type": "node",
@@ -1030,14 +1099,26 @@
 			"roles": [
 				"task"
 			],
-			"propertyPackages" :[
+			"propertyPackages":[
 				"baseAttributes",
 				"baseTasks",
 				"baseAtomicTasks",
 				"baseColor",
 				"baseResourcing",
-				"baseDecomposition"			
-			]
+				"baseDecomposition"		
+			],
+			"properties":[	
+				{	
+					"id":"timer",
+					"type":"Text",
+					"title":"Timer",
+					"value":"",
+					"description":"YAWL timer configuration XML. Please take care editing this, it may break functionality!",
+					"readonly":false,
+					"optional":true,
+					"wrapLines":true
+				}						
+			]			
 		}, 
 		{
 			"id":"AtomicMultipleTask",
@@ -1050,7 +1131,7 @@
 			"roles": [
 				"task"
 			],
-			"propertyPackages" :[
+			"propertyPackages":[
 				"baseAttributes",
 				"baseTasks",
 				"baseAtomicTasks",
@@ -1071,7 +1152,7 @@
 			"roles": [
 				"condition"
 			],
-			"propertyPackages": [
+			"propertyPackages":[
 				"baseAttributes",
 				"baseColor"
 			],						
@@ -1094,7 +1175,8 @@
 				"baseTasks",
 				"baseCompositeTasks",
 				"baseColor",
-				"baseResourcing"
+				"baseResourcing",
+				"baseDecomposition"
 			],
 			"properties": [
 							
@@ -1117,7 +1199,8 @@
 				"baseCompositeTasks",
 				"baseMultipleInstances",
 				"baseColor",
-				"baseResourcing"
+				"baseResourcing",
+				"baseDecomposition"
 			]
 		},
 		{
@@ -1192,11 +1275,7 @@
 				]
 			}	
 		],
-		"cardinalityRules": [
-			{
-				"role":"Net",
-				maximumOccurrence: 1
-			},		
+		"cardinalityRules": [	
 			{
 				"role":"task",
 				maximumOccurrence: undefined,
@@ -1250,19 +1329,13 @@
 			{
 				"role":"Diagram",
 				"contains": [
-					"Net"
-				]
-			},
-			{
-				"role":"Net",
-				"contains": [
 					"InputCondition",
 					"OutputCondition",
 					"condition",
 					"task",
 					"flows"
 				]
-			}			
+			}		
 		],
 		"morphingRules": [		
 			{

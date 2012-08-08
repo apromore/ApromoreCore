@@ -85,6 +85,11 @@
 			<requires namespace="http://b3mn.org/stencilset/bpmn2.0choreography#"/>
 		</plugin>		
 		
+		<plugin source="bpmnLayouter.js" name="ORYX.Plugins.BpmnLayouter">
+			<requires namespace="http://b3mn.org/stencilset/bpmn2.0#"/>	
+		</plugin>
+		
+		
 		<!-- End: BPMN2.0 specific plugins -->
 		
 		<!-- The following Plugin is needed for YAWL 2.2 Stencil Set -->
@@ -92,10 +97,13 @@
   			<requires namespace="http://b3mn.org/stencilset/yawl2.2#"/>  
 		</plugin>
 		
-		<!-- The following Plugin is needed for EPC Stencil Set -->
+		<!-- The following Plugin are needed for EPC Stencil Set -->
 		<plugin source="epcSupport.js" name="ORYX.Plugins.EPCSupport">
 			<requires namespace="http://b3mn.org/stencilset/epc#"/>
-		</plugin>		
+		</plugin>	
+		<plugin source="epcLayouter.js" name="ORYX.Plugins.EPCLayouter">
+			<requires namespace="http://b3mn.org/stencilset/epc#"/>
+		</plugin>				
 	</plugins>
 	
 	<properties>

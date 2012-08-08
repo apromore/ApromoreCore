@@ -17,6 +17,18 @@ public class ClusterAssignmentId implements Serializable {
     private String fragmentId;
     private String clusterId;
 
+
+    /**
+     * Constructor for the Id.
+     * @param fragmentVersionId the fragment version
+     * @param clusterId the cluster id.
+     */
+    public ClusterAssignmentId(final String fragmentVersionId, final String clusterId) {
+        this.fragmentId = fragmentVersionId;
+        this.clusterId = clusterId;
+    }
+
+
     @Column(name = "fragment_version_id", nullable = false, length = 40)
     public String getFragmentId() {
         return fragmentId;

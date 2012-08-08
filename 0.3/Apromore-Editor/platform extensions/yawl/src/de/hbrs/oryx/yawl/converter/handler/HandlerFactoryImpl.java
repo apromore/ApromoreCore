@@ -1,25 +1,20 @@
 /**
- * Copyright (c) 2011-2012 Felix Mannhardt
+ * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
  * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU Lesser General Public License for more details.
+
+ * You should have received a copy of the GNU Lesser General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
- * SOFTWARE.
- * 
- * See: http://www.opensource.org/licenses/mit-license.php
+ * See: http://www.gnu.org/licenses/lgpl-3.0
  * 
  */
 package de.hbrs.oryx.yawl.converter.handler;
@@ -76,8 +71,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
 	private YAWLConversionContext yawlContext;
 	private OryxConversionContext oryxContext;
 
-	public HandlerFactoryImpl(YAWLConversionContext yawlContext,
-			OryxConversionContext oryxContext) {
+	public HandlerFactoryImpl(YAWLConversionContext yawlContext, OryxConversionContext oryxContext) {
 		super();
 		yawlContext.setHandlerFactory(this);
 		oryxContext.setHandlerFactory(this);
@@ -134,18 +128,15 @@ public class HandlerFactoryImpl implements HandlerFactory {
 
 		if (netElement instanceof YAtomicTask) {
 			if (((YAtomicTask) netElement).isMultiInstance()) {
-				return new MultiInstanceAtomicTaskHandler(yawlContext,
-						(YAtomicTask) netElement);
+				return new MultiInstanceAtomicTaskHandler(yawlContext, (YAtomicTask) netElement);
 			} else {
-				return new AtomicTaskHandler(yawlContext,
-						(YAtomicTask) netElement);
+				return new AtomicTaskHandler(yawlContext, (YAtomicTask) netElement);
 			}
 		} else if (netElement instanceof YCompositeTask) {
 			if (((YCompositeTask) netElement).isMultiInstance()) {
-				return new MultiInstanceCompositeTaskHandler(yawlContext,
-						netElement);
+				return new MultiInstanceCompositeTaskHandler(yawlContext, (YCompositeTask) netElement);
 			} else {
-				return new CompositeTaskHandler(yawlContext, netElement);
+				return new CompositeTaskHandler(yawlContext, (YCompositeTask) netElement);
 			}
 		} else if (netElement instanceof YInputCondition) {
 			return new InputConditionHandler(yawlContext, netElement);
@@ -172,20 +163,27 @@ public class HandlerFactoryImpl implements HandlerFactory {
 	}
 
 	private boolean isRootNet(YDecomposition decomposition) {
-		return decomposition.getAttribute("isRootNet") != null
-				&& decomposition.getAttribute("isRootNet").equals("true");
+		return decomposition.getAttribute("isRootNet") != null && decomposition.getAttribute("isRootNet").equals("true");
 	}
 
-	/* (non-Javadoc)
-	 * @see de.hbrs.oryx.yawl.converter.handler.HandlerFactory#createOryxConverter(org.oryxeditor.server.diagram.Diagram)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.hbrs.oryx.yawl.converter.handler.HandlerFactory#createOryxConverter
+	 * (org.oryxeditor.server.diagram.Diagram)
 	 */
 	@Override
 	public OryxHandler createOryxConverter(BasicDiagram diagramShape) {
 		return new OryxDiagramHandler(oryxContext, diagramShape);
 	}
 
-	/* (non-Javadoc)
-	 * @see de.hbrs.oryx.yawl.converter.handler.HandlerFactory#createOryxConverter(org.oryxeditor.server.diagram.Shape)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.hbrs.oryx.yawl.converter.handler.HandlerFactory#createOryxConverter
+	 * (org.oryxeditor.server.diagram.Shape)
 	 */
 	@Override
 	public OryxHandler createOryxConverter(BasicShape shape) {
@@ -203,7 +201,7 @@ public class HandlerFactoryImpl implements HandlerFactory {
 			return new OryxInputConditionHandler(oryxContext, shape);
 		} else if (shape.getStencilId().equals("OutputCondition")) {
 			return new OryxOutputConditionHandler(oryxContext, shape);
-		} else if (shape.getStencilId().equals("Net")) {
+		} else if (shape.getStencilId().equals("Diagram")) {
 			return new OryxNetHandler(oryxContext, shape);
 		} else {
 			return new NotImplementedHandler();

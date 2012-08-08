@@ -13,7 +13,7 @@ public class GEDDissimCalc implements DissimilarityCalc {
     static double prunewhen = 100.0;
     static double pruneto = 10.0;
     static double useepsilon = 0.0; //0.0 represents 'false', 1.0 represents 'true'
-    static boolean considerevents = true;
+    //static boolean considerevents = true;
 
     static double vweight = 1.0;
     static double sweight = 1.0;

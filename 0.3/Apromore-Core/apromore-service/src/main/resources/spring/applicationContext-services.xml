@@ -99,11 +99,11 @@
     <bean id="ChangePropagator" class="org.apromore.service.helper.ChangePropagator" />
     <bean id="PocketMapper" class="org.apromore.service.helper.PocketMapper" />
 
-    <bean id="gedMatrix" class="org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryGEDMatrix" />
-    <bean id="clusterAnalyzer" class="org.apromore.toolbox.clustering.analyzers.ClusterAnalyzer" />
-    <bean id="dbscanClusterer" class="org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryClusterer" />
-    <bean id="excludedObjectDbscanClusterer" class="org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryExcludedObjectClusterer" />
-    <bean id="dbscanHierarchyFilter" class="org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryHierarchyBasedFilter" />
+    <bean id="GEDMatrix" class="org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryGEDMatrix" />
+    <bean id="ClusterAnalyzer" class="org.apromore.toolbox.clustering.analyzers.ClusterAnalyzer" />
+    <bean id="DBscanClusterer" class="org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryClusterer" />
+    <bean id="ExcludedObjectDbscanClusterer" class="org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryExcludedObjectClusterer" />
+    <bean id="DBscanHierarchyFilter" class="org.apromore.toolbox.clustering.algorithms.dbscan.InMemoryHierarchyBasedFilter" />
     <bean id="DistanceMatrix" class="org.apromore.service.impl.DistanceMatrix" />
     <bean id="ContainmentRelation" class="org.apromore.clustering.containment.ContainmentRelationImpl" />
     <bean id="DissimilarityMatrix" class="org.apromore.clustering.hierarchy.HierarchyAwareDissimMatrixGenerator" />
