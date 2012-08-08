@@ -12,6 +12,14 @@
 	<xsd:import namespace="http://www.omg.org/spec/BPMN/20100524/DI" schemaLocation="BPMNDI.xsd"/>
 	<xsd:include schemaLocation="Semantic.xsd"/>
 
+	<xsd:annotation>
+		<xsd:appinfo>
+			<jaxb:globalBindings>
+				<xjc:simple/>
+			</jaxb:globalBindings>
+		</xsd:appinfo>
+	</xsd:annotation>
+
 	<xsd:element name="definitions" type="tDefinitions"/>
 	<xsd:complexType name="tDefinitions">
 		<xsd:sequence>

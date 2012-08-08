@@ -47,19 +47,25 @@ public class DefinitionsTest {
      */
     @Before
     public void initializeContext() throws JAXBException {
-        context = JAXBContext.newInstance("org.omg.spec.bpmn._20100524.model:org.omg.spec.bpmn._20100524.di:org.omg.spec.dd._20100524.dc:org.omg.spec.dd._20100524.di");
+        context = JAXBContext.newInstance(org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
+                                          org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
+                                          org.omg.spec.dd._20100524.dc.ObjectFactory.class,
+                                          org.omg.spec.dd._20100524.di.ObjectFactory.class);
     }
 
     /**
      * Test parsing of <a href="{@docRoot}/Test1.bpmn20.xml">Test1.bpmn20.xml</a>.
+     *
+     * @throws FileNotFoundException if the input file of test data is absent
+     * @throws JAXBException
+     * @throws SAXException
      */
     @Test
     public final void test1() throws FileNotFoundException, JAXBException, SAXException {
         // Obtain the test instance
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        JAXBElement<TDefinitions> tDefinitions = unmarshaller.unmarshal(
-                new StreamSource(new FileInputStream("src/test/resources/Test1.bpmn20.xml")),
-                TDefinitions.class);
+        Definitions definitions = context.createUnmarshaller()
+                                         .unmarshal(new StreamSource(new FileInputStream("src/test/resources/Test1.bpmn20.xml")), Definitions.class)
+                                         .getValue();
 
         // Serialize the test instance out again
         Marshaller marshaller = context.createMarshaller();
@@ -67,71 +73,76 @@ public class DefinitionsTest {
         marshaller.setEventHandler(vec);
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new File("src/main/xsd/BPMN20.xsd")));
-        marshaller.marshal(tDefinitions, new FileOutputStream("target/surefire/Test1.bpmn20.xml"));
+        marshaller.marshal(definitions, new FileOutputStream("target/surefire/Test1.bpmn20.xml"));
         assertFalse(formatValidationEvents(vec), vec.hasEvents());
 
         // Inspect the test instance
 
         // Expect a single <process> element
-        TDefinitions definitions = tDefinitions.getValue();
         assertNotNull(definitions);
-        assertNotNull(definitions.getRootElement());
-        assertEquals(1, definitions.getRootElement().size());
-        assertTrue(definitions.getRootElement().get(0).getValue() instanceof TProcess);
-        TProcess process = (TProcess) definitions.getRootElement().get(0).getValue();
+        assertNotNull(definitions.getRootElements());
+        assertEquals(1, definitions.getRootElements().size());
+        assertTrue(definitions.getRootElements().get(0).getValue() instanceof TProcess);
+        TProcess process = (TProcess) definitions.getRootElements().get(0).getValue();
         assertFalse(process.isIsClosed());
         assertFalse(process.isIsExecutable());
 
         // Expect process to have a <variants> extension element
         assertNotNull(process.getExtensionElements());
-        assertNotNull(process.getExtensionElements().getAny());
-        assertEquals(1, process.getExtensionElements().getAny().size());
+        assertNotNull(process.getExtensionElements().getAnies());
+        assertEquals(1, process.getExtensionElements().getAnies().size());
+
         /*
-        assertSame(Variants.class, process.getExtensionElements().getAny().get(0).getClass());
-        Variants variants = (Variants) process.getExtensionElements().getAny().get(0);
+        assertSame(Variants.class, process.getExtensionElements().getAnies().get(0).getClass());
+        Variants variants = (Variants) process.getExtensionElements().getAnies().get(0);
         assertEquals(3, variants.getVariant().size());
         assertEquals("vid-1940931807", variants.getVariant().get(0).getId());
         assertEquals("A", variants.getVariant().get(0).getName());
         */
 
         // Expect process to have 10 flow elements, the first of which is a task named "Airbus"
-        assertNotNull(process.getFlowElement());
-        assertEquals(10, process.getFlowElement().size());
-        TTask airbus = (TTask) process.getFlowElement().get(0).getValue();
+        assertNotNull(process.getFlowElements());
+        assertEquals(10, process.getFlowElements().size());
+        TTask airbus = (TTask) process.getFlowElements().get(0).getValue();
         assertEquals("Airbus", airbus.getName());
 
         // Expect "Airbus" to have two extension elements
-        assertEquals(2, airbus.getExtensionElements().getAny().size());
+        assertEquals(2, airbus.getExtensionElements().getAnies().size());
+
         /*
-        assertSame(SignavioMetaData.class,        airbus.getExtensionElements().getAny().get(0).getClass());
-        assertSame(ConfigurationAnnotation.class, airbus.getExtensionElements().getAny().get(1).getClass());
+        assertSame(SignavioMetaData.class,        airbus.getExtensionElements().getAnies().get(0).getClass());
+        assertSame(ConfigurationAnnotation.class, airbus.getExtensionElements().getAnies().get(1).getClass());
         */
 
         // Expect a single <BPMNDiagram> element
-        assertNotNull(definitions.getBPMNDiagram());
-        assertEquals(1, definitions.getBPMNDiagram().size());
-        assertEquals("sid-db4fcdfb-67a0-4ef0-9a45-3167bfd77e4f", definitions.getBPMNDiagram().get(0).getId());
-        assertNotNull(definitions.getBPMNDiagram().get(0).getBPMNPlane());
-        assertEquals("sid-69a9f6ba-9421-44ee-a6fb-f50fc5e881e4", definitions.getBPMNDiagram().get(0).getBPMNPlane().getId());
+        assertNotNull(definitions.getBPMNDiagrams());
+        assertEquals(1, definitions.getBPMNDiagrams().size());
+        assertEquals("sid-db4fcdfb-67a0-4ef0-9a45-3167bfd77e4f", definitions.getBPMNDiagrams().get(0).getId());
+        assertNotNull(definitions.getBPMNDiagrams().get(0).getBPMNPlane());
+        assertEquals("sid-69a9f6ba-9421-44ee-a6fb-f50fc5e881e4", definitions.getBPMNDiagrams().get(0).getBPMNPlane().getId());
+        // TODO - the following result almost certainly has the wrong namespace for the QName
         assertEquals(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "sid-68aefed9-f32a-4503-895c-b26b0ee8dded"),
-                definitions.getBPMNDiagram().get(0).getBPMNPlane().getBpmnElement());
-        assertNotNull(definitions.getBPMNDiagram().get(0).getBPMNPlane().getDiagramElement());
+                definitions.getBPMNDiagrams().get(0).getBPMNPlane().getBpmnElement());
+        assertNotNull(definitions.getBPMNDiagrams().get(0).getBPMNPlane().getDiagramElements());
 
-        // INCORRECT - ought to be 10 diagram elements to match the 10 process elements
-        assertEquals(10, definitions.getBPMNDiagram().get(0).getBPMNPlane().getDiagramElement().size());
+        // Expect 10 diagram elements to match the 10 process elements
+        assertEquals(10, definitions.getBPMNDiagrams().get(0).getBPMNPlane().getDiagramElements().size());
     }
 
     /**
      * Test parsing of <a href="{@docRoot}/TrivialGateway.bpmn20.xml">TrivialGateway.bpmn20.xml</a>.
+     *
+     * @throws FileNotFoundException if the input file of test data is absent
+     * @throws JAXBException
+     * @throws SAXException
      */
     @Test
     public final void testTrivialGateway() throws FileNotFoundException, JAXBException, SAXException {
         // Obtain the test instance
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        JAXBElement<TDefinitions> tDefinitions = unmarshaller.unmarshal(
-                new StreamSource(new FileInputStream("src/test/resources/TrivialGateway.bpmn20.xml")),
-                TDefinitions.class
-        );
+        Definitions definitions = context.createUnmarshaller()
+                                         .unmarshal(new StreamSource(new FileInputStream("src/test/resources/TrivialGateway.bpmn20.xml")),
+                                                    Definitions.class)
+                                         .getValue();
 
         // Serialize the test instance out again
         Marshaller marshaller = context.createMarshaller();
@@ -139,12 +150,13 @@ public class DefinitionsTest {
         marshaller.setEventHandler(vec);
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new File("src/main/xsd/BPMN20.xsd")));
-        marshaller.marshal(tDefinitions, new FileOutputStream("target/surefire/TrivialGateway.bpmn20.xml"));
+        marshaller.marshal(definitions, new FileOutputStream("target/surefire/TrivialGateway.bpmn20.xml"));
         assertFalse(formatValidationEvents(vec), vec.hasEvents());
     }
 
     /**
      * Produce helpful diagnostic text when the XML output of tests fails XML schema validation.
+     *
      * @param vec the collection of validation errors
      * @return a human-legible error listing in English text
      */
