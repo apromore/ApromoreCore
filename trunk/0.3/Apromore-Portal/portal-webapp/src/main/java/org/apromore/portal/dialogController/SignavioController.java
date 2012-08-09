@@ -53,15 +53,12 @@ public class SignavioController extends BaseController {
         }
 
     }
-
-    public void setupConverter() {
-    }
-
-    public void readModel() {
-    }
-
-    public void saveModel() {
-    }
+//
+//    public void setupConverter() { }
+//
+//    public void readModel() { }
+//
+//    public void saveModel() { }
 
     private String getURL(String nativeType) {
         String url = "";

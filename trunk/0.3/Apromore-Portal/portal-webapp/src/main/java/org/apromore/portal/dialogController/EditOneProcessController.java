@@ -46,7 +46,6 @@ public class EditOneProcessController extends BaseController {
         this.process = process;
         this.version = version;
 
-
         this.chooseNativeW = (Window) Executions.createComponents("macros/choosenative.zul", null, null);
         this.chooseNativeW.setTitle("Edit process " + process.getName() + ", " + version.getName() + ".");
         Rows rows = (Rows) this.chooseNativeW.getFirstChild().getFirstChild().getFirstChild().getNextSibling();
@@ -73,22 +72,15 @@ public class EditOneProcessController extends BaseController {
             cbi = new Listitem();
             this.nativeTypesLB.appendChild(cbi);
             cbi.setLabel(formats.get(it.next()));
-            if ("XPDL 2.1".compareTo(cbi.getLabel()) == 0) {
-                cbi.setSelected(true);
-            }
-//			if ("EPML 2.0".compareTo(cbi.getLabel())==0) {
-//				cbi.setDisabled(true);
-//			}
         }
-        //((Listitem) this.nativeTypesLB.getFirstChild()).setSelected(true);
+        ((Listitem) this.nativeTypesLB.getFirstChild()).setSelected(true);
         // Build list of annotations associated with the process version
         for (int i = 0; i < this.version.getAnnotations().size(); i++) {
             String native_type = this.version.getAnnotations().get(i).getNativeType();
             for (int k = 0; k < this.version.getAnnotations().get(i).getAnnotationName().size(); k++) {
                 cbi = new Listitem();
                 this.annotationsLB.appendChild(cbi);
-                cbi.setLabel(this.version.getAnnotations().get(i).getAnnotationName().get(k)
-                        + " (" + native_type + ")");
+                cbi.setLabel(this.version.getAnnotations().get(i).getAnnotationName().get(k) + " (" + native_type + ")");
                 cbi.setValue(this.version.getAnnotations().get(i).getAnnotationName().get(k));
                 if (Constants.INITIAL_ANNOTATION.compareTo((String) cbi.getValue()) == 0) {
                     cbi.setSelected(true);
@@ -136,10 +128,6 @@ public class EditOneProcessController extends BaseController {
                     }
                 });
         this.chooseNativeW.doModal();
-        //		} else {
-        //			Messagebox.show("Not owner", "Attention", Messagebox.OK,
-        //					Messagebox.ERROR);
-        //		}
     }
 
     /**
