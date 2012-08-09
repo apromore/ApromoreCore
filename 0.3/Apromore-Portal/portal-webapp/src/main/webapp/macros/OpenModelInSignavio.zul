@@ -1,71 +1,83 @@
-  <window id="win" xmlns:n="http://www.zkoss.org/2005/zk/native" use="org.apromore.portal.dialogController.SignavioController">
+<window id="win" xmlns:n="http://www.zkoss.org/2005/zk/native" use="org.apromore.portal.dialogController.SignavioController">
 
-  <n:style media="screen" type="text/css">
-  @import url("/Apromore-editor/libs/ext-2.0.2/resources/css/ext-all.css");
-  @import url("/Apromore-editor/libs/ext-2.0.2/resources/css/xtheme-gray.css");
-  </n:style>
-  <n:link rel="Stylesheet" media="screen" href="/Apromore-editor/editor/css/theme_norm.css" type="text/css" />
-  <n:link rel="Stylesheet" media="screen" href="/Apromore-editor/editor/css/theme_norm_signavio.css" type="text/css" />
-  <n:link rel="Stylesheet" media="screen" href="/Apromore-editor/explorer/src/css/xtheme-smoky.css" type="text/css"/>
-  <n:link rel="Stylesheet" media="screen" href="/Apromore-editor/explorer/src/css/custom-style.css" type="text/css"/>
+    <n:style media="screen" type="text/css">
+        @import url("/Apromore-editor/libs/ext-2.0.2/resources/css/ext-all.css");
+        @import url("/Apromore-editor/libs/ext-2.0.2/resources/css/xtheme-gray.css");
+    </n:style>
+    <n:link rel="Stylesheet" media="screen" href="/Apromore-editor/editor/css/theme_norm.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/Apromore-editor/editor/css/theme_norm_signavio.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/Apromore-editor/explorer/src/css/xtheme-smoky.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/Apromore-editor/explorer/src/css/custom-style.css" type="text/css"/>
 
-  <n:div id="oryxwrapper" style="display: none">
+    <n:div id="oryxwrapper" style="display: none">
+        <n:script>
+            <![CDATA[
+                if (!ORYX) {
+                    var ORYX = {};
+                }
+                if (!ORYX.CONFIG) {
+                    ORYX.CONFIG = {};
+                }
+                ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = "../../Apromore-editor";
+            ]]>
+        </n:script>
 
-  <n:script>
-  <![CDATA[
-    if (!ORYX)
-    var ORYX = {};
-    if (!ORYX.CONFIG)
-    ORYX.CONFIG = {};
-    ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = "../../Apromore-editor";
-  ]]>
-  </n:script>
+        <!-- JavaScript Dependencies of Signavio Process Editor-->
+        <n:script src="/Apromore-editor/libs/prototype-1.5.1.js" type="text/javascript"></n:script>
+        <n:script src="/Apromore-editor/libs/path_parser.js" type="text/javascript"></n:script>
+        <n:script src="/Apromore-editor/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"></n:script>
+        <n:script src="/Apromore-editor/libs/ext-2.0.2/ext-all.js" type="text/javascript"></n:script>
+        <n:script src="/Apromore-editor/libs/ext-2.0.2/color-field.js" type="text/javascript"></n:script>
+        <n:script src="/Apromore-editor/editor/i18n/translation_en_us.js" type="text/javascript"></n:script>
+        <n:script src="/Apromore-editor/editor/i18n/translation_signavio_en_us.js" type="text/javascript"></n:script>
+        <n:script src="/Apromore-editor/libs/utils.js" type="text/javascript"></n:script>
+        <n:script src="/Apromore-editor/editor/oryx.debug.js" type="text/javascript"></n:script>
 
+        <n:span id="oryxstartupcode">
+            <n:script>
+                <![CDATA[
+                    // This function is called upon load of all Oryx dependencies
+                    window.onOryxResourcesLoaded = function() {
+                        var oryxEditor = new ORYX.Editor({
+                            id : 'oryx-canvas123', stencilset : { url : 'http://b3mn.org/stencilset/epc#' }, fullscreen : true
+                        });
 
-  <!-- JavaScript Dependencies of Signavio Process Editor-->
-  <n:script src="/Apromore-editor/libs/prototype-1.5.1.js" type="text/javascript"></n:script>
-  <n:script src="/Apromore-editor/libs/path_parser.js" type="text/javascript"></n:script>
-  <n:script src="/Apromore-editor/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript" ></n:script>
-  <n:script src="/Apromore-editor/libs/ext-2.0.2/ext-all.js" type="text/javascript"></n:script>
-  <n:script src="/Apromore-editor/libs/ext-2.0.2/color-field.js" type="text/javascript"></n:script>
-  <n:script src="/Apromore-editor/editor/i18n/translation_en_us.js" type="text/javascript"></n:script>
-  <n:script src="/Apromore-editor/editor/i18n/translation_signavio_en_us.js" type="text/javascript"></n:script>
-  <n:script src="/Apromore-editor/libs/utils.js" type="text/javascript"></n:script>
-  <n:script src="/Apromore-editor/editor/oryx.debug.js" type="text/javascript"></n:script>
+                    // Import new process model
+                    new Ajax.Request('${arg.importPath}', {
+                        parameters: {
+                            'data': '${arg.jsonData}'}, method: 'POST',
+                            onSuccess: function(transport) {
+                                var editorConfig = Ext.decode(transport.responseText);
+                                oryxEditor.importJSON(editorConfig);
 
-<n:span id="oryxstartupcode">
-  <n:script>
-  <![CDATA[
-  // This function is called upon load of all Oryx dependencies
+                                // Call Auto-Layout if everything is available
+                                window.setTimeout(function() {
+                                    var epcLayouter = oryxEditor.pluginsData.find(function(pluginData) {
+                                        return pluginData.name === "Layout-EPC";
+                                    });
 
- window.onOryxResourcesLoaded = function() {
-  var oryxEditor = new ORYX.Editor({
-    id : 'oryx-canvas123',
-    stencilset : {
-    url : 'http://b3mn.org/stencilset/epc#'
-    },
-    fullscreen : true
-    });
-    //alert('${arg.url}');
-    //Import new process model
-    new Ajax.Request('${arg.importPath}', {
-    parameters: {'data': '${arg.jsonData}'},
-    method: 'POST',
-    onSuccess: function(transport) {
-    var editorConfig = Ext.decode(transport.responseText);
-    oryxEditor.importJSON(editorConfig);
-    }.bind(this),
-    onFailure: function(transport) {
-    alert("Failed to load process fragment!");
-    }.bind(this)
-    });
-  };
+                                    if (epcLayouter) {
+                                        epcLayouter.functionality();
+                                        // Display Result
+                                        Ext.select('svg').setVisible(true);
+                                    } else {
+                                        alert("Did not find Layouter");
+                                    }
 
-  ]]>
-  </n:script>
-  </n:span>
-  </n:div>
+                                    window.onbeforeunload = null;
 
-  <n:div id="oryx-canvas123"></n:div>
-  </window>
+                                }, 100);
+                            }.bind(this),
+                            onFailure: function(transport) {
+                                alert("Failed to load process fragment!");
+                            }.bind(this)
+                        });
+                    };
+                ]]>
+            </n:script>
+        </n:span>
+    </n:div>
+
+    <n:div id="oryx-canvas123"></n:div>
+</window>
 
