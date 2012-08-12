@@ -97,7 +97,7 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     @Transactional(readOnly = true)
     public DataSource exportFormat(final String name, final Integer processId, final String version, final String format,
-                                   final String annName, boolean withAnn) throws ExportFormatException {
+            final String annName, boolean withAnn) throws ExportFormatException {
         DataSource ds;
         try {
             CPF cpf = rSrv.getCurrentProcessModel(name, version, false);

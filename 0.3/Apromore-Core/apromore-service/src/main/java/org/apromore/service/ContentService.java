@@ -1,6 +1,7 @@
 package org.apromore.service;
 
 import java.util.Collection;
+import java.util.Map;
 
 import org.apromore.dao.model.Content;
 import org.apromore.dao.model.Node;
@@ -27,28 +28,26 @@ public interface ContentService {
      */
     String getMatchingContentId(String hash);
 
-
     /**
      * Add new Content?
-     *
      * @param c    RPSTNode
      * @param hash the contents Hash code
      * @param g    the Process Model Graph
+     * @param pocketIdMappings the pocket mappings
      */
-    Content addContent(RPSTNode c, String hash, CPF g);
+    Content addContent(RPSTNode c, String hash, CPF g, Map<String, String> pocketIdMappings);
 
     /**
-     * Add Vertices to the repository.
-     *
+     * Add Nodes to the repository.
      * @param content  the content id
      * @param vertices the list of vertices
      * @param g        the Process Model Graph
+     * @param pocketIdMappings the pocket mappings
      */
-    void addNodes(Content content, Collection<CpfNode> vertices, CPF g);
+    void addNodes(Content content, Collection<CpfNode> vertices, CPF g, Map<String, String> pocketIdMappings);
 
     /**
      * Add a Node to the repository.
-     *
      * @param content the content Id
      * @param v       the vertex
      * @param vtype   the vertex type
@@ -57,14 +56,12 @@ public interface ContentService {
 
     /**
      * Add non pocket vertices to the repository.
-     *
      * @param vid the vertex id
      */
-    void addNonPacketNode(Integer vid);
+    void addNonPocketNode(Integer vid);
 
     /**
      * Add multiple Edges to the Repository.
-     *
      * @param content the contentId
      * @param edges   the list of edges to add.
      */
@@ -72,7 +69,6 @@ public interface ContentService {
 
     /**
      * Add a single edge to the Repository.
-     *
      * @param content the content to attach
      * @param e       the edge
      * @param source  the Node
@@ -83,21 +79,18 @@ public interface ContentService {
 
     /**
      * Delete the Content and all it's extra elements.
-     *
      * @param contentId the content to remove.
      */
     void deleteContent(String contentId);
 
     /**
      * Delete the Edges that are linked to the Content
-     *
      * @param contentId the content with the edges to remove.
      */
     void deleteEdgesOfContent(String contentId);
 
     /**
      * Delete the Vetices that are linked to the Content
-     *
      * @param contentId the content with the vertices to remove.
      */
     void deleteVerticesOfContent(String contentId);

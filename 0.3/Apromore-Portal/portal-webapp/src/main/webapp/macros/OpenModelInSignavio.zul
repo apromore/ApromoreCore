@@ -38,40 +38,53 @@
                 <![CDATA[
                     // This function is called upon load of all Oryx dependencies
                     window.onOryxResourcesLoaded = function() {
+
                         var oryxEditor = new ORYX.Editor({
-                            id : 'oryx-canvas123', stencilset : { url : 'http://b3mn.org/stencilset/epc#' }, fullscreen : true
+                            model : {
+                                id : 'oryx-canvas123',
+                                stencilset : {
+                                    url : '${arg.url}'
+                                },
+                            },
+                            fullscreen : true
                         });
 
-                    // Import new process model
-                    new Ajax.Request('${arg.importPath}', {
-                        parameters: {
-                            'data': '${arg.jsonData}'}, method: 'POST',
-                            onSuccess: function(transport) {
-                                var editorConfig = Ext.decode(transport.responseText);
-                                oryxEditor.importJSON(editorConfig);
+                        Ext.select('svg').setVisible(false);
 
-                                // Call Auto-Layout if everything is available
-                                window.setTimeout(function() {
-                                    var epcLayouter = oryxEditor.pluginsData.find(function(pluginData) {
-                                        return pluginData.name === "Layout-EPC";
-                                    });
+                        // Import new process model
+                        new Ajax.Request('${arg.importPath}', {
+                            parameters: {
+                                'data': '${arg.jsonData}'}, method: 'POST',
+                                onSuccess: function(transport) {
+                                    var editorConfig = Ext.decode(transport.responseText);
+                                    oryxEditor.importJSON(editorConfig);
 
-                                    if (epcLayouter) {
-                                        epcLayouter.functionality();
-                                        // Display Result
-                                        Ext.select('svg').setVisible(true);
-                                    } else {
-                                        alert("Did not find Layouter");
-                                    }
+                                    // Call Auto-Layout if everything is available
+                                    console.log("before");
+                                    window.setTimeout(function() {
+                                        console.log("in function");
+                                        var epcLayouter = oryxEditor.pluginsData.find(function(pluginData) {
+                                            return pluginData.name === "Layout-EPC";
+                                        });
 
-                                    window.onbeforeunload = null;
+                                        if (epcLayouter) {
+                                            console.log("Did find Layouter");
+                                            epcLayouter.functionality();
+                                            Ext.select('svg').setVisible(true);
+                                        } else {
+                                            alert("Did not find Layouter");
+                                        }
 
-                                }, 100);
-                            }.bind(this),
-                            onFailure: function(transport) {
-                                alert("Failed to load process fragment!");
-                            }.bind(this)
-                        });
+                                        window.onbeforeunload = null;
+
+                                    }, 1000);
+                                }.bind(this),
+
+                                onFailure: function(transport) {
+                                    alert("Failed to load process fragment!");
+                                }.bind(this)
+                            }
+                        );
                     };
                 ]]>
             </n:script>

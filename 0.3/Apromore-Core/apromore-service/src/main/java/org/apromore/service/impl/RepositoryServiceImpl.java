@@ -31,6 +31,8 @@ import org.apromore.graph.JBPT.CPF;
 import org.apromore.graph.JBPT.CpfNode;
 import org.apromore.graph.JBPT.ICpfObject;
 import org.apromore.graph.JBPT.ICpfResource;
+import org.apromore.service.ComposerService;
+import org.apromore.service.DecomposerService;
 import org.apromore.service.FormatService;
 import org.apromore.service.FragmentService;
 import org.apromore.service.LockService;
@@ -58,49 +60,35 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(RepositoryServiceImpl.class);
 
-    @Autowired
-    @Qualifier("ProcessBranchDao")
+    @Autowired @Qualifier("ProcessBranchDao")
     private ProcessBranchDao bDao;
-    @Autowired
-    @Qualifier("ContentDao")
+    @Autowired @Qualifier("ContentDao")
     private ContentDao cDao;
-    @Autowired
-    @Qualifier("ProcessDao")
+    @Autowired @Qualifier("ProcessDao")
     private ProcessDao pDao;
-    @Autowired
-    @Qualifier("ProcessModelVersionDao")
+    @Autowired @Qualifier("ProcessModelVersionDao")
     private ProcessModelVersionDao pmvDao;
-    @Autowired
-    @Qualifier("ProcessFragmentMapDao")
+    @Autowired @Qualifier("ProcessFragmentMapDao")
     private ProcessFragmentMapDao pfmDao;
-    @Autowired
-    @Qualifier("FragmentVersionDao")
+    @Autowired @Qualifier("FragmentVersionDao")
     private FragmentVersionDao fvDao;
-    @Autowired
-    @Qualifier("FragmentVersionDagDao")
+    @Autowired @Qualifier("FragmentVersionDagDao")
     private FragmentVersionDagDao fvdDao;
 
-    @Autowired
-    @Qualifier("UserService")
+    @Autowired @Qualifier("UserService")
     private UserService uSrv;
-    @Autowired
-    @Qualifier("FormatService")
+    @Autowired @Qualifier("FormatService")
     private FormatService fSrv;
-    @Autowired
-    @Qualifier("FragmentService")
+    @Autowired @Qualifier("FragmentService")
     private FragmentService frgSrv;
-    @Autowired
-    @Qualifier("LockService")
+    @Autowired @Qualifier("LockService")
     private LockService lSrv;
 
-    @Autowired
-    @Qualifier("Decomposer")
-    private Decomposer decomposer;
-    @Autowired
-    @Qualifier("Composer")
-    private Composer composer;
-    @Autowired
-    @Qualifier("ChangePropagator")
+    @Autowired @Qualifier("ComposerService")
+    private ComposerService composer;
+    @Autowired @Qualifier("DecomposerService")
+    private DecomposerService decomposer;
+    @Autowired @Qualifier("ChangePropagator")
     private ChangePropagator cPropagator;
 
 
@@ -128,7 +116,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             Process process = insertProcess(processName, username, nativeType, domain);
             ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, versionName);
 
-            List<String> composingFragmentIds = new ArrayList<String>(0);
+            List<String> composingFragmentIds = new ArrayList<>(0);
             FragmentVersion rootFV = decomposer.decompose(proModGrap, composingFragmentIds);
             ProcessModelVersion pdo = insertProcessModelVersion(proModGrap, branch, rootFV.getFragmentVersionId(), numVertices, numEdges);
             insertProcessFragmentMappings(pdo, composingFragmentIds);
@@ -176,7 +164,7 @@ public class RepositoryServiceImpl implements RepositoryService {
                 LOGGER.error(msg);
             }
 
-            List<String> composingFragmentIds = new ArrayList<String>();
+            List<String> composingFragmentIds = new ArrayList<>();
             FragmentVersion rootFV = decomposer.decompose(g, composingFragmentIds);
             cPropagator.propagateChangesWithLockRelease(pmVersion.getRootFragmentVersionId(), rootFV.getFragmentVersionId(), composingFragmentIds);
         } catch (Exception re) {
@@ -210,7 +198,7 @@ public class RepositoryServiceImpl implements RepositoryService {
                 LOGGER.error(msg);
             }
 
-            List<String> composingFragmentIds = new ArrayList<String>();
+            List<String> composingFragmentIds = new ArrayList<>();
             FragmentVersion rootFV = decomposer.decompose(g, composingFragmentIds);
             cPropagator.propagateChangesWithLockRelease(pmVersion.getRootFragmentVersionId(), rootFV.getFragmentVersionId(), composingFragmentIds);
         } catch (Exception e) {
@@ -371,7 +359,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         }
 
         try {
-            List<String> composingFragmentIds = new ArrayList<String>();
+            List<String> composingFragmentIds = new ArrayList<>();
             String originalFragmentId = fg.getProperty(Constants.ORIGINAL_FRAGMENT_ID);
 
             LOGGER.debug("Decomposing the fragment graph of fragment " + originalFragmentId + "...");
@@ -664,20 +652,20 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     /**
-     * Set the Composer for this class. Mainly for spring tests.
+     * Set the ComposerServiceImpl for this class. Mainly for spring tests.
      *
      * @param comp the composer
      */
-    public void setComposer(Composer comp) {
+    public void setComposer(ComposerService comp) {
         this.composer = comp;
     }
 
     /**
-     * Set the Decomposer for this class. Mainly for spring tests.
+     * Set the DecomposerService for this class. Mainly for spring tests.
      *
-     * @param decomp the Decomposer
+     * @param decomp the DecomposerService
      */
-    public void setDecomposer(Decomposer decomp) {
+    public void setDecomposer(DecomposerService decomp) {
         this.decomposer = decomp;
     }
 

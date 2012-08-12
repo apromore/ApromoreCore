@@ -8,7 +8,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import javax.activation.DataHandler;
@@ -729,7 +728,6 @@ public class ManagerPortalEndpoint {
     @ResponsePayload
     public JAXBElement<ReadDomainsOutputMsgType> readDomains(@RequestPayload final JAXBElement<ReadDomainsInputMsgType> req) {
         LOGGER.info("Executing operation readDomains");
-        //ReadDomainsInputMsgType payload = req.getValue();
         ReadDomainsOutputMsgType res = new ReadDomainsOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
