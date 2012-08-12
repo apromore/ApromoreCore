@@ -188,7 +188,7 @@
 					      }.bind(this)
 					    });		
 					
-				};
+				    };
 				]]>
                 </n:script>
             </n:span>

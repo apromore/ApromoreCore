@@ -159,7 +159,7 @@ public class GraphToCPFHelper {
             typ.setId(n.getId());
             typ.getAttribute().addAll(addAttributes(n));
             net.getNode().add(typ);
-        } else if (n instanceof CpfNode) {
+        } else if (n != null) {
             NodeType typ = new NodeType();
             typ.setName(n.getName());
             typ.setId(n.getId());
@@ -168,7 +168,7 @@ public class GraphToCPFHelper {
     }
 
     private static List<ICpfResource> findResourceList(CPF graph) {
-        List<ICpfResource> resources = new ArrayList<ICpfResource>(0);
+        List<ICpfResource> resources = new ArrayList<>(0);
         Collection<FlowNode> nodes = graph.getFlowNodes();
         for (FlowNode node : nodes) {
             if (node instanceof CpfNode) {
@@ -179,7 +179,7 @@ public class GraphToCPFHelper {
     }
 
     private static List<ICpfObject> findObjectList(CPF graph) {
-        List<ICpfObject> resources = new ArrayList<ICpfObject>(0);
+        List<ICpfObject> resources = new ArrayList<>(0);
         Collection<FlowNode> nodes = graph.getFlowNodes();
         for (FlowNode node : nodes) {
             if (node instanceof CpfNode) {
@@ -191,7 +191,7 @@ public class GraphToCPFHelper {
 
     private static Collection<? extends TypeAttribute> addAttributes(CpfNode n) {
         TypeAttribute typAtt;
-        List<TypeAttribute> atts = new ArrayList<TypeAttribute>(0);
+        List<TypeAttribute> atts = new ArrayList<>(0);
         for (Entry<String, String> att : n.getAttributes().entrySet()) {
             typAtt = new TypeAttribute();
             typAtt.setTypeRef(att.getKey());
@@ -202,7 +202,7 @@ public class GraphToCPFHelper {
 
     private static Collection<ObjectRefType> addObjectRef(CpfNode n) {
         ObjectRefType object;
-        List<ObjectRefType> objs = new ArrayList<ObjectRefType>(0);
+        List<ObjectRefType> objs = new ArrayList<>(0);
         for (ICpfObject obj : n.getObjects()) {
             object = new ObjectRefType();
             object.setId(obj.getId());
@@ -219,7 +219,7 @@ public class GraphToCPFHelper {
 
     private static Collection<ResourceTypeRefType> addResourceRef(CpfNode n) {
         ResourceTypeRefType resource;
-        List<ResourceTypeRefType> ress = new ArrayList<ResourceTypeRefType>(0);
+        List<ResourceTypeRefType> ress = new ArrayList<>(0);
         for (ICpfResource res : n.getResource()) {
             resource = new ResourceTypeRefType();
             resource.setId(res.getId());
@@ -291,7 +291,7 @@ public class GraphToCPFHelper {
 
     private static List<TypeAttribute> buildAttributeList(Map<String, String> attributes) {
         TypeAttribute typAtt;
-        List<TypeAttribute> atts = new ArrayList<TypeAttribute>(0);
+        List<TypeAttribute> atts = new ArrayList<>(0);
         for (Entry<String, String> e : attributes.entrySet()) {
             typAtt = new TypeAttribute();
             typAtt.setTypeRef(e.getKey());

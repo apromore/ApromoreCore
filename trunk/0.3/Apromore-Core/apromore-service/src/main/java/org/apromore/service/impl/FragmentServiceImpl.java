@@ -141,8 +141,8 @@ public class FragmentServiceImpl implements FragmentService {
             }
 
             LOGGER.debug("Composing the fragment " + fragmentId + "...");
-            Composer composer = new Composer();
-            processModelGraph = composer.compose(fragmentId);
+            ComposerServiceImpl composerServiceImpl = new ComposerServiceImpl();
+            processModelGraph = composerServiceImpl.compose(fragmentId);
             processModelGraph.setProperty(Constants.ORIGINAL_FRAGMENT_ID, fragmentId);
 
             if (lock) {

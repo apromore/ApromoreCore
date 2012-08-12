@@ -1,6 +1,7 @@
 package org.apromore.service.impl;
 
 import java.util.Collection;
+import java.util.Map;
 import java.util.Map.Entry;
 
 import org.apromore.common.Constants;
@@ -40,23 +41,19 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRED)
 public class ContentServiceImpl implements ContentService {
 
-    @Autowired
-    @Qualifier("ContentDao")
+    @Autowired @Qualifier("ContentDao")
     private ContentDao contentDao;
-    @Autowired
-    @Qualifier("EdgeDao")
+    @Autowired @Qualifier("EdgeDao")
     private EdgeDao edgeDao;
-    @Autowired
-    @Qualifier("NodeDao")
+    @Autowired @Qualifier("NodeDao")
     private NodeDao nDao;
-    @Autowired
-    @Qualifier("NonPocketNodeDao")
+    @Autowired @Qualifier("NonPocketNodeDao")
     private NonPocketNodeDao nonPocketNodeDao;
 
 
     /**
      * @see org.apromore.service.ContentService#getMatchingContentId(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -69,38 +66,41 @@ public class ContentServiceImpl implements ContentService {
 
 
     /**
-     * @see org.apromore.service.ContentService#addContent(org.jbpt.graph.algo.rpst.RPSTNode, String, org.apromore.graph.JBPT.CPF)
+     * @see org.apromore.service.ContentService#addContent(org.jbpt.graph.algo.rpst.RPSTNode, String, org.apromore.graph.JBPT.CPF, java.util.Map)
      *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Content addContent(RPSTNode c, String hash, CPF g) {
+    public Content addContent(RPSTNode c, String hash, CPF g, Map<String, String> pocketIdMappings) {
         Content content = new Content();
+        content.setCode(hash);
+        contentDao.save(content);
+
+        addNodes(content, c.getFragment().getVertices(), g, pocketIdMappings);
+        addEdges(content, c.getFragmentEdges());
 
         content.setBoundaryS(c.getEntry().getId());
         content.setBoundaryE(c.getExit().getId());
-        content.setCode(hash);
-
-        contentDao.save(content);
-
-        addNodes(content, c.getFragment().getVertices(), g);
-        addEdges(content, c.getFragmentEdges());
+        contentDao.update(content);
 
         return content;
     }
 
     /**
-     * @see org.apromore.service.ContentService#addNodes(org.apromore.dao.model.Content, java.util.Collection, org.apromore.graph.JBPT.CPF)
-     *      {@inheritDoc}
+     * @see org.apromore.service.ContentService#addNodes(org.apromore.dao.model.Content, java.util.Collection, org.apromore.graph.JBPT.CPF, java.util.Map)
+     * {@inheritDoc}
      */
     @Override
-    public void addNodes(Content content, Collection<CpfNode> vertices, CPF g) {
+    public void addNodes(Content content, Collection<CpfNode> vertices, CPF g, Map<String, String> pocketIdMappings) {
         for (ICpfNode v : vertices) {
+            String oldVId = v.getId();
             String type = g.getVertexProperty(v.getId(), Constants.TYPE);
             Node n = addNode(content, v, type);
             v.setId(String.valueOf(n.getVid()));
             if (!"Pocket".equals(type)) {
-                addNonPacketNode(n.getVid());
+                addNonPocketNode(n.getVid());
+            } else {
+                pocketIdMappings.put(oldVId, v.getId());
             }
         }
     }
@@ -129,11 +129,11 @@ public class ContentServiceImpl implements ContentService {
     }
 
     /**
-     * @see org.apromore.service.ContentService#addNonPacketNode(String)
+     * @see org.apromore.service.ContentService#addNonPocketNode(Integer)
      *      {@inheritDoc}
      */
     @Override
-    public void addNonPacketNode(Integer vid) {
+    public void addNonPocketNode(Integer vid) {
         NonPocketNode nonPockNode = new NonPocketNode();
 
         nonPockNode.setVid(vid);

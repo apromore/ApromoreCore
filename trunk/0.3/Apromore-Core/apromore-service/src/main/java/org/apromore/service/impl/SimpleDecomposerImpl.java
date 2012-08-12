@@ -13,11 +13,13 @@ import org.apromore.dao.model.FragmentVersion;
 import org.apromore.exception.RepositoryException;
 import org.apromore.graph.JBPT.CPF;
 import org.apromore.graph.TreeVisitor;
+import org.apromore.service.DecomposerService;
 import org.apromore.service.FragmentService;
 import org.apromore.service.helper.OperationContext;
 import org.apromore.service.helper.RPSTNodeCopy;
 import org.apromore.util.FragmentUtil;
 import org.apromore.util.GraphUtil;
+import org.apromore.util.HashUtil;
 import org.jbpt.graph.abs.AbstractDirectedEdge;
 import org.jbpt.graph.algo.rpst.RPST;
 import org.jbpt.graph.algo.rpst.RPSTNode;
@@ -32,20 +34,23 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service("ClusteringDecomposer")
+@Service("SimpleDecomposerService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class ClusteringDecomposer {
+public class SimpleDecomposerImpl implements DecomposerService {
 
-    private static final Logger log = LoggerFactory.getLogger(ClusteringDecomposer.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleDecomposerImpl.class);
 
     @Autowired @Qualifier("FragmentService")
     private FragmentService fsrv;
-
 
     private Map<String, String> fragmentIdMap = new HashMap<String, String>();
     private TreeVisitor visitor = new TreeVisitor();
 
 
+    /**
+     * @see org.apromore.service.DecomposerService#decompose(org.apromore.graph.JBPT.CPF, java.util.List)
+     * {@inheritDoc}
+     */
     public FragmentVersion decompose(CPF graph, List<String> fragmentIds) throws RepositoryException {
         TreeVisitor visitor = new TreeVisitor();
         OperationContext op = new OperationContext();
@@ -55,33 +60,30 @@ public class ClusteringDecomposer {
         try {
             RPST rpst = GraphUtil.normalizeGraph(graph);
             RPSTNode rootFragment = rpst.getRoot();
-            log.debug("Starting the processing of the root fragment...");
+            LOGGER.debug("Starting the processing of the root fragment...");
             FragmentVersion rootfv = process(rpst, rootFragment, op, fragmentIds, graph);
             fragmentIds.add(rootfv.getFragmentVersionId());
             return rootfv;
-
         } catch (Exception e) {
             String msg = "Failed to add root fragment version of the process model.";
-            log.error(msg, e);
+            LOGGER.error(msg, e);
             throw new RepositoryException(msg, e);
         }
     }
 
     /**
-     * Stores the fragment as it is
-     * Removes all child fragments and replace them with their fragment codes
-     * Returns the fragment code of the fragment
-     * @param rpst
-     * @param f
-     * @param op
-     * @param fragmentIds
-     * @return
-     * @throws org.apromore.exception.RepositoryException
+     * @see org.apromore.service.DecomposerService#decomposeFragment(org.apromore.graph.JBPT.CPF, java.util.List)
+     * {@inheritDoc}
      */
-    public FragmentVersion process(RPST rpst, RPSTNode f, OperationContext op, List<String> fragmentIds, CPF g)
-            throws RepositoryException {
-        removeRundandantBoundaryConnectors(f, op);
+    public String decomposeFragment(CPF graph, List<String> fragmentIds) throws RepositoryException {
+        throw new UnsupportedOperationException("Fragment level decomposition is not supported by the simple decomposer.");
+    }
 
+
+
+    /* Process the Decomposition. */
+    private FragmentVersion process(RPST rpst, RPSTNode f, OperationContext op, List<String> fragmentIds, CPF g)
+            throws RepositoryException {
         RPSTNodeCopy fCopy = new RPSTNodeCopy(f);
         fCopy.setReadableNodeType(FragmentUtil.getFragmentType(f));
 
@@ -97,7 +99,6 @@ public class ClusteringDecomposer {
         // child id -> uuid (we use uuid instead of a pocket id here as we are not using pockets in this simple decomposition)
         Map<String, String> childFragmentIds = new HashMap<String, String>();
         for (RPSTNode c : cs) {
-
             if (c.getType().equals(TCType.T)) {
                 continue;
             }
@@ -138,11 +139,9 @@ public class ClusteringDecomposer {
             System.out.println(vertices);
         }
 
-        log.debug("Computing the code for fragment: " + fCopy.getReadableNodeType() + " : " + fCopy.getNumVertices());
-        String fragmentCode = "NOT COMPUTED";
-
-        log.debug("Computation of code complete.");
-
+        LOGGER.debug("Computing the code for fragment: " + fCopy.getReadableNodeType() + " : " + fCopy.getNumVertices());
+        String fragmentCode = HashUtil.computeHash(f, op);
+        LOGGER.debug("Computation of code complete.");
         FragmentVersion fv = null;
         if (fv == null) {
             fv = fsrv.storeFragment(fragmentCode, fCopy, g);
@@ -151,39 +150,4 @@ public class ClusteringDecomposer {
         return fv;
     }
 
-    private void removeRundandantBoundaryConnectors(RPSTNode f, OperationContext op) {
-        if (f.getType().equals(TCType.P)) {
-            CPF g = op.getGraph();
-            if (Constants.CONNECTOR.equals(g.getVertexProperty(f.getEntry().getId(), Constants.TYPE))) {
-                Collection<Vertex> entryPostset = f.getFragment().getDirectSuccessors(f.getEntry());
-                if (entryPostset.size() == 1) {
-                    f.getFragment().removeVertex(f.getEntry());
-
-                    for (Vertex newEntry : entryPostset) {
-                        f.setEntry(newEntry);
-                        break;
-                    }
-                }
-            }
-            if (Constants.CONNECTOR.equals(g.getVertexProperty(f.getExit().getId(), Constants.TYPE))) {
-                Collection<Vertex> exitPreset = f.getFragment().getDirectPredecessors(f.getExit());
-                if (exitPreset.size() == 1) {
-                    f.getFragment().removeVertex(f.getExit());
-
-                    for (Vertex newExit : exitPreset) {
-                        f.setExit(newExit);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
-    /*
-      * Fragment level decomposition is not supported by the simple decomposer.
-      */
-    public String decomposeFragment(CPF graph, List<String> fragmentIds)
-            throws RepositoryException {
-        throw new UnsupportedOperationException("Fragment level decomposition is not supported by the simple decomposer.");
-    }
 }

@@ -15,8 +15,8 @@ import org.apromore.clustering.dissimilarity.DissimilarityMatrix;
 import org.apromore.clustering.dissimilarity.measure.GEDDissimCalc;
 import org.apromore.dao.ClusteringDao;
 import org.apromore.graph.JBPT.CPF;
+import org.apromore.service.ComposerService;
 import org.apromore.service.helper.SimpleGraphWrapper;
-import org.apromore.service.impl.ClusteringComposer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -35,8 +35,8 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     private ContainmentRelation crel;
     @Autowired @Qualifier("ClusteringDao")
     private ClusteringDao clusteringDao;
-    @Autowired @Qualifier("ClusteringComposer")
-    private ClusteringComposer composer;
+    @Autowired @Qualifier("ComposerService")
+    private ComposerService composer;
 
     /* Fragment Id -> SimpleGraph object containing all nodes and edges of the fragment. */
     private Map<String, SimpleGraph> models = new HashMap<>();
