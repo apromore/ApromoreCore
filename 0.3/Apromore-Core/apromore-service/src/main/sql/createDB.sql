@@ -391,6 +391,7 @@ CREATE TABLE `fragment_distance` (
 
 CREATE TABLE `cluster_assignment` (
     `cluster_id`           int(11),
+    `fragment_version_id`  varchar(40),
     `clone_id`             varchar(40),
     `maximal`              boolean,
     `core_object_nb`       int,

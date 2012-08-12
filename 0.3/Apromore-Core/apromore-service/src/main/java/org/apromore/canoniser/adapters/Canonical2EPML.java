@@ -73,25 +73,23 @@ import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 
 public class Canonical2EPML {
-    Map<String, BigInteger> id_map = new HashMap<String, BigInteger>();
-    List<String> event_list = new LinkedList<String>();
-    Map<String, NodeType> nodeRefMap = new HashMap<String, NodeType>();
-    Map<String, EdgeType> edgeRefMap = new HashMap<String, EdgeType>();
-    Map<BigInteger, Object> epcRefMap = new HashMap<BigInteger, Object>();
-    Map<String, ObjectRefType> objectRefMap = new HashMap<String, ObjectRefType>();
-    List<TEpcElement> eventFuncList = new LinkedList<TEpcElement>();
-    List<String> object_res_list = new LinkedList<String>();
-    Map<BigInteger, List<String>> role_map = new HashMap<BigInteger, List<String>>();
-    List<TypeFunction> subnet_list = new LinkedList<TypeFunction>();
-    List<TypeProcessInterface> pi_list = new LinkedList<TypeProcessInterface>();
-    List<Object> temp_list = new LinkedList<Object>();
+    Map<String, BigInteger> id_map = new HashMap<>();
+    List<String> event_list = new LinkedList<>();
+    Map<String, NodeType> nodeRefMap = new HashMap<>();
+    Map<String, EdgeType> edgeRefMap = new HashMap<>();
+    Map<BigInteger, Object> epcRefMap = new HashMap<>();
+    Map<String, ObjectRefType> objectRefMap = new HashMap<>();
+    List<TEpcElement> eventFuncList = new LinkedList<>();
+    List<String> object_res_list = new LinkedList<>();
+    Map<BigInteger, List<String>> role_map = new HashMap<>();
+    List<TypeFunction> subnet_list = new LinkedList<>();
+    List<TypeProcessInterface> pi_list = new LinkedList<>();
 
-    List<TypeFlow> flow_list = new LinkedList<TypeFlow>();
+    List<TypeFlow> flow_list = new LinkedList<>();
 
     private TypeEPML epml = new TypeEPML();
     private TypeDirectory dir = new TypeDirectory();
     private long ids = System.currentTimeMillis();
-    ;
     private long defIds = 1;
 
     public TypeEPML getEPML() {
@@ -103,44 +101,42 @@ public class Canonical2EPML {
      * will be added as needed. The algorithm will also minimized them as much as possible.
      * It verifies the functions and events elements one by one until the last element.
      * This method will only be called if the addFakes boolean value is defined and true.
-     * <p/>
-     *
      * @param epc the header for an EPCs modelass
      * @since 1.0
      */
     private void validate_model(TypeEPC epc) {
-        List<TEpcElement> successors = new LinkedList<TEpcElement>();
+        List<TEpcElement> successors;
         int events, funcs;
-        for (Object obj : epc.getEventOrFunctionOrRole())
-            if (obj instanceof TypeFunction || obj instanceof TypeEvent)
+        for (Object obj : epc.getEventOrFunctionOrRole()) {
+            if (obj instanceof TypeFunction || obj instanceof TypeEvent) {
                 eventFuncList.add((TEpcElement) obj);
+            }
+        }
 
         for (TEpcElement element : eventFuncList) {
             if (element instanceof TypeEvent) {
                 successors = retrieve_successors(element, epc);
                 events = funcs = 0;
-                for (TEpcElement obj : successors)
-                    if (obj instanceof TypeFunction)
+                for (TEpcElement obj : successors) {
+                    if (obj instanceof TypeFunction) {
                         funcs++;
-                    else
+                    } else {
                         events++;
+                    }
+                }
                 if (events == 0 && funcs == 0) {
-                    // Do Nothing
-                } else if (events == 0 && funcs != 0) {
-                    // DO NOTHING
-                } else if (funcs == 0 && events != 0) {
+                } else if (events == 0) {  // && funcs != 0
+                } else if (funcs == 0) {   // && events != 0
                     // Add fake function after the current event
                     TypeFunction func = new TypeFunction();
                     TypeArc arc1, arc2 = new TypeArc();
                     TypeFlow flow = new TypeFlow();
                     arc2.setFlow(flow);
-
                     arc1 = find_post_arc(element, epc);
                     add_fake(arc1, func, arc2, epc);
-
                 } else {
                     if (events > funcs) {
-                        //Add fake function after the current event
+                        // Add fake function after the current event
                         TypeFunction func = new TypeFunction();
                         TypeArc arc1, arc2 = new TypeArc();
                         TypeFlow flow = new TypeFlow();
@@ -149,7 +145,7 @@ public class Canonical2EPML {
                         arc1 = find_pre_arc(element, epc);
                         add_fake(arc1, func, arc2, epc);
 
-                        //Add fake event before each successor function
+                        // Add fake event before each successor function
                         for (TEpcElement tepc : successors) {
                             if (tepc instanceof TypeFunction) {
                                 TypeEvent event = new TypeEvent();
@@ -176,15 +172,16 @@ public class Canonical2EPML {
                         }
                     }
                 }
-
             } else if (element instanceof TypeFunction) {
-                successors = retrieve_successors((TEpcElement) element, epc);
+                successors = retrieve_successors(element, epc);
                 events = funcs = 0;
-                for (TEpcElement obj : successors)
-                    if (obj instanceof TypeFunction)
+                for (TEpcElement obj : successors) {
+                    if (obj instanceof TypeFunction) {
                         funcs++;
-                    else
+                    } else {
                         events++;
+                    }
+                }
 
                 if (funcs == 0 && events == 0) {
                     // Do Nothing
@@ -192,7 +189,6 @@ public class Canonical2EPML {
                 if (funcs == 0) {
                     // DO NOTHING
                 } else if (events == 0) {
-                    // Add fake event after the current function
                     TypeEvent event = new TypeEvent();
                     TypeArc arc1, arc2 = new TypeArc();
                     TypeFlow flow = new TypeFlow();
@@ -202,7 +198,6 @@ public class Canonical2EPML {
                     add_fake(arc1, event, arc2, epc);
                 } else {
                     if (funcs > events) {
-                        //Add fake event after the current function
                         TypeEvent event = new TypeEvent();
                         TypeArc arc1, arc2 = new TypeArc();
                         TypeFlow flow = new TypeFlow();
@@ -211,7 +206,6 @@ public class Canonical2EPML {
                         arc1 = find_post_arc(element, epc);
                         add_fake(arc1, event, arc2, epc);
 
-                        //Add fake function before each successor event
                         for (TEpcElement tepc : successors) {
                             if (tepc instanceof TypeEvent) {
                                 TypeFunction func = new TypeFunction();
@@ -223,43 +217,33 @@ public class Canonical2EPML {
                                 add_fake(arc11, func, arc22, epc);
                             }
                         }
-
                     } else {
-                        // Add fake event before each successor function
                         for (TEpcElement tepc : successors) {
                             if (tepc instanceof TypeFunction) {
                                 TypeEvent event = new TypeEvent();
                                 TypeArc arc11, arc22 = new TypeArc();
                                 TypeFlow flow1 = new TypeFlow();
                                 arc22.setFlow(flow1);
-
                                 arc11 = find_pre_arc(element, epc);
                                 add_fake(arc11, event, arc22, epc);
                             }
                         }
                     }
                 }
-
             }
         }
-
     }
 
     /**
      * Adds a fake element between the received two arcs.
-     * <p/>
-     *
      * @param epc the header for an EPCs modelass
-     *            element
-     *            arc1
-     *            arc2
+     * element
+     * arc1
+     * arc2
      * @since 1.0
      */
-    private void add_fake(TypeArc arc1,
-                          TEpcElement element, TypeArc arc2, TypeEPC epc) {
-
+    private void add_fake(TypeArc arc1, TEpcElement element, TypeArc arc2, TypeEPC epc) {
         element.setId(BigInteger.valueOf(ids++));
-        TExtensibleElements ex;
         QName typeRef = new QName("typeRef");
         element.getOtherAttributes().put(typeRef, "fake");
         element.setName("");
@@ -275,22 +259,17 @@ public class Canonical2EPML {
     /**
      * It take two parameters and returns the previous arc element for
      * the received EPC element if it is exist.
-     * <p/>
-     *
      * @param epc the header for an EPCs modelass
-     *            element   the element from this epc intended to retrieve its previous arc
+     * element   the element from this epc intended to retrieve its previous arc
      * @since 1.0
      */
     private TypeArc find_pre_arc(TEpcElement element, TypeEPC epc) {
         for (Object obj : epc.getEventOrFunctionOrRole()) {
-            if (obj != null &&
-                    ((TypeArc) obj).getFlow() != null &&
-                    ((TypeArc) obj).getFlow().getTarget() != null
-                    && element != null)
-                if (obj instanceof TypeArc)
-                    if (((TypeArc) obj).getFlow().getTarget()
-                            .equals(element.getId()))
-                        return (TypeArc) obj;
+            if (obj != null && ((TypeArc) obj).getFlow() != null && ((TypeArc) obj).getFlow().getTarget() != null && element != null) {
+                if (((TypeArc) obj).getFlow().getTarget().equals(element.getId())) {
+                    return (TypeArc) obj;
+                }
+            }
         }
         return null;
     }
@@ -298,22 +277,18 @@ public class Canonical2EPML {
     /**
      * It take two parameters and returns the post arc element for
      * the received EPC element if it is exist.
-     * <p/>
-     *
      * @param epc the header for an EPCs modelass
-     *            element   the element from this epc intended to retrieve its post arc
+     * element   the element from this epc intended to retrieve its post arc
      * @since 1.0
      */
     private TypeArc find_post_arc(TEpcElement element, TypeEPC epc) {
         for (Object obj : epc.getEventOrFunctionOrRole()) {
-            if (obj != null && obj instanceof TypeArc &&
-                    ((TypeArc) obj).getFlow() != null &&
-                    ((TypeArc) obj).getFlow().getSource() != null
-                    && element != null)
-                if (obj instanceof TypeArc)
-                    if (((TypeArc) obj).getFlow().getSource()
-                            .equals(element.getId()))
-                        return (TypeArc) obj;
+            if (obj != null && obj instanceof TypeArc && ((TypeArc) obj).getFlow() != null && ((TypeArc) obj).getFlow().getSource() != null &&
+                    element != null) {
+                if (((TypeArc) obj).getFlow().getSource().equals(element.getId())) {
+                    return (TypeArc) obj;
+                }
+            }
         }
         return null;
     }
@@ -321,15 +296,13 @@ public class Canonical2EPML {
     /**
      * It take two parameters and returns all the successors elements for
      * the received EPC element.
-     * <p/>
-     *
      * @param epc the header for an EPCs modelass
-     *            element   the element from this epc intended to retrieve its successors
+     * element   the element from this epc intended to retrieve its successors
      * @since 1.0
      */
     private List<TEpcElement> retrieve_successors(TEpcElement element, TypeEPC epc) {
-        List<Object> elements = new LinkedList<Object>();
-        List<TEpcElement> successors = new LinkedList<TEpcElement>();
+        List<Object> elements = new LinkedList<>();
+        List<TEpcElement> successors = new LinkedList<>();
         elements.add(element);
         boolean flag = false;
 
@@ -340,7 +313,7 @@ public class Canonical2EPML {
                 successors.add((TEpcElement) obj);
             } else {
                 flag = true;
-                for (Object object : epc.getEventOrFunctionOrRole())
+                for (Object object : epc.getEventOrFunctionOrRole()) {
                     if (object instanceof TypeArc) {
                         if (((TypeArc) object).getFlow() != null) {
                             TypeFlow flow = ((TypeArc) object).getFlow();
@@ -349,6 +322,7 @@ public class Canonical2EPML {
                             }
                         }
                     }
+                }
             }
 
         }
@@ -359,12 +333,8 @@ public class Canonical2EPML {
     /**
      * Constructor for de-canonizing CPF & ANF files. The fake
      * feature will be set to false as a default value.
-     * <p/>
-     *
      * @param cproc the header for a CPF modelass
-     *              annotations       the header for an ANF modelass
-     * @throws
-     * @since 1.0
+     * @param annotations the header for an ANF modelass
      */
     public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations) {
         main(cproc, false);
@@ -376,11 +346,7 @@ public class Canonical2EPML {
      * Constructor for de-canonizing CPF file without
      * annotations. The fake feature will be set to false
      * as a default value.
-     * <p/>
-     *
      * @param cproc the header for a CPF modelass
-     * @throws
-     * @since 1.0
      */
     public Canonical2EPML(CanonicalProcessType cproc) {
         main(cproc, false);
@@ -389,13 +355,9 @@ public class Canonical2EPML {
 
     /**
      * Constructor for de-canonizing CPF & ANF files.
-     * <p/>
-     *
-     * @param cproc the header for a CPF modelass
-     *              annotations       the header for an ANF modelass
-     *              addFake           Boolean value to either add fake elements or not.
-     * @throws
-     * @since 1.0
+     * @param cproc        The header for a CPF modelass
+     * @param annotations  The header for an ANF modelass
+     * @param addFakes     Boolean value to either add fake elements or not.
      */
     public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations, boolean addFakes) {
         main(cproc, addFakes);
@@ -403,26 +365,12 @@ public class Canonical2EPML {
         mapEdgeAnnotations(annotations);
     }
 
-    /**
-     * Constructor for de-canonizing CPF file without annotation.
-     * <p/>
-     *
-     * @param cproc the header for a CPF modelass
-     *              addFake           Boolean value to either add fake elements or not.
-     * @throws
-     * @since 1.0
-     */
-    public Canonical2EPML(CanonicalProcessType cproc, boolean addFakes) {
-        main(cproc, addFakes);
-    }
 
     /**
      * This main method to be reused by all the constructors
      * for all cases.
-     * <p/>
-     *
      * @param cproc the header for a CPF modelass
-     *              addFake           Boolean value to either add fake elements or not.
+     * @param addFakes           Boolean value to either add fake elements or not.
      * @since 1.0
      */
     private void main(CanonicalProcessType cproc, boolean addFakes) {
@@ -435,24 +383,29 @@ public class Canonical2EPML {
             epc.setName(" ");
             translateNet(epc, net);
             for (ObjectType obj : cproc.getObject()) {
-                if (object_res_list.contains(obj.getId()))
+                if (object_res_list.contains(obj.getId())) {
                     translateObject(obj, epc);
+                }
             }
             for (ResourceTypeType resT : cproc.getResourceType()) {
-                if (object_res_list.contains(resT.getId()))
+                if (object_res_list.contains(resT.getId())) {
                     translateResource(resT, epc);
+                }
             }
             createRelationArc(epc, net);
             object_res_list.clear();
-            if (addFakes)
+            if (addFakes) {
                 validate_model(epc);
+            }
             epml.getDirectory().get(0).getEpcOrDirectory().add(epc);
         }
 
-        for (TypeFunction func : subnet_list)
-            func.getToProcess().setLinkToEpcId(id_map.get(func.getToProcess().getLinkToEpcId()));
-        for (TypeProcessInterface pi : pi_list)
-            pi.getToProcess().setLinkToEpcId(id_map.get(pi.getToProcess().getLinkToEpcId()));
+        for (TypeFunction func : subnet_list) {
+            func.getToProcess().setLinkToEpcId(id_map.get(func.getToProcess().getLinkToEpcId().toString()));
+        }
+        for (TypeProcessInterface pi : pi_list) {
+            pi.getToProcess().setLinkToEpcId(id_map.get(pi.getToProcess().getLinkToEpcId().toString()));
+        }
     }
 
     private void translateNet(TypeEPC epc, NetType net) {
@@ -460,21 +413,24 @@ public class Canonical2EPML {
             if (node instanceof TaskType || node instanceof EventType) {
                 if (node instanceof TaskType) {
                     translateTask(epc, (TaskType) node);
-                } else if (node instanceof EventType) {
+                } else {
                     translateEvent(epc, node);
                 }
+
                 for (ObjectRefType ref : ((WorkType) node).getObjectRef()) {
                     object_res_list.add(ref.getObjectId());
                 }
-                List<String> ll = new LinkedList<String>();
+
+                List<String> ll = new LinkedList<>();
                 for (ResourceTypeRefType ref : ((WorkType) node).getResourceTypeRef()) {
                     object_res_list.add(ref.getResourceTypeId());
                     ll.add(ref.getResourceTypeId());
                 }
                 role_map.put(epc.getEpcId(), ll);
-
             } else if (node instanceof RoutingType) {
                 translateGateway(epc, node);
+            } else if (node.getName().equals("_entry_") || node.getName().equals("_exit_")) {
+                translateEvent(epc, node);
             }
             nodeRefMap.put(node.getId(), node);
         }
@@ -483,14 +439,14 @@ public class Canonical2EPML {
 
         for (EdgeType edge : net.getEdge()) {
             boolean flag = true;
-            if (edge.getCondition() == null)
+            if (edge.getCondition() == null) {
                 flag = true;
-            else if (edge.getCondition().equals("EPMLEPML"))
+            } else if (edge.getCondition().equals("EPMLEPML")) {
                 flag = false;
+            }
 
             edgeRefMap.put(edge.getId(), edge);
             if (flag) {
-
                 if (id_map.get(edge.getTargetId()) != null) {
                     TypeArc arc = new TypeArc();
                     TypeFlow flow = new TypeFlow();
@@ -505,11 +461,8 @@ public class Canonical2EPML {
                 } else {
                     id_map.put(edge.getTargetId(), id_map.get(edge.getSourceId()));
                 }
-
             }
         }
-
-
     }
 
     private void createRelationArc(TypeEPC epc, NetType net) {
@@ -533,12 +486,13 @@ public class Canonical2EPML {
                             TypeObject o = (TypeObject) epcRefMap.get(id);
                             o.setType("input");
                         }
-                        for (TypeAttribute att : ref.getAttribute())
+                        for (TypeAttribute att : ref.getAttribute()) {
                             if (att.getTypeRef().equals("RefID")) {
                                 String l = att.getValue();
                                 objectRefMap.put(l, ref);
                                 id_map.put(l, arc.getId());
                             }
+                        }
                         arc.setRelation(rel);
                         epcRefMap.put(arc.getId(), arc);
                         epc.getEventOrFunctionOrRole().add(arc);
@@ -590,7 +544,6 @@ public class Canonical2EPML {
         event.setDefRef(find_def_id("event", event.getName()));
         epc.getEventOrFunctionOrRole().add(event);
         epcRefMap.put(event.getId(), event);
-
     }
 
     private void translateObject(ObjectType obj, TypeEPC epc) {
@@ -612,16 +565,14 @@ public class Canonical2EPML {
         role.setDefRef(find_def_id("role", role.getName()));
         epc.getEventOrFunctionOrRole().add(role);
 
-        // Linking the related element
-
-        List<TypeArc> arcs_list = new LinkedList<TypeArc>();
-
+        List<TypeArc> arcs_list = new LinkedList<>();
         for (Object obj : epc.getEventOrFunctionOrRole()) {
             List<String> ll;
-            if (obj instanceof TypeArc)
+            if (obj instanceof TypeArc) {
                 ll = role_map.get(((TypeArc) obj).getId());
-            else
+            } else {
                 ll = role_map.get(((TEpcElement) obj).getId());
+            }
 
             if (ll != null) {
                 if (obj instanceof TypeFunction) {
@@ -634,24 +585,12 @@ public class Canonical2EPML {
                         arcs_list.add(arc1);
                     }
                 }
-                /*else if(obj instanceof TypeEvent)
-                    {
-                        if(ll.contains(resT.getId()))
-                        {
-                            TypeArc arc2 = new TypeArc();
-                            TypeRelation rel = new TypeRelation();
-                            rel.setSource(role.getId());
-                            rel.setTarget(((TypeEvent)obj).getId());
-                            arc2.setRelation(rel);
-                            arcs_list.add(arc2);
-                        }
-                    }*/
             }
         }
 
-        for (TypeArc arc : arcs_list)
+        for (TypeArc arc : arcs_list) {
             epc.getEventOrFunctionOrRole().add(arc);
-
+        }
     }
 
     private void translateGateway(TypeEPC epc, NodeType node) {
@@ -705,15 +644,13 @@ public class Canonical2EPML {
     private void createEvent(TypeEPC epc, NetType net) {
         BigInteger n;
 
-        for (String id : event_list)
+        for (String id : event_list) {
             for (EdgeType edge : net.getEdge()) {
                 if (edge.getSourceId().equals(id)) {
-                    //
                     n = BigInteger.valueOf(ids++);
                     TypeEvent event = new TypeEvent();
                     event.setName(edge.getCondition());
                     event.setId(n);
-                    //edge.setTargetId(n);
 
                     TypeArc arc = new TypeArc();
                     TypeFlow flow = new TypeFlow();
@@ -741,15 +678,15 @@ public class Canonical2EPML {
                     epcRefMap.put(event.getId(), event);
                 }
             }
+        }
 
         event_list.clear();
     }
 
-    /// translate the annotations
+    // translate the annotations
     private void mapNodeAnnotations(AnnotationsType annotations) {
         for (AnnotationType annotation : annotations.getAnnotation()) {
             if (nodeRefMap.containsKey(annotation.getCpfId())) {
-                // TODO: Handle 1-N mappings
                 String cid = annotation.getCpfId();
 
                 if (annotation instanceof GraphicsType) {
@@ -797,8 +734,9 @@ public class Canonical2EPML {
                     graphics.setPosition(pos);
 
                     Object obj = epcRefMap.get(id_map.get(cid));
-                    if (obj != null)
+                    if (obj != null) {
                         ((TEpcElement) obj).setGraphics(graphics);
+                    }
                 }
             }
         }
@@ -806,9 +744,7 @@ public class Canonical2EPML {
 
     private void mapEdgeAnnotations(AnnotationsType annotations) {
         for (AnnotationType annotation : annotations.getAnnotation()) {
-            if (edgeRefMap.containsKey(annotation.getCpfId())
-                    || objectRefMap.containsKey(annotation.getCpfId())) {
-                // TODO: Handle 1-N mappings
+            if (edgeRefMap.containsKey(annotation.getCpfId()) || objectRefMap.containsKey(annotation.getCpfId())) {
                 String cid = annotation.getCpfId();
                 TypeLine line = new TypeLine();
                 TypeFont font = new TypeFont();
@@ -845,18 +781,18 @@ public class Canonical2EPML {
                     }
 
                     Object obj = epcRefMap.get(id_map.get(cid));
-                    if (obj instanceof TypeArc)
+                    if (obj instanceof TypeArc) {
                         ((TypeArc) obj).getGraphics().add(move);
+                    }
                 }
             }
         }
     }
 
     private BigInteger find_def_id(String type, String name) {
-
         for (TExtensibleElements def : epml.getDefinitions().getDefinitionOrSpecialization()) {
             if (def instanceof TypeDefinition) {
-                if (((TypeDefinition) def).getType() == type && ((TypeDefinition) def).getName() == name) {
+                if (((TypeDefinition) def).getType().equals(type) && ((TypeDefinition) def).getName().equals(name)) {
                     return ((TypeDefinition) def).getDefId();
                 }
             }
@@ -869,6 +805,6 @@ public class Canonical2EPML {
         epml.getDefinitions().getDefinitionOrSpecialization().add(def);
 
         return def.getDefId();
-
     }
+
 }

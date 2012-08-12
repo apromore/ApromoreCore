@@ -1,6 +1,7 @@
 package org.apromore.service.impl;
 
 import org.apromore.graph.JBPT.CPF;
+import org.apromore.service.ComposerService;
 import org.apromore.service.GraphService;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -10,17 +11,21 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-@Service("ClusteringComposer")
+@Service("SimpleComposerService")
 @Transactional(propagation = Propagation.REQUIRED)
-public class ClusteringComposer {
+public class SimpleComposerImpl implements ComposerService {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleComposerImpl.class);
 
     @Autowired @Qualifier("GraphService")
     private GraphService gSrv;
 
-    private static final Logger log = LoggerFactory.getLogger(ClusteringComposer.class);
-
+    /**
+     * @see ComposerService#compose(String)
+     * {@inheritDoc}
+     */
     public CPF compose(String fragmentId) {
-        log.debug("Composing the content of fragment " + fragmentId);
+        LOGGER.debug("Composing the content of fragment " + fragmentId);
         CPF g = new CPF();
         gSrv.fillNodesByFragmentId(g, fragmentId);
         gSrv.fillEdgesByFragmentId(g, fragmentId);

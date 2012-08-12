@@ -10,7 +10,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.sax.SAXSource;
 
@@ -125,12 +124,8 @@ public class CanoniserServiceImpl implements CanoniserService {
             InputStream native_xml_is = new ByteArrayInputStream(native_xml.toByteArray());
             native_ds = new ByteArrayDataSource(native_xml_is, "text/xml");
 
-        } catch (JAXBException je) {
+        } catch (JAXBException | IOException | CanoniserException je) {
             LOGGER.error("DeCanonisation Failed: " + je.getMessage());
-        } catch (IOException ioe) {
-            LOGGER.error("DeCanonisation Failed: " + ioe.getMessage());
-        } catch (CanoniserException ae) {
-            LOGGER.error("DeCanonisation Failed: " + ae.getMessage());
         }
         return native_ds;
     }
