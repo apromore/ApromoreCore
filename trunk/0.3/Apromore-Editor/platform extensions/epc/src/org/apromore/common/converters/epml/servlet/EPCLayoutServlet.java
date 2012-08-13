@@ -28,8 +28,6 @@ public class EPCLayoutServlet extends HttpServlet {
 
     private static final long serialVersionUID = -5592867075605609828L;
 
-    private Grid<LayoutingElement> grid;
-
     protected EPCDiagram diagram;
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -41,7 +39,6 @@ public class EPCLayoutServlet extends HttpServlet {
             jsonModel = new JSONObject(jsonmodel);
             this.diagram = getEPCDiagramFromJSON(jsonModel);
         } catch (JSONException e1) {
-            //throw new ServletException(e1);
             response.setStatus(500);
             response.getWriter().print("import of json failed:");
             e1.printStackTrace(response.getWriter());
@@ -82,9 +79,8 @@ public class EPCLayoutServlet extends HttpServlet {
 
                 if (EPCType.isAConnectingElement(element.getType())) {
                     if (element.getDockers() != null) {
-                        obj.put("dockers", buildDockersArray(element));//buildDokersString(element));
-                    }
-                    else {
+                        obj.put("dockers", buildDockersArray(element));
+                    } else {
                         obj.put("dockers", JSONObject.NULL);
                     }
                 }
@@ -110,7 +106,7 @@ public class EPCLayoutServlet extends HttpServlet {
                 point.put("x", p.x);
                 point.put("y", p.y);
                 dockers.put(point);
-            } catch (JSONException e) {
+            } catch (JSONException ignored) {
             }
         }
         return dockers;
@@ -122,13 +118,12 @@ public class EPCLayoutServlet extends HttpServlet {
 
         // Layouting main process
         EPCTopToBottomGridLayouter gridLayouter = layoutProcess();
-        grid = gridLayouter.getGrid();
-
+        Grid<LayoutingElement> grid = gridLayouter.getGrid();
 
         // Setting edges
         List<LayoutingElement> flows = diagram.getConnectingElements();
         for (LayoutingElement flow : flows) {
-            new EPCEdgeLayouter(this.grid, flow);
+            new EPCEdgeLayouter(grid, flow);
         }
     }
 
@@ -137,11 +132,9 @@ public class EPCLayoutServlet extends HttpServlet {
         Queue<LayoutingElement> sortedElements = new TopologicalSorterEPC(diagram, null).getSortedElements();
 
         // Sorted
-        int count = 0;
-        List<String> sortedIds = new LinkedList<String>();
+        List<String> sortedIds = new LinkedList<>();
         for (LayoutingElement element : sortedElements) {
             sortedIds.add(element.getId());
-            count++;
         }
 
         EPCTopToBottomGridLayouter gridLayouter = new EPCTopToBottomGridLayouter(sortedIds);
