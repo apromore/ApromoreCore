@@ -60,15 +60,12 @@
                                     oryxEditor.importJSON(editorConfig);
 
                                     // Call Auto-Layout if everything is available
-                                    console.log("before");
                                     window.setTimeout(function() {
-                                        console.log("in function");
                                         var epcLayouter = oryxEditor.pluginsData.find(function(pluginData) {
                                             return pluginData.name === "Layout-EPC";
                                         });
 
                                         if (epcLayouter) {
-                                            console.log("Did find Layouter");
                                             epcLayouter.functionality();
                                             Ext.select('svg').setVisible(true);
                                         } else {
