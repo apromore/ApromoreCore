@@ -17,29 +17,17 @@ import org.zkoss.zk.ui.Executions;
  * To change this template use File | Settings | File Templates.
  */
 public class SignavioController extends BaseController {
-//    private static final String PROCESS_ID = "processId";
-//    private static final String PROCESS_NAME = "processName";
-//    private static final String VERSION = "version";
-//    private static final String ANNOTATION = "annotation";
-//    private static final String DOMAIN = "domain";
-//    private static final String PRE_VERSION = "preVersion";
-//    private static final String RANKING = "ranking";
-//    private static final String USERNAME = "username";
+
     public static ProcessSummaryType process;
     public static VersionSummaryType version;
     public static String annotation = null;
     public static MainController mainC;
     private static final String JSON_DATA = "jsonData";
     public static String nativeType;
-    //public static String url;
-    //public static String importPath;
 
     public SignavioController() {
         super();
-        //String processId = Executions.getCurrent().getParameter(PROCESS_ID);
-        //String ver = Executions.getCurrent().getParameter(VERSION);
-        Map<String, String> param = new HashMap<String, String>();
-        //ProcessSummaryType proccess = getService().readProcess(processId, versionId);
+        Map<String, String> param = new HashMap<>();
         try {
             DataHandler nativeDH = getService().exportFormat(process.getId(), process.getName(), version.getName(),
                     nativeType, annotation, false, this.mainC.getCurrentUser().getUsername());
@@ -53,12 +41,7 @@ public class SignavioController extends BaseController {
         }
 
     }
-//
-//    public void setupConverter() { }
-//
-//    public void readModel() { }
-//
-//    public void saveModel() { }
+
 
     private String getURL(String nativeType) {
         String url = "";
