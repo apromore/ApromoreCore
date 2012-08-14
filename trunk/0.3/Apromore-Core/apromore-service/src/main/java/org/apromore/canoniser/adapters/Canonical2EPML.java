@@ -429,8 +429,6 @@ public class Canonical2EPML {
                 role_map.put(epc.getEpcId(), ll);
             } else if (node instanceof RoutingType) {
                 translateGateway(epc, node);
-            } else if (node.getName().equals("_entry_") || node.getName().equals("_exit_")) {
-                translateEvent(epc, node);
             }
             nodeRefMap.put(node.getId(), node);
         }
