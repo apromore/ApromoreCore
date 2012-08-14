@@ -11,10 +11,13 @@ import org.apromore.common.Constants;
 import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.exception.PocketMappingException;
 import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.JBPT.CpfAndGateway;
 import org.apromore.graph.JBPT.CpfEvent;
 import org.apromore.graph.JBPT.CpfGateway;
 import org.apromore.graph.JBPT.CpfNode;
+import org.apromore.graph.JBPT.CpfOrGateway;
 import org.apromore.graph.JBPT.CpfTask;
+import org.apromore.graph.JBPT.CpfXorGateway;
 import org.apromore.graph.JBPT.ICpfNode;
 import org.jbpt.graph.abs.AbstractDirectedEdge;
 import org.jbpt.graph.algo.rpst.RPST;
@@ -64,7 +67,7 @@ public class FragmentUtil {
     }
 
     public static Collection<AbstractDirectedEdge> getIncomingEdges(IFlowNode v, Collection<AbstractDirectedEdge> es) {
-        Collection<AbstractDirectedEdge> incomingEdges = new ArrayList<AbstractDirectedEdge>(0);
+        Collection<AbstractDirectedEdge> incomingEdges = new ArrayList<>(0);
         for (AbstractDirectedEdge e : es) {
             if (e.getTarget().getId().equals(v.getId())) {
                 incomingEdges.add(e);
@@ -74,7 +77,7 @@ public class FragmentUtil {
     }
 
     public static Collection<AbstractDirectedEdge> getOutgoingEdges(IFlowNode v, Collection<AbstractDirectedEdge> es) {
-        Collection<AbstractDirectedEdge> outgoingEdges = new ArrayList<AbstractDirectedEdge>(0);
+        Collection<AbstractDirectedEdge> outgoingEdges = new ArrayList<>(0);
         for (AbstractDirectedEdge e : es) {
             if (e.getSource().getId().equals(v.getId())) {
                 outgoingEdges.add(e);
@@ -84,7 +87,7 @@ public class FragmentUtil {
     }
 
     public static List<IFlowNode> getPreset(IFlowNode v, Collection<AbstractDirectedEdge> es) {
-        List<IFlowNode> preset = new ArrayList<IFlowNode>(0);
+        List<IFlowNode> preset = new ArrayList<>(0);
         for (AbstractDirectedEdge e : es) {
             if (e.getTarget().getId().equals(v.getId())) {
                 preset.add((IFlowNode) e.getSource());
@@ -94,7 +97,7 @@ public class FragmentUtil {
     }
 
     public static List<IFlowNode> getPostset(IFlowNode v, Collection<AbstractDirectedEdge> es) {
-        List<IFlowNode> postset = new ArrayList<IFlowNode>(0);
+        List<IFlowNode> postset = new ArrayList<>(0);
         for (AbstractDirectedEdge e : es) {
             if (e.getSource().getId().equals(v.getId())) {
                 postset.add((IFlowNode) e.getTarget());
@@ -119,7 +122,7 @@ public class FragmentUtil {
      */
     public static Map<String, String> remapChildren(Map<String, String> childMappings, Map<String, String> pocketMappings)
             throws PocketMappingException {
-        Map<String, String> newChildMapping = new HashMap<String, String>(0);
+        Map<String, String> newChildMapping = new HashMap<>(0);
         for (Entry<String, String> stringStringEntry : childMappings.entrySet()) {
             String o = pocketMappings.get(stringStringEntry.getKey());
             if (o != null) {
@@ -143,7 +146,7 @@ public class FragmentUtil {
      */
     public static Map<String, String> remapChildren(List<FragmentVersionDag> childMappings, Map<String, String> pocketMappings)
             throws PocketMappingException {
-        Map<String, String> newChildMapping = new HashMap<String, String>(0);
+        Map<String, String> newChildMapping = new HashMap<>(0);
         for (FragmentVersionDag fvd : childMappings) {
             String o = pocketMappings.get(fvd.getId().getPocketId());
             if (o != null) {
@@ -162,7 +165,7 @@ public class FragmentUtil {
     public static void cleanFragment(RPSTNode f) {
         Collection<AbstractDirectedEdge> es = f.getFragmentEdges();
         Collection<FlowNode> vs = f.getFragment().getVertices();
-        Collection<AbstractDirectedEdge> removableEdges = new ArrayList<AbstractDirectedEdge>(0);
+        Collection<AbstractDirectedEdge> removableEdges = new ArrayList<>(0);
 
         for (AbstractDirectedEdge e : es) {
             if (!vs.contains(e.getSource()) || !vs.contains(e.getTarget())) {
@@ -232,15 +235,25 @@ public class FragmentUtil {
         String label = v.getName();
         String type = og.getVertexProperty(v.getId(), Constants.TYPE);
 
-        FlowNode newV = new CpfNode(label);
+        FlowNode newV;
+        if (label.equals("XOR")) {
+            newV = new CpfXorGateway(label);
+        } else if (label.equals("AND")) {
+            newV = new CpfAndGateway(label);
+        } else if (label.equals("OR")) {
+            newV = new CpfOrGateway(label);
+        } else {
+            newV = new CpfNode(label);
+        }
         og.addVertex(newV);
         og.setVertexProperty(newV.getId(), Constants.TYPE, type);
+
         return newV;
     }
 
     @SuppressWarnings("unchecked")
     public static String fragmentToString(RPSTNode f, CPF g) {
-        StringBuffer fs = new StringBuffer(0);
+        StringBuilder fs = new StringBuilder();
         Collection<FlowNode> vs = f.getFragment().getVertices();
         for (FlowNode v : vs) {
             String label = v.getName();
@@ -253,7 +266,7 @@ public class FragmentUtil {
 
     @SuppressWarnings("unchecked")
     public static String fragmentToString(RPSTNode f) {
-        StringBuffer fs = new StringBuffer(0);
+        StringBuilder fs = new StringBuilder();
         Collection<FlowNode> vs = f.getFragment().getVertices();
         for (FlowNode v : vs) {
             fs.append(v).append(", ");
@@ -281,21 +294,6 @@ public class FragmentUtil {
     }
 
     public static String getType(ICpfNode node) {
-        String type = null;
-        if (node instanceof CpfTask) {
-            type = Constants.FUNCTION;
-        } else if (node instanceof CpfEvent) {
-            type = Constants.EVENT;
-        } else {
-            if (node instanceof CpfGateway) {
-                type = Constants.CONNECTOR;
-            } else {
-                String nodeName = node.getName();
-                if (nodeName.equals("OR") || nodeName.equals("XOR") || nodeName.equals("AND")) {
-                    type = Constants.CONNECTOR;
-                }
-            }
-        }
-        return type;
+        return getType((FlowNode) node);
     }
 }

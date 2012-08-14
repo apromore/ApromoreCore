@@ -253,20 +253,16 @@ public class MenuController extends Menubar {
     }
 
     /**
-     * Edit all selected process versions
-     *
+     * Edit all selected process versions.
      * @throws InterruptedException
      * @throws org.apromore.portal.exception.ExceptionFormats
-     *
      * @throws SuspendNotAllowedException
      */
     protected void editNative() throws InterruptedException, SuspendNotAllowedException, ExceptionFormats {
         this.mainC.eraseMessage();
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions =
-                getSelectedProcessVersions();
+        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
         if (selectedProcessVersions.size() != 0) {
-            EditListProcessesController editList =
-                    new EditListProcessesController(this.mainC, this, selectedProcessVersions);
+            EditListProcessesController editList = new EditListProcessesController(this.mainC, this, selectedProcessVersions);
         } else {
             this.mainC.displayMessage("No process version selected.");
         }
@@ -280,8 +276,7 @@ public class MenuController extends Menubar {
      */
     protected void deleteSelectedProcessVersions() throws Exception {
         this.mainC.eraseMessage();        
-        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions =
-                getSelectedProcessVersions();
+        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
         if (selectedProcessVersions.size() != 0) {
             this.mainC.deleteProcessVersions(selectedProcessVersions);
         } else {

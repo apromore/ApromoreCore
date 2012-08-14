@@ -23,7 +23,7 @@ public interface ProcessBranchDao {
      * @param branchName the branch name
      * @return the found processBranch
      */
-    ProcessBranch getProcessBranchByProcessBranchName(String processId, String branchName);
+    ProcessBranch getProcessBranchByProcessBranchName(Integer processId, String branchName);
 
 
     /**

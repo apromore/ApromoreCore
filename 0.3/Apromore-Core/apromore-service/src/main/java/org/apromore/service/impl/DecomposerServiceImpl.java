@@ -161,7 +161,7 @@ public class DecomposerServiceImpl implements DecomposerService {
             FlowNode entry = FragmentUtil.getFirstVertex(graph.getSourceVertices());
             FlowNode exit = FragmentUtil.getFirstVertex(graph.getSinkVertices());
             if (graph.getVertices().size() > 2) {
-                RPST<ControlFlow<FlowNode>, FlowNode> rpst = new RPST<ControlFlow<FlowNode>, FlowNode>(graph);
+                RPST<ControlFlow<FlowNode>, FlowNode> rpst = new RPST<>(graph);
                 RPSTNode rootFragment = rpst.getRoot();
                 FragmentVersion rootFV = decompose(rpst, rootFragment, op, fragmentIds);
                 fragmentIds.add(rootFV.getFragmentVersionId());
@@ -180,13 +180,14 @@ public class DecomposerServiceImpl implements DecomposerService {
     }
 
     /**
-     * @param g
-     * @param entry
-     * @param exit
-     * @param op
-     * @return
-     * @throws ExceptionDao
-     * @throws RepositoryException
+     * Decomposing a single Standalone Fragment
+     * @param g the RPST graph
+     * @param entry the entry node
+     * @param exit the exit node
+     * @param op the OperationConext
+     * @return the new fragment
+     * @throws ExceptionDao the DAO Exception
+     * @throws RepositoryException the Repository Exception
      */
     @SuppressWarnings("unchecked")
     public FragmentVersion decomposeSimpleStandaloneFragment(CPF g, FlowNode entry, FlowNode exit, OperationContext op) throws ExceptionDao,
@@ -239,7 +240,7 @@ public class DecomposerServiceImpl implements DecomposerService {
 
     /* Adds a fragment version */
     private FragmentVersion addFragmentVersion(RPSTNode f, String hash, Map<String, String> childMappings, int fragmentSize, String fragmentType,
-                                               String keywords, OperationContext op) throws RepositoryException {
+            String keywords, OperationContext op) throws RepositoryException {
         // mappings (UUIDs generated for pocket Ids -> Pocket Ids assigned to pockets when they are persisted in the database)
         Map<String, String> pocketIdMappings = new HashMap<>();
         Content content = cSrv.addContent(f, hash, op.getGraph(), pocketIdMappings);
@@ -257,7 +258,7 @@ public class DecomposerServiceImpl implements DecomposerService {
 
     /* Adds a fragment version */
     private FragmentVersion addFragmentVersion(Content cid, Map<String, String> childMappings, String derivedFrom, int lockStatus, int lockCount,
-                                               int originalSize, String fragmentType, String keywords, OperationContext op) throws RepositoryException {
+            int originalSize, String fragmentType, String keywords, OperationContext op) throws RepositoryException {
         op.addProcessedFragmentType(fragmentType);
         return fSrv.addFragmentVersion(cid, childMappings, derivedFrom, lockStatus, lockCount, originalSize, fragmentType);
     }

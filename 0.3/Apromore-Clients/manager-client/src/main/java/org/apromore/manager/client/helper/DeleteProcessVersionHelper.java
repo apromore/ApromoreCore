@@ -12,13 +12,13 @@ import org.apromore.model.VersionSummaryType;
 
 /**
  * Helper class to help construct the client's message to the WebService.
- *
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 public final class DeleteProcessVersionHelper {
 
     /* Private Constructor */
-    private DeleteProcessVersionHelper() { }
+    private DeleteProcessVersionHelper() {
+    }
 
 
     /**
@@ -31,17 +31,15 @@ public final class DeleteProcessVersionHelper {
         List<VersionSummaryType> versionSummaries;
         Set<ProcessSummaryType> keys = selectedProVers.keySet();
 
-        Collection<ProcessVersionIdentifierType> payload = new ArrayList<ProcessVersionIdentifierType>();
+        Collection<ProcessVersionIdentifierType> payload = new ArrayList<>();
 
         for (ProcessSummaryType processSummary : keys) {
             versionSummaries = selectedProVers.get(processSummary);
-
             processVersionId = new ProcessVersionIdentifierType();
-            processVersionId.setProcessid(processSummary.getId());
+            processVersionId.setProcessName(processSummary.getName());
             for (VersionSummaryType versionSummary : versionSummaries) {
-                processVersionId.getVersionName().add(versionSummary.getName());
+                processVersionId.setBranchName(versionSummary.getName());
             }
-
             payload.add(processVersionId);
         }
 

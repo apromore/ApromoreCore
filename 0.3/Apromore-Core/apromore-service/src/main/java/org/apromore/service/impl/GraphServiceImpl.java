@@ -99,7 +99,7 @@ public class GraphServiceImpl implements GraphService {
         for (Node node : nodes) {
             v = buildNodeByType(node);
             procModelGraph.addVertex(v);
-            procModelGraph.setVertexProperty(String.valueOf(node.getVid()), Constants.TYPE, node.getVtype());
+            procModelGraph.setVertexProperty(String.valueOf(node.getVid()), Constants.TYPE, Constants.FUNCTION);
         }
     }
 
@@ -121,11 +121,9 @@ public class GraphServiceImpl implements GraphService {
                 if (v1 == null && v2 != null) {
                     LOGGER.info("Null source node found for the edge terminating at " + v2.getId() + " = " + v2.getName() + " in content " + contentID);
                 }
-
                 if (v2 == null && v1 != null) {
                     LOGGER.info("Null target node found for the edge originating at " + v1.getId() + " = " + v1.getName() + " in content " + contentID);
                 }
-
                 if (v1 == null && v2 == null) {
                     LOGGER.info("Null source and target nodes found for an edge in content " + contentID);
                 }
@@ -164,11 +162,9 @@ public class GraphServiceImpl implements GraphService {
                 if (v1 == null && v2 != null) {
                     LOGGER.info("Null source node found for the edge terminating at " + v2.getId() + " = " + v2.getName() + " in fragment " + fragmentID);
                 }
-
                 if (v2 == null && v1 != null) {
                     LOGGER.info("Null target node found for the edge originating at " + v1.getId() + " = " + v1.getName() + " in fragment " + fragmentID);
                 }
-
                 if (v1 == null && v2 == null) {
                     LOGGER.info("Null source and target nodes found for an edge in fragment " + fragmentID);
                 }

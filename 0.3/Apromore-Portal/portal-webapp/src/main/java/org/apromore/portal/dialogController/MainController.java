@@ -216,34 +216,28 @@ public class MainController extends BaseController {
      * @param processVersions
      * @throws InterruptedException
      */
-    public void deleteProcessVersions(
-            Map<ProcessSummaryType, List<VersionSummaryType>> processVersions)
-            throws InterruptedException {
+    public void deleteProcessVersions(Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws InterruptedException {
         try {
             getService().deleteProcessVersions(processVersions);
             switchToProcessSummaryView();
-            ((ProcessListboxController) this.baseListboxController)
-                    .unDisplay(processVersions);
+            ((ProcessListboxController) this.baseListboxController).unDisplay(processVersions);
             String message;
             int nb = 0;
 
             // to count how many process version(s) deleted
-            Collection<List<VersionSummaryType>> sumTypes = processVersions
-                    .values();
+            Collection<List<VersionSummaryType>> sumTypes = processVersions.values();
             for (List<VersionSummaryType> sumType : sumTypes) {
                 nb += sumType.size();
             }
             if (nb > 1) {
                 message = nb + " process versions deleted.";
-            }
-            else {
+            } else {
                 message = " One process version deleted.";
             }
             displayMessage(message);
         } catch (Exception e) {
             e.printStackTrace();
-            Messagebox.show("Deletion failed (" + e.getMessage() + ")",
-                    "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Deletion failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 

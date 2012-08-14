@@ -2,7 +2,6 @@ package org.apromore.service.impl;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.PriorityQueue;
@@ -80,7 +79,7 @@ public class FragmentServiceImpl implements FragmentService {
 
     /**
      * @see org.apromore.service.FragmentService#addProcessFragmentMappings(Integer, java.util.List)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public void addProcessFragmentMappings(Integer pmvid, List<String> composingFragmentIds) throws ExceptionDao {
@@ -96,29 +95,29 @@ public class FragmentServiceImpl implements FragmentService {
 
     /**
      * @see FragmentService#getFragmentId(Integer, org.apromore.graph.JBPT.CPF, java.util.List)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public String getFragmentId(Integer pmvid, CPF g, List<String> nodes) {
         FragmentDAG fdag = constructFragmentDAG(pmvid);
         List<String> originalNodes = getOriginalNodes(nodes, g);
         List<String> containingFragments = getContainingFragments(originalNodes, fdag);
-        List<String> candidateContainingFragments = new ArrayList<String>();
+        List<String> candidateContainingFragments = new ArrayList<>();
         findCandidateContainingFragments(containingFragments.get(0), containingFragments, fdag, candidateContainingFragments);
         return findSmallestContainingFragment(candidateContainingFragments, fdag);
     }
 
+    /**
+     * @see FragmentService#getFragmentAsEPML(String)
+     * {@inheritDoc}
+     */
     @Override
     public String getFragmentAsEPML(String fragmentId) throws RepositoryException {
         String xml;
         try {
             CPF g = getFragment(fragmentId, false);
             xml = cSrv.CPFtoString(cSrv.serializeCPF(g));
-        } catch (LockFailedException e) {
-            throw new RepositoryException(e);
-        } catch (SerializationException e) {
-            throw new RepositoryException(e);
-        } catch (JAXBException e) {
+        } catch (LockFailedException | SerializationException | JAXBException e) {
             throw new RepositoryException(e);
         }
         return xml;
@@ -126,7 +125,7 @@ public class FragmentServiceImpl implements FragmentService {
 
     /**
      * @see FragmentService#getFragment(String, boolean)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public CPF getFragment(String fragmentId, boolean lock) throws LockFailedException {
@@ -159,7 +158,7 @@ public class FragmentServiceImpl implements FragmentService {
 
     /**
      * @see FragmentService#getFragmentVersion(String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public FragmentVersion getFragmentVersion(String fragmentVersionId) {
@@ -168,7 +167,7 @@ public class FragmentServiceImpl implements FragmentService {
 
     /**
      * @see FragmentService#addFragmentVersion(org.apromore.dao.model.Content, java.util.Map, String, int, int, int, String)
-     *      {@inheritDoc}
+     * {@inheritDoc}
      */
     @Override
     public FragmentVersion addFragmentVersion(Content cid, Map<String, String> childMappings, String derivedFrom,
@@ -235,22 +234,18 @@ public class FragmentServiceImpl implements FragmentService {
         f.setFragmentSize(fCopy.getSize());
         fvDao.save(f);
 
-        Map<String, Integer> nodeMappings = new HashMap<String, Integer>();
-
         for (ICpfNode v : fCopy.getVertices()) {
             String vtype = FragmentUtil.getType(v);
 
             Node node = new Node();
             node.setContent(c);
-            node.setVname(v.getLabel());
+            node.setVname(v.getLabel() != null ? v.getLabel() : v.getName());
             node.setVtype(vtype);
             node.setConfiguration(v.isConfigurable());
             node.setCtype(v.getClass().getName());
             node.setOriginalId(v.getId());
             nDao.save(node);
             v.setId(String.valueOf(node.getVid()));
-
-            nodeMappings.put(v.getId(), node.getVid());
         }
 
         for (AbstractDirectedEdge e : fCopy.getEdges()) {
@@ -290,26 +285,13 @@ public class FragmentServiceImpl implements FragmentService {
     private String calculateChildMappingCode(Map<String, String> childMapping) {
         StringBuilder buf = new StringBuilder();
         Set<String> pids = childMapping.keySet();
-        PriorityQueue<String> q = new PriorityQueue<String>(pids);
+        PriorityQueue<String> q = new PriorityQueue<>(pids);
         while (!q.isEmpty()) {
             String pid = q.poll();
             String cid = childMapping.get(pid);
             buf.append(pid).append(":").append(cid).append("|");
         }
         return buf.toString();
-    }
-
-    private void fillMatchingChildIds(String parentId, int minSize, int maxSize, List<String> matchingChildren) {
-        Map<String, Integer> cs = fvDao.getChildFragmentsWithSize(parentId);
-        for (String childId : cs.keySet()) {
-            int size = cs.get(childId);
-            if (size >= minSize) {
-                if (size <= maxSize) {
-                    matchingChildren.add(childId);
-                }
-                fillMatchingChildIds(childId, minSize, maxSize, matchingChildren);
-            }
-        }
     }
 
     private FragmentDAG constructFragmentDAG(final Integer pmvid) {
@@ -337,7 +319,7 @@ public class FragmentServiceImpl implements FragmentService {
     }
 
     private Collection<String> getChildIds(List<FragmentVersionDag> fdags) {
-        List<String> id = new ArrayList<String>();
+        List<String> id = new ArrayList<>();
         for (FragmentVersionDag fdag : fdags) {
             id.add(fdag.getId().getChildFragmentVersionId());
         }
@@ -345,7 +327,7 @@ public class FragmentServiceImpl implements FragmentService {
     }
 
     private List<String> getOriginalNodes(List<String> nodes, CPF g) {
-        List<String> originalNodes = new ArrayList<String>();
+        List<String> originalNodes = new ArrayList<>();
         for (String node : nodes) {
             if (g.isDuplicateNode(node)) {
                 originalNodes.add(g.getOriginalNode(node));
@@ -364,7 +346,7 @@ public class FragmentServiceImpl implements FragmentService {
     }
 
     private void findCandidateContainingFragments(String candidateFragment, List<String> containingFragments, FragmentDAG fdag,
-                                                  List<String> candidateContainingFragments) {
+            List<String> candidateContainingFragments) {
         boolean contained = fdag.isIncluded(candidateFragment, containingFragments);
         if (contained) {
             candidateContainingFragments.add(candidateFragment);

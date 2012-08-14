@@ -10,8 +10,6 @@ import org.jbpt.graph.abs.AbstractDirectedEdge;
 import org.jbpt.graph.algo.rpst.RPSTNode;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.IFlowNode;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Processors take a fragment and its child fragment and takes care of
@@ -22,8 +20,7 @@ import org.slf4j.LoggerFactory;
  */
 public class FSCNSExtractor {
 
-    private static Logger log = LoggerFactory.getLogger(FSCNSExtractor.class);
-
+    @SuppressWarnings("unchecked")
     public static FlowNode extract(RPSTNode f, RPSTNode cf, CPF g) {
         FragmentUtil.removeEdges(f, cf);
 

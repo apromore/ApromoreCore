@@ -17,6 +17,7 @@ public class FNSCNSExtractor {
 
     private static final Logger log = LoggerFactory.getLogger(FNSCNSExtractor.class);
 
+    @SuppressWarnings("unchecked")
     public static FlowNode extract(RPSTNode f, RPSTNode cf, RPST rpst, CPF g) {
         FlowNode childB1 = (FlowNode) cf.getEntry();
         FlowNode newChildB1 = FragmentUtil.duplicateVertex(childB1, g);

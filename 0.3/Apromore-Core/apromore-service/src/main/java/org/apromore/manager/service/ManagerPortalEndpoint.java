@@ -8,6 +8,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.activation.DataHandler;
@@ -105,11 +106,13 @@ import org.apromore.service.FormatService;
 import org.apromore.service.FragmentService;
 import org.apromore.service.MergeService;
 import org.apromore.service.ProcessService;
+import org.apromore.service.RepositoryService;
 import org.apromore.service.SessionService;
 import org.apromore.service.SimilarityService;
 import org.apromore.service.UserService;
 import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
+import org.apromore.service.model.NameValuePair;
 import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentPair;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -145,6 +148,8 @@ public class ManagerPortalEndpoint {
     private FragmentService fragmentSrv;
     @Autowired @Qualifier("ProcessService")
     private ProcessService procSrv;
+    @Autowired @Qualifier("RepositoryService")
+    private RepositoryService repSrv;
     @Autowired @Qualifier("ClusterService")
     private ClusterService clusterService;
     @Autowired @Qualifier("FormatService")
@@ -354,16 +359,13 @@ public class ManagerPortalEndpoint {
         DeleteProcessVersionsOutputMsgType res = new DeleteProcessVersionsOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
-        List<ProcessVersionIdentifierType> processesP = payload.getProcessVersionIdentifier();
         try {
-            List<ProcessVersionIdentifierType> processesDa = new ArrayList<ProcessVersionIdentifierType>();
-            for (final ProcessVersionIdentifierType processP : processesP) {
-                ProcessVersionIdentifierType processDa = new ProcessVersionIdentifierType();
-                processDa.setProcessid(processP.getProcessid());
-                processDa.getVersionName().addAll(processP.getVersionName());
-                processesDa.add(processDa);
+            List<NameValuePair> processVersions = new ArrayList<>(0);
+            for (final ProcessVersionIdentifierType p : payload.getProcessVersionIdentifier()) {
+                processVersions.add(new NameValuePair(p.getProcessName(), p.getBranchName()));
             }
-            daClient.DeleteProcessVersion(processesDa);
+            repSrv.deleteProcessModel(processVersions);
+
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {

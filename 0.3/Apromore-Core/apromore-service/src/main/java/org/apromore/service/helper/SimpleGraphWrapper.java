@@ -28,20 +28,20 @@ public class SimpleGraphWrapper extends SimpleGraph {
     public SimpleGraphWrapper(CPF pg) {
         super();
 
-        Map<String, Integer> nodeId2vertex = new HashMap<String, Integer>(0);
-        Map<Integer, String> vertex2nodeId = new HashMap<Integer, String>(0);
+        Map<String, Integer> nodeId2vertex = new HashMap<>(0);
+        Map<Integer, String> vertex2nodeId = new HashMap<>(0);
 
-        vertices = new HashSet<Integer>(0);
-        connectors = new HashSet<Integer>(0);
-        events = new HashSet<Integer>(0);
-        functions = new HashSet<Integer>(0);
+        vertices = new HashSet<>(0);
+        connectors = new HashSet<>(0);
+        events = new HashSet<>(0);
+        functions = new HashSet<>(0);
 
-        outgoingEdges = new HashMap<Integer, Set<Integer>>(0);
-        incomingEdges = new HashMap<Integer, Set<Integer>>(0);
-        labels = new HashMap<Integer, String>(0);
-        functionLabels = new HashSet<String>(0);
-        eventLabels = new HashSet<String>(0);
-        edges = new HashSet<TwoVertices>(0);
+        outgoingEdges = new HashMap<>(0);
+        incomingEdges = new HashMap<>(0);
+        labels = new HashMap<>(0);
+        functionLabels = new HashSet<>(0);
+        eventLabels = new HashSet<>(0);
+        edges = new HashSet<>(0);
 
         int vertexId = 0;
         for (FlowNode n : pg.getVertices()) {
@@ -66,13 +66,13 @@ public class SimpleGraphWrapper extends SimpleGraph {
         for (Integer v = 0; v < vertexId; v++) {
             FlowNode pgv = pg.getVertex(vertex2nodeId.get(v));
 
-            Set<Integer> incomingCurrent = new HashSet<Integer>(0);
+            Set<Integer> incomingCurrent = new HashSet<>(0);
             for (FlowNode preV : pg.getAllPredecessors(pgv)) {
                 incomingCurrent.add(nodeId2vertex.get(preV.getId()));
             }
             incomingEdges.put(v, incomingCurrent);
 
-            Set<Integer> outgoingCurrent = new HashSet<Integer>(0);
+            Set<Integer> outgoingCurrent = new HashSet<>(0);
             for (FlowNode postV : pg.getAllSuccessors(pgv)) {
                 outgoingCurrent.add(nodeId2vertex.get(postV.getId()));
                 TwoVertices edge = new TwoVertices(v, nodeId2vertex.get(postV.getId()));
