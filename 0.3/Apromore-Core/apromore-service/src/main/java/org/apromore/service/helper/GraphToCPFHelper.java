@@ -158,8 +158,8 @@ public class GraphToCPFHelper {
             typ.setId(n.getId());
             typ.getAttribute().addAll(addAttributes(n));
             net.getNode().add(typ);
-        } else if (n != null && (n.getName().equals("_entry_") || n.getName().equals("_exit_"))) {
-            NodeType typ = new EventType();
+        } else if (n != null) {
+            NodeType typ = new NodeType();
             typ.setName(n.getName());
             typ.setId(n.getId());
             net.getNode().add(typ);

@@ -38,6 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 @Service("ComposerService")
 @Transactional(propagation = Propagation.REQUIRED)
 public class ComposerServiceImpl implements ComposerService {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(ComposerServiceImpl.class);
 
     @Autowired @Qualifier("ContentDao")
@@ -50,7 +51,6 @@ public class ComposerServiceImpl implements ComposerService {
 
     /**
      * Compose a process Model graph from the DB.
-     *
      * @param fragmentVersionId the fragment version Id we are looking to construct from.
      * @return the process model graph
      * @throws ExceptionDao if something fails.
@@ -64,6 +64,7 @@ public class ComposerServiceImpl implements ComposerService {
     }
 
 
+
     private void composeFragment(OperationContext op, String fragmentVersionId, String pocketId) throws ExceptionDao {
         Content content = cDao.getContentByFragmentVersion(fragmentVersionId);
 
@@ -74,7 +75,8 @@ public class ComposerServiceImpl implements ComposerService {
         }
     }
 
-    private void composeNewContent(OperationContext op, String fragmentVersionId, String pocketId, Content contentDO) throws ExceptionDao {
+    private void composeNewContent(OperationContext op, String fragmentVersionId, String pocketId, Content contentDO)
+            throws ExceptionDao {
         op.incrementContentUsage(contentDO.getContentId());
 
         CPF g = op.getGraph();
@@ -82,16 +84,20 @@ public class ComposerServiceImpl implements ComposerService {
         gSrv.fillEdges(g, contentDO.getContentId());
 
         Collection<FlowNode> nodesToBeRemoved = new HashSet<>();
+        //Collection<ControlFlow<FlowNode>> edgesToBeRemoved = new HashSet<ControlFlow<FlowNode>>();
         if (pocketId != null) {
-            for (ControlFlow<FlowNode> edge : g.getEdges()) {
+            Collection<ControlFlow<FlowNode>> edges = g.getEdges();
+            for (ControlFlow<FlowNode> edge: edges) {
                 if (edge.getTarget() != null && edge.getTarget().getId().equals(pocketId)) {
                     FlowNode boundaryS = g.getVertex(contentDO.getBoundaryS());
                     FlowNode parentT1 = edge.getSource();
                     if (canCombineSplit(parentT1, boundaryS)) {
-                        for (FlowNode ct : g.getDirectSuccessors(boundaryS)) {
+                        Collection<FlowNode> childTs = g.getDirectSuccessors(boundaryS);
+                        for (FlowNode ct : childTs) {
                             g.addEdge(parentT1, ct);
                         }
                         nodesToBeRemoved.add(boundaryS);
+
                     } else {
                         edge.setTarget(g.getVertex(contentDO.getBoundaryS()));
                     }
@@ -106,6 +112,7 @@ public class ComposerServiceImpl implements ComposerService {
                             g.addEdge(ct, parentT2);
                         }
                         nodesToBeRemoved.add(boundaryE);
+
                     } else {
                         edge.setSource(g.getVertex(contentDO.getBoundaryE()));
                     }
@@ -121,7 +128,101 @@ public class ComposerServiceImpl implements ComposerService {
         }
     }
 
-    private void composeDuplicateContent(OperationContext op, String fragmentVersionId, String pocketId, Content contentDO) throws ExceptionDao {
+    private boolean canCombineSplit(FlowNode parentT1, FlowNode boundaryS) {
+
+        if (parentT1 == null || boundaryS == null) {
+            return false;
+        }
+
+        if ((parentT1 instanceof CpfXorGateway) && (boundaryS instanceof CpfXorGateway)) {
+            return true;
+        }
+
+        if ((parentT1 instanceof CpfAndGateway) && (boundaryS instanceof CpfAndGateway)) {
+            return true;
+        }
+
+        if ((parentT1 instanceof CpfOrGateway) && (boundaryS instanceof CpfOrGateway)) {
+            return true;
+        }
+
+        if (("XOR".equals(parentT1.getName())) && ("XOR".equals(boundaryS.getName()))) {
+            return true;
+        }
+
+        if (("AND".equals(parentT1.getName())) && ("AND".equals(boundaryS.getName()))) {
+            return true;
+        }
+
+        if (("OR".equals(parentT1.getName())) && ("OR".equals(boundaryS.getName()))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private boolean canCombineJoin(FlowNode parentT2, FlowNode boundaryE) {
+
+        if (parentT2 == null || boundaryE == null) {
+            return false;
+        }
+
+        if ((parentT2 instanceof CpfXorGateway) && (boundaryE instanceof CpfXorGateway)) {
+            return true;
+        }
+
+        if ((parentT2 instanceof CpfAndGateway) && (boundaryE instanceof CpfAndGateway)) {
+            return true;
+        }
+
+        if ((parentT2 instanceof CpfOrGateway) && (boundaryE instanceof CpfOrGateway)) {
+            return true;
+        }
+
+        if (("XOR".equals(parentT2.getName())) && ("XOR".equals(boundaryE.getName()))) {
+            return true;
+        }
+
+        if (("AND".equals(parentT2.getName())) && ("AND".equals(boundaryE.getName()))) {
+            return true;
+        }
+
+        if (("OR".equals(parentT2.getName())) && ("OR".equals(boundaryE.getName()))) {
+            return true;
+        }
+
+        return false;
+    }
+
+    private void composeNewContentOld(OperationContext op, String fragmentVersionId, String pocketId, Content contentDO)
+            throws ExceptionDao {
+        op.incrementContentUsage(contentDO.getContentId());
+
+        CPF g = op.getGraph();
+        gSrv.fillNodes(g, contentDO.getContentId());
+        gSrv.fillEdges(g, contentDO.getContentId());
+
+        if (pocketId != null) {
+            Collection<ControlFlow<FlowNode>> edges = g.getEdges();
+            for (ControlFlow<FlowNode> edge: edges) {
+                if (edge.getTarget() != null && edge.getTarget().getId().equals(pocketId)) {
+                    edge.setTarget(g.getVertex(contentDO.getBoundaryS()));
+                }
+                if (edge.getSource() != null && edge.getSource().getId().equals(pocketId)) {
+                    edge.setSource(g.getVertex(contentDO.getBoundaryE()));
+                }
+            }
+            g.removeVertex(g.getVertex(pocketId));
+        }
+
+        List<FragmentVersionDag> childMappings = fvdDao.getChildMappings(fragmentVersionId);
+        for (FragmentVersionDag fvd : childMappings) {
+            composeFragment(op, fvd.getId().getChildFragmentVersionId(), fvd.getId().getPocketId());
+        }
+    }
+
+    private void composeDuplicateContent(OperationContext op, String fragmentVersionId, String pocketId,
+            Content contentDO) throws ExceptionDao {
         op.incrementContentUsage(contentDO.getContentId());
 
         CPF g = op.getGraph();
@@ -133,15 +234,18 @@ public class ComposerServiceImpl implements ComposerService {
 
         Collection<FlowNode> nodesToBeRemoved = new HashSet<>();
         if (pocketId != null) {
-            for (ControlFlow<FlowNode> edge : g.getEdges()) {
+            Collection<ControlFlow<FlowNode>> edges = g.getEdges();
+            for (ControlFlow<FlowNode> edge: edges) {
                 if (edge.getTarget() != null && edge.getTarget().getId().equals(pocketId)) {
                     FlowNode boundaryS = g.getVertex(vMap.get(contentDO.getBoundaryS()));
                     FlowNode parentT1 = edge.getSource();
                     if (canCombineSplit(parentT1, boundaryS)) {
-                        for (FlowNode ct : g.getDirectSuccessors(boundaryS)) {
+                        Collection<FlowNode> childTs = g.getDirectSuccessors(boundaryS);
+                        for (FlowNode ct : childTs) {
                             g.addEdge(parentT1, ct);
                         }
                         nodesToBeRemoved.add(boundaryS);
+
                     } else {
                         edge.setTarget(g.getVertex(vMap.get(contentDO.getBoundaryS())));
                     }
@@ -155,6 +259,7 @@ public class ComposerServiceImpl implements ComposerService {
                             g.addEdge(ct, parentT2);
                         }
                         nodesToBeRemoved.add(boundaryE);
+
                     } else {
                         edge.setSource(g.getVertex(vMap.get(contentDO.getBoundaryE())));
                     }
@@ -172,7 +277,6 @@ public class ComposerServiceImpl implements ComposerService {
             String msg = "Failed a pocked mapping of fragment " + fragmentVersionId;
             LOGGER.error(msg, e);
         }
-        assert newChildMapping != null;
         Set<String> pids = newChildMapping.keySet();
         for (String pid: pids) {
             String childId = newChildMapping.get(pid);
@@ -183,48 +287,10 @@ public class ComposerServiceImpl implements ComposerService {
     private void fillOriginalNodeMappings(Map<String, String> vMap, CPF g) {
         for (String originalNode : vMap.keySet()) {
             String duplicateNode = vMap.get(originalNode);
-            if (g.getVertexProperty(duplicateNode, Constants.TYPE) != null && !g.getVertexProperty(duplicateNode, Constants.TYPE).equals(Constants.POCKET)) {
+            if (!g.getVertexProperty(duplicateNode, Constants.TYPE).equals(Constants.POCKET)) {
                 g.addOriginalNodeMapping(duplicateNode, originalNode);
             }
         }
-    }
-
-    private boolean canCombineSplit(FlowNode parentT1, FlowNode boundaryS) {
-        if (parentT1 == null || boundaryS == null) {
-            return false;
-        } else if ((parentT1 instanceof CpfXorGateway) && (boundaryS instanceof CpfXorGateway)) {
-            return true;
-        } else if ((parentT1 instanceof CpfAndGateway) && (boundaryS instanceof CpfAndGateway)) {
-            return true;
-        } else if ((parentT1 instanceof CpfOrGateway) && (boundaryS instanceof CpfOrGateway)) {
-            return true;
-        } else if (("XOR".equals(parentT1.getName())) && ("XOR".equals(boundaryS.getName()))) {
-            return true;
-        } else if (("AND".equals(parentT1.getName())) && ("AND".equals(boundaryS.getName()))) {
-            return true;
-        } else if (("OR".equals(parentT1.getName())) && ("OR".equals(boundaryS.getName()))) {
-            return true;
-        }
-        return false;
-    }
-
-    private boolean canCombineJoin(FlowNode parentT2, FlowNode boundaryE) {
-        if (parentT2 == null || boundaryE == null) {
-            return false;
-        } else if ((parentT2 instanceof CpfXorGateway) && (boundaryE instanceof CpfXorGateway)) {
-            return true;
-        } else if ((parentT2 instanceof CpfAndGateway) && (boundaryE instanceof CpfAndGateway)) {
-            return true;
-        } else if ((parentT2 instanceof CpfOrGateway) && (boundaryE instanceof CpfOrGateway)) {
-            return true;
-        } else if (("XOR".equals(parentT2.getName())) && ("XOR".equals(boundaryE.getName()))) {
-            return true;
-        } else if (("AND".equals(parentT2.getName())) && ("AND".equals(boundaryE.getName()))) {
-            return true;
-        } else if (("OR".equals(parentT2.getName())) && ("OR".equals(boundaryE.getName()))) {
-            return true;
-        }
-        return false;
     }
 
 
@@ -233,7 +299,6 @@ public class ComposerServiceImpl implements ComposerService {
 
     /**
      * Set the Content DAO object for this class. Mainly for spring tests.
-     *
      * @param cntDAOJpa the content Dao.
      */
     public void setContentDao(ContentDao cntDAOJpa) {
@@ -242,7 +307,6 @@ public class ComposerServiceImpl implements ComposerService {
 
     /**
      * Set the Fragment Version Dag DAO object for this class. Mainly for spring tests.
-     *
      * @param fvdDAOJpa the Fragment Version Dag Dao.
      */
     public void setFragmentVersionDagDao(FragmentVersionDagDao fvdDAOJpa) {
@@ -251,7 +315,6 @@ public class ComposerServiceImpl implements ComposerService {
 
     /**
      * Set the Graph Service object for this class. Mainly for spring tests.
-     *
      * @param gService the Graph Service.
      */
     public void setGraphService(GraphService gService) {
