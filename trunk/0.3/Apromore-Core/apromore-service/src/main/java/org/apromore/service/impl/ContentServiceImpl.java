@@ -113,7 +113,7 @@ public class ContentServiceImpl implements ContentService {
     public Node addNode(Content content, ICpfNode v, String vtype) {
         Node node = new Node();
         node.setContent(content);
-        node.setVname(v.getName());
+        node.setVname(v.getLabel() != null ? v.getLabel() : v.getName());
         node.setVtype(vtype);
         node.setConfiguration(v.isConfigurable());
         node.setCtype(v.getClass().getName());

@@ -1,26 +1,17 @@
 package org.apromore.manager.da;
 
-import java.util.List;
-
 import org.apromore.dao.DataAccessManagerManager;
 import org.apromore.exception.ExceptionDeleteEditSession;
-import org.apromore.exception.ExceptionDeleteProcessVersions;
 import org.apromore.exception.ExceptionReadEditSession;
 import org.apromore.exception.ExceptionUpdateProcess;
-import org.apromore.exception.ExceptionWriteEditSession;
 import org.apromore.model.DeleteEditSessionInputMsgType;
 import org.apromore.model.DeleteEditSessionOutputMsgType;
-import org.apromore.model.DeleteProcessVersionsInputMsgType;
-import org.apromore.model.DeleteProcessVersionsOutputMsgType;
 import org.apromore.model.EditProcessDataInputMsgType;
 import org.apromore.model.EditProcessDataOutputMsgType;
 import org.apromore.model.EditSessionType;
-import org.apromore.model.ProcessVersionIdentifierType;
 import org.apromore.model.ReadEditSessionInputMsgType;
 import org.apromore.model.ReadEditSessionOutputMsgType;
 import org.apromore.model.ResultType;
-import org.apromore.model.WriteEditSessionInputMsgType;
-import org.apromore.model.WriteEditSessionOutputMsgType;
 
 public class ManagerDataAccessClient {
 
@@ -58,22 +49,11 @@ public class ManagerDataAccessClient {
         if (result.getCode() == 0) {
             editSession = res.getEditSession();
             return editSession;
-        } else {
+        }
+        else {
             throw new ExceptionReadEditSession(result.getMessage());
         }
 
-    }
-
-    public int WriteEditSession(EditSessionType editSession) throws ExceptionWriteEditSession {
-        WriteEditSessionInputMsgType payload = new WriteEditSessionInputMsgType();
-        payload.setEditSession(editSession);
-        WriteEditSessionOutputMsgType res = manager.writeEditSession(payload);
-        ResultType result = res.getResult();
-        if (result.getCode() != 0) {
-            throw new ExceptionWriteEditSession(result.getMessage());
-        } else {
-            return res.getEditSessionCode();
-        }
     }
 
     public void DeleteEditSession(int code) throws ExceptionDeleteEditSession {
@@ -83,18 +63,6 @@ public class ManagerDataAccessClient {
         ResultType result = res.getResult();
         if (result.getCode() != 0) {
             throw new ExceptionDeleteEditSession(result.getMessage());
-        }
-    }
-
-
-    public void DeleteProcessVersion(List<ProcessVersionIdentifierType> processVersions) throws ExceptionDeleteProcessVersions {
-        DeleteProcessVersionsInputMsgType payload = new DeleteProcessVersionsInputMsgType();
-        payload.getProcessVersionIdentifier().clear();
-        payload.getProcessVersionIdentifier().addAll(processVersions);
-        DeleteProcessVersionsOutputMsgType res = manager.deleteProcessVersions(payload);
-        ResultType result = res.getResult();
-        if (result.getCode() != 0) {
-            throw new ExceptionDeleteProcessVersions(result.getMessage());
         }
     }
 

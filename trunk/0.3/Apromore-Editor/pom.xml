@@ -45,6 +45,8 @@
                                 <property name="test_classpath" refid="maven.test.classpath"/>
                                 <property name="plugin_classpath" refid="maven.plugin.classpath"/>
 
+                                <ant target="build-all" dir="platform extensions" inheritall="false"/>
+
                                 <ant target="build-all-in-one-war" inheritall="false" />
                             </target>
                         </configuration>

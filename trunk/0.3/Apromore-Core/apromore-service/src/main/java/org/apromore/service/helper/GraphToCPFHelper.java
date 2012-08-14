@@ -53,8 +53,7 @@ import org.jbpt.pm.FlowNode;
 public class GraphToCPFHelper {
 
     /* Private Constructor so it can't be instantiated */
-    private GraphToCPFHelper() {
-    }
+    private GraphToCPFHelper() { }
 
 
     /**
@@ -133,7 +132,7 @@ public class GraphToCPFHelper {
             } else {
                 typ = new ORSplitType();
             }
-            typ.setName(n.getName());
+            typ.setName("OR");
             typ.setId(n.getId());
             typ.getAttribute().addAll(addAttributes(n));
             net.getNode().add(typ);
@@ -144,7 +143,7 @@ public class GraphToCPFHelper {
             } else {
                 typ = new ANDSplitType();
             }
-            typ.setName(n.getName());
+            typ.setName("AND");
             typ.setId(n.getId());
             typ.getAttribute().addAll(addAttributes(n));
             net.getNode().add(typ);
@@ -155,12 +154,12 @@ public class GraphToCPFHelper {
             } else {
                 typ = new XORSplitType();
             }
-            typ.setName(n.getName());
+            typ.setName("XOR");
             typ.setId(n.getId());
             typ.getAttribute().addAll(addAttributes(n));
             net.getNode().add(typ);
-        } else if (n != null) {
-            NodeType typ = new NodeType();
+        } else if (n != null && (n.getName().equals("_entry_") || n.getName().equals("_exit_"))) {
+            NodeType typ = new EventType();
             typ.setName(n.getName());
             typ.setId(n.getId());
             net.getNode().add(typ);

@@ -142,9 +142,7 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
         Map<String, Integer> fsizeMap = new HashMap<String, Integer>();
         for (Object[] fsize : fragmentSizes) {
-            String fid = (String) fsize[0];
-            Integer size = (Integer) fsize[1];
-            fsizeMap.put(fid, size.intValue());
+            fsizeMap.put((String) fsize[0], (Integer) fsize[1]);
         }
         return fsizeMap;
     }
@@ -154,10 +152,16 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public String getContentId(final String fvid) {
         Query query = em.createNamedQuery(NamedQueries.GET_FRAGMENT_VERSION);
         query.setParameter("id", fvid);
-        return ((FragmentVersion) query.getResultList()).getContent().getContentId();
+        List<FragmentVersion> result = query.getResultList();
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return result.get(0).getContent().getContentId();
+        }
     }
 
     /**

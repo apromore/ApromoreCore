@@ -16,17 +16,11 @@ import org.apromore.model.WriteEditSessionOutputMsgType;
  */
 public interface DataAccessManagerManager {
 
-    public DeleteProcessVersionsOutputMsgType deleteProcessVersions(DeleteProcessVersionsInputMsgType payload);
-
     public DeleteEditSessionOutputMsgType deleteEditSession(DeleteEditSessionInputMsgType payload);
 
     public ReadEditSessionOutputMsgType readEditSession(ReadEditSessionInputMsgType payload);
 
     public WriteEditSessionOutputMsgType writeEditSession(WriteEditSessionInputMsgType payload);
-
-//    public ReadCanonicalAnfOutputMsgType readCanonicalAnf(ReadCanonicalAnfInputMsgType payload);
-//
-//    public ReadFormatOutputMsgType readFormat(ReadFormatInputMsgType payload);
 
     public EditProcessDataOutputMsgType editProcessData(EditProcessDataInputMsgType payload);
 

@@ -62,7 +62,7 @@ public class CPF extends ProcessModel implements ICpf<ControlFlow<FlowNode>, Flo
     public void setVertexProperty(String vertex, String propertyName, String propertyValue) {
         Map<String, String> properties = vertexProperties.get(vertex);
         if (properties == null) {
-            properties = new HashMap<String, String>(0);
+            properties = new HashMap<>(0);
             vertexProperties.put(vertex, properties);
         }
         properties.put(propertyName, propertyValue);

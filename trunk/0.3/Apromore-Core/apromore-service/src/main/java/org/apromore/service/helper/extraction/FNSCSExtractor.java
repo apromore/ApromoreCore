@@ -3,10 +3,12 @@ package org.apromore.service.helper.extraction;
 import org.apromore.common.Constants;
 import org.apromore.graph.JBPT.CPF;
 import org.apromore.graph.JBPT.CpfNode;
+import org.apromore.service.helper.FragmentProcesser;
 import org.apromore.util.FragmentUtil;
 import org.jbpt.graph.algo.rpst.RPST;
 import org.jbpt.graph.algo.rpst.RPSTNode;
 import org.jbpt.pm.FlowNode;
+import org.jbpt.pm.IFlowNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -17,9 +19,13 @@ public class FNSCSExtractor {
 
     private static final Logger log = LoggerFactory.getLogger(FNSCSExtractor.class);
 
+    @SuppressWarnings("unchecked")
     public static FlowNode extract(RPSTNode f, RPSTNode cf, RPST rpst, CPF g) {
         FlowNode originalChildB1 = (FlowNode) cf.getEntry();
         FlowNode originalChildB2 = (FlowNode) cf.getExit();
+
+        // Do we need this call ???
+        FragmentProcesser.preprocessFragmentV2(cf, f, g);
 
         FlowNode childB1 = (FlowNode) cf.getEntry();
         if (childB1.getId().equals(originalChildB1.getId())) {
@@ -70,4 +76,5 @@ public class FNSCSExtractor {
 
         return pocket;
     }
+
 }

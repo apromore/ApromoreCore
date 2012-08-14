@@ -7,9 +7,7 @@ public interface Constants {
 
     public static final String INITIAL_ANNOTATION = "Initial";
     public static final String ANNOTATIONS = "Annotations";
-    public static final String CANONICAL = "Canonical";
 
-    public static final boolean INDEX_CONNECTORS = false;
     public static final String TRUNK_NAME = "MAIN";
     public static final String TYPE = "type";
     public static final String CONNECTOR = "Connector";
@@ -43,9 +41,6 @@ public interface Constants {
     public static final int NO_LOCK = 0;
     public static final int INDIRECT_LOCK = 1;
     public static final int DIRECT_LOCK = 2;
-
-    public static final int MAXIMUM_PROCESS_LOCK_ATTEMPTS = 10;
-    public static final int PROCESS_LOCKING_WAITING_TIME = 5000;
 
     public static final String PHASE1 = "Phase_1";
     public static final String PHASE2 = "Phase_2";

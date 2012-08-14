@@ -34,8 +34,7 @@ public class PocketMapper {
 
     private static Logger LOGGER = LoggerFactory.getLogger(PocketMapper.class);
 
-    @Autowired
-    @Qualifier("GraphService")
+    @Autowired @Qualifier("GraphService")
     private GraphService gSrv;
 
 
@@ -57,9 +56,9 @@ public class PocketMapper {
 
         // let's handle the easy cases first. content with no pockets and content with only one pocket.
         if (cPockets.size() == 0) {
-            return new HashMap<String, String>(0);
+            return new HashMap<>(0);
         } else if (cPockets.size() == 1) {
-            Map<String, String> pocketMapping = new HashMap<String, String>(0);
+            Map<String, String> pocketMapping = new HashMap<>(0);
             pocketMapping.put(pockets.get(0).getId(), cPockets.get(0).getId());
             return pocketMapping;
         }
@@ -87,18 +86,17 @@ public class PocketMapper {
     }
 
     private static Map<String, String> mapPocketsArbitrary(List<IFlowNode> fps, List<IFlowNode> cps) {
-        Map<String, String> pocketMapping = new HashMap<String, String>(0);
-        List<IFlowNode> fpList = new ArrayList<IFlowNode>(fps);
-        List<IFlowNode> cpList = new ArrayList<IFlowNode>(cps);
+        Map<String, String> pocketMapping = new HashMap<>(0);
+        List<IFlowNode> fpList = new ArrayList<>(fps);
+        List<IFlowNode> cpList = new ArrayList<>(cps);
         for (int i = 0; i < fpList.size(); i++) {
             pocketMapping.put(fpList.get(i).getId(), cpList.get(i).getId());
         }
         return pocketMapping;
     }
 
-    private static Map<String, String> mapPocketsByLocators(Map<IFlowNode, PocketLocator> flmap,
-                                                            Map<IFlowNode, PocketLocator> clmap) {
-        Map<String, String> pocketMappings = new HashMap<String, String>(0);
+    private static Map<String, String> mapPocketsByLocators(Map<IFlowNode, PocketLocator> flmap, Map<IFlowNode, PocketLocator> clmap) {
+        Map<String, String> pocketMappings = new HashMap<>(0);
         Set<IFlowNode> fps = flmap.keySet();
         for (IFlowNode fp : fps) {
             PocketLocator fpl = flmap.get(fp);
@@ -138,9 +136,9 @@ public class PocketMapper {
      * @throws org.apromore.exception.UnlocatablePocketsException
      *          thrown if unique locators cannot be calculated.
      */
-    private static Map<IFlowNode, PocketLocator> calculateLocators(List<IFlowNode> pockets,
-                                                                   Collection<AbstractDirectedEdge> edges, CPF g) throws UnlocatablePocketsException {
-        Map<IFlowNode, PocketLocator> locators = new HashMap<IFlowNode, PocketLocator>(0);
+    private static Map<IFlowNode, PocketLocator> calculateLocators(List<IFlowNode> pockets, Collection<AbstractDirectedEdge> edges, CPF g)
+            throws UnlocatablePocketsException {
+        Map<IFlowNode, PocketLocator> locators = new HashMap<>(0);
         for (IFlowNode p : pockets) {
             PocketLocator locator = buildLocator(p, edges, g);
             locators.put(p, locator);
@@ -170,7 +168,7 @@ public class PocketMapper {
         // otherwise, locators are valid only if no two pockets have same preset
         // or same postset labels (i.e. no two locators PocketLocator.match()
         // each other)
-        List<PocketLocator> equivalentLocators = new ArrayList<PocketLocator>(0);
+        List<PocketLocator> equivalentLocators = new ArrayList<>(0);
         Collection<PocketLocator> ls = locators.values();
         for (PocketLocator l : ls) {
             for (PocketLocator otherL : ls) {
@@ -199,7 +197,7 @@ public class PocketMapper {
     }
 
     private static List<IFlowNode> getPockets(Collection<IFlowNode> vertices, CPF g) {
-        List<IFlowNode> pockets = new ArrayList<IFlowNode>(0);
+        List<IFlowNode> pockets = new ArrayList<>(0);
         for (IFlowNode v : vertices) {
             String type = g.getVertexProperty(v.getId(), Constants.TYPE);
             if (Constants.POCKET.equals(type)) {

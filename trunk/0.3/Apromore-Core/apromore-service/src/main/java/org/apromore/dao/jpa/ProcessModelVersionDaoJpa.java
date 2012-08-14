@@ -92,14 +92,14 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
     }
 
     /**
-     * @see org.apromore.dao.ProcessModelVersionDao#getCurrentProcessModelVersion(String)
+     * @see org.apromore.dao.ProcessModelVersionDao#getCurrentProcessModelVersion(Integer)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public ProcessModelVersion getCurrentProcessModelVersion(final String branchName) {
+    public ProcessModelVersion getCurrentProcessModelVersion(final Integer branchId) {
         Query query = em.createNamedQuery(NamedQueries.GET_CURRENT_PROCESS_MODEL_VERSION_A);
-        query.setParameter("branchName", branchName);
+        query.setParameter("branchId", branchId);
         return (ProcessModelVersion) query.getSingleResult();
     }
 

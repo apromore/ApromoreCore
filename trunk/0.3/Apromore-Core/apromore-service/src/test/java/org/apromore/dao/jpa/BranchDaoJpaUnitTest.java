@@ -66,7 +66,7 @@ public class BranchDaoJpaUnitTest {
     @Test
     public final void testGetProcessBranchByProcessBranchName() {
         ProcessBranch b = new ProcessBranch();
-        String processId = "1";
+        Integer processId = 1;
         String branchName = "branchName";
 
         Query query = createMock(Query.class);
