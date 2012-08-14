@@ -62,15 +62,10 @@ public class EPMLToJSONConverter {
      * @param jsonStream
      */
     public void convert(InputStream epmlStream, OutputStream jsonStream) {
-
         try {
             JAXBElement<TypeEPML> nativeElement = unmarshalNativeFormat(epmlStream);
             convertEPML(nativeElement.getValue(), jsonStream);
-        } catch (JAXBException e) {
-            //TODO Logging
-        } catch (JSONException e) {
-            //TODO Logging
-        } catch (IOException e) {
+        } catch (JAXBException | JSONException | IOException e) {
             //TODO Logging
         }
     }
@@ -97,7 +92,7 @@ public class EPMLToJSONConverter {
         EPMLHandlerFactory converterFactory = new EPMLHandlerFactory(context);
         context.setConverterFactory(converterFactory);
 
-        List<TExtensibleElements> extList = new ArrayList<TExtensibleElements> ();
+        List<TExtensibleElements> extList = new ArrayList<>();
         if (epml.getDirectory() != null && !epml.getDirectory().isEmpty()) {
             extList.addAll(epml.getDirectory().get(0).getEpcOrDirectory());
         } else {
@@ -109,20 +104,26 @@ public class EPMLToJSONConverter {
             String stencilSetNs = "http://b3mn.org/stencilset/epc#";
             BasicDiagram diagram = new BasicDiagram(epc.getName(), "Diagram", new StencilSetReference(stencilSetNs));
             Bounds bounds = new Bounds();
-            bounds.setCoordinates(0,0,200,200);
+            bounds.setCoordinates(0, 0, 200, 200);
             diagram.setBounds(bounds);
             context.addDiagram(diagram);
+
             for (Object obj : epc.getEventOrFunctionOrRole()) {
-                if (obj instanceof JAXBElement) {
-                    obj = ((JAXBElement) obj).getValue();
-                }
-                EPMLHandler converter = converterFactory.createConverter(obj);
+                EPMLHandler converter = converterFactory.createNodeConverter(obj);
                 if (converter != null) {
                     diagram.addChildShape(converter.convert());
                 }
             }
+
+            for (Object obj : epc.getEventOrFunctionOrRole()) {
+                EPMLHandler converter = converterFactory.createEdgeConverter(obj);
+                if (converter != null) {
+                    diagram.addChildShape(converter.convert());
+                }
+            }
+
             for (JAXBElement<?> element : epc.getConfigurationRequirementOrConfigurationGuidelineOrConfigurationOrder()) {
-                EPMLHandler converter = converterFactory.createConverter(element.getValue());
+                EPMLHandler converter = converterFactory.createNodeConverter(element.getValue());
                 if (converter != null) {
                     diagram.addChildShape(converter.convert());
                 }

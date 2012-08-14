@@ -37,15 +37,16 @@ import org.oryxeditor.server.diagram.basic.BasicShape;
 public class EPMLConversionContext {
 
     private EPMLHandlerFactory converterFactory;
-
     private List<BasicDiagram> epcDiagrams;
     private Map<BigInteger, BasicShape> shapeMap;
 
+
     public EPMLConversionContext() {
         super();
-        this.epcDiagrams = new ArrayList<BasicDiagram>();
-        this.shapeMap = new HashMap<BigInteger, BasicShape>();
+        this.epcDiagrams = new ArrayList<>();
+        this.shapeMap = new HashMap<>();
     }
+
 
     public void addDiagram(BasicDiagram diagram) {
         epcDiagrams.add(diagram);

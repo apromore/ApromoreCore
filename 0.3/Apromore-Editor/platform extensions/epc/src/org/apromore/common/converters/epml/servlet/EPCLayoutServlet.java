@@ -148,7 +148,8 @@ public class EPCLayoutServlet extends HttpServlet {
         // turn direction of associations to text annotations towards them
         // so that they are right of the elements
         for (LayoutingElement textNote : this.diagram.getElementsOfType(EPCType.TextNote)) {
-            for (EPCElement edge : textNote.getOutgoingLinks().toArray(new EPCElement[0])) {
+            List<LayoutingElement> outgoingLinks = textNote.getOutgoingLinks();
+            for (EPCElement edge : outgoingLinks.toArray(new EPCElement[outgoingLinks.size()])) {
                 EPCElement target = (EPCElement) edge.getOutgoingLinks().get(0);
                 // remove old connection
                 textNote.removeOutgoingLink(edge);
