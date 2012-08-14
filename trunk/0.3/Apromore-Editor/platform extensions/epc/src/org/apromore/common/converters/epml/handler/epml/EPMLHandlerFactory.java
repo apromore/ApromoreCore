@@ -24,6 +24,12 @@
  */
 package org.apromore.common.converters.epml.handler.epml;
 
+import de.epml.TypeAND;
+import de.epml.TypeArc;
+import de.epml.TypeEvent;
+import de.epml.TypeFunction;
+import de.epml.TypeOR;
+import de.epml.TypeXOR;
 import org.apromore.common.converters.epml.context.EPMLConversionContext;
 import org.apromore.common.converters.epml.handler.epml.impl.TypeANDHandler;
 import org.apromore.common.converters.epml.handler.epml.impl.TypeArcHandler;
@@ -31,19 +37,6 @@ import org.apromore.common.converters.epml.handler.epml.impl.TypeEventHandler;
 import org.apromore.common.converters.epml.handler.epml.impl.TypeFunctionHandler;
 import org.apromore.common.converters.epml.handler.epml.impl.TypeORHandler;
 import org.apromore.common.converters.epml.handler.epml.impl.TypeXORHandler;
-
-import de.epml.TypeAND;
-import de.epml.TypeArc;
-import de.epml.TypeCOrder;
-import de.epml.TypeCReq;
-import de.epml.TypeEvent;
-import de.epml.TypeFunction;
-import de.epml.TypeOR;
-import de.epml.TypeObject;
-import de.epml.TypeProcessInterface;
-import de.epml.TypeRANGE;
-import de.epml.TypeRole;
-import de.epml.TypeXOR;
 
 public class EPMLHandlerFactory {
 
@@ -53,44 +46,27 @@ public class EPMLHandlerFactory {
         this.context = context;
     }
 
-    public EPMLHandler createConverter(Object obj) {
+    public EPMLHandler createNodeConverter(Object obj) {
         if (obj instanceof TypeFunction) {
             return new TypeFunctionHandler(context, (TypeFunction) obj);
-        }
-        else if (obj instanceof TypeEvent) {
+        } else if (obj instanceof TypeEvent) {
             return new TypeEventHandler(context, (TypeEvent) obj);
-        }
-        else if (obj instanceof TypeRole) {
-            // TODO
-        }
-        else if (obj instanceof TypeObject) {
-            // TODO
-        }
-        else if (obj instanceof TypeProcessInterface) {
-            // TODO
-        }
-        else if (obj instanceof TypeAND) {
+        } else if (obj instanceof TypeAND) {
             return new TypeANDHandler(context, (TypeAND) obj);
-        }
-        else if (obj instanceof TypeOR) {
+        } else if (obj instanceof TypeOR) {
             return new TypeORHandler(context, (TypeOR) obj);
-        }
-        else if (obj instanceof TypeXOR) {
+        } else if (obj instanceof TypeXOR) {
             return new TypeXORHandler(context, (TypeXOR) obj);
-        }
-        else if (obj instanceof TypeRANGE) {
-            // TODO what is this?
-        }
-        else if (obj instanceof TypeArc) {
+        } else if (obj instanceof TypeArc) {
             return new TypeArcHandler(context, (TypeArc) obj);
         }
-        else if (obj instanceof TypeCReq) {
-        }
-        else if (obj instanceof TypeCOrder) {
-        }
+        return null;
+    }
 
-        System.out
-                .println("Missing Converter for: " + obj.getClass().getName());
+    public EPMLHandler createEdgeConverter(Object obj) {
+        if (obj instanceof TypeArc) {
+            return new TypeArcHandler(context, (TypeArc) obj);
+        }
         return null;
     }
 
