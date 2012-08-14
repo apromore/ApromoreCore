@@ -24,6 +24,7 @@
  */
 package org.apromore.common.converters.epml.handler.epml.impl;
 
+import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.HashMap;
 import java.util.Map;
@@ -70,8 +71,14 @@ public class TypeFunctionHandler extends NodeHandler {
 	protected TypePosition getPosition() {
 		if (function.getGraphics() != null) {
 			return function.getGraphics().getPosition();
-		}
-		return null;
+		}else {
+            TypePosition position = new de.epml.ObjectFactory().createTypePosition();
+            position.setX(BigDecimal.valueOf(0));
+            position.setY(BigDecimal.valueOf(30));
+            position.setWidth(BigDecimal.valueOf(100));
+            position.setHeight(BigDecimal.valueOf(60));
+            return position;
+        }
 	}
 
 	/* (non-Javadoc)

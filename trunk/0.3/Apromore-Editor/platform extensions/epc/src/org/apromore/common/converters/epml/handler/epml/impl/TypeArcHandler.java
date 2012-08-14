@@ -78,12 +78,14 @@ public class TypeArcHandler extends EPMLHandlerImpl {
 				
 				return new Bounds(upperLeft, lowerRight);
 			} else {
-				//TODO
-				return new Bounds();
+                Bounds artificalBounds = new Bounds();
+                artificalBounds.setCoordinates(10, 10, 20, 20);
+				return artificalBounds;
 			}		
-		} else {			
-			//TODO
-			return new Bounds();
+		} else {
+            Bounds artificalBounds = new Bounds();
+            artificalBounds.setCoordinates(10, 10, 20, 20);
+            return artificalBounds;
 		}
 	}
 
