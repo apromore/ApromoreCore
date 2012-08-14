@@ -322,15 +322,8 @@
 	
 	<!--  Added for EPC Extension -->
 	
-	<!-- Auto Layout for BPMN -->
+	<!-- Auto Layout for BPMN -->	
 	
-	<servlet>
-		<display-name>BPMN Layouter</display-name>
-		<servlet-name>BPMNLayouterServlet</servlet-name>
-		<servlet-class>
-			org.oryxeditor.server.BPMNLayouterServlet
-		</servlet-class>
-	</servlet>	
 	
 	<servlet-mapping>
 		<servlet-name>BPMNLayouterServlet</servlet-name>

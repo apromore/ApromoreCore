@@ -33,6 +33,7 @@ import org.oryxeditor.server.diagram.Point;
 import org.oryxeditor.server.diagram.basic.BasicShape;
 
 import de.epml.TypePosition;
+import org.oryxeditor.server.diagram.label.LabelSettings;
 
 /**
  * Base class for all converters that create a Signavio/Oryx node
@@ -55,6 +56,7 @@ public abstract class NodeHandler extends EPMLHandlerImpl {
 		TypePosition position = getPosition();
 		if (position != null) {
 			shape.setBounds(convertPosition(position));
+            //shape.getLabelSettings().add(new LabelSettings());
 		}
 		shape.setProperties(convertProperties());
 		getContext().addShape(getShapeId(), shape);
