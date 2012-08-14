@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apromore.common.Constants;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -40,6 +41,7 @@ import org.apromore.graph.JBPT.CpfTimer;
 import org.apromore.graph.JBPT.CpfXorGateway;
 import org.apromore.graph.JBPT.ICpfObject;
 import org.apromore.graph.JBPT.ICpfResource;
+import org.apromore.util.FragmentUtil;
 import org.jbpt.pm.FlowNode;
 
 /**
@@ -55,7 +57,6 @@ public class CPFtoGraphHelper {
 
     /**
      * Builds a graph from the CPF XSD Format.
-     *
      * @param cpf the cpf format from the canoniser.
      * @return the JBpt CPF Graph representation
      */
@@ -166,17 +167,17 @@ public class CPFtoGraphHelper {
                 addResources(type, (EventType) node, res);
                 flow.put(node.getId(), type);
             } else if (node instanceof ORSplitType || node instanceof ORJoinType) {
-                CpfOrGateway og = new CpfOrGateway();
+                CpfOrGateway og = new CpfOrGateway("OR");
                 og.setId(node.getId());
                 addAttributes(og, node);
                 flow.put(node.getId(), og);
             } else if (node instanceof XORSplitType || node instanceof XORJoinType) {
-                CpfXorGateway xog = new CpfXorGateway();
+                CpfXorGateway xog = new CpfXorGateway("XOR");
                 xog.setId(node.getId());
                 addAttributes(xog, node);
                 flow.put(node.getId(), xog);
             } else if (node instanceof ANDSplitType || node instanceof ANDJoinType) {
-                CpfAndGateway ag = new CpfAndGateway();
+                CpfAndGateway ag = new CpfAndGateway("AND");
                 ag.setId(node.getId());
                 addAttributes(ag, node);
                 flow.put(node.getId(), ag);
@@ -190,7 +191,12 @@ public class CPFtoGraphHelper {
         for (EdgeType edge : edgeTypes) {
             FlowNode source = nodes.get(edge.getSourceId());
             FlowNode target = nodes.get(edge.getTargetId());
-            graph.addControlFlow(source, target);
+            if (source != null && target != null) {
+                graph.addControlFlow(source, target);
+
+                graph.setVertexProperty(source.getId(), Constants.TYPE, FragmentUtil.getType(source));
+                graph.setVertexProperty(target.getId(), Constants.TYPE, FragmentUtil.getType(target));
+            }
         }
     }
 

@@ -312,8 +312,7 @@
 
     <xs:complexType name="DeleteProcessVersionsInputMsgType">
         <xs:sequence>
-            <xs:element name="ProcessVersionIdentifier" type="tns:ProcessVersionIdentifierType" minOccurs="1"
-                        maxOccurs="unbounded"/>
+            <xs:element name="ProcessVersionIdentifier" type="tns:ProcessVersionIdentifierType" minOccurs="1" maxOccurs="unbounded"/>
         </xs:sequence>
     </xs:complexType>
 
@@ -325,8 +324,7 @@
 
     <xs:complexType name="ImportProcessInputMsgType">
         <xs:sequence>
-            <xs:element name="ProcessDescription" type="xs:base64Binary"
-                        xmime:expectedContentTypes="application/octet-stream"/>
+            <xs:element name="ProcessDescription" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
             <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
         <xs:attribute name="AddFakeEvents" type="xs:boolean"/>
@@ -372,10 +370,8 @@
     </xs:complexType>
 
     <xs:complexType name="ProcessVersionIdentifierType">
-        <xs:sequence>
-            <xs:element name="VersionName" type="xs:string" minOccurs="1" maxOccurs="unbounded"/>
-        </xs:sequence>
-        <xs:attribute name="Processid" type="xs:int"/>
+        <xs:attribute name="ProcessName" type="xs:string"/>
+        <xs:attribute name="BranchName" type="xs:string"/>
     </xs:complexType>
 
     <!-- DataAccess Data Types -->

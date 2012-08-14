@@ -32,15 +32,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRED)
 public class BondContentHandler {
 
-    @Autowired
-    @Qualifier("FragmentVersionDao")
+    @Autowired @Qualifier("FragmentVersionDao")
     private FragmentVersionDao fvDao;
-    @Autowired
-    @Qualifier("FragmentVersionDagDao")
+    @Autowired @Qualifier("FragmentVersionDagDao")
     private FragmentVersionDagDao fvdDao;
 
-    @Autowired
-    @Qualifier("GraphService")
+    @Autowired @Qualifier("GraphService")
     private GraphService gSrv;
 
 
@@ -58,12 +55,12 @@ public class BondContentHandler {
      * @return Matching fragment id. Null if there is no matching fragment.
      */
     public String matchFragment(RPSTNode f, Content matchingContent, Map<String, String> childMappings,
-                                Map<String, String> newChildMappings) {
+            Map<String, String> newChildMappings) {
         // find forward and reverse pocket ids of the given fragment
         String fragmentEntryId = f.getEntry().getId();
         String fragmentExitId = f.getExit().getId();
-        List<String> forwardFragmentPocketIds = new ArrayList<String>();
-        List<String> reverseFragmentPocketIds = new ArrayList<String>();
+        List<String> forwardFragmentPocketIds = new ArrayList<>();
+        List<String> reverseFragmentPocketIds = new ArrayList<>();
         Collection<AbstractDirectedEdge> fragmentEdges = f.getFragmentEdges();
         for (AbstractDirectedEdge fragmentEdge : fragmentEdges) {
             if (fragmentEdge.getSource().getId().equals(fragmentEntryId)) {
@@ -82,8 +79,8 @@ public class BondContentHandler {
         }
 
         // find forward and reverse child ids of the given fragment
-        List<String> forwardFragmentChildIds = new ArrayList<String>();
-        List<String> reverseFragmentChildIds = new ArrayList<String>();
+        List<String> forwardFragmentChildIds = new ArrayList<>();
+        List<String> reverseFragmentChildIds = new ArrayList<>();
         Set<String> fragmentPockets = childMappings.keySet();
         for (String fragmentPocketId : fragmentPockets) {
             if (forwardFragmentPocketIds.contains(fragmentPocketId)) {
@@ -96,8 +93,8 @@ public class BondContentHandler {
         }
 
         // find forward and reverse pocket Ids of the matching content
-        List<String> forwardContentPocketIds = new ArrayList<String>();
-        List<String> reverseContentPocketIds = new ArrayList<String>();
+        List<String> forwardContentPocketIds = new ArrayList<>();
+        List<String> reverseContentPocketIds = new ArrayList<>();
         CPF content = gSrv.getGraph(matchingContent.getContentId());
         String contentEntryId = content.getSourceVertices().get(0).getId();
         String contentExitId = content.getSinkVertices().get(0).getId();
@@ -122,8 +119,8 @@ public class BondContentHandler {
         for (FragmentChildMapping fragmentChildMapping : candidateChildMappings) {
             List<FragmentVersionDag> candidateMapping = fragmentChildMapping.getChildMapping();
 
-            List<String> forwardCandidateChildIds = new ArrayList<String>();
-            List<String> reverseCandidateChildIds = new ArrayList<String>();
+            List<String> forwardCandidateChildIds = new ArrayList<>();
+            List<String> reverseCandidateChildIds = new ArrayList<>();
 
             for (FragmentVersionDag candidatePocket : candidateMapping) {
                 if (forwardContentPocketIds.contains(candidatePocket.getId().getPocketId())) {
@@ -158,7 +155,7 @@ public class BondContentHandler {
     }
 
     private List<FragmentChildMapping> getCandidateChildMappings(String matchingContentId) {
-        List<FragmentChildMapping> candidateChildMappings = new ArrayList<FragmentChildMapping>();
+        List<FragmentChildMapping> candidateChildMappings = new ArrayList<>();
         List<String> candidateFragmentIds = fvDao.getUsedFragmentIds(matchingContentId);
         for (String candidateFragmentId : candidateFragmentIds) {
             List<FragmentVersionDag> childMapping = fvdDao.getChildMappings(candidateFragmentId);
@@ -173,7 +170,6 @@ public class BondContentHandler {
 
     /**
      * Set the Fragment Version DAO object for this class. Mainly for spring tests.
-     *
      * @param fvDAOJpa the Fragment Version Dao.
      */
     public void setFragmentVersionDao(FragmentVersionDaoJpa fvDAOJpa) {
@@ -182,7 +178,6 @@ public class BondContentHandler {
 
     /**
      * Set the Fragment Version Dag Dao object for this class. Mainly for spring tests.
-     *
      * @param fvdDAOJpa the Fragment Version Dag Dao.
      */
     public void setFragmentVersionDagDao(FragmentVersionDagDaoJpa fvdDAOJpa) {
@@ -191,7 +186,6 @@ public class BondContentHandler {
 
     /**
      * Set the Graph Service object for this class. Mainly for spring tests.
-     *
      * @param gService the Graph Service.
      */
     public void setGraphService(GraphServiceImpl gService) {

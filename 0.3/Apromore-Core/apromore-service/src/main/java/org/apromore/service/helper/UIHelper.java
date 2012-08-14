@@ -33,14 +33,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRED)
 public class UIHelper {
 
-    @Autowired
-    @Qualifier("AnnotationDao")
+    @Autowired @Qualifier("AnnotationDao")
     private AnnotationDao annDao;
-    @Autowired
-    @Qualifier("ProcessDao")
+    @Autowired @Qualifier("ProcessDao")
     private ProcessDao prsDao;
-    @Autowired
-    @Qualifier("NativeDao")
+    @Autowired @Qualifier("NativeDao")
     private NativeDao natDao;
 
 
@@ -58,7 +55,7 @@ public class UIHelper {
      * @return the created Process Summary
      */
     public ProcessSummaryType createProcessSummary(String name, Integer processId, String version, String nativeType,
-                                                   String domain, String created, String lastUpdate, String username) {
+            String domain, String created, String lastUpdate, String username) {
         ProcessSummaryType proType = new ProcessSummaryType();
         VersionSummaryType verType = new VersionSummaryType();
         AnnotationsType annType = new AnnotationsType();
@@ -169,7 +166,7 @@ public class UIHelper {
 
     /* From a list of ProcessVersionTypes build a list of the id's of each */
     private List<Integer> buildProcessIdList(ProcessVersionsType similarProcesses) {
-        List<Integer> proIds = new ArrayList<Integer>(0);
+        List<Integer> proIds = new ArrayList<>(0);
         if (similarProcesses != null) {
             for (ProcessVersionType pvt : similarProcesses.getProcessVersion()) {
                 proIds.add(pvt.getProcessId());

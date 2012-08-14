@@ -49,7 +49,7 @@ public interface ProcessModelVersionDao {
      * @param branchName the branch name
      * @return the process model version.
      */
-    ProcessModelVersion getCurrentProcessModelVersion(String branchName);
+    ProcessModelVersion getCurrentProcessModelVersion(Integer branchName);
 
     /**
      * find the current process model version for the processname and branch provided.

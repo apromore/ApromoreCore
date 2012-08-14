@@ -38,7 +38,6 @@ import org.springframework.transaction.annotation.Transactional;
 @Service("ComposerService")
 @Transactional(propagation = Propagation.REQUIRED)
 public class ComposerServiceImpl implements ComposerService {
-
     private static final Logger LOGGER = LoggerFactory.getLogger(ComposerServiceImpl.class);
 
     @Autowired @Qualifier("ContentDao")
@@ -84,14 +83,12 @@ public class ComposerServiceImpl implements ComposerService {
 
         Collection<FlowNode> nodesToBeRemoved = new HashSet<>();
         if (pocketId != null) {
-            Collection<ControlFlow<FlowNode>> edges = g.getEdges();
-            for (ControlFlow<FlowNode> edge: edges) {
+            for (ControlFlow<FlowNode> edge : g.getEdges()) {
                 if (edge.getTarget() != null && edge.getTarget().getId().equals(pocketId)) {
                     FlowNode boundaryS = g.getVertex(contentDO.getBoundaryS());
                     FlowNode parentT1 = edge.getSource();
                     if (canCombineSplit(parentT1, boundaryS)) {
-                        Collection<FlowNode> childTs = g.getDirectSuccessors(boundaryS);
-                        for (FlowNode ct : childTs) {
+                        for (FlowNode ct : g.getDirectSuccessors(boundaryS)) {
                             g.addEdge(parentT1, ct);
                         }
                         nodesToBeRemoved.add(boundaryS);
@@ -136,14 +133,12 @@ public class ComposerServiceImpl implements ComposerService {
 
         Collection<FlowNode> nodesToBeRemoved = new HashSet<>();
         if (pocketId != null) {
-            Collection<ControlFlow<FlowNode>> edges = g.getEdges();
-            for (ControlFlow<FlowNode> edge: edges) {
+            for (ControlFlow<FlowNode> edge : g.getEdges()) {
                 if (edge.getTarget() != null && edge.getTarget().getId().equals(pocketId)) {
                     FlowNode boundaryS = g.getVertex(vMap.get(contentDO.getBoundaryS()));
                     FlowNode parentT1 = edge.getSource();
                     if (canCombineSplit(parentT1, boundaryS)) {
-                        Collection<FlowNode> childTs = g.getDirectSuccessors(boundaryS);
-                        for (FlowNode ct : childTs) {
+                        for (FlowNode ct : g.getDirectSuccessors(boundaryS)) {
                             g.addEdge(parentT1, ct);
                         }
                         nodesToBeRemoved.add(boundaryS);
@@ -188,7 +183,7 @@ public class ComposerServiceImpl implements ComposerService {
     private void fillOriginalNodeMappings(Map<String, String> vMap, CPF g) {
         for (String originalNode : vMap.keySet()) {
             String duplicateNode = vMap.get(originalNode);
-            if (!g.getVertexProperty(duplicateNode, Constants.TYPE).equals(Constants.POCKET)) {
+            if (g.getVertexProperty(duplicateNode, Constants.TYPE) != null && !g.getVertexProperty(duplicateNode, Constants.TYPE).equals(Constants.POCKET)) {
                 g.addOriginalNodeMapping(duplicateNode, originalNode);
             }
         }

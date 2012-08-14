@@ -1,20 +1,13 @@
 package org.apromore.dao.service;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-
 import org.apromore.dao.DataAccessManagerManager;
 import org.apromore.dao.dao.EditSessionDao;
 import org.apromore.dao.dao.ProcessDao;
 import org.apromore.model.DeleteEditSessionInputMsgType;
 import org.apromore.model.DeleteEditSessionOutputMsgType;
-import org.apromore.model.DeleteProcessVersionsInputMsgType;
-import org.apromore.model.DeleteProcessVersionsOutputMsgType;
 import org.apromore.model.EditProcessDataInputMsgType;
 import org.apromore.model.EditProcessDataOutputMsgType;
 import org.apromore.model.EditSessionType;
-import org.apromore.model.ProcessVersionIdentifierType;
 import org.apromore.model.ReadEditSessionInputMsgType;
 import org.apromore.model.ReadEditSessionOutputMsgType;
 import org.apromore.model.ResultType;
@@ -57,30 +50,30 @@ public class DataAccessManagerManagerImpl implements DataAccessManagerManager {
         return res;
     }
 
-    public DeleteProcessVersionsOutputMsgType deleteProcessVersions(DeleteProcessVersionsInputMsgType payload) {
-        LOGGER.info("Executing operation deleteProcessVersions");
-        DeleteProcessVersionsOutputMsgType res = new DeleteProcessVersionsOutputMsgType();
-        ResultType result = new ResultType();
-        res.setResult(result);
-        try {
-            HashMap<Integer, List<String>> processVersions = new HashMap<Integer, List<String>>();
-            List<ProcessVersionIdentifierType> processes = payload.getProcessVersionIdentifier();
-            Iterator<ProcessVersionIdentifierType> it = processes.iterator();
-            while (it.hasNext()) {
-                ProcessVersionIdentifierType process = it.next();
-                Iterator<String> itV = process.getVersionName().iterator();
-                processVersions.put(process.getProcessid(), process.getVersionName());
-            }
-            ProcessDao.getInstance().deleteProcessVersions(processVersions);
-            result.setCode(0);
-            result.setMessage("");
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        }
-        return res;
-    }
+//    public DeleteProcessVersionsOutputMsgType deleteProcessVersions(DeleteProcessVersionsInputMsgType payload) {
+//        LOGGER.info("Executing operation deleteProcessVersions");
+//        DeleteProcessVersionsOutputMsgType res = new DeleteProcessVersionsOutputMsgType();
+//        ResultType result = new ResultType();
+//        res.setResult(result);
+//        try {
+//            HashMap<Integer, List<String>> processVersions = new HashMap<Integer, List<String>>();
+//            List<ProcessVersionIdentifierType> processes = payload.getProcessVersionIdentifier();
+//            Iterator<ProcessVersionIdentifierType> it = processes.iterator();
+//            while (it.hasNext()) {
+//                ProcessVersionIdentifierType process = it.next();
+//                Iterator<String> itV = process.getVersionName().iterator();
+//                processVersions.put(process.getProcessid(), process.getVersionName());
+//            }
+//            ProcessDao.getInstance().deleteProcessVersions(processVersions);
+//            result.setCode(0);
+//            result.setMessage("");
+//        } catch (Exception ex) {
+//            ex.printStackTrace();
+//            result.setCode(-1);
+//            result.setMessage(ex.getMessage());
+//        }
+//        return res;
+//    }
 
 
     public DeleteEditSessionOutputMsgType deleteEditSession(DeleteEditSessionInputMsgType payload) {

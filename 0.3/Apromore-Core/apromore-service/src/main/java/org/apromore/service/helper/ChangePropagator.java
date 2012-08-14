@@ -39,24 +39,18 @@ public class ChangePropagator {
 
     private static Logger LOGGER = LoggerFactory.getLogger(ChangePropagator.class);
 
-    @Autowired
-    @Qualifier("FragmentVersionDao")
+    @Autowired @Qualifier("FragmentVersionDao")
     private FragmentVersionDao fvDao;
-    @Autowired
-    @Qualifier("FragmentVersionDagDao")
+    @Autowired @Qualifier("FragmentVersionDagDao")
     private FragmentVersionDagDao fvdDao;
-    @Autowired
-    @Qualifier("ProcessModelVersionDao")
+    @Autowired @Qualifier("ProcessModelVersionDao")
     private ProcessModelVersionDao pmvDao;
 
-    @Autowired
-    @Qualifier("LockService")
+    @Autowired @Qualifier("LockService")
     private LockService lSrv;
-    @Autowired
-    @Qualifier("FragmentService")
+    @Autowired @Qualifier("FragmentService")
     private FragmentService fSrv;
-    @Autowired
-    @Qualifier("ProcessService")
+    @Autowired @Qualifier("ProcessService")
     private ProcessService pSrv;
 
 
@@ -66,8 +60,7 @@ public class ChangePropagator {
      * created for all process models which use any of the updated fragments as
      * its root fragment. This method also releases locks of all ascendant
      * fragments.
-     *
-     * @param originalFragmentId the orginal Fragment Id
+     * @param originalFragmentId the original Fragment Id
      * @param updatedFragmentId  the updated fragment Id
      */
     public void propagateChangesWithLockRelease(String originalFragmentId, String updatedFragmentId, List<String> composingFragmentIds)
@@ -90,7 +83,7 @@ public class ChangePropagator {
 
 
     private void createNewProcessModelVersion(ProcessModelVersion pmv, String rootFragmentId,
-                                              List<String> composingFragmentIds) throws ExceptionDao {
+            List<String> composingFragmentIds) throws ExceptionDao {
         int versionNumber = pmv.getVersionNumber() + 1;
         String versionName = VersionNameUtil.getNextVersionName(pmv.getVersionName());
         ProcessModelVersion pv = pSrv.addProcessModelVersion(pmv.getProcessBranch(), rootFragmentId, versionNumber, versionName, 0, 0);
@@ -98,7 +91,7 @@ public class ChangePropagator {
     }
 
     private void propagateToParentsWithLockRelease(String parentId, String originalFragmentId, String updatedFragmentId,
-                                                   List<String> composingFragmentIds) throws ExceptionDao {
+            List<String> composingFragmentIds) throws ExceptionDao {
         LOGGER.debug("Propagating - fragment: " + originalFragmentId + ", parent: " + parentId);
         String newParentId = createNewFragmentVersionByReplacingChild(parentId, originalFragmentId, updatedFragmentId);
         composingFragmentIds.add(newParentId);
@@ -118,8 +111,7 @@ public class ChangePropagator {
         LOGGER.debug("Completed propagation - fragment: " + originalFragmentId + ", parent: " + parentId);
     }
 
-    private void fillUnchangedDescendantIds(String parentId, String updatedChildId,
-                                            List<String> composingFragmentIds) throws ExceptionDao {
+    private void fillUnchangedDescendantIds(String parentId, String updatedChildId, List<String> composingFragmentIds) throws ExceptionDao {
         List<FragmentVersionDag> allChild = fvdDao.getChildMappings(parentId);
         for (FragmentVersionDag child : allChild) {
             if (!child.getId().getChildFragmentVersionId().equals(updatedChildId)) {

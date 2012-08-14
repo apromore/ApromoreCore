@@ -39,6 +39,7 @@ import org.apromore.service.LockService;
 import org.apromore.service.RepositoryService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.ChangePropagator;
+import org.apromore.service.model.NameValuePair;
 import org.apromore.util.VersionNameUtil;
 import org.jbpt.pm.FlowNode;
 import org.slf4j.Logger;
@@ -66,6 +67,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     private ContentDao cDao;
     @Autowired @Qualifier("ProcessDao")
     private ProcessDao pDao;
+    @Autowired @Qualifier("ProcessBranchDao")
+    private ProcessBranchDao pbDao;
     @Autowired @Qualifier("ProcessModelVersionDao")
     private ProcessModelVersionDao pmvDao;
     @Autowired @Qualifier("ProcessFragmentMapDao")
@@ -190,7 +193,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         }
 
         try {
-            ProcessModelVersion pmVersion = pmvDao.getCurrentProcessModelVersion(branchId);
+            ProcessModelVersion pmVersion = pmvDao.getCurrentProcessModelVersion(Integer.parseInt(branchId));
             if (Integer.parseInt(versionNumber) != pmVersion.getVersionNumber()) {
                 String msg = "CONFLICT! The process model " + branchId + " - " + versionId + " has been updated by another user." +
                         "\nThis process model version number: " + versionNumber +
@@ -375,19 +378,50 @@ public class RepositoryServiceImpl implements RepositoryService {
         return updatedFragmentId;
     }
 
+
     /**
-     * @param processName Name of the process.
-     * @param branchName  Name of the branch.
+     * @see RepositoryService#deleteProcess(org.apromore.dao.model.Process)
+     * {@inheritDoc}
      */
     @Override
-    public void deleteProcessModel(String processName, String branchName) {
-        try {
-            ProcessModelVersion pvid = pmvDao.getCurrentProcessModelVersion(processName, branchName);
-            LOGGER.debug("Retrievd the pvid of the current version of " + processName + " - " + branchName + " to be deleted: " + pvid);
-            deleteProcessModel(pvid.getProcessModelVersionId());
-        } catch (Exception e) {
-            String msg = "Failed to delete the current version of the branch " + branchName + " of the process model " + processName;
-            LOGGER.error(msg, e);
+    public void deleteProcess(final Process process) {
+        pDao.delete(process);
+    }
+
+
+    /**
+     * @see RepositoryService#deleteProcessModel(java.util.List)
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteProcessModel(List<NameValuePair> models) {
+        ProcessModelVersion pvid;
+        for (NameValuePair entry : models) {
+            try {
+                LOGGER.debug("Retrieved the pvid of the current version of " + entry.getName() + " - " + entry.getValue() + " to be deleted.");
+                pvid = pmvDao.getCurrentProcessModelVersion(entry.getName(), entry.getValue());
+                deleteProcessModel(pvid);
+
+                updateProcessTree(entry.getName(), entry.getValue());
+            } catch (Exception e) {
+                String msg = "Failed to delete the current version of the branch " + entry.getValue() + " of the process model " + entry.getValue();
+                LOGGER.error(msg, e);
+            }
+        }
+    }
+
+    /* Update the branch links or remove if no processModelVersion is attached. */
+    private void updateProcessTree(final String processName, final String branchName) {
+        Process process = pDao.getProcess(processName);
+        ProcessBranch pBranch = pbDao.getProcessBranchByProcessBranchName(process.getProcessId(), branchName);
+
+        if (process.getProcessBranches() != null && process.getProcessBranches().size() == 1 && pBranch.getProcessModelVersions().size() == 0) {
+            deleteProcess(process);
+
+        } else {
+            ProcessModelVersion pmv = pmvDao.getCurrentProcessModelVersion(pBranch.getBranchId());
+            pBranch.setProcessModelVersionsByCurrentProcessModelVersionId(pmv);
+            pbDao.update(pBranch);
         }
     }
 
@@ -433,8 +467,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     /* inserts a new process model into the repository */
-    private ProcessModelVersion insertProcessModelVersion(CPF proModGrap, ProcessBranch branch, String rootFragmentVersionId,
-                                                          int numVertices, int numEdges) {
+    private ProcessModelVersion insertProcessModelVersion(CPF proModGrap, ProcessBranch branch, String rootFragmentVersionId, int numVertices,
+            int numEdges) {
         ProcessModelVersion process = new ProcessModelVersion();
         ProcessModelVersion pmv = pmvDao.getMaxVersionProcessModel(branch);
 
@@ -526,11 +560,10 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
 
-    private void deleteProcessModel(Integer pvid) throws ExceptionDao {
+    private void deleteProcessModel(ProcessModelVersion pvid) throws ExceptionDao {
         try {
-            String rootFragmentVersion = pDao.getRootFragmentVersionId(pvid);
-            pmvDao.delete(pmvDao.findProcessModelVersion(pvid));
-
+            String rootFragmentVersion = pDao.getRootFragmentVersionId(pvid.getProcessModelVersionId());
+            pmvDao.delete(pvid);
             deleteFragmentVersion(rootFragmentVersion);
         } catch (Exception e) {
             String msg = "Failed to delete the process model version " + pvid;
@@ -543,7 +576,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         List<FragmentVersionDag> childFragments = fvdDao.getChildMappings(fvid);
         String contentId = fvDao.getContentId(fvid);
         frgSrv.deleteChildRelationships(fvid);
-        frgSrv.deleteFragmentVersion(fvid);
+        //frgSrv.deleteFragmentVersion(fvid);
         cDao.delete(cDao.findContent(contentId));
 
         for (FragmentVersionDag childFV : childFragments) {

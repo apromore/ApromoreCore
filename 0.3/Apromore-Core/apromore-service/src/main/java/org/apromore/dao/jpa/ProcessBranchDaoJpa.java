@@ -37,12 +37,12 @@ public class ProcessBranchDaoJpa implements ProcessBranchDao {
 
 
     /**
-     * @see org.apromore.dao.ProcessBranchDao#getProcessBranchByProcessBranchName(String, String)
+     * @see org.apromore.dao.ProcessBranchDao#getProcessBranchByProcessBranchName(Integer, String)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public ProcessBranch getProcessBranchByProcessBranchName(final String processId, final String branchName) {
+    public ProcessBranch getProcessBranchByProcessBranchName(final Integer processId, final String branchName) {
         Query query = em.createNamedQuery(NamedQueries.GET_BRANCH_BY_PROCESS_BRANCH_NAME);
         query.setParameter("processId", processId);
         query.setParameter("name", branchName);
