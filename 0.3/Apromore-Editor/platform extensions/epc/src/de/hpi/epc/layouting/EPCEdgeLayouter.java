@@ -118,7 +118,6 @@ public class EPCEdgeLayouter {
 
         this.targetAbsoluteX = this.targetGeometry.getX() + targetParentAdjustmentX;
         this.targetAbsoluteY = this.targetGeometry.getY() + targetParentAdjustmentY;
-
         this.targetAbsoluteY2 = this.targetGeometry.getY2() + targetParentAdjustmentY;
 
         this.sourceAbsoluteCenterX = sourceAbsoluteX + this.sourceRelativCenterX;
