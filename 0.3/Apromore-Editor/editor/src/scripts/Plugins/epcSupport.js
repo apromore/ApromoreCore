@@ -158,7 +158,7 @@ ORYX.Plugins.EPCSupport = ORYX.Plugins.AbstractPlugin.extend({
 							failure : function() {
 								this.progressDialog.hide();
 								Ext.Msg.alert(ORYX.I18N.EPCSupport.error);
-							},
+							}.bind(this),
 							params : {
 								data : epmlString,
 								action : "Import"

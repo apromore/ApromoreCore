@@ -30,6 +30,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.UnsupportedEncodingException;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -43,6 +44,7 @@ import org.apromore.common.converters.epml.handler.epml.EPMLHandlerFactory;
 import org.apromore.common.converters.epml.handler.epml.EPMLHandler;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.oryxeditor.server.diagram.Bounds;
 import org.oryxeditor.server.diagram.StencilSetReference;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.generic.GenericJSONBuilder;
@@ -94,14 +96,26 @@ public class EPMLToJSONConverter {
         EPMLConversionContext context = new EPMLConversionContext();
         EPMLHandlerFactory converterFactory = new EPMLHandlerFactory(context);
         context.setConverterFactory(converterFactory);
-        List<TExtensibleElements> extList = epml.getDirectory().get(0).getEpcOrDirectory();
+
+        List<TExtensibleElements> extList = new ArrayList<TExtensibleElements> ();
+        if (epml.getDirectory() != null && !epml.getDirectory().isEmpty()) {
+            extList.addAll(epml.getDirectory().get(0).getEpcOrDirectory());
+        } else {
+            extList.addAll(epml.getEpcs());
+        }
 
         for (TExtensibleElements ext : extList) {
             TypeEPC epc = (TypeEPC) ext;
             String stencilSetNs = "http://b3mn.org/stencilset/epc#";
             BasicDiagram diagram = new BasicDiagram(epc.getName(), "Diagram", new StencilSetReference(stencilSetNs));
+            Bounds bounds = new Bounds();
+            bounds.setCoordinates(0,0,200,200);
+            diagram.setBounds(bounds);
             context.addDiagram(diagram);
             for (Object obj : epc.getEventOrFunctionOrRole()) {
+                if (obj instanceof JAXBElement) {
+                    obj = ((JAXBElement) obj).getValue();
+                }
                 EPMLHandler converter = converterFactory.createConverter(obj);
                 if (converter != null) {
                     diagram.addChildShape(converter.convert());
