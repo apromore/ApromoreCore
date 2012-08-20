@@ -1,0 +1,52 @@
+<bindings
+  xmlns="http://java.sun.com/xml/ns/jaxb"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  xmlns:xsi="http://www.w3.org/2000/10/XMLSchema-instance"
+  xsi:schemaLocation="http://java.sun.com/xml/ns/jaxb  http://java.sun.com/xml/ns/jaxb/bindingschema_2_0.xsd
+                      http://www.w3.org/2001/XMLSchema http://www.w3.org/2001/XMLSchema.xsd"
+  version="2.1">
+    <bindings schemaLocation="Semantic.xsd" node="/xsd:schema">
+        <bindings node="xsd:complexType[@name='tSequenceFlow']">
+            <javadoc>I'm trying to add a comment to the sequence flow class.</javadoc>
+        </bindings>
+        <bindings node="xsd:complexType[@name='tSequenceFlow']//xsd:attribute[@name='sourceRef']">
+            <property>
+                <baseType name="TFlowNode"/>
+            </property>
+        </bindings>
+        <bindings node="xsd:complexType[@name='tSequenceFlow']//xsd:attribute[@name='targetRef']">
+            <property>
+                <baseType name="TFlowNode"/>
+            </property>
+        </bindings>
+    </bindings>
+
+    <!-- The @baseElement links from the ANF to the CPF ought to be TBaseElement, but I can't figure out how to make that work. -->
+
+    <bindings schemaLocation="BPMNDI.xsd" node="/xsd:schema">
+        <bindings node="xsd:complexType[@name='BPMNEdge']//xsd:attribute[@name='bpmnElement']">
+            <property>
+                <baseType name="java.lang.String"/>
+                <!--
+                <baseType name="org.omg.spec.bpmn._20100524.model.TBaseElement"/>
+                -->
+            </property>
+        </bindings>
+        <bindings node="xsd:complexType[@name='BPMNPlane']//xsd:attribute[@name='bpmnElement']">
+            <!--
+            <property>
+                <baseType name="org.omg.spec.bpmn._20100524.model.TBaseElement"/>
+            </property>
+            -->
+        </bindings>
+        <bindings node="xsd:complexType[@name='BPMNShape']//xsd:attribute[@name='bpmnElement']">
+            <property>
+                <baseType name="java.lang.String"/>
+                <!--
+                <baseType name="org.omg.spec.bpmn._20100524.model.TBaseElement"/>
+                -->
+            </property>
+        </bindings>
+    </bindings>
+
+</bindings>

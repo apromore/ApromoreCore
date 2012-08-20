@@ -67,7 +67,20 @@
                 <configuration>
                     <extension>true</extension>
                     <schemaDirectory>${basedir}/src/main/xsd</schemaDirectory>
+                    <bindingDirectory>${basedir}/src/main/xsd</bindingDirectory>
                     <generateDirectory>${basedir}/target/generated-sources/src</generateDirectory>
+                    <args>
+                        <arg>-Xvisitor</arg>
+                        <arg>-Xvisitor-package:org.omg.spec.bpmn._20100524.model</arg>
+                    </args>
+                    <plugins>
+                        <plugin>
+                            <groupId>com.massfords</groupId>
+                            <artifactId>jaxb-visitor</artifactId>
+                            <version>1.9</version>
+                        </plugin>
+                    </plugins>
+
                 </configuration>
             </plugin>
             <plugin>
