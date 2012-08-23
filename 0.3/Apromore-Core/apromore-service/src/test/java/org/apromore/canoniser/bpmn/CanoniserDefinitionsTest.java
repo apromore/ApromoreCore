@@ -75,7 +75,7 @@ public class CanoniserDefinitionsTest {
     }
 
     /**
-     * Test construction from <code>Basic.cpf</code> and <code>Basic.anf</code>.
+     * Test decanonisation of <code>Basic.cpf</code> and <code>Basic.anf</code>.
      */
     @Test
     public final void testBasic() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
@@ -111,7 +111,7 @@ public class CanoniserDefinitionsTest {
     }
 
     /**
-     * Test parsing of <code>Test1.bpmn20.xml</code>.
+     * Test canonisation of <code>Test1.bpmn20.xml</code>.
      */
     @Test
     public final void test1() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
@@ -144,7 +144,7 @@ public class CanoniserDefinitionsTest {
         // Validate and serialize the canonised documents to be inspected offline
         Marshaller marshaller = JAXBContext.newInstance(Constants.ANF_CONTEXT).createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        //marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new File("/Users/raboczi/Project/apromore/0.3/Apromore-Schema/anf-schema/src/main/xsd/anf_0.3.xsd")));
+        marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new File("../../Apromore-Schema/anf-schema/src/main/xsd/anf_0.3.xsd")));
         marshaller.marshal(new JAXBElement<AnnotationsType>(new QName("http://www.apromore.org/ANF", "Annotations"),
                                                             AnnotationsType.class,
                                                             definitions.getANF()),
@@ -152,7 +152,7 @@ public class CanoniserDefinitionsTest {
 
         marshaller = JAXBContext.newInstance(Constants.CPF_CONTEXT).createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        //marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new File("src/main/xsd/cpf.xsd")));
+        marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new File("../../Apromore-Schema/cpf-schema/src/main/xsd/cpf_0.5.xsd")));
         marshaller.marshal(new JAXBElement<CanonicalProcessType>(new QName("http://www.apromore.org/CPF", "CanonicalProcess"),
                                                                  CanonicalProcessType.class,
                                                                  definitions.getCPF()),
