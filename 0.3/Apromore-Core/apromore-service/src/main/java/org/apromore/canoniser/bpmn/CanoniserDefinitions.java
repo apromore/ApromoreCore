@@ -103,7 +103,7 @@ public class CanoniserDefinitions extends Definitions {
      */
     public CanoniserDefinitions(CanonicalProcessType cpf, AnnotationsType anf) throws CanoniserException {
 
-        // Map from CPF @cpfId identifiers to BPMN ids
+        // Maps from CPF @cpfId identifiers to BPMN ids
         final Map<String, TFlowNode> idMap = new HashMap<>();
         final Map<String, TSequenceFlow> edgeMap = new HashMap<>();
 
@@ -275,6 +275,7 @@ public class CanoniserDefinitions extends Definitions {
 
                     @Override public void visit(final GraphicsType that) {
                         GraphicsType graphics = (GraphicsType) annotation;
+                        /*
                         logger.info("  Graphics");
 
                         FillType fill = graphics.getFill();
@@ -321,12 +322,26 @@ public class CanoniserDefinitions extends Definitions {
                         if (size != null) {
                             logger.info("  Size " + size.getWidth() + " x " + size.getHeight());
                         };
+                        */
 
                         if (idMap.containsKey(annotation.getCpfId())) {
                             BPMNShape shape = new BPMNShape();
                             shape.setId(annotation.getId());
                             shape.setBpmnElement(idMap.get(annotation.getCpfId()).getId());
 
+                            /* TODO - generated visit() methods need to throw CanoniserException
+                            // a shape requires a bounding box, defined by a top-left position and a size (width and height)
+                            if (graphics.getPosition().size() != 1) {
+                                throw new CanoniserException("Annotation " + annotation.getId() + " for shape " +
+                                    annotation.getCpfId() + " should have just one origin position");
+                            }
+                            if (graphics.getSize() == null) {
+                                throw new CanoniserException("Annotation " + annotation.getId() + " for shape " +
+                                    annotation.getCpfId() + " should specify a size");
+                            }
+                            */
+
+                            // add the ANF position and size as a BPMNDI bounds
                             Bounds bounds = new Bounds();
                             bounds.setHeight(graphics.getSize().getHeight().doubleValue());
                             bounds.setWidth(graphics.getSize().getWidth().doubleValue());
@@ -335,11 +350,21 @@ public class CanoniserDefinitions extends Definitions {
                             shape.setBounds(bounds);
 
                             bpmnPlane.getDiagramElements().add(diObjectFactory.createBPMNShape(shape));
+
                         } else if(edgeMap.containsKey(annotation.getCpfId())) {
                             BPMNEdge edge = new BPMNEdge();
                             edge.setId(annotation.getId());
                             edge.setBpmnElement(edgeMap.get(annotation.getCpfId()).getId());
 
+                            /* TODO - generated visit() methods need to throw CanoniserException
+                            // an edge requires two or more waypoints
+                            if (graphics.getPosition().size() < 2) {
+                                throw new CanoniserException("Annotation " + annotation.getId() + " for edge " +
+                                    annotation.getCpfId() + " should have at least two positions");
+                            }
+                            */
+
+                            // add each ANF position as a BPMNDI waypoint
                             for (PositionType position : graphics.getPosition()) {
                                 Point point = new Point();
                                 point.setX(position.getX().doubleValue());
@@ -349,7 +374,6 @@ public class CanoniserDefinitions extends Definitions {
 
                             bpmnPlane.getDiagramElements().add(diObjectFactory.createBPMNEdge(edge));
                         }
-
                     }
 
                     @Override public void visit(final SimulationType that) {
@@ -367,6 +391,12 @@ public class CanoniserDefinitions extends Definitions {
     }
 
     /**
+     * The canonical annotations corresponding to this BPMN.
+     *
+     * This is lazily initialized the first time it is accessed.
+     * Identifiers in this structure reference the corresponding {@link CanonicalProcessType}
+     * returned by {@link #getCPF}.
+     *
      * @return canonical annotations corresponding to this BPMN
      */
     public AnnotationsType getANF() {
@@ -382,6 +412,10 @@ public class CanoniserDefinitions extends Definitions {
     }
 
     /**
+     * The canonical process model corresponding to this BPMN.
+     *
+     * This is lazily initialized the first time it is accessed.
+     *
      * @return canonical process model corresponding to this BPMN
      */
     public CanonicalProcessType getCPF() {
@@ -401,6 +435,8 @@ public class CanoniserDefinitions extends Definitions {
      */
     private void canonise() {
 
+        anf.setUri("dummy-uri");
+
         // Traverse diagram
         logger.info("Traversing diagrams");
         for (BPMNDiagram diagram : getBPMNDiagrams()) {
@@ -412,6 +448,7 @@ public class CanoniserDefinitions extends Definitions {
                     public void visit(final BPMNEdge edge) {
                         logger.info("Annotating an edge");
                         AnnotationType annotation = new AnnotationType();
+                        annotation.setId(edge.getId());
                         annotation.setCpfId(edge.getBpmnElement().toString());
                         anf.getAnnotation().add(annotation);
                     }
@@ -419,12 +456,17 @@ public class CanoniserDefinitions extends Definitions {
                     public void visit(final BPMNShape shape) {
                         logger.info("Annotating a shape");
                         AnnotationType annotation = new AnnotationType();
+                        annotation.setId(shape.getId());
                         annotation.setCpfId(shape.getBpmnElement().toString());
                         anf.getAnnotation().add(annotation);
                     }
                 });
             }
         }
+
+        cpf.setName("dummy-name");
+        cpf.setUri("dummy-uri");
+        cpf.setVersion("0.5");
 
         // Traverse processes
         logger.info("Traversing processes");
@@ -434,6 +476,7 @@ public class CanoniserDefinitions extends Definitions {
                 public void visit(final TProcess process) {
                     final NetType net = new NetType();
                     net.setId(process.getId());
+                    cpf.setRootId(process.getId());
                     cpf.getNet().add(net);
 
                     for (JAXBElement<? extends TFlowElement> flowElement : process.getFlowElements()) {
