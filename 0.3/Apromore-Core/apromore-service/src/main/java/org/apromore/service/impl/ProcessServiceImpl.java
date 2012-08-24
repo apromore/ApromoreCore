@@ -6,6 +6,7 @@ import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 
 import org.apromore.common.Constants;
+import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.AnnotationDao;
 import org.apromore.dao.NativeDao;
 import org.apromore.dao.ProcessModelVersionDao;
@@ -102,12 +103,10 @@ public class ProcessServiceImpl implements ProcessService {
         try {
             CPF cpf = rSrv.getCurrentProcessModel(name, version, false);
 
-            // Get the Canonical Model
-            if (withAnn && annName.equals(Constants.INITIAL_ANNOTATION)) {
+            if ((withAnn && format.startsWith(Constants.INITIAL_ANNOTATION)) || format.startsWith(Constants.ANNOTATIONS)) {
                 ds = new ByteArrayDataSource(natDao.getNative(processId, version, format).getContent(), "text/xml");
-            } else if (format.startsWith(Constants.ANNOTATIONS)) {
-                String type = format.substring(Constants.ANNOTATIONS.length() + 3, format.length());
-                ds = new ByteArrayDataSource(annDao.getAnnotation(processId, version, type).getContent(), "text/xml");
+            } else if (format.equals(Constants.CANONICAL)) {
+                ds = new ByteArrayDataSource(canSrv.CPFtoString(canSrv.serializeCPF(cpf)), "text/xml");
             } else {
                 if (withAnn) {
                     String annotation = annDao.getAnnotation(processId, version, annName).getContent();
