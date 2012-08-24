@@ -21,24 +21,34 @@ import org.apromore.anf.PositionType;
 import org.apromore.anf.SimulationType;
 import org.apromore.anf.SizeType;
 import org.apromore.exception.CanoniserException;
+import org.apromore.cpf.ANDJoinType;
+import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectType;
+import org.apromore.cpf.ORJoinType;
+import org.apromore.cpf.ORSplitType;
 import org.apromore.cpf.ResourceTypeType;
+import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TypeAttribute;
+import org.apromore.cpf.XORJoinType;
+import org.apromore.cpf.XORSplitType;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
 import org.omg.spec.bpmn._20100524.di.BPMNShape;
 import org.omg.spec.bpmn._20100524.model.Definitions;
+import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
+import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
+import org.omg.spec.bpmn._20100524.model.TParallelGateway;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TRootElement;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
@@ -64,6 +74,15 @@ public class CanoniserDefinitions extends Definitions {
      * Logger.  Named after the class.
      */
     private static final Logger logger = Logger.getLogger(CanoniserDefinitions.class.getCanonicalName());
+
+    /**
+     * The dummy value for the <code>uri</code> attributes of the paired CPF and ANF structures.
+     *
+     * Although the name strongly suggests this is a URI, the specification (and the XML schema) allows general strings.
+     *
+     * @see <a href="http://apromore.org/wp-content/uploads/2010/12/cpf.gif">Canonical Process Format UML diagram</a>
+     */
+    private static final String DUMMY_URI = "dummy-model-uri";
 
     /**
      * Canonical process model equivalent to this BPMN model.
@@ -116,7 +135,7 @@ public class CanoniserDefinitions extends Definitions {
         setExporterVersion("0.3");
         setExpressionLanguage("http://www.w3.org/1999/XPath");
         setId(null);
-        setName(null);
+        setName(cpf.getName());
         setTargetNamespace("http://www.signavio.com/bpmn20");
         setTypeLanguage("http://www.w3.org/2001/XMLSchema");
 
@@ -214,7 +233,7 @@ public class CanoniserDefinitions extends Definitions {
                 }
             }
 
-            // Beware that in CPF 0.6 objects become children of net rather than of canonicalProcess
+            // Beware that in CPF 0.6 objects will become children of net rather than of canonicalProcess
             for (ObjectType object : cpf.getObject()) {
                 logger.info("Object id=" + object.getId() + " name=" + object.getName() + " isConfigurable=" + object.isConfigurable());
                 for (TypeAttribute attribute : object.getAttribute()) {
@@ -403,7 +422,7 @@ public class CanoniserDefinitions extends Definitions {
 
         // Lazy initialization
         if (!canonised) {
-            canonise();
+            canonise(DUMMY_URI);
             canonised = true;
         }
         assert canonised;
@@ -422,7 +441,7 @@ public class CanoniserDefinitions extends Definitions {
 
         // Lazy initialization
         if (!canonised) {
-            canonise();
+            canonise(DUMMY_URI);
             canonised = true;
         }
         assert canonised;
@@ -432,10 +451,18 @@ public class CanoniserDefinitions extends Definitions {
 
     /**
      * Initialize {@link #anf} and {@link #cpf}.
+     *
+     * @param uri  the shared top-level <code>uri</code>  attribute of the CPF and ANF structures
      */
-    private void canonise() {
+    private void canonise(String uri) {
 
-        anf.setUri("dummy-uri");
+        // Top-level attributes
+        cpf.setName(getName() == null ? "" : getName());  // @name is required by the CPF XML schema
+
+        anf.setUri(uri);
+        cpf.setUri(uri);
+
+        cpf.setVersion("0.5");
 
         // Traverse diagram
         logger.info("Traversing diagrams");
@@ -464,10 +491,6 @@ public class CanoniserDefinitions extends Definitions {
             }
         }
 
-        cpf.setName("dummy-name");
-        cpf.setUri("dummy-uri");
-        cpf.setVersion("0.5");
-
         // Traverse processes
         logger.info("Traversing processes");
         for (JAXBElement<? extends TRootElement> rootElement : getRootElements()) {
@@ -483,35 +506,112 @@ public class CanoniserDefinitions extends Definitions {
                         flowElement.getValue().accept(new org.omg.spec.bpmn._20100524.model.BaseVisitor() {
                             @Override
                             public void visit(final TEndEvent endEvent) {
-                                NodeType node = new NodeType();
-                                node.setId(endEvent.getId());
-                                net.getNode().add(node);
+                                EventType event = new EventType();
+                                populateFlowElement(event, endEvent);
+
+                                net.getNode().add(event);
                             }
+
+                            @Override
+                            public void visit(final TExclusiveGateway exclusiveGateway) {
+                                RoutingType routing;
+
+                                switch (exclusiveGateway.getGatewayDirection()) {
+                                case CONVERGING: routing = new XORJoinType(); break;
+                                case DIVERGING:  routing = new XORSplitType();  break;
+                                default:
+                                    throw new RuntimeException("Unimplemented gateway direction " + exclusiveGateway.getGatewayDirection());  // TODO - handle this properly
+                                }
+                                assert routing != null;
+
+                                populateFlowElement(routing, exclusiveGateway);
+
+                                net.getNode().add(routing);
+                            }
+
                             @Override
                             public void visit(final TInclusiveGateway inclusiveGateway) {
-                                NodeType node = new NodeType();
-                                node.setId(inclusiveGateway.getId());
-                                net.getNode().add(node);
+                                RoutingType routing;
+               
+                                switch (inclusiveGateway.getGatewayDirection()) {
+                                case CONVERGING: routing = new ORJoinType(); break;
+                                case DIVERGING:  routing = new ORSplitType();  break;
+                                default:
+                                    throw new RuntimeException("Unimplemented gateway direction " + inclusiveGateway.getGatewayDirection());  // TODO - handle this properly
+                                }
+                                assert routing != null;
+
+                                populateFlowElement(routing, inclusiveGateway);
+
+                                net.getNode().add(routing);
                             }
+
+                            @Override
+                            public void visit(final TParallelGateway parallelGateway) {
+                                RoutingType routing;
+               
+                                switch (parallelGateway.getGatewayDirection()) {
+                                case CONVERGING: routing = new ANDJoinType(); break;
+                                case DIVERGING:  routing = new ANDSplitType();  break;
+                                default:
+                                    throw new RuntimeException("Unimplemented gateway direction " + parallelGateway.getGatewayDirection());  // TODO - handle this properly
+                                }
+                                assert routing != null;
+
+                                populateFlowElement(routing, parallelGateway);
+
+                                net.getNode().add(routing);
+                            }
+
                             @Override
                             public void visit(final TStartEvent startEvent) {
-                                NodeType node = new NodeType();
-                                node.setId(startEvent.getId());
-                                net.getNode().add(node);
+                                EventType event = new EventType();
+                                populateFlowElement(event, startEvent);
+
+                                net.getNode().add(event);
                             }
+
                             @Override
                             public void visit(final TSequenceFlow sequenceFlow) {
                                 EdgeType edge = new EdgeType();
-                                edge.setId(sequenceFlow.getId());
+                                populateFlowElement(edge, sequenceFlow);
+
+                                if (sequenceFlow.getConditionExpression() != null) {
+                                    edge.setCondition(sequenceFlow.getConditionExpression().getContent().get(0).toString());  // TODO - handle non-singleton expressions
+                                }
                                 edge.setSourceId(((TFlowNode) sequenceFlow.getSourceRef()).getId());
                                 edge.setTargetId(((TFlowNode) sequenceFlow.getTargetRef()).getId());
+
                                 net.getEdge().add(edge);
                             }
+
                             @Override
-                            public void visit(final TTask task) {
-                                NodeType node = new NodeType();
-                                node.setId(task.getId());
-                                net.getNode().add(node);
+                            public void visit(final TTask bpmnTask) {
+                                TaskType cpfTask = new TaskType();
+                                populateFlowElement(cpfTask, bpmnTask);
+
+                                net.getNode().add(cpfTask);
+                            }
+
+                            // Edge supertype handlers
+
+                            private void populateBaseElement(final EdgeType edge, final TBaseElement baseElement) {
+                                edge.setId(baseElement.getId());
+                            }
+
+                            private void populateFlowElement(final EdgeType edge, final TFlowElement flowElement) {
+                                populateBaseElement(edge, flowElement);
+                            }
+
+                            // Node supertype handlers
+
+                            private void populateBaseElement(final NodeType node, final TBaseElement baseElement) {
+                                node.setId(baseElement.getId());
+                            }
+
+                            private void populateFlowElement(final NodeType node, final TFlowElement flowElement) {
+                                populateBaseElement(node, flowElement);
+                                node.setName(flowElement.getName());
                             }
                         });
                     }
