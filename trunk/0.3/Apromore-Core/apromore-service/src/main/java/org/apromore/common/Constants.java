@@ -7,6 +7,7 @@ public interface Constants {
 
     public static final String INITIAL_ANNOTATION = "Initial";
     public static final String ANNOTATIONS = "Annotations";
+    public static final String CANONICAL = "Canonical";
 
     public static final String TRUNK_NAME = "MAIN";
     public static final String TYPE = "type";

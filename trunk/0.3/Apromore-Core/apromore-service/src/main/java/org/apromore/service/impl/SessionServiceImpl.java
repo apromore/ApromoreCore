@@ -2,7 +2,6 @@ package org.apromore.service.impl;
 
 import java.util.Date;
 
-import org.apromore.dao.NativeTypeDao;
 import org.apromore.dao.ProcessModelVersionDao;
 import org.apromore.dao.SessionDao;
 import org.apromore.dao.UserDao;
@@ -27,8 +26,6 @@ public class SessionServiceImpl implements SessionService {
 
     @Autowired @Qualifier("ProcessModelVersionDao")
     ProcessModelVersionDao pmvDao;
-    @Autowired @Qualifier("NativeTypeDao")
-    private NativeTypeDao natTypeDao;
     @Autowired @Qualifier("UserDao")
     private UserDao usrDao;
 
@@ -73,14 +70,6 @@ public class SessionServiceImpl implements SessionService {
      */
     public void setProcessModelVersionDao(ProcessModelVersionDao pmvDAOJpa) {
         pmvDao = pmvDAOJpa;
-    }
-
-    /**
-     * Set the Native Type DAO object for this class. Mainly for spring tests.
-     * @param nativeTypeDAOJpa the user Dao.
-     */
-    public void setNativeTypeDao(NativeTypeDao nativeTypeDAOJpa) {
-        natTypeDao = nativeTypeDAOJpa;
     }
 
     /**

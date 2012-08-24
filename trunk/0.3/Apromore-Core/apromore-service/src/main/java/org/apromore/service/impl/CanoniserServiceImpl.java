@@ -106,7 +106,7 @@ public class CanoniserServiceImpl implements CanoniserService {
         DataSource native_ds = null;
 
         try {
-            if (anf != null) {
+            if (anf != null && anf.getInputStream().available() > 0) {
                 JAXBContext jc = JAXBContext.newInstance(Constants.ANF_CONTEXT);
                 Unmarshaller u = jc.createUnmarshaller();
                 JAXBElement<AnnotationsType> rootAnf = (JAXBElement<AnnotationsType>) u.unmarshal(anf.getInputStream());
@@ -155,6 +155,8 @@ public class CanoniserServiceImpl implements CanoniserService {
     /* Canonise the epml to CPF format */
     @SuppressWarnings("unchecked")
     private CanonisedProcess canoniseEPML(String cpf_uri, InputStream process_xml) throws JAXBException, CanoniserException {
+        ByteArrayOutputStream anf_xml = new ByteArrayOutputStream();
+        ByteArrayOutputStream cpf_xml = new ByteArrayOutputStream();
         CanonisedProcess cp = new CanonisedProcess();
 
         JAXBContext jc1 = JAXBContext.newInstance(Constants.EPML_CONTEXT);
@@ -167,13 +169,17 @@ public class CanoniserServiceImpl implements CanoniserService {
         Marshaller m_anf = jc1.createMarshaller();
         m_anf.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         JAXBElement<AnnotationsType> cproc_anf = new org.apromore.anf.ObjectFactory().createAnnotations(epml2canonical.getANF());
+        m_anf.marshal(cproc_anf, anf_xml);
         cp.setAnt(cproc_anf.getValue());
+        cp.setAnf(new ByteArrayInputStream(anf_xml.toByteArray()));
 
         jc1 = JAXBContext.newInstance(Constants.CPF_CONTEXT);
         Marshaller m_cpf = jc1.createMarshaller();
         m_cpf.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         JAXBElement<CanonicalProcessType> cproc_cpf = new org.apromore.cpf.ObjectFactory().createCanonicalProcess(epml2canonical.getCPF());
+        m_cpf.marshal(cproc_cpf, cpf_xml);
         cp.setCpt(cproc_cpf.getValue());
+        cp.setCpf(new ByteArrayInputStream(cpf_xml.toByteArray()));
 
         return cp;
     }
@@ -215,17 +221,17 @@ public class CanoniserServiceImpl implements CanoniserService {
         jc1 = JAXBContext.newInstance(Constants.ANF_CONTEXT);
         Marshaller m_anf = jc1.createMarshaller();
         m_anf.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        JAXBElement<AnnotationsType> cproc_anf = new org.apromore.anf.ObjectFactory().createAnnotations(xpdl2canonical.getAnf());
-        m_anf.marshal(cproc_anf, anf_xml);
-        cp.setAnt(cproc_anf.getValue());
+        JAXBElement<AnnotationsType> anf = new org.apromore.anf.ObjectFactory().createAnnotations(xpdl2canonical.getAnf());
+        m_anf.marshal(anf, anf_xml);
+        cp.setAnt(anf.getValue());
         cp.setAnf(new ByteArrayInputStream(anf_xml.toByteArray()));
 
         jc1 = JAXBContext.newInstance(Constants.CPF_CONTEXT);
         Marshaller m_cpf = jc1.createMarshaller();
         m_cpf.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        JAXBElement<CanonicalProcessType> cproc_cpf = new org.apromore.cpf.ObjectFactory().createCanonicalProcess(xpdl2canonical.getCpf());
-        m_cpf.marshal(cproc_cpf, cpf_xml);
-        cp.setCpt(cproc_cpf.getValue());
+        JAXBElement<CanonicalProcessType> cpf = new org.apromore.cpf.ObjectFactory().createCanonicalProcess(xpdl2canonical.getCpf());
+        m_cpf.marshal(cpf, cpf_xml);
+        cp.setCpt(cpf.getValue());
         cp.setCpf(new ByteArrayInputStream(cpf_xml.toByteArray()));
 
         return cp;
@@ -253,8 +259,9 @@ public class CanoniserServiceImpl implements CanoniserService {
 
     /* Canonise the PNML to CPF format */
     @SuppressWarnings("unchecked")
-    private CanonisedProcess canonisePNML(String cpf_uri, InputStream process_xml) throws JAXBException,
-            CanoniserException, SAXException {
+    private CanonisedProcess canonisePNML(String cpf_uri, InputStream process_xml) throws JAXBException, CanoniserException, SAXException {
+        ByteArrayOutputStream anf_xml = new ByteArrayOutputStream();
+        ByteArrayOutputStream cpf_xml = new ByteArrayOutputStream();
         CanonisedProcess cp = new CanonisedProcess();
 
         JAXBContext jc1 = JAXBContext.newInstance(Constants.PNML_CONTEXT);
@@ -267,17 +274,22 @@ public class CanoniserServiceImpl implements CanoniserService {
         PnmlType pkg = rootElement.getValue();
         PNML2Canonical pnml2canonical = new PNML2Canonical(pkg, Long.parseLong(cpf_uri));
 
-        jc1 = JAXBContext.newInstance(Constants.CPF_CONTEXT);
-        Marshaller m_cpf = jc1.createMarshaller();
-        m_cpf.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-        JAXBElement<CanonicalProcessType> cproc_cpf = new org.apromore.cpf.ObjectFactory().createCanonicalProcess(pnml2canonical.getCPF());
-        cp.setCpt(cproc_cpf.getValue());
-
         jc1 = JAXBContext.newInstance(Constants.ANF_CONTEXT);
         Marshaller m_anf = jc1.createMarshaller();
         m_anf.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
         JAXBElement<AnnotationsType> anf = new org.apromore.anf.ObjectFactory().createAnnotations(pnml2canonical.getANF());
+        m_anf.marshal(anf, anf_xml);
         cp.setAnt(anf.getValue());
+        cp.setAnf(new ByteArrayInputStream(anf_xml.toByteArray()));
+
+        jc1 = JAXBContext.newInstance(Constants.CPF_CONTEXT);
+        Marshaller m_cpf = jc1.createMarshaller();
+        m_cpf.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        JAXBElement<CanonicalProcessType> cpf = new org.apromore.cpf.ObjectFactory().createCanonicalProcess(pnml2canonical.getCPF());
+        m_cpf.marshal(cpf, cpf_xml);
+        cp.setCpt(cpf.getValue());
+        cp.setCpf(new ByteArrayInputStream(cpf_xml.toByteArray()));
+
         return cp;
     }
 

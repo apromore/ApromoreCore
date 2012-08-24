@@ -8,7 +8,6 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.activation.DataHandler;
@@ -405,10 +404,7 @@ public class ManagerPortalEndpoint {
         } catch (ExceptionVersion ex) {
             result.setCode(-3);
             result.setMessage(ex.getMessage());
-        } catch (IOException ex) {
-            result.setCode(-1);
-            result.setMessage(ex.getMessage());
-        } catch (ExceptionCanoniseVersion ex) {
+        } catch (IOException | ExceptionCanoniseVersion ex) {
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
