@@ -8,9 +8,8 @@ import java.util.Map;
 
 import org.apromore.common.Constants;
 import org.apromore.graph.JBPT.CPF;
-import org.apromore.graph.JBPT.CpfEvent;
 import org.apromore.graph.JBPT.CpfNode;
-import org.apromore.graph.JBPT.CpfXorGateway;
+import org.apromore.graph.JBPT.CpfOrGateway;
 import org.jbpt.graph.algo.rpst.RPST;
 import org.jbpt.pm.Activity;
 import org.jbpt.pm.ControlFlow;
@@ -121,10 +120,10 @@ public class GraphUtil {
             srcs = graph.getSourceVertices();
             tgts = graph.getSinkVertices();
 
-            entry = new CpfEvent("_entry_");
+            entry = new CpfNode("_entry_");
             graph.addVertex(entry);
 
-            exit = new CpfEvent("_exit_");
+            exit = new CpfNode("_exit_");
             graph.addVertex(exit);
 
             if (srcs.size() == 1) {
@@ -132,7 +131,7 @@ public class GraphUtil {
                     graph.addEdge(entry, tgt);
                 }
             } else {
-                FlowNode sourceAggregator = new CpfXorGateway("OR");
+                FlowNode sourceAggregator = new CpfOrGateway("OR");
                 graph.addFlowNode(sourceAggregator);
                 graph.setVertexProperty(sourceAggregator.getId(), Constants.TYPE, Constants.CONNECTOR);
                 graph.addEdge(entry, sourceAggregator);
@@ -146,7 +145,7 @@ public class GraphUtil {
                     graph.addEdge(src, exit);
                 }
             } else {
-                FlowNode sinkAggregator = new CpfXorGateway("OR");
+                FlowNode sinkAggregator = new CpfOrGateway("OR");
                 graph.addFlowNode(sinkAggregator);
                 graph.setVertexProperty(sinkAggregator.getId(), Constants.TYPE, Constants.CONNECTOR);
                 graph.addEdge(sinkAggregator, exit);
