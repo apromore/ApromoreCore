@@ -97,21 +97,36 @@ public class CanoniserDefinitionsTest {
             new StreamSource(loader.getResourceAsStream("xsd/anf_0.3.xsd"))
         );
 
-        /* This works, but breaks the Jenkins build
-        BPMN_SCHEMA = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(
-            new File("../../Apromore-Schema/bpmn-schema/src/main/resources/xsd/BPMN20.xsd")
-        );
-        */
+        if (System.getProperty("bpmnvalidation") != null) {
 
-        /* This wouldn't break the Jenkins builds, but for some baffling reason doesn't find <definitions>.
-           Consequently, all uses of BPMN_SCHEMA are commented out. */
-        BPMN_SCHEMA = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new StreamSource[] {
-            new StreamSource(loader.getResourceAsStream("xsd/DC.xsd")),
-            new StreamSource(loader.getResourceAsStream("xsd/DI.xsd")),
-            new StreamSource(loader.getResourceAsStream("xsd/BPMNDI.xsd")),
-            new StreamSource(loader.getResourceAsStream("xsd/Semantic.xsd")),
-            new StreamSource(loader.getResourceAsStream("xsd/BPMN20.xsd"))
-        });
+            /* By default, marshallers and unmarshallers don't validate BPMN documents.
+             * Validation can be enabled by passing a -Dbpmnvalidation flag to Maven.
+             *
+             * This switches to loading the BPMN schema from the filesystem, as so:
+             */
+            BPMN_SCHEMA = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(
+                new File("../../Apromore-Schema/bpmn-schema/src/main/resources/xsd/BPMN20.xsd")
+            );
+            /* The reason this isn't the default behavior is because it only works when
+             * executed from the complete Apromore checkout.  When Jenkins runs the
+             * tests, it tests each element in isolation and so the BPMN schema can't be loaded.
+             *
+             * Hence, we have the following code which loads the BPMN from the classpath:
+             */
+        } else {
+            BPMN_SCHEMA = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new StreamSource[] {
+                new StreamSource(loader.getResourceAsStream("xsd/DC.xsd")),
+                new StreamSource(loader.getResourceAsStream("xsd/DI.xsd")),
+                new StreamSource(loader.getResourceAsStream("xsd/BPMNDI.xsd")),
+                new StreamSource(loader.getResourceAsStream("xsd/Semantic.xsd")),
+                new StreamSource(loader.getResourceAsStream("xsd/BPMN20.xsd"))
+            });
+            /* Unfortunately, the above code doesn't work; it fails to parse the root <definitions>.
+             * Until someone can figure out why it fails, BPMN validation is off unless explicitly
+             * requested by -Dbpmnvalidation.
+             */
+        }
+        assert BPMN_SCHEMA != null;
 
         CPF_SCHEMA  = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(
             new StreamSource(loader.getResourceAsStream("xsd/cpf_0.5.xsd"))
@@ -127,6 +142,7 @@ public class CanoniserDefinitionsTest {
     public void initializeContext() throws JAXBException {
         context = JAXBContext.newInstance(CanoniserObjectFactory.class,
                                           org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
+                                          org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
                                           org.omg.spec.dd._20100524.dc.ObjectFactory.class,
                                           org.omg.spec.dd._20100524.di.ObjectFactory.class);
     }
@@ -157,7 +173,9 @@ public class CanoniserDefinitionsTest {
         marshaller.marshal(definitions, new File(OUTPUT_DIR, "Basic.bpmn20.xml"));
 
         // Validate the test instance
-        //marshaller.setSchema(BPMN_SCHEMA);
+        if (System.getProperty("bpmnvalidation") != null) {
+            marshaller.setSchema(BPMN_SCHEMA);
+        }
         marshaller.marshal(definitions, new NullOutputStream());
 
         // Inspect the test instance
@@ -234,7 +252,9 @@ public class CanoniserDefinitionsTest {
 
         // Obtain the test instance
         Unmarshaller unmarshaller = context.createUnmarshaller();
-        //unmarshaller.setSchema(BPMN_SCHEMA);
+        if (System.getProperty("bpmnvalidation") != null) {
+            unmarshaller.setSchema(BPMN_SCHEMA);
+        }
         CanoniserDefinitions definitions = unmarshaller.unmarshal(
             new StreamSource(new FileInputStream(new File(MODELS_DIR, filename + ".bpmn20.xml"))),
             CanoniserDefinitions.class
