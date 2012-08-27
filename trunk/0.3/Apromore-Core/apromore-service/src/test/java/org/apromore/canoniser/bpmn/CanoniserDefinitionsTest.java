@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collections;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -35,7 +36,9 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.NodeType;
+import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
+import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 import org.apromore.exception.CanoniserException;
 import org.omg.spec.bpmn._20100524.model.Definitions;
@@ -249,7 +252,7 @@ public class CanoniserDefinitionsTest {
          assertEquals(EventType.class, e1.getClass());
 
          // Task "A"
-         NodeType a  = definitions.getCPF().getNet().get(0).getNode().get(1);
+         NodeType a = definitions.getCPF().getNet().get(0).getNode().get(1);
          assertEquals("A", a.getName());
          assertEquals(TaskType.class, a.getClass());
 
@@ -287,22 +290,22 @@ public class CanoniserDefinitionsTest {
          assertEquals(4, definitions.getCPF().getNet().get(0).getNode().size());
 
          // Task "A"
-         NodeType a  = definitions.getCPF().getNet().get(0).getNode().get(0);
+         NodeType a = definitions.getCPF().getNet().get(0).getNode().get(0);
          assertEquals("A", a.getName());
          assertEquals(TaskType.class, a.getClass());
 
          // XOR Split
-         NodeType xor  = definitions.getCPF().getNet().get(0).getNode().get(1);
+         NodeType xor = definitions.getCPF().getNet().get(0).getNode().get(1);
          assertNull(xor.getName());
          assertEquals(XORSplitType.class, xor.getClass());
 
          // Task "B"
-         NodeType b  = definitions.getCPF().getNet().get(0).getNode().get(2);
+         NodeType b = definitions.getCPF().getNet().get(0).getNode().get(2);
          assertEquals("B", b.getName());
          assertEquals(TaskType.class, b.getClass());
 
          // Task "C"
-         NodeType c  = definitions.getCPF().getNet().get(0).getNode().get(3);
+         NodeType c = definitions.getCPF().getNet().get(0).getNode().get(3);
          assertEquals("C", c.getName());
          assertEquals(TaskType.class, c.getClass());
 
@@ -337,7 +340,49 @@ public class CanoniserDefinitionsTest {
      public void testCanonise5() throws FileNotFoundException, JAXBException, SAXException {
          CanoniserDefinitions definitions = testCanonise("Case 5");
 
-         // not yet implemented
+         // Expect 4 nodes
+         assertEquals(4, definitions.getCPF().getNet().get(0).getNode().size());
+
+         // Task "A"
+         NodeType a = definitions.getCPF().getNet().get(0).getNode().get(0);
+         assertEquals("A", a.getName());
+         assertEquals(TaskType.class, a.getClass());
+
+         // XOR Join
+         NodeType xor = definitions.getCPF().getNet().get(0).getNode().get(1);
+         assertNull(xor.getName());
+         assertEquals(XORJoinType.class, xor.getClass());
+
+         // Task "B"
+         NodeType b = definitions.getCPF().getNet().get(0).getNode().get(2);
+         assertEquals("B", b.getName());
+         assertEquals(TaskType.class, b.getClass());
+
+         // Task "C"
+         NodeType c = definitions.getCPF().getNet().get(0).getNode().get(3);
+         assertEquals("C", c.getName());
+         assertEquals(TaskType.class, c.getClass());
+
+         // Expect 3 edges
+         assertEquals(3, definitions.getCPF().getNet().get(0).getEdge().size());
+
+         // Sequence flow from A to XOR
+         EdgeType a_xor = definitions.getCPF().getNet().get(0).getEdge().get(0);
+         assertNull(a_xor.getCondition());
+         assertEquals(a.getId(), a_xor.getSourceId());
+         assertEquals(xor.getId(), a_xor.getTargetId());
+
+         // Sequence flow B to XOR
+         EdgeType b_xor = definitions.getCPF().getNet().get(0).getEdge().get(1);
+         assertNull(b_xor.getCondition());
+         assertEquals(b.getId(), b_xor.getSourceId());
+         assertEquals(xor.getId(), b_xor.getTargetId());
+
+         // Sequence flow from XOR to C
+         EdgeType xor_c = definitions.getCPF().getNet().get(0).getEdge().get(2);
+         assertNull(xor_c.getCondition());
+         assertEquals(xor.getId(), xor_c.getSourceId());
+         assertEquals(c.getId(), xor_c.getTargetId());
      }
 
     /**
@@ -349,7 +394,46 @@ public class CanoniserDefinitionsTest {
      public void testCanonise9() throws FileNotFoundException, JAXBException, SAXException {
          CanoniserDefinitions definitions = testCanonise("Case 9");
 
-         // not yet implemented
+         /*
+         // Expect 4 nodes
+         assertEquals(4, definitions.getCPF().getNet().get(0).getNode().size());
+
+         // Pool "P"
+         NodeType p = definitions.getCPF().getNet().get(0).getNode().get(3);
+         assertEquals("P", p.getName());
+         assertEquals(ResourceTypeType.class, p.getClass());
+
+         // Start event "E1"
+         NodeType e1 = definitions.getCPF().getNet().get(0).getNode().get(0);
+         assertEquals("E1", e1.getName());
+         assertEquals(EventType.class, e1.getClass());
+         assertEquals(Collections.singletonList(p), ((EventType) e1).getResourceTypeRef()); 
+
+         // Task "A"
+         NodeType a = definitions.getCPF().getNet().get(0).getNode().get(1);
+         assertEquals("A", a.getName());
+         assertEquals(TaskType.class, a.getClass());
+
+         // End event "E2"
+         NodeType e2 = definitions.getCPF().getNet().get(0).getNode().get(2);
+         assertEquals("E2", e2.getName());
+         assertEquals(EventType.class, e2.getClass());
+
+         // Expect 2 edges
+         assertEquals(2, definitions.getCPF().getNet().get(0).getEdge().size());
+
+         // Sequence flow from E1 to A
+         EdgeType e1_a = definitions.getCPF().getNet().get(0).getEdge().get(0);
+         assertNull(e1_a.getCondition());
+         assertEquals(e1.getId(), e1_a.getSourceId());
+         assertEquals(a.getId(), e1_a.getTargetId());
+
+         // Sequence flow A to E1
+         EdgeType a_e2 = definitions.getCPF().getNet().get(0).getEdge().get(1);
+         assertNull(a_e2.getCondition());
+         assertEquals(a.getId(), a_e2.getSourceId());
+         assertEquals(e2.getId(), a_e2.getTargetId());
+         */
      }
 
     /**

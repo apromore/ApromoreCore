@@ -7,7 +7,7 @@
          </extensionElements>
          <outgoing>sid-9CB42502-B1AD-4C4C-A188-BF519F2CC943</outgoing>
       </task>
-      <exclusiveGateway gatewayDirection="Converging" id="sid-D513C67D-3A75-4E58-A797-6FF3390541F3" name="">
+      <exclusiveGateway gatewayDirection="Converging" id="sid-D513C67D-3A75-4E58-A797-6FF3390541F3">
          <extensionElements>
             <signavio:signavioMetaData metaKey="bgcolor" metaValue="#ffffff"/>
          </extensionElements>
