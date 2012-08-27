@@ -88,7 +88,7 @@ public class TypeArcHandler extends EPMLHandlerImpl {
     }
 
     private List<Point> convertPosition(List<TypeMove> graphics) {
-        List<Point> points = new ArrayList<>();
+        List<Point> points = new ArrayList<Point>();
 
         for (TypeMove move : graphics) {
             if (move.getPosition().size() > 2) {
@@ -116,14 +116,14 @@ public class TypeArcHandler extends EPMLHandlerImpl {
     }
 
     private void connectEdge(BasicEdge basicEdge, BigInteger source, BigInteger target) {
-        List<BasicShape> outgoings = new ArrayList<>();
+        List<BasicShape> outgoings = new ArrayList<BasicShape>();
         BasicShape outgoingShape = getContext().getShape(target);
         if (outgoingShape != null) {
             outgoings.add(outgoingShape);
         }
         basicEdge.setOutgoingsAndUpdateTheirIncomings(outgoings);
 
-        List<BasicShape> incomings = new ArrayList<>();
+        List<BasicShape> incomings = new ArrayList<BasicShape>();
         BasicShape incomingShape = getContext().getShape(source);
         if (incomingShape != null) {
             incomings.add(incomingShape);

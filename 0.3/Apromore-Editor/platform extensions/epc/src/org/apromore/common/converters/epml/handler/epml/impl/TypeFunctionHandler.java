@@ -49,7 +49,7 @@ public class TypeFunctionHandler extends NodeHandler {
     @Override
     protected Map<String, String> convertProperties() {
         // TODO extends for all properties
-        HashMap<String, String> hashMap = new HashMap<>();
+        HashMap<String, String> hashMap = new HashMap<String, String>();
         hashMap.put("title", function.getName());
         hashMap.put("description", function.getDescription());
         return hashMap;

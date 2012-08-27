@@ -20,13 +20,13 @@ public class RPSTNodeCopy {
         this.entry = fragment.getEntry();
         this.exit = fragment.getExit();
 
-        vertices = new ArrayList<>();
+        vertices = new ArrayList<ICpfNode>();
         Collection<ICpfNode> originalVertices = fragment.getFragment().getVertices();
         for (ICpfNode v : originalVertices) {
             vertices.add(v);
         }
 
-        edges = new ArrayList<>();
+        edges = new ArrayList<AbstractDirectedEdge>();
         Collection<AbstractDirectedEdge> originalEdges = fragment.getFragment().getEdges();
         for (AbstractDirectedEdge e : originalEdges) {
             edges.add(e);

@@ -73,19 +73,19 @@ import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 
 public class Canonical2EPML {
-    Map<String, BigInteger> id_map = new HashMap<>();
-    List<String> event_list = new LinkedList<>();
-    Map<String, NodeType> nodeRefMap = new HashMap<>();
-    Map<String, EdgeType> edgeRefMap = new HashMap<>();
-    Map<BigInteger, Object> epcRefMap = new HashMap<>();
-    Map<String, ObjectRefType> objectRefMap = new HashMap<>();
-    List<TEpcElement> eventFuncList = new LinkedList<>();
-    List<String> object_res_list = new LinkedList<>();
-    Map<BigInteger, List<String>> role_map = new HashMap<>();
-    List<TypeFunction> subnet_list = new LinkedList<>();
-    List<TypeProcessInterface> pi_list = new LinkedList<>();
+    Map<String, BigInteger> id_map = new HashMap<String, BigInteger>();
+    List<String> event_list = new LinkedList<String>();
+    Map<String, NodeType> nodeRefMap = new HashMap<String, NodeType>();
+    Map<String, EdgeType> edgeRefMap = new HashMap<String, EdgeType>();
+    Map<BigInteger, Object> epcRefMap = new HashMap<BigInteger, Object>();
+    Map<String, ObjectRefType> objectRefMap = new HashMap<String, ObjectRefType>();
+    List<TEpcElement> eventFuncList = new LinkedList<TEpcElement>();
+    List<String> object_res_list = new LinkedList<String>();
+    Map<BigInteger, List<String>> role_map = new HashMap<BigInteger, List<String>>();
+    List<TypeFunction> subnet_list = new LinkedList<TypeFunction>();
+    List<TypeProcessInterface> pi_list = new LinkedList<TypeProcessInterface>();
 
-    List<TypeFlow> flow_list = new LinkedList<>();
+    List<TypeFlow> flow_list = new LinkedList<TypeFlow>();
 
     private TypeEPML epml = new TypeEPML();
     private TypeDirectory dir = new TypeDirectory();
@@ -301,8 +301,8 @@ public class Canonical2EPML {
      * @since 1.0
      */
     private List<TEpcElement> retrieve_successors(TEpcElement element, TypeEPC epc) {
-        List<Object> elements = new LinkedList<>();
-        List<TEpcElement> successors = new LinkedList<>();
+        List<Object> elements = new LinkedList<Object>();
+        List<TEpcElement> successors = new LinkedList<TEpcElement>();
         elements.add(element);
         boolean flag = false;
 
@@ -421,7 +421,7 @@ public class Canonical2EPML {
                     object_res_list.add(ref.getObjectId());
                 }
 
-                List<String> ll = new LinkedList<>();
+                List<String> ll = new LinkedList<String>();
                 for (ResourceTypeRefType ref : ((WorkType) node).getResourceTypeRef()) {
                     object_res_list.add(ref.getResourceTypeId());
                     ll.add(ref.getResourceTypeId());
@@ -563,7 +563,7 @@ public class Canonical2EPML {
         role.setDefRef(find_def_id("role", role.getName()));
         epc.getEventOrFunctionOrRole().add(role);
 
-        List<TypeArc> arcs_list = new LinkedList<>();
+        List<TypeArc> arcs_list = new LinkedList<TypeArc>();
         for (Object obj : epc.getEventOrFunctionOrRole()) {
             List<String> ll;
             if (obj instanceof TypeArc) {

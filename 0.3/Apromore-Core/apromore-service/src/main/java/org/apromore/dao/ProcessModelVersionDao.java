@@ -46,6 +46,14 @@ public interface ProcessModelVersionDao {
 
     /**
      * find the current process model version for the branch provided.
+     * @param processId the branch name
+     * @param versionName the version Name
+     * @return the process model version.
+     */
+    ProcessModelVersion getCurrentProcessModelVersion(Integer processId, String versionName);
+
+    /**
+     * find the current process model version for the branch provided.
      * @param branchName the branch name
      * @return the process model version.
      */

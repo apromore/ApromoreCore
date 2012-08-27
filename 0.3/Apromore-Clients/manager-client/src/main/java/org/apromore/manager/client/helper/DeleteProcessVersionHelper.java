@@ -31,7 +31,7 @@ public final class DeleteProcessVersionHelper {
         List<VersionSummaryType> versionSummaries;
         Set<ProcessSummaryType> keys = selectedProVers.keySet();
 
-        Collection<ProcessVersionIdentifierType> payload = new ArrayList<>();
+        Collection<ProcessVersionIdentifierType> payload = new ArrayList<ProcessVersionIdentifierType>();
 
         for (ProcessSummaryType processSummary : keys) {
             versionSummaries = selectedProVers.get(processSummary);

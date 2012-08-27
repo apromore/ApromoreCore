@@ -59,8 +59,8 @@ public class BondContentHandler {
         // find forward and reverse pocket ids of the given fragment
         String fragmentEntryId = f.getEntry().getId();
         String fragmentExitId = f.getExit().getId();
-        List<String> forwardFragmentPocketIds = new ArrayList<>();
-        List<String> reverseFragmentPocketIds = new ArrayList<>();
+        List<String> forwardFragmentPocketIds = new ArrayList<String>();
+        List<String> reverseFragmentPocketIds = new ArrayList<String>();
         Collection<AbstractDirectedEdge> fragmentEdges = f.getFragmentEdges();
         for (AbstractDirectedEdge fragmentEdge : fragmentEdges) {
             if (fragmentEdge.getSource().getId().equals(fragmentEntryId)) {
@@ -79,8 +79,8 @@ public class BondContentHandler {
         }
 
         // find forward and reverse child ids of the given fragment
-        List<String> forwardFragmentChildIds = new ArrayList<>();
-        List<String> reverseFragmentChildIds = new ArrayList<>();
+        List<String> forwardFragmentChildIds = new ArrayList<String>();
+        List<String> reverseFragmentChildIds = new ArrayList<String>();
         Set<String> fragmentPockets = childMappings.keySet();
         for (String fragmentPocketId : fragmentPockets) {
             if (forwardFragmentPocketIds.contains(fragmentPocketId)) {
@@ -93,8 +93,8 @@ public class BondContentHandler {
         }
 
         // find forward and reverse pocket Ids of the matching content
-        List<String> forwardContentPocketIds = new ArrayList<>();
-        List<String> reverseContentPocketIds = new ArrayList<>();
+        List<String> forwardContentPocketIds = new ArrayList<String>();
+        List<String> reverseContentPocketIds = new ArrayList<String>();
         CPF content = gSrv.getGraph(matchingContent.getContentId());
         String contentEntryId = content.getSourceVertices().get(0).getId();
         String contentExitId = content.getSinkVertices().get(0).getId();
@@ -119,8 +119,8 @@ public class BondContentHandler {
         for (FragmentChildMapping fragmentChildMapping : candidateChildMappings) {
             List<FragmentVersionDag> candidateMapping = fragmentChildMapping.getChildMapping();
 
-            List<String> forwardCandidateChildIds = new ArrayList<>();
-            List<String> reverseCandidateChildIds = new ArrayList<>();
+            List<String> forwardCandidateChildIds = new ArrayList<String>();
+            List<String> reverseCandidateChildIds = new ArrayList<String>();
 
             for (FragmentVersionDag candidatePocket : candidateMapping) {
                 if (forwardContentPocketIds.contains(candidatePocket.getId().getPocketId())) {
@@ -155,7 +155,7 @@ public class BondContentHandler {
     }
 
     private List<FragmentChildMapping> getCandidateChildMappings(String matchingContentId) {
-        List<FragmentChildMapping> candidateChildMappings = new ArrayList<>();
+        List<FragmentChildMapping> candidateChildMappings = new ArrayList<FragmentChildMapping>();
         List<String> candidateFragmentIds = fvDao.getUsedFragmentIds(matchingContentId);
         for (String candidateFragmentId : candidateFragmentIds) {
             List<FragmentVersionDag> childMapping = fvdDao.getChildMappings(candidateFragmentId);

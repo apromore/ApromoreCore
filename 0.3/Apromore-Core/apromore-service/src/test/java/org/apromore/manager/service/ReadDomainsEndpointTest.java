@@ -1,7 +1,6 @@
 package org.apromore.manager.service;
 
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
-import org.apromore.manager.da.ManagerDataAccessClient;
 import org.apromore.model.ObjectFactory;
 import org.apromore.model.ReadDomainsInputMsgType;
 import org.apromore.model.ReadDomainsOutputMsgType;
@@ -38,7 +37,6 @@ public class ReadDomainsEndpointTest {
     private ManagerPortalEndpoint endpoint;
     private Document requestDocument;
     private Document responseDocument;
-    private ManagerDataAccessClient daMock;
     private ManagerCanoniserClient caMock;
 
     private DomainService domSrv;
@@ -51,12 +49,10 @@ public class ReadDomainsEndpointTest {
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         requestDocument = documentBuilder.newDocument();
         responseDocument = documentBuilder.newDocument();
-        daMock = createMock(ManagerDataAccessClient.class);
         caMock = createMock(ManagerCanoniserClient.class);
         domSrv = createMock(DomainService.class);
         endpoint = new ManagerPortalEndpoint();
         endpoint.setCaClient(caMock);
-        endpoint.setDaClient(daMock);
         endpoint.setDomSrv(domSrv);
     }
 

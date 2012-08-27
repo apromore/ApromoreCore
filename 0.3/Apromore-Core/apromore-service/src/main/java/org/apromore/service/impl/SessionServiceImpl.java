@@ -34,6 +34,28 @@ public class SessionServiceImpl implements SessionService {
 
 
     /**
+     * @see SessionService#readSession(int)
+     * {@inheritDoc}
+     */
+    @Override
+    public EditSession readSession(final int sessionCode) {
+        EditSession session = sessDao.findSession(sessionCode);
+        session.getProcess();
+        session.getUser();
+        return session;
+    }
+
+    /**
+     * @see SessionService#deleteSession(int)
+     * {@inheritDoc}
+     */
+    @Override
+    public void deleteSession(final int sessionCode) {
+        sessDao.delete(sessDao.findSession(sessionCode));
+    }
+
+
+    /**
      * @see SessionService#createSession(org.apromore.model.EditSessionType)
      * {@inheritDoc}
      */
@@ -60,7 +82,6 @@ public class SessionServiceImpl implements SessionService {
         sessDao.save(session);
         return session.getCode();
     }
-
 
 
 

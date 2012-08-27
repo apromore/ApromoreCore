@@ -276,6 +276,16 @@
             GROUP BY pm2.processBranch.branchId)
         </query>
     </named-query>
+    <named-query name="processModelVersion.getCurrentProcessModelVersion">
+        <!-- Used ProcessModelVersionDao -->
+        <query>SELECT pmv
+            FROM ProcessModelVersion pmv, Process p, ProcessBranch pb
+            WHERE p.processId = pb.process.processId
+            AND pb.branchId = pmv.processBranch.branchId
+            AND p.processId = :processId
+            AND pmv.versionName = :versionName
+        </query>
+    </named-query>
     <named-query name="processModelVersion.getCurrentProcessModelVersionA">
         <!-- Used ProcessModelVersionDao -->
         <query>SELECT pmv
@@ -290,16 +300,14 @@
         <!-- Used ProcessModelVersionDao -->
         <query>SELECT pmv
             FROM ProcessModelVersion pmv
-            WHERE pmv.processBranch.branchId =
-            (SELECT pb.branchId
+            WHERE pmv.processBranch.branchId = (SELECT pb.branchId
             FROM Process p, ProcessBranch pb
             WHERE p.processId = pb.process.processId
             AND p.name = :processName
             AND pb.branchName = :branchName)
             AND pmv.versionNumber =
             (SELECT max(pmv1.versionNumber) from ProcessModelVersion pmv1
-            WHERE pmv1.processBranch.branchId =
-            (SELECT pb1.branchId
+            WHERE pmv1.processBranch.branchId = (SELECT pb1.branchId
             FROM Process p1, ProcessBranch pb1
             WHERE p1.processId = pb1.process.processId
             AND p1.name = :processName
@@ -338,11 +346,11 @@
     <named-query name="processModelVersion.getCurrentModel">
         <!-- Used FragmentVersionDao -->
         <query>SELECT pmv
-               FROM ProcessModelVersion pmv, Process p, ProcessBranch pb
-               WHERE p.processId = pb.process.processId
-                 AND pb.branchId = pmv.processBranch.branchId
-                 AND p.processId = :processId
-                 AND pmv.versionName = :versionName
+            FROM ProcessModelVersion pmv, Process p, ProcessBranch pb
+            WHERE p.processId = pb.process.processId
+            AND pb.branchId = pmv.processBranch.branchId
+            AND p.processId = :processId
+            AND pmv.versionName = :versionName
         </query>
     </named-query>
 

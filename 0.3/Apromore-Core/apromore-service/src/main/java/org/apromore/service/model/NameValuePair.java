@@ -11,6 +11,11 @@ public class NameValuePair {
     private String value;
 
     /**
+     * Default Constructor.
+     */
+    public NameValuePair() { }
+
+    /**
      * Public Constructor.
      * @param name the name
      * @param value the value

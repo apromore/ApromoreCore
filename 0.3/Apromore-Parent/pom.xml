@@ -133,6 +133,10 @@
                 <version>${javancss-maven-plugin.version}</version>
                 <inherited>true</inherited>
             </plugin>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>cobertura-maven-plugin</artifactId>
+            </plugin>
         </plugins>
     </reporting>
 
@@ -215,6 +219,40 @@
                     <version>${maven-bundle-plugin.version}</version>
                     <extensions>true</extensions>
                 </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <version>${maven-site-plugin.version}</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>cobertura-maven-plugin</artifactId>
+                    <version>${cobertura-maven-plugin.version}</version>
+                    <configuration>
+                        <instrumentation>
+                            <excludes>
+                                <exclude>**/boundary/**/*</exclude>
+                            </excludes>
+                        </instrumentation>
+                        <check>
+                            <totalBranchRate>${cobertura.total-branch-rate}</totalBranchRate>
+                            <totalLineRate>${cobertura.total-line-rate}</totalLineRate>
+                            <haltOnFailure>${cobertura.halt-on-failure}</haltOnFailure>
+                        </check>
+                        <formats>
+                            <format>xml</format>
+                            <format>html</format>
+                        </formats>
+                    </configuration>
+                    <executions>
+                        <execution>
+                            <phase>package</phase>
+                            <goals>
+                                <goal>cobertura</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
             </plugins>
         </pluginManagement>
 
@@ -266,6 +304,7 @@
                 <version>${maven-surefire-plugin.version}</version>
                 <inherited>true</inherited>
                 <configuration>
+                    <argLine>-XX:-UseSplitVerifier</argLine>
                     <excludes>
                         <exclude>**/${integration.test.package}/**</exclude>
                         <exclude>**/*${integration.test.suffix}</exclude>
@@ -305,6 +344,20 @@
                         </goals>
                     </execution>
                 </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-site-plugin</artifactId>
+                <version>${maven-site-plugin.version}</version>
+                <configuration>
+                    <reportPlugins>
+                        <plugin>
+                            <groupId>org.codehaus.mojo</groupId>
+                            <artifactId>cobertura-maven-plugin</artifactId>
+                            <version>${cobertura-maven-plugin.version}</version>
+                        </plugin>
+                    </reportPlugins>
+                </configuration>
             </plugin>
         </plugins>
 
@@ -684,50 +737,6 @@
         </dependencies>
     </dependencyManagement>
 
-    <profiles>
-        <profile>
-            <id>hudson</id>
-            <activation>
-                <property>
-                    <name>BUILD_NUMBER</name>
-                </property>
-            </activation>
-            <build>
-                <pluginManagement>
-                    <plugins>
-                        <plugin>
-                            <groupId>org.codehaus.mojo</groupId>
-                            <artifactId>cobertura-maven-plugin</artifactId>
-                            <version>${cobertura-maven-plugin.version}</version>
-                            <configuration>
-                                <instrumentation>
-                                    <excludes>
-                                        <exclude>**/boundary/**/*</exclude>
-                                    </excludes>
-                                </instrumentation>
-                                <check>
-                                    <totalBranchRate>${cobertura.total-branch-rate}</totalBranchRate>
-                                    <totalLineRate>${cobertura.total-line-rate}</totalLineRate>
-                                    <haltOnFailure>${cobertura.halt-on-failure}</haltOnFailure>
-                                </check>
-                                <formats>
-                                    <format>xml</format>
-                                </formats>
-                            </configuration>
-                            <executions>
-                                <execution>
-                                    <phase>package</phase>
-                                    <goals>
-                                        <goal>cobertura</goal>
-                                    </goals>
-                                </execution>
-                            </executions>
-                        </plugin>
-                    </plugins>
-                </pluginManagement>
-            </build>
-        </profile>
-    </profiles>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -820,6 +829,7 @@
         <!-- **** Settings for the building of the projects **** -->
         <!-- Plugins used by the Build process -->
         <cobertura-maven-plugin.version>2.5.1</cobertura-maven-plugin.version>
+        <clover-maven-plugin.version>3.1.6</clover-maven-plugin.version>
         <findbugs-maven-plugin.version>2.3.2</findbugs-maven-plugin.version>
         <javancss-maven-plugin.version>2.0-beta-2</javancss-maven-plugin.version>
         <exec-maven-plugin.version>1.2</exec-maven-plugin.version>

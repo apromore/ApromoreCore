@@ -49,7 +49,7 @@ public class TypeEventHandler extends NodeHandler {
     @Override
     protected Map<String, String> convertProperties() {
         // TODO extends for all properties
-        HashMap<String, String> hashMap = new HashMap<>();
+        HashMap<String, String> hashMap = new HashMap<String, String>();
         hashMap.put("title", event.getName());
         hashMap.put("description", event.getDescription());
         return hashMap;

@@ -37,7 +37,7 @@ public class Cluster implements Serializable {
     private float avgFragmentSize = 0;
     private String medoidId = null;
     private double standardizingEffort = 0;
-    private double bcr = 0;
+    private double BCR = 0;
     private int refactoringGain = 0;
 
     private Set<ClusterAssignment> clusterAssignments = new HashSet<ClusterAssignment>(0);
@@ -88,11 +88,11 @@ public class Cluster implements Serializable {
 
     @Column(name = "benifit_cost_ratio")
     public double getBCR() {
-        return bcr;
+        return BCR;
     }
 
     public void setBCR(final double newBCR) {
-        this.bcr = newBCR;
+        this.BCR = newBCR;
     }
 
     @Column(name = "std_effort")
@@ -131,6 +131,6 @@ public class Cluster implements Serializable {
 
     @Override
     public String toString() {
-        return clusterId + " | " + size + " | " + avgFragmentSize + " | " + bcr;
+        return clusterId + " | " + size + " | " + avgFragmentSize + " | " + BCR;
     }
 }

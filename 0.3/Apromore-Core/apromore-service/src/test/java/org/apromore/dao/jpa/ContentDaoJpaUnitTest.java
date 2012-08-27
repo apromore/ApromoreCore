@@ -80,11 +80,48 @@ public class ContentDaoJpaUnitTest {
     }
 
     @Test
+    public final void testGetContentByFragmentVersionNothingFound() {
+        String fragVersionId = "1";
+        Content con = null;
+        List<Content> contents = new ArrayList<Content>();
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(NamedQueries.GET_CONTENT_BY_FRAGMENT_VERSION)).andReturn(query);
+        expect(query.setParameter("fragVersion", fragVersionId)).andReturn(query);
+        expect(query.getResultList()).andReturn(contents);
+        replay(manager, query);
+
+        Content result = dao.getContentByFragmentVersion(fragVersionId);
+
+        verify(manager, query);
+        assertThat(con, equalTo(result));
+    }
+
+
+    @Test
     public final void testGetContentByHash() {
         String hashCode = "121";
         Content con = new Content();
         List<Content> contents = new ArrayList<Content>();
         contents.add(con);
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(NamedQueries.GET_CONTENT_BY_HASH)).andReturn(query);
+        expect(query.setParameter("code", hashCode)).andReturn(query);
+        expect(query.getResultList()).andReturn(contents);
+        replay(manager, query);
+
+        Content result = dao.getContentByCode(hashCode);
+
+        verify(manager, query);
+        assertThat(con, equalTo(result));
+    }
+
+    @Test
+    public final void testGetContentByHashNothingFound() {
+        String hashCode = "121";
+        Content con = null;
+        List<Content> contents = new ArrayList<Content>();
 
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(NamedQueries.GET_CONTENT_BY_HASH)).andReturn(query);

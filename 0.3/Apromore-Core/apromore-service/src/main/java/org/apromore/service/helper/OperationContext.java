@@ -17,8 +17,8 @@ public class OperationContext {
     private Map<String, Integer> processedFragmentTypes;
 
     public OperationContext() {
-        contentUsage = new HashMap<>();
-        processedFragmentTypes = new HashMap<>();
+        contentUsage = new HashMap<String, Integer>();
+        processedFragmentTypes = new HashMap<String, Integer>();
         processedFragmentTypes.put("S", 0);
         processedFragmentTypes.put("P", 0);
         processedFragmentTypes.put("R", 0);

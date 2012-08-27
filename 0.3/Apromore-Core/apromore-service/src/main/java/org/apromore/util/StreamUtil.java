@@ -115,7 +115,7 @@ public class StreamUtil {
      */
     @SuppressWarnings("unchecked")
     public static InputStream copyParam2CPF(InputStream cpf_xml, Integer cpf_uri, String processName, String version, String username,
-                                            String creationDate, String lastUpdate) throws JAXBException {
+            String creationDate, String lastUpdate) throws JAXBException {
         InputStream res;
 
         JAXBContext jc = JAXBContext.newInstance(CPF_URI);
@@ -154,7 +154,7 @@ public class StreamUtil {
      */
     @SuppressWarnings("unchecked")
     public static InputStream copyParam2NPF(InputStream process_xml, String nativeType, String processName, String version, String username,
-                                            String creationDate, String lastUpdate) throws JAXBException {
+            String creationDate, String lastUpdate) throws JAXBException {
         InputStream res = null;
 
         if (nativeType.compareTo(Constants.XPDL_2_1) == 0) {
@@ -178,7 +178,6 @@ public class StreamUtil {
 
     /**
      * Modify pkg (npf of type xpdl) with parameters values if not null.
-     *
      * @param pkg          the package to change to
      * @param processName  the process name
      * @param version      the process version
@@ -246,11 +245,40 @@ public class StreamUtil {
 
 
     /**
-     * Converts an input stream to a string.
-     *
-     * @param is the input stream
-     * @return the String that was the input stream
+     * UNMarshall XML into an object structure.
+     * @param xpdl the XPDL
      */
+    @SuppressWarnings("unchecked")
+    public static PackageType unmarshallXPDL(InputStream xpdl) throws JAXBException {
+        JAXBContext jc = JAXBContext.newInstance(Constants.XPDL2_CONTEXT);
+        Unmarshaller u = jc.createUnmarshaller();
+        JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(xpdl);
+        return rootElement.getValue();
+    }
+
+    /**
+     * Marshall a object structure back into XML.
+     * @param xpdl the XPDL
+     * @return the output stream of the XPDL object as xml.
+     */
+    @SuppressWarnings("unchecked")
+    public static String marshallXPDL(PackageType xpdl) throws JAXBException {
+        ByteArrayOutputStream native_xml = null;
+        JAXBContext jc = JAXBContext.newInstance(Constants.XPDL2_CONTEXT);
+        Marshaller m = jc.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(xpdl);
+        m.marshal(rootxpdl, native_xml);
+        return native_xml.toString();
+    }
+
+
+        /**
+        * Converts an input stream to a string.
+        *
+        * @param is the input stream
+        * @return the String that was the input stream
+        */
     public static String inputStream2String(InputStream is) {
         try {
             if (is != null) {
