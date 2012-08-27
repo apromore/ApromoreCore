@@ -60,11 +60,12 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
     }
 
     /**
-     * @see org.apromore.dao.ProcessModelVersionDao#getCurrentProcessModelVersion(String)
+     * @see org.apromore.dao.ProcessModelVersionDao#getUsedProcessModelVersions(String)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
     public List<ProcessModelVersion> getUsedProcessModelVersions(final String fragmentVersionId) {
         Query query = em.createNamedQuery(NamedQueries.GET_USED_PROCESS_MODEL_VERSIONS);
         query.setParameter("id", fragmentVersionId);
@@ -104,6 +105,19 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
     }
 
     /**
+     * @see org.apromore.dao.ProcessModelVersionDao#getCurrentProcessModelVersion(Integer)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public ProcessModelVersion getCurrentProcessModelVersion(Integer processId, String versionName) {
+        Query query = em.createNamedQuery(NamedQueries.GET_CURRENT_PROCESS_MODEL_VERSION);
+        query.setParameter("processId", processId);
+        query.setParameter("versionName", versionName);
+        return (ProcessModelVersion) query.getSingleResult();
+    }
+
+    /**
      * @see org.apromore.dao.ProcessModelVersionDao#getCurrentProcessModelVersion(String, String)
      * {@inheritDoc}
      */
@@ -138,6 +152,7 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
      */
     @Override
     @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
     public Map<String, Integer> getMaxModelVersions(final String fragmentVersionId) {
         Query query = em.createNamedQuery(NamedQueries.GET_MAX_MODEL_VERSIONS);
         query.setParameter("fragmentVersionId", fragmentVersionId);
@@ -150,6 +165,7 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
      */
     @Override
     @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
     public Map<String, Integer> getCurrentModelVersions(final String fragmentVersionId) {
         Query query = em.createNamedQuery(NamedQueries.GET_CURRENT_MODEL_VERSIONS);
         query.setParameter("fragmentVersionId", fragmentVersionId);

@@ -132,7 +132,7 @@ public class EPCLayoutServlet extends HttpServlet {
         Queue<LayoutingElement> sortedElements = new TopologicalSorterEPC(diagram, null).getSortedElements();
 
         // Sorted
-        List<String> sortedIds = new LinkedList<>();
+        List<String> sortedIds = new LinkedList<String>();
         for (LayoutingElement element : sortedElements) {
             sortedIds.add(element.getId());
         }

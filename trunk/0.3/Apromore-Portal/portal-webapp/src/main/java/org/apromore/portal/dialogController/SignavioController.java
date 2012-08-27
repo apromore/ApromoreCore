@@ -27,7 +27,7 @@ public class SignavioController extends BaseController {
 
     public SignavioController() {
         super();
-        Map<String, String> param = new HashMap<>();
+        Map<String, String> param = new HashMap<String, String>();
         try {
             DataHandler nativeDH = getService().exportFormat(process.getId(), process.getName(), version.getName(),
                     nativeType, annotation, false, this.mainC.getCurrentUser().getUsername());

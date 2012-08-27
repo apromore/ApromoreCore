@@ -49,7 +49,7 @@ public class TypeXORHandler extends NodeHandler {
       */
     @Override
     protected Map<String, String> convertProperties() {
-        return new HashMap<>();
+        return new HashMap<String, String>();
     }
 
     /* (non-Javadoc)

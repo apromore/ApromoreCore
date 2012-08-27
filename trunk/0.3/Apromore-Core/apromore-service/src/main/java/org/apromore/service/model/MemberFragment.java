@@ -17,6 +17,13 @@ public class MemberFragment {
 
     private List<ProcessAssociation> processAssociations = new ArrayList<ProcessAssociation>();
 
+
+    /**
+     * Default Constructor.
+     */
+    public MemberFragment() { }
+
+
     public MemberFragment(String fragmentId) {
         this.fragmentId = fragmentId;
     }

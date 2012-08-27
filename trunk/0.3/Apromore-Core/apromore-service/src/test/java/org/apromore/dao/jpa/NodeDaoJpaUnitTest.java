@@ -84,7 +84,7 @@ public class NodeDaoJpaUnitTest {
     }
 
     @Test
-    public final void testGetVertexByContent() {
+         public final void testGetVertexByContent() {
         String contentID = "1234";
         List<Node> vertices = new ArrayList<Node>();
         vertices.add(new Node());
@@ -97,6 +97,26 @@ public class NodeDaoJpaUnitTest {
         replay(manager, query);
 
         List<Node> results = dao.getVertexByContent(contentID);
+
+        verify(manager, query);
+
+        assertThat(vertices, equalTo(results));
+    }
+
+    @Test
+    public final void testGetVertexByFragment() {
+        String id = "1234";
+        List<Node> vertices = new ArrayList<Node>();
+        vertices.add(new Node());
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(NamedQueries.GET_VERTICES_BY_FRAGMENT)).andReturn(query);
+        expect(query.setParameter("fragmentId", id)).andReturn(query);
+        expect(query.getResultList()).andReturn(vertices);
+
+        replay(manager, query);
+
+        List<Node> results = dao.getVertexByFragment(id);
 
         verify(manager, query);
 

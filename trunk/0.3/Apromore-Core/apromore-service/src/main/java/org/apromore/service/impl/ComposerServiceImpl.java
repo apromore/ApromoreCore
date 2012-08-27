@@ -83,7 +83,7 @@ public class ComposerServiceImpl implements ComposerService {
         gSrv.fillNodes(g, contentDO.getContentId());
         gSrv.fillEdges(g, contentDO.getContentId());
 
-        Collection<FlowNode> nodesToBeRemoved = new HashSet<>();
+        Collection<FlowNode> nodesToBeRemoved = new HashSet<FlowNode>();
         //Collection<ControlFlow<FlowNode>> edgesToBeRemoved = new HashSet<ControlFlow<FlowNode>>();
         if (pocketId != null) {
             Collection<ControlFlow<FlowNode>> edges = g.getEdges();
@@ -232,7 +232,7 @@ public class ComposerServiceImpl implements ComposerService {
         GraphUtil.fillGraph(g, duplicateGraph);
         fillOriginalNodeMappings(vMap, g);
 
-        Collection<FlowNode> nodesToBeRemoved = new HashSet<>();
+        Collection<FlowNode> nodesToBeRemoved = new HashSet<FlowNode>();
         if (pocketId != null) {
             Collection<ControlFlow<FlowNode>> edges = g.getEdges();
             for (ControlFlow<FlowNode> edge: edges) {

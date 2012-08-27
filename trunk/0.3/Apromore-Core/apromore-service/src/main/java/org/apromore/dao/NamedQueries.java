@@ -73,6 +73,7 @@ public interface NamedQueries {
     String GET_ROOT_FRAGMENT_PROCESS_MODEL = "processModelVersion.getRootFragmentProcessModel";
     String GET_MAX_VERSION_PROCESS_MODEL = "processModelVersion.getMaxVersionProcessModel";
     String GET_CURRENT_PROCESS_MODELS = "processModelVersion.getCurrentProcessModels";
+    String GET_CURRENT_PROCESS_MODEL_VERSION = "processModelVersion.getCurrentProcessModelVersion";
     String GET_CURRENT_PROCESS_MODEL_VERSION_A = "processModelVersion.getCurrentProcessModelVersionA";
     String GET_CURRENT_PROCESS_MODEL_VERSION_B = "processModelVersion.getCurrentProcessModelVersionB";
     String GET_CURRENT_PROCESS_MODEL_VERSION_C = "processModelVersion.getCurrentProcessModelVersionC";

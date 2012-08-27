@@ -1,6 +1,7 @@
 package org.apromore.dao;
 
 import org.apromore.dao.model.EditSession;
+import org.apromore.dao.model.ProcessBranch;
 
 /**
  * Interface domain model Data access object Session.
@@ -9,6 +10,15 @@ import org.apromore.dao.model.EditSession;
  * @see org.apromore.dao.model.EditSession
  */
 public interface SessionDao {
+
+
+    /**
+     * Returns a single Edit Session based on the primary Key.
+     * @param sessionId the EditSession Id
+     * @return the found EditSession
+     */
+    EditSession findSession(int sessionId);
+
 
 
     /**

@@ -1,5 +1,6 @@
 package org.apromore.service;
 
+import org.apromore.dao.model.EditSession;
 import org.apromore.model.EditSessionType;
 
 /**
@@ -11,10 +12,23 @@ import org.apromore.model.EditSessionType;
 public interface SessionService {
 
     /**
-     * Creates a session object in the DB
+     * Reads the session.
+     * @param sessionCode the session id.
+     * @return the found session.
+     */
+    EditSession readSession(int sessionCode);
+
+
+    /**
+     * Creates a session object in the DB.
      * @param editSession the details from the Portal.
-     * @return the new session id that willl be used.
+     * @return the new session id that will be used.
      */
     int createSession(EditSessionType editSession);
 
+    /**
+     * Removes a session from the Repository.
+     * @param sessionCode the session id
+     */
+    void deleteSession(int sessionCode);
 }

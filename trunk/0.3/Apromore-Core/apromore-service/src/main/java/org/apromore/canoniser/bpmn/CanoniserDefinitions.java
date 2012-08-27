@@ -123,12 +123,12 @@ public class CanoniserDefinitions extends Definitions {
     public CanoniserDefinitions(CanonicalProcessType cpf, AnnotationsType anf) throws CanoniserException {
 
         // Maps from CPF @cpfId identifiers to BPMN ids
-        final Map<String, TFlowNode> idMap = new HashMap<>();
-        final Map<String, TSequenceFlow> edgeMap = new HashMap<>();
+        final Map<String, TFlowNode> idMap = new HashMap<String, TFlowNode>();
+        final Map<String, TSequenceFlow> edgeMap = new HashMap<String, TSequenceFlow>();
 
         // Records the CPF cpfIds of  BPMN sequence flows which need their @sourceRef|@targetRef populated
-        final Map<String, TSequenceFlow> flowWithoutSourceRefMap = new HashMap<>();
-        final Map<String, TSequenceFlow> flowWithoutTargetRefMap = new HashMap<>();
+        final Map<String, TSequenceFlow> flowWithoutSourceRefMap = new HashMap<String, TSequenceFlow>();
+        final Map<String, TSequenceFlow> flowWithoutTargetRefMap = new HashMap<String, TSequenceFlow>();
 
         // Set attributes of the document root
         setExporter("http://apromore.org");

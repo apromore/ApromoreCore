@@ -35,8 +35,8 @@ public class GraphUtil {
     public static Map<String, String> copyContentGraph(CPF g, CPF ng) {
         Collection<FlowNode> vertices = g.getVertices();
         Collection<ControlFlow<FlowNode>> edges = g.getEdges();
-        Map<String, String> vMap = new HashMap<>(0);
-        Map<String, String> pocketMap = new HashMap<>(0);
+        Map<String, String> vMap = new HashMap<String, String>(0);
+        Map<String, String> pocketMap = new HashMap<String, String>(0);
 
         // copy vertices to the new graph
         for (FlowNode v : vertices) {
@@ -90,7 +90,7 @@ public class GraphUtil {
         List<FlowNode> tgts = graph.getSinkVertices();
 
         // remove isolated vertices
-        List<FlowNode> isolatedVertices = new ArrayList<>(0);
+        List<FlowNode> isolatedVertices = new ArrayList<FlowNode>(0);
         for (FlowNode isrc : srcs) {
             if (tgts.contains(isrc)) {
                 isolatedVertices.add(isrc);
@@ -155,6 +155,6 @@ public class GraphUtil {
             }
         }
 
-        return new RPST<>(graph);
+        return new RPST<ControlFlow<FlowNode>, FlowNode>(graph);
     }
 }

@@ -43,8 +43,8 @@ public class EPMLConversionContext {
 
     public EPMLConversionContext() {
         super();
-        this.epcDiagrams = new ArrayList<>();
-        this.shapeMap = new HashMap<>();
+        this.epcDiagrams = new ArrayList<BasicDiagram>();
+        this.shapeMap = new HashMap<BigInteger, BasicShape>();
     }
 
 

@@ -3,7 +3,6 @@ package org.apromore.manager.service;
 import org.apromore.dao.model.User;
 import org.apromore.exception.UserNotFoundException;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
-import org.apromore.manager.da.ManagerDataAccessClient;
 import org.apromore.model.ObjectFactory;
 import org.apromore.model.ReadUserInputMsgType;
 import org.apromore.model.ReadUserOutputMsgType;
@@ -34,7 +33,6 @@ import static org.powermock.api.easymock.PowerMock.verify;
 public class ReadUserEndpointTest {
 
     private ManagerPortalEndpoint endpoint;
-    private ManagerDataAccessClient daMock;
     private ManagerCanoniserClient caMock;
 
     private UserService userSrv;
@@ -42,12 +40,10 @@ public class ReadUserEndpointTest {
 
     @Before
     public void setUp() throws Exception {
-        daMock = createMock(ManagerDataAccessClient.class);
         caMock = createMock(ManagerCanoniserClient.class);
         userSrv = createMock(UserServiceImpl.class);
         endpoint = new ManagerPortalEndpoint();
         endpoint.setCaClient(caMock);
-        endpoint.setDaClient(daMock);
         endpoint.setUserSrv(userSrv);
     }
 

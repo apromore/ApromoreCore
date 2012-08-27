@@ -87,22 +87,23 @@ public class ProcessDaoJpaUnitTest {
     }
 
     @Test
-    public final void testGetProcesses() {
-        List<Process> prss = new ArrayList<Process>();
-        prss.add(createProcess());
-        prss.add(createProcess());
+    public final void testGetProcessByNameNothingFound() {
+        String name = "procName1";
+        Process p = null;
+        List<Process> processes = new ArrayList<Process>();
 
         Query query = createMock(Query.class);
-        expect(manager.createNamedQuery(NamedQueries.GET_All_PROCESSES)).andReturn(query);
-        expect(query.getResultList()).andReturn(prss);
+        expect(manager.createNamedQuery(NamedQueries.GET_PROCESS_BY_NAME)).andReturn(query);
+        expect(query.setParameter("name", name)).andReturn(query);
+        expect(query.getResultList()).andReturn(processes);
 
         replay(manager, query);
 
-        List<Process> result = dao.getProcesses();
+        Process result = dao.getProcess(name);
 
         verify(manager, query);
 
-        assertThat(result, equalTo(prss));
+        assertThat(result, equalTo(p));
     }
 
     @Test
@@ -124,6 +125,46 @@ public class ProcessDaoJpaUnitTest {
         verify(manager, query);
 
         assertThat(result, equalTo(p));
+    }
+
+    @Test
+    public final void testGetProcessByIdNothingFound() {
+        int id = 1234;
+        Process p = null;
+        List<Process> processes = new ArrayList<Process>();
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(NamedQueries.GET_PROCESS_BY_ID)).andReturn(query);
+        expect(query.setParameter("id", id)).andReturn(query);
+        expect(query.getResultList()).andReturn(processes);
+
+        replay(manager, query);
+
+        Process result = dao.getProcess(id);
+
+        verify(manager, query);
+
+        assertThat(result, equalTo(p));
+    }
+
+
+    @Test
+    public final void testGetProcesses() {
+        List<Process> prss = new ArrayList<Process>();
+        prss.add(createProcess());
+        prss.add(createProcess());
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(NamedQueries.GET_All_PROCESSES)).andReturn(query);
+        expect(query.getResultList()).andReturn(prss);
+
+        replay(manager, query);
+
+        List<Process> result = dao.getProcesses();
+
+        verify(manager, query);
+
+        assertThat(result, equalTo(prss));
     }
 
     @Test
@@ -179,23 +220,23 @@ public class ProcessDaoJpaUnitTest {
         assertThat(processes, equalTo(procs));
     }
 
-//    @Test
-//    public final void testGetAllProcessesNonEmptySearch() {
-//        String invoicingStr = " and  p.processId in (select k.processId FROM Keyword k WHERE k.word like '%invoicing%' )";
-//        List<Object[]> procs = new ArrayList<Object[]>(0);
-//
-//        Query query = createMock(Query.class);
-//        expect(manager.createQuery(ProcessDaoJpa.GET_ALL_PROCESSES + invoicingStr + ProcessDaoJpa.GET_ALL_PRO_SORT)).andReturn(query);
-//        expect(query.getResultList()).andReturn(procs);
-//
-//        replay(manager, query);
-//
-//        List<Object[]> processes = dao.getAllProcesses(invoicingStr);
-//
-//        verify(manager, query);
-//
-//        assertThat(processes, equalTo(procs));
-//    }
+    @Test
+    public final void testGetAllProcessesNonEmptySearch() {
+        String invoicingStr = " and  p.processId in (select k.processId FROM Keyword k WHERE k.word like '%invoicing%' )";
+        List<Process> procs = new ArrayList<Process>(0);
+
+        Query query = createMock(Query.class);
+        expect(manager.createQuery(ProcessDaoJpa.GET_ALL_PROCESSES + invoicingStr + ProcessDaoJpa.GET_ALL_PRO_SORT)).andReturn(query);
+        expect(query.getResultList()).andReturn(procs);
+
+        replay(manager, query);
+
+        List<Process> processes = dao.getAllProcesses(invoicingStr);
+
+        verify(manager, query);
+
+        assertThat(processes, equalTo(procs));
+    }
 
     @Test
     public final void testGetRootFragmentVersionId() {

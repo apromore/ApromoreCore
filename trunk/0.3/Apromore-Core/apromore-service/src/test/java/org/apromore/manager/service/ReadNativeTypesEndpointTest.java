@@ -2,7 +2,6 @@ package org.apromore.manager.service;
 
 import org.apromore.dao.model.NativeType;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
-import org.apromore.manager.da.ManagerDataAccessClient;
 import org.apromore.model.ObjectFactory;
 import org.apromore.model.ReadNativeTypesInputMsgType;
 import org.apromore.model.ReadNativeTypesOutputMsgType;
@@ -39,7 +38,6 @@ public class ReadNativeTypesEndpointTest {
     private ManagerPortalEndpoint endpoint;
     private Document requestDocument;
     private Document responseDocument;
-    private ManagerDataAccessClient daMock;
     private ManagerCanoniserClient caMock;
 
     private FormatService formatSrv;
@@ -52,12 +50,10 @@ public class ReadNativeTypesEndpointTest {
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         requestDocument = documentBuilder.newDocument();
         responseDocument = documentBuilder.newDocument();
-        daMock = createMock(ManagerDataAccessClient.class);
         caMock = createMock(ManagerCanoniserClient.class);
         formatSrv = createMock(FormatService.class);
         endpoint = new ManagerPortalEndpoint();
         endpoint.setCaClient(caMock);
-        endpoint.setDaClient(daMock);
         endpoint.setFrmSrv(formatSrv);
     }
 

@@ -164,7 +164,9 @@ public class MenuController extends Menubar {
         this.mainC.eraseMessage();
         try {
             new CreateProcessController(this.mainC, this.mainC.getNativeTypes());
-        } catch (SuspendNotAllowedException | InterruptedException e) {
+        } catch (SuspendNotAllowedException e) {
+            Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
+        } catch (InterruptedException e) {
             Messagebox.show(e.getMessage(), "Attention", Messagebox.OK, Messagebox.ERROR);
         } catch (ExceptionDomains e) {
             String message;
@@ -263,14 +265,14 @@ public class MenuController extends Menubar {
         if (this.mainC.getBaseListboxController() instanceof ProcessListboxController) {
             Set selectedProcesses = this.mainC.getBaseListboxController().getListModel().getSelection();
 
-            HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions = new HashMap<>();
+            HashMap<ProcessSummaryType, List<VersionSummaryType>> processVersions = new HashMap<ProcessSummaryType, List<VersionSummaryType>>();
 
             ProcessVersionDetailController detailController = ((ProcessVersionDetailController) this.mainC.getDetailListbox());
             VersionSummaryType selectedVersion = detailController.getSelectedVersion();
 
             for (Object obj : selectedProcesses) {
                 ProcessSummaryType selectedProcess = (ProcessSummaryType) obj;
-                ArrayList<VersionSummaryType> versionList = new ArrayList<>();
+                ArrayList<VersionSummaryType> versionList = new ArrayList<VersionSummaryType>();
                 if (selectedVersion != null) {
                     versionList.add(selectedVersion);
                 } else {
@@ -285,7 +287,7 @@ public class MenuController extends Menubar {
 
             return processVersions;
         } else {
-            return new HashMap<>();
+            return new HashMap<ProcessSummaryType, List<VersionSummaryType>>();
         }
 
     }
