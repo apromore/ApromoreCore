@@ -16,6 +16,7 @@ import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.util.ValidationEventCollector;
 import javax.xml.namespace.QName;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.junit.Before;
@@ -42,15 +43,36 @@ public class DefinitionsTest {
     private JAXBContext context;
 
     /**
+     * BPMN 2.0 XML schema.
+     */
+    private Schema bpmnSchema;
+
+    /**
      * Initialize {@link #context}.
      * This ought to be invoked before each of the test methods.
+     *
+     * @throws JAXBException if {@link #context} can't be initialized
+     * @throws SAXException if {@link #bpmnSchema} can't be initialized
      */
     @Before
-    public void initializeContext() throws JAXBException {
+    public void initializeContext() throws JAXBException, SAXException {
         context = JAXBContext.newInstance(org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
                                           org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
                                           org.omg.spec.dd._20100524.dc.ObjectFactory.class,
                                           org.omg.spec.dd._20100524.di.ObjectFactory.class);
+
+        bpmnSchema = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new File("src/main/resources/xsd/BPMN20.xsd"));
+        /*
+        ClassLoader loader = getClass().getClassLoader();
+        bpmnSchema = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI)
+                                  .newSchema(new StreamSource[] {
+            new StreamSource(loader.getResourceAsStream("xsd/BPMN20.xsd")),
+            new StreamSource(loader.getResourceAsStream("xsd/BPMNDI.xsd")),
+            new StreamSource(loader.getResourceAsStream("xsd/DC.xsd")),
+            new StreamSource(loader.getResourceAsStream("xsd/DI.xsd")),
+            new StreamSource(loader.getResourceAsStream("xsd/Semantics.xsd"))
+        });
+        */
     }
 
     /**
@@ -58,21 +80,21 @@ public class DefinitionsTest {
      *
      * @throws FileNotFoundException if the input file of test data is absent
      * @throws JAXBException
-     * @throws SAXException
      */
     @Test
-    public final void test1() throws FileNotFoundException, JAXBException, SAXException {
+    public final void test1() throws FileNotFoundException, JAXBException {
         // Obtain the test instance
-        Definitions definitions = context.createUnmarshaller()
-                                         .unmarshal(new StreamSource(new FileInputStream("src/test/resources/Test1.bpmn20.xml")), Definitions.class)
-                                         .getValue();
+        Definitions definitions = context.createUnmarshaller().unmarshal(
+            new StreamSource(getClass().getClassLoader().getResourceAsStream("Test1.bpmn20.xml")),
+            Definitions.class
+        ).getValue();
 
         // Serialize the test instance out again
         Marshaller marshaller = context.createMarshaller();
         ValidationEventCollector vec = new ValidationEventCollector();
         marshaller.setEventHandler(vec);
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new File("src/main/xsd/BPMN20.xsd")));
+        marshaller.setSchema(bpmnSchema);
         marshaller.marshal(definitions, new FileOutputStream("target/surefire/Test1.bpmn20.xml"));
         assertFalse(formatValidationEvents(vec), vec.hasEvents());
 
@@ -134,22 +156,21 @@ public class DefinitionsTest {
      *
      * @throws FileNotFoundException if the input file of test data is absent
      * @throws JAXBException
-     * @throws SAXException
      */
     @Test
-    public final void testTrivialGateway() throws FileNotFoundException, JAXBException, SAXException {
+    public final void testTrivialGateway() throws FileNotFoundException, JAXBException {
         // Obtain the test instance
-        Definitions definitions = context.createUnmarshaller()
-                                         .unmarshal(new StreamSource(new FileInputStream("src/test/resources/TrivialGateway.bpmn20.xml")),
-                                                    Definitions.class)
-                                         .getValue();
+        Definitions definitions = context.createUnmarshaller().unmarshal(
+            new StreamSource(getClass().getClassLoader().getResourceAsStream("TrivialGateway.bpmn20.xml")),
+            Definitions.class
+        ).getValue();
 
         // Serialize the test instance out again
         Marshaller marshaller = context.createMarshaller();
         ValidationEventCollector vec = new ValidationEventCollector();
         marshaller.setEventHandler(vec);
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setSchema(SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new File("src/main/xsd/BPMN20.xsd")));
+        marshaller.setSchema(bpmnSchema);
         marshaller.marshal(definitions, new FileOutputStream("target/surefire/TrivialGateway.bpmn20.xml"));
         assertFalse(formatValidationEvents(vec), vec.hasEvents());
     }
