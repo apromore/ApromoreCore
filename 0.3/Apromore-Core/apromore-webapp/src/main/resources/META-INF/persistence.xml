@@ -2,7 +2,7 @@
              xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
              xsi:schemaLocation="http://java.sun.com/xml/ns/persistence">
 
-    <persistence-unit name="TESTApromore" transaction-type="RESOURCE_LOCAL">
+    <persistence-unit name="Apromore" transaction-type="RESOURCE_LOCAL">
         <!-- Tables -->
         <class>org.apromore.dao.model.Annotation</class>
         <class>org.apromore.dao.model.EditSession</class>
