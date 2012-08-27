@@ -66,13 +66,9 @@
     <!-- ************************** Non WebServices ************************** -->
 
     <bean id="dataAccessCanoniserManager" class="org.apromore.dao.service.DataAccessCanoniserManagerImpl" />
-    <bean id="dataAccessManagerManager" class="org.apromore.dao.service.DataAccessManagerManagerImpl" />
-
-    <bean id="canoniserDataAccessClient" class="org.apromore.canoniser.da.CanoniserDataAccessClient" p:manager-ref="dataAccessCanoniserManager" />
-    <bean id="managerDataAccessClient" class="org.apromore.manager.da.ManagerDataAccessClient" p:manager-ref="dataAccessManagerManager" />
-    <bean id="managerCanoniserClient" class="org.apromore.manager.canoniser.ManagerCanoniserClient" p:manager-ref="canoniserManager" />
-
     <bean id="canoniserManager" class="org.apromore.canoniser.service.CanoniserManagerImpl" p:client-ref="canoniserDataAccessClient" />
+    <bean id="canoniserDataAccessClient" class="org.apromore.canoniser.da.CanoniserDataAccessClient" p:manager-ref="dataAccessCanoniserManager" />
+    <bean id="managerCanoniserClient" class="org.apromore.manager.canoniser.ManagerCanoniserClient" p:manager-ref="canoniserManager" />
 
 
     <bean id="ClusterService" class="org.apromore.service.impl.ClusterServiceImpl" />

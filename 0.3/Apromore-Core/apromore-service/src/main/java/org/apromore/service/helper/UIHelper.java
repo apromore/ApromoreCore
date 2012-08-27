@@ -166,7 +166,7 @@ public class UIHelper {
 
     /* From a list of ProcessVersionTypes build a list of the id's of each */
     private List<Integer> buildProcessIdList(ProcessVersionsType similarProcesses) {
-        List<Integer> proIds = new ArrayList<>(0);
+        List<Integer> proIds = new ArrayList<Integer>(0);
         if (similarProcesses != null) {
             for (ProcessVersionType pvt : similarProcesses.getProcessVersion()) {
                 proIds.add(pvt.getProcessId());

@@ -83,7 +83,7 @@ public class CPFtoGraphHelper {
     private static List<ICpfResource> buildResourcesList(CanonicalProcessType cpf) {
         ICpfResource rec;
         List<ResourceTypeType> rty = cpf.getResourceType();
-        List<ICpfResource> attribs = new ArrayList<>(0);
+        List<ICpfResource> attribs = new ArrayList<ICpfResource>(0);
         for (ResourceTypeType resource : rty) {
             rec = new CpfResource();
             rec.setId(resource.getId());
@@ -106,7 +106,7 @@ public class CPFtoGraphHelper {
     private static List<ICpfObject> buildObjectsList(CanonicalProcessType cpf) {
         ICpfObject obj;
         List<ObjectType> obt = cpf.getObject();
-        List<ICpfObject> objs = new ArrayList<>(0);
+        List<ICpfObject> objs = new ArrayList<ICpfObject>(0);
         for (ObjectType object : obt) {
             obj = new CpfObject();
             obj.setId(object.getId());
@@ -127,7 +127,7 @@ public class CPFtoGraphHelper {
 
     /* Add a node to the graph, could be of any of the types */
     private static void buildNodeList(CanonicalProcessType cpf, CPF g, List<ICpfResource> res, List<ICpfObject> obj) {
-        Map<String, FlowNode> flow = new HashMap<>(0);
+        Map<String, FlowNode> flow = new HashMap<String, FlowNode>(0);
         for (NetType net : cpf.getNet()) {
             flow.putAll(buildNodeListFromNet(net.getNode(), res, obj));
             buildEdges(net.getEdge(), g, flow);
@@ -136,7 +136,7 @@ public class CPFtoGraphHelper {
 
     /* Build the Node list for a single Net */
     private static Map<String, FlowNode> buildNodeListFromNet(List<NodeType> nodes, List<ICpfResource> res, List<ICpfObject> obj) {
-        Map<String, FlowNode> flow = new HashMap<>(0);
+        Map<String, FlowNode> flow = new HashMap<String, FlowNode>(0);
         for (NodeType node : nodes) {
             if (node instanceof MessageType) {
                 CpfMessage type = new CpfMessage(node.getName());
@@ -245,7 +245,7 @@ public class CPFtoGraphHelper {
     }
 
     private static Map<String, String> buildCombinedAttributeList(Map<String, String> attr1, List<TypeAttribute> attr2) {
-        Map<String, String> results = new HashMap<>(0);
+        Map<String, String> results = new HashMap<String, String>(0);
         results.putAll(attr1);
         for (TypeAttribute typAtt : attr2) {
             results.put(typAtt.getTypeRef(), typAtt.getValue());

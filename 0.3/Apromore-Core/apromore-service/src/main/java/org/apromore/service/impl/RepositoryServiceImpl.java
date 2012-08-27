@@ -119,7 +119,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             Process process = insertProcess(processName, username, nativeType, domain);
             ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, versionName);
 
-            List<String> composingFragmentIds = new ArrayList<>(0);
+            List<String> composingFragmentIds = new ArrayList<String>(0);
             FragmentVersion rootFV = decomposer.decompose(proModGrap, composingFragmentIds);
             ProcessModelVersion pdo = insertProcessModelVersion(proModGrap, branch, rootFV.getFragmentVersionId(), numVertices, numEdges);
             insertProcessFragmentMappings(pdo, composingFragmentIds);
@@ -167,7 +167,7 @@ public class RepositoryServiceImpl implements RepositoryService {
                 LOGGER.error(msg);
             }
 
-            List<String> composingFragmentIds = new ArrayList<>();
+            List<String> composingFragmentIds = new ArrayList<String>();
             FragmentVersion rootFV = decomposer.decompose(g, composingFragmentIds);
             cPropagator.propagateChangesWithLockRelease(pmVersion.getRootFragmentVersionId(), rootFV.getFragmentVersionId(), composingFragmentIds);
         } catch (Exception re) {
@@ -201,7 +201,7 @@ public class RepositoryServiceImpl implements RepositoryService {
                 LOGGER.error(msg);
             }
 
-            List<String> composingFragmentIds = new ArrayList<>();
+            List<String> composingFragmentIds = new ArrayList<String>();
             FragmentVersion rootFV = decomposer.decompose(g, composingFragmentIds);
             cPropagator.propagateChangesWithLockRelease(pmVersion.getRootFragmentVersionId(), rootFV.getFragmentVersionId(), composingFragmentIds);
         } catch (Exception e) {
@@ -362,7 +362,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         }
 
         try {
-            List<String> composingFragmentIds = new ArrayList<>();
+            List<String> composingFragmentIds = new ArrayList<String>();
             String originalFragmentId = fg.getProperty(Constants.ORIGINAL_FRAGMENT_ID);
 
             LOGGER.debug("Decomposing the fragment graph of fragment " + originalFragmentId + "...");

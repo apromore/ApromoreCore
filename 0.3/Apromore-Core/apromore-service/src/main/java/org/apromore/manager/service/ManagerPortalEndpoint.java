@@ -1,7 +1,5 @@
 package org.apromore.manager.service;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
@@ -12,22 +10,16 @@ import java.util.List;
 import java.util.Map;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 
-import de.epml.TypeEPML;
-import org.apromore.common.Constants;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
+import org.apromore.dao.model.EditSession;
 import org.apromore.exception.ExceptionCanoniseVersion;
 import org.apromore.exception.ExceptionVersion;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
-import org.apromore.manager.da.ManagerDataAccessClient;
 import org.apromore.mapper.ClusterMapper;
 import org.apromore.mapper.DomainMapper;
 import org.apromore.mapper.NativeTypeMapper;
@@ -121,14 +113,6 @@ import org.springframework.ws.server.endpoint.annotation.Endpoint;
 import org.springframework.ws.server.endpoint.annotation.PayloadRoot;
 import org.springframework.ws.server.endpoint.annotation.RequestPayload;
 import org.springframework.ws.server.endpoint.annotation.ResponsePayload;
-import org.wfmc._2008.xpdl2.Author;
-import org.wfmc._2008.xpdl2.Created;
-import org.wfmc._2008.xpdl2.Documentation;
-import org.wfmc._2008.xpdl2.ModificationDate;
-import org.wfmc._2008.xpdl2.PackageHeader;
-import org.wfmc._2008.xpdl2.PackageType;
-import org.wfmc._2008.xpdl2.RedefinableHeader;
-import org.wfmc._2008.xpdl2.Version;
 
 /**
  * The WebService Endpoint Used by the Portal.
@@ -165,8 +149,6 @@ public class ManagerPortalEndpoint {
     private SessionService sesSrv;
 
     @Autowired
-    private ManagerDataAccessClient daClient;
-    @Autowired
     private ManagerCanoniserClient caClient;
 
 
@@ -186,7 +168,9 @@ public class ManagerPortalEndpoint {
             String preVersion = payload.getPreName();
             String newVersion = payload.getNewName();
             String ranking = payload.getRanking();
-            daClient.EditProcessData(processId, processName, domain, username, preVersion, newVersion, ranking);
+
+            procSrv.updateProcessMetaData(processId, processName, domain, username, preVersion, newVersion, ranking);
+
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {
@@ -338,7 +322,7 @@ public class ManagerPortalEndpoint {
         res.setResult(result);
         int code = payload.getEditSessionCode();
         try {
-            daClient.DeleteEditSession(code);
+            sesSrv.deleteSession(code);
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {
@@ -359,7 +343,7 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         try {
-            List<NameValuePair> processVersions = new ArrayList<>(0);
+            List<NameValuePair> processVersions = new ArrayList<NameValuePair>(0);
             for (final ProcessVersionIdentifierType p : payload.getProcessVersionIdentifier()) {
                 processVersions.add(new NameValuePair(p.getProcessName(), p.getBranchName()));
             }
@@ -404,7 +388,10 @@ public class ManagerPortalEndpoint {
         } catch (ExceptionVersion ex) {
             result.setCode(-3);
             result.setMessage(ex.getMessage());
-        } catch (IOException | ExceptionCanoniseVersion ex) {
+        } catch (IOException ex){
+            result.setCode(-1);
+            result.setMessage(ex.getMessage());
+        } catch (ExceptionCanoniseVersion ex) {
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
@@ -422,18 +409,24 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         try {
-            EditSessionType editSessionDA = daClient.ReadEditSession(code);
+            EditSession session = sesSrv.readSession(code);
+
             EditSessionType editSessionP = new EditSessionType();
-            editSessionP.setNativeType(editSessionDA.getNativeType());
-            editSessionP.setProcessId(editSessionDA.getProcessId());
-            editSessionP.setUsername(editSessionDA.getUsername());
-            editSessionP.setVersionName(editSessionDA.getVersionName());
-            editSessionP.setProcessName(editSessionDA.getProcessName());
-            editSessionP.setDomain(editSessionDA.getDomain());
-            editSessionP.setCreationDate(editSessionDA.getCreationDate());
-            editSessionP.setLastUpdate(editSessionDA.getLastUpdate());
-            editSessionP.setWithAnnotation(editSessionDA.isWithAnnotation());
-            editSessionP.setAnnotation(editSessionDA.getAnnotation());
+            editSessionP.setNativeType(session.getNatType());
+            editSessionP.setProcessId(session.getProcess().getProcessId());
+            editSessionP.setUsername(session.getUser().getUsername());
+            editSessionP.setVersionName(session.getVersionName());
+            editSessionP.setProcessName(session.getProcess().getName());
+            editSessionP.setDomain(session.getProcess().getDomain());
+            editSessionP.setCreationDate(session.getCreationDate());
+            editSessionP.setLastUpdate(session.getLastUpdate());
+            if (session.getAnnotation() == null) {
+                editSessionP.setWithAnnotation(false);
+            } else {
+                editSessionP.setWithAnnotation(true);
+                editSessionP.setAnnotation(session.getAnnotation());
+            }
+
             res.setEditSession(editSessionP);
             result.setCode(0);
             result.setMessage("");
@@ -453,8 +446,8 @@ public class ManagerPortalEndpoint {
         WriteEditSessionOutputMsgType res = new WriteEditSessionOutputMsgType();
         ResultType result = new ResultType();
         res.setResult(result);
-        EditSessionType editSessionP = payload.getEditSession();
 
+        EditSessionType editSessionP = payload.getEditSession();
         EditSessionType editSessionType = new EditSessionType();
         editSessionType.setNativeType(editSessionP.getNativeType());
         editSessionType.setProcessId(editSessionP.getProcessId());
@@ -558,8 +551,6 @@ public class ManagerPortalEndpoint {
             //Boolean addFakeEvents = payload.isAddFakeEvents();
             DataHandler handler = payload.getProcessDescription();
 
-            //ProcessSummaryType process = caClient.CanoniseProcess(username, processName, newCpfURI(),
-            //        versionName, nativeType, is, domain, "", creationDate, lastUpdate, addFakeEvents);
             ProcessSummaryType process = procSrv.importProcess(username, processName, newCpfURI(), versionName,
                     nativeType, handler, domain, "", creationDate, lastUpdate);
 
@@ -792,115 +783,7 @@ public class ManagerPortalEndpoint {
         return new ObjectFactory().createReadProcessSummariesResponse(res);
     }
 
-    /**
-     * Generate a new npf which is the result of writing parameters in process_xml.
-     *
-     * @param process_xml the given npf to be synchronised
-     * @param nativeType  npf native type
-     * @param processName
-     * @param version
-     * @param username
-     * @param lastUpdate
-     * @return
-     * @throws javax.xml.bind.JAXBException
-     */
-    private InputStream copyParam2NPF(InputStream process_xml, String nativeType, String processName,
-            String version, String username, String lastUpdate, String documentation) throws JAXBException {
-        InputStream res = null;
-        if (nativeType.compareTo(Constants.XPDL_2_1) == 0) {
-            JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
-            Unmarshaller u = jc.createUnmarshaller();
-            JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
-            PackageType pkg = rootElement.getValue();
-            copyParam2xpdl(pkg, processName, version, username, lastUpdate, documentation);
 
-            Marshaller m = jc.createMarshaller();
-            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
-            m.marshal(rootElement, xpdl_xml);
-            res = new ByteArrayInputStream(xpdl_xml.toByteArray());
-
-        } else if (nativeType.compareTo(Constants.EPML_2_0) == 0) {
-            JAXBContext jc = JAXBContext.newInstance("de.epml");
-            Unmarshaller u = jc.createUnmarshaller();
-            JAXBElement<TypeEPML> rootElement = (JAXBElement<TypeEPML>) u.unmarshal(process_xml);
-            TypeEPML epml = rootElement.getValue();
-
-            Marshaller m = jc.createMarshaller();
-            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
-            m.marshal(rootElement, xpdl_xml);
-            res = new ByteArrayInputStream(xpdl_xml.toByteArray());
-        }
-        return res;
-    }
-
-    /**
-     * Modify pkg (npf of type xpdl) with parameters values if not null.
-     *
-     * @param pkg
-     * @param processName
-     * @param version
-     * @param username
-     * @param lastUpdate
-     * @param documentation
-     * @return
-     */
-    private void copyParam2xpdl(PackageType pkg,
-                                String processName, String version, String username,
-                                String lastUpdate, String documentation) {
-
-        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
-        Date date = new Date();
-        String creationDate = dateFormat.format(date);
-
-        if (pkg.getRedefinableHeader() == null) {
-            RedefinableHeader header = new RedefinableHeader();
-            pkg.setRedefinableHeader(header);
-            Version v = new Version();
-            header.setVersion(v);
-            Author a = new Author();
-            header.setAuthor(a);
-        } else {
-            if (pkg.getRedefinableHeader().getVersion() == null) {
-                Version v = new Version();
-                pkg.getRedefinableHeader().setVersion(v);
-            }
-            if (pkg.getRedefinableHeader().getAuthor() == null) {
-                Author a = new Author();
-                pkg.getRedefinableHeader().setAuthor(a);
-            }
-        }
-        if (pkg.getPackageHeader() == null) {
-            PackageHeader pkgHeader = new PackageHeader();
-            pkg.setPackageHeader(pkgHeader);
-            Created created = new Created();
-            pkgHeader.setCreated(created);
-            ModificationDate modifDate = new ModificationDate();
-            pkgHeader.setModificationDate(modifDate);
-            Documentation doc = new Documentation();
-            pkgHeader.setDocumentation(doc);
-        } else {
-            if (pkg.getPackageHeader().getCreated() == null) {
-                Created created = new Created();
-                pkg.getPackageHeader().setCreated(created);
-            }
-            if (pkg.getPackageHeader().getModificationDate() == null) {
-                ModificationDate modifDate = new ModificationDate();
-                pkg.getPackageHeader().setModificationDate(modifDate);
-            }
-            if (pkg.getPackageHeader().getDocumentation() == null) {
-                Documentation doc = new Documentation();
-                pkg.getPackageHeader().setDocumentation(doc);
-            }
-        }
-        if (processName != null) pkg.setName(processName);
-        if (version != null) pkg.getRedefinableHeader().getVersion().setValue(version);
-        if (username != null) pkg.getRedefinableHeader().getAuthor().setValue(username);
-        if (creationDate != null) pkg.getPackageHeader().getCreated().setValue(creationDate);
-        if (lastUpdate != null) pkg.getPackageHeader().getModificationDate().setValue(lastUpdate);
-        if (documentation != null) pkg.getPackageHeader().getDocumentation().setValue(documentation);
-    }
 
     /**
      * Generate a cpf uri for version of processId
@@ -916,14 +799,9 @@ public class ManagerPortalEndpoint {
 
 
 
-    public void setDaClient(ManagerDataAccessClient daClient) {
-        this.daClient = daClient;
-    }
-
     public void setCaClient(ManagerCanoniserClient caClient) {
         this.caClient = caClient;
     }
-
 
     public void setUserSrv(UserService userService) {
         this.userSrv = userService;

@@ -53,19 +53,19 @@ public interface FragmentVersionDao {
      */
     List<String> getLockedParentFragmentIds(String fvid);
 
-    /**
-     * find all the child fragments with their size.
-     * @param fvid the fragment id.
-     * @return the list of fragments
-     */
-    Map<String, Integer> getChildFragmentsWithSize(String fvid);
-
-    /**
-     * find all the child fragments with their type.
-     * @param fvid the fragment id.
-     * @return the list of fragments
-     */
-    Map<Integer, String> getChildFragmentsWithType(int fvid);
+//    /**
+//     * find all the child fragments with their size.
+//     * @param fvid the fragment id.
+//     * @return the list of fragments
+//     */
+//    Map<String, Integer> getChildFragmentsWithSize(String fvid);
+//
+//    /**
+//     * find all the child fragments with their type.
+//     * @param fvid the fragment id.
+//     * @return the list of fragments
+//     */
+//    Map<Integer, String> getChildFragmentsWithType(int fvid);
 
     /**
      * Returns all the Fragments with a certain size.

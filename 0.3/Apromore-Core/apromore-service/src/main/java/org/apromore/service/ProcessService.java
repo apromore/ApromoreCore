@@ -8,6 +8,7 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
+import org.apromore.exception.UpdateProcessException;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 
@@ -26,21 +27,6 @@ public interface ProcessService {
      * @return The ProcessSummariesType used for Webservices.
      */
     ProcessSummariesType readProcessSummaries(final String searchExpression);
-
-    /**
-     * Export a BMP Model but in a particular format.
-     * @param name       the process model name
-     * @param processId  the processId
-     * @param version    the version of the process model
-     * @param nativeType the format of the model
-     * @param annName    the annotation format
-     * @param withAnn    do we export annotations as well.
-     * @return the XML but as a dataSource object
-     * @throws ExportFormatException if for some reason the process model can not be found.
-     */
-    DataSource exportFormat(final String name, final Integer processId, final String version, final String nativeType,
-            final String annName, boolean withAnn) throws ExportFormatException;
-
 
     /**
      * Import a Process.
@@ -62,6 +48,32 @@ public interface ProcessService {
     ProcessSummaryType importProcess(String username, String processName, String cpfURI, String versionName, String nativeType,
             DataHandler cpf, String domain, String documentation, String created, String lastUpdate) throws ImportException;
 
+    /**
+     * Export a BMP Model but in a particular format.
+     * @param name       the process model name
+     * @param processId  the processId
+     * @param version    the version of the process model
+     * @param nativeType the format of the model
+     * @param annName    the annotation format
+     * @param withAnn    do we export annotations as well.
+     * @return the XML but as a dataSource object
+     * @throws ExportFormatException if for some reason the process model can not be found.
+     */
+    DataSource exportFormat(final String name, final Integer processId, final String version, final String nativeType,
+            final String annName, boolean withAnn) throws ExportFormatException;
+
+    /**
+     * Updates a processes meta data, this is the Name, Version, domain, rating and then updated the Native xml with these details.
+     * @param processId the process id.
+     * @param processName the process name.
+     * @param domain the domain of the process.
+     * @param username the user who is updating the data.
+     * @param preVersion the before version.
+     * @param newVersion the old version.
+     * @param ranking the ranking of this model.
+     */
+    void updateProcessMetaData(final Integer processId, final String processName, final String domain, final String username, final String preVersion,
+            final String newVersion, final String ranking) throws UpdateProcessException;
 
     /**
      * Add a new ProcessModelVersion record into the DB.

@@ -39,8 +39,8 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
     private ComposerService composer;
 
     /* Fragment Id -> SimpleGraph object containing all nodes and edges of the fragment. */
-    private Map<String, SimpleGraph> models = new HashMap<>();
-    private List<DissimilarityCalc> chain = new LinkedList<>();
+    private Map<String, SimpleGraph> models = new HashMap<String, SimpleGraph>();
+    private List<DissimilarityCalc> chain = new LinkedList<DissimilarityCalc>();
     private MultiKeyMap dissimmap = null;
     private double dissThreshold;
 
@@ -56,7 +56,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
      */
     public void computeDissimilarity() {
         startedTime = System.currentTimeMillis();
-        List<String> processedFragmentIds = new ArrayList<>();
+        List<String> processedFragmentIds = new ArrayList<String>();
         dissimmap = new MultiKeyMap();
         nfrag = crel.getNumberOfFragments();
         totalPairs = nfrag * (nfrag + 1) / 2;

@@ -102,7 +102,7 @@ public class FragmentServiceImpl implements FragmentService {
         FragmentDAG fdag = constructFragmentDAG(pmvid);
         List<String> originalNodes = getOriginalNodes(nodes, g);
         List<String> containingFragments = getContainingFragments(originalNodes, fdag);
-        List<String> candidateContainingFragments = new ArrayList<>();
+        List<String> candidateContainingFragments = new ArrayList<String>();
         findCandidateContainingFragments(containingFragments.get(0), containingFragments, fdag, candidateContainingFragments);
         return findSmallestContainingFragment(candidateContainingFragments, fdag);
     }
@@ -117,7 +117,11 @@ public class FragmentServiceImpl implements FragmentService {
         try {
             CPF g = getFragment(fragmentId, false);
             xml = cSrv.CPFtoString(cSrv.serializeCPF(g));
-        } catch (LockFailedException | SerializationException | JAXBException e) {
+        } catch (LockFailedException e) {
+            throw new RepositoryException(e);
+        } catch (SerializationException e) {
+            throw new RepositoryException(e);
+        } catch (JAXBException e) {
             throw new RepositoryException(e);
         }
         return xml;
@@ -285,7 +289,7 @@ public class FragmentServiceImpl implements FragmentService {
     private String calculateChildMappingCode(Map<String, String> childMapping) {
         StringBuilder buf = new StringBuilder();
         Set<String> pids = childMapping.keySet();
-        PriorityQueue<String> q = new PriorityQueue<>(pids);
+        PriorityQueue<String> q = new PriorityQueue<String>(pids);
         while (!q.isEmpty()) {
             String pid = q.poll();
             String cid = childMapping.get(pid);
@@ -319,7 +323,7 @@ public class FragmentServiceImpl implements FragmentService {
     }
 
     private Collection<String> getChildIds(List<FragmentVersionDag> fdags) {
-        List<String> id = new ArrayList<>();
+        List<String> id = new ArrayList<String>();
         for (FragmentVersionDag fdag : fdags) {
             id.add(fdag.getId().getChildFragmentVersionId());
         }
@@ -327,7 +331,7 @@ public class FragmentServiceImpl implements FragmentService {
     }
 
     private List<String> getOriginalNodes(List<String> nodes, CPF g) {
-        List<String> originalNodes = new ArrayList<>();
+        List<String> originalNodes = new ArrayList<String>();
         for (String node : nodes) {
             if (g.isDuplicateNode(node)) {
                 originalNodes.add(g.getOriginalNode(node));

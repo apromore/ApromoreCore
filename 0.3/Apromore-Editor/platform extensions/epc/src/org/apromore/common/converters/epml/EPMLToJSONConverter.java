@@ -65,8 +65,9 @@ public class EPMLToJSONConverter {
         try {
             JAXBElement<TypeEPML> nativeElement = unmarshalNativeFormat(epmlStream);
             convertEPML(nativeElement.getValue(), jsonStream);
-        } catch (JAXBException | JSONException | IOException e) {
-            //TODO Logging
+        } catch (JAXBException e) {
+        } catch (JSONException e) {
+        } catch (IOException e) {
         }
     }
 
@@ -92,7 +93,7 @@ public class EPMLToJSONConverter {
         EPMLHandlerFactory converterFactory = new EPMLHandlerFactory(context);
         context.setConverterFactory(converterFactory);
 
-        List<TExtensibleElements> extList = new ArrayList<>();
+        List<TExtensibleElements> extList = new ArrayList<TExtensibleElements>();
         if (epml.getDirectory() != null && !epml.getDirectory().isEmpty()) {
             extList.addAll(epml.getDirectory().get(0).getEpcOrDirectory());
         } else {

@@ -124,7 +124,11 @@ public class CanoniserServiceImpl implements CanoniserService {
             InputStream native_xml_is = new ByteArrayInputStream(native_xml.toByteArray());
             native_ds = new ByteArrayDataSource(native_xml_is, "text/xml");
 
-        } catch (JAXBException | IOException | CanoniserException je) {
+        } catch (JAXBException je) {
+            LOGGER.error("DeCanonisation Failed: " + je.getMessage());
+        } catch (IOException je) {
+            LOGGER.error("DeCanonisation Failed: " + je.getMessage());
+        } catch (CanoniserException je) {
             LOGGER.error("DeCanonisation Failed: " + je.getMessage());
         }
         return native_ds;

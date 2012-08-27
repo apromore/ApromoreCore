@@ -14,7 +14,9 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.Query;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.equalTo;
@@ -55,13 +57,11 @@ public class FragmentVersionDagDaoJpaUnitTest {
         FragmentVersionDag v = new FragmentVersionDag();
 
         expect(manager.find(FragmentVersionDag.class, id)).andReturn(v);
-
         replay(manager);
 
         FragmentVersionDag result = dao.findFragmentVersionDag(id);
 
         verify(manager);
-
         assertThat(v, equalTo(result));
     }
 
@@ -75,14 +75,69 @@ public class FragmentVersionDagDaoJpaUnitTest {
         expect(manager.createNamedQuery(NamedQueries.GET_CHILD_MAPPINGS)).andReturn(query);
         expect(query.setParameter("fragVersionId", fragmentId)).andReturn(query);
         expect(query.getResultList()).andReturn(fvs);
-
         replay(manager, query);
 
         List<FragmentVersionDag> childFv = dao.getChildMappings(fragmentId);
 
         verify(manager, query);
-
         assertThat(fvs.size(), equalTo(childFv.size()));
+    }
+
+    @Test
+    public final void testGetAllParentChildMappings() {
+        List<FragmentVersionDag> fvs = new ArrayList<FragmentVersionDag>();
+        fvs.add(createFragmentVersionDag("1", "2"));
+        fvs.add(createFragmentVersionDag("2", "3"));
+        fvs.add(createFragmentVersionDag("3", "10"));
+        fvs.add(createFragmentVersionDag("1", "4"));
+
+        Map<String, List<String>> expRslt = new HashMap<String, List<String>>();
+        List<String> parent1 = new ArrayList<String>(1); parent1.add("2"); parent1.add("4");
+        List<String> parent2 = new ArrayList<String>(1); parent2.add("3");
+        List<String> parent3 = new ArrayList<String>(1); parent3.add("10");
+
+        expRslt.put("1", parent1);
+        expRslt.put("2", parent2);
+        expRslt.put("3", parent3);
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(NamedQueries.GET_ALL_PARENT_CHILD_MAPPINGS)).andReturn(query);
+        expect(query.getResultList()).andReturn(fvs);
+        replay(manager, query);
+
+        Map<String, List<String>> childFv = dao.getAllParentChildMappings();
+
+        verify(manager, query);
+        assertThat(childFv, equalTo(expRslt));
+    }
+
+
+    @Test
+    public final void testGetAllChildParentMappings() {
+        List<FragmentVersionDag> fvs = new ArrayList<FragmentVersionDag>();
+        fvs.add(createFragmentVersionDag("1", "2"));
+        fvs.add(createFragmentVersionDag("2", "3"));
+        fvs.add(createFragmentVersionDag("3", "10"));
+        fvs.add(createFragmentVersionDag("1", "10"));
+
+        Map<String, List<String>> expRslt = new HashMap<String, List<String>>();
+        List<String> parent1 = new ArrayList<String>(1); parent1.add("1");
+        List<String> parent2 = new ArrayList<String>(1); parent2.add("2");
+        List<String> parent3 = new ArrayList<String>(1); parent3.add("3"); parent3.add("1");
+
+        expRslt.put("2", parent1);
+        expRslt.put("3", parent2);
+        expRslt.put("10", parent3);
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(NamedQueries.GET_ALL_PARENT_CHILD_MAPPINGS)).andReturn(query);
+        expect(query.getResultList()).andReturn(fvs);
+        replay(manager, query);
+
+        Map<String, List<String>> childFv = dao.getAllChildParentMappings();
+
+        verify(manager, query);
+        assertThat(childFv, equalTo(expRslt));
     }
 
     @Test
@@ -95,15 +150,33 @@ public class FragmentVersionDagDaoJpaUnitTest {
         expect(manager.createNamedQuery(NamedQueries.GET_CHILD_FRAGMENTS_BY_FRAGMENT_VERSION)).andReturn(query);
         expect(query.setParameter("fragVersionId", fragmentVersionId)).andReturn(query);
         expect(query.getResultList()).andReturn(fvs);
-
         replay(manager, query);
 
         List<FragmentVersion> childFv = dao.getChildFragmentsByFragmentVersion(fragmentVersionId);
 
         verify(manager, query);
-
         assertThat(fvs.size(), equalTo(childFv.size()));
     }
+
+    @Test
+    public final void testGetAllDAGEntries() {
+        int minChildFragSize = 1;
+        List<FragmentVersionDag> fvs = new ArrayList<FragmentVersionDag>();
+        fvs.add(new FragmentVersionDag());
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(NamedQueries.GET_ALL_DAGS_WITH_SIZE)).andReturn(query);
+        expect(query.setParameter("minSize", minChildFragSize)).andReturn(query);
+        expect(query.getResultList()).andReturn(fvs);
+
+        replay(manager, query);
+        List<FragmentVersionDag> childFv = dao.getAllDAGEntries(minChildFragSize);
+
+        verify(manager, query);
+        assertThat(fvs.size(), equalTo(childFv.size()));
+    }
+
+
 
     @Test
     public final void testSaveFragmentVersionDag() {
@@ -134,9 +207,18 @@ public class FragmentVersionDagDaoJpaUnitTest {
     }
 
 
+
+
     private FragmentVersionDag createFragmentVersionDag() {
         FragmentVersionDag e = new FragmentVersionDag();
         e.setId(new FragmentVersionDagId());
+        e.setFragmentVersionByFragVerId(new FragmentVersion());
+        return e;
+    }
+
+    private FragmentVersionDag createFragmentVersionDag(String frgId, String chlId) {
+        FragmentVersionDag e = new FragmentVersionDag();
+        e.setId(new FragmentVersionDagId(frgId, chlId, "test"));
         e.setFragmentVersionByFragVerId(new FragmentVersion());
         return e;
     }

@@ -46,6 +46,7 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<FragmentVersionDag> getChildMappings(final String fragmentId) {
         Query query = em.createNamedQuery(NamedQueries.GET_CHILD_MAPPINGS);
         query.setParameter("fragVersionId", fragmentId);
@@ -57,6 +58,7 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public Map<String, List<String>> getAllParentChildMappings() {
         Query query = em.createNamedQuery(NamedQueries.GET_ALL_PARENT_CHILD_MAPPINGS);
         List<FragmentVersionDag> mappings = (List<FragmentVersionDag>) query.getResultList();
@@ -81,6 +83,7 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
      *  {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public Map<String, List<String>> getAllChildParentMappings() {
         Query query = em.createNamedQuery(NamedQueries.GET_ALL_PARENT_CHILD_MAPPINGS);
         List<FragmentVersionDag> mappings = (List<FragmentVersionDag>) query.getResultList();
@@ -105,6 +108,7 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<FragmentVersion> getChildFragmentsByFragmentVersion(final String fragmentVersionId) {
         Query query = em.createNamedQuery(NamedQueries.GET_CHILD_FRAGMENTS_BY_FRAGMENT_VERSION);
         query.setParameter("fragVersionId", fragmentVersionId);
@@ -116,6 +120,7 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     public List<FragmentVersionDag> getAllDAGEntries(int minimumChildFragmentSize) {
         Query query = em.createNamedQuery(NamedQueries.GET_ALL_DAGS_WITH_SIZE);
         query.setParameter("minSize", minimumChildFragmentSize);

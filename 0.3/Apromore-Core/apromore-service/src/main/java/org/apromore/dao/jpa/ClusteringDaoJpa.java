@@ -147,7 +147,7 @@ public class ClusteringDaoJpa implements ClusteringDao {
         query.setParameter("threshold", threshold);
         List<FragmentDistance> distances = query.getResultList();
 
-        Map<FragmentPair, Double> fragmentDistances = new HashMap<>();
+        Map<FragmentPair, Double> fragmentDistances = new HashMap<FragmentPair, Double>();
         for (FragmentDistance d : distances) {
             FragmentPair pair = new FragmentPair(d.getId().getFragmentId1(), d.getId().getFragmentId2());
             fragmentDistances.put(pair, d.getDistance());
@@ -212,7 +212,7 @@ public class ClusteringDaoJpa implements ClusteringDao {
      */
     @Override
     public List<FragmentDataObject> getUnprocessedFragments() {
-        List<FragmentDataObject> fragments = new ArrayList<>();
+        List<FragmentDataObject> fragments = new ArrayList<FragmentDataObject>();
         List<FragmentVersion> fvs = getAllFragments();
         for (FragmentVersion fv : fvs) {
             FragmentDataObject fragment = new FragmentDataObject();
@@ -229,7 +229,7 @@ public class ClusteringDaoJpa implements ClusteringDao {
      */
     @Override
     public List<FragmentDataObject> getUnprocessedFragmentsOfProcesses(final List<Integer> processIds) {
-        List<FragmentDataObject> fragments = new ArrayList<>();
+        List<FragmentDataObject> fragments = new ArrayList<FragmentDataObject>();
         List<FragmentVersion> fvs = getFragmentsOfProcesses(processIds);
         for (FragmentVersion fv : fvs) {
             FragmentDataObject fragment = new FragmentDataObject();
@@ -280,7 +280,7 @@ public class ClusteringDaoJpa implements ClusteringDao {
     public void persistClusterAssignments(final Collection<InMemoryCluster> clusters) {
         Cluster cluster;
         FragmentVersion fv;
-        List<ClusterAssignment> cas = new ArrayList<>();
+        List<ClusterAssignment> cas = new ArrayList<ClusterAssignment>();
 
         for (InMemoryCluster c : clusters) {
             Collection<FragmentDataObject> fs = c.getFragments();

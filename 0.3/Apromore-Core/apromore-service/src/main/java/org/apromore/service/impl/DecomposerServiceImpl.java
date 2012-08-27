@@ -116,7 +116,7 @@ public class DecomposerServiceImpl implements DecomposerService {
 
         Map<String, String> newChildMappings;
         if (f.getType().equals(TCType.B)) {
-            newChildMappings = new HashMap<>();
+            newChildMappings = new HashMap<String, String>();
             String matchingBondFragmentId = bcHandler.matchFragment(f, matchingContent, childMappings, newChildMappings);
             if (matchingBondFragmentId != null) {
                 return fSrv.getFragmentVersion(matchingBondFragmentId);
@@ -161,7 +161,7 @@ public class DecomposerServiceImpl implements DecomposerService {
             FlowNode entry = FragmentUtil.getFirstVertex(graph.getSourceVertices());
             FlowNode exit = FragmentUtil.getFirstVertex(graph.getSinkVertices());
             if (graph.getVertices().size() > 2) {
-                RPST<ControlFlow<FlowNode>, FlowNode> rpst = new RPST<>(graph);
+                RPST<ControlFlow<FlowNode>, FlowNode> rpst = new RPST<ControlFlow<FlowNode>, FlowNode>(graph);
                 RPSTNode rootFragment = rpst.getRoot();
                 FragmentVersion rootFV = decompose(rpst, rootFragment, op, fragmentIds);
                 fragmentIds.add(rootFV.getFragmentVersionId());
@@ -202,7 +202,7 @@ public class DecomposerServiceImpl implements DecomposerService {
         sNode.setEntry(entry);
         sNode.setExit(exit);
 
-        Map<String, String> childMappings = new HashMap<>(0);
+        Map<String, String> childMappings = new HashMap<String, String>(0);
         Set<AbstractDirectedEdge> edges = new HashSet<AbstractDirectedEdge>(g.getEdges());
         String hash = op.getTreeVisitor().visitSNode(g, edges, entry);
         String matchingContentId = cSrv.getMatchingContentId(hash);
@@ -223,7 +223,7 @@ public class DecomposerServiceImpl implements DecomposerService {
     /* mapping pocketId -> childId */
     private Map<String, String> mapPocketChildId(RPST rpst, RPSTNode f, OperationContext op, List<String> fragmentIds, Collection<RPSTNode> cs)
             throws RepositoryException {
-        Map<String, String> childMappings = new HashMap<>(0);
+        Map<String, String> childMappings = new HashMap<String, String>(0);
         for (RPSTNode c : cs) {
             if (TCType.T.equals(c.getType())) {
                 continue;
@@ -242,11 +242,11 @@ public class DecomposerServiceImpl implements DecomposerService {
     private FragmentVersion addFragmentVersion(RPSTNode f, String hash, Map<String, String> childMappings, int fragmentSize, String fragmentType,
             String keywords, OperationContext op) throws RepositoryException {
         // mappings (UUIDs generated for pocket Ids -> Pocket Ids assigned to pockets when they are persisted in the database)
-        Map<String, String> pocketIdMappings = new HashMap<>();
+        Map<String, String> pocketIdMappings = new HashMap<String, String>();
         Content content = cSrv.addContent(f, hash, op.getGraph(), pocketIdMappings);
 
         // rewrite child mapping with new pocket Ids
-        Map<String, String> refinedChildMappings = new HashMap<>();
+        Map<String, String> refinedChildMappings = new HashMap<String, String>();
         for (String oldPocketId : childMappings.keySet()) {
             String childId = childMappings.get(oldPocketId);
             String newPocketId = pocketIdMappings.get(oldPocketId);

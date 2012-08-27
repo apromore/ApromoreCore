@@ -75,19 +75,19 @@ import org.apromore.exception.CanoniserException;
 
 public class EPML2Canonical {
 
-    Map<BigInteger, String> id_map = new HashMap<>();
-    List<String> flow_source_id_list = new LinkedList<>();
-    List<TypeAND> and_list = new LinkedList<>();
-    List<TypeOR> or_list = new LinkedList<>();
-    List<TypeXOR> xor_list = new LinkedList<>();
-    Map<BigInteger, String> def_ref = new HashMap<>();
-    Map<BigInteger, TypeRole> role_ref = new HashMap<>();
-    Map<BigInteger, TypeObject> obj_ref = new HashMap<>();
-    List<TaskType> subnet_list = new LinkedList<>();
-    List<BigInteger> range_ids = new LinkedList<>();
-    List<String> event_ids = new LinkedList<>();
-    List<TypeArc> range_flow = new LinkedList<>();
-    List<TypeArc> range_relation = new LinkedList<>();
+    Map<BigInteger, String> id_map = new HashMap<BigInteger, String>();
+    List<String> flow_source_id_list = new LinkedList<String>();
+    List<TypeAND> and_list = new LinkedList<TypeAND>();
+    List<TypeOR> or_list = new LinkedList<TypeOR>();
+    List<TypeXOR> xor_list = new LinkedList<TypeXOR>();
+    Map<BigInteger, String> def_ref = new HashMap<BigInteger, String>();
+    Map<BigInteger, TypeRole> role_ref = new HashMap<BigInteger, TypeRole>();
+    Map<BigInteger, TypeObject> obj_ref = new HashMap<BigInteger, TypeObject>();
+    List<TaskType> subnet_list = new LinkedList<TaskType>();
+    List<BigInteger> range_ids = new LinkedList<BigInteger>();
+    List<String> event_ids = new LinkedList<String>();
+    List<TypeArc> range_flow = new LinkedList<TypeArc>();
+    List<TypeArc> range_relation = new LinkedList<TypeArc>();
 
     private CanonicalProcessType cproc = new CanonicalProcessType();
     private AnnotationsType annotations = new AnnotationsType();
@@ -171,8 +171,8 @@ public class EPML2Canonical {
      * @since 1.0
      */
     private TypeEPML removeFakes(TypeEPML epml) {
-        List<TEpcElement> remove_list = new LinkedList<>();
-        List<TypeArc> arc_remove_list = new LinkedList<>();
+        List<TEpcElement> remove_list = new LinkedList<TEpcElement>();
+        List<TypeArc> arc_remove_list = new LinkedList<TypeArc>();
 
         if (epml.getDirectory() != null && epml.getDirectory().size() > 0) {
             for (int i = 0; i < epml.getDirectory().size(); i++) {
@@ -252,7 +252,7 @@ public class EPML2Canonical {
 
     @SuppressWarnings("unchecked")
     private void translateEpc(NetType net, TypeEPC epc) throws CanoniserException {
-        Map<String, String> role_names = new HashMap<>();
+        Map<String, String> role_names = new HashMap<String, String>();
 
         for (Object obj : epc.getEventOrFunctionOrRole()) {
             if (obj instanceof JAXBElement) {
@@ -513,8 +513,8 @@ public class EPML2Canonical {
     // should be in the end
 
     private void processUnrequiredEvents(NetType net, BigInteger id) throws CanoniserException {
-        List<EdgeType> edge_remove_list = new LinkedList<>();
-        List<NodeType> node_remove_list = new LinkedList<>();
+        List<EdgeType> edge_remove_list = new LinkedList<EdgeType>();
+        List<NodeType> node_remove_list = new LinkedList<NodeType>();
         String event_id;
         boolean found = false;
         for (EdgeType edge : net.getEdge()) {

@@ -17,6 +17,14 @@ public class ClusteringSummary {
     protected double minBCR;
     protected double maxBCR;
 
+    /**
+     * Public Default Constructor.
+     */
+    public ClusteringSummary() { }
+
+    /**
+     * Public Default Constructor that sets up the Object.
+     */
     public ClusteringSummary(Long numClusters, Integer minClusterSize, Integer maxClusterSize, Float minAvgFragSize, Float maxAvgFragSize,
             Double minBCR, Double maxBCR) {
         if (numClusters != null) {

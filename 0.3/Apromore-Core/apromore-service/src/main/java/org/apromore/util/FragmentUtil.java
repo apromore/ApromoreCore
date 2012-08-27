@@ -67,7 +67,7 @@ public class FragmentUtil {
     }
 
     public static Collection<AbstractDirectedEdge> getIncomingEdges(IFlowNode v, Collection<AbstractDirectedEdge> es) {
-        Collection<AbstractDirectedEdge> incomingEdges = new ArrayList<>(0);
+        Collection<AbstractDirectedEdge> incomingEdges = new ArrayList<AbstractDirectedEdge>(0);
         for (AbstractDirectedEdge e : es) {
             if (e.getTarget().getId().equals(v.getId())) {
                 incomingEdges.add(e);
@@ -77,7 +77,7 @@ public class FragmentUtil {
     }
 
     public static Collection<AbstractDirectedEdge> getOutgoingEdges(IFlowNode v, Collection<AbstractDirectedEdge> es) {
-        Collection<AbstractDirectedEdge> outgoingEdges = new ArrayList<>(0);
+        Collection<AbstractDirectedEdge> outgoingEdges = new ArrayList<AbstractDirectedEdge>(0);
         for (AbstractDirectedEdge e : es) {
             if (e.getSource().getId().equals(v.getId())) {
                 outgoingEdges.add(e);
@@ -87,7 +87,7 @@ public class FragmentUtil {
     }
 
     public static List<IFlowNode> getPreset(IFlowNode v, Collection<AbstractDirectedEdge> es) {
-        List<IFlowNode> preset = new ArrayList<>(0);
+        List<IFlowNode> preset = new ArrayList<IFlowNode>(0);
         for (AbstractDirectedEdge e : es) {
             if (e.getTarget().getId().equals(v.getId())) {
                 preset.add((IFlowNode) e.getSource());
@@ -97,7 +97,7 @@ public class FragmentUtil {
     }
 
     public static List<IFlowNode> getPostset(IFlowNode v, Collection<AbstractDirectedEdge> es) {
-        List<IFlowNode> postset = new ArrayList<>(0);
+        List<IFlowNode> postset = new ArrayList<IFlowNode>(0);
         for (AbstractDirectedEdge e : es) {
             if (e.getSource().getId().equals(v.getId())) {
                 postset.add((IFlowNode) e.getTarget());
@@ -122,7 +122,7 @@ public class FragmentUtil {
      */
     public static Map<String, String> remapChildren(Map<String, String> childMappings, Map<String, String> pocketMappings)
             throws PocketMappingException {
-        Map<String, String> newChildMapping = new HashMap<>(0);
+        Map<String, String> newChildMapping = new HashMap<String, String>(0);
         for (Entry<String, String> stringStringEntry : childMappings.entrySet()) {
             String o = pocketMappings.get(stringStringEntry.getKey());
             if (o != null) {
@@ -146,7 +146,7 @@ public class FragmentUtil {
      */
     public static Map<String, String> remapChildren(List<FragmentVersionDag> childMappings, Map<String, String> pocketMappings)
             throws PocketMappingException {
-        Map<String, String> newChildMapping = new HashMap<>(0);
+        Map<String, String> newChildMapping = new HashMap<String, String>(0);
         for (FragmentVersionDag fvd : childMappings) {
             String o = pocketMappings.get(fvd.getId().getPocketId());
             if (o != null) {
@@ -165,7 +165,7 @@ public class FragmentUtil {
     public static void cleanFragment(RPSTNode f) {
         Collection<AbstractDirectedEdge> es = f.getFragmentEdges();
         Collection<FlowNode> vs = f.getFragment().getVertices();
-        Collection<AbstractDirectedEdge> removableEdges = new ArrayList<>(0);
+        Collection<AbstractDirectedEdge> removableEdges = new ArrayList<AbstractDirectedEdge>(0);
 
         for (AbstractDirectedEdge e : es) {
             if (!vs.contains(e.getSource()) || !vs.contains(e.getTarget())) {

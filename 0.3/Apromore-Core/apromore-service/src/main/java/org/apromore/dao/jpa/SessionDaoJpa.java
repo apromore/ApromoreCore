@@ -24,6 +24,17 @@ public class SessionDaoJpa implements SessionDao {
 
 
     /**
+     * @see org.apromore.dao.SessionDao#findSession(int)
+     * {@inheritDoc}
+     */
+    @Override
+    public EditSession findSession(final int sessionId) {
+        return em.find(EditSession.class, sessionId);
+    }
+
+
+
+    /**
      * @see org.apromore.dao.SessionDao#save(org.apromore.dao.model.EditSession)
      * {@inheritDoc}
      */

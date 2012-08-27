@@ -5,49 +5,33 @@ package org.apromore.service.model;
 
 import java.util.List;
 
-
 /**
  * <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 public abstract class ClusterSettings {
 
     private float minLuceneSimilarity = 0.5F;
-
     private float filteringSizePercentage = 0.4F;
-
     private double maxNeighborGraphEditDistance = 0.4;
-
     private double gedMatrixThreshold = 0.4;
-
     private int minPoints = 2;
-
     private int minClusteringFragmentSize = 2;
-
     private int maxClusteringFragmentSize = 500;
-
     private boolean dynamicClustering = false;
-
     private boolean hierarchyFiltering = true;
-
     private boolean processBasedFiltering = false;
-
     private boolean clusterwideMaximalFragmentFiltering = false;
-
     private boolean clusterwideMaximalFragmentFilteringWithCentroids = false;
-
     private boolean simpleDecomposition = true;
-
     private boolean enableGEDMatrix = true;
-
     private boolean enableClusterOverlapping = true;
-
     private boolean enableMergingRestriction = true;
-
     private boolean enableNearestRelativeFiltering = true;
-
     private List<Integer> constrainedProcessIds = null;
-
     private boolean ignoreClustersWithExactClones = true;
+    private boolean enableClusterWideNearestRelativeFiltering = false;
+    private boolean dbscanClustering = true;
+    public abstract String getAlgorithm();
 
     /**
      * When searching for the neighbourhood NBHk of k, a fragment b is excluded from NBHk, if b is included in a
@@ -58,11 +42,12 @@ public abstract class ClusterSettings {
      */
     private boolean removeHierarchyClusterContainments = true;
 
-    private boolean enableClusterWideNearestRelativeFiltering = false;
 
-    private boolean dbscanClustering = true;
+    /**
+     * Default Constructor.
+     */
+    public ClusterSettings() { }
 
-    public abstract String getAlgorithm();
 
     public boolean isIgnoreClustersWithExactClones() {
         return ignoreClustersWithExactClones;
@@ -241,4 +226,5 @@ public abstract class ClusterSettings {
     public void setEnableClusterWideNearestRelativeFiltering(boolean enableClusterWideNearestRelativeFiltering) {
         this.enableClusterWideNearestRelativeFiltering = enableClusterWideNearestRelativeFiltering;
     }
+
 }

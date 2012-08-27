@@ -85,6 +85,25 @@ public class EdgeDaoJpaUnitTest {
         assertThat(count, equalTo(result));
     }
 
+    @Test
+    public final void testGetEdgesByFragment() {
+        String id = "1";
+        List<Edge> edges = new ArrayList<Edge>();
+
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(NamedQueries.GET_EDGES_BY_FRAGMENT)).andReturn(query);
+        expect(query.setParameter("fragmentId", id)).andReturn(query);
+        expect(query.getResultList()).andReturn(edges);
+
+        replay(manager, query);
+
+        List<Edge> result = dao.getEdgesByFragment(id);
+
+        verify(manager, query);
+
+        assertThat(edges, equalTo(result));
+    }
+
 
 
     @Test
