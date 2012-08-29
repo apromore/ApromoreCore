@@ -10,7 +10,7 @@
         <!--</description>-->
         <!--<property name="schemaCollection" ref="schemaCollection"/>-->
         <!--<property name="portTypeName" value="ManagerPortalPortType"/>-->
-        <!--<property name="locationUri" value="http://localhost:8080/Apromore/services/manager"/>-->
+        <!--<property name="locationUri" value="http://localhost:80/Apromore/services/manager"/>-->
         <!--<property name="targetNamespace" value="http://www.apromore.org/manager/service_portal"/>-->
     <!--</bean>-->
     

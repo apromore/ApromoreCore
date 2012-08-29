@@ -30,13 +30,13 @@
 
     <ciManagement>
         <system>Jenkins</system>
-        <url>http://fastyawl01.qut.edu.au:8080/jenkins/view/apromore</url>
+        <url>http://fastyawl01.qut.edu.au:80/jenkins/view/apromore</url>
     </ciManagement>
 
     <distributionManagement>
         <site>
             <id>website</id>
-            <url>dav:http://fastyawl01.qut.edu.au:8080/projects/Apromore-Parent</url>
+            <url>dav:http://fastyawl01.qut.edu.au:80/projects/Apromore-Parent</url>
         </site>
     </distributionManagement>
 

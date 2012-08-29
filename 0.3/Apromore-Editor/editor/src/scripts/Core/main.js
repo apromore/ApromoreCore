@@ -1176,7 +1176,7 @@ ORYX.Editor = {
      *       language: "English"
      *    },
      *    stencilset:{
-     *       url:"http://localhost:8080/oryx/stencilsets/bpmn1.1/bpmn1.1.json"
+     *       url:"http://localhost:80/oryx/stencilsets/bpmn1.1/bpmn1.1.json"
      *    },
      *    stencil:{
      *       id:"BPMNDiagram"
