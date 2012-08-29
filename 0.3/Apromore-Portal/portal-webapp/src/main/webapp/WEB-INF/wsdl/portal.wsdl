@@ -217,7 +217,7 @@
 
     <wsdl:service name="PortalOryxService">
         <wsdl:port binding="tns:PortalOryxBinding" name="PortalOryx">
-            <soap:address location="http://127.0.0.1:8080/Apromore-portal/services/PortalOryx"/>
+            <soap:address location="http://127.0.0.1:80/Apromore-portal/services/PortalOryx"/>
         </wsdl:port>
     </wsdl:service>
 </wsdl:definitions>

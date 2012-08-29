@@ -24,7 +24,7 @@
 
     <ciManagement>
         <system>Jenkins</system>
-        <url>http://fastyawl01.qut.edu.au:8080/jenkins/view/Tools/</url>
+        <url>http://fastyawl01.qut.edu.au:80/jenkins/view/Tools/</url>
     </ciManagement>
 
     <build>
