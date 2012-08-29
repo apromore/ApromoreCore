@@ -42,6 +42,8 @@ import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
 import org.omg.spec.bpmn._20100524.di.BPMNShape;
 import org.omg.spec.bpmn._20100524.model.Definitions;
+import org.omg.spec.bpmn._20100524.model.Lane;
+import org.omg.spec.bpmn._20100524.model.LaneSet;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
@@ -547,6 +549,19 @@ public class CanoniserDefinitions extends Definitions {
                             }
 
                             @Override
+                            public void visit(final LaneSet laneSet) {
+                                ResourceTypeType resourceType = new ResourceTypeType();
+
+                                for (Lane lane : laneSet.getLanes()) {
+                                    // TODO
+                                }
+
+                                populateBaseElement(resourceType, laneSet);
+
+                                cpf.getResourceType().add(resourceType);
+                            }
+
+                            @Override
                             public void visit(final TParallelGateway parallelGateway) {
                                 RoutingType routing;
                
@@ -597,6 +612,7 @@ public class CanoniserDefinitions extends Definitions {
 
                             private void populateBaseElement(final EdgeType edge, final TBaseElement baseElement) {
                                 edge.setId(baseElement.getId());
+                                edge.setOriginalID(baseElement.getId());
                             }
 
                             private void populateFlowElement(final EdgeType edge, final TFlowElement flowElement) {
@@ -607,11 +623,19 @@ public class CanoniserDefinitions extends Definitions {
 
                             private void populateBaseElement(final NodeType node, final TBaseElement baseElement) {
                                 node.setId(baseElement.getId());
+                                node.setOriginalID(baseElement.getId());
                             }
 
                             private void populateFlowElement(final NodeType node, final TFlowElement flowElement) {
                                 populateBaseElement(node, flowElement);
                                 node.setName(flowElement.getName());
+                            }
+
+                            // ResourceType supertype handlers
+
+                            private void populateBaseElement(final ResourceTypeType resourceType, final TBaseElement baseElement) {
+                                resourceType.setId(baseElement.getId());
+                                resourceType.setOriginalID(baseElement.getId());
                             }
                         });
                     }

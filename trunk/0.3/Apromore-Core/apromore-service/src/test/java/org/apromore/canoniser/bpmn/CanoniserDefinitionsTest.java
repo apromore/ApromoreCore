@@ -151,7 +151,7 @@ public class CanoniserDefinitionsTest {
      * Test decanonisation of <code>Basic.cpf</code> and <code>Basic.anf</code>.
      */
     @Test
-    public final void testBasic() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    public final void testDecanoniseBasic() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
 
         // Obtain the test instance
         CanoniserDefinitions definitions = new CanoniserDefinitions(
@@ -183,6 +183,16 @@ public class CanoniserDefinitionsTest {
 
         assertNotNull(definitions.getRootElements());
         assertEquals(1, definitions.getRootElements().size());
+    }
+
+    /**
+     * Test decanonization to <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Expected 1.bpmn20.xml">expectation #1</a>.
+     *
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Expected 1.bpmn20.svg"/></div>
+     */
+    @Test
+    public final void testDecanonise1() {
+        // not yet implemented
     }
 
     /**
@@ -428,12 +438,12 @@ public class CanoniserDefinitionsTest {
      }
 
     /**
-     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 9.bpmn20.xml">case #9</a>.
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 8.bpmn20.xml">case #8</a>.
      *
-     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 9.bpmn20.svg"/></div>
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 8.bpmn20.svg"/></div>
      */
      @Test
-     public void testCanonise9() throws FileNotFoundException, JAXBException, SAXException {
+     public void testCanonise8() throws FileNotFoundException, JAXBException, SAXException {
          CanoniserDefinitions definitions = testCanonise("Case 9");
 
          /*
@@ -444,6 +454,65 @@ public class CanoniserDefinitionsTest {
          NodeType p = definitions.getCPF().getNet().get(0).getNode().get(3);
          assertEquals("P", p.getName());
          assertEquals(ResourceTypeType.class, p.getClass());
+         assertEquals(Collections.EMPTY_LIST, ((ResourceTypeType) l.getSpecializationIds());
+         */
+
+         // Start event "E1"
+         NodeType e1 = definitions.getCPF().getNet().get(0).getNode().get(0);
+         assertEquals("E1", e1.getName());
+         assertEquals(EventType.class, e1.getClass());
+         //assertEquals(Collections.singletonList(p), ((EventType) e1).getResourceTypeRef()); 
+
+         // Task "A"
+         NodeType a = definitions.getCPF().getNet().get(0).getNode().get(1);
+         assertEquals("A", a.getName());
+         assertEquals(TaskType.class, a.getClass());
+
+         // End event "E2"
+         NodeType e2 = definitions.getCPF().getNet().get(0).getNode().get(2);
+         assertEquals("E2", e2.getName());
+         assertEquals(EventType.class, e2.getClass());
+
+         // Expect 2 edges
+         assertEquals(2, definitions.getCPF().getNet().get(0).getEdge().size());
+
+         // Sequence flow from E1 to A
+         EdgeType e1_a = definitions.getCPF().getNet().get(0).getEdge().get(0);
+         assertNull(e1_a.getCondition());
+         assertEquals(e1.getId(), e1_a.getSourceId());
+         assertEquals(a.getId(), e1_a.getTargetId());
+
+         // Sequence flow A to E1
+         EdgeType a_e2 = definitions.getCPF().getNet().get(0).getEdge().get(1);
+         assertNull(a_e2.getCondition());
+         assertEquals(a.getId(), a_e2.getSourceId());
+         assertEquals(e2.getId(), a_e2.getTargetId());
+     }
+
+    /**
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 9.bpmn20.xml">case #9</a>.
+     *
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 9.bpmn20.svg"/></div>
+     */
+     @Test
+     public void testCanonise9() throws FileNotFoundException, JAXBException, SAXException {
+         CanoniserDefinitions definitions = testCanonise("Case 9");
+
+         /*
+         // Expect 5 nodes
+         assertEquals(5, definitions.getCPF().getNet().get(0).getNode().size());
+
+         // Pool "P"
+         NodeType p = definitions.getCPF().getNet().get(0).getNode().get(3);
+         assertEquals("P", p.getName());
+         assertEquals(ResourceTypeType.class, p.getClass());
+         assertEquals(Collections.EMPTY_LIST, ((ResourceTypeType) l.getSpecializationIds());
+
+         // Lane "L"
+         NodeType l = definitions.getCPF().getNet().get(0).getNode().get(4);
+         assertEquals("L", l.getName());
+         assertEquals(ResourceTypeType.class, l.getClass());
+         assertEquals(Collections.singletonList(p.getId()), ((ResourceTypeType) l.getSpecializationIds());
 
          // Start event "E1"
          NodeType e1 = definitions.getCPF().getNet().get(0).getNode().get(0);
@@ -498,6 +567,16 @@ public class CanoniserDefinitionsTest {
      @Test
      public void testCanonise11() throws FileNotFoundException, JAXBException, SAXException {
          CanoniserDefinitions definitions = testCanonise("Case 11");
+
+         // not yet implemented
+     }
+
+    /**
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 12.bpmn20.xml">case #12</a>.
+     */
+     @Test
+     public void testCanonise12() throws FileNotFoundException, JAXBException, SAXException {
+         //CanoniserDefinitions definitions = testCanonise("Case 12");
 
          // not yet implemented
      }
