@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.apromore</groupId>
+    <artifactId>test-tools</artifactId>
+    <version>1.0</version>
+    <packaging>jar</packaging>
+
+    <url>http://code.google.com/p/apromore/</url>
+    <name>Apromore Testing Tools</name>
+    <description>The Testing tools are a collection of classes that help in the testing of Apromore.</description>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>${maven-compiler-plugin.version}</version>
+                    <inherited>true</inherited>
+                    <configuration>
+                        <source>${java.source.version}</source>
+                        <target>${java.target.version}</target>
+                    </configuration>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <dependencies>
+        <!-- Logging -->
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <version>${slf4j.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-core</artifactId>
+            <version>${logback.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>net.sf.ipsedixit</groupId>
+            <artifactId>ipsedixit</artifactId>
+            <version>${ipsedixit.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+            <version>${google-guava.version}</version>
+        </dependency>
+    </dependencies>
+
+    <properties>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+
+        <java.source.version>1.7</java.source.version>
+        <java.target.version>${java.source.version}</java.target.version>
+
+        <!-- Logging versions -->
+        <slf4j.version>1.6.3</slf4j.version>
+        <logback.version>0.9.28</logback.version>
+
+        <!-- Other version info -->
+        <ipsedixit.version>1.0.0</ipsedixit.version>
+        <google-guava.version>r08</google-guava.version>
+
+        <!-- Plugings -->
+        <maven-compiler-plugin.version>2.5.1</maven-compiler-plugin.version>
+    </properties>
+
+</project>
