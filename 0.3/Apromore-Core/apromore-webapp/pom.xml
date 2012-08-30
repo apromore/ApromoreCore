@@ -38,7 +38,7 @@
     </distributionManagement>
 
     <build>
-        <finalName>Apromore-manager</finalName>
+        <finalName>manager</finalName>
     </build>
 
     <dependencies>

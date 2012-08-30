@@ -72,17 +72,17 @@
                             <target>
                                 <property file="build.properties"/>
 
-                                <delete dir="${dir-tomcat-webapps}/Apromore"/>
-                                <delete file="${dir-tomcat-webapps}/Apromore.war"/>
-                                <copy file="${basedir}/Apromore-Core/apromore-webapp/target/Apromore-manager.war" todir="${dir-tomcat-webapps}"/>
+                                <delete dir="${dir-tomcat-webapps}/manager"/>
+                                <delete file="${dir-tomcat-webapps}/manager.war"/>
+                                <copy file="${basedir}/Apromore-Core/apromore-webapp/target/manager.war" todir="${dir-tomcat-webapps}"/>
 
-                                <delete dir="${dir-tomcat-webapps}/Apromore-portal"/>
-                                <delete file="${dir-tomcat-webapps}/Apromore-portal.war"/>
-                                <copy file="${basedir}/Apromore-Portal/portal-webapp/target/Apromore.war" todir="${dir-tomcat-webapps}"/>
+                                <delete dir="${dir-tomcat-webapps}/portal"/>
+                                <delete file="${dir-tomcat-webapps}/portal.war"/>
+                                <copy file="${basedir}/Apromore-Portal/portal-webapp/target/portal.war" todir="${dir-tomcat-webapps}"/>
 
-                                <delete dir="${dir-tomcat-webapps}/Apromore-editor"/>
-                                <delete file="${dir-tomcat-webapps}/Apromore-editor.war"/>
-                                <copy file="${basedir}/Apromore-Editor/target/Apromore-editor.war" todir="${dir-tomcat-webapps}"/>
+                                <delete dir="${dir-tomcat-webapps}/editor"/>
+                                <delete file="${dir-tomcat-webapps}/editor.war"/>
+                                <copy file="${basedir}/Apromore-Editor/target/editor.war" todir="${dir-tomcat-webapps}"/>
                             </target>
                         </configuration>
                         <goals>
