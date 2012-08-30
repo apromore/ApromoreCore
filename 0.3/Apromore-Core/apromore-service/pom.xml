@@ -7,7 +7,7 @@
     <parent>
         <groupId>org.apromore</groupId>
         <artifactId>apromore-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
     <groupId>org.apromore</groupId>
@@ -314,8 +314,8 @@
         </dependency>
         <dependency>
             <groupId>org.apromore</groupId>
-            <artifactId>apromore-testing-tools</artifactId>
-            <version>${apromore-testing-tools.version}</version>
+            <artifactId>test-tools</artifactId>
+            <version>${test-tools.version}</version>
             <scope>test</scope>
         </dependency>
     </dependencies>
