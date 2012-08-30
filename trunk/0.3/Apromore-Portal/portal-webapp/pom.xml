@@ -91,7 +91,7 @@
     </repositories>
 
     <build>
-        <finalName>Apromore</finalName>
+        <finalName>portal</finalName>
     </build>
 
     <dependencies>

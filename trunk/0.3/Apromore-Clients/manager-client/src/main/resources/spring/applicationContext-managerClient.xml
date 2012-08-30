@@ -22,7 +22,7 @@
         <property name="messageSender">
             <bean class="org.springframework.ws.transport.http.CommonsHttpMessageSender" />
         </property>
-        <property name="defaultUri" value="http://localhost:80/Apromore-manager/services/manager" />
+        <property name="defaultUri" value="http://localhost/manager/services/manager" />
     </bean>
 
     <bean id="managerClient" class="org.apromore.manager.client.ManagerServiceClient">

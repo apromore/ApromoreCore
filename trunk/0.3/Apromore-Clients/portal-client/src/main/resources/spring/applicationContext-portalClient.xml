@@ -22,7 +22,7 @@
         <property name="messageSender">
             <bean class="org.springframework.ws.transport.http.CommonsHttpMessageSender" />
         </property>
-        <property name="defaultUri" value="http://localhost:80/Apromore/services/portal" />
+        <property name="defaultUri" value="http://localhost/portal/services/portal" />
     </bean>
 
     <bean id="portalClient" class="org.apromore.portal.client.PortalServiceClient">
