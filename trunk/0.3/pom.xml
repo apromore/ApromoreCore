@@ -8,7 +8,7 @@
     <groupId>org.apromore</groupId>
     <artifactId>apromore-master</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0</version>
 
     <url>http://code.google.com/p/apromore/</url>
     <name>Advanced Process Model Repository</name>
@@ -20,8 +20,8 @@
 
     <modules>
         <!-- Needed before Parent Builds -->
-        <module>Apromore-Tools/Apromore-Tools</module>
-        <module>Apromore-Tools/Apromore-Testing-Tools</module>
+        <module>Build-Tools</module>
+        <module>Test-Tools</module>
 
         <!-- Apromore project, includes the above -->
         <module>Apromore-Parent</module>
@@ -74,11 +74,11 @@
 
                                 <delete dir="${dir-tomcat-webapps}/Apromore"/>
                                 <delete file="${dir-tomcat-webapps}/Apromore.war"/>
-                                <copy file="${basedir}/Apromore-Core/apromore-webapp/target/Apromore.war" todir="${dir-tomcat-webapps}"/>
+                                <copy file="${basedir}/Apromore-Core/apromore-webapp/target/Apromore-manager.war" todir="${dir-tomcat-webapps}"/>
 
                                 <delete dir="${dir-tomcat-webapps}/Apromore-portal"/>
                                 <delete file="${dir-tomcat-webapps}/Apromore-portal.war"/>
-                                <copy file="${basedir}/Apromore-Portal/portal-webapp/target/Apromore-portal.war" todir="${dir-tomcat-webapps}"/>
+                                <copy file="${basedir}/Apromore-Portal/portal-webapp/target/Apromore.war" todir="${dir-tomcat-webapps}"/>
 
                                 <delete dir="${dir-tomcat-webapps}/Apromore-editor"/>
                                 <delete file="${dir-tomcat-webapps}/Apromore-editor.war"/>
