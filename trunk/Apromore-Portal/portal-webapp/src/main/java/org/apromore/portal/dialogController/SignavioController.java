@@ -32,6 +32,7 @@ public class SignavioController extends BaseController {
             DataHandler nativeDH = getService().exportFormat(process.getId(), process.getName(), version.getName(),
                     nativeType, annotation, false, this.mainC.getCurrentUser().getUsername());
             String data = StreamUtil.convertStreamToString(nativeDH.getInputStream());
+            this.setTitle(process.getName());
             param.put(JSON_DATA, data.replace("\n", "").trim());
             param.put("url", getURL(nativeType));
             param.put("importPath", getImportPath(nativeType));

@@ -105,24 +105,24 @@ public class EPMLToJSONConverter {
             String stencilSetNs = "http://b3mn.org/stencilset/epc#";
             BasicDiagram diagram = new BasicDiagram(epc.getName(), "Diagram", new StencilSetReference(stencilSetNs));
             Bounds bounds = new Bounds();
-            bounds.setCoordinates(0, 0, 200, 200);
+            bounds.setCoordinates(0,0,200,200);
             diagram.setBounds(bounds);
             context.addDiagram(diagram);
-
             for (Object obj : epc.getEventOrFunctionOrRole()) {
+                if (obj instanceof JAXBElement) {
+                    obj = ((JAXBElement) obj).getValue();
+                }
                 EPMLHandler converter = converterFactory.createNodeConverter(obj);
                 if (converter != null) {
                     diagram.addChildShape(converter.convert());
                 }
             }
-
             for (Object obj : epc.getEventOrFunctionOrRole()) {
                 EPMLHandler converter = converterFactory.createEdgeConverter(obj);
                 if (converter != null) {
                     diagram.addChildShape(converter.convert());
                 }
             }
-
             for (JAXBElement<?> element : epc.getConfigurationRequirementOrConfigurationGuidelineOrConfigurationOrder()) {
                 EPMLHandler converter = converterFactory.createNodeConverter(element.getValue());
                 if (converter != null) {

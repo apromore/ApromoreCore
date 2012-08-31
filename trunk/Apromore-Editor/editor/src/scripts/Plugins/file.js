@@ -85,13 +85,20 @@ ORYX.Plugins.Save = Clazz.extend({
 	},
 	
 	updateTitle: function(){
-		
-		var value = window.document.title || document.getElementsByTagName("title")[0].childNodes[0].nodeValue;
-		
-		if (this.changeDifference === 0 && value.startsWith(this.changeSymbol)){
-			window.document.title = value.slice(1);
-		} else if (this.changeDifference !== 0 && !value.startsWith(this.changeSymbol)){
-			window.document.title = this.changeSymbol + "" + value;
+
+		var value = window.document.title;
+		var docElement = document.getElementsByTagName("title")[0];
+		if(docElement){
+		    var child = docElement.childNodes[0];
+            if(child)
+		        value = nodeValue;
+		}
+		if(value){
+            if (this.changeDifference === 0 && value.startsWith(this.changeSymbol)){
+                window.document.title = value.slice(1);
+            } else if (this.changeDifference !== 0 && !value.startsWith(this.changeSymbol)){
+                window.document.title = this.changeSymbol + "" + value;
+            }
 		}
 	},
 	

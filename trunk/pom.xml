@@ -37,7 +37,6 @@
         
         <module>Apromore-Clients/manager-client</module>
         <module>Apromore-Clients/portal-client</module>
-        <module>Apromore-Clients/oryx-servlet</module>
         
         <module>Apromore-Core/apromore-service</module>
         <module>Apromore-Core/apromore-webapp</module>
