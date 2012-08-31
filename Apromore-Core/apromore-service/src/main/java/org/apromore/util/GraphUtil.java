@@ -101,12 +101,19 @@ public class GraphUtil {
         graph.removeVertices(isolatedVertices);
 
         FlowNode entry = null;
-        FlowNode exit;
+        FlowNode exit = null;
 
         for (FlowNode src : srcs) {
             String srcLabel = src.getName();
             if ("_entry_".equals(srcLabel)) {
                 entry = src;
+            }
+        }
+
+        for (FlowNode tgt : tgts) {
+            String tgtLabel = tgt.getName();
+            if ("_exit_".equals(tgtLabel)) {
+                exit = tgt;
             }
         }
 

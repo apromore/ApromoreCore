@@ -84,7 +84,6 @@ public class ComposerServiceImpl implements ComposerService {
         gSrv.fillEdges(g, contentDO.getContentId());
 
         Collection<FlowNode> nodesToBeRemoved = new HashSet<FlowNode>();
-        //Collection<ControlFlow<FlowNode>> edgesToBeRemoved = new HashSet<ControlFlow<FlowNode>>();
         if (pocketId != null) {
             Collection<ControlFlow<FlowNode>> edges = g.getEdges();
             for (ControlFlow<FlowNode> edge: edges) {
@@ -129,68 +128,40 @@ public class ComposerServiceImpl implements ComposerService {
     }
 
     private boolean canCombineSplit(FlowNode parentT1, FlowNode boundaryS) {
-
         if (parentT1 == null || boundaryS == null) {
             return false;
-        }
-
-        if ((parentT1 instanceof CpfXorGateway) && (boundaryS instanceof CpfXorGateway)) {
+        } else if ((parentT1 instanceof CpfXorGateway) && (boundaryS instanceof CpfXorGateway)) {
+            return true;
+        } else if ((parentT1 instanceof CpfAndGateway) && (boundaryS instanceof CpfAndGateway)) {
+            return true;
+        } else if ((parentT1 instanceof CpfOrGateway) && (boundaryS instanceof CpfOrGateway)) {
+            return true;
+        } else if (("XOR".equals(parentT1.getName())) && ("XOR".equals(boundaryS.getName()))) {
+            return true;
+        } else if (("AND".equals(parentT1.getName())) && ("AND".equals(boundaryS.getName()))) {
+            return true;
+        } else if (("OR".equals(parentT1.getName())) && ("OR".equals(boundaryS.getName()))) {
             return true;
         }
-
-        if ((parentT1 instanceof CpfAndGateway) && (boundaryS instanceof CpfAndGateway)) {
-            return true;
-        }
-
-        if ((parentT1 instanceof CpfOrGateway) && (boundaryS instanceof CpfOrGateway)) {
-            return true;
-        }
-
-        if (("XOR".equals(parentT1.getName())) && ("XOR".equals(boundaryS.getName()))) {
-            return true;
-        }
-
-        if (("AND".equals(parentT1.getName())) && ("AND".equals(boundaryS.getName()))) {
-            return true;
-        }
-
-        if (("OR".equals(parentT1.getName())) && ("OR".equals(boundaryS.getName()))) {
-            return true;
-        }
-
         return false;
     }
 
     private boolean canCombineJoin(FlowNode parentT2, FlowNode boundaryE) {
-
         if (parentT2 == null || boundaryE == null) {
             return false;
-        }
-
-        if ((parentT2 instanceof CpfXorGateway) && (boundaryE instanceof CpfXorGateway)) {
+        } else if ((parentT2 instanceof CpfXorGateway) && (boundaryE instanceof CpfXorGateway)) {
+            return true;
+        } else if ((parentT2 instanceof CpfAndGateway) && (boundaryE instanceof CpfAndGateway)) {
+            return true;
+        } else if ((parentT2 instanceof CpfOrGateway) && (boundaryE instanceof CpfOrGateway)) {
+            return true;
+        } else if (("XOR".equals(parentT2.getName())) && ("XOR".equals(boundaryE.getName()))) {
+            return true;
+        } else if (("AND".equals(parentT2.getName())) && ("AND".equals(boundaryE.getName()))) {
+            return true;
+        } else if (("OR".equals(parentT2.getName())) && ("OR".equals(boundaryE.getName()))) {
             return true;
         }
-
-        if ((parentT2 instanceof CpfAndGateway) && (boundaryE instanceof CpfAndGateway)) {
-            return true;
-        }
-
-        if ((parentT2 instanceof CpfOrGateway) && (boundaryE instanceof CpfOrGateway)) {
-            return true;
-        }
-
-        if (("XOR".equals(parentT2.getName())) && ("XOR".equals(boundaryE.getName()))) {
-            return true;
-        }
-
-        if (("AND".equals(parentT2.getName())) && ("AND".equals(boundaryE.getName()))) {
-            return true;
-        }
-
-        if (("OR".equals(parentT2.getName())) && ("OR".equals(boundaryE.getName()))) {
-            return true;
-        }
-
         return false;
     }
 
