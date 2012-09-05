@@ -11,7 +11,7 @@
 
     <name>Apromore Standard Parent POM</name>
     <description>Provides a base build script for all projects.</description>
-    <url>http://code.google.com/p/apromore/</url>
+    <url>http://apromore.org/</url>
 
     <scm>
         <url>http://apromore.googlecode.com/svn/trunk/apromore-parent</url>
@@ -21,23 +21,23 @@
 
     <ciManagement>
         <system>Bamboo</system>
-        <url>http://fastyawl/bamboo</url>
+        <url>http://apromore-build.qut.edu.au/bamboo</url>
         <notifiers>
             <notifier>
-                <address>jamesc2@qut.edu.au</address>
+                <address>cam.james@gmail.com</address>
             </notifier>
         </notifiers>
     </ciManagement>
 
     <issueManagement>
         <system>JIRA</system>
-        <url>http://fastyawl/jira/browse/apromore</url>
+        <url>http://apromore-build.qut.edu.au/jira/browse/support</url>
     </issueManagement>
 
     <distributionManagement>
         <site>
             <id>website</id>
-            <url>dav:http://fastyawl/projects/Apromore-Parent</url>
+            <url>dav:http://apromore-build.qut.edu.au/projects/Apromore-Parent</url>
         </site>
     </distributionManagement>
 
@@ -53,6 +53,34 @@
         <name>QUT</name>
         <url>http://www.qut.edu.au</url>
     </organization>
+
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
+
+    <inceptionYear>2010</inceptionYear>
+
+    <mailingLists>
+        <mailingList>
+            <name>Apromore Forum</name>
+            <post>apromore-rm@googlegroups.com</post>
+            <unsubscribe>apromore-rm+unsubscribe@googlegroups.com</unsubscribe>
+        </mailingList>
+    </mailingLists>
+
+    <developers>
+        <developer>
+            <id>u312978</id>
+            <name>Cameron James</name>
+            <email>cam.james@gmail.com</email>
+            <organization>Suncorp</organization>
+            <organizationUrl>http://www.suncorp.com.au/</organizationUrl>
+            <roles>
+                <role>Active User</role>
+            </roles>
+            <timezone>+10</timezone>
+        </developer>
+    </developers>
 
     <reporting>
         <plugins>

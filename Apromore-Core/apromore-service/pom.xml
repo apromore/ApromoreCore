@@ -12,30 +12,53 @@
 
     <groupId>org.apromore</groupId>
     <artifactId>apromore-service</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
+    <version>1.0</version>
 
-    <url>http://code.google.com/p/apromore/</url>
+    <url>http://apromore.org/</url>
     <name>Apromore Service</name>
     <description>Apromore's Service. This is the guts of Apromore which performs all the processing.</description>
 
     <scm>
-        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/0.3/Apromore-Core/apromore-core</developerConnection>
-        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Core/apromore-core</connection>
-        <url>http://code.google.com/p/apromore/source/browse/trunk/0.3/Apromore-Core/apromore-core</url>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Core/apromore-service</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Core/apromore-service</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Core/apromore-service</developerConnection>
     </scm>
 
     <ciManagement>
-        <system>Jenkins</system>
-        <url>http://fastyawl01.qut.edu.au:80/jenkins/view/Services</url>
+        <system>Bamboo</system>
+        <url>http://apromore-build.qut.edu.au/bamboo</url>
+        <notifiers>
+            <notifier>
+                <address>cam.james@gmail.com</address>
+            </notifier>
+        </notifiers>
     </ciManagement>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://apromore-build.qut.edu.au/jira/browse/apromore</url>
+    </issueManagement>
 
     <distributionManagement>
         <site>
             <id>website</id>
-            <url>dav:http://fastyawl01.qut.edu.au:80/projects/apromoreCore</url>
+            <url>dav:http://apromore-build.qut.edu.au/projects/Apromore-Service</url>
         </site>
     </distributionManagement>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v3</name>
+            <distribution>repo</distribution>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>QUT</name>
+        <url>http://www.qut.edu.au</url>
+    </organization>
 
     <build>
         <finalName>apromore-common</finalName>
