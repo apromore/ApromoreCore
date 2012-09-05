@@ -7,7 +7,7 @@
          </extensionElements>
       </participant>
    </collaboration>
-   <process id="sid-02288a67-54a8-419c-bb09-96fc364e74ce" isClosed="false" isExecutable="false" name="P" processType="None">
+   <process id="sid-02288a67-54a8-419c-bb09-96fc364e74ce" name="P" isClosed="false" isExecutable="false" processType="None">
       <laneSet id="sid-11570fe6-6612-4598-9d94-cc2ac47b07f2">
          <lane id="sid-C599C65B-4C1E-44B8-9653-E6E849AE31D5">
             <extensionElements>
