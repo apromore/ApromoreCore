@@ -13,9 +13,9 @@
     <groupId>org.apromore</groupId>
     <artifactId>manager-client</artifactId>
     <packaging>jar</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0</version>
 
-    <url>http://code.google.com/p/apromore/</url>
+    <url>http://apromore.org/</url>
     <name>Apromore Manager Client</name>
     <description>Apromore is an open and extensible repository to store and disclose business process models of a
         variety of types and languages, and beyond that, to build on top of existing tools and techniques, to provide
@@ -23,34 +23,33 @@
         re-use.
     </description>
 
-    <issueManagement>
-        <system>Google Code</system>
-        <url>http://code.google.com/p/apromore/wiki/IssueTracker</url>
-    </issueManagement>
-
     <scm>
-        <developerConnection>scm:svn:http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Clients/manager-client/</developerConnection>
-        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Clients/manager-client/</connection>
-        <url>http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Clients/manager-client/</url>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Clients/manager-client</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Clients/manager-client</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Clients/manager-client</developerConnection>
     </scm>
 
     <ciManagement>
-        <system>Hudson</system>
-        <url>http://fastyawl01.qut.edu.au:80/view/apromore</url>
+        <system>Bamboo</system>
+        <url>http://apromore-build.qut.edu.au/bamboo</url>
+        <notifiers>
+            <notifier>
+                <address>cam.james@gmail.com</address>
+            </notifier>
+        </notifiers>
     </ciManagement>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://apromore-build.qut.edu.au/jira/browse/clients</url>
+    </issueManagement>
 
     <distributionManagement>
         <site>
             <id>website</id>
-            <url>dav:http://fastyawl01.qut.edu.au:80/projects/apromore</url>
+            <url>dav:http://apromore-build.qut.edu.au/projects/Manager-Client</url>
         </site>
     </distributionManagement>
-
-    <prerequisites>
-        <maven>2.2.1</maven>
-    </prerequisites>
-
-    <inceptionYear>2010</inceptionYear>
 
     <licenses>
         <license>
@@ -64,28 +63,6 @@
         <name>QUT</name>
         <url>http://www.qut.edu.au</url>
     </organization>
-
-    <mailingLists>
-        <mailingList>
-            <name>Apromore Forum</name>
-            <post>apromore-rm@googlegroups.com</post>
-            <unsubscribe>apromore-rm+unsubscribe@googlegroups.com</unsubscribe>
-        </mailingList>
-    </mailingLists>
-
-    <developers>
-        <developer>
-            <id>u312978</id>
-            <name>Cameron James</name>
-            <email>cam.james@gmail.com</email>
-            <organization>Suncorp</organization>
-            <organizationUrl>http://www.suncorp.com.au/</organizationUrl>
-            <roles>
-                <role>Active User</role>
-            </roles>
-            <timezone>+10</timezone>
-        </developer>
-    </developers>
 
     <dependencies>
         <dependency>

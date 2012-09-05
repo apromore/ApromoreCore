@@ -9,9 +9,50 @@
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <url>http://code.google.com/p/apromore/</url>
+    <url>http://apromore.org/</url>
     <name>Apromore Testing Tools</name>
     <description>The Testing tools are a collection of classes that help in the testing of Apromore.</description>
+
+    <scm>
+        <url>http://apromore.googlecode.com/svn/trunk/Test-Tools</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Test-Tools</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Test-Tools</developerConnection>
+    </scm>
+
+    <ciManagement>
+        <system>Bamboo</system>
+        <url>http://apromore-build.qut.edu.au/bamboo</url>
+        <notifiers>
+            <notifier>
+                <address>cam.james@gmail.com</address>
+            </notifier>
+        </notifiers>
+    </ciManagement>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://apromore-build.qut.edu.au/jira/browse/support</url>
+    </issueManagement>
+
+    <distributionManagement>
+        <site>
+            <id>website</id>
+            <url>dav:http://apromore-build.qut.edu.au/projects/test-tools</url>
+        </site>
+    </distributionManagement>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v3</name>
+            <distribution>repo</distribution>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>QUT</name>
+        <url>http://www.qut.edu.au</url>
+    </organization>
 
     <build>
         <pluginManagement>

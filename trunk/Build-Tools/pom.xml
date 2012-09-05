@@ -9,25 +9,50 @@
     <version>1.0</version>
     <packaging>jar</packaging>
 
-    <url>http://code.google.com/p/apromore/</url>
+    <url>http://apromore.org/</url>
     <name>Apromore Build Tools Extension</name>
     <description>The Build tools are to help track changes in the code and a place to store checkstyle configuration for all the other projects in Apromore.</description>
 
-    <issueManagement>
-        <system>Google Code</system>
-        <url>http://code.google.com/p/apromore/wiki/IssueTracker</url>
-    </issueManagement>
-
     <scm>
-        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/0.3/Apromore-Tools</developerConnection>
-        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Tools</connection>
-        <url>http://code.google.com/p/apromore/source/browse/trunk/0.3/Apromore-Tools</url>
+        <url>http://apromore.googlecode.com/svn/trunk/Build-Tools</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Build-Tools</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Build-Tools</developerConnection>
     </scm>
 
     <ciManagement>
-        <system>Jenkins</system>
-        <url>http://fastyawl01.qut.edu.au:80/jenkins/view/Tools/</url>
+        <system>Bamboo</system>
+        <url>http://apromore-build.qut.edu.au/bamboo</url>
+        <notifiers>
+            <notifier>
+                <address>cam.james@gmail.com</address>
+            </notifier>
+        </notifiers>
     </ciManagement>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://apromore-build.qut.edu.au/jira/browse/support</url>
+    </issueManagement>
+
+    <distributionManagement>
+        <site>
+            <id>website</id>
+            <url>dav:http://apromore-build.qut.edu.au/projects/build-tools</url>
+        </site>
+    </distributionManagement>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v3</name>
+            <distribution>repo</distribution>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>QUT</name>
+        <url>http://www.qut.edu.au</url>
+    </organization>
 
     <reporting>
         <plugins>

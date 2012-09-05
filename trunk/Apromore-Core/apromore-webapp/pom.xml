@@ -13,29 +13,52 @@
     <groupId>org.apromore</groupId>
     <artifactId>apromore-webapp</artifactId>
     <packaging>war</packaging>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0</version>
 
-    <url>http://code.google.com/p/apromore/</url>
+    <url>http://apromore.org/</url>
     <name>Apromore WebApp</name>
-    <description>Apromore's WebApp component. It is what is used to expose the webservices to the world.</description>
+    <description>Apromore's WebApp component. It is what is used to expose the web services to the world.</description>
 
     <scm>
-        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/0.3/Apromore-Core/apromore-webapp</developerConnection>
-        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/0.3/Apromore-Core/apromore-webapp</connection>
-        <url>http://code.google.com/p/apromore/source/browse/trunk/0.3/Apromore-Core/apromore-webapp</url>
+        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Core/apromore-webapp</url>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Core/apromore-webapp</connection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Core/apromore-webapp</developerConnection>
     </scm>
 
     <ciManagement>
-        <system>Jenkins</system>
-        <url>http://fastyawl01.qut.edu.au:80/jenkins/view%20Apps</url>
+        <system>Bamboo</system>
+        <url>http://apromore-build.qut.edu.au/bamboo</url>
+        <notifiers>
+            <notifier>
+                <address>cam.james@gmail.com</address>
+            </notifier>
+        </notifiers>
     </ciManagement>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://apromore-build.qut.edu.au/jira/browse/apromore</url>
+    </issueManagement>
 
     <distributionManagement>
         <site>
             <id>website</id>
-            <url>dav:http://fastyawl01.qut.edu.au:80/projects/apromoreWebApp</url>
+            <url>dav:http://apromore-build.qut.edu.au/projects/Apromore-webapp</url>
         </site>
     </distributionManagement>
+
+    <licenses>
+        <license>
+            <name>GNU General Public License v3</name>
+            <distribution>repo</distribution>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>QUT</name>
+        <url>http://www.qut.edu.au</url>
+    </organization>
 
     <build>
         <finalName>manager</finalName>
@@ -46,7 +69,7 @@
         <dependency>
             <groupId>org.apromore</groupId>
             <artifactId>apromore-service</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>1.0</version>
         </dependency>
 
         <!-- Logging -->
