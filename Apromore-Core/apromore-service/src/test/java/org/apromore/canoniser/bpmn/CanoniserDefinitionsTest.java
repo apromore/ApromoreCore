@@ -444,18 +444,25 @@ public class CanoniserDefinitionsTest {
      */
      @Test
      public void testCanonise8() throws FileNotFoundException, JAXBException, SAXException {
-         CanoniserDefinitions definitions = testCanonise("Case 9");
+         CanoniserDefinitions definitions = testCanonise("Case 8");
 
-         /*
-         // Expect 4 nodes
-         assertEquals(4, definitions.getCPF().getNet().get(0).getNode().size());
+         // Expect 1 graph, 2 resource types
+         assertEquals(1, definitions.getCPF().getNet().size());
+         assertEquals(2, definitions.getCPF().getResourceType().size());
 
          // Pool "P"
-         NodeType p = definitions.getCPF().getNet().get(0).getNode().get(3);
+         ResourceTypeType p = definitions.getCPF().getResourceType().get(1);
          assertEquals("P", p.getName());
          assertEquals(ResourceTypeType.class, p.getClass());
-         assertEquals(Collections.EMPTY_LIST, ((ResourceTypeType) l.getSpecializationIds());
-         */
+         //assertEquals(Collections.EMPTY_LIST, p.getSpecializationIds());
+
+         // Implicit lane within "P"
+         ResourceTypeType p_lane = definitions.getCPF().getResourceType().get(0);
+         assertEquals("", p_lane.getName());
+         assertEquals(ResourceTypeType.class, p_lane.getClass());
+
+         // Expect 3 nodes
+         assertEquals(3, definitions.getCPF().getNet().get(0).getNode().size());
 
          // Start event "E1"
          NodeType e1 = definitions.getCPF().getNet().get(0).getNode().get(0);
@@ -498,27 +505,31 @@ public class CanoniserDefinitionsTest {
      public void testCanonise9() throws FileNotFoundException, JAXBException, SAXException {
          CanoniserDefinitions definitions = testCanonise("Case 9");
 
-         /*
-         // Expect 5 nodes
-         assertEquals(5, definitions.getCPF().getNet().get(0).getNode().size());
+         // Expect 1 graph, 2 resource types
+         assertEquals(1, definitions.getCPF().getNet().size());
+         assertEquals(4, definitions.getCPF().getResourceType().size());
 
          // Pool "P"
-         NodeType p = definitions.getCPF().getNet().get(0).getNode().get(3);
+         ResourceTypeType p = definitions.getCPF().getResourceType().get(3);
          assertEquals("P", p.getName());
          assertEquals(ResourceTypeType.class, p.getClass());
-         assertEquals(Collections.EMPTY_LIST, ((ResourceTypeType) l.getSpecializationIds());
 
          // Lane "L"
-         NodeType l = definitions.getCPF().getNet().get(0).getNode().get(4);
+         ResourceTypeType l = definitions.getCPF().getResourceType().get(1);
          assertEquals("L", l.getName());
          assertEquals(ResourceTypeType.class, l.getClass());
-         assertEquals(Collections.singletonList(p.getId()), ((ResourceTypeType) l.getSpecializationIds());
+         assertEquals(Collections.EMPTY_LIST, l.getSpecializationIds());
+
+         //assertEquals(Collections.singletonList(p.getId()), ((ResourceTypeType) l.getSpecializationIds()));
+
+         // Expect 3 nodes
+         assertEquals(3, definitions.getCPF().getNet().get(0).getNode().size());
 
          // Start event "E1"
          NodeType e1 = definitions.getCPF().getNet().get(0).getNode().get(0);
          assertEquals("E1", e1.getName());
          assertEquals(EventType.class, e1.getClass());
-         assertEquals(Collections.singletonList(p), ((EventType) e1).getResourceTypeRef()); 
+         //assertEquals(Collections.singletonList(p), ((EventType) e1).getResourceTypeRef()); 
 
          // Task "A"
          NodeType a = definitions.getCPF().getNet().get(0).getNode().get(1);
@@ -544,7 +555,6 @@ public class CanoniserDefinitionsTest {
          assertNull(a_e2.getCondition());
          assertEquals(a.getId(), a_e2.getSourceId());
          assertEquals(e2.getId(), a_e2.getTargetId());
-         */
      }
 
     /**
@@ -573,6 +583,8 @@ public class CanoniserDefinitionsTest {
 
     /**
      * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 12.bpmn20.xml">case #12</a>.
+     *
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 12.bpmn20.svg"/></div>
      */
      @Test
      public void testCanonise12() throws FileNotFoundException, JAXBException, SAXException {
