@@ -13,13 +13,13 @@ import javax.xml.namespace.QName;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.DocumentationType;
-import org.apromore.anf.FillType;
-import org.apromore.anf.FontType;
+//import org.apromore.anf.FillType;
+//import org.apromore.anf.FontType;
 import org.apromore.anf.GraphicsType;
-import org.apromore.anf.LineType;
+//import org.apromore.anf.LineType;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SimulationType;
-import org.apromore.anf.SizeType;
+//import org.apromore.anf.SizeType;
 import org.apromore.exception.CanoniserException;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
@@ -45,6 +45,7 @@ import org.omg.spec.bpmn._20100524.model.Definitions;
 import org.omg.spec.bpmn._20100524.model.Lane;
 import org.omg.spec.bpmn._20100524.model.LaneSet;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
+import org.omg.spec.bpmn._20100524.model.TDataObject;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
@@ -59,7 +60,7 @@ import org.omg.spec.bpmn._20100524.model.TTask;
 import org.omg.spec.dd._20100524.dc.Bounds;
 import org.omg.spec.dd._20100524.dc.Point;
 import org.omg.spec.dd._20100524.di.DiagramElement;
-import org.omg.spec.dd._20100524.di.Plane;
+//import org.omg.spec.dd._20100524.di.Plane;
 
 /**
  * BPMN 2.0 object model with canonisation methods.
@@ -69,13 +70,14 @@ import org.omg.spec.dd._20100524.di.Plane;
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  * @since 0.3
  */
-@XmlRootElement(namespace="http://www.omg.org/spec/BPMN/20100524/MODEL",name="definitions")
+@XmlRootElement(namespace = "http://www.omg.org/spec/BPMN/20100524/MODEL", name = "definitions")
 public class CanoniserDefinitions extends Definitions {
 
     /**
      * Logger.  Named after the class.
      */
-    private static final Logger logger = Logger.getLogger(CanoniserDefinitions.class.getCanonicalName());
+    @XmlTransient
+    private final Logger logger = Logger.getLogger(CanoniserDefinitions.class.getCanonicalName());
 
     /**
      * The dummy value for the <code>uri</code> attributes of the paired CPF and ANF structures.
@@ -92,7 +94,7 @@ public class CanoniserDefinitions extends Definitions {
      * This is lazily initialized by the {@link #canonise} method.
      */
     @XmlTransient
-    private final CanonicalProcessType cpf = new CanonicalProcessType();
+    private final CanonicalProcessType mCPF = new CanonicalProcessType();
 
     /**
      * Canonical anotations equivalent to this BPMN model.
@@ -100,7 +102,7 @@ public class CanoniserDefinitions extends Definitions {
      * This is lazily initialized by the {@link #canonise} method.
      */
     @XmlTransient
-    private final AnnotationsType anf = new AnnotationsType();
+    private final AnnotationsType mANF = new AnnotationsType();
 
     /**
      * Whether or not the {@link #cpf} and {@link #anf} fields have been initialized.
@@ -113,23 +115,27 @@ public class CanoniserDefinitions extends Definitions {
      *
      * Required for JUnit to work.
      */
-    public CanoniserDefinitions() {}
+    public CanoniserDefinitions() { }
 
     /**
      * Construct a BPMN model from a canonical form.
      *
      * @param cpf  a canonical process model
      * @param anf  annotations for the canonical process model
-     * @throws CanoniserException
+     * @throws CanoniserException if unable to generate BPMN from the given CPF and ANF arguments
      */
-    public CanoniserDefinitions(CanonicalProcessType cpf, AnnotationsType anf) throws CanoniserException {
+    public CanoniserDefinitions(final CanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
 
-        // Maps from CPF @cpfId identifiers to BPMN ids
+        // Map from CPF @cpfId node identifiers to BPMN ids
         final Map<String, TFlowNode> idMap = new HashMap<String, TFlowNode>();
+
+        // Map from CPF @cpfId edge identifiers to BPMN ids
         final Map<String, TSequenceFlow> edgeMap = new HashMap<String, TSequenceFlow>();
 
-        // Records the CPF cpfIds of  BPMN sequence flows which need their @sourceRef|@targetRef populated
+        // Records the CPF cpfIds of BPMN sequence flows which need their @sourceRef populated
         final Map<String, TSequenceFlow> flowWithoutSourceRefMap = new HashMap<String, TSequenceFlow>();
+
+        // Records the CPF cpfIds of BPMN sequence flows which need their @targetRef populated
         final Map<String, TSequenceFlow> flowWithoutTargetRefMap = new HashMap<String, TSequenceFlow>();
 
         // Set attributes of the document root
@@ -146,7 +152,7 @@ public class CanoniserDefinitions extends Definitions {
             final CanoniserObjectFactory factory = new CanoniserObjectFactory();
 
             for (TypeAttribute attribute : cpf.getAttribute()) {
-                logger.info("CanonicalProcess attribute typeRef=" + attribute.getTypeRef() + " value=" + attribute.getValue());
+                //logger.info("CanonicalProcess attribute typeRef=" + attribute.getTypeRef() + " value=" + attribute.getValue());
             }
 
             String author = cpf.getAuthor();
@@ -155,7 +161,7 @@ public class CanoniserDefinitions extends Definitions {
             String cpfName = cpf.getName();
 
             for (NetType net : cpf.getNet()) {
-                logger.info("Net id=" + net.getId() + " originalID=" + net.getOriginalID());
+                //logger.info("Net id=" + net.getId() + " originalID=" + net.getOriginalID());
 
                 // Translate this CPF net to a BPMN process
                 final TProcess process = new TProcess();
@@ -163,15 +169,17 @@ public class CanoniserDefinitions extends Definitions {
                 getRootElements().add(factory.createProcess(process));
 
                 for (TypeAttribute attribute : net.getAttribute()) {
-                    logger.info("  attribute " + attribute.getTypeRef() + "=" + attribute.getValue());
+                    //logger.info("  attribute " + attribute.getTypeRef() + "=" + attribute.getValue());
                 }
 
                 for (EdgeType edge : net.getEdge()) {
+                    /*
                     logger.info("  Edge " + edge.getId());
 
                     for (TypeAttribute attribute : edge.getAttribute()) {
                         logger.info("     attribute " + attribute.getTypeRef() + "=" + attribute.getValue());
                     }
+                    */
 
                     TSequenceFlow sequenceFlow = new TSequenceFlow();
                     sequenceFlow.setId("flow-" + edge.getId());
@@ -197,15 +205,15 @@ public class CanoniserDefinitions extends Definitions {
                 }
 
                 for (final NodeType node : net.getNode()) {
-                    logger.info("  Node " + node.getId());
+                    //logger.info("  Node " + node.getId());
 
                     for (TypeAttribute attribute : node.getAttribute()) {
-                        logger.info("     attribute " + attribute.getTypeRef() + "=" + attribute.getValue());
+                        //logger.info("     attribute " + attribute.getTypeRef() + "=" + attribute.getValue());
                     }
 
                     node.accept(new org.apromore.cpf.BaseVisitor() {
                         @Override public void visit(final EventType that) {
-                            logger.info("     Event"); 
+                            //logger.info("     Event");
 
                             TStartEvent event = new TStartEvent();
                             event.setId("event-" + node.getId());
@@ -214,7 +222,7 @@ public class CanoniserDefinitions extends Definitions {
                         }
 
                         @Override public void visit(final TaskType that) {
-                            logger.info("     Task subnetId=" + ((TaskType) node).getSubnetId()); 
+                            //logger.info("     Task subnetId=" + ((TaskType) node).getSubnetId());
 
                             TTask task = new TTask();
                             task.setId("task-" + node.getId());
@@ -233,15 +241,6 @@ public class CanoniserDefinitions extends Definitions {
                         flowWithoutTargetRefMap.remove(node.getId());
                     }
                 }
-            }
-
-            // Beware that in CPF 0.6 objects will become children of net rather than of canonicalProcess
-            for (ObjectType object : cpf.getObject()) {
-                logger.info("Object id=" + object.getId() + " name=" + object.getName() + " isConfigurable=" + object.isConfigurable());
-                for (TypeAttribute attribute : object.getAttribute()) {
-                    logger.info("  attribute " + attribute.getTypeRef() + "=" + attribute.getValue());
-                }
-                
             }
 
             for (ResourceTypeType resource : cpf.getResourceType()) {
@@ -288,7 +287,7 @@ public class CanoniserDefinitions extends Definitions {
             bpmnDiagram.setBPMNPlane(bpmnPlane);
 
             for (final AnnotationType annotation : anf.getAnnotation()) {
-                logger.info("Annotation id=" + annotation.getId() + " cpfId=" + annotation.getCpfId());
+                //logger.info("Annotation id=" + annotation.getId() + " cpfId=" + annotation.getCpfId());
                 annotation.accept(new org.apromore.anf.BaseVisitor() {
                     @Override public void visit(final DocumentationType that) {
                         logger.info("  Documentation");
@@ -321,7 +320,7 @@ public class CanoniserDefinitions extends Definitions {
                                         " verticalAlign= " + font.getVerticalAlign() +
                                         " weight=" + font.getWeight() +
                                         " xPosition=" + font.getXPosition() +
-                                        " yPosition=" + font.getYPosition()); 
+                                        " yPosition=" + font.getYPosition());
                         };
 
                         LineType line = graphics.getLine();
@@ -372,7 +371,7 @@ public class CanoniserDefinitions extends Definitions {
 
                             bpmnPlane.getDiagramElements().add(diObjectFactory.createBPMNShape(shape));
 
-                        } else if(edgeMap.containsKey(annotation.getCpfId())) {
+                        } else if (edgeMap.containsKey(annotation.getCpfId())) {
                             BPMNEdge edge = new BPMNEdge();
                             edge.setId(annotation.getId());
                             edge.setBpmnElement(edgeMap.get(annotation.getCpfId()).getId());
@@ -429,7 +428,7 @@ public class CanoniserDefinitions extends Definitions {
         }
         assert canonised;
 
-        return anf;
+        return mANF;
     }
 
     /**
@@ -448,64 +447,86 @@ public class CanoniserDefinitions extends Definitions {
         }
         assert canonised;
 
-        return cpf;
+        return mCPF;
     }
 
     /**
-     * Initialize {@link #anf} and {@link #cpf}.
+     * Lazily initialize {@link #mANF} and {@link #mCPF}.
      *
      * @param uri  the shared top-level <code>uri</code>  attribute of the CPF and ANF structures
      */
-    private void canonise(String uri) {
+    private void canonise(final String uri) {
 
         // Top-level attributes
-        cpf.setName(getName() == null ? "" : getName());  // @name is required by the CPF XML schema
+        mCPF.setName(requiredName(getName()));
 
-        anf.setUri(uri);
-        cpf.setUri(uri);
+        mANF.setUri(uri);
+        mCPF.setUri(uri);
 
-        cpf.setVersion("0.5");
+        mCPF.setVersion("0.5");
 
         // Traverse diagram
-        logger.info("Traversing diagrams");
+        //logger.info("Traversing diagrams");
         for (BPMNDiagram diagram : getBPMNDiagrams()) {
-            logger.info("Annotating a diagram " + ((Plane) diagram.getBPMNPlane()).getDiagramElements());
+            //logger.info("Annotating a diagram " + ((Plane) diagram.getBPMNPlane()).getDiagramElements());
             for (JAXBElement<? extends DiagramElement> element : diagram.getBPMNPlane().getDiagramElements()) {
-                logger.info("Annotating an element " + element);
+                //logger.info("Annotating an element " + element);
                 element.getValue().accept(new org.omg.spec.bpmn._20100524.model.BaseVisitor() {
                     @Override
                     public void visit(final BPMNEdge edge) {
-                        logger.info("Annotating an edge");
+                        //logger.info("Annotating an edge");
                         AnnotationType annotation = new AnnotationType();
                         annotation.setId(edge.getId());
                         annotation.setCpfId(edge.getBpmnElement().toString());
-                        anf.getAnnotation().add(annotation);
+                        mANF.getAnnotation().add(annotation);
                     }
                     @Override
                     public void visit(final BPMNShape shape) {
-                        logger.info("Annotating a shape");
+                        //logger.info("Annotating a shape");
                         AnnotationType annotation = new AnnotationType();
                         annotation.setId(shape.getId());
                         annotation.setCpfId(shape.getBpmnElement().toString());
-                        anf.getAnnotation().add(annotation);
+                        mANF.getAnnotation().add(annotation);
                     }
                 });
             }
         }
 
         // Traverse processes
-        logger.info("Traversing processes");
         for (JAXBElement<? extends TRootElement> rootElement : getRootElements()) {
             rootElement.getValue().accept(new org.omg.spec.bpmn._20100524.model.BaseVisitor() {
                 @Override
                 public void visit(final TProcess process) {
                     final NetType net = new NetType();
                     net.setId(process.getId());
-                    cpf.setRootId(process.getId());
-                    cpf.getNet().add(net);
+                    mCPF.setRootId(process.getId());
+                    mCPF.getNet().add(net);
+
+                    for (LaneSet laneSet : process.getLaneSets()) {
+                        addLaneSet(laneSet, process.getName());
+                    }
 
                     for (JAXBElement<? extends TFlowElement> flowElement : process.getFlowElements()) {
                         flowElement.getValue().accept(new org.omg.spec.bpmn._20100524.model.BaseVisitor() {
+                            @Override
+                            public void visit(final TDataObject dataObject) {
+                                ObjectType object = new ObjectType();
+
+                                object.setConfigurable(false);  // BPMN doesn't have an obvious equivalent
+
+                                if (dataObject.isIsCollection()) {
+                                    TypeAttribute attribute = new TypeAttribute();
+                                    attribute.setTypeRef("bpmn.isCollection");
+                                    attribute.setValue("true");
+                                    object.getAttribute().add(attribute);
+                                }
+
+                                populateFlowElement(object, dataObject);
+
+                                //mCPF.getObject().add(object);  // CPF 0.5
+                                //net.getObject().add(object);   // CPF 0.6
+                            }
+
                             @Override
                             public void visit(final TEndEvent endEvent) {
                                 EventType event = new EventType();
@@ -522,7 +543,8 @@ public class CanoniserDefinitions extends Definitions {
                                 case CONVERGING: routing = new XORJoinType(); break;
                                 case DIVERGING:  routing = new XORSplitType();  break;
                                 default:
-                                    throw new RuntimeException("Unimplemented gateway direction " + exclusiveGateway.getGatewayDirection());  // TODO - handle this properly
+                                    throw new RuntimeException("Unimplemented gateway direction " + exclusiveGateway.getGatewayDirection());
+                                    // TODO - handle this properly
                                 }
                                 assert routing != null;
 
@@ -534,12 +556,13 @@ public class CanoniserDefinitions extends Definitions {
                             @Override
                             public void visit(final TInclusiveGateway inclusiveGateway) {
                                 RoutingType routing;
-               
+
                                 switch (inclusiveGateway.getGatewayDirection()) {
                                 case CONVERGING: routing = new ORJoinType(); break;
                                 case DIVERGING:  routing = new ORSplitType();  break;
                                 default:
-                                    throw new RuntimeException("Unimplemented gateway direction " + inclusiveGateway.getGatewayDirection());  // TODO - handle this properly
+                                    throw new RuntimeException("Unimplemented gateway direction " + inclusiveGateway.getGatewayDirection());
+                                    // TODO - handle this properly
                                 }
                                 assert routing != null;
 
@@ -549,27 +572,15 @@ public class CanoniserDefinitions extends Definitions {
                             }
 
                             @Override
-                            public void visit(final LaneSet laneSet) {
-                                ResourceTypeType resourceType = new ResourceTypeType();
-
-                                for (Lane lane : laneSet.getLanes()) {
-                                    // TODO
-                                }
-
-                                populateBaseElement(resourceType, laneSet);
-
-                                cpf.getResourceType().add(resourceType);
-                            }
-
-                            @Override
                             public void visit(final TParallelGateway parallelGateway) {
                                 RoutingType routing;
-               
+
                                 switch (parallelGateway.getGatewayDirection()) {
                                 case CONVERGING: routing = new ANDJoinType(); break;
                                 case DIVERGING:  routing = new ANDSplitType();  break;
                                 default:
-                                    throw new RuntimeException("Unimplemented gateway direction " + parallelGateway.getGatewayDirection());  // TODO - handle this properly
+                                    throw new RuntimeException("Unimplemented gateway direction " + parallelGateway.getGatewayDirection());
+                                    // TODO - handle this properly
                                 }
                                 assert routing != null;
 
@@ -592,7 +603,8 @@ public class CanoniserDefinitions extends Definitions {
                                 populateFlowElement(edge, sequenceFlow);
 
                                 if (sequenceFlow.getConditionExpression() != null) {
-                                    edge.setCondition(sequenceFlow.getConditionExpression().getContent().get(0).toString());  // TODO - handle non-singleton expressions
+                                    edge.setCondition(sequenceFlow.getConditionExpression().getContent().get(0).toString());
+                                    // TODO - handle non-singleton expressions
                                 }
                                 edge.setSourceId(((TFlowNode) sequenceFlow.getSourceRef()).getId());
                                 edge.setTargetId(((TFlowNode) sequenceFlow.getTargetRef()).getId());
@@ -631,6 +643,17 @@ public class CanoniserDefinitions extends Definitions {
                                 node.setName(flowElement.getName());
                             }
 
+                            // Object supertype handlers
+
+                            private void populateBaseElement(final ObjectType object, final TBaseElement baseElement) {
+                                object.setId(baseElement.getId());
+                            }
+
+                            private void populateFlowElement(final ObjectType object, final TFlowElement flowElement) {
+                                populateBaseElement(object, flowElement);
+                                object.setName(flowElement.getName());
+                            }
+
                             // ResourceType supertype handlers
 
                             private void populateBaseElement(final ResourceTypeType resourceType, final TBaseElement baseElement) {
@@ -640,7 +663,56 @@ public class CanoniserDefinitions extends Definitions {
                         });
                     }
                 }
+
+                /**
+                 * Recursively add resource types to this CPF corresponding to the BPMN pools lanes.
+                 *
+                 * This is recursive, since a lane may itself contain a child lane set.
+                 *
+                 * @param laneSet  BPMN lane set to add, never <code>null</code>
+                 * @param parentName  the name attribute of the parent element ({@link TProcess} or a {@link TLane}), possibly <code>null</code>
+                 */
+                private void addLaneSet(final LaneSet laneSet, final String parentName) {
+                    ResourceTypeType poolResourceType = new ResourceTypeType();
+
+                    poolResourceType.setId(laneSet.getId());
+
+                    // In BPMN lane sets have their own distinct name attribute, but we ignore this and use the parent name instead
+                    poolResourceType.setName(requiredName(parentName));
+
+                    for (Lane lane : laneSet.getLanes()) {
+                        ResourceTypeType laneResourceType = new ResourceTypeType();
+
+                        for (JAXBElement<Object> flowNode : lane.getFlowNodeRefs()) {
+                            logger.info("Lane " + ((TFlowNode) flowNode.getValue()).getId());
+                        }
+
+                        laneResourceType.setId(lane.getId());
+                        laneResourceType.setName(requiredName(lane.getName()));
+                        poolResourceType.getSpecializationIds().add(lane.getId());
+
+                        mCPF.getResourceType().add(laneResourceType);
+
+                        // recurse on any child lane sets
+                        if (lane.getChildLaneSet() != null) {
+                            addLaneSet(lane.getChildLaneSet(), lane.getName());
+                        }
+                    }
+
+                    mCPF.getResourceType().add(poolResourceType);
+                }
             });
         }
     };
+
+    /**
+     * This method centralizes the policy of filling in absent names with a zero-length
+     * string in cases where CPF requires a name which is optional in BPMN.
+     *
+     * @param name  a name which might be absent in the source language
+     * @return <var>name</var> if present, otherwise <code>""</code> (the zero-length string).
+     */
+    static String requiredName(final String name) {
+        return (name == null ? "" : name);
+    }
 }
