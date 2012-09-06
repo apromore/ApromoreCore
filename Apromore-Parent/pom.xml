@@ -272,6 +272,11 @@
         <pluginManagement>
             <plugins>
                 <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>sonar-maven-plugin</artifactId>
+                    <version>${sonar-maven.version}</version>
+                </plugin>
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-compiler-plugin</artifactId>
                     <version>${maven-compiler-plugin.version}</version>
@@ -836,6 +841,7 @@
 
         <!-- **** Settings for the building of the projects **** -->
         <!-- Plugins used by the Build process -->
+        <sonar-maven.version>2.0</sonar-maven.version>
         <taglist-maven-plugin.version>2.4</taglist-maven-plugin.version>
         <cobertura-maven-plugin.version>2.5.1</cobertura-maven-plugin.version>
         <clover-maven-plugin.version>3.1.6</clover-maven-plugin.version>
