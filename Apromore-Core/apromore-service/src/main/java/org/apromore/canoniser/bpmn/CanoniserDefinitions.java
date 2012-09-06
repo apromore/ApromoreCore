@@ -1,7 +1,9 @@
 package org.apromore.canoniser.bpmn;
 
 // Java 2 Standard packges
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBElement;
@@ -65,7 +67,11 @@ import org.omg.spec.dd._20100524.di.DiagramElement;
 /**
  * BPMN 2.0 object model with canonisation methods.
  *
- * This also supports extensions to BPMN for configurable models.
+ * Apromore's canonical format (CPF) describes an individual process.
+ * The annotation format (ANF) is paired with a specific CPF document and currently describes diagram layout.
+ * A BPMN document describes a collection of processes which may all feature in a single diagram.
+ * Consequently one BPMN document may correspond to several CPF documents, and a single diagram element within
+ * a BPMN document may correspond to several ANF documents.
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  * @version 0.4
@@ -120,20 +126,22 @@ public class CanoniserDefinitions extends Definitions {
     public static final String XSD_URI = "http://www.w3.org/2001/XMLSchema";
 
     /**
-     * Canonical process model equivalent to this BPMN model.
+     * Canonical process models equivalent to those in this BPMN model.
+     *
+     * The ordering of the list corresponds to the order of the processes in the BPMN document.
      *
      * This is lazily initialized by the {@link #canonise} method.
      */
     @XmlTransient
-    private final CanonicalProcessType mCPF = new CanonicalProcessType();
+    private final List<CanonicalProcessType> cpfList = new ArrayList<CanonicalProcessType>(1);
 
     /**
-     * Canonical anotations equivalent to this BPMN model.
+     * Canonical annotations equivalent to this BPMN model.
      *
      * This is lazily initialized by the {@link #canonise} method.
      */
     @XmlTransient
-    private final AnnotationsType mANF = new AnnotationsType();
+    private final List<AnnotationsType> anfList = new ArrayList<AnnotationsType>(1);
 
     /**
      * Whether or not the {@link #cpf} and {@link #anf} fields have been initialized.
@@ -452,8 +460,9 @@ public class CanoniserDefinitions extends Definitions {
      * returned by {@link #getCPF}.
      *
      * @return canonical annotations corresponding to this BPMN
+     * @throws CanoniserException unless this BPMN has only a single process
      */
-    public AnnotationsType getANF() {
+    public AnnotationsType getANF() throws CanoniserException {
 
         // Lazy initialization
         if (!canonised) {
@@ -462,7 +471,12 @@ public class CanoniserDefinitions extends Definitions {
         }
         assert canonised;
 
-        return mANF;
+        // Until multiple ANF output is supported, raise an exception if this BPMN document doesn't correspond to a single ANF
+        if (anfList.size() != 1) {
+            throw new CanoniserException("There are " + anfList.size() + " ANF documents");
+        }
+
+        return anfList.get(0);
     }
 
     /**
@@ -470,9 +484,10 @@ public class CanoniserDefinitions extends Definitions {
      *
      * This is lazily initialized the first time it is accessed.
      *
-     * @return canonical process model corresponding to this BPMN
+     * @return canonical process models corresponding to this BPMN
+     * @throws CanoniserException unless this BPMN has only a single process
      */
-    public CanonicalProcessType getCPF() {
+    public CanonicalProcessType getCPF() throws CanoniserException {
 
         // Lazy initialization
         if (!canonised) {
@@ -481,11 +496,16 @@ public class CanoniserDefinitions extends Definitions {
         }
         assert canonised;
 
-        return mCPF;
+        // Until multiple CPF output is supported, raise an exception if this BPMN document doesn't correspond to a single CPF
+        if (cpfList.size() != 1) {
+            throw new CanoniserException("There are " + cpfList.size() + " CPF documents");
+        }
+
+        return cpfList.get(0);
     }
 
     /**
-     * Lazily initialize {@link #mANF} and {@link #mCPF}.
+     * Lazily initialize {@link #anfList} and {@link #cpfList}.
      *
      * @param uri  the shared top-level <code>uri</code>  attribute of the CPF and ANF structures
      */
@@ -494,13 +514,16 @@ public class CanoniserDefinitions extends Definitions {
         final IdFactory anfIdFactory = new IdFactory();
         final IdFactory cpfIdFactory = new IdFactory();
 
+        final AnnotationsType anf = new AnnotationsType();
+        final CanonicalProcessType cpf = new CanonicalProcessType();
+
         // Top-level attributes
-        mCPF.setName(requiredName(getName()));
+        cpf.setName(requiredName(getName()));
 
-        mANF.setUri(uri);
-        mCPF.setUri(uri);
+        anf.setUri(uri);
+        cpf.setUri(uri);
 
-        mCPF.setVersion(CPF_VERSION);
+        cpf.setVersion(CPF_VERSION);
 
         // Traverse diagram
         //logger.info("Traversing diagrams");
@@ -515,7 +538,7 @@ public class CanoniserDefinitions extends Definitions {
                         AnnotationType annotation = new AnnotationType();
                         annotation.setId(anfIdFactory.newId(edge.getId()));
                         annotation.setCpfId(edge.getBpmnElement().toString());  // TODO - process through cpfIdFactory instead
-                        mANF.getAnnotation().add(annotation);
+                        anf.getAnnotation().add(annotation);
                     }
                     @Override
                     public void visit(final BPMNShape shape) {
@@ -523,7 +546,7 @@ public class CanoniserDefinitions extends Definitions {
                         AnnotationType annotation = new AnnotationType();
                         annotation.setId(anfIdFactory.newId(shape.getId()));
                         annotation.setCpfId(shape.getBpmnElement().toString());  // TODO - process through cpfIdFactory instead
-                        mANF.getAnnotation().add(annotation);
+                        anf.getAnnotation().add(annotation);
                     }
                 });
             }
@@ -536,8 +559,8 @@ public class CanoniserDefinitions extends Definitions {
                 public void visit(final TProcess process) {
                     final NetType net = new NetType();
                     net.setId(cpfIdFactory.newId(process.getId()));
-                    mCPF.setRootId(net.getId());
-                    mCPF.getNet().add(net);
+                    cpf.setRootId(net.getId());
+                    cpf.getNet().add(net);
 
                     for (LaneSet laneSet : process.getLaneSets()) {
                         addLaneSet(laneSet, process.getName(), cpfIdFactory);
@@ -560,7 +583,7 @@ public class CanoniserDefinitions extends Definitions {
 
                                 populateFlowElement(object, dataObject);
 
-                                //mCPF.getObject().add(object);  // CPF 0.5
+                                //cpf.getObject().add(object);  // CPF 0.5
                                 //net.getObject().add(object);   // CPF 0.6
                             }
 
@@ -729,7 +752,7 @@ public class CanoniserDefinitions extends Definitions {
                         laneResourceType.setName(requiredName(lane.getName()));
                         poolResourceType.getSpecializationIds().add(laneResourceType.getId());
 
-                        mCPF.getResourceType().add(laneResourceType);
+                        cpf.getResourceType().add(laneResourceType);
 
                         // recurse on any child lane sets
                         if (lane.getChildLaneSet() != null) {
@@ -737,10 +760,14 @@ public class CanoniserDefinitions extends Definitions {
                         }
                     }
 
-                    mCPF.getResourceType().add(poolResourceType);
+                    cpf.getResourceType().add(poolResourceType);
                 }
             });
         }
+
+        // Populate the output lists; these are singletons currently, but eventually should be lists
+        anfList.add(anf);
+        cpfList.add(cpf);
     };
 
     /**
