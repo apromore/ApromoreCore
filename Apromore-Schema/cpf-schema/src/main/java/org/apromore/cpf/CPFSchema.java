@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
 public class CPFSchema {
 
     private static final String CPF_SCHEMA_LOCATION = "/xsd/cpf_0.6.xsd";
-    private static final String CPF_CONTEXT = "org.apromore.cpf:org.yawlfoundation.yawlschema";
+    private static final String CPF_CONTEXT = "org.apromore.cpf";
 
     /**
      * Schema of CPF
