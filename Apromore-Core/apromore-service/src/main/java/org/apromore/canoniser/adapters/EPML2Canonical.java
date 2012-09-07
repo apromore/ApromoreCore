@@ -287,7 +287,7 @@ public class EPML2Canonical {
                         id_map.put(((TypeRole) element.getValue()).getId(), role_names.get(((TypeRole) element.getValue()).getName()));
                     }
                 } else if (element.getValue() instanceof TypeObject) {
-                    translateObject((TypeObject) element.getValue());
+                    translateObject(net, (TypeObject) element.getValue());
                     addNodeAnnotations(element.getValue());
                 } else if (element.getValue() instanceof TypeRANGE) {
                     range_ids.add(((TypeRANGE) element.getValue()).getId());
@@ -646,7 +646,7 @@ public class EPML2Canonical {
         }
     }
 
-    private void translateObject(TypeObject obj) {
+    private void translateObject(final NetType net, TypeObject obj) {
         if (obj.getDefRef() != null && def_ref.get(obj.getDefRef()) != null) {
             id_map.put(obj.getId(), def_ref.get(obj.getDefRef()));
         }
@@ -655,7 +655,7 @@ public class EPML2Canonical {
             id_map.put(obj.getId(), String.valueOf(ids));
             object.setId(String.valueOf(ids));
             object.setName(obj.getName());
-            cproc.getObject().add(object);
+            net.getObject().add(object);
             def_ref.put(obj.getDefRef(), String.valueOf(ids++));
         }
         obj_ref.put(obj.getId(), obj);
