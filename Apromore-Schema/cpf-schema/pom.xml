@@ -7,15 +7,15 @@
     <parent>
         <groupId>org.apromore</groupId>
         <artifactId>apromore-parent</artifactId>
-        <version>1.0</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
     
     <groupId>org.apromore</groupId>
     <artifactId>cpf-schema</artifactId>
-    <version>1.0</version>
+    <version>1.0.0-SNAPSHOT</version>
     <packaging>jar</packaging>
 
-    <url>http://apromore.org/</url>
+    <url>http://code.google.com/p/apromore/</url>
     <name>Apromore Common CPF Generated Code</name>
     <description>Apromore is an open and extensible repository to store and disclose business process models of a
         variety of types and languages, and beyond that, to build on top of existing tools and techniques, to provide
@@ -24,48 +24,27 @@
     </description>
 
     <scm>
-        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Schema/cpf-schema</url>
-        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Schema/cpf-schema</connection>
-        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Schema/cpf-schema</developerConnection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/0.3/Apromore-Schema/cpf-schema</developerConnection>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/svn/trunk/0.3/Apromore-Schema/cpf-schema</connection>
+        <url>http://code.google.com/p/apromore/source/browse/svn/trunk/0.3/Apromore-Schema/cpf-schema</url>
     </scm>
 
     <ciManagement>
-        <system>Bamboo</system>
-        <url>http://apromore-build.qut.edu.au/bamboo</url>
-        <notifiers>
-            <notifier>
-                <address>cam.james@gmail.com</address>
-            </notifier>
-        </notifiers>
+        <system>Jenkins</system>
+        <url>http://fastyawl01.qut.edu.au:8080/jenkins/view/schemas</url>
     </ciManagement>
-
-    <issueManagement>
-        <system>JIRA</system>
-        <url>http://apromore-build.qut.edu.au/jira/browse/apromore</url>
-    </issueManagement>
 
     <distributionManagement>
         <site>
             <id>website</id>
-            <url>dav:http://apromore-build.qut.edu.au/projects/cpf-schema</url>
+            <url>dav:http://fastyawl01.qut.edu.au:8080/projects/cpf-schema</url>
         </site>
     </distributionManagement>
 
-    <licenses>
-        <license>
-            <name>GNU General Public License v3</name>
-            <distribution>repo</distribution>
-            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
-        </license>
-    </licenses>
-
-    <organization>
-        <name>QUT</name>
-        <url>http://www.qut.edu.au</url>
-    </organization>
-
     <build>
+        <!-- Removed as maven-bundle-plugin otherwise fails to embed this correctly
         <finalName>cpf-schema</finalName>
+        -->
         <plugins>
             <plugin>
                 <groupId>org.jvnet.jaxb2.maven2</groupId>
@@ -79,17 +58,7 @@
                 </executions>
                 <configuration>
                     <schemaDirectory>${basedir}/src/main/resources/xsd</schemaDirectory>
-                    <generateDirectory>${basedir}/target/generated-sources/src</generateDirectory>
-                    <args>
-                        <arg>-Xvisitor</arg>
-                    </args>
-                    <plugins>
-                        <plugin>
-                            <groupId>com.massfords</groupId>
-                            <artifactId>jaxb-visitor</artifactId>
-                            <version>1.9</version>
-                        </plugin>
-                    </plugins>
+                    <generateDirectory>${basedir}/target/generated-sources/src</generateDirectory>                    
                 </configuration>
             </plugin>
             <plugin>
@@ -110,7 +79,16 @@
                     </execution>
                 </executions>
             </plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Export-Package>org.apromore.cpf</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>              
         </plugins>
     </build>
-
 </project>

@@ -90,14 +90,14 @@ public class CPFModelParser {
         return l;
     }
 
-    private static void addObjectsAndResources(CanonicalProcessType cpf,
-                                               Graph epcGraph) {
-        for (ObjectType o : cpf.getObject()) {
-            epcGraph.addObject(new VertexObject(o.getId(), o.getName(), o.isConfigurable(),
-                    o instanceof HardType ? VertexObject.SoftHart.Hard :
-                            (o instanceof SoftType ? VertexObject.SoftHart.Soft :
-                                    VertexObject.SoftHart.Other)));
-        }
+    private static void addObjectsAndResources(CanonicalProcessType cpf, Graph epcGraph) {
+// TODO: FIX
+//        for (ObjectType o : cpf.getObject()) {
+//            epcGraph.addObject(new VertexObject(o.getId(), o.getName(), o.isConfigurable(),
+//                    o instanceof HardType ? VertexObject.SoftHart.Hard :
+//                            (o instanceof SoftType ? VertexObject.SoftHart.Soft :
+//                                    VertexObject.SoftHart.Other)));
+//        }
 
         for (ResourceTypeType r : cpf.getResourceType()) {
             epcGraph.addResource(new VertexResource(r.getId(), r.getName(), r.isConfigurable(),
@@ -277,7 +277,8 @@ public class CPFModelParser {
             a.setTypeRef("annotation");
             a.setValue(parseAnnotationFromSet(o.getModels()));
             ot.getAttribute().add(a);
-            toReturn.getObject().add(ot);
+            //TODO: FIX
+            //toReturn.getObject().add(ot);
         }
 
         // objects and resources

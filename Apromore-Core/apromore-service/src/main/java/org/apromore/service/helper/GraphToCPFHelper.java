@@ -65,12 +65,11 @@ public class GraphToCPFHelper {
     public static CanonicalProcessType createCanonicalProcess(CPF graph) {
         CanonicalProcessType c = new CanonicalProcessType();
         c.getAttribute().addAll(new ArrayList<TypeAttribute>(0));
-        c.getObject().addAll(new ArrayList<ObjectType>(0));
+        //c.getObject().addAll(new ArrayList<ObjectType>(0));
         c.getResourceType().addAll(new ArrayList<ResourceTypeType>(0));
 
         // Create the Nets / Nodes / Edges  - > return Objects, Resources
         buildNets(graph, c);
-        addObjectsForCpf(findObjectList(graph), c);
         addResourcesForCpf(findResourceList(graph), c);
         addPropertiesForCpf(graph, c);
 
@@ -82,6 +81,9 @@ public class GraphToCPFHelper {
     private static void buildNets(CPF graph, CanonicalProcessType c) {
         NetType net = new NetType();
         net.setId(graph.getId());
+        net.getObject().addAll(new ArrayList<ObjectType>(0));
+
+        addObjectsForCpf(findObjectList(graph), net);
         for (FlowNode node : graph.getFlowNodes()) {
             buildNodesForNet((CpfNode) node, net);
         }
@@ -208,7 +210,6 @@ public class GraphToCPFHelper {
             object.setObjectId(obj.getObjectId());
             object.setConsumed(obj.getConsumed());
             object.setOptional(obj.getOptional());
-            object.setOriginalID(obj.getOriginalId());
             object.setType(InputOutputType.valueOf(obj.getType()));
             object.getAttribute().addAll(buildAttributeList(obj.getAttributes()));
             objs.add(object);
@@ -242,7 +243,7 @@ public class GraphToCPFHelper {
     }
 
     /* Add objects for the Canonical Format */
-    private static void addObjectsForCpf(List<ICpfObject> cpfObject, CanonicalProcessType c) {
+    private static void addObjectsForCpf(List<ICpfObject> cpfObject, NetType net) {
         ObjectType typ;
         for (ICpfObject obj : cpfObject) {
             if (obj.getObjectType().equals(ICpfObject.ObjectType.HARD)) {
@@ -253,7 +254,7 @@ public class GraphToCPFHelper {
             typ.setId(obj.getId());
             typ.setName(obj.getName());
             typ.getAttribute().addAll(buildAttributeList(obj.getAttributes()));
-            c.getObject().add(typ);
+            net.getObject().add(typ);
         }
     }
 

@@ -46,7 +46,9 @@ import org.wfmc._2008.xpdl2.ConnectorGraphicsInfos;
 import org.wfmc._2008.xpdl2.Coordinates;
 import org.wfmc._2008.xpdl2.EndEvent;
 import org.wfmc._2008.xpdl2.Event;
-import org.wfmc._2008.xpdl2.Implementation;
+import org.wfmc._2008.xpdl2.Input;
+import org.wfmc._2008.xpdl2.InputSet;
+import org.wfmc._2008.xpdl2.InputSets;
 import org.wfmc._2008.xpdl2.IntermediateEvent;
 import org.wfmc._2008.xpdl2.Lane;
 import org.wfmc._2008.xpdl2.NodeGraphicsInfo;
@@ -80,10 +82,9 @@ public class XPDL2Canonical {
     List<BigInteger> unrequired_event_list = new LinkedList<BigInteger>();
     List<NodeType> node_remove_list = new LinkedList<NodeType>();
     Map<String, ResourceTypeType> pool_resource_map = new HashMap<String, ResourceTypeType>();
-    Map<String, String> object_map = new HashMap<String, String>();
+    Map<String, ObjectType> object_map = new HashMap<String, ObjectType>();
 
     long cpfId = System.currentTimeMillis();
-    ;
     long anfId = 1;
 
     CanonicalProcessType cpf;
@@ -103,10 +104,8 @@ public class XPDL2Canonical {
      * the canonical format. The user also will be able to retrieve the annotation
      * element which stores the annotation data for the canonized modelass isolated
      * from the process flow.
-     * <p/>
-     *
      * @param pkg the header for an XPDL (XML Process Definition Language) which
-     *            is file format for BPMN diagrams.
+     * is file format for BPMN diagrams.
      * @since 1.0
      */
     public XPDL2Canonical(PackageType pkg) throws CanoniserException {
@@ -153,13 +152,13 @@ public class XPDL2Canonical {
             for (Object obj : pkg.getArtifacts().getArtifactAndAny()) {
                 if (obj instanceof Artifact) {
                     Artifact arti = (Artifact) obj;
-                    if (arti.getArtifactType().equals("DataObject")
-                            && arti.getDataObject() != null) {
+                    if (arti.getArtifactType().equals("DataObject") && arti.getDataObject() != null) {
                         ObjectType ot = new ObjectType();
                         ot.setName(arti.getDataObject().getName());
                         ot.setId(String.valueOf(cpfId++));
-                        object_map.put(arti.getId(), ot.getId());
-                        this.cpf.getObject().add(ot);
+                        object_map.put(arti.getId(), ot);
+                        //object_map.put(arti.getId(), ot.getId());
+                        //this.cpf.getObject().add(ot);
                     }
                 }
             }
@@ -192,9 +191,6 @@ public class XPDL2Canonical {
                     transitions.clear();
                     this.cpf.getNet().add(net);
                 }
-                //activities.clear();
-                //transitions.clear();
-                //this.cpf.getNet().add(net);
             }
         }
 
@@ -210,14 +206,20 @@ public class XPDL2Canonical {
                             Activity act = xpdlRefMap.get(source);
                             WorkType node = (WorkType) xpdl2canon.get(act);
                             ObjectRefType ref = new ObjectRefType();
-                            ref.setObjectId(object_map.get(target));
+                            ObjectType o = object_map.get(target);
+                            if (o != null) {
+                                ref.setObjectId(o.getId());
+                            }
                             ref.setType(InputOutputType.OUTPUT);
                             node.getObjectRef().add(ref);
                         } else if (xpdlRefMap.get(target) != null) {
                             Activity act = xpdlRefMap.get(target);
                             WorkType node = (WorkType) xpdl2canon.get(act);
                             ObjectRefType ref = new ObjectRefType();
-                            ref.setObjectId(object_map.get(source));
+                            ObjectType o = object_map.get(source);
+                            if (o != null) {
+                                ref.setObjectId(o.getId());
+                            }
                             ref.setType(InputOutputType.INPUT);
                             node.getObjectRef().add(ref);
                         }
@@ -244,19 +246,23 @@ public class XPDL2Canonical {
                     }
                 }
                 for (EdgeType edge : net.getEdge()) {
-                    if (edge.getSourceId().equals(id))
-                        if (source_id == null)
+                    if (edge.getSourceId().equals(id)) {
+                        if (source_id == null) {
                             edge_remove_list.add(edge);
-                        else
+                        } else {
                             edge.setSourceId(source_id);
+                        }
+                    }
                 }
             }
 
-            for (EdgeType edge : edge_remove_list)
+            for (EdgeType edge : edge_remove_list) {
                 net.getEdge().remove(edge);
+            }
             edge_remove_list.clear();
-            for (NodeType node : node_remove_list)
+            for (NodeType node : node_remove_list) {
                 net.getNode().remove(node);
+            }
             node_remove_list.clear();
 
         } catch (Exception e) {
@@ -265,8 +271,7 @@ public class XPDL2Canonical {
         }
     }
 
-    private void recordAnnotations(ProcessType bpmnproc,
-                                   AnnotationsType annotations) {
+    private void recordAnnotations(ProcessType bpmnproc, AnnotationsType annotations) {
         for (Activity act : activities) {
             GraphicsType cGraphInfo = new GraphicsType();
             cGraphInfo.setId(String.valueOf(anfId++));
@@ -276,8 +281,6 @@ public class XPDL2Canonical {
                     for (NodeGraphicsInfo xGraphInfo : ((NodeGraphicsInfos) obj).getNodeGraphicsInfo()) {
                         if (xGraphInfo.getFillColor() != null) {
                             FillType fill = new FillType();
-                            //StringTokenizer tokenizer = new StringTokenizer(xGraphInfo.getFillColor(), ",");
-                            //fill.setColor(String.format("R:%sG:%sB:%s", tokenizer.nextToken(), tokenizer.nextToken(), tokenizer.nextToken()));
                             fill.setColor(xGraphInfo.getFillColor());
                             cGraphInfo.setFill(fill);
                         }
@@ -287,8 +290,9 @@ public class XPDL2Canonical {
                             pos.setX(BigDecimal.valueOf(xGraphInfo.getCoordinates().getXCoordinate()));
                             pos.setY(BigDecimal.valueOf(xGraphInfo.getCoordinates().getYCoordinate()));
                             cGraphInfo.getPosition().add(pos);
-                            if (xpdl2canon.get(act) instanceof WorkType)
+                            if (xpdl2canon.get(act) instanceof WorkType) {
                                 addRefs((WorkType) xpdl2canon.get(act), xGraphInfo.getCoordinates().getXCoordinate(), xGraphInfo.getCoordinates().getYCoordinate());
+                            }
                         }
 
                         SizeType size = new SizeType();
@@ -333,7 +337,7 @@ public class XPDL2Canonical {
             cGraphInfo.setCpfId(pool2resourceType.get(pool).getId());
             NodeGraphicsInfos infos = pool.getNodeGraphicsInfos();
 
-            if (infos != null)
+            if (infos != null) {
                 for (NodeGraphicsInfo xGraphInfo : infos.getNodeGraphicsInfo()) {
                     if (xGraphInfo.getFillColor() != null) {
                         FillType fill = new FillType();
@@ -360,6 +364,7 @@ public class XPDL2Canonical {
 
                     cGraphInfo.setSize(size);
                 }
+            }
 
             annotations.getAnnotation().add(cGraphInfo);
         }
@@ -370,7 +375,7 @@ public class XPDL2Canonical {
             cGraphInfo.setCpfId(lane2resourceType.get(lane).getId());
             NodeGraphicsInfos infos = lane.getNodeGraphicsInfos();
 
-            if (infos != null)
+            if (infos != null) {
                 for (NodeGraphicsInfo xGraphInfo : infos.getNodeGraphicsInfo()) {
                     if (xGraphInfo.getFillColor() != null) {
                         FillType fill = new FillType();
@@ -397,6 +402,7 @@ public class XPDL2Canonical {
 
                     cGraphInfo.setSize(size);
                 }
+            }
 
             annotations.getAnnotation().add(cGraphInfo);
         }
@@ -527,31 +533,38 @@ public class XPDL2Canonical {
     }
 
     private void translateActivity(NetType net, Activity act, ResourceTypeRefType ref) throws CanoniserException {
-        NodeType node = new NodeType();
+        NodeType node;
         Route route = null;
         Event event = null;
-        Implementation implementation = null;
+        InputSets inputs = null;
         TransitionRestrictions trests = null;
-        for (Object obj : act.getContent())
-            if (obj instanceof Route)
+        for (Object obj : act.getContent()) {
+            if (obj instanceof Route) {
                 route = (Route) obj;
-            else if (obj instanceof Event)
+            } else if (obj instanceof Event) {
                 event = (Event) obj;
-            else if (obj instanceof Implementation)
-                implementation = (Implementation) obj;
-            else if (obj instanceof TransitionRestrictions)
+            } else if (obj instanceof InputSets) {
+                inputs = (InputSets) obj;
+            } else if (obj instanceof TransitionRestrictions) {
                 trests = (TransitionRestrictions) obj;
+            }
+        }
         if (route != null) {
             node = translateGateway(net, act, route, trests);
         } else if (event != null) {
             node = translateEvent(net, act, event);
-            if (ref != null)
+            if (ref != null) {
                 ((EventType) node).getResourceTypeRef().add(ref);
+            }
         } else {
             // TODO: Subprocesses ...
             node = translateTask(net, act);
-            if (ref != null)
+            if (inputs != null) {
+                translateObjects(net, inputs.getInputSet());
+            }
+            if (ref != null) {
                 ((TaskType) node).getResourceTypeRef().add(ref);
+            }
         }
 
         node.setId(String.valueOf(cpfId++));
@@ -560,17 +573,27 @@ public class XPDL2Canonical {
         xpdlRefMap.put(act.getId(), act);
     }
 
-    private NodeType translateTask(NetType net, Activity act) {
+    /* Used to Translate the XPDL Inputs into object references. */
+    private void translateObjects(final NetType net, final List<InputSet> inputSets) {
+        for (InputSet inSet : inputSets) {
+            for (Input in : inSet.getInput()) {
+                net.getObject().add(object_map.get(in.getArtifactId()));
+            }
+        }
+    }
+
+    private NodeType translateTask(final NetType net, final Activity act) {
         NodeType node = new TaskType();
         boolean isSplit = false, isJoin = false;
 
         for (Object obj : act.getContent()) {
             if (obj instanceof TransitionRestrictions) {
                 for (TransitionRestriction tres : ((TransitionRestrictions) obj).getTransitionRestriction()) {
-                    if (tres.getSplit() != null)
+                    if (tres.getSplit() != null) {
                         isSplit = true;
-                    else if (tres.getJoin() != null)
+                    } else if (tres.getJoin() != null) {
                         isJoin = true;
+                    }
                 }
             }
         }
@@ -590,28 +613,27 @@ public class XPDL2Canonical {
         return node;
     }
 
-    private NodeType translateEvent(NetType net, Activity act, Event event) throws CanoniserException {
-        NodeType node = null;
+    private NodeType translateEvent(final NetType net, final Activity act, final Event event) throws CanoniserException {
+        NodeType node;
 
         if (event.getStartEvent() != null) {
             StartEvent startEvent = event.getStartEvent();
-            if (startEvent.getTrigger().equals("None") ||
-                    startEvent.getTrigger().equals("Conditional"))
+            if (startEvent.getTrigger().equals("None") || startEvent.getTrigger().equals("Conditional")) {
                 node = new EventType();
-            else if (startEvent.getTrigger().equals("Message"))
+            } else if (startEvent.getTrigger().equals("Message")) {
                 node = new MessageType();
-            else if (startEvent.getTrigger().equals("Timer"))
+            } else if (startEvent.getTrigger().equals("Timer")) {
                 node = new TimerType();
-            else {
+            } else {
                 throw new CanoniserException("XPDL2Canonical: event type not supported (Start event): " + startEvent.getTrigger());
             }
         } else if (event.getEndEvent() != null) {
             EndEvent endEvent = event.getEndEvent();
-            if (endEvent.getResult().equals("None"))
+            if (endEvent.getResult().equals("None")) {
                 node = new EventType();
-            else if (endEvent.getResult().equals("Message"))
+            } else if (endEvent.getResult().equals("Message")) {
                 node = new MessageType();
-            else if (endEvent.getResult().equals("Cancel")) {
+            } else if (endEvent.getResult().equals("Cancel")) {
                 node = new EventType();
                 node.setName("Cancel");
             } else {
@@ -619,13 +641,13 @@ public class XPDL2Canonical {
             }
         } else {
             IntermediateEvent interEvent = event.getIntermediateEvent();
-            if (interEvent.getTrigger().equals("None"))
+            if (interEvent.getTrigger().equals("None")) {
                 node = new EventType();
-            else if (interEvent.getTrigger().equals("Message"))
+            } else if (interEvent.getTrigger().equals("Message")) {
                 node = new MessageType();
-            else if (interEvent.getTrigger().equals("Timer"))
+            } else if (interEvent.getTrigger().equals("Timer")) {
                 node = new TimerType();
-            else if (interEvent.getTrigger().equals("Link") || interEvent.getTrigger().equals("Rule")) {
+            } else if (interEvent.getTrigger().equals("Link") || interEvent.getTrigger().equals("Rule")) {
                 node = new EventType();
                 unrequired_event_list.add(BigInteger.valueOf(cpfId));
                 node_remove_list.add(node);
@@ -638,39 +660,44 @@ public class XPDL2Canonical {
         return node;
     }
 
-    private NodeType translateGateway(NetType net, Activity act, Route route, TransitionRestrictions trests) throws CanoniserException {
+    private NodeType translateGateway(final NetType net, final Activity act, final Route route, final TransitionRestrictions trests) throws CanoniserException {
         boolean isSplit = false;
         boolean isJoin = false;
 
         if (trests != null) {
             for (TransitionRestriction trest : trests.getTransitionRestriction()) {
-                if (trest.getSplit() != null)
+                if (trest.getSplit() != null) {
                     isSplit = true;
-                if (trest.getJoin() != null)
+                }
+                if (trest.getJoin() != null) {
                     isJoin = true;
+                }
             }
         }
 
-        NodeType node = null;
-
+        NodeType node;
         if (route.getGatewayType().equals("Parallel") || route.getGatewayType().equals("AND")) {
-            if (isSplit)
+            if (isSplit) {
                 node = new ANDSplitType();
-            else
+            } else {
                 node = new ANDJoinType();
+            }
         } else if (route.getGatewayType().equals("Exclusive") || route.getGatewayType().equals("XOR")) {
             if (route.getExclusiveType().equals("Data")) {
-                if (isSplit)
+                if (isSplit) {
                     node = new XORSplitType();
-                else
+                } else {
                     node = new XORJoinType();
-            } else
+                }
+            } else {
                 node = new StateType();
+            }
         } else if (route.getGatewayType().equals("Inclusive") || route.getGatewayType().equals("OR")) {
-            if (isSplit)
+            if (isSplit) {
                 node = new ORSplitType();
-            else
+            } else {
                 node = new ORJoinType();
+            }
         } else if (route.getGatewayType().equals("EventBasedXOR")) {
             node = new StateType();
         } else {

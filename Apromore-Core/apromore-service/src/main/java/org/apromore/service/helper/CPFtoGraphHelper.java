@@ -65,8 +65,7 @@ public class CPFtoGraphHelper {
 
         addProperties(cpf, g);
         List<ICpfResource> res = buildResourcesList(cpf);
-        List<ICpfObject> obj = buildObjectsList(cpf);
-        buildNodeList(cpf, g, res, obj);
+        buildNodeList(cpf, g, res);
 
         return g;
     }
@@ -102,10 +101,21 @@ public class CPFtoGraphHelper {
         return attribs;
     }
 
+
+    /* Add a node to the graph, could be of any of the types */
+    private static void buildNodeList(final CanonicalProcessType cpf, final CPF g, final List<ICpfResource> res) {
+        Map<String, FlowNode> flow = new HashMap<String, FlowNode>(0);
+        for (NetType net : cpf.getNet()) {
+            List<ICpfObject> obj = buildObjectsList(net);
+            flow.putAll(buildNodeListFromNet(net.getNode(), res, obj));
+            buildEdges(net.getEdge(), g, flow);
+        }
+    }
+
     /* Add Objects to the Graph */
-    private static List<ICpfObject> buildObjectsList(CanonicalProcessType cpf) {
+    private static List<ICpfObject> buildObjectsList(final NetType net) {
         ICpfObject obj;
-        List<ObjectType> obt = cpf.getObject();
+        List<ObjectType> obt = net.getObject();
         List<ICpfObject> objs = new ArrayList<ICpfObject>(0);
         for (ObjectType object : obt) {
             obj = new CpfObject();
@@ -124,15 +134,6 @@ public class CPFtoGraphHelper {
         return objs;
     }
 
-
-    /* Add a node to the graph, could be of any of the types */
-    private static void buildNodeList(CanonicalProcessType cpf, CPF g, List<ICpfResource> res, List<ICpfObject> obj) {
-        Map<String, FlowNode> flow = new HashMap<String, FlowNode>(0);
-        for (NetType net : cpf.getNet()) {
-            flow.putAll(buildNodeListFromNet(net.getNode(), res, obj));
-            buildEdges(net.getEdge(), g, flow);
-        }
-    }
 
     /* Build the Node list for a single Net */
     private static Map<String, FlowNode> buildNodeListFromNet(List<NodeType> nodes, List<ICpfResource> res, List<ICpfObject> obj) {
@@ -212,7 +213,7 @@ public class CPFtoGraphHelper {
                     o.setOptional(obj.getOptional());
                     o.setConsumed(obj.getConsumed());
                     o.setConfigurable(obj.isConfigurable());
-                    o.setOriginalId(ort.getOriginalID());
+                    o.setOriginalId(ort.getObjectId());
                     o.setObjectId(ort.getObjectId());
                     o.setType(ort.getType().toString());
                     o.setAttributes(buildCombinedAttributeList(obj.getAttributes(), ort.getAttribute()));
