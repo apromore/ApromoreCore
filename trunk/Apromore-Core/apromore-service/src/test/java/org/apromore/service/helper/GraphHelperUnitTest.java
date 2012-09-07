@@ -44,7 +44,7 @@ public class GraphHelperUnitTest {
     public void testCreatingAGraphFromCPT() {
         CanonicalProcessType cpt = new CanonicalProcessType();
         cpt.getAttribute().add(createAttribute("name", "value"));
-        cpt.getObject().add(createObject("123", "name"));
+        //cpt.getObject().add(createObject("123", "name"));
         cpt.getNet().add(createNet("321"));
 
         CPF graph = CPFtoGraphHelper.createGraph(cpt);
@@ -94,7 +94,7 @@ public class GraphHelperUnitTest {
         assertThat(returnType, notNullValue());
 
         assertThat(returnType.getAttribute().size(), equalTo(canType.getAttribute().size()));
-        assertThat(returnType.getObject().size(), equalTo(canType.getObject().size()));
+        //assertThat(returnType.getObject().size(), equalTo(canType.getObject().size()));
         assertThat(returnType.getResourceType().size(), equalTo(canType.getResourceType().size()));
         assertThat(returnType.getNet().size(), equalTo(canType.getNet().size()));
 

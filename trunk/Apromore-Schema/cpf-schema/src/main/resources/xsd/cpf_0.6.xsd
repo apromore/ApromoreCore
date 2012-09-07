@@ -1,0 +1,472 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!--
+ Copyright (C) 2009, The AProMoRe Foundation
+ 
+ All rights reserved. This program and the accompanying materials
+ are made available under the terms of the XX license
+ which accompanies this distribution, and is available at XX
+ 
+ Contributors:
+     Marcello La Rosa, Felix Mannhardt
+     
+     v0.1 - initial document
+     v0.2 - added 'version' attribute to both this document and type 'CanonicalProcessType'
+     v0.3 - added extensible 'attribute' to all super-types
+     v0.4 - added process meta-data (author, creationDate...), changed type of attribute 'value' to 'anySimpleType'
+	 v0.6 - changed Objects to be part of a Net (Net Scope Data) instead of a CanonicalProcess,
+	  		added Objects to WorkNodes (Task Scope Data) for YAWL and BPMN
+	  		added 'mapsToObjectId' referencing the target Object (if available) to objectRef for YAWL and BPMN
+	 		added 'direction' attribute with type IncomingOutgoingType to MessageEvent, 
+	 		added 'cancellationSet' to NodeType for YAWL and BPMN
+	 		added 'distributionSet' to ResourceTypeType for YAWL and BPMN
+			added extended ResourceType taxonomy					
+-->
+
+<schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:cpf="http://www.apromore.org/CPF"
+	targetNamespace="http://www.apromore.org/CPF" attributeFormDefault="unqualified"
+	elementFormDefault="unqualified" version="0.6">
+
+	<element name="CanonicalProcess" type="cpf:CanonicalProcessType">
+		<unique name="nIdUn"><!-- all net ids must be different -->
+			<selector xpath="./*" />
+			<field xpath="@id" />
+		</unique>
+		<keyref name="rootRef" refer="cpf:nIdUn">
+			<selector xpath="." />
+			<field xpath="@rootId" />
+		</keyref>
+		<keyref name="subnetRef" refer="cpf:nIdUn">
+			<selector xpath=".//Node" />
+			<field xpath="@subnetId" />
+		</keyref>
+		<!-- All ids in the whole document must be different -->
+		<unique name="idUn">
+			<selector xpath=".//*" />
+			<field xpath="@id" />
+		</unique>
+		<unique name="resourceTypeIdUn">
+			<selector xpath="./ResourceType" />
+			<field xpath="@id" />
+		</unique>
+		<unique name="objectIdUn">
+			<selector xpath="./Net/Object" />
+			<field xpath="@id" />
+		</unique>
+		<keyref name="resourceTypeRef" refer="cpf:resourceTypeIdUn">
+			<selector xpath=".//Node/resourceTypeRef" />
+			<field xpath="@resourceTypeId" />
+		</keyref>
+		<keyref name="objectRef" refer="cpf:objectIdUn">
+			<selector xpath=".//Node/objectRef" />
+			<field xpath="@objectId" />
+		</keyref>
+		<!-- Each element of a Cancellation Set must reference a Node or Edge -->
+		<key name="idControlFlow">
+			<selector xpath=".//Node|.//Edge" />
+			<field xpath="@id" />
+		</key>
+		<keyref name="cancellationSetRef" refer="cpf:idControlFlow">
+			<selector xpath="./Node/cancellationSet/controlFlowRef" />
+			<field xpath="@controlFlowRefId" />
+		</keyref>
+		<!-- Each element of a Distribution Set must reference a ResourceType -->
+		<keyref name="distributionSetRef" refer="cpf:resourceTypeIdUn">
+			<selector xpath="./ResourceType/distributionSet/resourceTypeRef" />
+			<field xpath="@resourceTypeId" />
+		</keyref>
+		<!-- Each ObjectRef that references an Work or Net variable must reference it correctly  (Does only check for existence!)-->
+		<unique name="nodeOrNetObjectIdUn">
+			<selector xpath="./Net/Node/Object|./Net/Object" />
+			<field xpath="@id" />
+		</unique>		
+		<keyref name="internalObjectRef" refer="cpf:nodeOrNetObjectIdUn">
+			<selector xpath="./Net/Node/objectRef" />
+			<field xpath="@mapsToObjectId" />
+		</keyref>
+	</element>
+
+	<!-- Extension for any attribute (name/value) -->
+	<complexType name="typeAttribute">
+		<attribute name="typeRef" type="string" use="required" />
+		<attribute name="value" type="anySimpleType" />
+	</complexType>
+
+	<complexType name="CanonicalProcessType">
+		<sequence>
+			<element name="Net" type="cpf:NetType" minOccurs="1"
+				maxOccurs="unbounded">
+				<unique name="idUn2">
+					<selector xpath="./*" />
+					<field xpath="@id" />
+				</unique>
+				<keyref name="sourceRef" refer="cpf:idUn2">
+					<selector xpath="./Edge" />
+					<field xpath="@sourceId" />
+				</keyref>
+				<keyref name="targetRef" refer="cpf:idUn2">
+					<selector xpath="./Edge" />
+					<field xpath="@targetId" />
+				</keyref>
+				<!--  Object name should be unique in Net  -->
+				<unique name="objectNameUnInNet">
+					<selector xpath="./Object" />
+					<field xpath="name" />
+				</unique>
+			</element>
+			<element name="ResourceType" minOccurs="0" maxOccurs="unbounded"
+				type="cpf:ResourceTypeType" />
+			<element name="attribute" type="cpf:typeAttribute" minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="uri" type="anyURI" use="required" />
+		<attribute name="version" type="string" use="required" />
+		<attribute name="name" type="string" use="required" />
+		<attribute name="author" type="string" />
+		<attribute name="creationDate" type="string" />
+		<attribute name="modificationDate" type="string" />
+		<attribute name="rootId" type="string" use="required" />
+	</complexType>
+
+	<complexType name="NetType">
+		<sequence>
+			<element name="Node" minOccurs="1" maxOccurs="unbounded" type="cpf:NodeType">
+				<!--  Object name should be unique in Node  -->
+				<unique name="objectNameUnInNode">
+					<selector xpath="./Object" />
+					<field xpath="name" />
+				</unique>				
+			</element>
+			<element name="Edge" minOccurs="0" maxOccurs="unbounded"
+				type="cpf:EdgeType" />
+			<element name="Object" minOccurs="0" maxOccurs="unbounded"
+				type="cpf:ObjectType" />
+			<element name="attribute" type="cpf:typeAttribute" minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="id" type="string" use="required" />
+		<attribute name="originalID" type="string" use="optional" />
+	</complexType>
+
+	<complexType name="EdgeType">
+		<sequence>
+			<element name="attribute" type="cpf:typeAttribute" minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="id" type="string" use="required" />
+		<attribute name="condition" type="string" use="optional" />
+		<attribute name="default" type="boolean" use="optional"
+			default="true" />
+		<attribute name="sourceId" type="string" use="required" />
+		<attribute name="targetId" type="string" use="required" />
+		<attribute name="originalID" type="string" use="optional" />
+	</complexType>
+
+	<complexType name="NodeType">
+		<sequence>
+			<element name="name" type="string" minOccurs="0" />
+			<element name="configurable" type="boolean" default="false"
+				minOccurs="0" />
+			<element name="cancellationSet" type="cpf:CancellationSetType"
+				minOccurs="0" />
+			<element name="attribute" type="cpf:typeAttribute" minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="id" type="string" use="required" />
+		<attribute name="originalID" type="string" use="optional" />
+	</complexType>
+
+	<complexType name="WorkType">
+		<complexContent>
+			<extension base="cpf:NodeType">
+				<sequence>
+					<!-- WorkNode scope data objects -->
+					<element name="Object" minOccurs="0" maxOccurs="unbounded"
+						type="cpf:ObjectType" />				
+					<element name="resourceTypeRef" type="cpf:resourceTypeRefType"
+						minOccurs="0" maxOccurs="unbounded" />
+					<!-- Reference to NetType data objects -->
+					<element name="objectRef" type="cpf:objectRefType"
+						minOccurs="0" maxOccurs="unbounded" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="resourceTypeRefType">
+		<sequence>
+			<element name="attribute" type="cpf:typeAttribute" minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="id" type="string" />
+		<attribute name="resourceTypeId" type="string" />
+		<attribute name="optional" type="boolean" default="false"
+			use="optional" />
+		<attribute name="qualifier" type="string" use="optional" />
+	</complexType>
+
+	<complexType name="objectRefType">
+		<sequence>
+			<element name="attribute" type="cpf:typeAttribute" minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="id" type="string" />
+		<attribute name="objectId" type="string" />
+		<attribute name="type" type="cpf:InputOutputType" />
+		<attribute name="optional" type="boolean" default="false"
+			use="optional" />
+		<attribute name="consumed" type="boolean" default="false"
+			use="optional" />
+		<!-- ID of the Object in scope of the WorkNode that this reference points to -->
+		<attribute name="mapsToObjectId" type="string" use="optional" />
+	</complexType>
+
+	<complexType name="TaskType">
+		<complexContent>
+			<extension base="cpf:WorkType">
+				<attribute name="subnetId" type="string" />
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="EventType">
+		<complexContent>
+			<extension base="cpf:WorkType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="MessageType">
+		<complexContent>
+			<extension base="cpf:EventType">
+				<sequence>
+					<element name="direction" type="cpf:DirectionType" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<complexType name="TimerType">
+		<complexContent>
+			<extension base="cpf:EventType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="RoutingType">
+		<complexContent>
+			<extension base="cpf:NodeType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="SplitType">
+		<complexContent>
+			<extension base="cpf:RoutingType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="ORSplitType">
+		<complexContent>
+			<extension base="cpf:SplitType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="XORSplitType">
+		<complexContent>
+			<extension base="cpf:SplitType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="ANDSplitType">
+		<complexContent>
+			<extension base="cpf:SplitType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="StateType">
+		<complexContent>
+			<extension base="cpf:RoutingType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="JoinType">
+		<complexContent>
+			<extension base="cpf:RoutingType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="ORJoinType">
+		<complexContent>
+			<extension base="cpf:JoinType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="XORJoinType">
+		<complexContent>
+			<extension base="cpf:JoinType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="ANDJoinType">
+		<complexContent>
+			<extension base="cpf:JoinType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="ResourceTypeType">
+		<sequence>
+			<element name="name" type="string" />
+			<element name="configurable" type="boolean" default="false"
+				minOccurs="0" />
+			<element name="distributionSet" type="cpf:DistributionSetType" 
+				minOccurs="0" />
+			<element name="attribute" type="cpf:typeAttribute" minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="id" type="string" use="required" />
+		<attribute name="specializationIds" type="cpf:IdListType" />
+		<attribute name="originalID" type="string" use="optional" />
+	</complexType>
+
+	<complexType name="HumanType">
+		<complexContent>
+			<extension base="cpf:ResourceTypeType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="NonhumanType">
+		<complexContent>
+			<extension base="cpf:ResourceTypeType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="OrganisationType">
+		<complexContent>
+			<extension base="cpf:HumanType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="DepartmentType">
+		<complexContent>
+			<extension base="cpf:HumanType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="UnitType">
+		<complexContent>
+			<extension base="cpf:HumanType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="TeamType">
+		<complexContent>
+			<extension base="cpf:HumanType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="GroupType">
+		<complexContent>
+			<extension base="cpf:HumanType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="RoleType">
+		<complexContent>
+			<extension base="cpf:HumanType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="ParticipantType">
+		<complexContent>
+			<extension base="cpf:HumanType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="SoftwareSystemType">
+		<complexContent>
+			<extension base="cpf:NonhumanType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="EquipmentType">
+		<complexContent>
+			<extension base="cpf:NonhumanType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="ObjectType">
+		<sequence>
+			<element name="name" type="string" />
+			<element name="configurable" type="boolean" default="false"
+				minOccurs="0" />
+			<element name="attribute" type="cpf:typeAttribute" minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="id" type="string" use="required" />
+		<attribute name="originalID" type="string" use="optional" />
+	</complexType>
+
+	<complexType name="HardType">
+		<complexContent>
+			<extension base="cpf:ObjectType" />
+		</complexContent>
+	</complexType>
+
+	<complexType name="SoftType">
+		<complexContent>
+			<extension base="cpf:ObjectType">
+				<sequence>
+					<element name="type" type="string" />
+				</sequence>
+			</extension>
+		</complexContent>
+	</complexType>
+
+	<simpleType name="InputOutputType">
+		<restriction base="string">
+			<enumeration value="input" />
+			<enumeration value="output" />
+		</restriction>
+	</simpleType>
+
+	<simpleType name="IdListType">
+		<list itemType="string" />
+	</simpleType>
+
+	<simpleType name="DirectionType">
+		<restriction base="string">
+			<enumeration value="incoming" />
+			<enumeration value="outgoing" />
+		</restriction>
+	</simpleType>
+
+	<complexType name="CancellationSetType">
+		<sequence>
+			<element name="controlFlowRef" type="cpf:controlFlowRef" maxOccurs="unbounded" />
+			<element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+	</complexType>
+	
+	<complexType name="controlFlowRef">
+		<sequence>
+			<element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="id" type="string" />
+		<attribute name="controlFlowRefId" type="string" />
+	</complexType>
+	
+	<complexType name="DistributionSetType">
+		<sequence>
+			<element name="resourceTypeRef" type="cpf:distributionSetRef" maxOccurs="unbounded" />
+			<element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded" />
+		</sequence>					
+	</complexType>	
+	
+	<complexType name="distributionSetRef">
+		<sequence>
+			<element name="attribute" type="cpf:typeAttribute" minOccurs="0"
+				maxOccurs="unbounded" />
+		</sequence>
+		<attribute name="id" type="string" />
+		<attribute name="resourceTypeId" type="string" />
+	</complexType>	
+
+</schema>

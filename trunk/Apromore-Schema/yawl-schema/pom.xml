@@ -7,15 +7,14 @@
     <parent>
         <groupId>org.apromore</groupId>
         <artifactId>apromore-parent</artifactId>
-        <version>1.0</version>
+        <version>1.0.0-SNAPSHOT</version>
     </parent>
 
     <groupId>org.apromore</groupId>
     <artifactId>yawl-schema</artifactId>
-    <packaging>jar</packaging>
-    <version>1.0</version>
+    <version>1.0.0-SNAPSHOT</version>
 
-    <url>http://apromore.org/</url>
+    <url>http://code.google.com/p/apromore/</url>
     <name>Apromore Common YAWL Generated Code</name>
     <description>Apromore is an open and extensible repository to store and disclose business process models of a
         variety of types and languages, and beyond that, to build on top of existing tools and techniques, to provide
@@ -24,62 +23,42 @@
     </description>
 
     <scm>
-        <url>http://apromore.googlecode.com/svn/trunk/Apromore-Schema/yawl-schema</url>
-        <connection>scm:svn:http://apromore.googlecode.com/svn/trunk/Apromore-Schema/yawl-schema</connection>
-        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/Apromore-Schema/yawl-schema</developerConnection>
+        <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/0.3/Apromore-Schema/yawl-schema</developerConnection>
+        <connection>scm:svn:http://apromore.googlecode.com/svn/svn/trunk/0.3/Apromore-Schema/yawl-schema</connection>
+        <url>http://code.google.com/p/apromore/source/browse/svn/trunk/0.3/Apromore-Schema/yawl-schema</url>
     </scm>
 
     <ciManagement>
-        <system>Bamboo</system>
-        <url>http://apromore-build.qut.edu.au/bamboo</url>
-        <notifiers>
-            <notifier>
-                <address>cam.james@gmail.com</address>
-            </notifier>
-        </notifiers>
+        <system>Jenkins</system>
+        <url>http://fastyawl01.qut.edu.au:8080/jenkins/view/schemas</url>
     </ciManagement>
-
-    <issueManagement>
-        <system>JIRA</system>
-        <url>http://apromore-build.qut.edu.au/jira/browse/apromore</url>
-    </issueManagement>
 
     <distributionManagement>
         <site>
             <id>website</id>
-            <url>dav:http://apromore-build.qut.edu.au/projects/yawl-schema</url>
+            <url>dav:http://fastyawl01.qut.edu.au:8080/projects/yawl-schema</url>
         </site>
     </distributionManagement>
 
-    <licenses>
-        <license>
-            <name>GNU General Public License v3</name>
-            <distribution>repo</distribution>
-            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
-        </license>
-    </licenses>
-
-    <organization>
-        <name>QUT</name>
-        <url>http://www.qut.edu.au</url>
-    </organization>
-
     <build>
+    	<!-- Removed as maven-bundle-plugin otherwise fails to embed this correctly
         <finalName>yawl-schema</finalName>
+        -->
         <plugins>
             <plugin>
-                <groupId>org.jvnet.jaxb2.maven2</groupId>
-                <artifactId>maven-jaxb2-plugin</artifactId>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>jaxb2-maven-plugin</artifactId>
                 <executions>
                     <execution>
                         <goals>
-                            <goal>generate</goal>
+                            <goal>xjc</goal>
                         </goals>
                     </execution>
                 </executions>
                 <configuration>
-                    <schemaDirectory>${basedir}/src/main/xsd</schemaDirectory>
-                    <generateDirectory>${basedir}/target/generated-sources/src</generateDirectory>
+                    <schemaDirectory>${basedir}/src/main/resources/xsd</schemaDirectory>
+                    <outputDirectory>${basedir}/target/generated-sources/src</outputDirectory>
+                    <bindingDirectory>${basedir}/src/main/resources/xjb</bindingDirectory>
                 </configuration>
             </plugin>
             <plugin>
@@ -100,7 +79,16 @@
                     </execution>
                 </executions>
             </plugin>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Export-Package>org.yawlfoundation.yawlschema</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>             
         </plugins>
     </build>
-
 </project>
