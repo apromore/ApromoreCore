@@ -87,15 +87,6 @@ public class CanoniserDefinitions extends Definitions {
     private final Logger logger = Logger.getLogger(CanoniserDefinitions.class.getCanonicalName());
 
     /**
-     * The dummy value for the <code>uri</code> attributes of the paired CPF and ANF structures.
-     *
-     * Although the name strongly suggests this is a URI, the specification (and the XML schema) allows general strings.
-     *
-     * @see <a href="http://apromore.org/wp-content/uploads/2010/12/cpf.gif">Canonical Process Format UML diagram</a>
-     */
-    private static final String DUMMY_URI = "dummy-model-uri";
-
-    /**
      * Apromore URI.
      */
     public static final String APROMORE_URI = "http://apromore.org";
@@ -466,7 +457,7 @@ public class CanoniserDefinitions extends Definitions {
 
         // Lazy initialization
         if (!canonised) {
-            canonise(DUMMY_URI);
+            canonise();
             canonised = true;
         }
         assert canonised;
@@ -491,7 +482,7 @@ public class CanoniserDefinitions extends Definitions {
 
         // Lazy initialization
         if (!canonised) {
-            canonise(DUMMY_URI);
+            canonise();
             canonised = true;
         }
         assert canonised;
@@ -505,65 +496,37 @@ public class CanoniserDefinitions extends Definitions {
     }
 
     /**
-     * Lazily initialize {@link #anfList} and {@link #cpfList}.
+     * Convert this BPMN document into an equivalent collection of CPF and ANF documents.
      *
-     * @param uri  the shared top-level <code>uri</code>  attribute of the CPF and ANF structures
+     * @return a result containing CPF and ANF documents equivalent to this BPMN
      */
-    private void canonise(final String uri) {
+    public CanoniserResult canonise() {
 
-        final IdFactory anfIdFactory = new IdFactory();
-        final IdFactory cpfIdFactory = new IdFactory();
-
-        final AnnotationsType anf = new AnnotationsType();
-        final CanonicalProcessType cpf = new CanonicalProcessType();
-
-        // Top-level attributes
-        cpf.setName(requiredName(getName()));
-
-        anf.setUri(uri);
-        cpf.setUri(uri);
-
-        cpf.setVersion(CPF_VERSION);
-
-        // Traverse diagram
-        //logger.info("Traversing diagrams");
-        for (BPMNDiagram diagram : getBPMNDiagrams()) {
-            //logger.info("Annotating a diagram " + ((Plane) diagram.getBPMNPlane()).getDiagramElements());
-            for (JAXBElement<? extends DiagramElement> element : diagram.getBPMNPlane().getDiagramElements()) {
-                //logger.info("Annotating an element " + element);
-                element.getValue().accept(new org.omg.spec.bpmn._20100524.model.BaseVisitor() {
-                    @Override
-                    public void visit(final BPMNEdge edge) {
-                        //logger.info("Annotating an edge");
-                        AnnotationType annotation = new AnnotationType();
-                        annotation.setId(anfIdFactory.newId(edge.getId()));
-                        annotation.setCpfId(edge.getBpmnElement().toString());  // TODO - process through cpfIdFactory instead
-                        anf.getAnnotation().add(annotation);
-                    }
-                    @Override
-                    public void visit(final BPMNShape shape) {
-                        //logger.info("Annotating a shape");
-                        AnnotationType annotation = new AnnotationType();
-                        annotation.setId(anfIdFactory.newId(shape.getId()));
-                        annotation.setCpfId(shape.getBpmnElement().toString());  // TODO - process through cpfIdFactory instead
-                        anf.getAnnotation().add(annotation);
-                    }
-                });
-            }
-        }
+        // Generate identifiers for @uri scoped across all generated CPF and ANF documents
+        final IdFactory linkUriFactory = new IdFactory();
 
         // Traverse processes
         for (JAXBElement<? extends TRootElement> rootElement : getRootElements()) {
             rootElement.getValue().accept(new org.omg.spec.bpmn._20100524.model.BaseVisitor() {
                 @Override
                 public void visit(final TProcess process) {
+
+                    // Generate identifiers scoped to this single CPF document
+                    final IdFactory cpfIdFactory = new IdFactory();
+
+                    final CanonicalProcessType cpf = new CanonicalProcessType();
+                      
+                    // Top-level attributes
+                    cpf.setName(requiredName(getName()));
+                    cpf.setVersion(CPF_VERSION);
+
                     final NetType net = new NetType();
                     net.setId(cpfIdFactory.newId(process.getId()));
                     cpf.setRootId(net.getId());
                     cpf.getNet().add(net);
 
                     for (LaneSet laneSet : process.getLaneSets()) {
-                        addLaneSet(laneSet, process.getName(), cpfIdFactory);
+                        addLaneSet(laneSet, process.getName(), cpf, cpfIdFactory);
                     }
 
                     for (JAXBElement<? extends TFlowElement> flowElement : process.getFlowElements()) {
@@ -722,6 +685,20 @@ public class CanoniserDefinitions extends Definitions {
                             }
                         });
                     }
+
+                    // For each diagram in the BPMN, generate an ANF for this CPF
+                    List<AnnotationsType> anfs = annotate();
+
+                    // Link the ANF to the CPF so that @cpfId attributes are meaningful
+                    String linkUri = linkUriFactory.newId(null);
+                    cpf.setUri(linkUri);
+                    for (AnnotationsType anf : anfs) {
+                        anf.setUri(linkUri);
+                    }
+
+                    // Populate the output lists; these are singletons currently, but eventually should be lists
+                    cpfList.add(cpf);
+                    anfList.addAll(anfs);
                 }
 
                 /**
@@ -731,9 +708,10 @@ public class CanoniserDefinitions extends Definitions {
                  *
                  * @param laneSet  BPMN lane set to add, never <code>null</code>
                  * @param parentName  the name attribute of the parent element ({@link TProcess} or a {@link TLane}), possibly <code>null</code>
+                 * @param cpf  the CPF document to populate
                  * @param cpfIdFactory  generator of identifiers for pools and lanes
                  */
-                private void addLaneSet(final LaneSet laneSet, final String parentName, final IdFactory cpfIdFactory) {
+                private void addLaneSet(final LaneSet laneSet, final String parentName, final CanonicalProcessType cpf, final IdFactory cpfIdFactory) {
                     ResourceTypeType poolResourceType = new ResourceTypeType();
 
                     poolResourceType.setId(cpfIdFactory.newId(laneSet.getId()));
@@ -756,7 +734,7 @@ public class CanoniserDefinitions extends Definitions {
 
                         // recurse on any child lane sets
                         if (lane.getChildLaneSet() != null) {
-                            addLaneSet(lane.getChildLaneSet(), lane.getName(), cpfIdFactory);
+                            addLaneSet(lane.getChildLaneSet(), lane.getName(), cpf, cpfIdFactory);
                         }
                     }
 
@@ -765,10 +743,55 @@ public class CanoniserDefinitions extends Definitions {
             });
         }
 
-        // Populate the output lists; these are singletons currently, but eventually should be lists
-        anfList.add(anf);
-        cpfList.add(cpf);
-    };
+        // Dummy return value
+        return null;
+    }
+
+    /**
+     * Traverse the BPMN diagram elements, converting them into ANF documents.
+     *
+     * @return an ANF document
+     */
+    private List<AnnotationsType> annotate() {
+
+        final List<AnnotationsType> anfs = new ArrayList<>();
+
+        for (BPMNDiagram diagram : getBPMNDiagrams()) {
+            //logger.info("Annotating a diagram " + ((Plane) diagram.getBPMNPlane()).getDiagramElements());
+
+            final AnnotationsType anf = new AnnotationsType();
+
+            for (JAXBElement<? extends DiagramElement> element : diagram.getBPMNPlane().getDiagramElements()) {
+
+                // Generator for identifiers scoped to this ANF document
+                final IdFactory anfIdFactory = new IdFactory();
+
+                //logger.info("Annotating an element " + element);
+                element.getValue().accept(new org.omg.spec.bpmn._20100524.model.BaseVisitor() {
+                    @Override
+                    public void visit(final BPMNEdge edge) {
+                        //logger.info("Annotating an edge");
+                        AnnotationType annotation = new AnnotationType();
+                        annotation.setId(anfIdFactory.newId(edge.getId()));
+                        annotation.setCpfId(edge.getBpmnElement().toString());  // TODO - process through cpfIdFactory instead
+                        anf.getAnnotation().add(annotation);
+                    }
+                    @Override
+                    public void visit(final BPMNShape shape) {
+                        //logger.info("Annotating a shape");
+                        AnnotationType annotation = new AnnotationType();
+                        annotation.setId(anfIdFactory.newId(shape.getId()));
+                        annotation.setCpfId(shape.getBpmnElement().toString());  // TODO - process through cpfIdFactory instead
+                        anf.getAnnotation().add(annotation);
+                    }
+                });
+            }
+
+            anfs.add(anf);
+        }
+
+        return anfs;
+    }
 
     /**
      * This method centralizes the policy of filling in absent names with a zero-length
