@@ -59,6 +59,16 @@
                 <configuration>
                     <schemaDirectory>${basedir}/src/main/resources/xsd</schemaDirectory>
                     <generateDirectory>${basedir}/target/generated-sources/src</generateDirectory>                    
+                    <args>
+                        <arg>-Xvisitor</arg>
+                    </args>
+                    <plugins>
+                        <plugin>
+                            <groupId>com.massfords</groupId>
+                            <artifactId>jaxb-visitor</artifactId>
+                            <version>1.9</version>
+                        </plugin>
+                    </plugins>
                 </configuration>
             </plugin>
             <plugin>
