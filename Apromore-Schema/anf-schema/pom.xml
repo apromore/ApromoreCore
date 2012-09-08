@@ -43,18 +43,28 @@
 			<finalName>anf-schema</finalName> -->
 		<plugins>
 			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>jaxb2-maven-plugin</artifactId>
+				<groupId>org.jvnet.jaxb2.maven2</groupId>
+				<artifactId>maven-jaxb2-plugin</artifactId>
 				<executions>
 					<execution>
 						<goals>
-							<goal>xjc</goal>
+							<goal>generate</goal>
 						</goals>
 					</execution>
 				</executions>
 				<configuration>
 					<schemaDirectory>${basedir}/src/main/resources/xsd</schemaDirectory>
 					<outputDirectory>${basedir}/target/generated-sources/src</outputDirectory>
+					<args>
+						<arg>-Xvisitor</arg>
+					</args>
+					<plugins>
+						<plugin>
+							<groupId>com.massfords</groupId>
+							<artifactId>jaxb-visitor</artifactId>
+							<version>1.9</version>
+						</plugin>
+					</plugins>
 				</configuration>
 			</plugin>
 			<plugin>

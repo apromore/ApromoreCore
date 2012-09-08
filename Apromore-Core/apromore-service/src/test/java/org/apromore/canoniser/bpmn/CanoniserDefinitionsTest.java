@@ -129,7 +129,7 @@ public class CanoniserDefinitionsTest {
         assert BPMN_SCHEMA != null;
 
         CPF_SCHEMA  = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(
-            new StreamSource(loader.getResourceAsStream("xsd/cpf_0.5.xsd"))
+            new StreamSource(loader.getResourceAsStream("xsd/cpf_0.6.xsd"))
         );
     }
 
@@ -258,7 +258,7 @@ public class CanoniserDefinitionsTest {
      * @throws JAXBException
      * @throws SAXException
      */
-    private CanoniserDefinitions testCanonise(String filename) throws FileNotFoundException, JAXBException, SAXException {
+    private CanoniserDefinitions testCanonise(String filename) throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
 
         // Obtain the test instance
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -335,7 +335,7 @@ public class CanoniserDefinitionsTest {
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 2.bpmn20.svg"/></div>
      */
      @Test
-     public void testCanonise2() throws FileNotFoundException, JAXBException, SAXException {
+     public void testCanonise2() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
          CanoniserDefinitions definitions = testCanonise("Case 2");
 
          // Expect 4 nodes
@@ -389,7 +389,7 @@ public class CanoniserDefinitionsTest {
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 5.bpmn20.svg"/></div>
      */
      @Test
-     public void testCanonise5() throws FileNotFoundException, JAXBException, SAXException {
+     public void testCanonise5() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
          CanoniserDefinitions definitions = testCanonise("Case 5");
 
          // Expect 4 nodes
@@ -443,7 +443,7 @@ public class CanoniserDefinitionsTest {
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 8.bpmn20.svg"/></div>
      */
      @Test
-     public void testCanonise8() throws FileNotFoundException, JAXBException, SAXException {
+     public void testCanonise8() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
          CanoniserDefinitions definitions = testCanonise("Case 8");
 
          // Expect 1 graph, 2 resource types
@@ -502,7 +502,7 @@ public class CanoniserDefinitionsTest {
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 9.bpmn20.svg"/></div>
      */
      @Test
-     public void testCanonise9() throws FileNotFoundException, JAXBException, SAXException {
+     public void testCanonise9() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
          CanoniserDefinitions definitions = testCanonise("Case 9");
 
          // Expect 1 graph, 2 resource types
@@ -563,7 +563,7 @@ public class CanoniserDefinitionsTest {
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 10.bpmn20.svg"/></div>
      */
      @Test
-     public void testCanonise10() throws FileNotFoundException, JAXBException, SAXException {
+     public void testCanonise10() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
          CanoniserDefinitions definitions = testCanonise("Case 10");
 
          // not yet implemented
@@ -575,7 +575,7 @@ public class CanoniserDefinitionsTest {
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 11.bpmn20.svg"/></div>
      */
      @Test
-     public void testCanonise11() throws FileNotFoundException, JAXBException, SAXException {
+     public void testCanonise11() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
          CanoniserDefinitions definitions = testCanonise("Case 11");
 
          // not yet implemented
@@ -587,7 +587,7 @@ public class CanoniserDefinitionsTest {
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 12.bpmn20.svg"/></div>
      */
      @Test
-     public void testCanonise12() throws FileNotFoundException, JAXBException, SAXException {
+     public void testCanonise12() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
          //CanoniserDefinitions definitions = testCanonise("Case 12");
 
          // not yet implemented
