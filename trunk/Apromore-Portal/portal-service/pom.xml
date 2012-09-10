@@ -22,11 +22,6 @@
         re-use.
     </description>
 
-    <issueManagement>
-        <system>Google Code</system>
-        <url>http://code.google.com/p/apromore/wiki/IssueTracker</url>
-    </issueManagement>
-
     <scm>
         <developerConnection>scm:svn:https://apromore.googlecode.com/svn/trunk/0.3/Apromore-Portal/portal-service/</developerConnection>
         <connection>scm:svn:http://apromore.googlecode.com/svn/svn/trunk/0.3/Apromore-Portal/portal-service/</connection>
@@ -34,22 +29,26 @@
     </scm>
 
     <ciManagement>
-        <system>Hudson</system>
-        <url>http://fastyawl01.qut.edu.au:80/view/apromore</url>
+        <system>Bamboo</system>
+        <url>http://apromore-build.qut.edu.au/bamboo</url>
+        <notifiers>
+            <notifier>
+                <address>cam.james@gmail.com</address>
+            </notifier>
+        </notifiers>
     </ciManagement>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://apromore-build.qut.edu.au/jira/browse/support</url>
+    </issueManagement>
 
     <distributionManagement>
         <site>
-            <id>website</id>
-            <url>dav:http://fastyawl01.qut.edu.au:80/projects/apromore</url>
+            <id>Apromore-site</id>
+            <url>dav:http://apromore.qut.edu.au/projects/Apromore-Portal/portal-service</url>
         </site>
     </distributionManagement>
-
-    <prerequisites>
-        <maven>2.2.1</maven>
-    </prerequisites>
-
-    <inceptionYear>2010</inceptionYear>
 
     <licenses>
         <license>
@@ -63,6 +62,12 @@
         <name>QUT</name>
         <url>http://www.qut.edu.au</url>
     </organization>
+
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
+
+    <inceptionYear>2010</inceptionYear>
 
     <mailingLists>
         <mailingList>
@@ -85,6 +90,7 @@
             <timezone>+10</timezone>
         </developer>
     </developers>
+
 
     <dependencies>
         <!-- Client -->
@@ -129,33 +135,10 @@
             <artifactId>logback-core</artifactId>
         </dependency>
 
-        <!-- JAXB -->
-        <dependency>
-            <groupId>javax.xml.bind</groupId>
-            <artifactId>jaxb-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.sun.xml.bind</groupId>
-            <artifactId>jaxb-impl</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.ws.commons.schema</groupId>
-            <artifactId>XmlSchema</artifactId>
-        </dependency>
-
         <!-- Spring-WS dependencies -->
         <dependency>
             <groupId>org.springframework.ws</groupId>
             <artifactId>spring-xml</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.ws</groupId>
-            <artifactId>spring-ws-core</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.ws</groupId>
-            <artifactId>spring-ws-support</artifactId>
-            <scope>runtime</scope>
         </dependency>
 
         <!-- Spring dependencies -->

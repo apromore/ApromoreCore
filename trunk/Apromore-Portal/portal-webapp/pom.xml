@@ -19,11 +19,6 @@
     <name>Apromore Portal Web App</name>
     <description>Apromore Portal is the User Interface of the Apromore Application.</description>
 
-    <issueManagement>
-        <system>Google Code</system>
-        <url>http://code.google.com/p/apromore/wiki/IssueTracker</url>
-    </issueManagement>
-
     <scm>
         <developerConnection>scm:svn:https://apromore.googlecode.com/svn/base-pom</developerConnection>
         <connection>scm:svn:http://apromore.googlecode.com/svn/base-pom</connection>
@@ -31,22 +26,26 @@
     </scm>
 
     <ciManagement>
-        <system>Hudson</system>
-        <url>http://fastyawl01.qut.edu.au:80/view/apromore</url>
+        <system>Bamboo</system>
+        <url>http://apromore-build.qut.edu.au/bamboo</url>
+        <notifiers>
+            <notifier>
+                <address>cam.james@gmail.com</address>
+            </notifier>
+        </notifiers>
     </ciManagement>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://apromore-build.qut.edu.au/jira/browse/support</url>
+    </issueManagement>
 
     <distributionManagement>
         <site>
-            <id>website</id>
-            <url>dav:http://fastyawl01.qut.edu.au:80/projects/apromore</url>
+            <id>Apromore-site</id>
+            <url>dav:http://apromore.qut.edu.au/projects/Apromore-Portal/portal-webapp</url>
         </site>
     </distributionManagement>
-
-    <prerequisites>
-        <maven>2.2.1</maven>
-    </prerequisites>
-
-    <inceptionYear>2010</inceptionYear>
 
     <licenses>
         <license>
@@ -60,6 +59,12 @@
         <name>QUT</name>
         <url>http://www.qut.edu.au</url>
     </organization>
+
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
+
+    <inceptionYear>2010</inceptionYear>
 
     <mailingLists>
         <mailingList>
@@ -82,6 +87,7 @@
             <timezone>+10</timezone>
         </developer>
     </developers>
+
 
     <repositories>
         <repository>

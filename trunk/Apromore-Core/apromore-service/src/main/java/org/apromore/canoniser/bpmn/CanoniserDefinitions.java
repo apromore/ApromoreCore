@@ -722,7 +722,7 @@ public class CanoniserDefinitions extends Definitions {
                     for (Lane lane : laneSet.getLanes()) {
                         ResourceTypeType laneResourceType = new ResourceTypeType();
 
-                        for (JAXBElement<Object> flowNode : lane.getFlowNodeRefs()) {
+                        for (JAXBElement<Object> flowNode : lane.getFlowNodeReves()) {
                             logger.info("Lane " + ((TFlowNode) flowNode.getValue()).getId());
                         }
 
@@ -754,7 +754,7 @@ public class CanoniserDefinitions extends Definitions {
      */
     private List<AnnotationsType> annotate() {
 
-        final List<AnnotationsType> anfs = new ArrayList<>();
+        final List<AnnotationsType> anfs = new ArrayList<AnnotationsType>();
 
         for (BPMNDiagram diagram : getBPMNDiagrams()) {
             //logger.info("Annotating a diagram " + ((Plane) diagram.getBPMNPlane()).getDiagramElements());
