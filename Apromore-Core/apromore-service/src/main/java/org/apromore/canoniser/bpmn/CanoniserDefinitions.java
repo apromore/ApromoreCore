@@ -722,9 +722,9 @@ public class CanoniserDefinitions extends Definitions {
                     for (Lane lane : laneSet.getLanes()) {
                         ResourceTypeType laneResourceType = new ResourceTypeType();
 
-                        for (JAXBElement<Object> flowNode : lane.getFlowNodeReves()) {
-                            logger.info("Lane " + ((TFlowNode) flowNode.getValue()).getId());
-                        }
+//                        for (JAXBElement<Object> flowNode : lane.getFlowNodeReves()) {
+//                            logger.info("Lane " + ((TFlowNode) flowNode.getValue()).getId());
+//                        }
 
                         laneResourceType.setId(cpfIdFactory.newId(lane.getId()));
                         laneResourceType.setName(requiredName(lane.getName()));
