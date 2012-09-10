@@ -27,7 +27,7 @@ public class IdFactory {
      *
      * This set never contains <code>null</code>.
      */
-    private final Set<String> idSet = new HashSet<>();
+    private final Set<String> idSet = new HashSet<String>();
 
     /**
      * Issue a new identifier.

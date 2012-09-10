@@ -1,65 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <beans xmlns="http://www.springframework.org/schema/beans" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-       xmlns:p="http://www.springframework.org/schema/p" xmlns:context="http://www.springframework.org/schema/context"
-       xmlns:sws="http://www.springframework.org/schema/web-services" xmlns:util="http://www.springframework.org/schema/util"
+       xmlns:context="http://www.springframework.org/schema/context"
        xsi:schemaLocation="
-            http://www.springframework.org/schema/util     http://www.springframework.org/schema/util/spring-util-3.0.xsd
             http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-3.0.xsd
-            http://www.springframework.org/schema/web-services http://www.springframework.org/schema/web-services/web-services-2.0.xsd
             http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-3.0.xsd">
 
     <context:component-scan base-package="org.apromore"/>
-
-    <!-- ************************** WebServices ************************** -->
-
-    <sws:annotation-driven />
-
-    <sws:dynamic-wsdl id="portal" portTypeName="Portal" locationUri="/services/portal/" targetNamespace="urn:qut-edu-au:schema:apromore:portal">
-        <sws:xsd location="classpath:portal.xsd"/>
-    </sws:dynamic-wsdl>
-
-    <sws:interceptors>
-        <bean class="org.springframework.ws.server.endpoint.interceptor.PayloadLoggingInterceptor"
-            p:logRequest="false" p:logResponse="false" />
-        <bean id="validatingInterceptor"  class="org.springframework.ws.soap.server.endpoint.interceptor.PayloadValidatingInterceptor"
-            p:xsdSchemaCollection-ref="schemaCollection" p:validateRequest="false" p:validateResponse="false"/>
-    </sws:interceptors>
-
-    <bean id="marshallingMethodProcessor" class="org.springframework.ws.server.endpoint.adapter.method.MarshallingPayloadMethodProcessor"
-        p:marshaller-ref="jaxb2Marshaller" p:unmarshaller-ref="jaxb2Marshaller"/>
-
-    <bean id="defaultMethodEndpointAdapter" class="org.springframework.ws.server.endpoint.adapter.DefaultMethodEndpointAdapter">
-        <property name="methodArgumentResolvers">
-            <list>
-                <ref bean="marshallingMethodProcessor"/>
-            </list>
-        </property>
-        <property name="methodReturnValueHandlers">
-            <list>
-                <ref bean="marshallingMethodProcessor"/>
-            </list>
-        </property>
-    </bean>
-
-    <bean id="jaxb2Marshaller" class="org.springframework.oxm.jaxb.Jaxb2Marshaller">
-        <property name="schemas" ref="schemasList" />
-        <property name="contextPaths">
-            <list>
-                <value>org.apromore.portal.model</value>
-            </list>
-        </property>
-    </bean>
-
-    <util:list id="schemasList">
-        <value>classpath:portal.xsd</value>
-    </util:list>
-
-    <bean id="schemaCollection" class="org.springframework.xml.xsd.commons.CommonsXsdSchemaCollection">
-        <property name="xsds" value="/WEB-INF/wsdl/portal.xsd"/>
-        <property name="inline" value="true"/>
-    </bean>
-
-    <bean id="messageFactory" class="org.springframework.ws.soap.saaj.SaajSoapMessageFactory"/>
-    <bean id="messageReceiver" class="org.springframework.ws.soap.server.SoapMessageDispatcher"/>
 
 </beans>

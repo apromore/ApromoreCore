@@ -18,6 +18,13 @@
         re-use.
     </description>
 
+    <distributionManagement>
+        <site>
+            <id>Apromore-site</id>
+            <url>dav:http://apromore.qut.edu.au/projects/</url>
+        </site>
+    </distributionManagement>
+
     <modules>
         <!-- Needed before Parent Builds -->
         <module>Build-Tools</module>
@@ -36,7 +43,6 @@
         <module>Apromore-Schema/yawl-schema</module>
         
         <module>Apromore-Clients/manager-client</module>
-        <module>Apromore-Clients/portal-client</module>
         
         <module>Apromore-Core/apromore-service</module>
         <module>Apromore-Core/apromore-webapp</module>

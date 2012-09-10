@@ -7,12 +7,13 @@
     <parent>
         <groupId>org.apromore</groupId>
         <artifactId>apromore-parent</artifactId>
-        <version>1.0.0-SNAPSHOT</version>
+        <version>1.0</version>
     </parent>
 
     <groupId>org.apromore</groupId>
     <artifactId>yawl-schema</artifactId>
-    <version>1.0.0-SNAPSHOT</version>
+    <version>1.0</version>
+    <packaging>jar</packaging>
 
     <url>http://code.google.com/p/apromore/</url>
     <name>Apromore Common YAWL Generated Code</name>
@@ -29,19 +30,70 @@
     </scm>
 
     <ciManagement>
-        <system>Jenkins</system>
-        <url>http://fastyawl01.qut.edu.au:8080/jenkins/view/schemas</url>
+        <system>Bamboo</system>
+        <url>http://apromore-build.qut.edu.au/bamboo</url>
+        <notifiers>
+            <notifier>
+                <address>cam.james@gmail.com</address>
+            </notifier>
+        </notifiers>
     </ciManagement>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://apromore-build.qut.edu.au/jira/browse/support</url>
+    </issueManagement>
 
     <distributionManagement>
         <site>
-            <id>website</id>
-            <url>dav:http://fastyawl01.qut.edu.au:8080/projects/yawl-schema</url>
+            <id>Apromore-site</id>
+            <url>dav:http://apromore.qut.edu.au/projects/Apromore-Schema/yawl-schema</url>
         </site>
     </distributionManagement>
 
+    <licenses>
+        <license>
+            <name>GNU General Public License v3</name>
+            <distribution>repo</distribution>
+            <url>http://www.gnu.org/licenses/gpl-3.0.txt</url>
+        </license>
+    </licenses>
+
+    <organization>
+        <name>QUT</name>
+        <url>http://www.qut.edu.au</url>
+    </organization>
+
+    <prerequisites>
+        <maven>2.2.1</maven>
+    </prerequisites>
+
+    <inceptionYear>2010</inceptionYear>
+
+    <mailingLists>
+        <mailingList>
+            <name>Apromore Forum</name>
+            <post>apromore-rm@googlegroups.com</post>
+            <unsubscribe>apromore-rm+unsubscribe@googlegroups.com</unsubscribe>
+        </mailingList>
+    </mailingLists>
+
+    <developers>
+        <developer>
+            <id>u312978</id>
+            <name>Cameron James</name>
+            <email>cam.james@gmail.com</email>
+            <organization>Suncorp</organization>
+            <organizationUrl>http://www.suncorp.com.au/</organizationUrl>
+            <roles>
+                <role>Active User</role>
+            </roles>
+            <timezone>+10</timezone>
+        </developer>
+    </developers>
+
     <build>
-    	<!-- Removed as maven-bundle-plugin otherwise fails to embed this correctly
+        <!-- Removed as maven-bundle-plugin otherwise fails to embed this correctly
         <finalName>yawl-schema</finalName>
         -->
         <plugins>
@@ -79,16 +131,16 @@
                     </execution>
                 </executions>
             </plugin>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Export-Package>org.yawlfoundation.yawlschema</Export-Package>
-					</instructions>
-				</configuration>
-			</plugin>             
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Export-Package>org.yawlfoundation.yawlschema</Export-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 </project>
