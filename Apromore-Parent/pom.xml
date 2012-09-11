@@ -157,6 +157,19 @@
     </reporting>
 
     <build>
+        <extensions>
+            <extension>
+                <groupId>org.apache.maven.wagon</groupId>
+                <artifactId>wagon-webdav-jackrabbit</artifactId>
+                <version>${wagon-webdav.version}</version>
+            </extension>
+            <extension>
+                <groupId>org.apromore</groupId>
+                <artifactId>build-tools</artifactId>
+                <version>${build-tools.version}</version>
+            </extension>
+        </extensions>
+
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -256,19 +269,6 @@
             </plugin>
         </plugins>
 
-        <extensions>
-            <extension>
-                <groupId>org.apache.maven.wagon</groupId>
-                <artifactId>wagon-webdav-jackrabbit</artifactId>
-                <version>2.2</version>
-            </extension>
-            <extension>
-                <groupId>org.apromore</groupId>
-                <artifactId>build-tools</artifactId>
-                <version>${build-tools.version}</version>
-            </extension>
-        </extensions>
-
         <pluginManagement>
             <plugins>
                 <plugin>
@@ -326,11 +326,6 @@
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-site-plugin</artifactId>
                     <version>${maven-site-plugin.version}</version>
-                    <configuration>
-                        <generateSitemap>true</generateSitemap>
-                        <inputEncoding>UTF-8</inputEncoding>
-                        <outputEncoding>UTF-8</outputEncoding>
-                    </configuration>
                     <dependencies>
                         <dependency>
                             <groupId>org.slf4j</groupId>
@@ -789,7 +784,7 @@
         <!-- Logging versions -->
         <slf4j.version>1.6.3</slf4j.version>
         <logback.version>0.9.28</logback.version>
-        <wagon-ssh.version>2.2</wagon-ssh.version>
+        <wagon-webdav.version>1.0</wagon-webdav.version>
 
         <!-- Commons versions -->
         <commons-lang.version>2.4</commons-lang.version>

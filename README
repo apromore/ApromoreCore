@@ -1,0 +1,18 @@
+Apromore Build Instructions
+
+To build apromore you firstly need to have the follow software installed:
+Java 1.7
+Maven 3.0.4
+Ant 1.8.3
+MySQL 5.5
+Tomcat 7\
+
+1. Firstly navigate to the \Apromore-Core\apromore-service\src\main\sql and execute createDB.sql in your mysql database. 
+   This will create your database and setup the tables.
+2. next navigate to the \Build-Tools folder and run 'mvn clean install'
+3. then navigate to the \Test-Tools folder and run 'mvn clean install'
+4. next navigate to the \Apromore-Parent folder and run 'mvn clean install'
+5. Chnage the the \Extras folder and run 'upload.bat', this will place jars in the build that is needed for the next set.
+6. Finally, change to the root and run 'mvn clean install'. This will build the rest and deploy to tomcat 7.
+
+Start up tomcat and see if it works.
