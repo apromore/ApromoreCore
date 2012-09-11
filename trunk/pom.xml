@@ -26,13 +26,6 @@
     </distributionManagement>
 
     <modules>
-        <!-- Needed before Parent Builds -->
-        <module>Build-Tools</module>
-        <module>Test-Tools</module>
-
-        <!-- Apromore project, includes the above -->
-        <module>Apromore-Parent</module>
-        
         <module>Apromore-Schema/anf-schema</module>
         <module>Apromore-Schema/bpmn-schema</module>
         <module>Apromore-Schema/cpf-schema</module>

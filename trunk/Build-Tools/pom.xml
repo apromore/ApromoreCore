@@ -37,7 +37,7 @@
     <distributionManagement>
         <site>
             <id>Apromore-site</id>
-            <url>dav:http://apromore.qut.edu.au/projects/Builds-Tools</url>
+            <url>dav:http://apromore.qut.edu.au/projects/Build-Tools</url>
         </site>
     </distributionManagement>
 
