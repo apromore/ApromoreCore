@@ -35,6 +35,7 @@ import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
+import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
@@ -179,23 +180,22 @@ public class CanoniserDefinitionsTest {
         assertEquals(10, definitions.getBPMNDiagrams().get(0).getBPMNPlane().getDiagramElements().size());
 
         // Validate and serialize the canonised documents to be inspected offline
+        CanoniserResult result = definitions.canonise();
+        assertEquals(1, result.size());
+        assertNotNull(result.getAnf(0));
+        assertNotNull(result.getCpf(0));
+
         Marshaller marshaller = JAXBContext.newInstance(Constants.ANF_CONTEXT).createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setSchema(ANF_SCHEMA);
-        marshaller.marshal(new JAXBElement<AnnotationsType>(ANF_ROOT, AnnotationsType.class, definitions.getANF()),
+        marshaller.marshal(new JAXBElement<AnnotationsType>(ANF_ROOT, AnnotationsType.class, result.getAnf(0)),
                            new File(OUTPUT_DIR, "Test1.anf"));
 
         marshaller = JAXBContext.newInstance(Constants.CPF_CONTEXT).createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setSchema(CPF_SCHEMA);
-        marshaller.marshal(new JAXBElement<CanonicalProcessType>(CPF_ROOT, CanonicalProcessType.class, definitions.getCPF()),
+        marshaller.marshal(new JAXBElement<CanonicalProcessType>(CPF_ROOT, CanonicalProcessType.class, result.getCpf(0)),
                            new File(OUTPUT_DIR, "Test1.cpf"));
-
-        // Inspect the ANF property
-        assertNotNull(definitions.getANF());
-
-        // Inspect the CPF property
-        assertNotNull(definitions.getCPF());
     }
 
     /**
@@ -210,7 +210,7 @@ public class CanoniserDefinitionsTest {
      * @throws JAXBException
      * @throws SAXException
      */
-    private CanoniserDefinitions testCanonise(String filename) throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    private CanoniserResult testCanonise(String filename) throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
 
         // Obtain the test instance
         Unmarshaller unmarshaller = context.createUnmarshaller();
@@ -223,19 +223,24 @@ public class CanoniserDefinitionsTest {
         ).getValue();
 
         // Validate and serialize the canonised documents to be inspected offline
+        CanoniserResult result = definitions.canonise();
+        assertEquals(1, result.size());
+        assertNotNull(result.getAnf(0));
+        assertNotNull(result.getCpf(0));
+
         Marshaller marshaller = JAXBContext.newInstance(Constants.ANF_CONTEXT).createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setSchema(ANF_SCHEMA);
-        marshaller.marshal(new JAXBElement<AnnotationsType>(ANF_ROOT, AnnotationsType.class, definitions.getANF()),
+        marshaller.marshal(new JAXBElement<AnnotationsType>(ANF_ROOT, AnnotationsType.class, result.getAnf(0)),
                            new File(OUTPUT_DIR, filename + ".anf"));
 
         marshaller = JAXBContext.newInstance(Constants.CPF_CONTEXT).createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setSchema(CPF_SCHEMA);
-        marshaller.marshal(new JAXBElement<CanonicalProcessType>(CPF_ROOT, CanonicalProcessType.class, definitions.getCPF()),
+        marshaller.marshal(new JAXBElement<CanonicalProcessType>(CPF_ROOT, CanonicalProcessType.class, result.getCpf(0)),
                            new File(OUTPUT_DIR, filename + ".cpf"));
 
-        return definitions;
+        return result;
     }
 
     /**
@@ -245,37 +250,37 @@ public class CanoniserDefinitionsTest {
      */
      @Test
      public void testCanonise1() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
-         CanoniserDefinitions definitions = testCanonise("Case 1");
 
          // Expect 3 nodes
-         assertEquals(3, definitions.getCPF().getNet().get(0).getNode().size());
+         NetType net = testCanonise("Case 1").getCpf(0).getNet().get(0);
+         assertEquals(3, net.getNode().size());
 
          // Start event "E1"
-         NodeType e1 = definitions.getCPF().getNet().get(0).getNode().get(0);
+         NodeType e1 = net.getNode().get(0);
          assertEquals("E1", e1.getName());
          assertEquals(EventType.class, e1.getClass());
 
          // Task "A"
-         NodeType a = definitions.getCPF().getNet().get(0).getNode().get(1);
+         NodeType a = net.getNode().get(1);
          assertEquals("A", a.getName());
          assertEquals(TaskType.class, a.getClass());
 
          // End event "E2"
-         NodeType e2 = definitions.getCPF().getNet().get(0).getNode().get(2);
+         NodeType e2 = net.getNode().get(2);
          assertEquals("E2", e2.getName());
          assertEquals(EventType.class, e2.getClass());
 
          // Expect 2 edges
-         assertEquals(2, definitions.getCPF().getNet().get(0).getEdge().size());
+         assertEquals(2, net.getEdge().size());
 
          // Sequence flow from E1 to A
-         EdgeType e1_a = definitions.getCPF().getNet().get(0).getEdge().get(0);
+         EdgeType e1_a = net.getEdge().get(0);
          assertNull(e1_a.getCondition());
          assertEquals(e1.getId(), e1_a.getSourceId());
          assertEquals(a.getId(), e1_a.getTargetId());
 
          // Sequence flow from A to E2
-         EdgeType a_e2 = definitions.getCPF().getNet().get(0).getEdge().get(1);
+         EdgeType a_e2 = net.getEdge().get(1);
          assertNull(a_e2.getCondition());
          assertEquals(a.getId(), a_e2.getSourceId());
          assertEquals(e2.getId(), a_e2.getTargetId());
@@ -288,48 +293,48 @@ public class CanoniserDefinitionsTest {
      */
      @Test
      public void testCanonise2() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
-         CanoniserDefinitions definitions = testCanonise("Case 2");
+         NetType net = testCanonise("Case 2").getCpf(0).getNet().get(0);
 
          // Expect 4 nodes
-         assertEquals(4, definitions.getCPF().getNet().get(0).getNode().size());
+         assertEquals(4, net.getNode().size());
 
          // Task "A"
-         NodeType a = definitions.getCPF().getNet().get(0).getNode().get(0);
+         NodeType a = net.getNode().get(0);
          assertEquals("A", a.getName());
          assertEquals(TaskType.class, a.getClass());
 
          // XOR Split
-         NodeType xor = definitions.getCPF().getNet().get(0).getNode().get(1);
+         NodeType xor = net.getNode().get(1);
          assertNull(xor.getName());
          assertEquals(XORSplitType.class, xor.getClass());
 
          // Task "B"
-         NodeType b = definitions.getCPF().getNet().get(0).getNode().get(2);
+         NodeType b = net.getNode().get(2);
          assertEquals("B", b.getName());
          assertEquals(TaskType.class, b.getClass());
 
          // Task "C"
-         NodeType c = definitions.getCPF().getNet().get(0).getNode().get(3);
+         NodeType c = net.getNode().get(3);
          assertEquals("C", c.getName());
          assertEquals(TaskType.class, c.getClass());
 
          // Expect 3 edges
-         assertEquals(3, definitions.getCPF().getNet().get(0).getEdge().size());
+         assertEquals(3, net.getEdge().size());
 
          // Sequence flow from A to XOR
-         EdgeType a_xor = definitions.getCPF().getNet().get(0).getEdge().get(0);
+         EdgeType a_xor = net.getEdge().get(0);
          assertNull(a_xor.getCondition());
          assertEquals(a.getId(), a_xor.getSourceId());
          assertEquals(xor.getId(), a_xor.getTargetId());
 
          // Sequence flow "C1" from XOR to B
-         EdgeType xor_b = definitions.getCPF().getNet().get(0).getEdge().get(1);
+         EdgeType xor_b = net.getEdge().get(1);
          assertEquals("C1", xor_b.getCondition());
          assertEquals(xor.getId(), xor_b.getSourceId());
          assertEquals(b.getId(), xor_b.getTargetId());
 
          // Sequence flow "C2" from XOR to C
-         EdgeType xor_c = definitions.getCPF().getNet().get(0).getEdge().get(2);
+         EdgeType xor_c = net.getEdge().get(2);
          assertEquals("C2", xor_c.getCondition());
          assertEquals(xor.getId(), xor_c.getSourceId());
          assertEquals(c.getId(), xor_c.getTargetId());
@@ -342,48 +347,48 @@ public class CanoniserDefinitionsTest {
      */
      @Test
      public void testCanonise5() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
-         CanoniserDefinitions definitions = testCanonise("Case 5");
+         NetType net = testCanonise("Case 5").getCpf(0).getNet().get(0);
 
          // Expect 4 nodes
-         assertEquals(4, definitions.getCPF().getNet().get(0).getNode().size());
+         assertEquals(4, net.getNode().size());
 
          // Task "A"
-         NodeType a = definitions.getCPF().getNet().get(0).getNode().get(0);
+         NodeType a = net.getNode().get(0);
          assertEquals("A", a.getName());
          assertEquals(TaskType.class, a.getClass());
 
          // XOR Join
-         NodeType xor = definitions.getCPF().getNet().get(0).getNode().get(1);
+         NodeType xor = net.getNode().get(1);
          assertNull(xor.getName());
          assertEquals(XORJoinType.class, xor.getClass());
 
          // Task "B"
-         NodeType b = definitions.getCPF().getNet().get(0).getNode().get(2);
+         NodeType b = net.getNode().get(2);
          assertEquals("B", b.getName());
          assertEquals(TaskType.class, b.getClass());
 
          // Task "C"
-         NodeType c = definitions.getCPF().getNet().get(0).getNode().get(3);
+         NodeType c = net.getNode().get(3);
          assertEquals("C", c.getName());
          assertEquals(TaskType.class, c.getClass());
 
          // Expect 3 edges
-         assertEquals(3, definitions.getCPF().getNet().get(0).getEdge().size());
+         assertEquals(3, net.getEdge().size());
 
          // Sequence flow from A to XOR
-         EdgeType a_xor = definitions.getCPF().getNet().get(0).getEdge().get(0);
+         EdgeType a_xor = net.getEdge().get(0);
          assertNull(a_xor.getCondition());
          assertEquals(a.getId(), a_xor.getSourceId());
          assertEquals(xor.getId(), a_xor.getTargetId());
 
          // Sequence flow B to XOR
-         EdgeType b_xor = definitions.getCPF().getNet().get(0).getEdge().get(1);
+         EdgeType b_xor = net.getEdge().get(1);
          assertNull(b_xor.getCondition());
          assertEquals(b.getId(), b_xor.getSourceId());
          assertEquals(xor.getId(), b_xor.getTargetId());
 
          // Sequence flow from XOR to C
-         EdgeType xor_c = definitions.getCPF().getNet().get(0).getEdge().get(2);
+         EdgeType xor_c = net.getEdge().get(2);
          assertNull(xor_c.getCondition());
          assertEquals(xor.getId(), xor_c.getSourceId());
          assertEquals(c.getId(), xor_c.getTargetId());
@@ -396,58 +401,59 @@ public class CanoniserDefinitionsTest {
      */
      @Test
      public void testCanonise8() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
-         CanoniserDefinitions definitions = testCanonise("Case 8");
+         CanonicalProcessType cpf = testCanonise("Case 8").getCpf(0);
 
          // Expect 1 graph, 2 resource types
-         assertEquals(1, definitions.getCPF().getNet().size());
-         assertEquals(2, definitions.getCPF().getResourceType().size());
+         assertEquals(1, cpf.getNet().size());
+         assertEquals(2, cpf.getResourceType().size());
 
          // Pool "P"
-         ResourceTypeType p = definitions.getCPF().getResourceType().get(1);
+         ResourceTypeType p = cpf.getResourceType().get(1);
          assertEquals("P", p.getName());
          assertEquals(ResourceTypeType.class, p.getClass());
          //assertEquals(Collections.EMPTY_LIST, p.getSpecializationIds());
 
          // Implicit lane within "P"
-         ResourceTypeType p_lane = definitions.getCPF().getResourceType().get(0);
+         ResourceTypeType p_lane = cpf.getResourceType().get(0);
          assertEquals("", p_lane.getName());
          assertEquals(ResourceTypeType.class, p_lane.getClass());
 
          // Expect 3 nodes
-         assertEquals(3, definitions.getCPF().getNet().get(0).getNode().size());
+         NetType net = cpf.getNet().get(0);
+         assertEquals(3, net.getNode().size());
 
          // Start event "E1"
-         NodeType e1 = definitions.getCPF().getNet().get(0).getNode().get(0);
+         NodeType e1 = net.getNode().get(0);
          assertEquals("E1", e1.getName());
          assertEquals(EventType.class, e1.getClass());
          assertEquals(1, ((EventType) e1).getResourceTypeRef().size()); 
          assertEquals(p_lane.getId(), ((EventType) e1).getResourceTypeRef().get(0).getResourceTypeId()); 
 
          // Task "A"
-         NodeType a = definitions.getCPF().getNet().get(0).getNode().get(1);
+         NodeType a = net.getNode().get(1);
          assertEquals("A", a.getName());
          assertEquals(TaskType.class, a.getClass());
          assertEquals(1, ((TaskType) a).getResourceTypeRef().size()); 
          assertEquals(p_lane.getId(), ((TaskType) a).getResourceTypeRef().get(0).getResourceTypeId()); 
 
          // End event "E2"
-         NodeType e2 = definitions.getCPF().getNet().get(0).getNode().get(2);
+         NodeType e2 = net.getNode().get(2);
          assertEquals("E2", e2.getName());
          assertEquals(EventType.class, e2.getClass());
          assertEquals(1, ((EventType) e2).getResourceTypeRef().size()); 
          assertEquals(p_lane.getId(), ((EventType) e2).getResourceTypeRef().get(0).getResourceTypeId()); 
 
          // Expect 2 edges
-         assertEquals(2, definitions.getCPF().getNet().get(0).getEdge().size());
+         assertEquals(2, net.getEdge().size());
 
          // Sequence flow from E1 to A
-         EdgeType e1_a = definitions.getCPF().getNet().get(0).getEdge().get(0);
+         EdgeType e1_a = net.getEdge().get(0);
          assertNull(e1_a.getCondition());
          assertEquals(e1.getId(), e1_a.getSourceId());
          assertEquals(a.getId(), e1_a.getTargetId());
 
          // Sequence flow A to E1
-         EdgeType a_e2 = definitions.getCPF().getNet().get(0).getEdge().get(1);
+         EdgeType a_e2 = net.getEdge().get(1);
          assertNull(a_e2.getCondition());
          assertEquals(a.getId(), a_e2.getSourceId());
          assertEquals(e2.getId(), a_e2.getTargetId());
@@ -460,19 +466,19 @@ public class CanoniserDefinitionsTest {
      */
      @Test
      public void testCanonise9() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
-         CanoniserDefinitions definitions = testCanonise("Case 9");
+         CanonicalProcessType cpf = testCanonise("Case 9").getCpf(0);
 
          // Expect 1 graph, 2 resource types
-         assertEquals(1, definitions.getCPF().getNet().size());
-         assertEquals(4, definitions.getCPF().getResourceType().size());
+         assertEquals(1, cpf.getNet().size());
+         assertEquals(4, cpf.getResourceType().size());
 
          // Pool "P"
-         ResourceTypeType p = definitions.getCPF().getResourceType().get(3);
+         ResourceTypeType p = cpf.getResourceType().get(3);
          assertEquals("P", p.getName());
          assertEquals(ResourceTypeType.class, p.getClass());
 
          // Lane "L"
-         ResourceTypeType l = definitions.getCPF().getResourceType().get(1);
+         ResourceTypeType l = cpf.getResourceType().get(1);
          assertEquals("L", l.getName());
          assertEquals(ResourceTypeType.class, l.getClass());
          assertEquals(Collections.EMPTY_LIST, l.getSpecializationIds());
@@ -480,40 +486,41 @@ public class CanoniserDefinitionsTest {
          //assertEquals(Collections.singletonList(p.getId()), ((ResourceTypeType) l.getSpecializationIds()));
 
          // Expect 3 nodes
-         assertEquals(3, definitions.getCPF().getNet().get(0).getNode().size());
+         NetType net = cpf.getNet().get(0);
+         assertEquals(3, net.getNode().size());
 
          // Start event "E1"
-         NodeType e1 = definitions.getCPF().getNet().get(0).getNode().get(0);
+         NodeType e1 = net.getNode().get(0);
          assertEquals("E1", e1.getName());
          assertEquals(EventType.class, e1.getClass());
          assertEquals(1, ((EventType) e1).getResourceTypeRef().size()); 
          assertEquals(l.getId(), ((EventType) e1).getResourceTypeRef().get(0).getResourceTypeId()); 
 
          // Task "A"
-         NodeType a = definitions.getCPF().getNet().get(0).getNode().get(1);
+         NodeType a = net.getNode().get(1);
          assertEquals("A", a.getName());
          assertEquals(TaskType.class, a.getClass());
          assertEquals(1, ((TaskType) a).getResourceTypeRef().size()); 
          assertEquals(l.getId(), ((TaskType) a).getResourceTypeRef().get(0).getResourceTypeId()); 
 
          // End event "E2"
-         NodeType e2 = definitions.getCPF().getNet().get(0).getNode().get(2);
+         NodeType e2 = net.getNode().get(2);
          assertEquals("E2", e2.getName());
          assertEquals(EventType.class, e2.getClass());
          assertEquals(1, ((EventType) e2).getResourceTypeRef().size()); 
          assertEquals(l.getId(), ((EventType) e2).getResourceTypeRef().get(0).getResourceTypeId()); 
 
          // Expect 2 edges
-         assertEquals(2, definitions.getCPF().getNet().get(0).getEdge().size());
+         assertEquals(2, net.getEdge().size());
 
          // Sequence flow from E1 to A
-         EdgeType e1_a = definitions.getCPF().getNet().get(0).getEdge().get(0);
+         EdgeType e1_a = net.getEdge().get(0);
          assertNull(e1_a.getCondition());
          assertEquals(e1.getId(), e1_a.getSourceId());
          assertEquals(a.getId(), e1_a.getTargetId());
 
          // Sequence flow A to E1
-         EdgeType a_e2 = definitions.getCPF().getNet().get(0).getEdge().get(1);
+         EdgeType a_e2 = net.getEdge().get(1);
          assertNull(a_e2.getCondition());
          assertEquals(a.getId(), a_e2.getSourceId());
          assertEquals(e2.getId(), a_e2.getTargetId());
@@ -526,7 +533,7 @@ public class CanoniserDefinitionsTest {
      */
      @Test
      public void testCanonise10() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
-         CanoniserDefinitions definitions = testCanonise("Case 10");
+         testCanonise("Case 10");
 
          // not yet implemented
      }
@@ -538,7 +545,7 @@ public class CanoniserDefinitionsTest {
      */
      @Test
      public void testCanonise11() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
-         CanoniserDefinitions definitions = testCanonise("Case 11");
+         testCanonise("Case 11");
 
          // not yet implemented
      }

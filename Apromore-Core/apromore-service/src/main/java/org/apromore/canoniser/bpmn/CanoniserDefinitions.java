@@ -119,30 +119,6 @@ public class CanoniserDefinitions extends Definitions {
     public static final String XSD_URI = "http://www.w3.org/2001/XMLSchema";
 
     /**
-     * Canonical process models equivalent to those in this BPMN model.
-     *
-     * The ordering of the list corresponds to the order of the processes in the BPMN document.
-     *
-     * This is lazily initialized by the {@link #canonise} method.
-     */
-    @XmlTransient
-    private final List<CanonicalProcessType> cpfList = new ArrayList<CanonicalProcessType>(1);
-
-    /**
-     * Canonical annotations equivalent to this BPMN model.
-     *
-     * This is lazily initialized by the {@link #canonise} method.
-     */
-    @XmlTransient
-    private final List<AnnotationsType> anfList = new ArrayList<AnnotationsType>(1);
-
-    /**
-     * Whether or not the {@link #cpf} and {@link #anf} fields have been initialized.
-     */
-    @XmlTransient
-    private boolean canonised = false;
-
-    /**
      * No-op constructor.
      *
      * Required for JUnit to work.
@@ -448,63 +424,14 @@ public class CanoniserDefinitions extends Definitions {
     }
 
     /**
-     * The canonical annotations corresponding to this BPMN.
-     *
-     * This is lazily initialized the first time it is accessed.
-     * Identifiers in this structure reference the corresponding {@link CanonicalProcessType}
-     * returned by {@link #getCPF}.
-     *
-     * @return canonical annotations corresponding to this BPMN
-     * @throws CanoniserException unless this BPMN has only a single process
-     */
-    public AnnotationsType getANF() throws CanoniserException {
-
-        // Lazy initialization
-        if (!canonised) {
-            canonise();
-            canonised = true;
-        }
-        assert canonised;
-
-        // Until multiple ANF output is supported, raise an exception if this BPMN document doesn't correspond to a single ANF
-        if (anfList.size() != 1) {
-            throw new CanoniserException("There are " + anfList.size() + " ANF documents");
-        }
-
-        return anfList.get(0);
-    }
-
-    /**
-     * The canonical process model corresponding to this BPMN.
-     *
-     * This is lazily initialized the first time it is accessed.
-     *
-     * @return canonical process models corresponding to this BPMN
-     * @throws CanoniserException unless this BPMN has only a single process
-     */
-    public CanonicalProcessType getCPF() throws CanoniserException {
-
-        // Lazy initialization
-        if (!canonised) {
-            canonise();
-            canonised = true;
-        }
-        assert canonised;
-
-        // Until multiple CPF output is supported, raise an exception if this BPMN document doesn't correspond to a single CPF
-        if (cpfList.size() != 1) {
-            throw new CanoniserException("There are " + cpfList.size() + " CPF documents");
-        }
-
-        return cpfList.get(0);
-    }
-
-    /**
      * Convert this BPMN document into an equivalent collection of CPF and ANF documents.
      *
      * @return a result containing CPF and ANF documents equivalent to this BPMN
      */
     public CanoniserResult canonise() {
+
+        // This instance will be populated and returned at the end of this method
+        final CanoniserResult result = new CanoniserResult();
 
         // Generate identifiers for @uri scoped across all generated CPF and ANF documents
         final IdFactory linkUriFactory = new IdFactory();
@@ -716,11 +643,8 @@ public class CanoniserDefinitions extends Definitions {
                     cpf.setUri(linkUri);
                     for (AnnotationsType anf : anfs) {
                         anf.setUri(linkUri);
+                        result.put(cpf, anf);
                     }
-
-                    // Populate the output lists; these are singletons currently, but eventually should be lists
-                    cpfList.add(cpf);
-                    anfList.addAll(anfs);
                 }
 
                 /**
@@ -796,7 +720,7 @@ public class CanoniserDefinitions extends Definitions {
         }
 
         // Dummy return value
-        return null;
+        return result;
     }
 
     /**
