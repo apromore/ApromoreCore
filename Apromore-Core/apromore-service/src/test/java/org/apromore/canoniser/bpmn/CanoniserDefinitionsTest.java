@@ -148,54 +148,6 @@ public class CanoniserDefinitionsTest {
     }
 
     /**
-     * Test decanonisation of <code>Basic.cpf</code> and <code>Basic.anf</code>.
-     */
-    @Test
-    public final void testDecanoniseBasic() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
-
-        // Obtain the test instance
-        CanoniserDefinitions definitions = new CanoniserDefinitions(
-            JAXBContext.newInstance(Constants.CPF_CONTEXT)
-                       .createUnmarshaller()
-                       .unmarshal(new StreamSource(new FileInputStream(new File(TESTCASES_DIR, "Basic.cpf"))),
-                                  CanonicalProcessType.class)
-                       .getValue(),
-            JAXBContext.newInstance(Constants.ANF_CONTEXT)
-                       .createUnmarshaller()
-                       .unmarshal(new StreamSource(new FileInputStream(new File(TESTCASES_DIR, "Basic.anf"))),
-                                  AnnotationsType.class)
-                       .getValue()
-        );
-
-        // Serialize the test instance for offline inspection
-        Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.marshal(definitions, new File(OUTPUT_DIR, "Basic.bpmn20.xml"));
-
-        // Validate the test instance
-        if (System.getProperty("bpmnvalidation") != null) {
-            marshaller.setSchema(BPMN_SCHEMA);
-        }
-        marshaller.marshal(definitions, new NullOutputStream());
-
-        // Inspect the test instance
-        assertNotNull(definitions);
-
-        assertNotNull(definitions.getRootElements());
-        assertEquals(1, definitions.getRootElements().size());
-    }
-
-    /**
-     * Test decanonization to <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Expected 1.bpmn20.xml">expectation #1</a>.
-     *
-     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Expected 1.bpmn20.svg"/></div>
-     */
-    @Test
-    public final void testDecanonise1() {
-        // not yet implemented
-    }
-
-    /**
      * Test canonisation of <code>Test1.bpmn20.xml</code>.
      */
     @Test
@@ -468,17 +420,22 @@ public class CanoniserDefinitionsTest {
          NodeType e1 = definitions.getCPF().getNet().get(0).getNode().get(0);
          assertEquals("E1", e1.getName());
          assertEquals(EventType.class, e1.getClass());
-         //assertEquals(Collections.singletonList(p), ((EventType) e1).getResourceTypeRef()); 
+         assertEquals(1, ((EventType) e1).getResourceTypeRef().size()); 
+         assertEquals(p_lane.getId(), ((EventType) e1).getResourceTypeRef().get(0).getResourceTypeId()); 
 
          // Task "A"
          NodeType a = definitions.getCPF().getNet().get(0).getNode().get(1);
          assertEquals("A", a.getName());
          assertEquals(TaskType.class, a.getClass());
+         assertEquals(1, ((TaskType) a).getResourceTypeRef().size()); 
+         assertEquals(p_lane.getId(), ((TaskType) a).getResourceTypeRef().get(0).getResourceTypeId()); 
 
          // End event "E2"
          NodeType e2 = definitions.getCPF().getNet().get(0).getNode().get(2);
          assertEquals("E2", e2.getName());
          assertEquals(EventType.class, e2.getClass());
+         assertEquals(1, ((EventType) e2).getResourceTypeRef().size()); 
+         assertEquals(p_lane.getId(), ((EventType) e2).getResourceTypeRef().get(0).getResourceTypeId()); 
 
          // Expect 2 edges
          assertEquals(2, definitions.getCPF().getNet().get(0).getEdge().size());
@@ -529,17 +486,22 @@ public class CanoniserDefinitionsTest {
          NodeType e1 = definitions.getCPF().getNet().get(0).getNode().get(0);
          assertEquals("E1", e1.getName());
          assertEquals(EventType.class, e1.getClass());
-         //assertEquals(Collections.singletonList(p), ((EventType) e1).getResourceTypeRef()); 
+         assertEquals(1, ((EventType) e1).getResourceTypeRef().size()); 
+         assertEquals(l.getId(), ((EventType) e1).getResourceTypeRef().get(0).getResourceTypeId()); 
 
          // Task "A"
          NodeType a = definitions.getCPF().getNet().get(0).getNode().get(1);
          assertEquals("A", a.getName());
          assertEquals(TaskType.class, a.getClass());
+         assertEquals(1, ((TaskType) a).getResourceTypeRef().size()); 
+         assertEquals(l.getId(), ((TaskType) a).getResourceTypeRef().get(0).getResourceTypeId()); 
 
          // End event "E2"
          NodeType e2 = definitions.getCPF().getNet().get(0).getNode().get(2);
          assertEquals("E2", e2.getName());
          assertEquals(EventType.class, e2.getClass());
+         assertEquals(1, ((EventType) e2).getResourceTypeRef().size()); 
+         assertEquals(l.getId(), ((EventType) e2).getResourceTypeRef().get(0).getResourceTypeId()); 
 
          // Expect 2 edges
          assertEquals(2, definitions.getCPF().getNet().get(0).getEdge().size());
@@ -592,4 +554,52 @@ public class CanoniserDefinitionsTest {
 
          // not yet implemented
      }
+
+    /**
+     * Test decanonisation of <code>Basic.cpf</code> and <code>Basic.anf</code>.
+     */
+    @Test
+    public final void testDecanoniseBasic() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+
+        // Obtain the test instance
+        CanoniserDefinitions definitions = new CanoniserDefinitions(
+            JAXBContext.newInstance(Constants.CPF_CONTEXT)
+                       .createUnmarshaller()
+                       .unmarshal(new StreamSource(new FileInputStream(new File(TESTCASES_DIR, "Basic.cpf"))),
+                                  CanonicalProcessType.class)
+                       .getValue(),
+            JAXBContext.newInstance(Constants.ANF_CONTEXT)
+                       .createUnmarshaller()
+                       .unmarshal(new StreamSource(new FileInputStream(new File(TESTCASES_DIR, "Basic.anf"))),
+                                  AnnotationsType.class)
+                       .getValue()
+        );
+
+        // Serialize the test instance for offline inspection
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.marshal(definitions, new File(OUTPUT_DIR, "Basic.bpmn20.xml"));
+
+        // Validate the test instance
+        if (System.getProperty("bpmnvalidation") != null) {
+            marshaller.setSchema(BPMN_SCHEMA);
+        }
+        marshaller.marshal(definitions, new NullOutputStream());
+
+        // Inspect the test instance
+        assertNotNull(definitions);
+
+        assertNotNull(definitions.getRootElements());
+        assertEquals(1, definitions.getRootElements().size());
+    }
+
+    /**
+     * Test decanonization to <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Expected 1.bpmn20.xml">expectation #1</a>.
+     *
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Expected 1.bpmn20.svg"/></div>
+     */
+    @Test
+    public final void testDecanonise1() {
+        // not yet implemented
+    }
 }

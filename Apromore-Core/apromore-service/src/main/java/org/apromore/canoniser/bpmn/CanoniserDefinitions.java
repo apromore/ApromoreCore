@@ -34,9 +34,11 @@ import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ORJoinType;
 import org.apromore.cpf.ORSplitType;
 import org.apromore.cpf.ResourceTypeType;
+import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TypeAttribute;
+import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
@@ -382,17 +384,19 @@ public class CanoniserDefinitions extends Definitions {
                             shape.setId(bpmnIdFactory.newId(annotation.getId()));
                             shape.setBpmnElement(idMap.get(annotation.getCpfId()).getId());
 
-                            /* TODO - generated visit() methods need to throw CanoniserException
                             // a shape requires a bounding box, defined by a top-left position and a size (width and height)
                             if (graphics.getPosition().size() != 1) {
-                                throw new CanoniserException("Annotation " + annotation.getId() + " for shape " +
-                                    annotation.getCpfId() + " should have just one origin position");
+                                throw new RuntimeException(  // TODO - remove this wrapper hack
+                                    new CanoniserException("Annotation " + annotation.getId() + " for shape " +
+                                        annotation.getCpfId() + " should have just one origin position")
+                                );
                             }
                             if (graphics.getSize() == null) {
-                                throw new CanoniserException("Annotation " + annotation.getId() + " for shape " +
-                                    annotation.getCpfId() + " should specify a size");
+                                throw new RuntimeException(  // TODO - remove this wrapper hack
+                                    new CanoniserException("Annotation " + annotation.getId() + " for shape " +
+                                        annotation.getCpfId() + " should specify a size")
+                                );
                             }
-                            */
 
                             // add the ANF position and size as a BPMNDI bounds
                             Bounds bounds = new Bounds();
@@ -409,13 +413,13 @@ public class CanoniserDefinitions extends Definitions {
                             edge.setId(bpmnIdFactory.newId(annotation.getId()));
                             edge.setBpmnElement(edgeMap.get(annotation.getCpfId()).getId());
 
-                            /* TODO - generated visit() methods need to throw CanoniserException
                             // an edge requires two or more waypoints
                             if (graphics.getPosition().size() < 2) {
-                                throw new CanoniserException("Annotation " + annotation.getId() + " for edge " +
-                                    annotation.getCpfId() + " should have at least two positions");
+                                throw new RuntimeException(  // TODO - remove this wrapper hack
+                                    new CanoniserException("Annotation " + annotation.getId() + " for edge " +
+                                        annotation.getCpfId() + " should have at least two positions")
+                                );
                             }
-                            */
 
                             // add each ANF position as a BPMNDI waypoint
                             for (PositionType position : graphics.getPosition()) {
@@ -505,6 +509,12 @@ public class CanoniserDefinitions extends Definitions {
         // Generate identifiers for @uri scoped across all generated CPF and ANF documents
         final IdFactory linkUriFactory = new IdFactory();
 
+        // Map BPMN flow nodes to CPF nodes
+        final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap = new HashMap<>();
+
+        // Map BPMN flow nodes to the CPF lanes containing them
+        final Map<TFlowNode, Lane> laneMap = new HashMap<>();
+
         // Traverse processes
         for (JAXBElement<? extends TRootElement> rootElement : getRootElements()) {
             rootElement.getValue().accept(new org.omg.spec.bpmn._20100524.model.BaseVisitor() {
@@ -546,14 +556,13 @@ public class CanoniserDefinitions extends Definitions {
 
                                 populateFlowElement(object, dataObject);
 
-                                //cpf.getObject().add(object);  // CPF 0.5
-                                //net.getObject().add(object);   // CPF 0.6
+                                net.getObject().add(object);
                             }
 
                             @Override
                             public void visit(final TEndEvent endEvent) {
                                 EventType event = new EventType();
-                                populateFlowElement(event, endEvent);
+                                populateFlowNode(event, endEvent);
 
                                 net.getNode().add(event);
                             }
@@ -566,8 +575,9 @@ public class CanoniserDefinitions extends Definitions {
                                 case CONVERGING: routing = new XORJoinType(); break;
                                 case DIVERGING:  routing = new XORSplitType();  break;
                                 default:
-                                    throw new RuntimeException("Unimplemented gateway direction " + exclusiveGateway.getGatewayDirection());
-                                    // TODO - handle this properly
+                                    throw new RuntimeException(  // TODO - remove wrapper hack
+                                        new CanoniserException("Unimplemented gateway direction " + exclusiveGateway.getGatewayDirection())
+                                    );
                                 }
                                 assert routing != null;
 
@@ -584,8 +594,9 @@ public class CanoniserDefinitions extends Definitions {
                                 case CONVERGING: routing = new ORJoinType(); break;
                                 case DIVERGING:  routing = new ORSplitType();  break;
                                 default:
-                                    throw new RuntimeException("Unimplemented gateway direction " + inclusiveGateway.getGatewayDirection());
-                                    // TODO - handle this properly
+                                    throw new RuntimeException(  // TODO - remove wrapper hack
+                                        new CanoniserException("Unimplemented gateway direction " + inclusiveGateway.getGatewayDirection())
+                                    );
                                 }
                                 assert routing != null;
 
@@ -602,8 +613,9 @@ public class CanoniserDefinitions extends Definitions {
                                 case CONVERGING: routing = new ANDJoinType(); break;
                                 case DIVERGING:  routing = new ANDSplitType();  break;
                                 default:
-                                    throw new RuntimeException("Unimplemented gateway direction " + parallelGateway.getGatewayDirection());
-                                    // TODO - handle this properly
+                                    throw new RuntimeException(  // TODO - remove wrapper hack
+                                        new CanoniserException("Unimplemented gateway direction " + parallelGateway.getGatewayDirection())
+                                    );
                                 }
                                 assert routing != null;
 
@@ -615,7 +627,7 @@ public class CanoniserDefinitions extends Definitions {
                             @Override
                             public void visit(final TStartEvent startEvent) {
                                 EventType event = new EventType();
-                                populateFlowElement(event, startEvent);
+                                populateFlowNode(event, startEvent);
 
                                 net.getNode().add(event);
                             }
@@ -638,7 +650,7 @@ public class CanoniserDefinitions extends Definitions {
                             @Override
                             public void visit(final TTask bpmnTask) {
                                 TaskType cpfTask = new TaskType();
-                                populateFlowElement(cpfTask, bpmnTask);
+                                populateFlowNode(cpfTask, bpmnTask);
 
                                 net.getNode().add(cpfTask);
                             }
@@ -666,6 +678,13 @@ public class CanoniserDefinitions extends Definitions {
                                 node.setName(flowElement.getName());
                             }
 
+                            // Work supertype handler
+
+                            private void populateFlowNode(final WorkType work, final TFlowNode flowNode) {
+                                populateFlowElement(work, flowNode);
+                                bpmnFlowNodeToCpfNodeMap.put(flowNode, work);
+                            }
+
                             // Object supertype handlers
 
                             private void populateBaseElement(final ObjectType object, final TBaseElement baseElement) {
@@ -688,6 +707,9 @@ public class CanoniserDefinitions extends Definitions {
 
                     // For each diagram in the BPMN, generate an ANF for this CPF
                     List<AnnotationsType> anfs = annotate();
+
+                    // Assign resource types to nodes
+                    unwindLaneMap(cpfIdFactory);
 
                     // Link the ANF to the CPF so that @cpfId attributes are meaningful
                     String linkUri = linkUriFactory.newId(null);
@@ -722,9 +744,11 @@ public class CanoniserDefinitions extends Definitions {
                     for (Lane lane : laneSet.getLanes()) {
                         ResourceTypeType laneResourceType = new ResourceTypeType();
 
-//                        for (JAXBElement<Object> flowNode : lane.getFlowNodeReves()) {
-//                            logger.info("Lane " + ((TFlowNode) flowNode.getValue()).getId());
-//                        }
+                        for (JAXBElement<Object> object : lane.getFlowNodeRefs()) {
+                            TFlowNode flowNode = (TFlowNode) object.getValue();
+                            logger.info("Lane " + flowNode.getId());
+                            laneMap.put(flowNode, lane);
+                        }
 
                         laneResourceType.setId(cpfIdFactory.newId(lane.getId()));
                         laneResourceType.setName(requiredName(lane.getName()));
@@ -739,6 +763,34 @@ public class CanoniserDefinitions extends Definitions {
                     }
 
                     cpf.getResourceType().add(poolResourceType);
+                }
+
+                /**
+                 * Take the {@link #laneMap} populated by {@link #addLaneSet} and use it to populate the CPF nodes' {@link NodeType#resourceTypeRef}s.
+                 *
+                 * @param cpfIdFactory  generator for {@link ResourceTypeRefType#id}s
+                 * @throws CanoniserException  if the {@link #laneMap} contains a lane mapping to a node that doesn't exist
+                 */
+                private void unwindLaneMap(final IdFactory cpfIdFactory) {
+
+                    for (Map.Entry<TFlowNode, Lane> entry : laneMap.entrySet()) {
+                        if (!bpmnFlowNodeToCpfNodeMap.containsKey(entry.getKey())) {
+                            throw new RuntimeException(  // TODO - remove the wrapper hack
+                                new CanoniserException("Lane " + entry.getValue().getId() + " contains " + entry.getKey().getId() + " which is not present")
+                            );
+                        }
+                        NodeType node = bpmnFlowNodeToCpfNodeMap.get(entry.getKey());  // get the CPF node corresponding to the BPMN flow node
+                        if (node instanceof WorkType) {
+                            ResourceTypeRefType resourceTypeRef = new ResourceTypeRefType();
+
+                            resourceTypeRef.setId(cpfIdFactory.newId(null));
+                            resourceTypeRef.setOptional(false);  // redundant, since false is the default
+                            resourceTypeRef.setQualifier(null);
+                            resourceTypeRef.setResourceTypeId(entry.getValue().getId());
+
+                            ((WorkType) node).getResourceTypeRef().add(resourceTypeRef);
+                        }
+                    }
                 }
             });
         }
