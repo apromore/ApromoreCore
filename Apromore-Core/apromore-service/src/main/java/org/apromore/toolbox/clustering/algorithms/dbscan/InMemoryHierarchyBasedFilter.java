@@ -30,8 +30,8 @@ public class InMemoryHierarchyBasedFilter {
     @Autowired @Qualifier("FragmentVersionDagDao")
     private FragmentVersionDagDao fragmentVersionDagDao;
 
-    private Map<String, List<String>> parentChildMap;
-    private Map<String, List<String>> childParentMap;
+    private Map<Integer, List<Integer>> parentChildMap;
+    private Map<Integer, List<Integer>> childParentMap;
     private ClusteringContext cc;
     private ClusterSettings settings;
 
@@ -45,37 +45,35 @@ public class InMemoryHierarchyBasedFilter {
         log.debug("Parent child hierarchies were loaded to memory.");
     }
 
-    private void fillAscendants(String fid, Collection<String> ascendants) {
-        List<String> parents = childParentMap.get(fid);
+    private void fillAscendants(Integer fid, Collection<Integer> ascendants) {
+        List<Integer> parents = childParentMap.get(fid);
         if (parents != null) {
             ascendants.addAll(parents);
-            for (String parentId : parents) {
+            for (Integer parentId : parents) {
                 fillAscendants(parentId, ascendants);
             }
         }
     }
 
-    private void fillDecendants(String fid, Collection<String> decendants) {
-        List<String> children = parentChildMap.get(fid);
+    private void fillDecendants(Integer fid, Collection<Integer> decendants) {
+        List<Integer> children = parentChildMap.get(fid);
         if (children != null) {
             decendants.addAll(children);
-            for (String childId : children) {
+            for (Integer childId : children) {
                 fillDecendants(childId, decendants);
             }
         }
     }
 
-    public void removeHierarchyClusterContainments(FragmentDataObject o, List<FragmentDataObject> n)
-            throws RepositoryException {
-
-        Set<String> hierarchy = new HashSet<String>();
-        fillAscendants(o.getFragmentId(), hierarchy);
-        fillDecendants(o.getFragmentId(), hierarchy);
+    public void removeHierarchyClusterContainments(FragmentDataObject o, List<FragmentDataObject> n) throws RepositoryException {
+        Set<Integer> hierarchy = new HashSet<Integer>();
+        fillAscendants(o.getFragment().getId(), hierarchy);
+        fillDecendants(o.getFragment().getId(), hierarchy);
         // note that we don't want to check cluster containments of o's clusters. so we don't include o in the hierarchy
 
-        Set<String> hierarchyClusters = new HashSet<String>();
-        for (String h : hierarchy) {
-            Set<String> fcids = cc.getFragmentClusterMap().get(h);
+        Set<Integer> hierarchyClusters = new HashSet<Integer>();
+        for (Integer h : hierarchy) {
+            Set<Integer> fcids = cc.getFragmentClusterMap().get(h);
             if (fcids != null) {
                 hierarchyClusters.addAll(fcids);
             }
@@ -83,10 +81,10 @@ public class InMemoryHierarchyBasedFilter {
 
         Set<FragmentDataObject> toBeRemoved = new HashSet<FragmentDataObject>();
         for (FragmentDataObject nfo : n) {
-            String nid = nfo.getFragmentId();
-            Set<String> ncids = cc.getFragmentClusterMap().get(nid);
+            Integer nid = nfo.getFragment().getId();
+            Set<Integer> ncids = cc.getFragmentClusterMap().get(nid);
             if (ncids != null) {
-                for (String ncid : ncids) {
+                for (Integer ncid : ncids) {
                     if (hierarchyClusters.contains(ncid)) {
                         // we got a hierarchy containment. this neighbour has to be removed.
                         toBeRemoved.add(nfo);
@@ -98,48 +96,47 @@ public class InMemoryHierarchyBasedFilter {
         n.removeAll(toBeRemoved);
     }
 
-    public Set<String> retainNearestRelatives(FragmentDataObject o, List<FragmentDataObject> n, InMemoryGEDMatrix gedFinder) throws RepositoryException {
-
+    public Set<Integer> retainNearestRelatives(FragmentDataObject o, List<FragmentDataObject> n, InMemoryGEDMatrix gedFinder) throws RepositoryException {
         if (settings.isRemoveHierarchyClusterContainments()) {
             removeHierarchyClusterContainments(o, n);
         }
 
-        log.debug("Retaining nearest relatives of " + o.getFragmentId() + " from neighbourhood size " + n.size());
+        log.debug("Retaining nearest relatives of " + o.getFragment().getId() + " from neighbourhood size " + n.size());
 
-        if (o.getFragmentId().equals("8080")) {
+        if (o.getFragment().getId().equals("8080")) {
             int test1 = 10;
         }
 
-        Set<String> allHierarchies = new HashSet<String>();
-        Set<String> visitedContainedHierarchies = new HashSet<String>();
-        Set<String> filteredNeighbourhood = new HashSet<String>();
+        Set<Integer> allHierarchies = new HashSet<Integer>();
+        Set<Integer> visitedContainedHierarchies = new HashSet<Integer>();
+        Set<Integer> filteredNeighbourhood = new HashSet<Integer>();
         for (FragmentDataObject pickedNeighbour : n) {
             if (!visitedContainedHierarchies.contains(pickedNeighbour)) {
-                Set<String> hierarchy = new HashSet<String>();
-                fillAscendants(pickedNeighbour.getFragmentId(), hierarchy);
-                fillDecendants(pickedNeighbour.getFragmentId(), hierarchy);
-                hierarchy.add(pickedNeighbour.getFragmentId());
+                Set<Integer> hierarchy = new HashSet<Integer>();
+                fillAscendants(pickedNeighbour.getFragment().getId(), hierarchy);
+                fillDecendants(pickedNeighbour.getFragment().getId(), hierarchy);
+                hierarchy.add(pickedNeighbour.getFragment().getId());
                 allHierarchies.addAll(hierarchy);
 
-                Set<String> containedHierarchy = new HashSet<String>();
-                for (String h : hierarchy) {
+                Set<Integer> containedHierarchy = new HashSet<Integer>();
+                for (Integer h : hierarchy) {
                     if (contains(n, h)) {
                         containedHierarchy.add(h);
                     }
                 }
 
                 double lowestGED = Double.MAX_VALUE;
-                String nearestRelative = null;
+                Integer nearestRelative = null;
                 if (containedHierarchy.size() > 1) {
-                    for (String ch : containedHierarchy) {
-                        double ged = gedFinder.getGED(o.getFragmentId(), ch);
+                    for (Integer ch : containedHierarchy) {
+                        double ged = gedFinder.getGED(o.getFragment().getId(), ch);
                         if (ged < lowestGED) {
                             lowestGED = ged;
                             nearestRelative = ch;
                         }
                     }
                 } else {
-                    nearestRelative = pickedNeighbour.getFragmentId();
+                    nearestRelative = pickedNeighbour.getFragment().getId();
                 }
 
                 filteredNeighbourhood.removeAll(containedHierarchy);
@@ -151,9 +148,6 @@ public class InMemoryHierarchyBasedFilter {
         }
 
         retainAll(n, filteredNeighbourhood);
-//		if (!n.contains(o)) {
-//			n.add(o);
-//		}
         log.debug("New neighbourhood of size after filtering nearest relatives: " + n.size());
 
         return allHierarchies;
@@ -163,10 +157,10 @@ public class InMemoryHierarchyBasedFilter {
      * @param n
      * @param filteredNeighbourhood
      */
-    private void retainAll(List<FragmentDataObject> n, Set<String> filteredNeighbourhood) {
+    private void retainAll(List<FragmentDataObject> n, Set<Integer> filteredNeighbourhood) {
         List<FragmentDataObject> toBeRemoved = new ArrayList<FragmentDataObject>();
         for (FragmentDataObject nfo : n) {
-            String nfid = nfo.getFragmentId();
+            Integer nfid = nfo.getFragment().getId();
             if (!filteredNeighbourhood.contains(nfid)) {
                 toBeRemoved.add(nfo);
             }
@@ -174,9 +168,9 @@ public class InMemoryHierarchyBasedFilter {
         n.removeAll(toBeRemoved);
     }
 
-    private boolean contains(Collection<FragmentDataObject> fs, String fid) {
+    private boolean contains(Collection<FragmentDataObject> fs, Integer fid) {
         for (FragmentDataObject f : fs) {
-            if (f.getFragmentId().equals(fid)) {
+            if (f.getFragment().getId().equals(fid)) {
                 return true;
             }
         }

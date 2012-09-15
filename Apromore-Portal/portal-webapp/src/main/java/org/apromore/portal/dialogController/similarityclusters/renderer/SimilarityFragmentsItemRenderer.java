@@ -3,6 +3,7 @@ package org.apromore.portal.dialogController.similarityclusters.renderer;
 import java.text.NumberFormat;
 import java.util.List;
 
+import ch.qos.logback.core.rolling.helper.IntegerTokenConverter;
 import org.apromore.model.FragmentData;
 import org.apromore.model.ProcessAssociationsType;
 import org.zkoss.zk.ui.Component;
@@ -30,8 +31,7 @@ public class SimilarityFragmentsItemRenderer implements ListitemRenderer {
         renderSimilarityFragment(item, (FragmentData) obj);
     }
 
-    private void renderSimilarityFragment(Listitem listItem,
-                                          final FragmentData fragment) {
+    private void renderSimilarityFragment(Listitem listItem, final FragmentData fragment) {
         listItem.appendChild(renderFragmentId(fragment));
         listItem.appendChild(renderFragmentLabel(fragment));
         listItem.appendChild(renderFragmentSize(fragment));
@@ -49,12 +49,12 @@ public class SimilarityFragmentsItemRenderer implements ListitemRenderer {
             for (int i = 0; i < processAssociations.size(); i++) {
                 ProcessAssociationsType info = processAssociations.get(i);
                 String name = info.getProcessName();
-                String id = info.getProcessId();
+                Integer id = info.getProcessId();
                 String branch = info.getBranchName();
                 String version = info.getProcessVersionNumber();
                 Listitem processReferenceItem = new Listitem();
                 processReferences.appendChild(processReferenceItem);
-                processReferenceItem.setLabel(String.format("%s: %s (%s) v%s", id, name, branch, version));
+                processReferenceItem.setLabel(String.format("%i: %s (%s) v%s", id, name, branch, version));
             }
             processReferences.getItemAtIndex(0).setSelected(true);
             cell.appendChild(processReferences);
@@ -83,7 +83,7 @@ public class SimilarityFragmentsItemRenderer implements ListitemRenderer {
 
     private Component renderFragmentId(final FragmentData fragment) {
         Listcell listcell = new Listcell();
-        A fragmentLink = new A(fragment.getFragmentId());
+        A fragmentLink = new A(String.valueOf(fragment.getFragmentId()));
         fragmentLink.addEventListener("onClick", new EventListener() {
 
             @Override

@@ -73,7 +73,7 @@ public class SearchHistoryDaoJpaUnitTest {
     private SearchHistory createSearchHistory() {
         SearchHistory sch = new SearchHistory();
 
-        sch.setNum(1);
+        sch.setId(1);
         sch.setSearch("test");
         sch.setUser(createUser());
 

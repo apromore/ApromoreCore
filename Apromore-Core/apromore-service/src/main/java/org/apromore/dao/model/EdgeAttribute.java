@@ -31,8 +31,10 @@ public class EdgeAttribute {
     private Edge edge;
 
 
-    public EdgeAttribute() {
-    }
+    /**
+     * Public Constructor.
+     */
+    public EdgeAttribute() { }
 
 
     @Id
@@ -68,7 +70,7 @@ public class EdgeAttribute {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "edge_id")
+    @JoinColumn(name = "edgeId")
     public Edge getEdge() {
         return this.edge;
     }

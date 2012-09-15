@@ -21,13 +21,13 @@ public interface UserService {
     List<User> findAllUsers();
 
     /**
-     * Find a particular User.
+     * Find a particular User by their Login name.
      *
      * @param username the username of the user we are searching for.
      * @return the Found User
      * @throws UserNotFoundException when the user can not be found in the system
      */
-    User findUser(String username) throws UserNotFoundException;
+    User findUserByLogin(String username) throws UserNotFoundException;
 
     /**
      * Currently only refreshes the users search history. Needs to do more in the future.

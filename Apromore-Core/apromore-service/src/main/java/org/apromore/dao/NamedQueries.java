@@ -36,11 +36,11 @@ public interface NamedQueries {
 
     String GET_FRAGMENT_VERSION = "fragmentVersion.getFragmentVersion";
     String GET_ALL_FRAGMENT_VERSION = "fragmentVersion.getAllFragmentVersion";
+    String GET_FRAGMENT_BY_URI = "fragmentVersion.getFragmentVersionByURI";
     String GET_FRAGMENT_BY_CONTENT_MAPPING = "fragmentVersion.getFragmentVersionByContentIdMappingCode";
     String GET_USED_PROCESS_MODEL_FOR_FRAGMENT = "fragmentVersion.getUsedProcessModelForFragment";
     String GET_LOCKED_PARENT_FRAGMENTS = "fragmentVersion.getLockedParentFragmentIds";
-    String GET_CHILD_FRAGMENTS_WITH_SIZE = "fragmentVersion.getChildFragmentsWithSize";
-    String GET_CHILD_FRAGMENTS_WITH_TYPE = "fragmentVersion.getChildFragmentsWithType";
+    String GET_LOCKED_PARENT_FRAGMENTS_BY_URI = "fragmentVersion.getLockedParentFragmentIdsByURI";
     String GET_FRAGMENT_DATA = "fragmentVersion.getFragmentData";
     String GET_FRAGMENT_DATA_OF_PROCESS_MODEL = "fragmentVersion.getFragmentDataOfProcessModel";
     String GET_ALL_FRAGMENTS_WITH_SIZE = "fragmentVersion.getAllFragmentsWithSize";
@@ -50,7 +50,9 @@ public interface NamedQueries {
     String GET_ROOT_FRAGMENT_IDS_ABOVE_SIZE = "fragmentVersion.getRootFragmentIdAboveSize";
 
     String GET_PARENT_FRAGMENT_VERSIONS = "fragmentVersionDag.getParentFragmentVersions";
+    String GET_FRAGMENT_VERSION_DAG_BY_URI = "fragmentVersionDag.getFragmentVersionDagByURI";
     String GET_CHILD_MAPPINGS = "fragmentVersionDag.getChildMappings";
+    String GET_CHILD_MAPPINGS_BY_URI = "fragmentVersionDag.getChildMappingsByUri";
     String GET_CHILD_FRAGMENTS_BY_FRAGMENT_VERSION = "fragmentVersionDag.getChildFragmentsByFragmentVersion";
     String GET_ALL_PARENT_CHILD_MAPPINGS = "fragmentVersionDag.getAllParentChildMappings";
     String GET_ALL_DAGS_WITH_SIZE = "fragmentVersionDag.getAllDagsWithSize";
@@ -70,7 +72,9 @@ public interface NamedQueries {
 
     String GET_PROCESS_MODEL_VERSION_BY_BRANCH = "processModelVersion.getProcessModelVersionByBranch";
     String GET_USED_PROCESS_MODEL_VERSIONS = "processModelVersion.getUsedProcessModelVersions";
+    String GET_USED_PROCESS_MODEL_VERSIONS_BY_URI = "processModelVersion.getUsedProcessModelVersionsByURI";
     String GET_ROOT_FRAGMENT_PROCESS_MODEL = "processModelVersion.getRootFragmentProcessModel";
+    String GET_ROOT_FRAGMENT_PROCESS_MODEL_URI = "processModelVersion.getRootFragmentProcessModelURI";
     String GET_MAX_VERSION_PROCESS_MODEL = "processModelVersion.getMaxVersionProcessModel";
     String GET_CURRENT_PROCESS_MODELS = "processModelVersion.getCurrentProcessModels";
     String GET_CURRENT_PROCESS_MODEL_VERSION = "processModelVersion.getCurrentProcessModelVersion";
@@ -84,8 +88,10 @@ public interface NamedQueries {
     String GET_CONTAINED_PROCESS_MODEL = "processModelMap.getContainedProcessModel";
 
     String GET_ALL_USERS = "user.getAllUsers";
+    String GET_USER_BY_LOGIN = "user.getUserByLogin";
 
     String GET_CONTENT_IDS = "node.getContentIds";
+    String GET_NODE_BY_URI = "node.getNodeByURI";
     String GET_VERTICES_BY_CONTENT = "node.getVerticesByContentId";
     String GET_VERTICES_BY_FRAGMENT = "node.getVerticesByFragmentId";
     String GET_STORED_VERTICES = "node.getStoredVertices";

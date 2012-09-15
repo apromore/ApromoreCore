@@ -19,7 +19,7 @@ public interface GraphService {
      * @param fragmentVersionId the fragment version id
      * @return the content corresponding to the fragment id
      */
-    Content getContent(String fragmentVersionId);
+    Content getContent(Integer fragmentVersionId);
 
     /**
      * returns all the Distinct Content Id's from the Vertices.
@@ -34,7 +34,7 @@ public interface GraphService {
      * @param contentID the content id
      * @return the process model graph
      */
-    CPF getGraph(String contentID);
+    CPF getGraph(Integer contentID);
 
     /**
      * Fills the ProcessModelGraphs vertices
@@ -42,7 +42,7 @@ public interface GraphService {
      * @param procModelGraph
      * @param contentID
      */
-    void fillNodes(CPF procModelGraph, String contentID);
+    void fillNodes(CPF procModelGraph, Integer contentID);
 
     /**
      * Fills the ProcessModelGraphs Edges
@@ -50,20 +50,20 @@ public interface GraphService {
      * @param procModelGraph
      * @param contentID
      */
-    void fillEdges(CPF procModelGraph, String contentID);
+    void fillEdges(CPF procModelGraph, Integer contentID);
 
     /**
      * Populate Nodes by it's Fragment Id.
      * @param procModelGraph the process model graph
      * @param fragmentID the fragment Id.
      */
-    void fillNodesByFragmentId(CPF procModelGraph, String fragmentID);
+    void fillNodesByFragmentId(CPF procModelGraph, Integer fragmentID);
 
     /**
      * Populate Nodes by it's Fragment Id.
      * @param procModelGraph process model graph
      * @param fragmentID the fragment id
      */
-    void fillEdgesByFragmentId(CPF procModelGraph, String fragmentID);
+    void fillEdgesByFragmentId(CPF procModelGraph, Integer fragmentID);
 
 }

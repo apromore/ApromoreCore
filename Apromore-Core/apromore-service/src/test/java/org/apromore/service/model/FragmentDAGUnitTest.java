@@ -39,7 +39,7 @@ public class FragmentDAGUnitTest {
         assertThat(fdag.getFragment(FragmentDAGUnitTest.f1), equalTo(fdNode1));
         assertThat(fdag.getFragmentIds().contains(FragmentDAGUnitTest.f1), equalTo(true));
         assertThat(fdag.getFragmentIds().contains(FragmentDAGUnitTest.f2), equalTo(true));
-        assertThat(fdag.getFragmentIds().contains("5555"), equalTo(false));
+        assertThat(fdag.getFragmentIds().contains(5555), equalTo(false));
     }
 
     @Test

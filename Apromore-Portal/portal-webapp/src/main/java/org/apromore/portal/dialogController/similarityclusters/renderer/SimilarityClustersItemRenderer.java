@@ -22,8 +22,7 @@ public class SimilarityClustersItemRenderer implements ListitemRenderer {
         renderSimilarityCluster(listItem, (ClusterSummaryType) obj);
     }
 
-    private void renderSimilarityCluster(Listitem listItem,
-                                         final ClusterSummaryType obj) {
+    private void renderSimilarityCluster(Listitem listItem, final ClusterSummaryType obj) {
         listItem.appendChild(new Listcell()); // Built-In Checkbox
         listItem.appendChild(renderClusterId(obj));
         listItem.appendChild(renderClusterName(obj));
@@ -34,7 +33,7 @@ public class SimilarityClustersItemRenderer implements ListitemRenderer {
     }
 
     private Listcell renderClusterId(final ClusterSummaryType obj) {
-        Listcell listcell = new Listcell(obj.getClusterId());
+        Listcell listcell = new Listcell(obj.getClusterId().toString());
         return listcell;
     }
 

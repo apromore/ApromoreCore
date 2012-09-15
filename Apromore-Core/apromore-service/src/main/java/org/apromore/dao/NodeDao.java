@@ -19,6 +19,12 @@ public interface NodeDao {
      */
     Node findNode(Integer nodeId);
 
+    /**
+     * Find the Node by It's Uri.
+     * @param uri the uri to search for.
+     * @return the found Node.
+     */
+    Node findNodeByUri(String uri);
 
     /**
      * Returns all the Content Id's from Node table.
@@ -31,7 +37,7 @@ public interface NodeDao {
      * @param contentID the content id
      * @return the list of Node or null.
      */
-    List<Node> getVertexByContent(String contentID);
+    List<Node> getVertexByContent(Integer contentID);
 
     /**
      * Returns the count for vertices in the DB.
@@ -44,7 +50,7 @@ public interface NodeDao {
      * @param fragmentID the fragment Id
      * @return the Node
      */
-    List<Node> getVertexByFragment(String fragmentID);
+    List<Node> getVertexByFragment(Integer fragmentID);
 
 
 

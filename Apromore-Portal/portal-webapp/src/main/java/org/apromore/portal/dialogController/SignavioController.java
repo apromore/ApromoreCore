@@ -64,15 +64,15 @@ public class SignavioController extends BaseController {
     private String getImportPath(String nativeType) {
         String importPath = "";
         if (nativeType.equals("XPDL 2.1")) {
-            importPath = "/Apromore-editor/editor/xpdlimport";
+            importPath = "/editor/editor/xpdlimport";
         } else if (nativeType.equals("BPMN 2.1")) {
-            importPath = "/Apromore-editor/editor/bpmnimport";
+            importPath = "/editor/editor/bpmnimport";
         } else if (nativeType.equals("PNML 1.3.2")) {
-            importPath = "/Apromore-editor/editor/pnmlimport";
+            importPath = "/editor/editor/pnmlimport";
         } else if (nativeType.equals("YAWL 2.2")) {
-            importPath = "/Apromore-editor/editor/yawlimport";
+            importPath = "/editor/editor/yawlimport";
         } else if (nativeType.equals("EPML 2.0")) {
-            importPath = "/Apromore-editor/editor/epmlimport";
+            importPath = "/editor/editor/epmlimport";
         }
         return importPath;
     }

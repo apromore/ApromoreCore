@@ -33,7 +33,7 @@ public class ClusterMapper {
 
     public static ClusterSummaryType convertClusterInfoToClusterSummaryType(Cluster c) {
         ClusterSummaryType ct = new ClusterSummaryType();
-        ct.setClusterId(c.getClusterId());
+        ct.setClusterId(c.getId());
         ct.setClusterSize(c.getSize());
         ct.setMedoidId(c.getMedoidId());
         ct.setAvgFragmentSize(c.getAvgFragmentSize());
@@ -45,7 +45,7 @@ public class ClusterMapper {
 
     public static ClusterType convertClusterToClusterType(org.apromore.service.model.Cluster c) {
         ClusterType ct = new ClusterType();
-        ct.setClusterId(c.getCluster().getClusterId());
+        ct.setClusterId(c.getCluster().getId().toString());
         ct.setClusterSize(c.getCluster().getSize());
         ct.setMedoidId(c.getCluster().getMedoidId());
         ct.setAvgFragmentSize(c.getCluster().getAvgFragmentSize());
@@ -136,8 +136,8 @@ public class ClusterMapper {
         PairDistancesType pdt = new PairDistancesType();
         for (FragmentPair pair : pairDistances.keySet()) {
             PairDistanceType p = new PairDistanceType();
-            p.setFragmentId1(pair.getFid1());
-            p.setFragmentId2(pair.getFid2());
+            p.setFragmentId1(pair.getFid1().getId());
+            p.setFragmentId2(pair.getFid2().getId());
             p.setDistance(pairDistances.get(pair));
             pdt.getPiarDistance().add(p);
         }

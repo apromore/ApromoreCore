@@ -1,36 +1,38 @@
 package org.apromore.toolbox.clustering.algorithms.dbscan;
 
 
+import org.apromore.dao.model.FragmentVersion;
+
 /**
  * <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 public class FragmentPair {
 
-    private String fid1;
-    private String fid2;
+    private FragmentVersion fid1;
+    private FragmentVersion fid2;
 
-    public FragmentPair(String fid1, String fid2) {
+    public FragmentPair(FragmentVersion fid1, FragmentVersion fid2) {
         this.fid1 = fid1;
         this.fid2 = fid2;
     }
 
-    public String getFid1() {
+    public FragmentVersion getFid1() {
         return fid1;
     }
 
-    public void setFid1(String fid1) {
+    public void setFid1(FragmentVersion fid1) {
         this.fid1 = fid1;
     }
 
-    public String getFid2() {
+    public FragmentVersion getFid2() {
         return fid2;
     }
 
-    public void setFid2(String fid2) {
+    public void setFid2(FragmentVersion fid2) {
         this.fid2 = fid2;
     }
 
-    public boolean hasFragment(String fid) {
+    public boolean hasFragment(Integer fid) {
         return fid1.equals(fid) || fid2.equals(fid);
     }
 
@@ -42,7 +44,6 @@ public class FragmentPair {
 
     @Override
     public boolean equals(Object obj) {
-
         if (obj == null || !(obj instanceof FragmentPair)) {
             return false;
         }

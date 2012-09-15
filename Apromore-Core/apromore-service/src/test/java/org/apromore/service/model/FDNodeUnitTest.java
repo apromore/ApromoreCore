@@ -23,7 +23,7 @@ public class FDNodeUnitTest {
     @Test
     public void basicBean() {
         String fragmentId = "123";
-        List<String> ids = new ArrayList<String>();
+        List<String> ids = new ArrayList<String>(0);
 
         FDNode fdn = new FDNode(fragmentId);
         fdn.setChildIds(ids);

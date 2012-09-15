@@ -34,7 +34,14 @@ public interface ProcessModelVersionDao {
      * @param fragmentVersionId the fragment version if we are searching for used models
      * @return the list of found fragment model versions
      */
-    List<ProcessModelVersion> getUsedProcessModelVersions(String fragmentVersionId);
+    List<ProcessModelVersion> getUsedProcessModelVersions(Integer fragmentVersionId);
+
+    /**
+     * Gets the list of Used Fragment Models for a fragment version Id.
+     * @param uri the fragment version uri if we are searching for used models
+     * @return the list of found fragment model versions
+     */
+    List<ProcessModelVersion> getUsedProcessModelVersionsByURI(String uri);
 
     /**
      * Find the current process model for the process id and name combination.
@@ -81,14 +88,14 @@ public interface ProcessModelVersionDao {
      * @param fragmentVersionId the fragment id
      * @return the mapped results
      */
-    Map<String, Integer> getMaxModelVersions(String fragmentVersionId);
+    Map<String, Integer> getMaxModelVersions(Integer fragmentVersionId);
 
     /**
      * The Map of current model versions.
      * @param fragmentVersionId the fragment id
      * @return the mapped results
      */
-    Map<String, Integer> getCurrentModelVersions(String fragmentVersionId);
+    Map<String, Integer> getCurrentModelVersions(Integer fragmentVersionId);
 
     /**
      * Finds the max version of a process model for a particular branch.
@@ -110,7 +117,7 @@ public interface ProcessModelVersionDao {
      * @param minSize the minimum size fragment.
      * @return the list of root fragment ids
      */
-    List<String> getRootFragments(int minSize);
+    List<Integer> getRootFragments(int minSize);
 
 
 

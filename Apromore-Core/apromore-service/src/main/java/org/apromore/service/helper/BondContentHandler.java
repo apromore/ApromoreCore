@@ -54,7 +54,7 @@ public class BondContentHandler {
      *                         fragment. i.e. return value is null.
      * @return Matching fragment id. Null if there is no matching fragment.
      */
-    public String matchFragment(RPSTNode f, Content matchingContent, Map<String, String> childMappings,
+    public Integer matchFragment(RPSTNode f, Content matchingContent, Map<String, String> childMappings,
             Map<String, String> newChildMappings) {
         // find forward and reverse pocket ids of the given fragment
         String fragmentEntryId = f.getEntry().getId();
@@ -95,7 +95,7 @@ public class BondContentHandler {
         // find forward and reverse pocket Ids of the matching content
         List<String> forwardContentPocketIds = new ArrayList<String>();
         List<String> reverseContentPocketIds = new ArrayList<String>();
-        CPF content = gSrv.getGraph(matchingContent.getContentId());
+        CPF content = gSrv.getGraph(matchingContent.getId());
         String contentEntryId = content.getSourceVertices().get(0).getId();
         String contentExitId = content.getSinkVertices().get(0).getId();
         Collection<ControlFlow<FlowNode>> contentEdges = content.getEdges();
@@ -114,20 +114,19 @@ public class BondContentHandler {
             }
         }
 
-        String matchingFragmentId = null;
-        List<FragmentChildMapping> candidateChildMappings = getCandidateChildMappings(matchingContent.getContentId());
+        Integer matchingFragmentId = null;
+        List<FragmentChildMapping> candidateChildMappings = getCandidateChildMappings(matchingContent.getId());
         for (FragmentChildMapping fragmentChildMapping : candidateChildMappings) {
             List<FragmentVersionDag> candidateMapping = fragmentChildMapping.getChildMapping();
 
             List<String> forwardCandidateChildIds = new ArrayList<String>();
             List<String> reverseCandidateChildIds = new ArrayList<String>();
-
             for (FragmentVersionDag candidatePocket : candidateMapping) {
-                if (forwardContentPocketIds.contains(candidatePocket.getId().getPocketId())) {
-                    forwardCandidateChildIds.add(candidatePocket.getId().getChildFragmentVersionId());
+                if (forwardContentPocketIds.contains(candidatePocket.getPocketId())) {
+                    forwardCandidateChildIds.add(candidatePocket.getChildFragmentVersionId().getUri());
                 }
-                if (reverseContentPocketIds.contains(candidatePocket.getId().getPocketId())) {
-                    reverseCandidateChildIds.add(candidatePocket.getId().getChildFragmentVersionId());
+                if (reverseContentPocketIds.contains(candidatePocket.getPocketId())) {
+                    reverseCandidateChildIds.add(candidatePocket.getChildFragmentVersionId().getUri());
                 }
             }
             if (forwardFragmentChildIds.containsAll(forwardCandidateChildIds) &&
@@ -154,10 +153,10 @@ public class BondContentHandler {
         return matchingFragmentId;
     }
 
-    private List<FragmentChildMapping> getCandidateChildMappings(String matchingContentId) {
+    private List<FragmentChildMapping> getCandidateChildMappings(Integer matchingContentId) {
         List<FragmentChildMapping> candidateChildMappings = new ArrayList<FragmentChildMapping>();
-        List<String> candidateFragmentIds = fvDao.getUsedFragmentIds(matchingContentId);
-        for (String candidateFragmentId : candidateFragmentIds) {
+        List<Integer> candidateFragmentIds = fvDao.getUsedFragmentIds(matchingContentId);
+        for (Integer candidateFragmentId : candidateFragmentIds) {
             List<FragmentVersionDag> childMapping = fvdDao.getChildMappings(candidateFragmentId);
             FragmentChildMapping fragmentChildMapping = new FragmentChildMapping();
             fragmentChildMapping.setFragmentId(candidateFragmentId);

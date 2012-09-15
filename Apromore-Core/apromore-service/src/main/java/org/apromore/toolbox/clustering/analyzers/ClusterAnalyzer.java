@@ -37,7 +37,7 @@ public class ClusterAnalyzer {
     @Autowired @Qualifier("FragmentVersionDao")
     private FragmentVersionDao fragmentVersionDao;
 
-    private Map<String, Integer> fragmentSizes;
+    private Map<Integer, Integer> fragmentSizes;
 
 
     public void loadFragmentSizes() {
@@ -48,14 +48,13 @@ public class ClusterAnalyzer {
 
     public Cluster analyzeCluster(InMemoryCluster c, ClusterSettings settings) throws RepositoryException {
         Cluster cd = new Cluster();
-        cd.setClusterId(c.getClusterId());
+        cd.setId(c.getClusterId());
 
         int sumOfFragmentSizes = 0;
-
         List<FragmentDataObject> fragments = c.getFragments();
 
         for (FragmentDataObject fragment : fragments) {
-            fragment.setSize(fragmentSizes.get(fragment.getFragmentId()));
+            fragment.setSize(fragmentSizes.get(fragment.getFragment().getId()));
             sumOfFragmentSizes += fragment.getSize();
         }
         cd.setSize(fragments.size());
@@ -71,13 +70,11 @@ public class ClusterAnalyzer {
     public void fillStandardizingDetails(Cluster cd, InMemoryCluster c, ClusterSettings settings) throws RepositoryException {
         double gedThreshold = settings.getMaxNeighborGraphEditDistance();
         try {
-            String medoidFragmentId = "";
+            Integer medoidFragmentId = 0;
             int refactoringGain = 0;
             double standardizingEffot = 0;
-//            double totalDistance = 0;
             double maxBenifitCostRatio = 0; // we want to maximise this
             double maxDistance = Double.MAX_VALUE; // we want to minimise this
-//            Map<String, Integer> fSizes = new HashMap<String, Integer>();
             int sumOfSizes = 0;
             for (FragmentDataObject fragment : c.getFragments()) {
                 sumOfSizes += fragment.getSize();
@@ -91,8 +88,7 @@ public class ClusterAnalyzer {
                         maxBenifitCostRatio = medoidProps[1];
                         standardizingEffot = medoidProps[2];
                         refactoringGain = (int) medoidProps[3];
-//                        totalDistance = medoidProps[4];
-                        medoidFragmentId = f.getFragmentId();
+                        medoidFragmentId = f.getFragment().getId();
 
                     } else if (medoidProps[1] == maxBenifitCostRatio) {
                         if (medoidProps[0] < maxDistance) {
@@ -101,8 +97,7 @@ public class ClusterAnalyzer {
                             maxBenifitCostRatio = medoidProps[1];
                             standardizingEffot = medoidProps[2];
                             refactoringGain = (int) medoidProps[3];
-//                            totalDistance = medoidProps[4];
-                            medoidFragmentId = f.getFragmentId();
+                            medoidFragmentId = f.getFragment().getId();
                         }
                     }
                 }
@@ -130,7 +125,7 @@ public class ClusterAnalyzer {
         double benifitCostRatio = 0;
 
         for (FragmentDataObject memberFragment : memberFragments) {
-            double normalizedDistance = gedMatrix.getGED(candidate.getFragmentId(), memberFragment.getFragmentId());
+            double normalizedDistance = gedMatrix.getGED(candidate.getFragment().getId(), memberFragment.getFragment().getId());
             if (normalizedDistance > maxDistance) {
                 maxDistance = normalizedDistance;
             }

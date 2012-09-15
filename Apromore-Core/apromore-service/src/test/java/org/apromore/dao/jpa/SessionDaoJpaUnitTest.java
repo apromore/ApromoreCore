@@ -111,7 +111,7 @@ public class SessionDaoJpaUnitTest {
         EditSession usr = new EditSession();
 
         usr.setAnnotation("ann");
-        usr.setCode(1);
+        usr.setId(1);
         usr.setCreationDate("date1");
         usr.setLastUpdate("date2");
         usr.setNatType("native");

@@ -22,12 +22,12 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRED)
 public class ContainmentRelationImpl implements ContainmentRelation {
 
-    private Map<String, Integer> idIndexMap = new HashMap<String, Integer>();
-    private  Map<Integer, String> indexIdMap = new HashMap<Integer, String>();
-    private List<String> idList = new ArrayList<String>();
-    private Map<String, Integer> fragSize = new HashMap<String, Integer>();
+    private Map<Integer, Integer> idIndexMap = new HashMap<Integer, Integer>();
+    private  Map<Integer, Integer> indexIdMap = new HashMap<Integer, Integer>();
+    private List<Integer> idList = new ArrayList<Integer>();
+    private Map<Integer, Integer> fragSize = new HashMap<Integer, Integer>();
 
-    private List<String> rootIds = new ArrayList<String>();
+    private List<Integer> rootIds = new ArrayList<Integer>();
 
     @Autowired @Qualifier("FragmentVersionDao")
     private FragmentVersionDao fDao;
@@ -37,7 +37,7 @@ public class ContainmentRelationImpl implements ContainmentRelation {
     private ProcessModelVersionDao pmvDao;
 
     /* Mapping from root fragment Id -> Ids of all ascendant fragments of that root fragment */
-    private Map<String, List<String>> hierarchies = new HashMap<String, List<String>>();
+    private Map<Integer, List<Integer>> hierarchies = new HashMap<Integer, List<Integer>>();
     private boolean[][] contmatrix;
     private int minSize = 3;
 
@@ -45,8 +45,7 @@ public class ContainmentRelationImpl implements ContainmentRelation {
     /**
      * Public Constructor.
      */
-    public ContainmentRelationImpl() {
-    }
+    public ContainmentRelationImpl() { }
 
     /**
      * Get something.
@@ -59,7 +58,7 @@ public class ContainmentRelationImpl implements ContainmentRelation {
         List<FragmentVersion> fs = fDao.getSimilarFragmentsBySize(minSize, 5000);
         for (FragmentVersion f : fs) {
             Integer index = idIndexMap.size();
-            String id = f.getFragmentVersionId();
+            Integer id = f.getId();
             idIndexMap.put(id, index);
             indexIdMap.put(index, id);
             idList.add(id);
@@ -71,11 +70,11 @@ public class ContainmentRelationImpl implements ContainmentRelation {
      * @throws Exception
      */
     public void initHierarchies() throws Exception {
-        List<String> rootIds = queryRoots();
+        List<Integer> rootIds = queryRoots();
         System.out.println("Total roots: " + rootIds.size());
 
-        for (String rootId : rootIds) {
-            List<String> hierarchy = new ArrayList<String>();
+        for (Integer rootId : rootIds) {
+            List<Integer> hierarchy = new ArrayList<Integer>();
             hierarchies.put(rootId, hierarchy);
             hierarchy.add(rootId);
 
@@ -90,7 +89,7 @@ public class ContainmentRelationImpl implements ContainmentRelation {
     }
 
 
-    public List<String> queryRoots() throws Exception {
+    public List<Integer> queryRoots() throws Exception {
         rootIds = pmvDao.getRootFragments(minSize);
         return rootIds;
     }
@@ -102,7 +101,7 @@ public class ContainmentRelationImpl implements ContainmentRelation {
      * @param rootIds root ids
      * @param visitedFIds visited fragments
      */
-    private void fillRoots(String fid, List<String> rootIds, Set<String> visitedFIds) throws Exception {
+    private void fillRoots(Integer fid, List<Integer> rootIds, Set<Integer> visitedFIds) throws Exception {
         if (!visitedFIds.contains(fid)) {
             visitedFIds.add(fid);
 
@@ -112,8 +111,7 @@ public class ContainmentRelationImpl implements ContainmentRelation {
             }
             else {
                 for (FragmentVersion parent : parents) {
-                    fillRoots(parent.getFragmentVersionId(), rootIds,
-                            visitedFIds);
+                    fillRoots(parent.getId(), rootIds, visitedFIds);
                 }
             }
         }
@@ -130,7 +128,7 @@ public class ContainmentRelationImpl implements ContainmentRelation {
 
         // Initialize the containment matrix using the parent-child relation
         for (FragmentVersionDag fdag : dags) {
-            contmatrix[idIndexMap.get(fdag.getId().getFragmentVersionId())][idIndexMap.get(fdag.getId().getChildFragmentVersionId())] = true;
+            contmatrix[idIndexMap.get(fdag.getFragmentVersionId().getId())][idIndexMap.get(fdag.getChildFragmentVersionId().getId())] = true;
         }
 
         // Compute the transitive closure (i.e., ancestor-descendant relation)
@@ -158,13 +156,13 @@ public class ContainmentRelationImpl implements ContainmentRelation {
 
 
     @Override
-    public List<String> getRoots() {
+    public List<Integer> getRoots() {
         return rootIds;
     }
 
 
     @Override
-    public List<String> getHierarchy(String rootFragmentId) {
+    public List<Integer> getHierarchy(Integer rootFragmentId) {
         return hierarchies.get(rootFragmentId);
     }
 
@@ -177,11 +175,11 @@ public class ContainmentRelationImpl implements ContainmentRelation {
         return idIndexMap.size();
     }
 
-    public String getFragmentId(int frag) {
+    public Integer getFragmentId(int frag) {
         return indexIdMap.get(frag);
     }
 
-    public Integer getFragmentIndex(String frag) {
+    public Integer getFragmentIndex(Integer frag) {
         return idIndexMap.get(frag);
     }
 

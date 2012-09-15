@@ -27,24 +27,24 @@ public class EdgeDaoJpa implements EdgeDao {
 
 
     /**
-     * @see org.apromore.dao.EdgeDao#getEdgesByContent(String)
+     * @see org.apromore.dao.EdgeDao#getEdgesByContent(Integer)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public List<Edge> getEdgesByContent(final String contentID) {
+    public List<Edge> getEdgesByContent(final Integer contentID) {
         Query query = em.createNamedQuery(NamedQueries.GET_EDGES_BY_CONTENT);
         query.setParameter("contentId", contentID);
         return (List<Edge>) query.getResultList();
     }
 
     /**
-     * @see org.apromore.dao.EdgeDao#getEdgesByFragment(String)
+     * @see org.apromore.dao.EdgeDao#getEdgesByFragment(Integer)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public List<Edge> getEdgesByFragment(final String fragmentID) {
+    public List<Edge> getEdgesByFragment(final Integer fragmentID) {
         Query query = em.createNamedQuery(NamedQueries.GET_EDGES_BY_FRAGMENT);
         query.setParameter("fragmentId", fragmentID);
         return (List<Edge>) query.getResultList();

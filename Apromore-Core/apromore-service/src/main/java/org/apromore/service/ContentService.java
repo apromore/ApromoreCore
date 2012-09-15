@@ -26,7 +26,7 @@ public interface ContentService {
      * @param hash the hash to search for.
      * @return any matching content records
      */
-    String getMatchingContentId(String hash);
+    Integer getMatchingContentId(String hash);
 
     /**
      * Add new Content?
@@ -56,9 +56,9 @@ public interface ContentService {
 
     /**
      * Add non pocket vertices to the repository.
-     * @param vid the vertex id
+     * @param node the vertex id
      */
-    void addNonPocketNode(Integer vid);
+    void addNonPocketNode(Node node);
 
     /**
      * Add multiple Edges to the Repository.
@@ -81,17 +81,17 @@ public interface ContentService {
      * Delete the Content and all it's extra elements.
      * @param contentId the content to remove.
      */
-    void deleteContent(String contentId);
+    void deleteContent(Integer contentId);
 
     /**
      * Delete the Edges that are linked to the Content
      * @param contentId the content with the edges to remove.
      */
-    void deleteEdgesOfContent(String contentId);
+    void deleteEdgesOfContent(Integer contentId);
 
     /**
      * Delete the Vetices that are linked to the Content
      * @param contentId the content with the vertices to remove.
      */
-    void deleteVerticesOfContent(String contentId);
+    void deleteVerticesOfContent(Integer contentId);
 }

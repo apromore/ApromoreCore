@@ -1,18 +1,18 @@
 package org.apromore.dao.jpa;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-
 import org.apromore.dao.FragmentVersionDao;
 import org.apromore.dao.NamedQueries;
 import org.apromore.dao.model.FragmentVersion;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Hibernate implementation of the org.apromore.dao.FragmentVersionDao interface.
@@ -29,14 +29,15 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
 
     /**
-     * @see org.apromore.dao.FragmentVersionDao#findFragmentVersion(String)
+     * @see org.apromore.dao.FragmentVersionDao#findFragmentVersion(Integer)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public FragmentVersion findFragmentVersion(final String fragmentId) {
+    public FragmentVersion findFragmentVersion(final Integer fragmentId) {
         return em.find(FragmentVersion.class, fragmentId);
     }
+
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#getAllFragmentVersion()
@@ -52,12 +53,30 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
 
 
     /**
-     * @see org.apromore.dao.FragmentVersionDao#getMatchingFragmentVersionId(String, String)
+     * @see org.apromore.dao.FragmentVersionDao#findFragmentVersionByURI(String)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public FragmentVersion findFragmentVersionByURI(String uri) {
+        Query query = em.createNamedQuery(NamedQueries.GET_FRAGMENT_BY_URI);
+        query.setParameter("uri", uri);
+        List result = query.getResultList();
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return (FragmentVersion) result.get(0);
+        }
+    }
+
+
+    /**
+     * @see org.apromore.dao.FragmentVersionDao#getMatchingFragmentVersionId(Integer, String)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public FragmentVersion getMatchingFragmentVersionId(final String contentId, final String childMappingCode) {
+    public FragmentVersion getMatchingFragmentVersionId(final Integer contentId, final String childMappingCode) {
         Query query = em.createNamedQuery(NamedQueries.GET_FRAGMENT_BY_CONTENT_MAPPING);
         query.setParameter("contentId", contentId);
         query.setParameter("mappingCode", childMappingCode);
@@ -70,12 +89,12 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
     }
 
     /**
-     * @see org.apromore.dao.FragmentVersionDao#getUsedProcessModels(String)
+     * @see org.apromore.dao.FragmentVersionDao#getUsedProcessModels(Integer)
      *  {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Integer getUsedProcessModels(final String fvid) {
+    public Integer getUsedProcessModels(final Integer fvid) {
         Query query = em.createNamedQuery(NamedQueries.GET_USED_PROCESS_MODEL_FOR_FRAGMENT);
         query.setParameter("fragVersionId", fvid);
         List<Integer> result = query.getResultList();
@@ -87,52 +106,43 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
     }
 
     /**
-     * @see org.apromore.dao.FragmentVersionDao#getParentFragments(String)
+     * @see org.apromore.dao.FragmentVersionDao#getParentFragments(Integer)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<FragmentVersion> getParentFragments(final String fvid) {
+    public List<FragmentVersion> getParentFragments(final Integer fvid) {
         Query query = em.createNamedQuery(NamedQueries.GET_PARENT_FRAGMENT_VERSIONS);
         query.setParameter("fragVersionId", fvid);
         return (List<FragmentVersion>) query.getResultList();
     }
 
     /**
-     * @see org.apromore.dao.FragmentVersionDao#getLockedParentFragmentIds(String)
+     * @see org.apromore.dao.FragmentVersionDao#getLockedParentFragmentIds(Integer)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<String> getLockedParentFragmentIds(final String fvid) {
+    public List<Integer> getLockedParentFragmentIds(final Integer fvid) {
         Query query = em.createNamedQuery(NamedQueries.GET_LOCKED_PARENT_FRAGMENTS);
         query.setParameter("childFragVersionId", fvid);
+        return (List<Integer>) query.getResultList();
+    }
+
+    /**
+     * @see org.apromore.dao.FragmentVersionDao#getLockedParentFragmentIds(Integer)
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<String> getLockedParentFragmentIdsByURI(final String uri) {
+        Query query = em.createNamedQuery(NamedQueries.GET_LOCKED_PARENT_FRAGMENTS_BY_URI);
+        query.setParameter("uri", uri);
         return (List<String>) query.getResultList();
     }
 
-//    /**
-//     * @see org.apromore.dao.FragmentVersionDao#getChildFragmentsWithSize(String)
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    @SuppressWarnings("unchecked")
-//    public Map<String, Integer> getChildFragmentsWithSize(final String fvid) {
 //        Query query = em.createNamedQuery(NamedQueries.GET_CHILD_FRAGMENTS_WITH_SIZE);
-//        query.setParameter("fragVersionId", fvid);
-//        return (Map<String, Integer>) query.getResultList();
-//    }
-//
-//    /**
-//     * @see org.apromore.dao.FragmentVersionDao#getChildFragmentsWithType(int)
-//     * {@inheritDoc}
-//     */
-//    @Override
-//    @SuppressWarnings("unchecked")
-//    public Map<Integer, String> getChildFragmentsWithType(final int fvid) {
 //        Query query = em.createNamedQuery(NamedQueries.GET_CHILD_FRAGMENTS_WITH_TYPE);
-//        query.setParameter("fragVersionId", fvid);
-//        return (Map<Integer, String>) query.getResultList();
-//    }
 
     /**
      * @see org.apromore.dao.FragmentVersionDao#getAllFragmentIdsWithSize()
@@ -140,53 +150,53 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Map<String, Integer> getAllFragmentIdsWithSize() {
+    public Map<Integer, Integer> getAllFragmentIdsWithSize() {
         Query query = em.createNamedQuery(NamedQueries.GET_ALL_FRAGMENTS_WITH_SIZE);
         List<Object[]> fragmentSizes = query.getResultList();
 
-        Map<String, Integer> fsizeMap = new HashMap<String, Integer>();
+        Map<Integer, Integer> fsizeMap = new HashMap<Integer, Integer>();
         for (Object[] fsize : fragmentSizes) {
-            fsizeMap.put((String) fsize[0], (Integer) fsize[1]);
+            fsizeMap.put((Integer) fsize[0], (Integer) fsize[1]);
         }
         return fsizeMap;
     }
 
     /**
-     * @see org.apromore.dao.FragmentVersionDao#getContentId(String)
+     * @see org.apromore.dao.FragmentVersionDao#getContentId(Integer)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public String getContentId(final String fvid) {
+    public Integer getContentId(final Integer fvid) {
         Query query = em.createNamedQuery(NamedQueries.GET_FRAGMENT_VERSION);
         query.setParameter("id", fvid);
         List<FragmentVersion> result = query.getResultList();
         if (result.isEmpty()) {
             return null;
         } else {
-            return result.get(0).getContent().getContentId();
+            return result.get(0).getContent().getId();
         }
     }
 
     /**
-     * @see org.apromore.dao.FragmentVersionDao#getFragmentDataOfProcessModel(String)
+     * @see org.apromore.dao.FragmentVersionDao#getFragmentDataOfProcessModel(Integer)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<FragmentVersion> getFragmentDataOfProcessModel(final String pmvid) {
+    public List<FragmentVersion> getFragmentDataOfProcessModel(final Integer pmvid) {
         Query query = em.createNamedQuery(NamedQueries.GET_FRAGMENT_DATA_OF_PROCESS_MODEL);
         query.setParameter("procModelId", pmvid);
         return (List<FragmentVersion>) query.getResultList();
     }
 
     /**
-     * @see org.apromore.dao.FragmentVersionDao#getFragmentData(String)
+     * @see org.apromore.dao.FragmentVersionDao#getFragmentData(Integer)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public FragmentVersion getFragmentData(final String fragmentId) {
+    public FragmentVersion getFragmentData(final Integer fragmentId) {
         Query query = em.createNamedQuery(NamedQueries.GET_FRAGMENT_DATA);
         query.setParameter("fragVersionId", fragmentId);
         List<FragmentVersion> result = query.getResultList();
@@ -202,33 +212,43 @@ public class FragmentVersionDaoJpa implements FragmentVersionDao {
      * {@inheritDoc}
      */
     @Override
-    public List<String> getContainingFragments(final List<String> nodes) {
+    public List<Integer> getContainingFragments(final List<Integer> nodes) {
         // TODO: Implement as it is used...or should be
         return null;
     }
 
     /**
-     * @see org.apromore.dao.FragmentVersionDao#getContainedProcessModels(int)
+     * @see org.apromore.dao.FragmentVersionDao#getContainingFragmentsByURI(java.util.List)
+     * {@inheritDoc}
+     */
+    @Override
+    public List<String> getContainingFragmentsByURI(final List<String> nodes) {
+        // TODO: Implement as it is used...or should be
+        return null;
+    }
+
+    /**
+     * @see org.apromore.dao.FragmentVersionDao#getContainedProcessModels(Integer)
      *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<Integer> getContainedProcessModels(final int fragmentId) {
+    public List<Integer> getContainedProcessModels(final Integer fragmentId) {
         Query query = em.createNamedQuery(NamedQueries.GET_CONTAINED_PROCESS_MODEL);
         query.setParameter("fragVersionId", fragmentId);
         return (List<Integer>) query.getResultList();
     }
 
     /**
-     * @see org.apromore.dao.FragmentVersionDao#getUsedFragmentIds(String)
+     * @see org.apromore.dao.FragmentVersionDao#getUsedFragmentIds(Integer)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<String> getUsedFragmentIds(final String matchingContentId) {
+    public List<Integer> getUsedFragmentIds(final Integer matchingContentId) {
         Query query = em.createNamedQuery(NamedQueries.GET_USED_FRAGMENT_IDS);
         query.setParameter("contentId", matchingContentId);
-        return (List<String>) query.getResultList();
+        return (List<Integer>) query.getResultList();
     }
 
 

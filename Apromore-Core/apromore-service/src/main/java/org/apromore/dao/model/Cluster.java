@@ -32,10 +32,10 @@ public class Cluster implements Serializable {
 
     private static final long serialVersionUID = -2353656404638485586L;
 
-    private String clusterId;
+    private Integer id;
     private int size = 0;
     private float avgFragmentSize = 0;
-    private String medoidId = null;
+    private Integer medoidId = null;
     private double standardizingEffort = 0;
     private double BCR = 0;
     private int refactoringGain = 0;
@@ -48,16 +48,25 @@ public class Cluster implements Serializable {
     public Cluster() { }
 
 
+    /**
+     * returns the Id of this Object.
+     * @return the id
+     */
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "cluster_id")
-    public String getClusterId() {
-        return clusterId;
+    @Column(name = "id", unique = true, nullable = false)
+    public Integer getId() {
+        return this.id;
     }
 
-    public void setClusterId(final String newClusterId) {
-        this.clusterId = newClusterId;
+    /**
+     * Sets the Id of this Object
+     * @param id the new Id.
+     */
+    public void setId(final Integer id) {
+        this.id = id;
     }
+
 
     @Column(name = "size")
     public int getSize() {
@@ -78,11 +87,11 @@ public class Cluster implements Serializable {
     }
 
     @Column(name = "medoid_id")
-    public String getMedoidId() {
+    public Integer getMedoidId() {
         return medoidId;
     }
 
-    public void setMedoidId(final String newMdoidId) {
+    public void setMedoidId(final Integer newMdoidId) {
         this.medoidId = newMdoidId;
     }
 
@@ -131,6 +140,6 @@ public class Cluster implements Serializable {
 
     @Override
     public String toString() {
-        return clusterId + " | " + size + " | " + avgFragmentSize + " | " + BCR;
+        return id + " | " + size + " | " + avgFragmentSize + " | " + BCR;
     }
 }

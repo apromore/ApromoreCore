@@ -24,17 +24,22 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Configurable("processModelAttribute")
 public class ProcessModelAttribute implements java.io.Serializable {
 
-
     private Integer id;
-    private ProcessModelVersion processModelVersion;
     private String name;
     private String value;
 
+    private ProcessModelVersion processModelVersion;
 
-    public ProcessModelAttribute() {
-    }
+    /**
+     * Public Constructor.
+     */
+    public ProcessModelAttribute() { }
 
 
+    /**
+     * returns the Id of this Object.
+     * @return the id
+     */
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -42,18 +47,12 @@ public class ProcessModelAttribute implements java.io.Serializable {
         return this.id;
     }
 
-    public void setId(Integer id) {
+    /**
+     * Sets the Id of this Object
+     * @param id the new Id.
+     */
+    public void setId(final Integer id) {
         this.id = id;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "process_model_version_id")
-    public ProcessModelVersion getProcessModelVersion() {
-        return this.processModelVersion;
-    }
-
-    public void setProcessModelVersion(ProcessModelVersion processModelVersion) {
-        this.processModelVersion = processModelVersion;
     }
 
 
@@ -76,6 +75,15 @@ public class ProcessModelAttribute implements java.io.Serializable {
         this.value = value;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "processModelVersionId")
+    public ProcessModelVersion getProcessModelVersion() {
+        return this.processModelVersion;
+    }
+
+    public void setProcessModelVersion(ProcessModelVersion processModelVersion) {
+        this.processModelVersion = processModelVersion;
+    }
 
 }
 

@@ -31,10 +31,16 @@ public class ResourceRefTypeAttribute implements java.io.Serializable {
     private ResourceRefType resourceRefType;
 
 
-    public ResourceRefTypeAttribute() {
-    }
+    /**
+     * Public Constructor.
+     */
+    public ResourceRefTypeAttribute() { }
 
 
+    /**
+     * returns the Id of this Object.
+     * @return the id
+     */
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -42,7 +48,11 @@ public class ResourceRefTypeAttribute implements java.io.Serializable {
         return this.id;
     }
 
-    public void setId(Integer id) {
+    /**
+     * Sets the Id of this Object
+     * @param id the new Id.
+     */
+    public void setId(final Integer id) {
         this.id = id;
     }
 
@@ -68,7 +78,7 @@ public class ResourceRefTypeAttribute implements java.io.Serializable {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resource_ref_type_id")
+    @JoinColumn(name = "resourceRefTypeId")
     public ResourceRefType getResourceRefType() {
         return this.resourceRefType;
     }

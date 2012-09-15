@@ -26,12 +26,12 @@ public class ProcessBranchDaoJpa implements ProcessBranchDao {
 
 
     /**
-     * @see org.apromore.dao.ProcessBranchDao#findProcessBranch(String)
+     * @see org.apromore.dao.ProcessBranchDao#findProcessBranch(Integer)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public ProcessBranch findProcessBranch(final String branchId) {
+    public ProcessBranch findProcessBranch(final Integer branchId) {
         return em.find(ProcessBranch.class, branchId);
     }
 

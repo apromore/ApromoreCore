@@ -78,7 +78,7 @@ public interface ProcessService {
     /**
      * Add a new ProcessModelVersion record into the DB.
      * @param branch
-     * @param rootFragmentVersionId
+     * @param rootFragmentVersionUri
      * @param versionNumber
      * @param versionName
      * @param numVertices
@@ -86,7 +86,7 @@ public interface ProcessService {
      * @return
      * @throws ExceptionDao
      */
-    ProcessModelVersion addProcessModelVersion(ProcessBranch branch, String rootFragmentVersionId, int versionNumber, String versionName,
+    ProcessModelVersion addProcessModelVersion(ProcessBranch branch, String rootFragmentVersionUri, int versionNumber, String versionName,
             int numVertices, int numEdges) throws ExceptionDao;
 
 

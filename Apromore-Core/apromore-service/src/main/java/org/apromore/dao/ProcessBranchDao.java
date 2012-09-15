@@ -15,7 +15,7 @@ public interface ProcessBranchDao {
      * @param branchId the processBranch Id
      * @return the found processBranch
      */
-    ProcessBranch findProcessBranch(String branchId);
+    ProcessBranch findProcessBranch(Integer branchId);
 
     /**
      * Returns a single Process Branch based on the primary Key.

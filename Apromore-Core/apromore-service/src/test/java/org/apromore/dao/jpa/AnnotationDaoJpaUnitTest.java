@@ -174,7 +174,7 @@ public class AnnotationDaoJpaUnitTest {
 
         a.setContent("12345");
         a.setName("newCanonical");
-        a.setUri(12425535);
+        a.setId(12425535);
         a.setProcessModelVersion(new ProcessModelVersion());
 
         return a;

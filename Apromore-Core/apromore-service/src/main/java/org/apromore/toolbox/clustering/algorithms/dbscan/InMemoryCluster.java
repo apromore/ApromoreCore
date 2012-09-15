@@ -11,20 +11,20 @@ import java.util.List;
  */
 public class InMemoryCluster {
 
-    private String clusterId;
+    private Integer clusterId;
     private String phase;
     private List<FragmentDataObject> fragments = new ArrayList<FragmentDataObject>();
 
-    public InMemoryCluster(String clusterId, String phase) {
+    public InMemoryCluster(Integer clusterId, String phase) {
         this.clusterId = clusterId;
         this.phase = phase;
     }
 
-    public String getClusterId() {
+    public Integer getClusterId() {
         return clusterId;
     }
 
-    public void setClusterId(String clusterId) {
+    public void setClusterId(Integer clusterId) {
         this.clusterId = clusterId;
     }
 

@@ -17,7 +17,7 @@ public interface UserDao {
      * @param username the username of the user we are searching for.
      * @return the username of the user we are searching for.
      */
-    User findUser(String username);
+    User findUserByLogin(String username);
 
     /**
      * Returns a list of all the Users found in the system.

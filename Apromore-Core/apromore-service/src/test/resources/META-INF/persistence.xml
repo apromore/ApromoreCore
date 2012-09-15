@@ -28,9 +28,7 @@
         <!-- Clustering tables -->
         <class>org.apromore.dao.model.Cluster</class>
         <class>org.apromore.dao.model.ClusterAssignment</class>
-        <class>org.apromore.dao.model.ClusterAssignmentId</class>
         <class>org.apromore.dao.model.FragmentDistance</class>
-        <class>org.apromore.dao.model.FragmentDistanceId</class>
 
         <class>org.apromore.dao.model.ProcessModelAttribute</class>
         <class>org.apromore.dao.model.ResourceTypeAttribute</class>

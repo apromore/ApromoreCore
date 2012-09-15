@@ -33,10 +33,16 @@ public class ObjectTypeAttribute implements java.io.Serializable {
     private String value;
 
 
-    public ObjectTypeAttribute() {
-    }
+    /**
+     * Public Constructor.
+     */
+    public ObjectTypeAttribute() { }
 
 
+    /**
+     * returns the Id of this Object.
+     * @return the id
+     */
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -44,7 +50,11 @@ public class ObjectTypeAttribute implements java.io.Serializable {
         return this.id;
     }
 
-    public void setId(Integer id) {
+    /**
+     * Sets the Id of this Object
+     * @param id the new Id.
+     */
+    public void setId(final Integer id) {
         this.id = id;
     }
 
@@ -80,7 +90,7 @@ public class ObjectTypeAttribute implements java.io.Serializable {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "object_type_id")
+    @JoinColumn(name = "objectTypeId")
     public ObjectType getObjectType() {
         return this.objectType;
     }

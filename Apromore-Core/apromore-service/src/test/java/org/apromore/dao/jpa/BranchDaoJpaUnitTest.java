@@ -49,7 +49,7 @@ public class BranchDaoJpaUnitTest {
 
     @Test
     public final void testFindProcessBranch() {
-        String id = "1";
+        Integer id = 0;
         ProcessBranch b = new ProcessBranch();
 
         expect(manager.find(ProcessBranch.class, id)).andReturn(b);
@@ -116,7 +116,7 @@ public class BranchDaoJpaUnitTest {
     private ProcessBranch createProcessBranch() {
         ProcessBranch b = new ProcessBranch();
         b.setProcess(new Process());
-        b.setBranchId(1);
+        b.setId(1);
         b.setBranchName("name");
         return b;
     }

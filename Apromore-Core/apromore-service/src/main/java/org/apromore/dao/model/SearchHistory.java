@@ -1,20 +1,13 @@
 package org.apromore.dao.model;
 
-import java.io.Serializable;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-import org.hibernate.annotations.GenericGenerator;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import javax.persistence.*;
+import java.io.Serializable;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 /**
  * Stores the process in apromore.
@@ -24,7 +17,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Entity
 @Table(name = "search_history",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = {"username", "search"})
+                @UniqueConstraint(columnNames = {"userId", "search"})
         }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -36,7 +29,7 @@ public class SearchHistory implements Serializable {
      */
     private static final long serialVersionUID = -2353312846108485548L;
 
-    private Integer num;
+    private Integer id;
     private String search;
 
     private User user;
@@ -45,24 +38,30 @@ public class SearchHistory implements Serializable {
     /**
      * Default Constructor.
      */
-    public SearchHistory() {
-    }
+    public SearchHistory() { }
 
 
+    /**
+     * returns the Id of this Object.
+     * @return the id
+     */
     @Id
-    @GeneratedValue(generator = "system-uuid")
-    @GenericGenerator(name = "system-uuid", strategy = "uuid")
-    @Column(name = "num", unique = true, nullable = false)
-    public Integer getNum() {
-        return this.num;
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
+    public Integer getId() {
+        return this.id;
     }
 
-    public void setNum(Integer newNum) {
-        this.num = newNum;
+    /**
+     * Sets the Id of this Object
+     * @param id the new Id.
+     */
+    public void setId(final Integer id) {
+        this.id = id;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "userId")
     public User getUser() {
         return this.user;
     }

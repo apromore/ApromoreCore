@@ -27,13 +27,15 @@ public class UserDaoJpa implements UserDao {
 
 
     /**
-     * @see org.apromore.dao.UserDao#findUser(String)
+     * @see org.apromore.dao.UserDao#findUserByLogin(String)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public User findUser(final String username) {
-        return em.find(User.class, username);
+    public User findUserByLogin(final String username) {
+        Query query = em.createNamedQuery(NamedQueries.GET_USER_BY_LOGIN);
+        query.setParameter("username", username);
+        return (User) query.getSingleResult();
     }
 
     /**

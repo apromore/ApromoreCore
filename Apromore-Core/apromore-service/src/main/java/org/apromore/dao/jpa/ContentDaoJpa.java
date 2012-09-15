@@ -26,23 +26,23 @@ public class ContentDaoJpa implements ContentDao {
 
 
     /**
-     * @see org.apromore.dao.ContentDao#findContent(String)
+     * @see org.apromore.dao.ContentDao#findContent(Integer)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public Content findContent(final String contentId) {
+    public Content findContent(final Integer contentId) {
         return em.find(Content.class, contentId);
     }
 
 
     /**
-     * @see org.apromore.dao.ContentDao#getContentByFragmentVersion(String)
+     * @see org.apromore.dao.ContentDao#getContentByFragmentVersion(Integer)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public Content getContentByFragmentVersion(final String fragVersionId) {
+    public Content getContentByFragmentVersion(final Integer fragVersionId) {
         Query query = em.createNamedQuery(NamedQueries.GET_CONTENT_BY_FRAGMENT_VERSION);
         query.setParameter("fragVersion", fragVersionId);
         List<Content> result = query.getResultList();

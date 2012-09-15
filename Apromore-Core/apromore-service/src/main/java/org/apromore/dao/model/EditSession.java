@@ -35,7 +35,7 @@ public class EditSession implements Serializable {
      */
     private static final long serialVersionUID = -7892398704638485548L;
 
-    private Integer code;
+    private Integer id;
     private Date recordTime;
     private String versionName;
     private String natType;
@@ -55,19 +55,28 @@ public class EditSession implements Serializable {
     public EditSession() { }
 
 
+    /**
+     * returns the Id of this Object.
+     * @return the id
+     */
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "code", unique = true, nullable = false)
-    public Integer getCode() {
-        return this.code;
+    @Column(name = "id", unique = true, nullable = false)
+    public Integer getId() {
+        return this.id;
     }
 
-    public void setCode(final Integer newCode) {
-        this.code = newCode;
+    /**
+     * Sets the Id of this Object
+     * @param id the new Id.
+     */
+    public void setId(final Integer id) {
+        this.id = id;
     }
+
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "username")
+    @JoinColumn(name = "userId")
     public User getUser() {
         return this.user;
     }
@@ -152,7 +161,7 @@ public class EditSession implements Serializable {
     }
 
     @ManyToOne(fetch=FetchType.LAZY)
-    @JoinColumn(name="process_model_version_id", nullable=false)
+    @JoinColumn(name="processModelVersionId", nullable=false)
     public ProcessModelVersion getProcessModelVersion() {
         return this.processModelVersion;
     }

@@ -3,16 +3,13 @@ package org.apromore.dao.model;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 /**
  * Stores the native type in apromore.
@@ -30,6 +27,7 @@ public class NativeType implements Serializable {
      */
     private static final long serialVersionUID = -2353311738938485548L;
 
+    private Integer id;
     private String natType;
     private String extension;
 
@@ -40,16 +38,32 @@ public class NativeType implements Serializable {
     /**
      * Default Constructor.
      */
-    public NativeType() {
-    }
+    public NativeType() { }
 
 
     /**
-     * Get the Primary Key for the Object.
-     *
-     * @return Returns the Id.
+     * returns the Id of this Object.
+     * @return the id
      */
     @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
+    public Integer getId() {
+        return this.id;
+    }
+
+    /**
+     * Sets the Id of this Object
+     * @param id the new Id.
+     */
+    public void setId(final Integer id) {
+        this.id = id;
+    }
+
+    /**
+     * Get the Primary Key for the Object.
+     * @return Returns the Id.
+     */
     @Column(name = "nat_type", unique = true, nullable = false, length = 20)
     public String getNatType() {
         return this.natType;
@@ -57,7 +71,6 @@ public class NativeType implements Serializable {
 
     /**
      * Set the natType for the Object.
-     *
      * @param newNatType The natType to set.
      */
     public void setNatType(final String newNatType) {

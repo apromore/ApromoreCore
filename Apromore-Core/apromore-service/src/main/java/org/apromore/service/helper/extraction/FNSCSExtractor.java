@@ -8,7 +8,6 @@ import org.apromore.util.FragmentUtil;
 import org.jbpt.graph.algo.rpst.RPST;
 import org.jbpt.graph.algo.rpst.RPSTNode;
 import org.jbpt.pm.FlowNode;
-import org.jbpt.pm.IFlowNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

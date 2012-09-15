@@ -19,15 +19,15 @@ import static org.hamcrest.Matchers.equalTo;
  */
 public class NativeTypeMapperUnitTest {
 
-	NativeTypeMapper mapper;
+    NativeTypeMapper mapper;
 
-	@Before
-	public void setUp() throws Exception {
-		mapper = new NativeTypeMapper();
-	}
+    @Before
+    public void setUp() throws Exception {
+        mapper = new NativeTypeMapper();
+    }
 
-	@Test
-	public void testConvertFromNativeType() throws Exception {
+    @Test
+    public void testConvertFromNativeType() throws Exception {
         List<NativeType> natTypes = new ArrayList<NativeType>();
         NativeType typ1 = new NativeType();
         typ1.setExtension("ext");
@@ -43,6 +43,6 @@ public class NativeTypeMapperUnitTest {
         assertThat(type.getNativeType().size(), equalTo(natTypes.size()));
         assertThat(type.getNativeType().get(0).getFormat(), equalTo(natTypes.get(0).getNatType()));
         assertThat(type.getNativeType().get(0).getExtension(), equalTo(natTypes.get(0).getExtension()));
-	}
+    }
 
 }

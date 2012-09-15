@@ -17,7 +17,7 @@ public interface SessionDao {
      * @param sessionId the EditSession Id
      * @return the found EditSession
      */
-    EditSession findSession(int sessionId);
+    EditSession findSession(Integer sessionId);
 
 
 

@@ -79,7 +79,7 @@ public interface ManagerService {
      * @param clusterId the Id of the Cluster we want
      * @return the found cluster
      */
-    ClusterType getCluster(String clusterId);
+    ClusterType getCluster(Integer clusterId);
 
     /**
      * Get a list of clusters.
@@ -99,14 +99,14 @@ public interface ManagerService {
      * @param fragmentId the id of the fragment we want
      * @return the found fragment
      */
-    FragmentType getFragment(String fragmentId);
+    FragmentType getFragment(Integer fragmentId);
 
     /**
      * get the distance between two fragments.
      * @param fragmentIds the Id's of the fragments want to find the distances.
      * @return the list of distances
      */
-    List<PairDistanceType> getPairwiseDistances(List<String> fragmentIds);
+    List<PairDistanceType> getPairwiseDistances(List<Integer> fragmentIds);
 
     /**
      * Get the Process Summaries from the Apromore Manager.
