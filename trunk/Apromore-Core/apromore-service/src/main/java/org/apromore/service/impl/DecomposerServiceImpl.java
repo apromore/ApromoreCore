@@ -256,8 +256,9 @@ public class DecomposerServiceImpl implements DecomposerService {
     }
 
     /* Adds a fragment version */
-    private FragmentVersion addFragmentVersion(Content cid, Map<String, String> childMappings, String derivedFrom, int lockStatus,
-            int lockCount, int originalSize, String fragmentType, String keywords, OperationContext op) throws RepositoryException {
+    private FragmentVersion addFragmentVersion(Content cid, Map<String, String> childMappings, String derivedFrom,
+            int lockStatus, int lockCount, int originalSize, String fragmentType, String keywords, OperationContext op)
+            throws RepositoryException {
         op.addProcessedFragmentType(fragmentType);
         return fSrv.addFragmentVersion(cid, childMappings, derivedFrom, lockStatus, lockCount, originalSize, fragmentType);
     }

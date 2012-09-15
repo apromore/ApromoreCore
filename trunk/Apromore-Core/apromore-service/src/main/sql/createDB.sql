@@ -439,7 +439,7 @@ CREATE INDEX `id_annotation_name` ON `annotation` (`name`) USING BTREE;
 CREATE INDEX `id_fv_lock` ON `fragment_version` (`lock_status`) USING BTREE;
 CREATE INDEX `id_fv_sizetype` ON `fragment_version` (`fragment_size`, `fragment_type`) USING BTREE;
 CREATE INDEX `id_fvd_pocket` ON `fragment_version_dag` (`pocketId`) USING BTREE;
-CREATE INDEX `id_cluster_1` ON `cluster` (`size`, `avg_fragment_size`, `benifit_cost_ratio`) USING BTREE;
+CREATE INDEX `id_cluster` ON `cluster` (`size`, `avg_fragment_size`, `benifit_cost_ratio`) USING BTREE;
 CREATE INDEX `id_fragment_distance` ON `fragment_distance` (`ged`) USING BTREE;
 
 
