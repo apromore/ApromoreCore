@@ -126,8 +126,8 @@ public class ProcessServiceImpl implements ProcessService {
             ProcessModelVersion pmv = rSrv.addProcessModel(processName, version, user.getUsername(), cpfURI, nativeType.getNatType(),
                     domain, documentation, created, lastUpdate, pg);
             fmtSrv.storeNative(processName, version, pmv, cpf.getInputStream(), created, lastUpdate, user, nativeType, cp);
-            pro = uiSrv.createProcessSummary(processName, pmv.getId(), version, nativeType.getNatType(), domain,
-                    created, lastUpdate, user.getUsername());
+            pro = uiSrv.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(), version, nativeType.getNatType(),
+                    domain, created, lastUpdate, user.getUsername());
         } catch (Exception e) {
             LOGGER.error("Canonisation Process Failed: " + e.toString());
             throw new ImportException(e);

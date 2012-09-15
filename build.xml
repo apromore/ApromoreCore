@@ -37,7 +37,7 @@
     <!-- Copy all WAR files to Tomcat -->
     <target name="copy-war" depends="build-war">
         <copy file="Apromore-Editor/target/editor.war" todir="${dir-tomcat-webapps}"/>
-        <copy file="Apromore-Core/apromore-webapp/target/web-manager.war" todir="${dir-tomcat-webapps}"/>
+        <copy file="Apromore-Core/apromore-webapp/target/manager.war" todir="${dir-tomcat-webapps}"/>
         <copy file="Apromore-Portal/portal-webapp/target/portal.war" todir="${dir-tomcat-webapps}"/>
     </target>
 
@@ -45,7 +45,7 @@
 
     <target name="copy-war-nodep">
         <copy file="Apromore-Editor/target/editor.war" todir="${dir-tomcat-webapps}"/>
-        <copy file="Apromore-Core/apromore-webapp/target/web-manager.war" todir="${dir-tomcat-webapps}"/>
+        <copy file="Apromore-Core/apromore-webapp/target/manager.war" todir="${dir-tomcat-webapps}"/>
         <copy file="Apromore-Portal/portal-webapp/target/portal.war" todir="${dir-tomcat-webapps}"/>
     </target>
     
