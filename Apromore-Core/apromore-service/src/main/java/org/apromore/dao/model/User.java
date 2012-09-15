@@ -1,19 +1,15 @@
 package org.apromore.dao.model;
 
-import java.io.Serializable;
-import java.util.HashSet;
-import java.util.Set;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.Id;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 /**
  * Stores the process in apromore.
@@ -35,6 +31,7 @@ public class User implements Serializable {
      */
     private static final long serialVersionUID = -2353314404638485548L;
 
+    private Integer id;
     private String username;
     private String firstname;
     private String lastname;
@@ -49,16 +46,32 @@ public class User implements Serializable {
     /**
      * Default Constructor.
      */
-    public User() {
-    }
+    public User() { }
 
 
     /**
-     * Get the Primary Key for the Object.
-     *
-     * @return Returns the Id.
+     * returns the Id of this Object.
+     * @return the id
      */
     @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
+    public Integer getId() {
+        return this.id;
+    }
+
+    /**
+     * Sets the Id of this Object
+     * @param id the new Id.
+     */
+    public void setId(final Integer id) {
+        this.id = id;
+    }
+
+    /**
+     * Get the Primary Key for the Object.
+     * @return Returns the Id.
+     */
     @Column(name = "username", unique = true, nullable = false, length = 10)
     public String getUsername() {
         return username;
@@ -76,7 +89,6 @@ public class User implements Serializable {
 
     /**
      * Get the firstname for the Object.
-     *
      * @return Returns the firstname.
      */
     @Column(name = "firstname", unique = false, nullable = true, length = 40)
@@ -86,7 +98,6 @@ public class User implements Serializable {
 
     /**
      * Set the firstname for the Object.
-     *
      * @param newFirstname The firstname to set.
      */
     public void setFirstname(final String newFirstname) {
@@ -95,7 +106,6 @@ public class User implements Serializable {
 
     /**
      * Get the lastname for the Object.
-     *
      * @return Returns the lastname.
      */
     @Column(name = "lastname", unique = false, nullable = true, length = 40)
@@ -105,7 +115,6 @@ public class User implements Serializable {
 
     /**
      * Set the lastname for the Object.
-     *
      * @param newLastname The lastname to set.
      */
     public void setLastname(final String newLastname) {
@@ -114,7 +123,6 @@ public class User implements Serializable {
 
     /**
      * Get the email for the Object.
-     *
      * @return Returns the email.
      */
     @Column(name = "email", unique = true, nullable = true, length = 80)
@@ -124,7 +132,6 @@ public class User implements Serializable {
 
     /**
      * Set the Email for the Object.
-     *
      * @param newEmail The Email to set.
      */
     public void setEmail(final String newEmail) {
@@ -133,7 +140,6 @@ public class User implements Serializable {
 
     /**
      * Get the password for the Object.
-     *
      * @return Returns the password.
      */
     @Column(name = "passwd", unique = false, nullable = false, length = 80)
@@ -143,7 +149,6 @@ public class User implements Serializable {
 
     /**
      * Set the password for the Object.
-     *
      * @param newPassword The password to set.
      */
     public void setPasswd(final String newPassword) {
@@ -153,7 +158,6 @@ public class User implements Serializable {
 
     /**
      * Get the processes for the Object.
-     *
      * @return Returns the processes.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
@@ -163,7 +167,6 @@ public class User implements Serializable {
 
     /**
      * Set the processes for the Object.
-     *
      * @param newProcesses The processes to set.
      */
     public void setProcesses(final Set<Process> newProcesses) {
@@ -172,7 +175,6 @@ public class User implements Serializable {
 
     /**
      * Get the editSessions for the Object.
-     *
      * @return Returns the editSessions.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
@@ -182,7 +184,6 @@ public class User implements Serializable {
 
     /**
      * Set the editSessions for the Object.
-     *
      * @param newEditSessions The editSessions to set.
      */
     public void setEditSessions(final Set<EditSession> newEditSessions) {
@@ -191,7 +192,6 @@ public class User implements Serializable {
 
     /**
      * Get the searchHistories for the Object.
-     *
      * @return Returns the searchHistories.
      */
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "user")
@@ -201,7 +201,6 @@ public class User implements Serializable {
 
     /**
      * Set the searchHistories for the Object.
-     *
      * @param newSearchHistories The searchHistories to set.
      */
     public void setSearchHistories(final Set<SearchHistory> newSearchHistories) {

@@ -1,8 +1,5 @@
 package org.apromore.service.impl;
 
-import java.util.List;
-import java.util.Map;
-
 import org.apromore.common.Constants;
 import org.apromore.dao.FragmentVersionDagDao;
 import org.apromore.dao.FragmentVersionDao;
@@ -18,6 +15,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of the LockService Contract.
@@ -72,19 +72,33 @@ public class LockServiceImpl implements LockService {
 
 
     /**
-     * @see org.apromore.service.LockService#lockFragment(String)
+     * @see org.apromore.service.LockService#lockFragment(Integer)
      *      {@inheritDoc}
      */
     @Override
-    public boolean lockFragment(String fragmentVersionId) {
+    public boolean lockFragment(Integer fragmentVersionId) {
         FragmentVersion fragVersion = fragVersionDao.findFragmentVersion(fragmentVersionId);
         boolean locked = lockSingleFragment(fragVersion);
         if (!locked) {
             return false;
         }
 
-        return lockAscendantCurrentFragments(fragVersion.getFragmentVersionId()) &&
-                lockDescendantFragment(fragVersion.getFragmentVersionId());
+        return lockAscendantCurrentFragments(fragVersion.getId()) && lockDescendantFragment(fragVersion.getId());
+    }
+
+    /**
+     * @see org.apromore.service.LockService#lockFragmentByUri(String)
+     * {@inheritDoc}
+     */
+    @Override
+    public boolean lockFragmentByUri(String fragmentUri) {
+        FragmentVersion fragVersion = fragVersionDao.findFragmentVersionByURI(fragmentUri);
+        boolean locked = lockSingleFragment(fragVersion);
+        if (!locked) {
+            return false;
+        }
+
+        return lockAscendantCurrentFragments(fragVersion.getId()) && lockDescendantFragment(fragVersion.getId());
     }
 
 
@@ -106,36 +120,56 @@ public class LockServiceImpl implements LockService {
     }
 
     /**
-     * @see org.apromore.service.LockService#unlockFragment(String)
+     * @see org.apromore.service.LockService#unlockFragment(Integer)
      *      {@inheritDoc}
      */
     @Override
-    public void unlockFragment(String fragmentId) {
+    public void unlockFragment(final Integer fragmentId) {
         FragmentVersion fragVersion = fragVersionDao.findFragmentVersion(fragmentId);
         fragVersion.setLockStatus(Constants.NO_LOCK);
         fragVersionDao.update(fragVersion);
     }
 
     /**
-     * @see org.apromore.service.LockService#unlockFragment(String)
+     * @see org.apromore.service.LockService#unlockFragmentByURI(String)
      *      {@inheritDoc}
      */
     @Override
-    public void unlockAscendantFragments(String fragmentId) {
-        List<String> parentIds = fragVersionDao.getLockedParentFragmentIds(fragmentId);
-        for (String parentId : parentIds) {
+    public void unlockFragmentByURI(final String uri){
+        FragmentVersion fragVersion = fragVersionDao.findFragmentVersionByURI(uri);
+        fragVersion.setLockStatus(Constants.NO_LOCK);
+        fragVersionDao.update(fragVersion);
+    }
+
+    /**
+     * @see org.apromore.service.LockService#unlockAscendantFragments(Integer)
+     * {@inheritDoc}
+     */
+    @Override
+    public void unlockAscendantFragments(Integer fragmentId) {
+        List<Integer> parentIds = fragVersionDao.getLockedParentFragmentIds(fragmentId);
+        for (Integer parentId : parentIds) {
             decrementParentLocks(parentId);
             unlockAscendantFragments(parentId);
         }
     }
 
     /**
-     * @see org.apromore.service.LockService#unlockDescendantFragments(String)
+     * @see org.apromore.service.LockService#unlockDescendantFragments(Integer)
      *      {@inheritDoc}
      */
     @Override
-    public void unlockDescendantFragments(String fragmentId) {
+    public void unlockDescendantFragments(final Integer fragmentId) {
         unlockDescendantFragments(fragVersionDagDao.findFragmentVersionDag(fragmentId));
+    }
+
+    /**
+     * @see org.apromore.service.LockService#unlockDescendantFragmentsByURI(String)
+     *      {@inheritDoc}
+     */
+    @Override
+    public void unlockDescendantFragmentsByURI(final String uri) {
+        unlockDescendantFragments(fragVersionDagDao.findFragmentVersionDagByURI(uri));
     }
 
     /**
@@ -144,8 +178,8 @@ public class LockServiceImpl implements LockService {
      */
     @Override
     public void unlockDescendantFragments(FragmentVersionDag fragmentVersionDag) {
-        unlockChildFragments(fragmentVersionDag.getFragmentVersionByFragVerId());
-        List<FragmentVersionDag> childIds = fragVersionDagDao.getChildMappings(fragmentVersionDag.getFragmentVersionByFragVerId().getFragmentVersionId());
+        unlockChildFragments(fragmentVersionDag.getFragmentVersionId());
+        List<FragmentVersionDag> childIds = fragVersionDagDao.getChildMappings(fragmentVersionDag.getId());
         for (FragmentVersionDag childId : childIds) {
             unlockDescendantFragments(childId);
         }
@@ -161,8 +195,8 @@ public class LockServiceImpl implements LockService {
         int currentVersion;
         boolean usedInCurrentProcessModel = false;
 
-        Map<String, Integer> maxVersions = prsModelVersionDao.getMaxModelVersions(fragVersion.getFragmentVersionId());
-        Map<String, Integer> currentVersions = prsModelVersionDao.getCurrentModelVersions(fragVersion.getFragmentVersionId());
+        Map<String, Integer> maxVersions = prsModelVersionDao.getMaxModelVersions(fragVersion.getId());
+        Map<String, Integer> currentVersions = prsModelVersionDao.getCurrentModelVersions(fragVersion.getId());
 
         for (String branchId : maxVersions.keySet()) {
             maxVersion = maxVersions.get(branchId);
@@ -178,7 +212,7 @@ public class LockServiceImpl implements LockService {
 
 
     /* Locks the Ascendant fragments, only pass the id as the object isn't needed. */
-    private boolean lockAscendantCurrentFragments(String fragmentId) {
+    private boolean lockAscendantCurrentFragments(Integer fragmentId) {
         List<FragmentVersion> parents = fragVersionDao.getParentFragments(fragmentId);
 
         for (FragmentVersion parent : parents) {
@@ -188,7 +222,7 @@ public class LockServiceImpl implements LockService {
                     return false;
                 }
 
-                boolean ascendantsLocked = lockAscendantCurrentFragments(parent.getFragmentVersionId());
+                boolean ascendantsLocked = lockAscendantCurrentFragments(parent.getId());
                 if (!ascendantsLocked) {
                     return false;
                 }
@@ -197,7 +231,7 @@ public class LockServiceImpl implements LockService {
         return true;
     }
 
-    private void decrementParentLocks(String fragmentId) {
+    private void decrementParentLocks(Integer fragmentId) {
         FragmentVersion fd = fragVersionDao.getFragmentData(fragmentId);
         Integer lockStatus = fd.getLockStatus();
         Integer lockCount = fd.getLockCount();
@@ -222,16 +256,16 @@ public class LockServiceImpl implements LockService {
     }
 
     /* Locks the Descendant fragments, only pass the id as the object isn't needed. */
-    private boolean lockDescendantFragment(String fragmentId) {
+    private boolean lockDescendantFragment(Integer fragmentId) {
         List<FragmentVersionDag> childIds = fragVersionDagDao.getChildMappings(fragmentId);
         int lockedChildren = lockChildren(fragmentId);
         return lockedChildren == childIds.size();
     }
 
-    private int lockChildren(String fragmentId) {
+    private int lockChildren(Integer fragmentId) {
         int updated = 0;
         FragmentVersion fd = fragVersionDao.getFragmentData(fragmentId);
-        List<FragmentVersion> frags = fragVersionDagDao.getChildFragmentsByFragmentVersion(fd.getFragmentVersionId());
+        List<FragmentVersion> frags = fragVersionDagDao.getChildFragmentsByFragmentVersion(fd.getId());
         for (FragmentVersion frag : frags) {
             if (frag.getLockStatus().equals(Constants.NO_LOCK) || frag.getLockStatus().equals(Constants.DIRECT_LOCK)) {
                 updated++;
@@ -243,7 +277,7 @@ public class LockServiceImpl implements LockService {
     }
 
     private void unlockChildFragments(FragmentVersion fragmentVersion) {
-        List<FragmentVersion> frags = fragVersionDagDao.getChildFragmentsByFragmentVersion(fragmentVersion.getFragmentVersionId());
+        List<FragmentVersion> frags = fragVersionDagDao.getChildFragmentsByFragmentVersion(fragmentVersion.getId());
         for (FragmentVersion frag : frags) {
             fragmentVersion.setLockStatus(Constants.NO_LOCK);
             fragVersionDao.update(fragmentVersion);

@@ -19,7 +19,14 @@ public interface FragmentVersionDagDao {
      * @param fragmentVersionDagId the Fragment Id
      * @return the found FragmentVersionDag
      */
-    FragmentVersionDag findFragmentVersionDag(String fragmentVersionDagId);
+    FragmentVersionDag findFragmentVersionDag(Integer fragmentVersionDagId);
+
+    /**
+     * Returns a single FragmentVersionDag based on the fragment version uri.
+     * @param uri the Fragment uri
+     * @return the found FragmentVersionDag
+     */
+    FragmentVersionDag findFragmentVersionDagByURI(String uri);
 
 
     /**
@@ -27,26 +34,33 @@ public interface FragmentVersionDagDao {
      * @param fragmentId the fragment id
      * @return the list of child fragments
      */
-    List<FragmentVersionDag> getChildMappings(String fragmentId);
+    List<FragmentVersionDag> getChildMappings(Integer fragmentId);
+
+    /**
+     * Returns all the child mappings for the FragmentId.
+     * @param parentUri the fragment uri
+     * @return the list of child fragments
+     */
+    List<FragmentVersionDag> getChildMappingsByURI(String parentUri);
 
     /**
      * Returns all parent-child mappings between all fragments
      * @return mappings fragment Id -> list of child Ids for all fragments that has at least one child
      */
-    Map<String, List<String>> getAllParentChildMappings();
+    Map<Integer, List<Integer>> getAllParentChildMappings();
 
     /**
      * Returns all child-parent mappings between all fragments
      * @return mappings fragment Id -> list of parent Ids for all non-root fragments
      */
-    Map<String, List<String>> getAllChildParentMappings();
+    Map<Integer, List<Integer>> getAllChildParentMappings();
 
     /**
      * the child Fragments from the fragment Version.
      * @param fragmentVersionId the fragment version id
      * @return the list of child fragments.
      */
-    List<FragmentVersion> getChildFragmentsByFragmentVersion(String fragmentVersionId);
+    List<FragmentVersion> getChildFragmentsByFragmentVersion(Integer fragmentVersionId);
 
     /**
      * Finds all the DAG entries greater than a min size.

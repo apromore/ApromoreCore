@@ -32,7 +32,7 @@ public interface RepositoryService {
      * @throws ImportException if the import failed ???
      */
     ProcessModelVersion addProcessModel(String processName, String versionName, String username, String cpfURI, String nativeType,
-                                        String domain, String documentation, String created, String lastUpdated, CPF pg) //ProcessModelGraph processModelGraph)
+            String domain, String documentation, String created, String lastUpdated, CPF pg) //ProcessModelGraph processModelGraph)
             throws ImportException;
 
     /**
@@ -110,12 +110,12 @@ public interface RepositoryService {
 
     /**
      * Get a Fragment.
-     * @param fragmentId the id of the fragment to get.
+     * @param fragmentUri the id of the fragment to get.
      * @param lock do we lock or not.
      * @return the process Model Graph
      * @throws LockFailedException if the lock failed.
      */
-    CPF getFragment(String fragmentId, boolean lock) throws LockFailedException;
+    CPF getFragment(String fragmentUri, boolean lock) throws LockFailedException;
 
     /**
      * Updates the fragment if it doesn't conflict with concurrent modifications

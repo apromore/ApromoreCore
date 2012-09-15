@@ -4,19 +4,13 @@
 package org.apromore.dao.model;
 
 import java.io.Serializable;
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.FetchType;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Configurable;
+
+import static javax.persistence.GenerationType.IDENTITY;
 
 /**
  * The Cluster Assignment.
@@ -28,7 +22,7 @@ import org.springframework.beans.factory.annotation.Configurable;
 @Configurable("clusterAssignment")
 public class ClusterAssignment implements Serializable {
 
-    private ClusterAssignmentId id;
+    private Integer id;
     private String cloneId;
     private Boolean maximal;
     private Integer coreObjectNb;
@@ -43,21 +37,28 @@ public class ClusterAssignment implements Serializable {
     public ClusterAssignment() { }
 
 
-
-    @EmbeddedId
-    @AttributeOverrides({
-            @AttributeOverride(name = "fragmentId", column = @Column(name = "fragment_version_id", nullable = false, length = 40)),
-            @AttributeOverride(name = "clusterId", column = @Column(name = "cluster_id", nullable = false, length = 40))})
-    public ClusterAssignmentId getId() {
+    /**
+     * returns the Id of this Object.
+     * @return the id
+     */
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
+    public Integer getId() {
         return this.id;
     }
 
-    public void setId(ClusterAssignmentId newId) {
-        this.id = newId;
+    /**
+     * Sets the Id of this Object
+     * @param id the new Id.
+     */
+    public void setId(final Integer id) {
+        this.id = id;
     }
 
+
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fragment_version_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "fragmentVersionId", nullable = false, insertable = false, updatable = false)
     public FragmentVersion getFragment() {
         return this.fragment;
     }
@@ -67,7 +68,7 @@ public class ClusterAssignment implements Serializable {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "cluster_id", nullable = false, insertable = false, updatable = false)
+    @JoinColumn(name = "clusterId", nullable = false, insertable = false, updatable = false)
     public Cluster getCluster() {
         return this.cluster;
     }

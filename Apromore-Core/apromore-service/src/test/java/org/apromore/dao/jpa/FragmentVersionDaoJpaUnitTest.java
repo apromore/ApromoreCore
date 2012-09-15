@@ -1,12 +1,7 @@
 package org.apromore.dao.jpa;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.EntityManager;
-import javax.persistence.EntityManagerFactory;
-import javax.persistence.Query;
-
 import org.apromore.dao.NamedQueries;
+import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.Content;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.test.heuristic.JavaBeanHeuristic;
@@ -15,12 +10,16 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.powermock.modules.junit4.PowerMockRunner;
 
+import javax.persistence.EntityManager;
+import javax.persistence.EntityManagerFactory;
+import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.equalTo;
 import static org.junit.Assert.assertThat;
-import static org.powermock.api.easymock.PowerMock.createMock;
-import static org.powermock.api.easymock.PowerMock.replay;
-import static org.powermock.api.easymock.PowerMock.verify;
+import static org.powermock.api.easymock.PowerMock.*;
 
 /**
  * Test the FragmentVersion DAO JPA class.
@@ -50,7 +49,7 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testFindFragmentVersionDag() {
-        String id = "1";
+        Integer id = 0;
         FragmentVersion v = new FragmentVersion();
 
         expect(manager.find(FragmentVersion.class, id)).andReturn(v);
@@ -65,8 +64,8 @@ public class FragmentVersionDaoJpaUnitTest {
     @Test
     public final void testGetAllFragmentVersion() {
         List<FragmentVersion> fv = new ArrayList<FragmentVersion>();
-        fv.add(createFragmentVersion("1"));
-        fv.add(createFragmentVersion("2"));
+        fv.add(createFragmentVersion(1));
+        fv.add(createFragmentVersion(2));
 
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(NamedQueries.GET_ALL_FRAGMENT_VERSION)).andReturn(query);
@@ -82,11 +81,11 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testGetMatchingFragmentVersionId() {
-        String contentId = "12";
+        Integer contentId = 12;
         String mappingCode = "2";
 
         List<FragmentVersion> fvs = new ArrayList<FragmentVersion>(0);
-        FragmentVersion fv = createFragmentVersion("1");
+        FragmentVersion fv = createFragmentVersion(1);
         fvs.add(fv);
 
         Query query = createMock(Query.class);
@@ -105,7 +104,7 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testGetMatchingFragmentVersionIdNothingFound() {
-        String contentId = "12";
+        Integer contentId = 12;
         String mappingCode = "2";
         FragmentVersion fv = null;
         List<FragmentVersion> fvs = new ArrayList<FragmentVersion>();
@@ -126,7 +125,7 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testGetUsedProcessModels() {
-        String fragmentVersionId = "12";
+        Integer fragmentVersionId = 12;
         Integer fvCount = 2;
         List<Integer> fvs = new ArrayList<Integer>();
         fvs.add(fvCount);
@@ -146,7 +145,7 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testGetUsedProcessModelsNothingFound() {
-        String fragmentVersionId = "12";
+        Integer fragmentVersionId = 12;
         Integer fvCount = null;
         List<Integer> fvs = new ArrayList<Integer>();
 
@@ -165,7 +164,7 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testGetParentFragments() {
-        String fragmentVersionId = "12";
+        Integer fragmentVersionId = 12;
         List<FragmentVersion> fvs = new ArrayList<FragmentVersion>();
         fvs.add(new FragmentVersion());
 
@@ -183,9 +182,9 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testGetLockedParentFragments() {
-        String fragmentVersionId = "12";
-        List<String> fvs = new ArrayList<String>();
-        fvs.add("1");
+        Integer fragmentVersionId = 12;
+        List<Integer> fvs = new ArrayList<Integer>();
+        fvs.add(1);
 
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(NamedQueries.GET_LOCKED_PARENT_FRAGMENTS)).andReturn(query);
@@ -193,7 +192,7 @@ public class FragmentVersionDaoJpaUnitTest {
         expect(query.getResultList()).andReturn(fvs);
 
         replay(manager, query);
-        List<String> childFv = dao.getLockedParentFragmentIds(fragmentVersionId);
+        List<Integer> childFv = dao.getLockedParentFragmentIds(fragmentVersionId);
 
         verify(manager, query);
         assertThat(fvs.size(), equalTo(childFv.size()));
@@ -201,8 +200,8 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testGetContentId() {
-        String fragmentVersionId = "12";
-        String cntId = "11";
+        Integer fragmentVersionId = 12;
+        Integer cntId = 11;
         List<FragmentVersion> fvs = new ArrayList<FragmentVersion>();
         fvs.add(createFragmentVersion(cntId));
 
@@ -212,7 +211,7 @@ public class FragmentVersionDaoJpaUnitTest {
         expect(query.getResultList()).andReturn(fvs);
 
         replay(manager, query);
-        String contentId = dao.getContentId(fragmentVersionId);
+        Integer contentId = dao.getContentId(fragmentVersionId);
 
         verify(manager, query);
         assertThat(cntId, equalTo(contentId));
@@ -220,8 +219,8 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testGetContentIdNothingFound() {
-        String fragmentVersionId = "12";
-        String cntId = null;
+        Integer fragmentVersionId = 12;
+        Integer cntId = null;
         List<FragmentVersion> fvs = new ArrayList<FragmentVersion>();
 
         Query query = createMock(Query.class);
@@ -230,7 +229,7 @@ public class FragmentVersionDaoJpaUnitTest {
         expect(query.getResultList()).andReturn(fvs);
 
         replay(manager, query);
-        String contentId = dao.getContentId(fragmentVersionId);
+        Integer contentId = dao.getContentId(fragmentVersionId);
 
         verify(manager, query);
         assertThat(cntId, equalTo(contentId));
@@ -238,9 +237,9 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testGetFragmentDataOfProcessModel() {
-        String fragmentVersionId = "12";
+        Integer fragmentVersionId = 12;
         List<FragmentVersion> fvs = new ArrayList<FragmentVersion>();
-        fvs.add(createFragmentVersion("1"));
+        fvs.add(createFragmentVersion(1));
 
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(NamedQueries.GET_FRAGMENT_DATA_OF_PROCESS_MODEL)).andReturn(query);
@@ -256,8 +255,8 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testGetFragmentData() {
-        String fragmentVersionId = "12";
-        FragmentVersion fv = createFragmentVersion("1");
+        Integer fragmentVersionId = 12;
+        FragmentVersion fv = createFragmentVersion(1);
         List<FragmentVersion> fvs = new ArrayList<FragmentVersion>();
         fvs.add(fv);
 
@@ -275,7 +274,7 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testGetFragmentDataFoundNothing() {
-        String fragmentVersionId = "12";
+        Integer fragmentVersionId = 12;
         FragmentVersion fv = null;
         List<FragmentVersion> fvs = new ArrayList<FragmentVersion>();
 
@@ -293,10 +292,10 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testGetContainingFragments() {
-        List<String> fragIds = new ArrayList<String>();
+        List<Integer> fragIds = new ArrayList<Integer>();
 
         replay(manager);
-        List<String> fragData = dao.getContainingFragments(fragIds);
+        List<Integer> fragData = dao.getContainingFragments(fragIds);
 
         verify(manager);
         assertThat(fragData, equalTo(null));
@@ -304,7 +303,7 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testGetContainedProcessModels() {
-        int fragmentVersionId = 12;
+        Integer fragmentVersionId = 12;
         List<Integer> fvs = new ArrayList<Integer>();
         fvs.add(1);
         fvs.add(2);
@@ -323,10 +322,10 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testGetUsedFragmentIds() {
-        String matchingContentId = "12";
-        List<String> fvs = new ArrayList<String>();
-        fvs.add("1");
-        fvs.add("2");
+        Integer matchingContentId = 12;
+        List<Integer> fvs = new ArrayList<Integer>();
+        fvs.add(1);
+        fvs.add(2);
 
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(NamedQueries.GET_USED_FRAGMENT_IDS)).andReturn(query);
@@ -334,7 +333,7 @@ public class FragmentVersionDaoJpaUnitTest {
         expect(query.getResultList()).andReturn(fvs);
 
         replay(manager, query);
-        List<String> fragData = dao.getUsedFragmentIds(matchingContentId);
+        List<Integer> fragData = dao.getUsedFragmentIds(matchingContentId);
 
         verify(manager, query);
         assertThat(fragData, equalTo(fvs));
@@ -345,8 +344,8 @@ public class FragmentVersionDaoJpaUnitTest {
         int minSize = 1;
         int maxSize = 100;
         List<FragmentVersion> fvs = new ArrayList<FragmentVersion>();
-        fvs.add(createFragmentVersion("1"));
-        fvs.add(createFragmentVersion("2"));
+        fvs.add(createFragmentVersion(1));
+        fvs.add(createFragmentVersion(1));
 
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(NamedQueries.GET_SIMILAR_FRAGMENTS_BY_SIZE)).andReturn(query);
@@ -367,8 +366,8 @@ public class FragmentVersionDaoJpaUnitTest {
         int maxSize = 100;
         String type = "TheType";
         List<FragmentVersion> fvs = new ArrayList<FragmentVersion>();
-        fvs.add(createFragmentVersion("1"));
-        fvs.add(createFragmentVersion("2"));
+        fvs.add(createFragmentVersion(1));
+        fvs.add(createFragmentVersion(1));
 
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(NamedQueries.GET_SIMILAR_FRAGMENTS_BY_SIZE_AND_TYPE)).andReturn(query);
@@ -390,7 +389,7 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testSaveFragmentVersionDag() {
-        FragmentVersion v = createFragmentVersion("1");
+        FragmentVersion v = createFragmentVersion(1);
         manager.persist(v);
         replay(manager);
         dao.save(v);
@@ -399,7 +398,7 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testUpdateFragmentVersion() {
-        FragmentVersion v = createFragmentVersion("1");
+        FragmentVersion v = createFragmentVersion(1);
         expect(manager.merge(v)).andReturn(v);
         replay(manager);
         dao.update(v);
@@ -409,7 +408,7 @@ public class FragmentVersionDaoJpaUnitTest {
 
     @Test
     public final void testDeleteFragmentVersion() {
-        FragmentVersion v = createFragmentVersion("1");
+        FragmentVersion v = createFragmentVersion(1);
         manager.remove(v);
         replay(manager);
         dao.delete(v);
@@ -418,13 +417,16 @@ public class FragmentVersionDaoJpaUnitTest {
 
 
 
-    private FragmentVersion createFragmentVersion(String id) {
+    private FragmentVersion createFragmentVersion(Integer id) {
         FragmentVersion e = new FragmentVersion();
-        e.setClusterId(id);
+        Cluster cl = new Cluster();
+        cl.setId(id);
+
+        e.setCluster(cl);
         e.setDerivedFromFragment("1");
 
         Content c = new Content();
-        c.setContentId(id);
+        c.setId(id);
         e.setContent(c);
 
         return e;

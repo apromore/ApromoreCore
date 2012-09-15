@@ -30,29 +30,38 @@ public class ProcessFragmentMap implements Serializable {
      */
     private static final long serialVersionUID = -9072538487638485548L;
 
-    private Integer mappingId;
+    private Integer id;
     private FragmentVersion fragmentVersion;
     private ProcessModelVersion processModelVersion;
 
 
-    public ProcessFragmentMap() {
-    }
+    /**
+     * Public Constructor.
+     */
+    public ProcessFragmentMap() { }
 
 
+    /**
+     * returns the Id of this Object.
+     * @return the id
+     */
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "mapping_id", unique = true, nullable = false)
-    public Integer getMappingId() {
-        return this.mappingId;
+    @Column(name = "id", unique = true, nullable = false)
+    public Integer getId() {
+        return this.id;
     }
 
-    public void setMappingId(Integer mappingId) {
-        this.mappingId = mappingId;
+    /**
+     * Sets the Id of this Object
+     * @param id the new Id.
+     */
+    public void setId(final Integer id) {
+        this.id = id;
     }
-
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "fragment_version_id")
+    @JoinColumn(name = "fragmentVersionId")
     public FragmentVersion getFragmentVersion() {
         return this.fragmentVersion;
     }
@@ -62,7 +71,7 @@ public class ProcessFragmentMap implements Serializable {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "process_model_version_id")
+    @JoinColumn(name = "processModelVersionId")
     public ProcessModelVersion getProcessModelVersion() {
         return this.processModelVersion;
     }

@@ -25,7 +25,7 @@ public class SearchHistoryMapper {
         Set<SearchHistory> searches = new HashSet<SearchHistory>();
         for (SearchHistoriesType srhType : srhTypes) {
             SearchHistory sh = new SearchHistory();
-            sh.setNum(srhType.getNum());
+            sh.setId(srhType.getNum());
             sh.setSearch(srhType.getSearch());
             searches.add(sh);
         }

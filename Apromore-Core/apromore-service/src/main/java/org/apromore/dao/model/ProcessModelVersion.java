@@ -33,8 +33,7 @@ public class ProcessModelVersion implements Serializable {
      */
     private static final long serialVersionUID = -1172538404638485548L;
 
-    private Integer processModelVersionId;
-    private String rootFragmentVersionId;
+    private Integer id;
     private Integer versionNumber;
     private String versionName;
     private Integer changePropagation;
@@ -43,12 +42,15 @@ public class ProcessModelVersion implements Serializable {
     private Integer numEdges;
 
     private ProcessBranch processBranch;
+    private FragmentVersion rootFragmentVersion;
+
+    private Set<Annotation> annotations = new HashSet<Annotation>(0);
     private Set<Native> natives = new HashSet<Native>(0);
     private Set<EditSession> editSessions = new HashSet<EditSession>(0);
     private Set<Node> parentProcesses = new HashSet<Node>(0);
     private Set<ProcessFragmentMap> processFragmentMaps = new HashSet<ProcessFragmentMap>(0);
-    private Set<ProcessBranch> processBranchesForCurrentProcessModelVersionId = new HashSet<ProcessBranch>(0);
-    private Set<ProcessBranch> processBranchesForSourceProcessModelVersionId = new HashSet<ProcessBranch>(0);
+    private Set<ProcessBranch> currentProcessModelVersionId = new HashSet<ProcessBranch>(0);
+    private Set<ProcessBranch> sourceProcessModelVersionId = new HashSet<ProcessBranch>(0);
 
     private Set<ProcessModelAttribute> processModelAttributes = new HashSet<ProcessModelAttribute>(0);
     private Set<ObjectType> objectTypes = new HashSet<ObjectType>(0);
@@ -58,39 +60,26 @@ public class ProcessModelVersion implements Serializable {
     /**
      * Default Constructor.
      */
-    public ProcessModelVersion() {
-    }
+    public ProcessModelVersion() { }
 
 
+    /**
+     * returns the Id of this Object.
+     * @return the id
+     */
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "process_model_version_id", unique = true, nullable = false)
-    public Integer getProcessModelVersionId() {
-        return this.processModelVersionId;
+    @Column(name = "id", unique = true, nullable = false)
+    public Integer getId() {
+        return this.id;
     }
 
-    public void setProcessModelVersionId(final Integer newProcessModelVersionId) {
-        this.processModelVersionId = newProcessModelVersionId;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "branch_id")
-    public ProcessBranch getProcessBranch() {
-        return this.processBranch;
-    }
-
-    public void setProcessBranch(final ProcessBranch newProcessBranches) {
-        this.processBranch = newProcessBranches;
-    }
-
-
-    @Column(name = "root_fragment_version_id", length = 40)
-    public String getRootFragmentVersionId() {
-        return this.rootFragmentVersionId;
-    }
-
-    public void setRootFragmentVersionId(final String newRootFragmentVersionId) {
-        this.rootFragmentVersionId = newRootFragmentVersionId;
+    /**
+     * Sets the Id of this Object
+     * @param id the new Id.
+     */
+    public void setId(final Integer id) {
+        this.id = id;
     }
 
 
@@ -154,6 +143,37 @@ public class ProcessModelVersion implements Serializable {
     }
 
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "branchId")
+    public ProcessBranch getProcessBranch() {
+        return this.processBranch;
+    }
+
+    public void setProcessBranch(final ProcessBranch newProcessBranches) {
+        this.processBranch = newProcessBranches;
+    }
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "rootFragmentVersionId")
+    public FragmentVersion getRootFragmentVersion() {
+        return this.rootFragmentVersion;
+    }
+
+    public void setRootFragmentVersion(final FragmentVersion newRootFragmentVersion) {
+        this.rootFragmentVersion = newRootFragmentVersion;
+    }
+
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "processModelVersion")
+    public Set<Annotation> getAnnotations() {
+        return this.annotations;
+    }
+
+    public void setAnnotations(Set<Annotation> annotations) {
+        this.annotations = annotations;
+    }
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "processModelVersion")
     public Set<Native> getNatives() {
         return this.natives;
@@ -190,22 +210,22 @@ public class ProcessModelVersion implements Serializable {
         this.processFragmentMaps = newProcessFragmentMaps;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "processModelVersionsByCurrentProcessModelVersionId")
-    public Set<ProcessBranch> getProcessBranchesForCurrentProcessModelVersionId() {
-        return this.processBranchesForCurrentProcessModelVersionId;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "currentProcessModelVersionId")
+    public Set<ProcessBranch> getCurrentProcessModelVersionId() {
+        return this.currentProcessModelVersionId;
     }
 
-    public void setProcessBranchesForCurrentProcessModelVersionId(final Set<ProcessBranch> newCurrentIds) {
-        this.processBranchesForCurrentProcessModelVersionId = newCurrentIds;
+    public void setCurrentProcessModelVersionId(final Set<ProcessBranch> newCurrentIds) {
+        this.currentProcessModelVersionId = newCurrentIds;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "processModelVersionsBySourceProcessModelVersionId")
-    public Set<ProcessBranch> getProcessBranchesForSourceProcessModelVersionId() {
-        return this.processBranchesForSourceProcessModelVersionId;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sourceProcessModelVersionId")
+    public Set<ProcessBranch> getSourceProcessModelVersionId() {
+        return this.sourceProcessModelVersionId;
     }
 
-    public void setProcessBranchesForSourceProcessModelVersionId(final Set<ProcessBranch> newSourceIds) {
-        this.processBranchesForSourceProcessModelVersionId = newSourceIds;
+    public void setSourceProcessModelVersionId(final Set<ProcessBranch> newSourceIds) {
+        this.sourceProcessModelVersionId = newSourceIds;
     }
 
 

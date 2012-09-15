@@ -1,24 +1,10 @@
 package org.apromore.util;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
-
 import org.apromore.common.Constants;
+import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.exception.PocketMappingException;
-import org.apromore.graph.JBPT.CPF;
-import org.apromore.graph.JBPT.CpfAndGateway;
-import org.apromore.graph.JBPT.CpfEvent;
-import org.apromore.graph.JBPT.CpfGateway;
-import org.apromore.graph.JBPT.CpfNode;
-import org.apromore.graph.JBPT.CpfOrGateway;
-import org.apromore.graph.JBPT.CpfTask;
-import org.apromore.graph.JBPT.CpfXorGateway;
-import org.apromore.graph.JBPT.ICpfNode;
+import org.apromore.graph.JBPT.*;
 import org.jbpt.graph.abs.AbstractDirectedEdge;
 import org.jbpt.graph.algo.rpst.RPST;
 import org.jbpt.graph.algo.rpst.RPSTNode;
@@ -28,6 +14,9 @@ import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.IFlowNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import java.util.*;
+import java.util.Map.Entry;
 
 /**
  * @author Chathura Ekanayake
@@ -144,16 +133,16 @@ public class FragmentUtil {
      * @param childMappings  map pocketId -> childId
      * @param pocketMappings map fragment pocket Id -> content pocket Id
      */
-    public static Map<String, String> remapChildren(List<FragmentVersionDag> childMappings, Map<String, String> pocketMappings)
+    public static Map<String, FragmentVersion> remapChildren(List<FragmentVersionDag> childMappings, Map<String, String> pocketMappings)
             throws PocketMappingException {
-        Map<String, String> newChildMapping = new HashMap<String, String>(0);
+        Map<String, FragmentVersion> newChildMapping = new HashMap<String, FragmentVersion>(0);
         for (FragmentVersionDag fvd : childMappings) {
-            String o = pocketMappings.get(fvd.getId().getPocketId());
+            String o = pocketMappings.get(fvd.getPocketId());
             if (o != null) {
-                String mappedPocketId = pocketMappings.get(fvd.getId().getPocketId());
-                newChildMapping.put(mappedPocketId, fvd.getId().getChildFragmentVersionId());
+                String mappedPocketId = pocketMappings.get(fvd.getPocketId());
+                newChildMapping.put(mappedPocketId, fvd.getChildFragmentVersionId());
             } else {
-                String msg = "Mapping of pocket " + fvd.getId().getPocketId() + " is null.";
+                String msg = "Mapping of pocket " + fvd.getPocketId() + " is null.";
                 LOGGER.error(msg);
                 throw new PocketMappingException(msg);
             }

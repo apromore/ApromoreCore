@@ -38,10 +38,29 @@ public class NodeDaoJpa implements NodeDao {
 
 
     /**
+     * @see org.apromore.dao.NodeDao#findNodeByUri(String)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public Node findNodeByUri(final String uri) {
+        Query query = em.createNamedQuery(NamedQueries.GET_NODE_BY_URI);
+        query.setParameter("uri", uri);
+        List result = query.getResultList();
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return (Node) result.get(0);
+        }
+    }
+
+
+    /**
      * @see org.apromore.dao.NodeDao#getContentIDs()
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
     public List<String> getContentIDs() {
         Query query = em.createNamedQuery(NamedQueries.GET_CONTENT_IDS);
@@ -49,24 +68,26 @@ public class NodeDaoJpa implements NodeDao {
     }
 
     /**
-     * @see org.apromore.dao.NodeDao#getVertexByContent(String)
+     * @see org.apromore.dao.NodeDao#getVertexByContent(Integer)
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
-    public List<Node> getVertexByContent(final String contentID) {
+    public List<Node> getVertexByContent(final Integer contentID) {
         Query query = em.createNamedQuery(NamedQueries.GET_VERTICES_BY_CONTENT);
         query.setParameter("contentId", contentID);
         return (List<Node>) query.getResultList();
     }
 
     /**
-     * @see org.apromore.dao.NodeDao#getVertexByFragment(String)
+     * @see org.apromore.dao.NodeDao#getVertexByFragment(Integer)
      * {@inheritDoc}
      */
     @Override
+    @SuppressWarnings("unchecked")
     @Transactional(readOnly = true)
-    public List<Node> getVertexByFragment(final String fragmentID) {
+    public List<Node> getVertexByFragment(final Integer fragmentID) {
         Query query = em.createNamedQuery(NamedQueries.GET_VERTICES_BY_FRAGMENT);
         query.setParameter("fragmentId", fragmentID);
         return (List<Node>) query.getResultList();

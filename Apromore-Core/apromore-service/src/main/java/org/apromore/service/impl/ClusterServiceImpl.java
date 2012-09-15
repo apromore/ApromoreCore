@@ -1,11 +1,5 @@
 package org.apromore.service.impl;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import nl.tue.tm.is.graph.SimpleGraph;
 import org.apromore.clustering.dissimilarity.measure.GEDDissimCalc;
 import org.apromore.dao.ClusteringDao;
@@ -32,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.*;
+
 /**
  * Implementation of the ClusterService Contract.
  *
@@ -42,7 +38,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class ClusterServiceImpl implements ClusterService {
 
     @Autowired @Qualifier("FragmentVersionDao")
-    private FragmentVersionDao fragVersionDao;
+    private FragmentVersionDao fvDao;
     @Autowired @Qualifier("ClusteringDao")
     private ClusteringDao clusteringDao;
     @Autowired @Qualifier("FragmentService")
@@ -54,25 +50,25 @@ public class ClusterServiceImpl implements ClusterService {
 
 
     /**
-     * @see org.apromore.service.ClusterService#assignFragments(java.util.List, String)
+     * @see org.apromore.service.ClusterService#assignFragments(java.util.List, Integer)
      * {@inheritDoc}
      */
     @Override
-    public void assignFragments(List<String> fragmentIds, String clusterId) {
-        for (String frag : fragmentIds) {
+    public void assignFragments(List<Integer> fragmentIds, Integer clusterId) {
+        for (Integer frag : fragmentIds) {
             assignFragment(frag, clusterId);
         }
     }
 
     /**
-     * @see org.apromore.service.ClusterService#assignFragment(String, String)
+     * @see org.apromore.service.ClusterService#assignFragment(Integer, Integer)
      * {@inheritDoc}
      */
     @Override
-    public void assignFragment(String fragmentId, String clusterId) {
-        FragmentVersion fragVersion = fragVersionDao.findFragmentVersion(fragmentId);
-        fragVersion.setClusterId(clusterId);
-        fragVersionDao.update(fragVersion);
+    public void assignFragment(Integer fragmentId, Integer clusterId) {
+        FragmentVersion fragVersion = fvDao.findFragmentVersion(fragmentId);
+        fragVersion.setCluster(clusteringDao.getCluster(clusterId));
+        fvDao.update(fragVersion);
     }
 
     /**
@@ -105,25 +101,25 @@ public class ClusterServiceImpl implements ClusterService {
     }
 
     /**
-     * @see org.apromore.service.ClusterService#getCluster(String)
+     * @see org.apromore.service.ClusterService#getCluster(Integer)
      * {@inheritDoc}
      */
     @Override
-    public org.apromore.service.model.Cluster getCluster(String clusterId) {
+    public org.apromore.service.model.Cluster getCluster(Integer clusterId) {
         Cluster cinfo = clusteringDao.getClusterSummary(clusterId);
 
         org.apromore.service.model.Cluster c = new org.apromore.service.model.Cluster();
         c.setCluster(cinfo);
         List<FragmentVersion> fs = clusteringDao.getFragments(clusterId);
         for (FragmentVersion f : fs) {
-            MemberFragment fragment = new MemberFragment(f.getFragmentVersionId());
+            MemberFragment fragment = new MemberFragment(f.getId());
             fragment.setFragmentSize(f.getFragmentSize());
             Set<ProcessFragmentMap> pmap = f.getProcessFragmentMaps();
             for (ProcessFragmentMap m : pmap) {
-                String pmvid = Integer.toString(m.getProcessModelVersion().getProcessModelVersionId());
+                Integer pmvid = m.getProcessModelVersion().getId();
                 int pmvNumber = m.getProcessModelVersion().getVersionNumber();
                 String branchName = m.getProcessModelVersion().getProcessBranch().getBranchName();
-                String processId = Integer.toString(m.getProcessModelVersion().getProcessBranch().getProcess().getProcessId());
+                Integer processId = m.getProcessModelVersion().getProcessBranch().getProcess().getId();
                 String processName = m.getProcessModelVersion().getProcessBranch().getProcess().getName();
 
                 ProcessAssociation pa = new ProcessAssociation();
@@ -134,7 +130,7 @@ public class ClusterServiceImpl implements ClusterService {
                 pa.setProcessName(processName);
                 fragment.getProcessAssociations().add(pa);
             }
-            double distance = clusteringDao.getDistance(cinfo.getMedoidId(), f.getFragmentVersionId());
+            double distance = clusteringDao.getDistance(cinfo.getMedoidId(), f.getId());
             fragment.setDistance(distance);
             c.addFragment(fragment);
         }
@@ -161,16 +157,16 @@ public class ClusterServiceImpl implements ClusterService {
         for (Cluster cinfo : cinfos) {
             org.apromore.service.model.Cluster c = new org.apromore.service.model.Cluster();
             c.setCluster(cinfo);
-            List<FragmentVersion> fs = clusteringDao.getFragments(cinfo.getClusterId());
+            List<FragmentVersion> fs = clusteringDao.getFragments(cinfo.getId());
             for (FragmentVersion f : fs) {
-                MemberFragment fragment = new MemberFragment(f.getFragmentVersionId());
+                MemberFragment fragment = new MemberFragment(f.getId());
                 fragment.setFragmentSize(f.getFragmentSize());
                 Set<ProcessFragmentMap> pmap = f.getProcessFragmentMaps();
                 for (ProcessFragmentMap m : pmap) {
-                    String pmvid = Integer.toString(m.getProcessModelVersion().getProcessModelVersionId());
+                    Integer pmvid = m.getProcessModelVersion().getId();
                     int pmvNumber = m.getProcessModelVersion().getVersionNumber();
                     String branchName = m.getProcessModelVersion().getProcessBranch().getBranchName();
-                    String processId = Integer.toString(m.getProcessModelVersion().getProcessBranch().getProcess().getProcessId());
+                    Integer processId = m.getProcessModelVersion().getProcessBranch().getProcess().getId();
                     String processName = m.getProcessModelVersion().getProcessBranch().getProcess().getName();
 
                     ProcessAssociation pa = new ProcessAssociation();
@@ -181,7 +177,7 @@ public class ClusterServiceImpl implements ClusterService {
                     pa.setProcessName(processName);
                     fragment.getProcessAssociations().add(pa);
                 }
-                double distance = clusteringDao.getDistance(cinfo.getMedoidId(), f.getFragmentVersionId());
+                double distance = clusteringDao.getDistance(cinfo.getMedoidId(), f.getId());
                 fragment.setDistance(distance);
                 c.addFragment(fragment);
             }
@@ -191,11 +187,11 @@ public class ClusterServiceImpl implements ClusterService {
     }
 
     /**
-     * @see org.apromore.service.ClusterService#getFragmentIds(String)
+     * @see org.apromore.service.ClusterService#getFragmentIds(Integer)
      * {@inheritDoc}
      */
     @Override
-    public List<String> getFragmentIds(String clusterId) {
+    public List<Integer> getFragmentIds(Integer clusterId) {
         return clusteringDao.getFragmentIds(clusterId);
     }
 
@@ -204,13 +200,13 @@ public class ClusterServiceImpl implements ClusterService {
      * {@inheritDoc}
      */
     @Override
-    public Map<FragmentPair, Double> getPairDistances(List<String> fragmentIds) throws RepositoryException {
+    public Map<FragmentPair, Double> getPairDistances(List<Integer> fragmentIds) throws RepositoryException {
         Map<FragmentPair, Double> pairDistances = new HashMap<FragmentPair, Double>(0);
 
         for (int i = 0; i < fragmentIds.size() - 1; i++) {
             for (int j = i + 1; j < fragmentIds.size(); j++) {
-                String fid1 = fragmentIds.get(i);
-                String fid2 = fragmentIds.get(j);
+                Integer fid1 = fragmentIds.get(i);
+                Integer fid2 = fragmentIds.get(j);
                 double distance = clusteringDao.getDistance(fid1, fid2);
                 if (distance < 0) {
 
@@ -228,7 +224,9 @@ public class ClusterServiceImpl implements ClusterService {
                         throw new RepositoryException(e);
                     }
                 }
-                pairDistances.put(new FragmentPair(fid1, fid2), distance);
+
+                FragmentPair pair = new FragmentPair(fvDao.findFragmentVersion(fid1), fvDao.findFragmentVersion(fid2));
+                pairDistances.put(pair, distance);
             }
         }
 
@@ -253,6 +251,6 @@ public class ClusterServiceImpl implements ClusterService {
      * @param fragVersionDAOJpa the Fragment Version Dao.
      */
     public void setFragmentVersionDao(FragmentVersionDao fragVersionDAOJpa) {
-        fragVersionDao = fragVersionDAOJpa;
+        fvDao = fragVersionDAOJpa;
     }
 }

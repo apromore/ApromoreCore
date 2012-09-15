@@ -4,40 +4,78 @@
 package org.apromore.dao.model;
 
 import java.io.Serializable;
-import javax.persistence.AttributeOverride;
-import javax.persistence.AttributeOverrides;
-import javax.persistence.Column;
-import javax.persistence.EmbeddedId;
-import javax.persistence.Entity;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 import org.springframework.beans.factory.annotation.Configurable;
 
+import static javax.persistence.GenerationType.IDENTITY;
+
 /**
  * The Fragment Distance.
+ *
  * @author <a href="mailto:chathura.ekanayake@gmail.com">Chathura C. Ekanayake</a>
  */
 @Entity
-@Table(name = "fragment_distance")
+@Table(name = "fragment_distance",
+        uniqueConstraints = @UniqueConstraint(columnNames = {"fragmentVersionId1", "fragmentVersionId2"}))
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Configurable("fragmentDistance")
 public class FragmentDistance implements Serializable {
 
-    private FragmentDistanceId id;
+    private Integer id;
+    private FragmentVersion fragmentVersionId1;
+    private FragmentVersion fragmentVersionId2;
     private double distance;
 
-    @EmbeddedId
-    @AttributeOverrides({
-            @AttributeOverride(name = "fragmentId1", column = @Column(name = "fid1", nullable = false, length = 40)),
-            @AttributeOverride(name = "fragmentId2", column = @Column(name = "fid2", nullable = false, length = 40))})
-    public FragmentDistanceId getId() {
+
+    /**
+     * Public Constructor.
+     */
+    public FragmentDistance() { }
+
+
+    /**
+     * returns the Id of this Object.
+     *
+     * @return the id
+     */
+    @Id
+    @GeneratedValue(strategy = IDENTITY)
+    @Column(name = "id", unique = true, nullable = false)
+    public Integer getId() {
         return this.id;
     }
 
-    public void setId(FragmentDistanceId id) {
+    /**
+     * Sets the Id of this Object
+     *
+     * @param id the new Id.
+     */
+    public void setId(final Integer id) {
         this.id = id;
+    }
+
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fragmentVersionId2", nullable = false)
+    public FragmentVersion getFragmentVersionId2() {
+        return this.fragmentVersionId2;
+    }
+
+    public void setFragmentVersionId2(FragmentVersion newFragmentVersionId2) {
+        this.fragmentVersionId2 = newFragmentVersionId2;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "fragmentVersionId1", nullable = false)
+    public FragmentVersion getFragmentVersionId1() {
+        return this.fragmentVersionId1;
+    }
+
+    public void setFragmentVersionId1(final FragmentVersion newFragmentVersionId1) {
+        this.fragmentVersionId1 = newFragmentVersionId1;
     }
 
     @Column(name = "ged")

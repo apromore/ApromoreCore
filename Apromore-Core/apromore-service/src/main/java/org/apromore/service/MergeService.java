@@ -27,7 +27,7 @@ public interface MergeService {
      * @throws ExceptionMergeProcess if the merge failed
      */
     ProcessSummaryType mergeProcesses(String processName, String version, String domain, String username, String algo,
-                                      ParametersType parameters, ProcessVersionIdsType ids) throws ExceptionMergeProcess;
+        ParametersType parameters, ProcessVersionIdsType ids) throws ExceptionMergeProcess;
 
 
 }

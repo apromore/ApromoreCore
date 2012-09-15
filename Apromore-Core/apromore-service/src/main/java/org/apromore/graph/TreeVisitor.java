@@ -1,14 +1,5 @@
 package org.apromore.graph;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.regex.Pattern;
-
 import org.apromore.common.Constants;
 import org.apromore.graph.JBPT.CPF;
 import org.apromore.graph.util.SortedListPermutationGenerator;
@@ -17,16 +8,19 @@ import org.jbpt.graph.abs.AbstractDirectedEdge;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.IFlowNode;
 
+import java.util.*;
+import java.util.regex.Pattern;
+
 public class TreeVisitor {
 
     private static final Pattern COMPILE = Pattern.compile("\\s+");
 
-    public TreeVisitor() {
-    }
+
+    public TreeVisitor() { }
 
 
     private String getBestLabelHash(CPF graph, Set<AbstractDirectedEdge> edges, Set<FlowNode> vertices,
-                                    IFlowNode entry, IFlowNode exit, LinkedList<QueueEntry> sortedEntries) {
+            IFlowNode entry, IFlowNode exit, LinkedList<QueueEntry> sortedEntries) {
         String lexSmallest = null;
         SortedListPermutationGenerator gen = new SortedListPermutationGenerator(sortedEntries);
 

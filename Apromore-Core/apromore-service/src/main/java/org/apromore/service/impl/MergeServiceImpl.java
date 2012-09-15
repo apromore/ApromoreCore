@@ -43,28 +43,24 @@ public class MergeServiceImpl implements MergeService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MergeServiceImpl.class);
 
-    @Autowired
-    @Qualifier("ProcessModelVersionDao")
+    @Autowired @Qualifier("ProcessModelVersionDao")
     private ProcessModelVersionDao pmvDao;
 
-    @Autowired
-    @Qualifier("CanoniserService")
+    @Autowired @Qualifier("CanoniserService")
     private CanoniserService canSrv;
-    @Autowired
-    @Qualifier("RepositoryService")
+    @Autowired @Qualifier("RepositoryService")
     private RepositoryService rSrv;
-    @Autowired
-    @Qualifier("UIHelper")
+    @Autowired @Qualifier("UIHelper")
     private UIHelper uiSrv;
 
 
     /**
-     * @see org.apromore.service.MergeService#MergeProcesses(String, String, String, String, String, org.apromore.model.ParametersType, org.apromore.model.ProcessVersionIdsType)
-     *      {@inheritDoc}
+     * @see org.apromore.service.MergeService#mergeProcesses(String, String, String, String, String, org.apromore.model.ParametersType, org.apromore.model.ProcessVersionIdsType)
+     * {@inheritDoc}
      */
     @Override
     public ProcessSummaryType mergeProcesses(String processName, String version, String domain, String username, String algo,
-                                             ParametersType parameters, ProcessVersionIdsType ids) throws ExceptionMergeProcess {
+            ParametersType parameters, ProcessVersionIdsType ids) throws ExceptionMergeProcess {
         List<ProcessModelVersion> models = new ArrayList<ProcessModelVersion>(0);
         for (ProcessVersionIdType cpf : ids.getProcessVersionId()) {
             models.add(pmvDao.findProcessModelVersionByBranch(cpf.getProcessId(), cpf.getVersionName()));
@@ -79,7 +75,7 @@ public class MergeServiceImpl implements MergeService {
             SimpleDateFormat sf = new SimpleDateFormat(Constants.DATE_FORMAT);
             String created = sf.format(new Date());
             ProcessModelVersion pmv = rSrv.addProcessModel(processName, version, username, null, null, domain, "", created, created, pg);
-            pst = uiSrv.createProcessSummary(processName, pmv.getProcessModelVersionId(), version, null, domain, created, created, username);
+            pst = uiSrv.createProcessSummary(processName, pmv.getId(), version, null, domain, created, created, username);
         } catch (SerializationException se) {
             LOGGER.error("Failed to convert the models into the Canonical Format.", se);
         } catch (ImportException ie) {

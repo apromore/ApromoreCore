@@ -38,13 +38,13 @@ public class UserServiceImpl implements UserService {
     }
 
     /**
-     * @see org.apromore.service.UserService#findUser(String)
+     * @see org.apromore.service.UserService#findUserByLogin(String)
      *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public User findUser(String username) throws UserNotFoundException {
-        User user = usrDao.findUser(username);
+    public User findUserByLogin(String username) throws UserNotFoundException {
+        User user = usrDao.findUserByLogin(username);
         if (user != null) {
             return user;
         } else {
@@ -58,7 +58,7 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public void writeUser(User user) {
-        User dbUser = usrDao.findUser(user.getUsername());
+        User dbUser = usrDao.findUserByLogin(user.getUsername());
         dbUser.setSearchHistories(user.getSearchHistories());
         usrDao.update(dbUser);
     }

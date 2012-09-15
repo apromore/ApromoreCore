@@ -11,7 +11,7 @@ import java.util.List;
  */
 public class MemberFragment {
 
-    private String fragmentId;
+    private Integer fragmentId;
     private int fragmentSize;
     private double distance;
 
@@ -24,15 +24,15 @@ public class MemberFragment {
     public MemberFragment() { }
 
 
-    public MemberFragment(String fragmentId) {
+    public MemberFragment(Integer fragmentId) {
         this.fragmentId = fragmentId;
     }
 
-    public String getFragmentId() {
+    public Integer getFragmentId() {
         return fragmentId;
     }
 
-    public void setFragmentId(String fragmentId) {
+    public void setFragmentId(Integer fragmentId) {
         this.fragmentId = fragmentId;
     }
 

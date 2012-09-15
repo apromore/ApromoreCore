@@ -51,12 +51,15 @@ public class UserDaoJpaUnitTest {
         String username = "jamesc";
         User user = new User();
 
-        expect(manager.find(User.class, username)).andReturn(user);
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(NamedQueries.GET_USER_BY_LOGIN)).andReturn(query);
+        expect(query.setParameter("username", username)).andReturn(query);
+        expect(query.getSingleResult()).andReturn(user);
 
-        replay(manager);
+        replay(manager, query);
 
-        User usr = dao.findUser(username);
-        verify(manager);
+        User usr = dao.findUserByLogin(username);
+        verify(manager, query);
         assertThat(user, equalTo(usr));
     }
 
@@ -65,12 +68,15 @@ public class UserDaoJpaUnitTest {
         String username = "XXXX";
         User user = null;
 
-        expect(manager.find(User.class, username)).andReturn(user);
+        Query query = createMock(Query.class);
+        expect(manager.createNamedQuery(NamedQueries.GET_USER_BY_LOGIN)).andReturn(query);
+        expect(query.setParameter("username", username)).andReturn(query);
+        expect(query.getSingleResult()).andReturn(user);
 
-        replay(manager);
+        replay(manager, query);
 
-        User usr = dao.findUser(username);
-        verify(manager);
+        User usr = dao.findUserByLogin(username);
+        verify(manager, query);
         assertThat(user, equalTo(usr));
     }
 

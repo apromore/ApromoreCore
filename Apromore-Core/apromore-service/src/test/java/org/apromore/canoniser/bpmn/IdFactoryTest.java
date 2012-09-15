@@ -15,7 +15,7 @@ import org.junit.Test;
 public class IdFactoryTest {
 
     /**
-     * Test {@link IdFactory#NCName} regular expression.
+     * Test {@link IdFactory#NCNAME} regular expression.
      *
      * @see <a href="http://www.w3.org/TR/xml-names11/#NT-NCName">Namespaces in XML 1.1</a>
      */ 

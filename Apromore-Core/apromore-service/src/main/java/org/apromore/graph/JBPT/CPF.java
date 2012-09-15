@@ -1,14 +1,14 @@
 package org.apromore.graph.JBPT;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
 import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.FlowNode;
 import org.jbpt.pm.NonFlowNode;
 import org.jbpt.pm.ProcessModel;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Implementation of the Canonical Process Format for JBPT.

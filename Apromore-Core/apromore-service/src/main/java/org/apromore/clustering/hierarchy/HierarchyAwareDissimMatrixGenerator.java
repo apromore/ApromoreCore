@@ -1,11 +1,5 @@
 package org.apromore.clustering.hierarchy;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-
 import nl.tue.tm.is.graph.SimpleGraph;
 import nl.tue.tm.is.led.StringEditDistance;
 import org.apache.commons.collections.map.MultiKeyMap;
@@ -14,6 +8,8 @@ import org.apromore.clustering.dissimilarity.DissimilarityCalc;
 import org.apromore.clustering.dissimilarity.DissimilarityMatrix;
 import org.apromore.clustering.dissimilarity.measure.GEDDissimCalc;
 import org.apromore.dao.ClusteringDao;
+import org.apromore.dao.FragmentVersionDao;
+import org.apromore.dao.model.FragmentVersion;
 import org.apromore.graph.JBPT.CPF;
 import org.apromore.service.ComposerService;
 import org.apromore.service.helper.SimpleGraphWrapper;
@@ -25,21 +21,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.*;
+
 @Service("DissimilarityMatrix")
 @Transactional(propagation = Propagation.REQUIRED)
 public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(HierarchyAwareDissimMatrixGenerator.class);
 
-    @Autowired @Qualifier("ContainmentRelation")
-    private ContainmentRelation crel;
     @Autowired @Qualifier("ClusteringDao")
     private ClusteringDao clusteringDao;
+    @Autowired @Qualifier("FragmentVersionDao")
+    private FragmentVersionDao fvDao;
+
+    @Autowired @Qualifier("ContainmentRelation")
+    private ContainmentRelation crel;
     @Autowired @Qualifier("ComposerService")
     private ComposerService composer;
 
     /* Fragment Id -> SimpleGraph object containing all nodes and edges of the fragment. */
-    private Map<String, SimpleGraph> models = new HashMap<String, SimpleGraph>();
+    private Map<Integer, SimpleGraph> models = new HashMap<Integer, SimpleGraph>();
     private List<DissimilarityCalc> chain = new LinkedList<DissimilarityCalc>();
     private MultiKeyMap dissimmap = null;
     private double dissThreshold;
@@ -56,22 +57,22 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
      */
     public void computeDissimilarity() {
         startedTime = System.currentTimeMillis();
-        List<String> processedFragmentIds = new ArrayList<String>();
+        List<Integer> processedFragmentIds = new ArrayList<Integer>();
         dissimmap = new MultiKeyMap();
         nfrag = crel.getNumberOfFragments();
         totalPairs = nfrag * (nfrag + 1) / 2;
         reportingInterval = 0;
         processedPairs = 0;
 
-        List<String> roots = crel.getRoots();
+        List<Integer> roots = crel.getRoots();
         for (int p = 0; p < roots.size(); p++) {
-            List<String> h1 = crel.getHierarchy(roots.get(p));
+            List<Integer> h1 = crel.getHierarchy(roots.get(p));
             h1.removeAll(processedFragmentIds);
 
             computeIntraHierarchyGEDs(h1);
             if (p < roots.size() - 1) {
                 for (int q = p + 1; q < roots.size(); q++) {
-                    List<String> h2 = crel.getHierarchy(roots.get(q));
+                    List<Integer> h2 = crel.getHierarchy(roots.get(q));
                     computeInterHierarchyGEDs(h1, h2);
                 }
             }
@@ -92,11 +93,11 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
      * @param h1 hierarchy 1
      * @param h2 hierarchy 2
      */
-    private void computeInterHierarchyGEDs(List<String> h1, List<String> h2) {
+    private void computeInterHierarchyGEDs(List<Integer> h1, List<Integer> h2) {
         StringEditDistance.clearWordCache();
 
-        for (String fid1 : h1) {
-            for (String fid2 : h2) {
+        for (Integer fid1 : h1) {
+            for (Integer fid2 : h2) {
                 computeDissim(fid1, fid2);
             }
         }
@@ -106,13 +107,13 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
      * Compute Intra Hierarchy Distances.
      * @param h1 hierarchy
      */
-    private void computeIntraHierarchyGEDs(List<String> h1) {
+    private void computeIntraHierarchyGEDs(List<Integer> h1) {
         StringEditDistance.clearWordCache();
 
         for (int i = 0; i < h1.size() - 1; i++) {
             for (int j = i + 1; j < h1.size(); j++) {
-                String fid1 = h1.get(i);
-                String fid2 = h1.get(j);
+                Integer fid1 = h1.get(i);
+                Integer fid2 = h1.get(j);
 
                 computeDissim(fid1, fid2);
             }
@@ -132,7 +133,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         chain.add(calc);
     }
 
-    public double compute(String frag1, String frag2) {
+    public double compute(Integer frag1, Integer frag2) {
         SimpleGraph g1 = getSimpleGraph(frag1);
         SimpleGraph g2 = getSimpleGraph(frag2);
         double disim = 1.0;
@@ -158,7 +159,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
 
 
 
-    private void computeDissim(String fid1, String fid2) {
+    private void computeDissim(Integer fid1, Integer fid2) {
         int fid1Index = crel.getFragmentIndex(fid1);
         int fid2Index = crel.getFragmentIndex(fid2);
 
@@ -184,17 +185,18 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         }
     }
 
-    private SimpleGraph getSimpleGraph(String frag) {
-        SimpleGraph graph = models.get(frag);
+    private SimpleGraph getSimpleGraph(Integer fragId) {
+        SimpleGraph graph = models.get(fragId);
 
         if (graph == null) {
             try {
-                CPF cpfGraph = composer.compose(frag);
+                FragmentVersion fv = fvDao.findFragmentVersion(fragId);
+                CPF cpfGraph = composer.compose(fv.getUri());
                 graph = new SimpleGraphWrapper(cpfGraph);
 
                 // NOTE: this was commented out in the svn version
                 if (graph.getEdges() != null && graph.getEdges().size() < 100) {
-                    models.put(frag, graph);
+                    models.put(fragId, graph);
                 }
             } catch (Exception e) {
                 e.printStackTrace();

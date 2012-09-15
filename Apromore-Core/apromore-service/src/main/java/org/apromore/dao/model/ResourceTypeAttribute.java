@@ -25,14 +25,21 @@ import static javax.persistence.GenerationType.IDENTITY;
 public class ResourceTypeAttribute implements java.io.Serializable {
 
     private Integer id;
-    private ResourceType resourceType;
     private String name;
     private String value;
 
-    public ResourceTypeAttribute() {
-    }
+    private ResourceType resourceType;
+
+    /**
+     * Public Constructor.
+     */
+    public ResourceTypeAttribute() { }
 
 
+    /**
+     * returns the Id of this Object.
+     * @return the id
+     */
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -40,7 +47,11 @@ public class ResourceTypeAttribute implements java.io.Serializable {
         return this.id;
     }
 
-    public void setId(Integer id) {
+    /**
+     * Sets the Id of this Object
+     * @param id the new Id.
+     */
+    public void setId(final Integer id) {
         this.id = id;
     }
 
@@ -65,7 +76,7 @@ public class ResourceTypeAttribute implements java.io.Serializable {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "resource_type_id")
+    @JoinColumn(name = "resourceTypeId")
     public ResourceType getResourceType() {
         return this.resourceType;
     }

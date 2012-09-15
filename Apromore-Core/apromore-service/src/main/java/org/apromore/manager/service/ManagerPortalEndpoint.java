@@ -413,7 +413,7 @@ public class ManagerPortalEndpoint {
 
             EditSessionType editSessionP = new EditSessionType();
             editSessionP.setNativeType(session.getNatType());
-            editSessionP.setProcessId(session.getProcess().getProcessId());
+            editSessionP.setProcessId(session.getProcess().getId());
             editSessionP.setUsername(session.getUser().getUsername());
             editSessionP.setVersionName(session.getVersionName());
             editSessionP.setProcessName(session.getProcess().getName());
@@ -478,7 +478,7 @@ public class ManagerPortalEndpoint {
     public JAXBElement<FragmentResponseType> getFragment(@RequestPayload final JAXBElement<GetFragmentRequestType> req) {
         LOGGER.info("Executing operation getFragment");
 
-        String fragmentId = req.getValue().getFragmentId();
+        Integer fragmentId = req.getValue().getFragmentId();
         FragmentResponseType res = new FragmentResponseType();
         FragmentType fragment = new FragmentType();
         fragment.setFragmentId(fragmentId);
@@ -597,7 +597,7 @@ public class ManagerPortalEndpoint {
         GetPairwiseDistancesInputMsgType payload = req.getValue();
         GetPairwiseDistancesOutputMsgType res = new GetPairwiseDistancesOutputMsgType();
 
-        List<String> fragmentIds = payload.getFragmentIds().getFragmentId();
+        List<Integer> fragmentIds = payload.getFragmentIds().getFragmentId();
         try {
             Map<FragmentPair, Double> pairDistances = clusterService.getPairDistances(fragmentIds);
             PairDistancesType pairDistancesType = ClusterMapper.convertPairDistancesToPairDistancesType(pairDistances);
@@ -646,7 +646,7 @@ public class ManagerPortalEndpoint {
         GetClusterInputMsgType payload = req.getValue();
         GetClusterOutputMsgType res = new GetClusterOutputMsgType();
 
-        String clusterId = payload.getClusterId();
+        Integer clusterId = payload.getClusterId();
         org.apromore.service.model.Cluster cluster = clusterService.getCluster(clusterId);
         ClusterType ctype = ClusterMapper.convertClusterToClusterType(cluster);
         res.setCluster(ctype);
@@ -745,7 +745,7 @@ public class ManagerPortalEndpoint {
         ResultType result = new ResultType();
         res.setResult(result);
         try {
-            UserType user = UserMapper.convertUserTypes(userSrv.findUser(payload.getUsername()));
+            UserType user = UserMapper.convertUserTypes(userSrv.findUserByLogin(payload.getUsername()));
             result.setCode(0);
             result.setMessage("");
             res.setUser(user);

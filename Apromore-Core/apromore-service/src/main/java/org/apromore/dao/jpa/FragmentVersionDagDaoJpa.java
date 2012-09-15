@@ -31,27 +31,58 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
 
 
     /**
-     * @see org.apromore.dao.FragmentVersionDagDao#findFragmentVersionDag(String)
+     * @see org.apromore.dao.FragmentVersionDagDao#findFragmentVersionDag(Integer)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public FragmentVersionDag findFragmentVersionDag(final String vertexId) {
+    public FragmentVersionDag findFragmentVersionDag(final Integer vertexId) {
         return em.find(FragmentVersionDag.class, vertexId);
     }
 
 
     /**
-     * @see org.apromore.dao.FragmentVersionDagDao#getChildMappings(String)
+     * @see org.apromore.dao.FragmentVersionDagDao#findFragmentVersionDagByURI(String)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public FragmentVersionDag findFragmentVersionDagByURI(String uri) {
+        Query query = em.createNamedQuery(NamedQueries.GET_FRAGMENT_VERSION_DAG_BY_URI);
+        query.setParameter("uri", uri);
+        List result = query.getResultList();
+        if (result.isEmpty()) {
+            return null;
+        } else {
+            return (FragmentVersionDag) result.get(0);
+        }
+    }
+
+
+    /**
+     * @see org.apromore.dao.FragmentVersionDagDao#getChildMappings(Integer)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<FragmentVersionDag> getChildMappings(final String fragmentId) {
+    public List<FragmentVersionDag> getChildMappings(final Integer fragmentId) {
         Query query = em.createNamedQuery(NamedQueries.GET_CHILD_MAPPINGS);
         query.setParameter("fragVersionId", fragmentId);
         return (List<FragmentVersionDag>) query.getResultList();
     }
+
+    /**
+     * @see org.apromore.dao.FragmentVersionDagDao#getChildMappingsByURI(String)
+     * {@inheritDoc}
+     */
+    @Override
+    @SuppressWarnings("unchecked")
+    public List<FragmentVersionDag> getChildMappingsByURI(final String fragmentUri) {
+        Query query = em.createNamedQuery(NamedQueries.GET_CHILD_MAPPINGS_BY_URI);
+        query.setParameter("uri", fragmentUri);
+        return (List<FragmentVersionDag>) query.getResultList();
+    }
+
 
     /**
      * @see org.apromore.dao.FragmentVersionDagDao#getAllParentChildMappings()
@@ -59,18 +90,18 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Map<String, List<String>> getAllParentChildMappings() {
+    public Map<Integer, List<Integer>> getAllParentChildMappings() {
         Query query = em.createNamedQuery(NamedQueries.GET_ALL_PARENT_CHILD_MAPPINGS);
         List<FragmentVersionDag> mappings = (List<FragmentVersionDag>) query.getResultList();
 
-        Map<String, List<String>> parentChildMap = new HashMap<String, List<String>>();
+        Map<Integer, List<Integer>> parentChildMap = new HashMap<Integer, List<Integer>>();
         for (FragmentVersionDag mapping : mappings) {
-            String pid = mapping.getId().getFragmentVersionId();
-            String cid = mapping.getId().getChildFragmentVersionId();
+            Integer pid = mapping.getFragmentVersionId().getId();
+            Integer cid = mapping.getChildFragmentVersionId().getId();
             if (parentChildMap.containsKey(pid)) {
                 parentChildMap.get(pid).add(cid);
             } else {
-                List<String> childIds = new ArrayList<String>();
+                List<Integer> childIds = new ArrayList<Integer>();
                 childIds.add(cid);
                 parentChildMap.put(pid, childIds);
             }
@@ -84,18 +115,18 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Map<String, List<String>> getAllChildParentMappings() {
+    public Map<Integer, List<Integer>> getAllChildParentMappings() {
         Query query = em.createNamedQuery(NamedQueries.GET_ALL_PARENT_CHILD_MAPPINGS);
         List<FragmentVersionDag> mappings = (List<FragmentVersionDag>) query.getResultList();
 
-        Map<String, List<String>> childParentMap = new HashMap<String, List<String>>();
+        Map<Integer, List<Integer>> childParentMap = new HashMap<Integer, List<Integer>>();
         for (FragmentVersionDag mapping : mappings) {
-            String pid = mapping.getId().getFragmentVersionId();
-            String cid = mapping.getId().getChildFragmentVersionId();
+            Integer pid = mapping.getFragmentVersionId().getId();
+            Integer cid = mapping.getChildFragmentVersionId().getId();
             if (childParentMap.containsKey(cid)) {
                 childParentMap.get(cid).add(pid);
             } else {
-                List<String> parentIds = new ArrayList<String>();
+                List<Integer> parentIds = new ArrayList<Integer>();
                 parentIds.add(pid);
                 childParentMap.put(cid, parentIds);
             }
@@ -104,12 +135,12 @@ public class FragmentVersionDagDaoJpa implements FragmentVersionDagDao {
     }
 
     /**
-     * @see org.apromore.dao.FragmentVersionDagDao#getChildFragmentsByFragmentVersion(String)
+     * @see org.apromore.dao.FragmentVersionDagDao#getChildFragmentsByFragmentVersion(Integer)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<FragmentVersion> getChildFragmentsByFragmentVersion(final String fragmentVersionId) {
+    public List<FragmentVersion> getChildFragmentsByFragmentVersion(final Integer fragmentVersionId) {
         Query query = em.createNamedQuery(NamedQueries.GET_CHILD_FRAGMENTS_BY_FRAGMENT_VERSION);
         query.setParameter("fragVersionId", fragmentVersionId);
         return (List<FragmentVersion>) query.getResultList();

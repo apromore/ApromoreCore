@@ -15,7 +15,7 @@ public interface ContentDao {
      * @param contentId the content Id
      * @return the found content
      */
-    Content findContent(String contentId);
+    Content findContent(Integer contentId);
 
 
     /**
@@ -23,7 +23,7 @@ public interface ContentDao {
      * @param fragVersionId the fragment version
      * @return the found content record or null
      */
-    Content getContentByFragmentVersion(String fragVersionId);
+    Content getContentByFragmentVersion(Integer fragVersionId);
 
     /**
      * Finds the Content record by the has code.

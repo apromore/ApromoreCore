@@ -24,15 +24,15 @@ import static org.hamcrest.Matchers.equalTo;
  */
 public class UserMapperUnitTest {
 
-	UserMapper mapper;
+    UserMapper mapper;
 
-	@Before
-	public void setUp() throws Exception {
-		mapper = new UserMapper();
-	}
+    @Before
+    public void setUp() throws Exception {
+        mapper = new UserMapper();
+    }
 
-	@Test
-	public void testMapUserNames() throws Exception {
+    @Test
+    public void testMapUserNames() throws Exception {
         List<User> usrs = new ArrayList<User>();
         User usr1 = new User();
         usr1.setUsername("Bob1");
@@ -42,16 +42,16 @@ public class UserMapperUnitTest {
         usrs.add(usr1);
         usrs.add(usr2);
 
-		UsernamesType result = mapper.convertUsernameTypes(usrs);
+        UsernamesType result = mapper.convertUsernameTypes(usrs);
         assertThat(result.getUsername().size(), equalTo(usrs.size()));
         assertThat(result.getUsername().get(0), equalTo(usrs.get(0).getUsername()));
-	}
+    }
 
 
     @Test
     public void testMapUserType() throws Exception {
         SearchHistory searchHist = new SearchHistory();
-        searchHist.setNum(1);
+        searchHist.setId(1);
         searchHist.setSearch("cheque processing");
         Set<SearchHistory> searches = new HashSet<SearchHistory>();
         searches.add(searchHist);

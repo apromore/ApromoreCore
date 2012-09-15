@@ -1,13 +1,13 @@
 <window id="win" xmlns:n="http://www.zkoss.org/2005/zk/native" use="org.apromore.portal.dialogController.SignavioController">
 
     <n:style media="screen" type="text/css">
-        @import url("/Apromore-editor/libs/ext-2.0.2/resources/css/ext-all.css");
-        @import url("/Apromore-editor/libs/ext-2.0.2/resources/css/xtheme-gray.css");
+        @import url("/editor/libs/ext-2.0.2/resources/css/ext-all.css");
+        @import url("/editor/libs/ext-2.0.2/resources/css/xtheme-gray.css");
     </n:style>
-    <n:link rel="Stylesheet" media="screen" href="/Apromore-editor/editor/css/theme_norm.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/Apromore-editor/editor/css/theme_norm_signavio.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/Apromore-editor/explorer/src/css/xtheme-smoky.css" type="text/css"/>
-    <n:link rel="Stylesheet" media="screen" href="/Apromore-editor/explorer/src/css/custom-style.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/editor/editor/css/theme_norm.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/editor/editor/css/theme_norm_signavio.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/editor/explorer/src/css/xtheme-smoky.css" type="text/css"/>
+    <n:link rel="Stylesheet" media="screen" href="/editor/explorer/src/css/custom-style.css" type="text/css"/>
 
     <n:div id="oryxwrapper" style="display: none">
         <n:script>
@@ -18,20 +18,20 @@
                 if (!ORYX.CONFIG) {
                     ORYX.CONFIG = {};
                 }
-                ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = "../../Apromore-editor";
+                ORYX.CONFIG.SERVER_HANDLER_ROOT_PREFIX = "../../editor";
             ]]>
         </n:script>
 
         <!-- JavaScript Dependencies of Signavio Process Editor-->
-        <n:script src="/Apromore-editor/libs/prototype-1.5.1.js" type="text/javascript"></n:script>
-        <n:script src="/Apromore-editor/libs/path_parser.js" type="text/javascript"></n:script>
-        <n:script src="/Apromore-editor/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"></n:script>
-        <n:script src="/Apromore-editor/libs/ext-2.0.2/ext-all.js" type="text/javascript"></n:script>
-        <n:script src="/Apromore-editor/libs/ext-2.0.2/color-field.js" type="text/javascript"></n:script>
-        <n:script src="/Apromore-editor/editor/i18n/translation_en_us.js" type="text/javascript"></n:script>
-        <n:script src="/Apromore-editor/editor/i18n/translation_signavio_en_us.js" type="text/javascript"></n:script>
-        <n:script src="/Apromore-editor/libs/utils.js" type="text/javascript"></n:script>
-        <n:script src="/Apromore-editor/editor/oryx.debug.js" type="text/javascript"></n:script>
+        <n:script src="/editor/libs/prototype-1.5.1.js" type="text/javascript"></n:script>
+        <n:script src="/editor/libs/path_parser.js" type="text/javascript"></n:script>
+        <n:script src="/editor/libs/ext-2.0.2/adapter/ext/ext-base.js" type="text/javascript"></n:script>
+        <n:script src="/editor/libs/ext-2.0.2/ext-all.js" type="text/javascript"></n:script>
+        <n:script src="/editor/libs/ext-2.0.2/color-field.js" type="text/javascript"></n:script>
+        <n:script src="/editor/editor/i18n/translation_en_us.js" type="text/javascript"></n:script>
+        <n:script src="/editor/editor/i18n/translation_signavio_en_us.js" type="text/javascript"></n:script>
+        <n:script src="/editor/libs/utils.js" type="text/javascript"></n:script>
+        <n:script src="/editor/editor/oryx.debug.js" type="text/javascript"></n:script>
 
         <n:span id="oryxstartupcode">
             <n:script>

@@ -14,9 +14,9 @@ public interface ComposerService {
 
     /**
      * Compose from the Apromore DB version to CPF RPST Directed Graph.
-     * @param fragmentVersionId the fragment version id
+     * @param fragmentVersionUri the fragment version id
      * @return the Directed Graph
      * @throws ExceptionDao if there is a DB Exception
      */
-    public CPF compose(String fragmentVersionId) throws ExceptionDao;
+    public CPF compose(String fragmentVersionUri) throws ExceptionDao;
 }

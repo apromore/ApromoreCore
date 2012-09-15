@@ -1,15 +1,11 @@
 package org.apromore.service.impl;
 
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apromore.common.Constants;
 import org.apromore.dao.ContentDao;
 import org.apromore.dao.FragmentVersionDagDao;
+import org.apromore.dao.FragmentVersionDao;
 import org.apromore.dao.model.Content;
+import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.PocketMappingException;
@@ -32,6 +28,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.*;
+
 /**
  * @author Chathura Ekanayake
  */
@@ -43,6 +41,8 @@ public class ComposerServiceImpl implements ComposerService {
 
     @Autowired @Qualifier("ContentDao")
     private ContentDao cDao;
+    @Autowired @Qualifier("FragmentVersionDao")
+    private FragmentVersionDao fvDao;
     @Autowired @Qualifier("FragmentVersionDagDao")
     private FragmentVersionDagDao fvdDao;
 
@@ -51,37 +51,36 @@ public class ComposerServiceImpl implements ComposerService {
 
     /**
      * Compose a process Model graph from the DB.
-     * @param fragmentVersionId the fragment version Id we are looking to construct from.
+     * @param fragmentVersionUri the fragment version Id we are looking to construct from.
      * @return the process model graph
      * @throws ExceptionDao if something fails.
      */
-    public CPF compose(String fragmentVersionId) throws ExceptionDao {
+    public CPF compose(String fragmentVersionUri) throws ExceptionDao {
         OperationContext op = new OperationContext();
         CPF g = new CPF();
         op.setGraph(g);
-        composeFragment(op, fragmentVersionId, null);
+        composeFragment(op, fvDao.findFragmentVersionByURI(fragmentVersionUri), null);
         return g;
     }
 
 
 
-    private void composeFragment(OperationContext op, String fragmentVersionId, String pocketId) throws ExceptionDao {
-        Content content = cDao.getContentByFragmentVersion(fragmentVersionId);
+    private void composeFragment(OperationContext op, FragmentVersion fragVersion, String pocketId) throws ExceptionDao {
+        Content content = cDao.getContentByFragmentVersion(fragVersion.getId());
 
-        if (op.getContentUsage(content.getContentId()) == 0) {
-            composeNewContent(op, fragmentVersionId, pocketId, content);
+        if (op.getContentUsage(content.getId()) == 0) {
+            composeNewContent(op, fragVersion.getUri(), pocketId, content);
         } else {
-            composeDuplicateContent(op, fragmentVersionId, pocketId, content);
+            composeDuplicateContent(op, fragVersion.getUri(), pocketId, content);
         }
     }
 
-    private void composeNewContent(OperationContext op, String fragmentVersionId, String pocketId, Content contentDO)
-            throws ExceptionDao {
-        op.incrementContentUsage(contentDO.getContentId());
+    private void composeNewContent(OperationContext op, String fragmentVersionUri, String pocketId, Content contentDO) throws ExceptionDao {
+        op.incrementContentUsage(contentDO.getId());
 
         CPF g = op.getGraph();
-        gSrv.fillNodes(g, contentDO.getContentId());
-        gSrv.fillEdges(g, contentDO.getContentId());
+        gSrv.fillNodes(g, contentDO.getId());
+        gSrv.fillEdges(g, contentDO.getId());
 
         Collection<FlowNode> nodesToBeRemoved = new HashSet<FlowNode>();
         if (pocketId != null) {
@@ -96,7 +95,6 @@ public class ComposerServiceImpl implements ComposerService {
                             g.addEdge(parentT1, ct);
                         }
                         nodesToBeRemoved.add(boundaryS);
-
                     } else {
                         edge.setTarget(g.getVertex(contentDO.getBoundaryS()));
                     }
@@ -121,9 +119,9 @@ public class ComposerServiceImpl implements ComposerService {
             g.removeVertices(nodesToBeRemoved);
         }
 
-        List<FragmentVersionDag> childMappings = fvdDao.getChildMappings(fragmentVersionId);
+        List<FragmentVersionDag> childMappings = fvdDao.getChildMappingsByURI(fragmentVersionUri);
         for (FragmentVersionDag fvd : childMappings) {
-            composeFragment(op, fvd.getId().getChildFragmentVersionId(), fvd.getId().getPocketId());
+            composeFragment(op, fvd.getChildFragmentVersionId(), fvd.getPocketId());
         }
     }
 
@@ -165,13 +163,13 @@ public class ComposerServiceImpl implements ComposerService {
         return false;
     }
 
-    private void composeNewContentOld(OperationContext op, String fragmentVersionId, String pocketId, Content contentDO)
+    private void composeNewContentOld(OperationContext op, String fragmentVersionUri, String pocketId, Content contentDO)
             throws ExceptionDao {
-        op.incrementContentUsage(contentDO.getContentId());
+        op.incrementContentUsage(contentDO.getId());
 
         CPF g = op.getGraph();
-        gSrv.fillNodes(g, contentDO.getContentId());
-        gSrv.fillEdges(g, contentDO.getContentId());
+        gSrv.fillNodes(g, contentDO.getId());
+        gSrv.fillEdges(g, contentDO.getId());
 
         if (pocketId != null) {
             Collection<ControlFlow<FlowNode>> edges = g.getEdges();
@@ -186,18 +184,18 @@ public class ComposerServiceImpl implements ComposerService {
             g.removeVertex(g.getVertex(pocketId));
         }
 
-        List<FragmentVersionDag> childMappings = fvdDao.getChildMappings(fragmentVersionId);
+        List<FragmentVersionDag> childMappings = fvdDao.getChildMappingsByURI(fragmentVersionUri);
         for (FragmentVersionDag fvd : childMappings) {
-            composeFragment(op, fvd.getId().getChildFragmentVersionId(), fvd.getId().getPocketId());
+            composeFragment(op, fvd.getChildFragmentVersionId(), fvd.getPocketId());
         }
     }
 
-    private void composeDuplicateContent(OperationContext op, String fragmentVersionId, String pocketId,
-            Content contentDO) throws ExceptionDao {
-        op.incrementContentUsage(contentDO.getContentId());
+    private void composeDuplicateContent(OperationContext op, String fragmentVersionUri, String pocketId, Content contentDO)
+            throws ExceptionDao {
+        op.incrementContentUsage(contentDO.getId());
 
         CPF g = op.getGraph();
-        CPF contentGraph = gSrv.getGraph(contentDO.getContentId());
+        CPF contentGraph = gSrv.getGraph(contentDO.getId());
         CPF duplicateGraph = new CPF();
         Map<String, String> vMap = GraphUtil.copyContentGraph(contentGraph, duplicateGraph);
         GraphUtil.fillGraph(g, duplicateGraph);
@@ -240,17 +238,17 @@ public class ComposerServiceImpl implements ComposerService {
             g.removeVertices(nodesToBeRemoved);
         }
 
-        List<FragmentVersionDag> childMappings = fvdDao.getChildMappings(fragmentVersionId);
-        Map<String, String> newChildMapping = null;
+        List<FragmentVersionDag> childMappings = fvdDao.getChildMappingsByURI(fragmentVersionUri);
+        Map<String, FragmentVersion> newChildMapping = null;
         try {
             newChildMapping = FragmentUtil.remapChildren(childMappings, vMap);
         } catch (PocketMappingException e) {
-            String msg = "Failed a pocked mapping of fragment " + fragmentVersionId;
+            String msg = "Failed a pocked mapping of fragment " + fragmentVersionUri;
             LOGGER.error(msg, e);
         }
         Set<String> pids = newChildMapping.keySet();
         for (String pid: pids) {
-            String childId = newChildMapping.get(pid);
+            FragmentVersion childId = newChildMapping.get(pid);
             composeFragment(op, childId, pid);
         }
     }
@@ -274,6 +272,14 @@ public class ComposerServiceImpl implements ComposerService {
      */
     public void setContentDao(ContentDao cntDAOJpa) {
         cDao = cntDAOJpa;
+    }
+
+    /**
+     * Set the Fragment Version DAO object for this class. Mainly for spring tests.
+     * @param fvDAOJpa the Fragment Version Dao.
+     */
+    public void setFragmentVersionDao(FragmentVersionDao fvDAOJpa) {
+        fvDao = fvDAOJpa;
     }
 
     /**

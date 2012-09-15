@@ -37,10 +37,16 @@ public class ResourceType implements java.io.Serializable {
     private Set<ResourceRefType> resourceRefTypes = new HashSet<ResourceRefType>(0);
 
 
-    public ResourceType() {
-    }
+    /**
+     * Public Constructor.
+     */
+    public ResourceType() { }
 
 
+    /**
+     * returns the Id of this Object.
+     * @return the id
+     */
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -48,12 +54,16 @@ public class ResourceType implements java.io.Serializable {
         return this.id;
     }
 
-    public void setId(Integer id) {
+    /**
+     * Sets the Id of this Object
+     * @param id the new Id.
+     */
+    public void setId(final Integer id) {
         this.id = id;
     }
 
 
-    @Column(name = "original_id", length = 40)
+    @Column(name = "originalId", length = 40)
     public String getOriginalId() {
         return this.originalId;
     }
@@ -84,7 +94,7 @@ public class ResourceType implements java.io.Serializable {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "process_model_version_id")
+    @JoinColumn(name = "processModelVersionId")
     public ProcessModelVersion getProcessModelVersion() {
         return this.processModelVersion;
     }

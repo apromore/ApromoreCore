@@ -30,11 +30,16 @@ public class ObjectRefTypeAttribute implements java.io.Serializable {
 
     private ObjectRefType objectRefType;
 
+    /**
+     * Public Constructor.
+     */
+    public ObjectRefTypeAttribute() { }
 
-    public ObjectRefTypeAttribute() {
-    }
 
-
+    /**
+     * returns the Id of this Object.
+     * @return the id
+     */
     @Id
     @GeneratedValue(strategy = IDENTITY)
     @Column(name = "id", unique = true, nullable = false)
@@ -42,7 +47,11 @@ public class ObjectRefTypeAttribute implements java.io.Serializable {
         return this.id;
     }
 
-    public void setId(Integer id) {
+    /**
+     * Sets the Id of this Object
+     * @param id the new Id.
+     */
+    public void setId(final Integer id) {
         this.id = id;
     }
 
@@ -68,7 +77,7 @@ public class ObjectRefTypeAttribute implements java.io.Serializable {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "object_ref_type_id")
+    @JoinColumn(name = "objectRefTypeId")
     public ObjectRefType getObjectRefType() {
         return this.objectRefType;
     }

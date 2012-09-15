@@ -1,8 +1,5 @@
 package org.apromore.dao.jpa;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.apromore.dao.NamedQueries;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
@@ -16,14 +13,13 @@ import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.NonUniqueResultException;
 import javax.persistence.Query;
+import java.util.ArrayList;
+import java.util.List;
 
 import static org.easymock.EasyMock.expect;
 import static org.hamcrest.CoreMatchers.equalTo;
-import static org.hamcrest.CoreMatchers.is;
 import static org.junit.Assert.assertThat;
-import static org.powermock.api.easymock.PowerMock.createMock;
-import static org.powermock.api.easymock.PowerMock.replay;
-import static org.powermock.api.easymock.PowerMock.verify;
+import static org.powermock.api.easymock.PowerMock.*;
 
 /**
  * Test the ProcessModelVersion DAO JPA class.
@@ -87,7 +83,7 @@ public class ProcessModelVersionDaoJpaUnitTest {
 
     @Test
     public final void testGetUsedProcessModelVersions() {
-        String fragmentVersionId = "1";
+        Integer fragmentVersionId = 1;
         ProcessModelVersion pmv = createProcessModelVersion();
         List<ProcessModelVersion> pmvs = new ArrayList<ProcessModelVersion>();
         pmvs.add(pmv);
@@ -250,7 +246,7 @@ public class ProcessModelVersionDaoJpaUnitTest {
 
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(NamedQueries.GET_MAX_VERSION_PROCESS_MODEL)).andReturn(query);
-        expect(query.setParameter("branchId", pb.getBranchId())).andReturn(query);
+        expect(query.setParameter("branchId", pb.getId())).andReturn(query);
         expect(query.getResultList()).andReturn(pmvs);
 
         replay(manager, query);
@@ -268,7 +264,7 @@ public class ProcessModelVersionDaoJpaUnitTest {
 
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(NamedQueries.GET_MAX_VERSION_PROCESS_MODEL)).andReturn(query);
-        expect(query.setParameter("branchId", pb.getBranchId())).andReturn(query);
+        expect(query.setParameter("branchId", pb.getId())).andReturn(query);
         expect(query.getResultList()).andReturn(pmvs);
 
         replay(manager, query);
@@ -288,7 +284,7 @@ public class ProcessModelVersionDaoJpaUnitTest {
 
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(NamedQueries.GET_MAX_VERSION_PROCESS_MODEL)).andReturn(query);
-        expect(query.setParameter("branchId", pb.getBranchId())).andReturn(query);
+        expect(query.setParameter("branchId", pb.getId())).andReturn(query);
         expect(query.getResultList()).andReturn(pmvs);
 
         replay(manager, query);
@@ -299,8 +295,8 @@ public class ProcessModelVersionDaoJpaUnitTest {
     @Test
     public final void testGetRootFragments() {
         int minSize = 1;
-        List<String> pmvs = new ArrayList<String>();
-        pmvs.add("1");
+        List<Integer> pmvs = new ArrayList<Integer>();
+        pmvs.add(1);
 
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(NamedQueries.GET_ROOT_FRAGMENT_IDS_ABOVE_SIZE)).andReturn(query);
@@ -308,7 +304,7 @@ public class ProcessModelVersionDaoJpaUnitTest {
         expect(query.getResultList()).andReturn(pmvs);
 
         replay(manager, query);
-        List<String> pmvData = dao.getRootFragments(minSize);
+        List<Integer> pmvData = dao.getRootFragments(minSize);
 
         verify(manager, query);
         assertThat(pmvData, equalTo(pmvs));
@@ -402,7 +398,7 @@ public class ProcessModelVersionDaoJpaUnitTest {
 
     private ProcessBranch createProcessBranch() {
         ProcessBranch pb = new ProcessBranch();
-        pb.setBranchId(1);
+        pb.setId(1);
         pb.setBranchName("MAIN");
         return pb;
     }

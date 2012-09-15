@@ -1,28 +1,9 @@
 package org.apromore.service.impl;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map.Entry;
-
 import org.apromore.common.Constants;
-import org.apromore.dao.ContentDao;
-import org.apromore.dao.FragmentVersionDagDao;
-import org.apromore.dao.FragmentVersionDao;
-import org.apromore.dao.ProcessBranchDao;
-import org.apromore.dao.ProcessDao;
-import org.apromore.dao.ProcessFragmentMapDao;
-import org.apromore.dao.ProcessModelVersionDao;
-import org.apromore.dao.model.FragmentVersion;
-import org.apromore.dao.model.FragmentVersionDag;
-import org.apromore.dao.model.NativeType;
-import org.apromore.dao.model.ObjectType;
+import org.apromore.dao.*;
+import org.apromore.dao.model.*;
 import org.apromore.dao.model.Process;
-import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessFragmentMap;
-import org.apromore.dao.model.ProcessModelAttribute;
-import org.apromore.dao.model.ProcessModelVersion;
-import org.apromore.dao.model.ResourceType;
-import org.apromore.dao.model.User;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.LockFailedException;
@@ -31,13 +12,7 @@ import org.apromore.graph.JBPT.CPF;
 import org.apromore.graph.JBPT.CpfNode;
 import org.apromore.graph.JBPT.ICpfObject;
 import org.apromore.graph.JBPT.ICpfResource;
-import org.apromore.service.ComposerService;
-import org.apromore.service.DecomposerService;
-import org.apromore.service.FormatService;
-import org.apromore.service.FragmentService;
-import org.apromore.service.LockService;
-import org.apromore.service.RepositoryService;
-import org.apromore.service.UserService;
+import org.apromore.service.*;
 import org.apromore.service.helper.ChangePropagator;
 import org.apromore.service.model.NameValuePair;
 import org.apromore.util.VersionNameUtil;
@@ -49,6 +24,10 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map.Entry;
 
 /**
  * Implementation of the RepositoryService Contract.
@@ -121,7 +100,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
             List<String> composingFragmentIds = new ArrayList<String>(0);
             FragmentVersion rootFV = decomposer.decompose(proModGrap, composingFragmentIds);
-            ProcessModelVersion pdo = insertProcessModelVersion(proModGrap, branch, rootFV.getFragmentVersionId(), numVertices, numEdges);
+            ProcessModelVersion pdo = insertProcessModelVersion(proModGrap, branch, rootFV.getId(), numVertices, numEdges);
             insertProcessFragmentMappings(pdo, composingFragmentIds);
             result = pdo;
         } catch (Exception re) {
@@ -169,7 +148,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
             List<String> composingFragmentIds = new ArrayList<String>();
             FragmentVersion rootFV = decomposer.decompose(g, composingFragmentIds);
-            cPropagator.propagateChangesWithLockRelease(pmVersion.getRootFragmentVersionId(), rootFV.getFragmentVersionId(), composingFragmentIds);
+            cPropagator.propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion().getUri(), rootFV.getUri(), composingFragmentIds);
         } catch (Exception re) {
             LOGGER.error("Failed to add the process model " + processName, re);
         }
@@ -203,7 +182,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
             List<String> composingFragmentIds = new ArrayList<String>();
             FragmentVersion rootFV = decomposer.decompose(g, composingFragmentIds);
-            cPropagator.propagateChangesWithLockRelease(pmVersion.getRootFragmentVersionId(), rootFV.getFragmentVersionId(), composingFragmentIds);
+            cPropagator.propagateChangesWithLockRelease(pmVersion.getRootFragmentVersion().getUri(), rootFV.getUri(), composingFragmentIds);
         } catch (Exception e) {
             String msg = "Failed to add the process model " + versionId;
             LOGGER.error(msg, e);
@@ -231,13 +210,13 @@ public class RepositoryServiceImpl implements RepositoryService {
     public CPF getCanonicalFormat(ProcessModelVersion pmv, String processName, String branchName, boolean lock) {
         CPF processModelGraph = null;
         try {
-            processModelGraph = composer.compose(pmv.getRootFragmentVersionId());
+            processModelGraph = composer.compose(pmv.getRootFragmentVersion().getUri());
             processModelGraph.setProperty(Constants.PROCESS_NAME, processName);
             processModelGraph.setProperty(Constants.BRANCH_NAME, branchName);
-            processModelGraph.setProperty(Constants.BRANCH_ID, pmv.getProcessBranch().getBranchId().toString());
+            processModelGraph.setProperty(Constants.BRANCH_ID, pmv.getProcessBranch().getId().toString());
             processModelGraph.setProperty(Constants.VERSION_NUMBER, Integer.toString(pmv.getVersionNumber()));
-            processModelGraph.setProperty(Constants.PROCESS_MODEL_VERSION_ID, pmv.getProcessModelVersionId().toString());
-            processModelGraph.setProperty(Constants.ROOT_FRAGMENT_ID, pmv.getRootFragmentVersionId());
+            processModelGraph.setProperty(Constants.PROCESS_MODEL_VERSION_ID, pmv.getId().toString());
+            processModelGraph.setProperty(Constants.ROOT_FRAGMENT_ID, pmv.getRootFragmentVersion().getId().toString());
             if (lock) {
                 processModelGraph.setProperty(Constants.LOCK_STATUS, Constants.LOCKED);
             }
@@ -270,7 +249,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             return null;
         }
         if (lock) {
-            boolean locked = lSrv.lockFragment(pmv.getRootFragmentVersionId());
+            boolean locked = lSrv.lockFragment(pmv.getRootFragmentVersion().getId());
             if (!locked) {
                 throw new LockFailedException();
             }
@@ -298,22 +277,21 @@ public class RepositoryServiceImpl implements RepositoryService {
      *      {@inheritDoc}
      */
     @Override
-    public CPF getFragment(CPF g, List<String> nodes, boolean lock)
-            throws LockFailedException, NonEditableVersionException {
+    public CPF getFragment(CPF g, List<String> nodes, boolean lock) throws LockFailedException, NonEditableVersionException {
         String processName = g.getProperty(Constants.PROCESS_NAME);
         String branchName = g.getProperty(Constants.BRANCH_NAME);
         Integer pmvid = Integer.parseInt(g.getProperty(Constants.PROCESS_MODEL_VERSION_ID));
         ProcessModelVersion pmv = pmvDao.getCurrentProcessModelVersion(processName, branchName);
 
-        if (lock && !pmvid.equals(pmv.getProcessModelVersionId())) {
+        if (lock && !pmvid.equals(pmv.getId())) {
             String msg = "Process model " + processName + " - " + branchName
                     + " has been updated by another session. Aborting the update.";
             LOGGER.info(msg);
             throw new NonEditableVersionException(msg);
         }
 
-        String fragmentId = frgSrv.getFragmentId(pmvid, g, nodes);
-        return getFragment(fragmentId, lock);
+        String fragmentUri = frgSrv.getFragmentUri(pmvid, g, nodes);
+        return getFragment(fragmentUri, lock);
     }
 
     /**
@@ -321,9 +299,9 @@ public class RepositoryServiceImpl implements RepositoryService {
      *      {@inheritDoc}
      */
     @Override
-    public CPF getFragment(String fragmentId, boolean lock) throws LockFailedException {
+    public CPF getFragment(String fragmentUri, boolean lock) throws LockFailedException {
         if (lock) {
-            boolean locked = lSrv.lockFragment(fragmentId);
+            boolean locked = lSrv.lockFragmentByUri(fragmentUri);
             if (!locked) {
                 throw new LockFailedException();
             }
@@ -331,13 +309,13 @@ public class RepositoryServiceImpl implements RepositoryService {
 
         CPF processModelGraph = null;
         try {
-            processModelGraph = composer.compose(fragmentId);
-            processModelGraph.setProperty(Constants.ORIGINAL_FRAGMENT_ID, fragmentId);
+            processModelGraph = composer.compose(fragmentUri);
+            processModelGraph.setProperty(Constants.ORIGINAL_FRAGMENT_ID, fragmentUri);
             if (lock) {
                 processModelGraph.setProperty(Constants.LOCK_STATUS, Constants.LOCKED);
             }
         } catch (ExceptionDao e) {
-            String msg = "Failed to retrieve the fragment " + fragmentId;
+            String msg = "Failed to retrieve the fragment " + fragmentUri;
             LOGGER.error(msg, e);
         }
         return processModelGraph;
@@ -413,14 +391,14 @@ public class RepositoryServiceImpl implements RepositoryService {
     /* Update the branch links or remove if no processModelVersion is attached. */
     private void updateProcessTree(final String processName, final String branchName) {
         Process process = pDao.getProcess(processName);
-        ProcessBranch pBranch = pbDao.getProcessBranchByProcessBranchName(process.getProcessId(), branchName);
+        ProcessBranch pBranch = pbDao.getProcessBranchByProcessBranchName(process.getId(), branchName);
 
         if (process.getProcessBranches() != null && process.getProcessBranches().size() == 1 && pBranch.getProcessModelVersions().size() == 0) {
             deleteProcess(process);
 
         } else {
-            ProcessModelVersion pmv = pmvDao.getCurrentProcessModelVersion(pBranch.getBranchId());
-            pBranch.setProcessModelVersionsByCurrentProcessModelVersionId(pmv);
+            ProcessModelVersion pmv = pmvDao.getCurrentProcessModelVersion(pBranch.getId());
+            pBranch.setCurrentProcessModelVersionId(pmv);
             pbDao.update(pBranch);
         }
     }
@@ -432,7 +410,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         Process process = new Process();
 
         try {
-            User user = uSrv.findUser(username);
+            User user = uSrv.findUserByLogin(username);
             NativeType nativeType = fSrv.findNativeType(natType);
 
             process.setName(processName);
@@ -467,7 +445,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     /* inserts a new process model into the repository */
-    private ProcessModelVersion insertProcessModelVersion(CPF proModGrap, ProcessBranch branch, String rootFragmentVersionId, int numVertices,
+    private ProcessModelVersion insertProcessModelVersion(CPF proModGrap, ProcessBranch branch, Integer rootFragmentVersionId, int numVertices,
             int numEdges) {
         ProcessModelVersion process = new ProcessModelVersion();
         ProcessModelVersion pmv = pmvDao.getMaxVersionProcessModel(branch);
@@ -486,7 +464,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         process.setVersionName(lastVersionName);
         process.setVersionNumber(versionNumber);
         process.setProcessBranch(branch);
-        process.setRootFragmentVersionId(rootFragmentVersionId);
+        process.setRootFragmentVersion(fvDao.findFragmentVersion(rootFragmentVersionId));
         process.setNumEdges(numEdges);
         process.setNumVertices(numVertices);
         process.setLockStatus(Constants.NO_LOCK);
@@ -551,10 +529,10 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /* Inserts a new Process Fragment Mapping to the repository */
     private void insertProcessFragmentMappings(ProcessModelVersion pmv, List<String> composingFragmentIds) {
-        for (String id : composingFragmentIds) {
+        for (String uri : composingFragmentIds) {
             ProcessFragmentMap map = new ProcessFragmentMap();
             map.setProcessModelVersion(pmv);
-            map.setFragmentVersion(fvDao.findFragmentVersion(id));
+            map.setFragmentVersion(fvDao.findFragmentVersionByURI(uri));
             pfmDao.save(map);
         }
     }
@@ -562,7 +540,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     private void deleteProcessModel(ProcessModelVersion pvid) throws ExceptionDao {
         try {
-            String rootFragmentVersion = pDao.getRootFragmentVersionId(pvid.getProcessModelVersionId());
+            Integer rootFragmentVersion = pDao.getRootFragmentVersionId(pvid.getId());
             pmvDao.delete(pvid);
             deleteFragmentVersion(rootFragmentVersion);
         } catch (Exception e) {
@@ -572,15 +550,15 @@ public class RepositoryServiceImpl implements RepositoryService {
         }
     }
 
-    private void deleteFragmentVersion(String fvid) throws ExceptionDao {
+    private void deleteFragmentVersion(Integer fvid) throws ExceptionDao {
         List<FragmentVersionDag> childFragments = fvdDao.getChildMappings(fvid);
-        String contentId = fvDao.getContentId(fvid);
+        Integer contentId = fvDao.getContentId(fvid);
         frgSrv.deleteChildRelationships(fvid);
-        //frgSrv.deleteFragmentVersion(fvid);
         cDao.delete(cDao.findContent(contentId));
 
         for (FragmentVersionDag childFV : childFragments) {
-            deleteFragmentVersion(childFV.getId().getChildFragmentVersionId());
+            // TODO: Change this to not use the Integer Id
+            deleteFragmentVersion(childFV.getChildFragmentVersionId().getId());
         }
     }
 

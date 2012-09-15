@@ -53,7 +53,7 @@ public class ProcessDaoJpaUnitTest {
 
     @Test
     public final void testFindProcess() {
-        String id = "1234567890";
+        Integer id = 1234567890;
         Process p = createProcess();
 
         expect(manager.find(Process.class, id)).andReturn(p);
@@ -241,7 +241,7 @@ public class ProcessDaoJpaUnitTest {
     @Test
     public final void testGetRootFragmentVersionId() {
         Integer pmvid = 1234;
-        String rfvid = "3333";
+        Integer rfvid = 3333;
 
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(NamedQueries.GET_ROOT_FRAGMENT_PROCESS_MODEL)).andReturn(query);
@@ -250,7 +250,7 @@ public class ProcessDaoJpaUnitTest {
 
         replay(manager, query);
 
-        String result = dao.getRootFragmentVersionId(pmvid);
+        Integer result = dao.getRootFragmentVersionId(pmvid);
 
         verify(manager, query);
 
@@ -350,7 +350,7 @@ public class ProcessDaoJpaUnitTest {
         Process prs = new Process();
 
         prs.setDomain("airport");
-        prs.setProcessId(1234567890);
+        prs.setId(1234567890);
         prs.setName("testProcess");
         prs.setNativeType(new NativeType());
         prs.setUser(new User());

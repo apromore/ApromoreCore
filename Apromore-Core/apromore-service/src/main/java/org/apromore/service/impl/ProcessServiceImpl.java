@@ -11,11 +11,7 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBException;
 
 import org.apromore.common.Constants;
-import org.apromore.dao.AnnotationDao;
-import org.apromore.dao.NativeDao;
-import org.apromore.dao.ProcessBranchDao;
-import org.apromore.dao.ProcessDao;
-import org.apromore.dao.ProcessModelVersionDao;
+import org.apromore.dao.*;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Process;
@@ -66,6 +62,8 @@ public class ProcessServiceImpl implements ProcessService {
     private NativeDao natDao;
     @Autowired @Qualifier("ProcessDao")
     private ProcessDao proDao;
+    @Autowired @Qualifier("FragmentVersionDao")
+    private FragmentVersionDao fvDao;
     @Autowired @Qualifier("ProcessModelVersionDao")
     private ProcessModelVersionDao pmvDao;
     @Autowired @Qualifier("ProcessBranchDao")
@@ -121,14 +119,14 @@ public class ProcessServiceImpl implements ProcessService {
         try {
             CanonisedProcess cp = canSrv.canonise(natType, cpfURI, cpf.getInputStream());
 
-            User user = usrSrv.findUser(username);
+            User user = usrSrv.findUserByLogin(username);
             NativeType nativeType = fmtSrv.findNativeType(natType);
             CPF pg = canSrv.deserializeCPF(cp.getCpt());
 
             ProcessModelVersion pmv = rSrv.addProcessModel(processName, version, user.getUsername(), cpfURI, nativeType.getNatType(),
                     domain, documentation, created, lastUpdate, pg);
             fmtSrv.storeNative(processName, version, pmv, cpf.getInputStream(), created, lastUpdate, user, nativeType, cp);
-            pro = uiSrv.createProcessSummary(processName, pmv.getProcessModelVersionId(), version, nativeType.getNatType(), domain,
+            pro = uiSrv.createProcessSummary(processName, pmv.getId(), version, nativeType.getNatType(), domain,
                     created, lastUpdate, user.getUsername());
         } catch (Exception e) {
             LOGGER.error("Canonisation Process Failed: " + e.toString());
@@ -179,10 +177,10 @@ public class ProcessServiceImpl implements ProcessService {
             final String preVersion, final String newVersion, final String ranking) throws UpdateProcessException {
         LOGGER.info("Executing operation update process meta data.");
         try {
-            Process process = proDao.findProcess(processId.toString());
+            Process process = proDao.findProcess(processId);
             process.setDomain(domain);
             process.setName(processName);
-            process.setUser(usrSrv.findUser(username));
+            process.setUser(usrSrv.findUserByLogin(username));
 
             ProcessModelVersion processModelVersion = pmvDao.getCurrentProcessModelVersion(processId, preVersion);
             processModelVersion.setVersionName(newVersion);
@@ -206,12 +204,12 @@ public class ProcessServiceImpl implements ProcessService {
      * {@inheritDoc}
      */
     @Override
-    public ProcessModelVersion addProcessModelVersion(ProcessBranch branch, String rootFragmentVersionId, int versionNumber,
+    public ProcessModelVersion addProcessModelVersion(ProcessBranch branch, String rootFragmentVersionUri, int versionNumber,
                 String versionName, int numVertices, int numEdges) throws ExceptionDao {
         ProcessModelVersion pmv = new ProcessModelVersion();
 
         pmv.setProcessBranch(branch);
-        pmv.setRootFragmentVersionId(rootFragmentVersionId);
+        pmv.setRootFragmentVersion(fvDao.findFragmentVersionByURI(rootFragmentVersionUri));
         pmv.setVersionNumber(versionNumber);
         pmv.setVersionName(versionName);
         pmv.setNumVertices(numVertices);
@@ -229,7 +227,7 @@ public class ProcessServiceImpl implements ProcessService {
             for (Native n : natives) {
                 String natType = n.getNativeType().getNatType();
                 InputStream inStr = new ByteArrayInputStream(n.getContent().getBytes());
-                CanonisedProcess cp = canSrv.canonise(natType, n.getUri().toString(), inStr);
+                CanonisedProcess cp = canSrv.canonise(natType, n.getId().toString(), inStr);
 
                 if (natType.compareTo(Constants.XPDL_2_1) == 0) {
                     PackageType pakType = StreamUtil.unmarshallXPDL(inStr);
@@ -268,6 +266,14 @@ public class ProcessServiceImpl implements ProcessService {
      */
     public void setProcessDao(ProcessDao proDAOJpa) {
         proDao = proDAOJpa;
+    }
+
+    /**
+     * Set the Fragment Version DAO object for this class. Mainly for spring tests.
+     * @param fvDAOJpa the Fragment version
+     */
+    public void setFragmentVersionDao(FragmentVersionDao fvDAOJpa) {
+        fvDao = fvDAOJpa;
     }
 
     /**

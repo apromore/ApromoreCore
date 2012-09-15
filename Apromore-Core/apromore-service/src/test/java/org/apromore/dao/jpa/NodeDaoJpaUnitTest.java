@@ -84,8 +84,8 @@ public class NodeDaoJpaUnitTest {
     }
 
     @Test
-         public final void testGetVertexByContent() {
-        String contentID = "1234";
+    public final void testGetVertexByContent() {
+        Integer contentID = 1234;
         List<Node> vertices = new ArrayList<Node>();
         vertices.add(new Node());
 
@@ -105,7 +105,7 @@ public class NodeDaoJpaUnitTest {
 
     @Test
     public final void testGetVertexByFragment() {
-        String id = "1234";
+        Integer id = 1234;
         List<Node> vertices = new ArrayList<Node>();
         vertices.add(new Node());
 
@@ -173,9 +173,9 @@ public class NodeDaoJpaUnitTest {
     private Node createVertex() {
         Node e = new Node();
         e.setContent(new Content());
-        e.setVid(1);
-        e.setVname("name");
-        e.setVtype("type");
+        e.setId(1);
+        e.setName("name");
+        e.setType("type");
         return e;
     }
 }
