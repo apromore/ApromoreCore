@@ -60,15 +60,28 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
     }
 
     /**
-     * @see org.apromore.dao.ProcessModelVersionDao#getUsedProcessModelVersions(String)
+     * @see org.apromore.dao.ProcessModelVersionDao#getUsedProcessModelVersions(Integer)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
-    public List<ProcessModelVersion> getUsedProcessModelVersions(final String fragmentVersionId) {
+    public List<ProcessModelVersion> getUsedProcessModelVersions(final Integer fragmentVersionId) {
         Query query = em.createNamedQuery(NamedQueries.GET_USED_PROCESS_MODEL_VERSIONS);
         query.setParameter("id", fragmentVersionId);
+        return query.getResultList();
+    }
+
+    /**
+     * @see org.apromore.dao.ProcessModelVersionDao#getUsedProcessModelVersionsByURI(String)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    @SuppressWarnings("unchecked")
+    public List<ProcessModelVersion> getUsedProcessModelVersionsByURI(final String uri) {
+        Query query = em.createNamedQuery(NamedQueries.GET_USED_PROCESS_MODEL_VERSIONS);
+        query.setParameter("uri", uri);
         return query.getResultList();
     }
 
@@ -147,26 +160,26 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
 
 
     /**
-     * @see org.apromore.dao.ProcessModelVersionDao#getMaxModelVersions(String)
+     * @see org.apromore.dao.ProcessModelVersionDao#getMaxModelVersions(Integer)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
-    public Map<String, Integer> getMaxModelVersions(final String fragmentVersionId) {
+    public Map<String, Integer> getMaxModelVersions(final Integer fragmentVersionId) {
         Query query = em.createNamedQuery(NamedQueries.GET_MAX_MODEL_VERSIONS);
         query.setParameter("fragmentVersionId", fragmentVersionId);
         return (Map<String, Integer>) query.getResultList();
     }
 
     /**
-     * @see org.apromore.dao.ProcessModelVersionDao#getCurrentModelVersions(String)
+     * @see org.apromore.dao.ProcessModelVersionDao#getCurrentModelVersions(Integer)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
-    public Map<String, Integer> getCurrentModelVersions(final String fragmentVersionId) {
+    public Map<String, Integer> getCurrentModelVersions(final Integer fragmentVersionId) {
         Query query = em.createNamedQuery(NamedQueries.GET_CURRENT_MODEL_VERSIONS);
         query.setParameter("fragmentVersionId", fragmentVersionId);
         return (Map<String, Integer>) query.getResultList();
@@ -181,7 +194,7 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
     @Transactional(readOnly = true)
     public ProcessModelVersion getMaxVersionProcessModel(final ProcessBranch branch) {
         Query query = em.createNamedQuery(NamedQueries.GET_MAX_VERSION_PROCESS_MODEL);
-        query.setParameter("branchId", branch.getBranchId());
+        query.setParameter("branchId", branch.getId());
 
         List results = query.getResultList();
         if (results.isEmpty()) {
@@ -214,10 +227,10 @@ public class ProcessModelVersionDaoJpa implements ProcessModelVersionDao {
     @Override
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
-    public List<String> getRootFragments(int minSize) {
+    public List<Integer> getRootFragments(int minSize) {
         Query query = em.createNamedQuery(NamedQueries.GET_ROOT_FRAGMENT_IDS_ABOVE_SIZE);
         query.setParameter("minSize", minSize);
-        return (List<String>) query.getResultList();
+        return (List<Integer>) query.getResultList();
     }
 
 

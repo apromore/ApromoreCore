@@ -45,7 +45,7 @@ public class UserMapper {
         userType.setPasswd(user.getPasswd());
         for (SearchHistory esm : user.getSearchHistories()) {
             SearchHistoriesType sht = new SearchHistoriesType();
-            sht.setNum(esm.getNum());
+            sht.setNum(esm.getId());
             sht.setSearch(esm.getSearch());
             userType.getSearchHistories().add(sht);
         }

@@ -98,11 +98,11 @@ public class UIHelper {
         List<Integer> proIds = buildProcessIdList(similarProcesses);
         List<Process> processes = prsDao.getAllProcesses(conditions);
         for (Process pro : processes) {
-            if (!proIds.isEmpty() && !proIds.contains(pro.getProcessId())) {
+            if (!proIds.isEmpty() && !proIds.contains(pro.getId())) {
                 continue;
             }
             processSummary = new ProcessSummaryType();
-            processSummary.setId(pro.getProcessId());
+            processSummary.setId(pro.getId());
             processSummary.setName(pro.getName());
             processSummary.setDomain(pro.getDomain());
             processSummary.setRanking("");
@@ -158,7 +158,7 @@ public class UIHelper {
 
     /* Populate the Annotation names. */
     private void buildAnnotationNames(Native nat, AnnotationsType annotation) {
-        List<Annotation> anns = annDao.findByUri(nat.getUri());
+        List<Annotation> anns = annDao.findByUri(nat.getId());
         for (Annotation ann : anns) {
             annotation.getAnnotationName().add(ann.getName());
         }

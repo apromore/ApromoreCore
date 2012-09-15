@@ -180,7 +180,7 @@ public class NativeDaoJpaUnitTest {
         Native n = new Native();
 
         n.setContent("12345");
-        n.setUri(12425535);
+        n.setId(12425535);
         n.setNativeType(new NativeType());
         n.setProcessModelVersion(new ProcessModelVersion());
 

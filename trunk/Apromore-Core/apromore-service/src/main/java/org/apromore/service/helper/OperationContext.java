@@ -13,11 +13,11 @@ public class OperationContext {
 
     private CPF graph;
     private TreeVisitor treeVisitor;
-    private Map<String, Integer> contentUsage;
+    private Map<Integer, Integer> contentUsage;
     private Map<String, Integer> processedFragmentTypes;
 
     public OperationContext() {
-        contentUsage = new HashMap<String, Integer>();
+        contentUsage = new HashMap<Integer, Integer>();
         processedFragmentTypes = new HashMap<String, Integer>();
         processedFragmentTypes.put("S", 0);
         processedFragmentTypes.put("P", 0);
@@ -50,14 +50,15 @@ public class OperationContext {
         processedFragmentTypes.put(fragmentType, typeCount);
     }
 
-    public int getContentUsage(String contentId) {
-        if (contentUsage.containsKey(contentId))
+    public int getContentUsage(Integer contentId) {
+        if (contentUsage.containsKey(contentId)) {
             return contentUsage.get(contentId);
-        else
+        } else {
             return 0;
+        }
     }
 
-    public void incrementContentUsage(String contentId) {
+    public void incrementContentUsage(Integer contentId) {
         if (!contentUsage.containsKey(contentId)) {
             contentUsage.put(contentId, 1);
         } else {

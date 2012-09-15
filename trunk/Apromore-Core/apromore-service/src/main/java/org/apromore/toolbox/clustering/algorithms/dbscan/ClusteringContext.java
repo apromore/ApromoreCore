@@ -15,36 +15,37 @@ import java.util.Set;
  */
 public class ClusteringContext {
 
-    private Map<String, Set<String>> fragmentClusterMap = new HashMap<String, Set<String>>();
+    private Map<Integer, Set<Integer>> fragmentClusterMap = new HashMap<Integer, Set<Integer>>();
     private List<FragmentDataObject> unprocessedFragments;
-    private List<String> allowedFragmentIds;
+    private List<Integer> allowedFragmentIds;
     private List<FragmentDataObject> ignoredFragments = new ArrayList<FragmentDataObject>();
     private List<FragmentDataObject> noise = new ArrayList<FragmentDataObject>();
     private List<FragmentDataObject> excluded = new ArrayList<FragmentDataObject>();
-    private Map<String, InMemoryCluster> clusters = new HashMap<String, InMemoryCluster>();
+    private Map<Integer, InMemoryCluster> clusters = new HashMap<Integer, InMemoryCluster>();
 
-    public void mapFragmentToCluster(String fid, String cid) {
-        Set<String> cids = fragmentClusterMap.get(fid);
+
+    public void mapFragmentToCluster(Integer fid, Integer cid) {
+        Set<Integer> cids = fragmentClusterMap.get(fid);
         if (cids == null) {
-            cids = new HashSet<String>();
+            cids = new HashSet<Integer>();
             fragmentClusterMap.put(fid, cids);
         }
         cids.add(cid);
     }
 
-    public List<String> getAllowedFragmentIds() {
+    public List<Integer> getAllowedFragmentIds() {
         return allowedFragmentIds;
     }
 
-    public void setAllowedFragmentIds(List<String> allowedFragmentIds) {
+    public void setAllowedFragmentIds(List<Integer> allowedFragmentIds) {
         this.allowedFragmentIds = allowedFragmentIds;
     }
 
-    public Map<String, Set<String>> getFragmentClusterMap() {
+    public Map<Integer, Set<Integer>> getFragmentClusterMap() {
         return fragmentClusterMap;
     }
 
-    public void setFragmentClusterMap(Map<String, Set<String>> fragmentClusterMap) {
+    public void setFragmentClusterMap(Map<Integer, Set<Integer>> fragmentClusterMap) {
         this.fragmentClusterMap = fragmentClusterMap;
     }
 
@@ -80,11 +81,11 @@ public class ClusteringContext {
         this.excluded = excluded;
     }
 
-    public Map<String, InMemoryCluster> getClusters() {
+    public Map<Integer, InMemoryCluster> getClusters() {
         return clusters;
     }
 
-    public void setClusters(Map<String, InMemoryCluster> clusters) {
+    public void setClusters(Map<Integer, InMemoryCluster> clusters) {
         this.clusters = clusters;
     }
 }

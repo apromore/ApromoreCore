@@ -33,51 +33,41 @@ public class ProcessBranch implements Serializable {
      */
     private static final long serialVersionUID = -9072538404478485548L;
 
-    private Integer branchId;
+    private Integer id;
     private String branchName;
     private String creationDate;
     private String lastUpdate;
     private String ranking;
 
     private Process process;
-    private ProcessModelVersion processModelVersionsByCurrentProcessModelVersionId;
-    private ProcessModelVersion processModelVersionsBySourceProcessModelVersionId;
+    private ProcessModelVersion currentProcessModelVersionId;
+    private ProcessModelVersion sourceProcessModelVersionId;
     private Set<ProcessModelVersion> processModelVersions = new HashSet<ProcessModelVersion>(0);
 
 
-    public ProcessBranch() {
-    }
+    /**
+     * Public Constructor.
+     */
+    public ProcessBranch() { }
 
 
+    /**
+     * returns the Id of this Object.
+     * @return the id
+     */
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "branch_id", unique = true, nullable = false, length = 40)
-    public Integer getBranchId() {
-        return this.branchId;
+    @Column(name = "id", unique = true, nullable = false)
+    public Integer getId() {
+        return this.id;
     }
 
-    public void setBranchId(Integer branchId) {
-        this.branchId = branchId;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "current_process_model_version_id")
-    public ProcessModelVersion getProcessModelVersionsByCurrentProcessModelVersionId() {
-        return this.processModelVersionsByCurrentProcessModelVersionId;
-    }
-
-    public void setProcessModelVersionsByCurrentProcessModelVersionId(ProcessModelVersion processModelVersionsByCurrentProcessModelVersionId) {
-        this.processModelVersionsByCurrentProcessModelVersionId = processModelVersionsByCurrentProcessModelVersionId;
-    }
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "source_process_model_version_id")
-    public ProcessModelVersion getProcessModelVersionsBySourceProcessModelVersionId() {
-        return this.processModelVersionsBySourceProcessModelVersionId;
-    }
-
-    public void setProcessModelVersionsBySourceProcessModelVersionId(ProcessModelVersion processModelVersionsBySourceProcessModelVersionId) {
-        this.processModelVersionsBySourceProcessModelVersionId = processModelVersionsBySourceProcessModelVersionId;
+    /**
+     * Sets the Id of this Object
+     * @param id the new Id.
+     */
+    public void setId(final Integer id) {
+        this.id = id;
     }
 
 
@@ -92,7 +82,6 @@ public class ProcessBranch implements Serializable {
 
     /**
      * Get the process for the Object.
-     *
      * @return Returns the process.
      */
     @Column(name = "creation_date", length = 35)
@@ -106,7 +95,6 @@ public class ProcessBranch implements Serializable {
 
     /**
      * Get the process for the Object.
-     *
      * @return Returns the process.
      */
     @Column(name = "last_update", length = 35)
@@ -120,7 +108,6 @@ public class ProcessBranch implements Serializable {
 
     /**
      * Get the process for the Object.
-     *
      * @return Returns the process.
      */
     @Column(name = "ranking", length = 10)
@@ -134,13 +121,33 @@ public class ProcessBranch implements Serializable {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "process_id")
+    @JoinColumn(name = "processId")
     public Process getProcess() {
         return this.process;
     }
 
     public void setProcess(final Process newProcess) {
         this.process = newProcess;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "currentProcessModelVersionId")
+    public ProcessModelVersion getCurrentProcessModelVersionId() {
+        return this.currentProcessModelVersionId;
+    }
+
+    public void setCurrentProcessModelVersionId(final ProcessModelVersion newCurrentProcessModelVersionId) {
+        this.currentProcessModelVersionId = newCurrentProcessModelVersionId;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "sourceProcessModelVersionId")
+    public ProcessModelVersion getSourceProcessModelVersionId() {
+        return this.sourceProcessModelVersionId;
+    }
+
+    public void setSourceProcessModelVersionId(final ProcessModelVersion newSourceProcessModelVersionId) {
+        this.sourceProcessModelVersionId = newSourceProcessModelVersionId;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "processBranch")

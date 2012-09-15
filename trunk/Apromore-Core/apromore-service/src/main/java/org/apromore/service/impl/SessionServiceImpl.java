@@ -74,13 +74,13 @@ public class SessionServiceImpl implements SessionService {
         session.setVersionName(versionName);
         session.setNatType(editSession.getNativeType());
         session.setProcessModelVersion(pmv);
-        session.setUser(usrDao.findUser(editSession.getUsername()));
+        session.setUser(usrDao.findUserByLogin(editSession.getUsername()));
         if (withAnnotation) {
             session.setAnnotation(editSession.getAnnotation());
         }
 
         sessDao.save(session);
-        return session.getCode();
+        return session.getId();
     }
 
 

@@ -18,7 +18,7 @@ public interface EdgeDao {
      * @param contentID the content id
      * @return the list of Edges or null.
      */
-    List<Edge> getEdgesByContent(String contentID);
+    List<Edge> getEdgesByContent(Integer contentID);
 
     /**
      * Returns the count of stored edges in the db.
@@ -31,7 +31,7 @@ public interface EdgeDao {
      * @param fragmentID
      * @return
      */
-    List<Edge> getEdgesByFragment(String fragmentID);
+    List<Edge> getEdgesByFragment(Integer fragmentID);
 
 
     /**

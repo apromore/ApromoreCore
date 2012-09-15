@@ -72,7 +72,7 @@ public class NonPocketNodeDaoJpaUnitTest {
 
     private NonPocketNode createNonPocketNode() {
         NonPocketNode e = new NonPocketNode();
-        e.setVid(1);
+        e.setId(1);
         return e;
     }
 }

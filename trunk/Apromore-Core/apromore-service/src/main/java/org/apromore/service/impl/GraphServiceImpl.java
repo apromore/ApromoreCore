@@ -55,12 +55,12 @@ public class GraphServiceImpl implements GraphService {
 
 
     /**
-     * @see org.apromore.service.GraphService#getContent(String)
+     * @see org.apromore.service.GraphService#getContent(Integer)
      *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public Content getContent(String fragmentVersionId) {
+    public Content getContent(Integer fragmentVersionId) {
         return contentDao.getContentByFragmentVersion(fragmentVersionId);
     }
 
@@ -75,12 +75,12 @@ public class GraphServiceImpl implements GraphService {
     }
 
     /**
-     * @see org.apromore.service.GraphService#getGraph(String)
+     * @see org.apromore.service.GraphService#getGraph(Integer)
      *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public CPF getGraph(String contentID) {
+    public CPF getGraph(Integer contentID) {
         CPF g = new CPF();
         fillNodes(g, contentID);
         fillEdges(g, contentID);
@@ -88,33 +88,33 @@ public class GraphServiceImpl implements GraphService {
     }
 
     /**
-     * @see org.apromore.service.GraphService#getGraph(String)
+     * @see org.apromore.service.GraphService#fillNodes(org.apromore.graph.JBPT.CPF, Integer)
      *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public void fillNodes(CPF procModelGraph, String contentID) {
+    public void fillNodes(CPF procModelGraph, Integer contentID) {
         FlowNode v;
         List<Node> nodes = nDao.getVertexByContent(contentID);
         for (Node node : nodes) {
             v = buildNodeByType(node);
             procModelGraph.addVertex(v);
-            procModelGraph.setVertexProperty(String.valueOf(node.getVid()), Constants.TYPE, Constants.FUNCTION);
+            procModelGraph.setVertexProperty(String.valueOf(node.getId()), Constants.TYPE, Constants.FUNCTION);
         }
     }
 
 
     /**
-     * @see org.apromore.service.GraphService#getGraph(String)
+     * @see org.apromore.service.GraphService#fillEdges(org.apromore.graph.JBPT.CPF, Integer)
      *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public void fillEdges(CPF procModelGraph, String contentID) {
+    public void fillEdges(CPF procModelGraph, Integer contentID) {
         List<Edge> edges = edgeDao.getEdgesByContent(contentID);
         for (Edge edge : edges) {
-            FlowNode v1 = procModelGraph.getVertex(String.valueOf(edge.getVerticesBySourceVid().getVid()));
-            FlowNode v2 = procModelGraph.getVertex(String.valueOf(edge.getVerticesByTargetVid().getVid()));
+            FlowNode v1 = procModelGraph.getVertex(edge.getVerticesBySourceVid().getUri());
+            FlowNode v2 = procModelGraph.getVertex(edge.getVerticesByTargetVid().getUri());
             if (v1 != null && v2 != null) {
                 procModelGraph.addEdge(v1, v2);
             } else {
@@ -132,30 +132,30 @@ public class GraphServiceImpl implements GraphService {
     }
 
     /**
-     * @see org.apromore.service.GraphService#fillNodesByFragmentId(org.apromore.graph.JBPT.CPF, String)
+     * @see org.apromore.service.GraphService#fillNodesByFragmentId(org.apromore.graph.JBPT.CPF, Integer)
      * {@inheritDoc}
      */
     @Override
-    public void fillNodesByFragmentId(CPF procModelGraph, String fragmentID) {
+    public void fillNodesByFragmentId(CPF procModelGraph, Integer fragmentID) {
         FlowNode v;
         List<Node> nodes = nDao.getVertexByFragment(fragmentID);
         for (Node node : nodes) {
             v = buildNodeByType(node);
             procModelGraph.addVertex(v);
-            procModelGraph.setVertexProperty(String.valueOf(node.getVid()), Constants.TYPE, node.getVtype());
+            procModelGraph.setVertexProperty(String.valueOf(node.getId()), Constants.TYPE, node.getType());
         }
     }
 
     /**
-     * @see org.apromore.service.GraphService#fillEdgesByFragmentId(org.apromore.graph.JBPT.CPF, String)
+     * @see org.apromore.service.GraphService#fillEdgesByFragmentId(org.apromore.graph.JBPT.CPF, Integer)
      * {@inheritDoc}
      */
     @Override
-    public void fillEdgesByFragmentId(CPF procModelGraph, String fragmentID) {
+    public void fillEdgesByFragmentId(CPF procModelGraph, Integer fragmentID) {
         List<Edge> edges = edgeDao.getEdgesByFragment(fragmentID);
         for (Edge edge : edges) {
-            FlowNode v1 = procModelGraph.getVertex(String.valueOf(edge.getVerticesBySourceVid().getVid()));
-            FlowNode v2 = procModelGraph.getVertex(String.valueOf(edge.getVerticesByTargetVid().getVid()));
+            FlowNode v1 = procModelGraph.getVertex(edge.getVerticesBySourceVid().getUri());
+            FlowNode v2 = procModelGraph.getVertex(edge.getVerticesByTargetVid().getUri());
             if (v1 != null && v2 != null) {
                 procModelGraph.addEdge(v1, v2);
             } else {
@@ -178,47 +178,47 @@ public class GraphServiceImpl implements GraphService {
     private FlowNode buildNodeByType(Node node) {
         FlowNode result = null;
         if (node.getCtype().equals(CpfNode.class.getName())) {
-            result = new CpfNode(node.getVname());
-            result.setId(String.valueOf(node.getVid()));
+            result = new CpfNode(node.getName());
+            result.setId(String.valueOf(node.getId()));
         } else if (node.getCtype().equals(CpfMessage.class.getName())) {
-            result = new CpfMessage(node.getVname());
-            result.setId(String.valueOf(node.getVid()));
+            result = new CpfMessage(node.getName());
+            result.setId(String.valueOf(node.getId()));
             addResources((CpfNode) result, node);
             addObjects((CpfNode) result, node);
             addNodeAttributes((CpfNode) result, node);
         } else if (node.getCtype().equals(CpfTimer.class.getName())) {
-            result = new CpfTimer(node.getVname());
-            result.setId(String.valueOf(node.getVid()));
+            result = new CpfTimer(node.getName());
+            result.setId(String.valueOf(node.getId()));
             addResources((CpfNode) result, node);
             addObjects((CpfNode) result, node);
             addNodeAttributes((CpfNode) result, node);
         } else if (node.getCtype().equals(CpfTask.class.getName())) {
-            result = new CpfTask(node.getVname());
-            result.setId(String.valueOf(node.getVid()));
+            result = new CpfTask(node.getName());
+            result.setId(String.valueOf(node.getId()));
             addResources((CpfNode) result, node);
             addObjects((CpfNode) result, node);
             addNodeAttributes((CpfNode) result, node);
         } else if (node.getCtype().equals(CpfEvent.class.getName())) {
-            result = new CpfEvent(node.getVname());
-            result.setId(String.valueOf(node.getVid()));
+            result = new CpfEvent(node.getName());
+            result.setId(String.valueOf(node.getId()));
             addResources((CpfNode) result, node);
             addObjects((CpfNode) result, node);
             addNodeAttributes((CpfNode) result, node);
         } else if (node.getCtype().equals(CpfOrGateway.class.getName())) {
-            result = new CpfOrGateway(node.getVname());
-            result.setId(String.valueOf(node.getVid()));
+            result = new CpfOrGateway(node.getName());
+            result.setId(String.valueOf(node.getId()));
             addResources((CpfNode) result, node);
             addObjects((CpfNode) result, node);
             addNodeAttributes((CpfNode) result, node);
         } else if (node.getCtype().equals(CpfXorGateway.class.getName())) {
-            result = new CpfXorGateway(node.getVname());
-            result.setId(String.valueOf(node.getVid()));
+            result = new CpfXorGateway(node.getName());
+            result.setId(String.valueOf(node.getId()));
             addResources((CpfNode) result, node);
             addObjects((CpfNode) result, node);
             addNodeAttributes((CpfNode) result, node);
         } else if (node.getCtype().equals(CpfAndGateway.class.getName())) {
-            result = new CpfAndGateway(node.getVname());
-            result.setId(String.valueOf(node.getVid()));
+            result = new CpfAndGateway(node.getName());
+            result.setId(String.valueOf(node.getId()));
             addResources((CpfNode) result, node);
             addObjects((CpfNode) result, node);
             addNodeAttributes((CpfNode) result, node);

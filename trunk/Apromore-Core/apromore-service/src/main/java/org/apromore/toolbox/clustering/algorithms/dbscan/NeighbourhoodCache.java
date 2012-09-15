@@ -35,7 +35,7 @@ public class NeighbourhoodCache {
         cache.put(fragmentId, neighborhood);
     }
 
-    public List<FragmentDataObject> getNeighborhood(String fragmentId) {
+    public List<FragmentDataObject> getNeighborhood(Integer fragmentId) {
         List<FragmentDataObject> neighborhood = cache.get(fragmentId);
         if (neighborhood != null) {
             log.debug("Neighborhood cache hit for fragment: " + fragmentId);

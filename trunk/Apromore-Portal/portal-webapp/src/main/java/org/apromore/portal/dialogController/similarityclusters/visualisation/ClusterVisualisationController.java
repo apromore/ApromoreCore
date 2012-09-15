@@ -48,7 +48,7 @@ public class ClusterVisualisationController extends BaseController {
     public static final String PAIRWISE_FILTER_ATTRIBUTE_NAME = "org.apromore.portal.pairwiseFilter";
 
     private List<ClusterSummaryType> clusterResult;
-    private Map<String, Long> indexMap;
+    private Map<Integer, Long> indexMap;
 
     /**
      * Gets the current similarity cluster result set from the Session and
@@ -63,7 +63,7 @@ public class ClusterVisualisationController extends BaseController {
         Session session = Sessions.getCurrent();
 
         this.clusterResult = (List<ClusterSummaryType>) session.getAttribute(CLUSTER_RESULT_ATTRIBUTE_NAME);
-        this.indexMap = new HashMap<String, Long>();
+        this.indexMap = new HashMap<Integer, Long>();
         this.addEventListener("onShowSelection", new EventListener() {
 
             @Override
@@ -118,11 +118,11 @@ public class ClusterVisualisationController extends BaseController {
         JSONArray edgesArray = new JSONArray();
         updateObject.put("edges", edgesArray);
 
-        List<PairDistanceType> pairwiseMedoidDistances = getService().getPairwiseDistances(new ArrayList<String>(indexMap.keySet()));
+        List<PairDistanceType> pairwiseMedoidDistances = getService().getPairwiseDistances(new ArrayList<Integer>(indexMap.keySet()));
         for (PairDistanceType pairDistance : pairwiseMedoidDistances) {
             if (nodeFilter.contains(pairDistance.getFragmentId1()) || nodeFilter.contains(pairDistance.getFragmentId2())) {
-                String fragment1Id = pairDistance.getFragmentId1();
-                String fragment2Id = pairDistance.getFragmentId2();
+                Integer fragment1Id = pairDistance.getFragmentId1();
+                Integer fragment2Id = pairDistance.getFragmentId2();
                 if (indexMap.containsKey(fragment1Id)&& indexMap.containsKey(fragment2Id)) {
                     JSONObject medoidEdgeObj = buildEdgeObject(
                             indexMap.get(fragment1Id), indexMap.get(fragment2Id), pairDistance.getDistance(), true);
@@ -145,8 +145,8 @@ public class ClusterVisualisationController extends BaseController {
         long index = 0;
 
         for (ClusterSummaryType clusterInfo : clusterResult) {
-            String clusterId = clusterInfo.getClusterId();
-            String medoidId = clusterInfo.getMedoidId();
+            Integer clusterId = clusterInfo.getClusterId();
+            Integer medoidId = clusterInfo.getMedoidId();
             writeNode(jsonWriter, clusterId, clusterInfo.getMedoidId(),
                     clusterInfo.getClusterLabel(), true, clusterInfo.getClusterSize());
 
@@ -176,8 +176,8 @@ public class ClusterVisualisationController extends BaseController {
         outputStreamWriter.flush();
     }
 
-    private boolean isMedoid(final String medoidId, final String fragmentId) {
-        return fragmentId.equals(medoidId);
+    private boolean isMedoid(final Integer medoidId, final int fragmentId) {
+        return medoidId.equals(fragmentId);
     }
 
     /**
@@ -212,10 +212,10 @@ public class ClusterVisualisationController extends BaseController {
      * @param id           of the Fragment
      * @param name         of the Fragment
      * @param isMedoid
-     * @param fragmentSiez
+     * @param fragmentSize
      * @throws JSONException
      */
-    private void writeNode(final JSONWriter jsonWriter, final String clusterId, final String id, final String name, final boolean isMedoid,
+    private void writeNode(final JSONWriter jsonWriter, final Integer clusterId, final int id, final String name, final boolean isMedoid,
             final int fragmentSize) throws JSONException {
         jsonWriter.object();
         jsonWriter.key("id");

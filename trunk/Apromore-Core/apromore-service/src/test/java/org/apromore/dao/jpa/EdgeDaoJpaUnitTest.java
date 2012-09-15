@@ -51,7 +51,7 @@ public class EdgeDaoJpaUnitTest {
 
     @Test
     public final void testGetEdgesByContent() {
-        String id = "1";
+        Integer id = 1;
         List<Edge> edges = new ArrayList<Edge>();
 
         Query query = createMock(Query.class);
@@ -87,7 +87,7 @@ public class EdgeDaoJpaUnitTest {
 
     @Test
     public final void testGetEdgesByFragment() {
-        String id = "1";
+        Integer id = 1;
         List<Edge> edges = new ArrayList<Edge>();
 
         Query query = createMock(Query.class);
@@ -138,7 +138,7 @@ public class EdgeDaoJpaUnitTest {
     private Edge createEdge() {
         Edge e = new Edge();
         e.setContent(new Content());
-        e.setEdgeId(123);
+        e.setId(123);
         e.setVerticesBySourceVid(new Node());
         e.setVerticesByTargetVid(new Node());
         return e;

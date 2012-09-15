@@ -55,7 +55,7 @@ public class ReadUserEndpointTest {
         JAXBElement<ReadUserInputMsgType> request = new ObjectFactory().createReadUserRequest(msg);
 
         User user = new User();
-        expect(userSrv.findUser(msg.getUsername())).andReturn(user);
+        expect(userSrv.findUserByLogin(msg.getUsername())).andReturn(user);
 
         replay(userSrv);
 
@@ -74,7 +74,7 @@ public class ReadUserEndpointTest {
         msg.setUsername("someone");
         JAXBElement<ReadUserInputMsgType> request = new ObjectFactory().createReadUserRequest(msg);
 
-        expect(userSrv.findUser(msg.getUsername())).andThrow(new UserNotFoundException());
+        expect(userSrv.findUserByLogin(msg.getUsername())).andThrow(new UserNotFoundException());
 
         replay(userSrv);
 

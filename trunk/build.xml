@@ -12,12 +12,12 @@
 
     <!-- Delete all deployed WAR files -->
     <target name="clean-war">
-        <delete file="${dir-tomcat-webapps}/Apromore.war"/>
-        <delete file="${dir-tomcat-webapps}/Apromore-portal.war"/>
-        <delete file="${dir-tomcat-webapps}/Apromore-editor.war"/>
-        <delete dir="${dir-tomcat-webapps}/Apromore"/>
-        <delete dir="${dir-tomcat-webapps}/Apromore-portal"/>
-        <delete dir="${dir-tomcat-webapps}/Apromore-editor"/>
+        <delete file="${dir-tomcat-webapps}/manager.war"/>
+        <delete file="${dir-tomcat-webapps}/portal.war"/>
+        <delete file="${dir-tomcat-webapps}/editor.war"/>
+        <delete dir="${dir-tomcat-webapps}/manager"/>
+        <delete dir="${dir-tomcat-webapps}/portal"/>
+        <delete dir="${dir-tomcat-webapps}/editor"/>
     </target>
 
     <!-- Build all WAR files using ANT and Maven -->
@@ -36,17 +36,17 @@
 
     <!-- Copy all WAR files to Tomcat -->
     <target name="copy-war" depends="build-war">
-        <copy file="Apromore-Editor/target/Apromore-editor.war" todir="${dir-tomcat-webapps}"/>
-        <copy file="Apromore-Core/apromore-webapp/target/Apromore.war" todir="${dir-tomcat-webapps}"/>
-        <copy file="Apromore-Portal/portal-webapp/target/Apromore-portal.war" todir="${dir-tomcat-webapps}"/>
+        <copy file="Apromore-Editor/target/editor.war" todir="${dir-tomcat-webapps}"/>
+        <copy file="Apromore-Core/apromore-webapp/target/web-manager.war" todir="${dir-tomcat-webapps}"/>
+        <copy file="Apromore-Portal/portal-webapp/target/portal.war" todir="${dir-tomcat-webapps}"/>
     </target>
 
     <target name="deploy-war" depends="copy-war" />
 
     <target name="copy-war-nodep">
-        <copy file="Apromore-Editor/target/Apromore-editor.war" todir="${dir-tomcat-webapps}"/>
-        <copy file="Apromore-Core/apromore-webapp/target/Apromore.war" todir="${dir-tomcat-webapps}"/>
-        <copy file="Apromore-Portal/portal-webapp/target/Apromore-portal.war" todir="${dir-tomcat-webapps}"/>
+        <copy file="Apromore-Editor/target/editor.war" todir="${dir-tomcat-webapps}"/>
+        <copy file="Apromore-Core/apromore-webapp/target/web-manager.war" todir="${dir-tomcat-webapps}"/>
+        <copy file="Apromore-Portal/portal-webapp/target/portal.war" todir="${dir-tomcat-webapps}"/>
     </target>
     
 </project>

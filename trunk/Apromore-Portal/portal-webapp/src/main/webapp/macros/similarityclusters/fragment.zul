@@ -157,7 +157,7 @@
 					Ext.select('svg').setVisible(false);
 																										
 					//Import new process model
-					new Ajax.Request("/Apromore-editor/editor/epmlimport", {
+					new Ajax.Request("/editor/editor/epmlimport", {
 						  parameters: {'data': '${arg.fragmentData}'},
 					      method: 'POST',
 					      onSuccess: function(transport) {

@@ -18,15 +18,15 @@ import static org.hamcrest.Matchers.equalTo;
  */
 public class DomainMapperUnitTest {
 
-	DomainMapper mapper;
+    DomainMapper mapper;
 
-	@Before
-	public void setUp() throws Exception {
-		mapper = new DomainMapper();
-	}
+    @Before
+    public void setUp() throws Exception {
+        mapper = new DomainMapper();
+    }
 
-	@Test
-	public void testConvertFromDomains() throws Exception {
+    @Test
+    public void testConvertFromDomains() throws Exception {
         List<String> domains = new ArrayList<String>();
         String typ1 = "jack";
         String typ2 = "john";
@@ -37,6 +37,6 @@ public class DomainMapperUnitTest {
         assertThat(type.getDomain().size(), equalTo(domains.size()));
         assertThat(type.getDomain().get(0), equalTo(domains.get(0)));
         assertThat(type.getDomain().get(0), equalTo(domains.get(0)));
-	}
+    }
 
 }

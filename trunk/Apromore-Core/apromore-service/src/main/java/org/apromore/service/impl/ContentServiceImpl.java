@@ -57,11 +57,11 @@ public class ContentServiceImpl implements ContentService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public String getMatchingContentId(String hash) {
+    public Integer getMatchingContentId(String hash) {
         if (hash == null) {
             return null;
         }
-        return contentDao.getContentByCode(hash).getContentId();
+        return contentDao.getContentByCode(hash).getId();
     }
 
 
@@ -96,9 +96,8 @@ public class ContentServiceImpl implements ContentService {
             String oldVId = v.getId();
             String type = g.getVertexProperty(v.getId(), Constants.TYPE);
             Node n = addNode(content, v, type);
-            v.setId(String.valueOf(n.getVid()));
             if (!"Pocket".equals(type)) {
-                addNonPocketNode(n.getVid());
+                addNonPocketNode(n);
             } else {
                 pocketIdMappings.put(oldVId, v.getId());
             }
@@ -113,11 +112,12 @@ public class ContentServiceImpl implements ContentService {
     public Node addNode(Content content, ICpfNode v, String vtype) {
         Node node = new Node();
         node.setContent(content);
-        node.setVname(v.getLabel() != null ? v.getLabel() : v.getName());
-        node.setVtype(vtype);
+        node.setName(v.getLabel() != null ? v.getLabel() : v.getName());
+        node.setType(vtype);
         node.setConfiguration(v.isConfigurable());
         node.setCtype(v.getClass().getName());
         node.setOriginalId(v.getId());
+        node.setUri(v.getId());
 
         addObjects(node, v);
         addResources(node, v);
@@ -129,14 +129,14 @@ public class ContentServiceImpl implements ContentService {
     }
 
     /**
-     * @see org.apromore.service.ContentService#addNonPocketNode(Integer)
+     * @see org.apromore.service.ContentService#addNonPocketNode(Node)
      *      {@inheritDoc}
      */
     @Override
-    public void addNonPocketNode(Integer vid) {
+    public void addNonPocketNode(Node node) {
         NonPocketNode nonPockNode = new NonPocketNode();
 
-        nonPockNode.setVid(vid);
+        nonPockNode.setNode(node);
 
         nonPocketNodeDao.save(nonPockNode);
     }
@@ -148,8 +148,8 @@ public class ContentServiceImpl implements ContentService {
     @Override
     public void addEdges(Content content, Collection<AbstractDirectedEdge> edges) {
         for (AbstractDirectedEdge e : edges) {
-            Node source = nDao.findNode(Integer.valueOf(e.getSource().getId()));
-            Node target = nDao.findNode(Integer.valueOf(e.getTarget().getId()));
+            Node source = nDao.findNodeByUri(e.getSource().getId());
+            Node target = nDao.findNodeByUri(e.getTarget().getId());
             addEdge(content, e, source, target);
         }
     }
@@ -168,26 +168,27 @@ public class ContentServiceImpl implements ContentService {
         edge.setOriginalId(e.getId());
         edge.setCond("");
         edge.setDef(false);
+        edge.setUri(e.getId());
 
         edgeDao.save(edge);
     }
 
     /**
-     * @see org.apromore.service.ContentService#deleteContent(String)
+     * @see org.apromore.service.ContentService#deleteContent(Integer)
      *      {@inheritDoc}
      */
     @Override
-    public void deleteContent(String contentId) {
+    public void deleteContent(Integer contentId) {
         Content content = contentDao.findContent(contentId);
         contentDao.delete(content);
     }
 
     /**
-     * @see org.apromore.service.ContentService#deleteContent(String)
+     * @see org.apromore.service.ContentService#deleteContent(Integer)
      *      {@inheritDoc}
      */
     @Override
-    public void deleteEdgesOfContent(String contentId) {
+    public void deleteEdgesOfContent(Integer contentId) {
         Content content = contentDao.findContent(contentId);
         for (Edge edge : content.getEdges()) {
             edgeDao.delete(edge);
@@ -195,13 +196,13 @@ public class ContentServiceImpl implements ContentService {
     }
 
     /**
-     * @see org.apromore.service.ContentService#deleteContent(String)
+     * @see org.apromore.service.ContentService#deleteContent(Integer)
      *      {@inheritDoc}
      */
     @Override
-    public void deleteVerticesOfContent(String contentId) {
+    public void deleteVerticesOfContent(Integer contentId) {
         Content content = contentDao.findContent(contentId);
-        for (Node node : content.getVertices()) {
+        for (Node node : content.getNodes()) {
             nDao.delete(node);
         }
     }

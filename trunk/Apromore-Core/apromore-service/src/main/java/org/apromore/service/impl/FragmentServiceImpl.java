@@ -1,27 +1,8 @@
 package org.apromore.service.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.PriorityQueue;
-import java.util.Set;
-import javax.xml.bind.JAXBException;
-
 import org.apromore.common.Constants;
-import org.apromore.dao.ContentDao;
-import org.apromore.dao.FragmentVersionDagDao;
-import org.apromore.dao.FragmentVersionDao;
-import org.apromore.dao.NodeDao;
-import org.apromore.dao.ProcessDao;
-import org.apromore.dao.ProcessModelVersionDao;
-import org.apromore.dao.model.Content;
-import org.apromore.dao.model.FragmentVersion;
-import org.apromore.dao.model.FragmentVersionDag;
-import org.apromore.dao.model.FragmentVersionDagId;
-import org.apromore.dao.model.Node;
-import org.apromore.dao.model.ProcessFragmentMap;
-import org.apromore.dao.model.ProcessModelVersion;
+import org.apromore.dao.*;
+import org.apromore.dao.model.*;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.LockFailedException;
 import org.apromore.exception.RepositoryException;
@@ -44,6 +25,9 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.xml.bind.JAXBException;
+import java.util.*;
 
 /**
  * Implementation of the FragmentService Contract.
@@ -88,17 +72,17 @@ public class FragmentServiceImpl implements FragmentService {
         for (String composingFragmentId : composingFragmentIds) {
             pfm = new ProcessFragmentMap();
             pfm.setProcessModelVersion(pmv);
-            pfm.setFragmentVersion(fvDao.findFragmentVersion(composingFragmentId));
+            pfm.setFragmentVersion(fvDao.findFragmentVersionByURI(composingFragmentId));
         }
     }
 
 
     /**
-     * @see FragmentService#getFragmentId(Integer, org.apromore.graph.JBPT.CPF, java.util.List)
+     * @see FragmentService#getFragmentUri(Integer, org.apromore.graph.JBPT.CPF, java.util.List)
      * {@inheritDoc}
      */
     @Override
-    public String getFragmentId(Integer pmvid, CPF g, List<String> nodes) {
+    public String getFragmentUri(Integer pmvid, CPF g, List<String> nodes) {
         FragmentDAG fdag = constructFragmentDAG(pmvid);
         List<String> originalNodes = getOriginalNodes(nodes, g);
         List<String> containingFragments = getContainingFragments(originalNodes, fdag);
@@ -108,11 +92,11 @@ public class FragmentServiceImpl implements FragmentService {
     }
 
     /**
-     * @see FragmentService#getFragmentAsEPML(String)
+     * @see FragmentService#getFragmentAsEPML(Integer)
      * {@inheritDoc}
      */
     @Override
-    public String getFragmentAsEPML(String fragmentId) throws RepositoryException {
+    public String getFragmentAsEPML(Integer fragmentId) throws RepositoryException {
         String xml;
         try {
             CPF g = getFragment(fragmentId, false);
@@ -128,11 +112,11 @@ public class FragmentServiceImpl implements FragmentService {
     }
 
     /**
-     * @see FragmentService#getFragment(String, boolean)
+     * @see FragmentService#getFragment(Integer, boolean)
      * {@inheritDoc}
      */
     @Override
-    public CPF getFragment(String fragmentId, boolean lock) throws LockFailedException {
+    public CPF getFragment(Integer fragmentId, boolean lock) throws LockFailedException {
         CPF processModelGraph = null;
         try {
             if (lock) {
@@ -145,8 +129,9 @@ public class FragmentServiceImpl implements FragmentService {
 
             LOGGER.debug("Composing the fragment " + fragmentId + "...");
             ComposerServiceImpl composerServiceImpl = new ComposerServiceImpl();
-            processModelGraph = composerServiceImpl.compose(fragmentId);
-            processModelGraph.setProperty(Constants.ORIGINAL_FRAGMENT_ID, fragmentId);
+            FragmentVersion fv = fvDao.findFragmentVersion(fragmentId);
+            processModelGraph = composerServiceImpl.compose(fv.getUri());
+            processModelGraph.setProperty(Constants.ORIGINAL_FRAGMENT_ID, fragmentId.toString());
 
             if (lock) {
                 processModelGraph.setProperty(Constants.LOCK_STATUS, Constants.LOCKED);
@@ -161,11 +146,11 @@ public class FragmentServiceImpl implements FragmentService {
     }
 
     /**
-     * @see FragmentService#getFragmentVersion(String)
+     * @see FragmentService#getFragmentVersion(Integer)
      * {@inheritDoc}
      */
     @Override
-    public FragmentVersion getFragmentVersion(String fragmentVersionId) {
+    public FragmentVersion getFragmentVersion(Integer fragmentVersionId) {
         return fvDao.findFragmentVersion(fragmentVersionId);
     }
 
@@ -205,18 +190,12 @@ public class FragmentServiceImpl implements FragmentService {
             if (fragVer == null || cid == null || pid == null) {
                 String msg = "Invalid child mapping parameters. child Id: " + cid + ", Pocket Id: " + pid;
                 LOGGER.error(msg);
-                //throw new ExceptionDao(msg);
             }
 
-            FragmentVersionDagId id = new FragmentVersionDagId();
-            id.setFragmentVersionId(fragVer.getFragmentVersionId());
-            id.setChildFragmentVersionId(cid);
-            id.setPocketId(pid);
-
             FragmentVersionDag fvd = new FragmentVersionDag();
-            fvd.setFragmentVersionByFragVerId(fragVer);
-            fvd.setFragmentVersionByChildFragVerId(fvDao.findFragmentVersion(cid));
-            fvd.setId(id);
+            fvd.setChildFragmentVersionId(fvDao.findFragmentVersionByURI(cid));
+            fvd.setFragmentVersionId(fragVer);
+            fvd.setPocketId(pid);
 
             fvdDao.save(fvd);
         }
@@ -243,13 +222,13 @@ public class FragmentServiceImpl implements FragmentService {
 
             Node node = new Node();
             node.setContent(c);
-            node.setVname(v.getLabel() != null ? v.getLabel() : v.getName());
-            node.setVtype(vtype);
+            node.setName(v.getLabel() != null ? v.getLabel() : v.getName());
+            node.setType(vtype);
             node.setConfiguration(v.isConfigurable());
             node.setCtype(v.getClass().getName());
             node.setOriginalId(v.getId());
             nDao.save(node);
-            v.setId(String.valueOf(node.getVid()));
+            v.setId(String.valueOf(node.getId()));
         }
 
         for (AbstractDirectedEdge e : fCopy.getEdges()) {
@@ -262,25 +241,25 @@ public class FragmentServiceImpl implements FragmentService {
     }
 
     @Override
-    public FragmentVersion getMatchingFragmentVersionId(String contentId, Map<String, String> childMappings) {
+    public FragmentVersion getMatchingFragmentVersionId(Integer contentId, Map<String, String> childMappings) {
         String childMappingCode = calculateChildMappingCode(childMappings);
         return fvDao.getMatchingFragmentVersionId(contentId, childMappingCode);
     }
 
 
     @Override
-    public void deleteFragmentVersion(String fvid) {
+    public void deleteFragmentVersion(Integer fvid) {
         fvDao.delete(fvDao.findFragmentVersion(fvid));
     }
 
     @Override
-    public void deleteChildRelationships(String fvid) {
+    public void deleteChildRelationships(Integer fvid) {
         fvDao.delete(fvDao.findFragmentVersion(fvid));
     }
 
     @Override
-    public void setDerivation(String fvid, String derivedFromFragmentId) {
-        FragmentVersion fragVersion = fvDao.findFragmentVersion(fvid);
+    public void setDerivation(String fragVersionUri, String derivedFromFragmentId) {
+        FragmentVersion fragVersion = fvDao.findFragmentVersionByURI(fragVersionUri);
         fragVersion.setDerivedFromFragment(derivedFromFragmentId);
         fvDao.update(fragVersion);
     }
@@ -300,24 +279,24 @@ public class FragmentServiceImpl implements FragmentService {
 
     private FragmentDAG constructFragmentDAG(final Integer pmvid) {
         FragmentDAG fdag = new FragmentDAG();
-        String rootfid = pDao.getRootFragmentVersionId(pmvid);
-        fillFragmentDAG(rootfid, null, fdag);
+        String rootFUri = pDao.getRootFragmentVersionURI(pmvid);
+        fillFragmentDAG(rootFUri, null, fdag);
         return fdag;
     }
 
-    private void fillFragmentDAG(String fragmentId, String parentId, FragmentDAG fdag) {
-        if (fdag.contains(fragmentId)) {
-            FDNode fdNode = fdag.getFragment(fragmentId);
-            fdNode.getParentIds().add(parentId);
+    private void fillFragmentDAG(String fragmentUri, String parentUri, FragmentDAG fdag) {
+        if (fdag.contains(fragmentUri)) {
+            FDNode fdNode = fdag.getFragment(fragmentUri);
+            fdNode.getParentIds().add(parentUri);
         } else {
-            FDNode fdNode = new FDNode(fragmentId);
+            FDNode fdNode = new FDNode(fragmentUri);
             fdag.addFragment(fdNode);
-            fdNode.getParentIds().add(parentId);
+            fdNode.getParentIds().add(parentUri);
 
-            List<FragmentVersionDag> childIds = fvdDao.getChildMappings(fragmentId);
+            List<FragmentVersionDag> childIds = fvdDao.getChildMappingsByURI(fragmentUri);
             fdNode.getChildIds().addAll(getChildIds(childIds));
             for (FragmentVersionDag childId : childIds) {
-                fillFragmentDAG(childId.getId().getChildFragmentVersionId(), fragmentId, fdag);
+                fillFragmentDAG(childId.getChildFragmentVersionId().getUri(), fragmentUri, fdag);
             }
         }
     }
@@ -325,7 +304,7 @@ public class FragmentServiceImpl implements FragmentService {
     private Collection<String> getChildIds(List<FragmentVersionDag> fdags) {
         List<String> id = new ArrayList<String>();
         for (FragmentVersionDag fdag : fdags) {
-            id.add(fdag.getId().getChildFragmentVersionId());
+            id.add(fdag.getChildFragmentVersionId().getUri());
         }
         return id;
     }
@@ -343,7 +322,7 @@ public class FragmentServiceImpl implements FragmentService {
     }
 
     private List<String> getContainingFragments(List<String> nodes, FragmentDAG fdag) {
-        List<String> containingFragments = fvDao.getContainingFragments(nodes);
+        List<String> containingFragments = fvDao.getContainingFragmentsByURI(nodes);
         Set<String> processFragmentIds = fdag.getFragmentIds();
         containingFragments.retainAll(processFragmentIds);
         return containingFragments;

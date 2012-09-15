@@ -23,14 +23,14 @@ public interface ClusterService {
      * @param fragmentIds the list of fragments
      * @param clusterId   the cluster to assign the fragments
      */
-    void assignFragments(List<String> fragmentIds, String clusterId);
+    void assignFragments(List<Integer> fragmentIds, Integer clusterId);
 
     /**
      * Assign a single fragment to a single cluster.
      * @param fragVersion the fragment
      * @param clusterId   the cluster to assign the fragments
      */
-    void assignFragment(String fragVersion, String clusterId);
+    void assignFragment(Integer fragVersion, Integer clusterId);
 
     /**
      * Does something to a cluster, comments would be good.
@@ -57,7 +57,7 @@ public interface ClusterService {
      * @param clusterId this is the id of the cluster we want
      * @return the found cluster using the id
      */
-    org.apromore.service.model.Cluster getCluster(String clusterId);
+    org.apromore.service.model.Cluster getCluster(Integer clusterId);
 
     /**
      * Returns all the clusters.
@@ -77,7 +77,7 @@ public interface ClusterService {
      * @param clusterId the cluster Id we are using to find fragments with.
      * @return the list of fragments Id's
      */
-    List<String> getFragmentIds(String clusterId);
+    List<Integer> getFragmentIds(Integer clusterId);
 
     /**
      * Get distances between pairs of fragments
@@ -85,6 +85,6 @@ public interface ClusterService {
      * @return the distances for the fragment pairs.
      * @throws RepositoryException if the repository had issues
      */
-    Map<FragmentPair, Double> getPairDistances(List<String> fragmentIds) throws RepositoryException;
+    Map<FragmentPair, Double> getPairDistances(List<Integer> fragmentIds) throws RepositoryException;
 
 }

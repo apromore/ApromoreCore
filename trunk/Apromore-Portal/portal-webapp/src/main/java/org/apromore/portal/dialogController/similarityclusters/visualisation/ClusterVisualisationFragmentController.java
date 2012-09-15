@@ -40,9 +40,8 @@ public class ClusterVisualisationFragmentController extends BaseController {
      * @return EPML
      */
     private String getFragmentData(final String fragmentId) {
-
         if (fragmentId != null) {
-            FragmentType fragment = getService().getFragment(fragmentId);
+            FragmentType fragment = getService().getFragment(Integer.valueOf(fragmentId));
 
             if (fragment != null) {
                 return fragment.getContent();

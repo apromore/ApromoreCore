@@ -16,7 +16,14 @@ public interface FragmentVersionDao {
      * @param fragmentId the fragment version id
      * @return the found fragmentVersion
      */
-    FragmentVersion findFragmentVersion(String fragmentId);
+    FragmentVersion findFragmentVersion(Integer fragmentId);
+
+    /**
+     * Find the Fragment version from it's URI.
+     * @param uri the uri of the fragment version.
+     * @return the fragment version
+     */
+    FragmentVersion findFragmentVersionByURI(String uri);
 
     /**
      * Get all the Fragment Version records.
@@ -30,90 +37,90 @@ public interface FragmentVersionDao {
      * @param childMappingCode the child mapping code.
      * @return the fragment version that corresponds to the content and mapping code.
      */
-    FragmentVersion getMatchingFragmentVersionId(String contentId, String childMappingCode);
+    FragmentVersion getMatchingFragmentVersionId(Integer contentId, String childMappingCode);
 
     /**
      * get the used process models for a fragment.
      * @param fvid the fragment id.
      * @return the process model that uses fragment.
      */
-    Integer getUsedProcessModels(String fvid);
+    Integer getUsedProcessModels(Integer fvid);
 
     /**
      * Return the parent fragment for a fragment.
      * @param fvid the child fragment id.
      * @return the list of parent fragments.
      */
-    List<FragmentVersion> getParentFragments(String fvid);
+    List<FragmentVersion> getParentFragments(Integer fvid);
 
     /**
      * find all the parent fragments that are locked.
      * @param fvid the fragment we are searching for parents
      * @return the list of fragments Id's we are looking for.
      */
-    List<String> getLockedParentFragmentIds(String fvid);
+    List<Integer> getLockedParentFragmentIds(Integer fvid);
 
-//    /**
-//     * find all the child fragments with their size.
-//     * @param fvid the fragment id.
-//     * @return the list of fragments
-//     */
-//    Map<String, Integer> getChildFragmentsWithSize(String fvid);
-//
-//    /**
-//     * find all the child fragments with their type.
-//     * @param fvid the fragment id.
-//     * @return the list of fragments
-//     */
-//    Map<Integer, String> getChildFragmentsWithType(int fvid);
+    /**
+     * find all the parent fragments that are locked.
+     * @param uri the fragment we are searching for parents
+     * @return the list of fragments Id's we are looking for.
+     */
+    List<String> getLockedParentFragmentIdsByURI(String uri);
 
     /**
      * Returns all the Fragments with a certain size.
      * @return the collection of Fragments
      */
-    Map<String, Integer> getAllFragmentIdsWithSize();
+    Map<Integer, Integer> getAllFragmentIdsWithSize();
 
     /**
      * Return the content id from a fragment.
      * @param fvid the fragment id
      * @return the content id.
      */
-    String getContentId(String fvid);
+    Integer getContentId(Integer fvid);
 
     /**
      * return all the fragments for a particular process model.
      * @param pmvid the process model version id
      * @return the list of fragment data.
      */
-    List<FragmentVersion> getFragmentDataOfProcessModel(String pmvid);
+    List<FragmentVersion> getFragmentDataOfProcessModel(Integer pmvid);
 
     /**
      * Return a fragment by it's id.
      * @param fragmentId the fragment Id we want
      * @return the fragment id or null.
      */
-    FragmentVersion getFragmentData(String fragmentId);
+    FragmentVersion getFragmentData(Integer fragmentId);
 
     /**
      * Find all the process models that are used in a list of nodes.
      * @param nodes the nodes we are using to find the fragments
      * @return the list of fragment id's
      */
-    List<String> getContainingFragments(List<String> nodes);
+    List<Integer> getContainingFragments(List<Integer> nodes);
+
+    /**
+     * Find all the process models that are used in a list of nodes.
+     * @param nodes the nodes we are using to find the fragments
+     * @return the list of fragment id's
+     */
+    List<String> getContainingFragmentsByURI(List<String> nodes);
 
     /**
      * Find all the process models that use a particular fragment.
      * @param fragmentId the fragment Id
      * @return the list of process model id's
      */
-    List<Integer> getContainedProcessModels(int fragmentId);
+    List<Integer> getContainedProcessModels(Integer fragmentId);
 
     /**
      * Find all the fragments that have been used by a particular fragment.
      * @param matchingContentId the fragment id we are searching for.
      * @return the list of fragments.
      */
-    List<String> getUsedFragmentIds(String matchingContentId);
+    List<Integer> getUsedFragmentIds(Integer matchingContentId);
 
     /**
      * Find all the similar fragments byt their size.

@@ -3,13 +3,9 @@
  */
 package org.apromore.toolbox.clustering.algorithms.dbscan;
 
-import java.sql.Connection;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
 import org.apromore.dao.ClusteringDao;
+import org.apromore.dao.FragmentVersionDao;
+import org.apromore.dao.model.FragmentVersion;
 import org.apromore.exception.RepositoryException;
 import org.apromore.service.model.ClusterSettings;
 import org.slf4j.Logger;
@@ -20,6 +16,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 /**
  * @author Chathura Ekanayake
  */
@@ -29,30 +30,29 @@ public class InMemoryGEDMatrix {
 
     private static final Logger log = LoggerFactory.getLogger(InMemoryGEDMatrix.class);
 
-    int cacheSize = 12502500;
-
     @Autowired @Qualifier("ClusteringDao")
     private ClusteringDao clusteringDao;
+    @Autowired @Qualifier("FragmentVersionDao")
+    private FragmentVersionDao fvDao;
 
     private NeighbourhoodCache neighborhoodCache;
 
     private Map<FragmentPair, Double> inMemoryGEDs;
-    private boolean useInMemoryGEDs = false;
 
-    private Map<String, InMemoryCluster> clusters;
+    private Map<Integer, InMemoryCluster> clusters;
     private List<FragmentDataObject> noise;
     private List<FragmentDataObject> unprocessedFragments;
 
     private ClusterSettings settings;
 
+
     public InMemoryGEDMatrix() {
         neighborhoodCache = new NeighbourhoodCache();
     }
 
-    public void initialize(ClusterSettings settings,
-                           Map<String, InMemoryCluster> clusters,
-                           List<FragmentDataObject> noise,
-                           List<FragmentDataObject> unprocessedFragments) throws RepositoryException {
+
+    public void initialize(ClusterSettings settings, Map<Integer, InMemoryCluster> clusters, List<FragmentDataObject> noise,
+            List<FragmentDataObject> unprocessedFragments) throws RepositoryException {
         this.settings = settings;
         this.clusters = clusters;
         this.noise = noise;
@@ -61,30 +61,21 @@ public class InMemoryGEDMatrix {
         loadInMemoryGEDs();
     }
 
-    public void setClusteringDao(ClusteringDao clusteringDao) {
-        this.clusteringDao = clusteringDao;
-    }
-
     private void loadInMemoryGEDs() throws RepositoryException {
         double maxGED = settings.getMaxNeighborGraphEditDistance();
         log.debug("Loading GEDs to memory...");
         inMemoryGEDs = clusteringDao.getDistances(maxGED);
-        useInMemoryGEDs = true;
         log.debug("GEDs have been successfully loaded to memory.");
     }
 
-    public void loadCache() {
-//		geds = GEDDAO.loadGEDs(0, cacheSize);
-    }
 
-    public double getGED(String fid1, String fid2) throws RepositoryException {
-
+    public double getGED(Integer fid1, Integer fid2) throws RepositoryException {
         if (fid1.equals(fid2)) {
             return 0;
         }
 
         double gedValue = 1;
-        FragmentPair pair = new FragmentPair(fid1, fid2);
+        FragmentPair pair = new FragmentPair(fvDao.findFragmentVersion(fid1), fvDao.findFragmentVersion(fid2));
         if (inMemoryGEDs.containsKey(pair)) {
             gedValue = inMemoryGEDs.get(pair);
         }
@@ -92,9 +83,8 @@ public class InMemoryGEDMatrix {
         return gedValue;
     }
 
-    public List<FragmentDataObject> getUnsharedCoreObjectNeighborhood(FragmentDataObject o, String sharableClusterId,
-                                                                      List<String> allowedIds) throws RepositoryException {
-
+    public List<FragmentDataObject> getUnsharedCoreObjectNeighborhood(FragmentDataObject o, Integer sharableClusterId,
+            List<Integer> allowedIds) throws RepositoryException {
         List<FragmentDataObject> nb = getCoreObjectNeighborhood(o, allowedIds);
         if (nb == null) {
             return null;
@@ -125,21 +115,20 @@ public class InMemoryGEDMatrix {
         }
     }
 
-    public List<FragmentDataObject> getCoreObjectNeighborhood(FragmentDataObject o, List<String> allowedIds)
-            throws RepositoryException {
-
-        List<FragmentDataObject> nb = neighborhoodCache.getNeighborhood(o.getFragmentId());
+    public List<FragmentDataObject> getCoreObjectNeighborhood(FragmentDataObject o, List<Integer> allowedIds) throws RepositoryException {
+        List<FragmentDataObject> nb = neighborhoodCache.getNeighborhood(o.getFragment().getId());
 
         if (nb == null) {
             nb = getNeighbourhood(o);
-            if (!nb.contains(o)) nb.add(o);
-//			neighborhoodCache.add(o.getFragmentId(), nb);
+            if (!nb.contains(o)) {
+                nb.add(o);
+            }
         }
 
         if (allowedIds != null) {
             List<FragmentDataObject> toBeRemoved = new ArrayList<FragmentDataObject>();
             for (FragmentDataObject nf : nb) {
-                if (!allowedIds.contains(nf.getFragmentId())) {
+                if (!allowedIds.contains(nf.getFragment().getId())) {
                     toBeRemoved.add(nf);
                 }
             }
@@ -158,8 +147,7 @@ public class InMemoryGEDMatrix {
      * @return
      */
     private List<FragmentDataObject> getNeighbourhood(FragmentDataObject o) {
-
-        String oid = o.getFragmentId();
+        FragmentVersion oid = o.getFragment();
         List<FragmentDataObject> nb = new ArrayList<FragmentDataObject>();
         Set<FragmentPair> pairs = inMemoryGEDs.keySet();
         for (FragmentPair pair : pairs) {
@@ -175,28 +163,19 @@ public class InMemoryGEDMatrix {
         return nb;
     }
 
-    /* (non-Javadoc)
-      * @see fragstore.repository.clustering.INeighbourhoodFinder#getCoreObjectNeighborhood(fragstore.repository.clustering.fragments.FragmentDataObject, java.util.List, java.sql.Connection)
-      */
-    public List<FragmentDataObject> getCoreObjectNeighborhood(FragmentDataObject o, List<String> allowedIds,
-                                                              Connection con) throws RepositoryException {
 
-        List<FragmentDataObject> nb = neighborhoodCache.getNeighborhood(o.getFragmentId());
 
-        if (nb == null) {
-            nb = getNeighbourhood(o);
-            if (!nb.contains(o)) nb.add(o);
-            neighborhoodCache.add(o.getFragmentId(), nb);
-        }
 
-        if (allowedIds != null) {
-            nb.retainAll(allowedIds);
-        }
-
-        if (nb.size() >= settings.getMinPoints()) {
-            return nb;
-        } else {
-            return null;
-        }
+    public void setClusteringDao(ClusteringDao clusteringDao) {
+        this.clusteringDao = clusteringDao;
     }
+
+    /**
+     * Set the Fragment Version DAO object for this class. Mainly for spring tests.
+     * @param fvDAOJpa the Fragment Version Dao.
+     */
+    public void setFragmentVersionDao(FragmentVersionDao fvDAOJpa) {
+        fvDao = fvDAOJpa;
+    }
+
 }

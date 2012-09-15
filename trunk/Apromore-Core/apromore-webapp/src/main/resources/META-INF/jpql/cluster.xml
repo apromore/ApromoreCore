@@ -5,7 +5,7 @@
 
     <named-query name="clusteringSummary.getClusteringSummary">
         <!-- Used ClusteringDao -->
-        <query>SELECT new org.apromore.dao.model.ClusteringSummary(count(c.clusterId), min(c.size), max(c.size),
+        <query>SELECT new org.apromore.dao.model.ClusteringSummary(count(c.id), min(c.size), max(c.size),
             min(c.avgFragmentSize), max(c.avgFragmentSize), min(c.BCR), max(c.BCR))
             FROM Cluster c
         </query>
@@ -19,7 +19,7 @@
     <named-query name="cluster.getClusterById">
         <!-- Used ClusteringDaoJpa -->
         <query>SELECT c FROM Cluster c
-            WHERE c.clusterId = :clusterId</query>
+            WHERE c.id = :clusterId</query>
     </named-query>
 
     <named-query name="cluster.getAllClusters">
@@ -37,15 +37,15 @@
     <named-query name="fragmentDistance.getDistance">
         <!-- Used ClusteringDao -->
         <query>SELECT fd.distance FROM FragmentDistance fd
-            WHERE fd.id.fragmentId1 = :fragmentId1
-            AND fd.id.fragmentId2 = :fragmentId2
+            WHERE fd.fragmentVersionId1.id = :fragmentId1
+            AND fd.fragmentVersionId1.id = :fragmentId2
         </query>
     </named-query>
 
     <named-query name="clusterAssignment.getFragmentIdsOfCluster">
         <!-- Used ClusteringDao -->
-        <query>SELECT ca.id.fragmentId FROM ClusterAssignment ca
-            WHERE ca.id.clusterId = :clusterId
+        <query>SELECT ca.fragment.id FROM ClusterAssignment ca
+            WHERE ca.cluster.id = :clusterId
         </query>
     </named-query>
 
@@ -53,26 +53,29 @@
         <!-- Used ClusteringDao -->
         <query>SELECT f FROM FragmentVersion f, ProcessFragmentMap m, ProcessModelVersion pmv, ProcessBranch b, Process
             p
-            WHERE f.fragmentVersionId = m.fragmentVersion.fragmentVersionId AND
-            m.processModelVersion.processModelVersionId = pmv.processModelVersionId AND
-            pmv.processBranch.branchId = b.branchId AND b.process.processId = p.processId AND p.processId IN
-            (:processIds)
+            WHERE f.id = m.fragmentVersion.id
+            AND m.processModelVersion.id = pmv.id
+            AND pmv.processBranch.id = b.id
+            AND b.process.id = p.id
+            AND p.id IN (:processIds)
         </query>
     </named-query>
 
     <named-query name="clusterAssignment.getFragmentsOfCluster">
         <!-- Used ClusteringDao -->
         <query>SELECT f FROM FragmentVersion f, ClusterAssignment ca
-            WHERE ca.id.clusterId = :clusterId AND ca.id.fragmentId = f.fragmentVersionId
+            WHERE ca.cluster.id = :clusterId
+            AND ca.fragment.id = f.id
         </query>
     </named-query>
 
     <named-query name="clusterAssignment.getFragmentsOfCluster2">
         <!-- Used ClusteringDao -->
         <query>SELECT f FROM FragmentVersion f, ClusterAssignment ca, ProcessFragmentMap m, ProcessModelVersion pmv
-            WHERE ca.id.clusterId = :clusterId AND ca.id.fragmentId = f.fragmentVersionId
-            AND f.fragmentVersionId = m.fragmentVersion.fragmentVersionId AND
-            m.processModelVersion.processModelVersionId = pmv.processModelVersionId
+            WHERE ca.cluster.id = :clusterId
+            AND ca.fragment.id = f.id
+            AND f.id = m.fragmentVersion.id
+            AND m.processModelVersion.id = pmv.id
         </query>
     </named-query>
 

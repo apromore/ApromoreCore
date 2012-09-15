@@ -3,7 +3,6 @@ package org.apromore.dao.jpa;
 import org.apromore.dao.NamedQueries;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
-import org.apromore.dao.model.FragmentVersionDagId;
 import org.apromore.test.heuristic.JavaBeanHeuristic;
 import org.junit.Before;
 import org.junit.Test;
@@ -53,7 +52,7 @@ public class FragmentVersionDagDaoJpaUnitTest {
 
     @Test
     public final void testFindFragmentVersionDag() {
-        String id = "1";
+        Integer id = 1;
         FragmentVersionDag v = new FragmentVersionDag();
 
         expect(manager.find(FragmentVersionDag.class, id)).andReturn(v);
@@ -67,7 +66,7 @@ public class FragmentVersionDagDaoJpaUnitTest {
 
     @Test
     public final void testGetChildMappings() {
-        String fragmentId = "1";
+        Integer fragmentId = 1;
         List<FragmentVersionDag> fvs = new ArrayList<FragmentVersionDag>();
         fvs.add(new FragmentVersionDag());
 
@@ -86,26 +85,26 @@ public class FragmentVersionDagDaoJpaUnitTest {
     @Test
     public final void testGetAllParentChildMappings() {
         List<FragmentVersionDag> fvs = new ArrayList<FragmentVersionDag>();
-        fvs.add(createFragmentVersionDag("1", "2"));
-        fvs.add(createFragmentVersionDag("2", "3"));
-        fvs.add(createFragmentVersionDag("3", "10"));
-        fvs.add(createFragmentVersionDag("1", "4"));
+        fvs.add(createFragmentVersionDag(1, 2));
+        fvs.add(createFragmentVersionDag(2, 3));
+        fvs.add(createFragmentVersionDag(3, 10));
+        fvs.add(createFragmentVersionDag(1, 4));
 
-        Map<String, List<String>> expRslt = new HashMap<String, List<String>>();
-        List<String> parent1 = new ArrayList<String>(1); parent1.add("2"); parent1.add("4");
-        List<String> parent2 = new ArrayList<String>(1); parent2.add("3");
-        List<String> parent3 = new ArrayList<String>(1); parent3.add("10");
+        Map<Integer, List<Integer>> expRslt = new HashMap<Integer, List<Integer>>();
+        List<Integer> parent1 = new ArrayList<Integer>(1); parent1.add(2); parent1.add(4);
+        List<Integer> parent2 = new ArrayList<Integer>(1); parent2.add(3);
+        List<Integer> parent3 = new ArrayList<Integer>(1); parent3.add(10);
 
-        expRslt.put("1", parent1);
-        expRslt.put("2", parent2);
-        expRslt.put("3", parent3);
+        expRslt.put(1, parent1);
+        expRslt.put(2, parent2);
+        expRslt.put(3, parent3);
 
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(NamedQueries.GET_ALL_PARENT_CHILD_MAPPINGS)).andReturn(query);
         expect(query.getResultList()).andReturn(fvs);
         replay(manager, query);
 
-        Map<String, List<String>> childFv = dao.getAllParentChildMappings();
+        Map<Integer, List<Integer>> childFv = dao.getAllParentChildMappings();
 
         verify(manager, query);
         assertThat(childFv, equalTo(expRslt));
@@ -115,26 +114,26 @@ public class FragmentVersionDagDaoJpaUnitTest {
     @Test
     public final void testGetAllChildParentMappings() {
         List<FragmentVersionDag> fvs = new ArrayList<FragmentVersionDag>();
-        fvs.add(createFragmentVersionDag("1", "2"));
-        fvs.add(createFragmentVersionDag("2", "3"));
-        fvs.add(createFragmentVersionDag("3", "10"));
-        fvs.add(createFragmentVersionDag("1", "10"));
+        fvs.add(createFragmentVersionDag(1, 2));
+        fvs.add(createFragmentVersionDag(2, 3));
+        fvs.add(createFragmentVersionDag(3, 10));
+        fvs.add(createFragmentVersionDag(1, 10));
 
-        Map<String, List<String>> expRslt = new HashMap<String, List<String>>();
-        List<String> parent1 = new ArrayList<String>(1); parent1.add("1");
-        List<String> parent2 = new ArrayList<String>(1); parent2.add("2");
-        List<String> parent3 = new ArrayList<String>(1); parent3.add("3"); parent3.add("1");
+        Map<Integer, List<Integer>> expRslt = new HashMap<Integer, List<Integer>>();
+        List<Integer> parent1 = new ArrayList<Integer>(1); parent1.add(1);
+        List<Integer> parent2 = new ArrayList<Integer>(1); parent2.add(2);
+        List<Integer> parent3 = new ArrayList<Integer>(1); parent3.add(3); parent3.add(1);
 
-        expRslt.put("2", parent1);
-        expRslt.put("3", parent2);
-        expRslt.put("10", parent3);
+        expRslt.put(2, parent1);
+        expRslt.put(3, parent2);
+        expRslt.put(10, parent3);
 
         Query query = createMock(Query.class);
         expect(manager.createNamedQuery(NamedQueries.GET_ALL_PARENT_CHILD_MAPPINGS)).andReturn(query);
         expect(query.getResultList()).andReturn(fvs);
         replay(manager, query);
 
-        Map<String, List<String>> childFv = dao.getAllChildParentMappings();
+        Map<Integer, List<Integer>> childFv = dao.getAllChildParentMappings();
 
         verify(manager, query);
         assertThat(childFv, equalTo(expRslt));
@@ -142,7 +141,7 @@ public class FragmentVersionDagDaoJpaUnitTest {
 
     @Test
     public final void testGetChildFragmentsByFragmentVersion() {
-        String fragmentVersionId = "1";
+        Integer fragmentVersionId = 1;
         List<FragmentVersion> fvs = new ArrayList<FragmentVersion>();
         fvs.add(new FragmentVersion());
 
@@ -211,15 +210,21 @@ public class FragmentVersionDagDaoJpaUnitTest {
 
     private FragmentVersionDag createFragmentVersionDag() {
         FragmentVersionDag e = new FragmentVersionDag();
-        e.setId(new FragmentVersionDagId());
-        e.setFragmentVersionByFragVerId(new FragmentVersion());
+        e.setFragmentVersionId(new FragmentVersion());
         return e;
     }
 
-    private FragmentVersionDag createFragmentVersionDag(String frgId, String chlId) {
+    private FragmentVersionDag createFragmentVersionDag(Integer frgId, Integer chlId) {
         FragmentVersionDag e = new FragmentVersionDag();
-        e.setId(new FragmentVersionDagId(frgId, chlId, "test"));
-        e.setFragmentVersionByFragVerId(new FragmentVersion());
+
+        FragmentVersion f1 = new FragmentVersion();
+        f1.setId(frgId);
+        FragmentVersion f2 = new FragmentVersion();
+        f2.setId(chlId);
+
+        e.setChildFragmentVersionId(f2);
+        e.setFragmentVersionId(f1);
+        e.setPocketId("123");
         return e;
     }
 }

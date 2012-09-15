@@ -9,16 +9,16 @@ import org.apromore.dao.model.FragmentVersionDag;
  */
 public class FragmentChildMapping {
 
-    private String fragmentId;
+    private Integer fragmentId;
 
     //private Map<String, String> childMapping;
     private List<FragmentVersionDag> childMapping;
 
-    public String getFragmentId() {
+    public Integer getFragmentId() {
         return fragmentId;
     }
 
-    public void setFragmentId(String fragmentId) {
+    public void setFragmentId(Integer fragmentId) {
         this.fragmentId = fragmentId;
     }
 

@@ -19,19 +19,19 @@ public interface LockService {
     boolean lockProcessModelVersion(Integer processModelVersionId);
 
     /**
-     * unLock a previously locked process Model.
-     *
-     * @param processModelVersionId the process model
-     */
-    void unlockProcessModelVersion(Integer processModelVersionId);
-
-    /**
      * Lock a fragment.
      *
      * @param fragmentId the fragment to lock
      * @return if locked successfully or not
      */
-    boolean lockFragment(String fragmentId);
+    boolean lockFragment(Integer fragmentId);
+
+    /**
+     * Lock a fragment.
+     * @param fragmentUri the fragment to lock
+     * @return if locked successfully or not
+     */
+    boolean lockFragmentByUri(String fragmentUri);
 
     /**
      * Locks a single fragment.
@@ -41,26 +41,44 @@ public interface LockService {
      */
     boolean lockSingleFragment(FragmentVersion fragVersion);
 
+
+
+    /**
+     * unLock a previously locked process Model.
+     *
+     * @param processModelVersionId the process model
+     */
+    void unlockProcessModelVersion(Integer processModelVersionId);
+
     /**
      * unLock a previously locked fragment.
-     *
      * @param fragmentId the fragment to unlock
      */
-    void unlockFragment(String fragmentId);
+    void unlockFragment(Integer fragmentId);
+
+    /**
+     * unLock a previously locked fragment.
+     * @param uri the fragment to unlock
+     */
+    void unlockFragmentByURI(String uri);
 
     /**
      * Unlocks the ascendant fragments ????
-     *
      * @param fragmentId the fragment id.
      */
-    void unlockAscendantFragments(String fragmentId);
+    void unlockAscendantFragments(Integer fragmentId);
 
     /**
      * Unlocks the descendant Fragments ????
-     *
      * @param fragmentId the fragmentId.
      */
-    void unlockDescendantFragments(String fragmentId);
+    void unlockDescendantFragments(Integer fragmentId);
+
+    /**
+     * Unlocks the descendant Fragments ????
+     * @param uri the fragment uri.
+     */
+    void unlockDescendantFragmentsByURI(String uri);
 
     /**
      * Unlocks the descendant Fragments ????
@@ -68,6 +86,8 @@ public interface LockService {
      * @param fragmentVersionDag the fragmentVersionDag.
      */
     void unlockDescendantFragments(FragmentVersionDag fragmentVersionDag);
+
+
 
 
     /**

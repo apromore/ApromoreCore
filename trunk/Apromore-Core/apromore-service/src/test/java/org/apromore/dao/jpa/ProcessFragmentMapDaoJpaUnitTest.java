@@ -75,7 +75,7 @@ public class ProcessFragmentMapDaoJpaUnitTest {
     private ProcessFragmentMap createProcessFragmentMap() {
         ProcessFragmentMap e = new ProcessFragmentMap();
         e.setFragmentVersion(new FragmentVersion());
-        e.setMappingId(1);
+        e.setId(1);
         e.setProcessModelVersion(new ProcessModelVersion());
         return e;
     }

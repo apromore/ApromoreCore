@@ -30,16 +30,16 @@ public class ProcessDaoJpa implements ProcessDao {
     /** The start of the manual search query. */
     public static final String GET_ALL_PROCESSES = "SELECT p FROM Process p ";
     /** The order by for the manual search query. */
-    public static final String GET_ALL_PRO_SORT = " ORDER by p.processId";
+    public static final String GET_ALL_PRO_SORT = " ORDER by p.id";
 
 
     /**
-     * @see org.apromore.dao.ProcessDao#findProcess(String)
+     * @see org.apromore.dao.ProcessDao#findProcess(Integer)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public Process findProcess(final String processId) {
+    public Process findProcess(final Integer processId) {
         return em.find(Process.class, processId);
     }
 
@@ -88,13 +88,13 @@ public class ProcessDaoJpa implements ProcessDao {
 
 
     /**
-     * @see org.apromore.dao.ProcessDao#getProcess(int)
+     * @see org.apromore.dao.ProcessDao#getProcess(Integer)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
     @SuppressWarnings("unchecked")
-    public Process getProcess(final int processId) {
+    public Process getProcess(final Integer processId) {
         Query query = em.createNamedQuery(NamedQueries.GET_PROCESS_BY_ID);
         query.setParameter("id", processId);
         List<Process> result = query.getResultList();
@@ -129,7 +129,19 @@ public class ProcessDaoJpa implements ProcessDao {
      */
     @Override
     @Transactional(readOnly = true)
-    public String getRootFragmentVersionId(final Integer processModelVersionId) {
+    public Integer getRootFragmentVersionId(final Integer processModelVersionId) {
+        Query query = em.createNamedQuery(NamedQueries.GET_ROOT_FRAGMENT_PROCESS_MODEL);
+        query.setParameter("id", processModelVersionId);
+        return (Integer) query.getSingleResult();
+    }
+
+    /**
+     * @see org.apromore.dao.ProcessDao#getRootFragmentVersionURI(Integer)
+     * {@inheritDoc}
+     */
+    @Override
+    @Transactional(readOnly = true)
+    public String getRootFragmentVersionURI(final Integer processModelVersionId) {
         Query query = em.createNamedQuery(NamedQueries.GET_ROOT_FRAGMENT_PROCESS_MODEL);
         query.setParameter("id", processModelVersionId);
         return (String) query.getSingleResult();

@@ -6,22 +6,22 @@
     <named-query name="annotation.getAnnotation">
         <!-- Used AnnotationDao -->
         <query>SELECT a FROM Annotation a, ProcessModelVersion p
-            WHERE a.processModelVersion.processModelVersionId = p.processModelVersionId
-            AND p.processModelVersionId = :processId
+            WHERE a.processModelVersion.id = p.id
+            AND p.id = :processId
             AND p.versionName = :versionName
             AND a.name = :name</query>
     </named-query>
     <named-query name="annotation.getAnnotationByUrl">
         <!-- Used AnnotationDao -->
         <query>SELECT a FROM Annotation a
-            WHERE a.natve.uri = :uri</query>
+            WHERE a.natve.id = :uri</query>
     </named-query>
 
     <named-query name="content.getContentByFragmentVersion">
         <!-- Used ContentDao -->
         <query>SELECT c FROM FragmentVersion fv, Content c
-            WHERE fv.content.contentId = c.contentId
-            AND fv.fragmentVersionId = :fragVersion</query>
+            WHERE fv.content.id = c.id
+            AND fv.id = :fragVersion</query>
     </named-query>
     <named-query name="content.getContentByHash">
         <!-- Used ContentDao -->
@@ -33,13 +33,13 @@
     <named-query name="edge.getEdgesByContentId">
         <!-- Used EdgeDao -->
         <query>SELECT e FROM Edge e
-            WHERE e.content.contentId = :contentId</query>
+            WHERE e.content.id = :contentId</query>
     </named-query>
     <named-query name="edge.getEdgesByFragmentId">
         <!-- Used EdgeDao -->
         <query>SELECT e FROM Edge e, FragmentVersion fv
-            WHERE e.content.contentId = fv.content.contentId
-            AND fv.fragmentVersionId = :fragmentId</query>
+            WHERE e.content.id = fv.content.id
+            AND fv.id = :fragmentId</query>
     </named-query>
     <named-query name="edge.getStoredEdges">
         <!-- Used EdgeDao -->
@@ -50,108 +50,130 @@
     <named-query name="fragmentVersion.getFragmentVersion">
         <!-- Used FragmentVersionDao -->
         <query>SELECT fv FROM FragmentVersion fv
-            WHERE fv.fragmentVersionId = :id</query>
+            WHERE fv.id = :id</query>
     </named-query>
     <named-query name="fragmentVersion.getAllFragmentVersion">
         <!-- Used FragmentVersionDao -->
         <query>SELECT fv FROM FragmentVersion fv</query>
     </named-query>
+    <named-query name="fragmentVersion.getFragmentVersionByURI">
+        <!-- Used FragmentVersionDao -->
+        <query>SELECT fv FROM FragmentVersion fv
+               WHERE fv.uri = :uri</query>
+    </named-query>
     <named-query name="fragmentVersion.getFragmentVersionByContentIdMappingCode">
         <!-- Used FragmentVersionDao -->
         <query>SELECT fv FROM FragmentVersion fv
-            WHERE fv.content.contentId = :contentId
-            AND fv.childMappingCode = :mappingCode</query>
+               WHERE fv.content.id = :contentId
+               AND fv.childMappingCode = :mappingCode</query>
     </named-query>
     <named-query name="fragmentVersion.getUsedProcessModelForFragment">
         <!-- Used FragmentVersionDao -->
-        <query>SELECT count(p.processModelVersionId) FROM ProcessModelVersion p
-            WHERE p.rootFragmentVersionId = :fragVersionId</query>
+        <query>SELECT count(p.id) FROM ProcessModelVersion p
+               WHERE p.rootFragmentVersion.id = :fragVersionId</query>
     </named-query>
     <named-query name="fragmentVersion.getLockedParentFragmentIds">
         <!-- Used FragmentVersionDao -->
-        <query>SELECT fv.fragmentVersionId FROM FragmentVersion fv, FragmentVersionDag fvd
-            WHERE fv.fragmentVersionId = fvd.id.fragmentVersionId
-            AND fv.lockStatus = 1
-            AND fvd.id.childFragmentVersionId = :childFragVersionId</query>
+        <query>SELECT fv.id FROM FragmentVersion fv, FragmentVersionDag fvd
+               WHERE fv.id = fvd.fragmentVersionId.id
+                 AND fv.lockStatus = 1
+                 AND fvd.childFragmentVersionId.id = :childFragVersionId</query>
+    </named-query>
+    <named-query name="fragmentVersion.getLockedParentFragmentIdsByURI">
+        <!-- Used FragmentVersionDao -->
+        <query>SELECT fv.uri FROM FragmentVersion fv, FragmentVersionDag fvd
+               WHERE fv.id = fvd.fragmentVersionId.id
+                 AND fv.lockStatus = 1
+                 AND fvd.childFragmentVersionId.uri = :uri</query>
     </named-query>
     <named-query name="fragmentVersion.getChildFragmentsWithSize">
         <!-- Used FragmentVersionDao -->
-        <query>SELECT new map(fv.fragmentVersionId, fv.fragmentSize)
-            FROM FragmentVersionDag fvd, FragmentVersion fv
-            WHERE fv.fragmentVersionId = fvd.id.fragmentVersionId
-            AND fvd.id.fragmentVersionId = :fragVersionId</query>
+        <query>SELECT new map(fv.id, fv.fragmentSize)
+               FROM FragmentVersionDag fvd, FragmentVersion fv
+               WHERE fv.id = fvd.fragmentVersionId.id
+                 AND fvd.fragmentVersionId.id = :fragVersionId</query>
     </named-query>
     <named-query name="fragmentVersion.getChildFragmentsWithType">
         <!-- Used FragmentVersionDao -->
-        <query>SELECT new map(fv.fragmentVersionId, fv.fragmentType)
-            FROM FragmentVersionDag fvd, FragmentVersion fv
-            WHERE fv.fragmentVersionId = fvd.id.fragmentVersionId
-            AND fvd.id.fragmentVersionId = :fragVersionId</query>
+        <query>SELECT new map(fv.id, fv.fragmentType)
+               FROM FragmentVersionDag fvd, FragmentVersion fv
+               WHERE fv.id = fvd.fragmentVersionId.id
+                 AND fvd.fragmentVersionId.id = :fragVersionId</query>
     </named-query>
     <named-query name="fragmentVersion.getFragmentData">
         <!-- Used FragmentVersionDao -->
         <query>SELECT fv From FragmentVersion fv
-            WHERE fv.fragmentVersionId = :fragVersionId</query>
+               WHERE fv.id = :fragVersionId</query>
     </named-query>
     <named-query name="fragmentVersion.getFragmentDataOfProcessModel">
         <!-- Used FragmentVersionDao -->
         <query>SELECT fv From FragmentVersion fv, ProcessFragmentMap pfm
-            WHERE fv.fragmentVersionId = pfm.fragmentVersion.fragmentVersionId
-            AND pfm.processModelVersion.processModelVersionId = :procModelId</query>
+               WHERE fv.id = pfm.fragmentVersion.id
+                 AND pfm.processModelVersion.id = :procModelId</query>
     </named-query>
     <named-query name="fragmentVersion.getUsedFragmentIds">
         <!-- Used FragmentVersionDao -->
-        <query>SELECT fv.fragmentVersionId FROM FragmentVersion fv
-            WHERE fv.content.contentId = :contentId</query>
+        <query>SELECT fv.id FROM FragmentVersion fv
+               WHERE fv.content.id = :contentId</query>
     </named-query>
     <named-query name="fragmentVersion.getSimilarFragmentsBySize">
         <!-- Used FragmentVersionDao -->
         <query>SELECT fv FROM FragmentVersion fv
-            WHERE fv.fragmentSize &gt; :min
-            AND fv.fragmentSize &lt; :max</query>
+               WHERE fv.fragmentSize &gt; :min
+                 AND fv.fragmentSize &lt; :max</query>
     </named-query>
     <named-query name="fragmentVersion.getSimilarFragmentsBySizeType">
         <!-- Used FragmentVersionDao -->
         <query>SELECT fv FROM FragmentVersion fv
-            WHERE fv.fragmentSize &gt; :min
-            AND fv.fragmentSize &lt; :max
-            AND fv.fragmentType = :type</query>
+               WHERE fv.fragmentSize &gt; :min
+                 AND fv.fragmentSize &lt; :max
+                 AND fv.fragmentType = :type</query>
     </named-query>
     <named-query name="fragmentVersion.getAllFragmentsWithSize">
         <!-- Used FragmentVersionDao -->
-        <query>SELECT fv.fragmentVersionId, fv.fragmentSize
-            FROM FragmentVersion fv</query>
+        <query>SELECT fv.id, fv.fragmentSize
+               FROM FragmentVersion fv</query>
     </named-query>
     <named-query name="fragmentVersion.getRootFragmentIdAboveSize">
         <!-- Used FragmentVersionDao -->
-        <query>SELECT f.fragmentVersionId
-            FROM FragmentVersion f, ProcessModelVersion pmv
-            WHERE f.fragmentVersionId = pmv.rootFragmentVersionId
-            AND f.fragmentSize &gt; :minSize</query>
+        <query>SELECT f.id
+               FROM FragmentVersion f, ProcessModelVersion pmv
+               WHERE f.id = pmv.rootFragmentVersion.id
+                 AND f.fragmentSize &gt; :minSize</query>
     </named-query>
 
 
     <named-query name="fragmentVersionDag.getParentFragmentVersions">
         <!-- Used FragmentVersionDao, AnalysisDao -->
         <query>SELECT fvd FROM FragmentVersionDag fvd
-            WHERE fvd.id.fragmentVersionId = :childId</query>
+               WHERE fvd.fragmentVersionId.id = :childId</query>
+    </named-query>
+    <named-query name="fragmentVersionDag.getFragmentVersionDagByURI">
+        <!-- Used FragmentVersionDao, AnalysisDao -->
+        <query>SELECT fvd FROM FragmentVersionDag fvd
+               WHERE fvd.fragmentVersionId.uri = :uri</query>
     </named-query>
     <named-query name="fragmentVersionDag.getChildMappings">
         <!-- Used FragmentVersionDagDao -->
         <query>SELECT fvd FROM FragmentVersionDag fvd
-            WHERE fvd.id.fragmentVersionId = :fragVersionId</query>
+               WHERE fvd.fragmentVersionId.id = :fragVersionId</query>
+    </named-query>
+    <named-query name="fragmentVersionDag.getChildMappingsByUri">
+        <!-- Used FragmentVersionDagDao -->
+        <query>SELECT fvd FROM FragmentVersionDag fvd
+            WHERE fvd.fragmentVersionId.uri = :uri</query>
     </named-query>
     <named-query name="fragmentVersionDag.getChildFragmentsByFragmentVersion">
         <!-- Used FragmentVersionDagDao -->
         <query>SELECT fv FROM FragmentVersionDag fvd, FragmentVersion fv
-            WHERE fvd.id.childFragmentVersionId = fv.fragmentVersionId
-            AND fv.fragmentVersionId = :fragVersionId</query>
+               WHERE fvd.childFragmentVersionId.id = fv.id
+                 AND fv.id = :fragVersionId</query>
     </named-query>
     <named-query name="fragmentVersionDag.getChildFragmentCount">
         <!-- Used FragmentVersionDagDao -->
         <query>SELECT fv FROM FragmentVersionDag fvd, FragmentVersion fv
-            WHERE fvd.id.childFragmentVersionId = fv.fragmentVersionId
-            AND fv.fragmentVersionId = :fragVersionId</query>
+               WHERE fvd.childFragmentVersionId.id = fv.id
+                 AND fv.id = :fragVersionId</query>
     </named-query>
     <named-query name="fragmentVersionDag.getAllParentChildMappings">
         <!-- Used FragmentVersionDagDao -->
@@ -160,25 +182,26 @@
     <named-query name="fragmentVersionDag.getAllDagsWithSize">
         <!-- Used FragmentVersionDagDao -->
         <query>SELECT fvd FROM FragmentVersionDag fvd, FragmentVersion f
-            WHERE fvd.id.childFragmentVersionId = f.fragmentVersionId AND f.fragmentSize &gt; :minSize</query>
+               WHERE fvd.childFragmentVersionId.id = f.id
+                 AND f.fragmentSize &gt; :minSize</query>
     </named-query>
 
 
     <named-query name="native.getNative">
         <!-- Used NativeDao -->
         <query>SELECT n FROM Native n, ProcessModelVersion p
-            WHERE n.processModelVersion.processModelVersionId = p.processModelVersionId
-            AND p.processBranch.branchId = :branchId
-            AND p.versionName = :versionName
-            AND n.nativeType.natType = :nativeType</query>
+               WHERE n.processModelVersion.id = p.id
+                 AND p.processBranch.id = :branchId
+                 AND p.versionName = :versionName
+                 AND n.nativeType.natType = :nativeType</query>
     </named-query>
     <named-query name="native.getNativeTypes">
         <!-- Used NativeDao -->
         <query>SELECT n
-            FROM Native n, ProcessModelVersion p
-            WHERE n.processModelVersion.processModelVersionId = p.processModelVersionId
-            AND p.processBranch.branchId = :branchId
-            AND p.versionName = :versionName
+               FROM Native n, ProcessModelVersion p
+               WHERE n.processModelVersion.id = p.id
+                 AND p.processBranch.id = :branchId
+                 AND p.versionName = :versionName
         </query>
     </named-query>
 
@@ -190,8 +213,8 @@
     <named-query name="nativeType.getNativeTypeFormats">
         <!-- Used NativeTypeDao -->
         <query>SELECT n
-            FROM NativeType n
-            WHERE n.natType = :name
+               FROM NativeType n
+               WHERE n.natType = :name
         </query>
     </named-query>
 
@@ -211,7 +234,7 @@
         <!-- Used ProcessDao -->
         <query>SELECT p
             FROM Process p
-            WHERE p.processId = :id
+            WHERE p.id = :id
         </query>
     </named-query>
     <named-query name="process.getProcessByName">
@@ -227,7 +250,7 @@
         <!-- Used ProcessBranchDao -->
         <query>SELECT b
             FROM ProcessBranch b
-            WHERE b.process.processId = :processId
+            WHERE b.process.id = :processId
             AND b.branchName = :name
         </query>
     </named-query>
@@ -235,24 +258,35 @@
 
     <named-query name="processModelVersion.getProcessModelVersionByBranch">
         <!-- Used AnalysisDao -->
-        <query>SELECT pmv
-            FROM ProcessModelVersion pmv
-            WHERE pmv.processBranch.branchId = :id
-            AND pmv.processBranch.branchName = :name
+        <query>SELECT pmv FROM ProcessModelVersion pmv
+               WHERE pmv.processBranch.id = :id
+               AND pmv.processBranch.branchName = :name
         </query>
     </named-query>
     <named-query name="processModelVersion.getUsedProcessModelVersions">
         <!-- Used AnalysisDao -->
-        <query>SELECT pm
-            FROM ProcessModelVersion pm
-            WHERE pm.rootFragmentVersionId = :id
+        <query>SELECT pm FROM ProcessModelVersion pm
+               WHERE pm.rootFragmentVersion.id = :id
+        </query>
+    </named-query>
+    <named-query name="processModelVersion.getUsedProcessModelVersionsByURI">
+        <!-- Used AnalysisDao -->
+        <query>SELECT pm FROM ProcessModelVersion pm
+               WHERE pm.rootFragmentVersion.uri = :uri
         </query>
     </named-query>
     <named-query name="processModelVersion.getRootFragmentProcessModel">
         <!-- Used ProcessDao -->
-        <query>SELECT pm.rootFragmentVersionId
+        <query>SELECT pm.rootFragmentVersion.id
             FROM ProcessModelVersion pm
-            WHERE pm.processModelVersionId = :id
+            WHERE pm.id = :id
+        </query>
+    </named-query>
+    <named-query name="processModelVersion.getRootFragmentProcessModelURI">
+        <!-- Used ProcessDao -->
+        <query>SELECT pm.rootFragmentVersion.uri
+            FROM ProcessModelVersion pm
+            WHERE pm.id = :id
         </query>
     </named-query>
     <named-query name="processModelVersion.getMaxVersionProcessModel">
@@ -261,28 +295,28 @@
             FROM ProcessModelVersion pm
             WHERE pm.versionNumber = (SELECT max(pm1.versionNumber)
             FROM ProcessModelVersion pm1
-            WHERE pm1.processBranch.branchId = :branchId)
+            WHERE pm1.processBranch.id = :branchId)
         </query>
     </named-query>
     <named-query name="processModelVersion.getCurrentProcessModels">
         <!-- Used ProcessDao -->
-        <query>SELECT pm.processModelVersionId, pm.versionNumber, pm.processBranch.branchId
-            FROM ProcessModelVersion pm
-            WHERE pm.processBranch.branchId = (SELECT pm2.processBranch.branchId
-            FROM ProcessModelVersion pm2
-            GROUP BY pm2.processBranch.branchId)
-            AND pm.versionNumber = (SELECT MAX(pm2.versionNumber)
-            FROM ProcessModelVersion pm2
-            GROUP BY pm2.processBranch.branchId)
+        <query>SELECT pm.id, pm.versionNumber, pm.processBranch.id
+               FROM ProcessModelVersion pm
+               WHERE pm.processBranch.id = (SELECT pm2.processBranch.id
+                                            FROM ProcessModelVersion pm2
+                                            GROUP BY pm2.processBranch.id)
+                 AND pm.versionNumber = (SELECT MAX(pm2.versionNumber)
+                                         FROM ProcessModelVersion pm2
+                                         GROUP BY pm2.processBranch.id)
         </query>
     </named-query>
     <named-query name="processModelVersion.getCurrentProcessModelVersion">
         <!-- Used ProcessModelVersionDao -->
         <query>SELECT pmv
             FROM ProcessModelVersion pmv, Process p, ProcessBranch pb
-            WHERE p.processId = pb.process.processId
-            AND pb.branchId = pmv.processBranch.branchId
-            AND p.processId = :processId
+            WHERE p.id = pb.process.id
+            AND pb.id = pmv.processBranch.id
+            AND p.id = :processId
             AND pmv.versionName = :versionName
         </query>
     </named-query>
@@ -290,26 +324,26 @@
         <!-- Used ProcessModelVersionDao -->
         <query>SELECT pmv
             FROM ProcessModelVersion pmv
-            WHERE pmv.processBranch.branchId = :branchId
+            WHERE pmv.processBranch.id = :branchId
             AND pmv.versionNumber = (SELECT max(pmv1.versionNumber)
             FROM ProcessModelVersion pmv1
-            WHERE pmv1.processBranch.branchId = :branchId)
+            WHERE pmv1.processBranch.id = :branchId)
         </query>
     </named-query>
     <named-query name="processModelVersion.getCurrentProcessModelVersionB">
         <!-- Used ProcessModelVersionDao -->
         <query>SELECT pmv
             FROM ProcessModelVersion pmv
-            WHERE pmv.processBranch.branchId = (SELECT pb.branchId
+            WHERE pmv.processBranch.id = (SELECT pb.id
             FROM Process p, ProcessBranch pb
-            WHERE p.processId = pb.process.processId
+            WHERE p.id = pb.process.id
             AND p.name = :processName
             AND pb.branchName = :branchName)
             AND pmv.versionNumber =
             (SELECT max(pmv1.versionNumber) from ProcessModelVersion pmv1
-            WHERE pmv1.processBranch.branchId = (SELECT pb1.branchId
+            WHERE pmv1.processBranch.id = (SELECT pb1.id
             FROM Process p1, ProcessBranch pb1
-            WHERE p1.processId = pb1.process.processId
+            WHERE p1.id = pb1.process.id
             AND p1.name = :processName
             AND pb1.branchName = :branchName))</query>
     </named-query>
@@ -317,8 +351,8 @@
         <!-- Used ProcessModelVersionDao -->
         <query>SELECT pmv
             FROM ProcessModelVersion pmv, Process p, ProcessBranch pb
-            WHERE p.processId = pb.process.processId
-            AND pb.branchId = pmv.processBranch.branchId
+            WHERE p.id = pb.process.id
+            AND pb.id = pmv.processBranch.id
             AND p.name = :processName
             AND pb.branchName = :branchName
             AND pmv.versionName = :versionName
@@ -326,30 +360,30 @@
     </named-query>
     <named-query name="processModelVersion.getMaxModelVersions">
         <!-- Used FragmentVersionDao -->
-        <query>SELECT new map(pmv.processBranch.branchId, max(pmv.versionNumber))
+        <query>SELECT new map(pmv.processBranch.id, max(pmv.versionNumber))
             FROM ProcessModelVersion pmv, ProcessFragmentMap pfm
-            WHERE pmv.processModelVersionId = pfm.processModelVersion.processModelVersionId
-            AND pfm.fragmentVersion.fragmentVersionId = :fragmentVersionId
-            GROUP BY pmv.processBranch.branchId
+            WHERE pmv.id = pfm.processModelVersion.id
+            AND pfm.fragmentVersion.id = :fragmentVersionId
+            GROUP BY pmv.processBranch.id
         </query>
     </named-query>
     <named-query name="processModelVersion.getCurrentModelVersions">
         <!-- Used FragmentVersionDao -->
-        <query>SELECT new map(pmv1.processBranch.branchId, max(pmv1.versionNumber))
+        <query>SELECT new map(pmv1.processBranch.id, max(pmv1.versionNumber))
             FROM ProcessModelVersion pmv1, ProcessModelVersion pmv2, ProcessFragmentMap pfm
-            WHERE pmv2.processModelVersionId = pfm.processModelVersion.processModelVersionId
-            AND pfm.fragmentVersion.fragmentVersionId = :fragmentVersionId
-            AND pmv2.processBranch.branchId = pmv1.processBranch.branchId
-            GROUP BY pmv1.processBranch.branchId
+            WHERE pmv2.id = pfm.processModelVersion.id
+            AND pfm.fragmentVersion.id = :fragmentVersionId
+            AND pmv2.processBranch.id = pmv1.processBranch.id
+            GROUP BY pmv1.processBranch.id
         </query>
     </named-query>
     <named-query name="processModelVersion.getCurrentModel">
         <!-- Used FragmentVersionDao -->
         <query>SELECT pmv
             FROM ProcessModelVersion pmv, Process p, ProcessBranch pb
-            WHERE p.processId = pb.process.processId
-            AND pb.branchId = pmv.processBranch.branchId
-            AND p.processId = :processId
+            WHERE p.id = pb.process.id
+            AND pb.id = pmv.processBranch.id
+            AND p.id = :processId
             AND pmv.versionName = :versionName
         </query>
     </named-query>
@@ -357,9 +391,9 @@
 
     <named-query name="processModelMap.getContainedProcessModel">
         <!-- Used FragmentVersionDao -->
-        <query>SELECT fv.processModelVersion.processModelVersionId
+        <query>SELECT fv.processModelVersion.id
             FROM ProcessFragmentMap fv
-            WHERE fv.fragmentVersion.fragmentVersionId = :fragVersionId
+            WHERE fv.fragmentVersion.id = :fragVersionId
         </query>
     </named-query>
 
@@ -368,27 +402,36 @@
         <!-- Used UserDao -->
         <query>SELECT usr FROM User usr</query>
     </named-query>
+    <named-query name="user.getUserByLogin">
+        <!-- Used UserDao -->
+        <query>SELECT usr FROM User usr
+               WHERE usr.username = :username</query>
+    </named-query>
 
 
     <named-query name="node.getContentIds">
         <!-- Used NodeDao -->
-        <query>SELECT distinct v.content.contentId
-            FROM Node v
+        <query>SELECT distinct v.content.id
+               FROM Node v
         </query>
+    </named-query>
+    <named-query name="node.getNodeByURI">
+        <query>SELECT n FROM Node n
+               WHERE n.uri = :uri</query>
     </named-query>
     <named-query name="node.getVerticesByContentId">
         <!-- Used NodeDao -->
         <query>SELECT v
             FROM Node v
-            WHERE v.content.contentId = :contentId
+            WHERE v.content.id = :contentId
         </query>
     </named-query>
     <named-query name="node.getVerticesByFragmentId">
         <!-- Used NodeDao -->
         <query>SELECT v
             FROM Node v, FragmentVersion fv
-            WHERE v.content.contentId = fv.content.contentId
-            AND fv.fragmentVersionId = :fragmentId
+            WHERE v.content.id = fv.content.id
+            AND fv.id = :fragmentId
         </query>
     </named-query>
     <named-query name="node.getStoredVertices">

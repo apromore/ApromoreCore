@@ -18,7 +18,7 @@ public interface ProcessDao {
      * @param processId the process id
      * @return the Process
      */
-    Process findProcess(String processId);
+    Process findProcess(Integer processId);
 
 
     /**
@@ -45,7 +45,7 @@ public interface ProcessDao {
      * @param processId the identifier of the process
      * @return the name of the process
      */
-    Process getProcess(int processId);
+    Process getProcess(Integer processId);
 
     /**
      * Returns the process object for the record that contains the passed in process name.
@@ -59,7 +59,14 @@ public interface ProcessDao {
      * @param processModelVersionId the model version id
      * @return the fragment version id
      */
-    String getRootFragmentVersionId(final Integer processModelVersionId);
+    Integer getRootFragmentVersionId(Integer processModelVersionId);
+
+    /**
+     * Returns the root process model fragment.
+     * @param processModelVersionId the model version id
+     * @return the fragment version id
+     */
+    String getRootFragmentVersionURI(Integer pmvid);
 
     /**
      * Returns a map of the current process models and the branch version.

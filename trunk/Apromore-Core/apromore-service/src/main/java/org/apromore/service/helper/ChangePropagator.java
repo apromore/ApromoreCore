@@ -65,72 +65,72 @@ public class ChangePropagator {
      */
     public void propagateChangesWithLockRelease(String originalFragmentId, String updatedFragmentId, List<String> composingFragmentIds)
             throws ExceptionDao {
-        List<ProcessModelVersion> usedProcessModels = pmvDao.getUsedProcessModelVersions(originalFragmentId);
+        List<ProcessModelVersion> usedProcessModels = pmvDao.getUsedProcessModelVersionsByURI(originalFragmentId);
         for (ProcessModelVersion pmv : usedProcessModels) {
             createNewProcessModelVersion(pmv, updatedFragmentId, composingFragmentIds);
         }
 
         LOGGER.debug("Unlocking the original fragment: " + originalFragmentId);
-        lSrv.unlockFragment(originalFragmentId);
-        lSrv.unlockDescendantFragments(originalFragmentId);
+        lSrv.unlockFragmentByURI(originalFragmentId);
+        lSrv.unlockDescendantFragmentsByURI(originalFragmentId);
 
         LOGGER.debug("Propagating to parent fragments of fragment: " + originalFragmentId);
-        List<String> lockedParentIds = fvDao.getLockedParentFragmentIds(originalFragmentId);
+        List<String> lockedParentIds = fvDao.getLockedParentFragmentIdsByURI(originalFragmentId);
         for (String parentId : lockedParentIds) {
             propagateToParentsWithLockRelease(parentId, originalFragmentId, updatedFragmentId, composingFragmentIds);
         }
     }
 
 
-    private void createNewProcessModelVersion(ProcessModelVersion pmv, String rootFragmentId,
-            List<String> composingFragmentIds) throws ExceptionDao {
+    private void createNewProcessModelVersion(ProcessModelVersion pmv, String rootFragmentUri, List<String> composingFragmentIds)
+            throws ExceptionDao {
         int versionNumber = pmv.getVersionNumber() + 1;
         String versionName = VersionNameUtil.getNextVersionName(pmv.getVersionName());
-        ProcessModelVersion pv = pSrv.addProcessModelVersion(pmv.getProcessBranch(), rootFragmentId, versionNumber, versionName, 0, 0);
-        fSrv.addProcessFragmentMappings(pv.getProcessModelVersionId(), composingFragmentIds);
+        ProcessModelVersion pv = pSrv.addProcessModelVersion(pmv.getProcessBranch(), rootFragmentUri, versionNumber, versionName, 0, 0);
+        fSrv.addProcessFragmentMappings(pv.getId(), composingFragmentIds);
     }
 
-    private void propagateToParentsWithLockRelease(String parentId, String originalFragmentId, String updatedFragmentId,
+    private void propagateToParentsWithLockRelease(String parentUri, String originalFragmentId, String updatedFragmentId,
             List<String> composingFragmentIds) throws ExceptionDao {
-        LOGGER.debug("Propagating - fragment: " + originalFragmentId + ", parent: " + parentId);
-        String newParentId = createNewFragmentVersionByReplacingChild(parentId, originalFragmentId, updatedFragmentId);
-        composingFragmentIds.add(newParentId);
-        fillUnchangedDescendantIds(newParentId, updatedFragmentId, composingFragmentIds);
+        LOGGER.debug("Propagating - fragment: " + originalFragmentId + ", parent: " + parentUri);
+        String newParentUri = createNewFragmentVersionByReplacingChild(parentUri, originalFragmentId, updatedFragmentId);
+        composingFragmentIds.add(newParentUri);
+        fillUnchangedDescendantIds(newParentUri, updatedFragmentId, composingFragmentIds);
 
-        List<ProcessModelVersion> usedProcessModels = pmvDao.getUsedProcessModelVersions(parentId);
+        List<ProcessModelVersion> usedProcessModels = pmvDao.getUsedProcessModelVersionsByURI(parentUri);
         for (ProcessModelVersion pmv : usedProcessModels) {
-            createNewProcessModelVersion(pmv, newParentId, composingFragmentIds);
-            lSrv.unlockProcessModelVersion(pmv.getProcessModelVersionId());
+            createNewProcessModelVersion(pmv, newParentUri, composingFragmentIds);
+            lSrv.unlockProcessModelVersion(pmv.getId());
         }
-        lSrv.unlockFragment(parentId);
+        lSrv.unlockFragmentByURI(parentUri);
 
-        List<String> nextLockedParentIds = fvDao.getLockedParentFragmentIds(parentId);
+        List<String> nextLockedParentIds = fvDao.getLockedParentFragmentIdsByURI(parentUri);
         for (String nextParentId : nextLockedParentIds) {
-            propagateToParentsWithLockRelease(nextParentId, parentId, newParentId, composingFragmentIds);
+            propagateToParentsWithLockRelease(nextParentId, parentUri, newParentUri, composingFragmentIds);
         }
-        LOGGER.debug("Completed propagation - fragment: " + originalFragmentId + ", parent: " + parentId);
+        LOGGER.debug("Completed propagation - fragment: " + originalFragmentId + ", parent: " + parentUri);
     }
 
-    private void fillUnchangedDescendantIds(String parentId, String updatedChildId, List<String> composingFragmentIds) throws ExceptionDao {
-        List<FragmentVersionDag> allChild = fvdDao.getChildMappings(parentId);
+    private void fillUnchangedDescendantIds(String parentUri, String updatedChildId, List<String> composingFragmentIds) throws ExceptionDao {
+        List<FragmentVersionDag> allChild = fvdDao.getChildMappingsByURI(parentUri);
         for (FragmentVersionDag child : allChild) {
-            if (!child.getId().getChildFragmentVersionId().equals(updatedChildId)) {
-                composingFragmentIds.add(child.getId().getChildFragmentVersionId());
-                fillDescendantIds(child.getId().getChildFragmentVersionId(), composingFragmentIds);
+            if (!child.getChildFragmentVersionId().getUri().equals(updatedChildId)) {
+                composingFragmentIds.add(child.getChildFragmentVersionId().getUri());
+                fillDescendantIds(child.getChildFragmentVersionId().getId(), composingFragmentIds);
             }
         }
     }
 
-    private void fillDescendantIds(String fragmentId, List<String> composingFragmentIds) throws ExceptionDao {
+    private void fillDescendantIds(Integer fragmentId, List<String> composingFragmentIds) throws ExceptionDao {
         List<FragmentVersionDag> allChild = fvdDao.getChildMappings(fragmentId);
         for (FragmentVersionDag child : allChild) {
-            composingFragmentIds.add(child.getId().getChildFragmentVersionId());
-            fillDescendantIds(child.getId().getChildFragmentVersionId(), composingFragmentIds);
+            composingFragmentIds.add(child.getChildFragmentVersionId().getUri());
+            fillDescendantIds(child.getChildFragmentVersionId().getId(), composingFragmentIds);
         }
     }
 
-    private String createNewFragmentVersionByReplacingChild(String fragmentId, String oldChildId, String newChildId) throws ExceptionDao {
-        FragmentVersion fv = fvDao.findFragmentVersion(fragmentId);
+    private String createNewFragmentVersionByReplacingChild(String fragmentUri, String oldChildId, String newChildId) throws ExceptionDao {
+        FragmentVersion fv = fvDao.findFragmentVersionByURI(fragmentUri);
         int lockType = 0;
         int lockCount = 0;
         if (fv.getLockStatus() == 1) {
@@ -140,7 +140,7 @@ public class ChangePropagator {
             }
         }
 
-        Map<String, String> childMappings = createChildMap(fvdDao.getChildMappings(fragmentId));
+        Map<String, String> childMappings = createChildMap(fvdDao.getChildMappingsByURI(fragmentUri));
         Set<String> pockets = childMappings.keySet();
         for (String pocketId : pockets) {
             String childId = childMappings.get(pocketId);
@@ -150,15 +150,15 @@ public class ChangePropagator {
         }
 
         // TODO size of the new fragment has to calculated correctly by considering the sizes of the old child and new child
-        return fSrv.addFragmentVersion(fv.getContent(), childMappings, fragmentId, lockType, lockCount, fv.getFragmentSize(),
-                fv.getFragmentType()).getFragmentVersionId();
+        return fSrv.addFragmentVersion(fv.getContent(), childMappings, fragmentUri, lockType, lockCount, fv.getFragmentSize(),
+                fv.getFragmentType()).getUri();
     }
 
 
     private Map<String, String> createChildMap(List<FragmentVersionDag> fvds) {
         Map<String, String> childMappings = new HashMap<String, String>();
         for (FragmentVersionDag fvd : fvds) {
-            childMappings.put(fvd.getId().getPocketId(), fvd.getId().getChildFragmentVersionId());
+            childMappings.put(fvd.getPocketId(), fvd.getChildFragmentVersionId().getUri());
         }
         return childMappings;
     }

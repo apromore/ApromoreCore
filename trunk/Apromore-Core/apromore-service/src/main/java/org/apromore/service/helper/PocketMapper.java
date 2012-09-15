@@ -50,15 +50,15 @@ public class PocketMapper {
      */
     @SuppressWarnings("unchecked")
     public Map<String, String> mapPockets(RPSTNode f, CPF g, Content content) {
-        CPF c = gSrv.getGraph(content.getContentId());
+        CPF c = gSrv.getGraph(content.getId());
         List<IFlowNode> cPockets = getPockets(new ArrayList<IFlowNode>(c.getVertices()), c);
         List<IFlowNode> pockets = getPockets(f.getFragment().getVertices(), g);
 
-        // let's handle the easy cases first. content with no pockets and content with only one pocket.
+        // Content with no pockets and content with only one pocket.
+        Map<String, String> pocketMapping = new HashMap<String, String>(0);
         if (cPockets.size() == 0) {
-            return new HashMap<String, String>(0);
+            return pocketMapping;
         } else if (cPockets.size() == 1) {
-            Map<String, String> pocketMapping = new HashMap<String, String>(0);
             pocketMapping.put(pockets.get(0).getId(), cPockets.get(0).getId());
             return pocketMapping;
         }

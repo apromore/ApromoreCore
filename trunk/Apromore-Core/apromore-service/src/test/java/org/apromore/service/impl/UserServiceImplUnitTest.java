@@ -72,10 +72,10 @@ public class UserServiceImplUnitTest {
         String username = "jaybob";
         User usr = new User();
 
-        expect(usrDAOJpa.findUser(username)).andReturn(usr);
+        expect(usrDAOJpa.findUserByLogin(username)).andReturn(usr);
         replay(usrDAOJpa);
 
-        User serviceUsr = usrServiceImpl.findUser(username);
+        User serviceUsr = usrServiceImpl.findUserByLogin(username);
         verify(usrDAOJpa);
         assertThat(serviceUsr, equalTo(usr));
     }
@@ -84,11 +84,11 @@ public class UserServiceImplUnitTest {
     public void getUserNotFound() throws Exception {
         String username = "jaybob";
 
-        expect(usrDAOJpa.findUser(username)).andReturn(null);
+        expect(usrDAOJpa.findUserByLogin(username)).andReturn(null);
         replay(usrDAOJpa);
 
         exception.expect(UserNotFoundException.class);
-        usrServiceImpl.findUser(username);
+        usrServiceImpl.findUserByLogin(username);
 
         verify(usrDAOJpa);
     }
@@ -99,7 +99,7 @@ public class UserServiceImplUnitTest {
         String username = "username";
         User usr = createUser();
 
-        expect(usrDAOJpa.findUser(username)).andReturn(usr);
+        expect(usrDAOJpa.findUserByLogin(username)).andReturn(usr);
         expect(usrDAOJpa.update((User) anyObject())).andReturn(usr);
         replay(usrDAOJpa);
 

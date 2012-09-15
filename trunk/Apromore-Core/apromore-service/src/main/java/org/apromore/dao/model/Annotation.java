@@ -26,8 +26,8 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Entity
 @Table(name = "annotation",
         uniqueConstraints = {
-                @UniqueConstraint(columnNames = { "process_model_version_id", "name" }),
-                @UniqueConstraint(columnNames = { "native" })
+                @UniqueConstraint(columnNames = {"processModelVersionId", "name"}),
+                @UniqueConstraint(columnNames = {"native"})
         }
 )
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
@@ -39,7 +39,7 @@ public class Annotation implements Serializable {
      */
     private static final long serialVersionUID = -2353376324638485548L;
 
-    private int uri;
+    private Integer id;
     private String name;
     private String content;
 
@@ -53,24 +53,22 @@ public class Annotation implements Serializable {
 
 
     /**
-     * Get the Primary Key for the Object.
-     *
-     * @return Returns the uri.
+     * returns the Id of this Object.
+     * @return the id
      */
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "uri", unique = true, nullable = false, precision = 11, scale = 0)
-    public int getUri() {
-        return uri;
+    @Column(name = "id", unique = true, nullable = false)
+    public Integer getId() {
+        return this.id;
     }
 
     /**
-     * Set the Primary Key for the Object.
-     *
-     * @param newUri The uri to set.
+     * Sets the Id of this Object
+     * @param id the new Id.
      */
-    public void setUri(final int newUri) {
-        this.uri = newUri;
+    public void setId(final Integer id) {
+        this.id = id;
     }
 
 
@@ -141,7 +139,7 @@ public class Annotation implements Serializable {
      * @return Returns the process Model Version.
      */
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "process_model_version_id")
+    @JoinColumn(name = "processModelVersionId")
     public ProcessModelVersion getProcessModelVersion() {
         return this.processModelVersion;
     }

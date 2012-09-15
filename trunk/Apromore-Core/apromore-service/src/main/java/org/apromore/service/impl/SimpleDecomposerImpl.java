@@ -1,13 +1,5 @@
 package org.apromore.service.impl;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.UUID;
-
 import org.apromore.common.Constants;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.exception.RepositoryException;
@@ -34,6 +26,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.*;
+
 @Service("SimpleDecomposerService")
 @Transactional(propagation = Propagation.REQUIRED)
 public class SimpleDecomposerImpl implements DecomposerService {
@@ -51,6 +45,7 @@ public class SimpleDecomposerImpl implements DecomposerService {
      * @see org.apromore.service.DecomposerService#decompose(org.apromore.graph.JBPT.CPF, java.util.List)
      * {@inheritDoc}
      */
+    @Override
     public FragmentVersion decompose(CPF graph, List<String> fragmentIds) throws RepositoryException {
         TreeVisitor visitor = new TreeVisitor();
         OperationContext op = new OperationContext();
@@ -62,7 +57,7 @@ public class SimpleDecomposerImpl implements DecomposerService {
             RPSTNode rootFragment = rpst.getRoot();
             LOGGER.debug("Starting the processing of the root fragment...");
             FragmentVersion rootfv = process(rpst, rootFragment, op, fragmentIds, graph);
-            fragmentIds.add(rootfv.getFragmentVersionId());
+            fragmentIds.add(rootfv.getUri());
             return rootfv;
         } catch (Exception e) {
             String msg = "Failed to add root fragment version of the process model.";
@@ -75,6 +70,7 @@ public class SimpleDecomposerImpl implements DecomposerService {
      * @see org.apromore.service.DecomposerService#decomposeFragment(org.apromore.graph.JBPT.CPF, java.util.List)
      * {@inheritDoc}
      */
+    @Override
     public String decomposeFragment(CPF graph, List<String> fragmentIds) throws RepositoryException {
         throw new UnsupportedOperationException("Fragment level decomposition is not supported by the simple decomposer.");
     }
@@ -90,7 +86,7 @@ public class SimpleDecomposerImpl implements DecomposerService {
         TCType fragmentType = f.getType();
         if (fragmentType.equals(TCType.T)) {
             FragmentVersion tempFV = new FragmentVersion();
-            tempFV.setFragmentVersionId("");
+            tempFV.setId(0);
             return tempFV;
         }
 
@@ -121,10 +117,10 @@ public class SimpleDecomposerImpl implements DecomposerService {
                 return childFragment;
             }
 
-            fragmentIds.add(childFragment.getFragmentVersionId());
-            childFragmentIds.put(UUID.randomUUID().toString(), childFragment.getFragmentVersionId());
+            fragmentIds.add(childFragment.getUri());
+            childFragmentIds.put(UUID.randomUUID().toString(), childFragment.getUri());
 
-            Vertex childFragmentComposite = new Vertex(childFragment.getFragmentVersionId());
+            Vertex childFragmentComposite = new Vertex(childFragment.getId().toString());
             op.getGraph().setVertexProperty(childFragmentComposite.getId(), Constants.TYPE, Constants.FUNCTION);
             f.getFragment().addVertex(childFragmentComposite);
 

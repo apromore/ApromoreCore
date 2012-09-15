@@ -70,6 +70,7 @@ public class DecomposerServiceImpl implements DecomposerService {
      * @return the Root Id.
      * @throws org.apromore.exception.RepositoryException if something fails while populating the Repository
      */
+    @Override
     public FragmentVersion decompose(CPF graph, List<String> fragmentIds) throws RepositoryException {
         TreeVisitor visitor = new TreeVisitor();
         OperationContext op = new OperationContext();
@@ -79,7 +80,7 @@ public class DecomposerServiceImpl implements DecomposerService {
         try {
             RPST rpst = GraphUtil.normalizeGraph(graph);
             FragmentVersion rootFV = decompose(rpst, rpst.getRoot(), op, fragmentIds);
-            fragmentIds.add(rootFV.getFragmentVersionId());
+            fragmentIds.add(rootFV.getUri());
             return rootFV;
         } catch (Exception e) {
             String msg = "Failed to add root fragment version of the process model.";
@@ -114,15 +115,13 @@ public class DecomposerServiceImpl implements DecomposerService {
             return addFragmentVersion(f, hash, childMappings, fragmentSize, nodeType, keywords, op);
         }
 
-        Map<String, String> newChildMappings;
+        Map<String, String> newChildMappings = new HashMap<String, String>();
         if (f.getType().equals(TCType.B)) {
-            newChildMappings = new HashMap<String, String>();
-            String matchingBondFragmentId = bcHandler.matchFragment(f, matchingContent, childMappings, newChildMappings);
+            Integer matchingBondFragmentId = bcHandler.matchFragment(f, matchingContent, childMappings, newChildMappings);
             if (matchingBondFragmentId != null) {
                 return fSrv.getFragmentVersion(matchingBondFragmentId);
             }
-        }
-        else {
+        } else {
             Map<String, String> pocketMappings = pMapper.mapPockets(f, op.getGraph(), matchingContent);
             if (pocketMappings == null) {
                 LOGGER.info("Could not map pockets of fragment with its matching fragment " + childMappings);
@@ -135,7 +134,7 @@ public class DecomposerServiceImpl implements DecomposerService {
                 LOGGER.error(msg, e);
                 throw new RepositoryException(msg, e);
             }
-            FragmentVersion matchingFV = fSrv.getMatchingFragmentVersionId(matchingContent.getContentId(), newChildMappings);
+            FragmentVersion matchingFV = fSrv.getMatchingFragmentVersionId(matchingContent.getId(), newChildMappings);
             if (matchingFV != null) {
                 return matchingFV;
             }
@@ -151,6 +150,7 @@ public class DecomposerServiceImpl implements DecomposerService {
      * @return the root fragment version id
      * @throws org.apromore.exception.RepositoryException
      */
+    @Override
     public String decomposeFragment(CPF graph, List<String> fragmentIds) throws RepositoryException {
         TreeVisitor visitor = new TreeVisitor();
         OperationContext op = new OperationContext();
@@ -164,13 +164,12 @@ public class DecomposerServiceImpl implements DecomposerService {
                 RPST<ControlFlow<FlowNode>, FlowNode> rpst = new RPST<ControlFlow<FlowNode>, FlowNode>(graph);
                 RPSTNode rootFragment = rpst.getRoot();
                 FragmentVersion rootFV = decompose(rpst, rootFragment, op, fragmentIds);
-                fragmentIds.add(rootFV.getFragmentVersionId());
-                return rootFV.getFragmentVersionId();
-            }
-            else {
+                fragmentIds.add(rootFV.getUri());
+                return rootFV.getUri();
+            } else {
                 FragmentVersion rootFV = decomposeSimpleStandaloneFragment(graph, entry, exit, op);
-                fragmentIds.add(rootFV.getFragmentVersionId());
-                return rootFV.getFragmentVersionId();
+                fragmentIds.add(rootFV.getUri());
+                return rootFV.getUri();
             }
         } catch (Exception e) {
             String msg = "Failed to add root fragment version.";
@@ -205,7 +204,7 @@ public class DecomposerServiceImpl implements DecomposerService {
         Map<String, String> childMappings = new HashMap<String, String>(0);
         Set<AbstractDirectedEdge> edges = new HashSet<AbstractDirectedEdge>(g.getEdges());
         String hash = op.getTreeVisitor().visitSNode(g, edges, entry);
-        String matchingContentId = cSrv.getMatchingContentId(hash);
+        Integer matchingContentId = cSrv.getMatchingContentId(hash);
         if (matchingContentId == null) {
             return addFragmentVersion(sNode, hash, childMappings, fragmentSize, nodeType, keywords, op);
         }
@@ -221,8 +220,8 @@ public class DecomposerServiceImpl implements DecomposerService {
 
 
     /* mapping pocketId -> childId */
-    private Map<String, String> mapPocketChildId(RPST rpst, RPSTNode f, OperationContext op, List<String> fragmentIds, Collection<RPSTNode> cs)
-            throws RepositoryException {
+    private Map<String, String> mapPocketChildId(RPST rpst, RPSTNode f, OperationContext op, List<String> fragmentIds,
+            Collection<RPSTNode> cs) throws RepositoryException {
         Map<String, String> childMappings = new HashMap<String, String>(0);
         for (RPSTNode c : cs) {
             if (TCType.T.equals(c.getType())) {
@@ -232,8 +231,8 @@ public class DecomposerServiceImpl implements DecomposerService {
             FlowNode pocket = Extractor.extractChildFragment(f, c, rpst, op.getGraph());
             FragmentUtil.cleanFragment(f);
             FragmentVersion child = decompose(rpst, c, op, fragmentIds);
-            fragmentIds.add(child.getFragmentVersionId());
-            childMappings.put(pocket.getId(), child.getFragmentVersionId());
+            fragmentIds.add(child.getUri());
+            childMappings.put(pocket.getId(), child.getUri());
         }
         return childMappings;
     }
@@ -257,11 +256,14 @@ public class DecomposerServiceImpl implements DecomposerService {
     }
 
     /* Adds a fragment version */
-    private FragmentVersion addFragmentVersion(Content cid, Map<String, String> childMappings, String derivedFrom, int lockStatus, int lockCount,
-            int originalSize, String fragmentType, String keywords, OperationContext op) throws RepositoryException {
+    private FragmentVersion addFragmentVersion(Content cid, Map<String, String> childMappings, String derivedFrom, int lockStatus,
+            int lockCount, int originalSize, String fragmentType, String keywords, OperationContext op) throws RepositoryException {
         op.addProcessedFragmentType(fragmentType);
         return fSrv.addFragmentVersion(cid, childMappings, derivedFrom, lockStatus, lockCount, originalSize, fragmentType);
     }
+
+
+
 
     /**
      * Set the Content DAO object for this class. Mainly for spring tests.

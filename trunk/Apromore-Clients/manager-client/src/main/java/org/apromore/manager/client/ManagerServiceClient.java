@@ -192,12 +192,12 @@ public class ManagerServiceClient implements ManagerService {
 
 
     /**
-     * @see ManagerService#getFragment(String)
+     * @see ManagerService#getFragment(Integer)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public FragmentType getFragment(final String fragmentId) {
+    public FragmentType getFragment(final Integer fragmentId) {
         LOGGER.debug("Invoking getFragment method to retreive fragment content...");
 
         GetFragmentRequestType msg = new GetFragmentRequestType();
@@ -231,12 +231,12 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public List<PairDistanceType> getPairwiseDistances(final List<String> fragmentIds) {
+    public List<PairDistanceType> getPairwiseDistances(final List<Integer> fragmentIds) {
         LOGGER.debug("Invoking get pairwise distances method ...");
 
         GetPairwiseDistancesInputMsgType msg = new GetPairwiseDistancesInputMsgType();
         msg.setFragmentIds(new FragmentIdsType());
-        for (String fid : fragmentIds) {
+        for (Integer fid : fragmentIds) {
             msg.getFragmentIds().getFragmentId().add(fid);
         }
         JAXBElement<GetPairwiseDistancesInputMsgType> request = WS_CLIENT_FACTORY.createPairwiseDistancesRequest(msg);
@@ -283,12 +283,12 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /**
-     * @see ManagerService#getCluster(String)
+     * @see ManagerService#getCluster(Integer)
      * {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ClusterType getCluster(final String clusterId) {
+    public ClusterType getCluster(final Integer clusterId) {
         LOGGER.debug("Invoking get cluster method ...");
 
         GetClusterInputMsgType msg = new GetClusterInputMsgType();

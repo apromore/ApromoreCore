@@ -39,7 +39,7 @@ public interface ClusteringDao {
      * @param clusterId the id of the cluster to get.
      * @return the cluster.
      */
-    Cluster getCluster(final String clusterId);
+    Cluster getCluster(final Integer clusterId);
 
     /**
      * Get the clustering Summary.
@@ -52,7 +52,7 @@ public interface ClusteringDao {
      * @param clusterId the cluster id
      * @return the summary for the cluster.
      */
-    Cluster getClusterSummary(String clusterId);
+    Cluster getClusterSummary(Integer clusterId);
 
     /**
      * find clusters by a filter.
@@ -66,14 +66,14 @@ public interface ClusteringDao {
      * @param clusterId the cluster id
      * @return the list of fragments
      */
-    List<String> getFragmentIds(String clusterId);
+    List<Integer> getFragmentIds(Integer clusterId);
 
     /**
      * find a fragments of a cluster.
      * @param clusterId the cluster id
      * @return the list of fragments
      */
-    List<FragmentVersion> getFragments(String clusterId);
+    List<FragmentVersion> getFragments(Integer clusterId);
 
     /**
      * find the distance between two fragments.
@@ -81,7 +81,7 @@ public interface ClusteringDao {
      * @param fragmentId2 fragment two
      * @return the distance between the two
      */
-    double getDistance(String fragmentId1, String fragmentId2);
+    double getDistance(Integer fragmentId1, Integer fragmentId2);
 
     /**
      * find the fragment pairs within a certain distance.

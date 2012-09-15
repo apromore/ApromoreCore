@@ -39,18 +39,14 @@ public class SimilarityServiceImpl implements SimilarityService {
     private static final Logger LOGGER = LoggerFactory.getLogger(SimilarityServiceImpl.class);
 
 
-    @Autowired
-    @Qualifier("ProcessModelVersionDao")
+    @Autowired @Qualifier("ProcessModelVersionDao")
     private ProcessModelVersionDao pmvDao;
 
-    @Autowired
-    @Qualifier("CanoniserService")
+    @Autowired @Qualifier("CanoniserService")
     private CanoniserService canSrv;
-    @Autowired
-    @Qualifier("RepositoryService")
+    @Autowired @Qualifier("RepositoryService")
     private RepositoryService rSrv;
-    @Autowired
-    @Qualifier("UIHelper")
+    @Autowired @Qualifier("UIHelper")
     private UIHelper uiSrv;
 
 
@@ -59,7 +55,7 @@ public class SimilarityServiceImpl implements SimilarityService {
      *      {@inheritDoc}
      */
     public ProcessSummariesType SearchForSimilarProcesses(final Integer branchId, final String versionName, final Boolean latestVersions,
-                                                          final String method, final ParametersType params) throws ExceptionSearchForSimilar {
+            final String method, final ParametersType params) throws ExceptionSearchForSimilar {
         ProcessVersionsType similarProcesses = null;
         ProcessModelVersion query = pmvDao.findProcessModelVersionByBranch(branchId, versionName);
         List<ProcessModelVersion> models = pmvDao.getAllProcessModelVersions(latestVersions);
@@ -70,7 +66,7 @@ public class SimilarityServiceImpl implements SimilarityService {
             if (similarProcesses.getProcessVersion().size() == 0) {
                 //throw new ExceptionComputeSimilarity("Process model " + query.getProcessBranch().getProcess().getProcessId()
                 //        + " version " + query.getVersionName() + " probably faulty");
-                LOGGER.error("Process model " + query.getProcessBranch().getProcess().getProcessId() + " version " +
+                LOGGER.error("Process model " + query.getProcessBranch().getProcess().getId() + " version " +
                         query.getVersionName() + " probably faulty");
             }
         } catch (SerializationException se) {
@@ -128,7 +124,7 @@ public class SimilarityServiceImpl implements SimilarityService {
                     data.getSkipnweight(), data.getSubnweight(), data.getSkipeweight());
             if (similarity >= data.getModelthreshold()) {
                 processVersion = new ProcessVersionType();
-                processVersion.setProcessId(e.getKey().getProcessBranch().getProcess().getProcessId());
+                processVersion.setProcessId(e.getKey().getProcessBranch().getProcess().getId());
                 processVersion.setVersionName(e.getKey().getVersionName());
                 processVersion.setScore(similarity);
                 similarProcesses.getProcessVersion().add(processVersion);

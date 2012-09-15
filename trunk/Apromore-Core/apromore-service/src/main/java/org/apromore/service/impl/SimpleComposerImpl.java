@@ -1,5 +1,7 @@
 package org.apromore.service.impl;
 
+import org.apromore.dao.FragmentVersionDao;
+import org.apromore.dao.model.FragmentVersion;
 import org.apromore.graph.JBPT.CPF;
 import org.apromore.service.ComposerService;
 import org.apromore.service.GraphService;
@@ -17,6 +19,8 @@ public class SimpleComposerImpl implements ComposerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SimpleComposerImpl.class);
 
+    @Autowired @Qualifier("FragmentVersionDao")
+    private FragmentVersionDao fvDao;
     @Autowired @Qualifier("GraphService")
     private GraphService gSrv;
 
@@ -24,11 +28,13 @@ public class SimpleComposerImpl implements ComposerService {
      * @see ComposerService#compose(String)
      * {@inheritDoc}
      */
-    public CPF compose(String fragmentId) {
-        LOGGER.debug("Composing the content of fragment " + fragmentId);
+    @Override
+    public CPF compose(String fragmentUri) {
+        LOGGER.debug("Composing the content of fragment " + fragmentUri);
         CPF g = new CPF();
-        gSrv.fillNodesByFragmentId(g, fragmentId);
-        gSrv.fillEdgesByFragmentId(g, fragmentId);
+        FragmentVersion fv = fvDao.findFragmentVersionByURI(fragmentUri);
+        gSrv.fillNodesByFragmentId(g, fv.getId());
+        gSrv.fillEdgesByFragmentId(g, fv.getId());
         return g;
     }
 }

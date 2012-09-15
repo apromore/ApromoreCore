@@ -33,7 +33,7 @@ public interface FragmentService {
      * @param nodes the list of nodes
      * @return the fragment Id
      */
-    String getFragmentId(Integer pmvid, CPF g, List<String> nodes);
+    String getFragmentUri(Integer pmvid, CPF g, List<String> nodes);
 
     /**
      * Gets the Fragment as Epml.
@@ -41,7 +41,7 @@ public interface FragmentService {
      * @return
      * @throws RepositoryException
      */
-    String getFragmentAsEPML(String fragmentId) throws RepositoryException;
+    String getFragmentAsEPML(Integer fragmentId) throws RepositoryException;
 
     /**
      * Get a particular Fragment based on fragmentId.
@@ -50,14 +50,14 @@ public interface FragmentService {
      * @return the found processModel.
      * @throws LockFailedException if we failed to obtain a lock on the table
      */
-    CPF getFragment(String fragmentId, boolean lock) throws LockFailedException;
+    CPF getFragment(Integer fragmentId, boolean lock) throws LockFailedException;
 
     /**
      * Get a particular Fragment version based on fragmentVersionId.
      * @param fragmentVersionId the fragment version to return
      * @return the found fragment version.
      */
-    FragmentVersion getFragmentVersion(String fragmentVersionId);
+    FragmentVersion getFragmentVersion(Integer fragmentVersionId);
 
     /**
      * Used to save a new Fragment to the DB.
@@ -95,27 +95,27 @@ public interface FragmentService {
      * @param childMappings the child mappings
      * @return the FragmentVersion
      */
-    FragmentVersion getMatchingFragmentVersionId(final String contentId, final Map<String, String> childMappings);
+    FragmentVersion getMatchingFragmentVersionId(final Integer contentId, final Map<String, String> childMappings);
 
 
     /**
      * Deletes the Fragment Version.
      * @param fvid the fragment Version id.
      */
-    void deleteFragmentVersion(String fvid);
+    void deleteFragmentVersion(Integer fvid);
 
     /**
      * Deletes all the child relationships from a fragment Version.
      * @param fvid the fragment Version id.
      */
-    void deleteChildRelationships(String fvid);
+    void deleteChildRelationships(Integer fvid);
 
     /**
      * Update to have the new Derived fragments.
-     * @param fvid                  the fragment Version Id
+     * @param fragVersionUri        the fragment Version Id
      * @param derivedFromFragmentId the id it was derived from.
      */
-    void setDerivation(String fvid, String derivedFromFragmentId);
+    void setDerivation(String fragVersionUri, String derivedFromFragmentId);
 
 }
 

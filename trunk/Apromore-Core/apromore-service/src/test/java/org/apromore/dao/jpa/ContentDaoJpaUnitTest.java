@@ -48,7 +48,7 @@ public class ContentDaoJpaUnitTest {
 
     @Test
     public final void testFindContent() {
-        String id = "1";
+        Integer id = 1;
         Content c = new Content();
 
         expect(manager.find(Content.class, id)).andReturn(c);
@@ -62,7 +62,7 @@ public class ContentDaoJpaUnitTest {
 
     @Test
     public final void testGetContentByFragmentVersion() {
-        String fragVersionId = "1";
+        Integer fragVersionId = 1;
         Content con = new Content();
         List<Content> contents = new ArrayList<Content>();
         contents.add(con);
@@ -81,7 +81,7 @@ public class ContentDaoJpaUnitTest {
 
     @Test
     public final void testGetContentByFragmentVersionNothingFound() {
-        String fragVersionId = "1";
+        Integer fragVersionId = 1;
         Content con = null;
         List<Content> contents = new ArrayList<Content>();
 
@@ -169,9 +169,9 @@ public class ContentDaoJpaUnitTest {
     private Content createContent() {
         Content c = new Content();
         c.setCode("12345");
-        c.setBoundaryE("1");
-        c.setBoundaryS("1");
-        c.setContentId("1234565");
+        c.setBoundaryE("2");
+        c.setBoundaryS("3");
+        c.setId(1234565);
         return c;
     }
 }

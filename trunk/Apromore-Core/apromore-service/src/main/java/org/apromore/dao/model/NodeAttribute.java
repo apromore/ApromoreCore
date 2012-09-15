@@ -30,9 +30,10 @@ public class NodeAttribute {
 
     private Node node;
 
-
-    public NodeAttribute() {
-    }
+    /**
+     * Public Constructor.
+     */
+    public NodeAttribute() { }
 
 
     @Id
@@ -68,7 +69,7 @@ public class NodeAttribute {
 
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "node_id")
+    @JoinColumn(name = "nodeId")
     public Node getNode() {
         return this.node;
     }

@@ -18,7 +18,7 @@ public class MemberFragmentUnitTest {
 
     @Test
     public void testConstructor() {
-        String first = "1";
+        Integer first = 1;
 
         MemberFragment obj = new MemberFragment(first);
         assertEquals("First param wasn't the expected value" , first, obj.getFragmentId());
