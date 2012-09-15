@@ -382,9 +382,9 @@
         <query>SELECT pmv
             FROM ProcessModelVersion pmv, Process p, ProcessBranch pb
             WHERE p.id = pb.process.id
-            AND pb.id = pmv.processBranch.id
-            AND p.id = :processId
-            AND pmv.versionName = :versionName
+              AND pb.id = pmv.processBranch.id
+              AND p.id = :processId
+              AND pmv.versionName = :versionName
         </query>
     </named-query>
 

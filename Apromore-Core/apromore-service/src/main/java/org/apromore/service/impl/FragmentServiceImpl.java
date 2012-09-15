@@ -165,6 +165,7 @@ public class FragmentServiceImpl implements FragmentService {
 
         FragmentVersion fragVersion = new FragmentVersion();
         fragVersion.setContent(cid);
+        fragVersion.setUri(UUID.randomUUID().toString());
         fragVersion.setChildMappingCode(childMappingCode);
         fragVersion.setDerivedFromFragment(derivedFrom);
         fragVersion.setLockStatus(lockStatus);
