@@ -407,7 +407,7 @@
 
     <service name="ManagerService">
         <port binding="tns:ManagerSoap11" name="ManagerSoap11">
-            <soap:address location="http://localhost:9000/Apromore/services/manager"/>
+            <soap:address location="http://localhost/Apromore/services/manager"/>
         </port>
     </service>
 </definitions>
