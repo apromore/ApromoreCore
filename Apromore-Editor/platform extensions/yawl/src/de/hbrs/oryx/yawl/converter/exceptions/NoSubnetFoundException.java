@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -13,30 +13,30 @@
 
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * See: http://www.gnu.org/licenses/lgpl-3.0
- * 
+ *
  */
 package de.hbrs.oryx.yawl.converter.exceptions;
 
 public class NoSubnetFoundException extends ConversionException {
 
-	private static final long serialVersionUID = 687413923047557816L;
+    private static final long serialVersionUID = 687413923047557816L;
 
-	public NoSubnetFoundException() {
-		super();
-	}
+    public NoSubnetFoundException() {
+        super();
+    }
 
-	public NoSubnetFoundException(String arg0, Throwable arg1) {
-		super(arg0, arg1);
-	}
+    public NoSubnetFoundException(String arg0, Throwable arg1) {
+        super(arg0, arg1);
+    }
 
-	public NoSubnetFoundException(String arg0) {
-		super(arg0);
-	}
+    public NoSubnetFoundException(String arg0) {
+        super(arg0);
+    }
 
-	public NoSubnetFoundException(Throwable arg0) {
-		super(arg0);
-	}
+    public NoSubnetFoundException(Throwable arg0) {
+        super(arg0);
+    }
 
 }

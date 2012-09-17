@@ -22,8 +22,6 @@
  **/
 package de.hpi.epc.layouting;
 
-import java.util.Random;
-
 import de.hpi.epc.layouting.model.EPCType;
 import de.hpi.layouting.grid.Grid;
 import de.hpi.layouting.grid.Grid.Cell;
@@ -32,8 +30,11 @@ import de.hpi.layouting.model.LayoutingBoundsImpl;
 import de.hpi.layouting.model.LayoutingDockers;
 import de.hpi.layouting.model.LayoutingElement;
 
+import java.util.Random;
+
 /**
  * Simple layouting of edges based on the edge layouter of team Royal Fawn.
+ *
  * @author matthias.weidlich
  */
 public class EPCEdgeLayouter {
@@ -286,7 +287,7 @@ public class EPCEdgeLayouter {
     }
 
     private void set90DegreeEdgeGeometry(double boundsMinX, double boundsMinY, double boundsMaxX, double boundsMaxY, double cornerDockerX,
-            double cornerDockerY) {
+                                         double cornerDockerY) {
         // set bounds
         edge.setGeometry(new LayoutingBoundsImpl(boundsMinX, boundsMinY, boundsMaxX - boundsMinX, boundsMaxY - boundsMinY));
 
@@ -297,7 +298,7 @@ public class EPCEdgeLayouter {
 
     private void setEdgeAroundTheCorner(boolean down) {
         int angleDistance = 15;
-        double height = Math.max(sourceGeometry.getHeight() / 2, targetGeometry .getHeight() / 2) + 20;
+        double height = Math.max(sourceGeometry.getHeight() / 2, targetGeometry.getHeight() / 2) + 20;
         height += new Random().nextInt(5) * 3;
 
         // make bounding box
@@ -337,7 +338,7 @@ public class EPCEdgeLayouter {
         }
 
         edge.getDockers().setPoints(sourceRelativCenterX, sourceRelativCenterY, docker1X, docker1Y, docker2X, docker2Y, targetRelativCenterX,
-                       targetRelativCenterY);
+                targetRelativCenterY);
     }
 
     private void setEdgeStepRight() {

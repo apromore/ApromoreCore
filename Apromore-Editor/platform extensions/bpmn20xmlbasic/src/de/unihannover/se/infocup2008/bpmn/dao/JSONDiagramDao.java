@@ -22,69 +22,64 @@
  **/
 package de.unihannover.se.infocup2008.bpmn.dao;
 
+import de.hpi.layouting.model.LayoutingBoundsImpl;
+import de.unihannover.se.infocup2008.bpmn.model.*;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import de.hpi.layouting.model.LayoutingBoundsImpl;
-import de.unihannover.se.infocup2008.bpmn.model.BPMNDiagram;
-import de.unihannover.se.infocup2008.bpmn.model.BPMNDiagramJSON;
-import de.unihannover.se.infocup2008.bpmn.model.BPMNElement;
-import de.unihannover.se.infocup2008.bpmn.model.BPMNElementJSON;
-import de.unihannover.se.infocup2008.bpmn.model.BPMNType;
-
 public class JSONDiagramDao {
-	public BPMNDiagram getDiagramFromJSON(JSONObject node) throws JSONException {
-		BPMNDiagramJSON dia = new BPMNDiagramJSON();
-		walkChilds(node, dia, null);
-		return dia;
-	}
+    public BPMNDiagram getDiagramFromJSON(JSONObject node) throws JSONException {
+        BPMNDiagramJSON dia = new BPMNDiagramJSON();
+        walkChilds(node, dia, null);
+        return dia;
+    }
 
-	/**
-	 * @param node
-	 * @param dia
-	 * @throws JSONException
-	 */
-	private void walkChilds(JSONObject node, BPMNDiagramJSON dia, BPMNElement parent)
-			throws JSONException {
-		JSONArray shapes = node.getJSONArray("childShapes");
-		for (int i = 0; i < shapes.length(); i++) {
-			walkShape(shapes.getJSONObject(i), dia, parent);
-		}
-	}
+    /**
+     * @param node
+     * @param dia
+     * @throws JSONException
+     */
+    private void walkChilds(JSONObject node, BPMNDiagramJSON dia, BPMNElement parent)
+            throws JSONException {
+        JSONArray shapes = node.getJSONArray("childShapes");
+        for (int i = 0; i < shapes.length(); i++) {
+            walkShape(shapes.getJSONObject(i), dia, parent);
+        }
+    }
 
-	private void walkShape(JSONObject node, BPMNDiagramJSON dia, BPMNElement parent)
-			throws JSONException {
-		BPMNElementJSON elem = (BPMNElementJSON) dia.getElement(node.getString("resourceId"));
-		elem.setElementJSON(node);
-		JSONObject stencil = node.getJSONObject("stencil");
-		elem.setType(BPMNType.PREFIX + stencil.getString("id"));
-		elem.setParent(parent);
+    private void walkShape(JSONObject node, BPMNDiagramJSON dia, BPMNElement parent)
+            throws JSONException {
+        BPMNElementJSON elem = (BPMNElementJSON) dia.getElement(node.getString("resourceId"));
+        elem.setElementJSON(node);
+        JSONObject stencil = node.getJSONObject("stencil");
+        elem.setType(BPMNType.PREFIX + stencil.getString("id"));
+        elem.setParent(parent);
 
-		JSONArray outLinks = node.getJSONArray("outgoing");
-		for (int i = 0; i < outLinks.length(); i++) {
-			JSONObject link = outLinks.getJSONObject(i);
-			BPMNElementJSON target = (BPMNElementJSON) dia.getElement(link.getString("resourceId"));
-			elem.addOutgoingLink(target);
-			target.addIncomingLink(elem);
-		}
-		JSONObject bounds = node.getJSONObject("bounds");
-		double x = bounds.getJSONObject("upperLeft").getDouble("x");
-		double y = bounds.getJSONObject("upperLeft").getDouble("y");
-		double x2 = bounds.getJSONObject("lowerRight").getDouble("x");
-		double y2 = bounds.getJSONObject("lowerRight").getDouble("y");
-		elem.setGeometry(new LayoutingBoundsImpl(x, y, x2 - x, y2 - y));
-		elem.setBoundsJSON(bounds);
-		
-		JSONArray dockers = node.getJSONArray("dockers");
-		elem.getDockers().getPoints().clear();
-		for (int i = 0; i < dockers.length(); i++) {
-			JSONObject point = dockers.getJSONObject(i);
-			elem.getDockers().addPoint(point.getDouble("x"), point.getDouble("y"));
-		}
-		elem.setDockersJSON(dockers);
-		
-		walkChilds(node, dia, elem);
+        JSONArray outLinks = node.getJSONArray("outgoing");
+        for (int i = 0; i < outLinks.length(); i++) {
+            JSONObject link = outLinks.getJSONObject(i);
+            BPMNElementJSON target = (BPMNElementJSON) dia.getElement(link.getString("resourceId"));
+            elem.addOutgoingLink(target);
+            target.addIncomingLink(elem);
+        }
+        JSONObject bounds = node.getJSONObject("bounds");
+        double x = bounds.getJSONObject("upperLeft").getDouble("x");
+        double y = bounds.getJSONObject("upperLeft").getDouble("y");
+        double x2 = bounds.getJSONObject("lowerRight").getDouble("x");
+        double y2 = bounds.getJSONObject("lowerRight").getDouble("y");
+        elem.setGeometry(new LayoutingBoundsImpl(x, y, x2 - x, y2 - y));
+        elem.setBoundsJSON(bounds);
 
-	}
+        JSONArray dockers = node.getJSONArray("dockers");
+        elem.getDockers().getPoints().clear();
+        for (int i = 0; i < dockers.length(); i++) {
+            JSONObject point = dockers.getJSONObject(i);
+            elem.getDockers().addPoint(point.getDouble("x"), point.getDouble("y"));
+        }
+        elem.setDockersJSON(dockers);
+
+        walkChilds(node, dia, elem);
+
+    }
 }

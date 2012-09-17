@@ -1,17 +1,17 @@
 /**
  * Copyright (c) 2010
  * Signavio, Sven Wagner-Boysen
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,23 +23,19 @@
 
 package de.hpi.bpmn2_0.model.extension;
 
+import de.hpi.bpmn2_0.model.Documentation;
+
+import javax.xml.bind.annotation.*;
+import javax.xml.namespace.QName;
 import java.util.ArrayList;
 import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
-
-import de.hpi.bpmn2_0.model.Documentation;
 
 
 /**
  * <p>Java class for tExtension complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name="tExtension">
  *   &lt;complexContent>
@@ -53,13 +49,11 @@ import de.hpi.bpmn2_0.model.Documentation;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tExtension", propOrder = {
-    "documentation"
+        "documentation"
 })
 public class Extension {
 
@@ -71,25 +65,23 @@ public class Extension {
 
     /**
      * Gets the value of the documentation property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the documentation property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getDocumentation().add(newItem);
      * </pre>
-     * 
-     * 
-     * <p>
+     * <p/>
+     * <p/>
+     * <p/>
      * Objects of the following type(s) are allowed in the list
      * {@link TDocumentation }
-     * 
-     * 
      */
     public List<Documentation> getDocumentation() {
         if (documentation == null) {
@@ -100,11 +92,9 @@ public class Extension {
 
     /**
      * Gets the value of the definition property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QName }
-     *     
+     *
+     * @return possible object is
+     *         {@link QName }
      */
     public QName getDefinition() {
         return definition;
@@ -112,11 +102,9 @@ public class Extension {
 
     /**
      * Sets the value of the definition property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QName }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link QName }
      */
     public void setDefinition(QName value) {
         this.definition = value;
@@ -124,11 +112,9 @@ public class Extension {
 
     /**
      * Gets the value of the mustUnderstand property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
+     *
+     * @return possible object is
+     *         {@link Boolean }
      */
     public boolean isMustUnderstand() {
         if (mustUnderstand == null) {
@@ -140,11 +126,9 @@ public class Extension {
 
     /**
      * Sets the value of the mustUnderstand property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Boolean }
      */
     public void setMustUnderstand(Boolean value) {
         this.mustUnderstand = value;

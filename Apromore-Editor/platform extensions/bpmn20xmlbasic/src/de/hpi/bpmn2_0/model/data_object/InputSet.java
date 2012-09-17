@@ -1,17 +1,17 @@
 /**
  * Copyright (c) 2010
  * Philipp Giese, Sven Wagner-Boysen
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,26 +23,19 @@
 
 package de.hpi.bpmn2_0.model.data_object;
 
-import java.util.ArrayList;
-import java.util.List;
+import de.hpi.bpmn2_0.model.BaseElement;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
-import de.hpi.bpmn2_0.model.BaseElement;
+import javax.xml.bind.annotation.*;
+import java.util.ArrayList;
+import java.util.List;
 
 
 /**
  * <p>Java class for tInputSet complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name="tInputSet">
  *   &lt;complexContent>
@@ -58,29 +51,26 @@ import de.hpi.bpmn2_0.model.BaseElement;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tInputSet", propOrder = {
-    "dataInputRefs",
-    "optionalInputRefs",
-    "whileExecutingInputRefs",
-    "outputSetRefs"
+        "dataInputRefs",
+        "optionalInputRefs",
+        "whileExecutingInputRefs",
+        "outputSetRefs"
 })
 public class InputSet
-    extends BaseElement
-{
+        extends BaseElement {
 
     @XmlIDREF
-	@XmlElement(type = DataInput.class)
+    @XmlElement(type = DataInput.class)
     protected List<DataInput> dataInputRefs;
     @XmlIDREF
-	@XmlElement(type = DataInput.class)
+    @XmlElement(type = DataInput.class)
     protected List<DataInput> optionalInputRefs;
     @XmlIDREF
-	@XmlElement(type = DataInput.class)
+    @XmlElement(type = DataInput.class)
     protected List<DataInput> whileExecutingInputRefs;
     @XmlIDREF
     @XmlElement(type = OutputSet.class)
@@ -90,25 +80,23 @@ public class InputSet
 
     /**
      * Gets the value of the dataInputRefs property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the dataInputRefs property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getDataInputRefs().add(newItem);
      * </pre>
-     * 
-     * 
-     * <p>
+     * <p/>
+     * <p/>
+     * <p/>
      * Objects of the following type(s) are allowed in the list
      * {@link DataInput}
-     * 
-     * 
      */
     public List<DataInput> getDataInputRefs() {
         if (dataInputRefs == null) {
@@ -119,25 +107,23 @@ public class InputSet
 
     /**
      * Gets the value of the optionalInputRefs property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the optionalInputRefs property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getOptionalInputRefs().add(newItem);
      * </pre>
-     * 
-     * 
-     * <p>
+     * <p/>
+     * <p/>
+     * <p/>
      * Objects of the following type(s) are allowed in the list
      * {@link DataInput}
-     * 
-     * 
      */
     public List<DataInput> getOptionalInputRefs() {
         if (optionalInputRefs == null) {
@@ -148,25 +134,23 @@ public class InputSet
 
     /**
      * Gets the value of the whileExecutingInputRefs property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the whileExecutingInputRefs property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getWhileExecutingInputRefs().add(newItem);
      * </pre>
-     * 
-     * 
-     * <p>
+     * <p/>
+     * <p/>
+     * <p/>
      * Objects of the following type(s) are allowed in the list
      * {@link JAXBElement }{@code <}{@link Object }{@code >}
-     * 
-     * 
      */
     public List<DataInput> getWhileExecutingInputRefs() {
         if (whileExecutingInputRefs == null) {
@@ -177,25 +161,23 @@ public class InputSet
 
     /**
      * Gets the value of the outputSetRefs property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the outputSetRefs property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getOutputSetRefs().add(newItem);
      * </pre>
-     * 
-     * 
-     * <p>
+     * <p/>
+     * <p/>
+     * <p/>
      * Objects of the following type(s) are allowed in the list
      * {@link OutputSet}
-     * 
-     * 
      */
     public List<OutputSet> getOutputSetRefs() {
         if (outputSetRefs == null) {
@@ -206,11 +188,9 @@ public class InputSet
 
     /**
      * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     *         {@link String }
      */
     public String getName() {
         return name;
@@ -218,11 +198,9 @@ public class InputSet
 
     /**
      * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setName(String value) {
         this.name = value;

@@ -24,19 +24,9 @@
  */
 package org.apromore.common.converters.epml.handler.epml;
 
-import de.epml.TypeAND;
-import de.epml.TypeArc;
-import de.epml.TypeEvent;
-import de.epml.TypeFunction;
-import de.epml.TypeOR;
-import de.epml.TypeXOR;
+import de.epml.*;
 import org.apromore.common.converters.epml.context.EPMLConversionContext;
-import org.apromore.common.converters.epml.handler.epml.impl.TypeANDHandler;
-import org.apromore.common.converters.epml.handler.epml.impl.TypeArcHandler;
-import org.apromore.common.converters.epml.handler.epml.impl.TypeEventHandler;
-import org.apromore.common.converters.epml.handler.epml.impl.TypeFunctionHandler;
-import org.apromore.common.converters.epml.handler.epml.impl.TypeORHandler;
-import org.apromore.common.converters.epml.handler.epml.impl.TypeXORHandler;
+import org.apromore.common.converters.epml.handler.epml.impl.*;
 
 public class EPMLHandlerFactory {
 

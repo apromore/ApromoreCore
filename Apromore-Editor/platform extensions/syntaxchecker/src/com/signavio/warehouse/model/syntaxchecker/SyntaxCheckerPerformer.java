@@ -1,17 +1,16 @@
 package com.signavio.warehouse.model.syntaxchecker;
 
-import java.util.List;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.oryxeditor.server.diagram.generic.GenericDiagram;
-
 import de.hpi.bpmn2_0.exceptions.BpmnConverterException;
 import de.hpi.bpmn2_0.factory.AbstractBpmnFactory;
 import de.hpi.bpmn2_0.model.Definitions;
 import de.hpi.bpmn2_0.transformation.Diagram2BpmnConverter;
 import de.hpi.bpmn2_0.validation.BPMN2SyntaxChecker;
 import de.hpi.diagram.verification.SyntaxChecker;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.oryxeditor.server.diagram.generic.GenericDiagram;
+
+import java.util.List;
 
 public class SyntaxCheckerPerformer {
 
@@ -50,30 +49,30 @@ public class SyntaxCheckerPerformer {
 //			writer.print(checker.getErrorsAsJson().toString());
 //		}
 //	}
-	
-	public JSONObject processDocument(GenericDiagram diagram, List<Class<? extends AbstractBpmnFactory>> factoryClasses) throws JSONException, BpmnConverterException {
+
+    public JSONObject processDocument(GenericDiagram diagram, List<Class<? extends AbstractBpmnFactory>> factoryClasses) throws JSONException, BpmnConverterException {
 //		GenericDiagram diagram = BasicDiagramBuilder.parseJson(jsonDocument);
-		
-		//TODO: validate edges that are not in the java object model
+
+        //TODO: validate edges that are not in the java object model
 //		ArrayList<Shape> edges = this.getEdgesFromDiagram(diagram.getChildShapes());
-		
-		String type = diagram.getStencilsetRef().getNamespace();
-		SyntaxChecker checker = null;
-		
-		if(type != null && (type.equals("http://b3mn.org/stencilset/bpmn2.0#") ||
-				type.equals("http://b3mn.org/stencilset/bpmn2.0choreography#") ||
-				type.equals("http://b3mn.org/stencilset/bpmn2.0conversation#"))) {
-			checker = getCheckerBPMN2(diagram, factoryClasses);
-		}
-		
-		if (checker == null) {
-			return new JSONObject();
-		} else {
-			checker.checkSyntax();
-			return checker.getErrorsAsJson();
-		}
-	}
-	
+
+        String type = diagram.getStencilsetRef().getNamespace();
+        SyntaxChecker checker = null;
+
+        if (type != null && (type.equals("http://b3mn.org/stencilset/bpmn2.0#") ||
+                type.equals("http://b3mn.org/stencilset/bpmn2.0choreography#") ||
+                type.equals("http://b3mn.org/stencilset/bpmn2.0conversation#"))) {
+            checker = getCheckerBPMN2(diagram, factoryClasses);
+        }
+
+        if (checker == null) {
+            return new JSONObject();
+        } else {
+            checker.checkSyntax();
+            return checker.getErrorsAsJson();
+        }
+    }
+
 //	private ArrayList<Shape> getEdgesFromDiagram(ArrayList<Shape> shapes) {
 //		ArrayList<Shape> edges = new ArrayList<Shape>();
 //		
@@ -94,11 +93,11 @@ public class SyntaxCheckerPerformer {
 //		
 //		return edges;
 //	}
-	
-	protected SyntaxChecker getCheckerBPMN2(GenericDiagram diagram, List<Class<? extends AbstractBpmnFactory>> factoryClasses) throws BpmnConverterException {
-		Diagram2BpmnConverter converter = new Diagram2BpmnConverter(diagram, factoryClasses);
-		
-		Definitions defs = converter.getDefinitionsFromDiagram();
-		return new BPMN2SyntaxChecker(defs);
-	}
+
+    protected SyntaxChecker getCheckerBPMN2(GenericDiagram diagram, List<Class<? extends AbstractBpmnFactory>> factoryClasses) throws BpmnConverterException {
+        Diagram2BpmnConverter converter = new Diagram2BpmnConverter(diagram, factoryClasses);
+
+        Definitions defs = converter.getDefinitionsFromDiagram();
+        return new BPMN2SyntaxChecker(defs);
+    }
 }

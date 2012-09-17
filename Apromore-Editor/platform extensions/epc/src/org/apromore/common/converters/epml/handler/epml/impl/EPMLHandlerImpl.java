@@ -29,6 +29,7 @@ import org.apromore.common.converters.epml.handler.epml.EPMLHandler;
 
 /**
  * Base class for all converters using the conversion context
+ *
  * @author Felix Mannhardt
  */
 public abstract class EPMLHandlerImpl implements EPMLHandler {

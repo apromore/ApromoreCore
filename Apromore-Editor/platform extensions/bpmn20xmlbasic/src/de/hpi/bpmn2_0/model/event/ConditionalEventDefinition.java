@@ -1,17 +1,17 @@
 /**
  * Copyright (c) 2009
  * Philipp Giese, Sven Wagner-Boysen
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,20 +23,16 @@
 
 package de.hpi.bpmn2_0.model.event;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import de.hpi.bpmn2_0.model.Expression;
+
+import javax.xml.bind.annotation.*;
 
 
 /**
  * <p>Java class for tConditionalEventDefinition complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name="tConditionalEventDefinition">
  *   &lt;complexContent>
@@ -48,28 +44,23 @@ import de.hpi.bpmn2_0.model.Expression;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tConditionalEventDefinition", propOrder = {
-    "condition"
+        "condition"
 })
 public class ConditionalEventDefinition
-    extends EventDefinition
-{
+        extends EventDefinition {
 
     @XmlElement(required = true)
     protected Expression condition;
 
     /**
      * Gets the value of the condition property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TExpression }
-     *     
+     *
+     * @return possible object is
+     *         {@link TExpression }
      */
     public Expression getCondition() {
         return condition;
@@ -77,11 +68,9 @@ public class ConditionalEventDefinition
 
     /**
      * Sets the value of the condition property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TExpression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link TExpression }
      */
     public void setCondition(Expression value) {
         this.condition = value;

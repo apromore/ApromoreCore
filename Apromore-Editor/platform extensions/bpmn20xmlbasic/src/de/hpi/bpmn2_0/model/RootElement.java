@@ -1,22 +1,19 @@
-
-
-
 package de.hpi.bpmn2_0.model;
+
+import de.hpi.bpmn2_0.model.data_object.Message;
+import de.hpi.bpmn2_0.model.misc.Signal;
 
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlSeeAlso;
 import javax.xml.bind.annotation.XmlType;
 
-import de.hpi.bpmn2_0.model.data_object.Message;
-import de.hpi.bpmn2_0.model.misc.Signal;
-
 
 /**
  * <p>Java class for tRootElement complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name="tRootElement">
  *   &lt;complexContent>
@@ -25,8 +22,6 @@ import de.hpi.bpmn2_0.model.misc.Signal;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 
 @XmlAccessorType(XmlAccessType.FIELD)
@@ -38,27 +33,27 @@ import de.hpi.bpmn2_0.model.misc.Signal;
 //    TEndPoint.class,
 //    TPartnerRole.class,
 //    TPartnerEntity.class,
-    Signal.class,
+        Signal.class,
 //    EventDefinition.class,
 //    TError.class,
 //    TResource.class,
 //    TInterface.class,
 //    TCorrelationProperty.class,
-    Message.class,
+        Message.class,
 
-    CallableElement.class//,
+        CallableElement.class//,
 
 //    TEscalation.class
 })
 public abstract class RootElement
-    extends BaseElement
-{
-	
-	public RootElement() {}
-	
-	public RootElement(RootElement rootElement) {
-		super(rootElement);
-	}
+        extends BaseElement {
+
+    public RootElement() {
+    }
+
+    public RootElement(RootElement rootElement) {
+        super(rootElement);
+    }
 
 
 }

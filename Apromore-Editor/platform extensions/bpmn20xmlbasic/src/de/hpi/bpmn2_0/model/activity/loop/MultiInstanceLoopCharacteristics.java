@@ -1,17 +1,17 @@
 /**
  * Copyright (c) 2009
  * Sven Wagner-Boysen
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,18 +23,6 @@
 
 package de.hpi.bpmn2_0.model.activity.loop;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlElements;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import de.hpi.bpmn2_0.model.Expression;
 import de.hpi.bpmn2_0.model.FormalExpression;
 import de.hpi.bpmn2_0.model.data_object.DataInput;
@@ -42,12 +30,16 @@ import de.hpi.bpmn2_0.model.data_object.DataOutput;
 import de.hpi.bpmn2_0.model.event.EventDefinition;
 import de.hpi.bpmn2_0.model.misc.Property;
 
+import javax.xml.bind.annotation.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * <p>Java class for tMultiInstanceLoopCharacteristics complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name="tMultiInstanceLoopCharacteristics">
  *   &lt;complexContent>
@@ -69,46 +61,43 @@ import de.hpi.bpmn2_0.model.misc.Property;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tMultiInstanceLoopCharacteristics", propOrder = {
-    "loopCardinality",
-    "loopDataInput",
-    "loopDataOutput",
-    "inputDataItem",
-    "outputDataItem",
-    "complexBehaviorDefinition",
-    "completionCondition"
+        "loopCardinality",
+        "loopDataInput",
+        "loopDataOutput",
+        "inputDataItem",
+        "outputDataItem",
+        "complexBehaviorDefinition",
+        "completionCondition"
 })
 public class MultiInstanceLoopCharacteristics
-    extends LoopCharacteristics
-{
-	
-	@XmlElements({
-		@XmlElement(type = FormalExpression.class),
-		@XmlElement(type = Expression.class)
-	})
+        extends LoopCharacteristics {
+
+    @XmlElements({
+            @XmlElement(type = FormalExpression.class),
+            @XmlElement(type = Expression.class)
+    })
     protected Expression loopCardinality;
-    
+
     protected DataInput loopDataInput;
     protected DataOutput loopDataOutput;
     protected Property inputDataItem;
     protected Property outputDataItem;
     protected List<ComplexBehaviorDefinition> complexBehaviorDefinition;
-    
+
     @XmlElements({
-		@XmlElement(type = FormalExpression.class),
-		@XmlElement(type = Expression.class)
-	})
+            @XmlElement(type = FormalExpression.class),
+            @XmlElement(type = Expression.class)
+    })
     protected Expression completionCondition;
     @XmlAttribute
     protected Boolean isSequential;
     @XmlAttribute
     protected MultiInstanceFlowCondition behavior;
-    
+
     @XmlAttribute
     @XmlIDREF
     protected EventDefinition oneBehaviorEventRef;
@@ -118,11 +107,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Gets the value of the loopCardinality property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TExpression }
-     *     
+     *
+     * @return possible object is
+     *         {@link TExpression }
      */
     public Expression getLoopCardinality() {
         return loopCardinality;
@@ -130,11 +117,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Sets the value of the loopCardinality property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setLoopCardinality(Expression value) {
         this.loopCardinality = value;
@@ -142,11 +127,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Gets the value of the loopDataInput property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link DataInput }
-     *     
+     *
+     * @return possible object is
+     *         {@link DataInput }
      */
     public DataInput getLoopDataInput() {
         return loopDataInput;
@@ -154,11 +137,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Sets the value of the loopDataInput property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link DataInput }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link DataInput }
      */
     public void setLoopDataInput(DataInput value) {
         this.loopDataInput = value;
@@ -166,11 +147,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Gets the value of the loopDataOutput property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link DataOutput }
-     *     
+     *
+     * @return possible object is
+     *         {@link DataOutput }
      */
     public DataOutput getLoopDataOutput() {
         return loopDataOutput;
@@ -178,11 +157,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Sets the value of the loopDataOutput property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link DataOutput }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link DataOutput }
      */
     public void setLoopDataOutput(DataOutput value) {
         this.loopDataOutput = value;
@@ -190,11 +167,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Gets the value of the inputDataItem property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TProperty }
-     *     
+     *
+     * @return possible object is
+     *         {@link TProperty }
      */
     public Property getInputDataItem() {
         return inputDataItem;
@@ -202,11 +177,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Sets the value of the inputDataItem property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Property }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Property }
      */
     public void setInputDataItem(Property value) {
         this.inputDataItem = value;
@@ -214,11 +187,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Gets the value of the outputDataItem property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Property }
-     *     
+     *
+     * @return possible object is
+     *         {@link Property }
      */
     public Property getOutputDataItem() {
         return outputDataItem;
@@ -226,11 +197,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Sets the value of the outputDataItem property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Property }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Property }
      */
     public void setOutputDataItem(Property value) {
         this.outputDataItem = value;
@@ -238,25 +207,23 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Gets the value of the complexBehaviorDefinition property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the complexBehaviorDefinition property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getComplexBehaviorDefinition().add(newItem);
      * </pre>
-     * 
-     * 
-     * <p>
+     * <p/>
+     * <p/>
+     * <p/>
      * Objects of the following type(s) are allowed in the list
      * {@link ComplexBehaviorDefinition }
-     * 
-     * 
      */
     public List<ComplexBehaviorDefinition> getComplexBehaviorDefinition() {
         if (complexBehaviorDefinition == null) {
@@ -267,11 +234,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Gets the value of the completionCondition property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Expression }
-     *     
+     *
+     * @return possible object is
+     *         {@link Expression }
      */
     public Expression getCompletionCondition() {
         return completionCondition;
@@ -279,11 +244,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Sets the value of the completionCondition property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Expression }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Expression }
      */
     public void setCompletionCondition(Expression value) {
         this.completionCondition = value;
@@ -291,11 +254,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Gets the value of the isSequential property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Boolean }
-     *     
+     *
+     * @return possible object is
+     *         {@link Boolean }
      */
     public boolean isIsSequential() {
         if (isSequential == null) {
@@ -307,11 +268,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Sets the value of the isSequential property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Boolean }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Boolean }
      */
     public void setIsSequential(Boolean value) {
         this.isSequential = value;
@@ -319,11 +278,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Gets the value of the behavior property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link MultiInstanceFlowCondition }
-     *     
+     *
+     * @return possible object is
+     *         {@link MultiInstanceFlowCondition }
      */
     public MultiInstanceFlowCondition getBehavior() {
         if (behavior == null) {
@@ -335,11 +292,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Sets the value of the behavior property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link MultiInstanceFlowCondition }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link MultiInstanceFlowCondition }
      */
     public void setBehavior(MultiInstanceFlowCondition value) {
         this.behavior = value;
@@ -347,11 +302,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Gets the value of the oneBehaviorEventRef property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link EventDefinition }
-     *     
+     *
+     * @return possible object is
+     *         {@link EventDefinition }
      */
     public EventDefinition getOneBehaviorEventRef() {
         return oneBehaviorEventRef;
@@ -359,11 +312,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Sets the value of the oneBehaviorEventRef property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link EventDefinition }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link EventDefinition }
      */
     public void setOneBehaviorEventRef(EventDefinition value) {
         this.oneBehaviorEventRef = value;
@@ -371,11 +322,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Gets the value of the noneBehaviorEventRef property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link EventDefinition }
-     *     
+     *
+     * @return possible object is
+     *         {@link EventDefinition }
      */
     public EventDefinition getNoneBehaviorEventRef() {
         return noneBehaviorEventRef;
@@ -383,11 +332,9 @@ public class MultiInstanceLoopCharacteristics
 
     /**
      * Sets the value of the noneBehaviorEventRef property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link EventDefinition }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link EventDefinition }
      */
     public void setNoneBehaviorEventRef(EventDefinition value) {
         this.noneBehaviorEventRef = value;

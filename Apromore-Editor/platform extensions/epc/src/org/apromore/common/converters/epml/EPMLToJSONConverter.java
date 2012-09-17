@@ -24,24 +24,12 @@
  */
 package org.apromore.common.converters.epml;
 
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-
-import de.epml.*;
+import de.epml.TExtensibleElements;
+import de.epml.TypeEPC;
+import de.epml.TypeEPML;
 import org.apromore.common.converters.epml.context.EPMLConversionContext;
-import org.apromore.common.converters.epml.handler.epml.EPMLHandlerFactory;
 import org.apromore.common.converters.epml.handler.epml.EPMLHandler;
+import org.apromore.common.converters.epml.handler.epml.EPMLHandlerFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oryxeditor.server.diagram.Bounds;
@@ -49,8 +37,17 @@ import org.oryxeditor.server.diagram.StencilSetReference;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.generic.GenericJSONBuilder;
 
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+import java.io.*;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
  * Converts a EPML Stream to a Signavio/Oryx JSON Stream
+ *
  * @author Felix Mannhardt
  */
 public class EPMLToJSONConverter {
@@ -105,7 +102,7 @@ public class EPMLToJSONConverter {
             String stencilSetNs = "http://b3mn.org/stencilset/epc#";
             BasicDiagram diagram = new BasicDiagram(epc.getName(), "Diagram", new StencilSetReference(stencilSetNs));
             Bounds bounds = new Bounds();
-            bounds.setCoordinates(0,0,200,200);
+            bounds.setCoordinates(0, 0, 200, 200);
             diagram.setBounds(bounds);
             context.addDiagram(diagram);
             for (Object obj : epc.getEventOrFunctionOrRole()) {

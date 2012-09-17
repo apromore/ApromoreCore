@@ -26,14 +26,13 @@ import de.unihannover.se.infocup2008.bpmn.model.BPMNDiagram;
 
 /**
  * Basic interface for a Layouter
- * 
- * @author Team Royal Fawn
  *
+ * @author Team Royal Fawn
  */
 public interface Layouter {
 
-	public abstract void doLayout();
-	
-	public abstract void setDiagram(BPMNDiagram diagram);
-	
+    public abstract void doLayout();
+
+    public abstract void setDiagram(BPMNDiagram diagram);
+
 }

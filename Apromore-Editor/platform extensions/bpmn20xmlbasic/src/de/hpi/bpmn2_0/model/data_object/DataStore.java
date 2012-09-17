@@ -1,17 +1,17 @@
 /**
  * Copyright (c) 2009
  * Philipp Giese, Sven Wagner-Boysen
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,24 +23,19 @@
 
 package de.hpi.bpmn2_0.model.data_object;
 
-import javax.xml.bind.annotation.XmlAccessType;
-
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.namespace.QName;
-
 import de.hpi.bpmn2_0.model.RootElement;
 import de.hpi.bpmn2_0.util.EscapingStringAdapter;
+
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.namespace.QName;
 
 
 /**
  * <p>Java class for tDataStore complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name="tDataStore">
  *   &lt;complexContent>
@@ -53,23 +48,20 @@ import de.hpi.bpmn2_0.util.EscapingStringAdapter;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tDataStore", propOrder = {
-	"dataState",
-	"name",
-	"capacity",
-	"isUnlimited"
+        "dataState",
+        "name",
+        "capacity",
+        "isUnlimited"
 })
 public class DataStore
-    extends RootElement
-{
+        extends RootElement {
 
     protected DataState dataState;
-    
+
     @XmlAttribute
     @XmlJavaTypeAdapter(EscapingStringAdapter.class)
     protected String name;
@@ -77,7 +69,7 @@ public class DataStore
     protected int capacity;
     @XmlAttribute
     protected boolean isUnlimited;
-    
+
 //	/**
 //	 * 
 //	 * Basic method for the conversion of BPMN2.0 to the editor's internal format. 
@@ -93,43 +85,41 @@ public class DataStore
 //        
 //		return shape;
 //	}	
-    
+
     /* Getter & Setter */
-    
+
     public String getName() {
-		return name;
-	}
+        return name;
+    }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+    public void setName(String name) {
+        this.name = name;
+    }
 
-	public int getCapacity() {
-		return capacity;
-	}
+    public int getCapacity() {
+        return capacity;
+    }
 
-	public void setCapacity(int capacity) {
-		this.capacity = capacity;
-	}
+    public void setCapacity(int capacity) {
+        this.capacity = capacity;
+    }
 
-	public boolean isUnlimited() {
-		return isUnlimited;
-	}
+    public boolean isUnlimited() {
+        return isUnlimited;
+    }
 
-	public void setUnlimited(boolean isUnlimited) {
-		this.isUnlimited = isUnlimited;
-	}
+    public void setUnlimited(boolean isUnlimited) {
+        this.isUnlimited = isUnlimited;
+    }
 
-	@XmlAttribute
+    @XmlAttribute
     protected QName itemSubjectRef;
 
     /**
      * Gets the value of the dataState property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link DataState }
-     *     
+     *
+     * @return possible object is
+     *         {@link DataState }
      */
     public DataState getDataState() {
         return dataState;
@@ -137,11 +127,9 @@ public class DataStore
 
     /**
      * Sets the value of the dataState property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link DataState }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link DataState }
      */
     public void setDataState(DataState value) {
         this.dataState = value;
@@ -149,11 +137,9 @@ public class DataStore
 
     /**
      * Gets the value of the itemSubjectRef property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QName }
-     *     
+     *
+     * @return possible object is
+     *         {@link QName }
      */
     public QName getItemSubjectRef() {
         return itemSubjectRef;
@@ -161,11 +147,9 @@ public class DataStore
 
     /**
      * Sets the value of the itemSubjectRef property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QName }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link QName }
      */
     public void setItemSubjectRef(QName value) {
         this.itemSubjectRef = value;

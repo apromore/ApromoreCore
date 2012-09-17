@@ -27,17 +27,17 @@ import de.hpi.layouting.model.LayoutingElement;
 /**
  * Represents an element of the bpmn diagram. Each task, sequenceflow, etc. is
  * an element.
- * 
+ *
  * @author Team Royal Fawn
- * 
- * FIXME make a Class of it (BPMNElementImpl)
+ *         <p/>
+ *         FIXME make a Class of it (BPMNElementImpl)
  */
 public interface BPMNElement extends LayoutingElement {
 
-	/**
-	 * Updates the underlying DataModel e.g. JSONObject or XMLNode
-	 */
-	public abstract void updateDataModel();
+    /**
+     * Updates the underlying DataModel e.g. JSONObject or XMLNode
+     */
+    public abstract void updateDataModel();
 
-	public abstract boolean isADockedIntermediateEvent();
+    public abstract boolean isADockedIntermediateEvent();
 }
