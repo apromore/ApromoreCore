@@ -33,6 +33,7 @@ public interface EPMLHandler {
 
     /**
      * Convert the EPML Object to a Shape
+     *
      * @return the converted EPML object as a Signavio Shape
      */
     public BasicShape convert();

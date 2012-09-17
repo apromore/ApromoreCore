@@ -8,17 +8,6 @@
 
 package de.hpi.bpmn2_0.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
-import javax.xml.namespace.QName;
-
 import de.hpi.bpmn2_0.model.callable.GlobalChoreographyTask;
 import de.hpi.bpmn2_0.model.callable.GlobalTask;
 import de.hpi.bpmn2_0.model.choreography.Choreography;
@@ -27,12 +16,18 @@ import de.hpi.bpmn2_0.model.data_object.InputOutputBinding;
 import de.hpi.bpmn2_0.model.data_object.InputOutputSpecification;
 import de.hpi.bpmn2_0.util.EscapingStringAdapter;
 
+import javax.xml.bind.annotation.*;
+import javax.xml.bind.annotation.adapters.XmlJavaTypeAdapter;
+import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * <p>Java class for tCallableElement complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name="tCallableElement">
  *   &lt;complexContent>
@@ -47,40 +42,37 @@ import de.hpi.bpmn2_0.util.EscapingStringAdapter;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tCallableElement", propOrder = {
-    "supportedInterfaceRef",
-    "ioSpecification",
-    "ioBinding"
+        "supportedInterfaceRef",
+        "ioSpecification",
+        "ioBinding"
 })
 @XmlSeeAlso({
-    Process.class,
-    Choreography.class,
-    GlobalChoreographyTask.class,
-    GlobalCommunication.class,
-    GlobalTask.class
+        Process.class,
+        Choreography.class,
+        GlobalChoreographyTask.class,
+        GlobalCommunication.class,
+        GlobalTask.class
 })
 public class CallableElement
-    extends RootElement
-{
-	
-	/* Constructors */
-	public CallableElement() {
-		super();
-	}
-	
-	public CallableElement(CallableElement ce) {
-		super(ce);
-		
-		this.getSupportedInterfaceRef().addAll(ce.getSupportedInterfaceRef());
-		this.getIoBinding().addAll(ce.getIoBinding());
-		this.setIoSpecification(ce.getIoSpecification());
-		this.setName(ce.getName());
-	}
-	
+        extends RootElement {
+
+    /* Constructors */
+    public CallableElement() {
+        super();
+    }
+
+    public CallableElement(CallableElement ce) {
+        super(ce);
+
+        this.getSupportedInterfaceRef().addAll(ce.getSupportedInterfaceRef());
+        this.getIoBinding().addAll(ce.getIoBinding());
+        this.setIoSpecification(ce.getIoSpecification());
+        this.setName(ce.getName());
+    }
+
     protected List<QName> supportedInterfaceRef;
     protected InputOutputSpecification ioSpecification;
     protected List<InputOutputBinding> ioBinding;
@@ -90,25 +82,23 @@ public class CallableElement
 
     /**
      * Gets the value of the supportedInterfaceRef property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the supportedInterfaceRef property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getSupportedInterfaceRef().add(newItem);
      * </pre>
-     * 
-     * 
-     * <p>
+     * <p/>
+     * <p/>
+     * <p/>
      * Objects of the following type(s) are allowed in the list
      * {@link QName }
-     * 
-     * 
      */
     public List<QName> getSupportedInterfaceRef() {
         if (supportedInterfaceRef == null) {
@@ -119,11 +109,9 @@ public class CallableElement
 
     /**
      * Gets the value of the ioSpecification property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link InputOutputSpecification }
-     *     
+     *
+     * @return possible object is
+     *         {@link InputOutputSpecification }
      */
     public InputOutputSpecification getIoSpecification() {
         return ioSpecification;
@@ -131,11 +119,9 @@ public class CallableElement
 
     /**
      * Sets the value of the ioSpecification property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link InputOutputSpecification }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link InputOutputSpecification }
      */
     public void setIoSpecification(InputOutputSpecification value) {
         this.ioSpecification = value;
@@ -143,25 +129,23 @@ public class CallableElement
 
     /**
      * Gets the value of the ioBinding property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the ioBinding property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getIoBinding().add(newItem);
      * </pre>
-     * 
-     * 
-     * <p>
+     * <p/>
+     * <p/>
+     * <p/>
      * Objects of the following type(s) are allowed in the list
      * {@link TInputOutputBinding }
-     * 
-     * 
      */
     public List<InputOutputBinding> getIoBinding() {
         if (ioBinding == null) {
@@ -172,11 +156,9 @@ public class CallableElement
 
     /**
      * Gets the value of the name property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link String }
-     *     
+     *
+     * @return possible object is
+     *         {@link String }
      */
     public String getName() {
         return name;
@@ -184,11 +166,9 @@ public class CallableElement
 
     /**
      * Sets the value of the name property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link String }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link String }
      */
     public void setName(String value) {
         this.name = value;

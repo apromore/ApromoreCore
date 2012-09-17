@@ -1,14 +1,5 @@
 package org.apromore.common.converters.epml.servlet;
 
-import java.io.IOException;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Queue;
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import de.hpi.epc.layouting.EPCEdgeLayouter;
 import de.hpi.epc.layouting.EPCTopToBottomGridLayouter;
 import de.hpi.epc.layouting.TopologicalSorterEPC;
@@ -23,6 +14,15 @@ import de.hpi.layouting.model.LayoutingElement;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Queue;
 
 public class EPCLayoutServlet extends HttpServlet {
 

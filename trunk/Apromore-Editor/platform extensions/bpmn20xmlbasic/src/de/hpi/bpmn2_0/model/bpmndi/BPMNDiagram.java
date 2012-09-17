@@ -1,17 +1,17 @@
 /**
  * Copyright (c) 2010
  * Signavio, Sven Wagner-Boysen
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,27 +23,22 @@
 
 package de.hpi.bpmn2_0.model.bpmndi;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import de.hpi.bpmn2_0.model.bpmndi.di.Diagram;
 import de.hpi.bpmn2_0.model.bpmndi.di.DiagramElement;
-import de.hpi.bpmn2_0.model.bpmndi.di.Shape;
 import de.hpi.bpmn2_0.model.participant.Lane;
 import de.hpi.bpmn2_0.model.participant.Participant;
 import de.hpi.diagram.SignavioUUID;
 
+import javax.xml.bind.annotation.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * <p>Java class for BPMNDiagram complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name="BPMNDiagram">
  *   &lt;complexContent>
@@ -56,18 +51,15 @@ import de.hpi.diagram.SignavioUUID;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlRootElement(name = "BPMNDiagram")
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(propOrder = {
-    "bpmnPlane",
-    "bpmnLabelStyle"
+        "bpmnPlane",
+        "bpmnLabelStyle"
 })
 public class BPMNDiagram
-    extends Diagram
-{
+        extends Diagram {
 
     @XmlElement(name = "BPMNPlane", required = true)
     protected BPMNPlane bpmnPlane;
@@ -76,46 +68,45 @@ public class BPMNDiagram
 
     /* Constructor */
     public BPMNDiagram() {
-    	super();
-    	id = SignavioUUID.generate();
-    	bpmnPlane = new BPMNPlane();
+        super();
+        id = SignavioUUID.generate();
+        bpmnPlane = new BPMNPlane();
     }
-    
+
     /* Public methods */
+
     /**
      * Returns the orientation of the diagram depending on the pool and lane
      * elements included.
      */
     public String getOrientation() {
-    	int countH = 0;
-    	int countV = 0;
-    	
-    	for(DiagramElement de : this.getBPMNPlane().getDiagramElement()) {
-    		if(de instanceof BPMNShape) {
-    			BPMNShape s = (BPMNShape) de;
-    			
-    			if(((s.getBpmnElement() instanceof Lane) 
-    					|| (s.getBpmnElement() instanceof Participant)) 
-    				&& s.isIsHorizontalNoNull()) {
-    					countH++;
-    			} else {
-    				countV++;
-    			}
-    		}
-    	}
-    	
-    	return (countV > countH ? "vertical" : "horizontal");
+        int countH = 0;
+        int countV = 0;
+
+        for (DiagramElement de : this.getBPMNPlane().getDiagramElement()) {
+            if (de instanceof BPMNShape) {
+                BPMNShape s = (BPMNShape) de;
+
+                if (((s.getBpmnElement() instanceof Lane)
+                        || (s.getBpmnElement() instanceof Participant))
+                        && s.isIsHorizontalNoNull()) {
+                    countH++;
+                } else {
+                    countV++;
+                }
+            }
+        }
+
+        return (countV > countH ? "vertical" : "horizontal");
     }
-    
+
     /* Getter & Setter */
-    
+
     /**
      * Gets the value of the bpmnPlane property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link BPMNPlane }
-     *     
+     *
+     * @return possible object is
+     *         {@link BPMNPlane }
      */
     public BPMNPlane getBPMNPlane() {
         return bpmnPlane;
@@ -123,11 +114,9 @@ public class BPMNDiagram
 
     /**
      * Sets the value of the bpmnPlane property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link BPMNPlane }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link BPMNPlane }
      */
     public void setBPMNPlane(BPMNPlane value) {
         this.bpmnPlane = value;
@@ -135,25 +124,23 @@ public class BPMNDiagram
 
     /**
      * Gets the value of the bpmnLabelStyle property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the bpmnLabelStyle property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getBPMNLabelStyle().add(newItem);
      * </pre>
-     * 
-     * 
-     * <p>
+     * <p/>
+     * <p/>
+     * <p/>
      * Objects of the following type(s) are allowed in the list
      * {@link BPMNLabelStyle }
-     * 
-     * 
      */
     public List<BPMNLabelStyle> getBPMNLabelStyle() {
         if (bpmnLabelStyle == null) {

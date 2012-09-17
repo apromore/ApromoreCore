@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -13,16 +13,14 @@
 
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * See: http://www.gnu.org/licenses/lgpl-3.0
- * 
+ *
  */
 package de.hbrs.oryx.yawl.converter.handler.yawl;
 
-import java.text.SimpleDateFormat;
-import java.util.HashMap;
-import java.util.List;
-
+import de.hbrs.oryx.yawl.converter.context.YAWLConversionContext;
+import de.hbrs.oryx.yawl.util.YAWLUtils;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -33,111 +31,112 @@ import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.yawlfoundation.yawl.elements.YSpecification;
 import org.yawlfoundation.yawl.unmarshal.YMetaData;
 
-import de.hbrs.oryx.yawl.converter.context.YAWLConversionContext;
-import de.hbrs.oryx.yawl.util.YAWLUtils;
+import java.text.SimpleDateFormat;
+import java.util.HashMap;
+import java.util.List;
 
 public class SpecificationHandler extends YAWLHandlerImpl {
 
-	YSpecification specification;
+    YSpecification specification;
 
-	public SpecificationHandler(YAWLConversionContext context, YSpecification ySpec) {
-		super(context);
-		this.specification = ySpec;
-	}
+    public SpecificationHandler(YAWLConversionContext context, YSpecification ySpec) {
+        super(context);
+        this.specification = ySpec;
+    }
 
-	public YSpecification getSpecification() {
-		return specification;
-	}
+    public YSpecification getSpecification() {
+        return specification;
+    }
 
-	@Override
-	public void convert(String parentId) {
-		BasicDiagram specDiagram = createEmptyDiagram("diagram-" + getSpecification().getURI());
+    @Override
+    public void convert(String parentId) {
+        BasicDiagram specDiagram = createEmptyDiagram("diagram-" + getSpecification().getURI());
 
-		specDiagram.setProperties(convertProperties());
+        specDiagram.setProperties(convertProperties());
 
-		getContext().setSpecificationDiagram(specDiagram);
-	}
+        getContext().setSpecificationDiagram(specDiagram);
+    }
 
-	private HashMap<String, String> convertProperties() {
-		HashMap<String, String> props = new HashMap<String, String>();
+    private HashMap<String, String> convertProperties() {
+        HashMap<String, String> props = new HashMap<String, String>();
 
-		final YSpecification spec = getSpecification();
-		final YMetaData metaData = spec.getMetaData();
+        final YSpecification spec = getSpecification();
+        final YMetaData metaData = spec.getMetaData();
 
-		// General Properties
+        // General Properties
 
-		props.put("specname", convertNullable(spec.getName()));
-		props.put("specid", convertNullable(metaData.getUniqueID()));
+        props.put("specname", convertNullable(spec.getName()));
+        props.put("specid", convertNullable(metaData.getUniqueID()));
 
-		// Specification Related
+        // Specification Related
 
-		props.put("spectitle", convertNullable(metaData.getTitle()));
+        props.put("spectitle", convertNullable(metaData.getTitle()));
 
-		try {
-			props.put("speccreators", convertListOfNames(metaData.getCreators()));
-		} catch (JSONException e) {
-			getContext().addConversionWarnings("Could not convert YAWL specification 'creators'", e);
-		}
+        try {
+            props.put("speccreators", convertListOfNames(metaData.getCreators()));
+        } catch (JSONException e) {
+            getContext().addConversionWarnings("Could not convert YAWL specification 'creators'", e);
+        }
 
-		try {
-			props.put("specsubject", convertListOfNames(metaData.getSubjects()));
-		} catch (JSONException e) {
-			getContext().addConversionWarnings("Could not convert YAWL specification 'subject'", e);
-		}
+        try {
+            props.put("specsubject", convertListOfNames(metaData.getSubjects()));
+        } catch (JSONException e) {
+            getContext().addConversionWarnings("Could not convert YAWL specification 'subject'", e);
+        }
 
-		props.put("specdescription", convertNullable(metaData.getDescription()));
+        props.put("specdescription", convertNullable(metaData.getDescription()));
 
-		try {
-			props.put("speccontributor", convertListOfNames(metaData.getContributors()));
-		} catch (JSONException e) {
-			getContext().addConversionWarnings("Could not convert YAWL specification 'subject'", e);
-		}
+        try {
+            props.put("speccontributor", convertListOfNames(metaData.getContributors()));
+        } catch (JSONException e) {
+            getContext().addConversionWarnings("Could not convert YAWL specification 'subject'", e);
+        }
 
-		props.put("speccoverage", convertNullable(metaData.getCoverage()));
+        props.put("speccoverage", convertNullable(metaData.getCoverage()));
 
-		props.put("specvalidfrom",
-				metaData.getValidFrom() != null ? new SimpleDateFormat(YAWLUtils.DATE_FORMAT).format(metaData.getValidFrom()) : "");
-		props.put("specvaliduntil",
-				metaData.getValidUntil() != null ? new SimpleDateFormat(YAWLUtils.DATE_FORMAT).format(metaData.getValidUntil()) : "");
+        props.put("specvalidfrom",
+                metaData.getValidFrom() != null ? new SimpleDateFormat(YAWLUtils.DATE_FORMAT).format(metaData.getValidFrom()) : "");
+        props.put("specvaliduntil",
+                metaData.getValidUntil() != null ? new SimpleDateFormat(YAWLUtils.DATE_FORMAT).format(metaData.getValidUntil()) : "");
 
-		props.put("speccreated", metaData.getCreated() != null ? new SimpleDateFormat(YAWLUtils.DATE_FORMAT).format(metaData.getCreated()) : "");
+        props.put("speccreated", metaData.getCreated() != null ? new SimpleDateFormat(YAWLUtils.DATE_FORMAT).format(metaData.getCreated()) : "");
 
-		props.put("specversion", convertNullable(metaData.getVersion().toString()));
+        props.put("specversion", convertNullable(metaData.getVersion().toString()));
 
-		props.put("specstatus", convertNullable(metaData.getStatus()));
+        props.put("specstatus", convertNullable(metaData.getStatus()));
 
-		props.put("specpersistent", new Boolean(metaData.isPersistent()).toString());
+        props.put("specpersistent", new Boolean(metaData.isPersistent()).toString());
 
-		props.put("specuri", spec.getURI());
+        props.put("specuri", spec.getURI());
 
-		props.put("specdatatypedefinitions", convertNullable(spec.getDataValidator().getSchema()));
+        props.put("specdatatypedefinitions", convertNullable(spec.getDataValidator().getSchema()));
 
-		return props;
-	}
+        return props;
+    }
 
-	private String convertListOfNames(List<String> list) throws JSONException {
-		JSONObject listOfNames = new JSONObject();
-		JSONArray items = new JSONArray();
-		for (String creator : list) {
-			JSONObject obj = new JSONObject();
-			obj.put("name", creator);
-			items.put(obj);
-		}
-		listOfNames.put("items", items);
-		return listOfNames.toString();
-	}
+    private String convertListOfNames(List<String> list) throws JSONException {
+        JSONObject listOfNames = new JSONObject();
+        JSONArray items = new JSONArray();
+        for (String creator : list) {
+            JSONObject obj = new JSONObject();
+            obj.put("name", creator);
+            items.put(obj);
+        }
+        listOfNames.put("items", items);
+        return listOfNames.toString();
+    }
 
-	private BasicDiagram createEmptyDiagram(String id) {
+    private BasicDiagram createEmptyDiagram(String id) {
 
-		String stencilSetNs = "http://b3mn.org/stencilset/yawl2.2#";
-		StencilSetReference stencilSetRef = new StencilSetReference(stencilSetNs);
+        String stencilSetNs = "http://b3mn.org/stencilset/yawl2.2#";
+        StencilSetReference stencilSetRef = new StencilSetReference(stencilSetNs);
 
-		BasicDiagram diagram = new BasicDiagram(id, "Diagram", stencilSetRef);
-		// Set required properties to initial values
-		// TODO: probably not used anymore in SIGNAVIO CORE COMPONENTS
-		// diagram.setChildShapes(new ArrayList<Shape>());
-		diagram.setBounds(new Bounds(new Point(0.0, 0.0), new Point(0.0, 0.0)));
-		return diagram;
-	}
+        BasicDiagram diagram = new BasicDiagram(id, "Diagram", stencilSetRef);
+        // Set required properties to initial values
+        // TODO: probably not used anymore in SIGNAVIO CORE COMPONENTS
+        // diagram.setChildShapes(new ArrayList<Shape>());
+        diagram.setBounds(new Bounds(new Point(0.0, 0.0), new Point(0.0, 0.0)));
+        return diagram;
+    }
 
 }

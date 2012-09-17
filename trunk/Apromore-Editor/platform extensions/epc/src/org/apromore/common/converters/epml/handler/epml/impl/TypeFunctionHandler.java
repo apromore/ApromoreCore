@@ -24,15 +24,15 @@
  */
 package org.apromore.common.converters.epml.handler.epml.impl;
 
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.HashMap;
-import java.util.Map;
-
 import de.epml.TypeFunction;
 import de.epml.TypePosition;
 import org.apromore.common.converters.epml.context.EPMLConversionContext;
 import org.oryxeditor.server.diagram.basic.BasicNode;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.util.HashMap;
+import java.util.Map;
 
 public class TypeFunctionHandler extends NodeHandler {
 

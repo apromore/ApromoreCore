@@ -1,17 +1,17 @@
 /**
  * Copyright (c) 2010
  * Signavio, Sven Wagner-Boysen
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,20 +23,20 @@
 
 package de.hpi.bpmn2_0.model.bpmndi;
 
+import de.hpi.bpmn2_0.model.bpmndi.di.Label;
+
 import javax.xml.bind.annotation.XmlAccessType;
 import javax.xml.bind.annotation.XmlAccessorType;
 import javax.xml.bind.annotation.XmlAttribute;
 import javax.xml.bind.annotation.XmlType;
 import javax.xml.namespace.QName;
 
-import de.hpi.bpmn2_0.model.bpmndi.di.Label;
-
 
 /**
  * <p>Java class for BPMNLabel complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name="BPMNLabel">
  *   &lt;complexContent>
@@ -47,25 +47,20 @@ import de.hpi.bpmn2_0.model.bpmndi.di.Label;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "BPMNLabel")
 public class BPMNLabel
-    extends Label
-{
+        extends Label {
 
     @XmlAttribute(name = "labelStyle")
     protected QName labelStyle;
 
     /**
      * Gets the value of the labelStyle property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QName }
-     *     
+     *
+     * @return possible object is
+     *         {@link QName }
      */
     public QName getLabelStyle() {
         return labelStyle;
@@ -73,11 +68,9 @@ public class BPMNLabel
 
     /**
      * Sets the value of the labelStyle property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QName }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link QName }
      */
     public void setLabelStyle(QName value) {
         this.labelStyle = value;

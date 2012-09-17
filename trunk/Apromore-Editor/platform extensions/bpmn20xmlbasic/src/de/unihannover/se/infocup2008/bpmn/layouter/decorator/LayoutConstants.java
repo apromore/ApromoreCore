@@ -24,11 +24,10 @@ package de.unihannover.se.infocup2008.bpmn.layouter.decorator;
 
 /**
  * Some constants used by the decorator
- * 
+ *
  * @author Team Royal Fawn
- * 
  */
 public class LayoutConstants {
-	public final static double EVENT_DIAMETER = 30;
-	public final static double EVENT_DOCKERS_MARGIN = 15;
+    public final static double EVENT_DIAMETER = 30;
+    public final static double EVENT_DOCKERS_MARGIN = 15;
 }

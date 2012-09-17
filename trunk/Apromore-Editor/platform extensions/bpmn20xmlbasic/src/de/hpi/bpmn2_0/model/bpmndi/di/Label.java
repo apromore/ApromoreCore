@@ -1,17 +1,17 @@
 /**
  * Copyright (c) 2010
  * Signavio, Sven Wagner-Boysen
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,21 +23,17 @@
 
 package de.hpi.bpmn2_0.model.bpmndi.di;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
-
 import de.hpi.bpmn2_0.model.bpmndi.BPMNLabel;
 import de.hpi.bpmn2_0.model.bpmndi.dc.Bounds;
+
+import javax.xml.bind.annotation.*;
 
 
 /**
  * <p>Java class for Label complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name="Label">
  *   &lt;complexContent>
@@ -50,30 +46,25 @@ import de.hpi.bpmn2_0.model.bpmndi.dc.Bounds;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "Label", propOrder = {
-    "bounds"
+        "bounds"
 })
 @XmlSeeAlso({
-    BPMNLabel.class
+        BPMNLabel.class
 })
 public abstract class Label
-    extends Node
-{
+        extends Node {
 
     @XmlElement(name = "Bounds", namespace = "http://www.omg.org/spec/DD/20100524/DC")
     protected Bounds bounds;
 
     /**
      * Gets the value of the bounds property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Bounds }
-     *     
+     *
+     * @return possible object is
+     *         {@link Bounds }
      */
     public Bounds getBounds() {
         return bounds;
@@ -81,11 +72,9 @@ public abstract class Label
 
     /**
      * Sets the value of the bounds property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Bounds }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Bounds }
      */
     public void setBounds(Bounds value) {
         this.bounds = value;

@@ -1,17 +1,17 @@
 /**
  * Copyright (c) 2010
  * Signavio, Sven Wagner-Boysen
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,22 +23,17 @@
 
 package de.hpi.bpmn2_0.model.data_object;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlType;
-
 import de.hpi.bpmn2_0.model.BaseElement;
 import de.hpi.bpmn2_0.model.activity.misc.Operation;
+
+import javax.xml.bind.annotation.*;
 
 
 /**
  * <p>Java class for tInputOutputBinding complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name="tInputOutputBinding">
  *   &lt;complexContent>
@@ -51,15 +46,12 @@ import de.hpi.bpmn2_0.model.activity.misc.Operation;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tInputOutputBinding")
 public class InputOutputBinding
-    extends BaseElement
-{
-	@XmlIDREF
+        extends BaseElement {
+    @XmlIDREF
     @XmlAttribute(name = "operationRef", required = true)
     protected Operation operationRef;
     @XmlAttribute(name = "inputDataRef", required = true)
@@ -73,11 +65,9 @@ public class InputOutputBinding
 
     /**
      * Gets the value of the operationRef property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Operation }
-     *     
+     *
+     * @return possible object is
+     *         {@link Operation }
      */
     public Operation getOperationRef() {
         return operationRef;
@@ -85,11 +75,9 @@ public class InputOutputBinding
 
     /**
      * Sets the value of the operationRef property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Operation }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Operation }
      */
     public void setOperationRef(Operation value) {
         this.operationRef = value;
@@ -97,11 +85,9 @@ public class InputOutputBinding
 
     /**
      * Gets the value of the inputDataRef property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Object }
-     *     
+     *
+     * @return possible object is
+     *         {@link Object }
      */
     public Object getInputDataRef() {
         return inputDataRef;
@@ -109,11 +95,9 @@ public class InputOutputBinding
 
     /**
      * Sets the value of the inputDataRef property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Object }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Object }
      */
     public void setInputDataRef(Object value) {
         this.inputDataRef = value;
@@ -121,11 +105,9 @@ public class InputOutputBinding
 
     /**
      * Gets the value of the outputDataRef property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link Object }
-     *     
+     *
+     * @return possible object is
+     *         {@link Object }
      */
     public Object getOutputDataRef() {
         return outputDataRef;
@@ -133,11 +115,9 @@ public class InputOutputBinding
 
     /**
      * Sets the value of the outputDataRef property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link Object }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link Object }
      */
     public void setOutputDataRef(Object value) {
         this.outputDataRef = value;

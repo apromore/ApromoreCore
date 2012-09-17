@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -13,96 +13,95 @@
 
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * See: http://www.gnu.org/licenses/lgpl-3.0
- * 
+ *
  */
 package de.hbrs.oryx.yawl.servlets;
 
-import java.io.IOException;
+import de.hbrs.oryx.yawl.converter.YAWLConverter;
+import de.hbrs.oryx.yawl.converter.YAWLConverter.YAWLResult;
+import de.hbrs.oryx.yawl.converter.exceptions.ConversionException;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.json.JSONException;
-import org.json.JSONObject;
-import de.hbrs.oryx.yawl.converter.YAWLConverter;
-import de.hbrs.oryx.yawl.converter.YAWLConverter.YAWLResult;
-import de.hbrs.oryx.yawl.converter.exceptions.ConversionException;
+import java.io.IOException;
 
 /**
  * YAWLExportServlet converts a Oryx JSON diagram to a YAWL specification (.yawl
  * file) It only supports POST requests with the JSON submitted as parameter
  * "data".
- * 
+ * <p/>
  * It should be accessible at: /yawlexport
- * 
+ *
  * @author Felix Mannhardt (University of Applied Sciences Bonn-Rhein-Sieg)
- * 
  */
 public class YAWLExportServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 6881808890572459223L;
+    private static final long serialVersionUID = 6881808890572459223L;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest
-	 * , javax.servlet.http.HttpServletResponse)
-	 */
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
+    /*
+      * (non-Javadoc)
+      *
+      * @see
+      * javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest
+      * , javax.servlet.http.HttpServletResponse)
+      */
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException {
 
-		String jsonData = req.getParameter("data");
+        String jsonData = req.getParameter("data");
 
-		/* Transform and return as YAWL XML */
-		try {
-			String yawlString = getYAWLfromJSON(jsonData);
-			res.setContentType("application/xml");
-			res.setStatus(200);
-			res.getWriter().print(yawlString);
-		} catch (Exception e) {
-			try {
-				e.printStackTrace();
-				res.setStatus(500);
-				res.setContentType("text/plain");
-				res.getWriter().write(e.getCause().getMessage());
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		}
+        /* Transform and return as YAWL XML */
+        try {
+            String yawlString = getYAWLfromJSON(jsonData);
+            res.setContentType("application/xml");
+            res.setStatus(200);
+            res.getWriter().print(yawlString);
+        } catch (Exception e) {
+            try {
+                e.printStackTrace();
+                res.setStatus(500);
+                res.setContentType("text/plain");
+                res.getWriter().write(e.getCause().getMessage());
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
 
-	}
+    }
 
-	private String getYAWLfromJSON(String jsonData) throws JSONException {
+    private String getYAWLfromJSON(String jsonData) throws JSONException {
 
-		// Convert Oryx Diagram
-		YAWLConverter yawlConverter = new YAWLConverter();
+        // Convert Oryx Diagram
+        YAWLConverter yawlConverter = new YAWLConverter();
 
-		YAWLResult yawlResult = yawlConverter.convertOryxToYAWL(jsonData);
+        YAWLResult yawlResult = yawlConverter.convertOryxToYAWL(jsonData);
 
-		String warningMessage = "";
-		for (ConversionException e : yawlResult.getWarnings()) {
-			warningMessage += "- ";
-			warningMessage += e.getMessage();
-			if (e.getCause() != null) {
-				warningMessage += " (" + e.getCause().getMessage();
-			}
-			warningMessage += ")\n";
-			e.printStackTrace();
-		}
+        String warningMessage = "";
+        for (ConversionException e : yawlResult.getWarnings()) {
+            warningMessage += "- ";
+            warningMessage += e.getMessage();
+            if (e.getCause() != null) {
+                warningMessage += " (" + e.getCause().getMessage();
+            }
+            warningMessage += ")\n";
+            e.printStackTrace();
+        }
 
-		// Write Conversion Result:
-		JSONObject jsonExportObject = new JSONObject();
-		jsonExportObject.put("yawlXML", yawlResult.getYAWLAsXML());
-		jsonExportObject.put("warnings", warningMessage);
-		jsonExportObject.put("hasFailed", yawlResult.hasFailed());
-		jsonExportObject.put("hasWarnings", yawlResult.hasWarnings());
-		jsonExportObject.put("filename", yawlResult.getFilename());
+        // Write Conversion Result:
+        JSONObject jsonExportObject = new JSONObject();
+        jsonExportObject.put("yawlXML", yawlResult.getYAWLAsXML());
+        jsonExportObject.put("warnings", warningMessage);
+        jsonExportObject.put("hasFailed", yawlResult.hasFailed());
+        jsonExportObject.put("hasWarnings", yawlResult.hasWarnings());
+        jsonExportObject.put("filename", yawlResult.getFilename());
 
-		return jsonExportObject.toString();
-	}
+        return jsonExportObject.toString();
+    }
 
 }

@@ -1,17 +1,17 @@
 /**
  * Copyright (c) 2009
  * Philipp Giese, Sven Wagner-Boysen
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,15 +23,6 @@
 
 package de.hpi.bpmn2_0.model.artifacts;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-
 import de.hpi.bpmn2_0.model.FlowElement;
 import de.hpi.bpmn2_0.model.FlowNode;
 import de.hpi.bpmn2_0.model.Process;
@@ -39,12 +30,16 @@ import de.hpi.bpmn2_0.model.connector.Edge;
 import de.hpi.bpmn2_0.model.conversation.ConversationElement;
 import de.hpi.bpmn2_0.transformation.Visitor;
 
+import javax.xml.bind.annotation.*;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * <p>Java class for tArtifact complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name="tArtifact">
  *   &lt;complexContent>
@@ -53,183 +48,178 @@ import de.hpi.bpmn2_0.transformation.Visitor;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tArtifact")
 @XmlSeeAlso({
 //    Association.class,
-    Group.class,
-    TextAnnotation.class
+        Group.class,
+        TextAnnotation.class
 })
 public abstract class Artifact
-    extends FlowNode
-{
-	
-	/* Business logic methodes */
+        extends FlowNode {
 
-	/**
-	 * List of elements already traversed in the graph.
-	 */
-	@XmlTransient
-	private List<FlowElement> processedElements;
+    /* Business logic methodes */
 
-	/**
-	 * Find an appropriate {@link Process} container for the data object.
-	 * 
-	 * The algorithm checks the source and target neighborhood nodes of the data
-	 * object and the takes the referenced process of one of the neighbors.
-	 * 
-	 * Navigates into both directions.
-	 */
-	public void findRelatedProcess() {
-		this.processedElements = new ArrayList<FlowElement>();
-		Process process = this.findRelatedProcessRecursivly(this);
-		if (process != null) {
-			
-			/* Remove from other containment based process reference */
-			if(this.getProcess() != null) {
-				this.getProcess().removeChild(this);
-			}
-			
-			this.setProcess(process);
-			process.addChild(this);
-		}
-	}
+    /**
+     * List of elements already traversed in the graph.
+     */
+    @XmlTransient
+    private List<FlowElement> processedElements;
 
-	/**
-	 * Navigates into both directions.
-	 * 
-	 * @param flowElement
-	 *            The {@link FlowElement} to investigate.
-	 */
-	private Process findRelatedProcessRecursivly(FlowElement flowElement) {
-		if (flowElement == null)
-			return null;
+    /**
+     * Find an appropriate {@link Process} container for the data object.
+     * <p/>
+     * The algorithm checks the source and target neighborhood nodes of the data
+     * object and the takes the referenced process of one of the neighbors.
+     * <p/>
+     * Navigates into both directions.
+     */
+    public void findRelatedProcess() {
+        this.processedElements = new ArrayList<FlowElement>();
+        Process process = this.findRelatedProcessRecursivly(this);
+        if (process != null) {
 
-		/* Check if element is processed already */
-		if (this.processedElements.contains(flowElement))
-			return null;
+            /* Remove from other containment based process reference */
+            if (this.getProcess() != null) {
+                this.getProcess().removeChild(this);
+            }
 
-		this.processedElements.add(flowElement);
+            this.setProcess(process);
+            process.addChild(this);
+        }
+    }
 
-		/*
-		 * Check if one of the neighbors is assigned to a Process, otherwise
-		 * continue with the after next.
-		 */
+    /**
+     * Navigates into both directions.
+     *
+     * @param flowElement The {@link FlowElement} to investigate.
+     */
+    private Process findRelatedProcessRecursivly(FlowElement flowElement) {
+        if (flowElement == null)
+            return null;
 
-		for (Edge edge : flowElement.getIncoming()) {
-			FlowElement sourceRef = edge.getSourceRef();
-			if (sourceRef == null)
-				continue;
-			Process process = sourceRef.getProcess();
-			if (process != null)
-				return process;
-		}
+        /* Check if element is processed already */
+        if (this.processedElements.contains(flowElement))
+            return null;
 
-		for (Edge edge : flowElement.getOutgoing()) {
-			FlowElement targetRef = edge.getTargetRef();
-			if (targetRef == null)
-				continue;
-			Process process = targetRef.getProcess();
-			if (process != null)
-				return process;
-		}
+        this.processedElements.add(flowElement);
 
-		/* Continue with the after next nodes */
+        /*
+           * Check if one of the neighbors is assigned to a Process, otherwise
+           * continue with the after next.
+           */
 
-		for (Edge edge : flowElement.getIncoming()) {
-			Process process = this.findRelatedProcessRecursivly(edge
-					.getSourceRef());
-			if (process != null)
-				return process;
-		}
+        for (Edge edge : flowElement.getIncoming()) {
+            FlowElement sourceRef = edge.getSourceRef();
+            if (sourceRef == null)
+                continue;
+            Process process = sourceRef.getProcess();
+            if (process != null)
+                return process;
+        }
 
-		for (Edge edge : flowElement.getOutgoing()) {
-			Process process = this.findRelatedProcessRecursivly(edge
-					.getTargetRef());
-			if (process != null)
-				return process;
-		}
+        for (Edge edge : flowElement.getOutgoing()) {
+            FlowElement targetRef = edge.getTargetRef();
+            if (targetRef == null)
+                continue;
+            Process process = targetRef.getProcess();
+            if (process != null)
+                return process;
+        }
 
-		return null;
-	}
-	
-	public void acceptVisitor(Visitor v){
-		v.visitArtifact(this);
-	}
-	
-	/**
-	 * Checks whether the Artifact is contained in an conversation.
-	 * 
-	 * The algorithm checks the source and target neighborhood nodes of the data
-	 * object.
-	 * 
-	 * Navigates into both directions.
-	 */
-	public boolean isConverstionRelated() {
-		this.processedElements = new ArrayList<FlowElement>();
-		return this.isConversationConversationRecursivly(this);
-	}
-	
-	/**
-	 * Navigates into both directions.
-	 * 
-	 * @param flowElement
-	 *            The {@link FlowElement} to investigate.
-	 */
-	private boolean isConversationConversationRecursivly(FlowElement flowElement) {
-		if (flowElement == null)
-			return false;
+        /* Continue with the after next nodes */
 
-		/* Check if element is processed already */
-		if (this.processedElements.contains(flowElement))
-			return false;
+        for (Edge edge : flowElement.getIncoming()) {
+            Process process = this.findRelatedProcessRecursivly(edge
+                    .getSourceRef());
+            if (process != null)
+                return process;
+        }
 
-		this.processedElements.add(flowElement);
+        for (Edge edge : flowElement.getOutgoing()) {
+            Process process = this.findRelatedProcessRecursivly(edge
+                    .getTargetRef());
+            if (process != null)
+                return process;
+        }
 
-		/*
-		 * Check if one of the neighbors is assigned to a Process, otherwise
-		 * continue with the after next.
-		 */
+        return null;
+    }
 
-		for (Edge edge : flowElement.getIncoming()) {
-			FlowElement sourceRef = edge.getSourceRef();
-			if (sourceRef == null)
-				continue;
+    public void acceptVisitor(Visitor v) {
+        v.visitArtifact(this);
+    }
 
-			if(sourceRef instanceof ConversationElement) {
-				return true;	
-			}
-		}
+    /**
+     * Checks whether the Artifact is contained in an conversation.
+     * <p/>
+     * The algorithm checks the source and target neighborhood nodes of the data
+     * object.
+     * <p/>
+     * Navigates into both directions.
+     */
+    public boolean isConverstionRelated() {
+        this.processedElements = new ArrayList<FlowElement>();
+        return this.isConversationConversationRecursivly(this);
+    }
 
-		for (Edge edge : flowElement.getOutgoing()) {
-			FlowElement targetRef = edge.getTargetRef();
-			if (targetRef == null)
-				continue;
-			if(targetRef instanceof ConversationElement) {
-				return true;
-			}
-		}
+    /**
+     * Navigates into both directions.
+     *
+     * @param flowElement The {@link FlowElement} to investigate.
+     */
+    private boolean isConversationConversationRecursivly(FlowElement flowElement) {
+        if (flowElement == null)
+            return false;
 
-		/* Continue with the after next nodes */
-		
-		for (Edge edge : flowElement.getIncoming()) {
-			boolean result = this.isConversationConversationRecursivly(edge
-					.getSourceRef());
-			if (result)
-				return result;
-		}
+        /* Check if element is processed already */
+        if (this.processedElements.contains(flowElement))
+            return false;
 
-		for (Edge edge : flowElement.getOutgoing()) {
-			boolean result = this.isConversationConversationRecursivly(edge
-					.getTargetRef());
-			if (result)
-				return result;
-		}
+        this.processedElements.add(flowElement);
 
-		return false;
-	}
+        /*
+           * Check if one of the neighbors is assigned to a Process, otherwise
+           * continue with the after next.
+           */
+
+        for (Edge edge : flowElement.getIncoming()) {
+            FlowElement sourceRef = edge.getSourceRef();
+            if (sourceRef == null)
+                continue;
+
+            if (sourceRef instanceof ConversationElement) {
+                return true;
+            }
+        }
+
+        for (Edge edge : flowElement.getOutgoing()) {
+            FlowElement targetRef = edge.getTargetRef();
+            if (targetRef == null)
+                continue;
+            if (targetRef instanceof ConversationElement) {
+                return true;
+            }
+        }
+
+        /* Continue with the after next nodes */
+
+        for (Edge edge : flowElement.getIncoming()) {
+            boolean result = this.isConversationConversationRecursivly(edge
+                    .getSourceRef());
+            if (result)
+                return result;
+        }
+
+        for (Edge edge : flowElement.getOutgoing()) {
+            boolean result = this.isConversationConversationRecursivly(edge
+                    .getTargetRef());
+            if (result)
+                return result;
+        }
+
+        return false;
+    }
 
 }

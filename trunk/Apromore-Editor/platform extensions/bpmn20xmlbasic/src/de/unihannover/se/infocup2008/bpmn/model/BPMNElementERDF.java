@@ -22,48 +22,46 @@
  **/
 package de.unihannover.se.infocup2008.bpmn.model;
 
-import org.w3c.dom.Node;
-
 import de.hpi.layouting.model.LayoutingDockers.Point;
+import org.w3c.dom.Node;
 
 /**
  * Implements the <code>BPMNElement</code> Interface.
- * 
+ *
  * @author Team Royal Fawn
- * 
  */
 public class BPMNElementERDF extends BPMNAbstractElement implements BPMNElement {
-	private Node dockersNode = null;
-	protected Node boundsNode = null;
+    private Node dockersNode = null;
+    protected Node boundsNode = null;
 
-	public void updateDataModel() {
-		this.boundsNode.setNodeValue(geometry.getX() + "," + geometry.getY()
-				+ "," + geometry.getX2() + "," + geometry.getY2());
-		StringBuilder dockerSB = new StringBuilder();
-		for (Point p: dockers.getPoints()){
-			dockerSB.append(p.x);
-			dockerSB.append(" ");
-			dockerSB.append(p.y);
-			dockerSB.append(" ");
-		}
-		dockerSB.append(" # ");
-		dockersNode.setNodeValue(dockerSB.toString());
-	}
+    public void updateDataModel() {
+        this.boundsNode.setNodeValue(geometry.getX() + "," + geometry.getY()
+                + "," + geometry.getX2() + "," + geometry.getY2());
+        StringBuilder dockerSB = new StringBuilder();
+        for (Point p : dockers.getPoints()) {
+            dockerSB.append(p.x);
+            dockerSB.append(" ");
+            dockerSB.append(p.y);
+            dockerSB.append(" ");
+        }
+        dockerSB.append(" # ");
+        dockersNode.setNodeValue(dockerSB.toString());
+    }
 
-	public Node getDockersNode() {
-		return this.dockersNode;
-	}
+    public Node getDockersNode() {
+        return this.dockersNode;
+    }
 
-	public void setDockersNode(Node node) {
-		this.dockersNode = node;
-	}
+    public void setDockersNode(Node node) {
+        this.dockersNode = node;
+    }
 
-	public Node getBoundsNode() {
-		return boundsNode;
-	}
+    public Node getBoundsNode() {
+        return boundsNode;
+    }
 
-	public void setBoundsNode(Node node) {
-		this.boundsNode = node;
-	}
+    public void setBoundsNode(Node node) {
+        this.boundsNode = node;
+    }
 
 }

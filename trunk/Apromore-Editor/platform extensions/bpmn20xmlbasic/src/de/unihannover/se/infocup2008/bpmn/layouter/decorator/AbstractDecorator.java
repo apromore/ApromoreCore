@@ -26,90 +26,83 @@ import de.hpi.layouting.model.LayoutingBounds;
 
 /**
  * AbstractDecorator implements just delegation for all methods.
- * 
- * @author Team Royal Fawn 
- * 
+ *
+ * @author Team Royal Fawn
  */
 public abstract class AbstractDecorator implements LayoutingBounds {
 
-	
-	private LayoutingBounds target;
-	
-	/**
-	 * @param target
-	 */
-	protected AbstractDecorator(LayoutingBounds target) {
-		super();
-		this.target = target;
-	}
-	
-	/**
-	 * @return
-	 * @see de.hpi.layouting.model.LayoutingBounds#getHeight()
-	 */
-	public double getHeight() {
-		return target.getHeight();
-	}
+
+    private LayoutingBounds target;
+
+    /**
+     * @param target
+     */
+    protected AbstractDecorator(LayoutingBounds target) {
+        super();
+        this.target = target;
+    }
+
+    /**
+     * @return
+     * @see de.hpi.layouting.model.LayoutingBounds#getHeight()
+     */
+    public double getHeight() {
+        return target.getHeight();
+    }
 
 
-
-	/**
-	 * @return
-	 * @see de.hpi.layouting.model.LayoutingBounds#getWidth()
-	 */
-	public double getWidth() {
-		return target.getWidth();
-	}
-
+    /**
+     * @return
+     * @see de.hpi.layouting.model.LayoutingBounds#getWidth()
+     */
+    public double getWidth() {
+        return target.getWidth();
+    }
 
 
-	/**
-	 * @return
-	 * @see de.hpi.layouting.model.LayoutingBounds#getX()
-	 */
-	public double getX() {
-		return target.getX();
-	}
+    /**
+     * @return
+     * @see de.hpi.layouting.model.LayoutingBounds#getX()
+     */
+    public double getX() {
+        return target.getX();
+    }
 
 
-
-	/**
-	 * @return
-	 * @see de.hpi.layouting.model.LayoutingBounds#getX2()
-	 */
-	public double getX2() {
-		return getX() + getWidth();
-	}
-
+    /**
+     * @return
+     * @see de.hpi.layouting.model.LayoutingBounds#getX2()
+     */
+    public double getX2() {
+        return getX() + getWidth();
+    }
 
 
-	/**
-	 * @return
-	 * @see de.hpi.layouting.model.LayoutingBounds#getY()
-	 */
-	public double getY() {
-		return target.getY();
-	}
+    /**
+     * @return
+     * @see de.hpi.layouting.model.LayoutingBounds#getY()
+     */
+    public double getY() {
+        return target.getY();
+    }
 
 
-
-	/**
-	 * @return
-	 * @see de.hpi.layouting.model.LayoutingBounds#getY2()
-	 */
-	public double getY2() {
-		return getY() + getHeight();
-	}
-
+    /**
+     * @return
+     * @see de.hpi.layouting.model.LayoutingBounds#getY2()
+     */
+    public double getY2() {
+        return getY() + getHeight();
+    }
 
 
-	@Override
-	public String toString() {
-		String out = " x=" + getX();
-		out += " y=" + getY();
-		out += " width=" + getWidth();
-		out += " height=" + getHeight();
-		return out;
-	}
+    @Override
+    public String toString() {
+        String out = " x=" + getX();
+        out += " y=" + getY();
+        out += " width=" + getWidth();
+        out += " height=" + getHeight();
+        return out;
+    }
 
 }

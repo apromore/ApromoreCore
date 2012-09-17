@@ -1,44 +1,44 @@
 package de.hpi.diagram.verification;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
 abstract public class AbstractSyntaxChecker implements SyntaxChecker {
-	protected Map<String,String> errors;
-	
-	public AbstractSyntaxChecker(){
-		this.errors = new HashMap<String,String>();
-	}
+    protected Map<String, String> errors;
 
-	abstract public boolean checkSyntax();
+    public AbstractSyntaxChecker() {
+        this.errors = new HashMap<String, String>();
+    }
 
-	public Map<String, String> getErrors() {
-		return errors;
-	}
-	
-	public void clearErrors(){
-		errors.clear();
-	}
-	
-	public boolean errorsFound(){
-		return errors.size() > 0;
-	}
+    abstract public boolean checkSyntax();
 
-	public JSONObject getErrorsAsJson() {
-		JSONObject jsonObject = new JSONObject();
-		
-		for (Entry<String,String> error: this.getErrors().entrySet()) {
-			try {
-				jsonObject.put(error.getKey(), error.getValue());
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		return jsonObject;
-	}
+    public Map<String, String> getErrors() {
+        return errors;
+    }
+
+    public void clearErrors() {
+        errors.clear();
+    }
+
+    public boolean errorsFound() {
+        return errors.size() > 0;
+    }
+
+    public JSONObject getErrorsAsJson() {
+        JSONObject jsonObject = new JSONObject();
+
+        for (Entry<String, String> error : this.getErrors().entrySet()) {
+            try {
+                jsonObject.put(error.getKey(), error.getValue());
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        return jsonObject;
+    }
 }
