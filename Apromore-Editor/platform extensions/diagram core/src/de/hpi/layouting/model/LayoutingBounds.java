@@ -24,38 +24,37 @@ package de.hpi.layouting.model;
 
 /**
  * Represents the geometry of an element. Needed for the decorators
- * 
+ *
  * @author Team Royal Fawn
- * 
  */
 public interface LayoutingBounds {
-	/**
-	 * @return the x
-	 */
-	public abstract double getX();
+    /**
+     * @return the x
+     */
+    public abstract double getX();
 
-	/**
-	 * @return the y
-	 */
-	public abstract double getY();
+    /**
+     * @return the y
+     */
+    public abstract double getY();
 
-	/**
-	 * @return the width
-	 */
-	public abstract double getWidth();
+    /**
+     * @return the width
+     */
+    public abstract double getWidth();
 
-	/**
-	 * @return the height
-	 */
-	public abstract double getHeight();
+    /**
+     * @return the height
+     */
+    public abstract double getHeight();
 
-	/**
-	 * @return the x2
-	 */
-	public abstract double getX2();
+    /**
+     * @return the x2
+     */
+    public abstract double getX2();
 
-	/**
-	 * @return the y2
-	 */
-	public abstract double getY2();
+    /**
+     * @return the y2
+     */
+    public abstract double getY2();
 }

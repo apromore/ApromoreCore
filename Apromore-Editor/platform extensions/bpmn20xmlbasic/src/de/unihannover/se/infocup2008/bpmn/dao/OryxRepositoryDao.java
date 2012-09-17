@@ -22,60 +22,59 @@
  **/
 package de.unihannover.se.infocup2008.bpmn.dao;
 
-import java.net.*;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.regex.MatchResult;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import java.io.*;
 
 /**
  * This class provides access to the oryx repository
- * 
+ *
  * @author Team Royal Fawn
- * 
  */
 public class OryxRepositoryDao {
 
-	private static final Pattern ERDF_REGEX = Pattern.compile(
-			"<body style=\"overflow:hidden;\">((?:.*\\s)*)<\\/body>",
-			Pattern.CASE_INSENSITIVE & Pattern.DOTALL);
+    private static final Pattern ERDF_REGEX = Pattern.compile(
+            "<body style=\"overflow:hidden;\">((?:.*\\s)*)<\\/body>",
+            Pattern.CASE_INSENSITIVE & Pattern.DOTALL);
 
-	/**
-	 * Reads the eRDF from the model in the oryx repository identified by the id
-	 * 
-	 * @param oryxId
-	 *            the id of the model in the oryx repository
-	 * @return the eRDF or <code>null</code> in case of any errors
-	 */
-	public static String getERDFFromOryx(String oryxId) {
+    /**
+     * Reads the eRDF from the model in the oryx repository identified by the id
+     *
+     * @param oryxId the id of the model in the oryx repository
+     * @return the eRDF or <code>null</code> in case of any errors
+     */
+    public static String getERDFFromOryx(String oryxId) {
 
-		try {
-			URL url = new URL("http://oryx-editor.org/backend/poem/model/"
-					+ oryxId + "/self");
+        try {
+            URL url = new URL("http://oryx-editor.org/backend/poem/model/"
+                    + oryxId + "/self");
 
-			BufferedReader in = new BufferedReader(new InputStreamReader(url
-					.openStream()));
+            BufferedReader in = new BufferedReader(new InputStreamReader(url
+                    .openStream()));
 
-			StringBuffer buffer = new StringBuffer();
-			String inputLine;
-			while ((inputLine = in.readLine()) != null) {
-				buffer.append(inputLine);
-				buffer.append("\n");
-			}
-			in.close();
+            StringBuffer buffer = new StringBuffer();
+            String inputLine;
+            while ((inputLine = in.readLine()) != null) {
+                buffer.append(inputLine);
+                buffer.append("\n");
+            }
+            in.close();
 
-			// System.out.println(buffer);
+            // System.out.println(buffer);
 
-			Matcher m = ERDF_REGEX.matcher(buffer);
-			if (m.find()) {
-				MatchResult r = m.toMatchResult();
-				String eRDF = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
-						+ r.group(1);
-				return eRDF;
-			}
-		} catch (Exception e) {
-			return null; // in case of errors just return null
-		}
-		return null; // in case of errors just return null
-	}
+            Matcher m = ERDF_REGEX.matcher(buffer);
+            if (m.find()) {
+                MatchResult r = m.toMatchResult();
+                String eRDF = "<?xml version=\"1.0\" encoding=\"utf-8\"?>\n"
+                        + r.group(1);
+                return eRDF;
+            }
+        } catch (Exception e) {
+            return null; // in case of errors just return null
+        }
+        return null; // in case of errors just return null
+    }
 }

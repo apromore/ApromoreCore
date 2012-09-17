@@ -1,16 +1,16 @@
 /**
  * Copyright (c) 2009, Ole Eckermann, Stefan Krumnow & Signavio GmbH
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -21,120 +21,120 @@
  */
 package com.signavio.warehouse.business.util.jpdl4;
 
-import java.io.StringWriter;
-import java.util.UUID;
-
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.w3c.dom.NamedNodeMap;
 
+import java.io.StringWriter;
+import java.util.UUID;
+
 public class EndEvent extends Node {
 
-	protected String state;
-	protected String ends;
+    protected String state;
+    protected String ends;
 
-	public EndEvent(JSONObject endEvent) {
+    public EndEvent(JSONObject endEvent) {
 
-		this.name = JsonToJpdl.getAttribute(endEvent, "name");
-		this.ends = JsonToJpdl.getAttribute(endEvent, "ends");
-		this.state = JsonToJpdl.getAttribute(endEvent, "state");
-		this.bounds = JsonToJpdl.getBounds(endEvent);
-		
-		this.bounds.setUlx(this.bounds.getUlx() - 10);
-		this.bounds.setUly(this.bounds.getUly() - 10);
-		this.bounds.setWidth(48);
-		this.bounds.setHeight(48);
-		
+        this.name = JsonToJpdl.getAttribute(endEvent, "name");
+        this.ends = JsonToJpdl.getAttribute(endEvent, "ends");
+        this.state = JsonToJpdl.getAttribute(endEvent, "state");
+        this.bounds = JsonToJpdl.getBounds(endEvent);
 
-	}
-	
-	public EndEvent(org.w3c.dom.Node endEvent) {
-		this.uuid = "oryx_" + UUID.randomUUID().toString();
-		NamedNodeMap attributes = endEvent.getAttributes();
-		this.name = JpdlToJson.getAttribute(attributes, "name");
-		this.ends = JpdlToJson.getAttribute(attributes, "ends");
-		this.state = JpdlToJson.getAttribute(attributes, "state");
-		this.bounds = JpdlToJson.getBounds(attributes.getNamedItem("g"));
-		
-		this.bounds.setUlx(this.bounds.getUlx() + 10);
-		this.bounds.setUly(this.bounds.getUly() + 10);
-		this.bounds.setWidth(28);
-		this.bounds.setHeight(28);
-		
-	}
+        this.bounds.setUlx(this.bounds.getUlx() - 10);
+        this.bounds.setUly(this.bounds.getUly() - 10);
+        this.bounds.setWidth(48);
+        this.bounds.setHeight(48);
 
-	public String getState() {
-		return state;
-	}
 
-	public void setState(String state) {
-		this.state = state;
-	}
+    }
 
-	public String getEnds() {
-		return ends;
-	}
+    public EndEvent(org.w3c.dom.Node endEvent) {
+        this.uuid = "oryx_" + UUID.randomUUID().toString();
+        NamedNodeMap attributes = endEvent.getAttributes();
+        this.name = JpdlToJson.getAttribute(attributes, "name");
+        this.ends = JpdlToJson.getAttribute(attributes, "ends");
+        this.state = JpdlToJson.getAttribute(attributes, "state");
+        this.bounds = JpdlToJson.getBounds(attributes.getNamedItem("g"));
 
-	public void setEnds(String ends) {
-		this.ends = ends;
-	}
+        this.bounds.setUlx(this.bounds.getUlx() + 10);
+        this.bounds.setUly(this.bounds.getUly() + 10);
+        this.bounds.setWidth(28);
+        this.bounds.setHeight(28);
 
-	@Override
-	public String toJpdl() throws InvalidModelException {
-		String id = "end";
-		return writeJpdlAttributes(id).toString();
+    }
 
-	}
+    public String getState() {
+        return state;
+    }
 
-	@Override
-	public JSONObject toJson() throws JSONException {
-		String id = "EndEvent";
+    public void setState(String state) {
+        this.state = state;
+    }
 
-		return writeJsonAttributes(id);
-	}
+    public String getEnds() {
+        return ends;
+    }
 
-	protected JSONObject writeJsonAttributes(String id) throws JSONException {
-		JSONObject stencil = new JSONObject();
-		stencil.put("id", id);
+    public void setEnds(String ends) {
+        this.ends = ends;
+    }
 
-		JSONArray outgoing = new JSONArray();
+    @Override
+    public String toJpdl() throws InvalidModelException {
+        String id = "end";
+        return writeJpdlAttributes(id).toString();
 
-		JSONObject properties = new JSONObject();
-		properties.put("bgcolor", "#ffffff");
-		if (name != null)
-			properties.put("name", name);
-		if (state != null)
-			properties.put("state", state);
-		if (ends != null)
-			properties.put("ends", ends);
-		else
-			properties.put("ends", "processinstance"); // default value
+    }
 
-		JSONArray childShapes = new JSONArray();
+    @Override
+    public JSONObject toJson() throws JSONException {
+        String id = "EndEvent";
 
-		return JpdlToJson.createJsonObject(uuid, stencil, outgoing, properties,
-				childShapes, bounds.toJson());
-	}
+        return writeJsonAttributes(id);
+    }
 
-	protected String writeJpdlAttributes(String id)
-			throws InvalidModelException {
-		StringWriter jpdl = new StringWriter();
-		jpdl.write("  <" + id);
-		jpdl.write(JsonToJpdl.transformAttribute("name", name));
-		//if (!ends.equals("process-instance")) // processinstance is default value
-			jpdl.write(JsonToJpdl.transformAttribute("ends", ends));
-		jpdl.write(JsonToJpdl.transformAttribute("state", state));
+    protected JSONObject writeJsonAttributes(String id) throws JSONException {
+        JSONObject stencil = new JSONObject();
+        stencil.put("id", id);
 
-		if (bounds != null) {
-			jpdl.write(bounds.toJpdl());
-		} else {
-			throw new InvalidModelException(
-					"Invalid End Event. Bounds is missing.");
-		}
+        JSONArray outgoing = new JSONArray();
 
-		jpdl.write(" />\n\n");
+        JSONObject properties = new JSONObject();
+        properties.put("bgcolor", "#ffffff");
+        if (name != null)
+            properties.put("name", name);
+        if (state != null)
+            properties.put("state", state);
+        if (ends != null)
+            properties.put("ends", ends);
+        else
+            properties.put("ends", "processinstance"); // default value
 
-		return jpdl.toString();
-	}
+        JSONArray childShapes = new JSONArray();
+
+        return JpdlToJson.createJsonObject(uuid, stencil, outgoing, properties,
+                childShapes, bounds.toJson());
+    }
+
+    protected String writeJpdlAttributes(String id)
+            throws InvalidModelException {
+        StringWriter jpdl = new StringWriter();
+        jpdl.write("  <" + id);
+        jpdl.write(JsonToJpdl.transformAttribute("name", name));
+        //if (!ends.equals("process-instance")) // processinstance is default value
+        jpdl.write(JsonToJpdl.transformAttribute("ends", ends));
+        jpdl.write(JsonToJpdl.transformAttribute("state", state));
+
+        if (bounds != null) {
+            jpdl.write(bounds.toJpdl());
+        } else {
+            throw new InvalidModelException(
+                    "Invalid End Event. Bounds is missing.");
+        }
+
+        jpdl.write(" />\n\n");
+
+        return jpdl.toString();
+    }
 }

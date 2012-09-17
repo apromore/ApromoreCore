@@ -1,11 +1,10 @@
 package de.hpi.bpmn2_0.transformation;
 
-import java.io.ByteArrayInputStream;
-import java.io.File;
-import java.io.StringWriter;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
+import de.hpi.bpmn2_0.ExportValidationEventCollector;
+import de.hpi.bpmn2_0.model.Definitions;
+import org.w3c.dom.Document;
+import org.xml.sax.SAXException;
 
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
@@ -23,116 +22,115 @@ import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
-
-import org.w3c.dom.Document;
-import org.xml.sax.SAXException;
-
-import com.sun.xml.bind.marshaller.NamespacePrefixMapper;
-
-import de.hpi.bpmn2_0.ExportValidationEventCollector;
-import de.hpi.bpmn2_0.model.Definitions;
+import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.StringWriter;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
 
 public class Bpmn2XmlConverter {
 
-	private Definitions bpmnDefinitions;
-	private String bpmn20XsdPath;
+    private Definitions bpmnDefinitions;
+    private String bpmn20XsdPath;
 
-	public Bpmn2XmlConverter() {}
-	
-	public Bpmn2XmlConverter(Definitions bpmnDefinitions, String bpmn20XsdPath) {
-		this.bpmnDefinitions = bpmnDefinitions;
-		this.bpmn20XsdPath = bpmn20XsdPath;
-	}
+    public Bpmn2XmlConverter() {
+    }
 
-	public StringWriter getXml() throws JAXBException, SAXException,
-			ParserConfigurationException, TransformerException {
+    public Bpmn2XmlConverter(Definitions bpmnDefinitions, String bpmn20XsdPath) {
+        this.bpmnDefinitions = bpmnDefinitions;
+        this.bpmn20XsdPath = bpmn20XsdPath;
+    }
 
-		final Map<String, Object> properties = new HashMap<String, Object>();
+    public StringWriter getXml() throws JAXBException, SAXException,
+            ParserConfigurationException, TransformerException {
 
-		Class[] classes = { Definitions.class };
+        final Map<String, Object> properties = new HashMap<String, Object>();
 
-		/* Perform XML creation */
-		JAXBContext context = JAXBContext.newInstance(classes, properties);
-		Marshaller marshaller = context.createMarshaller();
-		marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd");
+        Class[] classes = {Definitions.class};
 
-		NamespacePrefixMapper nsp = new BPMNPrefixMapper();
-		((BPMNPrefixMapper) nsp).setNsDefs(bpmnDefinitions.externalNSDefs);
-		
-		marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", nsp);
+        /* Perform XML creation */
+        JAXBContext context = JAXBContext.newInstance(classes, properties);
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_SCHEMA_LOCATION, "http://www.omg.org/spec/BPMN/20100524/MODEL http://www.omg.org/spec/BPMN/2.0/20100501/BPMN20.xsd");
 
-		/* Marshal BPMN 2.0 XML */
+        NamespacePrefixMapper nsp = new BPMNPrefixMapper();
+        ((BPMNPrefixMapper) nsp).setNsDefs(bpmnDefinitions.externalNSDefs);
 
-		DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-		dbf.setNamespaceAware(true);
-		DocumentBuilder db = dbf.newDocumentBuilder();
-		Document doc = db.newDocument();
-		marshaller.marshal(bpmnDefinitions, doc);
-		
-		/*
-		 * Remove unused namespace prefixes
-		 */
-		
-		for(String prefix : bpmnDefinitions.unusedNamespaceDeclarations) {
-			doc.getDocumentElement().removeAttribute("xmlns:" + prefix);
-		}
-		
-		String styleSheet = "<!DOCTYPE stylesheet [  <!ENTITY cr \"<xsl:text></xsl:text>\">]> <xsl:stylesheet    xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"     xmlns:xalan=\"http://xml.apache.org/xslt\"     version=\"1.0\">        <xsl:output method=\"xml\" indent=\"yes\" xalan:indent-amount=\"3\"/>           <!-- copy out the xml -->    <xsl:template match=\"* | @*\">        <xsl:copy><xsl:copy-of select=\"@*\"/><xsl:apply-templates/></xsl:copy>    </xsl:template> </xsl:stylesheet>";
-		StreamSource styleStream = new StreamSource(new ByteArrayInputStream(styleSheet.getBytes()));
-		DOMSource domSource = new DOMSource(doc);
-		StringWriter writer = new StringWriter();
-		StreamResult result = new StreamResult(writer);
-		TransformerFactory tf = TransformerFactory.newInstance();
+        marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", nsp);
+
+        /* Marshal BPMN 2.0 XML */
+
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(true);
+        DocumentBuilder db = dbf.newDocumentBuilder();
+        Document doc = db.newDocument();
+        marshaller.marshal(bpmnDefinitions, doc);
+
+        /*
+           * Remove unused namespace prefixes
+           */
+
+        for (String prefix : bpmnDefinitions.unusedNamespaceDeclarations) {
+            doc.getDocumentElement().removeAttribute("xmlns:" + prefix);
+        }
+
+        String styleSheet = "<!DOCTYPE stylesheet [  <!ENTITY cr \"<xsl:text></xsl:text>\">]> <xsl:stylesheet    xmlns:xsl=\"http://www.w3.org/1999/XSL/Transform\"     xmlns:xalan=\"http://xml.apache.org/xslt\"     version=\"1.0\">        <xsl:output method=\"xml\" indent=\"yes\" xalan:indent-amount=\"3\"/>           <!-- copy out the xml -->    <xsl:template match=\"* | @*\">        <xsl:copy><xsl:copy-of select=\"@*\"/><xsl:apply-templates/></xsl:copy>    </xsl:template> </xsl:stylesheet>";
+        StreamSource styleStream = new StreamSource(new ByteArrayInputStream(styleSheet.getBytes()));
+        DOMSource domSource = new DOMSource(doc);
+        StringWriter writer = new StringWriter();
+        StreamResult result = new StreamResult(writer);
+        TransformerFactory tf = TransformerFactory.newInstance();
 //		tf.setAttribute("indent-amount", new Integer(4));
-		Transformer transformer = tf.newTransformer(styleStream);
-		transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-		transformer.transform(domSource, result);
-		return writer;
+        Transformer transformer = tf.newTransformer(styleStream);
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        transformer.transform(domSource, result);
+        return writer;
 
-	}
+    }
 
-	public StringBuilder getValidationResults() throws JAXBException,
-			SAXException {
-		
-		final Map<String, Object> properties = new HashMap<String, Object>();
+    public StringBuilder getValidationResults() throws JAXBException,
+            SAXException {
 
-		Class[] classes = { Definitions.class };
-		
-		JAXBContext context = JAXBContext.newInstance(classes, properties);
-		Marshaller marshaller = context.createMarshaller();
-		marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        final Map<String, Object> properties = new HashMap<String, Object>();
 
-		NamespacePrefixMapper nsp = new BPMNPrefixMapper();
-		marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", nsp);
+        Class[] classes = {Definitions.class};
 
-		/* Set Schema validation properties */
-		SchemaFactory sf = SchemaFactory
-				.newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
+        JAXBContext context = JAXBContext.newInstance(classes, properties);
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
 
-		Schema schema = sf.newSchema(new File(bpmn20XsdPath));
-		marshaller.setSchema(schema);
+        NamespacePrefixMapper nsp = new BPMNPrefixMapper();
+        marshaller.setProperty("com.sun.xml.bind.namespacePrefixMapper", nsp);
 
-		ExportValidationEventCollector vec = new ExportValidationEventCollector();
-		marshaller.setEventHandler(vec);
+        /* Set Schema validation properties */
+        SchemaFactory sf = SchemaFactory
+                .newInstance(javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI);
 
-		StringWriter writer = new StringWriter();
+        Schema schema = sf.newSchema(new File(bpmn20XsdPath));
+        marshaller.setSchema(schema);
 
-		/* Marshal BPMN 2.0 XML */
-		marshaller.marshal(bpmnDefinitions, writer);
+        ExportValidationEventCollector vec = new ExportValidationEventCollector();
+        marshaller.setEventHandler(vec);
 
-		/* Retrieve validation results */
-		ValidationEvent[] events = vec.getEvents();
+        StringWriter writer = new StringWriter();
 
-		StringBuilder builder = new StringBuilder();
-		builder.append("Validation Errors: \n\n");
+        /* Marshal BPMN 2.0 XML */
+        marshaller.marshal(bpmnDefinitions, writer);
 
-		for (ValidationEvent event : Arrays.asList(events)) {
+        /* Retrieve validation results */
+        ValidationEvent[] events = vec.getEvents();
 
-			builder.append("\nError: ");
-			builder.append(event.getMessage());
-			builder.append("\n\n\n");
-		}
+        StringBuilder builder = new StringBuilder();
+        builder.append("Validation Errors: \n\n");
 
-		return builder;
-	}
+        for (ValidationEvent event : Arrays.asList(events)) {
+
+            builder.append("\nError: ");
+            builder.append(event.getMessage());
+            builder.append("\n\n\n");
+        }
+
+        return builder;
+    }
 }

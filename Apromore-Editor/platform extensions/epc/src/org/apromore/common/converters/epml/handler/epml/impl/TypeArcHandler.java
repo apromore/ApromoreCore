@@ -24,20 +24,16 @@
  */
 package org.apromore.common.converters.epml.handler.epml.impl;
 
-import java.math.BigInteger;
-import java.util.ArrayList;
-import java.util.List;
-
-import de.epml.TypeArc;
-import de.epml.TypeFlow;
-import de.epml.TypeMove;
-import de.epml.TypeMove2;
-import de.epml.TypeRelation;
+import de.epml.*;
 import org.apromore.common.converters.epml.context.EPMLConversionContext;
 import org.oryxeditor.server.diagram.Bounds;
 import org.oryxeditor.server.diagram.Point;
 import org.oryxeditor.server.diagram.basic.BasicEdge;
 import org.oryxeditor.server.diagram.basic.BasicShape;
+
+import java.math.BigInteger;
+import java.util.ArrayList;
+import java.util.List;
 
 public class TypeArcHandler extends EPMLHandlerImpl {
 

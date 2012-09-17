@@ -1,17 +1,17 @@
 /**
  * Copyright (c) 2009
  * Philipp Giese, Sven Wagner-Boysen
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -22,18 +22,6 @@
  */
 
 package de.hpi.bpmn2_0.model;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlSchemaType;
-import javax.xml.bind.annotation.XmlSeeAlso;
-import javax.xml.bind.annotation.XmlType;
 
 import de.hpi.bpmn2_0.model.activity.Activity;
 import de.hpi.bpmn2_0.model.connector.Association;
@@ -48,14 +36,19 @@ import de.hpi.bpmn2_0.model.event.Event;
 import de.hpi.bpmn2_0.model.gateway.Gateway;
 import de.hpi.bpmn2_0.transformation.Visitor;
 
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.annotation.*;
+import java.util.ArrayList;
+import java.util.List;
+
 /**
- * <p>
+ * <p/>
  * Java class for tFlowNode complex type.
- * 
- * <p>
+ * <p/>
+ * <p/>
  * The following schema fragment specifies the expected content contained within
  * this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name=&quot;tFlowNode&quot;&gt;
  *   &lt;complexContent&gt;
@@ -68,170 +61,166 @@ import de.hpi.bpmn2_0.transformation.Visitor;
  *   &lt;/complexContent&gt;
  * &lt;/complexType&gt;
  * </pre>
- * 
- * 
  */
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tFlowNode")
-@XmlSeeAlso( { Event.class,
-	Message.class,
+@XmlSeeAlso({Event.class,
+        Message.class,
 // ChoreographyActivity.class,
-		Gateway.class, Activity.class, AbstractDataObject.class })
+        Gateway.class, Activity.class, AbstractDataObject.class})
 public abstract class FlowNode extends FlowElement {
 
-	/* Attributes */
+    /* Attributes */
 
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@XmlElement(name = "incoming")
-	protected List<SequenceFlow> _incomingSequenceFlows;
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @XmlElement(name = "incoming")
+    protected List<SequenceFlow> _incomingSequenceFlows;
 
-	@XmlIDREF
-	@XmlSchemaType(name = "IDREF")
-	@XmlElement(name = "outgoing")
-	protected List<SequenceFlow> _outgoingSequenceFlows;
+    @XmlIDREF
+    @XmlSchemaType(name = "IDREF")
+    @XmlElement(name = "outgoing")
+    protected List<SequenceFlow> _outgoingSequenceFlows;
 
-	/**
-	 * Default constructor
-	 */
-	public FlowNode() {
+    /**
+     * Default constructor
+     */
+    public FlowNode() {
 
-	}
+    }
 
-	/**
-	 * Copy constructor
-	 * 
-	 * @param flowNode
-	 *            The {@link FlowNode} to copy
-	 */
-	public FlowNode(FlowNode flowNode) {
-		super(flowNode);
-	}
-	
-	public void acceptVisitor(Visitor v){
-		v.visitBaseElement(this);
-	}
+    /**
+     * Copy constructor
+     *
+     * @param flowNode The {@link FlowNode} to copy
+     */
+    public FlowNode(FlowNode flowNode) {
+        super(flowNode);
+    }
 
-	/**
-	 * Convenience method to retrieve all incoming {@link SequenceFlow}
-	 * 
-	 * Changes to that list have no influence to the result other callers get.
-	 * 
-	 * @return The list of {@link SequenceFlow}
-	 */
-	public List<SequenceFlow> getIncomingSequenceFlows() {
-		ArrayList<SequenceFlow> incomingSeq = new ArrayList<SequenceFlow>();
+    public void acceptVisitor(Visitor v) {
+        v.visitBaseElement(this);
+    }
 
-		for (FlowElement node : this.getIncoming()) {
-			/* Determine if type of sequence flow */
-			if (node instanceof SequenceFlow) {
-				incomingSeq.add((SequenceFlow) node);
-			}
-		}
+    /**
+     * Convenience method to retrieve all incoming {@link SequenceFlow}
+     * <p/>
+     * Changes to that list have no influence to the result other callers get.
+     *
+     * @return The list of {@link SequenceFlow}
+     */
+    public List<SequenceFlow> getIncomingSequenceFlows() {
+        ArrayList<SequenceFlow> incomingSeq = new ArrayList<SequenceFlow>();
 
-		return incomingSeq;
-	}
+        for (FlowElement node : this.getIncoming()) {
+            /* Determine if type of sequence flow */
+            if (node instanceof SequenceFlow) {
+                incomingSeq.add((SequenceFlow) node);
+            }
+        }
 
-	/**
-	 * The {@link Marshaller} invokes this method right before marshaling to
-	 * XML. Add sequenceflow to the reference list.
-	 * 
-	 * @param marshaller
-	 *            The marshaling context
-	 */
-	public void beforeMarshal(Marshaller marshaller) {
-		/* Incoming sequence flows */
-		for (Edge edge : this.getIncoming()) {
-			if (edge instanceof SequenceFlow) {
-				get_incomingSequenceFlows().add((SequenceFlow) edge);
-			}
-		}
+        return incomingSeq;
+    }
 
-		/* Outgoing sequence flows */
-		for (Edge edge : this.getOutgoing()) {
-			if (edge instanceof SequenceFlow) {
-				get_outgoingSequenceFlows().add((SequenceFlow) edge);
-			}
-		}
-	}
+    /**
+     * The {@link Marshaller} invokes this method right before marshaling to
+     * XML. Add sequenceflow to the reference list.
+     *
+     * @param marshaller The marshaling context
+     */
+    public void beforeMarshal(Marshaller marshaller) {
+        /* Incoming sequence flows */
+        for (Edge edge : this.getIncoming()) {
+            if (edge instanceof SequenceFlow) {
+                get_incomingSequenceFlows().add((SequenceFlow) edge);
+            }
+        }
 
-	/**
-	 * Convenience method to retrieve all outgoing {@link SequenceFlow}
-	 * 
-	 * Changes to that list have no influence to the result other callers get.
-	 * 
-	 * @return The list of {@link SequenceFlow}
-	 */
-	public List<SequenceFlow> getOutgoingSequenceFlows() {
-		ArrayList<SequenceFlow> outgoingSeq = new ArrayList<SequenceFlow>();
+        /* Outgoing sequence flows */
+        for (Edge edge : this.getOutgoing()) {
+            if (edge instanceof SequenceFlow) {
+                get_outgoingSequenceFlows().add((SequenceFlow) edge);
+            }
+        }
+    }
 
-		for (FlowElement node : this.getOutgoing()) {
-			/* Determine if type of sequence flow */
-			if (node instanceof SequenceFlow) {
-				outgoingSeq.add((SequenceFlow) node);
-			}
-		}
+    /**
+     * Convenience method to retrieve all outgoing {@link SequenceFlow}
+     * <p/>
+     * Changes to that list have no influence to the result other callers get.
+     *
+     * @return The list of {@link SequenceFlow}
+     */
+    public List<SequenceFlow> getOutgoingSequenceFlows() {
+        ArrayList<SequenceFlow> outgoingSeq = new ArrayList<SequenceFlow>();
 
-		return outgoingSeq;
-	}
+        for (FlowElement node : this.getOutgoing()) {
+            /* Determine if type of sequence flow */
+            if (node instanceof SequenceFlow) {
+                outgoingSeq.add((SequenceFlow) node);
+            }
+        }
 
-	/**
-	 * @return The incoming compensation Flow.
-	 */
-	public List<Association> getIncomingCompensationFlows() {
-		ArrayList<Association> compensationFlows = new ArrayList<Association>();
+        return outgoingSeq;
+    }
 
-		/* Find incomming compensation flow */
-		for (FlowElement edge : this.getIncoming()) {
-			if (edge instanceof Association
-					&& ((Association) edge).getAssociationDirection().equals(
-							AssociationDirection.ONE)
-					&& ((Association) edge).getSourceRef() instanceof BoundaryEvent
-					&& (((BoundaryEvent) ((Association) edge).getSourceRef())
-							.getEventDefinition().size() == 1 && (((BoundaryEvent) ((Association) edge)
-							.getSourceRef()).getEventDefinition().get(0) instanceof CompensateEventDefinition))) {
-				compensationFlows.add((Association) edge);
-			}
-		}
+    /**
+     * @return The incoming compensation Flow.
+     */
+    public List<Association> getIncomingCompensationFlows() {
+        ArrayList<Association> compensationFlows = new ArrayList<Association>();
 
-		return compensationFlows;
-	}
+        /* Find incomming compensation flow */
+        for (FlowElement edge : this.getIncoming()) {
+            if (edge instanceof Association
+                    && ((Association) edge).getAssociationDirection().equals(
+                    AssociationDirection.ONE)
+                    && ((Association) edge).getSourceRef() instanceof BoundaryEvent
+                    && (((BoundaryEvent) ((Association) edge).getSourceRef())
+                    .getEventDefinition().size() == 1 && (((BoundaryEvent) ((Association) edge)
+                    .getSourceRef()).getEventDefinition().get(0) instanceof CompensateEventDefinition))) {
+                compensationFlows.add((Association) edge);
+            }
+        }
 
-	/**
-	 * @return The outcoming compensation Flow.
-	 */
-	public List<Association> getOutgoingCompensationFlows() {
-		ArrayList<Association> compensationFlows = new ArrayList<Association>();
+        return compensationFlows;
+    }
 
-		/* Find outgoing compensation flow */
-		for (FlowElement edge : this.getOutgoing()) {
-			if (edge instanceof Association
-					&& ((Association) edge).getAssociationDirection().equals(
-							AssociationDirection.ONE)
-					&& ((Association) edge).getSourceRef() instanceof BoundaryEvent
-					&& (((BoundaryEvent) ((Association) edge).getSourceRef())
-							.getEventDefinition().size() == 1 && (((BoundaryEvent) ((Association) edge)
-							.getSourceRef()).getEventDefinition().get(0) instanceof CompensateEventDefinition))) {
-				compensationFlows.add((Association) edge);
-			}
-		}
+    /**
+     * @return The outcoming compensation Flow.
+     */
+    public List<Association> getOutgoingCompensationFlows() {
+        ArrayList<Association> compensationFlows = new ArrayList<Association>();
 
-		return compensationFlows;
-	}
+        /* Find outgoing compensation flow */
+        for (FlowElement edge : this.getOutgoing()) {
+            if (edge instanceof Association
+                    && ((Association) edge).getAssociationDirection().equals(
+                    AssociationDirection.ONE)
+                    && ((Association) edge).getSourceRef() instanceof BoundaryEvent
+                    && (((BoundaryEvent) ((Association) edge).getSourceRef())
+                    .getEventDefinition().size() == 1 && (((BoundaryEvent) ((Association) edge)
+                    .getSourceRef()).getEventDefinition().get(0) instanceof CompensateEventDefinition))) {
+                compensationFlows.add((Association) edge);
+            }
+        }
 
-	public List<SequenceFlow> get_incomingSequenceFlows() {
-		if (_incomingSequenceFlows == null) {
-			_incomingSequenceFlows = new ArrayList<SequenceFlow>();
-		}
+        return compensationFlows;
+    }
 
-		return _incomingSequenceFlows;
-	}
+    public List<SequenceFlow> get_incomingSequenceFlows() {
+        if (_incomingSequenceFlows == null) {
+            _incomingSequenceFlows = new ArrayList<SequenceFlow>();
+        }
 
-	public List<SequenceFlow> get_outgoingSequenceFlows() {
-		if (_outgoingSequenceFlows == null) {
-			_outgoingSequenceFlows = new ArrayList<SequenceFlow>();
-		}
+        return _incomingSequenceFlows;
+    }
 
-		return _outgoingSequenceFlows;
-	}
+    public List<SequenceFlow> get_outgoingSequenceFlows() {
+        if (_outgoingSequenceFlows == null) {
+            _outgoingSequenceFlows = new ArrayList<SequenceFlow>();
+        }
+
+        return _outgoingSequenceFlows;
+    }
 }

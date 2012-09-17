@@ -24,15 +24,15 @@
  */
 package org.apromore.common.converters.epml.context;
 
+import org.apromore.common.converters.epml.handler.epml.EPMLHandlerFactory;
+import org.oryxeditor.server.diagram.basic.BasicDiagram;
+import org.oryxeditor.server.diagram.basic.BasicShape;
+
 import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import org.apromore.common.converters.epml.handler.epml.EPMLHandlerFactory;
-import org.oryxeditor.server.diagram.basic.BasicDiagram;
-import org.oryxeditor.server.diagram.basic.BasicShape;
 
 public class EPMLConversionContext {
 

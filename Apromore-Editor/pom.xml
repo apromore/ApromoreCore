@@ -10,10 +10,8 @@
         <version>1.0</version>
     </parent>
 
-    <groupId>org.apromore</groupId>
     <artifactId>apromore-editor</artifactId>
     <packaging>pom</packaging>
-    <version>1.0</version>
 
     <url>http://apromore.org/</url>
     <name>Apromore Editor (Signarvio)</name>
@@ -93,7 +91,6 @@
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-antrun-plugin</artifactId>
-                <version>${maven-antrun-plugin.version}</version>
                 <dependencies>
                     <dependency>
                         <groupId>com.sun</groupId>

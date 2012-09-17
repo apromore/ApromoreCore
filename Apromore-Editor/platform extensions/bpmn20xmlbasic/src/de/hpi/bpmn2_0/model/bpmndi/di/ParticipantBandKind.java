@@ -1,17 +1,17 @@
 /**
  * Copyright (c) 2010
  * Signavio, Sven Wagner-Boysen
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -30,9 +30,9 @@ import javax.xml.bind.annotation.XmlType;
 
 /**
  * <p>Java class for ParticipantBandKind.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * <p>
+ * <p/>
  * <pre>
  * &lt;simpleType name="ParticipantBandKind">
  *   &lt;restriction base="{http://www.w3.org/2001/XMLSchema}string">
@@ -45,7 +45,6 @@ import javax.xml.bind.annotation.XmlType;
  *   &lt;/restriction>
  * &lt;/simpleType>
  * </pre>
- * 
  */
 @XmlType(name = "ParticipantBandKind")
 @XmlEnum
@@ -74,45 +73,66 @@ public enum ParticipantBandKind {
     }
 
     public static ParticipantBandKind fromValue(String v) {
-        for (ParticipantBandKind c: ParticipantBandKind.values()) {
+        for (ParticipantBandKind c : ParticipantBandKind.values()) {
             if (c.value.equals(v)) {
                 return c;
             }
         }
         throw new IllegalArgumentException(v);
     }
-    
+
     /**
-     * 
-     * 
      * @return boolean stating whether the participant is initiating
      */
-    public boolean isInitiating(){
-    	switch(this){
-    		case TOP_INITIATING: {return true;}
-    		case TOP_NON_INITIATING: {return false;}
-    		case MIDDLE_INITIATING: {return true;}
-    		case MIDDLE_NON_INITIATING: {return false;}
-    		case BOTTOM_INITIATING: {return true;}
-    		case BOTTOM_NON_INITIATING: {return false;}
-    		default: return false;
-    	}
+    public boolean isInitiating() {
+        switch (this) {
+            case TOP_INITIATING: {
+                return true;
+            }
+            case TOP_NON_INITIATING: {
+                return false;
+            }
+            case MIDDLE_INITIATING: {
+                return true;
+            }
+            case MIDDLE_NON_INITIATING: {
+                return false;
+            }
+            case BOTTOM_INITIATING: {
+                return true;
+            }
+            case BOTTOM_NON_INITIATING: {
+                return false;
+            }
+            default:
+                return false;
+        }
     }
-    
-    public boolean isBottom(){
-    	switch(this){
-    		case BOTTOM_INITIATING: {return true;}
-    		case BOTTOM_NON_INITIATING: {return true;}
-    		default: return false;
-    	}
+
+    public boolean isBottom() {
+        switch (this) {
+            case BOTTOM_INITIATING: {
+                return true;
+            }
+            case BOTTOM_NON_INITIATING: {
+                return true;
+            }
+            default:
+                return false;
+        }
     }
-    
-    public boolean isTop(){
-    	switch(this){
-    		case TOP_INITIATING: {return true;}
-    		case TOP_NON_INITIATING: {return true;}
-    		default: return false;
-    	}
+
+    public boolean isTop() {
+        switch (this) {
+            case TOP_INITIATING: {
+                return true;
+            }
+            case TOP_NON_INITIATING: {
+                return true;
+            }
+            default:
+                return false;
+        }
     }
 
 }

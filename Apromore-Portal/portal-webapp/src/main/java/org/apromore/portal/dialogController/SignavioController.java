@@ -10,11 +10,9 @@ import org.apromore.portal.util.StreamUtil;
 import org.zkoss.zk.ui.Executions;
 
 /**
- * Created by IntelliJ IDEA.
- * User: Sathish
- * Date: 29/06/12
- * Time: 11:58 AM
- * To change this template use File | Settings | File Templates.
+ * The Signavio Controller. This controls opening the signavio editor in apromore.
+ *
+ * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 public class SignavioController extends BaseController {
 
@@ -46,16 +44,22 @@ public class SignavioController extends BaseController {
 
     private String getURL(String nativeType) {
         String url = "";
-        if (nativeType.equals("XPDL 2.1")) {
-            url = "";
-        } else if (nativeType.equals("BPMN 2.1")) {
-            url = "http://b3mn.org/stencilset/bpmn2.0#";
-        } else if (nativeType.equals("PNML 1.3.2")) {
-            url = "";
-        } else if (nativeType.equals("YAWL 2.2")) {
-            url = "http://b3mn.org/stencilset/yawl2.2#";
-        } else if (nativeType.equals("EPML 2.0")) {
-            url = "http://b3mn.org/stencilset/epc#";
+        switch (nativeType) {
+            case "XPDL 2.1":
+                url = "http://b3mn.org/stencilset/bpmn1.1#";
+                break;
+            case "BPMN 2.1":
+                url = "http://b3mn.org/stencilset/bpmn2.0#";
+                break;
+            case "PNML 1.3.2":
+                url = "";
+                break;
+            case "YAWL 2.2":
+                url = "http://b3mn.org/stencilset/yawl2.2#";
+                break;
+            case "EPML 2.0":
+                url = "http://b3mn.org/stencilset/epc#";
+                break;
         }
         return url;
     }
@@ -63,16 +67,22 @@ public class SignavioController extends BaseController {
 
     private String getImportPath(String nativeType) {
         String importPath = "";
-        if (nativeType.equals("XPDL 2.1")) {
-            importPath = "/editor/editor/xpdlimport";
-        } else if (nativeType.equals("BPMN 2.1")) {
-            importPath = "/editor/editor/bpmnimport";
-        } else if (nativeType.equals("PNML 1.3.2")) {
-            importPath = "/editor/editor/pnmlimport";
-        } else if (nativeType.equals("YAWL 2.2")) {
-            importPath = "/editor/editor/yawlimport";
-        } else if (nativeType.equals("EPML 2.0")) {
-            importPath = "/editor/editor/epmlimport";
+        switch (nativeType) {
+            case "XPDL 2.1":
+                importPath = "/editor/editor/xpdlimport";
+                break;
+            case "BPMN 2.1":
+                importPath = "/editor/editor/bpmnimport";
+                break;
+            case "PNML 1.3.2":
+                importPath = "/editor/editor/pnmlimport";
+                break;
+            case "YAWL 2.2":
+                importPath = "/editor/editor/yawlimport";
+                break;
+            case "EPML 2.0":
+                importPath = "/editor/editor/epmlimport";
+                break;
         }
         return importPath;
     }

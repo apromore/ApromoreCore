@@ -24,18 +24,19 @@
  */
 package org.apromore.common.converters.epml.servlet;
 
+import org.apromore.common.converters.epml.EPMLToJSONConverter;
+
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-
-import org.apromore.common.converters.epml.EPMLToJSONConverter;
 
 /**
  * EPMLImportServlet converts a EPML specification (.epml file) to the JSON
  * representation of an Signavio diagram. It only supports POST requests with the
  * EPML submitted as parameter "data".
  * It should be accessible at: /epmlimport
+ *
  * @author Felix Mannhardt (University of Applied Sciences Bonn-Rhein-Sieg)
  */
 public class EPMLImportServlet extends HttpServlet {

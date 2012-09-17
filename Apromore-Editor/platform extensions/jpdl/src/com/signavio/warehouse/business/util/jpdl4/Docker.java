@@ -1,16 +1,16 @@
 /**
  * Copyright (c) 2009, Ole Eckermann, Stefan Krumnow & Signavio GmbH
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -25,37 +25,40 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 public class Docker {
-	private int x;
-	private int y;
-	
-	public int getX() {
-		return x;
-	}
-	public void setX(int x) {
-		this.x = x;
-	}
-	public int getY() {
-		return y;
-	}
-	public void setY(int y) {
-		this.y = y;
-	}
-	
-	public Docker(int x, int y) {
-		super();
-		this.x = x;
-		this.y = y;
-	}
-	
-	public JSONObject toJson() throws JSONException {
-		JSONObject o = new JSONObject();
-		o.put("x", x);
-		o.put("y", y);
-		return o;
-	}
-	
-	public String toJpdl() {
-		return x + "," + y;
-	}
-	
+    private int x;
+    private int y;
+
+    public int getX() {
+        return x;
+    }
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public int getY() {
+        return y;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public Docker(int x, int y) {
+        super();
+        this.x = x;
+        this.y = y;
+    }
+
+    public JSONObject toJson() throws JSONException {
+        JSONObject o = new JSONObject();
+        o.put("x", x);
+        o.put("y", y);
+        return o;
+    }
+
+    public String toJpdl() {
+        return x + "," + y;
+    }
+
 }

@@ -24,17 +24,18 @@
  */
 package org.apromore.common.converters.epml.handler.epml.impl;
 
-import java.math.BigInteger;
-import java.util.Map;
-
 import de.epml.TypePosition;
 import org.apromore.common.converters.epml.context.EPMLConversionContext;
 import org.oryxeditor.server.diagram.Bounds;
 import org.oryxeditor.server.diagram.Point;
 import org.oryxeditor.server.diagram.basic.BasicShape;
 
+import java.math.BigInteger;
+import java.util.Map;
+
 /**
  * Base class for all converters that create a Signavio/Oryx node
+ *
  * @author Felix Mannhardt
  */
 public abstract class NodeHandler extends EPMLHandlerImpl {

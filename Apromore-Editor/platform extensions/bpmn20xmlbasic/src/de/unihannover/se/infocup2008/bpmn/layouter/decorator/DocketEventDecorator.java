@@ -27,38 +27,37 @@ import de.hpi.layouting.model.LayoutingBounds;
 /**
  * This decorator describes, how an attached event is positioned relative to the
  * task
- * 
+ *
  * @author Team Royal Fawn
- * 
  */
 public class DocketEventDecorator extends AbstractDecorator {
 
-	private LayoutingBounds relative;
+    private LayoutingBounds relative;
 
-	private int positionFromLeft;
+    private int positionFromLeft;
 
-	public DocketEventDecorator(LayoutingBounds target, LayoutingBounds relative,
-			int positionFromLeft) {
-		super(target);
-		this.relative = relative;
-		this.positionFromLeft = positionFromLeft;
-	}
+    public DocketEventDecorator(LayoutingBounds target, LayoutingBounds relative,
+                                int positionFromLeft) {
+        super(target);
+        this.relative = relative;
+        this.positionFromLeft = positionFromLeft;
+    }
 
-	@Override
-	public double getX() {
-		double firstX = this.relative.getX()
-				+ LayoutConstants.EVENT_DOCKERS_MARGIN;
-		// + LayoutConstants.EVENT_DIAMETER;
+    @Override
+    public double getX() {
+        double firstX = this.relative.getX()
+                + LayoutConstants.EVENT_DOCKERS_MARGIN;
+        // + LayoutConstants.EVENT_DIAMETER;
 
-		double relPostion = this.positionFromLeft
-				* (LayoutConstants.EVENT_DOCKERS_MARGIN + LayoutConstants.EVENT_DIAMETER);
-		double newX = firstX + relPostion;
-		return newX;
-	}
+        double relPostion = this.positionFromLeft
+                * (LayoutConstants.EVENT_DOCKERS_MARGIN + LayoutConstants.EVENT_DIAMETER);
+        double newX = firstX + relPostion;
+        return newX;
+    }
 
-	@Override
-	public double getY() {
-		return this.relative.getY2() - 18;
-	}
+    @Override
+    public double getY() {
+        return this.relative.getY2() - 18;
+    }
 
 }

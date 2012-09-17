@@ -1,17 +1,17 @@
 /**
  * Copyright (c) 2009
  * Philipp Giese, Sven Wagner-Boysen
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,20 +23,16 @@
 
 package de.hpi.bpmn2_0.model.activity;
 
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlType;
-
 import de.hpi.bpmn2_0.transformation.Visitor;
+
+import javax.xml.bind.annotation.*;
 
 
 /**
  * <p>Java class for tTransaction complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name="tTransaction">
  *   &lt;complexContent>
@@ -46,30 +42,25 @@ import de.hpi.bpmn2_0.transformation.Visitor;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tTransaction")
 public class Transaction
-    extends SubProcess
-{
+        extends SubProcess {
 
     @XmlAttribute
     protected TransactionMethod method;
 
-	public void acceptVisitor(Visitor v){
-		v.visitTransaction(this);
-	}
-	
+    public void acceptVisitor(Visitor v) {
+        v.visitTransaction(this);
+    }
+
     /**
      * Gets the value of the method property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link TransactionMethod }
-     *     
+     *
+     * @return possible object is
+     *         {@link TransactionMethod }
      */
     public TransactionMethod getMethod() {
         if (method == null) {
@@ -81,11 +72,9 @@ public class Transaction
 
     /**
      * Sets the value of the method property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link TransactionMethod }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link TransactionMethod }
      */
     public void setMethod(TransactionMethod value) {
         this.method = value;

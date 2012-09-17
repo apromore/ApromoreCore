@@ -1,17 +1,17 @@
 /**
  * Copyright (c) 2009
  * Philipp Giese, Sven Wagner-Boysen
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to deal
  * in the Software without restriction, including without limitation the rights
  * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
  * copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in
  * all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
  * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
  * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -23,19 +23,6 @@
 
 package de.hpi.bpmn2_0.model.participant;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import javax.xml.bind.annotation.XmlAccessType;
-import javax.xml.bind.annotation.XmlAccessorType;
-import javax.xml.bind.annotation.XmlAttribute;
-import javax.xml.bind.annotation.XmlElement;
-import javax.xml.bind.annotation.XmlIDREF;
-import javax.xml.bind.annotation.XmlRootElement;
-import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
-
 import de.hpi.bpmn2_0.model.BaseElement;
 import de.hpi.bpmn2_0.model.FlowNode;
 import de.hpi.bpmn2_0.model.Process;
@@ -44,12 +31,17 @@ import de.hpi.bpmn2_0.model.data_object.Message;
 import de.hpi.bpmn2_0.transformation.Visitor;
 import de.hpi.diagram.SignavioUUID;
 
+import javax.xml.bind.annotation.*;
+import javax.xml.namespace.QName;
+import java.util.ArrayList;
+import java.util.List;
+
 
 /**
  * <p>Java class for tParticipant complex type.
- * 
+ * <p/>
  * <p>The following schema fragment specifies the expected content contained within this class.
- * 
+ * <p/>
  * <pre>
  * &lt;complexType name="tParticipant">
  *   &lt;complexContent>
@@ -67,131 +59,126 @@ import de.hpi.diagram.SignavioUUID;
  *   &lt;/complexContent>
  * &lt;/complexType>
  * </pre>
- * 
- * 
  */
 @XmlRootElement
 @XmlAccessorType(XmlAccessType.FIELD)
 @XmlType(name = "tParticipant", propOrder = {
-    "interfaceRef",
-    "endPointRef",
-    "participantMultiplicity"
+        "interfaceRef",
+        "endPointRef",
+        "participantMultiplicity"
 })
 public class Participant
-    extends FlowNode implements ConversationElement
-{
+        extends FlowNode implements ConversationElement {
 
     @XmlElement
-	protected List<QName> interfaceRef;
+    protected List<QName> interfaceRef;
     @XmlElement
     protected List<QName> endPointRef;
     @XmlElement(type = ParticipantMultiplicity.class)
     protected ParticipantMultiplicity participantMultiplicity;
-    
+
     @XmlAttribute
     @XmlIDREF
     protected Process processRef;
-    
+
     @XmlAttribute
     protected QName partnerRoleRef;
     @XmlAttribute
     protected QName partnerEntityRef;
-    
+
     @XmlTransient
     protected boolean isInitiating;
-    
+
     @XmlTransient
     private LaneSet laneSet;
-    
+
     @XmlTransient
-	public String _processType;
-	@XmlTransient
-	public String _isClosed;
-	@XmlTransient
-	public String _isExecutable;
-	@XmlTransient
-	public boolean _isChoreographyParticipant = false;
-	@XmlTransient
-	public Message _msgRef;
-    
+    public String _processType;
+    @XmlTransient
+    public String _isClosed;
+    @XmlTransient
+    public String _isExecutable;
+    @XmlTransient
+    public boolean _isChoreographyParticipant = false;
+    @XmlTransient
+    public Message _msgRef;
+
     /*
-     * Constructors
+    * Constructors
+    */
+
+    /**
+     * Default constructor
      */
-	
-	/**
-	 * Default constructor
-	 */
-	public Participant() {
-		super();
-	}
-	
-	/**
-	 * Copy constructor
-	 * 
-	 * @param p 
-	 * 		template {@link Participant}
-	 */
+    public Participant() {
+        super();
+    }
+
+    /**
+     * Copy constructor
+     *
+     * @param p template {@link Participant}
+     */
     public Participant(Participant p) {
-		super(p);
-		
-		this.getInterfaceRef().addAll(p.getInterfaceRef());
-		this.getEndPointRef().addAll(p.getEndPointRef());
-		
-		this.setParticipantMultiplicity(p.getParticipantMultiplicity());
-		this.setProcessRef(p.getProcessRef());
-		
-		this.setPartnerRoleRef(p.getPartnerRoleRef());
-		this.setPartnerEntityRef(p.getPartnerEntityRef());
-		
-		this.setInitiating(p.isInitiating());
-		this.setLaneSet(p.getLaneSet());
-		
-		this._processType = p._processType;
-		this._isClosed = p._isClosed;
-		this._isExecutable = p._isExecutable;
-		this._isChoreographyParticipant = p._isChoreographyParticipant;
-	}
-    
+        super(p);
+
+        this.getInterfaceRef().addAll(p.getInterfaceRef());
+        this.getEndPointRef().addAll(p.getEndPointRef());
+
+        this.setParticipantMultiplicity(p.getParticipantMultiplicity());
+        this.setProcessRef(p.getProcessRef());
+
+        this.setPartnerRoleRef(p.getPartnerRoleRef());
+        this.setPartnerEntityRef(p.getPartnerEntityRef());
+
+        this.setInitiating(p.isInitiating());
+        this.setLaneSet(p.getLaneSet());
+
+        this._processType = p._processType;
+        this._isClosed = p._isClosed;
+        this._isExecutable = p._isExecutable;
+        this._isChoreographyParticipant = p._isChoreographyParticipant;
+    }
+
     /* Business logic methods */
 
-	// @Override
+    // @Override
     public void addChild(BaseElement child) {
-    	if(child instanceof Lane) {
-    		if(laneSet == null) {
-    			laneSet = new LaneSet();
-    			laneSet.setId(SignavioUUID.generate());
-    		}
-    		
-    		getLaneSet().addChild(child);
-    	}
+        if (child instanceof Lane) {
+            if (laneSet == null) {
+                laneSet = new LaneSet();
+                laneSet.setId(SignavioUUID.generate());
+            }
+
+            getLaneSet().addChild(child);
+        }
     }
-    
-	public void acceptVisitor(Visitor v){
-		v.visitParticipant(this);
-	}
-    
+
+    public void acceptVisitor(Visitor v) {
+        v.visitParticipant(this);
+    }
+
     /* Getter & Setter */
+
     /**
      * Gets the value of the interfaceRef property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the interfaceRef property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getInterfaceRef().add(newItem);
      * </pre>
-     * 
-     * 
-     * <p>
+     * <p/>
+     * <p/>
+     * <p/>
      * Objects of the following type(s) are allowed in the list
      * {@link QName }
-     * 
-     * 
      */
     public List<QName> getInterfaceRef() {
         if (interfaceRef == null) {
@@ -201,40 +188,38 @@ public class Participant
     }
 
     /**
-	 * @return the processRef
-	 */
-	public Process getProcessRef() {
-		return this.processRef;
-	}
+     * @return the processRef
+     */
+    public Process getProcessRef() {
+        return this.processRef;
+    }
 
-	/**
-	 * @param processRef the processRef to set
-	 */
-	public void setProcessRef(Process processRef) {
-		this.processRef = processRef;
-	}
+    /**
+     * @param processRef the processRef to set
+     */
+    public void setProcessRef(Process processRef) {
+        this.processRef = processRef;
+    }
 
-	/**
+    /**
      * Gets the value of the endPointRef property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * This accessor method returns a reference to the live list,
      * not a snapshot. Therefore any modification you make to the
      * returned list will be present inside the JAXB object.
      * This is why there is not a <CODE>set</CODE> method for the endPointRef property.
-     * 
-     * <p>
+     * <p/>
+     * <p/>
      * For example, to add a new item, do as follows:
      * <pre>
      *    getEndPointRef().add(newItem);
      * </pre>
-     * 
-     * 
-     * <p>
+     * <p/>
+     * <p/>
+     * <p/>
      * Objects of the following type(s) are allowed in the list
      * {@link QName }
-     * 
-     * 
      */
     public List<QName> getEndPointRef() {
         if (endPointRef == null) {
@@ -245,11 +230,9 @@ public class Participant
 
     /**
      * Gets the value of the participantMultiplicity property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link ParticipantMultiplicity }
-     *     
+     *
+     * @return possible object is
+     *         {@link ParticipantMultiplicity }
      */
     public ParticipantMultiplicity getParticipantMultiplicity() {
         return participantMultiplicity;
@@ -257,37 +240,33 @@ public class Participant
 
     /**
      * Sets the value of the participantMultiplicity property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link ParticipantMultiplicity }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link ParticipantMultiplicity }
      */
     public void setParticipantMultiplicity(ParticipantMultiplicity value) {
         this.participantMultiplicity = value;
     }
 
     /**
-	 * @return the isInitiating
-	 */
-	public boolean isInitiating() {
-		return isInitiating;
-	}
+     * @return the isInitiating
+     */
+    public boolean isInitiating() {
+        return isInitiating;
+    }
 
-	/**
-	 * @param isInitiating the isInitiating to set
-	 */
-	public void setInitiating(boolean isInitiating) {
-		this.isInitiating = isInitiating;
-	}
+    /**
+     * @param isInitiating the isInitiating to set
+     */
+    public void setInitiating(boolean isInitiating) {
+        this.isInitiating = isInitiating;
+    }
 
     /**
      * Gets the value of the partnerRoleRef property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QName }
-     *     
+     *
+     * @return possible object is
+     *         {@link QName }
      */
     public QName getPartnerRoleRef() {
         return partnerRoleRef;
@@ -295,11 +274,9 @@ public class Participant
 
     /**
      * Sets the value of the partnerRoleRef property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QName }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link QName }
      */
     public void setPartnerRoleRef(QName value) {
         this.partnerRoleRef = value;
@@ -307,11 +284,9 @@ public class Participant
 
     /**
      * Gets the value of the partnerEntityRef property.
-     * 
-     * @return
-     *     possible object is
-     *     {@link QName }
-     *     
+     *
+     * @return possible object is
+     *         {@link QName }
      */
     public QName getPartnerEntityRef() {
         return partnerEntityRef;
@@ -319,21 +294,19 @@ public class Participant
 
     /**
      * Sets the value of the partnerEntityRef property.
-     * 
-     * @param value
-     *     allowed object is
-     *     {@link QName }
-     *     
+     *
+     * @param value allowed object is
+     *              {@link QName }
      */
     public void setPartnerEntityRef(QName value) {
         this.partnerEntityRef = value;
     }
 
-	public LaneSet getLaneSet() {
-		return laneSet;
-	}
+    public LaneSet getLaneSet() {
+        return laneSet;
+    }
 
-	public void setLaneSet(LaneSet laneSet) {
-		this.laneSet = laneSet;
-	}
+    public void setLaneSet(LaneSet laneSet) {
+        this.laneSet = laneSet;
+    }
 }
