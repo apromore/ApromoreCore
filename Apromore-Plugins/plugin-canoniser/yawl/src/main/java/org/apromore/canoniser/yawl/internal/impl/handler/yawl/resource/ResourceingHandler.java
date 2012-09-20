@@ -14,6 +14,7 @@ package org.apromore.canoniser.yawl.internal.impl.handler.yawl.resource;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.YAWLConversionHandler;
@@ -39,7 +40,7 @@ import org.yawlfoundation.yawlschema.orgdata.RoleType;
 /**
  * Converting YAWL resources to CPF
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsType, TaskType> {
@@ -65,13 +66,25 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
             }
 
             if (offer.getFamiliarParticipant() != null) {
-                addToExtension(ConversionUtils.marshalYAWLFragment("familiarParticipant", offer.getFamiliarParticipant(), FamiliarParticipant.class),
-                        getConvertedParent().getId());
+                // TODO add to CPF instead of ANF
+                try {
+                    addToExtension(
+                            ConversionUtils.marshalYAWLFragment("familiarParticipant", offer.getFamiliarParticipant(), FamiliarParticipant.class),
+                            getConvertedParent().getId());
+                } catch (JAXBException e) {
+                    throw new CanoniserException("Failed to add the familiarParticipant extension element", e);
+                }
             }
 
         } else {
             // Distribution of work will be handled by User at Runtime, there is no way of capturing this in CPF
-            addToExtension(ConversionUtils.marshalYAWLFragment("resourcing", getObject(), ResourcingFactsType.class), getConvertedParent().getId());
+            // TODO add to CPF instead of ANF
+            try {
+                addToExtension(ConversionUtils.marshalYAWLFragment("resourcing", getObject(), ResourcingFactsType.class), getConvertedParent()
+                        .getId());
+            } catch (JAXBException e) {
+                throw new CanoniserException("Failed to add the resourcing extension element", e);
+            }
         }
 
         // TODO secondary resources !!
@@ -105,9 +118,14 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
             resourceType.setDistributionSet(distributionSetExt);
 
             // Add YAWL extension elements to ANF
-            addToExtension(ConversionUtils.marshalYAWLFragment("constraints", distributionSet.getConstraints(), Constraints.class),
-                    resourceType.getId());
-            addToExtension(ConversionUtils.marshalYAWLFragment("filters", distributionSet.getFilters(), Filters.class), resourceType.getId());
+            // TODO add to CPF instead of ANF
+            try {
+                addToExtension(ConversionUtils.marshalYAWLFragment("constraints", distributionSet.getConstraints(), Constraints.class),
+                        resourceType.getId());
+                addToExtension(ConversionUtils.marshalYAWLFragment("filters", distributionSet.getFilters(), Filters.class), resourceType.getId());
+            } catch (JAXBException e) {
+                throw new CanoniserException("Failed to add the constraints/filter extension element", e);
+            }
 
             createResourceReference(resourceType, null);
 

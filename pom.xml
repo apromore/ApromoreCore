@@ -71,6 +71,7 @@
                         <phase>package</phase>
                         <configuration>
                             <target>
+								<property file="local.properties"/>
                                 <property file="build.properties"/>
 
                                 <delete dir="${dir-tomcat-webapps}/manager"/>

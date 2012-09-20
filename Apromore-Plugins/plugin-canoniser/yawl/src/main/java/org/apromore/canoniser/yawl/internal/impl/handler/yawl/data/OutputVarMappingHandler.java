@@ -13,6 +13,8 @@ package org.apromore.canoniser.yawl.internal.impl.handler.yawl.data;
 
 import java.util.List;
 
+import javax.xml.bind.JAXBException;
+
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.cpf.InputOutputType;
@@ -28,7 +30,7 @@ import org.yawlfoundation.yawlschema.ExpressionType;
 /**
  * Converts the Output Mappings of a YAWL Task to Object references.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class OutputVarMappingHandler extends BaseVarMappingHandler {
@@ -74,10 +76,15 @@ public class OutputVarMappingHandler extends BaseVarMappingHandler {
 
     }
 
-    private TypeAttribute createExpressionAttribute(final ExpressionType expressionType) {
+    private TypeAttribute createExpressionAttribute(final ExpressionType expressionType) throws CanoniserException {
         final TypeAttribute expressionAttr = getContext().getCanonicalOF().createTypeAttribute();
         expressionAttr.setName(ConversionUtils.YAWL_EXPRESSION_EXTENSION);
-        expressionAttr.setAny(ConversionUtils.marshalYAWLFragment(ConversionUtils.YAWL_EXPRESSION_EXTENSION, expressionType, ExpressionType.class));
+        try {
+            expressionAttr.setAny(ConversionUtils
+                    .marshalYAWLFragment(ConversionUtils.YAWL_EXPRESSION_EXTENSION, expressionType, ExpressionType.class));
+        } catch (JAXBException e) {
+            throw new CanoniserException("Failed to add the expression extension element", e);
+        }
         return expressionAttr;
     }
 

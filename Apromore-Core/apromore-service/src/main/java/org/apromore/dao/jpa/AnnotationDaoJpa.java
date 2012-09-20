@@ -1,6 +1,7 @@
 package org.apromore.dao.jpa;
 
 import java.util.List;
+
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import javax.persistence.NonUniqueResultException;
@@ -38,7 +39,6 @@ public class AnnotationDaoJpa implements AnnotationDao {
         return query.getResultList();
     }
 
-
     /**
      * Returns the Annotation as XML.
      * @see org.apromore.dao.AnnotationDao#getAnnotation(Integer, String, String)
@@ -53,7 +53,6 @@ public class AnnotationDaoJpa implements AnnotationDao {
         query.setParameter("name", name);
         return (Annotation) query.getSingleResult();
     }
-
 
     /**
      * @see org.apromore.dao.AnnotationDao#delete(Annotation)

@@ -18,7 +18,7 @@ import org.yawlfoundation.yawlschema.ExternalConditionFactsType;
 /**
  * Converts a YAWL Condition to the canonical format.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class ConditionHandler extends BaseConditionHandler<ExternalConditionFactsType> {

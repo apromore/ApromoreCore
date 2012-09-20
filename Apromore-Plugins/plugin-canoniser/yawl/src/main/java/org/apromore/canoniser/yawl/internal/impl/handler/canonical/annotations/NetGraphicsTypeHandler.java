@@ -25,7 +25,7 @@ import org.yawlfoundation.yawlschema.ObjectFactory;
 /**
  * Convert the layout of a CPF NetType to YAWL
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class NetGraphicsTypeHandler extends CanonicalElementHandler<GraphicsType, Specification> {

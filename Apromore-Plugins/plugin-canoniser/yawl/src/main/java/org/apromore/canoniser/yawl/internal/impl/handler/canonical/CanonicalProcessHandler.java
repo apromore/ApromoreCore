@@ -35,7 +35,7 @@ import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
 /**
  * Converts a CanonicalProcessType an all its children.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalProcessType, Object> {

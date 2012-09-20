@@ -1,36 +1,36 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns3:CanonicalProcess xmlns:ns2="http://www.yawlfoundation.org/yawlschema" xmlns:ns3="http://www.apromore.org/CPF" uri="WPD2BlockData" version="0.1" name="WPD2BlockData" author="Felix" rootIds="id-N_Net">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WPD2BlockData" version="0.1" name="WPD2BlockData" author="Felix" rootIds="id-N_Net">
     <Net id="id-N_Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_InputCondition" originalID="InputCondition">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_A" originalID="A">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_A" originalID="A">
             <name>A</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_B" originalID="B">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_B" originalID="B">
             <name>B</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_OutputCondition" originalID="OutputCondition">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
         <Edge id="id-C_InputCondition-A" default="true" sourceId="id-C_InputCondition" targetId="id-C_A"/>
         <Edge id="id-C_A-B" default="true" sourceId="id-C_A" targetId="id-C_B"/>
         <Edge id="id-C_B-OutputCondition" default="true" sourceId="id-C_B" targetId="id-C_OutputCondition"/>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_Net_x" originalID="id-N_Net_x">
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D_id-N_Net_x" originalID="id-N_Net_x">
             <name>x</name>
             <type>boolean</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_Net_z" originalID="id-N_Net_z">
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D_id-N_Net_z" originalID="id-N_Net_z">
             <name>z</name>
             <type>string</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_Net_y" originalID="id-N_Net_y">
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D_id-N_Net_y" originalID="id-N_Net_y">
             <name>y</name>
             <type>string</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_Net_w" originalID="id-N_Net_w">
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D_id-N_Net_w" originalID="id-N_Net_w">
             <name>w</name>
             <type>string</type>
         </Object>
     </Net>
-</ns3:CanonicalProcess>
+</ns2:CanonicalProcess>

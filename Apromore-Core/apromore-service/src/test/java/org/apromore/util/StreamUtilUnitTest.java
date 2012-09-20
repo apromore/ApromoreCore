@@ -1,6 +1,7 @@
 package org.apromore.util;
 
 import org.apromore.TestData;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.wfmc._2008.xpdl2.PackageType;
 
@@ -123,8 +124,11 @@ public class StreamUtilUnitTest {
         assertThat(result, containsString(updated));
     }
 
+    @Ignore
     @Test
     public void testCopyParam2NPFXPDL() throws Exception {
+        //TODO FM, i think that is not needed anymore
+        
         String nativeType = "XPDL 2.1";
         String name = "bob43";
         String version = "999.9";
@@ -204,6 +208,7 @@ public class StreamUtilUnitTest {
         assertThat(pkg.getPackageHeader().getDocumentation(), notNullValue());
     }
 
+    @Ignore
     @Test
     public void testCopyParam2NPFPMNL() throws Exception {
         String nativeType = "PMNL 2.0";
@@ -216,6 +221,7 @@ public class StreamUtilUnitTest {
         InputStream stream = new ByteArrayInputStream("test".getBytes());
         InputStream stream2 = StreamUtil.copyParam2NPF(stream, nativeType,  name, version, username, created, updated);
 
+        //TODO why should it be NULL?
         assertThat(stream2, equalTo(null));
     }
 }

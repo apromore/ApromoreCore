@@ -21,13 +21,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Class controlling all Macros that are used in the conversion. 
+ * Class controlling all Macros that are used in the conversion.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
- *
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * 
  */
 public class MacroRewriter {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(RoutingNodeMacro.class.getName());
 
     final private List<RewriteMacro> availableMacros;

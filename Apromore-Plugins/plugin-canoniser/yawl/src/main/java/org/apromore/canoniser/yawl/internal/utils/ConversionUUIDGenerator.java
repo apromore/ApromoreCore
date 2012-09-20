@@ -19,15 +19,15 @@ import java.util.regex.Pattern;
 /**
  * Generating unique IDs for YAWL/CPF elements. The generated UUID will stay always the same for each YAWL/CPF element.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class ConversionUUIDGenerator {
 
     public static final Pattern NCNAME = Pattern.compile("[\\p{Alpha}_][\\p{Alnum}-_\\x2E]*");
-    
+
     private static final String ID_PREFIX = "id-";
-    
+
     private Map<String, String> uuidMap;
 
     /**
@@ -49,7 +49,7 @@ public class ConversionUUIDGenerator {
         return uuidMap.get(originalId);
     }
 
-    private String sanitizeId(String originalId) {
+    private String sanitizeId(final String originalId) {
         String sanitizedId = originalId;
         // YAWL does not like '_' in the IDs (see: http://code.google.com/p/yawl/issues/detail?id=470)
         sanitizedId.replace('_', '-');

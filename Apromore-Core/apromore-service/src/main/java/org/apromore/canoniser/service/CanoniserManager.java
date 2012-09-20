@@ -15,5 +15,6 @@ public interface CanoniserManager {
 
 //    public CanoniseProcessOutputMsgType canoniseProcess(CanoniseProcessInputMsgType payload);
 
+    @Deprecated
     public CanoniseVersionOutputMsgType canoniseVersion(CanoniseVersionInputMsgType payload);
 }
