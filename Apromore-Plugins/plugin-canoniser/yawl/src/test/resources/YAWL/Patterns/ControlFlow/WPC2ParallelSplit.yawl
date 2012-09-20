@@ -1,0 +1,235 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<specificationSet xmlns="http://www.yawlfoundation.org/yawlschema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2" xsi:schemaLocation="http://www.yawlfoundation.org/yawlschema http://www.yawlfoundation.org/yawlschema/YAWL_Schema2.2.xsd">
+  <specification uri="WP1SequencePattern">
+    <metaData>
+      <creator>Felix</creator>
+      <description>No description has been given.</description>
+      <version>0.1</version>
+      <persistent>false</persistent>
+      <identifier>UID_8cfa5775-b7f1-494c-b778-e74bb1761e9f</identifier>
+    </metaData>
+    <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" />
+    <decomposition id="Net" isRootNet="true" xsi:type="NetFactsType">
+      <processControlElements>
+        <inputCondition id="InputCondition">
+          <name>IN</name>
+          <flowsInto>
+            <nextElementRef id="A" />
+          </flowsInto>
+        </inputCondition>
+        <task id="A">
+          <name>A</name>
+          <flowsInto>
+            <nextElementRef id="D" />
+          </flowsInto>
+          <flowsInto>
+            <nextElementRef id="C" />
+          </flowsInto>
+          <flowsInto>
+            <nextElementRef id="B" />
+          </flowsInto>
+          <join code="xor" />
+          <split code="and" />
+        </task>
+        <task id="B">
+          <name>B</name>
+          <flowsInto>
+            <nextElementRef id="E" />
+          </flowsInto>
+          <join code="xor" />
+          <split code="and" />
+        </task>
+        <task id="C">
+          <name>C</name>
+          <flowsInto>
+            <nextElementRef id="E" />
+          </flowsInto>
+          <join code="xor" />
+          <split code="and" />
+        </task>
+        <task id="D">
+          <name>D</name>
+          <flowsInto>
+            <nextElementRef id="E" />
+          </flowsInto>
+          <join code="xor" />
+          <split code="and" />
+        </task>
+        <task id="E">
+          <name>E</name>
+          <flowsInto>
+            <nextElementRef id="OutputCondition" />
+          </flowsInto>
+          <join code="and" />
+          <split code="and" />
+        </task>
+        <outputCondition id="OutputCondition">
+          <name>OUT</name>
+        </outputCondition>
+      </processControlElements>
+    </decomposition>
+  </specification>
+  <layout>
+    <locale language="de" country="DE" />
+    <specification id="WP1SequencePattern">
+      <size w="103" h="28" />
+      <net id="Net">
+        <bounds x="0" y="0" w="786" h="668" />
+        <frame x="2" y="25" w="789" h="671" />
+        <viewport x="0" y="0" w="789" h="671" />
+        <container id="InputCondition">
+          <vertex>
+            <attributes>
+              <bounds x="60,0" y="368,0" w="32,0" h="32,0" />
+            </attributes>
+          </vertex>
+          <label>
+            <attributes>
+              <bounds x="28,0" y="400,0" w="96,0" h="20,0" />
+            </attributes>
+          </label>
+        </container>
+        <container id="OutputCondition">
+          <vertex>
+            <attributes>
+              <bounds x="396,0" y="368,0" w="32,0" h="32,0" />
+            </attributes>
+          </vertex>
+          <label>
+            <attributes>
+              <bounds x="364,0" y="400,0" w="96,0" h="20,0" />
+            </attributes>
+          </label>
+        </container>
+        <container id="E">
+          <vertex>
+            <attributes>
+              <bounds x="320,0" y="368,0" w="32,0" h="32,0" />
+            </attributes>
+          </vertex>
+          <label>
+            <attributes>
+              <bounds x="284,0" y="400,0" w="96,0" h="20,0" />
+            </attributes>
+          </label>
+          <decorator type="AND_join">
+            <position>12</position>
+            <attributes>
+              <bounds x="310,0" y="368,0" w="11,0" h="32,0" />
+              <size w="11" h="32" />
+            </attributes>
+          </decorator>
+        </container>
+        <container id="A">
+          <vertex>
+            <attributes>
+              <bounds x="132,0" y="368,0" w="32,0" h="32,0" />
+            </attributes>
+          </vertex>
+          <label>
+            <attributes>
+              <bounds x="104,0" y="400,0" w="96,0" h="20,0" />
+            </attributes>
+          </label>
+          <decorator type="AND_split">
+            <position>13</position>
+            <attributes>
+              <bounds x="163,0" y="368,0" w="11,0" h="32,0" />
+              <size w="11" h="32" />
+            </attributes>
+          </decorator>
+        </container>
+        <container id="B">
+          <vertex>
+            <attributes>
+              <bounds x="228,0" y="300,0" w="32,0" h="32,0" />
+            </attributes>
+          </vertex>
+          <label>
+            <attributes>
+              <bounds x="196,0" y="332,0" w="96,0" h="20,0" />
+            </attributes>
+          </label>
+        </container>
+        <container id="D">
+          <vertex>
+            <attributes>
+              <bounds x="228,0" y="436,0" w="32,0" h="32,0" />
+            </attributes>
+          </vertex>
+          <label>
+            <attributes>
+              <bounds x="196,0" y="468,0" w="96,0" h="20,0" />
+            </attributes>
+          </label>
+        </container>
+        <container id="C">
+          <vertex>
+            <attributes>
+              <bounds x="228,0" y="368,0" w="32,0" h="32,0" />
+            </attributes>
+          </vertex>
+          <label>
+            <attributes>
+              <bounds x="196,0" y="400,0" w="96,0" h="20,0" />
+            </attributes>
+          </label>
+        </container>
+        <flow source="E" target="OutputCondition">
+          <ports in="13" out="12" />
+          <attributes>
+            <lineStyle>11</lineStyle>
+          </attributes>
+        </flow>
+        <flow source="InputCondition" target="A">
+          <ports in="13" out="12" />
+          <attributes>
+            <lineStyle>11</lineStyle>
+          </attributes>
+        </flow>
+        <flow source="A" target="B">
+          <ports in="1" out="12" />
+          <attributes>
+            <lineStyle>11</lineStyle>
+          </attributes>
+        </flow>
+        <flow source="B" target="E">
+          <ports in="13" out="4" />
+          <attributes>
+            <lineStyle>11</lineStyle>
+          </attributes>
+        </flow>
+        <flow source="C" target="E">
+          <ports in="13" out="2" />
+          <attributes>
+            <lineStyle>11</lineStyle>
+            <points>
+              <value x="259,0" y="383,5" />
+              <value x="310,0" y="383,5" />
+            </points>
+          </attributes>
+        </flow>
+        <flow source="D" target="E">
+          <ports in="13" out="0" />
+          <attributes>
+            <lineStyle>11</lineStyle>
+          </attributes>
+        </flow>
+        <flow source="A" target="D">
+          <ports in="3" out="12" />
+          <attributes>
+            <lineStyle>11</lineStyle>
+          </attributes>
+        </flow>
+        <flow source="A" target="C">
+          <ports in="2" out="12" />
+          <attributes>
+            <lineStyle>11</lineStyle>
+          </attributes>
+        </flow>
+      </net>
+    </specification>
+  </layout>
+</specificationSet>
+
+

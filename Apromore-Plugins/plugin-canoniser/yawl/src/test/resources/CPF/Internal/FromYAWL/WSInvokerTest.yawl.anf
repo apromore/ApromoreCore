@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:Annotations xmlns:ns2="http://www.yawlfoundation.org/yawlschema" xmlns:ns3="http://www.apromore.org/ANF">
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" cpfId="id-N_Net">
+        <size width="1127" height="679"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:DocumentationType" cpfId="id-N_Net"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:DocumentationType" id="id-423672ef-5d15-4019-aca2-cdffa18b13e8" cpfId="id-C_InputCondition_1"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-cd808a68-489b-4a1e-874d-3d94eb2c53c7" cpfId="id-C_InputCondition_1">
+        <ns2:label>
+            <ns2:attributes>
+                <ns2:bounds x="204,0" y="388,0" w="97,0" h="21,0"/>
+            </ns2:attributes>
+        </ns2:label>
+        <position x="236.0" y="356.0"/>
+        <size width="32.0" height="32.0"/>
+        <fill/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:DocumentationType" id="id-d3dcf6ed-f5bb-4df6-bffe-35ac897475d1" cpfId="id-C_A_3"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-f0055c38-ccae-4197-a273-cd32ba23dadd" cpfId="id-C_A_3">
+        <ns2:label>
+            <ns2:attributes>
+                <ns2:bounds x="272,0" y="388,0" w="97,0" h="21,0"/>
+            </ns2:attributes>
+        </ns2:label>
+        <position x="304.0" y="356.0"/>
+        <size width="32.0" height="32.0"/>
+        <fill/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:DocumentationType" id="id-f672bb1e-e70e-495f-94f0-26bac8518a68" cpfId="id-C_OutputCondition_2"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-c648d332-8624-40d4-af99-408bf281ddde" cpfId="id-C_OutputCondition_2">
+        <ns2:label>
+            <ns2:attributes>
+                <ns2:bounds x="336,0" y="388,0" w="97,0" h="21,0"/>
+            </ns2:attributes>
+        </ns2:label>
+        <position x="368.0" y="356.0"/>
+        <size width="32.0" height="32.0"/>
+        <fill/>
+    </Annotation>
+</ns3:Annotations>

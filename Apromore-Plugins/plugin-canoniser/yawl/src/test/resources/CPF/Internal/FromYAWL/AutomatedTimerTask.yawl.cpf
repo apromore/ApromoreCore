@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:CanonicalProcess xmlns:ns2="http://www.yawlfoundation.org/yawlschema" xmlns:ns3="http://www.apromore.org/CPF" uri="AutomatedTimerTask" version="0.1" name="AutomatedTimerTask" author="Felix" rootIds="id-N_Net">
+    <Net id="id-N_Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_InputCondition" originalID="InputCondition">
+            <name>IN</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TimerType" id="id-04824567-dc8d-4058-bbc2-435bf9e8586f"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_A" originalID="A">
+            <name>A</name>
+            <resourceTypeRef id="id-529b910b-4bb8-47c8-abdf-3f68c202fc81" resourceTypeId="id-63d411a0-4edd-4ccf-95e6-b167004d3c91"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_OutputCondition" originalID="OutputCondition">
+            <name>OUT</name>
+        </Node>
+        <Edge id="id-C_id-04824567-dc8d-4058-bbc2-435bf9e8586f-id-C_A" default="true" sourceId="id-04824567-dc8d-4058-bbc2-435bf9e8586f" targetId="id-C_A"/>
+        <Edge id="id-C_id-C_InputCondition-id-04824567-dc8d-4058-bbc2-435bf9e8586f" default="true" sourceId="id-C_InputCondition" targetId="id-04824567-dc8d-4058-bbc2-435bf9e8586f"/>
+        <Edge id="id-C_A-OutputCondition" default="true" sourceId="id-C_A" targetId="id-C_OutputCondition"/>
+    </Net>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftwareSystemType" id="id-63d411a0-4edd-4ccf-95e6-b167004d3c91">
+        <name>org.yawlfoundation.yawl.resourcing.codelets.RandomWait</name>
+    </ResourceType>
+</ns3:CanonicalProcess>

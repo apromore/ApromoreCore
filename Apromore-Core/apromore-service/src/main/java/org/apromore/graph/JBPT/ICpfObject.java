@@ -126,22 +126,23 @@ public interface ICpfObject {
      *
      * @param name  the name of the attribute
      * @param value the value of the attribute
+     * @param any the XML extension of the attribute
      */
-    void addAttribute(String name, String value);
+    void addAttribute(String name, String value, Object any);
 
     /**
      * Set if this {@link ICpfObject} attributes.
      *
      * @param attributes the map of attributes
      */
-    void setAttributes(Map<String, String> attributes);
+    void setAttributes(Map<String, ICpfAttribute> attributes);
 
     /**
      * Return this {@link ICpfObject} attributes.
      *
      * @return the attributes
      */
-    Map<String, String> getAttributes();
+    Map<String, ICpfAttribute> getAttributes();
 
 
     /**

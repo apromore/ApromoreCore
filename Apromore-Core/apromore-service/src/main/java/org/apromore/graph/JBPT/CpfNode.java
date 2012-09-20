@@ -16,7 +16,7 @@ import org.jbpt.pm.Activity;
 public class CpfNode extends Activity implements ICpfNode {
 
     private boolean configurable = false;
-    private Map<String, String> attributes = new HashMap<String, String>(0);
+    private Map<String, ICpfAttribute> attributes = new HashMap<String, ICpfAttribute>(0);
     private Set<ICpfResource> resources = new HashSet<ICpfResource>(0);
     private Set<ICpfObject> objects = new HashSet<ICpfObject>(0);
 
@@ -35,7 +35,7 @@ public class CpfNode extends Activity implements ICpfNode {
      * @return the attributes
      */
     @Override
-    public Map<String, String> getAttributes() {
+    public Map<String, ICpfAttribute> getAttributes() {
         return attributes;
     }
 
@@ -66,9 +66,14 @@ public class CpfNode extends Activity implements ICpfNode {
      * @param value the value of the attribute
      */
     @Override
-    public void addAttribute(String name, String value) {
-        attributes.put(name, value);
+    public void addAttribute(final String name, final String value, final Object any) {
+        attributes.put(name, new CpfAttribute(value, any));
     }
+    
+    @Override
+    public void addAttribute(String name, String value) {
+        addAttribute(name, value, null);
+    }    
 
     /**
      * Set if this {@link org.apromore.graph.JBPT.ICpfNode} attributes.
@@ -76,7 +81,7 @@ public class CpfNode extends Activity implements ICpfNode {
      * @param newAttributes the map of attributes
      */
     @Override
-    public void setAttributes(Map<String, String> newAttributes) {
+    public void setAttributes(Map<String, ICpfAttribute> newAttributes) {
         attributes = newAttributes;
     }
 
@@ -87,7 +92,7 @@ public class CpfNode extends Activity implements ICpfNode {
      * @return the value of the found Attribute, otherwise null is not in the list.
      */
     @Override
-    public String getAttribute(String name) {
+    public ICpfAttribute getAttribute(String name) {
         return attributes.get(name);
     }
 
@@ -126,4 +131,5 @@ public class CpfNode extends Activity implements ICpfNode {
     public Collection<ICpfResource> getResource() {
         return resources;
     }
+
 }

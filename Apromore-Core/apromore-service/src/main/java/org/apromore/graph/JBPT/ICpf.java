@@ -20,14 +20,14 @@ public interface ICpf<CF extends IControlFlow<FN>, FN extends IFlowNode, NFN ext
      *
      * @param properties the properties
      */
-    void setProperties(Map<String, String> properties);
+    void setProperties(Map<String, ICpfAttribute> properties);
 
     /**
      * return the properties
      *
      * @return the map of properties
      */
-    Map<String, String> getProperties();
+    Map<String, ICpfAttribute> getProperties();
 
     /**
      * return a property.
@@ -35,14 +35,23 @@ public interface ICpf<CF extends IControlFlow<FN>, FN extends IFlowNode, NFN ext
      * @param name the name of the property
      * @return the value of the property we are searching for.
      */
-    String getProperty(String name);
+    ICpfAttribute getProperty(String name);
 
     /**
-     * sets a property.
+     * Sets a property.
      *
      * @param name  the name of the property
-     * @param value the value of the property
+     * @param value the simple value text value of the property
+     * @param any the complex XML value of the property
      */
-    void setProperty(String name, String value);
+    void setProperty(String name, String value, Object any);
 
+    /**
+     * Sets a property only the simple text based value.
+     *
+     * @param name  the name of the property
+     * @param value the simple value text value of the property
+     */
+    void setProperty(String name, String value);    
+ 
 }

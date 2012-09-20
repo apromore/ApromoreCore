@@ -9,6 +9,7 @@ import java.util.logging.Logger;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
+import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
 // Local packages
@@ -259,17 +260,18 @@ public class CanoniserDefinitions extends Definitions {
                             " name=" + resource.getName() +
                             " isConfigurable=" + resource.isConfigurable() +
                             " originalID=" + resource.getOriginalID());
-
-                for (TypeAttribute attribute : resource.getAttribute()) {
-                    logger.info("  attribute " + attribute.getTypeRef() + "=" + attribute.getValue());
-                }
+                //TODO depreciated
+//                for (TypeAttribute attribute : resource.getAttribute()) {
+//                    logger.info("  attribute " + attribute.getTypeRef() + "=" + attribute.getValue());
+//                }
 
                 for (String id : resource.getSpecializationIds()) {
                     logger.info("  specialization ID=" + id);
                 }
             }
 
-            String rootId = cpf.getRootId();
+            //TODO changed to list
+            List<String> rootId = cpf.getRootIds();
             String cpfUri = cpf.getUri();
             String version = cpf.getVersion();
         }
@@ -459,7 +461,7 @@ public class CanoniserDefinitions extends Definitions {
 
                     final NetType net = new NetType();
                     net.setId(cpfIdFactory.newId(process.getId()));
-                    cpf.setRootId(net.getId());
+                    cpf.getRootIds().add(net.getId());
                     cpf.getNet().add(net);
 
                     for (LaneSet laneSet : process.getLaneSets()) {
@@ -475,10 +477,11 @@ public class CanoniserDefinitions extends Definitions {
                                 object.setConfigurable(false);  // BPMN doesn't have an obvious equivalent
 
                                 if (dataObject.isIsCollection()) {
-                                    TypeAttribute attribute = new TypeAttribute();
-                                    attribute.setTypeRef("bpmn.isCollection");
-                                    attribute.setValue("true");
-                                    object.getAttribute().add(attribute);
+                                    //TODO depreciated
+//                                    TypeAttribute attribute = new TypeAttribute();
+//                                    attribute.setTypeRef("bpmn.isCollection");
+//                                    attribute.setValue("true");
+//                                    object.getAttribute().add(attribute);
                                 }
 
                                 populateFlowElement(object, dataObject);
@@ -565,7 +568,7 @@ public class CanoniserDefinitions extends Definitions {
                                 populateFlowElement(edge, sequenceFlow);
 
                                 if (sequenceFlow.getConditionExpression() != null) {
-                                    edge.setCondition(sequenceFlow.getConditionExpression().getContent().get(0).toString());
+                                    edge.setConditionExpr(sequenceFlow.getConditionExpression().getContent().get(0).toString());
                                     // TODO - handle non-singleton expressions
                                 }
                                 edge.setSourceId(((TFlowNode) sequenceFlow.getSourceRef()).getId());  // TODO - process through cpfIdFactory

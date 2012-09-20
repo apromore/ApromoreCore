@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:Annotations xmlns:ns2="http://www.yawlfoundation.org/yawlschema" xmlns:ns3="http://www.apromore.org/ANF">
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" cpfId="id-N_Net">
+        <size width="789" height="671"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:DocumentationType" cpfId="id-N_Net"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:DocumentationType" id="id-8ee2981e-a919-46d1-951f-659b6948a028" cpfId="id-C_InputCondition"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-9d070d82-43d2-4235-9539-50449d848fd7" cpfId="id-C_InputCondition">
+        <ns2:label>
+            <ns2:attributes>
+                <ns2:bounds x="28,0" y="452,0" w="96,0" h="20,0"/>
+            </ns2:attributes>
+        </ns2:label>
+        <position x="60.0" y="420.0"/>
+        <size width="32.0" height="32.0"/>
+        <fill/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-f8bc8d4b-5d1d-45a1-91ad-f9b1c0ff36eb" cpfId="id-C_InputCondition-A">
+        <ns2:flow source="InputCondition" target="A">
+            <ns2:label>Allocated+to+Role+X+with+CapabilityX+and+PositionX+of+OrgGroupX</ns2:label>
+            <ns2:ports in="13" out="12"/>
+            <ns2:attributes>
+                <ns2:offset x="32,0" y="0,0"/>
+                <ns2:labelposition x="1000,0" y="-32,5"/>
+                <ns2:lineStyle>11</ns2:lineStyle>
+                <ns2:points>
+                    <ns2:value x="91,0" y="435,5"/>
+                    <ns2:value x="208,0" y="435,5"/>
+                </ns2:points>
+            </ns2:attributes>
+        </ns2:flow>
+        <position x="91.0" y="435.5"/>
+        <position x="208.0" y="435.5"/>
+        <line width="11"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-f8bc8d4b-5d1d-45a1-91ad-f9b1c0ff36eb" cpfId="id-C_InputCondition-A">
+        <ns2:flow source="InputCondition" target="A">
+            <ns2:label>Allocated+to+Role+X+with+CapabilityX+and+PositionX+of+OrgGroupX</ns2:label>
+            <ns2:ports in="13" out="12"/>
+            <ns2:attributes>
+                <ns2:offset x="32,0" y="0,0"/>
+                <ns2:labelposition x="1000,0" y="-32,5"/>
+                <ns2:lineStyle>11</ns2:lineStyle>
+                <ns2:points>
+                    <ns2:value x="91,0" y="435,5"/>
+                    <ns2:value x="208,0" y="435,5"/>
+                </ns2:points>
+            </ns2:attributes>
+        </ns2:flow>
+        <position x="91.0" y="435.5"/>
+        <position x="208.0" y="435.5"/>
+        <line width="11"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:DocumentationType" id="id-4297e48b-c478-4f26-a8cb-10b052c19a80" cpfId="id-C_A"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-0540f0d6-914b-42d0-be59-edcb59f9d199" cpfId="id-C_A">
+        <ns2:label>
+            <ns2:attributes>
+                <ns2:bounds x="176,0" y="452,0" w="97,0" h="21,0"/>
+            </ns2:attributes>
+        </ns2:label>
+        <position x="208.0" y="420.0"/>
+        <size width="32.0" height="32.0"/>
+        <fill/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-e2134ad4-5d1a-4586-9926-77a0ac1422f1" cpfId="id-C_A-OutputCondition">
+        <ns2:flow source="A" target="OutputCondition">
+            <ns2:ports in="13" out="12"/>
+            <ns2:attributes>
+                <ns2:lineStyle>11</ns2:lineStyle>
+            </ns2:attributes>
+        </ns2:flow>
+        <line width="11"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-e2134ad4-5d1a-4586-9926-77a0ac1422f1" cpfId="id-C_A-OutputCondition">
+        <ns2:flow source="A" target="OutputCondition">
+            <ns2:ports in="13" out="12"/>
+            <ns2:attributes>
+                <ns2:lineStyle>11</ns2:lineStyle>
+            </ns2:attributes>
+        </ns2:flow>
+        <line width="11"/>
+    </Annotation>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:DocumentationType" id="id-bc828d89-9019-4c4f-99b1-1412463a9e2d" cpfId="id-C_OutputCondition"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-060e11b2-1181-4fbd-8ceb-c9bed8c8cc54" cpfId="id-C_OutputCondition">
+        <ns2:label>
+            <ns2:attributes>
+                <ns2:bounds x="348,0" y="452,0" w="97,0" h="21,0"/>
+            </ns2:attributes>
+        </ns2:label>
+        <position x="380.0" y="420.0"/>
+        <size width="32.0" height="32.0"/>
+        <fill/>
+    </Annotation>
+</ns3:Annotations>

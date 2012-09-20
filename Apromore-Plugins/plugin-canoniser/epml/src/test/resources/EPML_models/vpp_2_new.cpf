@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF">
+    <attribute typeRef="IntialFormat" value="EPML"/>
+</ns2:CanonicalProcess>

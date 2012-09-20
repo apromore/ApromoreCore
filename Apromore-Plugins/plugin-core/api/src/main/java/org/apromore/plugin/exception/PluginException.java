@@ -1,0 +1,50 @@
+/**
+ *  Copyright 2012, Felix Mannhardt 
+ * 
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+package org.apromore.plugin.exception;
+
+/**
+ * Generic exception that could be thrown during the execution of a Apromore plugin. All custom exceptions classes should inherite from this
+ * class to facilitate generic exception handling in Apromore.
+ * 
+ * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * 
+ */
+public class PluginException extends Exception {
+
+	private static final long serialVersionUID = 6697407243595333390L;
+
+	public PluginException() {
+		super();
+	}
+
+	public PluginException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
+		super(message, cause, enableSuppression, writableStackTrace);
+	}
+
+	public PluginException(final String message, final Throwable cause) {
+		super(message, cause);
+	}
+
+	public PluginException(final String message) {
+		super(message);
+	}
+
+	public PluginException(final Throwable cause) {
+		super(cause);
+	}
+
+}

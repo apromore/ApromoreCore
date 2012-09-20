@@ -30,6 +30,7 @@ import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 import org.apromore.graph.JBPT.CPF;
 import org.apromore.graph.JBPT.CpfAndGateway;
+import org.apromore.graph.JBPT.CpfAttribute;
 import org.apromore.graph.JBPT.CpfEvent;
 import org.apromore.graph.JBPT.CpfMessage;
 import org.apromore.graph.JBPT.CpfNode;
@@ -39,6 +40,7 @@ import org.apromore.graph.JBPT.CpfResource;
 import org.apromore.graph.JBPT.CpfTask;
 import org.apromore.graph.JBPT.CpfTimer;
 import org.apromore.graph.JBPT.CpfXorGateway;
+import org.apromore.graph.JBPT.ICpfAttribute;
 import org.apromore.graph.JBPT.ICpfObject;
 import org.apromore.graph.JBPT.ICpfResource;
 import org.apromore.util.FragmentUtil;
@@ -74,7 +76,7 @@ public class CPFtoGraphHelper {
     private static void addProperties(CanonicalProcessType cpf, CPF g) {
         List<TypeAttribute> ats = cpf.getAttribute();
         for (TypeAttribute attr : ats) {
-            g.setProperty(attr.getTypeRef(), attr.getValue());
+            g.setProperty(attr.getName(), attr.getValue(), attr.getAny());
         }
     }
 
@@ -94,7 +96,7 @@ public class CPFtoGraphHelper {
                 rec.setResourceType(CpfResource.ResourceType.NONHUMAN);
             }
             for (TypeAttribute type : resource.getAttribute()) {
-                rec.addAttribute(type.getTypeRef(), type.getValue());
+                rec.addAttribute(type.getName(), type.getValue(), type.getAny());
             }
             attribs.add(rec);
         }
@@ -127,7 +129,7 @@ public class CPFtoGraphHelper {
                 obj.setObjectType(CpfObject.ObjectType.HARD);
             }
             for (TypeAttribute type : object.getAttribute()) {
-                obj.addAttribute(type.getTypeRef(), type.getValue());
+                obj.addAttribute(type.getName(), type.getValue(), type.getAny());
             }
             objs.add(obj);
         }
@@ -245,11 +247,11 @@ public class CPFtoGraphHelper {
         }
     }
 
-    private static Map<String, String> buildCombinedAttributeList(Map<String, String> attr1, List<TypeAttribute> attr2) {
-        Map<String, String> results = new HashMap<String, String>(0);
-        results.putAll(attr1);
+    private static Map<String, ICpfAttribute> buildCombinedAttributeList(Map<String, ICpfAttribute> map, List<TypeAttribute> attr2) {
+        Map<String, ICpfAttribute> results = new HashMap<String, ICpfAttribute>(0);
+        results.putAll(map);
         for (TypeAttribute typAtt : attr2) {
-            results.put(typAtt.getTypeRef(), typAtt.getValue());
+            results.put(typAtt.getName(), new CpfAttribute(typAtt.getValue(), typAtt.getAny()));
         }
         return results;
     }
@@ -258,7 +260,7 @@ public class CPFtoGraphHelper {
     /* Adds the Attributes to the Node */
     private static void addAttributes(CpfNode n, NodeType node) {
         for (TypeAttribute attr : node.getAttribute()) {
-            n.addAttribute(attr.getTypeRef(), attr.getValue());
+            n.addAttribute(attr.getName(), attr.getValue(), attr.getAny());
         }
     }
 

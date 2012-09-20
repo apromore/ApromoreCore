@@ -52,7 +52,7 @@ public class GraphHelperUnitTest {
         assertThat(graph.getEdges().size(), equalTo(1));
         assertThat(graph.getFlowNodes().size(), equalTo(2));
         assertThat(graph.getProperties().size(), equalTo(1));
-        assertThat(((CpfTask) graph.getFlowNodes().iterator().next()).getAttribute("testNodeB"), equalTo("NodeValuetestNodeB"));
+        assertThat(((CpfTask) graph.getFlowNodes().iterator().next()).getAttribute("testNodeB").getValue(), equalTo("NodeValuetestNodeB"));
         for (ControlFlow<FlowNode> fn : graph.getEdges()) {
             assertThat(fn.getSource().getName(), equalTo("testNodeA"));
             assertThat(fn.getTarget().getName(), equalTo("testNodeB"));
@@ -131,8 +131,10 @@ public class GraphHelperUnitTest {
 
     private TypeAttribute createAttribute(String name, String value) {
         TypeAttribute ta = new TypeAttribute();
-        ta.setTypeRef(name);
+        ta.setName(name);
         ta.setValue(value);
+        //TODO
+        //ta.setAny();
         return ta;
     }
 
@@ -156,7 +158,7 @@ public class GraphHelperUnitTest {
     private EdgeType createEdge(String id, String source, String target) {
         EdgeType edge = new EdgeType();
         edge.setId(id);
-        edge.setCondition("");
+        edge.setConditionExpr("");
         edge.setDefault(Boolean.FALSE);
         edge.setSourceId(source);
         edge.setTargetId(target);

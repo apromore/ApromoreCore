@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:CanonicalProcess xmlns:ns2="http://www.yawlfoundation.org/yawlschema" xmlns:ns3="http://www.apromore.org/CPF" uri="WP1Sequence" version="0.1" name="WP1Sequence" author="Felix" rootIds="id-N_Net">
+    <Net id="id-N_Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_InputCondition" originalID="InputCondition">
+            <name>IN</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_A" originalID="A">
+            <name>A</name>
+            <objectRef id="id-9ba914c5-7b1c-4c18-94a3-e7d25e5e0264" objectId="id-D_id-N_Net_var" type="output" optional="false" consumed="true">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;var&gt;{/A/var/text()}&lt;/var&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-e0264182-39c6-4c0d-b0d3-9e9da784674c" objectId="id-D_id-N_Net_var" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;var&gt;{/Net/var/text()}&lt;/var&gt;"/>
+                </attribute>
+            </objectRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_B" originalID="B">
+            <name>B</name>
+            <objectRef id="id-859ba8a5-b4df-4417-a5d0-cf8acc8cb5c0" objectId="id-D_id-N_Net_var" type="output" optional="false" consumed="true">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;var&gt;{/B/var/text()}&lt;/var&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-a7be970a-5212-464d-b7b8-a1199d10c3c4" objectId="id-D_id-N_Net_var" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;var&gt;{/Net/var/text()}&lt;/var&gt;"/>
+                </attribute>
+            </objectRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_OutputCondition" originalID="OutputCondition">
+            <name>OUT</name>
+        </Node>
+        <Edge id="id-C_InputCondition-A" default="true" sourceId="id-C_InputCondition" targetId="id-C_A"/>
+        <Edge id="id-C_A-B" default="true" sourceId="id-C_A" targetId="id-C_B"/>
+        <Edge id="id-C_B-OutputCondition" default="true" sourceId="id-C_B" targetId="id-C_OutputCondition"/>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_Net_var" originalID="id-N_Net_var">
+            <name>var</name>
+            <type>string</type>
+        </Object>
+    </Net>
+</ns3:CanonicalProcess>

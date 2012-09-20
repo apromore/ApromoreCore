@@ -12,7 +12,8 @@ Tomcat 7\
 2. next navigate to the \Build-Tools folder and run 'mvn clean install'
 3. then navigate to the \Test-Tools folder and run 'mvn clean install'
 4. next navigate to the \Apromore-Parent folder and run 'mvn clean install'
-5. Chnage the the \Extras folder and run 'upload.bat', this will place jars in the build that is needed for the next set.
+5. next navigate to the \Apromore-Plugins\plugin-parent folder and run 'mvn clean install'
+5. Change the the \Extras folder and run 'upload.bat', this will place jars in the build that is needed for the next set.
 6. Finally, change to the root and run 'mvn clean install'. This will build the rest and deploy to tomcat 7.
 
 Start up tomcat and see if it works.

@@ -471,6 +471,7 @@ INSERT INTO `user` VALUES (14,'','Mehrad',NULL,'mehrad','');
 INSERT INTO `user` VALUES (15,NULL,'Public',NULL,'public','');
 INSERT INTO `user` VALUES (16,NULL,'Reina',NULL,'reina','');
 INSERT INTO `user` VALUES (17,'Dijkman','Remco','R.M.Dijkman@tue.nl','remco','');
+INSERT INTO `user` VALUES (18,'Mannhardt','Felix','felix.mannhardt@smail.wir.h-brs.de','felix','');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 
