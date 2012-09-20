@@ -19,7 +19,7 @@ import org.yawlfoundation.yawlschema.ExternalNetElementType;
 /**
  * Baseclass for converting a YAWL condition
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  * @param <T>
  *            has to be used as OutputCondition has a different type in JaxB

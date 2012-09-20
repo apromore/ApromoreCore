@@ -27,7 +27,7 @@ import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
 /**
  * Converts the YAWL specification
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificationFactsType, Object> {
@@ -48,8 +48,8 @@ public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificatio
         if (metaData != null) {
             c.setVersion(metaData.getVersion().toPlainString());
             if (metaData.getCreated() != null) {
-                //TODO set date
-                //c.setCreationDate(metaData.getCreated());
+                // TODO set date
+                // c.setCreationDate(metaData.getCreated());
             }
             c.setAuthor(convertCreatorList(metaData.getCreator()));
         }

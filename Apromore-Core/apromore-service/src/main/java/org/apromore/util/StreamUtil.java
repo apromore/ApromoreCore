@@ -155,24 +155,28 @@ public class StreamUtil {
     @SuppressWarnings("unchecked")
     public static InputStream copyParam2NPF(InputStream process_xml, String nativeType, String processName, String version, String username,
             String creationDate, String lastUpdate) throws JAXBException {
-        InputStream res = null;
+        InputStream res = process_xml;
 
-        if (nativeType.compareTo(Constants.XPDL_2_1) == 0) {
-            JAXBContext jc = JAXBContext.newInstance(XPDL_URI);
-            Unmarshaller u = jc.createUnmarshaller();
-            JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
-            copyParam2XPDL(rootElement.getValue(), processName, version, username, creationDate, lastUpdate);
-
-            Marshaller m = jc.createMarshaller();
-            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            ByteArrayOutputStream xml = new ByteArrayOutputStream();
-            m.marshal(rootElement, xml);
-            res = new ByteArrayInputStream(xml.toByteArray());
-        } else if (nativeType.compareTo(Constants.EPML_2_0) == 0) {
-            res = process_xml;
-        } else if (nativeType.compareTo("PNML 1.3.2") == 0) {
-            res = process_xml;
-        }
+        //TODO why should that be done? was the native format changed? if yes then it was result of decanonisation so the canoniser should care about this
+        
+//        if (nativeType.compareTo(Constants.XPDL_2_1) == 0) {
+//            JAXBContext jc = JAXBContext.newInstance(XPDL_URI);
+//            Unmarshaller u = jc.createUnmarshaller();
+//            JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(process_xml);
+//            copyParam2XPDL(rootElement.getValue(), processName, version, username, creationDate, lastUpdate);
+//
+//            Marshaller m = jc.createMarshaller();
+//            m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+//            ByteArrayOutputStream xml = new ByteArrayOutputStream();
+//            m.marshal(rootElement, xml);
+//            res = new ByteArrayInputStream(xml.toByteArray());
+//        } else if (nativeType.compareTo(Constants.EPML_2_0) == 0) {
+//            res = process_xml;
+//        } else if (nativeType.compareTo("PNML 1.3.2") == 0) {
+//            res = process_xml;
+//        }
+        
+        
         return res;
     }
 

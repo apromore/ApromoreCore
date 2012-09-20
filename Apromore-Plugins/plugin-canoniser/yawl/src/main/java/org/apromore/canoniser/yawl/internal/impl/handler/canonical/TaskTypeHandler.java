@@ -48,11 +48,11 @@ import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType.YawlService;
 /**
  * Converts a TaskType and also directly pre-/succeeding routing Nodes.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 /**
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType> {

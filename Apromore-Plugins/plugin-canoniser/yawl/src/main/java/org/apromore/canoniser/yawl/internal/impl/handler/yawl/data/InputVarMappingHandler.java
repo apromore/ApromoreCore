@@ -13,10 +13,7 @@ package org.apromore.canoniser.yawl.internal.impl.handler.yawl.data;
 
 import java.util.List;
 
-import javax.xml.xpath.XPath;
-import javax.xml.xpath.XPathExpression;
-import javax.xml.xpath.XPathExpressionException;
-import javax.xml.xpath.XPathFactory;
+import javax.xml.bind.JAXBException;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
@@ -36,7 +33,7 @@ import org.yawlfoundation.yawlschema.VarMappingFactsType;
 /**
  * Converts the Input Mapping of a YAWL Task to Object references.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class InputVarMappingHandler extends BaseVarMappingHandler {
@@ -72,9 +69,9 @@ public class InputVarMappingHandler extends BaseVarMappingHandler {
              * ((SoftType) targetTaskObj).getType())); } else { throw new CanoniserException("Could not find Object with name " + mapsTo +
              * " for input mapping of Task " + task.getName()); } }
              */
-            
-            getConvertedParent().getInputExpr().add(mapsTo+"="+convertXQuery(xQuery));
-            
+
+            getConvertedParent().getInputExpr().add(mapsTo + "=" + convertXQuery(xQuery));
+
         }
 
         // Create references to all Objects this mapping is refering to
@@ -100,7 +97,7 @@ public class InputVarMappingHandler extends BaseVarMappingHandler {
 
     }
 
-    private String convertXQuery(String xQuery) {        
+    private String convertXQuery(final String xQuery) {
         return null;
     }
 
@@ -108,7 +105,8 @@ public class InputVarMappingHandler extends BaseVarMappingHandler {
         return getConvertedParent().getSubnetId() != null;
     }
 
-    private SoftType createArtificialObject(final NetType parentNet, final VarMappingFactsType mapping, final String targetType) {
+    private SoftType createArtificialObject(final NetType parentNet, final VarMappingFactsType mapping, final String targetType)
+            throws CanoniserException {
         final SoftType canonicalObject = getContext().getCanonicalOF().createSoftType();
         // New ID as this Object was not known in YAWL before
         canonicalObject.setId(generateUUID());
@@ -123,11 +121,16 @@ public class InputVarMappingHandler extends BaseVarMappingHandler {
         return canonicalObject;
     }
 
-    private TypeAttribute createExpressionAttribute(final ExpressionType expressionType) {
+    private TypeAttribute createExpressionAttribute(final ExpressionType expressionType) throws CanoniserException {
         // TODO change
         final TypeAttribute expressionAttr = getContext().getCanonicalOF().createTypeAttribute();
         expressionAttr.setName(ConversionUtils.YAWL_EXPRESSION_EXTENSION);
-        expressionAttr.setAny(ConversionUtils.marshalYAWLFragment(ConversionUtils.YAWL_EXPRESSION_EXTENSION, expressionType, ExpressionType.class));
+        try {
+            expressionAttr.setAny(ConversionUtils
+                    .marshalYAWLFragment(ConversionUtils.YAWL_EXPRESSION_EXTENSION, expressionType, ExpressionType.class));
+        } catch (JAXBException e) {
+            throw new CanoniserException("Failed to add the expression extension element", e);
+        }
         return expressionAttr;
     }
 

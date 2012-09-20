@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.xml.bind.JAXBElement;
@@ -799,35 +800,35 @@ public class ManagerPortalEndpoint {
 
 
 
-    public void setCaClient(ManagerCanoniserClient caClient) {
+    public void setCaClient(final ManagerCanoniserClient caClient) {
         this.caClient = caClient;
     }
 
-    public void setUserSrv(UserService userService) {
+    public void setUserSrv(final UserService userService) {
         this.userSrv = userService;
     }
 
-    public void setProcSrv(ProcessService procService) {
+    public void setProcSrv(final ProcessService procService) {
         this.procSrv = procService;
     }
 
-    public void setFrmSrv(FormatService formatService) {
+    public void setFrmSrv(final FormatService formatService) {
         this.frmSrv = formatService;
     }
 
-    public void setDomSrv(DomainService domainService) {
+    public void setDomSrv(final DomainService domainService) {
         this.domSrv = domainService;
     }
 
-    public void setSimSrv(SimilarityService similarityService) {
+    public void setSimSrv(final SimilarityService similarityService) {
         this.simSrv = similarityService;
     }
 
-    public void setMerSrv(MergeService mergeService) {
+    public void setMerSrv(final MergeService mergeService) {
         this.merSrv = mergeService;
     }
 
-    public void setSesSrv(SessionService sessionService) {
+    public void setSesSrv(final SessionService sessionService) {
         this.sesSrv = sessionService;
     }
 }

@@ -56,7 +56,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Factory Class for Canonical Format through which all Handlers are created. Basically the mapping between Input objects and their Handler classes.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class CanonicalConversionFactory implements ConversionFactory {

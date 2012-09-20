@@ -32,10 +32,10 @@ public interface Constants {
     public static final String EPML_CONTEXT = "de.epml";
     public static final String PNML_CONTEXT = "org.apromore.pnml";
 
-    public static final String XPDL_2_1 = "XPDL 2.1";
-    public static final String EPML_2_0 = "EPML 2.0";
-    public static final String PNML_1_3_2 = "PNML 1.3.2";
-    public static final String BPMN_2_0 = "BPMN 2.0";
+//    public static final String XPDL_2_1 = "XPDL 2.1";
+//    public static final String EPML_2_0 = "EPML 2.0";
+//    public static final String PNML_1_3_2 = "PNML 1.3.2";
+//    public static final String BPMN_2_0 = "BPMN 2.0";
 
     public static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssZ";
 

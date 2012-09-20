@@ -35,7 +35,7 @@ import org.yawlfoundation.yawlschema.ObjectFactory;
 /**
  * Convert the layout for a CPF edge (YAWL Flow).
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {

@@ -26,16 +26,15 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Converts any multiple exit Net into a single exit  Net. By default it only adds an OR-JOIN, but more sophisticated techniques could be
- * implemented.
+ * Converts any multiple exit Net into a single exit Net. By default it only adds an OR-JOIN, but more sophisticated techniques could be implemented.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class SEMEToSESEMacro extends ContextAwareRewriteMacro implements RewriteMacro {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(SEMEToSESEMacro.class);
-    
+
     public SEMEToSESEMacro(final CanonicalConversionContext context) {
         super(context);
     }
@@ -81,7 +80,7 @@ public class SEMEToSESEMacro extends ContextAwareRewriteMacro implements Rewrite
         // Create ORJoin
         final ORJoinType orJoin = cpfFactory.createORJoinType();
         orJoin.setId(generateUUID());
-        
+
         LOGGER.debug("Adding OR join {}", orJoin.getId());
 
         // Connect all exits nodes to the ORJoin
@@ -97,7 +96,7 @@ public class SEMEToSESEMacro extends ContextAwareRewriteMacro implements Rewrite
         endEvent.setId(generateUUID());
 
         LOGGER.debug("Adding unique end event {}", endEvent.getId());
-        
+
         // Add End Event
         addNodeLater(endEvent);
 

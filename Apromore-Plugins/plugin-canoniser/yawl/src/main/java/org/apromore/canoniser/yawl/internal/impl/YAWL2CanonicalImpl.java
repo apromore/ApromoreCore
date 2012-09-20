@@ -27,7 +27,7 @@ import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
 /**
  * Converting YAWL to the Canonical Process Format
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class YAWL2CanonicalImpl implements YAWL2Canonical {

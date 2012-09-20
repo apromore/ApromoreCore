@@ -17,7 +17,9 @@ public class MiscTimerTest extends BaseCPF2YAWLTest {
         return new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/MiscTimer.cpf");
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apromore.canoniser.yawl.BaseCPF2YAWLTest#getANFFile()
      */
     @Override

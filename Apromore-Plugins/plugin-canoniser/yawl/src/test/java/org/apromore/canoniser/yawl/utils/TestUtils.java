@@ -34,7 +34,7 @@ public final class TestUtils {
 
     public static final String TEST_RESOURCES_DIRECTORY = "src/test/resources/";
 
-    private static final String ANF_CONTEXT = "org.apromore.anf:org.yawlfoundation.yawlschema";
+    private static final String ANF_CONTEXT = "org.apromore.anf";
 
     public static SpecificationSetFactsType unmarshalYAWL(final File yawlFile) throws JAXBException, FileNotFoundException, SAXException {
         return YAWLSchema.unmarshalYAWLFormat(new FileInputStream(yawlFile), false).getValue();
@@ -68,13 +68,13 @@ public final class TestUtils {
     }
 
     public static void printYawl(final SpecificationSetFactsType yawl, final OutputStream outputStream) throws JAXBException, SAXException,
-            IOException {
+    IOException {
         YAWLSchema.marshalYAWLFormat(outputStream, yawl, true);
         outputStream.flush();
     }
 
     public static void printYawlOrgData(final OrgDataType yawlOrgData, final OutputStream outputStream) throws JAXBException, SAXException,
-            IOException {
+    IOException {
         YAWLOrgDataSchema.marshalYAWLOrgDataFormat(outputStream, yawlOrgData, true);
         outputStream.flush();
     }

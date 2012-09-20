@@ -30,7 +30,7 @@ import org.yawlfoundation.yawlschema.NetFactsType;
 /**
  * Base class for tests on CPF -> YAWL conversion
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public abstract class BaseCPF2YAWLTest {

@@ -13,7 +13,7 @@ import org.junit.runners.Parameterized.Parameters;
 /**
  * This test is just checking if any exceptions occur during conversion. No structural checks are done.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 @RunWith(Parameterized.class)

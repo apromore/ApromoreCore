@@ -43,7 +43,7 @@ import org.yawlfoundation.yawlschema.ControlTypeType;
 /**
  * Merges JOIN and SPLIT routing nodes with their pre/suceeding Task nodes. Adds artificial Tasks if there is not Task following a Routing Node.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class RoutingNodeMacro extends ContextAwareRewriteMacro {
