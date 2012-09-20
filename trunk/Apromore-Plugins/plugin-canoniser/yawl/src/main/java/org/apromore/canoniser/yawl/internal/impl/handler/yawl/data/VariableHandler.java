@@ -23,7 +23,7 @@ import org.yawlfoundation.yawlschema.VariableBaseType;
 /**
  * Converts the variables of a YAWL Net to CPF Objects.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class VariableHandler extends YAWLConversionHandler<VariableBaseType, NetType> {

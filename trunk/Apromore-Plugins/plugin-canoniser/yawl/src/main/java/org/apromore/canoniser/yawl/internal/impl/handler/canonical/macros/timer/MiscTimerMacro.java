@@ -28,11 +28,11 @@ import org.yawlfoundation.yawlschema.TimerTriggerType;
 /**
  * Rewrite all other Timers that does not match a special category by introducing an artificial automated Task with an attached onEnablement Timer.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class MiscTimerMacro extends AbstractTimerMacro {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MiscTimerMacro.class);
 
     public MiscTimerMacro(final CanonicalConversionContext context) {
@@ -70,17 +70,17 @@ public class MiscTimerMacro extends AbstractTimerMacro {
         return hasRewritten;
     }
 
-    private boolean rewriteMisc(TimerType timer, NetType net, CanonicalProcessType cpf, ListIterator<NodeType> nodeIterator) {
+    private boolean rewriteMisc(final TimerType timer, final NetType net, final CanonicalProcessType cpf, final ListIterator<NodeType> nodeIterator) {
         LOGGER.debug("Rewriting Timer (Misc)");
-        
-        ObjectFactory oF = new ObjectFactory();
-        TaskType task = oF.createTaskType();
+
+        final ObjectFactory oF = new ObjectFactory();
+        final TaskType task = oF.createTaskType();
         task.setId(generateUUID());
         task.setName(timer.getName());
 
         addNodeLater(task);
         deleteNodeLater(timer);
-        
+
         // Set the correct YAWL Timer
         final org.yawlfoundation.yawlschema.TimerType yawlTimer = createTimer(timer);
         yawlTimer.setTrigger(TimerTriggerType.ON_ENABLED);
@@ -93,7 +93,7 @@ public class MiscTimerMacro extends AbstractTimerMacro {
         // Connect the Task correctly
         addEdgeLater(createEdge(getContext().getFirstPredecessor(timer.getId()), task));
         addEdgeLater(createEdge(task, getContext().getFirstSuccessor(timer.getId())));
-                
+
         return true;
     }
 

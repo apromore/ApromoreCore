@@ -1,17 +1,14 @@
 package org.apromore.service;
 
-import java.io.IOException;
 import java.io.InputStream;
 import javax.activation.DataSource;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.PropertyException;
 
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.exception.CanoniserException;
 import org.apromore.exception.SerializationException;
 import org.apromore.graph.JBPT.CPF;
 import org.apromore.service.model.CanonisedProcess;
-import org.xml.sax.SAXException;
 
 /**
  * Interface for the Canoniser Service. Defines all the methods that will do the majority of the work for

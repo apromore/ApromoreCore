@@ -45,7 +45,7 @@ import org.yawlfoundation.yawlschema.orgdata.YAWLOrgDataSchema;
 /**
  * YAWL 2.2 Canoniser Plugin
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de"><a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a></a>
  * 
  */
 @Component("yawlCanoniser")
@@ -127,7 +127,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
     public void canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat, final List<CanonicalProcessType> canonicalFormat)
             throws CanoniserException {
 
-        LOGGER.debug("Start canonising %s", getNativeType());
+        LOGGER.info("Start canonising %s", getNativeType());
 
         try {
             final JAXBElement<SpecificationSetFactsType> nativeElement = unmarshalNativeFormat(nativeInput);
@@ -155,7 +155,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
             throw new CanoniserException(e);
         }
 
-        LOGGER.debug("Finished canonising %s", getNativeType());
+        LOGGER.info("Finished canonising %s", getNativeType());
     }
 
     /*
@@ -167,7 +167,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
     public void deCanonise(final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final OutputStream nativeOutput)
             throws CanoniserException {
 
-        LOGGER.debug("Start decanonising %s", getNativeType());
+        LOGGER.info("Start decanonising %s", getNativeType());
 
         try {
             final Canonical2YAWL canonical2yawl = new Canonical2YAWLImpl();
@@ -189,7 +189,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
             throw new CanoniserException(e);
         }
 
-        LOGGER.debug("Finished decanonising %s", getNativeType());
+        LOGGER.info("Finished decanonising %s", getNativeType());
 
     }
 
@@ -213,7 +213,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
     }
 
     private void marshalYAWLFormat(final SpecificationSetFactsType yawlSpecification, final OutputStream nativeFormat) throws JAXBException,
-            SAXException {
+    SAXException {
         // Always validate our own output
         YAWLSchema.marshalYAWLFormat(nativeFormat, yawlSpecification, true);
     }

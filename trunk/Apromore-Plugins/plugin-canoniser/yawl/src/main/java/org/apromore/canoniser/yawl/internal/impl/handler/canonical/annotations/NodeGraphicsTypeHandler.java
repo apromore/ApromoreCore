@@ -40,7 +40,7 @@ import org.yawlfoundation.yawlschema.ObjectFactory;
 /**
  * Convert the layout of an CPF node to YAWL
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
@@ -61,13 +61,13 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
      */
     @Override
     public void convert() throws CanoniserException {
-        
+
         if (getContext().getElementInfo(getObject().getCpfId()).element != null) {
-            this.yawlElement = getContext().getElementInfo(getObject().getCpfId()).element;   
+            this.yawlElement = getContext().getElementInfo(getObject().getCpfId()).element;
         } else {
-            throw new CanoniserException("Could not find converted YAWL element for CPF-ID: "+getObject().getCpfId());
+            throw new CanoniserException("Could not find converted YAWL element for CPF-ID: " + getObject().getCpfId());
         }
-        
+
         this.autoLayoutInfo = getContext().getAutoLayoutInfo();
 
         final JAXBElement<LayoutContainerFactsType> elementLayout = createElementLayout(getObject());

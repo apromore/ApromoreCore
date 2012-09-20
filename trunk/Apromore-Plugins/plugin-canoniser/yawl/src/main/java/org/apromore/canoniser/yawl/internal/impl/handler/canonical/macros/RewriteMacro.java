@@ -17,15 +17,16 @@ import org.apromore.cpf.CanonicalProcessType;
 /**
  * A Macro that rewrites the CPF in some way.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
- *
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * 
  */
 public interface RewriteMacro {
 
     /**
      * Rewrite the Canonical Process Format according to the rules of this Macro.
      * 
-     * @param cpf to be rewritten
+     * @param cpf
+     *            to be rewritten
      * @return true if the CPF has been changed, false otherwise
      * @throws CanoniserException
      */

@@ -58,7 +58,7 @@ public class ContentServiceImpl implements ContentService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Integer getMatchingContentId(String hash) {
+    public Integer getMatchingContentId(final String hash) {
         if (hash == null) {
             return null;
         }
@@ -72,7 +72,7 @@ public class ContentServiceImpl implements ContentService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Content addContent(RPSTNode c, String hash, CPF g, Map<String, String> pocketIdMappings) {
+    public Content addContent(final RPSTNode c, final String hash, final CPF g, final Map<String, String> pocketIdMappings) {
         Content content = new Content();
         content.setCode(hash);
         contentDao.save(content);
@@ -92,7 +92,7 @@ public class ContentServiceImpl implements ContentService {
      * {@inheritDoc}
      */
     @Override
-    public void addNodes(Content content, Collection<CpfNode> vertices, CPF g, Map<String, String> pocketIdMappings) {
+    public void addNodes(final Content content, final Collection<CpfNode> vertices, final CPF g, final Map<String, String> pocketIdMappings) {
         for (ICpfNode v : vertices) {
             String oldVId = v.getId();
             String type = g.getVertexProperty(v.getId(), Constants.TYPE);
@@ -110,7 +110,7 @@ public class ContentServiceImpl implements ContentService {
      *      {@inheritDoc}
      */
     @Override
-    public Node addNode(Content content, ICpfNode v, String vtype) {
+    public Node addNode(final Content content, final ICpfNode v, final String vtype) {
         Node node = new Node();
         node.setContent(content);
         node.setName(v.getLabel() != null ? v.getLabel() : v.getName());
@@ -134,7 +134,7 @@ public class ContentServiceImpl implements ContentService {
      *      {@inheritDoc}
      */
     @Override
-    public void addNonPocketNode(Node node) {
+    public void addNonPocketNode(final Node node) {
         NonPocketNode nonPockNode = new NonPocketNode();
 
         nonPockNode.setNode(node);
@@ -147,7 +147,7 @@ public class ContentServiceImpl implements ContentService {
      *      {@inheritDoc}
      */
     @Override
-    public void addEdges(Content content, Collection<AbstractDirectedEdge> edges) {
+    public void addEdges(final Content content, final Collection<AbstractDirectedEdge> edges) {
         for (AbstractDirectedEdge e : edges) {
             Node source = nDao.findNodeByUri(e.getSource().getId());
             Node target = nDao.findNodeByUri(e.getTarget().getId());
@@ -160,7 +160,7 @@ public class ContentServiceImpl implements ContentService {
      *      {@inheritDoc}
      */
     @Override
-    public void addEdge(Content content, AbstractDirectedEdge e, Node source, Node target) {
+    public void addEdge(final Content content, final AbstractDirectedEdge e, final Node source, final Node target) {
         Edge edge = new Edge();
 
         edge.setContent(content);
@@ -179,7 +179,7 @@ public class ContentServiceImpl implements ContentService {
      *      {@inheritDoc}
      */
     @Override
-    public void deleteContent(Integer contentId) {
+    public void deleteContent(final Integer contentId) {
         Content content = contentDao.findContent(contentId);
         contentDao.delete(content);
     }
@@ -189,7 +189,7 @@ public class ContentServiceImpl implements ContentService {
      *      {@inheritDoc}
      */
     @Override
-    public void deleteEdgesOfContent(Integer contentId) {
+    public void deleteEdgesOfContent(final Integer contentId) {
         Content content = contentDao.findContent(contentId);
         for (Edge edge : content.getEdges()) {
             edgeDao.delete(edge);
@@ -201,7 +201,7 @@ public class ContentServiceImpl implements ContentService {
      *      {@inheritDoc}
      */
     @Override
-    public void deleteVerticesOfContent(Integer contentId) {
+    public void deleteVerticesOfContent(final Integer contentId) {
         Content content = contentDao.findContent(contentId);
         for (Node node : content.getNodes()) {
             nDao.delete(node);
@@ -209,12 +209,13 @@ public class ContentServiceImpl implements ContentService {
     }
 
 
-    private void addObjects(Node node, ICpfNode v) {
+    private void addObjects(final Node node, final ICpfNode v) {
         ObjectRefType obj;
         for (ICpfObject cObj : v.getObjects()) {
             obj = new ObjectRefType();
             if (cObj.getId() != null) {
-                obj.setId(Integer.valueOf(cObj.getId()));
+                //TODO store in another field
+                //obj.setId(Integer.valueOf(cObj.getId()));
             }
             obj.setConsumed(String.valueOf(cObj.getConsumed()));
             obj.setOptional(String.valueOf(cObj.getOptional()));
@@ -225,7 +226,7 @@ public class ContentServiceImpl implements ContentService {
         }
     }
 
-    private void addObjectAttributes(ObjectRefType obj, ICpfObject cObj) {
+    private void addObjectAttributes(final ObjectRefType obj, final ICpfObject cObj) {
         ObjectRefTypeAttribute oAtt;
         for (Entry<String, ICpfAttribute> e : cObj.getAttributes().entrySet()) {
             oAtt = new ObjectRefTypeAttribute();
@@ -237,12 +238,13 @@ public class ContentServiceImpl implements ContentService {
     }
 
 
-    private void addResources(Node node, ICpfNode v) {
+    private void addResources(final Node node, final ICpfNode v) {
         ResourceRefType resource;
         for (ICpfResource cRes : v.getResource()) {
             resource = new ResourceRefType();
             if (cRes.getId() != null) {
-                resource.setId(Integer.valueOf(cRes.getId()));
+                //TODO store in another field
+                //resource.setId(Integer.valueOf(cRes.getId()));
             }
             resource.setQualifier(cRes.getQualifier());
             resource.setOptional(String.valueOf(cRes.getOptional()));
@@ -252,7 +254,7 @@ public class ContentServiceImpl implements ContentService {
         }
     }
 
-    private void addResourceAttributes(ResourceRefType obj, ICpfResource cObj) {
+    private void addResourceAttributes(final ResourceRefType obj, final ICpfResource cObj) {
         ResourceRefTypeAttribute rAtt;
         for (Entry<String, ICpfAttribute> e : cObj.getAttributes().entrySet()) {
             rAtt = new ResourceRefTypeAttribute();
@@ -264,7 +266,7 @@ public class ContentServiceImpl implements ContentService {
     }
 
 
-    private void addNodeAttributes(Node node, ICpfNode v) {
+    private void addNodeAttributes(final Node node, final ICpfNode v) {
         NodeAttribute nAtt;
         for (Entry<String, ICpfAttribute> e : v.getAttributes().entrySet()) {
             nAtt = new NodeAttribute();
@@ -281,7 +283,7 @@ public class ContentServiceImpl implements ContentService {
      *
      * @param contentDaoJpa the Content Dao.
      */
-    public void setContentDao(ContentDao contentDaoJpa) {
+    public void setContentDao(final ContentDao contentDaoJpa) {
         contentDao = contentDaoJpa;
     }
 
@@ -290,7 +292,7 @@ public class ContentServiceImpl implements ContentService {
      *
      * @param edgeDaoJpa the edge Dao.
      */
-    public void setEdgeDao(EdgeDao edgeDaoJpa) {
+    public void setEdgeDao(final EdgeDao edgeDaoJpa) {
         edgeDao = edgeDaoJpa;
     }
 
@@ -299,7 +301,7 @@ public class ContentServiceImpl implements ContentService {
      *
      * @param nodeDaoJpa the Node Dao.
      */
-    public void setNodeDao(NodeDao nodeDaoJpa) {
+    public void setNodeDao(final NodeDao nodeDaoJpa) {
         nDao = nodeDaoJpa;
     }
 
@@ -308,7 +310,7 @@ public class ContentServiceImpl implements ContentService {
      *
      * @param nonPocketNodeDaoJpa the Non Pocket Node Dao.
      */
-    public void setNonPocketNodeDao(NonPocketNodeDao nonPocketNodeDaoJpa) {
+    public void setNonPocketNodeDao(final NonPocketNodeDao nonPocketNodeDaoJpa) {
         nonPocketNodeDao = nonPocketNodeDaoJpa;
     }
 }

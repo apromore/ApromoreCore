@@ -56,7 +56,7 @@ import org.yawlfoundation.yawlschema.orgdata.RoleType;
 /**
  * Context for a conversion from YAWL to Apromores canonical format. This is the glue for all handlers.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class YAWLConversionContext extends ConversionContext {

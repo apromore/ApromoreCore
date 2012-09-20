@@ -22,7 +22,7 @@ import org.yawlfoundation.yawlschema.OutputConditionFactsType;
 /**
  * Converts a StateType to a YAWL Condition.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class StateTypeHandler extends CanonicalElementHandler<StateType, NetFactsType> {

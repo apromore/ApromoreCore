@@ -19,7 +19,32 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.namespace.QName;
+
+import org.apromore.anf.AnnotationType;
+import org.apromore.anf.AnnotationsType;
+import org.apromore.anf.GraphicsType;
+import org.apromore.anf.PositionType;
+import org.apromore.cpf.ANDJoinType;
+import org.apromore.cpf.ANDSplitType;
+import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.EdgeType;
+import org.apromore.cpf.EventType;
+import org.apromore.cpf.InputOutputType;
+import org.apromore.cpf.NetType;
+import org.apromore.cpf.NodeType;
+import org.apromore.cpf.ORJoinType;
+import org.apromore.cpf.ORSplitType;
+import org.apromore.cpf.ObjectRefType;
+import org.apromore.cpf.ObjectType;
+import org.apromore.cpf.ResourceTypeRefType;
+import org.apromore.cpf.ResourceTypeType;
+import org.apromore.cpf.RoutingType;
+import org.apromore.cpf.TaskType;
+import org.apromore.cpf.WorkType;
+import org.apromore.cpf.XORJoinType;
+import org.apromore.cpf.XORSplitType;
 
 import de.epml.TEpcElement;
 import de.epml.TExtensibleElements;
@@ -47,29 +72,6 @@ import de.epml.TypeRelation;
 import de.epml.TypeRole;
 import de.epml.TypeToProcess;
 import de.epml.TypeXOR;
-import org.apromore.anf.AnnotationType;
-import org.apromore.anf.AnnotationsType;
-import org.apromore.anf.GraphicsType;
-import org.apromore.anf.PositionType;
-import org.apromore.cpf.ANDJoinType;
-import org.apromore.cpf.ANDSplitType;
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.EdgeType;
-import org.apromore.cpf.EventType;
-import org.apromore.cpf.InputOutputType;
-import org.apromore.cpf.NetType;
-import org.apromore.cpf.NodeType;
-import org.apromore.cpf.ORJoinType;
-import org.apromore.cpf.ORSplitType;
-import org.apromore.cpf.ObjectRefType;
-import org.apromore.cpf.ObjectType;
-import org.apromore.cpf.ResourceTypeRefType;
-import org.apromore.cpf.ResourceTypeType;
-import org.apromore.cpf.RoutingType;
-import org.apromore.cpf.TaskType;
-import org.apromore.cpf.WorkType;
-import org.apromore.cpf.XORJoinType;
-import org.apromore.cpf.XORSplitType;
 
 public class Canonical2EPML {
     Map<String, BigInteger> id_map = new HashMap<String, BigInteger>();
@@ -86,8 +88,8 @@ public class Canonical2EPML {
 
     List<TypeFlow> flow_list = new LinkedList<TypeFlow>();
 
-    private TypeEPML epml = new TypeEPML();
-    private TypeDirectory dir = new TypeDirectory();
+    private final TypeEPML epml = new TypeEPML();
+    private final TypeDirectory dir = new TypeDirectory();
     private long ids = System.currentTimeMillis();
     private long defIds = 1;
 
@@ -103,7 +105,7 @@ public class Canonical2EPML {
      * @param epc the header for an EPCs modelass
      * @since 1.0
      */
-    private void validate_model(TypeEPC epc) {
+    private void validate_model(final TypeEPC epc) {
         List<TEpcElement> successors;
         int events, funcs;
         for (Object obj : epc.getEventOrFunctionOrRole()) {
@@ -241,7 +243,7 @@ public class Canonical2EPML {
      * arc2
      * @since 1.0
      */
-    private void add_fake(TypeArc arc1, TEpcElement element, TypeArc arc2, TypeEPC epc) {
+    private void add_fake(final TypeArc arc1, final TEpcElement element, final TypeArc arc2, final TypeEPC epc) {
         element.setId(BigInteger.valueOf(ids++));
         QName typeRef = new QName("typeRef");
         element.getOtherAttributes().put(typeRef, "fake");
@@ -262,7 +264,7 @@ public class Canonical2EPML {
      * element   the element from this epc intended to retrieve its previous arc
      * @since 1.0
      */
-    private TypeArc find_pre_arc(TEpcElement element, TypeEPC epc) {
+    private TypeArc find_pre_arc(final TEpcElement element, final TypeEPC epc) {
         for (Object obj : epc.getEventOrFunctionOrRole()) {
             if (obj != null && ((TypeArc) obj).getFlow() != null && ((TypeArc) obj).getFlow().getTarget() != null && element != null) {
                 if (((TypeArc) obj).getFlow().getTarget().equals(element.getId())) {
@@ -280,7 +282,7 @@ public class Canonical2EPML {
      * element   the element from this epc intended to retrieve its post arc
      * @since 1.0
      */
-    private TypeArc find_post_arc(TEpcElement element, TypeEPC epc) {
+    private TypeArc find_post_arc(final TEpcElement element, final TypeEPC epc) {
         for (Object obj : epc.getEventOrFunctionOrRole()) {
             if (obj != null && obj instanceof TypeArc && ((TypeArc) obj).getFlow() != null && ((TypeArc) obj).getFlow().getSource() != null &&
                     element != null) {
@@ -299,7 +301,7 @@ public class Canonical2EPML {
      * element   the element from this epc intended to retrieve its successors
      * @since 1.0
      */
-    private List<TEpcElement> retrieve_successors(TEpcElement element, TypeEPC epc) {
+    private List<TEpcElement> retrieve_successors(final TEpcElement element, final TypeEPC epc) {
         List<Object> elements = new LinkedList<Object>();
         List<TEpcElement> successors = new LinkedList<TEpcElement>();
         elements.add(element);
@@ -335,7 +337,7 @@ public class Canonical2EPML {
      * @param cproc the header for a CPF modelass
      * @param annotations the header for an ANF modelass
      */
-    public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations) {
+    public Canonical2EPML(final CanonicalProcessType cproc, final AnnotationsType annotations) {
         main(cproc, false);
         mapNodeAnnotations(annotations);
         mapEdgeAnnotations(annotations);
@@ -347,7 +349,7 @@ public class Canonical2EPML {
      * as a default value.
      * @param cproc the header for a CPF modelass
      */
-    public Canonical2EPML(CanonicalProcessType cproc) {
+    public Canonical2EPML(final CanonicalProcessType cproc) {
         main(cproc, false);
     }
 
@@ -358,7 +360,7 @@ public class Canonical2EPML {
      * @param annotations  The header for an ANF modelass
      * @param addFakes     Boolean value to either add fake elements or not.
      */
-    public Canonical2EPML(CanonicalProcessType cproc, AnnotationsType annotations, boolean addFakes) {
+    public Canonical2EPML(final CanonicalProcessType cproc, final AnnotationsType annotations, final boolean addFakes) {
         main(cproc, addFakes);
         mapNodeAnnotations(annotations);
         mapEdgeAnnotations(annotations);
@@ -366,13 +368,13 @@ public class Canonical2EPML {
 
     /**
      * Constructor for de-canonizing CPF file without
-     * annotations. 
-     * 
+     * annotations.
+     *
      * @param cproc the header for a CPF modelass
      * @param addFakes Boolean value to either add fake elements or not.
      */
-    public Canonical2EPML(CanonicalProcessType cproc,
-			Boolean addFakes) {
+    public Canonical2EPML(final CanonicalProcessType cproc,
+			final Boolean addFakes) {
     	main(cproc, addFakes);
     }
 
@@ -383,7 +385,7 @@ public class Canonical2EPML {
      * @param addFakes           Boolean value to either add fake elements or not.
      * @since 1.0
      */
-    private void main(CanonicalProcessType cproc, boolean addFakes) {
+    private void main(final CanonicalProcessType cproc, final boolean addFakes) {
         epml.getDirectory().add(dir);
         epml.setDefinitions(new TypeDefinitions());
 
@@ -418,7 +420,7 @@ public class Canonical2EPML {
         }
     }
 
-    private void translateNet(TypeEPC epc, NetType net) {
+    private void translateNet(final TypeEPC epc, final NetType net) {
         for (NodeType node : net.getNode()) {
             if (node instanceof TaskType || node instanceof EventType) {
                 if (node instanceof TaskType) {
@@ -473,7 +475,7 @@ public class Canonical2EPML {
         }
     }
 
-    private void createRelationArc(TypeEPC epc, NetType net) {
+    private void createRelationArc(final TypeEPC epc, final NetType net) {
         for (NodeType node : net.getNode()) {
             if (node instanceof WorkType) {
                 for (ObjectRefType ref : ((WorkType) node).getObjectRef()) {
@@ -524,7 +526,7 @@ public class Canonical2EPML {
         }
     }
 
-    private void translateTask(TypeEPC epc, TaskType task) {
+    private void translateTask(final TypeEPC epc, final TaskType task) {
         if (task.getName() == null && task.getSubnetId() != null) {
             TypeProcessInterface pi = new TypeProcessInterface();
             pi.setToProcess(new TypeToProcess());
@@ -545,32 +547,35 @@ public class Canonical2EPML {
         }
     }
 
-    private void translateEvent(TypeEPC epc, NodeType node) {
+    private void translateEvent(final TypeEPC epc, final NodeType node) {
         TypeEvent event = new TypeEvent();
         id_map.put(node.getId(), BigInteger.valueOf(ids));
         event.setId(BigInteger.valueOf(ids++));
         event.setName(node.getName());
+        //TODO getName could be NULL, will not work as lookup key!
         event.setDefRef(find_def_id("event", event.getName()));
         epc.getEventOrFunctionOrRole().add(event);
         epcRefMap.put(event.getId(), event);
     }
 
-    private void translateObject(ObjectType obj, TypeEPC epc) {
+    private void translateObject(final ObjectType obj, final TypeEPC epc) {
         TypeObject object = new TypeObject();
         id_map.put(obj.getId(), BigInteger.valueOf(ids));
         object.setId(BigInteger.valueOf(ids++));
         object.setName(obj.getName());
+        //TODO getName could be NULL, will not work as lookup key!
         object.setDefRef(find_def_id("object", object.getName()));
         object.setFinal(obj.isConfigurable());
         epc.getEventOrFunctionOrRole().add(object);
         epcRefMap.put(object.getId(), object);
     }
 
-    private void translateResource(ResourceTypeType resT, TypeEPC epc) {
+    private void translateResource(final ResourceTypeType resT, final TypeEPC epc) {
         TypeRole role = new TypeRole();
         id_map.put(resT.getId(), BigInteger.valueOf(ids));
         role.setId(BigInteger.valueOf(ids++));
         role.setName(resT.getName());
+        //TODO getName could be NULL, will not work as lookup key!
         role.setDefRef(find_def_id("role", role.getName()));
         epc.getEventOrFunctionOrRole().add(role);
 
@@ -602,7 +607,7 @@ public class Canonical2EPML {
         }
     }
 
-    private void translateGateway(TypeEPC epc, NodeType node) {
+    private void translateGateway(final TypeEPC epc, final NodeType node) {
         if (node instanceof ANDSplitType) {
             TypeAND and = new TypeAND();
             id_map.put(node.getId(), BigInteger.valueOf(ids));
@@ -650,7 +655,7 @@ public class Canonical2EPML {
         }
     }
 
-    private void createEvent(TypeEPC epc, NetType net) {
+    private void createEvent(final TypeEPC epc, final NetType net) {
         BigInteger n;
 
         for (String id : event_list) {
@@ -693,7 +698,7 @@ public class Canonical2EPML {
     }
 
     // translate the annotations
-    private void mapNodeAnnotations(AnnotationsType annotations) {
+    private void mapNodeAnnotations(final AnnotationsType annotations) {
         for (AnnotationType annotation : annotations.getAnnotation()) {
             if (nodeRefMap.containsKey(annotation.getCpfId())) {
                 String cid = annotation.getCpfId();
@@ -751,7 +756,7 @@ public class Canonical2EPML {
         }
     }
 
-    private void mapEdgeAnnotations(AnnotationsType annotations) {
+    private void mapEdgeAnnotations(final AnnotationsType annotations) {
         for (AnnotationType annotation : annotations.getAnnotation()) {
             if (edgeRefMap.containsKey(annotation.getCpfId()) || objectRefMap.containsKey(annotation.getCpfId())) {
                 String cid = annotation.getCpfId();
@@ -798,9 +803,9 @@ public class Canonical2EPML {
         }
     }
 
-    private BigInteger find_def_id(String type, String name) {
+    private BigInteger find_def_id(final String type, final String name) {
         for (TExtensibleElements def : epml.getDefinitions().getDefinitionOrSpecialization()) {
-            if (def instanceof TypeDefinition) {
+            if (def instanceof TypeDefinition && name != null) {
                 if (((TypeDefinition) def).getType().equals(type) && ((TypeDefinition) def).getName().equals(name)) {
                     return ((TypeDefinition) def).getDefId();
                 }

@@ -4,13 +4,18 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
+
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBException;
 
 import org.apromore.common.Constants;
-import org.apromore.dao.*;
+import org.apromore.dao.AnnotationDao;
+import org.apromore.dao.FragmentVersionDao;
+import org.apromore.dao.NativeDao;
+import org.apromore.dao.ProcessBranchDao;
+import org.apromore.dao.ProcessDao;
+import org.apromore.dao.ProcessModelVersionDao;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.NativeType;
 import org.apromore.dao.model.Process;
@@ -33,7 +38,6 @@ import org.apromore.service.UserService;
 import org.apromore.service.helper.UIHelper;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.search.SearchExpressionBuilder;
-import org.apromore.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +45,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.wfmc._2008.xpdl2.PackageType;
 
 /**
  * Implementation of the UserService Contract.
@@ -85,7 +88,7 @@ public class ProcessServiceImpl implements ProcessService {
      */
     @Override
     @Transactional(readOnly = true)
-    public ProcessSummariesType readProcessSummaries(String searchExpression) {
+    public ProcessSummariesType readProcessSummaries(final String searchExpression) {
         ProcessSummariesType processSummaries = null;
 
         try {
@@ -109,8 +112,8 @@ public class ProcessServiceImpl implements ProcessService {
      * {@inheritDoc}
      */
     @Override
-    public ProcessSummaryType importProcess(String username, String processName, String cpfURI, String version, String natType,
-            DataHandler cpf, String domain, String documentation, String created, String lastUpdate) throws ImportException {
+    public ProcessSummaryType importProcess(final String username, final String processName, final String cpfURI, final String version, final String natType,
+            final DataHandler cpf, final String domain, final String documentation, final String created, final String lastUpdate) throws ImportException {
         LOGGER.info("Executing operation canoniseProcess");
         ProcessSummaryType pro;
 
@@ -141,7 +144,7 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     @Transactional(readOnly = true)
     public DataSource exportFormat(final String name, final Integer processId, final String version, final String format,
-            final String annName, boolean withAnn) throws ExportFormatException {
+            final String annName, final boolean withAnn) throws ExportFormatException {
         DataSource ds;
         try {
             CPF cpf = rSrv.getCurrentProcessModel(name, version, false);
@@ -202,8 +205,8 @@ public class ProcessServiceImpl implements ProcessService {
      * {@inheritDoc}
      */
     @Override
-    public ProcessModelVersion addProcessModelVersion(ProcessBranch branch, String rootFragmentVersionUri, int versionNumber,
-                String versionName, int numVertices, int numEdges) throws ExceptionDao {
+    public ProcessModelVersion addProcessModelVersion(final ProcessBranch branch, final String rootFragmentVersionUri, final int versionNumber,
+            final String versionName, final int numVertices, final int numEdges) throws ExceptionDao {
         ProcessModelVersion pmv = new ProcessModelVersion();
 
         pmv.setProcessBranch(branch);
@@ -220,23 +223,18 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /* Update a list of native process models with this new meta data, */
-    private void updateNativeRecords(final Set<Native> natives, final String processName, final String username, final String version) {
-        try {
-            for (Native n : natives) {
-                String natType = n.getNativeType().getNatType();
-                InputStream inStr = new ByteArrayInputStream(n.getContent().getBytes());
-                CanonisedProcess cp = canSrv.canonise(natType, n.getId().toString(), inStr);
+    private void updateNativeRecords(final Set<Native> natives, final String processName, final String username, final String version) throws CanoniserException {
+        for (Native n : natives) {
+            String natType = n.getNativeType().getNatType();
+            InputStream inStr = new ByteArrayInputStream(n.getContent().getBytes());
+            CanonisedProcess cp = canSrv.canonise(natType, n.getId().toString(), inStr);
 
-                if (natType.compareTo(Constants.XPDL_2_1) == 0) {
-                    PackageType pakType = StreamUtil.unmarshallXPDL(inStr);
-                    StreamUtil.copyParam2XPDL(pakType, processName, version, username, null, null);
-                    n.setContent(StreamUtil.marshallXPDL(pakType));
-                }
-            }
-        } catch (CanoniserException e) {
-            e.printStackTrace();
-        } catch (JAXBException e) {
-            e.printStackTrace();
+            //TODO why is this done here? apromore should not know about native format outside of canonisers
+            //                if (natType.compareTo(Constants.XPDL_2_1) == 0) {
+            //                    PackageType pakType = StreamUtil.unmarshallXPDL(inStr);
+            //                    StreamUtil.copyParam2XPDL(pakType, processName, version, username, null, null);
+            //                    n.setContent(StreamUtil.marshallXPDL(pakType));
+            //                }
         }
     }
 
@@ -250,7 +248,7 @@ public class ProcessServiceImpl implements ProcessService {
      * Set the Annotation DAO object for this class. Mainly for spring tests.
      * @param annDAOJpa the Annotation Dao.
      */
-    public void setAnnotationDao(AnnotationDao annDAOJpa) {
+    public void setAnnotationDao(final AnnotationDao annDAOJpa) {
         annDao = annDAOJpa;
     }
 
@@ -258,7 +256,7 @@ public class ProcessServiceImpl implements ProcessService {
      * Set the Process DAO object for this class. Mainly for spring tests.
      * @param proDAOJpa the process
      */
-    public void setProcessDao(ProcessDao proDAOJpa) {
+    public void setProcessDao(final ProcessDao proDAOJpa) {
         proDao = proDAOJpa;
     }
 
@@ -266,7 +264,7 @@ public class ProcessServiceImpl implements ProcessService {
      * Set the Fragment Version DAO object for this class. Mainly for spring tests.
      * @param fvDAOJpa the Fragment version
      */
-    public void setFragmentVersionDao(FragmentVersionDao fvDAOJpa) {
+    public void setFragmentVersionDao(final FragmentVersionDao fvDAOJpa) {
         fvDao = fvDAOJpa;
     }
 
@@ -274,7 +272,7 @@ public class ProcessServiceImpl implements ProcessService {
      * Set the Process Model Version DAO object for this class. Mainly for spring tests.
      * @param pmvDAOJpa the process model version
      */
-    public void setProcessModelVersionDao(ProcessModelVersionDao pmvDAOJpa) {
+    public void setProcessModelVersionDao(final ProcessModelVersionDao pmvDAOJpa) {
         pmvDao = pmvDAOJpa;
     }
 
@@ -282,7 +280,7 @@ public class ProcessServiceImpl implements ProcessService {
      * Set the Process branch Version DAO object for this class. Mainly for spring tests.
      * @param pbDAOJpa the process branch
      */
-    public void setProcessBranchDao(ProcessBranchDao pbDAOJpa) {
+    public void setProcessBranchDao(final ProcessBranchDao pbDAOJpa) {
         pbDao = pbDAOJpa;
     }
 
@@ -291,7 +289,7 @@ public class ProcessServiceImpl implements ProcessService {
      * Set the Native DAO object for this class. Mainly for spring tests.
      * @param natDAOJpa the Native Dao.
      */
-    public void setNativeDao(NativeDao natDAOJpa) {
+    public void setNativeDao(final NativeDao natDAOJpa) {
         natDao = natDAOJpa;
     }
 
@@ -300,7 +298,7 @@ public class ProcessServiceImpl implements ProcessService {
      * Set the Canoniser Service for this class. Mainly for spring tests.
      * @param canSrv the service
      */
-    public void setCanoniserService(CanoniserService canSrv) {
+    public void setCanoniserService(final CanoniserService canSrv) {
         this.canSrv = canSrv;
     }
 
@@ -308,7 +306,7 @@ public class ProcessServiceImpl implements ProcessService {
      * Set the User Service for this class. Mainly for spring tests.
      * @param usrSrv the service
      */
-    public void setUserService(UserService usrSrv) {
+    public void setUserService(final UserService usrSrv) {
         this.usrSrv = usrSrv;
     }
 
@@ -316,7 +314,7 @@ public class ProcessServiceImpl implements ProcessService {
      * Set the Format Service for this class. Mainly for spring tests.
      * @param fmtSrv the service
      */
-    public void setFormatService(FormatService fmtSrv) {
+    public void setFormatService(final FormatService fmtSrv) {
         this.fmtSrv = fmtSrv;
     }
 
@@ -324,7 +322,7 @@ public class ProcessServiceImpl implements ProcessService {
      * Set the Repository Service for this class. Mainly for spring tests.
      * @param rSrv the service
      */
-    public void setRepositoryService(RepositoryService rSrv) {
+    public void setRepositoryService(final RepositoryService rSrv) {
         this.rSrv = rSrv;
     }
 
@@ -332,7 +330,7 @@ public class ProcessServiceImpl implements ProcessService {
      * Set the Repository Service for this class. Mainly for spring tests.
      * @param newUISrv the service
      */
-    public void setUIHelperService(UIHelper newUISrv) {
+    public void setUIHelperService(final UIHelper newUISrv) {
         this.uiSrv = newUISrv;
     }
 }

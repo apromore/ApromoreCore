@@ -1,146 +1,146 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns3:Annotations xmlns:ns2="http://www.yawlfoundation.org/yawlschema" xmlns:ns3="http://www.apromore.org/ANF">
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" cpfId="id-N_Net">
+<ns2:Annotations xmlns:ns2="http://www.apromore.org/ANF">
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" cpfId="id-N_Net">
         <size width="1767" height="865"/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:DocumentationType" cpfId="id-N_Net"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:DocumentationType" id="id-2987c091-bac5-4ed3-8f82-f028bfc48693" cpfId="id-C_InputCondition"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-cb745d9b-8531-4556-93de-61a3a1dfed87" cpfId="id-C_InputCondition">
-        <ns2:label>
-            <ns2:attributes>
-                <ns2:bounds x="28,0" y="392,0" w="96,0" h="20,0"/>
-            </ns2:attributes>
-        </ns2:label>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:DocumentationType" cpfId="id-N_Net"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:DocumentationType" id="id-d54437ba-c6bb-4c7c-b222-ddee9ffb1f05" cpfId="id-C_InputCondition"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-79331e96-1a4d-4480-a979-b488caf73ab1" cpfId="id-C_InputCondition">
+        <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+            <attributes>
+                <bounds h="20,0" w="96,0" x="28,0" y="392,0"/>
+            </attributes>
+        </label:label>
         <position x="60.0" y="360.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-7d60c495-fc7d-42a2-ba15-ba5e3ff38b89" cpfId="id-C_InputCondition-A">
-        <ns2:flow source="InputCondition" target="A">
-            <ns2:ports in="13" out="12"/>
-            <ns2:attributes>
-                <ns2:lineStyle>11</ns2:lineStyle>
-            </ns2:attributes>
-        </ns2:flow>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-7ad84e79-62f0-4838-9126-15e10ec6b0c2" cpfId="id-C_InputCondition-A">
+        <flow:flow xmlns:flow="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" source="InputCondition" target="A">
+            <ports in="13" out="12"/>
+            <attributes>
+                <lineStyle>11</lineStyle>
+            </attributes>
+        </flow:flow>
         <line width="11"/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-7d60c495-fc7d-42a2-ba15-ba5e3ff38b89" cpfId="id-C_InputCondition-A">
-        <ns2:flow source="InputCondition" target="A">
-            <ns2:ports in="13" out="12"/>
-            <ns2:attributes>
-                <ns2:lineStyle>11</ns2:lineStyle>
-            </ns2:attributes>
-        </ns2:flow>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-7ad84e79-62f0-4838-9126-15e10ec6b0c2" cpfId="id-C_InputCondition-A">
+        <flow:flow xmlns:flow="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" source="InputCondition" target="A">
+            <ports in="13" out="12"/>
+            <attributes>
+                <lineStyle>11</lineStyle>
+            </attributes>
+        </flow:flow>
         <line width="11"/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:DocumentationType" id="id-d68d5a2b-8595-464d-bb06-5b9fc074d520" cpfId="id-C_A"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-880e3219-d74c-4378-bf31-a286ac2cb184" cpfId="id-C_A">
-        <ns2:decorator type="AND_split">
-            <ns2:position>13</ns2:position>
-            <ns2:attributes>
-                <ns2:bounds x="143,0" y="360,0" w="11,0" h="32,0"/>
-                <ns2:size w="11" h="32"/>
-            </ns2:attributes>
-        </ns2:decorator>
-        <ns2:label>
-            <ns2:attributes>
-                <ns2:bounds x="84,0" y="392,0" w="96,0" h="20,0"/>
-            </ns2:attributes>
-        </ns2:label>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:DocumentationType" id="id-371b71df-1496-471c-82ec-7a1616d11324" cpfId="id-C_A"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-31a3cd1a-fe3f-4803-aa83-7b979098b7c8" cpfId="id-C_A">
+        <decorator:decorator xmlns:decorator="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" type="AND_split">
+            <position>13</position>
+            <attributes>
+                <bounds h="32,0" w="11,0" x="143,0" y="360,0"/>
+                <size h="32" w="11"/>
+            </attributes>
+        </decorator:decorator>
+        <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+            <attributes>
+                <bounds h="20,0" w="96,0" x="84,0" y="392,0"/>
+            </attributes>
+        </label:label>
         <position x="112.0" y="360.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:DocumentationType" id="id-cea13ea4-f5dc-4473-87ac-d78786e46422" cpfId="id-C_C"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-e5b5cfb8-82ac-4276-8c74-f3489de1ec4b" cpfId="id-C_C">
-        <ns2:label>
-            <ns2:attributes>
-                <ns2:bounds x="152,0" y="392,0" w="96,0" h="20,0"/>
-            </ns2:attributes>
-        </ns2:label>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:DocumentationType" id="id-13205280-aa18-43e5-a14e-fbf8f113a332" cpfId="id-C_C"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-ca79ad9c-3c53-44c3-b00b-09a8e49ef43b" cpfId="id-C_C">
+        <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+            <attributes>
+                <bounds h="20,0" w="96,0" x="152,0" y="392,0"/>
+            </attributes>
+        </label:label>
         <position x="184.0" y="360.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:DocumentationType" id="id-e7b124af-af10-4c1a-a166-46f7881a46e8" cpfId="id-C_B"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-9ab33472-44c5-42db-a062-ad51e7a121d4" cpfId="id-C_B">
-        <ns2:label>
-            <ns2:attributes>
-                <ns2:bounds x="152,0" y="332,0" w="96,0" h="20,0"/>
-            </ns2:attributes>
-        </ns2:label>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:DocumentationType" id="id-89a40aaa-199a-4043-b8f1-07cb93825ca8" cpfId="id-C_B"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-683d1523-9586-4005-8f64-980b3d21bbc2" cpfId="id-C_B">
+        <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+            <attributes>
+                <bounds h="20,0" w="96,0" x="152,0" y="332,0"/>
+            </attributes>
+        </label:label>
         <position x="184.0" y="300.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:DocumentationType" id="id-09a9b9a9-abee-4269-b090-ac481d24fea6" cpfId="id-C_D"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-be79b6c5-1bae-417d-bc32-26127a31a35b" cpfId="id-C_D">
-        <ns2:label>
-            <ns2:attributes>
-                <ns2:bounds x="152,0" y="456,0" w="96,0" h="20,0"/>
-            </ns2:attributes>
-        </ns2:label>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:DocumentationType" id="id-ffab7e21-02f1-4b3d-a610-f13725770c57" cpfId="id-C_D"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-9ec1a8d3-7d3d-43fa-9361-aaa0e517b007" cpfId="id-C_D">
+        <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+            <attributes>
+                <bounds h="20,0" w="96,0" x="152,0" y="456,0"/>
+            </attributes>
+        </label:label>
         <position x="184.0" y="424.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:DocumentationType" id="id-b6b82d47-b176-49ee-b30a-e294d35bda58" cpfId="id-C_E"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-7d245fd8-283f-4639-a1ac-f5c2ce669068" cpfId="id-C_E">
-        <ns2:decorator type="XOR_join">
-            <ns2:position>12</ns2:position>
-            <ns2:attributes>
-                <ns2:bounds x="254,0" y="360,0" w="11,0" h="32,0"/>
-                <ns2:size w="11" h="32"/>
-            </ns2:attributes>
-        </ns2:decorator>
-        <ns2:label>
-            <ns2:attributes>
-                <ns2:bounds x="228,0" y="392,0" w="96,0" h="20,0"/>
-            </ns2:attributes>
-        </ns2:label>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:DocumentationType" id="id-98d45517-5260-4c22-a220-f4a908f65ddd" cpfId="id-C_E"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-70fe6222-a5e8-4547-bd75-bb3e84097113" cpfId="id-C_E">
+        <decorator:decorator xmlns:decorator="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" type="XOR_join">
+            <position>12</position>
+            <attributes>
+                <bounds h="32,0" w="11,0" x="254,0" y="360,0"/>
+                <size h="32" w="11"/>
+            </attributes>
+        </decorator:decorator>
+        <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+            <attributes>
+                <bounds h="20,0" w="96,0" x="228,0" y="392,0"/>
+            </attributes>
+        </label:label>
         <position x="264.0" y="360.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-8e84f62e-060a-4655-8795-fac5ab09fd2a" cpfId="id-C_E-OutputCondition">
-        <ns2:flow source="E" target="OutputCondition">
-            <ns2:ports in="13" out="12"/>
-            <ns2:attributes>
-                <ns2:lineStyle>11</ns2:lineStyle>
-                <ns2:points>
-                    <ns2:value x="315,0" y="375,5"/>
-                    <ns2:value x="360,0" y="375,5"/>
-                </ns2:points>
-            </ns2:attributes>
-        </ns2:flow>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-0d4c8580-827f-400b-8976-fd30fa146ee8" cpfId="id-C_E-OutputCondition">
+        <flow:flow xmlns:flow="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" source="E" target="OutputCondition">
+            <ports in="13" out="12"/>
+            <attributes>
+                <lineStyle>11</lineStyle>
+                <points>
+                    <value x="315,0" y="375,5"/>
+                    <value x="360,0" y="375,5"/>
+                </points>
+            </attributes>
+        </flow:flow>
         <position x="315.0" y="375.5"/>
         <position x="360.0" y="375.5"/>
         <line width="11"/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-8e84f62e-060a-4655-8795-fac5ab09fd2a" cpfId="id-C_E-OutputCondition">
-        <ns2:flow source="E" target="OutputCondition">
-            <ns2:ports in="13" out="12"/>
-            <ns2:attributes>
-                <ns2:lineStyle>11</ns2:lineStyle>
-                <ns2:points>
-                    <ns2:value x="315,0" y="375,5"/>
-                    <ns2:value x="360,0" y="375,5"/>
-                </ns2:points>
-            </ns2:attributes>
-        </ns2:flow>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-0d4c8580-827f-400b-8976-fd30fa146ee8" cpfId="id-C_E-OutputCondition">
+        <flow:flow xmlns:flow="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" source="E" target="OutputCondition">
+            <ports in="13" out="12"/>
+            <attributes>
+                <lineStyle>11</lineStyle>
+                <points>
+                    <value x="315,0" y="375,5"/>
+                    <value x="360,0" y="375,5"/>
+                </points>
+            </attributes>
+        </flow:flow>
         <position x="315.0" y="375.5"/>
         <position x="360.0" y="375.5"/>
         <line width="11"/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:DocumentationType" id="id-0b62db8b-fe6b-456d-be93-eff39f175c2d" cpfId="id-C_OutputCondition"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:GraphicsType" id="id-791053c1-5ad3-4885-9304-7393383693be" cpfId="id-C_OutputCondition">
-        <ns2:label>
-            <ns2:attributes>
-                <ns2:bounds x="284,0" y="392,0" w="96,0" h="20,0"/>
-            </ns2:attributes>
-        </ns2:label>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:DocumentationType" id="id-8ff814e0-b8a2-43bd-89ca-56f4753239a8" cpfId="id-C_OutputCondition"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-b13ffe4f-232b-41b9-b8e8-60d494ff5608" cpfId="id-C_OutputCondition">
+        <label:label xmlns:label="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+            <attributes>
+                <bounds h="20,0" w="96,0" x="284,0" y="392,0"/>
+            </attributes>
+        </label:label>
         <position x="316.0" y="360.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-</ns3:Annotations>
+</ns2:Annotations>

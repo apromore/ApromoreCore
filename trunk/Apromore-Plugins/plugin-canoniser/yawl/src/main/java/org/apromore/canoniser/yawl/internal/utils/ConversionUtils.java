@@ -8,17 +8,22 @@ import java.util.regex.Pattern;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apromore.cpf.NodeType;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 
 /**
  * Helper class for all kind of various static methods and constants
- * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
- * 
+ *
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ *
  */
 public class ConversionUtils {
 
@@ -87,28 +92,46 @@ public class ConversionUtils {
     }
 
     /**
-     * 'Unmarshal' a YAWL object to its JAXB class
-     * 
-     * @param obj
+     * 'Unmarshal' a YAWL object to its expected class. Will throw an JAXBException is class is not known or wrong.
+     *
+     * @param object
+     *            returned of 'getAny' or similiar
      * @param expectedClass
+     *            object of this class will be returned
      * @return
      * @throws JAXBException
      */
-    public static <T> T unmarshalYAWLFragment(final Object obj, final Class<T> expectedClass) throws JAXBException {
+    public static <T> T unmarshalYAWLFragment(final Object object, final Class<T> expectedClass) throws JAXBException {
         final Unmarshaller u = YAWL_CONTEXT.createUnmarshaller();
-        final JAXBElement<T> jaxbElement = u.unmarshal((Node) obj, expectedClass);
+        final JAXBElement<T> jaxbElement = u.unmarshal((Node) object, expectedClass);
         return jaxbElement.getValue();
     }
 
     /**
-     * 'Marshal' a JAXB object of the YAWL schema to JAXB fragment
-     * 
+     * 'Marshal' a JAXB object of the YAWL schema to DOM Node that can be added to 'xs:any'
+     *
      * @param elementName
-     * @param obj
+     *            to use as local part
+     * @param object
+     *            to be marshalled
      * @param expectedClass
+     *            class of the object
      * @return
+     * @throws JAXBException
      */
-    public static <T> JAXBElement<T> marshalYAWLFragment(final String elementName, final T obj, final Class<T> expectedClass) {
-        return new JAXBElement<T>(new QName(YAWLSCHEMA_URL, elementName), expectedClass, obj);
+    public static <T> Element marshalYAWLFragment(final String elementName, final T object, final Class<T> expectedClass) throws JAXBException {
+        final Marshaller m = YAWL_CONTEXT.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+        JAXBElement<T> element = new JAXBElement<T>(new QName(YAWLSCHEMA_URL, elementName), expectedClass, object);
+        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(false);
+        Document doc;
+        try {
+            doc = dbf.newDocumentBuilder().newDocument();
+        } catch (ParserConfigurationException e) {
+            throw new RuntimeException("Could not build document while marshalling YAWL fragment. This should never happen!", e);
+        }
+        m.marshal(element, doc);
+        return doc.getDocumentElement();
     }
 }

@@ -17,7 +17,7 @@ import org.apromore.canoniser.yawl.internal.impl.context.ConversionContext;
 /**
  * 
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  * @param <T>
  * @param <E>

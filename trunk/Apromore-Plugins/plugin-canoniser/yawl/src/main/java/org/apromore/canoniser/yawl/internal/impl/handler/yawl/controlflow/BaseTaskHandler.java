@@ -13,6 +13,8 @@ package org.apromore.canoniser.yawl.internal.impl.handler.yawl.controlflow;
 
 import java.util.List;
 
+import javax.xml.bind.JAXBException;
+
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.data.InputVarMappingHandler;
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.data.OutputVarMappingHandler;
@@ -45,7 +47,7 @@ import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType;
 /**
  * Base class for converting a YAWL task
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  * @param <T>
  */
@@ -261,10 +263,15 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
         }
     }
 
-    private void convertConfiguration(final TaskType taskNode, final ExternalTaskFactsType task) {
+    private void convertConfiguration(final TaskType taskNode, final ExternalTaskFactsType task) throws CanoniserException {
         if (task.getConfiguration() != null) {
             taskNode.setConfigurable(true);
-            addToExtension(ConversionUtils.marshalYAWLFragment("configuration", task.getConfiguration(), ConfigurationType.class), taskNode.getId());
+            try {
+                addToExtension(ConversionUtils.marshalYAWLFragment("configuration", task.getConfiguration(), ConfigurationType.class),
+                        taskNode.getId());
+            } catch (JAXBException e) {
+                throw new CanoniserException("Failed to add configuration extension", e);
+            }
         }
     }
 

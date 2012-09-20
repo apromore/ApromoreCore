@@ -35,7 +35,7 @@ import org.yawlfoundation.yawlschema.TimerTriggerType;
  * 
  * In YAWL it is just a single Timer with attribute onEnablement set!
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class TimerOnEnablementMacro extends AbstractTimerMacro {
@@ -46,8 +46,9 @@ public class TimerOnEnablementMacro extends AbstractTimerMacro {
         super(context);
     }
 
-
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.RewriteMacro#rewrite(org.apromore.cpf.CanonicalProcessType)
      */
     @Override

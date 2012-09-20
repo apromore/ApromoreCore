@@ -12,7 +12,7 @@ import org.yawlfoundation.yawlschema.VariableBaseType;
 /**
  * Converts a Task scope variable
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class TaskVariableHandler extends YAWLConversionHandler<VariableBaseType, TaskType> {

@@ -21,7 +21,7 @@ import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
 /**
  * Converts a synchronous Web Service call of YAWL.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class WSInvokerTaskHandler extends BaseTaskHandler {

@@ -87,7 +87,7 @@ public class NativeTypeDaoJpaUnitTest {
 
     @Test
     public final void testGetNativeType() {
-        String type = Constants.XPDL_2_1;
+        String type = "XPDL 2.1";
 
         List<NativeType> types = new ArrayList<NativeType>(0);
         types.add(createNativeType());
@@ -109,7 +109,7 @@ public class NativeTypeDaoJpaUnitTest {
 
     @Test
     public final void testGetNativeTypeNonFound() {
-        String type = Constants.XPDL_2_1;
+        String type = "XPDL 2.1";
         NativeType nat = null;
         List<NativeType> types = new ArrayList<NativeType>(0);
 

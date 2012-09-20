@@ -48,11 +48,10 @@ import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
 /**
  * Factory Class for YAWL through which all Handlers are created. Basically the mapping between Input objects and their Handler classes.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class YAWLConversionFactory implements ConversionFactory {
-
 
     @SuppressWarnings("serial")
     static final Map<String, Class<? extends YAWLConversionHandler<?, ?>>> HANDLER_MAP = new HashMap<String, Class<? extends YAWLConversionHandler<?, ?>>>() {

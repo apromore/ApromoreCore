@@ -34,7 +34,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Macro that is aware of the current Conversion Context.
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public abstract class ContextAwareRewriteMacro implements RewriteMacro {

@@ -35,18 +35,20 @@ import org.yawlfoundation.yawlschema.TimerTriggerType;
  * 
  * In YAWL it is just a single Task with an attached Timer and attribute onEnablement set!
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class AutomaticTimerMacro extends AbstractTimerMacro {
-    
+
     static final Logger LOGGER = LoggerFactory.getLogger(AutomaticTimerMacro.class);
 
     public AutomaticTimerMacro(final CanonicalConversionContext context) {
         super(context);
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     * 
      * @see org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.RewriteMacro#rewrite(org.apromore.cpf.CanonicalProcessType)
      */
     @Override
@@ -75,21 +77,21 @@ public class AutomaticTimerMacro extends AbstractTimerMacro {
         return hasRewritten;
     }
 
-    private boolean rewriteAutomaticTimer(TimerType timer, NetType net, CanonicalProcessType cpf) {
-        TaskType task = testFollowedByTask(timer);
+    private boolean rewriteAutomaticTimer(final TimerType timer, final NetType net, final CanonicalProcessType cpf) {
+        final TaskType task = testFollowedByTask(timer);
         if (task == null) {
             return false;
         }
-        
+
         if (!isAutomaticTask(task, cpf)) {
             return false;
         }
-        
+
         LOGGER.debug("Rewriting Timer (Automatic, onEnablement)");
-        
+
         // We're a Timer before an automatic Task, this translates to a simple Task with Timer onEnablement in YAWL
         deleteNodeLater(timer);
-        
+
         // Set the correct YAWL Timer
         final org.yawlfoundation.yawlschema.TimerType yawlTimer = createTimer(timer);
         yawlTimer.setTrigger(TimerTriggerType.ON_ENABLED);
@@ -100,25 +102,25 @@ public class AutomaticTimerMacro extends AbstractTimerMacro {
         // Connect the Task correctly
         addEdgeLater((createEdge(getContext().getFirstPredecessor(timer.getId()), task)));
 
-        return true;    
+        return true;
     }
 
-    private boolean isAutomaticTask(TaskType task, CanonicalProcessType cpf) {
+    private boolean isAutomaticTask(final TaskType task, final CanonicalProcessType cpf) {
         if (task.getResourceTypeRef().isEmpty()) {
             // We can't decide so better assume NO
             return false;
         }
-        
+
         // Assume we're automatic
         boolean isAutomatic = true;
-        
+
         // Try to prove the converse
-        for (ResourceTypeRefType ref: task.getResourceTypeRef()) {
-            ResourceTypeType resource = getContext().getResourceTypeById(ref.getResourceTypeId());
+        for (final ResourceTypeRefType ref : task.getResourceTypeRef()) {
+            final ResourceTypeType resource = getContext().getResourceTypeById(ref.getResourceTypeId());
             if (resource.getDistributionSet() != null && resource.getDistributionSet().getResourceTypeRef().isEmpty()) {
                 // Check Distribution Set
-                for (DistributionSetRef distRef: resource.getDistributionSet().getResourceTypeRef()) {
-                    ResourceTypeType resourceInDistSet = getContext().getResourceTypeById(distRef.getResourceTypeId());
+                for (final DistributionSetRef distRef : resource.getDistributionSet().getResourceTypeRef()) {
+                    final ResourceTypeType resourceInDistSet = getContext().getResourceTypeById(distRef.getResourceTypeId());
                     isAutomatic = isAutomatic && resourceInDistSet instanceof NonhumanType;
                 }
             } else {

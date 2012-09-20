@@ -20,7 +20,7 @@ import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
 /**
  * Interface for a converter from CPF and ANF to YAWL
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de"><a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a></a>
  * 
  */
 public interface Canonical2YAWL {

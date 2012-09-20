@@ -20,7 +20,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
+import javax.xml.bind.JAXBException;
 
 import org.apromore.anf.DocumentationType;
 import org.apromore.anf.FillType;
@@ -53,7 +53,7 @@ import org.yawlfoundation.yawlschema.LayoutVertexFactsType;
 /**
  * Base class for converting all external net elements
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  * @param <T>
  *            type of Element to be converted
@@ -186,8 +186,6 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
         }
     }
 
-    /* Annotations */
-
     protected DocumentationType createDocumentation(final ExternalNetElementType element) {
         final DocumentationType documentation = getContext().getAnnotationOF().createDocumentationType();
         documentation.setCpfId(generateUUID(CONTROLFLOW_ID_PREFIX, element.getId()));
@@ -208,15 +206,21 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
         final Collection<LayoutDecoratorFactsType> layoutDecorators = getContext().getLayoutDecoratorForElement(element.getId());
         if (layoutDecorators != null) {
             for (final LayoutDecoratorFactsType decorator : layoutDecorators) {
-                graphics.getAny().add(
-                        new JAXBElement<LayoutDecoratorFactsType>(new QName(ConversionUtils.YAWLSCHEMA_URL, "decorator"),
-                                LayoutDecoratorFactsType.class, decorator));
+                try {
+                    graphics.getAny().add(ConversionUtils.marshalYAWLFragment("decorator", decorator, LayoutDecoratorFactsType.class));
+                } catch (JAXBException e) {
+                    throw new CanoniserException("Failed adding the decorator layout to ANF", e);
+                }
             }
         }
         if (getContext().getLayoutLabelForElement(element.getId()) != null) {
-            graphics.getAny().add(
-                    new JAXBElement<LayoutLabelFactsType>(new QName("http://www.yawlfoundation.org/yawlschema", "label"), LayoutLabelFactsType.class,
-                            getContext().getLayoutLabelForElement(element.getId())));
+            try {
+                graphics.getAny().add(
+                        ConversionUtils.marshalYAWLFragment("label", getContext().getLayoutLabelForElement(element.getId()),
+                                LayoutLabelFactsType.class));
+            } catch (JAXBException e) {
+                throw new CanoniserException("Failed adding the label layout to ANF", e);
+            }
         }
 
         getContext().getAnnotationResult().getAnnotation().add(graphics);
@@ -242,10 +246,13 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
         // Convert and add YAWL specific extension
         if (flowLayout != null) {
-            graphics.getAny().add(
-                    new JAXBElement<LayoutFlowFactsType>(new QName("http://www.yawlfoundation.org/yawlschema", "flow"), LayoutFlowFactsType.class,
-                            getContext().getLayoutFlow(getContext().buildEdgeId(sourceId, targetId))));
-
+            try {
+                graphics.getAny().add(
+                        ConversionUtils.marshalYAWLFragment("flow", getContext().getLayoutFlow(getContext().buildEdgeId(sourceId, targetId)),
+                                LayoutFlowFactsType.class));
+            } catch (JAXBException e1) {
+                throw new CanoniserException("Failed adding the label layout to ANF", e1);
+            }
             graphics.setLine(convertFlowLineStyle(flowLayout));
             try {
                 graphics.getPosition().addAll(convertFlowPositions(flowLayout));

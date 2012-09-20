@@ -20,7 +20,7 @@ import org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandlerImpl;
 /**
  * Abstract base class for a YAWL -> CPF handler
  * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  * @param <T>
  *            type of Element to be converted

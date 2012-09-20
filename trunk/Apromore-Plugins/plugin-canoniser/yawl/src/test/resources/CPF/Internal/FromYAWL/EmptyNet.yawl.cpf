@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns3:CanonicalProcess xmlns:ns2="http://www.yawlfoundation.org/yawlschema" xmlns:ns3="http://www.apromore.org/CPF" uri="EmptyNet" version="0.1" name="EmptyNet" author="Firstname Lastname" rootIds="id-N_EmptyNet">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="EmptyNet" version="0.1" name="EmptyNet" author="Firstname Lastname" rootIds="id-N_EmptyNet">
     <Net id="id-N_EmptyNet" originalID="EmptyNet">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_InputCondition" originalID="InputCondition"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_OutputCondition" originalID="OutputCondition"/>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_EmptyNet_variableA" originalID="id-N_EmptyNet_variableA">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_InputCondition" originalID="InputCondition"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_OutputCondition" originalID="OutputCondition"/>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D_id-N_EmptyNet_variableA" originalID="id-N_EmptyNet_variableA">
             <name>variableA</name>
             <type>string</type>
         </Object>
     </Net>
-</ns3:CanonicalProcess>
+</ns2:CanonicalProcess>
