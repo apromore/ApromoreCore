@@ -1,0 +1,267 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:CanonicalProcess xmlns:ns2="http://www.yawlfoundation.org/yawlschema" xmlns:ns3="http://www.apromore.org/CPF" uri="MakeTripProcessWithMICtasks.ywl" version="1.0" name="MakeTripProcessWithMICtasks.ywl" author="ouyang" rootIds="id-N_make_trip">
+    <Net id="id-N_make_trip" originalID="make_trip">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_InputCondition_1" originalID="InputCondition_1"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_register_83" originalID="register_83">
+            <name>register</name>
+            <objectRef id="id-c2286854-93a7-4f5b-8945-aba63da5427c" objectId="id-D_id-N_make_trip_customer" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;customer&gt;{/make_trip/customer/text()}&lt;/customer&gt;"/>
+                </attribute>
+            </objectRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" subnetId="id-N_do_itinerary_segment" id="id-C_do_itinerary_segment_5" originalID="do_itinerary_segment_5">
+            <name>do itinerary segment</name>
+            <objectRef id="id-0d89e177-b74a-45f9-9e5d-78818e595016" objectId="id-D_id-N_make_trip_subTotal" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;subTotal&gt;{number(/make_trip/subTotal/text())}&lt;/subTotal&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-b341a6f7-3407-45bc-bcec-84fd54476d6d" objectId="id-D_id-N_make_trip_hotelDetails" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;hotelDetails&gt;{/make_trip/hotelDetails/text()}&lt;/hotelDetails&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-1398f880-7f96-462d-8ecc-25a53993e739" objectId="id-D_id-N_make_trip_customer" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;customer&gt;{/make_trip/customer/text()}&lt;/customer&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-07f1ad21-28e5-4dad-88aa-fde0066792e8" objectId="id-D_id-N_make_trip_carDetails" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;carDetails&gt;{/make_trip/carDetails/text()}&lt;/carDetails&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-94fa4c05-05d5-49c8-93d6-2836f8fe8b10" objectId="id-D_id-N_make_trip_flightDetails" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;flightDetails&gt;{/make_trip/flightDetails/text()}&lt;/flightDetails&gt;"/>
+                </attribute>
+            </objectRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_pay_4" originalID="pay_4">
+            <name>pay</name>
+            <objectRef id="id-506de7af-3b83-42db-93bb-ff59caffed31" objectId="id-D_id-N_make_trip_itinerary" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;total&gt;{sum(/make_trip/itinerary/itinerarySegment/subTotal)}&lt;/total&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-332577c5-6c9e-4cbb-bbf6-a95297ac3dcb" objectId="id-D_id-N_make_trip_itinerary" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;itinerary&gt;{/make_trip/itinerary/*}&lt;/itinerary&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-3133e7f5-6673-4eda-b00c-341f4fccf73e" objectId="id-D_id-N_make_trip_payAccNumber" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;payAccNumber&gt;{/make_trip/payAccNumber/text()}&lt;/payAccNumber&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-64e0de56-4ff1-4373-b694-4b2814610e95" objectId="id-D_id-N_make_trip_customer" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;customer&gt;{/make_trip/customer/text()}&lt;/customer&gt;"/>
+                </attribute>
+            </objectRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_OutputCondition_2" originalID="OutputCondition_2"/>
+        <Edge id="id-C_InputCondition_1-register_83" default="true" sourceId="id-C_InputCondition_1" targetId="id-C_register_83"/>
+        <Edge id="id-C_register_83-do_itinerary_segment_5" default="true" sourceId="id-C_register_83" targetId="id-C_do_itinerary_segment_5"/>
+        <Edge id="id-C_do_itinerary_segment_5-pay_4" default="true" sourceId="id-C_do_itinerary_segment_5" targetId="id-C_pay_4"/>
+        <Edge id="id-C_pay_4-OutputCondition_2" default="true" sourceId="id-C_pay_4" targetId="id-C_OutputCondition_2"/>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_make_trip_carDetails" originalID="id-N_make_trip_carDetails">
+            <name>carDetails</name>
+            <type>string</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_make_trip_customer" originalID="id-N_make_trip_customer">
+            <name>customer</name>
+            <type>string</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_make_trip_endDate" originalID="id-N_make_trip_endDate">
+            <name>endDate</name>
+            <type>string</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_make_trip_flightDetails" originalID="id-N_make_trip_flightDetails">
+            <name>flightDetails</name>
+            <type>string</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_make_trip_hotelDetails" originalID="id-N_make_trip_hotelDetails">
+            <name>hotelDetails</name>
+            <type>string</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_make_trip_itinerary" originalID="id-N_make_trip_itinerary">
+            <name>itinerary</name>
+            <type>itineraryType</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_make_trip_legs" originalID="id-N_make_trip_legs">
+            <name>legs</name>
+            <type>legsType</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_make_trip_payAccNumber" originalID="id-N_make_trip_payAccNumber">
+            <name>payAccNumber</name>
+            <type>string</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_make_trip_startDate" originalID="id-N_make_trip_startDate">
+            <name>startDate</name>
+            <type>date</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_make_trip_subTotal" originalID="id-N_make_trip_subTotal">
+            <name>subTotal</name>
+            <type>double</type>
+        </Object>
+    </Net>
+    <Net id="id-N_do_itinerary_segment" originalID="do_itinerary_segment">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_InputCondition_8" originalID="InputCondition_8"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_register_itinerary_26" originalID="register_itinerary_26">
+            <name>register itinerary</name>
+            <objectRef id="id-3d88c89c-3b53-4e90-8ea4-a3cfb267434d" objectId="id-D_id-N_do_itinerary_segment_leg" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;leg&gt;{/do_itinerary_segment/leg/*}&lt;/leg&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-76377ef3-c664-4cc6-8d28-28d10908a1d3" objectId="id-D_id-N_do_itinerary_segment_customer" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;customer&gt;{/do_itinerary_segment/customer/text()}&lt;/customer&gt;"/>
+                </attribute>
+            </objectRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:ORSplitType" id="id-3dbc4aab-89c2-409c-8e05-a4995c382366"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_book_car_29" originalID="book_car_29">
+            <name>book car</name>
+            <objectRef id="id-57a20064-7f15-4824-8e38-5a9266b4600d" objectId="id-D_id-N_do_itinerary_segment_leg" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;leg&gt;{/do_itinerary_segment/leg/*}&lt;/leg&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-4274f6d3-bb00-4b55-8162-3326ff2f8ce9" objectId="id-D_id-N_do_itinerary_segment_startDate" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;startDate&gt;{/do_itinerary_segment/startDate/text()}&lt;/startDate&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-6ea1e5d8-361b-4f99-b748-e30024356fb5" objectId="id-D_id-N_do_itinerary_segment_endDate" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;endDate&gt;{/do_itinerary_segment/endDate/text()}&lt;/endDate&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-f3605eaf-fa4a-4bc5-9e7e-79dcc5f83dd0" objectId="id-D_id-N_do_itinerary_segment_customer" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;customer&gt;{/do_itinerary_segment/customer/text()}&lt;/customer&gt;"/>
+                </attribute>
+            </objectRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_book_flight_27" originalID="book_flight_27">
+            <name>book flight</name>
+            <objectRef id="id-98930836-99d6-45b9-8c5c-0b39b489c006" objectId="id-D_id-N_do_itinerary_segment_leg" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;leg&gt;{/do_itinerary_segment/leg/*}&lt;/leg&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-3a803cde-767a-4f70-95fe-3f71621980d4" objectId="id-D_id-N_do_itinerary_segment_startDate" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;startDate&gt;{/do_itinerary_segment/startDate/text()}&lt;/startDate&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-d20d7562-3aff-4dbc-abbf-7c95eb4c054e" objectId="id-D_id-N_do_itinerary_segment_endDate" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;endDate&gt;{/do_itinerary_segment/endDate/text()}&lt;/endDate&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-97fb6891-7ede-4e11-b451-ec64818e03ae" objectId="id-D_id-N_do_itinerary_segment_customer" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;customer&gt;{/do_itinerary_segment/customer/text()}&lt;/customer&gt;"/>
+                </attribute>
+            </objectRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_book_hotel_28" originalID="book_hotel_28">
+            <name>book hotel</name>
+            <objectRef id="id-311efe73-8566-42de-9402-b61b0e2871b8" objectId="id-D_id-N_do_itinerary_segment_leg" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;leg&gt;{/do_itinerary_segment/leg/*}&lt;/leg&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-984b45e0-f015-4c19-a2aa-adaaf0a3470b" objectId="id-D_id-N_do_itinerary_segment_startDate" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;startDate&gt;{/do_itinerary_segment/startDate/text()}&lt;/startDate&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-b04ab703-2c87-4fb7-8daa-bf76e2ec5045" objectId="id-D_id-N_do_itinerary_segment_endDate" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;endDate&gt;{/do_itinerary_segment/endDate/text()}&lt;/endDate&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-1bb5a90f-3767-4208-8e42-0a732cf5411c" objectId="id-D_id-N_do_itinerary_segment_customer" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;customer&gt;{/do_itinerary_segment/customer/text()}&lt;/customer&gt;"/>
+                </attribute>
+            </objectRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_prepare_pay_30" originalID="prepare_pay_30">
+            <name>prepare pay</name>
+            <objectRef id="id-600d26c7-93ca-47a6-bd3e-9ca1533b55be" objectId="id-D_id-N_do_itinerary_segment_hotelDetails" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;hotelDetails&gt;{/do_itinerary_segment/hotelDetails/text()}&lt;/hotelDetails&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-d3813d07-daeb-4976-9d4c-b702b77acb77" objectId="id-D_id-N_do_itinerary_segment_customer" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;customer&gt;{/do_itinerary_segment/customer/text()}&lt;/customer&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-875899a6-555d-4004-af06-5b5f08fa6d87" objectId="id-D_id-N_do_itinerary_segment_carDetails" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;carDetails&gt;{/do_itinerary_segment/carDetails/text()}&lt;/carDetails&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-b8cdb69d-2fee-47f5-b950-a5820bbf3db5" objectId="id-D_id-N_do_itinerary_segment_flightDetails" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;flightDetails&gt;{/do_itinerary_segment/flightDetails/text()}&lt;/flightDetails&gt;"/>
+                </attribute>
+            </objectRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:ORJoinType" id="id-9f398afa-97ec-41d5-a195-548d105848a8"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_OutputCondition_9" originalID="OutputCondition_9"/>
+        <Edge id="id-C_InputCondition_8-register_itinerary_26" default="true" sourceId="id-C_InputCondition_8" targetId="id-C_register_itinerary_26"/>
+        <Edge id="id-C_id-C_register_itinerary_26-id-3dbc4aab-89c2-409c-8e05-a4995c382366" default="true" sourceId="id-C_register_itinerary_26" targetId="id-3dbc4aab-89c2-409c-8e05-a4995c382366"/>
+        <Edge id="id-C_id-3dbc4aab-89c2-409c-8e05-a4995c382366-id-C_book_car_29" default="true" sourceId="id-3dbc4aab-89c2-409c-8e05-a4995c382366" targetId="id-C_book_car_29"/>
+        <Edge id="id-C_id-3dbc4aab-89c2-409c-8e05-a4995c382366-id-C_book_flight_27" default="true" sourceId="id-3dbc4aab-89c2-409c-8e05-a4995c382366" targetId="id-C_book_flight_27"/>
+        <Edge id="id-C_id-3dbc4aab-89c2-409c-8e05-a4995c382366-id-C_book_hotel_28" default="true" sourceId="id-3dbc4aab-89c2-409c-8e05-a4995c382366" targetId="id-C_book_hotel_28"/>
+        <Edge id="id-C_id-9f398afa-97ec-41d5-a195-548d105848a8-id-C_prepare_pay_30" default="true" sourceId="id-9f398afa-97ec-41d5-a195-548d105848a8" targetId="id-C_prepare_pay_30"/>
+        <Edge id="id-C_id-C_book_car_29-id-9f398afa-97ec-41d5-a195-548d105848a8" default="true" sourceId="id-C_book_car_29" targetId="id-9f398afa-97ec-41d5-a195-548d105848a8"/>
+        <Edge id="id-C_id-C_book_flight_27-id-9f398afa-97ec-41d5-a195-548d105848a8" default="true" sourceId="id-C_book_flight_27" targetId="id-9f398afa-97ec-41d5-a195-548d105848a8"/>
+        <Edge id="id-C_id-C_book_hotel_28-id-9f398afa-97ec-41d5-a195-548d105848a8" default="true" sourceId="id-C_book_hotel_28" targetId="id-9f398afa-97ec-41d5-a195-548d105848a8"/>
+        <Edge id="id-C_prepare_pay_30-OutputCondition_9" default="true" sourceId="id-C_prepare_pay_30" targetId="id-C_OutputCondition_9"/>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_do_itinerary_segment_endDate" originalID="id-N_do_itinerary_segment_endDate">
+            <name>endDate</name>
+            <type>date</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_do_itinerary_segment_serviceRequired" originalID="id-N_do_itinerary_segment_serviceRequired">
+            <name>serviceRequired</name>
+            <type>serviceType</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_do_itinerary_segment_startDate" originalID="id-N_do_itinerary_segment_startDate">
+            <name>startDate</name>
+            <type>date</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_do_itinerary_segment_leg" originalID="id-N_do_itinerary_segment_leg">
+            <name>leg</name>
+            <type>legType</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_do_itinerary_segment_subTotal" originalID="id-N_do_itinerary_segment_subTotal">
+            <name>subTotal</name>
+            <type>double</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_do_itinerary_segment_hotelDetails" originalID="id-N_do_itinerary_segment_hotelDetails">
+            <name>hotelDetails</name>
+            <type>string</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_do_itinerary_segment_customer" originalID="id-N_do_itinerary_segment_customer">
+            <name>customer</name>
+            <type>string</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_do_itinerary_segment_carDetails" originalID="id-N_do_itinerary_segment_carDetails">
+            <name>carDetails</name>
+            <type>string</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_do_itinerary_segment_flightDetails" originalID="id-N_do_itinerary_segment_flightDetails">
+            <name>flightDetails</name>
+            <type>string</type>
+        </Object>
+    </Net>
+</ns3:CanonicalProcess>

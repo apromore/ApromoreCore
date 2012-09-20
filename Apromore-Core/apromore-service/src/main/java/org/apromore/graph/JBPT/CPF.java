@@ -17,7 +17,7 @@ import java.util.Map;
  */
 public class CPF extends ProcessModel implements ICpf<ControlFlow<FlowNode>, FlowNode, NonFlowNode> {
 
-    private Map<String, String> properties = new HashMap<String, String>(0);
+    private Map<String, ICpfAttribute> properties = new HashMap<String, ICpfAttribute>(0);
     private Map<String, Map<String, String>> vertexProperties;
     private Map<String, FlowNode> pmgVertices = new HashMap<String, FlowNode>(0);
     private Map<String, String> originalNodeMapping = new HashMap<String, String>(0);
@@ -95,22 +95,28 @@ public class CPF extends ProcessModel implements ICpf<ControlFlow<FlowNode>, Flo
 
 
     @Override
-    public void setProperties(Map<String, String> properties) {
+    public void setProperties(Map<String, ICpfAttribute> properties) {
         this.properties = properties;
     }
 
     @Override
-    public Map<String, String> getProperties() {
+    public Map<String, ICpfAttribute> getProperties() {
         return properties;
     }
 
     @Override
-    public String getProperty(String name) {
+    public ICpfAttribute getProperty(String name) {
         return properties.get(name);
     }
 
     @Override
-    public void setProperty(String name, String value) {
-        properties.put(name, value);
+    public void setProperty(String name, String value, Object any) {
+        properties.put(name, new CpfAttribute(value, any));
     }
+
+    @Override
+    public void setProperty(String name, String value) {
+        setProperty(name, value, null);
+    }
+    
 }

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:CanonicalProcess xmlns:ns2="http://www.yawlfoundation.org/yawlschema" xmlns:ns3="http://www.apromore.org/CPF" uri="WPD9TaskToTask" version="0.1" name="WPD9TaskToTask" author="Felix" rootIds="id-N_Net">
+    <Net id="id-N_Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_InputCondition" originalID="InputCondition">
+            <name>IN</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_A" originalID="A">
+            <name>A</name>
+            <objectRef id="id-6bc0e102-b0de-4381-af83-3902055458d6" objectId="id-D_id-N_Net_x" type="output" optional="false" consumed="true">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;x&gt;Boolean({/A/x/text()})&lt;/x&gt;"/>
+                </attribute>
+            </objectRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_B" originalID="B">
+            <name>B</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_OutputCondition" originalID="OutputCondition">
+            <name>OUT</name>
+        </Node>
+        <Edge id="id-C_InputCondition-A" default="true" sourceId="id-C_InputCondition" targetId="id-C_A"/>
+        <Edge id="id-C_A-B" default="true" sourceId="id-C_A" targetId="id-C_B"/>
+        <Edge id="id-C_B-OutputCondition" default="true" sourceId="id-C_B" targetId="id-C_OutputCondition"/>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_Net_x" originalID="id-N_Net_x">
+            <name>x</name>
+            <type>boolean</type>
+        </Object>
+    </Net>
+</ns3:CanonicalProcess>

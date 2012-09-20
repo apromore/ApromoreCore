@@ -14,13 +14,17 @@
      v0.2 - added 'version' attribute to both this document and type 'CanonicalProcessType'
      v0.3 - added extensible 'attribute' to all super-types
      v0.4 - added process meta-data (author, creationDate...), changed type of attribute 'value' to 'anySimpleType'
-	 v0.6 - changed Objects to be part of a Net (Net Scope Data) instead of a CanonicalProcess,
-	  		added Objects to WorkNodes (Task Scope Data) for YAWL and BPMN
-	  		added 'mapsToObjectId' referencing the target Object (if available) to objectRef for YAWL and BPMN
+	 v0.6 - changed Objects to be part of a Net (Net Scope Data) instead of a CanonicalProcess,	 		
+	 		changed 'typeAttribute' to use xs:any as a real extension mechanism
+	 		changed 'condition' to 'conditionExpr' as it will contain an expression
+	 		added 'inputExpr'
+	 		added 'outputExpr'
+	 		added 'durationExpr'
 	 		added 'direction' attribute with type IncomingOutgoingType to MessageEvent, 
 	 		added 'cancellationSet' to NodeType for YAWL and BPMN
 	 		added 'distributionSet' to ResourceTypeType for YAWL and BPMN
 			added extended ResourceType taxonomy					
+			
 -->
 
 <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:cpf="http://www.apromore.org/CPF"
@@ -75,21 +79,22 @@
 			<selector xpath="./ResourceType/distributionSet/resourceTypeRef" />
 			<field xpath="@resourceTypeId" />
 		</keyref>
-		<!-- Each ObjectRef that references an Work or Net variable must reference it correctly  (Does only check for existence!)-->
-		<unique name="nodeOrNetObjectIdUn">
-			<selector xpath="./Net/Node/Object|./Net/Object" />
-			<field xpath="@id" />
-		</unique>		
-		<keyref name="internalObjectRef" refer="cpf:nodeOrNetObjectIdUn">
-			<selector xpath="./Net/Node/objectRef" />
-			<field xpath="@mapsToObjectId" />
-		</keyref>
 	</element>
 
-	<!-- Extension for any attribute (name/value) -->
+	<!-- Language specific extension for any other XML -->
 	<complexType name="typeAttribute">
-		<attribute name="typeRef" type="string" use="required" />
-		<attribute name="value" type="anySimpleType" />
+		<sequence>
+			<!-- Content has to be valid XML complying to a schema -->
+			<any namespace="##other" processContents="lax" minOccurs="0" />
+		</sequence>
+		<!-- 
+			Name that makes it easier to find a special extension again, without unmarshalling XML.
+			This name must be prefixed by a Canoniser specific string. You can take the Canoniser package name:
+				org.apromore.canoniser.yawl.attributeXY
+		 -->
+		<attribute name="name" type="string" use="required" />
+		<!-- Use this attribute if you only want to store simple Name/Value pairs without using XML -->
+		<attribute name="value" type="string" />
 	</complexType>
 
 	<complexType name="CanonicalProcessType">
@@ -123,20 +128,14 @@
 		<attribute name="version" type="string" use="required" />
 		<attribute name="name" type="string" use="required" />
 		<attribute name="author" type="string" />
-		<attribute name="creationDate" type="string" />
-		<attribute name="modificationDate" type="string" />
-		<attribute name="rootId" type="string" use="required" />
+		<attribute name="creationDate" type="string" /> <!-- should be dateTime -->
+		<attribute name="modificationDate" type="string" /> <!-- should be dateTime -->
+		<attribute name="rootIds" type="cpf:IdListType"  />
 	</complexType>
 
 	<complexType name="NetType">
 		<sequence>
-			<element name="Node" minOccurs="1" maxOccurs="unbounded" type="cpf:NodeType">
-				<!--  Object name should be unique in Node  -->
-				<unique name="objectNameUnInNode">
-					<selector xpath="./Object" />
-					<field xpath="name" />
-				</unique>				
-			</element>
+			<element name="Node" minOccurs="1" maxOccurs="unbounded" type="cpf:NodeType" />
 			<element name="Edge" minOccurs="0" maxOccurs="unbounded"
 				type="cpf:EdgeType" />
 			<element name="Object" minOccurs="0" maxOccurs="unbounded"
@@ -146,6 +145,7 @@
 		</sequence>
 		<attribute name="id" type="string" use="required" />
 		<attribute name="originalID" type="string" use="optional" />
+		<attribute name="name" type="string" use="optional" />		
 	</complexType>
 
 	<complexType name="EdgeType">
@@ -154,7 +154,7 @@
 				maxOccurs="unbounded" />
 		</sequence>
 		<attribute name="id" type="string" use="required" />
-		<attribute name="condition" type="string" use="optional" />
+		<attribute name="conditionExpr" type="cpf:ConditionExpressionType" use="optional" />
 		<attribute name="default" type="boolean" use="optional"
 			default="true" />
 		<attribute name="sourceId" type="string" use="required" />
@@ -179,14 +179,17 @@
 	<complexType name="WorkType">
 		<complexContent>
 			<extension base="cpf:NodeType">
-				<sequence>
-					<!-- WorkNode scope data objects -->
-					<element name="Object" minOccurs="0" maxOccurs="unbounded"
-						type="cpf:ObjectType" />				
+				<sequence>				
 					<element name="resourceTypeRef" type="cpf:resourceTypeRefType"
 						minOccurs="0" maxOccurs="unbounded" />
 					<!-- Reference to NetType data objects -->
 					<element name="objectRef" type="cpf:objectRefType"
+						minOccurs="0" maxOccurs="unbounded" />
+					<!-- Input expressions referring to [0..*] Objects of the Net -->
+					<element name="inputExpr" type="cpf:InputExpressionType" 
+						minOccurs="0" maxOccurs="unbounded" />
+					<!-- Output expressions referring to [1] Object of the Net -->
+					<element name="outputExpr" type="cpf:OutputExpressionType"
 						minOccurs="0" maxOccurs="unbounded" />
 				</sequence>
 			</extension>
@@ -217,8 +220,6 @@
 			use="optional" />
 		<attribute name="consumed" type="boolean" default="false"
 			use="optional" />
-		<!-- ID of the Object in scope of the WorkNode that this reference points to -->
-		<attribute name="mapsToObjectId" type="string" use="optional" />
 	</complexType>
 
 	<complexType name="TaskType">
@@ -247,7 +248,11 @@
 
 	<complexType name="TimerType">
 		<complexContent>
-			<extension base="cpf:EventType" />
+			<extension base="cpf:EventType">
+				<!-- Only one of the following attributes MAY be set  -->
+				<attribute name="timeDate" type="dateTime" use="optional" />
+				<attribute name="timeDuration" type="duration" use="optional" />
+			</extension>					
 		</complexContent>
 	</complexType>
 
@@ -446,10 +451,6 @@
 	</complexType>
 	
 	<complexType name="controlFlowRef">
-		<sequence>
-			<element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded" />
-		</sequence>
-		<attribute name="id" type="string" />
 		<attribute name="controlFlowRefId" type="string" />
 	</complexType>
 	
@@ -465,8 +466,26 @@
 			<element name="attribute" type="cpf:typeAttribute" minOccurs="0"
 				maxOccurs="unbounded" />
 		</sequence>
-		<attribute name="id" type="string" />
 		<attribute name="resourceTypeId" type="string" />
-	</complexType>	
+	</complexType>
+
+	<simpleType name="InputExpressionType">
+		<restriction base="string">
+			<minLength value="1"/>
+			<pattern value="[a-zA-Z0-9_]+=.*"/>
+		</restriction>
+	</simpleType>
+
+	<simpleType name="OutputExpressionType">
+		<restriction base="string">
+			<minLength value="1"/>
+			<pattern value="[a-zA-Z0-9_]+=.*"/>
+		</restriction>
+	</simpleType>	
+	
+	<simpleType name="ConditionExpressionType">
+		<restriction base="string">
+		</restriction>
+	</simpleType>
 
 </schema>

@@ -10,6 +10,7 @@ import org.apromore.exception.LockFailedException;
 import org.apromore.exception.NonEditableVersionException;
 import org.apromore.graph.JBPT.CPF;
 import org.apromore.graph.JBPT.CpfNode;
+import org.apromore.graph.JBPT.ICpfAttribute;
 import org.apromore.graph.JBPT.ICpfObject;
 import org.apromore.graph.JBPT.ICpfResource;
 import org.apromore.service.*;
@@ -115,17 +116,17 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public void updateProcessModel(CPF g) {
-        String pmvid = g.getProperty(Constants.PROCESS_MODEL_VERSION_ID);
+        String pmvid = g.getProperty(Constants.PROCESS_MODEL_VERSION_ID).getValue();
         if (pmvid != null && pmvid.length() != 0) {
-            String branchId = g.getProperty(Constants.BRANCH_ID);
+            String branchId = g.getProperty(Constants.BRANCH_ID).getValue();
             updateProcessModel(pmvid, branchId, g);
             return;
         }
 
-        String processName = g.getProperty(Constants.PROCESS_NAME);
-        String branchName = g.getProperty(Constants.BRANCH_NAME);
-        String versionNumber = g.getProperty(Constants.VERSION_NUMBER);
-        String lockStatus = g.getProperty(Constants.LOCK_STATUS);
+        String processName = g.getProperty(Constants.PROCESS_NAME).getValue();
+        String branchName = g.getProperty(Constants.BRANCH_NAME).getValue();
+        String versionNumber = g.getProperty(Constants.VERSION_NUMBER).getValue();
+        String lockStatus = g.getProperty(Constants.LOCK_STATUS).getValue();
 
         if (lockStatus == null || Constants.UNLOCKED.equals(lockStatus)) {
             String msg = "Process model " + processName + " is not locked for the updating session.";
@@ -160,8 +161,8 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public void updateProcessModel(String versionId, String branchId, CPF g) {//
-        String versionNumber = g.getProperty(Constants.VERSION_NUMBER);
-        String lockStatus = g.getProperty(Constants.LOCK_STATUS);
+        String versionNumber = g.getProperty(Constants.VERSION_NUMBER).getValue();
+        String lockStatus = g.getProperty(Constants.LOCK_STATUS).getValue();
         if (lockStatus == null || Constants.UNLOCKED.equals(lockStatus)) {
             String msg = "Process model " + versionId + " is not locked for the updating session.";
             LOGGER.error(msg);
@@ -278,9 +279,9 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public CPF getFragment(CPF g, List<String> nodes, boolean lock) throws LockFailedException, NonEditableVersionException {
-        String processName = g.getProperty(Constants.PROCESS_NAME);
-        String branchName = g.getProperty(Constants.BRANCH_NAME);
-        Integer pmvid = Integer.parseInt(g.getProperty(Constants.PROCESS_MODEL_VERSION_ID));
+        String processName = g.getProperty(Constants.PROCESS_NAME).getValue();
+        String branchName = g.getProperty(Constants.BRANCH_NAME).getValue();
+        Integer pmvid = Integer.parseInt(g.getProperty(Constants.PROCESS_MODEL_VERSION_ID).getValue());
         ProcessModelVersion pmv = pmvDao.getCurrentProcessModelVersion(processName, branchName);
 
         if (lock && !pmvid.equals(pmv.getId())) {
@@ -331,7 +332,7 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Override
     public String updateFragment(CPF fg) {
         String updatedFragmentId = null;
-        String lockStatus = fg.getProperty(Constants.LOCK_STATUS);
+        String lockStatus = fg.getProperty(Constants.LOCK_STATUS).getValue();
 
         if (lockStatus.equals(Constants.UNLOCKED)) {
             String msg = "Fragment is not locked for the current session.";
@@ -341,7 +342,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
         try {
             List<String> composingFragmentIds = new ArrayList<String>();
-            String originalFragmentId = fg.getProperty(Constants.ORIGINAL_FRAGMENT_ID);
+            String originalFragmentId = fg.getProperty(Constants.ORIGINAL_FRAGMENT_ID).getValue();
 
             LOGGER.debug("Decomposing the fragment graph of fragment " + originalFragmentId + "...");
             updatedFragmentId = decomposer.decomposeFragment(fg, composingFragmentIds);
@@ -483,10 +484,10 @@ public class RepositoryServiceImpl implements RepositoryService {
     private void addAttributesToProcessModel(CPF proModGrap, ProcessModelVersion process) {
         ProcessModelAttribute pmvAtt;
         for (FlowNode node : proModGrap.getFlowNodes()) {
-            for (Entry<String, String> obj : ((CpfNode) node).getAttributes().entrySet()) {
+            for (Entry<String, ICpfAttribute> obj : ((CpfNode) node).getAttributes().entrySet()) {
                 pmvAtt = new ProcessModelAttribute();
                 pmvAtt.setName(obj.getKey());
-                pmvAtt.setValue(obj.getValue());
+                pmvAtt.setValue(obj.getValue().getValue());
 
                 process.getProcessModelAttributes().add(pmvAtt);
             }

@@ -6,9 +6,15 @@
 	Added by Felix Mannhardt 
 -->
 <project name="Apromore - Copy and Build all WAR" default="deploy-war">
-
-    <!-- Put the path to your Tomcat webapps folder there -->
-    <property file="build.properties"/>
+    
+	<!-- 
+		Local properties for your developer machine. This will override whatever is defined in build.properties!
+		You should never check this into SVN.  
+	-->	
+	<property file="local.properties" />
+		
+	<!-- Standard properties for the build enviroment -->
+    <property file="build.properties" />
 
     <!-- Delete all deployed WAR files -->
     <target name="clean-war">

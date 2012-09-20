@@ -45,6 +45,9 @@
 
         <!-- Editor -->
         <module>Apromore-Editor</module>
+		
+		<!-- Plugins -->
+		<module>Apromore-Plugins</module>
     </modules>
 
     <build>

@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:CanonicalProcess xmlns:ns2="http://www.yawlfoundation.org/yawlschema" xmlns:ns3="http://www.apromore.org/CPF" uri="WPD1TaskData" version="0.1" name="WPD1TaskData" author="Felix" rootIds="id-N_Net">
+    <Net id="id-N_Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_InputCondition" originalID="InputCondition">
+            <name>IN</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_A" originalID="A">
+            <name>A</name>
+            <objectRef id="id-8d8430b7-f4b6-4bb9-9c71-1d083bcc94ad" objectId="id-D_id-N_Net_n3" type="output" optional="false" consumed="true">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;n3&gt;{/A/t3/text()}&lt;/n3&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-6e84f026-b1c0-494e-9bf9-459bec9abe67" objectId="id-D_id-N_Net_n2" type="output" optional="false" consumed="true">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;n2&gt;{/A/t3/text()}&lt;/n2&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-99e926be-d293-4828-a9b4-6cd4d8960014" objectId="id-D_id-N_Net_n4" type="output" optional="false" consumed="true">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;n4&gt;{/A/t4/text()}&lt;/n4&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-0d2b49e2-4d2e-4ffa-a94e-6cc30dcfa5e4" objectId="id-D_id-N_Net_n3" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;t3&gt;{/Net/n3/text()}&lt;/t3&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-2e5d9c39-c515-435c-8134-98f16ce65d4b" objectId="id-D_id-N_Net_n1" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;t2&gt;{/Net/n1/text()}&lt;/t2&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-9f3cdbca-f551-4f72-96a3-d093cc56126f" objectId="id-D_id-N_Net_n1" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;t1&gt;{/Net/n1/text()}&lt;/t1&gt;"/>
+                </attribute>
+            </objectRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_B" originalID="B">
+            <name>B</name>
+            <objectRef id="id-2a04e07b-f640-4bef-825b-60695bcd4bdb" objectId="id-D_id-N_Net_n2" type="output" optional="false" consumed="true">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;n2&gt;{/B/t1/text()}&lt;/n2&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-e392a753-9385-4d51-a737-7c6385221e32" objectId="id-D_id-N_Net_n3" type="output" optional="false" consumed="true">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;n3&gt;{/B/t1/text()}&lt;/n3&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-ed56fdc1-aff6-4e19-8d22-ec67c8be666c" objectId="id-D_id-N_Net_n2" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;t2&gt;{/Net/n2/text()}&lt;/t2&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-1766e600-ccbc-4706-825d-8f22e510db94" objectId="id-D_id-N_Net_n1" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;t1&gt;{/Net/n1/text()}&lt;/t1&gt;"/>
+                </attribute>
+            </objectRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_OutputCondition" originalID="OutputCondition">
+            <name>OUT</name>
+        </Node>
+        <Edge id="id-C_InputCondition-A" default="true" sourceId="id-C_InputCondition" targetId="id-C_A"/>
+        <Edge id="id-C_A-B" default="true" sourceId="id-C_A" targetId="id-C_B"/>
+        <Edge id="id-C_B-OutputCondition" default="true" sourceId="id-C_B" targetId="id-C_OutputCondition"/>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_Net_n2" originalID="id-N_Net_n2">
+            <name>n2</name>
+            <type>string</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_Net_n4" originalID="id-N_Net_n4">
+            <name>n4</name>
+            <type>string</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_Net_n5" originalID="id-N_Net_n5">
+            <name>n5</name>
+            <type>YDocumentType</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_Net_n1" originalID="id-N_Net_n1">
+            <name>n1</name>
+            <type>boolean</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_Net_n3" originalID="id-N_Net_n3">
+            <name>n3</name>
+            <type>byte</type>
+        </Object>
+    </Net>
+</ns3:CanonicalProcess>

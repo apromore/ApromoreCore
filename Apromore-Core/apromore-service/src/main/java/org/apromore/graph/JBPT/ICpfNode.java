@@ -43,19 +43,28 @@ public interface ICpfNode extends IVertex {
 
 
     /**
-     * add an attribute to the {@link ICpfNode}.
+     * Add an attribute to the {@link ICpfNode}.
      *
      * @param name  the name of the attribute
-     * @param value the value of the attribute
+     * @param value the simple value of the {@link ICpfAttribute}
+     * @param any the complex value of the {@link ICpfAttribute}
+     */
+    void addAttribute(String name, String value, Object any);
+
+    /**
+     * Add an attribute to the {@link ICpfNode}.
+     *
+     * @param name  the name of the attribute
+     * @param value the simple value of the {@link ICpfAttribute}
      */
     void addAttribute(String name, String value);
-
+    
     /**
      * Set if this {@link ICpfNode} attributes.
      *
      * @param attributes the map of attributes
      */
-    void setAttributes(Map<String, String> attributes);
+    void setAttributes(Map<String, ICpfAttribute> attributes);
 
     /**
      * Returns a single Attribute value for a given key.
@@ -63,14 +72,14 @@ public interface ICpfNode extends IVertex {
      * @param name the key of the Attribute we are looking for
      * @return the value of the found Attribute, otherwise null is not in the list.
      */
-    String getAttribute(String name);
+    ICpfAttribute getAttribute(String name);
 
     /**
      * Return this {@link ICpfNode} attributes.
      *
      * @return the attributes
      */
-    Map<String, String> getAttributes();
+    Map<String, ICpfAttribute> getAttributes();
 
     /**
      * @return a {@link java.util.Collection} of all {@link ICpfObject}s of this {@link IFlowNode}.

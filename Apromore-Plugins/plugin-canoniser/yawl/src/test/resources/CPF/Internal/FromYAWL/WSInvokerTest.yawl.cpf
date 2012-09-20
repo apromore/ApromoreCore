@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:CanonicalProcess xmlns:ns2="http://www.yawlfoundation.org/yawlschema" xmlns:ns3="http://www.apromore.org/CPF" uri="WSInvokerTest" version="0.1" name="WSInvokerTest" author="Felix" rootIds="id-N_Net">
+    <Net id="id-N_Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_InputCondition_1" originalID="InputCondition_1">
+            <name>IN</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_A_3" originalID="A_3">
+            <name>A</name>
+            <inputExpr>YawlWSInvokerOperationName=null</inputExpr>
+            <inputExpr>YawlWSInvokerWSDLLocation=null</inputExpr>
+            <inputExpr>YawlWSInvokerPortName=null</inputExpr>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:MessageType" id="id-5ba20377-332a-4c4b-ab57-92008a6e4e79">
+            <direction>outgoing</direction>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:MessageType" id="id-3c294a57-e2bb-4bc5-8159-9385f0429fc9">
+            <direction>incoming</direction>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_OutputCondition_2" originalID="OutputCondition_2">
+            <name>OUT</name>
+        </Node>
+        <Edge id="id-C_id-5ba20377-332a-4c4b-ab57-92008a6e4e79-id-C_A_3" default="true" sourceId="id-5ba20377-332a-4c4b-ab57-92008a6e4e79" targetId="id-C_A_3"/>
+        <Edge id="id-C_id-C_A_3-id-3c294a57-e2bb-4bc5-8159-9385f0429fc9" default="true" sourceId="id-C_A_3" targetId="id-3c294a57-e2bb-4bc5-8159-9385f0429fc9"/>
+        <Edge id="id-C_id-C_InputCondition_1-id-5ba20377-332a-4c4b-ab57-92008a6e4e79" default="true" sourceId="id-C_InputCondition_1" targetId="id-5ba20377-332a-4c4b-ab57-92008a6e4e79"/>
+        <Edge id="id-C_id-3c294a57-e2bb-4bc5-8159-9385f0429fc9-id-C_OutputCondition_2" default="true" sourceId="id-3c294a57-e2bb-4bc5-8159-9385f0429fc9" targetId="id-C_OutputCondition_2"/>
+    </Net>
+</ns3:CanonicalProcess>
