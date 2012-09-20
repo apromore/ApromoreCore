@@ -7,7 +7,7 @@
         <!-- Used AnnotationDao -->
         <query>SELECT a FROM Annotation a, ProcessModelVersion p
             WHERE a.processModelVersion.id = p.id
-            AND p.branchId = :processId
+            AND p.processBranch.id = :processId
             AND p.versionName = :versionName
             AND a.name = :name</query>
     </named-query>
