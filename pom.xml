@@ -34,6 +34,9 @@
         <module>Apromore-Schema/rlf-schema</module>
         <module>Apromore-Schema/xpdl-schema</module>
         <module>Apromore-Schema/yawl-schema</module>
+		
+		<!-- Plugins -->
+		<module>Apromore-Plugins</module>		
         
         <module>Apromore-Clients/manager-client</module>
         
@@ -44,10 +47,7 @@
         <module>Apromore-Portal/portal-webapp</module>
 
         <!-- Editor -->
-        <module>Apromore-Editor</module>
-		
-		<!-- Plugins -->
-		<module>Apromore-Plugins</module>
+        <module>Apromore-Editor</module>	
     </modules>
 
     <build>
