@@ -39,8 +39,7 @@ public interface CanoniserService {
      * @throws org.apromore.exception.CanoniserException
      *          something failed
      */
-    CanonisedProcess canonise(String nativeType, String cpf_uri, InputStream process_xml) throws CanoniserException,
-            IOException, JAXBException, SAXException;
+    CanonisedProcess canonise(String nativeType, String cpf_uri, InputStream process_xml) throws CanoniserException;
 
     /**
      * DeCanonise a process.
@@ -51,9 +50,11 @@ public interface CanoniserService {
      * @param cpf_is     the Canonical format inputStream
      * @param anf_is     the annotation inputStream
      * @return the DeCanonised model inputStream
+     * @throws org.apromore.exception.CanoniserException
+     *          something failed
      */
     DataSource deCanonise(final Integer processId, final String version, final String nativeType,
-                          final CanonicalProcessType canType, final DataSource anf_is);
+                          final CanonicalProcessType canType, final DataSource anf_is) throws CanoniserException;
 
 
     /**

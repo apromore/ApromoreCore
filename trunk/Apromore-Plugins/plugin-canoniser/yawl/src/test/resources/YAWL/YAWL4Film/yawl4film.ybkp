@@ -1,0 +1,295 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<orgdata>
+  <participants>
+    <participant id="PA-488e7f11-7bc4-48c1-ab10-78f6845ffb7d">
+      <userid>csmith</userid>
+      <password>bUlBkHMDhGQMFWNZUYdBGwmcoqQ=</password>
+      <firstname>Cheryl</firstname>
+      <lastname>Smith</lastname>
+      <description />
+      <notes />
+      <isAdministrator>false</isAdministrator>
+      <isAvailable>true</isAvailable>
+      <roles>
+        <role>RO-d2e982aa-96b7-40df-9b27-e78a5cb0c73b</role>
+      </roles>
+      <positions />
+      <capabilities />
+      <privileges>00000000</privileges>
+    </participant>
+    <participant id="PA-7413e85b-3e29-48b8-986a-b4eaba3f8303">
+      <userid>vrain</userid>
+      <password>bUlBkHMDhGQMFWNZUYdBGwmcoqQ=</password>
+      <firstname>Vincent</firstname>
+      <lastname>Rain</lastname>
+      <description />
+      <notes />
+      <isAdministrator>false</isAdministrator>
+      <isAvailable>true</isAvailable>
+      <roles>
+        <role>RO-aefd909c-9ca4-45ab-b0a0-1320008d7768</role>
+      </roles>
+      <positions />
+      <capabilities />
+      <privileges>00000000</privileges>
+    </participant>
+    <participant id="PA-c8ebc8d8-71a0-49ac-b951-9d99a7323998">
+      <userid>jgreen</userid>
+      <password>bUlBkHMDhGQMFWNZUYdBGwmcoqQ=</password>
+      <firstname>Jay</firstname>
+      <lastname>Green</lastname>
+      <description />
+      <notes />
+      <isAdministrator>false</isAdministrator>
+      <isAvailable>true</isAvailable>
+      <roles>
+        <role>RO-5cf6afa6-36cd-4398-890f-829ceaa282b4</role>
+      </roles>
+      <positions />
+      <capabilities />
+      <privileges>00000000</privileges>
+    </participant>
+    <participant id="PA-73158bc9-072d-4dec-9cb1-323698c1e276">
+      <userid>traymond</userid>
+      <password>bUlBkHMDhGQMFWNZUYdBGwmcoqQ=</password>
+      <firstname>Thomas</firstname>
+      <lastname>Raymond</lastname>
+      <description />
+      <notes />
+      <isAdministrator>false</isAdministrator>
+      <isAvailable>true</isAvailable>
+      <roles>
+        <role>RO-d00eaa77-0fe7-44c6-916e-c0dbc5710baf</role>
+      </roles>
+      <positions />
+      <capabilities />
+      <privileges>00000000</privileges>
+    </participant>
+    <participant id="PA-b7a79138-158d-4fce-b875-61029bb85431">
+      <userid>jlee</userid>
+      <password>bUlBkHMDhGQMFWNZUYdBGwmcoqQ=</password>
+      <firstname>Jane</firstname>
+      <lastname>Lee</lastname>
+      <description />
+      <notes />
+      <isAdministrator>false</isAdministrator>
+      <isAvailable>true</isAvailable>
+      <roles>
+        <role>RO-9b1bf293-9c1e-4868-8df0-f1f1911f5fca</role>
+      </roles>
+      <positions />
+      <capabilities />
+      <privileges>00000000</privileges>
+    </participant>
+    <participant id="PA-310ecbfc-70cf-4426-b307-9797ad55de29">
+      <userid>cdouglus</userid>
+      <password>bUlBkHMDhGQMFWNZUYdBGwmcoqQ=</password>
+      <firstname>Claire</firstname>
+      <lastname>Douglus</lastname>
+      <description />
+      <notes />
+      <isAdministrator>false</isAdministrator>
+      <isAvailable>true</isAvailable>
+      <roles>
+        <role>RO-21d5e567-504b-42ad-95af-4b1e7cf4b51e</role>
+      </roles>
+      <positions />
+      <capabilities />
+      <privileges>00000000</privileges>
+    </participant>
+    <participant id="PA-a4d14861-276c-4ea0-8bb9-cf7dcd94406f">
+      <userid>blaumen</userid>
+      <password>bUlBkHMDhGQMFWNZUYdBGwmcoqQ=</password>
+      <firstname>Ben</firstname>
+      <lastname>Laumen</lastname>
+      <description />
+      <notes />
+      <isAdministrator>false</isAdministrator>
+      <isAvailable>true</isAvailable>
+      <roles>
+        <role>RO-d0e1e1d0-6413-433f-8043-56c821686eaa</role>
+      </roles>
+      <positions />
+      <capabilities />
+      <privileges>00000000</privileges>
+    </participant>
+    <participant id="PA-4725b666-8cb2-4de1-8692-6bcd2d59179b">
+      <userid>gwilson</userid>
+      <password>bUlBkHMDhGQMFWNZUYdBGwmcoqQ=</password>
+      <firstname>Grace</firstname>
+      <lastname>Wilson</lastname>
+      <description />
+      <notes />
+      <isAdministrator>false</isAdministrator>
+      <isAvailable>true</isAvailable>
+      <roles>
+        <role>RO-dcf922c4-3738-49b5-b64b-f368520128a8</role>
+      </roles>
+      <positions />
+      <capabilities />
+      <privileges>00000000</privileges>
+    </participant>
+    <participant id="PA-4c189068-6342-4ed4-9e38-4830180207ac">
+      <userid>hnewman</userid>
+      <password>bUlBkHMDhGQMFWNZUYdBGwmcoqQ=</password>
+      <firstname>Harry</firstname>
+      <lastname>Newman</lastname>
+      <description />
+      <notes />
+      <isAdministrator>false</isAdministrator>
+      <isAvailable>true</isAvailable>
+      <roles>
+        <role>RO-41d22a3d-76f0-46e7-8f0f-109b1056803a</role>
+      </roles>
+      <positions />
+      <capabilities />
+      <privileges>00000000</privileges>
+    </participant>
+    <participant id="PA-e70e8912-275c-46cd-9375-5728742112a9">
+      <userid>mwest</userid>
+      <password>bUlBkHMDhGQMFWNZUYdBGwmcoqQ=</password>
+      <firstname>Michael</firstname>
+      <lastname>West</lastname>
+      <description />
+      <notes />
+      <isAdministrator>false</isAdministrator>
+      <isAvailable>true</isAvailable>
+      <roles>
+        <role>RO-1c74a581-b2fd-46db-8d9f-078a3f72207c</role>
+      </roles>
+      <positions />
+      <capabilities />
+      <privileges>00000000</privileges>
+    </participant>
+    <participant id="PA-17fde9e1-0f4f-4abd-9eeb-967078ce8a64">
+      <userid>jjason</userid>
+      <password>bUlBkHMDhGQMFWNZUYdBGwmcoqQ=</password>
+      <firstname>John</firstname>
+      <lastname>Jason</lastname>
+      <description />
+      <notes />
+      <isAdministrator>false</isAdministrator>
+      <isAvailable>true</isAvailable>
+      <roles>
+        <role>RO-3fd11c87-c95c-40cc-bbd7-ed0690420354</role>
+      </roles>
+      <positions />
+      <capabilities />
+      <privileges>00000000</privileges>
+    </participant>
+    <participant id="PA-89be9dfd-b389-4550-8170-aba4930abc36">
+      <userid>flang</userid>
+      <password>bUlBkHMDhGQMFWNZUYdBGwmcoqQ=</password>
+      <firstname>Florian</firstname>
+      <lastname>Lang</lastname>
+      <description />
+      <notes />
+      <isAdministrator>false</isAdministrator>
+      <isAvailable>true</isAvailable>
+      <roles>
+        <role>RO-55ed22a1-b494-42b7-9103-c16ce4f9b46d</role>
+      </roles>
+      <positions />
+      <capabilities />
+      <privileges>00000000</privileges>
+    </participant>
+    <participant id="PA-6477f285-8b81-4b01-a2f1-9e5be1670810">
+      <userid>awhite</userid>
+      <password>bUlBkHMDhGQMFWNZUYdBGwmcoqQ=</password>
+      <firstname>Alice</firstname>
+      <lastname>White</lastname>
+      <description>Alice White is a third-year student with a major of film production management. After she gets her degree, she wants to be a production manager of feature films and TV series.</description>
+      <notes>Contact details:
+Address - 101 Pacific Road, Ocean City 
+Email - alice.white@email.net</notes>
+      <isAdministrator>true</isAdministrator>
+      <isAvailable>true</isAvailable>
+      <roles>
+        <role>RO-7cfc01ca-7397-4d13-acc3-104a2c6ea3b0</role>
+      </roles>
+      <positions />
+      <capabilities />
+      <privileges>00000000</privileges>
+    </participant>
+  </participants>
+  <roles>
+    <role id="RO-d2e982aa-96b7-40df-9b27-e78a5cb0c73b">
+      <name>1st AD</name>
+      <description>The AD acts as a liaison between the director and the rest of the crew, ensuring that the production stays on schedule. There can be up to four ADs (1st, 2nd, 3rd, and AD-in-training), but, if there is only one, the AD is often in charge of developing the entire production schedule.</description>
+      <notes />
+    </role>
+    <role id="RO-d0e1e1d0-6413-433f-8043-56c821686eaa">
+      <name>2nd AD</name>
+      <description>The AD acts as a liaison between the director and the rest of the crew, ensuring that the production stays on schedule. There can be up to four ADs (1st, 2nd, 3rd, and AD-in-training), but, if there is only one, the AD is often in charge of developing the entire production schedule.</description>
+      <notes />
+    </role>
+    <role id="RO-d00eaa77-0fe7-44c6-916e-c0dbc5710baf">
+      <name>Camera Assistant</name>
+      <description>A camera operator is in charge of running a single camera.</description>
+      <notes />
+    </role>
+    <role id="RO-5cf6afa6-36cd-4398-890f-829ceaa282b4">
+      <name>Continuity</name>
+      <description />
+      <notes />
+    </role>
+    <role id="RO-aefd909c-9ca4-45ab-b0a0-1320008d7768">
+      <name>D.O.P.</name>
+      <description>A director of photography (DOP) is in charge of an entire unit of camera operators and knows how to light a scene to match the mood, set up the cameras to match the director's vision, and to take advantage of a set's visual elements.</description>
+      <notes />
+    </role>
+    <role id="RO-3fd11c87-c95c-40cc-bbd7-ed0690420354">
+      <name>Director</name>
+      <description>The director is responsible for the look, sound, and emotional feel of a film. He or she assembles a creative team to facilitate the film's vision. A director leads the actors, consults with department heads, and designs a shooting style in partnership with the director of photography.</description>
+      <notes />
+    </role>
+    <role id="RO-21d5e567-504b-42ad-95af-4b1e7cf4b51e">
+      <name>Editor</name>
+      <description />
+      <notes />
+    </role>
+    <role id="RO-55ed22a1-b494-42b7-9103-c16ce4f9b46d">
+      <name>Executive Producer</name>
+      <description />
+      <notes />
+    </role>
+    <role id="RO-1c74a581-b2fd-46db-8d9f-078a3f72207c">
+      <name>Producer</name>
+      <description>The producer oversees all aspects of a production at every stage along the way. The producer locks in the finances, oversees all creative needs (such as script rewrites), aids in the creation of a cast, and pre-arranges distribution. Everyone in a film production company relies on the producer's skill at building and maintaining a team.</description>
+      <notes />
+    </role>
+    <role id="RO-dcf922c4-3738-49b5-b64b-f368520128a8">
+      <name>Production Assistant</name>
+      <description />
+      <notes />
+    </role>
+    <role id="RO-9b1bf293-9c1e-4868-8df0-f1f1911f5fca">
+      <name>Production Coordinator</name>
+      <description />
+      <notes />
+    </role>
+    <role id="RO-7cfc01ca-7397-4d13-acc3-104a2c6ea3b0">
+      <name>Production Manager</name>
+      <description>Responsible for organizing 
+the business, finance and employment issues in film and television productions.</description>
+      <notes />
+      <belongsToID>RO-1c74a581-b2fd-46db-8d9f-078a3f72207c</belongsToID>
+    </role>
+    <role id="RO-41d22a3d-76f0-46e7-8f0f-109b1056803a">
+      <name>Sound Recordist</name>
+      <description />
+      <notes />
+    </role>
+  </roles>
+  <positions />
+  <capabilities />
+  <orggroups>
+    <orggroup id="OG-200b6b20-5023-47b7-8ef9-ad1ec55f87ff">
+      <groupName>Production Office</groupName>
+      <groupType>GROUP</groupType>
+      <description />
+      <notes />
+    </orggroup>
+  </orggroups>
+</orgdata>
+

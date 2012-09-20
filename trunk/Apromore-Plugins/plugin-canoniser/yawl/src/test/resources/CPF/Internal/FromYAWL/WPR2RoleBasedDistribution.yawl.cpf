@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:CanonicalProcess xmlns:ns2="http://www.yawlfoundation.org/yawlschema" xmlns:ns3="http://www.apromore.org/CPF" uri="WPR1DirectDistribution" version="0.1" name="WPR1DirectDistribution" author="Felix" rootIds="id-N_Net">
+    <Net id="id-N_Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_InputCondition" originalID="InputCondition">
+            <name>IN</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_A" originalID="A">
+            <name>A</name>
+            <resourceTypeRef id="id-d401917b-b55c-4e66-bdb4-009f23bc64cc" resourceTypeId="id-R_RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_OutputCondition" originalID="OutputCondition">
+            <name>OUT</name>
+        </Node>
+        <Edge id="id-C_InputCondition-A" default="true" sourceId="id-C_InputCondition" targetId="id-C_A"/>
+        <Edge id="id-C_A-OutputCondition" default="true" sourceId="id-C_A" targetId="id-C_OutputCondition"/>
+    </Net>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:RoleType" id="id-R_RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
+        <name>RoleX</name>
+    </ResourceType>
+</ns3:CanonicalProcess>

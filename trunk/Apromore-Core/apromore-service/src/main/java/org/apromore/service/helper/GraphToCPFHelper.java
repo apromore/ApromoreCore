@@ -40,6 +40,7 @@ import org.apromore.graph.JBPT.CpfOrGateway;
 import org.apromore.graph.JBPT.CpfTask;
 import org.apromore.graph.JBPT.CpfTimer;
 import org.apromore.graph.JBPT.CpfXorGateway;
+import org.apromore.graph.JBPT.ICpfAttribute;
 import org.apromore.graph.JBPT.ICpfObject;
 import org.apromore.graph.JBPT.ICpfResource;
 import org.jbpt.pm.ControlFlow;
@@ -193,10 +194,11 @@ public class GraphToCPFHelper {
     private static Collection<? extends TypeAttribute> addAttributes(CpfNode n) {
         TypeAttribute typAtt;
         List<TypeAttribute> atts = new ArrayList<TypeAttribute>(0);
-        for (Entry<String, String> att : n.getAttributes().entrySet()) {
+        for (Entry<String, ICpfAttribute> att : n.getAttributes().entrySet()) {
             typAtt = new TypeAttribute();
-            typAtt.setTypeRef(att.getKey());
-            typAtt.setValue(att.getValue());
+            typAtt.setName(att.getKey());
+            typAtt.setValue(att.getValue().getValue());
+            typAtt.setAny(att.getValue().getAny());
         }
         return atts;
     }
@@ -282,20 +284,22 @@ public class GraphToCPFHelper {
         TypeAttribute typeA;
         for (String propName : graph.getProperties().keySet()) {
             typeA = new TypeAttribute();
-            typeA.setTypeRef(propName);
-            typeA.setValue(graph.getProperty(propName));
+            typeA.setName(propName);
+            typeA.setValue(graph.getProperty(propName).getValue());
+            typeA.setAny(graph.getProperty(propName).getAny());
             c.getAttribute().add(typeA);
         }
     }
 
 
-    private static List<TypeAttribute> buildAttributeList(Map<String, String> attributes) {
+    private static List<TypeAttribute> buildAttributeList(Map<String, ICpfAttribute> attributes) {
         TypeAttribute typAtt;
         List<TypeAttribute> atts = new ArrayList<TypeAttribute>(0);
-        for (Entry<String, String> e : attributes.entrySet()) {
+        for (Entry<String, ICpfAttribute> e : attributes.entrySet()) {
             typAtt = new TypeAttribute();
-            typAtt.setTypeRef(e.getKey());
-            typAtt.setValue(e.getValue());
+            typAtt.setName(e.getKey());
+            typAtt.setValue(e.getValue().getValue());
+            typAtt.setAny(e.getValue().getAny());
             atts.add(typAtt);
         }
         return atts;

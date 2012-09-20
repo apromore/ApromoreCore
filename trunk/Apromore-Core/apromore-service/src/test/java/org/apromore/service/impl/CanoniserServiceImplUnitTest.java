@@ -5,6 +5,7 @@ import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.exception.CanoniserException;
 import org.apromore.graph.JBPT.CPF;
+import org.apromore.plugin.exception.PluginNotFoundException;
 import org.apromore.service.impl.models.CanonicalNoAnnotationModel;
 import org.apromore.service.impl.models.CanonicalWithAnnotationModel;
 import org.apromore.service.model.CanonisedProcess;
@@ -27,11 +28,13 @@ import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStream;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.*;
 
 /**
  * Unit test the UserService Implementation.
@@ -63,15 +66,21 @@ public class CanoniserServiceImplUnitTest {
     }
 
     @Test
-    public void deCanoniseWithIncorrectType() throws Exception {
+    public void deCanoniseWithIncorrectType() throws IOException {
         Integer processId = 123;
         String version = "1.2";
         String name = "Canonical";
         InputStream cpf = new ByteArrayDataSource(CanonicalNoAnnotationModel.CANONICAL_XML, "text/xml").getInputStream();
 
-        DataSource data = service.deCanonise(processId, version, name, getTypeFromXML(cpf), null);
-
-        MatcherAssert.assertThat(data, Matchers.notNullValue());
+        DataSource data;
+        try {
+            data = service.deCanonise(processId, version, name, getTypeFromXML(cpf), null);
+            fail();
+        } catch (CanoniserException e) {
+            assertTrue(e.getCause() instanceof PluginNotFoundException);
+        } catch (JAXBException e) {
+            fail();
+        }
     }
 
     @Test

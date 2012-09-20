@@ -1,7 +1,6 @@
 package org.apromore.service.impl;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
@@ -43,7 +42,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 import org.wfmc._2008.xpdl2.PackageType;
-import org.xml.sax.SAXException;
 
 /**
  * Implementation of the UserService Contract.
@@ -237,11 +235,7 @@ public class ProcessServiceImpl implements ProcessService {
             }
         } catch (CanoniserException e) {
             e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (JAXBException e) {
-            e.printStackTrace();
-        } catch (SAXException e) {
             e.printStackTrace();
         }
     }

@@ -20,6 +20,7 @@ import org.apromore.dao.model.ResourceRefType;
 import org.apromore.dao.model.ResourceRefTypeAttribute;
 import org.apromore.graph.JBPT.CPF;
 import org.apromore.graph.JBPT.CpfNode;
+import org.apromore.graph.JBPT.ICpfAttribute;
 import org.apromore.graph.JBPT.ICpfNode;
 import org.apromore.graph.JBPT.ICpfObject;
 import org.apromore.graph.JBPT.ICpfResource;
@@ -226,10 +227,11 @@ public class ContentServiceImpl implements ContentService {
 
     private void addObjectAttributes(ObjectRefType obj, ICpfObject cObj) {
         ObjectRefTypeAttribute oAtt;
-        for (Entry<String, String> e : cObj.getAttributes().entrySet()) {
+        for (Entry<String, ICpfAttribute> e : cObj.getAttributes().entrySet()) {
             oAtt = new ObjectRefTypeAttribute();
             oAtt.setName(e.getKey());
-            oAtt.setValue(e.getValue());
+            oAtt.setValue(e.getValue().getValue());
+            //TODO persist getAny() as XML string
             obj.getObjectRefTypeAttributes().add(oAtt);
         }
     }
@@ -252,10 +254,11 @@ public class ContentServiceImpl implements ContentService {
 
     private void addResourceAttributes(ResourceRefType obj, ICpfResource cObj) {
         ResourceRefTypeAttribute rAtt;
-        for (Entry<String, String> e : cObj.getAttributes().entrySet()) {
+        for (Entry<String, ICpfAttribute> e : cObj.getAttributes().entrySet()) {
             rAtt = new ResourceRefTypeAttribute();
             rAtt.setName(e.getKey());
-            rAtt.setValue(e.getValue());
+            rAtt.setValue(e.getValue().getValue());
+            //TODO persist getAny() as XML string
             obj.getResourceRefTypeAttributes().add(rAtt);
         }
     }
@@ -263,10 +266,11 @@ public class ContentServiceImpl implements ContentService {
 
     private void addNodeAttributes(Node node, ICpfNode v) {
         NodeAttribute nAtt;
-        for (Entry<String, String> e : v.getAttributes().entrySet()) {
+        for (Entry<String, ICpfAttribute> e : v.getAttributes().entrySet()) {
             nAtt = new NodeAttribute();
             nAtt.setName(e.getKey());
-            nAtt.setValue(e.getValue());
+            nAtt.setValue(e.getValue().getValue());
+            //TODO persist getAny() as XML string
             node.getAttributes().add(nAtt);
         }
     }

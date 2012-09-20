@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <groupId>org.apromore.plugin</groupId>
+        <artifactId>plugin-parent</artifactId>
+        <version>1.0</version>
+    </parent>
+
+    <artifactId>canoniser-api</artifactId>    
+    <name>Apromore Canoniser API</name>
+    <url>http://code.google.com/p/apromore/</url>
+
+    <build>
+        <plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Export-Package>
+							org.apromore.canoniser,
+							org.apromore.canoniser.exception,
+							org.apromore.canoniser.provider
+						</Export-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+		</plugins>
+    </build>
+
+    
+	<dependencies>	
+		<dependency>
+			<groupId>org.apromore.plugin</groupId>
+			<artifactId>plugin-api</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope> <!-- Change to Provided -->
+		</dependency>
+		
+		<!-- Schemas used for utility methods provided by the DefaultAbstractCanoniser -->
+		<dependency>
+			<groupId>org.apromore</groupId>
+			<artifactId>anf-schema</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope> <!-- Change to Provided -->
+		</dependency>
+		<dependency>
+			<groupId>org.apromore</groupId>
+			<artifactId>cpf-schema</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope> <!-- Change to Provided -->
+		</dependency>
+			
+    </dependencies>
+    
+</project>

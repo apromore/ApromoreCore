@@ -25,7 +25,7 @@ public class CpfResource extends Resource implements ICpfResource {
 
     private ResourceType type;
     private List<String> specializationId = new ArrayList<String>(0);
-    private Map<String, String> attributes = new HashMap<String, String>(0);
+    private Map<String, ICpfAttribute> attributes = new HashMap<String, ICpfAttribute>(0);
 
 
     /**
@@ -144,18 +144,18 @@ public class CpfResource extends Resource implements ICpfResource {
     }
 
     @Override
-    public Map<String, String> getAttributes() {
+    public Map<String, ICpfAttribute> getAttributes() {
         return attributes;
     }
 
     @Override
-    public void setAttributes(final Map<String, String> newAttributes) {
+    public void setAttributes(final Map<String, ICpfAttribute> newAttributes) {
         attributes = newAttributes;
     }
 
     @Override
-    public void addAttribute(final String name, final String value) {
-        attributes.put(name, value);
+    public void addAttribute(final String name, final String value, final Object any) {
+        attributes.put(name, new CpfAttribute(value, any));
     }
 
 

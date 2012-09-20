@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns3:CanonicalProcess xmlns:ns2="http://www.yawlfoundation.org/yawlschema" xmlns:ns3="http://www.apromore.org/CPF" uri="WP1Sequence" version="0.1" name="WP1Sequence" author="Felix" rootIds="id-N_Net">
+    <Net id="id-N_Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_InputCondition" originalID="InputCondition">
+            <name>IN</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_A" originalID="A">
+            <name>A</name>
+            <objectRef id="id-3a50825f-aaee-4e03-a9e7-7364d3b28d1b" objectId="id-D_id-N_Net_var" type="output" optional="false" consumed="true">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;var&gt;{/A/var/text()}&lt;/var&gt;"/>
+                </attribute>
+            </objectRef>
+            <objectRef id="id-780e3027-40da-46ce-ac7d-a31c5af9de06" objectId="id-D_id-N_Net_var" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;var&gt;{/Net/var/text()}&lt;/var&gt;"/>
+                </attribute>
+            </objectRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:StateType" id="id-C_B_1" originalID="B_1">
+            <name>B</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_C_1" originalID="C_1">
+            <name>C</name>
+            <objectRef id="id-ac549243-dac8-49e1-abfa-293a26da6bcf" objectId="id-D_id-N_Net_var" type="input" optional="false" consumed="false">
+                <attribute name="yawlOriginalExpression">
+                    <ns2:yawlOriginalExpression query="&lt;var&gt;{/Net/var/text()}&lt;/var&gt;"/>
+                </attribute>
+            </objectRef>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_D_1" originalID="D_1">
+            <name>D</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_OutputCondition" originalID="OutputCondition">
+            <name>OUT</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:StateType" id="id-f9fe6c7e-8f9a-4444-a408-2fdfcb10049c"/>
+        <Edge id="id-C_InputCondition-A" default="true" sourceId="id-C_InputCondition" targetId="id-C_A"/>
+        <Edge id="id-C_A-B_1" default="true" sourceId="id-C_A" targetId="id-C_B_1"/>
+        <Edge id="id-C_B_1-C_1" default="true" sourceId="id-C_B_1" targetId="id-C_C_1"/>
+        <Edge id="id-C_B_1-D_1" default="true" sourceId="id-C_B_1" targetId="id-C_D_1"/>
+        <Edge id="id-C_id-f9fe6c7e-8f9a-4444-a408-2fdfcb10049c-id-C_OutputCondition" default="true" sourceId="id-f9fe6c7e-8f9a-4444-a408-2fdfcb10049c" targetId="id-C_OutputCondition"/>
+        <Edge id="id-C_id-C_C_1-id-f9fe6c7e-8f9a-4444-a408-2fdfcb10049c" default="true" sourceId="id-C_C_1" targetId="id-f9fe6c7e-8f9a-4444-a408-2fdfcb10049c"/>
+        <Edge id="id-C_id-C_D_1-id-f9fe6c7e-8f9a-4444-a408-2fdfcb10049c" default="true" sourceId="id-C_D_1" targetId="id-f9fe6c7e-8f9a-4444-a408-2fdfcb10049c"/>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_Net_var" originalID="id-N_Net_var">
+            <name>var</name>
+            <type>string</type>
+        </Object>
+    </Net>
+</ns3:CanonicalProcess>

@@ -100,6 +100,52 @@
             <artifactId>manager-client</artifactId>
             <version>1.0</version>
         </dependency>
+        
+        <!-- Plugin API -->
+		<dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>plugin-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+                
+        <!-- Canoniser API -->
+		<dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+		<dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-api-provider</artifactId>
+            <version>1.0</version>
+        </dependency>
+        
+        <!-- Canoniser Plugins (workaround until OSGi is there) -->
+		<dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-epml</artifactId>
+            <version>1.0</version>
+        </dependency>
+		<dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-xpdl</artifactId>
+            <version>1.0</version>
+        </dependency>
+		<dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-pnml</artifactId>
+            <version>1.0</version>
+        </dependency>
+		<dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-bpmn</artifactId>
+            <version>1.0</version>
+        </dependency>
+		<dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-yawl</artifactId>
+            <version>1.0</version>
+        </dependency>
 
         <!-- Schema -->
         <dependency>
