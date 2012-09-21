@@ -17,19 +17,20 @@ import org.xml.sax.SAXException;
 
 /**
  * Utilities for working with the CPF (Validation/Parsing)
- * 
+ *
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
- * 
+ *
  */
 public class ANFSchema {
 
+    public static final String ANF_CONTEXT = "org.apromore.anf";
+
     private static final String ANF_SCHEMA_LOCATION = "/xsd/anf_0.3.xsd";
-    private static final String ANF_CONTEXT = "org.apromore.anf";
 
     /**
      * Schema of ANF
-     * 
-     * @return
+     *
+     * @return Schema
      * @throws SAXException
      */
     public static Schema getANFSchema() throws SAXException {
@@ -40,8 +41,8 @@ public class ANFSchema {
 
     /**
      * Validator for ANF
-     * 
-     * @return
+     *
+     * @return Validator
      * @throws SAXException
      */
     public static Validator getANFValidator() throws SAXException {
@@ -50,9 +51,10 @@ public class ANFSchema {
 
     /**
      * Marshal the Annotations Format into the provided OutputStream.
-     * 
-     * @param canonicalFormat
-     * @param cpf
+     *
+     * @param annotationFormat
+     * @param anf
+     * @param isValidating
      * @throws JAXBException
      * @throws PropertyException
      * @throws SAXException
@@ -71,8 +73,9 @@ public class ANFSchema {
 
     /**
      * Unmarshal the Annotations Format from the provided InputStream.
-     * 
-     * @param canonicalFormat
+     *
+     * @param annotationsFormat
+     * @param isValidating
      * @return
      * @throws JAXBException
      * @throws SAXException

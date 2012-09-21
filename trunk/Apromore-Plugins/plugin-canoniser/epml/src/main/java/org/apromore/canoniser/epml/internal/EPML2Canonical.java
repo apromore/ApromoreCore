@@ -27,8 +27,38 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
+
+import org.apromore.anf.AnnotationsType;
+import org.apromore.anf.FillType;
+import org.apromore.anf.FontType;
+import org.apromore.anf.GraphicsType;
+import org.apromore.anf.LineType;
+import org.apromore.anf.PositionType;
+import org.apromore.anf.SizeType;
+import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.cpf.ANDJoinType;
+import org.apromore.cpf.ANDSplitType;
+import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.ConditionExpressionType;
+import org.apromore.cpf.EdgeType;
+import org.apromore.cpf.EventType;
+import org.apromore.cpf.HumanType;
+import org.apromore.cpf.InputOutputType;
+import org.apromore.cpf.NetType;
+import org.apromore.cpf.NodeType;
+import org.apromore.cpf.ORJoinType;
+import org.apromore.cpf.ORSplitType;
+import org.apromore.cpf.ObjectRefType;
+import org.apromore.cpf.ObjectType;
+import org.apromore.cpf.ResourceTypeRefType;
+import org.apromore.cpf.TaskType;
+import org.apromore.cpf.TypeAttribute;
+import org.apromore.cpf.WorkType;
+import org.apromore.cpf.XORJoinType;
+import org.apromore.cpf.XORSplitType;
 
 import de.epml.TEpcElement;
 import de.epml.TExtensibleElements;
@@ -45,32 +75,7 @@ import de.epml.TypeProcessInterface;
 import de.epml.TypeRANGE;
 import de.epml.TypeRole;
 import de.epml.TypeXOR;
-import org.apromore.anf.AnnotationsType;
-import org.apromore.anf.FillType;
-import org.apromore.anf.FontType;
-import org.apromore.anf.GraphicsType;
-import org.apromore.anf.LineType;
-import org.apromore.anf.PositionType;
-import org.apromore.anf.SizeType;
-import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.ANDJoinType;
-import org.apromore.cpf.ANDSplitType;
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.EdgeType;
-import org.apromore.cpf.EventType;
-import org.apromore.cpf.HumanType;
-import org.apromore.cpf.InputOutputType;
-import org.apromore.cpf.NetType;
-import org.apromore.cpf.NodeType;
-import org.apromore.cpf.ORJoinType;
-import org.apromore.cpf.ORSplitType;
-import org.apromore.cpf.ObjectRefType;
-import org.apromore.cpf.ObjectType;
-import org.apromore.cpf.ResourceTypeRefType;
-import org.apromore.cpf.TaskType;
-import org.apromore.cpf.WorkType;
-import org.apromore.cpf.XORJoinType;
-import org.apromore.cpf.XORSplitType;
+;
 
 public class EPML2Canonical {
 
@@ -88,8 +93,8 @@ public class EPML2Canonical {
     List<TypeArc> range_flow = new LinkedList<TypeArc>();
     List<TypeArc> range_relation = new LinkedList<TypeArc>();
 
-    private CanonicalProcessType cproc = new CanonicalProcessType();
-    private AnnotationsType annotations = new AnnotationsType();
+    private final CanonicalProcessType cproc = new CanonicalProcessType();
+    private final AnnotationsType annotations = new AnnotationsType();
     private long ids = System.currentTimeMillis();
 
 
@@ -112,11 +117,11 @@ public class EPML2Canonical {
      * @throws org.apromore.exception.CanoniserException
      * @since 1.0
      */
-    public EPML2Canonical(TypeEPML epml) throws CanoniserException {
+    public EPML2Canonical(final TypeEPML epml) throws CanoniserException {
         main(epml);
     }
 
-    public EPML2Canonical(TypeEPML epml, long id) throws CanoniserException {
+    public EPML2Canonical(final TypeEPML epml, final long id) throws CanoniserException {
         this.ids = id;
         main(epml);
     }
@@ -124,11 +129,10 @@ public class EPML2Canonical {
     void main(TypeEPML epml) throws CanoniserException {
         epml = removeFakes(epml);
 
-        //TODO FM extension
-//        TypeAttribute att = new TypeAttribute();
-//        att.setTypeRef("IntialFormat");
-//        att.setValue("EPML");
-//        cproc.getAttribute().add(att);
+        TypeAttribute att = new TypeAttribute();
+        att.setName("IntialFormat");
+        att.setValue("EPML");
+        cproc.getAttribute().add(att);
 
         if (epml.getDirectory() != null && epml.getDirectory().size() > 0) {
             for (int i = 0; i < epml.getDirectory().size(); i++) {
@@ -170,7 +174,7 @@ public class EPML2Canonical {
      * @return epml      the header for the EPML modelass after modification
      * @since 1.0
      */
-    private TypeEPML removeFakes(TypeEPML epml) {
+    private TypeEPML removeFakes(final TypeEPML epml) {
         List<TEpcElement> remove_list = new LinkedList<TEpcElement>();
         List<TypeArc> arc_remove_list = new LinkedList<TypeArc>();
 
@@ -251,7 +255,7 @@ public class EPML2Canonical {
     }
 
     @SuppressWarnings("unchecked")
-    private void translateEpc(NetType net, TypeEPC epc) throws CanoniserException {
+    private void translateEpc(final NetType net, final TypeEPC epc) throws CanoniserException {
         Map<String, String> role_names = new HashMap<String, String>();
 
         for (Object obj : epc.getEventOrFunctionOrRole()) {
@@ -413,7 +417,7 @@ public class EPML2Canonical {
     }
 
 
-    private void addEdgeAnnotation(TypeArc arc) throws CanoniserException {
+    private void addEdgeAnnotation(final TypeArc arc) throws CanoniserException {
         LineType line = new LineType();
         GraphicsType graph = new GraphicsType();
         FontType font = new FontType();
@@ -454,7 +458,7 @@ public class EPML2Canonical {
         }
     }
 
-    private void addNodeAnnotations(Object obj) {
+    private void addNodeAnnotations(final Object obj) {
         GraphicsType graphT = new GraphicsType();
         LineType line = new LineType();
         FillType fill = new FillType();
@@ -512,7 +516,7 @@ public class EPML2Canonical {
 
     // should be in the end
 
-    private void processUnrequiredEvents(NetType net, BigInteger id) throws CanoniserException {
+    private void processUnrequiredEvents(final NetType net, final BigInteger id) throws CanoniserException {
         List<EdgeType> edge_remove_list = new LinkedList<EdgeType>();
         List<NodeType> node_remove_list = new LinkedList<NodeType>();
         String event_id;
@@ -532,11 +536,11 @@ public class EPML2Canonical {
                     for (NodeType node : net.getNode()) {
                         if (node.getId().equals(event_id)) {
                             if (found) {
-                                edge.setConditionExpr(node.getName());
+                                edge.setConditionExpr(convertStringExpression(node.getName()));
                                 node_remove_list.add(node);
                             }
                             else {
-                                edge.setConditionExpr(node.getName());
+                                edge.setConditionExpr(convertStringExpression(node.getName()));
                                 node.setName("");
                             }
                         }
@@ -556,7 +560,13 @@ public class EPML2Canonical {
 
     }
 
-    private void translateEvent(NetType net, TypeEvent event) {
+    private ConditionExpressionType convertStringExpression(final String name) {
+        ConditionExpressionType expr = new ConditionExpressionType();
+        expr.setDescription(name);
+        return expr;
+    }
+
+    private void translateEvent(final NetType net, final TypeEvent event) {
         EventType node = new EventType();
         id_map.put(event.getId(), String.valueOf(ids));
         event_ids.add(String.valueOf(ids));
@@ -565,7 +575,7 @@ public class EPML2Canonical {
         net.getNode().add(node);
     }
 
-    private void translateFunction(NetType net, TypeFunction func) {
+    private void translateFunction(final NetType net, final TypeFunction func) {
         TaskType task = new TaskType();
         id_map.put(func.getId(), String.valueOf(ids));
         task.setId(String.valueOf(ids++));
@@ -579,7 +589,7 @@ public class EPML2Canonical {
         net.getNode().add(task);
     }
 
-    private void translatePI(NetType net, TypeProcessInterface pi) {
+    private void translatePI(final NetType net, final TypeProcessInterface pi) {
         TaskType task = new TaskType();
         id_map.put(pi.getId(), String.valueOf(ids));
         task.setId(String.valueOf(ids++));
@@ -588,7 +598,7 @@ public class EPML2Canonical {
         net.getNode().add(task);
     }
 
-    private void translateArc(NetType net, TypeArc arc) {
+    private void translateArc(final NetType net, final TypeArc arc) {
         if (arc.getFlow() != null && id_map.get(arc.getFlow().getSource()) != null && id_map.get(arc.getFlow().getTarget()) != null) {
             EdgeType edge = new EdgeType();
             id_map.put(arc.getId(), String.valueOf(ids));
@@ -603,12 +613,11 @@ public class EPML2Canonical {
                 if (node.getId().equals(id_map.get(arc.getRelation().getSource()))) {
                     if (arc.getRelation().getType() != null && arc.getRelation().getType().equals("role")) {
                         ResourceTypeRefType ref = new ResourceTypeRefType();
-                        //TODO FM extension
-//                        TypeAttribute att = new TypeAttribute();
-//                        id_map.put(arc.getId(), String.valueOf(ids));
-//                        att.setTypeRef("RefID");
-//                        att.setValue(String.valueOf(ids++));
-//                        ref.getAttribute().add(att);
+                        TypeAttribute att = new TypeAttribute();
+                        id_map.put(arc.getId(), String.valueOf(ids));
+                        att.setName("RefID");
+                        att.setValue(String.valueOf(ids++));
+                        ref.getAttribute().add(att);
                         ref.setResourceTypeId(id_map.get(arc.getRelation().getTarget()));
                         if (role_ref.get(arc.getRelation().getSource()) != null) {
                             ref.setOptional(role_ref.get(arc.getRelation().getSource()).isOptional());
@@ -618,12 +627,11 @@ public class EPML2Canonical {
                     }
                     else {
                         ObjectRefType ref = new ObjectRefType();
-                        //TODO FM extension
-//                        TypeAttribute att = new TypeAttribute();
-//                        id_map.put(arc.getId(), String.valueOf(ids));
-//                        att.setTypeRef("RefID");
-//                        att.setValue(String.valueOf(ids++));
-//                        ref.getAttribute().add(att);
+                        TypeAttribute att = new TypeAttribute();
+                        id_map.put(arc.getId(), String.valueOf(ids));
+                        att.setName("RefID");
+                        att.setValue(String.valueOf(ids++));
+                        ref.getAttribute().add(att);
                         ref.setObjectId(id_map.get(arc.getRelation().getTarget()));
                         ref.setType(InputOutputType.OUTPUT);
                         if (obj_ref.get(arc.getRelation().getTarget()) != null) {
@@ -635,12 +643,11 @@ public class EPML2Canonical {
                 }
                 else if (node.getId().equals(id_map.get(arc.getRelation().getTarget()))) {
                     ObjectRefType ref = new ObjectRefType();
-                    //TODO FM extension
-//                    TypeAttribute att = new TypeAttribute();
-//                    id_map.put(arc.getId(), String.valueOf(ids));
-//                    att.setTypeRef("RefID");
-//                    att.setValue(String.valueOf(ids++));
-//                    ref.getAttribute().add(att);
+                    TypeAttribute att = new TypeAttribute();
+                    id_map.put(arc.getId(), String.valueOf(ids));
+                    att.setName("RefID");
+                    att.setValue(String.valueOf(ids++));
+                    ref.getAttribute().add(att);
                     ref.setObjectId(id_map.get(arc.getRelation().getSource()));
                     ref.setType(InputOutputType.INPUT);
                     ((WorkType) node).getObjectRef().add(ref);
@@ -649,7 +656,7 @@ public class EPML2Canonical {
         }
     }
 
-    private void translateObject(final NetType net, TypeObject obj) {
+    private void translateObject(final NetType net, final TypeObject obj) {
         if (obj.getDefRef() != null && def_ref.get(obj.getDefRef()) != null) {
             id_map.put(obj.getId(), def_ref.get(obj.getDefRef()));
         }
@@ -664,7 +671,7 @@ public class EPML2Canonical {
         obj_ref.put(obj.getId(), obj);
     }
 
-    private void translateRole(TypeRole role) {
+    private void translateRole(final TypeRole role) {
         if (role.getDefRef() != null && def_ref.get(role.getDefRef()) != null) {
             id_map.put(role.getId(), def_ref.get(role.getDefRef()));
         }

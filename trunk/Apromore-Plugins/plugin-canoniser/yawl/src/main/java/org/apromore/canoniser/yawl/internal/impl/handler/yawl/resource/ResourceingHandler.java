@@ -68,7 +68,7 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
             if (offer.getFamiliarParticipant() != null) {
                 // TODO add to CPF instead of ANF
                 try {
-                    addToExtension(
+                    addToAnnotations(
                             ConversionUtils.marshalYAWLFragment("familiarParticipant", offer.getFamiliarParticipant(), FamiliarParticipant.class),
                             getConvertedParent().getId());
                 } catch (JAXBException e) {
@@ -80,7 +80,7 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
             // Distribution of work will be handled by User at Runtime, there is no way of capturing this in CPF
             // TODO add to CPF instead of ANF
             try {
-                addToExtension(ConversionUtils.marshalYAWLFragment("resourcing", getObject(), ResourcingFactsType.class), getConvertedParent()
+                addToAnnotations(ConversionUtils.marshalYAWLFragment("resourcing", getObject(), ResourcingFactsType.class), getConvertedParent()
                         .getId());
             } catch (JAXBException e) {
                 throw new CanoniserException("Failed to add the resourcing extension element", e);
@@ -120,9 +120,9 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
             // Add YAWL extension elements to ANF
             // TODO add to CPF instead of ANF
             try {
-                addToExtension(ConversionUtils.marshalYAWLFragment("constraints", distributionSet.getConstraints(), Constraints.class),
+                addToAnnotations(ConversionUtils.marshalYAWLFragment("constraints", distributionSet.getConstraints(), Constraints.class),
                         resourceType.getId());
-                addToExtension(ConversionUtils.marshalYAWLFragment("filters", distributionSet.getFilters(), Filters.class), resourceType.getId());
+                addToAnnotations(ConversionUtils.marshalYAWLFragment("filters", distributionSet.getFilters(), Filters.class), resourceType.getId());
             } catch (JAXBException e) {
                 throw new CanoniserException("Failed to add the constraints/filter extension element", e);
             }

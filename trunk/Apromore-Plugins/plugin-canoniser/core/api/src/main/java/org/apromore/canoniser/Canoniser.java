@@ -1,6 +1,6 @@
 /**
- *  Copyright 2012, Felix Mannhardt 
- * 
+ *  Copyright 2012, Felix Mannhardt
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -27,43 +27,46 @@ import org.apromore.plugin.PropertyAwarePlugin;
 
 /**
  * Interface to an Apromore canoniser. Each canoniser is build as a OSGi plugin and has to implement this interface.
- * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ *
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  */
 public interface Canoniser extends PropertyAwarePlugin {
 
-	public static final String ANF_CONTEXT = "org.apromore.anf";
-	public static final String CPF_CONTEXT = "org.apromore.cpf";
+    /**
+     * Type of the native format which this canoniser can handle. For example "EPML 2.0" or "YAWL 2.2"
+     *
+     * @return the type of the native format
+     */
+    String getNativeType();
 
-	/**
-	 * Type of the native format which this canoniser can handle.
-	 * 
-	 * @return the type of the native format
-	 */
-	String getNativeType();
-	
+    /**
+     * Convert the data in native format to the canonical format and its annotation format.
+     *
+     * @param nativeInput
+     *            stream of the native format
+     * @param annotationFormat
+     *            list to which the canonized Annotations are added
+     * @param canonicalFormat
+     *            list to which the canonized Canonical Processes are added
+     * @throws CanoniserException
+     *             in case of an Exception during conversion
+     */
+    void canonise(final InputStream nativeInput, List<AnnotationsType> annotationFormat, List<CanonicalProcessType> canonicalFormat)
+            throws CanoniserException;
 
-	/**
-	 * Convert the data in native format to the canonical format and its annotation format.
-	 * 
-	 * @param nativeInput
-	 * @param annotationFormat
-	 * @param canonicalFormat
-	 * @throws CanoniserException
-	 *             in case of an Exception during conversion
-	 */
-	void canonise(final InputStream nativeInput, List<AnnotationsType> annotationFormat, List<CanonicalProcessType> canonicalFormat) throws CanoniserException;
-
-	/**
-	 * Convert the data in annotation format and canonical format to the native format.
-	 * 
-	 * @param canonicalFormat
-	 * @param annotationFormat
-	 * @param nativeOutput
-	 * @throws CanoniserException
-	 *             in case of an Exception during conversion
-	 */
-	void deCanonise(final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final OutputStream nativeOutput)
-			throws CanoniserException;
+    /**
+     * Convert the data in annotation format and canonical format to the native format.
+     *
+     * @param canonicalFormat
+     *            Canonical Process Type to deCanonise
+     * @param annotationFormat
+     *            Annotations to deCanonise
+     * @param nativeOutput
+     *            stream of the native format
+     * @throws CanoniserException
+     *             in case of an Exception during conversion
+     */
+    void deCanonise(final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final OutputStream nativeOutput)
+            throws CanoniserException;
 
 }

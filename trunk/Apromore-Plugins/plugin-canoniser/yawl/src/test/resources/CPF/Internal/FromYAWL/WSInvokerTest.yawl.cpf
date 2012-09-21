@@ -6,22 +6,19 @@
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_A_3" originalID="A_3">
             <name>A</name>
-            <inputExpr>YawlWSInvokerOperationName=null</inputExpr>
-            <inputExpr>YawlWSInvokerWSDLLocation=null</inputExpr>
-            <inputExpr>YawlWSInvokerPortName=null</inputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="id-b51f5550-eb84-41fc-8de8-b8724bef024d">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="id-635f5b37-e5ed-4bb2-bcfd-30dcfc03d5a3">
             <direction>outgoing</direction>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="id-719f739f-eb49-4a8d-9ee2-97c3455af1a6">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="id-48443998-0af7-4970-b70b-36f86c77e6bb">
             <direction>incoming</direction>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_OutputCondition_2" originalID="OutputCondition_2">
             <name>OUT</name>
         </Node>
-        <Edge id="id-C_id-b51f5550-eb84-41fc-8de8-b8724bef024d-id-C_A_3" default="true" sourceId="id-b51f5550-eb84-41fc-8de8-b8724bef024d" targetId="id-C_A_3"/>
-        <Edge id="id-C_id-C_A_3-id-719f739f-eb49-4a8d-9ee2-97c3455af1a6" default="true" sourceId="id-C_A_3" targetId="id-719f739f-eb49-4a8d-9ee2-97c3455af1a6"/>
-        <Edge id="id-C_id-C_InputCondition_1-id-b51f5550-eb84-41fc-8de8-b8724bef024d" default="true" sourceId="id-C_InputCondition_1" targetId="id-b51f5550-eb84-41fc-8de8-b8724bef024d"/>
-        <Edge id="id-C_id-719f739f-eb49-4a8d-9ee2-97c3455af1a6-id-C_OutputCondition_2" default="true" sourceId="id-719f739f-eb49-4a8d-9ee2-97c3455af1a6" targetId="id-C_OutputCondition_2"/>
+        <Edge id="id-C_id-635f5b37-e5ed-4bb2-bcfd-30dcfc03d5a3-id-C_A_3" default="true" sourceId="id-635f5b37-e5ed-4bb2-bcfd-30dcfc03d5a3" targetId="id-C_A_3"/>
+        <Edge id="id-C_id-C_A_3-id-48443998-0af7-4970-b70b-36f86c77e6bb" default="true" sourceId="id-C_A_3" targetId="id-48443998-0af7-4970-b70b-36f86c77e6bb"/>
+        <Edge id="id-C_id-C_InputCondition_1-id-635f5b37-e5ed-4bb2-bcfd-30dcfc03d5a3" default="true" sourceId="id-C_InputCondition_1" targetId="id-635f5b37-e5ed-4bb2-bcfd-30dcfc03d5a3"/>
+        <Edge id="id-C_id-48443998-0af7-4970-b70b-36f86c77e6bb-id-C_OutputCondition_2" default="true" sourceId="id-48443998-0af7-4970-b70b-36f86c77e6bb" targetId="id-C_OutputCondition_2"/>
     </Net>
 </ns2:CanonicalProcess>

@@ -6,7 +6,7 @@
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_A" originalID="A">
             <name>A</name>
-            <resourceTypeRef id="id-25564355-fe4f-41bc-8953-faede7597cc1" resourceTypeId="id-R_RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7"/>
+            <resourceTypeRef id="id-eb4703ad-2c21-4b8d-a6d9-30a77470a55c" resourceTypeId="id-R_RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7"/>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_OutputCondition" originalID="OutputCondition">
             <name>OUT</name>

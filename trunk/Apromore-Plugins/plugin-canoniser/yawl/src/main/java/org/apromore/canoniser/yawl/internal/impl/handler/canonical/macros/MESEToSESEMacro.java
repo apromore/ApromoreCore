@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros;
@@ -15,7 +15,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionContext;
+import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.ConditionExpressionType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.NetType;
@@ -29,9 +31,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Converts any multiple entry Net into a single entry Net. By default it only adds an OR-SPLIT, but more sophisticated techniques could be
  * implemented.
- * 
+ *
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class MESEToSESEMacro extends ContextAwareRewriteMacro {
 
@@ -43,13 +45,15 @@ public class MESEToSESEMacro extends ContextAwareRewriteMacro {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.RewriteMacro#rewrite(org.apromore.cpf.CanonicalProcessType)
      */
     @Override
     public boolean rewrite(final CanonicalProcessType cpf) {
 
         boolean hasRewritten = false;
+
+        //TODO check if net is not just work in progress
 
         for (final NetType net : cpf.getNet()) {
             if (getContext().hasMultipleEntries(net)) {
@@ -104,7 +108,10 @@ public class MESEToSESEMacro extends ContextAwareRewriteMacro {
         for (final NodeType node : entryNodes) {
             final EdgeType edge = createEdge(orSplit, node);
             // By default activate all outgoing edges
-            edge.setConditionExpr("true()");
+            ConditionExpressionType conditionExpr = cpfFactory.createConditionExpressionType();
+            conditionExpr.setExpression("true()");
+            conditionExpr.setLanguage(CPFSchema.EXPRESSION_LANGUAGE_XPATH);
+            edge.setConditionExpr(conditionExpr);
             addEdgeLater(edge);
         }
     }
