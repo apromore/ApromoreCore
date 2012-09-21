@@ -36,9 +36,9 @@ import org.xml.sax.SAXException;
 
 /**
  * Base class for all Pattern based Unit tests
- * 
+ *
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public abstract class BaseYAWL2CPFTest {
 
