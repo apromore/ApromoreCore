@@ -22,12 +22,12 @@ public class CanoniserResult {
     /**
      * Processes in the order they appeared within the original BPMN document.
      */
-    private List<CanonicalProcessType> cpfList = new ArrayList<>();
+    private List<CanonicalProcessType> cpfList = new ArrayList<CanonicalProcessType>();
 
     /**
      * Each annotation applies to the process in the same position within the {@link #cpfList}.
      */
-    private List<AnnotationsType> anfList = new ArrayList<>();
+    private List<AnnotationsType> anfList = new ArrayList<AnnotationsType>();
 
     /**
      * Add an associated pair of CPF and ANF structures to the result
