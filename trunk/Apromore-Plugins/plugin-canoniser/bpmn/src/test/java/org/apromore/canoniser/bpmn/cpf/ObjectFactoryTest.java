@@ -24,7 +24,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 // Local packages
-import org.apromore.common.Constants;
+import static org.apromore.canoniser.Canoniser.CPF_CONTEXT;
+import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
@@ -34,7 +35,6 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
-import org.apromore.exception.CanoniserException;
 
 /**
  * Test suite for {@link CanoniserDefinitions}.
@@ -81,7 +81,7 @@ public class ObjectFactoryTest {
         final String filename ="Basic";
 
         // Read the CPF source file
-        Unmarshaller cpfUnmarshaller = JAXBContext.newInstance(Constants.CPF_CONTEXT).createUnmarshaller();
+        Unmarshaller cpfUnmarshaller = JAXBContext.newInstance(CPF_CONTEXT).createUnmarshaller();
         cpfUnmarshaller.setListener(new CpfUnmarshallerListener());
         cpfUnmarshaller.setProperty(ID_RESOLVER, new CpfIDResolver());
         cpfUnmarshaller.setProperty(OBJECT_FACTORY, new ObjectFactory());

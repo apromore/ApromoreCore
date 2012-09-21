@@ -32,9 +32,11 @@ import org.junit.Test;
 
 // Local packages
 import org.apromore.anf.AnnotationsType;
+import static org.apromore.canoniser.Canoniser.ANF_CONTEXT;
+import static org.apromore.canoniser.Canoniser.CPF_CONTEXT;
 import org.apromore.canoniser.bpmn.cpf.CpfIDResolver;
 import org.apromore.canoniser.bpmn.cpf.CpfUnmarshallerListener;
-import org.apromore.common.Constants;
+import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
@@ -44,7 +46,6 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
-import org.apromore.exception.CanoniserException;
 import org.omg.spec.bpmn._20100524.model.Definitions;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TProcess;
@@ -200,13 +201,13 @@ public class CanoniserDefinitionsTest {
         assertNotNull(result.getAnf(0));
         assertNotNull(result.getCpf(0));
 
-        Marshaller marshaller = JAXBContext.newInstance(Constants.ANF_CONTEXT).createMarshaller();
+        Marshaller marshaller = JAXBContext.newInstance(ANF_CONTEXT).createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setSchema(ANF_SCHEMA);
         marshaller.marshal(new JAXBElement<AnnotationsType>(ANF_ROOT, AnnotationsType.class, result.getAnf(0)),
                            new File(OUTPUT_DIR, "Test1.anf"));
 
-        marshaller = JAXBContext.newInstance(Constants.CPF_CONTEXT).createMarshaller();
+        marshaller = JAXBContext.newInstance(CPF_CONTEXT).createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setSchema(CPF_SCHEMA);
         marshaller.marshal(new JAXBElement<CanonicalProcessType>(CPF_ROOT, CanonicalProcessType.class, result.getCpf(0)),
@@ -243,13 +244,13 @@ public class CanoniserDefinitionsTest {
         assertNotNull(result.getAnf(0));
         assertNotNull(result.getCpf(0));
 
-        Marshaller marshaller = JAXBContext.newInstance(Constants.ANF_CONTEXT).createMarshaller();
+        Marshaller marshaller = JAXBContext.newInstance(ANF_CONTEXT).createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setSchema(ANF_SCHEMA);
         marshaller.marshal(new JAXBElement<AnnotationsType>(ANF_ROOT, AnnotationsType.class, result.getAnf(0)),
                            new File(OUTPUT_DIR, filename + ".anf"));
 
-        marshaller = JAXBContext.newInstance(Constants.CPF_CONTEXT).createMarshaller();
+        marshaller = JAXBContext.newInstance(CPF_CONTEXT).createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setSchema(CPF_SCHEMA);
         marshaller.marshal(new JAXBElement<CanonicalProcessType>(CPF_ROOT, CanonicalProcessType.class, result.getCpf(0)),
@@ -591,7 +592,7 @@ public class CanoniserDefinitionsTest {
     private final CanoniserDefinitions testDecanonise(final String filename) throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
 
         // Read the CPF source file
-        Unmarshaller cpfUnmarshaller = JAXBContext.newInstance(Constants.CPF_CONTEXT).createUnmarshaller();
+        Unmarshaller cpfUnmarshaller = JAXBContext.newInstance(CPF_CONTEXT).createUnmarshaller();
         cpfUnmarshaller.setListener(new CpfUnmarshallerListener());
         cpfUnmarshaller.setProperty(ID_RESOLVER, new CpfIDResolver());
         cpfUnmarshaller.setProperty(OBJECT_FACTORY, new org.apromore.canoniser.bpmn.cpf.ObjectFactory());
@@ -602,7 +603,7 @@ public class CanoniserDefinitionsTest {
         ).getValue();
 
         // Read the ANF source file
-        Unmarshaller anfUnmarshaller = JAXBContext.newInstance(Constants.ANF_CONTEXT).createUnmarshaller();
+        Unmarshaller anfUnmarshaller = JAXBContext.newInstance(ANF_CONTEXT).createUnmarshaller();
         anfUnmarshaller.setSchema(ANF_SCHEMA);
         AnnotationsType anf = anfUnmarshaller.unmarshal(
             new StreamSource(new FileInputStream(new File(TESTCASES_DIR, filename + ".anf"))),
