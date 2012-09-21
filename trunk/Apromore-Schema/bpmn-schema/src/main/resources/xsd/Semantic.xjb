@@ -44,6 +44,12 @@
            </property>
         </bindings>
 
+        <bindings node="xsd:complexType[@name='tParticipant']//xsd:attribute[@name='processRef']">
+            <property>
+                <!-- <baseType name="TProcess"/> -->
+            </property>
+        </bindings>
+
         <bindings node="xsd:complexType[@name='tSequenceFlow']//xsd:attribute[@name='sourceRef']">
             <property><baseType name="TFlowNode"/></property>
         </bindings>
