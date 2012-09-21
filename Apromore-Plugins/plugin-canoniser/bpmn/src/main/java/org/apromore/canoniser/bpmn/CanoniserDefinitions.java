@@ -44,7 +44,7 @@ import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
-import org.apromore.exception.CanoniserException;
+import org.apromore.canoniser.exception.CanoniserException;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
@@ -229,7 +229,7 @@ public class CanoniserDefinitions extends Definitions {
     /**
      * CPF schema version.
      */
-    public static final String CPF_VERSION = "0.5";
+    public static final String CPF_VERSION = "0.6";
 
     /**
      * XPath expression language URI.
