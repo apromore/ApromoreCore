@@ -17,13 +17,13 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.bpmn.BPMN20Canoniser;
 import org.apromore.canoniser.epml.EPML20Canoniser;
+import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.pnml.PNML132Canoniser;
 import org.apromore.canoniser.provider.impl.CanoniserProviderImpl;
 import org.apromore.canoniser.xpdl.XPDL21Canoniser;
 import org.apromore.canoniser.yawl.YAWL22Canoniser;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.exception.CanoniserException;
 import org.apromore.exception.SerializationException;
 import org.apromore.graph.JBPT.CPF;
 import org.apromore.plugin.exception.PluginNotFoundException;
@@ -163,8 +163,8 @@ public class CanoniserServiceImpl implements CanoniserService {
 
             try {
                 canoniserProvider.deCanonise(nativeType, annType, canType, native_xml);
-            } catch (org.apromore.canoniser.exception.CanoniserException | PluginNotFoundException e) {
-                throw new CanoniserException("Could not deCanonise "+nativeType+" Exception was: "+e.getMessage(), e.getCause());
+            } catch (PluginNotFoundException e) {
+                throw new CanoniserException("Could not deCanonise "+nativeType, e);
             }
 
             InputStream native_xml_is = new ByteArrayInputStream(native_xml.toByteArray());

@@ -6,22 +6,20 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apromore.canoniser.yawl.utils.TestUtils;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
  * This test is just checking if any exceptions occur during conversion. No structural checks are done.
- * 
+ *
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
-@Ignore
 @RunWith(Parameterized.class)
-public class FromXDPLTests extends WholeDirectoryTest {
+public class FromPNMLTestsManualTest extends WholeDirectoryTest {
 
-    public static String MODEL_DIR = TestUtils.TEST_RESOURCES_DIRECTORY + "/CPF/External/XPDL";
+    public static String MODEL_DIR = TestUtils.TEST_RESOURCES_DIRECTORY + "/CPF/External/PNML";
 
     @Parameters
     public static Collection<Object[]> getFiles() {
@@ -50,8 +48,8 @@ public class FromXDPLTests extends WholeDirectoryTest {
         });
     }
 
-    public FromXDPLTests(final File testCPFFile, final File testANFFile) {
-        super(testCPFFile, testANFFile);
+    public FromPNMLTestsManualTest(final File testCPFFile, final File testANFFile) {
+        super(testCPFFile, null);
     }
 
 }

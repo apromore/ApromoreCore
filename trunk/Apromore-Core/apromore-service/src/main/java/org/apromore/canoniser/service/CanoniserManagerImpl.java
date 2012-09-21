@@ -13,15 +13,16 @@ import javax.xml.bind.JAXBException;
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.Canoniser;
+import org.apromore.canoniser.bpmn.BPMN20Canoniser;
 import org.apromore.canoniser.da.CanoniserDataAccessClient;
 import org.apromore.canoniser.epml.EPML20Canoniser;
+import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.pnml.PNML132Canoniser;
 import org.apromore.canoniser.provider.impl.CanoniserProviderImpl;
 import org.apromore.canoniser.xpdl.XPDL21Canoniser;
 import org.apromore.canoniser.yawl.YAWL22Canoniser;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.exception.CanoniserException;
 import org.apromore.exception.ExceptionAdapters;
 import org.apromore.exception.ExceptionStore;
 import org.apromore.exception.ExceptionVersion;
@@ -47,8 +48,9 @@ public class CanoniserManagerImpl implements CanoniserManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(CanoniserManagerImpl.class);
 
     private CanoniserDataAccessClient client;
-    
-    public GenerateAnnotationOutputMsgType generateAnnotation(GenerateAnnotationInputMsgType payload) {
+
+    @Override
+    public GenerateAnnotationOutputMsgType generateAnnotation(final GenerateAnnotationInputMsgType payload) {
         LOGGER.info("Executing operation generateAnnotation");
         GenerateAnnotationOutputMsgType res = new GenerateAnnotationOutputMsgType();
         ResultType result = new ResultType();
@@ -80,7 +82,8 @@ public class CanoniserManagerImpl implements CanoniserManager {
         return res;
     }
 
-    public CanoniseVersionOutputMsgType canoniseVersion(CanoniseVersionInputMsgType payload) {
+    @Override
+    public CanoniseVersionOutputMsgType canoniseVersion(final CanoniseVersionInputMsgType payload) {
         LOGGER.info("Executing operation canoniseVersion");
         CanoniseVersionOutputMsgType res = new CanoniseVersionOutputMsgType();
         ResultType result = new ResultType();
@@ -149,13 +152,13 @@ public class CanoniserManagerImpl implements CanoniserManager {
      * @throws javax.xml.bind.JAXBException
      */
     @Deprecated
-    private void Canonise(String cpf_uri, InputStream process_xml, String nativeType,
-                          ByteArrayOutputStream anf_xml, ByteArrayOutputStream cpf_xml, Boolean addFakeEvents) throws CanoniserException, JAXBException {
-        //TODO why and where is this mtehod needed? there is another one in CanoniserServiceImpl
-        
-        
+    private void Canonise(final String cpf_uri, final InputStream process_xml, final String nativeType,
+                          final ByteArrayOutputStream anf_xml, final ByteArrayOutputStream cpf_xml, final Boolean addFakeEvents) throws CanoniserException, JAXBException {
+        //TODO why and where is this method needed? there is another one in CanoniserServiceImpl
+        LOGGER.warn("Using depreciated method Canonise");
+
         CanoniserProviderImpl canoniserProvider = new CanoniserProviderImpl();
-        //TODO replace by OSGi DI 
+        //TODO replace by OSGi DI
         // Workaround until OSGi is there
         ArrayList<Canoniser> canoniserList = new ArrayList<Canoniser>();
         EPML20Canoniser epmlCanoniser = new EPML20Canoniser();
@@ -169,34 +172,35 @@ public class CanoniserManagerImpl implements CanoniserManager {
         canoniserList.add(new XPDL21Canoniser());
         canoniserList.add(new PNML132Canoniser());
         canoniserList.add(new YAWL22Canoniser());
+        canoniserList.add(new BPMN20Canoniser());
         canoniserProvider.setCanoniserList(canoniserList);
-        
+
         List<CanonicalProcessType> cpfList = new ArrayList<CanonicalProcessType>();
         List<AnnotationsType> anfList = new ArrayList<AnnotationsType>();
-        
+
         try {
             canoniserProvider.canonise(nativeType, process_xml, anfList, cpfList);
         } catch (org.apromore.canoniser.exception.CanoniserException | PluginNotFoundException e) {
             throw new CanoniserException("Could not canonise "+nativeType, e);
         }
-        
+
         if (cpfList.size() > 1 || anfList.size() > 1) {
             throw new CanoniserException("Can only process single CPF/ANF pair!");
         } else {
-            
+
             try {
                 ANFSchema.marshalAnnotationFormat(anf_xml, anfList.get(0), true);
                 CPFSchema.marshalCanoncialFormat(cpf_xml, cpfList.get(0), true);
             } catch (SAXException e) {
                 throw new CanoniserException("Error canonising "+nativeType+", probably an internal error in the Canoniser!", e);
             }
-            
+
         }
-        
+
     }
 
 
-    public void setClient(CanoniserDataAccessClient client) {
+    public void setClient(final CanoniserDataAccessClient client) {
         this.client = client;
     }
 

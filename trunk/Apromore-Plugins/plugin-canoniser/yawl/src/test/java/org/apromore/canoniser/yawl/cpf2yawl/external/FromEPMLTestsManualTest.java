@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apromore.canoniser.yawl.utils.TestUtils;
-import org.junit.Ignore;
 import org.junit.runner.RunWith;
 import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
@@ -17,11 +16,10 @@ import org.junit.runners.Parameterized.Parameters;
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
-@Ignore
 @RunWith(Parameterized.class)
-public class FromPNMLTests extends WholeDirectoryTest {
+public class FromEPMLTestsManualTest extends WholeDirectoryTest {
 
-    public static String MODEL_DIR = TestUtils.TEST_RESOURCES_DIRECTORY + "/CPF/External/PNML";
+    public static String MODEL_DIR = TestUtils.TEST_RESOURCES_DIRECTORY + "/CPF/External/EPML";
 
     @Parameters
     public static Collection<Object[]> getFiles() {
@@ -50,8 +48,8 @@ public class FromPNMLTests extends WholeDirectoryTest {
         });
     }
 
-    public FromPNMLTests(final File testCPFFile, final File testANFFile) {
-        super(testCPFFile, null);
+    public FromEPMLTestsManualTest(final File testCPFFile, final File testANFFile) {
+        super(testCPFFile, testANFFile);
     }
 
 }
