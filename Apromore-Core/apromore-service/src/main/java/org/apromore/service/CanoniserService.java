@@ -1,11 +1,12 @@
 package org.apromore.service;
 
 import java.io.InputStream;
+
 import javax.activation.DataSource;
 import javax.xml.bind.JAXBException;
 
+import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.exception.CanoniserException;
 import org.apromore.exception.SerializationException;
 import org.apromore.graph.JBPT.CPF;
 import org.apromore.service.model.CanonisedProcess;
@@ -35,6 +36,7 @@ public interface CanoniserService {
      * @return CanonisedProcess populated with the CPF and ANF details.
      * @throws org.apromore.exception.CanoniserException
      *          something failed
+     * @throws org.apromore.canoniser.exception.CanoniserException
      */
     CanonisedProcess canonise(String nativeType, String cpf_uri, InputStream process_xml) throws CanoniserException;
 

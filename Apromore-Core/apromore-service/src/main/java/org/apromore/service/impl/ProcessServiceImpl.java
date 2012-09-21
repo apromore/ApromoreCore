@@ -9,6 +9,7 @@ import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 
+import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.common.Constants;
 import org.apromore.dao.AnnotationDao;
 import org.apromore.dao.FragmentVersionDao;
@@ -22,7 +23,6 @@ import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.dao.model.User;
-import org.apromore.exception.CanoniserException;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
@@ -230,11 +230,11 @@ public class ProcessServiceImpl implements ProcessService {
             CanonisedProcess cp = canSrv.canonise(natType, n.getId().toString(), inStr);
 
             //TODO why is this done here? apromore should not know about native format outside of canonisers
-            //                if (natType.compareTo(Constants.XPDL_2_1) == 0) {
-            //                    PackageType pakType = StreamUtil.unmarshallXPDL(inStr);
-            //                    StreamUtil.copyParam2XPDL(pakType, processName, version, username, null, null);
-            //                    n.setContent(StreamUtil.marshallXPDL(pakType));
-            //                }
+//            if (natType.compareTo(Constants.XPDL_2_1) == 0) {
+//                PackageType pakType = StreamUtil.unmarshallXPDL(inStr);
+//                StreamUtil.copyParam2XPDL(pakType, processName, version, username, null, null);
+//                n.setContent(StreamUtil.marshallXPDL(pakType));
+//            }
         }
     }
 

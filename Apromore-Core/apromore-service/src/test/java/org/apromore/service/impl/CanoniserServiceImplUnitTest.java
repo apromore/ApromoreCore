@@ -1,9 +1,26 @@
 package org.apromore.service.impl;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+
+import javax.activation.DataSource;
+import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Unmarshaller;
+
 import org.apromore.TestData;
+import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.exception.CanoniserException;
 import org.apromore.graph.JBPT.CPF;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.apromore.service.impl.models.CanonicalNoAnnotationModel;
@@ -20,21 +37,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import javax.activation.DataSource;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.*;
 
 /**
  * Unit test the UserService Implementation.
@@ -235,7 +237,7 @@ public class CanoniserServiceImplUnitTest {
         assertThat(canTyp2, notNullValue());
     }
 
-    private CanonicalProcessType getTypeFromXML(InputStream cpf) throws JAXBException {
+    private CanonicalProcessType getTypeFromXML(final InputStream cpf) throws JAXBException {
         CanonicalProcessType type;
         JAXBContext jc1 = JAXBContext.newInstance(Constants.CPF_CONTEXT);
         Unmarshaller u = jc1.createUnmarshaller();

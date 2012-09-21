@@ -94,7 +94,7 @@
 			<name>SpringSource Enterprise Bundle Repository - External Bundle
 				Releases</name>
 			<url>http://repository.springsource.com/maven/bundles/external</url>
-		</repository>
+		</repository>		
 	</repositories>
 
     <reporting>
@@ -470,24 +470,82 @@
             </dependency>
 			
 			<!-- OSGi (Gemini Blueprint formerly Spring DM) -->
-			<dependency>
-				<groupId>org.eclipse.gemini</groupId>
-				<artifactId>org.eclipse.gemini.blueprint.extender</artifactId>
-				<version>${gemini.blueprint.version}</version>
-				<scope>provided</scope> <!-- Change to provided as deployed on Eclipse Virgo -->
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.gemini</groupId>
-				<artifactId>org.eclipse.gemini.blueprint.core</artifactId>
-				<version>${gemini.blueprint.version}</version>
-				<scope>provided</scope> <!-- Change to provided as deployed on Eclipse Virgo -->
-			</dependency>
-			<dependency>
-				<groupId>org.eclipse.gemini</groupId>
-				<artifactId>org.eclipse.gemini.blueprint.io</artifactId>
-				<version>${gemini.blueprint.version}</version>
-				<scope>provided</scope> <!-- Change to provided as deployed on Eclipse Virgo -->
-			</dependency>
+			<!-- Change to provided as deployed on Eclipse Virgo -->
+		   	<dependency>
+	    		<groupId>org.eclipse.gemini</groupId>
+	    		<artifactId>org.eclipse.gemini.blueprint.extender</artifactId>
+	    		<version>${gemini.blueprint.version}</version>
+	    		<exclusions>
+	    			<exclusion>
+	    				<artifactId>org.springframework.core</artifactId>
+	    				<groupId>org.springframework</groupId>
+	    			</exclusion>
+	    			<exclusion>
+	    				<artifactId>org.springframework.context</artifactId>
+	    				<groupId>org.springframework</groupId>
+	    			</exclusion>
+	    			<exclusion>
+	    				<artifactId>org.springframework.asm</artifactId>
+	    				<groupId>org.springframework</groupId>
+	    			</exclusion>
+	    			<exclusion>
+	    				<artifactId>
+	    					org.springframework.expression
+	    				</artifactId>
+	    				<groupId>org.springframework</groupId>
+	    			</exclusion>
+	    			<exclusion>
+	    				<artifactId>org.springframework.beans</artifactId>
+	    				<groupId>org.springframework</groupId>
+	    			</exclusion>
+	    			<exclusion>
+	    				<artifactId>org.springframework.aop</artifactId>
+	    				<groupId>org.springframework</groupId>
+	    			</exclusion>
+	    		</exclusions>
+	    	</dependency>
+	    	<!-- Change to provided as deployed on Eclipse Virgo -->
+	    	<dependency>
+	    		<groupId>org.eclipse.gemini</groupId>
+	    		<artifactId>org.eclipse.gemini.blueprint.io</artifactId>
+	    		<version>${gemini.blueprint.version}</version>
+	    		<exclusions>
+	    			<exclusion>
+	    				<artifactId>org.springframework.core</artifactId>
+	    				<groupId>org.springframework</groupId>
+	    			</exclusion>
+	    		</exclusions>
+	    	</dependency>
+	    	<!-- Change to provided as deployed on Eclipse Virgo -->
+	    	<dependency>
+	    		<groupId>org.eclipse.gemini</groupId>
+	    		<artifactId>org.eclipse.gemini.blueprint.core</artifactId>
+	    		<version>${gemini.blueprint.version}</version>
+	    		<exclusions>
+	    			<exclusion>
+	    				<artifactId>org.springframework.core</artifactId>
+	    				<groupId>org.springframework</groupId>
+	    			</exclusion>
+	    			<exclusion>
+	    				<artifactId>org.springframework.context</artifactId>
+	    				<groupId>org.springframework</groupId>
+	    			</exclusion>
+	    			<exclusion>
+	    				<artifactId>
+	    					org.springframework.context.support
+	    				</artifactId>
+	    				<groupId>org.springframework</groupId>
+	    			</exclusion>
+	    			<exclusion>
+	    				<artifactId>org.springframework.beans</artifactId>
+	    				<groupId>org.springframework</groupId>
+	    			</exclusion>
+	    			<exclusion>
+	    				<artifactId>org.springframework.aop</artifactId>
+	    				<groupId>org.springframework</groupId>
+	    			</exclusion>
+	    		</exclusions>
+	    	</dependency>
 		
             <!-- Spring -->
             <dependency>
@@ -546,6 +604,28 @@
                 <version>${spring.version}</version>
             </dependency>
 
+            <!-- JAXB -->
+            <dependency>
+                <groupId>javax.xml.bind</groupId>
+                <artifactId>jaxb-api</artifactId>
+                <version>${jaxb-api.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-impl</artifactId>
+                <version>${jaxb-impl.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.jvnet.jaxb2_commons</groupId>
+                <artifactId>jaxb2-basics-runtime</artifactId>
+                <version>${jaxb2-basics-runtime.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.sun.xml.bind</groupId>
+                <artifactId>jaxb-xjc</artifactId>
+                <version>${jaxb-xjc.version}</version>
+            </dependency>
+            
             <!-- Test Scope Dependencies -->
             <dependency>
                 <groupId>junit</groupId>
@@ -610,6 +690,20 @@
         </dependencies>
     </dependencyManagement>
 
+	<dependencies>
+	    <dependency>
+	        <groupId>org.springframework</groupId>
+	        <artifactId>spring-core</artifactId>
+	    </dependency>
+	    <dependency>
+	        <groupId>org.springframework</groupId>
+	        <artifactId>spring-beans</artifactId>
+	    </dependency>
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-context</artifactId>
+		</dependency>	    
+	</dependencies>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
@@ -639,6 +733,13 @@
         <slf4j.version>1.6.3</slf4j.version>
         <logback.version>0.9.28</logback.version>
         <wagon-webdav.version>1.0</wagon-webdav.version>
+        
+        <!--  JAXB versions -->
+        <jaxb-xjc.version>2.2-promoted-b65</jaxb-xjc.version>
+        <jaxb-impl.version>2.2-promoted-b65</jaxb-impl.version>
+        <jaxb-api.version>2.2.6</jaxb-api.version>
+        <jaxb2-basics.version>0.5.3.MR1</jaxb2-basics.version>
+        <jaxb2-basics-runtime.version>0.5.3</jaxb2-basics-runtime.version>        
 		
         <!-- junit/testing settings -->
         <junit.version>4.10</junit.version>
