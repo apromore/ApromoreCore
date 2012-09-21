@@ -1,8 +1,20 @@
 package org.apromore.service.helper;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+
+import java.io.ByteArrayInputStream;
+import java.io.InputStream;
+
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBElement;
+import javax.xml.bind.Unmarshaller;
+
 import org.apromore.TestData;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.ConditionExpressionType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
@@ -17,16 +29,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Unmarshaller;
-import java.io.ByteArrayInputStream;
-import java.io.InputStream;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Unit Test for the GraphToCPFHelper.
@@ -119,7 +121,7 @@ public class GraphHelperUnitTest {
 
 
 
-    private NetType createNet(String id) {
+    private NetType createNet(final String id) {
         NetType net = new NetType();
         net.setId(id);
         net.getNode().add(createNode("2", "testNodeA"));
@@ -129,16 +131,16 @@ public class GraphHelperUnitTest {
     }
 
 
-    private TypeAttribute createAttribute(String name, String value) {
+    private TypeAttribute createAttribute(final String name, final String value) {
         TypeAttribute ta = new TypeAttribute();
         ta.setName(name);
         ta.setValue(value);
-        //TODO
+        //TODO test setAny
         //ta.setAny();
         return ta;
     }
 
-    private ObjectType createObject(String id, String name) {
+    private ObjectType createObject(final String id, final String name) {
         ObjectType obj = new ObjectType();
         obj.setId(id);
         obj.setName(name);
@@ -146,7 +148,7 @@ public class GraphHelperUnitTest {
         return obj;
     }
 
-    private TaskType createNode(String id, String name) {
+    private TaskType createNode(final String id, final String name) {
         TaskType node = new TaskType();
         node.setId(id);
         node.setName(name);
@@ -155,10 +157,12 @@ public class GraphHelperUnitTest {
         return node;
     }
 
-    private EdgeType createEdge(String id, String source, String target) {
+    private EdgeType createEdge(final String id, final String source, final String target) {
         EdgeType edge = new EdgeType();
         edge.setId(id);
-        edge.setConditionExpr("");
+        ConditionExpressionType expr = new ConditionExpressionType();
+        expr.setExpression("");
+        edge.setConditionExpr(expr);
         edge.setDefault(Boolean.FALSE);
         edge.setSourceId(source);
         edge.setTargetId(target);

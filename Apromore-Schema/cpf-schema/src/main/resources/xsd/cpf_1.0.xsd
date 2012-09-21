@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <!--
- Copyright (C) 2009, The AProMoRe Foundation
+ Copyright (C) 2009-2012, The AProMoRe Foundation
  
  All rights reserved. This program and the accompanying materials
  are made available under the terms of the XX license
@@ -14,14 +14,14 @@
      v0.2 - added 'version' attribute to both this document and type 'CanonicalProcessType'
      v0.3 - added extensible 'attribute' to all super-types
      v0.4 - added process meta-data (author, creationDate...), changed type of attribute 'value' to 'anySimpleType'
-	 v0.6 - changed Objects to be part of a Net (Net Scope Data) instead of a CanonicalProcess,	 		
-	 		changed 'typeAttribute' to use xs:any as a real extension mechanism
+	 v1.0 - changed Objects to be part of a Net (Net Scope Data) instead of a CanonicalProcess,	 		
+	 		changed 'typeAttribute' to use xs:any as a real extension mechanism, also kept the old mechanism for backwards compability
 	 		changed 'condition' to 'conditionExpr' as it will contain an expression
-	 		added 'inputExpr'
-	 		added 'outputExpr'
-	 		added 'durationExpr'
+	 		added 'inputExpr' of type ExpressionType
+	 		added 'outputExpr' of type ExpressionType
+	 		added 'durationExpr' of type ExpressionType
 	 		added 'direction' attribute with type IncomingOutgoingType to MessageEvent, 
-	 		added 'cancellationSet' to NodeType for YAWL and BPMN
+	 		added 'cancelEdgeId', 'cancelNodeId' to NodeType for YAWL and BPMN
 	 		added 'distributionSet' to ResourceTypeType for YAWL and BPMN
 			added extended ResourceType taxonomy					
 			
@@ -29,7 +29,7 @@
 
 <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:cpf="http://www.apromore.org/CPF"
 	targetNamespace="http://www.apromore.org/CPF" attributeFormDefault="unqualified"
-	elementFormDefault="unqualified" version="0.6">
+	elementFormDefault="unqualified" version="1.0">
 
 	<element name="CanonicalProcess" type="cpf:CanonicalProcessType">
 		<unique name="nIdUn"><!-- all net ids must be different -->
@@ -65,15 +65,23 @@
 			<selector xpath=".//Node/objectRef" />
 			<field xpath="@objectId" />
 		</keyref>
-		<!-- Each element of a Cancellation Set must reference a Node or Edge -->
-		<key name="idControlFlow">
-			<selector xpath=".//Node|.//Edge" />
+		<!-- Cancel Edges must reference Edges, Cancel Nodes must reference Nodes -->
+		<key name="idNode">
+			<selector xpath=".//Node" />
 			<field xpath="@id" />
 		</key>
-		<keyref name="cancellationSetRef" refer="cpf:idControlFlow">
-			<selector xpath="./Node/cancellationSet/controlFlowRef" />
-			<field xpath="@controlFlowRefId" />
+		<key name="idEdge">
+			<selector xpath=".//Edge" />
+			<field xpath="@id" />
+		</key>		
+		<keyref name="cancelEdges" refer="cpf:idEdge">
+			<selector xpath="./Node/cancelEdgeId" />
+			<field xpath="@refId" />
 		</keyref>
+		<keyref name="cancelNodes" refer="cpf:idNode">
+			<selector xpath="./Node/cancelNodeId" />
+			<field xpath="@refId" />
+		</keyref>		
 		<!-- Each element of a Distribution Set must reference a ResourceType -->
 		<keyref name="distributionSetRef" refer="cpf:resourceTypeIdUn">
 			<selector xpath="./ResourceType/distributionSet/resourceTypeRef" />
@@ -134,8 +142,10 @@
 	</complexType>
 
 	<complexType name="NetType">
-		<sequence>
-			<element name="Node" minOccurs="1" maxOccurs="unbounded" type="cpf:NodeType" />
+		<sequence>		
+			<element name="name" type="string" minOccurs="0"/>		
+			<element name="Node" minOccurs="1" maxOccurs="unbounded" 
+				type="cpf:NodeType" />
 			<element name="Edge" minOccurs="0" maxOccurs="unbounded"
 				type="cpf:EdgeType" />
 			<element name="Object" minOccurs="0" maxOccurs="unbounded"
@@ -144,17 +154,16 @@
 				maxOccurs="unbounded" />
 		</sequence>
 		<attribute name="id" type="string" use="required" />
-		<attribute name="originalID" type="string" use="optional" />
-		<attribute name="name" type="string" use="optional" />		
+		<attribute name="originalID" type="string" use="optional" />		
 	</complexType>
 
 	<complexType name="EdgeType">
 		<sequence>
+			<element name="conditionExpr" type="cpf:ConditionExpressionType" minOccurs="0" />
 			<element name="attribute" type="cpf:typeAttribute" minOccurs="0"
 				maxOccurs="unbounded" />
 		</sequence>
-		<attribute name="id" type="string" use="required" />
-		<attribute name="conditionExpr" type="cpf:ConditionExpressionType" use="optional" />
+		<attribute name="id" type="string" use="required" />		
 		<attribute name="default" type="boolean" use="optional"
 			default="true" />
 		<attribute name="sourceId" type="string" use="required" />
@@ -163,28 +172,33 @@
 	</complexType>
 
 	<complexType name="NodeType">
-		<sequence>
-			<element name="name" type="string" minOccurs="0" />
+		<sequence>			
+		    <element name="name" type="string" minOccurs="0"/>
 			<element name="configurable" type="boolean" default="false"
-				minOccurs="0" />
-			<element name="cancellationSet" type="cpf:CancellationSetType"
 				minOccurs="0" />
 			<element name="attribute" type="cpf:typeAttribute" minOccurs="0"
 				maxOccurs="unbounded" />
 		</sequence>
 		<attribute name="id" type="string" use="required" />
-		<attribute name="originalID" type="string" use="optional" />
+		<attribute name="originalID" type="string" use="optional" />			
 	</complexType>
 
 	<complexType name="WorkType">
 		<complexContent>
 			<extension base="cpf:NodeType">
 				<sequence>				
+					<!-- Reference to a ResourceType, all referenced resources are needed for execution of this work  -->
 					<element name="resourceTypeRef" type="cpf:resourceTypeRefType"
 						minOccurs="0" maxOccurs="unbounded" />
-					<!-- Reference to NetType data objects -->
+					<!-- Reference to data objects of a Net -->
 					<element name="objectRef" type="cpf:objectRefType"
+						minOccurs="0" maxOccurs="unbounded" />		
+					<!-- Canceling the following Nodes -->
+					<element name="cancelNodeId" type="cpf:cancellationRefType" 
 						minOccurs="0" maxOccurs="unbounded" />
+					<!-- Canceling the following Edges -->
+					<element name="cancelEdgeId" type="cpf:cancellationRefType" 
+						minOccurs="0" maxOccurs="unbounded" />										
 					<!-- Input expressions referring to [0..*] Objects of the Net -->
 					<element name="inputExpr" type="cpf:InputExpressionType" 
 						minOccurs="0" maxOccurs="unbounded" />
@@ -221,7 +235,11 @@
 		<attribute name="consumed" type="boolean" default="false"
 			use="optional" />
 	</complexType>
-
+	
+	<complexType name="cancellationRefType">
+		<attribute name="refId" />
+	</complexType>
+	
 	<complexType name="TaskType">
 		<complexContent>
 			<extension base="cpf:WorkType">
@@ -249,6 +267,9 @@
 	<complexType name="TimerType">
 		<complexContent>
 			<extension base="cpf:EventType">
+				<sequence>
+					<element name="timeExpression" type="cpf:TimerExpressionType" minOccurs="0" />
+				</sequence>
 				<!-- Only one of the following attributes MAY be set  -->
 				<attribute name="timeDate" type="dateTime" use="optional" />
 				<attribute name="timeDuration" type="duration" use="optional" />
@@ -419,6 +440,7 @@
 		<complexContent>
 			<extension base="cpf:ObjectType">
 				<sequence>
+					<!-- Use the type system of XML Schema -->
 					<element name="type" type="string" />
 				</sequence>
 			</extension>
@@ -442,18 +464,7 @@
 			<enumeration value="outgoing" />
 		</restriction>
 	</simpleType>
-
-	<complexType name="CancellationSetType">
-		<sequence>
-			<element name="controlFlowRef" type="cpf:controlFlowRef" maxOccurs="unbounded" />
-			<element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded" />
-		</sequence>
-	</complexType>
-	
-	<complexType name="controlFlowRef">
-		<attribute name="controlFlowRefId" type="string" />
-	</complexType>
-	
+		
 	<complexType name="DistributionSetType">
 		<sequence>
 			<element name="resourceTypeRef" type="cpf:distributionSetRef" maxOccurs="unbounded" />
@@ -468,24 +479,73 @@
 		</sequence>
 		<attribute name="resourceTypeId" type="string" />
 	</complexType>
-
-	<simpleType name="InputExpressionType">
-		<restriction base="string">
-			<minLength value="1"/>
-			<pattern value="[a-zA-Z0-9_]+=.*"/>
-		</restriction>
-	</simpleType>
-
-	<simpleType name="OutputExpressionType">
-		<restriction base="string">
-			<minLength value="1"/>
-			<pattern value="[a-zA-Z0-9_]+=.*"/>
-		</restriction>
-	</simpleType>	
 	
-	<simpleType name="ConditionExpressionType">
-		<restriction base="string">
-		</restriction>
-	</simpleType>
+	<complexType name="ExpressionType">
+		<sequence>		
+			<element name="description" type="string" />
+			<!-- 
+				Defines the formal language of the expression. Examples could be:
+					http://www.w3.org/1999/xpath/
+					http://www.mvel.org/2.0
+					http://www.w3.org/2005/xpath-functions/		
+			 -->
+			<element name="Language" type="anyURI" />						
+			<element name="expression" type="string" />			
+		</sequence>
+	</complexType>
+
+	<complexType name="InputExpressionType">
+		<complexContent>
+			<restriction base="cpf:ExpressionType">
+				<sequence>
+					<element name="description" type="string" />				
+					<element name="Language" type="anyURI" />	
+					<element name="expression">
+						<simpleType>
+							<restriction base="string">							
+								<!-- Internal Variable Name = Query(Obj1, Obj2, ..., ObjN) -->
+								<pattern value="[a-zA-z0-9_]+ = .*" />
+							</restriction>
+						</simpleType>
+					</element>
+				</sequence>
+			</restriction>
+		</complexContent>
+	</complexType>
+
+	<complexType name="OutputExpressionType">
+		<complexContent>
+			<restriction base="cpf:ExpressionType">
+				<sequence>
+					<element name="description" type="string" />				
+					<element name="Language" type="anyURI" />					
+					<element name="expression">
+						<simpleType>
+							<restriction base="string">
+								<!-- Net Object Name = Query(Var1, Var2, ..., VarN) -->
+								<pattern value="[a-zA-z0-9_]+ = .*" />
+							</restriction>
+						</simpleType>
+					</element>
+				</sequence>
+			</restriction>
+		</complexContent>
+	</complexType>	
+	
+	<complexType name="ConditionExpressionType">
+		<complexContent>
+			<extension base="cpf:ExpressionType">
+				<!-- BooleanQuery(Obj1, Obj2, ..., ObjN) -->
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="TimerExpressionType">
+		<complexContent>
+			<extension base="cpf:ExpressionType">
+				<!-- TimerQuery(Obj1, Obj2, ..., ObjN) -->
+			</extension>
+		</complexContent>
+	</complexType>
 
 </schema>

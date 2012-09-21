@@ -1,3 +1,19 @@
+/**
+ *  Copyright 2012, Felix Mannhardt
+ *
+ *  This program is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU Lesser General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  This program is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU Lesser General Public License
+ *  along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.apromore.plugin;
 
 import java.util.Collections;
@@ -9,17 +25,17 @@ import org.apromore.plugin.property.PropertyType;
 
 /**
  * Abstract default implementation of handling the properties.
- * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
+ *
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public abstract class AbstractPropertyAwarePlugin implements PropertyAwarePlugin {
-	
-	private Set<PropertyType> availableProperties;
+
+	private final Set<PropertyType> availableProperties;
 
 	public AbstractPropertyAwarePlugin() {
 		super();
-		availableProperties = new HashSet<PropertyType>(); 
+		availableProperties = new HashSet<PropertyType>();
 	}
 
 	/* (non-Javadoc)
@@ -30,12 +46,12 @@ public abstract class AbstractPropertyAwarePlugin implements PropertyAwarePlugin
 		Set<PropertyType> mandatoryProperties = new HashSet<PropertyType>();
 		for (PropertyType property: getAvailableProperties()) {
 			if (property.isMandatory()) {
-				mandatoryProperties.add(property);	
-			}			
+				mandatoryProperties.add(property);
+			}
 		}
 		return Collections.unmodifiableSet(mandatoryProperties);
 	}
-	
+
 	/* (non-Javadoc)
 	 * @see org.apromore.plugin.PropertyAwarePlugin#getAvailableProperties()
 	 */
@@ -46,10 +62,10 @@ public abstract class AbstractPropertyAwarePlugin implements PropertyAwarePlugin
 
 	/**
 	 * Add a property to our list of available properties
-	 * 
+	 *
 	 * @param property
 	 */
-	protected void addProperty(PropertyType property) {
+	protected void addProperty(final PropertyType property) {
 		this.availableProperties.add(property);
 	}
 

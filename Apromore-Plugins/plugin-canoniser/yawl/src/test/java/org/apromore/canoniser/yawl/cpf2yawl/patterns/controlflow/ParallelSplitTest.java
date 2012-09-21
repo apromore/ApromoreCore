@@ -16,7 +16,7 @@ public class ParallelSplitTest extends BaseCPF2YAWLTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.BaseCPF2YAWLTest#getCPFFile()
      */
     @Override
@@ -26,7 +26,7 @@ public class ParallelSplitTest extends BaseCPF2YAWLTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.BaseCPF2YAWLTest#getANFFile()
      */
     @Override
@@ -38,16 +38,16 @@ public class ParallelSplitTest extends BaseCPF2YAWLTest {
     public void testStructure() {
         final NetFactsType rootNet = findRootNet();
         final ExternalTaskFactsType a = findTaskByName("A", rootNet);
-        assertNotNull(a);
+        assertNotNull("Could not find Task with Name A",a);
         assertTrue(a.getSplit().getCode().equals(ControlTypeCodeType.AND));
         final ExternalTaskFactsType b = findTaskByName("B", rootNet);
-        assertNotNull(b);
+        assertNotNull("Could not find Task with Name B",b);
         final ExternalTaskFactsType c = findTaskByName("C", rootNet);
-        assertNotNull(c);
+        assertNotNull("Could not find Task with Name C",c);
         final ExternalTaskFactsType d = findTaskByName("D", rootNet);
-        assertNotNull(d);
+        assertNotNull("Could not find Task with Name D",d);
         final ExternalTaskFactsType e = findTaskByName("E", rootNet);
-        assertNotNull(e);
+        assertNotNull("Could not find Task with Name E",e);
         assertTrue(e.getJoin().getCode().equals(ControlTypeCodeType.AND));
     }
 

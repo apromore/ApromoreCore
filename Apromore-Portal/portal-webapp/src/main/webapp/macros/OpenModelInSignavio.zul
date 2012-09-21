@@ -78,7 +78,8 @@
                                             layouter.functionality();
                                             Ext.select('svg').setVisible(true);
                                         } else {
-                                            alert("Did not find Layouter");
+                                        	// Could be already layouted model (for example YAWL)
+                                            // alert("Did not find Layouter");
                                         }
 
                                         window.onbeforeunload = null;

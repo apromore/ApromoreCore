@@ -55,7 +55,7 @@ public class CanoniserServiceImpl implements CanoniserService {
      * {@inheritDoc}
      */
     @Override
-    public String CPFtoString(CanonicalProcessType cpt) throws JAXBException {
+    public String CPFtoString(final CanonicalProcessType cpt) throws JAXBException {
         ByteArrayOutputStream xml = new ByteArrayOutputStream();
         try {
             CPFSchema.marshalCanoncialFormat(xml, cpt, false);
@@ -72,12 +72,12 @@ public class CanoniserServiceImpl implements CanoniserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public CanonisedProcess canonise(String nativeType, String cpf_uri, InputStream process_xml) throws CanoniserException {
-        
+    public CanonisedProcess canonise(final String nativeType, final String cpf_uri, final InputStream process_xml) throws CanoniserException {
+
         LOGGER.info("Canonising process with native type {}", nativeType);
-        
+
         CanoniserProviderImpl canoniserProvider = new CanoniserProviderImpl();
-        //TODO replace by OSGi DI 
+        //TODO replace by OSGi DI
         // Workaround until OSGi is there
         ArrayList<Canoniser> canoniserList = new ArrayList<Canoniser>();
         //TODO What about Properties like addFakeEvents??
@@ -87,20 +87,20 @@ public class CanoniserServiceImpl implements CanoniserService {
         canoniserList.add(new YAWL22Canoniser());
         canoniserList.add(new BPMN20Canoniser());
         canoniserProvider.setCanoniserList(canoniserList);
-        
+
         List<CanonicalProcessType> cpfList = new ArrayList<CanonicalProcessType>();
         List<AnnotationsType> anfList = new ArrayList<AnnotationsType>();
-        
+
         try {
             canoniserProvider.canonise(nativeType, process_xml, anfList, cpfList);
         } catch (org.apromore.canoniser.exception.CanoniserException | PluginNotFoundException e) {
             throw new CanoniserException("Could not canonise "+nativeType, e);
         }
-        
+
         CanonisedProcess cp = new CanonisedProcess();
         ByteArrayOutputStream anf_xml = new ByteArrayOutputStream();
         ByteArrayOutputStream cpf_xml = new ByteArrayOutputStream();
-        
+
         if (cpfList.size() > 1 || anfList.size() > 1) {
             throw new CanoniserException("Can only process single CPF/ANF pair!");
         } else {
@@ -109,12 +109,12 @@ public class CanoniserServiceImpl implements CanoniserService {
                 ANFSchema.marshalAnnotationFormat(anf_xml, anfList.get(0), false);
                 cp.setAnf(new ByteArrayInputStream(anf_xml.toByteArray()));
                 cp.setAnt(anfList.get(0));
-                
+
                 //TODO turn validation on as schema is stable
                 CPFSchema.marshalCanoncialFormat(cpf_xml, cpfList.get(0), false);
                 cp.setCpf(new ByteArrayInputStream(cpf_xml.toByteArray()));
                 cp.setCpt(cpfList.get(0));
-                
+
             } catch (PropertyException e) {
                 throw new CanoniserException(e);
             } catch (JAXBException e) {
@@ -123,13 +123,13 @@ public class CanoniserServiceImpl implements CanoniserService {
                 throw new CanoniserException("Error trying to marshal ANF or CPF. This is probably an internal error in a Canoniser.",e);
             }
         }
-        
+
         return cp;
     }
 
     /**
-     * @throws JAXBException 
-     * @throws IOException 
+     * @throws JAXBException
+     * @throws IOException
      * @see org.apromore.service.CanoniserService#deCanonise
      *      {@inheritDoc}
      */
@@ -137,11 +137,11 @@ public class CanoniserServiceImpl implements CanoniserService {
     @Transactional(readOnly = true)
     public DataSource deCanonise(final Integer processId, final String version, final String nativeType,
             final CanonicalProcessType canType, final DataSource anf) throws CanoniserException {
-        
+
         LOGGER.info("DeCanonising process with native type {}", nativeType);
-        
+
         CanoniserProviderImpl canoniserProvider = new CanoniserProviderImpl();
-        //TODO replace by OSGi DI 
+        //TODO replace by OSGi DI
         // Workaround until OSGi is there
         ArrayList<Canoniser> canoniserList = new ArrayList<Canoniser>();
         canoniserList.add(new EPML20Canoniser());
@@ -150,35 +150,35 @@ public class CanoniserServiceImpl implements CanoniserService {
         canoniserList.add(new YAWL22Canoniser());
         canoniserList.add(new BPMN20Canoniser());
         canoniserProvider.setCanoniserList(canoniserList);
-        
+
         try {
             AnnotationsType annType = null;
             DataSource native_ds = null;
-            
+
             if (anf != null && anf.getInputStream().available() > 0) {
                 annType = ANFSchema.unmarshalAnnotationFormat(anf.getInputStream(), false).getValue();
             }
-            
+
             ByteArrayOutputStream native_xml = new ByteArrayOutputStream();
-            
+
             try {
                 canoniserProvider.deCanonise(nativeType, annType, canType, native_xml);
             } catch (org.apromore.canoniser.exception.CanoniserException | PluginNotFoundException e) {
-                throw new CanoniserException("Could not deCanonise "+nativeType, e);
+                throw new CanoniserException("Could not deCanonise "+nativeType+" Exception was: "+e.getMessage(), e.getCause());
             }
-            
+
             InputStream native_xml_is = new ByteArrayInputStream(native_xml.toByteArray());
             native_ds = new ByteArrayDataSource(native_xml_is, "text/xml");
-            
+
             return native_ds;
         } catch (IOException e) {
-            throw new CanoniserException("",e);
+            throw new CanoniserException("IOException during decanonisation",e);
         } catch (JAXBException e) {
-            throw new CanoniserException("",e);
+            throw new CanoniserException("JAXBException during decanonisation",e);
         } catch (SAXException e) {
             throw new CanoniserException("Error trying to unmarshal ANF or CPF. This is probably an internal error in a Canoniser.",e);
         }
-        
+
     }
 
 
@@ -188,7 +188,7 @@ public class CanoniserServiceImpl implements CanoniserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public CanonicalProcessType serializeCPF(CPF graph) throws SerializationException {
+    public CanonicalProcessType serializeCPF(final CPF graph) throws SerializationException {
         return GraphToCPFHelper.createCanonicalProcess(graph);
     }
 
@@ -198,7 +198,7 @@ public class CanoniserServiceImpl implements CanoniserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public CPF deserializeCPF(CanonicalProcessType cpf) throws SerializationException {
+    public CPF deserializeCPF(final CanonicalProcessType cpf) throws SerializationException {
         return CPFtoGraphHelper.createGraph(cpf);
     }
 

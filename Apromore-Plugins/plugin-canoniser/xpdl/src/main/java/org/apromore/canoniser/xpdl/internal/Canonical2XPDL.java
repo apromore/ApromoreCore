@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.namespace.QName;
 
 import org.apromore.anf.AnnotationType;
@@ -15,6 +16,7 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.ConditionExpressionType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.InputOutputType;
@@ -95,14 +97,13 @@ public class Canonical2XPDL {
     int object_ids;
     boolean split_process, EPML_flag;
 
-    private PackageType xpdl;
+    private final PackageType xpdl;
 
     /**
      * de-canonize data (canonical) into xpdl
      * @throws
      */
-    @SuppressWarnings("unchecked")
-    public Canonical2XPDL(CanonicalProcessType cpf) {
+    public Canonical2XPDL(final CanonicalProcessType cpf) {
         this.xpdl = new PackageType();
         this.xpdl.setWorkflowProcesses(new WorkflowProcesses());
         this.xpdl.setPools(new Pools());
@@ -130,17 +131,16 @@ public class Canonical2XPDL {
      * @param anf the annotation
      * @throws org.apromore.exception.CanoniserException
      */
-    @SuppressWarnings("unchecked")
-    public Canonical2XPDL(CanonicalProcessType cpf, AnnotationsType anf) throws CanoniserException {
+    public Canonical2XPDL(final CanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
+        //TODO A canoniser should never know about the source language, otherwise we start to to language to language mappings again!
         this.EPML_flag = false;
-        //TODO FM extensions
-//        for (TypeAttribute att : cpf.getAttribute()) {
-//            if (att.getTypeRef().equals("IntialFormat")) {
-//                if (att.getValue().equals("EPML")) {
-//                    this.EPML_flag = true;
-//                }
-//            }
-//        }
+        for (TypeAttribute att : cpf.getAttribute()) {
+            if (att.getName().equals("IntialFormat")) {
+                if (att.getValue().equals("EPML")) {
+                    this.EPML_flag = true;
+                }
+            }
+        }
 
         this.xpdl = new PackageType();
         this.xpdl.setWorkflowProcesses(new WorkflowProcesses());
@@ -253,7 +253,7 @@ public class Canonical2XPDL {
     }
 
 
-    private void split(ProcessType bpmnproc) {
+    private void split(final ProcessType bpmnproc) {
         bpmnproc.setAdHocOrdering("Parallel");
         bpmnproc.setProcessType("None");
         bpmnproc.setStatus("None");
@@ -282,7 +282,7 @@ public class Canonical2XPDL {
 
     }
 
-    private void translateObjects(NetType net) {
+    private void translateObjects(final NetType net) {
         this.xpdl.setArtifacts(new Artifacts());
         this.xpdl.setAssociations(new Associations());
         for (ObjectType obj : net.getObject()) {
@@ -299,7 +299,7 @@ public class Canonical2XPDL {
         }
     }
 
-    private void translateResources(ProcessType bpmnproc, CanonicalProcessType cpf) {
+    private void translateResources(final ProcessType bpmnproc, final CanonicalProcessType cpf) {
         boolean flag = true;
         Pool parent = new Pool();
 
@@ -377,7 +377,7 @@ public class Canonical2XPDL {
         resource_ref_list.clear();
     }
 
-    private void translateNet(ProcessType bpmnproc, NetType net) {
+    private void translateNet(final ProcessType bpmnproc, final NetType net) {
         Activities acts = new Activities();
         Transitions trans = new Transitions();
 
@@ -399,7 +399,7 @@ public class Canonical2XPDL {
         completeMapping(bpmnproc, net);
     }
 
-    private void translateNet(ProcessType bpmnproc, NetType net, AnnotationsType annotations) throws CanoniserException {
+    private void translateNet(final ProcessType bpmnproc, final NetType net, final AnnotationsType annotations) throws CanoniserException {
         Activities acts = new Activities();
         Transitions trans = new Transitions();
 
@@ -429,7 +429,7 @@ public class Canonical2XPDL {
         completeMapping(bpmnproc, net);
     }
 
-    private void completeMapping(ProcessType bpmnproc, NetType net) {
+    private void completeMapping(final ProcessType bpmnproc, final NetType net) {
         for (EventType event : events.keySet()) {
             Activity act = canon2xpdl.get(event);
             act.setName(event.getName());
@@ -486,7 +486,7 @@ public class Canonical2XPDL {
         }
     }
 
-    private void mapObjectAnnotations(ProcessType bpmnproc, AnnotationsType annotations) throws CanoniserException {
+    private void mapObjectAnnotations(final ProcessType bpmnproc, final AnnotationsType annotations) throws CanoniserException {
         for (AnnotationType annotation : annotations.getAnnotation()) {
             if (objectMap.containsKey(annotation.getCpfId())) {
                 // TODO: Handle 1-N mappings
@@ -531,7 +531,7 @@ public class Canonical2XPDL {
         }
     }
 
-    private void mapResourceAnnotations(ProcessType bpmnproc, AnnotationsType annotations) throws CanoniserException {
+    private void mapResourceAnnotations(final ProcessType bpmnproc, final AnnotationsType annotations) throws CanoniserException {
         for (AnnotationType annotation : annotations.getAnnotation()) {
             if (resourceRefMap.containsKey(annotation.getCpfId())) {
                 // TODO: Handle 1-N mappings
@@ -580,7 +580,7 @@ public class Canonical2XPDL {
         }
     }
 
-    private void mapNodeAnnotations(ProcessType bpmnproc, AnnotationsType annotations) throws CanoniserException {
+    private void mapNodeAnnotations(final ProcessType bpmnproc, final AnnotationsType annotations) throws CanoniserException {
         for (AnnotationType annotation : annotations.getAnnotation()) {
             if (nodeRefMap.containsKey(annotation.getCpfId())) {
                 // TODO: Handle 1-N mappings
@@ -635,7 +635,7 @@ public class Canonical2XPDL {
         }
     }
 
-    private NodeGraphicsInfo manipulateEPML(NodeGraphicsInfo info, char c, String id) {
+    private NodeGraphicsInfo manipulateEPML(final NodeGraphicsInfo info, final char c, final String id) {
         double wo, wn, ho, hn, xo, yo, xn, yn;
         wo = wn = ho = hn = xo = yo = xn = yn = 0;
 
@@ -665,8 +665,8 @@ public class Canonical2XPDL {
         return info;
     }
 
-    private void mapEdgeAnnotations(ProcessType bpmnproc,
-            AnnotationsType annotations) {
+    private void mapEdgeAnnotations(final ProcessType bpmnproc,
+            final AnnotationsType annotations) {
         for (AnnotationType annotation : annotations.getAnnotation()) {
             if (edgeRefMap.containsKey(annotation.getCpfId())) {
                 // TODO: Handle 1-N mappings
@@ -715,8 +715,8 @@ public class Canonical2XPDL {
     }
 
 
-    private void mapAssociationAnnotations(ProcessType bpmnproc,
-            AnnotationsType annotations) {
+    private void mapAssociationAnnotations(final ProcessType bpmnproc,
+            final AnnotationsType annotations) {
         for (AnnotationType annotation : annotations.getAnnotation()) {
             if (objectRefMap.containsKey(annotation.getCpfId())) {
                 // TODO: Handle 1-N mappings
@@ -744,7 +744,7 @@ public class Canonical2XPDL {
         }
     }
 
-    private void setActivitiesId(ProcessType bpmnproc) {
+    private void setActivitiesId(final ProcessType bpmnproc) {
         for (NodeType node : nodeRefMap.values()) {
             Activity act = canon2xpdl.get(node);
             if (act != null) {
@@ -755,7 +755,7 @@ public class Canonical2XPDL {
         }
     }
 
-    private void setTransitionsId(ProcessType bpmnproc) {
+    private void setTransitionsId(final ProcessType bpmnproc) {
         for (EdgeType edge : edgeRefMap.values()) {
             Transition flow = edge2flow.get(edge);
             flow.setId(edge.getId().toString());
@@ -763,13 +763,14 @@ public class Canonical2XPDL {
         }
     }
 
-    private Transition translateEdge(ProcessType bpmnproc, EdgeType edge) {
+    private Transition translateEdge(final ProcessType bpmnproc, final EdgeType edge) {
         Transition flow = new Transition();
         flow.setFrom(cid2xid.get(edge.getSourceId()));
         flow.setTo(cid2xid.get(edge.getTargetId()));
         if (edge.getConditionExpr() != null) {
             Condition cond = new Condition();
-            cond.setExpression(edge.getConditionExpr());
+            cond.setExpression(convertConditionExpr(edge.getConditionExpr()));
+            //TODO maybe set the type of the expression??
             flow.setCondition(cond);
         }
         edge2flow.put(edge, flow);
@@ -792,7 +793,12 @@ public class Canonical2XPDL {
         return flow;
     }
 
-    private Activity translateNode(ProcessType bpmnproc, NodeType node) {
+    private String convertConditionExpr(final ConditionExpressionType conditionExpr) {
+        return conditionExpr.getDescription();
+    }
+
+
+    private Activity translateNode(final ProcessType bpmnproc, final NodeType node) {
         Activity act = null;
         if (node instanceof TaskType) {
             act = translateTask(bpmnproc, node);
@@ -816,12 +822,11 @@ public class Canonical2XPDL {
                     a.setSource(ref.getObjectId().toString());
                     a.setTarget(((TaskType) node).getId().toString());
                 }
-                //TODO FM extension
-//                for (TypeAttribute att : ref.getAttribute()) {
-//                    if (att.getTypeRef().equals("RefID")) {
-//                        objectRefMap.put(BigInteger.valueOf(Long.parseLong(att.getValue())), ref);
-//                    }
-//                }
+                for (TypeAttribute att : ref.getAttribute()) {
+                    if (att.getName().equals("RefID")) {
+                        objectRefMap.put(BigInteger.valueOf(Long.parseLong(att.getValue())), ref);
+                    }
+                }
                 ref2assoc.put(ref, a);
                 this.xpdl.getAssociations().getAssociationAndAny().add(a);
             }
@@ -837,7 +842,7 @@ public class Canonical2XPDL {
         return act;
     }
 
-    private Activity translateTask(ProcessType bpmnproc, NodeType node) {
+    private Activity translateTask(final ProcessType bpmnproc, final NodeType node) {
         Activity act = new Activity();
         act.setName(node.getName());
         Implementation impl = new Implementation();
@@ -847,7 +852,7 @@ public class Canonical2XPDL {
         return act;
     }
 
-    private Activity translateGateway(ProcessType bpmnproc, NodeType node) {
+    private Activity translateGateway(final ProcessType bpmnproc, final NodeType node) {
         Activity act = new Activity();
         Route route = new Route();
         TransitionRestrictions trests = new TransitionRestrictions();
@@ -889,7 +894,7 @@ public class Canonical2XPDL {
         return act;
     }
 
-    private TransitionRestriction createSplitGateway(Route route, String type, String extra) {
+    private TransitionRestriction createSplitGateway(final Route route, final String type, final String extra) {
         route.setGatewayType(type);
         TransitionRestriction trest = new TransitionRestriction();
         Split split = new Split();
@@ -903,7 +908,7 @@ public class Canonical2XPDL {
         return trest;
     }
 
-    private TransitionRestriction createJoinGateway(Route route, String type) {
+    private TransitionRestriction createJoinGateway(final Route route, final String type) {
         route.setGatewayType(type);
         TransitionRestriction trest = new TransitionRestriction();
         Join join = new Join();
@@ -912,7 +917,7 @@ public class Canonical2XPDL {
         return trest;
     }
 
-    private Activity translateEvent(ProcessType bpmnproc, NodeType node) {
+    private Activity translateEvent(final ProcessType bpmnproc, final NodeType node) {
         Activity act = new Activity();
         Event event = new Event();
 

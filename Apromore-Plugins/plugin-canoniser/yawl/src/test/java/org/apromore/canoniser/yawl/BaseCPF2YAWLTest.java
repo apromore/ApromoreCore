@@ -29,9 +29,9 @@ import org.yawlfoundation.yawlschema.NetFactsType;
 
 /**
  * Base class for tests on CPF -> YAWL conversion
- * 
+ *
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public abstract class BaseCPF2YAWLTest {
 
@@ -45,14 +45,14 @@ public abstract class BaseCPF2YAWLTest {
 
     /**
      * Override and return CPF file that should be used in this test.
-     * 
+     *
      * @return File
      */
     protected abstract File getCPFFile();
 
     /**
      * Override and return ANF file that should be used in this test.
-     * 
+     *
      * @return File
      */
     protected abstract File getANFFile();
@@ -115,7 +115,7 @@ public abstract class BaseCPF2YAWLTest {
     protected ExternalTaskFactsType findTaskByName(final String name, final NetFactsType net) {
         for (final ExternalNetElementFactsType element : net.getProcessControlElements().getTaskOrCondition()) {
             if (element instanceof ExternalTaskFactsType) {
-                if (element.getName().equals(name)) {
+                if (element.getName() != null && element.getName().equals(name)) {
                     return (ExternalTaskFactsType) element;
                 }
             }
@@ -126,7 +126,7 @@ public abstract class BaseCPF2YAWLTest {
     protected ExternalConditionFactsType findConditonByName(final String name, final NetFactsType net) {
         for (final ExternalNetElementFactsType element : net.getProcessControlElements().getTaskOrCondition()) {
             if (element instanceof ExternalConditionFactsType) {
-                if (element.getName().equals(name)) {
+                if (element.getName() != null && element.getName().equals(name)) {
                     return (ExternalConditionFactsType) element;
                 }
             }

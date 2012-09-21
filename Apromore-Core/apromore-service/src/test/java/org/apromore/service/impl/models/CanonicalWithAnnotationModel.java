@@ -40,7 +40,7 @@ public interface CanonicalWithAnnotationModel {
             "        <Edge id=\"2011072813324013\" sourceId=\"2011072813324006\" targetId=\"2011072813324005\"/>\n" +
             "        <Edge id=\"2011072813324014\" sourceId=\"2011072813324005\" targetId=\"2011072813324003\"/>\n" +
             "    </Net>\n" +
-            "    <attribute typeRef=\"IntialFormat\" value=\"EPML\"/>\n" +
+            "    <attribute name=\"IntialFormat\" value=\"EPML\"/>\n" +
             "</ns2:CanonicalProcess>";
 
     public static final String ANNOTATION_XML = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +

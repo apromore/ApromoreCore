@@ -1,6 +1,6 @@
 /**
- *  Copyright 2012, Felix Mannhardt 
- * 
+ *  Copyright 2012, Felix Mannhardt
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -25,11 +25,11 @@ import org.apromore.plugin.exception.PluginNotFoundException;
  * Interfaces used by Apromore to retrieve all currently installed plugins. Implementations of this interface usually should use OSGi
  * services (Gemini Blueprint) to pick up availables plugins automatically. Though it would also be possible to provide non-OSGi based
  * implementations.
- * 
+ *
  * @see http://www.eclipse.org/gemini/blueprint/
- * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
- * 
+ *
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ *
  */
 public interface PluginProvider {
 

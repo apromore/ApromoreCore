@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer;
@@ -16,8 +16,8 @@ import java.util.ListIterator;
 
 import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionContext;
 import org.apromore.cpf.ANDSplitType;
+import org.apromore.cpf.CancellationRefType;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.ControlFlowRef;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.TaskType;
@@ -29,13 +29,13 @@ import org.yawlfoundation.yawlschema.TimerTriggerType;
 
 /**
  * Rewrites the canonical way of representing an OnEnablement Timer to a single YAWL Timer. In CPF it looks like this (& = parallel Nodes):
- * 
+ *
  * ANDSplit -> (Timer & Task) -> XORJoin <br />
- * 
+ *
  * In YAWL it is just a single Timer with attribute onEnablement set!
- * 
+ *
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class TimerOnStartMacro extends AbstractTimerMacro {
 
@@ -47,7 +47,7 @@ public class TimerOnStartMacro extends AbstractTimerMacro {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.RewriteMacro#rewrite(org.apromore.cpf.CanonicalProcessType)
      */
     @Override
@@ -90,14 +90,18 @@ public class TimerOnStartMacro extends AbstractTimerMacro {
             return false;
         }
 
-        final List<ControlFlowRef> cSetT = timer.getCancellationSet().getControlFlowRef();
-        final List<ControlFlowRef> cSetM = task.getCancellationSet().getControlFlowRef();
+        if (!(timer.getCancelEdgeId().isEmpty() && task.getCancelEdgeId().isEmpty())) {
+            return false;
+        }
+
+        final List<CancellationRefType> cSetT = timer.getCancelNodeId();
+        final List<CancellationRefType> cSetM = task.getCancelNodeId();
 
         if (cSetT.size() != 1 || cSetM.size() != 1) {
             return false;
         }
 
-        if (!cSetM.get(0).getControlFlowRefId().equals(timer.getId()) || !cSetT.get(0).getControlFlowRefId().equals(task.getId())) {
+        if (!cSetM.get(0).getRefId().equals(timer.getId()) || !cSetT.get(0).getRefId().equals(task.getId())) {
             return false;
         }
 
