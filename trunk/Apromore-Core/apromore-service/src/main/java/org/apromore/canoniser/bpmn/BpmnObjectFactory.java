@@ -13,7 +13,7 @@ import org.omg.spec.bpmn._20100524.model.ObjectFactory;
  * @since 0.3
  */
 @XmlRegistry
-public class CanoniserObjectFactory extends ObjectFactory {
+public class BpmnObjectFactory extends ObjectFactory {
 
     @Override
     public CanoniserDefinitions createDefinitions() {

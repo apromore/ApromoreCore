@@ -3,8 +3,10 @@ package org.apromore.canoniser.bpmn;
 // Java 2 Standard packges
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlRootElement;
@@ -23,7 +25,7 @@ import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SimulationType;
 //import org.apromore.anf.SizeType;
-import org.apromore.exception.CanoniserException;
+import org.apromore.canoniser.bpmn.cpf.CpfNodeType;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -42,6 +44,7 @@ import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
+import org.apromore.exception.CanoniserException;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
@@ -49,9 +52,12 @@ import org.omg.spec.bpmn._20100524.di.BPMNShape;
 import org.omg.spec.bpmn._20100524.model.Definitions;
 import org.omg.spec.bpmn._20100524.model.Lane;
 import org.omg.spec.bpmn._20100524.model.LaneSet;
+import org.omg.spec.bpmn._20100524.model.Participant;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
+import org.omg.spec.bpmn._20100524.model.TCollaboration;
 import org.omg.spec.bpmn._20100524.model.TDataObject;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
+import org.omg.spec.bpmn._20100524.model.TEvent;
 import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
@@ -69,12 +75,128 @@ import org.omg.spec.dd._20100524.di.DiagramElement;
 
 /**
  * BPMN 2.0 object model with canonisation methods.
- *
+ * <p>
  * Apromore's canonical format (CPF) describes an individual process.
  * The annotation format (ANF) is paired with a specific CPF document and currently describes diagram layout.
  * A BPMN document describes a collection of processes which may all feature in a single diagram.
  * Consequently one BPMN document may correspond to several CPF documents, and a single diagram element within
  * a BPMN document may correspond to several ANF documents.
+ *
+ * <h4>Usage</h4>
+ *
+ * To canonise a BPMN document, unmarshal the XML into an object of this class, and invoke the {@link #canonise} method.
+ * Because a BPMN document may describe a collection of processes (for example, in a collaboration) the resulting
+ * {@link CanoniserResult} may contain several {@link CanonicalProcessType} instances.
+ * <p>
+ * To decanonise a canonical model into BPMN, invoke the constructor {@link CanoniserDefinitions(CanonicalProcessType, AnnotationsType}.
+ * Only individual canonical models may be decanonised; there is no facility for generating a BPMN document containing
+ * multiple top-level processes.
+ *
+ * <h4>Canonical mapping of BPMN elements</h4>
+ *
+ * All elements of the BPMN 2.0 Descriptive Process Modeling Conformance are mentioned in what follows.
+ * <p>
+ * A BPMN {@link TProcess} maps to the canonical {@link NetType} referenced by {@link CanonicalProcessType#getRootId}.
+ * Note that this means that a separate {@link CanonicalProcessType} is produced for each BPMN {@link TProcess}.
+ * <p>
+ * A BPMN {@link TCallActivity} maps to a canonical {@link TaskType} with a non-<code>null</code>
+ * {@list TaskType#getSubnetId} indicating the invoked subprocess {@link NetType}.
+ * <p>
+ * A BPMN {@link TSubProcess} is mapped in the same way as a BPMN {@link TCallActivity}, except that it should be
+ * the sole referencer of the invoked subprocess.
+ * <p>
+ * A BPMN {@link TTask} maps to a canonical {@link TaskType}.
+ * A BPMN {@link TServiceTask} is distinguished by...? 
+ * A BPMN {@link TUserTask} is distinguished by...?
+ * <p>
+ * A BPMN {@link TSequenceFlow} maps to a canonical {@link EdgeType}.
+ * <p>
+ * BPMN {@link MessageFlow}s are necessarily broken between distinct source and target {@link CanonicalProcessType} instances.  
+ * {@link ObjectType} instances with the same {@link ObjectType#getName} must occur in each {@CanonicalProcessType}.
+ * An output {@link ObjectRefType} must occur on the source element within one of the {@CanonicalProcessType}s, and an
+ * input {@link ObjectRefType} on the target element within the other {@CanonicalProcessType}.
+ * BPMN message flows are never a result of decanonisation, since only a single {@link CanonicalProcessType} is involved.
+ * <p>
+ * The various BPMN {@link TGateway}s map to various canonical {@link RoutingType}s.
+ * A BPMN {@link ExclusiveGateway} maps to an {@link XORJoinType} or {@link XORSplitType}, depending on the gateway direction. 
+ * A BPMN {@link ParallelGateway} maps similarly to an {@link ANDJoinType} or {@link ANDSplitType}.
+ * <p>
+ * The various BPMN {@link TEvent}s map to canonical {@link EventType}s.
+ * A canonical event with outgoing edges only decanonises as a {@link TStartEvent}.
+ * A canonical event with incoming edges only decanonises as a {@link TEndEvent}.
+ *
+ * Different types of event are distinguished by a {@link TCatchEvent#getEventDefinition} attribute.
+ * If this attribute is absent, it indicates a start none or end none event type.
+ * If this attribute is present, it means as follows:
+ * <ul>
+ * <li>{@link TMessageEventDefinition} maps to...?
+ * <li>{@link TTimerEventDefinition} maps to...?
+ * <li>{@link TTerminateEventDefinition} maps to populating the cancellation set of the {@link EventType} with
+ *   all elements of the subprocess.  Beware that this introduces an issue if the canonical process is subsequently
+ *   edited to add new elements: Apromore will not know that it should add these new elements to the cancellation set.
+ * <li>Multiple start, multiple end map to...?
+ * </ul>
+ * <p>
+ * BPMN participants (a.k.a. pools) and lanes map to canonical {@link ResourceTypeType}s.
+ * The specialization relation {@link ResourceTypeType#getSpecializationIds} distinguishes participants from lanes.
+ * Any {@link ResourceTypeType} which is a specialization of another is a lane; otherwise it is a participant.
+ * <p>
+ * A BPMN {@link LaneSet} does not map to any canonical element.
+ * It is considered to be part of its parent BPMN process (in the case of a pool) or BPMN lane.
+ * If present, a {link LaneSet}'s id, name, or documentation attributes are discarded during canonisation.
+ * <p>
+ * A BPMN {@link TDataObject}...
+ * <p>
+ * A BPMN {@link TDataStore}...
+ *
+ * <h4>Annotation mapping of BPMNDI elements</h4>
+ *
+ * BPMNDI elements are mapped exclusively to canonical annotation elements within {@link AnnotationsType}.
+ * <p>
+ * The BPMNDI {@link BPMNDiagram} and {@link BPMNPlane} elements are discarded during canonisation.
+ * <p>
+ * A BPMNDI {@link BPMNShape} maps to a canonical {@link GraphicsType}.
+ * The {@link BPMNShape#bpmnElement bpmnElement} attribute maps to the canonical {@link AnnotationType#cpfId cpfId}.
+ * The {@link Shape#getBounds bounds} subelement maps to a pair of canonical {@link PositionType} and {@link SizeType}.
+ * <p>
+ * A BPMNDI {@link BPMNEdge} maps to a canonical {@link GraphicsType}.
+ * The {@link BPMNEdge#bpmnElement bpmnElement} attribute maps to the canonical {@link AnnotationType#cpfId cpfId} of
+ * an {@link EdgeType} or an {@link ObjectRefType}.
+ * The two or more {@link Edge#getWaypoints waypoints} subelements map to canonical {@link PositionType}s, ordered
+ * from source to target.
+ * <p>
+ * BPMNDI {@link BPMNLabel}s and {@link BPMNLabelStyle}s are not implemented and are discarded during canonisation.
+ *
+ * <h4>Annotation mapping of BPMN elements</h4>
+ *
+ * The {@link AnnotationsType} contains some elements and attributes of the BPMN process semantics, in addition to the BPMNDI ones.
+ * <p>
+ * The BPMN documentation attributes {@link TBaseElement#getDocumentation} map to canonical {@link DocumentationType}s.
+ * The {@link AnnotationType#cpfId cpfId} indicates which {@link TBaseElement} bears the documentation.
+ * <p>
+ * The various BPMN {@link TArtifact}s (that is, {@link TAssociation}, {@link TGroup}, {@link TTextAnnotation})
+ * currently not implemented and are discarded during canonisation.
+ *
+ * <h4>BPMN elements outside the Descriptive subclass</h4>
+ *
+ * The following additional elements go beyond the BPMN 2.0 Descriptive Process Modeling Conformance subclass.
+ * <p>
+ * A BPMN {@link TDataInputObject} or {@link TDataOutputObject} maps to a canonical {@link ObjectType}.
+ * <p>
+ * A BPMN {@link TDataInputAssociation} does not map to any canonical element.
+ * Instead, it maps to a {@link WorkType#getObjectRef} attribute with a {@link ObjectRefType#getType} of
+ * {@link InputOutputType#INPUT}.
+ * and a {@link ObjectRefType#mapsToObjectId} 
+ * <p>
+ * A BPMN {@link TDataOutputAssociation} is mapped similarly to a {@link TDataInputAssociation}, except
+ * that it uses {@link InputOutputType#OUTPUT}.
+ * <p>
+ * A BPMN {@link TTask} with a {@link TBoundaryEvent} is rewritten according to the following transformation:
+ * <div>
+ * <img src="{@docRoot}/../../../src/test/resources/BPMN_models/Expected 1.bpmn20.svg"/> becomes
+ * <img src="{@docRoot}"/>.
+ * </div>
+ * In the canonical form, each branch appears in the cancellation set of the other.
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  * @version 0.4
@@ -139,7 +261,7 @@ public class CanoniserDefinitions extends Definitions {
         final IdFactory bpmnIdFactory = new IdFactory();
 
         // Map from CPF @cpfId node identifiers to BPMN ids
-        final Map<String, TFlowNode> idMap = new HashMap<String, TFlowNode>();
+        final Map<String, TBaseElement> idMap = new HashMap<String, TBaseElement>();
 
         // Map from CPF @cpfId edge identifiers to BPMN ids
         final Map<String, TSequenceFlow> edgeMap = new HashMap<String, TSequenceFlow>();
@@ -161,7 +283,7 @@ public class CanoniserDefinitions extends Definitions {
 
         // Process components
         if (cpf != null) {
-            final CanoniserObjectFactory factory = new CanoniserObjectFactory();
+            final BpmnObjectFactory factory = new BpmnObjectFactory();
 
             for (TypeAttribute attribute : cpf.getAttribute()) {
                 //logger.info("CanonicalProcess attribute typeRef=" + attribute.getTypeRef() + " value=" + attribute.getValue());
@@ -177,7 +299,7 @@ public class CanoniserDefinitions extends Definitions {
 
                 // Translate this CPF net to a BPMN process
                 final TProcess process = new TProcess();
-                process.setId("process-" + net.getId());
+                process.setId(bpmnIdFactory.newId(net.getId()));
                 getRootElements().add(factory.createProcess(process));
 
                 for (TypeAttribute attribute : net.getAttribute()) {
@@ -194,12 +316,12 @@ public class CanoniserDefinitions extends Definitions {
                     */
 
                     TSequenceFlow sequenceFlow = new TSequenceFlow();
-                    sequenceFlow.setId(bpmnIdFactory.newId("flow-" + edge.getId()));
+                    sequenceFlow.setId(bpmnIdFactory.newId(edge.getId()));
                     edgeMap.put(edge.getId(), sequenceFlow);
 
                     // Deal with @sourceId
                     if (idMap.containsKey(edge.getSourceId())) {
-                        sequenceFlow.setSourceRef(idMap.get(edge.getSourceId()));
+                        sequenceFlow.setSourceRef((TFlowNode) idMap.get(edge.getSourceId()));
                     } else {
                         assert !flowWithoutSourceRefMap.containsKey(sequenceFlow);
                         flowWithoutSourceRefMap.put(edge.getSourceId(), sequenceFlow);
@@ -207,7 +329,7 @@ public class CanoniserDefinitions extends Definitions {
 
                     // Deal with @targetId
                     if (idMap.containsKey(edge.getTargetId())) {
-                        sequenceFlow.setTargetRef(idMap.get(edge.getTargetId()));
+                        sequenceFlow.setTargetRef((TFlowNode) idMap.get(edge.getTargetId()));
                     } else {
                         assert !flowWithoutTargetRefMap.containsKey(sequenceFlow);
                         flowWithoutTargetRefMap.put(edge.getTargetId(), sequenceFlow);
@@ -225,19 +347,38 @@ public class CanoniserDefinitions extends Definitions {
 
                     node.accept(new org.apromore.cpf.BaseVisitor() {
                         @Override public void visit(final EventType that) {
-                            //logger.info("     Event");
+                            logger.info("     Event " + that);
 
-                            TStartEvent event = new TStartEvent();
-                            event.setId(bpmnIdFactory.newId("event-" + node.getId()));
-                            idMap.put(node.getId(), event);
-                            process.getFlowElements().add(factory.createStartEvent(event));
+                            // Count the incoming and outgoing edges to determine whether this is a start, end, or intermediate event
+                            CpfNodeType cpfNode = (CpfNodeType) that;
+                            logger.info("     - in=" + cpfNode.getIncomingEdges() + " out=" + cpfNode.getOutgoingEdges());
+                            if (cpfNode.getIncomingEdges().size() == 0 && cpfNode.getOutgoingEdges().size() > 0) {
+                                // assuming a StartEvent here, but could be TBoundaryEvent too
+                                TStartEvent event = new TStartEvent();
+                                event.setId(bpmnIdFactory.newId(node.getId()));
+                                idMap.put(node.getId(), event);
+                                process.getFlowElements().add(factory.createStartEvent(event));
+                            } else if (cpfNode.getIncomingEdges().size() > 0 && cpfNode.getOutgoingEdges().size() == 0) {
+                                TEndEvent event = new TEndEvent();
+                                event.setId(bpmnIdFactory.newId(node.getId()));
+                                idMap.put(node.getId(), event);
+                                process.getFlowElements().add(factory.createEndEvent(event));
+                            } else if (cpfNode.getIncomingEdges().size() > 0 && cpfNode.getOutgoingEdges().size() > 0) {
+                                throw new RuntimeException(  // TODO - remove this wrapper hack
+                                    new CanoniserException("Intermediate event \"" + that.getId() + "\" not supported")
+                                );
+                            } else {
+                                throw new RuntimeException(  // TODO - remove this wrapper hack
+                                    new CanoniserException("Event \"" + that.getId() + "\" has no edges")
+                                );
+                            }
                         }
 
                         @Override public void visit(final TaskType that) {
                             //logger.info("     Task subnetId=" + ((TaskType) node).getSubnetId());
 
                             TTask task = new TTask();
-                            task.setId(bpmnIdFactory.newId("task-" + node.getId()));
+                            task.setId(bpmnIdFactory.newId(node.getId()));
                             idMap.put(node.getId(), task);
                             process.getFlowElements().add(factory.createTask(task));
                         }
@@ -245,11 +386,11 @@ public class CanoniserDefinitions extends Definitions {
 
                     // Fill any BPMN @sourceRef or @targetRef attributes referencing this node
                     if (flowWithoutSourceRefMap.containsKey(node.getId())) {
-                        flowWithoutSourceRefMap.get(node.getId()).setSourceRef(idMap.get(node.getId()));
+                        flowWithoutSourceRefMap.get(node.getId()).setSourceRef((TFlowNode) idMap.get(node.getId()));
                         flowWithoutSourceRefMap.remove(node.getId());
                     }
                     if (flowWithoutTargetRefMap.containsKey(node.getId())) {
-                        flowWithoutTargetRefMap.get(node.getId()).setTargetRef(idMap.get(node.getId()));
+                        flowWithoutTargetRefMap.get(node.getId()).setTargetRef((TFlowNode) idMap.get(node.getId()));
                         flowWithoutTargetRefMap.remove(node.getId());
                     }
                 }
@@ -260,14 +401,16 @@ public class CanoniserDefinitions extends Definitions {
                             " name=" + resource.getName() +
                             " isConfigurable=" + resource.isConfigurable() +
                             " originalID=" + resource.getOriginalID());
-                //TODO depreciated
-//                for (TypeAttribute attribute : resource.getAttribute()) {
-//                    logger.info("  attribute " + attribute.getTypeRef() + "=" + attribute.getValue());
-//                }
+
+                Participant participant = new Participant();
+                participant.setId(bpmnIdFactory.newId(resource.getId()));
+                idMap.put(resource.getId(), participant);
 
                 for (String id : resource.getSpecializationIds()) {
                     logger.info("  specialization ID=" + id);
                 }
+
+                // TODO - insert pool/lane for this resource
             }
 
             //TODO changed to list
@@ -408,6 +551,8 @@ public class CanoniserDefinitions extends Definitions {
                             }
 
                             bpmnPlane.getDiagramElements().add(diObjectFactory.createBPMNEdge(edge));
+                        } else {
+                            throw new RuntimeException(new CanoniserException("CpfId \"" + annotation.getCpfId() + "\" in ANF document not found in CPF document"));
                         }
                     }
 
@@ -439,10 +584,10 @@ public class CanoniserDefinitions extends Definitions {
         final IdFactory linkUriFactory = new IdFactory();
 
         // Map BPMN flow nodes to CPF nodes
-        final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap = new HashMap<>();
+        final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap = new HashMap<TFlowNode, NodeType>();
 
         // Map BPMN flow nodes to the CPF lanes containing them
-        final Map<TFlowNode, Lane> laneMap = new HashMap<>();
+        final Map<TFlowNode, Lane> laneMap = new HashMap<TFlowNode, Lane>();
 
         // Traverse processes
         for (JAXBElement<? extends TRootElement> rootElement : getRootElements()) {
@@ -464,8 +609,16 @@ public class CanoniserDefinitions extends Definitions {
                     cpf.getRootIds().add(net.getId());
                     cpf.getNet().add(net);
 
-                    for (LaneSet laneSet : process.getLaneSets()) {
-                        addLaneSet(laneSet, process.getName(), cpf, cpfIdFactory);
+                    // Generate resource types for each pool and lane
+                    for (JAXBElement<? extends TRootElement> rootElement2 : getRootElements()) {
+                        java.util.logging.Logger.getAnonymousLogger().info("Root element " + rootElement2.getValue().getId());
+                        if (rootElement2.getValue() instanceof TCollaboration) {
+                            for (Participant participant : ((TCollaboration) rootElement2.getValue()).getParticipants()) {
+                                if (process.getId().equals(participant.getProcessRef().toString())) {
+                                    addPools(participant, process, cpf, cpfIdFactory);
+                                }
+                            }
+                        }
                     }
 
                     for (JAXBElement<? extends TFlowElement> flowElement : process.getFlowElements()) {
@@ -635,11 +788,10 @@ public class CanoniserDefinitions extends Definitions {
                         });
                     }
 
+                    unwindLaneMap(cpfIdFactory);
+
                     // For each diagram in the BPMN, generate an ANF for this CPF
                     List<AnnotationsType> anfs = annotate();
-
-                    // Assign resource types to nodes
-                    unwindLaneMap(cpfIdFactory);
 
                     // Link the ANF to the CPF so that @cpfId attributes are meaningful
                     String linkUri = linkUriFactory.newId(null);
@@ -651,45 +803,70 @@ public class CanoniserDefinitions extends Definitions {
                 }
 
                 /**
-                 * Recursively add resource types to this CPF corresponding to BPMN swimlanes.
+                 * Each lane set in a process corresponds to a pool; for each such pool, create a CPF resource type.
+                 *
+                 * @param participant  the BPMN participant corresponding to the pool
+                 * @param process  the BPMN process referenced by the <var>participant</var>
+                 * @param cpf  the CPF document to populate
+                 * @param cpfIdFactory  generator of identifiers for pools and lanes
+                 */
+                private void addPools(Participant participant, TProcess process, CanonicalProcessType cpf, IdFactory cpfIdFactory) {
+                    for (LaneSet laneSet : process.getLaneSets()) {
+
+                        // Create a pool
+                        ResourceTypeType poolResourceType = new ResourceTypeType();
+                        poolResourceType.setId(cpfIdFactory.newId(participant.getId()));
+                        poolResourceType.setName(requiredName(participant.getName()));
+                        cpf.getResourceType().add(poolResourceType);
+
+                        // Create the lanes within the pool
+                        poolResourceType.getSpecializationIds().addAll(
+                            addLanes(laneSet, cpf, cpfIdFactory)
+                        );
+                    }
+                }
+
+                /**
+                 * Recursively add resource types to this CPF corresponding to BPMN lanes.
                  *
                  * This is recursive, since a lane may itself contain a child lane set.
                  *
                  * @param laneSet  BPMN lane set to add, never <code>null</code>
-                 * @param parentName  the name attribute of the parent element ({@link TProcess} or a {@link TLane}), possibly <code>null</code>
                  * @param cpf  the CPF document to populate
                  * @param cpfIdFactory  generator of identifiers for pools and lanes
+                 * @return the CPF ids of all the added lanes (but not their sublanes)
                  */
-                private void addLaneSet(final LaneSet laneSet, final String parentName, final CanonicalProcessType cpf, final IdFactory cpfIdFactory) {
-                    ResourceTypeType poolResourceType = new ResourceTypeType();
+                private Set<String> addLanes(final LaneSet              laneSet,
+                                             final CanonicalProcessType cpf,
+                                             final IdFactory            cpfIdFactory) {
 
-                    poolResourceType.setId(cpfIdFactory.newId(laneSet.getId()));
-
-                    // In BPMN lane sets have their own distinct name attribute, but we ignore this and use the parent name instead
-                    poolResourceType.setName(requiredName(parentName));
+                    Set<String> specializationIds = new HashSet<String>();  // TODO - diamond operator
 
                     for (Lane lane : laneSet.getLanes()) {
                         ResourceTypeType laneResourceType = new ResourceTypeType();
 
+                        laneResourceType.setId(cpfIdFactory.newId(lane.getId()));
+                        laneResourceType.setName(requiredName(lane.getName()));
+
+                        // Remember which elements should be in each lane
                         for (JAXBElement<Object> object : lane.getFlowNodeRefs()) {
                             TFlowNode flowNode = (TFlowNode) object.getValue();
-                            logger.info("Lane " + flowNode.getId());
                             laneMap.put(flowNode, lane);
                         }
 
-                        laneResourceType.setId(cpfIdFactory.newId(lane.getId()));
-                        laneResourceType.setName(requiredName(lane.getName()));
-                        poolResourceType.getSpecializationIds().add(laneResourceType.getId());
+                        // recurse on any child lane sets
+                        if (lane.getChildLaneSet() != null) {
+                            laneResourceType.getSpecializationIds().addAll(
+                                addLanes(lane.getChildLaneSet(), cpf, cpfIdFactory)
+                            );
+                        }
 
                         cpf.getResourceType().add(laneResourceType);
 
-                        // recurse on any child lane sets
-                        if (lane.getChildLaneSet() != null) {
-                            addLaneSet(lane.getChildLaneSet(), lane.getName(), cpf, cpfIdFactory);
-                        }
+                        specializationIds.add(laneResourceType.getId());
                     }
 
-                    cpf.getResourceType().add(poolResourceType);
+                    return specializationIds;
                 }
 
                 /**

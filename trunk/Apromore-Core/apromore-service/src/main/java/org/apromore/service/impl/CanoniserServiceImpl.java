@@ -15,6 +15,7 @@ import javax.xml.bind.PropertyException;
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.Canoniser;
+import org.apromore.canoniser.bpmn.BPMN20Canoniser;
 import org.apromore.canoniser.epml.EPML20Canoniser;
 import org.apromore.canoniser.pnml.PNML132Canoniser;
 import org.apromore.canoniser.provider.impl.CanoniserProviderImpl;
@@ -84,6 +85,7 @@ public class CanoniserServiceImpl implements CanoniserService {
         canoniserList.add(new XPDL21Canoniser());
         canoniserList.add(new PNML132Canoniser());
         canoniserList.add(new YAWL22Canoniser());
+        canoniserList.add(new BPMN20Canoniser());
         canoniserProvider.setCanoniserList(canoniserList);
         
         List<CanonicalProcessType> cpfList = new ArrayList<CanonicalProcessType>();
@@ -146,6 +148,7 @@ public class CanoniserServiceImpl implements CanoniserService {
         canoniserList.add(new XPDL21Canoniser());
         canoniserList.add(new PNML132Canoniser());
         canoniserList.add(new YAWL22Canoniser());
+        canoniserList.add(new BPMN20Canoniser());
         canoniserProvider.setCanoniserList(canoniserList);
         
         try {
