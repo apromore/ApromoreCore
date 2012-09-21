@@ -1,12 +1,11 @@
 package org.apromore;
 
-import org.omg.CORBA.PUBLIC_MEMBER;
 
 /**
  * Data used in tests.
  */
 public interface TestData {
-    
+
     public static final String ANF = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<ns2:Annotations xmlns:ns2=\"http://www.apromore.org/ANF\">\n" +
             "    <Annotation xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:GraphicsType\" id=\"1\" cpfId=\"20110720171634430\">\n" +
@@ -447,7 +446,7 @@ public interface TestData {
             "    <ResourceType xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:type=\"ns2:HumanType\" id=\"1288089387829\">\n" +
             "        <name>R2</name>\n" +
             "    </ResourceType>\n" +
-            "    <attribute typeRef=\"IntialFormat\" value=\"EPML\"/>\n" +
+            "    <attribute name=\"IntialFormat\" value=\"EPML\"/>\n" +
             "</ns2:CanonicalProcess>\n";
 
 
@@ -480,8 +479,8 @@ public interface TestData {
             "        <Edge id=\"18\" sourceId=\"9\" targetId=\"4\"/>\n" +
             "    </Net>\n" +
             "</ns2:CanonicalProcess>";
-    
-    
+
+
     public static final String XPDL = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<Package xmlns=\"http://www.wfmc.org/2008/XPDL2.1\" xmlns:ns2=\"http://www.wfmc.org/2002/XPDL1.0\" Id=\"c21e82ba-3822-4cc5-b119-a540005e0725\" Name=\"SubProcess - Conduct monetary transactions\" OnlyOneProcess=\"false\">\n" +
             "    <PackageHeader>\n" +
@@ -1038,7 +1037,7 @@ public interface TestData {
             "    </WorkflowProcesses>\n" +
             "    <ExtendedAttributes/>\n" +
             "</Package>";
-    
+
     public static final String XPDL2 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<Package xmlns=\"http://www.wfmc.org/2008/XPDL2.1\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" Language=\"English\" Id=\"oryx-canvas123\">\n" +
             "  <ConformanceClass GraphConformance=\"NON-BLOCKED\" BPMNModelPortabilityConformance=\"STANDARD\" />\n" +
@@ -1275,7 +1274,7 @@ public interface TestData {
             "  </epc>\n" +
             "  </directory>\n" +
             "</epml:epml>";
-    
+
     public static final String EPML2 = "<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>\n" +
             "<ns2:epml xmlns:ns2=\"http://www.epml.de\">\n" +
             "<directory>\n" +
@@ -1445,7 +1444,7 @@ public interface TestData {
             "  </epc>\n" +
             "</directory>\n" +
             "</ns2:epml>";
-    
+
     public final static String PNML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<pnml>\n" +
             "  <net type=\"http://www.informatik.hu-berlin.de/top/pntd/ptNetb\" id=\"noID\">\n" +

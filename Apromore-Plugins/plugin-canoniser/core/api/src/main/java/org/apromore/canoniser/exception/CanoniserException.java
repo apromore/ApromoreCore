@@ -1,6 +1,6 @@
 /**
- *  Copyright 2012, Felix Mannhardt 
- * 
+ *  Copyright 2012, Felix Mannhardt
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -20,32 +20,32 @@ import org.apromore.plugin.exception.PluginException;
 
 /**
  * Thrown if a Canoniser can not proceed with the conversion.
- * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
- * 
+ *
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ *
  */
 public class CanoniserException extends PluginException {
 
-	private static final long serialVersionUID = 4207728954089608127L;
+    private static final long serialVersionUID = 4207728954089608127L;
 
-	public CanoniserException() {
-		super();
-	}
+    public CanoniserException() {
+        super();
+    }
 
-	public CanoniserException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
-		super(message, cause, enableSuppression, writableStackTrace);
-	}
+    public CanoniserException(final String message, final Throwable cause, final boolean enableSuppression, final boolean writableStackTrace) {
+        super(message, cause, enableSuppression, writableStackTrace);
+    }
 
-	public CanoniserException(final String message, final Throwable cause) {
-		super(message, cause);
-	}
+    public CanoniserException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 
-	public CanoniserException(final String message) {
-		super(message);
-	}
+    public CanoniserException(final String message) {
+        super(message);
+    }
 
-	public CanoniserException(final Throwable cause) {
-		super(cause);
-	}
+    public CanoniserException(final Throwable cause) {
+        super(cause);
+    }
 
 }

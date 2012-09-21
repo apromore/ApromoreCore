@@ -7,10 +7,8 @@ import java.io.IOException;
 import java.io.StringWriter;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
@@ -31,7 +29,7 @@ import org.xml.sax.SAXException;
  * @author Chathura Ekanayake
  */
 public class XMLUtils {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(XMLUtils.class);
 
     private static final String DEFAULT_NAMESPACE = "http://www.epml.de";
@@ -75,7 +73,7 @@ public class XMLUtils {
 
     /**
      * Converts an Object representing an xs:any type into its XML String representation.
-     * 
+     *
      * @param any extensions element that should contain valid XML with unkown schema
      * @return String representation of XML
      */
@@ -84,12 +82,6 @@ public class XMLUtils {
         if (any == null) {
             LOGGER.warn("anyElementToString returning NULL");
             return null;
-        }
-        //TODO this is just a workaround because non-XML is used at the moment
-        // If Object is a plain String, then return String
-        if (any instanceof String) {
-            LOGGER.warn("anyElementToString returning plain String {} instead of XML", any);
-            return (String) any;
         }
         // Otherwise return XML representation
         try {
@@ -100,15 +92,15 @@ public class XMLUtils {
             return writer.toString();
         } catch (final JAXBException e) {
             throw new IllegalArgumentException("Invalid Node in ANY!");
-        }        
+        }
     }
-    
+
     /**
      * Converts a XML String to an Object suitable to put into xs:any
-     * 
-     * @param value String containing XML 
+     *
+     * @param value String containing XML
      * @return Object representation of XML
-     */    
+     */
     public static Object stringToAnyElement(final String name, final String value) {
         // If Object is NULL, then we return NULL
         if (value == null) {
@@ -119,12 +111,10 @@ public class XMLUtils {
             // Otherwise return XML representation
             final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             final Element node  = docBuilder.parse(new ByteArrayInputStream(value.getBytes())).getDocumentElement();
-            LOGGER.debug("stringToAnyElement returning Element {}", value);
             return node;
         } catch (ParserConfigurationException | SAXException | IOException e) {
-            // Just add the String as String using the Attributes name as local part
             LOGGER.warn("stringToAnyElement returning JAXBElement with plain String {} instead of XML", value);
-            return new JAXBElement<String>(new QName(name), String.class, value);
+            throw new IllegalArgumentException("Invalid Node in ANY!");
         }
 
     }

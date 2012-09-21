@@ -1,6 +1,6 @@
 /**
- *  Copyright 2012, Felix Mannhardt 
- * 
+ *  Copyright 2012, Felix Mannhardt
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -35,6 +35,12 @@ import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+/**
+ * Tests for the Canoniser Provider
+ *
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de"><a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a></a>
+ *
+ */
 public class CanoniserProviderTest {
 
 	private CanoniserProvider provider;
@@ -74,22 +80,22 @@ public class CanoniserProviderTest {
 
 	 @Rule
 	 public ExpectedException exception = ExpectedException.none();
-	 
+
 	@Test
 	public void testListByNativeType() throws PluginNotFoundException {
-		assertNotNull(provider.findByNativeType("XPDL 2.0"));	
+		assertNotNull(provider.findByNativeType("XPDL 2.0"));
 	}
-	
+
 	@Test
 	public void testListByNativeTypeAndName() throws PluginNotFoundException {
 		assertNotNull(provider.findByNativeTypeAndName("XPDL 2.0", "XPDL 2.0 - Canoniser XY"));
 	}
-	
+
 	@Test
 	public void testListByNativeTypeAndNameAndVersion() throws PluginNotFoundException {
 		assertNotNull(provider.findByNativeTypeAndNameAndVersion("XPDL 2.0", "XPDL 2.0 - Canoniser XY", "1.0.0"));
 	}
-	
+
 	@Test
 	public void testNotFound() throws PluginNotFoundException {
 		exception.expect(PluginNotFoundException.class);

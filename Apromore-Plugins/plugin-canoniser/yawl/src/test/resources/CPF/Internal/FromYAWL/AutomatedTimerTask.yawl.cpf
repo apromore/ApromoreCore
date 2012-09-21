@@ -4,19 +4,19 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TimerType" id="id-2f69ec1e-5864-4c2f-a795-623e04c81c22"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TimerType" id="id-88121467-d431-4b89-a38d-6e50aea31ef1"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_A" originalID="A">
             <name>A</name>
-            <resourceTypeRef id="id-b9492396-d18e-44c8-9514-cb2c1d5772ee" resourceTypeId="id-5281ca6a-b8a2-4487-a89e-bfe94ad92cc5"/>
+            <resourceTypeRef id="id-805cb902-c354-4dd1-9e4b-3f23641c4d89" resourceTypeId="id-2d0a01a2-2c83-4010-991a-d0bd97b2a04b"/>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="id-C_id-2f69ec1e-5864-4c2f-a795-623e04c81c22-id-C_A" default="true" sourceId="id-2f69ec1e-5864-4c2f-a795-623e04c81c22" targetId="id-C_A"/>
-        <Edge id="id-C_id-C_InputCondition-id-2f69ec1e-5864-4c2f-a795-623e04c81c22" default="true" sourceId="id-C_InputCondition" targetId="id-2f69ec1e-5864-4c2f-a795-623e04c81c22"/>
+        <Edge id="id-C_id-88121467-d431-4b89-a38d-6e50aea31ef1-id-C_A" default="true" sourceId="id-88121467-d431-4b89-a38d-6e50aea31ef1" targetId="id-C_A"/>
+        <Edge id="id-C_id-C_InputCondition-id-88121467-d431-4b89-a38d-6e50aea31ef1" default="true" sourceId="id-C_InputCondition" targetId="id-88121467-d431-4b89-a38d-6e50aea31ef1"/>
         <Edge id="id-C_A-OutputCondition" default="true" sourceId="id-C_A" targetId="id-C_OutputCondition"/>
     </Net>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftwareSystemType" id="id-5281ca6a-b8a2-4487-a89e-bfe94ad92cc5">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftwareSystemType" id="id-2d0a01a2-2c83-4010-991a-d0bd97b2a04b">
         <name>org.yawlfoundation.yawl.resourcing.codelets.RandomWait</name>
     </ResourceType>
 </ns2:CanonicalProcess>

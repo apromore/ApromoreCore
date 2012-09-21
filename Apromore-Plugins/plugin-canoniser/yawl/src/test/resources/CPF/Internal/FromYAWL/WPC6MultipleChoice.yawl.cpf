@@ -7,7 +7,7 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_A" originalID="A">
             <name>A</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="id-c31bfb76-9f3b-4b90-8407-ebeb94c576bc"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="id-33ae0be6-e737-44b3-b1a3-028af66f0989"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_D_1" originalID="D_1">
             <name>D</name>
         </Node>
@@ -20,19 +20,19 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_E" originalID="E">
             <name>E</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="id-57e194cb-1978-4771-981f-b12b8bffdfa4"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="id-4c73438e-db1a-46aa-b152-98d3bb1bb6b3"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
         <Edge id="id-C_InputCondition-A" default="true" sourceId="id-C_InputCondition" targetId="id-C_A"/>
-        <Edge id="id-C_id-C_A-id-c31bfb76-9f3b-4b90-8407-ebeb94c576bc" default="true" sourceId="id-C_A" targetId="id-c31bfb76-9f3b-4b90-8407-ebeb94c576bc"/>
-        <Edge id="id-C_id-c31bfb76-9f3b-4b90-8407-ebeb94c576bc-id-C_D_1" default="true" sourceId="id-c31bfb76-9f3b-4b90-8407-ebeb94c576bc" targetId="id-C_D_1"/>
-        <Edge id="id-C_id-c31bfb76-9f3b-4b90-8407-ebeb94c576bc-id-C_C_1" default="true" sourceId="id-c31bfb76-9f3b-4b90-8407-ebeb94c576bc" targetId="id-C_C_1"/>
-        <Edge id="id-C_id-c31bfb76-9f3b-4b90-8407-ebeb94c576bc-id-C_B" default="true" sourceId="id-c31bfb76-9f3b-4b90-8407-ebeb94c576bc" targetId="id-C_B"/>
-        <Edge id="id-C_id-57e194cb-1978-4771-981f-b12b8bffdfa4-id-C_E" default="true" sourceId="id-57e194cb-1978-4771-981f-b12b8bffdfa4" targetId="id-C_E"/>
-        <Edge id="id-C_id-C_D_1-id-57e194cb-1978-4771-981f-b12b8bffdfa4" default="true" sourceId="id-C_D_1" targetId="id-57e194cb-1978-4771-981f-b12b8bffdfa4"/>
-        <Edge id="id-C_id-C_C_1-id-57e194cb-1978-4771-981f-b12b8bffdfa4" default="true" sourceId="id-C_C_1" targetId="id-57e194cb-1978-4771-981f-b12b8bffdfa4"/>
-        <Edge id="id-C_id-C_B-id-57e194cb-1978-4771-981f-b12b8bffdfa4" default="true" sourceId="id-C_B" targetId="id-57e194cb-1978-4771-981f-b12b8bffdfa4"/>
+        <Edge id="id-C_id-C_A-id-33ae0be6-e737-44b3-b1a3-028af66f0989" default="true" sourceId="id-C_A" targetId="id-33ae0be6-e737-44b3-b1a3-028af66f0989"/>
+        <Edge id="id-C_id-33ae0be6-e737-44b3-b1a3-028af66f0989-id-C_D_1" default="true" sourceId="id-33ae0be6-e737-44b3-b1a3-028af66f0989" targetId="id-C_D_1"/>
+        <Edge id="id-C_id-33ae0be6-e737-44b3-b1a3-028af66f0989-id-C_C_1" default="true" sourceId="id-33ae0be6-e737-44b3-b1a3-028af66f0989" targetId="id-C_C_1"/>
+        <Edge id="id-C_id-33ae0be6-e737-44b3-b1a3-028af66f0989-id-C_B" default="true" sourceId="id-33ae0be6-e737-44b3-b1a3-028af66f0989" targetId="id-C_B"/>
+        <Edge id="id-C_id-4c73438e-db1a-46aa-b152-98d3bb1bb6b3-id-C_E" default="true" sourceId="id-4c73438e-db1a-46aa-b152-98d3bb1bb6b3" targetId="id-C_E"/>
+        <Edge id="id-C_id-C_D_1-id-4c73438e-db1a-46aa-b152-98d3bb1bb6b3" default="true" sourceId="id-C_D_1" targetId="id-4c73438e-db1a-46aa-b152-98d3bb1bb6b3"/>
+        <Edge id="id-C_id-C_C_1-id-4c73438e-db1a-46aa-b152-98d3bb1bb6b3" default="true" sourceId="id-C_C_1" targetId="id-4c73438e-db1a-46aa-b152-98d3bb1bb6b3"/>
+        <Edge id="id-C_id-C_B-id-4c73438e-db1a-46aa-b152-98d3bb1bb6b3" default="true" sourceId="id-C_B" targetId="id-4c73438e-db1a-46aa-b152-98d3bb1bb6b3"/>
         <Edge id="id-C_E-OutputCondition" default="true" sourceId="id-C_E" targetId="id-C_OutputCondition"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D_id-N_Net_cond" originalID="id-N_Net_cond">
             <name>cond</name>

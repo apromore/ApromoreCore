@@ -18,6 +18,7 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.ConditionExpressionType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.InputOutputType;
@@ -108,16 +109,16 @@ public class XPDL2Canonical {
      * is file format for BPMN diagrams.
      * @since 1.0
      */
-    public XPDL2Canonical(PackageType pkg) throws CanoniserException {
+    public XPDL2Canonical(final PackageType pkg) throws CanoniserException {
         main(pkg);
     }
 
-    public XPDL2Canonical(PackageType pkg, long id) throws CanoniserException {
+    public XPDL2Canonical(final PackageType pkg, final long id) throws CanoniserException {
         this.cpfId = id;
         main(pkg);
     }
 
-    void main(PackageType pkg) throws CanoniserException {
+    void main(final PackageType pkg) throws CanoniserException {
         this.cpf = new CanonicalProcessType();
         this.anf = new AnnotationsType();
 
@@ -232,7 +233,7 @@ public class XPDL2Canonical {
         }
     }
 
-    private void process_unrequired_events(NetType net) throws CanoniserException {
+    private void process_unrequired_events(final NetType net) throws CanoniserException {
         List<EdgeType> edge_remove_list = new LinkedList<EdgeType>();
         String source_id;
         try {
@@ -271,7 +272,7 @@ public class XPDL2Canonical {
         }
     }
 
-    private void recordAnnotations(ProcessType bpmnproc, AnnotationsType annotations) {
+    private void recordAnnotations(final ProcessType bpmnproc, final AnnotationsType annotations) {
         for (Activity act : activities) {
             GraphicsType cGraphInfo = new GraphicsType();
             cGraphInfo.setId(String.valueOf(anfId++));
@@ -408,7 +409,7 @@ public class XPDL2Canonical {
         }
     }
 
-    private void addRefs(WorkType node, Double xCoordinate, Double yCoordinate) {
+    private void addRefs(final WorkType node, final Double xCoordinate, final Double yCoordinate) {
         double x, w, y, h;
         for (Lane lane : lanes) {
             if (lane.getNodeGraphicsInfos() != null
@@ -432,7 +433,7 @@ public class XPDL2Canonical {
 
     }
 
-    private void translateProcess(NetType net, ProcessType bpmnproc, ResourceTypeRefType ref) throws CanoniserException {
+    private void translateProcess(final NetType net, final ProcessType bpmnproc, final ResourceTypeRefType ref) throws CanoniserException {
         for (Object obj : bpmnproc.getContent()) {
             if (obj instanceof Activities) {
                 activities = ((Activities) obj).getActivity();
@@ -452,7 +453,7 @@ public class XPDL2Canonical {
         linkImplicitOrSplits(net);
     }
 
-    private void linkImplicitOrSplits(NetType net) throws CanoniserException {
+    private void linkImplicitOrSplits(final NetType net) throws CanoniserException {
         for (NodeType act : implicitORSplit.keySet()) {
             NodeType andSplit = implicitANDSplit.get(act);
             NodeType orSplit = implicitORSplit.get(act);
@@ -468,7 +469,7 @@ public class XPDL2Canonical {
         }
     }
 
-    private void translateSequenceFlow(NetType net, Transition flow) {
+    private void translateSequenceFlow(final NetType net, final Transition flow) {
         Activity xsrc = xpdlRefMap.get(flow.getFrom());
         Activity xtgt = xpdlRefMap.get(flow.getTo());
 
@@ -509,7 +510,7 @@ public class XPDL2Canonical {
 
             EdgeType edge = addEdge(net, csrc, ctgt);
             if (cond != null && cond.getExpression() != null) {
-                edge.setConditionExpr(cond.getExpression());
+                edge.setConditionExpr(convertConditionExpr(cond.getExpression()));
             }
 
             edgeMap.put(flow, edge);
@@ -517,7 +518,13 @@ public class XPDL2Canonical {
         }
     }
 
-    private EdgeType addEdge(NetType net, NodeType src, NodeType tgt) {
+    private ConditionExpressionType convertConditionExpr(final String expression) {
+        ConditionExpressionType expr = new ConditionExpressionType();
+        expr.setDescription(expression);
+        return expr;
+    }
+
+    private EdgeType addEdge(final NetType net, final NodeType src, final NodeType tgt) {
         EdgeType edge = new EdgeType();
         edge.setId(String.valueOf(cpfId++));
         edge.setSourceId(src.getId());
@@ -532,7 +539,7 @@ public class XPDL2Canonical {
         return edge;
     }
 
-    private void translateActivity(NetType net, Activity act, ResourceTypeRefType ref) throws CanoniserException {
+    private void translateActivity(final NetType net, final Activity act, final ResourceTypeRefType ref) throws CanoniserException {
         NodeType node;
         Route route = null;
         Event event = null;

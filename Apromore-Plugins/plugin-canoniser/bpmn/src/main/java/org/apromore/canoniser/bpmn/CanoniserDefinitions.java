@@ -721,7 +721,8 @@ public class CanoniserDefinitions extends Definitions {
                                 populateFlowElement(edge, sequenceFlow);
 
                                 if (sequenceFlow.getConditionExpression() != null) {
-                                    edge.setConditionExpr(sequenceFlow.getConditionExpression().getContent().get(0).toString());
+                                    //TODO change to CPF v1.0
+                                    //edge.setConditionExpr(sequenceFlow.getConditionExpression().getContent().get(0).toString());
                                     // TODO - handle non-singleton expressions
                                 }
                                 edge.setSourceId(((TFlowNode) sequenceFlow.getSourceRef()).getId());  // TODO - process through cpfIdFactory

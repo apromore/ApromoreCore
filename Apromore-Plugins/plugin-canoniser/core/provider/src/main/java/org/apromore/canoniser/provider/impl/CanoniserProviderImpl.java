@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.provider.impl;
@@ -30,10 +30,9 @@ import org.springframework.stereotype.Service;
 
 /**
  * Providing the default CanoniserProvider implementation using OSGi services
- * 
- * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
- * 
+ *
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ *
  */
 @Service
 public class CanoniserProviderImpl implements CanoniserProvider {
@@ -54,42 +53,45 @@ public class CanoniserProviderImpl implements CanoniserProvider {
         this.canoniserList = canoniserList;
     }
 
+    /* (non-Javadoc)
+     * @see org.apromore.canoniser.provider.CanoniserProvider#canonise(java.lang.String, java.io.InputStream, java.util.List, java.util.List)
+     */
     @Override
-    public final void canonise(final String nativeType, final InputStream nativeInput, List<AnnotationsType> annotationFormat,
-            List<CanonicalProcessType> canonicalFormat) throws CanoniserException, PluginNotFoundException {
+    public final void canonise(final String nativeType, final InputStream nativeInput, final List<AnnotationsType> annotationFormat,
+            final List<CanonicalProcessType> canonicalFormat) throws CanoniserException, PluginNotFoundException {
         final Canoniser c = findByNativeTypeAndNameAndVersion(nativeType, null, null);
         c.canonise(nativeInput, annotationFormat, canonicalFormat);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.provider.CanoniserProvider#canonise(java.lang.String, java.lang.String, org.apromore.canoniser.NativeInput,
      * java.io.OutputStream, java.io.OutputStream)
      */
     @Override
-    public final void canonise(final String nativeType, final String name, final InputStream nativeInput, List<AnnotationsType> annotationFormat,
-            List<CanonicalProcessType> canonicalFormat) throws CanoniserException, PluginNotFoundException {
+    public final void canonise(final String nativeType, final String name, final InputStream nativeInput, final List<AnnotationsType> annotationFormat,
+            final List<CanonicalProcessType> canonicalFormat) throws CanoniserException, PluginNotFoundException {
         final Canoniser c = findByNativeTypeAndNameAndVersion(nativeType, name, null);
         c.canonise(nativeInput, annotationFormat, canonicalFormat);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.provider.CanoniserProvider#canonise(java.lang.String, java.lang.String, java.lang.String,
      * org.apromore.canoniser.NativeInput, java.io.OutputStream, java.io.OutputStream)
      */
     @Override
     public final void canonise(final String nativeType, final String name, final String version, final InputStream nativeInput,
-            List<AnnotationsType> annotationFormat, List<CanonicalProcessType> canonicalFormat) throws CanoniserException, PluginNotFoundException {
+            final List<AnnotationsType> annotationFormat, final List<CanonicalProcessType> canonicalFormat) throws CanoniserException, PluginNotFoundException {
         final Canoniser c = findByNativeTypeAndNameAndVersion(nativeType, name, version);
         c.canonise(nativeInput, annotationFormat, canonicalFormat);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.provider.CanoniserProvider#deCanonise(java.lang.String, java.io.InputStream, java.io.InputStream,
      * org.apromore.canoniser.NativeOutput)
      */
@@ -102,7 +104,7 @@ public class CanoniserProviderImpl implements CanoniserProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.provider.CanoniserProvider#deCanonise(java.lang.String, java.lang.String, java.io.InputStream, java.io.InputStream,
      * org.apromore.canoniser.NativeOutput)
      */
@@ -115,7 +117,7 @@ public class CanoniserProviderImpl implements CanoniserProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.provider.CanoniserProvider#deCanonise(java.lang.String, java.lang.String, java.lang.String, java.io.InputStream,
      * java.io.InputStream, org.apromore.canoniser.NativeOutput)
      */
@@ -128,7 +130,7 @@ public class CanoniserProviderImpl implements CanoniserProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.provider.CanoniserProvider#listAll()
      */
     @Override
@@ -138,7 +140,7 @@ public class CanoniserProviderImpl implements CanoniserProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.provider.CanoniserProvider#listByNativeType(java.lang.String)
      */
     @Override
@@ -148,7 +150,7 @@ public class CanoniserProviderImpl implements CanoniserProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.provider.CanoniserProvider#listByNativeTypeAndName(java.lang.String, java.lang.String)
      */
     @Override
@@ -158,7 +160,7 @@ public class CanoniserProviderImpl implements CanoniserProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.provider.CanoniserProvider#findByNativeType(java.lang.String)
      */
     @Override
@@ -168,7 +170,7 @@ public class CanoniserProviderImpl implements CanoniserProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.provider.CanoniserProvider#findByNativeTypeAndName(java.lang.String, java.lang.String)
      */
     @Override
@@ -178,7 +180,7 @@ public class CanoniserProviderImpl implements CanoniserProvider {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.provider.CanoniserProvider#findByNativeTypeAndNameAndVersion(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override

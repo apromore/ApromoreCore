@@ -1,6 +1,6 @@
 /**
- *  Copyright 2012, Felix Mannhardt 
- * 
+ *  Copyright 2012, Felix Mannhardt
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -32,34 +32,69 @@ import org.xml.sax.SAXException;
 
 /**
  * Implements common functionality shared by all Canonisers
- * 
- * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
- * 
+ *
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ *
  */
 public abstract class DefaultAbstractCanoniser extends AbstractPropertyAwarePlugin implements Canoniser {
 
-	protected void marshalCanoncialFormat(final OutputStream canonicalFormat, final CanonicalProcessType cpf) throws JAXBException,
-			PropertyException, SAXException {
-		CPFSchema.marshalCanoncialFormat(canonicalFormat, cpf, true);
-	}
+    /**
+     * Marshal the Canonical Process Format into the provided OutputStream with Validation.
+     *
+     * @param canonicalFormat
+     * @param cpf
+     * @throws JAXBException
+     * @throws PropertyException
+     * @throws SAXException
+     */
+    protected void marshalCanoncialFormat(final OutputStream canonicalFormat, final CanonicalProcessType cpf) throws JAXBException,
+            PropertyException, SAXException {
+        CPFSchema.marshalCanoncialFormat(canonicalFormat, cpf, true);
+    }
 
-	protected void marshalAnnotationFormat(final OutputStream annotationFormat, final AnnotationsType anf) throws JAXBException,
-			PropertyException, SAXException {
-		ANFSchema.marshalAnnotationFormat(annotationFormat, anf, true);
-	}
+    /**
+     * Marshal the Annotations Format into the provided OutputStream with Validation.
+     *
+     * @param annotationFormat
+     * @param anf
+     * @throws JAXBException
+     * @throws PropertyException
+     * @throws SAXException
+     */
+    protected void marshalAnnotationFormat(final OutputStream annotationFormat, final AnnotationsType anf) throws JAXBException, PropertyException,
+            SAXException {
+        ANFSchema.marshalAnnotationFormat(annotationFormat, anf, true);
+    }
 
-	protected JAXBElement<CanonicalProcessType> unmarshalCanonicalFormat(final InputStream canonicalFormat) throws JAXBException, SAXException {
-		return CPFSchema.unmarshalCanonicalFormat(canonicalFormat, true);
-	}
 
-	protected JAXBElement<AnnotationsType> unmarshalAnnotationFormat(final InputStream annotationFormat) throws JAXBException, SAXException {
-		if (annotationFormat != null) {
+    /**
+     * Unmarshals the Canonical Process Format from the provided InputStream with Validation.
+     *
+     * @param canonicalFormat
+     * @return JAXBElement holding CanonicalProcessType
+     * @throws JAXBException
+     * @throws SAXException
+     */
+    protected JAXBElement<CanonicalProcessType> unmarshalCanonicalFormat(final InputStream canonicalFormat) throws JAXBException, SAXException {
+        return CPFSchema.unmarshalCanonicalFormat(canonicalFormat, true);
+    }
 
-			return ANFSchema.unmarshalAnnotationFormat(annotationFormat, false);
+    /**
+     * Unmarshal the Annotations Format from the provided InputStream without Validation.
+     *
+     * @param annotationsFormat
+     * @return
+     * @throws JAXBException
+     * @throws SAXException
+     */
+    protected JAXBElement<AnnotationsType> unmarshalAnnotationFormat(final InputStream annotationFormat) throws JAXBException, SAXException {
+        if (annotationFormat != null) {
 
-		} else {
-			return null;
-		}
-	}
+            return ANFSchema.unmarshalAnnotationFormat(annotationFormat, false);
+
+        } else {
+            return null;
+        }
+    }
 
 }

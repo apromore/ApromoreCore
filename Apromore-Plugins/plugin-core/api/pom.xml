@@ -35,8 +35,14 @@
     </build>
 
     
-	<dependencies>		
-		<!-- Nothing so far -->
+	<dependencies>
+			
+		<!-- Test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency> 
+		
     </dependencies>
     
 </project>

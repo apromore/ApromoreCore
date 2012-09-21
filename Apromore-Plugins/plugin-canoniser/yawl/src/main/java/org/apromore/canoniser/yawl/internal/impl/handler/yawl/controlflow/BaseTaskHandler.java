@@ -1,17 +1,15 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl.controlflow;
-
-import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
@@ -22,8 +20,7 @@ import org.apromore.canoniser.yawl.internal.impl.handler.yawl.data.TaskVariableH
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
-import org.apromore.cpf.CancellationSetType;
-import org.apromore.cpf.ControlFlowRef;
+import org.apromore.cpf.CancellationRefType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ORJoinType;
 import org.apromore.cpf.ORSplitType;
@@ -46,16 +43,16 @@ import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType;
 
 /**
  * Base class for converting a YAWL task
- * 
+ *
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  * @param <T>
  */
 public abstract class BaseTaskHandler extends ExternalNetElementHandler<ExternalTaskFactsType> {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -65,7 +62,7 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
 
     /**
      * Return a converted TaskType that is already added to its parent Net
-     * 
+     *
      * @param task
      * @return the CPF task
      * @throws CanoniserException
@@ -123,7 +120,7 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
 
     /**
      * Create a Join Routing Node
-     * 
+     *
      * @return
      * @throws CanoniserException
      */
@@ -169,7 +166,7 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
 
     /**
      * Create a Split Routing Node
-     * 
+     *
      * @return
      * @throws CanoniserException
      */
@@ -215,7 +212,7 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
 
     /**
      * Convert the Annotations of the currently to be converted Object and adds them to the ANF.
-     * 
+     *
      * @throws CanoniserException
      *             in case the Annotations can not be converted
      */
@@ -267,8 +264,8 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
         if (task.getConfiguration() != null) {
             taskNode.setConfigurable(true);
             try {
-                addToExtension(ConversionUtils.marshalYAWLFragment("configuration", task.getConfiguration(), ConfigurationType.class),
-                        taskNode.getId());
+                addToExtensions(ConversionUtils.marshalYAWLFragment("configuration", task.getConfiguration(), ConfigurationType.class),
+                        taskNode);
             } catch (JAXBException e) {
                 throw new CanoniserException("Failed to add configuration extension", e);
             }
@@ -278,26 +275,21 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
     private void convertCancellation(final TaskType taskNode, final ExternalTaskFactsType task) {
         if (!task.getRemovesTokens().isEmpty() || !task.getRemovesTokensFromFlow().isEmpty()) {
 
-            final CancellationSetType cancellationSet = getContext().getCanonicalOF().createCancellationSetType();
-            final List<ControlFlowRef> cancellationList = cancellationSet.getControlFlowRef();
-
             // Add cancelled Nodes
             for (final ExternalNetElementType element : task.getRemovesTokens()) {
-                final ControlFlowRef ref = getContext().getCanonicalOF().createControlFlowRef();
-                ref.setControlFlowRefId(generateUUID(CONTROLFLOW_ID_PREFIX, element.getId()));
-                cancellationList.add(ref);
+                final CancellationRefType ref = getContext().getCanonicalOF().createCancellationRefType();
+                ref.setRefId(generateUUID(CONTROLFLOW_ID_PREFIX, element.getId()));
+                taskNode.getCancelNodeId().add(ref);
             }
 
             // Add cancelled Edges
             for (final RemovesTokensFromFlowType flow : task.getRemovesTokensFromFlow()) {
                 final String sourceId = flow.getFlowSource().getId();
                 final String targetId = flow.getFlowDestination().getId();
-                final ControlFlowRef ref = getContext().getCanonicalOF().createControlFlowRef();
-                ref.setControlFlowRefId(generateEdgeId(sourceId, targetId));
-                cancellationList.add(ref);
+                final CancellationRefType ref = getContext().getCanonicalOF().createCancellationRefType();
+                ref.setRefId(generateEdgeId(sourceId, targetId));
+                taskNode.getCancelEdgeId().add(ref);
             }
-
-            taskNode.setCancellationSet(cancellationSet);
         }
     }
 

@@ -29,6 +29,7 @@ import org.apromore.anf.PositionType;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.ConditionExpressionType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.InputOutputType;
@@ -42,6 +43,7 @@ import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TaskType;
+import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
@@ -449,9 +451,9 @@ public class Canonical2EPML {
 
         for (EdgeType edge : net.getEdge()) {
             boolean flag = true;
-            if (edge.getConditionExpr() == null) {
+            if (convertConditionExpression(edge) == null) {
                 flag = true;
-            } else if (edge.getConditionExpr().equals("EPMLEPML")) {
+            } else if (convertConditionExpression(edge).equals("EPMLEPML")) {
                 flag = false;
             }
 
@@ -496,14 +498,13 @@ public class Canonical2EPML {
                             TypeObject o = (TypeObject) epcRefMap.get(id);
                             o.setType("input");
                         }
-                        //for (TypeAttribute att : ref.getAttribute()) {
-                        	//TODO FM, extension
-//                            if (att.getTypeRef().equals("RefID")) {
-//                                String l = att.getValue();
-//                                objectRefMap.put(l, ref);
-//                                id_map.put(l, arc.getId());
-//                            }
-                        //}
+                        for (TypeAttribute att : ref.getAttribute()) {
+                            if (att.getName().equals("RefID")) {
+                                String l = att.getValue();
+                                objectRefMap.put(l, ref);
+                                id_map.put(l, arc.getId());
+                            }
+                        }
                         arc.setRelation(rel);
                         epcRefMap.put(arc.getId(), arc);
                         epc.getEventOrFunctionOrRole().add(arc);
@@ -663,7 +664,7 @@ public class Canonical2EPML {
                 if (edge.getSourceId().equals(id)) {
                     n = BigInteger.valueOf(ids++);
                     TypeEvent event = new TypeEvent();
-                    event.setName(edge.getConditionExpr());
+                    event.setName(convertConditionExpression(edge));
                     event.setId(n);
 
                     TypeArc arc = new TypeArc();
@@ -682,7 +683,9 @@ public class Canonical2EPML {
                     flow_list.add(flow2);
                     arc2.setFlow(flow2);
 
-                    edge.setConditionExpr("EPMLEPML");
+                    ConditionExpressionType condExpr = new ConditionExpressionType();
+                    condExpr.setDescription("EPMLEPML");
+                    edge.setConditionExpr(condExpr);
 
                     epc.getEventOrFunctionOrRole().add(arc);
                     epc.getEventOrFunctionOrRole().add(event);
@@ -695,6 +698,23 @@ public class Canonical2EPML {
         }
 
         event_list.clear();
+    }
+
+    private String convertConditionExpression(final EdgeType edge) {
+        ConditionExpressionType conditionExpr = edge.getConditionExpr();
+        if (conditionExpr != null) {
+            if (conditionExpr.getDescription() != null) {
+                // Try to use the textual description of this expression
+                return conditionExpr.getDescription();
+            } else if (conditionExpr.getExpression() != null) {
+                // If there is not textual description then just display the formal expression
+                return conditionExpr.getExpression();
+            } else {
+                return null;
+            }
+        } else {
+            return null;
+        }
     }
 
     // translate the annotations
