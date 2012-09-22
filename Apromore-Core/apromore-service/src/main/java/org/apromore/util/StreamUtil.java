@@ -1,11 +1,10 @@
 package org.apromore.util;
 
-import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
+
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.xml.bind.JAXBContext;
@@ -14,6 +13,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
+import org.apache.commons.io.IOUtils;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
@@ -41,7 +41,7 @@ public class StreamUtil {
      * @param is the inputStream to convert
      * @return the string for that input stream
      */
-    public static String convertStreamToString(InputStream is) {
+    public static String convertStreamToString(final InputStream is) {
         return inputStream2String(is);
     }
 
@@ -51,7 +51,7 @@ public class StreamUtil {
      * @param dh the DataHandler to convert
      * @return the string for that DataHandler
      */
-    public static String convertStreamToString(DataHandler dh) {
+    public static String convertStreamToString(final DataHandler dh) {
         try {
             return inputStream2String(dh.getInputStream());
         } catch (IOException e) {
@@ -65,7 +65,7 @@ public class StreamUtil {
      * @param ds the DataSource to convert
      * @return the string for that DataSource
      */
-    public static String convertStreamToString(DataSource ds) {
+    public static String convertStreamToString(final DataSource ds) {
         try {
             return inputStream2String(ds.getInputStream());
         } catch (IOException e) {
@@ -81,7 +81,7 @@ public class StreamUtil {
      * @throws javax.xml.bind.JAXBException if it fails
      */
     @SuppressWarnings("unchecked")
-    public static InputStream copyParam2ANF(InputStream anf_xml, String name) throws JAXBException {
+    public static InputStream copyParam2ANF(final InputStream anf_xml, final String name) throws JAXBException {
         InputStream res;
 
         JAXBContext jc = JAXBContext.newInstance(ANF_URI);
@@ -114,8 +114,8 @@ public class StreamUtil {
      * @throws javax.xml.bind.JAXBException if it fails
      */
     @SuppressWarnings("unchecked")
-    public static InputStream copyParam2CPF(InputStream cpf_xml, Integer cpf_uri, String processName, String version, String username,
-            String creationDate, String lastUpdate) throws JAXBException {
+    public static InputStream copyParam2CPF(final InputStream cpf_xml, final Integer cpf_uri, final String processName, final String version, final String username,
+            final String creationDate, final String lastUpdate) throws JAXBException {
         InputStream res;
 
         JAXBContext jc = JAXBContext.newInstance(CPF_URI);
@@ -153,12 +153,12 @@ public class StreamUtil {
      * @throws javax.xml.bind.JAXBException if it fails
      */
     @SuppressWarnings("unchecked")
-    public static InputStream copyParam2NPF(InputStream process_xml, String nativeType, String processName, String version, String username,
-            String creationDate, String lastUpdate) throws JAXBException {
+    public static InputStream copyParam2NPF(final InputStream process_xml, final String nativeType, final String processName, final String version, final String username,
+            final String creationDate, final String lastUpdate) throws JAXBException {
         InputStream res = process_xml;
 
         //TODO why should that be done? was the native format changed? if yes then it was result of decanonisation so the canoniser should care about this
-        
+
 //        if (nativeType.compareTo(Constants.XPDL_2_1) == 0) {
 //            JAXBContext jc = JAXBContext.newInstance(XPDL_URI);
 //            Unmarshaller u = jc.createUnmarshaller();
@@ -175,8 +175,8 @@ public class StreamUtil {
 //        } else if (nativeType.compareTo("PNML 1.3.2") == 0) {
 //            res = process_xml;
 //        }
-        
-        
+
+
         return res;
     }
 
@@ -189,7 +189,7 @@ public class StreamUtil {
      * @param creationDate the date created
      * @param lastUpdate   the updated date
      */
-    public static void copyParam2XPDL(PackageType pkg, String processName, String version, String username, String creationDate, String lastUpdate) {
+    public static void copyParam2XPDL(final PackageType pkg, final String processName, final String version, final String username, final String creationDate, final String lastUpdate) {
         if (pkg.getRedefinableHeader() == null) {
             RedefinableHeader header = new RedefinableHeader();
             pkg.setRedefinableHeader(header);
@@ -253,7 +253,7 @@ public class StreamUtil {
      * @param xpdl the XPDL
      */
     @SuppressWarnings("unchecked")
-    public static PackageType unmarshallXPDL(InputStream xpdl) throws JAXBException {
+    public static PackageType unmarshallXPDL(final InputStream xpdl) throws JAXBException {
         JAXBContext jc = JAXBContext.newInstance(Constants.XPDL2_CONTEXT);
         Unmarshaller u = jc.createUnmarshaller();
         JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(xpdl);
@@ -266,7 +266,7 @@ public class StreamUtil {
      * @return the output stream of the XPDL object as xml.
      */
     @SuppressWarnings("unchecked")
-    public static String marshallXPDL(PackageType xpdl) throws JAXBException {
+    public static String marshallXPDL(final PackageType xpdl) throws JAXBException {
         ByteArrayOutputStream native_xml = null;
         JAXBContext jc = JAXBContext.newInstance(Constants.XPDL2_CONTEXT);
         Marshaller m = jc.createMarshaller();
@@ -277,31 +277,21 @@ public class StreamUtil {
     }
 
 
-        /**
-        * Converts an input stream to a string.
-        *
-        * @param is the input stream
-        * @return the String that was the input stream
-        */
-    public static String inputStream2String(InputStream is) {
-        try {
-            if (is != null) {
-                StringBuilder sb = new StringBuilder();
-                try {
-                    BufferedReader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
-                    String line;
-
-                    while ((line = reader.readLine()) != null) {
-                        sb.append(line);
-                    }
-                } finally {
-                    is.close();
-                }
-                return sb.toString();
+    /**
+    * Converts an input stream to a string.
+    *
+    * @param is the input stream
+    * @return the String that was the input stream
+    */
+    public static String inputStream2String(final InputStream is) {
+        if (is != null) {
+            try {
+                return IOUtils.toString(is, "UTF-8");
+            } catch (IOException e) {
+                return "error in reading the input streams: " + e.toString();
             }
-        } catch (IOException e) {
-            return "error in reading the input streams: " + e.toString();
         }
         return "";
     }
+
 }

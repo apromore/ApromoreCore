@@ -45,6 +45,8 @@ import org.apromore.graph.JBPT.ICpfObject;
 import org.apromore.graph.JBPT.ICpfResource;
 import org.jbpt.pm.ControlFlow;
 import org.jbpt.pm.FlowNode;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * GraphToCPFHelper. Used to help build and deconstruct a Graph from the CPF format.
@@ -52,6 +54,8 @@ import org.jbpt.pm.FlowNode;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 public class GraphToCPFHelper {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(GraphToCPFHelper.class);
 
     /* Private Constructor so it can't be instantiated */
     private GraphToCPFHelper() { }
@@ -63,7 +67,7 @@ public class GraphToCPFHelper {
      * @param graph the cpf format from the canoniser.
      * @return the CPF Ty[pe from the Graph
      */
-    public static CanonicalProcessType createCanonicalProcess(CPF graph) {
+    public static CanonicalProcessType createCanonicalProcess(final CPF graph) {
         CanonicalProcessType c = new CanonicalProcessType();
         c.getAttribute().addAll(new ArrayList<TypeAttribute>(0));
         //c.getObject().addAll(new ArrayList<ObjectType>(0));
@@ -79,14 +83,18 @@ public class GraphToCPFHelper {
 
 
     /* Build the Nets used in the Canonical Format from the graph. */
-    private static void buildNets(CPF graph, CanonicalProcessType c) {
+    private static void buildNets(final CPF graph, final CanonicalProcessType c) {
         NetType net = new NetType();
         net.setId(graph.getId());
         net.getObject().addAll(new ArrayList<ObjectType>(0));
 
         addObjectsForCpf(findObjectList(graph), net);
         for (FlowNode node : graph.getFlowNodes()) {
-            buildNodesForNet((CpfNode) node, net);
+            if (node instanceof CpfNode) {
+                buildNodesForNet((CpfNode) node, net);
+            } else {
+                LOGGER.warn("Unkown FlowNode type: {}", node.toString());
+            }
         }
         for (ControlFlow<FlowNode> cf : graph.getControlFlow()) {
             buildEdgesForNet(cf, net);
@@ -95,7 +103,7 @@ public class GraphToCPFHelper {
     }
 
     /* From the FlowNode, Build the Nodes used in the Canonical Format. */
-    private static void buildNodesForNet(CpfNode n, NetType net) {
+    private static void buildNodesForNet(final CpfNode n, final NetType net) {
         if (n instanceof CpfMessage) {
             MessageType typ = new MessageType();
             typ.setName(n.getName());
@@ -169,7 +177,7 @@ public class GraphToCPFHelper {
         }
     }
 
-    private static List<ICpfResource> findResourceList(CPF graph) {
+    private static List<ICpfResource> findResourceList(final CPF graph) {
         List<ICpfResource> resources = new ArrayList<ICpfResource>(0);
         Collection<FlowNode> nodes = graph.getFlowNodes();
         for (FlowNode node : nodes) {
@@ -180,7 +188,7 @@ public class GraphToCPFHelper {
         return resources;
     }
 
-    private static List<ICpfObject> findObjectList(CPF graph) {
+    private static List<ICpfObject> findObjectList(final CPF graph) {
         List<ICpfObject> resources = new ArrayList<ICpfObject>(0);
         Collection<FlowNode> nodes = graph.getFlowNodes();
         for (FlowNode node : nodes) {
@@ -191,7 +199,7 @@ public class GraphToCPFHelper {
         return resources;
     }
 
-    private static Collection<? extends TypeAttribute> addAttributes(CpfNode n) {
+    private static Collection<? extends TypeAttribute> addAttributes(final CpfNode n) {
         TypeAttribute typAtt;
         List<TypeAttribute> atts = new ArrayList<TypeAttribute>(0);
         for (Entry<String, ICpfAttribute> att : n.getAttributes().entrySet()) {
@@ -203,7 +211,7 @@ public class GraphToCPFHelper {
         return atts;
     }
 
-    private static Collection<ObjectRefType> addObjectRef(CpfNode n) {
+    private static Collection<ObjectRefType> addObjectRef(final CpfNode n) {
         ObjectRefType object;
         List<ObjectRefType> objs = new ArrayList<ObjectRefType>(0);
         for (ICpfObject obj : n.getObjects()) {
@@ -219,7 +227,7 @@ public class GraphToCPFHelper {
         return objs;
     }
 
-    private static Collection<ResourceTypeRefType> addResourceRef(CpfNode n) {
+    private static Collection<ResourceTypeRefType> addResourceRef(final CpfNode n) {
         ResourceTypeRefType resource;
         List<ResourceTypeRefType> ress = new ArrayList<ResourceTypeRefType>(0);
         for (ICpfResource res : n.getResource()) {
@@ -236,7 +244,7 @@ public class GraphToCPFHelper {
 
 
     /* From the flowNodes but the Edges used in the Canonical Format */
-    private static void buildEdgesForNet(ControlFlow<FlowNode> edge, NetType net) {
+    private static void buildEdgesForNet(final ControlFlow<FlowNode> edge, final NetType net) {
         EdgeType e = new EdgeType();
         e.setId(edge.getId());
         e.setSourceId(edge.getSource().getId());
@@ -245,7 +253,7 @@ public class GraphToCPFHelper {
     }
 
     /* Add objects for the Canonical Format */
-    private static void addObjectsForCpf(List<ICpfObject> cpfObject, NetType net) {
+    private static void addObjectsForCpf(final List<ICpfObject> cpfObject, final NetType net) {
         ObjectType typ;
         for (ICpfObject obj : cpfObject) {
             if (obj.getObjectType().equals(ICpfObject.ObjectType.HARD)) {
@@ -261,7 +269,7 @@ public class GraphToCPFHelper {
     }
 
     /* Add attributes for the Canonical Format */
-    private static void addResourcesForCpf(List<ICpfResource> cpfResource, CanonicalProcessType c) {
+    private static void addResourcesForCpf(final List<ICpfResource> cpfResource, final CanonicalProcessType c) {
         ResourceTypeType typ;
         for (ICpfResource obj : cpfResource) {
             if (obj.getResourceType().equals(ICpfResource.ResourceType.HUMAN)) {
@@ -280,7 +288,7 @@ public class GraphToCPFHelper {
     }
 
     /* Add properties for the Canonical Format */
-    private static void addPropertiesForCpf(CPF graph, CanonicalProcessType c) {
+    private static void addPropertiesForCpf(final CPF graph, final CanonicalProcessType c) {
         TypeAttribute typeA;
         for (String propName : graph.getProperties().keySet()) {
             typeA = new TypeAttribute();
@@ -292,7 +300,7 @@ public class GraphToCPFHelper {
     }
 
 
-    private static List<TypeAttribute> buildAttributeList(Map<String, ICpfAttribute> attributes) {
+    private static List<TypeAttribute> buildAttributeList(final Map<String, ICpfAttribute> attributes) {
         TypeAttribute typAtt;
         List<TypeAttribute> atts = new ArrayList<TypeAttribute>(0);
         for (Entry<String, ICpfAttribute> e : attributes.entrySet()) {

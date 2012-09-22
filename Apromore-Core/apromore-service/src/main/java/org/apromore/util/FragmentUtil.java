@@ -1,10 +1,25 @@
 package org.apromore.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
+
 import org.apromore.common.Constants;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.exception.PocketMappingException;
-import org.apromore.graph.JBPT.*;
+import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.JBPT.CpfAndGateway;
+import org.apromore.graph.JBPT.CpfEvent;
+import org.apromore.graph.JBPT.CpfGateway;
+import org.apromore.graph.JBPT.CpfNode;
+import org.apromore.graph.JBPT.CpfOrGateway;
+import org.apromore.graph.JBPT.CpfTask;
+import org.apromore.graph.JBPT.CpfXorGateway;
+import org.apromore.graph.JBPT.ICpfNode;
 import org.jbpt.graph.abs.AbstractDirectedEdge;
 import org.jbpt.graph.algo.rpst.RPST;
 import org.jbpt.graph.algo.rpst.RPSTNode;
@@ -15,9 +30,6 @@ import org.jbpt.pm.IFlowNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.*;
-import java.util.Map.Entry;
-
 /**
  * @author Chathura Ekanayake
  */
@@ -25,7 +37,7 @@ public class FragmentUtil {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(FragmentUtil.class);
 
-    public static String getFragmentType(RPSTNode f) {
+    public static String getFragmentType(final RPSTNode f) {
         String nodeType = "UNKNOWN";
         if (TCType.P.equals(f.getType())) {
             nodeType = "P";
@@ -40,7 +52,7 @@ public class FragmentUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static void removeEdges(RPSTNode f, RPSTNode cf) {
+    public static void removeEdges(final RPSTNode f, final RPSTNode cf) {
         Collection<AbstractDirectedEdge> fEdges = f.getFragmentEdges();
         Collection<AbstractDirectedEdge> cfEdges = cf.getFragmentEdges();
 
@@ -55,7 +67,7 @@ public class FragmentUtil {
 
     }
 
-    public static Collection<AbstractDirectedEdge> getIncomingEdges(IFlowNode v, Collection<AbstractDirectedEdge> es) {
+    public static Collection<AbstractDirectedEdge> getIncomingEdges(final IFlowNode v, final Collection<AbstractDirectedEdge> es) {
         Collection<AbstractDirectedEdge> incomingEdges = new ArrayList<AbstractDirectedEdge>(0);
         for (AbstractDirectedEdge e : es) {
             if (e.getTarget().getId().equals(v.getId())) {
@@ -65,7 +77,7 @@ public class FragmentUtil {
         return incomingEdges;
     }
 
-    public static Collection<AbstractDirectedEdge> getOutgoingEdges(IFlowNode v, Collection<AbstractDirectedEdge> es) {
+    public static Collection<AbstractDirectedEdge> getOutgoingEdges(final IFlowNode v, final Collection<AbstractDirectedEdge> es) {
         Collection<AbstractDirectedEdge> outgoingEdges = new ArrayList<AbstractDirectedEdge>(0);
         for (AbstractDirectedEdge e : es) {
             if (e.getSource().getId().equals(v.getId())) {
@@ -75,7 +87,7 @@ public class FragmentUtil {
         return outgoingEdges;
     }
 
-    public static List<IFlowNode> getPreset(IFlowNode v, Collection<AbstractDirectedEdge> es) {
+    public static List<IFlowNode> getPreset(final IFlowNode v, final Collection<AbstractDirectedEdge> es) {
         List<IFlowNode> preset = new ArrayList<IFlowNode>(0);
         for (AbstractDirectedEdge e : es) {
             if (e.getTarget().getId().equals(v.getId())) {
@@ -85,7 +97,7 @@ public class FragmentUtil {
         return preset;
     }
 
-    public static List<IFlowNode> getPostset(IFlowNode v, Collection<AbstractDirectedEdge> es) {
+    public static List<IFlowNode> getPostset(final IFlowNode v, final Collection<AbstractDirectedEdge> es) {
         List<IFlowNode> postset = new ArrayList<IFlowNode>(0);
         for (AbstractDirectedEdge e : es) {
             if (e.getSource().getId().equals(v.getId())) {
@@ -95,11 +107,11 @@ public class FragmentUtil {
         return postset;
     }
 
-    public static FlowNode getFirstVertex(Collection<FlowNode> vertices) {
+    public static FlowNode getFirstVertex(final Collection<FlowNode> vertices) {
         return vertices.iterator().next();
     }
 
-    public static AbstractDirectedEdge getFirstEdge(Collection<AbstractDirectedEdge> c) {
+    public static AbstractDirectedEdge getFirstEdge(final Collection<AbstractDirectedEdge> c) {
         return c.iterator().next();
     }
 
@@ -109,7 +121,7 @@ public class FragmentUtil {
      * @param childMappings  map pocketId -> childId
      * @param pocketMappings map fragment pocket Id -> content pocket Id
      */
-    public static Map<String, String> remapChildren(Map<String, String> childMappings, Map<String, String> pocketMappings)
+    public static Map<String, String> remapChildren(final Map<String, String> childMappings, final Map<String, String> pocketMappings)
             throws PocketMappingException {
         Map<String, String> newChildMapping = new HashMap<String, String>(0);
         for (Entry<String, String> stringStringEntry : childMappings.entrySet()) {
@@ -133,7 +145,7 @@ public class FragmentUtil {
      * @param childMappings  map pocketId -> childId
      * @param pocketMappings map fragment pocket Id -> content pocket Id
      */
-    public static Map<String, FragmentVersion> remapChildren(List<FragmentVersionDag> childMappings, Map<String, String> pocketMappings)
+    public static Map<String, FragmentVersion> remapChildren(final List<FragmentVersionDag> childMappings, final Map<String, String> pocketMappings)
             throws PocketMappingException {
         Map<String, FragmentVersion> newChildMapping = new HashMap<String, FragmentVersion>(0);
         for (FragmentVersionDag fvd : childMappings) {
@@ -151,7 +163,7 @@ public class FragmentUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static void cleanFragment(RPSTNode f) {
+    public static void cleanFragment(final RPSTNode f) {
         Collection<AbstractDirectedEdge> es = f.getFragmentEdges();
         Collection<FlowNode> vs = f.getFragment().getVertices();
         Collection<AbstractDirectedEdge> removableEdges = new ArrayList<AbstractDirectedEdge>(0);
@@ -166,7 +178,7 @@ public class FragmentUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static void reconnectBoundary1(RPSTNode f, FlowNode oldB1, FlowNode newB1, RPST rpst) {
+    public static void reconnectBoundary1(final RPSTNode f, final FlowNode oldB1, final FlowNode newB1, final RPST rpst) {
         FlowNode b1 = (FlowNode) f.getEntry();
         FlowNode b2 = (FlowNode) f.getExit();
 
@@ -190,7 +202,7 @@ public class FragmentUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static void reconnectBoundary2(RPSTNode f, FlowNode oldB2, FlowNode newB2, RPST rpst) {
+    public static void reconnectBoundary2(final RPSTNode f, final FlowNode oldB2, final FlowNode newB2, final RPST rpst) {
         FlowNode b2 = (FlowNode) f.getExit();
 
         if (b2.equals(oldB2)) {
@@ -209,7 +221,7 @@ public class FragmentUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static void reconnectVertices(FlowNode oldVertex, FlowNode newVertex, RPSTNode f) {
+    public static void reconnectVertices(final FlowNode oldVertex, final FlowNode newVertex, final RPSTNode f) {
         Collection<AbstractDirectedEdge> edges = f.getFragmentEdges();
         for (AbstractDirectedEdge edge : edges) {
             if (edge.getSource().getId().equals(oldVertex.getId())) {
@@ -220,7 +232,7 @@ public class FragmentUtil {
         }
     }
 
-    public static FlowNode duplicateVertex(IVertex v, CPF og) {
+    public static FlowNode duplicateVertex(final IVertex v, final CPF og) {
         String label = v.getName();
         String type = og.getVertexProperty(v.getId(), Constants.TYPE);
 
@@ -241,7 +253,7 @@ public class FragmentUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static String fragmentToString(RPSTNode f, CPF g) {
+    public static String fragmentToString(final RPSTNode f, final CPF g) {
         StringBuilder fs = new StringBuilder();
         Collection<FlowNode> vs = f.getFragment().getVertices();
         for (FlowNode v : vs) {
@@ -254,7 +266,7 @@ public class FragmentUtil {
     }
 
     @SuppressWarnings("unchecked")
-    public static String fragmentToString(RPSTNode f) {
+    public static String fragmentToString(final RPSTNode f) {
         StringBuilder fs = new StringBuilder();
         Collection<FlowNode> vs = f.getFragment().getVertices();
         for (FlowNode v : vs) {
@@ -263,7 +275,7 @@ public class FragmentUtil {
         return fs.toString();
     }
 
-    public static String getType(FlowNode node) {
+    public static String getType(final FlowNode node) {
         String type = null;
         if (node instanceof CpfTask) {
             type = Constants.FUNCTION;
@@ -282,7 +294,7 @@ public class FragmentUtil {
         return type;
     }
 
-    public static String getType(ICpfNode node) {
+    public static String getType(final ICpfNode node) {
         return getType((FlowNode) node);
     }
 }

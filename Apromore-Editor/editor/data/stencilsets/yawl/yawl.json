@@ -843,27 +843,27 @@
 						},
 						{
 							"title":"Manual",
-							"value":"manual",
+							"value":"Manual",
 							"refToView":"iconmanual"
 						},
 						{
 							"title":"Automatic",
-							"value":"automatic",
+							"value":"Automatic",
 							"refToView":"iconautomatic"
 						},
 						{
 							"title":"Automatic One",
-							"value":"automaticone",
+							"value":"AutomaticOne",
 							"refToView":"iconautomaticone"
 						},
 						{
 							"title":"Automatic Two",
-							"value":"automatictwo",
+							"value":"AutomaticTwo",
 							"refToView":"iconautomatictwo"
 						},
 						{
 							"title":"Group",
-							"value":"group",
+							"value":"Group",
 							"refToView":"icongroup"
 						},
 						{
@@ -873,72 +873,72 @@
 						},
 						{
 							"title":"Pair",
-							"value":"pair",
+							"value":"Pair",
 							"refToView":"iconpair"
 						},
 						{
 							"title":"Print",
-							"value":"print",
+							"value":"Print",
 							"refToView":"iconprint"
 						},
 						{
 							"title":"Validate",
-							"value":"validate",
+							"value":"Validate",
 							"refToView":"iconvalidate"
 						},
 						{
 							"title":"File",
-							"value":"file",
+							"value":"File",
 							"refToView":"iconfile"
 						},
 						{
 							"title":"Black PDA",
-							"value":"blackpda",
+							"value":"BlackPDA",
 							"refToView":"iconblackpda"
 						},
 						{
 							"title":"Timer",
-							"value":"timer",
+							"value":"Timer",
 							"refToView":"icontimer"
 						},
 						{
 							"title":"Schedule",
-							"value":"schedule",
+							"value":"Schedule",
 							"refToView":"iconschedule"
 						},
 						{
 							"title":"Question One",
-							"value":"questionone",
+							"value":"QuestionOne",
 							"refToView":"iconquestionone"
 						},
 						{
 							"title":"Question Two",
-							"value":"questiontwo",
+							"value":"QuestionTwo",
 							"refToView":"iconquestiontwo"
 						},
 						{
 							"title":"Plugin",
-							"value":"plugin",
+							"value":"Plugin",
 							"refToView":"iconplugin"
 						},
 						{
 							"title":"Exception",
-							"value":"exception",
+							"value":"Exception",
 							"refToView":"iconexception"
 						},
 						{
 							"title":"Dangerous",
-							"value":"dangerous",
+							"value":"Dangerous",
 							"refToView":"icondangerous"
 						},
 						{
 							"title":"Broken Icon",
-							"value":"brokenicon",
+							"value":"BrokenIcon",
 							"refToView":"iconbrokenicon"
 						},
 						{
 							"title":"Routing Task",
-							"value":"routingtask",
+							"value":"RoutingTask",
 							"refToView":"iconroutingtask"
 						}
 					]
@@ -1251,7 +1251,28 @@
 			"propertyPackages" :[
 				"baseAttributes"
 			],									
-			"properties": [			
+			"properties": [		
+				{	
+					"id":"linestyle",
+					"type":"Choice",
+					"title":"Line style",
+					"value":"11",
+					"optional":true,
+					"items": [
+						{
+							"title":"Orthogonal",
+							"value":"11"
+						},
+						{
+							"title":"Bezier",
+							"value":"12"
+						},
+						{
+							"title":"Spline",
+							"value":"13"
+						}
+					]
+				}	
 			]
 		}
 	],

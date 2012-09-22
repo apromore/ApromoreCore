@@ -20,11 +20,14 @@
 package de.hbrs.oryx.yawl.converter;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
 
-import org.jdom.JDOMException;
+import org.jdom2.JDOMException;
 import org.junit.Test;
 import org.yawlfoundation.yawl.exceptions.YSyntaxException;
 
@@ -39,17 +42,38 @@ import de.hbrs.oryx.yawl.converter.YAWLConverter.YAWLResult;
 public class Oryx2YAWLConversionTest {
 
 	@Test
-	public void testBasicConversion() throws YSyntaxException, JDOMException, IOException {
+	public void testOrderfulfilmentConversion() throws YSyntaxException, JDOMException, IOException {
 		YAWLConverter converter = new YAWLConverter();
 		YAWLResult result = converter.convertOryxToYAWL(OryxTestData.orderFulfillment);
 		assertNotNull(result);
 		assertEquals("orderfulfillment", result.getFilename());
 		assertNotNull(result.getWarnings());
 		assertNotNull(result.getYAWLAsXML());
+		assertFalse(result.hasFailed());
 
+		FileWriter fWriter = new FileWriter(new File("target/orderfulfilment.yawl"));
+		fWriter.write(result.getYAWLAsXML());
+		fWriter.flush();
+		
 		// Can not directly compare source
-		// assertEquals(result.getYAWLAsXML(),
-		// YAWLTestData.orderFulfillmentSource);
+		//assertEquals(result.getYAWLAsXML(), YAWLTestData.orderFulfillmentSource);
+	}
+	
+
+	@Test
+	public void testYAWL4FilmConversion() throws YSyntaxException, JDOMException, IOException {
+		YAWLConverter converter = new YAWLConverter();
+		YAWLResult result = converter.convertOryxToYAWL(OryxTestData.filmProduction);
+		assertNotNull(result);
+		assertEquals("YAWL4Film_Process", result.getFilename());
+		assertNotNull(result.getWarnings());
+		assertNotNull(result.getYAWLAsXML());
+		assertFalse(result.hasFailed());
+
+		assertFalse(result.hasFailed());
+		FileWriter fWriter = new FileWriter(new File("target/filmproduction.yawl"));
+		fWriter.write(result.getYAWLAsXML());
+		fWriter.flush();
 	}
 
 }

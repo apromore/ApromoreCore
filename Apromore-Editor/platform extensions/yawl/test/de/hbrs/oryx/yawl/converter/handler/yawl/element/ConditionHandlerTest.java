@@ -23,7 +23,6 @@ import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
-import org.oryxeditor.server.diagram.basic.BasicNode;
 import org.oryxeditor.server.diagram.basic.BasicShape;
 import org.yawlfoundation.yawl.elements.YCondition;
 import org.yawlfoundation.yawl.elements.YNet;

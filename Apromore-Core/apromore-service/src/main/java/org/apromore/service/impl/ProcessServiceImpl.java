@@ -8,6 +8,7 @@ import java.util.Set;
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
+import javax.xml.bind.JAXBException;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.common.Constants;
@@ -38,6 +39,7 @@ import org.apromore.service.UserService;
 import org.apromore.service.helper.UIHelper;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.search.SearchExpressionBuilder;
+import org.apromore.util.StreamUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,6 +47,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.wfmc._2008.xpdl2.PackageType;
 
 /**
  * Implementation of the UserService Contract.
@@ -130,7 +133,8 @@ public class ProcessServiceImpl implements ProcessService {
             pro = uiSrv.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(), version, nativeType.getNatType(),
                     domain, created, lastUpdate, user.getUsername());
         } catch (Exception e) {
-            LOGGER.error("Canonisation Process Failed: " + e.toString());
+            LOGGER.error("Failed to import process {} with native type {}", processName, natType);
+            LOGGER.error("Original exception was: ", e);
             throw new ImportException(e);
         }
 
@@ -163,7 +167,13 @@ public class ProcessServiceImpl implements ProcessService {
                 }
             }
         } catch (Exception e) {
-            throw new ExportFormatException(e.getMessage(), e.getCause());
+            LOGGER.error("Failed to export process model {} to format {}", name, format);
+            LOGGER.error("Original exception was: ", e);
+            if (e.getCause() != null) {
+                throw new ExportFormatException(e.getMessage(), e.getCause());
+            } else {
+                throw new ExportFormatException(e);
+            }
         }
         return ds;
     }
@@ -223,18 +233,18 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /* Update a list of native process models with this new meta data, */
-    private void updateNativeRecords(final Set<Native> natives, final String processName, final String username, final String version) throws CanoniserException {
+    private void updateNativeRecords(final Set<Native> natives, final String processName, final String username, final String version) throws CanoniserException, JAXBException {
         for (Native n : natives) {
             String natType = n.getNativeType().getNatType();
             InputStream inStr = new ByteArrayInputStream(n.getContent().getBytes());
             CanonisedProcess cp = canSrv.canonise(natType, n.getId().toString(), inStr);
 
             //TODO why is this done here? apromore should not know about native format outside of canonisers
-//            if (natType.compareTo(Constants.XPDL_2_1) == 0) {
-//                PackageType pakType = StreamUtil.unmarshallXPDL(inStr);
-//                StreamUtil.copyParam2XPDL(pakType, processName, version, username, null, null);
-//                n.setContent(StreamUtil.marshallXPDL(pakType));
-//            }
+            if (natType.compareTo("XPDL 2.1") == 0) {
+                PackageType pakType = StreamUtil.unmarshallXPDL(inStr);
+                StreamUtil.copyParam2XPDL(pakType, processName, version, username, null, null);
+                n.setContent(StreamUtil.marshallXPDL(pakType));
+            }
         }
     }
 

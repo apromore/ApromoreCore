@@ -1,9 +1,17 @@
 package org.apromore.util;
 
-import org.apromore.TestData;
-import org.junit.Ignore;
-import org.junit.Test;
-import org.wfmc._2008.xpdl2.PackageType;
+import static org.easymock.EasyMock.expect;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.containsString;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replayAll;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
+
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
@@ -11,16 +19,11 @@ import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 
-import static org.easymock.EasyMock.expect;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.containsString;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.powermock.api.easymock.PowerMock.*;
+import org.apromore.TestData;
+import org.junit.Ignore;
+import org.junit.Test;
+import org.wfmc._2008.xpdl2.PackageType;
 
 /**
  * Unit test the Stream Util.
@@ -33,8 +36,15 @@ public class StreamUtilUnitTest {
         InputStream stream = new ByteArrayInputStream(str.getBytes());
 
         String result = StreamUtil.convertStreamToString(stream);
-        
+
         assertThat(result, equalTo(str));
+
+        String str2 = "InputStream \n Test String";
+        InputStream stream2 = new ByteArrayInputStream(str2.getBytes());
+
+        String result2 = StreamUtil.convertStreamToString(stream2);
+
+        assertThat(result2, equalTo(str2));
     }
 
     @Test
@@ -57,7 +67,7 @@ public class StreamUtilUnitTest {
     @Test
     public void testConvertStreamToStringDataHandlerExceptionThrown() throws IOException {
         DataHandler source = createMock(DataHandler.class);
-        
+
         expect(source.getInputStream()).andThrow(new IOException(""));
         replayAll();
 
@@ -128,7 +138,7 @@ public class StreamUtilUnitTest {
     @Test
     public void testCopyParam2NPFXPDL() throws Exception {
         //TODO FM, i think that is not needed anymore
-        
+
         String nativeType = "XPDL 2.1";
         String name = "bob43";
         String version = "999.9";
@@ -166,13 +176,13 @@ public class StreamUtilUnitTest {
     @SuppressWarnings("unchecked")
     public void testCopyParam2XPDLNullHeader() throws Exception {
         InputStream stream = new ByteArrayInputStream(TestData.XPDL.getBytes());
-        
+
         // Get the package so I can change some data for the tests
         JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
         Unmarshaller u = jc.createUnmarshaller();
         JAXBElement<PackageType> rootElement = (JAXBElement<PackageType>) u.unmarshal(stream);
         PackageType pkg = rootElement.getValue();
-        
+
         pkg.setRedefinableHeader(null);
         pkg.setPackageHeader(null);
 

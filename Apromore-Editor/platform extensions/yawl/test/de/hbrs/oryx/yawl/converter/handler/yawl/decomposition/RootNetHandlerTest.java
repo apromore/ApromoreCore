@@ -36,8 +36,7 @@ public class RootNetHandlerTest extends YAWLHandlerTest {
 		handler.convert(YAWLTestData.orderFulfillmentSpecification.getID());
 		assertNotNull(orderFContext.getNet("Overall"));
 		assertNotNull(orderFContext.getRootNet());
-		assertEquals(orderFContext.getRootNet(), orderFContext.getNet("Overall"));
-		assertTrue(orderFContext.getNet("Overall").getPropertyBoolean("isrootnet"));
+		assertEquals(orderFContext.getRootNet(), orderFContext.getNet("Overall"));	
 	}
 
 }

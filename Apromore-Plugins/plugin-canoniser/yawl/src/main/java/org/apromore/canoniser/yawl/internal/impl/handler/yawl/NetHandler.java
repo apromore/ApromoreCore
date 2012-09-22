@@ -14,6 +14,7 @@ package org.apromore.canoniser.yawl.internal.impl.handler.yawl;
 import java.math.BigDecimal;
 
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.DocumentationType;
@@ -54,7 +55,10 @@ public class NetHandler extends YAWLConversionHandler<NetFactsType, CanonicalPro
 
         final LayoutNetFactsType netLayout = getContext().getLayoutForNet(getObject().getId());
         anf.getAnnotation().add(convertGraphics(netLayout));
-        anf.getAnnotation().add(convertDocumentation(canoncialNet));
+        if (getObject().getDocumentation() != null) {
+            anf.getAnnotation().add(convertDocumentation(canoncialNet, getObject().getDocumentation()));
+        }
+
 
         // Set rootId of parent if this is the RootNet
         if (getObject().isIsRootNet() != null && getObject().isIsRootNet()) {
@@ -93,21 +97,28 @@ public class NetHandler extends YAWLConversionHandler<NetFactsType, CanonicalPro
         }
     }
 
-    private DocumentationType convertDocumentation(final NetType canoncialNet) {
-        final DocumentationType documentation = getContext().getAnnotationOF().createDocumentationType();
-        documentation.setCpfId(generateUUID(NET_ID_PREFIX, getObject().getId()));
-        return documentation;
+    private DocumentationType convertDocumentation(final NetType canoncialNet, final String documentation) throws CanoniserException {
+        final DocumentationType d = getContext().getAnnotationOF().createDocumentationType();
+        d.setCpfId(generateUUID(NET_ID_PREFIX, getObject().getId()));
+        d.setId(generateUUID());
+        try {
+            d.getAny().add(ConversionUtils.marshalYAWLFragment("documentation", documentation, String.class));
+        } catch (JAXBException e) {
+            throw new CanoniserException("Failed to add documentation of Net to Annotation", e);
+        }
+        return d;
     }
 
     private GraphicsType convertGraphics(final LayoutNetFactsType netLayout) {
-        final GraphicsType annotation = getContext().getAnnotationOF().createGraphicsType();
-        annotation.setCpfId(generateUUID(NET_ID_PREFIX, getObject().getId()));
+        final GraphicsType g = getContext().getAnnotationOF().createGraphicsType();
+        g.setCpfId(generateUUID(NET_ID_PREFIX, getObject().getId()));
+        g.setId(generateUUID());
 
         if (netLayout.getBgColor() != null) {
             final FillType fill = getContext().getAnnotationOF().createFillType();
             final String color = ConversionUtils.convertColorToString(netLayout.getBgColor().intValue());
             fill.setColor(color);
-            annotation.setFill(fill);
+            g.setFill(fill);
         }
 
         // Use size of viewport only, as CPF only supports one type of size
@@ -121,9 +132,9 @@ public class NetHandler extends YAWLConversionHandler<NetFactsType, CanonicalPro
                 }
             }
         }
-        annotation.setSize(size);
+        g.setSize(size);
 
-        return annotation;
+        return g;
     }
 
     private NetType createNet() {

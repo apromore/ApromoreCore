@@ -6,13 +6,10 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStream;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.sax.SAXSource;
 
+import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.yawl.internal.utils.NamespaceFilter;
 import org.apromore.cpf.CPFSchema;
@@ -29,12 +26,9 @@ import org.yawlfoundation.yawlschema.orgdata.YAWLOrgDataSchema;
 public final class TestUtils {
 
     private TestUtils() {
-        // NoOp
     };
 
     public static final String TEST_RESOURCES_DIRECTORY = "src/test/resources/";
-
-    private static final String ANF_CONTEXT = "org.apromore.anf";
 
     public static SpecificationSetFactsType unmarshalYAWL(final File yawlFile) throws JAXBException, FileNotFoundException, SAXException {
         return YAWLSchema.unmarshalYAWLFormat(new FileInputStream(yawlFile), false).getValue();
@@ -53,12 +47,8 @@ public final class TestUtils {
         return YAWLOrgDataSchema.unmarshalYAWLOrgDataFormat(source, false).getValue();
     }
 
-    public static void printAnf(final AnnotationsType anf, final OutputStream outputStream) throws JAXBException, IOException {
-        final JAXBContext context = JAXBContext.newInstance(ANF_CONTEXT);
-        final Marshaller marshaller = context.createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
-        marshaller.marshal(new org.apromore.anf.ObjectFactory().createAnnotations(anf), outputStream);
+    public static void printAnf(final AnnotationsType anf, final OutputStream outputStream) throws JAXBException, IOException, SAXException {
+        ANFSchema.marshalAnnotationFormat(outputStream, anf, true);
         outputStream.flush();
     }
 
@@ -68,13 +58,13 @@ public final class TestUtils {
     }
 
     public static void printYawl(final SpecificationSetFactsType yawl, final OutputStream outputStream) throws JAXBException, SAXException,
-    IOException {
+            IOException {
         YAWLSchema.marshalYAWLFormat(outputStream, yawl, true);
         outputStream.flush();
     }
 
     public static void printYawlOrgData(final OrgDataType yawlOrgData, final OutputStream outputStream) throws JAXBException, SAXException,
-    IOException {
+            IOException {
         YAWLOrgDataSchema.marshalYAWLOrgDataFormat(outputStream, yawlOrgData, true);
         outputStream.flush();
     }
@@ -84,23 +74,6 @@ public final class TestUtils {
             new File("target/test/" + testClass.getName() + "/").mkdirs();
         }
         return new File("target/test/" + testClass.getName() + "/" + fileName);
-    }
-
-    public static CanonicalProcessType unmarshalCPF(final File cpfFile) throws JAXBException, FileNotFoundException, SAXException {
-        return CPFSchema.unmarshalCanonicalFormat(new FileInputStream(cpfFile), false).getValue();
-    }
-
-    @SuppressWarnings("unchecked")
-    public static AnnotationsType unmarshalANF(final File anfFile) throws JAXBException {
-        if (anfFile != null) {
-
-            final JAXBContext jc = JAXBContext.newInstance(ANF_CONTEXT);
-            final Unmarshaller u = jc.createUnmarshaller();
-            return ((JAXBElement<AnnotationsType>) u.unmarshal(anfFile)).getValue();
-
-        } else {
-            return null;
-        }
     }
 
 }

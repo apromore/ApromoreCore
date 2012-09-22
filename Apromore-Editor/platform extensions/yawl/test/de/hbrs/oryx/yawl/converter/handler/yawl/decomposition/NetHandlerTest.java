@@ -46,7 +46,6 @@ public class NetHandlerTest extends YAWLHandlerTest {
 		BasicShape net = orderFContext.getNet("Carrier_Appointment");
 
 		assertEquals("Carrier_Appointment", net.getProperty("yawlid"));
-		assertEquals(false, net.getPropertyBoolean("isrootnet"));
 
 		assertNotNull(net.getProperty("decompositionvariables"));
 		JSONObject jsonProp = new JSONObject(net.getProperty("decompositionvariables"));
