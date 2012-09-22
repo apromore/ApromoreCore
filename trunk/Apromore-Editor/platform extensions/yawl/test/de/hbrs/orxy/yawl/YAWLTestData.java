@@ -35,6 +35,8 @@ public class YAWLTestData {
 
 	public static String testSource;
 	public static YSpecification testSpecification;
+	
+	public static String filmProduction;
 
 	static {
 		try {
@@ -42,7 +44,9 @@ public class YAWLTestData {
 
 			List<YSpecification> specificationList = YMarshal.unmarshalSpecifications(YAWLTestData.orderFulfillmentSource, false);
 			orderFulfillmentSpecification = specificationList.get(0);
-
+			
+			filmProduction = new Scanner(new File("resources/filmproduction.yawl"), "UTF-8").useDelimiter("\\A").next();
+			
 			testSource = new Scanner(new File("resources/test.yawl"), "UTF-8").useDelimiter("\\A").next();
 
 			List<YSpecification> testSpecificationList = YMarshal.unmarshalSpecifications(YAWLTestData.testSource, false);

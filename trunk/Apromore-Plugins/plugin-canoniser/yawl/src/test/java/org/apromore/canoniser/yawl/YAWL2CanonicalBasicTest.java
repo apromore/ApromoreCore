@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl;
@@ -43,9 +43,9 @@ import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
 
 /**
  * Unit Tests trying the conversion from YAWL to canonical format.
- * 
+ *
  * @author Felix Mannhardt
- * 
+ *
  */
 public class YAWL2CanonicalBasicTest {
 
@@ -65,7 +65,7 @@ public class YAWL2CanonicalBasicTest {
 
     /**
      * Show the result of a canonisation, not really a test!
-     * 
+     *
      * @throws IOException
      * @throws SAXException
      */
@@ -122,11 +122,11 @@ public class YAWL2CanonicalBasicTest {
         // Basic check ANF
         final AnnotationsType anf = yawl2Canonical.getAnf();
         final YAWLSpecificationFactsType mainSpecification = yawlSpec.getSpecification().get(0);
-        assertEquals(mainSpecification.getName(), anf.getName());
-        assertEquals(null, anf.getUri()); // TODO what to set?
+        assertEquals("EmptyNet", anf.getName()); // Original Name is NULL, but we use the Uri instead
+        assertEquals(mainSpecification.getUri(), anf.getUri());
 
-        // Just InputCondition and OutputCondition and the RootNet, each 2 Annotations
-        assertEquals(6, anf.getAnnotation().size());
+        // Just InputCondition and OutputCondition and the RootNet, each 1 Graphic-Annotations
+        assertEquals(3, anf.getAnnotation().size());
 
         // Basic check CPF
         final CanonicalProcessType cpf = yawl2Canonical.getCpf();

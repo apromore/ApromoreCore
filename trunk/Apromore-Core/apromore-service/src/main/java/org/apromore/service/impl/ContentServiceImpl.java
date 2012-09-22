@@ -57,7 +57,6 @@ public class ContentServiceImpl implements ContentService {
      * {@inheritDoc}
      */
     @Override
-    @SuppressWarnings("unchecked")
     public Integer getMatchingContentId(final String hash) {
         if (hash == null) {
             return null;
@@ -100,7 +99,7 @@ public class ContentServiceImpl implements ContentService {
             if (!"Pocket".equals(type)) {
                 addNonPocketNode(n);
             } else {
-                pocketIdMappings.put(oldVId, v.getId());
+                pocketIdMappings.put(oldVId, String.valueOf(n.getId()));
             }
         }
     }

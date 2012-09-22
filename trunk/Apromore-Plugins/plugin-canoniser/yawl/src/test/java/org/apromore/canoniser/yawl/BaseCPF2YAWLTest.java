@@ -3,6 +3,7 @@ package org.apromore.canoniser.yawl;
 import static org.junit.Assert.fail;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -10,15 +11,18 @@ import java.util.List;
 
 import javax.xml.bind.JAXBException;
 
+import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.Canonical2YAWL;
 import org.apromore.canoniser.yawl.internal.impl.Canonical2YAWLImpl;
 import org.apromore.canoniser.yawl.utils.GraphvizVisualiser;
 import org.apromore.canoniser.yawl.utils.TestUtils;
+import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 import org.yawlfoundation.yawlschema.DecompositionType;
@@ -62,10 +66,10 @@ public abstract class BaseCPF2YAWLTest {
         canonical2Yawl = new Canonical2YAWLImpl();
         try {
             System.out.println("Testing file " + getCPFFile().getName());
-            cpfProcess = TestUtils.unmarshalCPF(getCPFFile());
+            cpfProcess = CPFSchema.unmarshalCanonicalFormat(new FileInputStream(getCPFFile()), false).getValue();
             createGraphImages(cpfProcess.getNet().get(0));
             try {
-                final AnnotationsType anf = TestUtils.unmarshalANF(getANFFile());
+                final AnnotationsType anf = ANFSchema.unmarshalAnnotationFormat(new FileInputStream(getANFFile()), false).getValue();
                 if (anf != null) {
                     canonical2Yawl.convertToYAWL(cpfProcess, anf);
                 } else {
@@ -79,6 +83,7 @@ public abstract class BaseCPF2YAWLTest {
         }
     }
 
+    @Ignore
     @Test
     public void testSaveResult() throws JAXBException, IOException, SAXException {
         TestUtils.printYawl(canonical2Yawl.getYAWL(),

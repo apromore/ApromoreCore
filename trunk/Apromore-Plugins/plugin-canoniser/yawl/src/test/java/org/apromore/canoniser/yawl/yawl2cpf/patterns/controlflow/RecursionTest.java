@@ -10,15 +10,13 @@ import org.apromore.canoniser.yawl.yawl2cpf.patterns.BasePatternTest;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.TaskType;
-import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
 public class RecursionTest extends BasePatternTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.BaseYAWL2CPFTest#getYAWLFile()
      */
     @Override

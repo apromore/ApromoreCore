@@ -13,8 +13,8 @@ import org.apromore.dao.model.FragmentVersion;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.PocketMappingException;
 import org.apromore.exception.RepositoryException;
-import org.apromore.graph.JBPT.CPF;
 import org.apromore.graph.TreeVisitor;
+import org.apromore.graph.JBPT.CPF;
 import org.apromore.service.ContentService;
 import org.apromore.service.DecomposerService;
 import org.apromore.service.FragmentService;
@@ -71,7 +71,7 @@ public class DecomposerServiceImpl implements DecomposerService {
      * @throws org.apromore.exception.RepositoryException if something fails while populating the Repository
      */
     @Override
-    public FragmentVersion decompose(CPF graph, List<String> fragmentIds) throws RepositoryException {
+    public FragmentVersion decompose(final CPF graph, final List<String> fragmentIds) throws RepositoryException {
         TreeVisitor visitor = new TreeVisitor();
         OperationContext op = new OperationContext();
         op.setGraph(graph);
@@ -100,7 +100,7 @@ public class DecomposerServiceImpl implements DecomposerService {
      * @throws RepositoryException if something fails while populating the Repository
      */
     @SuppressWarnings("unchecked")
-    public FragmentVersion decompose(RPST rpst, RPSTNode f, OperationContext op, List<String> fragmentIds) throws RepositoryException {
+    public FragmentVersion decompose(final RPST rpst, final RPSTNode f, final OperationContext op, final List<String> fragmentIds) throws RepositoryException {
         String keywords = "";
         int fragmentSize = f.getFragment().getVertices().size();
         String nodeType = FragmentUtil.getFragmentType(f);
@@ -151,7 +151,7 @@ public class DecomposerServiceImpl implements DecomposerService {
      * @throws org.apromore.exception.RepositoryException
      */
     @Override
-    public String decomposeFragment(CPF graph, List<String> fragmentIds) throws RepositoryException {
+    public String decomposeFragment(final CPF graph, final List<String> fragmentIds) throws RepositoryException {
         TreeVisitor visitor = new TreeVisitor();
         OperationContext op = new OperationContext();
         op.setGraph(graph);
@@ -189,7 +189,7 @@ public class DecomposerServiceImpl implements DecomposerService {
      * @throws RepositoryException the Repository Exception
      */
     @SuppressWarnings("unchecked")
-    public FragmentVersion decomposeSimpleStandaloneFragment(CPF g, FlowNode entry, FlowNode exit, OperationContext op) throws ExceptionDao,
+    public FragmentVersion decomposeSimpleStandaloneFragment(final CPF g, final FlowNode entry, final FlowNode exit, final OperationContext op) throws ExceptionDao,
             RepositoryException {
         String keywords = "";
         int fragmentSize = g.getVertices().size();
@@ -220,8 +220,8 @@ public class DecomposerServiceImpl implements DecomposerService {
 
 
     /* mapping pocketId -> childId */
-    private Map<String, String> mapPocketChildId(RPST rpst, RPSTNode f, OperationContext op, List<String> fragmentIds,
-            Collection<RPSTNode> cs) throws RepositoryException {
+    private Map<String, String> mapPocketChildId(final RPST rpst, final RPSTNode f, final OperationContext op, final List<String> fragmentIds,
+            final Collection<RPSTNode> cs) throws RepositoryException {
         Map<String, String> childMappings = new HashMap<String, String>(0);
         for (RPSTNode c : cs) {
             if (TCType.T.equals(c.getType())) {
@@ -238,8 +238,8 @@ public class DecomposerServiceImpl implements DecomposerService {
     }
 
     /* Adds a fragment version */
-    private FragmentVersion addFragmentVersion(RPSTNode f, String hash, Map<String, String> childMappings, int fragmentSize, String fragmentType,
-            String keywords, OperationContext op) throws RepositoryException {
+    private FragmentVersion addFragmentVersion(final RPSTNode f, final String hash, final Map<String, String> childMappings, final int fragmentSize, final String fragmentType,
+            final String keywords, final OperationContext op) throws RepositoryException {
         // mappings (UUIDs generated for pocket Ids -> Pocket Ids assigned to pockets when they are persisted in the database)
         Map<String, String> pocketIdMappings = new HashMap<String, String>();
         Content content = cSrv.addContent(f, hash, op.getGraph(), pocketIdMappings);
@@ -256,8 +256,8 @@ public class DecomposerServiceImpl implements DecomposerService {
     }
 
     /* Adds a fragment version */
-    private FragmentVersion addFragmentVersion(Content cid, Map<String, String> childMappings, String derivedFrom,
-            int lockStatus, int lockCount, int originalSize, String fragmentType, String keywords, OperationContext op)
+    private FragmentVersion addFragmentVersion(final Content cid, final Map<String, String> childMappings, final String derivedFrom,
+            final int lockStatus, final int lockCount, final int originalSize, final String fragmentType, final String keywords, final OperationContext op)
             throws RepositoryException {
         op.addProcessedFragmentType(fragmentType);
         return fSrv.addFragmentVersion(cid, childMappings, derivedFrom, lockStatus, lockCount, originalSize, fragmentType);
@@ -270,7 +270,7 @@ public class DecomposerServiceImpl implements DecomposerService {
      * Set the Content DAO object for this class. Mainly for spring tests.
      * @param cntDAOJpa the content Dao.
      */
-    public void setContentDao(ContentDao cntDAOJpa) {
+    public void setContentDao(final ContentDao cntDAOJpa) {
         cDao = cntDAOJpa;
     }
 
@@ -278,7 +278,7 @@ public class DecomposerServiceImpl implements DecomposerService {
      * Set the Content Service object for this class. Mainly for spring tests.
      * @param cService the Content Service.
      */
-    public void setContentService(ContentService cService) {
+    public void setContentService(final ContentService cService) {
         cSrv = cService;
     }
 
@@ -286,7 +286,7 @@ public class DecomposerServiceImpl implements DecomposerService {
      * Set the Fragment Service object for this class. Mainly for spring tests.
      * @param fService the Fragment Service.
      */
-    public void setFragmentService(FragmentService fService) {
+    public void setFragmentService(final FragmentService fService) {
         fSrv = fService;
     }
 }

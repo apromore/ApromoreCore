@@ -25,20 +25,22 @@ import java.util.Scanner;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.oryxeditor.server.diagram.basic.BasicDiagram;
 
 public class OryxTestData {
 
 	public static String orderFulfillment;
 	public static JSONObject orderFulfillmentAsJson;
-	public static BasicDiagram rootDiagram;
-	public static BasicDiagram orderingDiagram;
-	public static BasicDiagram freightDeliveredDiagram;
+	
+	public static String orderFulfillmentRequestData;
+	
+	public static String filmProduction;
 
 	static {
 		try {
 			orderFulfillment = new Scanner(new File("resources/orderfulfillment.json"), "UTF-8").useDelimiter("\\A").next();
 			orderFulfillmentAsJson = new JSONObject(orderFulfillment);
+			orderFulfillmentRequestData = new Scanner(new File("resources/orderfulfillment.json"), "UTF-8").useDelimiter("\\A").next();
+			filmProduction = new Scanner(new File("resources/filmproduction.json"), "UTF-8").useDelimiter("\\A").next();
 		} catch (FileNotFoundException e) {
 			e.printStackTrace();
 		} catch (JSONException e) {

@@ -54,7 +54,9 @@ public class ConditionHandler extends BaseConditionHandler<ExternalConditionFact
      * @throws CanoniserException
      */
     protected void convertAnnotations() throws CanoniserException {
-        createDocumentation(getObject()).getDocumentation().add(getObject().getDocumentation());
+        if (getObject().getDocumentation() != null) {
+            createDocumentation(getObject(), getObject().getDocumentation());
+        }
         createGraphics(getObject());
     }
 

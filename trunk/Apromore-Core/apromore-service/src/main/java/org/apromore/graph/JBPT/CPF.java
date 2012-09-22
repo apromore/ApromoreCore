@@ -1,14 +1,14 @@
 package org.apromore.graph.JBPT;
 
-import org.jbpt.pm.ControlFlow;
-import org.jbpt.pm.FlowNode;
-import org.jbpt.pm.NonFlowNode;
-import org.jbpt.pm.ProcessModel;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import org.jbpt.pm.ControlFlow;
+import org.jbpt.pm.FlowNode;
+import org.jbpt.pm.NonFlowNode;
+import org.jbpt.pm.ProcessModel;
 
 /**
  * Implementation of the Canonical Process Format for JBPT.
@@ -18,9 +18,9 @@ import java.util.Map;
 public class CPF extends ProcessModel implements ICpf<ControlFlow<FlowNode>, FlowNode, NonFlowNode> {
 
     private Map<String, ICpfAttribute> properties = new HashMap<String, ICpfAttribute>(0);
-    private Map<String, Map<String, String>> vertexProperties;
-    private Map<String, FlowNode> pmgVertices = new HashMap<String, FlowNode>(0);
-    private Map<String, String> originalNodeMapping = new HashMap<String, String>(0);
+    private final Map<String, Map<String, String>> vertexProperties;
+    private final Map<String, FlowNode> pmgVertices = new HashMap<String, FlowNode>(0);
+    private final Map<String, String> originalNodeMapping = new HashMap<String, String>(0);
 
 
     public CPF() {
@@ -49,17 +49,17 @@ public class CPF extends ProcessModel implements ICpf<ControlFlow<FlowNode>, Flo
         return sinks;
     }
 
-    public FlowNode getVertex(String vid) {
+    public FlowNode getVertex(final String vid) {
         return pmgVertices.get(vid);
     }
 
     @Override
-    public FlowNode addVertex(FlowNode v) {
+    public FlowNode addVertex(final FlowNode v) {
         pmgVertices.put(v.getId(), v);
         return super.addFlowNode(v);
     }
 
-    public void setVertexProperty(String vertex, String propertyName, String propertyValue) {
+    public void setVertexProperty(final String vertex, final String propertyName, final String propertyValue) {
         Map<String, String> properties = vertexProperties.get(vertex);
         if (properties == null) {
             properties = new HashMap<String, String>(0);
@@ -68,7 +68,7 @@ public class CPF extends ProcessModel implements ICpf<ControlFlow<FlowNode>, Flo
         properties.put(propertyName, propertyValue);
     }
 
-    public String getVertexProperty(String vertexId, String propertyName) {
+    public String getVertexProperty(final String vertexId, final String propertyName) {
         String result = null;
         Map<String, String> properties = vertexProperties.get(vertexId);
         if (properties != null) {
@@ -81,21 +81,21 @@ public class CPF extends ProcessModel implements ICpf<ControlFlow<FlowNode>, Flo
         return originalNodeMapping;
     }
 
-    public void addOriginalNodeMapping(String duplicateNode, String originalNode) {
+    public void addOriginalNodeMapping(final String duplicateNode, final String originalNode) {
         originalNodeMapping.put(duplicateNode, originalNode);
     }
 
-    public boolean isDuplicateNode(String node) {
+    public boolean isDuplicateNode(final String node) {
         return originalNodeMapping.keySet().contains(node);
     }
 
-    public String getOriginalNode(String duplicateNode) {
+    public String getOriginalNode(final String duplicateNode) {
         return originalNodeMapping.get(duplicateNode);
     }
 
 
     @Override
-    public void setProperties(Map<String, ICpfAttribute> properties) {
+    public void setProperties(final Map<String, ICpfAttribute> properties) {
         this.properties = properties;
     }
 
@@ -105,18 +105,18 @@ public class CPF extends ProcessModel implements ICpf<ControlFlow<FlowNode>, Flo
     }
 
     @Override
-    public ICpfAttribute getProperty(String name) {
+    public ICpfAttribute getProperty(final String name) {
         return properties.get(name);
     }
 
     @Override
-    public void setProperty(String name, String value, Object any) {
+    public void setProperty(final String name, final String value, final Object any) {
         properties.put(name, new CpfAttribute(value, any));
     }
 
     @Override
-    public void setProperty(String name, String value) {
+    public void setProperty(final String name, final String value) {
         setProperty(name, value, null);
     }
-    
+
 }

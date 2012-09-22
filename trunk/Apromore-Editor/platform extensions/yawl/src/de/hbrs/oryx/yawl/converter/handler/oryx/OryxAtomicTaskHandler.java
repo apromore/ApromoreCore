@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
- *
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -13,174 +13,180 @@
 
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  * See: http://www.gnu.org/licenses/lgpl-3.0
- *
+ * 
  */
 package de.hbrs.oryx.yawl.converter.handler.oryx;
 
-import de.hbrs.oryx.yawl.converter.context.OryxConversionContext;
-import de.hbrs.oryx.yawl.converter.exceptions.ConversionException;
-import de.hbrs.oryx.yawl.util.YAWLUtils;
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.oryxeditor.server.diagram.basic.BasicShape;
-import org.yawlfoundation.yawl.elements.*;
+import org.yawlfoundation.yawl.elements.YAWLServiceGateway;
+import org.yawlfoundation.yawl.elements.YAtomicTask;
+import org.yawlfoundation.yawl.elements.YDecomposition;
+import org.yawlfoundation.yawl.elements.YNet;
+import org.yawlfoundation.yawl.elements.YTask;
 import org.yawlfoundation.yawl.elements.data.YParameter;
+
+import de.hbrs.oryx.yawl.converter.context.OryxConversionContext;
+import de.hbrs.oryx.yawl.converter.exceptions.ConversionException;
+import de.hbrs.oryx.yawl.util.YAWLUtils;
 
 /**
  * Converts a Atomic Task
- *
+ * 
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University of Applied Sciences)
+ * 
  */
 public class OryxAtomicTaskHandler extends OryxTaskHandler {
 
-    public OryxAtomicTaskHandler(OryxConversionContext context, BasicShape shape) {
-        super(context, shape);
-    }
+	public OryxAtomicTaskHandler(OryxConversionContext context, BasicShape shape) {
+		super(context, shape);
+	}
 
-    /*
-      * (non-Javadoc)
-      *
-      * @see
-      * de.hbrs.oryx.yawl.converter.handler.oryx.OryxTaskHandler#createTask(java
-      * .lang.String, org.yawlfoundation.yawl.elements.YNet)
-      */
-    @Override
-    protected YTask createTask(String taskId, YNet parentNet) throws JSONException, ConversionException {
-        int joinType = convertConnectorType(getShape().getProperty("join"), YTask._XOR);
-        int splitType = convertConnectorType(getShape().getProperty("split"), YTask._AND);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.hbrs.oryx.yawl.converter.handler.oryx.OryxTaskHandler#createTask(java
+	 * .lang.String, org.yawlfoundation.yawl.elements.YNet)
+	 */
+	@Override
+	protected YTask createTask(String taskId, YNet parentNet) throws JSONException, ConversionException {
+		int joinType = convertConnectorType(getShape().getProperty("join"), YTask._XOR);
+		int splitType = convertConnectorType(getShape().getProperty("split"), YTask._AND);
 
-        YAtomicTask yAtomicTask = new YAtomicTask(taskId, joinType, splitType, parentNet);
+		YAtomicTask yAtomicTask = new YAtomicTask(taskId, joinType, splitType, parentNet);
 
-        if (hasDecomposition()) {
-            yAtomicTask.setDecompositionPrototype(createDecomposition(new YAWLServiceGateway(getDecompositionId(), getContext()
-                    .getSpecification())));
-        }
-        return yAtomicTask;
-    }
+		if (hasDecomposition()) {
+			yAtomicTask.setDecompositionPrototype(createDecomposition(new YAWLServiceGateway(getDecompositionId(), getContext()
+					.getSpecification())));
+		}
+		return yAtomicTask;
+	}
 
-    /*
-      * (non-Javadoc)
-      *
-      * @see de.hbrs.oryx.yawl.converter.handler.oryx.OryxTaskHandler#
-      * convertTaskProperties(org.yawlfoundation.yawl.elements.YTask)
-      */
-    @Override
-    protected void convertTaskProperties(YTask task) {
-        super.convertTaskProperties(task);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see de.hbrs.oryx.yawl.converter.handler.oryx.OryxTaskHandler#
+	 * convertTaskProperties(org.yawlfoundation.yawl.elements.YTask)
+	 */
+	@Override
+	protected void convertTaskProperties(YTask task) {
+		super.convertTaskProperties(task);
 
-        try {
-            convertResourcing((YAtomicTask) task);
-        } catch (ConversionException e) {
-            getContext().addConversionWarnings("Could not convert Resourcing for Task " + task.getID(), e);
-        }
+		try {
+			convertResourcing((YAtomicTask) task);
+		} catch (ConversionException e) {
+			getContext().addConversionWarnings("Could not convert Resourcing for Task " + task.getID(), e);
+		}
 
-    }
+	}
 
-    /*
-      * (non-Javadoc)
-      *
-      * @see
-      * de.hbrs.oryx.yawl.converter.handler.oryx.OryxTaskHandler#convertDecomposition
-      * (org.oryxeditor.server.diagram.basic.BasicShape)
-      */
-    @Override
-    protected YDecomposition createDecomposition(YDecomposition existingDecomposition) throws JSONException, ConversionException {
-        YDecomposition decomposition = super.createDecomposition(existingDecomposition);
-        convertDecompositionVariables(decomposition);
-        return decomposition;
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * de.hbrs.oryx.yawl.converter.handler.oryx.OryxTaskHandler#convertDecomposition
+	 * (org.oryxeditor.server.diagram.basic.BasicShape)
+	 */
+	@Override
+	protected YDecomposition createDecomposition(YDecomposition existingDecomposition) throws JSONException, ConversionException {
+		YDecomposition decomposition = super.createDecomposition(existingDecomposition);
+		convertDecompositionVariables(decomposition);
+		return decomposition;
+	}
 
-    private void convertDecompositionVariables(YDecomposition taskDecomposition) throws JSONException, ConversionException {
-        if (getShape().hasProperty("decompositionvariables")) {
-            JSONArray varArray = getShape().getPropertyJsonObject("decompositionvariables").getJSONArray("items");
-            for (int i = 0; i < varArray.length(); i++) {
-                JSONObject parameter = varArray.getJSONObject(i);
-                convertSingleDecompositionVariables(taskDecomposition, i, parameter);
+	private void convertDecompositionVariables(YDecomposition taskDecomposition) throws JSONException, ConversionException {
+		if (getShape().hasProperty("decompositionvariables")) {
+			JSONArray varArray = getShape().getPropertyJsonObject("decompositionvariables").getJSONArray("items");
+			for (int i = 0; i < varArray.length(); i++) {
+				JSONObject parameter = varArray.getJSONObject(i);
+				convertSingleDecompositionVariables(taskDecomposition, i, parameter);
 
-            }
-        }
-    }
+			}
+		}
+	}
 
-    private void convertSingleDecompositionVariables(YDecomposition decomposition, int index, JSONObject param) throws JSONException,
-            ConversionException {
-        String usage = param.getString("usage");
+	private void convertSingleDecompositionVariables(YDecomposition decomposition, int index, JSONObject param) throws JSONException,
+			ConversionException {
+		String usage = param.getString("usage");
 
-        YParameter convertParameter = convertParameter(decomposition, param);
-        convertParameter.setOrdering(index);
+		YParameter convertParameter = convertParameter(decomposition, param);
+		convertParameter.setOrdering(index);
 
-        if (usage.equals("input")) {
-            decomposition.addInputParameter(convertParameter);
-        } else if (usage.equals("output")) {
-            decomposition.addOutputParameter(convertParameter);
-        } else {
-            // Is Both
-            param.put("usage", "input");
-            YParameter inputParameter = convertParameter(decomposition, param);
-            inputParameter.setOrdering(index);
-            decomposition.addInputParameter(inputParameter);
+		if (usage.equals("input")) {
+			decomposition.addInputParameter(convertParameter);
+		} else if (usage.equals("output")) {
+			decomposition.addOutputParameter(convertParameter);
+		} else {
+			// Is Both
+			param.put("usage", "input");
+			YParameter inputParameter = convertParameter(decomposition, param);
+			inputParameter.setOrdering(index);
+			decomposition.addInputParameter(inputParameter);
 
-            // Add both to Input and Output Parameters
-            param.put("usage", "output");
-            YParameter outputParameter = convertParameter(decomposition, param);
-            outputParameter.setOrdering(index);
-            decomposition.addOutputParameter(outputParameter);
-        }
-    }
+			// Add both to Input and Output Parameters
+			param.put("usage", "output");
+			YParameter outputParameter = convertParameter(decomposition, param);
+			outputParameter.setOrdering(index);
+			decomposition.addOutputParameter(outputParameter);
+		}
+	}
 
-    private void convertResourcing(YAtomicTask task) throws ConversionException {
+	private void convertResourcing(YAtomicTask task) throws ConversionException {
 
-        String startInitiator = getShape().getProperty("startinitiator");
-        String startInteraction = getShape().getProperty("startinteraction");
-        String allocateInitiator = getShape().getProperty("allocateinitiator");
-        String allocateInteraction = getShape().getProperty("allocateinteraction");
-        String offerInitiator = getShape().getProperty("offerinitiator");
-        String offerInteraction = getShape().getProperty("offerinteraction");
-        String privilegesSource = getShape().getProperty("privileges");
+		String startInitiator = getShape().getProperty("startinitiator");
+		String startInteraction = getShape().getProperty("startinteraction");
+		String allocateInitiator = getShape().getProperty("allocateinitiator");
+		String allocateInteraction = getShape().getProperty("allocateinteraction");
+		String offerInitiator = getShape().getProperty("offerinitiator");
+		String offerInteraction = getShape().getProperty("offerinteraction");
+		String privilegesSource = getShape().getProperty("privileges");
 
-        Element resourcingSpecs = new Element("resourcing", YAWLUtils.YAWL_NS);
+		Element resourcingSpecs = new Element("resourcing", YAWLUtils.YAWL_NS);
 
-        // Add in order Offer, Allocate, Start, Privileges to ensure exact same
-        // result as on import
-        if (offerInteraction != null) {
-            Element offer = YAWLUtils.parseToElement("<offer xmlns=\"" + YAWLUtils.YAWL_NS + "\">" + offerInteraction + "</offer>")
-                    .detachRootElement();
-            if (offerInitiator != null) {
-                offer.setAttribute("initiator", offerInitiator);
-            }
-            resourcingSpecs.addContent(offer);
-        }
+		// Add in order Offer, Allocate, Start, Privileges to ensure exact same
+		// result as on import
+		if (offerInteraction != null) {
+			Element offer = YAWLUtils.parseToElement("<offer xmlns=\"" + YAWLUtils.YAWL_NS + "\">" + offerInteraction + "</offer>")
+					.detachRootElement();
+			if (offerInitiator != null) {
+				offer.setAttribute("initiator", offerInitiator);
+			}
+			resourcingSpecs.addContent(offer);
+		}
 
-        if (allocateInteraction != null) {
-            Element allocate = YAWLUtils.parseToElement(
-                    "<allocate xmlns=\"" + YAWLUtils.YAWL_NS + "\">" + allocateInteraction + "</allocate>").detachRootElement();
-            if (allocateInitiator != null) {
-                allocate.setAttribute("initiator", allocateInitiator);
-            }
-            resourcingSpecs.addContent(allocate);
-        }
+		if (allocateInteraction != null) {
+			Element allocate = YAWLUtils.parseToElement(
+					"<allocate xmlns=\"" + YAWLUtils.YAWL_NS + "\">" + allocateInteraction + "</allocate>").detachRootElement();
+			if (allocateInitiator != null) {
+				allocate.setAttribute("initiator", allocateInitiator);
+			}
+			resourcingSpecs.addContent(allocate);
+		}
 
-        if (startInteraction != null) {
-            Element start = YAWLUtils.parseToElement("<start xmlns=\"" + YAWLUtils.YAWL_NS + "\">" + startInteraction + "</start>")
-                    .detachRootElement();
-            if (startInitiator != null) {
-                start.setAttribute("initiator", startInitiator);
-            }
-            resourcingSpecs.addContent(start);
-        }
+		if (startInteraction != null) {
+			Element start = YAWLUtils.parseToElement("<start xmlns=\"" + YAWLUtils.YAWL_NS + "\">" + startInteraction + "</start>")
+					.detachRootElement();
+			if (startInitiator != null) {
+				start.setAttribute("initiator", startInitiator);
+			}
+			resourcingSpecs.addContent(start);
+		}
 
-        Element privileges = new Element("privileges", YAWLUtils.YAWL_NS);
-        if (privilegesSource != null && !privilegesSource.isEmpty()) {
-            privileges.addContent(YAWLUtils.parseToElement("<privileges>" + privilegesSource + "</privileges>").getRootElement()
-                    .cloneContent());
-            resourcingSpecs.addContent(privileges);
-        }
+		Element privileges = new Element("privileges", YAWLUtils.YAWL_NS);
+		if (privilegesSource != null && !privilegesSource.isEmpty()) {
+			privileges.addContent(YAWLUtils.parseToElement("<privileges>" + privilegesSource + "</privileges>").getRootElement()
+					.cloneContent());
+			resourcingSpecs.addContent(privileges);
+		}
 
-        if (resourcingSpecs.getChildren().size() > 0) {
-            task.setResourcingSpecs(resourcingSpecs);
-        }
-    }
+		if (resourcingSpecs.getChildren().size() > 0) {
+			task.setResourcingSpecs(resourcingSpecs);
+		}
+	}
 }

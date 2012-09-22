@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.context;
@@ -61,9 +61,9 @@ import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
 
 /**
  * Context for a conversion CPF -> YAWL
- * 
+ *
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class CanonicalConversionContext extends ConversionContext {
 
@@ -183,7 +183,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Create the Context for one CPF -> YAWL conversion
-     * 
+     *
      * @param canonicalProcess
      * @param annotationsType
      */
@@ -203,7 +203,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.context.ConversionContext#getUuidGenerator()
      */
     @Override
@@ -271,7 +271,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get Net of CPF by ID
-     * 
+     *
      * @param id
      *            of CPF Net
      * @return NetType or NULL
@@ -288,7 +288,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get Node of CPF by ID
-     * 
+     *
      * @param id
      *            of CPF Node
      * @return NodeType or NULL
@@ -313,7 +313,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get ResourceType of CPF by ID
-     * 
+     *
      * @param id
      *            of CPF ResourceType
      * @return ResourceTypeType or NULL
@@ -336,7 +336,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get ObjectType of CPF by ID
-     * 
+     *
      * @param id
      *            of CPF ObjectType
      * @return ObjectType or NULL
@@ -361,7 +361,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get Edge of CPF by ID
-     * 
+     *
      * @param id
      *            of CPF Edge
      * @return EdgeType or NULL
@@ -386,7 +386,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get all preceding elements of the Node with given ID. (i.e. the pre set)
-     * 
+     *
      * @param id
      *            of a CPF Node
      * @return UnmodifiableCollection of predecessors, empty if Node has none.
@@ -403,7 +403,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get all succeeding elements of the Node with given ID. (i.e. the post set)
-     * 
+     *
      * @param id
      *            of a CPF Node
      * @return UnmodifiableCollection of successors, empty if Node has none.
@@ -430,8 +430,18 @@ public class CanonicalConversionContext extends ConversionContext {
             for (final EdgeType edge : net.getEdge()) {
                 final String sourceId = edge.getSourceId();
                 final String targetId = edge.getTargetId();
-                addToPreSet(targetId, getNodeById(sourceId));
-                addToPostSet(sourceId, getNodeById(targetId));
+                NodeType preNode = getNodeById(sourceId);
+                if (preNode != null) {
+                    addToPreSet(targetId, preNode);
+                } else {
+                    LOGGER.warn("Could not find target {} for edge {}", targetId, edge.getId());
+                }
+                NodeType postNode = getNodeById(targetId);
+                if (postNode != null) {
+                    addToPostSet(sourceId, postNode);
+                } else {
+                    LOGGER.warn("Could not find source {} for edge {}", sourceId, edge.getId());
+                }
             }
         }
     }
@@ -456,7 +466,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get the first Successor of CPF Node with given ID.
-     * 
+     *
      * @param id
      *            of a CPF Node
      * @return NodeType or NULL is no successor found
@@ -471,7 +481,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get the first Predecessor of CPF Node with given ID.
-     * 
+     *
      * @param id
      *            of a CPF Node
      * @return NodeType or NULL is no predecessor found
@@ -486,7 +496,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Checks if the given CPF Net has more than one Node that has no successors. Such a Net has multiple exit nodes and is Multiple Exit.
-     * 
+     *
      * @param net
      *            a CPF net
      * @return true if Net is MESE or MEME, false otherwise
@@ -497,7 +507,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get the Nodes of a CPF Net that just have one predecessor.
-     * 
+     *
      * @param net
      *            the CPF Net
      * @return Unmodifiable Collection of entry Nodes
@@ -514,7 +524,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Checks if the given CPF Net has more than one Node that has no predecessors. Such a Net has multiple starting nodes and is Multiple Entry.
-     * 
+     *
      * @param net
      *            the CPF Net
      * @return true if Net is SEME or MEME, false otherwise
@@ -525,7 +535,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get the Nodes of a CPF Net that don't have a predecessor.
-     * 
+     *
      * @param net
      *            the CPF Net
      * @return Unmodifiable Collection of entry Nodes
@@ -555,7 +565,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Add a NetFactsType for the given ID
-     * 
+     *
      * @param id
      *            of the CPF Net
      * @param net
@@ -568,7 +578,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get the already converted NetFactsType if CPF Net with ID is already converted.
-     * 
+     *
      * @param id
      *            of a CPF Net
      * @return NetFactsType or NULL
@@ -590,7 +600,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Remembers a YAWL variable/parameter
-     * 
+     *
      * @param id
      *            of the CPF Object
      * @param inputParam
@@ -602,7 +612,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get a YAWL variable/parameter by the CPF Object-ID
-     * 
+     *
      * @param id
      *            of the CPF Object
      * @return VariableBaseType
@@ -620,7 +630,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Add an element that just has been converted
-     * 
+     *
      * @param nodeId
      *            of the CPF node
      * @param element
@@ -632,7 +642,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Adds layout bounds to the element information.
-     * 
+     *
      * @param nodeId
      *            of the CPF node
      * @param elementSize
@@ -643,7 +653,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Adds the join type to the element information.
-     * 
+     *
      * @param nodeId
      *            of the CPF node
      * @param joinType
@@ -654,7 +664,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Adds the split type to the element information.
-     * 
+     *
      * @param nodeId
      *            of the CPF node
      * @param splitType
@@ -665,7 +675,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get information about the conversion of the CPF Node to an YAWL element.
-     * 
+     *
      * @param nodeId
      *            of CPF node
      * @return YAWL element information
@@ -691,7 +701,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Add an flow that just has been converted
-     * 
+     *
      * @param nodeId
      *            of the CPF node
      * @param element
@@ -704,7 +714,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Gets the converted flow for edge CPF id
-     * 
+     *
      * @param nodeId
      *            of CPF edge
      * @return YAWL flow
@@ -726,7 +736,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get the already converted LayoutNetFactsType for the Net with provided YAWL ID.
-     * 
+     *
      * @param id
      *            of YAWL Net
      * @return LayoutNetFactsType or NULL is none found
@@ -745,7 +755,7 @@ public class CanonicalConversionContext extends ConversionContext {
     // TODO optimize with Map
     /**
      * Get the already converted LayoutContainerFactsType for the Element with provided YAWL ID.
-     * 
+     *
      * @param id
      *            of YAWL Element
      * @return LayoutContainerFactsType or NULL is none found
@@ -767,7 +777,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Adds the task element to a list of composite tasks that unfold to the sub net with given ID.
-     * 
+     *
      * @param subnetId
      *            of CPF net
      * @param taskFacts
@@ -786,7 +796,7 @@ public class CanonicalConversionContext extends ConversionContext {
     /**
      * Returns a collection of already converted YAWL tasks that unfold to a given sub net. There may be tasks missing that have not been converted
      * yet.
-     * 
+     *
      * @param subnetId
      *            of the CPF net
      * @return unmodifiable collection of YAWL tasks that unfold to this sub net
@@ -809,7 +819,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Remember that a YAWL task (given by its ID) has a JOIN routing attached.
-     * 
+     *
      * @param yawlId
      */
     public void setSplitRouting(final String yawlId) {
@@ -818,7 +828,7 @@ public class CanonicalConversionContext extends ConversionContext {
     }
 
     /**
-     * 
+     *
      * @param yawlId
      * @return true if Task has a SPLIT routing
      */
@@ -835,7 +845,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Remember that a YAWL task (given by its ID) has a JOIN routing attached.
-     * 
+     *
      * @param yawlId
      */
     public void setJoinRouting(final String yawlId) {
@@ -860,7 +870,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Checks if the Object with ID (in CPF) is used as input any composite task that points to the given Net
-     * 
+     *
      * @param objectId
      * @return
      */
@@ -885,7 +895,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Checks if the Object with ID (in CPF) is used as output in any composite task that points to the given Net
-     * 
+     *
      * @param objectId
      * @param netId
      * @return
@@ -912,7 +922,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Remembers a Variable that needs to be added to a sub net later on.
-     * 
+     *
      * @param subnetId
      *            CPF id of the Net
      * @param var
@@ -925,7 +935,7 @@ public class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get all Variables that need to be added to this sub net.
-     * 
+     *
      * @param subnetId
      *            CPF id of the Net
      * @return unmodifiableCollection of VariableBaseType

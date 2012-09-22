@@ -22,7 +22,7 @@ package de.hbrs.oryx.yawl.converter.handler.yawl;
 import java.io.IOException;
 import java.util.Iterator;
 
-import org.jdom.JDOMException;
+import org.jdom2.JDOMException;
 import org.junit.Before;
 import org.oryxeditor.server.diagram.basic.BasicShape;
 import org.yawlfoundation.yawl.elements.YNet;

@@ -28,7 +28,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.junit.Test;
 import org.oryxeditor.server.diagram.basic.BasicShape;
 import org.yawlfoundation.yawl.elements.YCompositeTask;

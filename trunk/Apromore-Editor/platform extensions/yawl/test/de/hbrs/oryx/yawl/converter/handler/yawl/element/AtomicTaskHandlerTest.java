@@ -21,13 +21,12 @@ package de.hbrs.oryx.yawl.converter.handler.yawl.element;
 
 import static org.junit.Assert.*;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.junit.Test;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
-import org.oryxeditor.server.diagram.basic.BasicNode;
 import org.oryxeditor.server.diagram.basic.BasicShape;
 import org.yawlfoundation.yawl.elements.YAtomicTask;
 import org.yawlfoundation.yawl.elements.YNet;
@@ -69,7 +68,7 @@ public class AtomicTaskHandlerTest extends YAWLHandlerTest {
 		// Basic Task Properties
 
 		assertEquals(task.getName(), shape.getProperty("name"));
-		assertEquals("manual", shape.getProperty("icon"));
+		assertEquals("Manual", shape.getProperty("icon"));
 		assertEquals("xorT", shape.getProperty("join"));
 		assertEquals("xorB", shape.getProperty("split"));
 
@@ -152,7 +151,7 @@ public class AtomicTaskHandlerTest extends YAWLHandlerTest {
 		assertEquals("<timer><netparam>ClaimsDeadlineTimer</netparam></timer>", shape.getProperty("timer"));
 
 		assertEquals("automated", shape.getProperty("decompositionexternalinteraction"));
-		assertEquals("timer", shape.getProperty("icon"));
+		assertEquals("Timer", shape.getProperty("icon"));
 	}
 
 	@Test

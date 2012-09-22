@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl.controlflow;
@@ -52,9 +52,9 @@ import org.yawlfoundation.yawlschema.LayoutVertexFactsType;
 
 /**
  * Base class for converting all external net elements
- * 
+ *
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  * @param <T>
  *            type of Element to be converted
  */
@@ -63,7 +63,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
     /**
      * Simple connection between two already converted element. Source and Target have to be SESE, as we are not going to introduce any kind of
      * routing node.
-     * 
+     *
      * @param sourceNode
      *            of CPF
      * @param targetNode
@@ -88,7 +88,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
     /**
      * Generates a unique ID for an edge between source and target. Same edges (identical source and target) will always return the same generated
      * unique id.
-     * 
+     *
      * @param sourceNode
      *            of CPF element
      * @param targetNode
@@ -109,7 +109,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
     /**
      * Create a StateType node that was not part of the original YAWL specification. The node is already added to its parent Net.
-     * 
+     *
      * @return
      */
     protected StateType createState() {
@@ -122,7 +122,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
     /**
      * Create a EventType node that was not part of the original YAWL specification. The node is already added to its parent Net.
-     * 
+     *
      * @return
      */
     protected EventType createEvent() {
@@ -135,7 +135,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
     /**
      * Create a MessageType node that was not part of the original YAWL specification. The node is already added to its parent Net.
-     * 
+     *
      * @param direction
      * @return the converted MessageType
      */
@@ -186,12 +186,17 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
         }
     }
 
-    protected DocumentationType createDocumentation(final ExternalNetElementType element) {
-        final DocumentationType documentation = getContext().getAnnotationOF().createDocumentationType();
-        documentation.setCpfId(generateUUID(CONTROLFLOW_ID_PREFIX, element.getId()));
-        documentation.setId(generateUUID());
-        getContext().getAnnotationResult().getAnnotation().add(documentation);
-        return documentation;
+    protected DocumentationType createDocumentation(final ExternalNetElementType element, final String documentation) throws CanoniserException {
+        final DocumentationType d = getContext().getAnnotationOF().createDocumentationType();
+        d.setCpfId(generateUUID(CONTROLFLOW_ID_PREFIX, element.getId()));
+        d.setId(generateUUID());
+        try {
+            d.getAny().add(ConversionUtils.marshalYAWLFragment("documentation", documentation, String.class));
+        } catch (JAXBException e) {
+            throw new CanoniserException("Failed to add documentation to ANF", e);
+        }
+        getContext().getAnnotationResult().getAnnotation().add(d);
+        return d;
     }
 
     protected GraphicsType createGraphics(final ExternalNetElementType element) throws CanoniserException {
@@ -229,7 +234,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
     /**
      * Create the graphical annotation for a YAWL edge.
-     * 
+     *
      * @param sourceId
      *            of the YAWL source
      * @param targetId

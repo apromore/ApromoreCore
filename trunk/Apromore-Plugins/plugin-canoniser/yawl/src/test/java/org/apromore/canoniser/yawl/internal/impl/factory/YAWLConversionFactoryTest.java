@@ -11,18 +11,16 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.BaseYAWL2CPFTest;
 import org.apromore.canoniser.yawl.internal.impl.context.YAWLConversionContext;
 import org.apromore.canoniser.yawl.utils.TestUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 import org.yawlfoundation.yawlschema.SpecificationSetFactsType;
 import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
 
-@Ignore
 public class YAWLConversionFactoryTest extends BaseYAWL2CPFTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.BaseYAWL2CPFTest#getYAWLFile()
      */
     @Override
