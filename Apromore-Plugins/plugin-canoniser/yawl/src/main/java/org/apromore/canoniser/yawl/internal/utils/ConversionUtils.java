@@ -37,7 +37,7 @@ public class ConversionUtils {
 
     public static final String CONFIGURATION_EXTENSION = "configuration";
 
-    private static final Pattern COLOR_REGEX = Pattern.compile("R([0-9][0-9][0-9])G([0-9][0-9][0-9])B([0-9][0-9][0-9])");
+    private static final Pattern COLOR_REGEX = Pattern.compile("R:([0-9][0-9][0-9])G:([0-9][0-9][0-9])B:([0-9][0-9][0-9])");
 
     private static final JAXBContext YAWL_CONTEXT = initYAWLContext();
 
@@ -54,7 +54,7 @@ public class ConversionUtils {
         final int red = (rgb >> 16) & 0x0ff;
         final int green = (rgb >> 8) & 0x0ff;
         final int blue = (rgb) & 0x0ff;
-        final String color = String.format("R%dG%dB%d", red, green, blue);
+        final String color = String.format("R:%dG:%dB:%d", red, green, blue);
         return color;
     }
 

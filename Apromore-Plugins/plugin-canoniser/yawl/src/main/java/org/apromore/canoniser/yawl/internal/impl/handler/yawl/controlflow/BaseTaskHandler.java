@@ -218,7 +218,9 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
      */
     protected void convertAnnotations() throws CanoniserException {
         // Annotation
-        createDocumentation(getObject()).getDocumentation().add(getObject().getDocumentation());
+        if (getObject().getDocumentation() != null) {
+            createDocumentation(getObject(), getObject().getDocumentation());
+        }
         createGraphics(getObject());
     }
 

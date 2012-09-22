@@ -13,15 +13,13 @@ import org.apromore.canoniser.yawl.yawl2cpf.patterns.BasePatternTest;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
-import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
 public class SequenceTest extends BasePatternTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.patterns.controlflow.PatternTest#getYAWLFile()
      */
     @Override

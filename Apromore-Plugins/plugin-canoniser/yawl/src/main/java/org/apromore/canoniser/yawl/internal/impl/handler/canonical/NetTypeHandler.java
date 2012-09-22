@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical;
@@ -20,6 +20,7 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
+import org.apromore.cpf.EventType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectType;
@@ -40,7 +41,7 @@ public class NetTypeHandler extends DecompositionHandler<NetType, YAWLSpecificat
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -76,8 +77,28 @@ public class NetTypeHandler extends DecompositionHandler<NetType, YAWLSpecificat
             getContext().getHandlerFactory().createHandler(egde, netFactsType, getObject()).convert();
         }
 
+        fixMissingInputCondition(netFactsType);
+        fixMissingOutputCondition(netFactsType);
+
         LOGGER.debug("Added Net {}", netFactsType.getName());
         getConvertedParent().getDecomposition().add(netFactsType);
+    }
+
+    private void fixMissingOutputCondition(final NetFactsType netFactsType) {
+        if (netFactsType.getProcessControlElements().getOutputCondition() == null) {
+            EventType node = new EventType();
+            node.setId(generateUUID());
+            netFactsType.getProcessControlElements().setOutputCondition(createOutputCondition(node));
+        }
+
+    }
+
+    private void fixMissingInputCondition(final NetFactsType netFactsType) {
+        if (netFactsType.getProcessControlElements().getInputCondition() == null) {
+            EventType node = new EventType();
+            node.setId(generateUUID());
+            netFactsType.getProcessControlElements().setInputCondition(createCondition(node));
+        }
     }
 
     private void convertDataObjects(final NetFactsType netFactsType) throws CanoniserException {

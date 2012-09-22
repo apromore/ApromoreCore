@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
- *
+ * 
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -13,58 +13,60 @@
 
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- *
+ * 
  * See: http://www.gnu.org/licenses/lgpl-3.0
- *
+ * 
  */
 package de.hbrs.oryx.yawl.converter.handler.yawl.decomposition;
 
-import de.hbrs.oryx.yawl.converter.context.YAWLConversionContext;
-import de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandlerImpl;
+import java.util.HashMap;
+
 import org.yawlfoundation.yawl.elements.YDecomposition;
 
-import java.util.HashMap;
+import de.hbrs.oryx.yawl.converter.context.YAWLConversionContext;
+import de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandlerImpl;
 
 /**
  * Base class for conversion of all different decompositions.
- *
+ * 
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University of Applied Sciences)
+ * 
  */
 public abstract class DecompositionHandler extends YAWLHandlerImpl {
 
-    private final YDecomposition decomposition;
+	private final YDecomposition decomposition;
 
-    public DecompositionHandler(YAWLConversionContext context, YDecomposition decomposition) {
-        super(context);
-        this.decomposition = decomposition;
-    }
+	public DecompositionHandler(YAWLConversionContext context, YDecomposition decomposition) {
+		super(context);
+		this.decomposition = decomposition;
+	}
 
-    protected YDecomposition getDecomposition() {
-        return decomposition;
-    }
+	protected YDecomposition getDecomposition() {
+		return decomposition;
+	}
 
-    /**
-     * @return properties belonging to YDecomposition only
-     */
-    protected HashMap<String, String> convertDecompositionProperties() {
-        HashMap<String, String> properties = new HashMap<String, String>();
+	/**
+	 * @return properties belonging to YDecomposition only
+	 */
+	protected HashMap<String, String> convertDecompositionProperties() {
+		HashMap<String, String> properties = new HashMap<String, String>();
 
-        if (hasDecomposition()) {
-            YDecomposition d = getDecomposition();
-            properties.put("decompositionid", d.getID());
-            properties.put("decompositionname", d.getName());
-            properties.put("decompositionexternalinteraction", d.requiresResourcingDecisions() ? "manual" : "automated");
-            properties.put("decompositioncodelet", d.getCodelet() != null ? d.getCodelet() : "");
-            properties.put("decompositionlogpredicate",
-                    d.getLogPredicate() != null ? d.getLogPredicate().toXML().replace("<logPredicate>", "").replace("</logPredicate>", "")
-                            : "");
-        }
+		if (hasDecomposition()) {
+			YDecomposition d = getDecomposition();
+			properties.put("decompositionid", d.getID());
+			properties.put("decompositionname", d.getName());
+			properties.put("decompositionexternalinteraction", d.requiresResourcingDecisions() ? "manual" : "automated");
+			properties.put("decompositioncodelet", d.getCodelet() != null ? d.getCodelet() : "");
+			properties.put("decompositionlogpredicate",
+					d.getLogPredicate() != null ? d.getLogPredicate().toXML().replace("<logPredicate>", "").replace("</logPredicate>", "")
+							: "");
+		}
 
-        return properties;
-    }
+		return properties;
+	}
 
-    protected boolean hasDecomposition() {
-        return getDecomposition() != null;
-    }
+	protected boolean hasDecomposition() {
+		return getDecomposition() != null;
+	}
 
 }

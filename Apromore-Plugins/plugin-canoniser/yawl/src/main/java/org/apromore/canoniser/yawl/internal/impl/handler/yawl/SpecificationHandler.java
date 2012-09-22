@@ -11,10 +11,7 @@
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl;
 
-import java.text.DateFormat;
 import java.util.List;
-
-import javax.xml.datatype.XMLGregorianCalendar;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
@@ -57,6 +54,8 @@ public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificatio
             c.setAuthor(convertCreatorList(metaData.getCreator()));
         }
 
+        convertAnnotations(c, getObject());
+
         if (getObject().getAny() != null) {
             LOGGER.debug("Found DataTypeDefinitions: {}", getObject().getAny().toString());
             // convertDataTypeDefinitions(getObject().getAny());
@@ -67,6 +66,12 @@ public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificatio
             getContext().getHandlerFactory().createHandler(d, c, getObject()).convert();
         }
 
+    }
+
+    private void convertAnnotations(final CanonicalProcessType c, final YAWLSpecificationFactsType object) {
+        // Link to Annotations
+        getContext().getAnnotationResult().setUri(c.getUri());
+        getContext().getAnnotationResult().setName(c.getName());
     }
 
     private TypeAttribute convertDataTypeDefinitions(final Object dataTypeDefinitions) {
@@ -84,9 +89,5 @@ public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificatio
         }
         return sb.substring(0, sb.length() - 2);
     }
-
-    private String convertDate(final XMLGregorianCalendar xmlDate) {
-        return DateFormat.getInstance().format(xmlDate.toGregorianCalendar().getTime());
-    }
-
+    
 }

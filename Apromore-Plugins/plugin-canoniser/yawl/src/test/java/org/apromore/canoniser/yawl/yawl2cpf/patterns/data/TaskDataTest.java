@@ -15,12 +15,11 @@ import org.apromore.cpf.TaskType;
 import org.junit.Ignore;
 import org.junit.Test;
 
-@Ignore
 public class TaskDataTest extends BasePatternTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.BaseYAWL2CPFTest#getYAWLFile()
      */
     @Override

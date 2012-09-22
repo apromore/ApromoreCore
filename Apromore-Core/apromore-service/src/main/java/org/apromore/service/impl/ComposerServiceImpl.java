@@ -1,9 +1,16 @@
 package org.apromore.service.impl;
 
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apromore.common.Constants;
 import org.apromore.dao.ContentDao;
 import org.apromore.dao.FragmentVersionDagDao;
 import org.apromore.dao.FragmentVersionDao;
+import org.apromore.dao.NodeDao;
 import org.apromore.dao.model.Content;
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
@@ -28,8 +35,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
-
 /**
  * @author Chathura Ekanayake
  */
@@ -45,6 +50,8 @@ public class ComposerServiceImpl implements ComposerService {
     private FragmentVersionDao fvDao;
     @Autowired @Qualifier("FragmentVersionDagDao")
     private FragmentVersionDagDao fvdDao;
+    @Autowired @Qualifier("NodeDao")
+    private NodeDao nDao;
 
     @Autowired @Qualifier("GraphService")
     private GraphService gSrv;
@@ -55,7 +62,8 @@ public class ComposerServiceImpl implements ComposerService {
      * @return the process model graph
      * @throws ExceptionDao if something fails.
      */
-    public CPF compose(String fragmentVersionUri) throws ExceptionDao {
+    @Override
+    public CPF compose(final String fragmentVersionUri) throws ExceptionDao {
         OperationContext op = new OperationContext();
         CPF g = new CPF();
         op.setGraph(g);
@@ -65,7 +73,7 @@ public class ComposerServiceImpl implements ComposerService {
 
 
 
-    private void composeFragment(OperationContext op, FragmentVersion fragVersion, String pocketId) throws ExceptionDao {
+    private void composeFragment(final OperationContext op, final FragmentVersion fragVersion, final String pocketId) throws ExceptionDao {
         Content content = cDao.getContentByFragmentVersion(fragVersion.getId());
 
         if (op.getContentUsage(content.getId()) == 0) {
@@ -75,7 +83,7 @@ public class ComposerServiceImpl implements ComposerService {
         }
     }
 
-    private void composeNewContent(OperationContext op, String fragmentVersionUri, String pocketId, Content contentDO) throws ExceptionDao {
+    private void composeNewContent(final OperationContext op, final String fragmentVersionUri, final String pocketId, final Content contentDO) throws ExceptionDao {
         op.incrementContentUsage(contentDO.getId());
 
         CPF g = op.getGraph();
@@ -87,7 +95,7 @@ public class ComposerServiceImpl implements ComposerService {
             Collection<ControlFlow<FlowNode>> edges = g.getEdges();
             for (ControlFlow<FlowNode> edge: edges) {
                 if (edge.getTarget() != null && edge.getTarget().getId().equals(pocketId)) {
-                    FlowNode boundaryS = g.getVertex(contentDO.getBoundaryS());
+                    FlowNode boundaryS = g.getVertex(getNodeIdByUri(contentDO.getBoundaryS()));
                     FlowNode parentT1 = edge.getSource();
                     if (canCombineSplit(parentT1, boundaryS)) {
                         Collection<FlowNode> childTs = g.getDirectSuccessors(boundaryS);
@@ -96,12 +104,12 @@ public class ComposerServiceImpl implements ComposerService {
                         }
                         nodesToBeRemoved.add(boundaryS);
                     } else {
-                        edge.setTarget(g.getVertex(contentDO.getBoundaryS()));
+                        edge.setTarget(g.getVertex(getNodeIdByUri(contentDO.getBoundaryS())));
                     }
                 }
 
                 if (edge.getSource() != null && edge.getSource().getId().equals(pocketId)) {
-                    FlowNode boundaryE = g.getVertex(contentDO.getBoundaryE());
+                    FlowNode boundaryE = g.getVertex(getNodeIdByUri(contentDO.getBoundaryE()));
                     FlowNode parentT2 = edge.getTarget();
                     if (canCombineJoin(parentT2, boundaryE)) {
                         Collection<FlowNode> childTs = g.getDirectPredecessors(boundaryE);
@@ -111,7 +119,7 @@ public class ComposerServiceImpl implements ComposerService {
                         nodesToBeRemoved.add(boundaryE);
 
                     } else {
-                        edge.setSource(g.getVertex(contentDO.getBoundaryE()));
+                        edge.setSource(g.getVertex(getNodeIdByUri(contentDO.getBoundaryE())));
                     }
                 }
             }
@@ -125,7 +133,12 @@ public class ComposerServiceImpl implements ComposerService {
         }
     }
 
-    private boolean canCombineSplit(FlowNode parentT1, FlowNode boundaryS) {
+    private String getNodeIdByUri(final String uri) {
+        //TODO FM, 22.09.2012 just a workaround to get things working
+        return String.valueOf(nDao.findNodeByUri(uri).getId());
+    }
+
+    private boolean canCombineSplit(final FlowNode parentT1, final FlowNode boundaryS) {
         if (parentT1 == null || boundaryS == null) {
             return false;
         } else if ((parentT1 instanceof CpfXorGateway) && (boundaryS instanceof CpfXorGateway)) {
@@ -144,7 +157,7 @@ public class ComposerServiceImpl implements ComposerService {
         return false;
     }
 
-    private boolean canCombineJoin(FlowNode parentT2, FlowNode boundaryE) {
+    private boolean canCombineJoin(final FlowNode parentT2, final FlowNode boundaryE) {
         if (parentT2 == null || boundaryE == null) {
             return false;
         } else if ((parentT2 instanceof CpfXorGateway) && (boundaryE instanceof CpfXorGateway)) {
@@ -163,7 +176,7 @@ public class ComposerServiceImpl implements ComposerService {
         return false;
     }
 
-    private void composeNewContentOld(OperationContext op, String fragmentVersionUri, String pocketId, Content contentDO)
+    private void composeNewContentOld(final OperationContext op, final String fragmentVersionUri, final String pocketId, final Content contentDO)
             throws ExceptionDao {
         op.incrementContentUsage(contentDO.getId());
 
@@ -190,7 +203,7 @@ public class ComposerServiceImpl implements ComposerService {
         }
     }
 
-    private void composeDuplicateContent(OperationContext op, String fragmentVersionUri, String pocketId, Content contentDO)
+    private void composeDuplicateContent(final OperationContext op, final String fragmentVersionUri, final String pocketId, final Content contentDO)
             throws ExceptionDao {
         op.incrementContentUsage(contentDO.getId());
 
@@ -206,7 +219,7 @@ public class ComposerServiceImpl implements ComposerService {
             Collection<ControlFlow<FlowNode>> edges = g.getEdges();
             for (ControlFlow<FlowNode> edge: edges) {
                 if (edge.getTarget() != null && edge.getTarget().getId().equals(pocketId)) {
-                    FlowNode boundaryS = g.getVertex(vMap.get(contentDO.getBoundaryS()));
+                    FlowNode boundaryS = g.getVertex(vMap.get(getNodeIdByUri(contentDO.getBoundaryS())));
                     FlowNode parentT1 = edge.getSource();
                     if (canCombineSplit(parentT1, boundaryS)) {
                         Collection<FlowNode> childTs = g.getDirectSuccessors(boundaryS);
@@ -216,11 +229,11 @@ public class ComposerServiceImpl implements ComposerService {
                         nodesToBeRemoved.add(boundaryS);
 
                     } else {
-                        edge.setTarget(g.getVertex(vMap.get(contentDO.getBoundaryS())));
+                        edge.setTarget(g.getVertex(vMap.get(getNodeIdByUri(contentDO.getBoundaryS()))));
                     }
                 }
                 if (edge.getSource().getId().equals(pocketId)) {
-                    FlowNode boundaryE = g.getVertex(vMap.get(contentDO.getBoundaryE()));
+                    FlowNode boundaryE = g.getVertex(vMap.get(getNodeIdByUri(contentDO.getBoundaryE())));
                     FlowNode parentT2 = edge.getTarget();
                     if (canCombineJoin(parentT2, boundaryE)) {
                         Collection<FlowNode> childTs = g.getDirectPredecessors(boundaryE);
@@ -230,7 +243,7 @@ public class ComposerServiceImpl implements ComposerService {
                         nodesToBeRemoved.add(boundaryE);
 
                     } else {
-                        edge.setSource(g.getVertex(vMap.get(contentDO.getBoundaryE())));
+                        edge.setSource(g.getVertex(vMap.get(getNodeIdByUri(contentDO.getBoundaryE()))));
                     }
                 }
             }
@@ -253,7 +266,7 @@ public class ComposerServiceImpl implements ComposerService {
         }
     }
 
-    private void fillOriginalNodeMappings(Map<String, String> vMap, CPF g) {
+    private void fillOriginalNodeMappings(final Map<String, String> vMap, final CPF g) {
         for (String originalNode : vMap.keySet()) {
             String duplicateNode = vMap.get(originalNode);
             if (!g.getVertexProperty(duplicateNode, Constants.TYPE).equals(Constants.POCKET)) {
@@ -270,7 +283,7 @@ public class ComposerServiceImpl implements ComposerService {
      * Set the Content DAO object for this class. Mainly for spring tests.
      * @param cntDAOJpa the content Dao.
      */
-    public void setContentDao(ContentDao cntDAOJpa) {
+    public void setContentDao(final ContentDao cntDAOJpa) {
         cDao = cntDAOJpa;
     }
 
@@ -278,7 +291,7 @@ public class ComposerServiceImpl implements ComposerService {
      * Set the Fragment Version DAO object for this class. Mainly for spring tests.
      * @param fvDAOJpa the Fragment Version Dao.
      */
-    public void setFragmentVersionDao(FragmentVersionDao fvDAOJpa) {
+    public void setFragmentVersionDao(final FragmentVersionDao fvDAOJpa) {
         fvDao = fvDAOJpa;
     }
 
@@ -286,7 +299,7 @@ public class ComposerServiceImpl implements ComposerService {
      * Set the Fragment Version Dag DAO object for this class. Mainly for spring tests.
      * @param fvdDAOJpa the Fragment Version Dag Dao.
      */
-    public void setFragmentVersionDagDao(FragmentVersionDagDao fvdDAOJpa) {
+    public void setFragmentVersionDagDao(final FragmentVersionDagDao fvdDAOJpa) {
         fvdDao = fvdDAOJpa;
     }
 
@@ -294,7 +307,7 @@ public class ComposerServiceImpl implements ComposerService {
      * Set the Graph Service object for this class. Mainly for spring tests.
      * @param gService the Graph Service.
      */
-    public void setGraphService(GraphService gService) {
+    public void setGraphService(final GraphService gService) {
         gSrv = gService;
     }
 }

@@ -26,6 +26,7 @@ import org.junit.Before;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.oryxeditor.server.diagram.basic.BasicDiagramBuilder;
 import org.oryxeditor.server.diagram.basic.BasicShape;
+import org.yawlfoundation.yawl.editor.core.layout.YNetLayout;
 import org.yawlfoundation.yawl.elements.YNet;
 import org.yawlfoundation.yawl.elements.YNetElement;
 import org.yawlfoundation.yawl.elements.YSpecification;
@@ -53,7 +54,9 @@ public class OryxHandlerTest {
 	protected void mockParentNet(BasicShape parentShape) {
 		YSpecification specification = new YSpecification("test");
 		context.setSpecification(specification);
-		context.addNet(parentShape, new YNet(parentShape.getProperty("yawlid"), specification));
+		YNet net = new YNet(parentShape.getProperty("yawlid"), specification);
+		context.addNet(parentShape, net);
+		context.getLayout().addNetLayout(new YNetLayout(net, context.getNumberFormat()));
 	}
 
 	protected void mockSubnets() {

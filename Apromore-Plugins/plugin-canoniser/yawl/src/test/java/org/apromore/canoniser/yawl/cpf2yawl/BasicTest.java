@@ -8,33 +8,31 @@ import java.io.File;
 
 import org.apromore.canoniser.yawl.BaseCPF2YAWLTest;
 import org.apromore.canoniser.yawl.utils.TestUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.yawlfoundation.yawlschema.LayoutFactsType.Specification;
 import org.yawlfoundation.yawlschema.LayoutNetFactsType;
 import org.yawlfoundation.yawlschema.SpecificationSetFactsType;
 
-@Ignore
 public class BasicTest extends BaseCPF2YAWLTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.BaseCPF2YAWLTest#getCPFFile()
      */
     @Override
     protected File getCPFFile() {
-        return new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/EmptyNet.yawl.cpf");
+        return new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/FromYAWL/EmptyNet.yawl.cpf");
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.BaseCPF2YAWLTest#getANFFile()
      */
     @Override
     protected File getANFFile() {
-        return new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/EmptyNet.yawl.anf");
+        return new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/FromYAWL/EmptyNet.yawl.anf");
     }
 
     /**

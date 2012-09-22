@@ -60,7 +60,7 @@ public class GraphServiceImpl implements GraphService {
      */
     @Override
     @Transactional(readOnly = true)
-    public Content getContent(Integer fragmentVersionId) {
+    public Content getContent(final Integer fragmentVersionId) {
         return contentDao.getContentByFragmentVersion(fragmentVersionId);
     }
 
@@ -80,7 +80,7 @@ public class GraphServiceImpl implements GraphService {
      */
     @Override
     @Transactional(readOnly = true)
-    public CPF getGraph(Integer contentID) {
+    public CPF getGraph(final Integer contentID) {
         CPF g = new CPF();
         fillNodes(g, contentID);
         fillEdges(g, contentID);
@@ -93,7 +93,7 @@ public class GraphServiceImpl implements GraphService {
      */
     @Override
     @Transactional(readOnly = true)
-    public void fillNodes(CPF procModelGraph, Integer contentID) {
+    public void fillNodes(final CPF procModelGraph, final Integer contentID) {
         FlowNode v;
         List<Node> nodes = nDao.getVertexByContent(contentID);
         for (Node node : nodes) {
@@ -110,11 +110,11 @@ public class GraphServiceImpl implements GraphService {
      */
     @Override
     @Transactional(readOnly = true)
-    public void fillEdges(CPF procModelGraph, Integer contentID) {
+    public void fillEdges(final CPF procModelGraph, final Integer contentID) {
         List<Edge> edges = edgeDao.getEdgesByContent(contentID);
         for (Edge edge : edges) {
-            FlowNode v1 = procModelGraph.getVertex(edge.getVerticesBySourceVid().getUri());
-            FlowNode v2 = procModelGraph.getVertex(edge.getVerticesByTargetVid().getUri());
+            FlowNode v1 = procModelGraph.getVertex(String.valueOf(edge.getVerticesBySourceVid().getId()));
+            FlowNode v2 = procModelGraph.getVertex(String.valueOf(edge.getVerticesByTargetVid().getId()));
             if (v1 != null && v2 != null) {
                 procModelGraph.addEdge(v1, v2);
             } else {
@@ -136,7 +136,7 @@ public class GraphServiceImpl implements GraphService {
      * {@inheritDoc}
      */
     @Override
-    public void fillNodesByFragmentId(CPF procModelGraph, Integer fragmentID) {
+    public void fillNodesByFragmentId(final CPF procModelGraph, final Integer fragmentID) {
         FlowNode v;
         List<Node> nodes = nDao.getVertexByFragment(fragmentID);
         for (Node node : nodes) {
@@ -151,11 +151,11 @@ public class GraphServiceImpl implements GraphService {
      * {@inheritDoc}
      */
     @Override
-    public void fillEdgesByFragmentId(CPF procModelGraph, Integer fragmentID) {
+    public void fillEdgesByFragmentId(final CPF procModelGraph, final Integer fragmentID) {
         List<Edge> edges = edgeDao.getEdgesByFragment(fragmentID);
         for (Edge edge : edges) {
-            FlowNode v1 = procModelGraph.getVertex(edge.getVerticesBySourceVid().getUri());
-            FlowNode v2 = procModelGraph.getVertex(edge.getVerticesByTargetVid().getUri());
+            FlowNode v1 = procModelGraph.getVertex(String.valueOf(edge.getVerticesBySourceVid().getId()));
+            FlowNode v2 = procModelGraph.getVertex(String.valueOf(edge.getVerticesByTargetVid().getId()));
             if (v1 != null && v2 != null) {
                 procModelGraph.addEdge(v1, v2);
             } else {
@@ -175,7 +175,7 @@ public class GraphServiceImpl implements GraphService {
 
 
     /* Build the correct type of Node so we don't loss Information */
-    private FlowNode buildNodeByType(Node node) {
+    private FlowNode buildNodeByType(final Node node) {
         FlowNode result = null;
         if (node.getCtype().equals(CpfNode.class.getName())) {
             result = new CpfNode(node.getName());
@@ -227,7 +227,7 @@ public class GraphServiceImpl implements GraphService {
     }
 
 
-    private void addObjects(CpfNode result, Node node) {
+    private void addObjects(final CpfNode result, final Node node) {
         ICpfObject object;
         for (ObjectRefType obj : node.getObjectRefTypes()) {
             object = new CpfObject();
@@ -240,7 +240,7 @@ public class GraphServiceImpl implements GraphService {
         }
     }
 
-    private void addResources(CpfNode result, Node node) {
+    private void addResources(final CpfNode result, final Node node) {
         ICpfResource resource;
         for (ResourceRefType res : node.getResourceRefTypes()) {
             resource = new CpfResource();
@@ -253,7 +253,7 @@ public class GraphServiceImpl implements GraphService {
     }
 
 
-    private void addNodeAttributes(CpfNode result, Node node) {
+    private void addNodeAttributes(final CpfNode result, final Node node) {
         for (NodeAttribute n : node.getAttributes()) {
             result.addAttribute(n.getName(), n.getValue());
         }
@@ -277,7 +277,7 @@ public class GraphServiceImpl implements GraphService {
      *
      * @param cntDAOJpa the content Dao.
      */
-    public void setContentDao(ContentDao cntDAOJpa) {
+    public void setContentDao(final ContentDao cntDAOJpa) {
         contentDao = cntDAOJpa;
     }
 
@@ -286,7 +286,7 @@ public class GraphServiceImpl implements GraphService {
      *
      * @param edgeDAOJpa the Edge Dao.
      */
-    public void setEdgeDao(EdgeDao edgeDAOJpa) {
+    public void setEdgeDao(final EdgeDao edgeDAOJpa) {
         edgeDao = edgeDAOJpa;
     }
 
@@ -295,7 +295,7 @@ public class GraphServiceImpl implements GraphService {
      *
      * @param nodeDAOJpa the Node Dao.
      */
-    public void setNodeDao(NodeDao nodeDAOJpa) {
+    public void setNodeDao(final NodeDao nodeDAOJpa) {
         nDao = nodeDAOJpa;
     }
 

@@ -74,6 +74,9 @@ public class CanoniserServiceImpl implements CanoniserService {
     @Transactional(readOnly = true)
     public CanonisedProcess canonise(final String nativeType, final String cpf_uri, final InputStream process_xml) throws CanoniserException {
 
+        //TODO what is cpf_uri used for?
+        LOGGER.warn("Unused parameter cpf_uri: {}",cpf_uri);
+
         LOGGER.info("Canonising process with native type {}", nativeType);
 
         CanoniserProviderImpl canoniserProvider = new CanoniserProviderImpl();

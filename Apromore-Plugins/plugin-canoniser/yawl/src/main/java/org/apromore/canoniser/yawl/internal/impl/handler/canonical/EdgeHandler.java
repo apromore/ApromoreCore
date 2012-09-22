@@ -52,19 +52,26 @@ public class EdgeHandler extends CanonicalElementHandler<EdgeType, NetFactsType>
             // Source will always be ExternalNetElementFactsType, as OutputCondition has no successor
             sourceElement = (ExternalNetElementFactsType) getContext().getElementInfo(getObject().getSourceId()).element;
         } else {
-            throw new CanoniserException("Could not find source element " + getObject().getSourceId() + " for edge " + getObject().getId());
+            LOGGER.warn("Could not find source element {} for Edge {}.", getObject().getSourceId(), getObject().getId());
+            return; // Ignore Edge
         }
 
         // Find Target of Edge
         ExternalNetElementType targetElement = getContext().getElementInfo(getObject().getTargetId()).element;
         if (targetElement == null) {
             final OutputConditionFactsType outputCondition = getConvertedParent().getProcessControlElements().getOutputCondition();
-            if (outputCondition.getId().equals(generateUUID(getObject().getTargetId()))) {
-                targetElement = outputCondition;
+            if (outputCondition != null) {
+                if (outputCondition.getId().equals(generateUUID(getObject().getTargetId()))) {
+                    targetElement = outputCondition;
+                }
+            } else {
+                LOGGER.warn("Missing OutputCondition in YAWL Net", getConvertedParent().getId());
             }
+
         }
         if (targetElement == null) {
-            throw new CanoniserException("Could not find target element " + getObject().getTargetId() + " for edge " + getObject().getId());
+            LOGGER.warn("Could not find target element {} for Edge {}.", getObject().getTargetId(), getObject().getId());
+            return; // Ignore Edge
         }
 
         if (sourceElement.getId().equals(targetElement.getId())) {

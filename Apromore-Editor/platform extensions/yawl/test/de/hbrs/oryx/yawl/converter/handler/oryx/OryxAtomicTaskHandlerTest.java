@@ -21,9 +21,10 @@ package de.hbrs.oryx.yawl.converter.handler.oryx;
 
 import static org.junit.Assert.*;
 
-import org.jdom.Element;
+import org.jdom2.Element;
 import org.junit.Test;
 import org.oryxeditor.server.diagram.basic.BasicShape;
+import org.yawlfoundation.yawl.editor.core.layout.YTaskLayout;
 import org.yawlfoundation.yawl.elements.YAtomicTask;
 import org.yawlfoundation.yawl.elements.YExternalNetElement;
 import org.yawlfoundation.yawl.util.JDOMUtil;
@@ -38,6 +39,46 @@ public class OryxAtomicTaskHandlerTest extends OryxHandlerTest {
 		doTestAtomicTaskById("Approve_Shipment_Payment_Order_593", "Payment");
 		doTestAtomicTaskById("Prepare_Transportation_Quote_390", "Carrier_Appointment");
 		doTestAtomicTaskById("null_389", "Carrier_Appointment");
+	}
+	
+	@Test
+	public void testBasicLayoutConversion() {
+		doTestBasicLayout("Authorize_Loss_or_Damage_Claim_257", "Freight_Delivered");
+		doTestBasicLayout("Claims_Timeout_254", "Freight_Delivered");
+		doTestBasicLayout("Approve_Purchase_Order_1901", "Ordering");
+		doTestBasicLayout("Approve_Shipment_Payment_Order_593", "Payment");
+		doTestBasicLayout("Prepare_Transportation_Quote_390", "Carrier_Appointment");
+		doTestBasicLayout("null_389", "Carrier_Appointment");
+	}
+	
+	/**
+	 * Test if the Task Layout is converted correctly
+	 * 
+	 * @param taskId
+	 * @param netId
+	 */
+	private void doTestBasicLayout(String taskId, String netId) {
+		BasicShape taskShape = findShapeById(taskId, netId);
+
+		BasicShape parentShape = taskShape.getParent();
+
+		mockParentNet(parentShape);
+
+		OryxShapeHandler handler = new OryxAtomicTaskHandler(context, taskShape);
+		handler.convert();
+
+		YTaskLayout taskLayout = context.getLayout().getTaskLayout(netId, taskId);
+		assertNotNull(taskLayout);
+		assertNotNull(taskLayout.getBounds());
+		
+		if (taskShape.hasProperty("join") && !taskShape.getProperty("join").equals("none")) {
+			assertNotNull(taskLayout.getJoinLayout());
+		}
+		
+		if (taskShape.hasProperty("split") && !taskShape.getProperty("split").equals("none")) {
+			assertNotNull(taskLayout.getSplitLayout());
+		}
+	
 	}
 
 	/**

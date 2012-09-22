@@ -21,11 +21,16 @@ package de.hbrs.oryx.yawl.converter;
 
 import static org.junit.Assert.*;
 
+import java.io.File;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map.Entry;
 
-import org.jdom.JDOMException;
+import org.jdom2.JDOMException;
+import org.json.JSONException;
 import org.junit.Test;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
+import org.oryxeditor.server.diagram.generic.GenericJSONBuilder;
 import org.yawlfoundation.yawl.exceptions.YSyntaxException;
 
 import de.hbrs.orxy.yawl.YAWLTestData;
@@ -38,25 +43,47 @@ import de.hbrs.oryx.yawl.converter.YAWLConverter.OryxResult;
 public class YAWL2OryxConversionTest {
 
 	@Test
-	public void testBasicConversion() throws YSyntaxException, JDOMException, IOException {
+	public void testOrderfulfilmentConversion() throws YSyntaxException, JDOMException, IOException, JSONException {
 		YAWLConverter converter = new YAWLConverter();
 		OryxResult result = converter.convertYAWLToOryx(YAWLTestData.orderFulfillmentSource);
 		assertNotNull(result);
-		assertEquals("There should be 9 nets in Orderfulfilment", result.getDiagrams().size(), 9);
+		assertEquals("There should be 9 nets in Orderfulfilment", 9, result.getDiagrams().size());
 		assertNotNull(result.getRootDiagram());
 		assertNotNull(result.getWarnings());
 		assertNotNull(result.getRootNetId());
 		assertEquals("Wrong RootNetId", "Overall", result.getRootNetId());
-	}
-
-	@Test
-	public void testBasicDiagramConversion() throws YSyntaxException, JDOMException, IOException {
-		YAWLConverter converter = new YAWLConverter();
-		OryxResult c = converter.convertYAWLToOryx(YAWLTestData.orderFulfillmentSource);
-		BasicDiagram d = c.getRootDiagram();
+		assertFalse(result.hasFailed());
+		
+		BasicDiagram d = result.getRootDiagram();
 		assertEquals("http://b3mn.org/stencilset/yawl2.2#", d.getStencilsetRef().getNamespace());
 		assertEquals("Wrong amount of Shapes", 16, d.getChildShapesReadOnly().size());
 		assertEquals("Overall", d.getProperty("yawlid"));
+		
+		for (Entry<String, BasicDiagram> diagramEntry: result.getDiagrams()) {
+			FileWriter fWriter = new FileWriter(new File("target/orderfulfilment-"+diagramEntry.getKey()+".json"));
+			fWriter.write(GenericJSONBuilder.parseModel(diagramEntry.getValue()).toString(4));
+			fWriter.flush();
+		}
+		
+	}
+	
+	@Test
+	public void testFilmproductionConversion() throws IOException, JSONException, YSyntaxException, JDOMException {
+		YAWLConverter converter = new YAWLConverter();
+		OryxResult result = converter.convertYAWLToOryx(YAWLTestData.filmProduction);
+		assertNotNull(result);
+		assertEquals("There should be 1 net in FilmProduction", 1, result.getDiagrams().size());
+		assertNotNull(result.getRootDiagram());
+		assertNotNull(result.getWarnings());
+		assertNotNull(result.getRootNetId());
+		assertEquals("Wrong RootNetId", "Film_Production_Process", result.getRootNetId());
+		assertFalse(result.hasFailed());
+		
+		for (Entry<String, BasicDiagram> diagramEntry: result.getDiagrams()) {
+			FileWriter fWriter = new FileWriter(new File("target/filmproduction-"+diagramEntry.getKey()+".json"));
+			fWriter.write(GenericJSONBuilder.parseModel(diagramEntry.getValue()).toString(4));
+			fWriter.flush();
+		}
 	}
 
 }
