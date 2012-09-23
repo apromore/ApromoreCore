@@ -1,6 +1,6 @@
 /**
- *  Copyright 2012, Felix Mannhardt 
- * 
+ *  Copyright 2012, Felix Mannhardt
+ *
  *  This program is free software: you can redistribute it and/or modify
  *  it under the terms of the GNU Lesser General Public License as published by
  *  the Free Software Foundation, either version 3 of the License, or
@@ -30,7 +30,7 @@ import org.springframework.stereotype.Service;
 
 /**
  * Default OSGi based implementation of the @link PluginProvider.
- * 
+ *
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
  */
 @Service
@@ -54,7 +54,7 @@ public class PluginProviderImpl implements PluginProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.apromore.plugin.provider.PluginProvider#listAll()
 	 */
 	@Override
@@ -64,7 +64,7 @@ public class PluginProviderImpl implements PluginProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.apromore.plugin.provider.PluginProvider#listByType(java.lang.String)
 	 */
 	@Override
@@ -74,7 +74,7 @@ public class PluginProviderImpl implements PluginProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.apromore.plugin.provider.PluginProvider#listByName(java.lang.String)
 	 */
 	@Override
@@ -89,14 +89,14 @@ public class PluginProviderImpl implements PluginProvider {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.apromore.plugin.provider.PluginProvider#findByNameAndVersion(java .lang.String, java.lang.String)
 	 */
 	@Override
 	public Plugin findByNameAndVersion(final String name, final String version) throws PluginNotFoundException {
 		final List<Plugin> resultList = findAllPlugin(name, null, version);
 		if (!resultList.isEmpty()) {
-			// TODO decide which to take if there are more than 1 matching
+			// Return first one found
 			return resultList.get(0);
 		}
 		throw new PluginNotFoundException("Could not find plugin with name: " + ((name != null) ? name : "null") + " version: "

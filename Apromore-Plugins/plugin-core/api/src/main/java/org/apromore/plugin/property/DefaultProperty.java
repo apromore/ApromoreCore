@@ -17,7 +17,8 @@
 package org.apromore.plugin.property;
 
 /**
- * Default implementation of a PropertyType.
+ * Default implementation of the PropertyType interface. It takes care of allowing values of specified Class only. Also two Properties are considered
+ * 'equal' if there 'name' is the same.
  *
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
@@ -64,7 +65,7 @@ public class DefaultProperty implements PropertyType {
         this.valueType = valueType;
         this.description = description;
         this.isMandatory = isMandatory;
-        this.value = defaultValue;
+        setValue(defaultValue);
     }
 
     /**
@@ -132,7 +133,8 @@ public class DefaultProperty implements PropertyType {
         if (getValueType().isInstance(value)) {
             this.value = value;
         } else {
-            throw new IllegalArgumentException("");
+            throw new IllegalArgumentException("Wrong type " + value.getClass().getSimpleName() + " for property " + getName() + "Expected type is: "
+                    + getValueType().getSimpleName());
         }
     }
 
@@ -154,6 +156,51 @@ public class DefaultProperty implements PropertyType {
     @Override
     public boolean hasValue() {
         return getValue() != null;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        return result;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj)
+            return true;
+        if (obj == null)
+            return false;
+        if (getClass() != obj.getClass())
+            return false;
+        DefaultProperty other = (DefaultProperty) obj;
+        if (name == null) {
+            if (other.name != null)
+                return false;
+        } else if (!name.equals(other.name))
+            return false;
+        return true;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see java.lang.Object#toString()
+     */
+    @Override
+    public String toString() {
+        return String.format("DefaultProperty [name=%s, isMandatory=%s, value=%s, valueType=%s]", name, isMandatory, value, valueType);
     }
 
 }

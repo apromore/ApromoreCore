@@ -188,23 +188,31 @@ public class CanoniserProviderImpl implements CanoniserProvider {
             throws PluginNotFoundException {
         final List<Canoniser> resultList = findAllCanoniser(nativeType, name, version);
         if (!resultList.isEmpty()) {
-            // TODO decide which to take if there are more than 1 matching
+            // Just return the first one
             return resultList.get(0);
         }
         throw new PluginNotFoundException("Could not find canoniser with name: " + ((name != null) ? name : "null") + " version: "
                 + ((version != null) ? version : "null") + " nativeType: " + ((nativeType != null) ? nativeType : "null"));
     }
 
+    /**
+     * Returns a List of Canonisers with matching parameters.
+     *
+     * @param nativeType can be NULL
+     * @param name can be NULL
+     * @param version can be NULL
+     * @return List of Canonisers or empty List
+     */
     private List<Canoniser> findAllCanoniser(final String nativeType, final String name, final String version) {
 
-        final List<Canoniser> canoniserList = new ArrayList<Canoniser>();
+        final List<Canoniser> cList = new ArrayList<Canoniser>();
 
         for (final Canoniser c : getCanoniserList()) {
             if (compareNullable(nativeType, c.getNativeType()) && compareNullable(name, c.getName()) && compareNullable(version, c.getVersion())) {
-                canoniserList.add(c);
+                cList.add(c);
             }
         }
-        return canoniserList;
+        return cList;
     }
 
     private boolean compareNullable(final String expectedType, final String actualType) {
