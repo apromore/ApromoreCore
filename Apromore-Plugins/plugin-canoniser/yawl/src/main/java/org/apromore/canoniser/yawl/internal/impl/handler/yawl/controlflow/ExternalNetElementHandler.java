@@ -60,6 +60,8 @@ import org.yawlfoundation.yawlschema.LayoutVertexFactsType;
  */
 public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler<T, NetType> {
 
+    private static final int DEFAULT_LINE_SIZE = 11;
+
     /**
      * Simple connection between two already converted element. Source and Target have to be SESE, as we are not going to introduce any kind of
      * routing node.
@@ -288,7 +290,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
     private LineType convertFlowLineStyle(final LayoutFlowFactsType flowLayout) {
         final LineType lineType = getContext().getAnnotationOF().createLineType();
-        lineType.setWidth(new BigDecimal(11));
+        lineType.setWidth(new BigDecimal(DEFAULT_LINE_SIZE));
         for (final JAXBElement<?> obj : flowLayout.getAttributes().getAutosizeOrBackgroundColorOrBendable()) {
             if (obj.getName().getLocalPart().equalsIgnoreCase("lineStyle")) {
                 lineType.setWidth(new BigDecimal((BigInteger) obj.getValue()));
@@ -312,11 +314,9 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
                         throw new CanoniserException("Could not convert layout of element " + vertex.getId(), e);
                     }
                 }
-                if (element.getName().getLocalPart().equals("backgroundColor")) {
-                    if (element.getValue() != null) {
-                        final BigInteger color = (BigInteger) element.getValue();
-                        fill.setColor(ConversionUtils.convertColorToString(color.intValue()));
-                    }
+                if (element.getName().getLocalPart().equals("backgroundColor") && element.getValue() != null) {
+                    final BigInteger color = (BigInteger) element.getValue();
+                    fill.setColor(ConversionUtils.convertColorToString(color.intValue()));
                 }
             }
 

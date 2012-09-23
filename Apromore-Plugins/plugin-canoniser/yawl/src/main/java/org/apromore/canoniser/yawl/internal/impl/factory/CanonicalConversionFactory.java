@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.factory;
@@ -55,9 +55,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Factory Class for Canonical Format through which all Handlers are created. Basically the mapping between Input objects and their Handler classes.
- * 
+ *
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class CanonicalConversionFactory implements ConversionFactory {
 
@@ -68,17 +68,14 @@ public class CanonicalConversionFactory implements ConversionFactory {
         {
             // Root
             put(CanonicalProcessType.class.getName(), CanonicalProcessHandler.class);
-
             // Control Flow
             put(TaskType.class.getName(), TaskTypeHandler.class);
             put(EventType.class.getName(), EventTypeHandler.class);
             put(StateType.class.getName(), StateTypeHandler.class);
             put(TimerType.class.getName(), TimerTypeHandler.class);
             put(MessageType.class.getName(), MessageTypeHandler.class);
-
             // Edges
             put(EdgeType.class.getName(), EdgeHandler.class);
-
             // Already rewritten by Macro
             put(XORJoinType.class.getName(), CanonicalNoOpHandler.class);
             put(XORSplitType.class.getName(), CanonicalNoOpHandler.class);
@@ -86,7 +83,6 @@ public class CanonicalConversionFactory implements ConversionFactory {
             put(ORJoinType.class.getName(), CanonicalNoOpHandler.class);
             put(ANDSplitType.class.getName(), CanonicalNoOpHandler.class);
             put(ANDJoinType.class.getName(), CanonicalNoOpHandler.class);
-
             // Annotations
             put(AnnotationsType.class.getName(), AnnotationsTypeHandler.class);
             put(DocumentationType.class.getName(), CanonicalNoOpHandler.class);
@@ -107,7 +103,7 @@ public class CanonicalConversionFactory implements ConversionFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.factory.ConversionFactory#createHandler(java.lang.Object, java.lang.Object, java.lang.Object,
      * java.lang.Class)
      */
@@ -127,7 +123,7 @@ public class CanonicalConversionFactory implements ConversionFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.factory.ConversionFactory#createHandler(java.lang.Object, java.lang.Object, java.util.Set)
      */
     @Override

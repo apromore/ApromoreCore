@@ -93,19 +93,7 @@ public class TimerOnEnablementMacro extends AbstractTimerMacro {
             return false;
         }
 
-        if (!(timer.getCancelEdgeId().isEmpty() && message.getCancelEdgeId().isEmpty())) {
-            return false;
-        }
-
-        final List<CancellationRefType> cSetT = timer.getCancelNodeId();
-        final List<CancellationRefType> cSetM = message.getCancelNodeId();
-
-        if (cSetT.size() != 1 || cSetM.size() != 1) {
-            return false;
-        }
-
-        // Test mutually canceling each other
-        if (!(cSetM.get(0).getRefId().equals(timer.getId()) && cSetT.get(0).getRefId().equals(message.getId()))) {
+        if (!testMutuallyCancelling(timer, message)) {
             return false;
         }
 
@@ -132,6 +120,26 @@ public class TimerOnEnablementMacro extends AbstractTimerMacro {
 
         // Connect the Task correctly
         net.getEdge().add(createEdge(getContext().getFirstPredecessor(splitNode.getId()), task));
+
+        return true;
+    }
+
+    private boolean testMutuallyCancelling(final TimerType timer, final MessageType message) {
+        if (!(timer.getCancelEdgeId().isEmpty() && message.getCancelEdgeId().isEmpty())) {
+            return false;
+        }
+
+        final List<CancellationRefType> cSetT = timer.getCancelNodeId();
+        final List<CancellationRefType> cSetM = message.getCancelNodeId();
+
+        if (cSetT.size() != 1 || cSetM.size() != 1) {
+            return false;
+        }
+
+        // Test mutually canceling each other
+        if (!(cSetM.get(0).getRefId().equals(timer.getId()) && cSetT.get(0).getRefId().equals(message.getId()))) {
+            return false;
+        }
 
         return true;
     }

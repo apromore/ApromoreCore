@@ -60,7 +60,7 @@ public class TimerOnStartMacro extends AbstractTimerMacro {
             while (nodeIterator.hasNext()) {
                 final NodeType node = nodeIterator.next();
                 if (node instanceof ANDSplitType) {
-                    hasRewritten = hasRewritten || rewriteSplit((ANDSplitType) node, net);
+                    hasRewritten = hasRewritten || rewriteSplit((ANDSplitType) node);
                 }
             }
 
@@ -76,7 +76,7 @@ public class TimerOnStartMacro extends AbstractTimerMacro {
         return hasRewritten;
     }
 
-    private boolean rewriteSplit(final ANDSplitType splitNode, final NetType net) {
+    private boolean rewriteSplit(final ANDSplitType splitNode) {
         final TimerType timer = testFollowedByTimer(splitNode);
         final TaskType task = testFollowedByTask(splitNode);
         final XORJoinType xorJoin1 = testFollowedByXORJoin(timer);
@@ -90,18 +90,7 @@ public class TimerOnStartMacro extends AbstractTimerMacro {
             return false;
         }
 
-        if (!(timer.getCancelEdgeId().isEmpty() && task.getCancelEdgeId().isEmpty())) {
-            return false;
-        }
-
-        final List<CancellationRefType> cSetT = timer.getCancelNodeId();
-        final List<CancellationRefType> cSetM = task.getCancelNodeId();
-
-        if (cSetT.size() != 1 || cSetM.size() != 1) {
-            return false;
-        }
-
-        if (!cSetM.get(0).getRefId().equals(timer.getId()) || !cSetT.get(0).getRefId().equals(task.getId())) {
+        if (!testMutuallyCancelling(timer, task)) {
             return false;
         }
 
@@ -122,6 +111,25 @@ public class TimerOnStartMacro extends AbstractTimerMacro {
         // Connect Task properly
         addEdgeLater(createEdge(getContext().getFirstPredecessor(splitNode.getId()), task));
         addEdgeLater(createEdge(task, getContext().getFirstSuccessor(xorJoin1.getId())));
+
+        return true;
+    }
+
+    private boolean testMutuallyCancelling(final TimerType timer, final TaskType task) {
+        if (!(timer.getCancelEdgeId().isEmpty() && task.getCancelEdgeId().isEmpty())) {
+            return false;
+        }
+
+        final List<CancellationRefType> cSetT = timer.getCancelNodeId();
+        final List<CancellationRefType> cSetM = task.getCancelNodeId();
+
+        if (cSetT.size() != 1 || cSetM.size() != 1) {
+            return false;
+        }
+
+        if (!cSetM.get(0).getRefId().equals(timer.getId()) || !cSetT.get(0).getRefId().equals(task.getId())) {
+            return false;
+        }
 
         return true;
     }
