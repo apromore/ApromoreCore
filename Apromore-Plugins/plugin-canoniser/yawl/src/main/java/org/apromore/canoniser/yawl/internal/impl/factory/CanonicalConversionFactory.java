@@ -30,7 +30,6 @@ import org.apromore.canoniser.yawl.internal.impl.handler.canonical.MessageTypeHa
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.NetTypeHandler;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.StateTypeHandler;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.TaskTypeHandler;
-import org.apromore.canoniser.yawl.internal.impl.handler.canonical.TimerTypeHandler;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations.AnnotationsTypeHandler;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations.EdgeGraphicsTypeHandler;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations.NetGraphicsTypeHandler;
@@ -47,7 +46,6 @@ import org.apromore.cpf.ORJoinType;
 import org.apromore.cpf.ORSplitType;
 import org.apromore.cpf.StateType;
 import org.apromore.cpf.TaskType;
-import org.apromore.cpf.TimerType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 import org.slf4j.Logger;
@@ -72,7 +70,6 @@ public class CanonicalConversionFactory implements ConversionFactory {
             put(TaskType.class.getName(), TaskTypeHandler.class);
             put(EventType.class.getName(), EventTypeHandler.class);
             put(StateType.class.getName(), StateTypeHandler.class);
-            put(TimerType.class.getName(), TimerTypeHandler.class);
             put(MessageType.class.getName(), MessageTypeHandler.class);
             // Edges
             put(EdgeType.class.getName(), EdgeHandler.class);

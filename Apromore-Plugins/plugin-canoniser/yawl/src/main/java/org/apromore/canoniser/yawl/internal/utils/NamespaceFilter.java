@@ -6,9 +6,9 @@ import org.xml.sax.helpers.XMLFilterImpl;
 
 /**
  * Used to add Namespace to
- * 
+ *
  * Implementation like here: http://stackoverflow.com/questions/277502/jaxb-how-to-ignore-namespace-during-unmarshalling-xml-document
- * 
+ *
  */
 public class NamespaceFilter extends XMLFilterImpl {
 
@@ -31,7 +31,7 @@ public class NamespaceFilter extends XMLFilterImpl {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.xml.sax.helpers.XMLFilterImpl#startDocument()
      */
     @Override
@@ -44,7 +44,7 @@ public class NamespaceFilter extends XMLFilterImpl {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.xml.sax.helpers.XMLFilterImpl#startElement(java.lang.String, java.lang.String, java.lang.String, org.xml.sax.Attributes)
      */
     @Override
@@ -55,7 +55,7 @@ public class NamespaceFilter extends XMLFilterImpl {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.xml.sax.helpers.XMLFilterImpl#endElement(java.lang.String, java.lang.String, java.lang.String)
      */
     @Override
@@ -66,7 +66,7 @@ public class NamespaceFilter extends XMLFilterImpl {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.xml.sax.helpers.XMLFilterImpl#startPrefixMapping(java.lang.String, java.lang.String)
      */
     @Override
@@ -74,10 +74,8 @@ public class NamespaceFilter extends XMLFilterImpl {
 
         if (addNamespace) {
             this.startControlledPrefixMapping();
-        } else {
-            // Remove the namespace, i.e. don´t call startPrefixMapping for parent!
         }
-
+        // Else remove the namespace, i.e. don´t call startPrefixMapping for parent!
     }
 
     private void startControlledPrefixMapping() throws SAXException {

@@ -31,7 +31,7 @@ import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
  */
 public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificationFactsType, Object> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SpecificationHandler.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(SpecificationHandler.class);
 
     /*
      * (non-Javadoc)
@@ -89,5 +89,5 @@ public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificatio
         }
         return sb.substring(0, sb.length() - 2);
     }
-    
+
 }

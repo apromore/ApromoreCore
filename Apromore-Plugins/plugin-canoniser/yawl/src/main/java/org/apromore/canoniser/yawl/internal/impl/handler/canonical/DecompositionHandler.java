@@ -13,9 +13,17 @@ import org.yawlfoundation.yawlschema.OutputParameterFactsType;
 import org.yawlfoundation.yawlschema.VariableBaseType;
 import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType;
 
+/**
+ * Base class for NetType and TaskType which are both converting to a Decomposition in YAWL
+ *
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ *
+ * @param <T> type of the Element to be converted
+ * @param <E> type of the already converted parent
+ */
 public abstract class DecompositionHandler<T, E> extends CanonicalElementHandler<T, E> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(DecompositionHandler.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(DecompositionHandler.class);
 
     public DecompositionHandler() {
         super();

@@ -14,6 +14,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.NodeType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -93,7 +94,7 @@ public class ConversionUtils {
         return newName;
     }
 
-    public static boolean isValidFragment(final Object obj, final String namespace, final String localPart) throws JAXBException {
+    public static boolean isValidFragment(final Object obj, final String namespace, final String localPart) {
         return ((Node) obj).getNamespaceURI().equals(namespace) && ((Node) obj).getLocalName().equals(localPart);
     }
 
@@ -105,12 +106,16 @@ public class ConversionUtils {
      * @param expectedClass
      *            object of this class will be returned
      * @return
-     * @throws JAXBException
+     * @throws CanoniserException
      */
-    public static <T> T unmarshalYAWLFragment(final Object object, final Class<T> expectedClass) throws JAXBException {
-        final Unmarshaller u = YAWL_CONTEXT.createUnmarshaller();
-        final JAXBElement<T> jaxbElement = u.unmarshal((Node) object, expectedClass);
-        return jaxbElement.getValue();
+    public static <T> T unmarshalYAWLFragment(final Object object, final Class<T> expectedClass) throws CanoniserException {
+        try {
+            final Unmarshaller u = YAWL_CONTEXT.createUnmarshaller();
+            final JAXBElement<T> jaxbElement = u.unmarshal((Node) object, expectedClass);
+            return jaxbElement.getValue();
+        } catch (JAXBException e) {
+            throw new CanoniserException("Failed to parse YAWL extension with expected class "+expectedClass.getName(), e);
+        }
     }
 
     /**
@@ -119,25 +124,29 @@ public class ConversionUtils {
      * @param elementName
      *            to use as local part
      * @param object
-     *            to be marshalled
+     *            to be marshaled
      * @param expectedClass
      *            class of the object
      * @return
-     * @throws JAXBException
+     * @throws CanoniserException
      */
-    public static <T> Element marshalYAWLFragment(final String elementName, final T object, final Class<T> expectedClass) throws JAXBException {
-        final Marshaller m = YAWL_CONTEXT.createMarshaller();
-        m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-        JAXBElement<T> element = new JAXBElement<T>(new QName(YAWLSCHEMA_URL, elementName), expectedClass, object);
-        DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-        dbf.setNamespaceAware(false);
-        Document doc;
+    public static <T> Element marshalYAWLFragment(final String elementName, final T object, final Class<T> expectedClass) throws CanoniserException {
         try {
-            doc = dbf.newDocumentBuilder().newDocument();
-        } catch (ParserConfigurationException e) {
-            throw new RuntimeException("Could not build document while marshalling YAWL fragment. This should never happen!", e);
+            final Marshaller m = YAWL_CONTEXT.createMarshaller();
+            m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+            JAXBElement<T> element = new JAXBElement<T>(new QName(YAWLSCHEMA_URL, elementName), expectedClass, object);
+            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+            dbf.setNamespaceAware(false);
+            Document doc;
+            try {
+                doc = dbf.newDocumentBuilder().newDocument();
+            } catch (ParserConfigurationException e) {
+                throw new RuntimeException("Could not build document while marshalling YAWL fragment. This should never happen!", e);
+            }
+            m.marshal(element, doc);
+            return doc.getDocumentElement();
+        } catch (JAXBException e) {
+            throw new CanoniserException("Failed to add YAWL extension with name "+elementName, e);
         }
-        m.marshal(element, doc);
-        return doc.getDocumentElement();
     }
 }

@@ -22,7 +22,6 @@ import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 import org.yawlfoundation.yawlschema.DecompositionType;
@@ -69,7 +68,10 @@ public abstract class BaseCPF2YAWLTest {
             cpfProcess = CPFSchema.unmarshalCanonicalFormat(new FileInputStream(getCPFFile()), false).getValue();
             createGraphImages(cpfProcess.getNet().get(0));
             try {
-                final AnnotationsType anf = ANFSchema.unmarshalAnnotationFormat(new FileInputStream(getANFFile()), false).getValue();
+                AnnotationsType anf = null;
+                if (getANFFile() != null) {
+                    anf = ANFSchema.unmarshalAnnotationFormat(new FileInputStream(getANFFile()), false).getValue();
+                }
                 if (anf != null) {
                     canonical2Yawl.convertToYAWL(cpfProcess, anf);
                 } else {
@@ -83,7 +85,6 @@ public abstract class BaseCPF2YAWLTest {
         }
     }
 
-    @Ignore
     @Test
     public void testSaveResult() throws JAXBException, IOException, SAXException {
         TestUtils.printYawl(canonical2Yawl.getYAWL(),

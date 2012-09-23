@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:Annotations xmlns:ns2="http://www.apromore.org/ANF" uri="EmptyNet" name="EmptyNet">
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-b50b041f-7455-4bf8-bdc6-8dd398881a0d" cpfId="id-N_EmptyNet">
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-d7b86296-dee9-4ede-9ff5-4baa621f8386" cpfId="id-N-EmptyNet">
         <size width="1761" height="685"/>
         <fill color="R:204G:204B:204"/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-786b32f0-29fd-47ee-b3a8-69353a69c305" cpfId="id-C_InputCondition">
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-d6480ddb-bac6-4c66-abed-5dcde562060c" cpfId="id-C-InputCondition">
         <position x="36.0" y="372.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-75eab10f-bde2-4ee0-a364-001f3fc65d29" cpfId="id-C_OutputCondition">
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id-f9852ebb-2959-4149-b756-8a1cc718bcfd" cpfId="id-C-OutputCondition">
         <position x="1052.0" y="372.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>

@@ -1,26 +1,29 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WPR1DirectDistribution" version="0.1" name="WPR1DirectDistribution" author="Felix" rootIds="id-N_Net">
-    <Net id="id-N_Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_InputCondition" originalID="InputCondition">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WPR1DirectDistribution" version="0.1" name="WPR1DirectDistribution" author="Felix" rootIds="id-N-Net">
+    <Net id="id-N-Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_A" originalID="A">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-A" originalID="A">
             <name>A</name>
-            <resourceTypeRef id="id-813a67d7-419a-4774-bb1e-96e67227477c" resourceTypeId="id-R_PA-c5795783-3695-48ec-b798-aea7890b0988"/>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
+            <resourceTypeRef id="id-c1e4c49d-17c7-4e82-8e0c-a3851daea949" resourceTypeId="id-R-PA-c5795783-3695-48ec-b798-aea7890b0988"/>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_OutputCondition" originalID="OutputCondition">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="id-C_InputCondition-A" default="true" sourceId="id-C_InputCondition" targetId="id-C_A"/>
-        <Edge id="id-C_A-OutputCondition" default="true" sourceId="id-C_A" targetId="id-C_OutputCondition"/>
+        <Edge id="id-C-InputCondition-A" default="true" sourceId="id-C-InputCondition" targetId="id-C-A"/>
+        <Edge id="id-C-A-OutputCondition" default="true" sourceId="id-C-A" targetId="id-C-OutputCondition"/>
     </Net>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ParticipantType" id="id-R_PA-c5795783-3695-48ec-b798-aea7890b0988" originalID="PA-c5795783-3695-48ec-b798-aea7890b0988">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ParticipantType" id="id-R-PA-c5795783-3695-48ec-b798-aea7890b0988" originalID="PA-c5795783-3695-48ec-b798-aea7890b0988">
         <name>TestX TestX</name>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:RoleType" id="id-R_RO-176b14db-d9d7-4de0-8a5f-657a1103a814" specializationIds="id-R_PA-c5795783-3695-48ec-b798-aea7890b0988" originalID="RO-176b14db-d9d7-4de0-8a5f-657a1103a814">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:RoleType" id="id-R-RO-176b14db-d9d7-4de0-8a5f-657a1103a814" specializationIds="id-R-PA-c5795783-3695-48ec-b798-aea7890b0988" originalID="RO-176b14db-d9d7-4de0-8a5f-657a1103a814">
         <name>RoleY</name>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:RoleType" id="id-R_RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7" specializationIds="id-R_RO-176b14db-d9d7-4de0-8a5f-657a1103a814 id-R_PA-c5795783-3695-48ec-b798-aea7890b0988" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:RoleType" id="id-R-RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7" specializationIds="id-R-RO-176b14db-d9d7-4de0-8a5f-657a1103a814 id-R-PA-c5795783-3695-48ec-b798-aea7890b0988" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
         <name>RoleX</name>
     </ResourceType>
 </ns2:CanonicalProcess>

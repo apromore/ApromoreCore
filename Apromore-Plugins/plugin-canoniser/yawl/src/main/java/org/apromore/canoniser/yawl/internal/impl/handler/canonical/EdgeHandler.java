@@ -29,14 +29,14 @@ import org.yawlfoundation.yawlschema.OutputConditionFactsType;
 import org.yawlfoundation.yawlschema.PredicateType;
 
 /**
- * Converts an EdgeType.
+ * Converts an EdgeType to YAWL 'flowsInto'.
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public class EdgeHandler extends CanonicalElementHandler<EdgeType, NetFactsType> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EdgeHandler.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(EdgeHandler.class);
 
     /*
      * (non-Javadoc)

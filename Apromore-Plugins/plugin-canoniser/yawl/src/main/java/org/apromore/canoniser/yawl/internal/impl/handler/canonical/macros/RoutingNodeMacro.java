@@ -73,10 +73,7 @@ public class RoutingNodeMacro extends ContextAwareRewriteMacro {
                 } else if (node instanceof SplitType) {
                     hasFoundRoutingNodes = true;
                     handleSplitNode(net, nodeIterator, node);
-                } else {
-                    // Ignore
                 }
-
             }
         }
 
