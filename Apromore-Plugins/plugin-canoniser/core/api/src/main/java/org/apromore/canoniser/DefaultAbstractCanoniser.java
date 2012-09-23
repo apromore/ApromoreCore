@@ -47,8 +47,7 @@ public abstract class DefaultAbstractCanoniser extends AbstractPropertyAwarePlug
      * @throws PropertyException
      * @throws SAXException
      */
-    protected void marshalCanoncialFormat(final OutputStream canonicalFormat, final CanonicalProcessType cpf) throws JAXBException,
-            PropertyException, SAXException {
+    protected void marshalCanoncialFormat(final OutputStream canonicalFormat, final CanonicalProcessType cpf) throws JAXBException, SAXException {
         CPFSchema.marshalCanoncialFormat(canonicalFormat, cpf, true);
     }
 
@@ -61,11 +60,9 @@ public abstract class DefaultAbstractCanoniser extends AbstractPropertyAwarePlug
      * @throws PropertyException
      * @throws SAXException
      */
-    protected void marshalAnnotationFormat(final OutputStream annotationFormat, final AnnotationsType anf) throws JAXBException, PropertyException,
-            SAXException {
+    protected void marshalAnnotationFormat(final OutputStream annotationFormat, final AnnotationsType anf) throws JAXBException, SAXException {
         ANFSchema.marshalAnnotationFormat(annotationFormat, anf, true);
     }
-
 
     /**
      * Unmarshals the Canonical Process Format from the provided InputStream with Validation.

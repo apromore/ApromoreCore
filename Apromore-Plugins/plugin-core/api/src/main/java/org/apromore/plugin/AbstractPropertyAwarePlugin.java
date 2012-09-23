@@ -35,7 +35,7 @@ public abstract class AbstractPropertyAwarePlugin implements PropertyAwarePlugin
 
 	public AbstractPropertyAwarePlugin() {
 		super();
-		availableProperties = new HashSet<PropertyType>();
+		availableProperties = new HashSet<PropertyType>(0);
 	}
 
 	/* (non-Javadoc)
@@ -61,12 +61,17 @@ public abstract class AbstractPropertyAwarePlugin implements PropertyAwarePlugin
 	}
 
 	/**
-	 * Add a property to our list of available properties
+	 * Add a property to our list of available properties.
 	 *
-	 * @param property
+	 * @param property to be added
+	 * @return true if property was added, false if property was already available or NULL
 	 */
-	protected void addProperty(final PropertyType property) {
-		this.availableProperties.add(property);
+	protected boolean addProperty(final PropertyType property) {
+	    if (property != null) {
+	        return this.availableProperties.add(property);
+	    } else {
+	        return false;
+	    }
 	}
 
 

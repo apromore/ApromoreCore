@@ -33,6 +33,12 @@ public class DefaultPropertyTest {
         assertNotNull(defaultProperty);
         assertNotNull(defaultProperty2);
         assertNotNull(defaultProperty3);
+        try {
+            new DefaultProperty("test3", String.class, "description3", false, new Integer(1));
+            fail();
+        } catch (IllegalArgumentException e) {
+            //Expected
+        }
     }
 
     @Test
@@ -69,7 +75,7 @@ public class DefaultPropertyTest {
         try {
             defaultProperty.setValue(2);
             fail();
-        } catch (RuntimeException e) {
+        } catch (IllegalArgumentException e) {
             // Expected
         }
         assertEquals("Test", defaultProperty.getValue());
