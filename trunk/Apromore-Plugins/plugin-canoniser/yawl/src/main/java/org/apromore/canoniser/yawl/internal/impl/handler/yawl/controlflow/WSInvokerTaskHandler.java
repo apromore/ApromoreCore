@@ -15,8 +15,6 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.DirectionType;
 import org.apromore.cpf.MessageType;
 import org.apromore.cpf.NodeType;
-import org.apromore.cpf.TaskType;
-import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
 
 /**
  * Converts a synchronous Web Service call of YAWL.
@@ -46,19 +44,6 @@ public class WSInvokerTaskHandler extends BaseTaskHandler {
         linkToSucessors(succeedingEvent);
 
         super.convert();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see
-     * org.apromore.canoniser.yawl.internal.impl.handler.yawl.controlflow.BaseTaskHandler#createTask(org.yawlfoundation.yawlschema.ExternalTaskFactsType
-     * )
-     */
-    @Override
-    protected TaskType createTask(final ExternalTaskFactsType task) throws CanoniserException {
-        //TODO add WSInvoker info
-        return super.createTask(task);
     }
 
 }

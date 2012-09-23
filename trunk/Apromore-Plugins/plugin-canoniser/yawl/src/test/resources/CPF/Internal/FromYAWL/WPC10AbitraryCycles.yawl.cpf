@@ -1,66 +1,196 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns3:CanonicalProcess xmlns:ns2="http://www.yawlfoundation.org/yawlschema" xmlns:ns3="http://www.apromore.org/CPF" uri="WP1Sequence" version="0.1" name="WP1Sequence" author="Felix" rootIds="id-N_Net">
-    <Net id="id-N_Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_InputCondition" originalID="InputCondition">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WP1Sequence" version="0.1" name="WP1Sequence" author="Felix" rootIds="id-N-Net">
+    <Net id="id-N-Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_A" originalID="A">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-A" originalID="A">
             <name>A</name>
-            <objectRef id="id-8fbede8f-db5b-42ea-9e50-881555abd62b" objectId="id-D_id-N_Net_cond" type="output" optional="false" consumed="true">
-                <attribute name="yawlOriginalExpression">
-                    <ns2:yawlOriginalExpression query="&lt;cond&gt;{/A/cond/text()}&lt;/cond&gt;"/>
-                </attribute>
-            </objectRef>
-            <objectRef id="id-8670eecf-f8cc-4ed4-abbe-5c8c3c242eff" objectId="id-D_id-N_Net_cond" type="input" optional="false" consumed="false">
-                <attribute name="yawlOriginalExpression">
-                    <ns2:yawlOriginalExpression query="&lt;cond&gt;{/Net/cond/text()}&lt;/cond&gt;"/>
-                </attribute>
-            </objectRef>
+            <attribute name="inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>cond</name>
+                    <type>int</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="outputParam">
+                <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>cond</name>
+                    <type>int</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputParam:outputParam>
+            </attribute>
+            <attribute name="resourcing">
+                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <offer initiator="user"/>
+                    <allocate initiator="user"/>
+                    <start initiator="user"/>
+                </resourcing:resourcing>
+            </attribute>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
+            <objectRef id="id-41a100d4-1de1-4dbb-978f-4353ea48b77e" objectId="id-D-id-N-Net-cond" type="output" optional="false" consumed="true"/>
+            <objectRef id="id-b5d995a3-9129-4053-9327-5d5df07334d7" objectId="id-D-id-N-Net-cond" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>cond = &lt;cond&gt;{/Net/cond/text()}&lt;/cond&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>cond = &lt;cond&gt;{/A/cond/text()}&lt;/cond&gt;</expression>
+            </outputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:XORJoinType" id="id-39f35a8c-c0f6-4dd1-b86e-7d79a4a23002"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_B" originalID="B">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id-16b48993-a9ec-436f-aa44-28530f2447c3"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-B" originalID="B">
             <name>B</name>
+            <attribute name="inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>cond</name>
+                    <type>int</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="outputParam">
+                <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>cond</name>
+                    <type>int</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputParam:outputParam>
+            </attribute>
+            <attribute name="resourcing">
+                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <offer initiator="user"/>
+                    <allocate initiator="user"/>
+                    <start initiator="user"/>
+                </resourcing:resourcing>
+            </attribute>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:XORJoinType" id="id-aa1948f6-f59c-4e54-aa3c-82903bfd562c"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_C" originalID="C">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id-ef911139-c28f-4ade-8571-c6627134b7eb"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-C" originalID="C">
             <name>C</name>
+            <attribute name="inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>cond</name>
+                    <type>int</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="outputParam">
+                <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>cond</name>
+                    <type>int</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputParam:outputParam>
+            </attribute>
+            <attribute name="resourcing">
+                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <offer initiator="user"/>
+                    <allocate initiator="user"/>
+                    <start initiator="user"/>
+                </resourcing:resourcing>
+            </attribute>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:XORSplitType" id="id-f3cecc48-0499-4c45-9406-5e93ca5f0a14"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_D" originalID="D">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id-0485096b-3996-49b2-be78-b902d8aae0f0"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-D" originalID="D">
             <name>D</name>
+            <attribute name="inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>cond</name>
+                    <type>int</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="outputParam">
+                <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>cond</name>
+                    <type>int</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputParam:outputParam>
+            </attribute>
+            <attribute name="resourcing">
+                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <offer initiator="user"/>
+                    <allocate initiator="user"/>
+                    <start initiator="user"/>
+                </resourcing:resourcing>
+            </attribute>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:XORSplitType" id="id-18655154-781e-450d-9ca4-c8ffc077fd85"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:TaskType" id="id-C_E" originalID="E">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id-95555e58-cc49-4c5c-9b4b-37eb582a839e"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-E" originalID="E">
             <name>E</name>
-            <objectRef id="id-d312c1ef-2377-4179-ac08-88a66cc7265d" objectId="id-D_id-N_Net_cond" type="output" optional="false" consumed="true">
-                <attribute name="yawlOriginalExpression">
-                    <ns2:yawlOriginalExpression query="&lt;cond&gt;{/E/cond/text()}&lt;/cond&gt;"/>
-                </attribute>
-            </objectRef>
-            <objectRef id="id-7a27647e-1a41-46eb-8cf5-0760650981fe" objectId="id-D_id-N_Net_cond" type="input" optional="false" consumed="false">
-                <attribute name="yawlOriginalExpression">
-                    <ns2:yawlOriginalExpression query="&lt;cond&gt;{/Net/cond/text()}&lt;/cond&gt;"/>
-                </attribute>
-            </objectRef>
+            <attribute name="inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>cond</name>
+                    <type>int</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="outputParam">
+                <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>cond</name>
+                    <type>int</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputParam:outputParam>
+            </attribute>
+            <attribute name="resourcing">
+                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <offer initiator="user"/>
+                    <allocate initiator="user"/>
+                    <start initiator="user"/>
+                </resourcing:resourcing>
+            </attribute>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
+            <objectRef id="id-7619b471-eae5-44bd-9098-e7af9412f080" objectId="id-D-id-N-Net-cond" type="output" optional="false" consumed="true"/>
+            <objectRef id="id-03a53c42-f7a1-4538-bcb8-01f38e6892e4" objectId="id-D-id-N-Net-cond" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>cond = &lt;cond&gt;{/Net/cond/text()}&lt;/cond&gt;</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>cond = &lt;cond&gt;{/E/cond/text()}&lt;/cond&gt;</expression>
+            </outputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:EventType" id="id-C_OutputCondition" originalID="OutputCondition">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="id-C_id-39f35a8c-c0f6-4dd1-b86e-7d79a4a23002-id-C_A" default="true" sourceId="id-39f35a8c-c0f6-4dd1-b86e-7d79a4a23002" targetId="id-C_A"/>
-        <Edge id="id-C_id-C_InputCondition-id-39f35a8c-c0f6-4dd1-b86e-7d79a4a23002" default="true" sourceId="id-C_InputCondition" targetId="id-39f35a8c-c0f6-4dd1-b86e-7d79a4a23002"/>
-        <Edge id="id-C_id-aa1948f6-f59c-4e54-aa3c-82903bfd562c-id-C_B" default="true" sourceId="id-aa1948f6-f59c-4e54-aa3c-82903bfd562c" targetId="id-C_B"/>
-        <Edge id="id-C_id-C_A-id-aa1948f6-f59c-4e54-aa3c-82903bfd562c" default="true" sourceId="id-C_A" targetId="id-aa1948f6-f59c-4e54-aa3c-82903bfd562c"/>
-        <Edge id="id-C_B-C" default="true" sourceId="id-C_B" targetId="id-C_C"/>
-        <Edge id="id-C_id-C_C-id-f3cecc48-0499-4c45-9406-5e93ca5f0a14" default="true" sourceId="id-C_C" targetId="id-f3cecc48-0499-4c45-9406-5e93ca5f0a14"/>
-        <Edge id="id-C_id-f3cecc48-0499-4c45-9406-5e93ca5f0a14-id-39f35a8c-c0f6-4dd1-b86e-7d79a4a23002" default="true" sourceId="id-f3cecc48-0499-4c45-9406-5e93ca5f0a14" targetId="id-39f35a8c-c0f6-4dd1-b86e-7d79a4a23002"/>
-        <Edge id="id-C_id-f3cecc48-0499-4c45-9406-5e93ca5f0a14-id-C_D" default="true" sourceId="id-f3cecc48-0499-4c45-9406-5e93ca5f0a14" targetId="id-C_D"/>
-        <Edge id="id-C_id-C_D-id-18655154-781e-450d-9ca4-c8ffc077fd85" default="true" sourceId="id-C_D" targetId="id-18655154-781e-450d-9ca4-c8ffc077fd85"/>
-        <Edge id="id-C_id-18655154-781e-450d-9ca4-c8ffc077fd85-id-C_E" default="true" sourceId="id-18655154-781e-450d-9ca4-c8ffc077fd85" targetId="id-C_E"/>
-        <Edge id="id-C_id-C_E-id-aa1948f6-f59c-4e54-aa3c-82903bfd562c" default="true" sourceId="id-C_E" targetId="id-aa1948f6-f59c-4e54-aa3c-82903bfd562c"/>
-        <Edge id="id-C_id-18655154-781e-450d-9ca4-c8ffc077fd85-id-C_OutputCondition" default="true" sourceId="id-18655154-781e-450d-9ca4-c8ffc077fd85" targetId="id-C_OutputCondition"/>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns3:SoftType" id="id-D_id-N_Net_cond" originalID="id-N_Net_cond">
+        <Edge id="id-C-id-16b48993-a9ec-436f-aa44-28530f2447c3-id-C-A" default="true" sourceId="id-16b48993-a9ec-436f-aa44-28530f2447c3" targetId="id-C-A"/>
+        <Edge id="id-C-id-C-InputCondition-id-16b48993-a9ec-436f-aa44-28530f2447c3" default="true" sourceId="id-C-InputCondition" targetId="id-16b48993-a9ec-436f-aa44-28530f2447c3"/>
+        <Edge id="id-C-id-ef911139-c28f-4ade-8571-c6627134b7eb-id-C-B" default="true" sourceId="id-ef911139-c28f-4ade-8571-c6627134b7eb" targetId="id-C-B"/>
+        <Edge id="id-C-id-C-A-id-ef911139-c28f-4ade-8571-c6627134b7eb" default="true" sourceId="id-C-A" targetId="id-ef911139-c28f-4ade-8571-c6627134b7eb"/>
+        <Edge id="id-C-B-C" default="true" sourceId="id-C-B" targetId="id-C-C"/>
+        <Edge id="id-C-id-C-C-id-0485096b-3996-49b2-be78-b902d8aae0f0" default="true" sourceId="id-C-C" targetId="id-0485096b-3996-49b2-be78-b902d8aae0f0"/>
+        <Edge id="id-C-id-0485096b-3996-49b2-be78-b902d8aae0f0-id-16b48993-a9ec-436f-aa44-28530f2447c3" default="true" sourceId="id-0485096b-3996-49b2-be78-b902d8aae0f0" targetId="id-16b48993-a9ec-436f-aa44-28530f2447c3"/>
+        <Edge id="id-C-id-0485096b-3996-49b2-be78-b902d8aae0f0-id-C-D" default="true" sourceId="id-0485096b-3996-49b2-be78-b902d8aae0f0" targetId="id-C-D"/>
+        <Edge id="id-C-id-C-D-id-95555e58-cc49-4c5c-9b4b-37eb582a839e" default="true" sourceId="id-C-D" targetId="id-95555e58-cc49-4c5c-9b4b-37eb582a839e"/>
+        <Edge id="id-C-id-95555e58-cc49-4c5c-9b4b-37eb582a839e-id-C-E" default="true" sourceId="id-95555e58-cc49-4c5c-9b4b-37eb582a839e" targetId="id-C-E"/>
+        <Edge id="id-C-id-C-E-id-ef911139-c28f-4ade-8571-c6627134b7eb" default="true" sourceId="id-C-E" targetId="id-ef911139-c28f-4ade-8571-c6627134b7eb"/>
+        <Edge id="id-C-id-95555e58-cc49-4c5c-9b4b-37eb582a839e-id-C-OutputCondition" default="true" sourceId="id-95555e58-cc49-4c5c-9b4b-37eb582a839e" targetId="id-C-OutputCondition"/>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D-id-N-Net-cond" originalID="id-N-Net_cond">
             <name>cond</name>
             <type>int</type>
         </Object>
     </Net>
-</ns3:CanonicalProcess>
+</ns2:CanonicalProcess>

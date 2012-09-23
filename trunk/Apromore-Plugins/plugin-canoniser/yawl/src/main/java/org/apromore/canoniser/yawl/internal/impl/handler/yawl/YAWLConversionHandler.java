@@ -19,6 +19,7 @@ import org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandlerImpl;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
+import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TypeAttribute;
 import org.w3c.dom.Element;
 
@@ -60,18 +61,18 @@ public abstract class YAWLConversionHandler<T, E> extends ConversionHandlerImpl<
         if (extension == null) {
             // Create new Annotation
             extension = getContext().getAnnotationOF().createAnnotationType();
-            getContext().getAnnotationResult().getAnnotation().add(extension);
             extension.setCpfId(nodeId);
             extension.setId(generateUUID());
+            extension.getAny().add(obj);
+            getContext().getAnnotationResult().getAnnotation().add(extension);
         }
-        extension.getAny().add(obj);
     }
 
     private AnnotationType findAnnotation(final String nodeId) {
         for (final AnnotationType annotation : getContext().getAnnotationResult().getAnnotation()) {
             if (!(annotation instanceof DocumentationType || annotation instanceof GraphicsType)) {
                 // We just want to add an plain 'AnnotationType'
-                if (annotation.getCpfId() != null && annotation.getCpfId().equals(nodeId)) {
+                if (nodeId.equals(annotation.getCpfId())) {
                     return annotation;
                 }
             }
@@ -87,6 +88,7 @@ public abstract class YAWLConversionHandler<T, E> extends ConversionHandlerImpl<
      */
     protected void addToExtensions(final Element extensionElement, final NodeType node) {
         TypeAttribute attr = getContext().getCanonicalOF().createTypeAttribute();
+        attr.setName(extensionElement.getLocalName());
         attr.setAny(extensionElement);
         node.getAttribute().add(attr);
     }
@@ -99,6 +101,7 @@ public abstract class YAWLConversionHandler<T, E> extends ConversionHandlerImpl<
      */
     protected void addToExtensions(final Element extensionElement, final CanonicalProcessType cpt) {
         TypeAttribute attr = getContext().getCanonicalOF().createTypeAttribute();
+        attr.setName(extensionElement.getLocalName());
         attr.setAny(extensionElement);
         cpt.getAttribute().add(attr);
     }
@@ -111,7 +114,21 @@ public abstract class YAWLConversionHandler<T, E> extends ConversionHandlerImpl<
      */
     protected void addToExtensions(final Element extensionElement, final NetType net) {
         TypeAttribute attr = getContext().getCanonicalOF().createTypeAttribute();
+        attr.setName(extensionElement.getLocalName());
         attr.setAny(extensionElement);
         net.getAttribute().add(attr);
+    }
+
+    /**
+     * Add the extension Element (XML) to the CPF ResourceType attributes
+     *
+     * @param extensionElement
+     * @param net
+     */
+    protected void addToExtensions(final Element extensionElement, final ResourceTypeType resourceType) {
+        TypeAttribute attr = getContext().getCanonicalOF().createTypeAttribute();
+        attr.setName(extensionElement.getLocalName());
+        attr.setAny(extensionElement);
+        resourceType.getAttribute().add(attr);
     }
 }

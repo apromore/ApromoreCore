@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl.resource;
@@ -14,7 +14,6 @@ package org.apromore.canoniser.yawl.internal.impl.handler.yawl.resource;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.YAWLConversionHandler;
@@ -34,14 +33,15 @@ import org.yawlfoundation.yawlschema.ResourcingFactsType;
 import org.yawlfoundation.yawlschema.ResourcingInitiatorType;
 import org.yawlfoundation.yawlschema.ResourcingOfferFactsType;
 import org.yawlfoundation.yawlschema.ResourcingOfferFactsType.FamiliarParticipant;
+import org.yawlfoundation.yawlschema.ResourcingSecondaryFactsType;
 import org.yawlfoundation.yawlschema.orgdata.ParticipantType;
 import org.yawlfoundation.yawlschema.orgdata.RoleType;
 
 /**
  * Converting YAWL resources to CPF
- * 
+ *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsType, TaskType> {
 
@@ -51,7 +51,7 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -66,33 +66,22 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
             }
 
             if (offer.getFamiliarParticipant() != null) {
-                // TODO add to CPF instead of ANF
-                try {
-                    addToAnnotations(
-                            ConversionUtils.marshalYAWLFragment("familiarParticipant", offer.getFamiliarParticipant(), FamiliarParticipant.class),
-                            getConvertedParent().getId());
-                } catch (JAXBException e) {
-                    throw new CanoniserException("Failed to add the familiarParticipant extension element", e);
-                }
+                addToExtensions(ConversionUtils.marshalYAWLFragment("familiarParticipant", offer.getFamiliarParticipant(), FamiliarParticipant.class),
+                            getConvertedParent());
             }
 
         } else {
             // Distribution of work will be handled by User at Runtime, there is no way of capturing this in CPF
-            // TODO add to CPF instead of ANF
-            try {
-                addToAnnotations(ConversionUtils.marshalYAWLFragment("resourcing", getObject(), ResourcingFactsType.class), getConvertedParent()
-                        .getId());
-            } catch (JAXBException e) {
-                throw new CanoniserException("Failed to add the resourcing extension element", e);
-            }
+            addToExtensions(ConversionUtils.marshalYAWLFragment("resourcing", getObject(), ResourcingFactsType.class), getConvertedParent());
         }
 
-        // TODO secondary resources !!
+        // TODO Deal with secondary resources in a more clever way
+        addToExtensions(ConversionUtils.marshalYAWLFragment("secondary", getObject().getSecondary(), ResourcingSecondaryFactsType.class), getConvertedParent());
     }
 
     /**
      * Creates a reference to a ResourceType.
-     * 
+     *
      * @param canonicalResource
      * @param qualifier
      */
@@ -118,14 +107,9 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
             resourceType.setDistributionSet(distributionSetExt);
 
             // Add YAWL extension elements to ANF
-            // TODO add to CPF instead of ANF
-            try {
-                addToAnnotations(ConversionUtils.marshalYAWLFragment("constraints", distributionSet.getConstraints(), Constraints.class),
-                        resourceType.getId());
-                addToAnnotations(ConversionUtils.marshalYAWLFragment("filters", distributionSet.getFilters(), Filters.class), resourceType.getId());
-            } catch (JAXBException e) {
-                throw new CanoniserException("Failed to add the constraints/filter extension element", e);
-            }
+            addToExtensions(ConversionUtils.marshalYAWLFragment("constraints", distributionSet.getConstraints(), Constraints.class),
+                    resourceType);
+            addToExtensions(ConversionUtils.marshalYAWLFragment("filters", distributionSet.getFilters(), Filters.class), resourceType);
 
             createResourceReference(resourceType, null);
 

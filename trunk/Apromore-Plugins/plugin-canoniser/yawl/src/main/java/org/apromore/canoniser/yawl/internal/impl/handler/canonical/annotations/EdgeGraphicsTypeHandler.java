@@ -14,7 +14,6 @@ package org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations;
 import java.math.BigInteger;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionContext.ElementInfo;
@@ -85,7 +84,7 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
                     final ObjectFactory oF = getContext().getYawlObjectFactory();
                     return oF.createLayoutNetFactsTypeFlow(flowLayout);
                 }
-            } catch (final JAXBException e) {
+            } catch (final CanoniserException e) {
                 LOGGER.warn("Error unmarshalling extension elements. This should not happen, but the conversion will still work.", e);
             }
         }

@@ -20,7 +20,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 
 import org.apromore.anf.DocumentationType;
 import org.apromore.anf.FillType;
@@ -82,7 +81,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
         edge.setDefault(true);
         getConvertedParent().getEdge().add(edge);
         if (sourceNode.getOriginalID() != null && targetNode.getOriginalID() != null) {
-            getContext().getAnnotationResult().getAnnotation().add(createGraphicsForFlow(sourceNode.getOriginalID(), targetNode.getOriginalID()));
+            createGraphicsForFlow(sourceNode.getOriginalID(), targetNode.getOriginalID());
         }
         return edge;
     }
@@ -188,20 +187,15 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
         }
     }
 
-    protected DocumentationType createDocumentation(final ExternalNetElementType element, final String documentation) throws CanoniserException {
+    protected void createDocumentation(final ExternalNetElementType element, final String documentation) throws CanoniserException {
         final DocumentationType d = getContext().getAnnotationOF().createDocumentationType();
         d.setCpfId(generateUUID(CONTROLFLOW_ID_PREFIX, element.getId()));
         d.setId(generateUUID());
-        try {
-            d.getAny().add(ConversionUtils.marshalYAWLFragment("documentation", documentation, String.class));
-        } catch (JAXBException e) {
-            throw new CanoniserException("Failed to add documentation to ANF", e);
-        }
+        d.getAny().add(ConversionUtils.marshalYAWLFragment("documentation", documentation, String.class));
         getContext().getAnnotationResult().getAnnotation().add(d);
-        return d;
     }
 
-    protected GraphicsType createGraphics(final ExternalNetElementType element) throws CanoniserException {
+    protected void createGraphics(final ExternalNetElementType element) throws CanoniserException {
         final GraphicsType graphics = getContext().getAnnotationOF().createGraphicsType();
         graphics.setCpfId(generateUUID(CONTROLFLOW_ID_PREFIX, element.getId()));
         graphics.setId(generateUUID());
@@ -213,25 +207,15 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
         final Collection<LayoutDecoratorFactsType> layoutDecorators = getContext().getLayoutDecoratorForElement(element.getId());
         if (layoutDecorators != null) {
             for (final LayoutDecoratorFactsType decorator : layoutDecorators) {
-                try {
-                    graphics.getAny().add(ConversionUtils.marshalYAWLFragment("decorator", decorator, LayoutDecoratorFactsType.class));
-                } catch (JAXBException e) {
-                    throw new CanoniserException("Failed adding the decorator layout to ANF", e);
-                }
+                graphics.getAny().add(ConversionUtils.marshalYAWLFragment("decorator", decorator, LayoutDecoratorFactsType.class));
             }
         }
         if (getContext().getLayoutLabelForElement(element.getId()) != null) {
-            try {
-                graphics.getAny().add(
-                        ConversionUtils.marshalYAWLFragment("label", getContext().getLayoutLabelForElement(element.getId()),
-                                LayoutLabelFactsType.class));
-            } catch (JAXBException e) {
-                throw new CanoniserException("Failed adding the label layout to ANF", e);
-            }
+            graphics.getAny().add(
+                    ConversionUtils.marshalYAWLFragment("label", getContext().getLayoutLabelForElement(element.getId()), LayoutLabelFactsType.class));
         }
 
         getContext().getAnnotationResult().getAnnotation().add(graphics);
-        return graphics;
     }
 
     /**
@@ -244,7 +228,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
      * @return
      * @throws CanoniserException
      */
-    protected GraphicsType createGraphicsForFlow(final String sourceId, final String targetId) throws CanoniserException {
+    protected void createGraphicsForFlow(final String sourceId, final String targetId) throws CanoniserException {
         final GraphicsType graphics = getContext().getAnnotationOF().createGraphicsType();
         graphics.setCpfId(generateUUID(CONTROLFLOW_ID_PREFIX, getContext().buildEdgeId(sourceId, targetId)));
         graphics.setId(generateUUID());
@@ -253,13 +237,9 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
         // Convert and add YAWL specific extension
         if (flowLayout != null) {
-            try {
-                graphics.getAny().add(
-                        ConversionUtils.marshalYAWLFragment("flow", getContext().getLayoutFlow(getContext().buildEdgeId(sourceId, targetId)),
-                                LayoutFlowFactsType.class));
-            } catch (JAXBException e1) {
-                throw new CanoniserException("Failed adding the label layout to ANF", e1);
-            }
+            graphics.getAny().add(
+                    ConversionUtils.marshalYAWLFragment("flow", getContext().getLayoutFlow(getContext().buildEdgeId(sourceId, targetId)),
+                            LayoutFlowFactsType.class));
             graphics.setLine(convertFlowLineStyle(flowLayout));
             try {
                 graphics.getPosition().addAll(convertFlowPositions(flowLayout));
@@ -269,7 +249,6 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
         }
 
         getContext().getAnnotationResult().getAnnotation().add(graphics);
-        return graphics;
     }
 
     private Collection<PositionType> convertFlowPositions(final LayoutFlowFactsType flowLayout) throws ParseException {

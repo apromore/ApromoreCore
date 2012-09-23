@@ -1,142 +1,217 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="CreditAppProcess2.0" version="0.1" name="CreditAppProcess2.0" author="tut" rootIds="id-N_CreditApplication">
-    <Net id="id-N_CreditApplication" originalID="CreditApplication">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_InputCondition_1" originalID="InputCondition_1"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_receive_application_3" originalID="receive_application_3">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="CreditAppProcess2.0" version="0.1" name="CreditAppProcess2.0" author="tut" rootIds="id-N-CreditApplication">
+    <Net id="id-N-CreditApplication" originalID="CreditApplication">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-InputCondition-1" originalID="InputCondition_1"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-receive-application-3" originalID="receive_application_3">
             <name>receive application</name>
+            <attribute name="outputParam">
+                <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>loanAmt</name>
+                    <type>double</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputParam:outputParam>
+            </attribute>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
+            <objectRef id="id-6dac9c26-2df8-4a23-9dfe-018f9727d945" objectId="id-D-id-N-CreditApplication-loanAmt" type="output" optional="false" consumed="true"/>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>loanAmt = &lt;loanAmt&gt;{/receive_application/loanAmt/text()}&lt;/loanAmt&gt;</expression>
+            </outputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_c1_13" originalID="c1_13">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-c1-13" originalID="c1_13">
             <name>c1</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_check_for_completeness_4" originalID="check_for_completeness_4">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-check-for-completeness-4" originalID="check_for_completeness_4">
             <name>check for completeness</name>
+            <attribute name="outputParam">
+                <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>completeApp</name>
+                    <type>boolean</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputParam:outputParam>
+            </attribute>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
+            <objectRef id="id-0c1e9aa1-0bdc-4784-95e4-40292693af5d" objectId="id-D-id-N-CreditApplication-completeApp" type="output" optional="false" consumed="true"/>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>completeApp = &lt;completeApp&gt;{/check_for_completeness/completeApp/text()}&lt;/completeApp&gt;</expression>
+            </outputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id-24896ccc-afb2-46cd-9596-b3ca592fa32c"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id-d4804e69-1114-4615-ac21-0d6d8824e099"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_c4_16" originalID="c4_16">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id-728dc737-fe0d-4001-8b5d-c491c28dbc4f"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id-a5db90c7-b27d-48d2-a047-6658706ac534"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-c4-16" originalID="c4_16">
             <name>c4</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_c2_15" originalID="c2_15">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-c2-15" originalID="c2_15">
             <name>c2</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_check_loan_amount_6" originalID="check_loan_amount_6">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-check-loan-amount-6" originalID="check_loan_amount_6">
             <name>check loan amount</name>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id-efb70eed-f4cc-46a5-b384-d68188034408"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_get_more_info_5" originalID="get_more_info_5">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id-31a1f8f5-a62b-462b-ba6f-f0ebf5fb1f64"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-get-more-info-5" originalID="get_more_info_5">
             <name>get more info</name>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_c5_27" originalID="c5_27">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-c5-27" originalID="c5_27">
             <name>c5</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_c7_28" originalID="c7_28">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-c7-28" originalID="c7_28">
             <name>c7</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_c3_14" originalID="c3_14">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-c3-14" originalID="c3_14">
             <name>c3</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_perform_checks_for_small_amount_8" originalID="perform_checks_for_small_amount_8">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-perform-checks-for-small-amount-8" originalID="perform_checks_for_small_amount_8">
             <name>perform checks for small amount</name>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_perform_checks_for_large_amount_7" originalID="perform_checks_for_large_amount_7">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-perform-checks-for-large-amount-7" originalID="perform_checks_for_large_amount_7">
             <name>perform checks for large amount</name>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_c8_29" originalID="c8_29">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-c8-29" originalID="c8_29">
             <name>c8</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_c6_17" originalID="c6_17">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-c6-17" originalID="c6_17">
             <name>c6</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_make_decision_9" originalID="make_decision_9">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-make-decision-9" originalID="make_decision_9">
             <name>make decision</name>
+            <attribute name="outputParam">
+                <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>decideApp</name>
+                    <type>boolean</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputParam:outputParam>
+            </attribute>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
+            <objectRef id="id-69b90507-4392-4245-b8e3-3da452ec6dd2" objectId="id-D-id-N-CreditApplication-decideApp" type="output" optional="false" consumed="true"/>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>decideApp = &lt;decideApp&gt;{/make_decision/decideApp/text()}&lt;/decideApp&gt;</expression>
+            </outputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id-26483357-e85d-4f44-aa02-d13e2e41544a"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id-941c15e2-10fd-4768-8f20-70535e6ea946"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_c9_18" originalID="c9_18">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id-03c03c50-262c-4da9-9c5b-a6884056c0aa"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id-6b012843-c671-412c-814e-5cfaee3d2c15"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-c9-18" originalID="c9_18">
             <name>c9</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_c10_20" originalID="c10_20">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-c10-20" originalID="c10_20">
             <name>c10</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_start_approval_23" originalID="start_approval_23">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-start-approval-23" originalID="start_approval_23">
             <name>start approval</name>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="id-b3c1081a-2f3a-484a-8c2e-93a3bc981c7d"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_notify_rejection_12" originalID="notify_rejection_12">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="id-4254d90a-0090-4d0b-8443-8e0768b17d58"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-notify-rejection-12" originalID="notify_rejection_12">
             <name>notify rejection</name>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_c11_25" originalID="c11_25">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-c11-25" originalID="c11_25">
             <name>c11</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_c12_26" originalID="c12_26">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-c12-26" originalID="c12_26">
             <name>c12</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_deliver_credit_card_11" originalID="deliver_credit_card_11">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-deliver-credit-card-11" originalID="deliver_credit_card_11">
             <name>deliver credit card</name>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_notify_acceptance_10" originalID="notify_acceptance_10">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-notify-acceptance-10" originalID="notify_acceptance_10">
             <name>notify acceptance</name>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_c14_31" originalID="c14_31">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-c14-31" originalID="c14_31">
             <name>c14</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_c13_19" originalID="c13_19">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-c13-19" originalID="c13_19">
             <name>c13</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_complete_approval_21" originalID="complete_approval_21">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-complete-approval-21" originalID="complete_approval_21">
             <name>complete approval</name>
+            <attribute name="secondary">
+                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
+            </attribute>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDJoinType" id="id-e7dd8cc9-7e9e-45ea-b0b0-a14ccb8d1e96"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_OutputCondition_2" originalID="OutputCondition_2"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="id-086b1831-5b98-41d0-87b6-c4e69bf3ec4a"/>
-        <Edge id="id-C_InputCondition_1-receive_application_3" default="true" sourceId="id-C_InputCondition_1" targetId="id-C_receive_application_3"/>
-        <Edge id="id-C_receive_application_3-c1_13" default="true" sourceId="id-C_receive_application_3" targetId="id-C_c1_13"/>
-        <Edge id="id-C_id-24896ccc-afb2-46cd-9596-b3ca592fa32c-id-C_check_for_completeness_4" default="true" sourceId="id-24896ccc-afb2-46cd-9596-b3ca592fa32c" targetId="id-C_check_for_completeness_4"/>
-        <Edge id="id-C_id-C_c1_13-id-24896ccc-afb2-46cd-9596-b3ca592fa32c" default="true" sourceId="id-C_c1_13" targetId="id-24896ccc-afb2-46cd-9596-b3ca592fa32c"/>
-        <Edge id="id-C_id-C_check_for_completeness_4-id-d4804e69-1114-4615-ac21-0d6d8824e099" default="true" sourceId="id-C_check_for_completeness_4" targetId="id-d4804e69-1114-4615-ac21-0d6d8824e099"/>
-        <Edge id="id-C_id-d4804e69-1114-4615-ac21-0d6d8824e099-id-C_c4_16" default="true" sourceId="id-d4804e69-1114-4615-ac21-0d6d8824e099" targetId="id-C_c4_16"/>
-        <Edge id="id-C_id-d4804e69-1114-4615-ac21-0d6d8824e099-id-C_c2_15" default="true" sourceId="id-d4804e69-1114-4615-ac21-0d6d8824e099" targetId="id-C_c2_15"/>
-        <Edge id="id-C_c4_16-check_loan_amount_6" default="true" sourceId="id-C_c4_16" targetId="id-C_check_loan_amount_6"/>
-        <Edge id="id-C_id-C_check_loan_amount_6-id-efb70eed-f4cc-46a5-b384-d68188034408" default="true" sourceId="id-C_check_loan_amount_6" targetId="id-efb70eed-f4cc-46a5-b384-d68188034408"/>
-        <Edge id="id-C_c2_15-get_more_info_5" default="true" sourceId="id-C_c2_15" targetId="id-C_get_more_info_5"/>
-        <Edge id="id-C_id-efb70eed-f4cc-46a5-b384-d68188034408-id-C_c5_27" default="true" sourceId="id-efb70eed-f4cc-46a5-b384-d68188034408" targetId="id-C_c5_27"/>
-        <Edge id="id-C_id-efb70eed-f4cc-46a5-b384-d68188034408-id-C_c7_28" default="true" sourceId="id-efb70eed-f4cc-46a5-b384-d68188034408" targetId="id-C_c7_28"/>
-        <Edge id="id-C_get_more_info_5-c3_14" default="true" sourceId="id-C_get_more_info_5" targetId="id-C_c3_14"/>
-        <Edge id="id-C_id-C_c3_14-id-24896ccc-afb2-46cd-9596-b3ca592fa32c" default="true" sourceId="id-C_c3_14" targetId="id-24896ccc-afb2-46cd-9596-b3ca592fa32c"/>
-        <Edge id="id-C_c7_28-perform_checks_for_small_amount_8" default="true" sourceId="id-C_c7_28" targetId="id-C_perform_checks_for_small_amount_8"/>
-        <Edge id="id-C_c5_27-perform_checks_for_large_amount_7" default="true" sourceId="id-C_c5_27" targetId="id-C_perform_checks_for_large_amount_7"/>
-        <Edge id="id-C_perform_checks_for_small_amount_8-c8_29" default="true" sourceId="id-C_perform_checks_for_small_amount_8" targetId="id-C_c8_29"/>
-        <Edge id="id-C_perform_checks_for_large_amount_7-c6_17" default="true" sourceId="id-C_perform_checks_for_large_amount_7" targetId="id-C_c6_17"/>
-        <Edge id="id-C_id-26483357-e85d-4f44-aa02-d13e2e41544a-id-C_make_decision_9" default="true" sourceId="id-26483357-e85d-4f44-aa02-d13e2e41544a" targetId="id-C_make_decision_9"/>
-        <Edge id="id-C_id-C_c8_29-id-26483357-e85d-4f44-aa02-d13e2e41544a" default="true" sourceId="id-C_c8_29" targetId="id-26483357-e85d-4f44-aa02-d13e2e41544a"/>
-        <Edge id="id-C_id-C_c6_17-id-26483357-e85d-4f44-aa02-d13e2e41544a" default="true" sourceId="id-C_c6_17" targetId="id-26483357-e85d-4f44-aa02-d13e2e41544a"/>
-        <Edge id="id-C_id-C_make_decision_9-id-941c15e2-10fd-4768-8f20-70535e6ea946" default="true" sourceId="id-C_make_decision_9" targetId="id-941c15e2-10fd-4768-8f20-70535e6ea946"/>
-        <Edge id="id-C_id-941c15e2-10fd-4768-8f20-70535e6ea946-id-C_c9_18" default="true" sourceId="id-941c15e2-10fd-4768-8f20-70535e6ea946" targetId="id-C_c9_18"/>
-        <Edge id="id-C_id-941c15e2-10fd-4768-8f20-70535e6ea946-id-C_c10_20" default="true" sourceId="id-941c15e2-10fd-4768-8f20-70535e6ea946" targetId="id-C_c10_20"/>
-        <Edge id="id-C_c9_18-start_approval_23" default="true" sourceId="id-C_c9_18" targetId="id-C_start_approval_23"/>
-        <Edge id="id-C_id-C_start_approval_23-id-b3c1081a-2f3a-484a-8c2e-93a3bc981c7d" default="true" sourceId="id-C_start_approval_23" targetId="id-b3c1081a-2f3a-484a-8c2e-93a3bc981c7d"/>
-        <Edge id="id-C_c10_20-notify_rejection_12" default="true" sourceId="id-C_c10_20" targetId="id-C_notify_rejection_12"/>
-        <Edge id="id-C_id-b3c1081a-2f3a-484a-8c2e-93a3bc981c7d-id-C_c11_25" default="true" sourceId="id-b3c1081a-2f3a-484a-8c2e-93a3bc981c7d" targetId="id-C_c11_25"/>
-        <Edge id="id-C_id-b3c1081a-2f3a-484a-8c2e-93a3bc981c7d-id-C_c12_26" default="true" sourceId="id-b3c1081a-2f3a-484a-8c2e-93a3bc981c7d" targetId="id-C_c12_26"/>
-        <Edge id="id-C_c12_26-deliver_credit_card_11" default="true" sourceId="id-C_c12_26" targetId="id-C_deliver_credit_card_11"/>
-        <Edge id="id-C_c11_25-notify_acceptance_10" default="true" sourceId="id-C_c11_25" targetId="id-C_notify_acceptance_10"/>
-        <Edge id="id-C_deliver_credit_card_11-c14_31" default="true" sourceId="id-C_deliver_credit_card_11" targetId="id-C_c14_31"/>
-        <Edge id="id-C_notify_acceptance_10-c13_19" default="true" sourceId="id-C_notify_acceptance_10" targetId="id-C_c13_19"/>
-        <Edge id="id-C_id-e7dd8cc9-7e9e-45ea-b0b0-a14ccb8d1e96-id-C_complete_approval_21" default="true" sourceId="id-e7dd8cc9-7e9e-45ea-b0b0-a14ccb8d1e96" targetId="id-C_complete_approval_21"/>
-        <Edge id="id-C_id-C_c14_31-id-e7dd8cc9-7e9e-45ea-b0b0-a14ccb8d1e96" default="true" sourceId="id-C_c14_31" targetId="id-e7dd8cc9-7e9e-45ea-b0b0-a14ccb8d1e96"/>
-        <Edge id="id-C_id-C_c13_19-id-e7dd8cc9-7e9e-45ea-b0b0-a14ccb8d1e96" default="true" sourceId="id-C_c13_19" targetId="id-e7dd8cc9-7e9e-45ea-b0b0-a14ccb8d1e96"/>
-        <Edge id="id-C_id-086b1831-5b98-41d0-87b6-c4e69bf3ec4a-id-C_OutputCondition_2" default="true" sourceId="id-086b1831-5b98-41d0-87b6-c4e69bf3ec4a" targetId="id-C_OutputCondition_2"/>
-        <Edge id="id-C_id-C_notify_rejection_12-id-086b1831-5b98-41d0-87b6-c4e69bf3ec4a" default="true" sourceId="id-C_notify_rejection_12" targetId="id-086b1831-5b98-41d0-87b6-c4e69bf3ec4a"/>
-        <Edge id="id-C_id-C_complete_approval_21-id-086b1831-5b98-41d0-87b6-c4e69bf3ec4a" default="true" sourceId="id-C_complete_approval_21" targetId="id-086b1831-5b98-41d0-87b6-c4e69bf3ec4a"/>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D_id-N_CreditApplication_completeApp" originalID="id-N_CreditApplication_completeApp">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDJoinType" id="id-37d5b3b9-0c42-4f4b-8662-09b8175c2622"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-OutputCondition-2" originalID="OutputCondition_2"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="id-f693f04f-4730-4738-8b89-11306a183e9b"/>
+        <Edge id="id-C-InputCondition-1-receive-application-3" default="true" sourceId="id-C-InputCondition-1" targetId="id-C-receive-application-3"/>
+        <Edge id="id-C-receive-application-3-c1-13" default="true" sourceId="id-C-receive-application-3" targetId="id-C-c1-13"/>
+        <Edge id="id-C-id-728dc737-fe0d-4001-8b5d-c491c28dbc4f-id-C-check-for-completeness-4" default="true" sourceId="id-728dc737-fe0d-4001-8b5d-c491c28dbc4f" targetId="id-C-check-for-completeness-4"/>
+        <Edge id="id-C-id-C-c1-13-id-728dc737-fe0d-4001-8b5d-c491c28dbc4f" default="true" sourceId="id-C-c1-13" targetId="id-728dc737-fe0d-4001-8b5d-c491c28dbc4f"/>
+        <Edge id="id-C-id-C-check-for-completeness-4-id-a5db90c7-b27d-48d2-a047-6658706ac534" default="true" sourceId="id-C-check-for-completeness-4" targetId="id-a5db90c7-b27d-48d2-a047-6658706ac534"/>
+        <Edge id="id-C-id-a5db90c7-b27d-48d2-a047-6658706ac534-id-C-c4-16" default="true" sourceId="id-a5db90c7-b27d-48d2-a047-6658706ac534" targetId="id-C-c4-16"/>
+        <Edge id="id-C-id-a5db90c7-b27d-48d2-a047-6658706ac534-id-C-c2-15" default="true" sourceId="id-a5db90c7-b27d-48d2-a047-6658706ac534" targetId="id-C-c2-15"/>
+        <Edge id="id-C-c4-16-check-loan-amount-6" default="true" sourceId="id-C-c4-16" targetId="id-C-check-loan-amount-6"/>
+        <Edge id="id-C-id-C-check-loan-amount-6-id-31a1f8f5-a62b-462b-ba6f-f0ebf5fb1f64" default="true" sourceId="id-C-check-loan-amount-6" targetId="id-31a1f8f5-a62b-462b-ba6f-f0ebf5fb1f64"/>
+        <Edge id="id-C-c2-15-get-more-info-5" default="true" sourceId="id-C-c2-15" targetId="id-C-get-more-info-5"/>
+        <Edge id="id-C-id-31a1f8f5-a62b-462b-ba6f-f0ebf5fb1f64-id-C-c5-27" default="true" sourceId="id-31a1f8f5-a62b-462b-ba6f-f0ebf5fb1f64" targetId="id-C-c5-27"/>
+        <Edge id="id-C-id-31a1f8f5-a62b-462b-ba6f-f0ebf5fb1f64-id-C-c7-28" default="true" sourceId="id-31a1f8f5-a62b-462b-ba6f-f0ebf5fb1f64" targetId="id-C-c7-28"/>
+        <Edge id="id-C-get-more-info-5-c3-14" default="true" sourceId="id-C-get-more-info-5" targetId="id-C-c3-14"/>
+        <Edge id="id-C-id-C-c3-14-id-728dc737-fe0d-4001-8b5d-c491c28dbc4f" default="true" sourceId="id-C-c3-14" targetId="id-728dc737-fe0d-4001-8b5d-c491c28dbc4f"/>
+        <Edge id="id-C-c7-28-perform-checks-for-small-amount-8" default="true" sourceId="id-C-c7-28" targetId="id-C-perform-checks-for-small-amount-8"/>
+        <Edge id="id-C-c5-27-perform-checks-for-large-amount-7" default="true" sourceId="id-C-c5-27" targetId="id-C-perform-checks-for-large-amount-7"/>
+        <Edge id="id-C-perform-checks-for-small-amount-8-c8-29" default="true" sourceId="id-C-perform-checks-for-small-amount-8" targetId="id-C-c8-29"/>
+        <Edge id="id-C-perform-checks-for-large-amount-7-c6-17" default="true" sourceId="id-C-perform-checks-for-large-amount-7" targetId="id-C-c6-17"/>
+        <Edge id="id-C-id-03c03c50-262c-4da9-9c5b-a6884056c0aa-id-C-make-decision-9" default="true" sourceId="id-03c03c50-262c-4da9-9c5b-a6884056c0aa" targetId="id-C-make-decision-9"/>
+        <Edge id="id-C-id-C-c8-29-id-03c03c50-262c-4da9-9c5b-a6884056c0aa" default="true" sourceId="id-C-c8-29" targetId="id-03c03c50-262c-4da9-9c5b-a6884056c0aa"/>
+        <Edge id="id-C-id-C-c6-17-id-03c03c50-262c-4da9-9c5b-a6884056c0aa" default="true" sourceId="id-C-c6-17" targetId="id-03c03c50-262c-4da9-9c5b-a6884056c0aa"/>
+        <Edge id="id-C-id-C-make-decision-9-id-6b012843-c671-412c-814e-5cfaee3d2c15" default="true" sourceId="id-C-make-decision-9" targetId="id-6b012843-c671-412c-814e-5cfaee3d2c15"/>
+        <Edge id="id-C-id-6b012843-c671-412c-814e-5cfaee3d2c15-id-C-c9-18" default="true" sourceId="id-6b012843-c671-412c-814e-5cfaee3d2c15" targetId="id-C-c9-18"/>
+        <Edge id="id-C-id-6b012843-c671-412c-814e-5cfaee3d2c15-id-C-c10-20" default="true" sourceId="id-6b012843-c671-412c-814e-5cfaee3d2c15" targetId="id-C-c10-20"/>
+        <Edge id="id-C-c9-18-start-approval-23" default="true" sourceId="id-C-c9-18" targetId="id-C-start-approval-23"/>
+        <Edge id="id-C-id-C-start-approval-23-id-4254d90a-0090-4d0b-8443-8e0768b17d58" default="true" sourceId="id-C-start-approval-23" targetId="id-4254d90a-0090-4d0b-8443-8e0768b17d58"/>
+        <Edge id="id-C-c10-20-notify-rejection-12" default="true" sourceId="id-C-c10-20" targetId="id-C-notify-rejection-12"/>
+        <Edge id="id-C-id-4254d90a-0090-4d0b-8443-8e0768b17d58-id-C-c11-25" default="true" sourceId="id-4254d90a-0090-4d0b-8443-8e0768b17d58" targetId="id-C-c11-25"/>
+        <Edge id="id-C-id-4254d90a-0090-4d0b-8443-8e0768b17d58-id-C-c12-26" default="true" sourceId="id-4254d90a-0090-4d0b-8443-8e0768b17d58" targetId="id-C-c12-26"/>
+        <Edge id="id-C-c12-26-deliver-credit-card-11" default="true" sourceId="id-C-c12-26" targetId="id-C-deliver-credit-card-11"/>
+        <Edge id="id-C-c11-25-notify-acceptance-10" default="true" sourceId="id-C-c11-25" targetId="id-C-notify-acceptance-10"/>
+        <Edge id="id-C-deliver-credit-card-11-c14-31" default="true" sourceId="id-C-deliver-credit-card-11" targetId="id-C-c14-31"/>
+        <Edge id="id-C-notify-acceptance-10-c13-19" default="true" sourceId="id-C-notify-acceptance-10" targetId="id-C-c13-19"/>
+        <Edge id="id-C-id-37d5b3b9-0c42-4f4b-8662-09b8175c2622-id-C-complete-approval-21" default="true" sourceId="id-37d5b3b9-0c42-4f4b-8662-09b8175c2622" targetId="id-C-complete-approval-21"/>
+        <Edge id="id-C-id-C-c14-31-id-37d5b3b9-0c42-4f4b-8662-09b8175c2622" default="true" sourceId="id-C-c14-31" targetId="id-37d5b3b9-0c42-4f4b-8662-09b8175c2622"/>
+        <Edge id="id-C-id-C-c13-19-id-37d5b3b9-0c42-4f4b-8662-09b8175c2622" default="true" sourceId="id-C-c13-19" targetId="id-37d5b3b9-0c42-4f4b-8662-09b8175c2622"/>
+        <Edge id="id-C-id-f693f04f-4730-4738-8b89-11306a183e9b-id-C-OutputCondition-2" default="true" sourceId="id-f693f04f-4730-4738-8b89-11306a183e9b" targetId="id-C-OutputCondition-2"/>
+        <Edge id="id-C-id-C-notify-rejection-12-id-f693f04f-4730-4738-8b89-11306a183e9b" default="true" sourceId="id-C-notify-rejection-12" targetId="id-f693f04f-4730-4738-8b89-11306a183e9b"/>
+        <Edge id="id-C-id-C-complete-approval-21-id-f693f04f-4730-4738-8b89-11306a183e9b" default="true" sourceId="id-C-complete-approval-21" targetId="id-f693f04f-4730-4738-8b89-11306a183e9b"/>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D-id-N-CreditApplication-completeApp" originalID="id-N-CreditApplication_completeApp">
             <name>completeApp</name>
             <type>boolean</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D_id-N_CreditApplication_decideApp" originalID="id-N_CreditApplication_decideApp">
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D-id-N-CreditApplication-decideApp" originalID="id-N-CreditApplication_decideApp">
             <name>decideApp</name>
             <type>boolean</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D_id-N_CreditApplication_loanAmt" originalID="id-N_CreditApplication_loanAmt">
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D-id-N-CreditApplication-loanAmt" originalID="id-N-CreditApplication_loanAmt">
             <name>loanAmt</name>
             <type>double</type>
         </Object>

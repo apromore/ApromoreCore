@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical;
@@ -46,14 +46,10 @@ import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType;
 import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType.YawlService;
 
 /**
- * Converts a TaskType and also directly pre-/succeeding routing Nodes.
- * 
+ * Converts a TaskType to a YAWL Task (Atomic/Composite)
+ *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
- */
-/**
- * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType> {
     // TODO refactor this class
@@ -62,7 +58,7 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -84,7 +80,7 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
             taskFacts.setDecomposesTo(d);
 
             if (hasResources(getObject()) && !isAutomatic(getObject())) {
-                taskFacts.setResourcing(convertResourceing(d));
+                taskFacts.setResourcing(convertResourceing());
             } else {
                 isAutomaticTask = true;
                 d.setCodelet(convertCodelet(getObject()));
@@ -111,17 +107,17 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
     }
 
     private YawlService convertYAWLService(final TaskType object) {
-        // TODO Auto-generated method stub
+        // TODO look for extension
         return null;
     }
 
     private String convertCodelet(final TaskType task) {
-        // TODO Auto-generated method stub
+        // TODO look for extension
         return null;
     }
 
     private boolean isAutomatic(final TaskType task) {
-        // TODO Auto-generated method stub
+        // TODO lookup in resources
         return false;
     }
 
@@ -178,7 +174,7 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
         return task.getResourceTypeRef() != null && !task.getResourceTypeRef().isEmpty();
     }
 
-    private ResourcingFactsType convertResourceing(final WebServiceGatewayFactsType decompositionType) {
+    private ResourcingFactsType convertResourceing() {
         final ResourcingFactsType resourceing = getContext().getYawlObjectFactory().createResourcingFactsType();
 
         final ResourcingOfferFactsType offer = getContext().getYawlObjectFactory().createResourcingOfferFactsType();

@@ -31,7 +31,6 @@ import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.WorkType;
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -65,7 +64,6 @@ public abstract class BaseYAWL2CPFTest {
         }
     }
 
-    @Ignore
     @Test
     public void testSaveResult() throws JAXBException, IOException, SAXException {
         TestUtils.printAnf(yawl2Canonical.getAnf(),

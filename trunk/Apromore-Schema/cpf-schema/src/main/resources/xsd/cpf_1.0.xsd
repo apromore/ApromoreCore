@@ -482,15 +482,15 @@
 	
 	<complexType name="ExpressionType">
 		<sequence>		
-			<element name="description" type="string" />
+			<element name="description" type="string" minOccurs="0" />
 			<!-- 
 				Defines the formal language of the expression. Examples could be:
 					http://www.w3.org/1999/xpath/
 					http://www.mvel.org/2.0
 					http://www.w3.org/2005/xpath-functions/		
 			 -->
-			<element name="Language" type="anyURI" />						
-			<element name="expression" type="string" />			
+			<element name="language" type="anyURI" minOccurs="0" />						
+			<element name="expression" type="string" minOccurs="0" />			
 		</sequence>
 	</complexType>
 
@@ -498,9 +498,9 @@
 		<complexContent>
 			<restriction base="cpf:ExpressionType">
 				<sequence>
-					<element name="description" type="string" />				
-					<element name="Language" type="anyURI" />	
-					<element name="expression">
+					<element name="description" type="string" minOccurs="0" />				
+					<element name="language" type="anyURI" minOccurs="0" />	
+					<element name="expression" minOccurs="0">
 						<simpleType>
 							<restriction base="string">							
 								<!-- Internal Variable Name = Query(Obj1, Obj2, ..., ObjN) -->
@@ -517,9 +517,9 @@
 		<complexContent>
 			<restriction base="cpf:ExpressionType">
 				<sequence>
-					<element name="description" type="string" />				
-					<element name="Language" type="anyURI" />					
-					<element name="expression">
+					<element name="description" type="string" minOccurs="0" />				
+					<element name="language" type="anyURI" minOccurs="0" />	
+					<element name="expression" minOccurs="0">
 						<simpleType>
 							<restriction base="string">
 								<!-- Net Object Name = Query(Var1, Var2, ..., VarN) -->

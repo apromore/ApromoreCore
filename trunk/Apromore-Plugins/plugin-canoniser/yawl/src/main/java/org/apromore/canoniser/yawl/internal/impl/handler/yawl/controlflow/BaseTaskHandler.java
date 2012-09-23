@@ -11,12 +11,9 @@
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl.controlflow;
 
-import javax.xml.bind.JAXBException;
-
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.data.InputVarMappingHandler;
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.data.OutputVarMappingHandler;
-import org.apromore.canoniser.yawl.internal.impl.handler.yawl.data.TaskVariableHandler;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
@@ -40,13 +37,13 @@ import org.yawlfoundation.yawlschema.RemovesTokensFromFlowType;
 import org.yawlfoundation.yawlschema.ResourcingExternalInteractionType;
 import org.yawlfoundation.yawlschema.VarMappingFactsType;
 import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType;
+import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType.YawlService;
 
 /**
  * Base class for converting a YAWL task
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
- * @param <T>
  */
 public abstract class BaseTaskHandler extends ExternalNetElementHandler<ExternalTaskFactsType> {
 
@@ -93,6 +90,12 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
         return taskNode;
     }
 
+    /**
+     * Connect the specified Node to its sucessors
+     *
+     * @param taskExitNode
+     * @throws CanoniserException
+     */
     protected void linkToSucessors(final NodeType taskExitNode) throws CanoniserException {
         // Create SPLIT routings if necessary
         if (checkSingleExit(getObject())) {
@@ -106,6 +109,12 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
         }
     }
 
+    /**
+     * Connect the specified Node to its predecessors
+     *
+     * @param taskEntryNode
+     * @throws CanoniserException
+     */
     protected void linkToPredecessors(final NodeType taskEntryNode) throws CanoniserException {
         if (hasIncomingQueue(getObject()) && !checkSingleEntry(getObject())) {
             // Create routing if we are non single entry
@@ -224,25 +233,50 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
         createGraphics(getObject());
     }
 
+    /**
+     * Converts the Tasks decomposition which may be a WebServiceGatewayFactsType in case of an AtomicTask or a NetFactsType in case of a CompositeTask.
+     *
+     * @param taskNode
+     * @param decomposition
+     * @throws CanoniserException
+     */
     private void convertDecomposition(final TaskType taskNode, final DecompositionType decomposition) throws CanoniserException {
         if (decomposition instanceof NetFactsType) {
             final NetFactsType netDecomposition = (NetFactsType) decomposition;
             taskNode.setSubnetId(generateUUID(NET_ID_PREFIX, netDecomposition.getId()));
         } else if (decomposition instanceof WebServiceGatewayFactsType) {
             final WebServiceGatewayFactsType taskDecomposition = (WebServiceGatewayFactsType) decomposition;
+
+            // Input Parameters / YAWL Task Variables
             if (taskDecomposition.getInputParam() != null) {
                 for (final InputParameterFactsType param : taskDecomposition.getInputParam()) {
-                    getContext().getHandlerFactory().createHandler(param, taskNode, decomposition, TaskVariableHandler.class).convert();
+                    addToExtensions(ConversionUtils.marshalYAWLFragment("inputParam", param, InputParameterFactsType.class), taskNode);
                 }
             }
+            // Output Parameters / YAWL Task Variables
             if (taskDecomposition.getOutputParam() != null) {
                 for (final OutputParameterFactsType param : taskDecomposition.getOutputParam()) {
-                    getContext().getHandlerFactory().createHandler(param, taskNode, decomposition, TaskVariableHandler.class).convert();
+                    addToExtensions(ConversionUtils.marshalYAWLFragment("outputParam", param, OutputParameterFactsType.class), taskNode);
                 }
+            }
+
+            if (taskDecomposition.getYawlService() != null) {
+                addToExtensions(ConversionUtils.marshalYAWLFragment("yawlService", taskDecomposition.getYawlService(), YawlService.class), taskNode);
+            }
+
+            if (taskDecomposition.getCodelet() != null) {
+                addToExtensions(ConversionUtils.marshalYAWLFragment("codelet", taskDecomposition.getCodelet(), String.class), taskNode);
             }
         }
     }
 
+    /**
+     * Converts the starting/completed mappings of the Task to input/output expressions
+     *
+     * @param taskNode
+     * @param task
+     * @throws CanoniserException
+     */
     private void convertDataMappings(final TaskType taskNode, final ExternalTaskFactsType task) throws CanoniserException {
         if (task.getCompletedMappings() != null) {
             for (final VarMappingFactsType mapping : task.getCompletedMappings().getMapping()) {
@@ -265,12 +299,7 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
     private void convertConfiguration(final TaskType taskNode, final ExternalTaskFactsType task) throws CanoniserException {
         if (task.getConfiguration() != null) {
             taskNode.setConfigurable(true);
-            try {
-                addToExtensions(ConversionUtils.marshalYAWLFragment("configuration", task.getConfiguration(), ConfigurationType.class),
-                        taskNode);
-            } catch (JAXBException e) {
-                throw new CanoniserException("Failed to add configuration extension", e);
-            }
+            addToExtensions(ConversionUtils.marshalYAWLFragment("configuration", task.getConfiguration(), ConfigurationType.class), taskNode);
         }
     }
 

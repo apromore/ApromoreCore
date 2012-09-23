@@ -51,6 +51,7 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.w3c.dom.Element;
 
 /**
  * Implementation of the RepositoryService Contract.
@@ -510,8 +511,10 @@ public class RepositoryServiceImpl implements RepositoryService {
                 pmvAtt = new ProcessModelAttribute();
                 pmvAtt.setName(obj.getKey());
                 pmvAtt.setValue(obj.getValue().getValue());
-                String anyXML = XMLUtils.anyElementToString(obj.getValue().getAny());
-                //TODO pmvAtt.setAny(anyXML);
+                if (obj.getValue().getAny() instanceof Element) {
+                    String anyXML = XMLUtils.anyElementToString((Element)obj.getValue().getAny());
+                    // pmvAtt.setAny(anyXML);
+                }
                 process.getProcessModelAttributes().add(pmvAtt);
             }
         }

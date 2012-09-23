@@ -24,12 +24,12 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 
 import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.DocumentationType;
 import org.apromore.anf.GraphicsType;
+import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations.YAWLAutoLayouter;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUUIDGenerator;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
@@ -964,7 +964,7 @@ public final class CanonicalConversionContext extends ConversionContext {
                         if (ConversionUtils.isValidFragment(extObj, ConversionUtils.YAWLSCHEMA_URL, elementName)) {
                             return ConversionUtils.unmarshalYAWLFragment(extObj, expectedClass);
                         }
-                    } catch (final JAXBException e) {
+                    } catch (final CanoniserException e) {
                         LOGGER.warn("Could not convert YAWL extension {} of Node {} with type {}",
                                 new String[] { elementName, cpfId, expectedClass.getSimpleName() });
                         LOGGER.warn("Original Exception", e);

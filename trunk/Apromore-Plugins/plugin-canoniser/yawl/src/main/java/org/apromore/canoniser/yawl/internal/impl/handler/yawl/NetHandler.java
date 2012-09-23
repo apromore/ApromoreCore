@@ -14,7 +14,6 @@ package org.apromore.canoniser.yawl.internal.impl.handler.yawl;
 import java.math.BigDecimal;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.DocumentationType;
@@ -101,11 +100,7 @@ public class NetHandler extends YAWLConversionHandler<NetFactsType, CanonicalPro
         final DocumentationType d = getContext().getAnnotationOF().createDocumentationType();
         d.setCpfId(generateUUID(NET_ID_PREFIX, canoncialNet.getId()));
         d.setId(generateUUID());
-        try {
-            d.getAny().add(ConversionUtils.marshalYAWLFragment("documentation", documentation, String.class));
-        } catch (JAXBException e) {
-            throw new CanoniserException("Failed to add documentation of Net to Annotation", e);
-        }
+        d.getAny().add(ConversionUtils.marshalYAWLFragment("documentation", documentation, String.class));
         return d;
     }
 

@@ -12,13 +12,19 @@ import org.yawlfoundation.yawlschema.NetFactsType;
 import org.yawlfoundation.yawlschema.ResourcingExternalInteractionType;
 import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType;
 
+/**
+ * TODO
+ *
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ *
+ */
 public class MessageTypeHandler extends DecompositionHandler<MessageType, NetFactsType> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(TimerTypeHandler.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(MessageTypeHandler.class);
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
