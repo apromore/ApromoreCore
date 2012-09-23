@@ -10,51 +10,47 @@
         <version>1.0</version>
     </parent>
 
-    <artifactId>canoniser-api-provider</artifactId>    
-    <name>Apromore Canoniser API Provider</name>
-	<description>
-		Provider for Canonisers using OSGi to dynamically discover available Canonisers
-	</description>
+    <artifactId>plugin-rpst</artifactId>   
+    <packaging>jar</packaging> 
+    <name>Apromore Plugin - RPST</name>
+    <description>
+		Plugin providing a RPST implementation for the CPF.
+	</description>   
+	<url>https://code.google.com/p/jbpt/</url>
 
     <build>
         <plugins>
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<!-- Embed all non-OSGi dependencies in our JAR -->
+						<Embed-Dependency>*;scope=compile;inline=true</Embed-Dependency>
+						<!-- Import everything we use -->
+						<Import-Package>
+							*
+						</Import-Package>
+						<!-- Add exported classes -->
+						<Export-Package>
+							
+						</Export-Package>						
+					</instructions>
+				</configuration>
 			</plugin>
 		</plugins>
     </build>
-	
-	<dependencies>
+
+    
+	<dependencies>			
 		<dependency>
 			<groupId>org.apromore.plugin</groupId>
 			<artifactId>plugin-api</artifactId>
 			<version>1.0</version>
-			<scope>compile</scope> <!-- Change to Provided -->
-		</dependency>
-			
-		<dependency>
-			<groupId>org.apromore.plugin</groupId>
-			<artifactId>canoniser-api</artifactId>
-			<version>1.0</version>
-			<scope>compile</scope> <!-- Change to Provided -->
-		</dependency>
-		
-		<!-- Schemas used for utility methods provided by the DefaultAbstractCanoniser -->
-		<dependency>
-			<groupId>org.apromore</groupId>
-			<artifactId>anf-schema</artifactId>
-			<version>1.0</version>
-			<scope>compile</scope>
-		</dependency>
-		<dependency>
-			<groupId>org.apromore</groupId>
-			<artifactId>cpf-schema</artifactId>
-			<version>1.0</version>
-			<scope>compile</scope>
-		</dependency>
-				
-		<!-- Provided dependencies -->
+			<scope>compile</scope> <!-- Change to provided when switching to OSGi -->
+		</dependency>		
+
+		<!-- Blueprint will be used as switching to OSGi -->
 		<dependency>
 		  <groupId>org.eclipse.gemini</groupId>
 		  <artifactId>org.eclipse.gemini.blueprint.extender</artifactId>
@@ -66,7 +62,15 @@
 		<dependency>
 		  <groupId>org.eclipse.gemini</groupId>
 		  <artifactId>org.eclipse.gemini.blueprint.io</artifactId>
-		</dependency>    
+		</dependency>
+        
+		<!-- Schema -->
+        <dependency>
+            <groupId>org.apromore</groupId>
+            <artifactId>cpf-schema</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope> <!-- Change to provided when switching to OSGi -->
+        </dependency>      
 		
 		<!-- Test dependencies -->
 		<dependency>
@@ -77,10 +81,7 @@
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-		</dependency>	  
+		
     </dependencies>
     
 </project>
