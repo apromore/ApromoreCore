@@ -82,15 +82,15 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
 
     private MacroRewriter createPatternRewriter() {
         final MacroRewriter patternRewriter = new MacroRewriter();
-        patternRewriter.addPattern(new CheckValidModelMacro(getContext()));
-        patternRewriter.addPattern(new MESEToSESEMacro(getContext()));
-        patternRewriter.addPattern(new SEMEToSESEMacro(getContext()));
-        patternRewriter.addPattern(new TimerOnEnablementMacro(getContext()));
-        patternRewriter.addPattern(new TimerOnStartMacro(getContext()));
-        patternRewriter.addPattern(new AutomaticTimerMacro(getContext()));
-        patternRewriter.addPattern(new MiscTimerMacro(getContext()));
-        patternRewriter.addPattern(new RoutingNodeMacro(getContext()));
-        patternRewriter.addPattern(new EnsureInputOutputCondition(getContext()));
+        patternRewriter.addMacro(new CheckValidModelMacro(getContext()));
+        patternRewriter.addMacro(new MESEToSESEMacro(getContext()));
+        patternRewriter.addMacro(new SEMEToSESEMacro(getContext()));
+        patternRewriter.addMacro(new TimerOnEnablementMacro(getContext()));
+        patternRewriter.addMacro(new TimerOnStartMacro(getContext()));
+        patternRewriter.addMacro(new AutomaticTimerMacro(getContext()));
+        patternRewriter.addMacro(new MiscTimerMacro(getContext()));
+        patternRewriter.addMacro(new RoutingNodeMacro(getContext()));
+        patternRewriter.addMacro(new EnsureInputOutputCondition(getContext()));
         return patternRewriter;
     }
 

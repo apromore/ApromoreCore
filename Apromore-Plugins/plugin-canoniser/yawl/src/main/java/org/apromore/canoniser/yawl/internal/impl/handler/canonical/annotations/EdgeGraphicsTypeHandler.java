@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations;
@@ -34,17 +34,20 @@ import org.yawlfoundation.yawlschema.ObjectFactory;
 
 /**
  * Convert the layout for a CPF edge (YAWL Flow).
- * 
+ *
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(EdgeGraphicsTypeHandler.class.getName());
+    private static final int DEFAULT_LINE_SIZE = 11;
+    private static final int DEFAULT_YAWL_PORT = 14;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(EdgeGraphicsTypeHandler.class);
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -111,14 +114,14 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
 
         // Convert Ports
         final LayoutPortsType ports = oF.createLayoutPortsType();
-        // 14 is the DEFAULT for not known in YAWL
-        ports.setIn(BigInteger.valueOf(14));
-        ports.setOut(BigInteger.valueOf(14));
+        // Set default port as we don't know better
+        ports.setIn(BigInteger.valueOf(DEFAULT_YAWL_PORT));
+        ports.setOut(BigInteger.valueOf(DEFAULT_YAWL_PORT));
         flowLayout.setPorts(ports);
 
         // Add default line style
         final LayoutAttributesFactsType attributes = oF.createLayoutAttributesFactsType();
-        attributes.getAutosizeOrBackgroundColorOrBendable().add(oF.createLayoutAttributesFactsTypeLineStyle(BigInteger.valueOf(11)));
+        attributes.getAutosizeOrBackgroundColorOrBendable().add(oF.createLayoutAttributesFactsTypeLineStyle(BigInteger.valueOf(DEFAULT_LINE_SIZE)));
         flowLayout.setAttributes(attributes);
 
         // Set default sizes

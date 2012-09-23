@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer;
@@ -27,9 +27,9 @@ import org.yawlfoundation.yawlschema.TimerTriggerType;
 
 /**
  * Rewrite all other Timers that does not match a special category by introducing an artificial automated Task with an attached onEnablement Timer.
- * 
+ *
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class MiscTimerMacro extends AbstractTimerMacro {
 
@@ -41,7 +41,7 @@ public class MiscTimerMacro extends AbstractTimerMacro {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.RewriteMacro#rewrite(org.apromore.cpf.CanonicalProcessType)
      */
     @Override
@@ -54,7 +54,7 @@ public class MiscTimerMacro extends AbstractTimerMacro {
             while (nodeIterator.hasNext()) {
                 final NodeType node = nodeIterator.next();
                 if (node instanceof TimerType) {
-                    hasRewritten = hasRewritten || rewriteMisc((TimerType) node, net, cpf, nodeIterator);
+                    hasRewritten = hasRewritten || rewriteMisc((TimerType) node, net, cpf);
                 }
             }
 
@@ -70,7 +70,7 @@ public class MiscTimerMacro extends AbstractTimerMacro {
         return hasRewritten;
     }
 
-    private boolean rewriteMisc(final TimerType timer, final NetType net, final CanonicalProcessType cpf, final ListIterator<NodeType> nodeIterator) {
+    private boolean rewriteMisc(final TimerType timer, final NetType net, final CanonicalProcessType cpf) {
         LOGGER.debug("Rewriting Timer (Misc)");
 
         final ObjectFactory oF = new ObjectFactory();

@@ -41,11 +41,18 @@ public class ConversionUtils {
 
     private static final JAXBContext YAWL_CONTEXT = initYAWLContext();
 
+    /**
+     * Hidden constructor as this class is not meant to be instantiated
+     */
+    private ConversionUtils() {
+        super();
+    }
+
     private static JAXBContext initYAWLContext() {
         try {
             return JAXBContext.newInstance("org.yawlfoundation.yawlschema");
         } catch (final JAXBException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Could not create JAXBContext for YAWL Schema. This should never happen!", e);
         }
     }
 
@@ -54,8 +61,7 @@ public class ConversionUtils {
         final int red = (rgb >> 16) & 0x0ff;
         final int green = (rgb >> 8) & 0x0ff;
         final int blue = (rgb) & 0x0ff;
-        final String color = String.format("R:%dG:%dB:%d", red, green, blue);
-        return color;
+        return String.format("R:%dG:%dB:%d", red, green, blue);
     }
 
     public static BigInteger convertColorToBigInteger(final String colorAsString) {
@@ -81,7 +87,7 @@ public class ConversionUtils {
     public static String generateUniqueName(final String originalName, final Set<String> nameSet) {
         int i = 1;
         String newName = originalName + i;
-        while (nameSet.contains(newName) && (i < 1000)) { // Prevent infinite loops on strange input data
+        while (nameSet.contains(newName) && (i < 10000)) { // Prevent infinite loops on strange input data
             newName = originalName + (++i);
         }
         return newName;

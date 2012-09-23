@@ -45,7 +45,7 @@ import org.yawlfoundation.yawlschema.ObjectFactory;
  */
 public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(NodeGraphicsTypeHandler.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(NodeGraphicsTypeHandler.class);
 
     private static final String JOIN_ROUTING_TYPE = "join";
     private static final String SPLIT_ROUTING_TYPE = "split";

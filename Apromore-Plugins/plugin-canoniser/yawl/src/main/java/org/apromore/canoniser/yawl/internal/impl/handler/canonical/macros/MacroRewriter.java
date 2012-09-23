@@ -26,17 +26,29 @@ import org.apromore.cpf.CanonicalProcessType;
  */
 public class MacroRewriter {
 
-    final private List<RewriteMacro> availableMacros;
+    private final List<RewriteMacro> availableMacros;
 
     public MacroRewriter() {
         super();
         availableMacros = new ArrayList<RewriteMacro>();
     }
 
-    public void addPattern(final RewriteMacro m) {
+    /**
+     * Add Macro to our list of Macros
+     *
+     * @param m Macro
+     */
+    public void addMacro(final RewriteMacro m) {
         availableMacros.add(m);
     }
 
+    /**
+     * Executes all added Macros in the order they were added
+     *
+     * @param cpf Canonical Process all Macros will be applied to
+     * @return a Collection of all Macros that rewrote someting
+     * @throws CanoniserException
+     */
     public Collection<RewriteMacro> executeAllMacros(final CanonicalProcessType cpf) throws CanoniserException {
         final Collection<RewriteMacro> appliedMacros = new ArrayList<RewriteMacro>();
         for (final RewriteMacro m : availableMacros) {

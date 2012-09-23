@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations;
@@ -24,15 +24,20 @@ import org.yawlfoundation.yawlschema.ObjectFactory;
 
 /**
  * Convert the layout of a CPF NetType to YAWL
- * 
+ *
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class NetGraphicsTypeHandler extends CanonicalElementHandler<GraphicsType, Specification> {
 
+    private static final int DEFAULT_NET_HEIGHT = 800;
+    private static final int DEFAULT_NET_WIDTH = 800;
+    private static final int DEFAULT_NET_X = 0;
+    private static final int DEFAULT_NET_Y = 0;
+
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -66,7 +71,7 @@ public class NetGraphicsTypeHandler extends CanonicalElementHandler<GraphicsType
 
     /**
      * Converts the ANF GraphicsType to an YAWL frame omitting the position information.
-     * 
+     *
      * @param graphic
      *            of ANF
      * @return YAWL frame
@@ -79,8 +84,8 @@ public class NetGraphicsTypeHandler extends CanonicalElementHandler<GraphicsType
             frame.setW(graphic.getSize().getWidth().toBigInteger());
         } else {
             // Some default values
-            frame.setH(BigInteger.valueOf(800));
-            frame.setW(BigInteger.valueOf(800));
+            frame.setH(BigInteger.valueOf(DEFAULT_NET_HEIGHT));
+            frame.setW(BigInteger.valueOf(DEFAULT_NET_WIDTH));
         }
 
         if (graphic.getPosition().size() == 1) {
@@ -88,8 +93,8 @@ public class NetGraphicsTypeHandler extends CanonicalElementHandler<GraphicsType
             frame.setY(graphic.getPosition().get(0).getY().toBigInteger());
         } else {
             // Some default value
-            frame.setX(BigInteger.valueOf(0));
-            frame.setY(BigInteger.valueOf(0));
+            frame.setX(BigInteger.valueOf(DEFAULT_NET_X));
+            frame.setY(BigInteger.valueOf(DEFAULT_NET_Y));
         }
         return frame;
     }

@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.context;
@@ -55,11 +55,11 @@ import org.yawlfoundation.yawlschema.orgdata.RoleType;
 
 /**
  * Context for a conversion from YAWL to Apromores canonical format. This is the glue for all handlers.
- * 
+ *
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
-public class YAWLConversionContext extends ConversionContext {
+public final class YAWLConversionContext extends ConversionContext {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(YAWL22Canoniser.class.getName());
 
@@ -174,7 +174,7 @@ public class YAWLConversionContext extends ConversionContext {
     /**
      * Map of Objects by Task and Name
      */
-    private HashMap<String, Map<String, SoftType>> taskObjectsByName;
+    private Map<String, Map<String, SoftType>> taskObjectsByName;
 
     public YAWLConversionContext(final YAWLSpecificationFactsType specification, final LayoutFactsType layoutFactsType, final OrgDataType orgDataType) {
         this.setOrgDataType(orgDataType);
@@ -272,7 +272,7 @@ public class YAWLConversionContext extends ConversionContext {
 
     /**
      * Get the successors of this YAWL element, will be initialised on the first call of this methods.
-     * 
+     *
      * @param netElement
      *            any element of a YAWL net
      * @return
@@ -290,7 +290,7 @@ public class YAWLConversionContext extends ConversionContext {
 
     /**
      * Get the predecessors of this YAWL element, will be initialised on the firs call of this method.
-     * 
+     *
      * @param netElement
      *            any element of a YAWL net
      * @return
