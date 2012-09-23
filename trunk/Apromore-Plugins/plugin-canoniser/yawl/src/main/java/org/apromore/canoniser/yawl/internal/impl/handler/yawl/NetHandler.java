@@ -99,7 +99,7 @@ public class NetHandler extends YAWLConversionHandler<NetFactsType, CanonicalPro
 
     private DocumentationType convertDocumentation(final NetType canoncialNet, final String documentation) throws CanoniserException {
         final DocumentationType d = getContext().getAnnotationOF().createDocumentationType();
-        d.setCpfId(generateUUID(NET_ID_PREFIX, getObject().getId()));
+        d.setCpfId(generateUUID(NET_ID_PREFIX, canoncialNet.getId()));
         d.setId(generateUUID());
         try {
             d.getAny().add(ConversionUtils.marshalYAWLFragment("documentation", documentation, String.class));

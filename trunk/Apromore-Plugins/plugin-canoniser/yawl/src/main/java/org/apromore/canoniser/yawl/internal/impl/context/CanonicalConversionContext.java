@@ -65,7 +65,7 @@ import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public class CanonicalConversionContext extends ConversionContext {
+public final class CanonicalConversionContext extends ConversionContext {
 
     public class ElementInfo {
         public ExternalNetElementType element;
@@ -76,7 +76,7 @@ public class CanonicalConversionContext extends ConversionContext {
         public boolean isAutomatic = false;
     }
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CanonicalConversionContext.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CanonicalConversionContext.class);
 
     private static final Locale DEFAULT_LOCALE = Locale.US;
 
@@ -752,7 +752,6 @@ public class CanonicalConversionContext extends ConversionContext {
         return null;
     }
 
-    // TODO optimize with Map
     /**
      * Get the already converted LayoutContainerFactsType for the Element with provided YAWL ID.
      *
@@ -761,6 +760,7 @@ public class CanonicalConversionContext extends ConversionContext {
      * @return LayoutContainerFactsType or NULL is none found
      */
     public LayoutContainerFactsType getConvertedElementLayout(final String id) {
+        // TODO optimize with Map
         final Specification specification = getYAWLSpecificationSet().getLayout().getSpecification().get(0);
         for (final LayoutNetFactsType netLayout : specification.getNet()) {
             for (final JAXBElement<?> element : netLayout.getBoundsOrFrameOrViewport()) {
@@ -956,7 +956,7 @@ public class CanonicalConversionContext extends ConversionContext {
         return variablesForNet;
     }
 
-    public <T> T getYAWLExtension(final String cpfId, final String elementName, final Class<T> expectedClass) {
+    public <T> T getYAWLExtensionFromAnnotations(final String cpfId, final String elementName, final Class<T> expectedClass) {
         for (final AnnotationType ann : getAnnotations(cpfId)) {
             if (!(ann instanceof DocumentationType || ann instanceof GraphicsType)) {
                 for (final Object extObj : ann.getAny()) {

@@ -65,8 +65,8 @@ public class MESEToSESEMacro extends ContextAwareRewriteMacro {
                     }
                 }
                 if (entryEvents.size() > 1) {
-                    LOGGER.debug("Rewriting Net with multiple entry nodes");
-                    fixWithOrSplit(net, entryEvents);
+                    LOGGER.info("Rewriting Net with multiple entry nodes");
+                    fixWithOrSplit(entryEvents);
                     hasRewritten = true;
                     cleanupNet(net);
                 }
@@ -82,7 +82,7 @@ public class MESEToSESEMacro extends ContextAwareRewriteMacro {
         return hasRewritten;
     }
 
-    private void fixWithOrSplit(final NetType net, final Collection<NodeType> entryNodes) {
+    private void fixWithOrSplit(final Collection<NodeType> entryNodes) {
         final ObjectFactory cpfFactory = new ObjectFactory();
 
         LOGGER.debug("Fix using OR Split");

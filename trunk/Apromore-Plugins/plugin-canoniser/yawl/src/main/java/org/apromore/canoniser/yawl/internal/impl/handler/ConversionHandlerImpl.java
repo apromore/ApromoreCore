@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler;
@@ -15,9 +15,9 @@ import org.apromore.canoniser.yawl.internal.impl.context.ConversionContext;
 
 /**
  * Abstract base class for all conversion Handlers. A Handler usually is responsible for converting one Element of type T.
- * 
+ *
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  * @param <T>
  *            type of Element to be converted
  * @param <E>
@@ -32,7 +32,7 @@ public abstract class ConversionHandlerImpl<T, E> implements ConversionHandler<T
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#setObject(java.lang.Object)
      */
     @SuppressWarnings("unchecked")
@@ -51,7 +51,7 @@ public abstract class ConversionHandlerImpl<T, E> implements ConversionHandler<T
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#setParent(java.lang.Object)
      */
     @SuppressWarnings("unchecked")
@@ -69,7 +69,7 @@ public abstract class ConversionHandlerImpl<T, E> implements ConversionHandler<T
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#setOriginalParent(java.lang.Object)
      */
     @Override
@@ -86,7 +86,7 @@ public abstract class ConversionHandlerImpl<T, E> implements ConversionHandler<T
 
     /**
      * Set the ConversionContext for this Handler
-     * 
+     *
      * @param context
      */
     @Override
@@ -96,7 +96,7 @@ public abstract class ConversionHandlerImpl<T, E> implements ConversionHandler<T
 
     /**
      * The returned UUID will be the same, if the same prefix and id combination is used.
-     * 
+     *
      * @param prefix
      *            used if IDs are not unique across different types of elements
      * @param id
@@ -113,7 +113,7 @@ public abstract class ConversionHandlerImpl<T, E> implements ConversionHandler<T
 
     /**
      * The returned UUID will be the same, if the same id is used.
-     * 
+     *
      * @param id
      *            of the element
      * @return the UUID associated with this element
@@ -125,7 +125,7 @@ public abstract class ConversionHandlerImpl<T, E> implements ConversionHandler<T
 
     /**
      * The returned UUID will be the a new one for each call.
-     * 
+     *
      * @return the newly generated UUID
      */
     protected String generateUUID() {

@@ -51,7 +51,7 @@ import org.yawlfoundation.yawlschema.orgdata.YAWLOrgDataSchema;
 @Component("yawlCanoniser")
 public class YAWL22Canoniser extends DefaultAbstractCanoniser {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(YAWL22Canoniser.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(YAWL22Canoniser.class);
 
     private static final String YAWL_ORGDATA_URI = "http://www.yawlfoundation.org/yawlschema/orgdata";
 
@@ -184,7 +184,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
             }
 
             marshalYAWLFormat(canonical2yawl.getYAWL(), nativeOutput);
-            YAWLOrgDataSchema.marshalYAWLOrgDataFormat((OutputStream) resourceDataInput.getValue(), canonical2yawl.getOrgData(), true);
+            YAWLOrgDataSchema.marshalYAWLOrgDataFormat((OutputStream) resourceDataOutput.getValue(), canonical2yawl.getOrgData(), true);
 
         } catch (final JAXBException e) {
             throw new CanoniserException(e);

@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros;
@@ -27,9 +27,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Converts any multiple exit Net into a single exit Net. By default it only adds an OR-JOIN, but more sophisticated techniques could be implemented.
- * 
+ *
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class SEMEToSESEMacro extends ContextAwareRewriteMacro implements RewriteMacro {
 
@@ -41,7 +41,7 @@ public class SEMEToSESEMacro extends ContextAwareRewriteMacro implements Rewrite
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.RewriteMacro#rewrite(org.apromore.cpf.CanonicalProcessType)
      */
     @Override
@@ -59,8 +59,8 @@ public class SEMEToSESEMacro extends ContextAwareRewriteMacro implements Rewrite
                     }
                 }
                 if (exitEvents.size() > 1) {
-                    LOGGER.debug("Rewriting Net with multiple exit nodes");
-                    fixWithORJoin(net, exitEvents);
+                    LOGGER.info("Rewriting Net with multiple exit nodes");
+                    fixWithORJoin(exitEvents);
                     hasRewritten = true;
                     cleanupNet(net);
                 }
@@ -74,7 +74,7 @@ public class SEMEToSESEMacro extends ContextAwareRewriteMacro implements Rewrite
 
     }
 
-    private void fixWithORJoin(final NetType net, final Collection<NodeType> exitNodes) {
+    private void fixWithORJoin(final Collection<NodeType> exitNodes) {
         final ObjectFactory cpfFactory = new ObjectFactory();
 
         // Create ORJoin
