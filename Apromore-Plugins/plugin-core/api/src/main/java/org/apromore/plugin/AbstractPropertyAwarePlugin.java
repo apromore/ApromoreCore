@@ -26,7 +26,7 @@ import org.apromore.plugin.property.PropertyType;
 /**
  * Abstract default implementation of handling the properties.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public abstract class AbstractPropertyAwarePlugin implements PropertyAwarePlugin {

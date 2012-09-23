@@ -44,7 +44,7 @@ import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType;
 /**
  * Base class for converting a YAWL task
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  * @param <T>
  */

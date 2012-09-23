@@ -21,7 +21,7 @@ import org.apromore.plugin.exception.PluginException;
 /**
  * Thrown if a Canoniser can not proceed with the conversion.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public class CanoniserException extends PluginException {

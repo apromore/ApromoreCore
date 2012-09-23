@@ -39,7 +39,7 @@ import org.yawlfoundation.yawlschema.NetFactsType;
 /**
  * Converts all Annotations from ANF to a YAWL layout. It will also guess defaults for elements that don't have any layout.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsType, Object> {

@@ -17,7 +17,7 @@ import org.apromore.cpf.CanonicalProcessType;
 /**
  * A Macro that rewrites the CPF in some way.
  * 
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public interface RewriteMacro {

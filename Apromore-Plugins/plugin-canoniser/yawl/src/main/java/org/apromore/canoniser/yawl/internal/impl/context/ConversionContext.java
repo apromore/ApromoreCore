@@ -17,7 +17,7 @@ import org.apromore.canoniser.yawl.internal.utils.ConversionUUIDGenerator;
 /**
  * Base class for both conversion contexts containing common functionality.
  * 
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class ConversionContext {

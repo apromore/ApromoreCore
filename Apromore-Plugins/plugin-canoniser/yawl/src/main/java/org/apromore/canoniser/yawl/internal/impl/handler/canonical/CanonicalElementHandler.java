@@ -30,7 +30,7 @@ import org.yawlfoundation.yawlschema.TimerType;
 /**
  * Abstract base class for all handlers that convert from CPF to YAWL
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  * @param <T>
  *            type of Element to be converted

@@ -16,7 +16,7 @@ import org.yawlfoundation.yawlschema.ExternalNetElementType;
 /**
  * Adapter used to keep "ExternalNetElementType" objects in HashMaps unique by their ID.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public class ElementAdapter {

@@ -53,7 +53,7 @@ import org.yawlfoundation.yawlschema.LayoutVertexFactsType;
 /**
  * Base class for converting all external net elements
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  * @param <T>
  *            type of Element to be converted

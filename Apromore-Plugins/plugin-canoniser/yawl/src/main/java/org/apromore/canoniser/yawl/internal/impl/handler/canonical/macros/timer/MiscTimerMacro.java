@@ -28,7 +28,7 @@ import org.yawlfoundation.yawlschema.TimerTriggerType;
 /**
  * Rewrite all other Timers that does not match a special category by introducing an artificial automated Task with an attached onEnablement Timer.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public class MiscTimerMacro extends AbstractTimerMacro {

@@ -28,7 +28,7 @@ import org.apromore.plugin.PropertyAwarePlugin;
 /**
  * Interface to an Apromore canoniser. Each canoniser is build as a OSGi plugin and has to implement this interface.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  */
 public interface Canoniser extends PropertyAwarePlugin {
 

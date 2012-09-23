@@ -22,7 +22,7 @@ import org.w3c.dom.Node;
 /**
  * Helper class for all kind of various static methods and constants
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public class ConversionUtils {

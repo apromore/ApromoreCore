@@ -19,7 +19,7 @@ package org.apromore.plugin.property;
 /**
  * Property that holds a simple String value. Just a convenience class.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public class StringProperty extends DefaultProperty {
