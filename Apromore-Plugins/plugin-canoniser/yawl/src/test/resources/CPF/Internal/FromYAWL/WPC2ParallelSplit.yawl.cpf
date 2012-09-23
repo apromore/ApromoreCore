@@ -1,38 +1,38 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WP1SequencePattern" version="0.1" name="WP1SequencePattern" author="Felix" rootIds="id-N_Net">
-    <Net id="id-N_Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_InputCondition" originalID="InputCondition">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WP1SequencePattern" version="0.1" name="WP1SequencePattern" author="Felix" rootIds="id-N-Net">
+    <Net id="id-N-Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_A" originalID="A">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-A" originalID="A">
             <name>A</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="id-35710ef5-2144-4ccf-8ab8-4332b918749e"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_B" originalID="B">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="id-20830eb8-14ab-4367-837a-d2a4edad9556"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-B" originalID="B">
             <name>B</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_C" originalID="C">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-C" originalID="C">
             <name>C</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_D" originalID="D">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-D" originalID="D">
             <name>D</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C_E" originalID="E">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-E" originalID="E">
             <name>E</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDJoinType" id="id-5d430ca4-d7d7-4d8c-bf71-30febaad3d05"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_OutputCondition" originalID="OutputCondition">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDJoinType" id="id-0e4af20a-e715-4eaa-834f-6b9555f018da"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="id-C_InputCondition-A" default="true" sourceId="id-C_InputCondition" targetId="id-C_A"/>
-        <Edge id="id-C_id-C_A-id-35710ef5-2144-4ccf-8ab8-4332b918749e" default="true" sourceId="id-C_A" targetId="id-35710ef5-2144-4ccf-8ab8-4332b918749e"/>
-        <Edge id="id-C_id-35710ef5-2144-4ccf-8ab8-4332b918749e-id-C_B" default="true" sourceId="id-35710ef5-2144-4ccf-8ab8-4332b918749e" targetId="id-C_B"/>
-        <Edge id="id-C_id-35710ef5-2144-4ccf-8ab8-4332b918749e-id-C_C" default="true" sourceId="id-35710ef5-2144-4ccf-8ab8-4332b918749e" targetId="id-C_C"/>
-        <Edge id="id-C_id-35710ef5-2144-4ccf-8ab8-4332b918749e-id-C_D" default="true" sourceId="id-35710ef5-2144-4ccf-8ab8-4332b918749e" targetId="id-C_D"/>
-        <Edge id="id-C_id-5d430ca4-d7d7-4d8c-bf71-30febaad3d05-id-C_E" default="true" sourceId="id-5d430ca4-d7d7-4d8c-bf71-30febaad3d05" targetId="id-C_E"/>
-        <Edge id="id-C_id-C_B-id-5d430ca4-d7d7-4d8c-bf71-30febaad3d05" default="true" sourceId="id-C_B" targetId="id-5d430ca4-d7d7-4d8c-bf71-30febaad3d05"/>
-        <Edge id="id-C_id-C_C-id-5d430ca4-d7d7-4d8c-bf71-30febaad3d05" default="true" sourceId="id-C_C" targetId="id-5d430ca4-d7d7-4d8c-bf71-30febaad3d05"/>
-        <Edge id="id-C_id-C_D-id-5d430ca4-d7d7-4d8c-bf71-30febaad3d05" default="true" sourceId="id-C_D" targetId="id-5d430ca4-d7d7-4d8c-bf71-30febaad3d05"/>
-        <Edge id="id-C_E-OutputCondition" default="true" sourceId="id-C_E" targetId="id-C_OutputCondition"/>
+        <Edge id="id-C-InputCondition-A" default="true" sourceId="id-C-InputCondition" targetId="id-C-A"/>
+        <Edge id="id-C-id-C-A-id-20830eb8-14ab-4367-837a-d2a4edad9556" default="true" sourceId="id-C-A" targetId="id-20830eb8-14ab-4367-837a-d2a4edad9556"/>
+        <Edge id="id-C-id-20830eb8-14ab-4367-837a-d2a4edad9556-id-C-B" default="true" sourceId="id-20830eb8-14ab-4367-837a-d2a4edad9556" targetId="id-C-B"/>
+        <Edge id="id-C-id-20830eb8-14ab-4367-837a-d2a4edad9556-id-C-C" default="true" sourceId="id-20830eb8-14ab-4367-837a-d2a4edad9556" targetId="id-C-C"/>
+        <Edge id="id-C-id-20830eb8-14ab-4367-837a-d2a4edad9556-id-C-D" default="true" sourceId="id-20830eb8-14ab-4367-837a-d2a4edad9556" targetId="id-C-D"/>
+        <Edge id="id-C-id-0e4af20a-e715-4eaa-834f-6b9555f018da-id-C-E" default="true" sourceId="id-0e4af20a-e715-4eaa-834f-6b9555f018da" targetId="id-C-E"/>
+        <Edge id="id-C-id-C-B-id-0e4af20a-e715-4eaa-834f-6b9555f018da" default="true" sourceId="id-C-B" targetId="id-0e4af20a-e715-4eaa-834f-6b9555f018da"/>
+        <Edge id="id-C-id-C-C-id-0e4af20a-e715-4eaa-834f-6b9555f018da" default="true" sourceId="id-C-C" targetId="id-0e4af20a-e715-4eaa-834f-6b9555f018da"/>
+        <Edge id="id-C-id-C-D-id-0e4af20a-e715-4eaa-834f-6b9555f018da" default="true" sourceId="id-C-D" targetId="id-0e4af20a-e715-4eaa-834f-6b9555f018da"/>
+        <Edge id="id-C-E-OutputCondition" default="true" sourceId="id-C-E" targetId="id-C-OutputCondition"/>
     </Net>
 </ns2:CanonicalProcess>

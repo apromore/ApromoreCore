@@ -27,16 +27,27 @@ import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.plugin.AbstractPropertyAwarePlugin;
+import org.apromore.plugin.impl.DefaultPropertyAwarePlugin;
 import org.xml.sax.SAXException;
 
 /**
- * Implements common functionality shared by all Canonisers
+ * Implements common functionality shared by all Canonisers and reads the supported native type from the Canonisers 'plugin.config' file. The key used
+ * is: 'canoniser.nativeType'.
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public abstract class DefaultAbstractCanoniser extends AbstractPropertyAwarePlugin implements Canoniser {
+public abstract class DefaultAbstractCanoniser extends DefaultPropertyAwarePlugin implements Canoniser {
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apromore.canoniser.Canoniser#getNativeType()
+     */
+    @Override
+    public String getNativeType() {
+        return getConfigurationByName("canoniser.nativeType");
+    }
 
     /**
      * Marshal the Canonical Process Format into the provided OutputStream with Validation.

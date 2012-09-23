@@ -6,12 +6,10 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.io.StringWriter;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
@@ -43,7 +41,7 @@ public class XMLUtils {
             w.flush();
             w.close();
         } catch (final IOException e) {
-            e.printStackTrace();
+            LOGGER.error("Error in xmlToFile", e);
         }
     }
 
@@ -66,32 +64,36 @@ public class XMLUtils {
             transformer.transform(domSource, result);
             return writer.toString();
         } catch (final TransformerException ex) {
-            ex.printStackTrace();
+            LOGGER.error("Error in xmlToFile", ex);
             return null;
         }
     }
 
     /**
-     * Converts an Object representing an xs:any type into its XML String representation.
+     * Converts an Element into its XML String representation.
      *
      * @param any extensions element that should contain valid XML with unkown schema
      * @return String representation of XML
      */
-    public static String anyElementToString(final Object any) {
+    public static String anyElementToString(final Element anyElement) {
         // If Object is NULL, then we return NULL
-        if (any == null) {
+        if (anyElement == null) {
             LOGGER.warn("anyElementToString returning NULL");
             return null;
         }
         // Otherwise return XML representation
         try {
-            final JAXBContext context = JAXBContext.newInstance();
-            final Marshaller marshaller = context.createMarshaller();
+            final DOMSource domSource = new DOMSource(anyElement);
             final StringWriter writer = new StringWriter();
-            marshaller.marshal(any, writer);
+            final StreamResult result = new StreamResult(writer);
+            final TransformerFactory tf = TransformerFactory.newInstance();
+            final Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.transform(domSource, result);
             return writer.toString();
-        } catch (final JAXBException e) {
-            throw new IllegalArgumentException("Invalid Node in ANY!");
+        } catch (final TransformerException e) {
+            throw new IllegalArgumentException("Invalid Node in ANY!", e);
         }
     }
 
@@ -101,7 +103,7 @@ public class XMLUtils {
      * @param value String containing XML
      * @return Object representation of XML
      */
-    public static Object stringToAnyElement(final String name, final String value) {
+    public static Element stringToAnyElement(final String value) {
         // If Object is NULL, then we return NULL
         if (value == null) {
             LOGGER.warn("stringToAnyElement returning NULL");
@@ -110,11 +112,10 @@ public class XMLUtils {
         try {
             // Otherwise return XML representation
             final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            final Element node  = docBuilder.parse(new ByteArrayInputStream(value.getBytes())).getDocumentElement();
-            return node;
+            return docBuilder.parse(new ByteArrayInputStream(value.getBytes())).getDocumentElement();
         } catch (ParserConfigurationException | SAXException | IOException e) {
             LOGGER.warn("stringToAnyElement returning JAXBElement with plain String {} instead of XML", value);
-            throw new IllegalArgumentException("Invalid Node in ANY!");
+            throw new IllegalArgumentException("Invalid Node in ANY!", e);
         }
 
     }

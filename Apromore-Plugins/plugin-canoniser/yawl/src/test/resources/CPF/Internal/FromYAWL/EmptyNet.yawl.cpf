@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="EmptyNet" version="0.1" name="EmptyNet" author="Firstname Lastname" rootIds="id-N_EmptyNet">
-    <Net id="id-N_EmptyNet" originalID="EmptyNet">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_InputCondition" originalID="InputCondition"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C_OutputCondition" originalID="OutputCondition"/>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D_id-N_EmptyNet_variableA" originalID="id-N_EmptyNet_variableA">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="EmptyNet" version="0.1" name="EmptyNet" author="Firstname Lastname" rootIds="id-N-EmptyNet">
+    <Net id="id-N-EmptyNet" originalID="EmptyNet">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-InputCondition" originalID="InputCondition"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-OutputCondition" originalID="OutputCondition"/>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D-id-N-EmptyNet-variableA" originalID="id-N-EmptyNet_variableA">
             <name>variableA</name>
             <type>string</type>
         </Object>

@@ -30,7 +30,6 @@ import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.SoftType;
-import org.apromore.cpf.TaskType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yawlfoundation.yawlschema.DecompositionType;
@@ -171,10 +170,6 @@ public final class YAWLConversionContext extends ConversionContext {
      */
     private Map<String, Map<String, SoftType>> netObjectsByName;
 
-    /**
-     * Map of Objects by Task and Name
-     */
-    private Map<String, Map<String, SoftType>> taskObjectsByName;
 
     public YAWLConversionContext(final YAWLSpecificationFactsType specification, final LayoutFactsType layoutFactsType, final OrgDataType orgDataType) {
         this.setOrgDataType(orgDataType);
@@ -248,25 +243,25 @@ public final class YAWLConversionContext extends ConversionContext {
         return orgDataType;
     }
 
-    private void setLayout(final LayoutFactsType layout) {
+    private final void setLayout(final LayoutFactsType layout) {
         this.setLayoutLocale(layout.getLocale());
         this.setNumberFormat(NumberFormat.getInstance(getLayoutLocale()));
         this.specificationLayout = layout.getSpecification().get(0);
     }
 
-    private void setNumberFormat(final NumberFormat numberFormat) {
+    private final void setNumberFormat(final NumberFormat numberFormat) {
         this.numberFormat = numberFormat;
     }
 
-    private void setLayoutLocale(final LayoutLocaleType layoutLocale) {
+    private final void setLayoutLocale(final LayoutLocaleType layoutLocale) {
         this.layoutLocale = layoutLocale;
     }
 
-    private void setSpecification(final YAWLSpecificationFactsType specification) {
+    private final void setSpecification(final YAWLSpecificationFactsType specification) {
         this.specification = specification;
     }
 
-    private void setOrgDataType(final OrgDataType orgDataType) {
+    private final void setOrgDataType(final OrgDataType orgDataType) {
         this.orgDataType = orgDataType;
     }
 
@@ -529,8 +524,8 @@ public final class YAWLConversionContext extends ConversionContext {
         return null;
     }
 
-    // TODO optimize with hashmap
     public ParticipantType getParticipantById(final String participantId) {
+        // TODO optimize with hashmap
         for (final ParticipantType p : getOrgDataType().getParticipants().getParticipant()) {
             if (p.getId().equals(participantId)) {
                 return p;
@@ -539,8 +534,8 @@ public final class YAWLConversionContext extends ConversionContext {
         return null;
     }
 
-    // TODO optimize with hashmap
     public NetType getNetForTaskId(final String id) {
+        // TODO optimize with hashmap
         for (final NetType net : canonicalResult.getNet()) {
             for (final NodeType node : net.getNode()) {
                 if (node.getId().equals(id)) {
@@ -573,31 +568,6 @@ public final class YAWLConversionContext extends ConversionContext {
     private void initNetObjectsByName() {
         if (netObjectsByName == null) {
             this.netObjectsByName = new HashMap<String, Map<String, SoftType>>();
-        }
-    }
-
-    public void addObjectForTask(final SoftType obj, final TaskType task) {
-        initTaskObjectsByName();
-        Map<String, SoftType> objectsByName = taskObjectsByName.get(task.getId());
-        if (objectsByName == null) {
-            objectsByName = new HashMap<String, SoftType>();
-            taskObjectsByName.put(task.getId(), objectsByName);
-        }
-        objectsByName.put(obj.getName(), obj);
-    }
-
-    public SoftType getObjectByName(final String name, final TaskType task) {
-        initTaskObjectsByName();
-        final Map<String, SoftType> objectsByName = taskObjectsByName.get(task.getId());
-        if (objectsByName != null) {
-            return objectsByName.get(name);
-        }
-        return null;
-    }
-
-    private void initTaskObjectsByName() {
-        if (taskObjectsByName == null) {
-            this.taskObjectsByName = new HashMap<String, Map<String, SoftType>>();
         }
     }
 

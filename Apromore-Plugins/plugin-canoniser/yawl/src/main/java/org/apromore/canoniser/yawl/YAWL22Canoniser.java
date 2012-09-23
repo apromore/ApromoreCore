@@ -20,7 +20,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.transform.sax.SAXSource;
 
 import org.apromore.anf.AnnotationsType;
-import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.DefaultAbstractCanoniser;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.Canonical2YAWL;
@@ -43,7 +42,7 @@ import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
 import org.yawlfoundation.yawlschema.orgdata.YAWLOrgDataSchema;
 
 /**
- * YAWL 2.2 Canoniser Plugin
+ * Canoniser plugin for YAWL 2.2/2.3
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
@@ -69,56 +68,6 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
                 "Writes a .ybkp file containing the organisational data used in this YAWL workflow.", false);
         addProperty(resourceDataInput);
         addProperty(resourceDataOutput);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apromore.plugin.Plugin#getType()
-     */
-    @Override
-    public String getType() {
-        return Canoniser.class.getName();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apromore.plugin.Plugin#getName()
-     */
-    @Override
-    public String getName() {
-        return YAWL22Canoniser.class.getName();
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apromore.plugin.Plugin#getVersion()
-     */
-    @Override
-    public String getVersion() {
-        return "1.0";
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apromore.plugin.Plugin#getDescription()
-     */
-    @Override
-    public String getDescription() {
-        return "Default canoniser for YAWL 2.2 and YAWL 2.3";
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apromore.canoniser.Canoniser#getNativeType()
-     */
-    @Override
-    public String getNativeType() {
-        return "YAWL 2.2";
     }
 
     /*
@@ -184,7 +133,8 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
             }
 
             marshalYAWLFormat(canonical2yawl.getYAWL(), nativeOutput);
-            YAWLOrgDataSchema.marshalYAWLOrgDataFormat((OutputStream) resourceDataOutput.getValue(), canonical2yawl.getOrgData(), true);
+            //TODO
+            //YAWLOrgDataSchema.marshalYAWLOrgDataFormat((OutputStream) resourceDataOutput.getValue(), canonical2yawl.getOrgData(), true);
 
         } catch (final JAXBException e) {
             throw new CanoniserException(e);

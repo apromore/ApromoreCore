@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
@@ -172,7 +171,7 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
                 if (ConversionUtils.isValidFragment(extensionObj, ConversionUtils.YAWLSCHEMA_URL, "label")) {
                     return ConversionUtils.unmarshalYAWLFragment(extensionObj, LayoutLabelFactsType.class);
                 }
-            } catch (final JAXBException e) {
+            } catch (final CanoniserException e) {
                 LOGGER.warn("Error unmarshalling extension elements. This should not happen, but the conversion will still work.", e);
             }
         }
@@ -217,7 +216,7 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
                     decoratorList.add(decorator);
                     LOGGER.debug("Adding decorator layout using YAWL extension, type: {}", decorator.getType());
                 }
-            } catch (final JAXBException e) {
+            } catch (final CanoniserException e) {
                 LOGGER.warn("Error unmarshalling extension elements. This should not happen, but the conversion will still work.", e);
             }
         }

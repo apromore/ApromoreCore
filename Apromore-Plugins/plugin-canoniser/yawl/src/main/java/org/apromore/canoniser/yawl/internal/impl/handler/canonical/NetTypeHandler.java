@@ -35,6 +35,12 @@ import org.yawlfoundation.yawlschema.OutputParameterFactsType;
 import org.yawlfoundation.yawlschema.VariableFactsType;
 import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
 
+/**
+ * Converts a NetType to a YAWL NetFactsType
+ *
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ *
+ */
 public class NetTypeHandler extends DecompositionHandler<NetType, YAWLSpecificationFactsType> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NetTypeHandler.class.getName());
