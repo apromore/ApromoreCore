@@ -12,7 +12,6 @@
 
     <artifactId>plugin-api</artifactId>    
     <name>Apromore Plugin API</name>
-    <url>http://code.google.com/p/apromore/</url>
 
     <build>
         <plugins>

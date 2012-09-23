@@ -12,7 +12,9 @@
 
     <artifactId>canoniser-api</artifactId>    
     <name>Apromore Canoniser API</name>
-    <url>http://code.google.com/p/apromore/</url>
+	<description>
+		API for Canonisers
+	</description>
 
     <build>
         <plugins>
@@ -31,7 +33,6 @@
 			</plugin>
 		</plugins>
     </build>
-
     
 	<dependencies>	
 		<dependency>

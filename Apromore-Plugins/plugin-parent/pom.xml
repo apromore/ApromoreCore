@@ -10,7 +10,10 @@
     <version>1.0</version>
 
     <name>Apromore Plugin Parent POM</name>
-    <description>Provides a base build script for all plugin projects.</description>
+    <description>
+		Provides common base settings for all plugin projects.
+		It is not needed that a Plugin project uses this POM as parent, but highly recommended!
+	</description>
     <url>http://apromore.org/</url>
 
     <scm>
@@ -59,28 +62,6 @@
     </prerequisites>
 
     <inceptionYear>2010</inceptionYear>
-
-    <mailingLists>
-        <mailingList>
-            <name>Apromore Forum</name>
-            <post>apromore-rm@googlegroups.com</post>
-            <unsubscribe>apromore-rm+unsubscribe@googlegroups.com</unsubscribe>
-        </mailingList>
-    </mailingLists>
-
-    <developers>
-        <developer>
-            <id>u312978</id>
-            <name>Cameron James</name>
-            <email>cam.james@gmail.com</email>
-            <organization>Suncorp</organization>
-            <organizationUrl>http://www.suncorp.com.au/</organizationUrl>
-            <roles>
-                <role>Active User</role>
-            </roles>
-            <timezone>+10</timezone>
-        </developer>
-    </developers>
 	
 	<repositories>
 		<repository>
