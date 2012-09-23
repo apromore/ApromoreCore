@@ -13,8 +13,24 @@
 	<version>1.0</version>
 	
 	<name>Apromore Canoniser YAWL</name>
-	<url>http://code.google.com/p/apromore/</url>
-
+	<description>Responsible for (de)canonising YAWL 2.2.</description>
+	<inceptionYear>2012</inceptionYear>
+	
+	<developers>
+		<developer>
+		  <id>felix.mannhardt</id>
+		  <name>Felix Mannhardt</name>
+		  <email>felix.mannhardt@smail.wir.h-brs.de</email>
+		  <url>http://www.felixmannhardt.de</url>
+		  <organization>Bonn-Rhein-Sieg University of Applied Sciences</organization>
+		  <organizationUrl>http://www.h-brs.de</organizationUrl>
+		  <roles>
+			<role>developer</role>
+		  </roles>
+		  <timezone>+10</timezone>
+		</developer>
+	</developers>
+	
 	<build>
 		<plugins>
 			<plugin>

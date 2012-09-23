@@ -10,20 +10,34 @@
     <packaging>pom</packaging>
     <version>1.0</version>
 
-    <url>http://code.google.com/p/apromore/</url>
-    <name>Advanced Process Model Repository - Plugins</name>
-    <description>Apromore is an open and extensible repository to store and disclose business process models of a
-        variety of types and languages, and beyond that, to build on top of existing tools and techniques, to provide
-        state-of-the-art features for model presentation, analysis, integration, contextualization, improvement, and
-        re-use.
+    <url>http://www.apromore.org/</url>
+    <name>Apromore - Core Plugins / API</name>
+    <description>
+		Apromore Plugin API's and core Plugins
     </description>
-
+	<inceptionYear>2012</inceptionYear>
+	
     <distributionManagement>
         <site>
             <id>Apromore-site</id>
-            <url>dav:http://apromore.qut.edu.au/projects/</url>
+            <url>dav:http://apromore.qut.edu.au/projects/Apromore-Plugins</url>
         </site>
     </distributionManagement>
+	
+    <ciManagement>
+        <system>Bamboo</system>
+        <url>http://apromore-build.qut.edu.au/bamboo</url>
+        <notifiers>
+            <notifier>
+                <address>cam.james@gmail.com</address>
+            </notifier>
+        </notifiers>
+    </ciManagement>
+
+    <issueManagement>
+        <system>JIRA</system>
+        <url>http://apromore-build.qut.edu.au/jira/browse/support</url>
+    </issueManagement>
 
     <modules>
 	
@@ -36,18 +50,29 @@
 			<!-- Canoniser Interface -->
 			<module>plugin-canoniser/core/api</module>
 			<module>plugin-canoniser/core/provider</module>		
-
+		
 		<!-- Plugin Implementations -->
-		<!-- Note: 	I'm not sure if we should include those here, as then we'll always build all Plugins.
-					Maybe we should just add the "core" Plugins here so that these are always build.
-		-->
+			<!-- Note: 	I'm not sure if we should include those here, as then we'll always build all Plugins.
+						Maybe we should just add the "core" Plugins here so that these are always build. -->
 			
-			<!-- Canoniser -->
+			<!-- Common Plugins (without own API) -->
+			<module>plugin-common/rpst</module>
+			
+			<!-- Canoniser Plugins -->
 			<module>plugin-canoniser/bpmn</module>
 			<module>plugin-canoniser/epml</module>
 			<module>plugin-canoniser/pnml</module>
 			<module>plugin-canoniser/xpdl</module>
 			<module>plugin-canoniser/yawl</module>
+			
+			<!-- Search Plugins -->
+			
+			
+			<!-- Cluster Plugins -->
+			
+			
+			<!-- Merge Plugins -->
+					
 			
     </modules>
  
