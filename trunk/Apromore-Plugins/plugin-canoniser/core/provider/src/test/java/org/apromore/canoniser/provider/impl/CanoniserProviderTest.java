@@ -38,7 +38,7 @@ import org.junit.rules.ExpectedException;
 /**
  * Tests for the Canoniser Provider
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de"><a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a></a>
+ * @author <a href="felix.mannhardt@smail.wir.h-brs.de"><a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a></a>
  *
  */
 public class CanoniserProviderTest {

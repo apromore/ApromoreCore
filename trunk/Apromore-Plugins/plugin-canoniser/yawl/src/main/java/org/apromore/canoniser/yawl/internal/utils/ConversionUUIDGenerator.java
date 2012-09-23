@@ -19,7 +19,7 @@ import java.util.regex.Pattern;
 /**
  * Generating unique IDs for YAWL/CPF elements. The generated UUID will stay always the same for each YAWL/CPF element.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public class ConversionUUIDGenerator {

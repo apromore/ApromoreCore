@@ -25,7 +25,7 @@ import org.apromore.plugin.exception.PluginNotFoundException;
 /**
  * Canoniser API used by Apromore, to access the Canoniser Plugins
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public interface CanoniserProvider {

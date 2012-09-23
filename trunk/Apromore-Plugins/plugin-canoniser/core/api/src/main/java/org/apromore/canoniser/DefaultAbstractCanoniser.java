@@ -33,7 +33,7 @@ import org.xml.sax.SAXException;
 /**
  * Implements common functionality shared by all Canonisers
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public abstract class DefaultAbstractCanoniser extends AbstractPropertyAwarePlugin implements Canoniser {

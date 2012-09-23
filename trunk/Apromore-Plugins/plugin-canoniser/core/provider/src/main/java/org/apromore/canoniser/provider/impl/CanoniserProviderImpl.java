@@ -31,7 +31,7 @@ import org.springframework.stereotype.Service;
 /**
  * Providing the default CanoniserProvider implementation using OSGi services
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 @Service

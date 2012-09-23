@@ -28,7 +28,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Converts any multiple exit Net into a single exit Net. By default it only adds an OR-JOIN, but more sophisticated techniques could be implemented.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public class SEMEToSESEMacro extends ContextAwareRewriteMacro implements RewriteMacro {

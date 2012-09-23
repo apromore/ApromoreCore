@@ -23,7 +23,7 @@ import org.apromore.plugin.property.PropertyType;
 /**
  * A PropertyAwarePlugin defines a Set of properties that can or must be provided by the caller for proper operation of the Plugin.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public interface PropertyAwarePlugin extends Plugin {

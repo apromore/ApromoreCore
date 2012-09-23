@@ -18,9 +18,9 @@ import org.yawlfoundation.yawlschema.SpecificationSetFactsType;
 import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
 
 /**
- * Interface for a converter from CPF and ANF to YAWL
+ * Interface for a converter from CPF and ANF to YAWL.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public interface Canonical2YAWL {
@@ -28,8 +28,8 @@ public interface Canonical2YAWL {
     /**
      * Converts the CPF and ANF to YAWL.
      *
-     * @param canonicalType
-     * @param annotationsType
+     * @param canonicalType CPF
+     * @param annotationsType ANF
      * @throws CanoniserException
      */
     void convertToYAWL(CanonicalProcessType canonicalType, AnnotationsType annotationsType) throws CanoniserException;
@@ -37,7 +37,7 @@ public interface Canonical2YAWL {
     /**
      * Converts the CPF to YAWL.
      *
-     * @param canonicalType
+     * @param canonicalType CPF
      * @throws CanoniserException
      */
     void convertToYAWL(CanonicalProcessType canonicalType) throws CanoniserException;
