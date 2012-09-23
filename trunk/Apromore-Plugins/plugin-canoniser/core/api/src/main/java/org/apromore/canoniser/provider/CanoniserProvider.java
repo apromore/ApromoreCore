@@ -40,7 +40,7 @@ public interface CanoniserProvider {
      * @throws CanoniserException
      * @throws PluginNotFoundException
      */
-    public void canonise(final String nativeType, final InputStream nativeInput, List<AnnotationsType> annotationFormat,
+    void canonise(String nativeType, InputStream nativeInput, List<AnnotationsType> annotationFormat,
             List<CanonicalProcessType> canonicalFormat) throws CanoniserException, PluginNotFoundException;
 
     /**
@@ -54,7 +54,7 @@ public interface CanoniserProvider {
      * @throws CanoniserException
      * @throws PluginNotFoundException
      */
-    public void canonise(final String nativeType, String name, final InputStream nativeInput, List<AnnotationsType> annotationFormat,
+    void canonise(String nativeType, String name, InputStream nativeInput, List<AnnotationsType> annotationFormat,
             List<CanonicalProcessType> canonicalFormat) throws CanoniserException, PluginNotFoundException;
 
     /**
@@ -69,7 +69,7 @@ public interface CanoniserProvider {
      * @throws CanoniserException
      * @throws PluginNotFoundException
      */
-    public void canonise(final String nativeType, String name, String version, final InputStream nativeInput, List<AnnotationsType> annotationFormat,
+    void canonise(final String nativeType, String name, String version, final InputStream nativeInput, List<AnnotationsType> annotationFormat,
             List<CanonicalProcessType> canonicalFormat) throws CanoniserException, PluginNotFoundException;
 
     /**
@@ -82,7 +82,7 @@ public interface CanoniserProvider {
      * @throws CanoniserException
      * @throws PluginNotFoundException
      */
-    public void deCanonise(final String nativeType, final AnnotationsType annotationFormat, final CanonicalProcessType canonicalFormat,
+    void deCanonise(final String nativeType, final AnnotationsType annotationFormat, final CanonicalProcessType canonicalFormat,
             OutputStream nativeOutput) throws CanoniserException, PluginNotFoundException;
 
     /**
@@ -96,7 +96,7 @@ public interface CanoniserProvider {
      * @throws CanoniserException
      * @throws PluginNotFoundException
      */
-    public void deCanonise(final String nativeType, final String name, final AnnotationsType annotationFormat,
+    void deCanonise(String nativeType, String name, AnnotationsType annotationFormat,
             final CanonicalProcessType canonicalFormat, OutputStream nativeOutput) throws CanoniserException, PluginNotFoundException;
 
     /**
@@ -117,7 +117,7 @@ public interface CanoniserProvider {
      * @throws CanoniserException
      * @throws PluginNotFoundException
      */
-    public void deCanonise(final String nativeType, final String name, final String version, final AnnotationsType annotationFormat,
+    void deCanonise(String nativeType, String name, String version, AnnotationsType annotationFormat,
             final CanonicalProcessType canonicalFormat, OutputStream nativeOutput) throws CanoniserException, PluginNotFoundException;
 
     /**
@@ -125,7 +125,7 @@ public interface CanoniserProvider {
      *
      * @return Collection of Canoniser
      */
-    public Collection<Canoniser> listAll();
+    Collection<Canoniser> listAll();
 
     /**
      * List all available Canoniser converting the specified native type.
@@ -134,7 +134,7 @@ public interface CanoniserProvider {
      *            for example "EPML 2.0" or "YAWL 2.2"
      * @return Collection of Canoniser
      */
-    public Collection<Canoniser> listByNativeType(String nativeType);
+    Collection<Canoniser> listByNativeType(String nativeType);
 
     /**
      * List all available Canoniser converting the specified native type with the exact name. Please note there could be multiple versions installed,
@@ -146,7 +146,7 @@ public interface CanoniserProvider {
      *            usually the full class name of the Canoniser
      * @return Collection of Canoniser
      */
-    public Collection<Canoniser> listByNativeTypeAndName(String nativeType, String name);
+    Collection<Canoniser> listByNativeTypeAndName(String nativeType, String name);
 
     /**
      * Return the first Canoniser that is found with the given parameters.
@@ -157,7 +157,7 @@ public interface CanoniserProvider {
      * @throws PluginNotFoundException
      *             in case there is no Canoniser found
      */
-    public Canoniser findByNativeType(String nativeType) throws PluginNotFoundException;
+    Canoniser findByNativeType(String nativeType) throws PluginNotFoundException;
 
     /**
      * Return the first Canoniser that is found with the given parameters.
@@ -170,7 +170,7 @@ public interface CanoniserProvider {
      * @throws PluginNotFoundException
      *             in case there is no Canoniser found
      */
-    public Canoniser findByNativeTypeAndName(String nativeType, String name) throws PluginNotFoundException;
+    Canoniser findByNativeTypeAndName(String nativeType, String name) throws PluginNotFoundException;
 
     /**
      * Return the first Canoniser that is found with the given parameters.
@@ -185,6 +185,6 @@ public interface CanoniserProvider {
      * @throws PluginNotFoundException
      *             in case there is no Canoniser found
      */
-    public Canoniser findByNativeTypeAndNameAndVersion(String nativeType, String name, String version) throws PluginNotFoundException;
+    Canoniser findByNativeTypeAndNameAndVersion(String nativeType, String name, String version) throws PluginNotFoundException;
 
 }

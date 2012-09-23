@@ -36,21 +36,21 @@ public interface PluginProvider {
 	/**
 	 * @return read-only collection of all currently available plugins
 	 */
-	public Collection<Plugin> listAll();
+	Collection<Plugin> listAll();
 
 	/**
 	 * @param type
 	 *            of the plugins
 	 * @return read-only collection of all plugins with specified type
 	 */
-	public Collection<Plugin> listByType(String type);
+	Collection<Plugin> listByType(String type);
 
 	/**
 	 * @param name
 	 *            of the plugins, usually the symbolic bundle name
 	 * @return read-only collection of all plugins with specified name
 	 */
-	public Collection<Plugin> listByName(String name);
+	Collection<Plugin> listByName(String name);
 
 	/**
 	 * @param name
@@ -58,7 +58,7 @@ public interface PluginProvider {
 	 * @return plugin with specified name and highest version if multiple
 	 * @throws PluginNotFoundException in case no matching Plugin is found
 	 */
-	public Plugin findByName(String name) throws PluginNotFoundException;
+	Plugin findByName(String name) throws PluginNotFoundException;
 
 	/**
 	 * @param name
@@ -68,6 +68,6 @@ public interface PluginProvider {
 	 * @return plugin with specified name and version
 	 * @throws PluginNotFoundException in case no matching Plugin is found
 	 */
-	public Plugin findByNameAndVersion(String name, String version) throws PluginNotFoundException;
+	Plugin findByNameAndVersion(String name, String version) throws PluginNotFoundException;
 
 }
