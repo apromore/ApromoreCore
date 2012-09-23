@@ -1,10 +1,11 @@
-package org.apromore.plugin;
+package org.apromore.plugin.impl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
+import org.apromore.plugin.impl.DefaultPropertyAwarePlugin;
 import org.apromore.plugin.property.BooleanProperty;
 import org.apromore.plugin.property.DefaultProperty;
 import org.junit.Before;
@@ -16,35 +17,15 @@ import org.junit.Test;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public class AbstractPropertyAwarePluginTest {
+public class DefaultPropertyAwarePluginTest {
 
-    private AbstractPropertyAwarePlugin propertyAwarePlugin;
+    private DefaultPropertyAwarePlugin propertyAwarePlugin;
     private DefaultProperty mandatoryProperty;
     private DefaultProperty nonMandatoryProperty;
 
     @Before
     public void setUp() {
-        this.propertyAwarePlugin = new AbstractPropertyAwarePlugin() {
-
-            @Override
-            public String getVersion() {
-                return "";
-            }
-
-            @Override
-            public String getType() {
-                return "";
-            }
-
-            @Override
-            public String getName() {
-                return "";
-            }
-
-            @Override
-            public String getDescription() {
-                return "";
-            }
+        this.propertyAwarePlugin = new DefaultPropertyAwarePlugin() {
         };
         mandatoryProperty = new DefaultProperty("test1", String.class, "test", true);
         nonMandatoryProperty = new DefaultProperty("test2", String.class, "test", false);
