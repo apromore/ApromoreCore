@@ -19,7 +19,7 @@ import org.yawlfoundation.yawlschema.ExternalConditionFactsType;
 /**
  * Converts the YAWL InputCondition.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public class InputConditionHandler extends BaseConditionHandler<ExternalConditionFactsType> {

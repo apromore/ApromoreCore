@@ -62,7 +62,7 @@ import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
 /**
  * Context for a conversion CPF -> YAWL
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public final class CanonicalConversionContext extends ConversionContext {

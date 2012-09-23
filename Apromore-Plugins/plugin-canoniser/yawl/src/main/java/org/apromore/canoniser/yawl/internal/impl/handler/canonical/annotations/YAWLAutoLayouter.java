@@ -23,7 +23,7 @@ import org.yawlfoundation.yawlschema.LayoutRectangleType;
 /**
  * Very basic auto layout for YAWL (sub)nets. Based on a breadth first traversal and some YAWL default sizes.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public class YAWLAutoLayouter {

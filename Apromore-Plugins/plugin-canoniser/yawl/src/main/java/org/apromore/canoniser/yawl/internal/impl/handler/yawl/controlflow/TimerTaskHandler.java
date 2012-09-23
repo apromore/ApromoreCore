@@ -25,7 +25,7 @@ import org.yawlfoundation.yawlschema.TimerTriggerType;
 /**
  * Converts a YAWL Timer to CPF.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public class TimerTaskHandler extends BaseTaskHandler {

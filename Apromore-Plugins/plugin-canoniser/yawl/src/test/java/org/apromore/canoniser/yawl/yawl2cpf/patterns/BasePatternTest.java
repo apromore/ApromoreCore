@@ -11,7 +11,7 @@ import org.junit.Test;
 /**
  * Basic class for all pattern based tests. Assumes that there is a InputCondition named "IN" and an OutputCondition named "OUT".
  * 
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public abstract class BasePatternTest extends BaseYAWL2CPFTest {

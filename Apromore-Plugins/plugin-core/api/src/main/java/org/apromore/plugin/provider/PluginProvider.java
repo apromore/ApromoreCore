@@ -28,7 +28,7 @@ import org.apromore.plugin.exception.PluginNotFoundException;
  *
  * @see http://www.eclipse.org/gemini/blueprint/
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public interface PluginProvider {

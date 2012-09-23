@@ -48,7 +48,7 @@ import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
 /**
  * Factory Class for YAWL through which all Handlers are created. Basically the mapping between Input objects and their Handler classes.
  * 
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class YAWLConversionFactory implements ConversionFactory {

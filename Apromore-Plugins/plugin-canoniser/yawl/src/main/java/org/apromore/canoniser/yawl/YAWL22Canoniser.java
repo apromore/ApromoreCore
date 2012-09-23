@@ -45,7 +45,7 @@ import org.yawlfoundation.yawlschema.orgdata.YAWLOrgDataSchema;
 /**
  * YAWL 2.2 Canoniser Plugin
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 @Component("yawlCanoniser")

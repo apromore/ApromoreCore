@@ -30,7 +30,7 @@ import org.yawlfoundation.yawlschema.ExpressionType;
 /**
  * Converts the Output Mappings of a YAWL Task to Object references.
  * 
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  * 
  */
 public class OutputVarMappingHandler extends BaseVarMappingHandler {

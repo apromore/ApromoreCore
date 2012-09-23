@@ -40,7 +40,7 @@ import org.yawlfoundation.yawlschema.ObjectFactory;
 /**
  * Convert the layout of an CPF node to YAWL
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {

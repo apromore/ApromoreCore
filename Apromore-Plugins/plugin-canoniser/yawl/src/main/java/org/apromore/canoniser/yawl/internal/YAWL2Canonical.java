@@ -18,9 +18,9 @@ import org.yawlfoundation.yawlschema.SpecificationSetFactsType;
 import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
 
 /**
- * Interface for a converter from YAWL to CPF and ANF
+ * Interface for a converter from YAWL to CPF and ANF.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public interface YAWL2Canonical {

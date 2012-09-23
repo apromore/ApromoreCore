@@ -20,7 +20,7 @@ package org.apromore.plugin.exception;
  * Generic exception that could be thrown during the execution of a Apromore plugin. All custom exceptions classes should inherite from this
  * class to facilitate generic exception handling in Apromore.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public class PluginException extends Exception {

@@ -20,7 +20,7 @@ package org.apromore.plugin.property;
  * Default implementation of the PropertyType interface. It takes care of allowing values of specified Class only. Also two Properties are considered
  * 'equal' if there 'name' is the same.
  *
- * @author <a href="felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public class DefaultProperty implements PropertyType {
@@ -119,7 +119,7 @@ public class DefaultProperty implements PropertyType {
      * @see org.apromore.plugin.property.PropertyType#getValue()
      */
     @Override
-    public Object getValue() {
+    public final Object getValue() {
         return value;
     }
 
@@ -129,7 +129,7 @@ public class DefaultProperty implements PropertyType {
      * @see org.apromore.plugin.property.PropertyType#setValue(java.lang.Object)
      */
     @Override
-    public void setValue(final Object value) {
+    public final void setValue(final Object value) {
         if (getValueType().isInstance(value)) {
             this.value = value;
         } else {
@@ -164,7 +164,7 @@ public class DefaultProperty implements PropertyType {
      * @see java.lang.Object#hashCode()
      */
     @Override
-    public int hashCode() {
+    public final int hashCode() {
         final int prime = 31;
         int result = 1;
         result = prime * result + ((name == null) ? 0 : name.hashCode());
@@ -177,19 +177,24 @@ public class DefaultProperty implements PropertyType {
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
-    public boolean equals(final Object obj) {
-        if (this == obj)
+    public final boolean equals(final Object obj) {
+        if (this == obj) {
             return true;
-        if (obj == null)
+        }
+        if (obj == null) {
             return false;
-        if (getClass() != obj.getClass())
+        }
+        if (getClass() != obj.getClass()) {
             return false;
+        }
         DefaultProperty other = (DefaultProperty) obj;
         if (name == null) {
-            if (other.name != null)
+            if (other.name != null) {
                 return false;
-        } else if (!name.equals(other.name))
+            }
+        } else if (!name.equals(other.name)) {
             return false;
+        }
         return true;
     }
 
