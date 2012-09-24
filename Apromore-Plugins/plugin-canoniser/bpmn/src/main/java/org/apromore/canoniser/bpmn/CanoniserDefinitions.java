@@ -11,7 +11,6 @@ import java.util.logging.Logger;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.datatype.XMLGregorianCalendar;
 import javax.xml.namespace.QName;
 
 // Local packages
@@ -29,6 +28,7 @@ import org.apromore.canoniser.bpmn.cpf.CpfNodeType;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.ConditionExpressionType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.NetType;
@@ -59,6 +59,7 @@ import org.omg.spec.bpmn._20100524.model.TDataObject;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TEvent;
 import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
+import org.omg.spec.bpmn._20100524.model.TExpression;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
@@ -106,19 +107,19 @@ import org.omg.spec.dd._20100524.di.DiagramElement;
  * the sole referencer of the invoked subprocess.
  * <p>
  * A BPMN {@link TTask} maps to a canonical {@link TaskType}.
- * A BPMN {@link TServiceTask} is distinguished by...? 
+ * A BPMN {@link TServiceTask} is distinguished by...?
  * A BPMN {@link TUserTask} is distinguished by...?
  * <p>
  * A BPMN {@link TSequenceFlow} maps to a canonical {@link EdgeType}.
  * <p>
- * BPMN {@link MessageFlow}s are necessarily broken between distinct source and target {@link CanonicalProcessType} instances.  
+ * BPMN {@link MessageFlow}s are necessarily broken between distinct source and target {@link CanonicalProcessType} instances.
  * {@link ObjectType} instances with the same {@link ObjectType#getName} must occur in each {@CanonicalProcessType}.
  * An output {@link ObjectRefType} must occur on the source element within one of the {@CanonicalProcessType}s, and an
  * input {@link ObjectRefType} on the target element within the other {@CanonicalProcessType}.
  * BPMN message flows are never a result of decanonisation, since only a single {@link CanonicalProcessType} is involved.
  * <p>
  * The various BPMN {@link TGateway}s map to various canonical {@link RoutingType}s.
- * A BPMN {@link ExclusiveGateway} maps to an {@link XORJoinType} or {@link XORSplitType}, depending on the gateway direction. 
+ * A BPMN {@link ExclusiveGateway} maps to an {@link XORJoinType} or {@link XORSplitType}, depending on the gateway direction.
  * A BPMN {@link ParallelGateway} maps similarly to an {@link ANDJoinType} or {@link ANDSplitType}.
  * <p>
  * The various BPMN {@link TEvent}s map to canonical {@link EventType}s.
@@ -186,7 +187,7 @@ import org.omg.spec.dd._20100524.di.DiagramElement;
  * A BPMN {@link TDataInputAssociation} does not map to any canonical element.
  * Instead, it maps to a {@link WorkType#getObjectRef} attribute with a {@link ObjectRefType#getType} of
  * {@link InputOutputType#INPUT}.
- * and a {@link ObjectRefType#mapsToObjectId} 
+ * and a {@link ObjectRefType#mapsToObjectId}
  * <p>
  * A BPMN {@link TDataOutputAssociation} is mapped similarly to a {@link TDataInputAssociation}, except
  * that it uses {@link InputOutputType#OUTPUT}.
@@ -222,7 +223,7 @@ public class CanoniserDefinitions extends Definitions {
     public static final String APROMORE_VERSION = "0.4";
 
     /**
-     * BPMN 2.0 namespace
+     * BPMN 2.0 namespace.
      */
     public static final String BPMN_NS = "http://www.signavio.com/bpmn20";
 
@@ -307,17 +308,17 @@ public class CanoniserDefinitions extends Definitions {
                 }
 
                 for (EdgeType edge : net.getEdge()) {
-                    /*
-                    logger.info("  Edge " + edge.getId());
-
-                    for (TypeAttribute attribute : edge.getAttribute()) {
-                        logger.info("     attribute " + attribute.getTypeRef() + "=" + attribute.getValue());
-                    }
-                    */
-
                     TSequenceFlow sequenceFlow = new TSequenceFlow();
+
                     sequenceFlow.setId(bpmnIdFactory.newId(edge.getId()));
                     edgeMap.put(edge.getId(), sequenceFlow);
+
+                    // Deal with @conditionExpression
+                    if (edge.getConditionExpr() != null) {
+                        TExpression expression = new TExpression();
+                        expression.getContent().add(edge.getConditionExpr().getExpression());
+                        sequenceFlow.setConditionExpression(expression);
+                    }
 
                     // Deal with @sourceId
                     if (idMap.containsKey(edge.getSourceId())) {
@@ -364,13 +365,13 @@ public class CanoniserDefinitions extends Definitions {
                                 idMap.put(node.getId(), event);
                                 process.getFlowElements().add(factory.createEndEvent(event));
                             } else if (cpfNode.getIncomingEdges().size() > 0 && cpfNode.getOutgoingEdges().size() > 0) {
-                                throw new RuntimeException(  // TODO - remove this wrapper hack
+                                throw new RuntimeException(
                                     new CanoniserException("Intermediate event \"" + that.getId() + "\" not supported")
-                                );
+                                );  // TODO - remove this wrapper hack
                             } else {
-                                throw new RuntimeException(  // TODO - remove this wrapper hack
+                                throw new RuntimeException(
                                     new CanoniserException("Event \"" + that.getId() + "\" has no edges")
-                                );
+                                );  // TODO - remove this wrapper hack
                             }
                         }
 
@@ -507,16 +508,16 @@ public class CanoniserDefinitions extends Definitions {
 
                             // a shape requires a bounding box, defined by a top-left position and a size (width and height)
                             if (graphics.getPosition().size() != 1) {
-                                throw new RuntimeException(  // TODO - remove this wrapper hack
+                                throw new RuntimeException(
                                     new CanoniserException("Annotation " + annotation.getId() + " for shape " +
                                         annotation.getCpfId() + " should have just one origin position")
-                                );
+                                );  // TODO - remove this wrapper hack
                             }
                             if (graphics.getSize() == null) {
-                                throw new RuntimeException(  // TODO - remove this wrapper hack
+                                throw new RuntimeException(
                                     new CanoniserException("Annotation " + annotation.getId() + " for shape " +
                                         annotation.getCpfId() + " should specify a size")
-                                );
+                                );  // TODO - remove this wrapper hack
                             }
 
                             // add the ANF position and size as a BPMNDI bounds
@@ -536,10 +537,10 @@ public class CanoniserDefinitions extends Definitions {
 
                             // an edge requires two or more waypoints
                             if (graphics.getPosition().size() < 2) {
-                                throw new RuntimeException(  // TODO - remove this wrapper hack
+                                throw new RuntimeException(
                                     new CanoniserException("Annotation " + annotation.getId() + " for edge " +
                                         annotation.getCpfId() + " should have at least two positions")
-                                );
+                                );  // TODO - remove this wrapper hack
                             }
 
                             // add each ANF position as a BPMNDI waypoint
@@ -552,7 +553,9 @@ public class CanoniserDefinitions extends Definitions {
 
                             bpmnPlane.getDiagramElements().add(diObjectFactory.createBPMNEdge(edge));
                         } else {
-                            throw new RuntimeException(new CanoniserException("CpfId \"" + annotation.getCpfId() + "\" in ANF document not found in CPF document"));
+                            throw new RuntimeException(
+                                new CanoniserException("CpfId \"" + annotation.getCpfId() + "\" in ANF document not found in CPF document")
+                            );  // TODO - remove this wrapper hack
                         }
                     }
 
@@ -599,7 +602,7 @@ public class CanoniserDefinitions extends Definitions {
                     final IdFactory cpfIdFactory = new IdFactory();
 
                     final CanonicalProcessType cpf = new CanonicalProcessType();
-                      
+
                     // Top-level attributes
                     cpf.setName(requiredName(getName()));
                     cpf.setVersion(CPF_VERSION);
@@ -658,9 +661,9 @@ public class CanoniserDefinitions extends Definitions {
                                 case CONVERGING: routing = new XORJoinType(); break;
                                 case DIVERGING:  routing = new XORSplitType();  break;
                                 default:
-                                    throw new RuntimeException(  // TODO - remove wrapper hack
+                                    throw new RuntimeException(
                                         new CanoniserException("Unimplemented gateway direction " + exclusiveGateway.getGatewayDirection())
-                                    );
+                                    );  // TODO - remove wrapper hack
                                 }
                                 assert routing != null;
 
@@ -677,9 +680,9 @@ public class CanoniserDefinitions extends Definitions {
                                 case CONVERGING: routing = new ORJoinType(); break;
                                 case DIVERGING:  routing = new ORSplitType();  break;
                                 default:
-                                    throw new RuntimeException(  // TODO - remove wrapper hack
+                                    throw new RuntimeException(
                                         new CanoniserException("Unimplemented gateway direction " + inclusiveGateway.getGatewayDirection())
-                                    );
+                                    );  // TODO - remove wrapper hack
                                 }
                                 assert routing != null;
 
@@ -696,9 +699,9 @@ public class CanoniserDefinitions extends Definitions {
                                 case CONVERGING: routing = new ANDJoinType(); break;
                                 case DIVERGING:  routing = new ANDSplitType();  break;
                                 default:
-                                    throw new RuntimeException(  // TODO - remove wrapper hack
+                                    throw new RuntimeException(
                                         new CanoniserException("Unimplemented gateway direction " + parallelGateway.getGatewayDirection())
-                                    );
+                                    );  // TODO - remove wrapper hack
                                 }
                                 assert routing != null;
 
@@ -721,9 +724,19 @@ public class CanoniserDefinitions extends Definitions {
                                 populateFlowElement(edge, sequenceFlow);
 
                                 if (sequenceFlow.getConditionExpression() != null) {
-                                    //TODO change to CPF v1.0
-                                    //edge.setConditionExpr(sequenceFlow.getConditionExpression().getContent().get(0).toString());
-                                    // TODO - handle non-singleton expressions
+
+                                    // We don't handle multiple conditions
+                                    if (sequenceFlow.getConditionExpression().getContent().size() != 1) {
+                                        throw new RuntimeException(
+                                            new CanoniserException("BPMN sequence flow " + sequenceFlow.getId() + " has " +
+                                                                   sequenceFlow.getConditionExpression().getContent().size() +
+                                                                   " conditions, which the canoniser doesn't implement")
+                                        );  // TODO - remove wrapper hack
+                                    }
+
+                                    ConditionExpressionType conditionExpr = new ConditionExpressionType();
+                                    conditionExpr.setExpression(sequenceFlow.getConditionExpression().getContent().get(0).toString());
+                                    edge.setConditionExpr(conditionExpr);
                                 }
                                 edge.setSourceId(((TFlowNode) sequenceFlow.getSourceRef()).getId());  // TODO - process through cpfIdFactory
                                 edge.setTargetId(((TFlowNode) sequenceFlow.getTargetRef()).getId());  // TODO - process through cpfIdFactory
@@ -811,7 +824,11 @@ public class CanoniserDefinitions extends Definitions {
                  * @param cpf  the CPF document to populate
                  * @param cpfIdFactory  generator of identifiers for pools and lanes
                  */
-                private void addPools(Participant participant, TProcess process, CanonicalProcessType cpf, IdFactory cpfIdFactory) {
+                private void addPools(final Participant          participant,
+                                      final TProcess             process,
+                                      final CanonicalProcessType cpf,
+                                      final IdFactory            cpfIdFactory) {
+
                     for (LaneSet laneSet : process.getLaneSets()) {
 
                         // Create a pool
@@ -880,9 +897,10 @@ public class CanoniserDefinitions extends Definitions {
 
                     for (Map.Entry<TFlowNode, Lane> entry : laneMap.entrySet()) {
                         if (!bpmnFlowNodeToCpfNodeMap.containsKey(entry.getKey())) {
-                            throw new RuntimeException(  // TODO - remove the wrapper hack
-                                new CanoniserException("Lane " + entry.getValue().getId() + " contains " + entry.getKey().getId() + " which is not present")
-                            );
+                            throw new RuntimeException(
+                                new CanoniserException("Lane " + entry.getValue().getId() + " contains " +
+                                                       entry.getKey().getId() + " which is not present")
+                            );  // TODO - remove the wrapper hack
                         }
                         NodeType node = bpmnFlowNodeToCpfNodeMap.get(entry.getKey());  // get the CPF node corresponding to the BPMN flow node
                         if (node instanceof WorkType) {

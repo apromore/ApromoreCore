@@ -9,7 +9,7 @@ import java.util.regex.Pattern;
 /**
  * Generator for identifier strings.
  *
- * @author <a href="simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
+ * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  * @since 0.4
  */
 public class IdFactory {
@@ -37,7 +37,7 @@ public class IdFactory {
      * @param suggestedId  a suggested value for the identifier, or <code>null</code> to indicate no preference
      * @return a new NCName, never <code>null</code>
      */
-    synchronized public String newId(final String suggestedId) {
+    public synchronized String newId(final String suggestedId) {
 
         String id = suggestedId;
 

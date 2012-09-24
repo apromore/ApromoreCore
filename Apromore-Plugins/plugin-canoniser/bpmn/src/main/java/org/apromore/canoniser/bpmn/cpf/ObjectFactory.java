@@ -1,16 +1,13 @@
 package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.annotation.XmlElementDecl;
 import javax.xml.bind.annotation.XmlRegistry;
-import javax.xml.bind.annotation.XmlType;
-import javax.xml.namespace.QName;
 
 // Local packages
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.TaskType;
+import org.apromore.cpf.XORSplitType;
 
 /**
  * Element factory for a CPF 0.6 object model with convenience methods.
@@ -34,5 +31,10 @@ public class ObjectFactory extends org.apromore.cpf.ObjectFactory {
     @Override
     public TaskType createTaskType() {
         return new CpfTaskType();
+    }
+
+    @Override
+    public XORSplitType createXORSplitType() {
+        return new CpfXORSplitType();
     }
 }

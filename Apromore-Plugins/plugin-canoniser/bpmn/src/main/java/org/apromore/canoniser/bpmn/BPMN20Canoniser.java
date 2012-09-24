@@ -36,9 +36,9 @@ public class BPMN20Canoniser implements Canoniser {
 
     /** {@inheritDoc} */
     @Override
-    public void canonise(final InputStream          bpmnInput,
-                         List<AnnotationsType>      annotationFormat,
-                         List<CanonicalProcessType> canonicalFormat) throws CanoniserException {
+    public void canonise(final InputStream                bpmnInput,
+                         final List<AnnotationsType>      annotationFormat,
+                         final List<CanonicalProcessType> canonicalFormat) throws CanoniserException {
 
         try {
             CanoniserResult result = JAXBContext.newInstance(BpmnObjectFactory.class,
@@ -54,7 +54,7 @@ public class BPMN20Canoniser implements Canoniser {
                 annotationFormat.add(result.getAnf(i));
                 canonicalFormat.add(result.getCpf(i));
             }
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new CanoniserException("Could not canonise to BPMN stream", e);
         }
     }
@@ -73,7 +73,7 @@ public class BPMN20Canoniser implements Canoniser {
                                                .createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(new CanoniserDefinitions(canonicalFormat, annotationFormat), bpmnOutput);
-        } catch(Exception e) {
+        } catch (Exception e) {
             throw new CanoniserException("Could not decanonise from BPMN stream", e);
         }
     }
