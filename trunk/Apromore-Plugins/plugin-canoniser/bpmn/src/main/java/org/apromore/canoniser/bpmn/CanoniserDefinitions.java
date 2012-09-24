@@ -230,7 +230,7 @@ public class CanoniserDefinitions extends Definitions {
     /**
      * CPF schema version.
      */
-    public static final String CPF_VERSION = "0.6";
+    public static final String CPF_VERSION = "1.0";
 
     /**
      * XPath expression language URI.
@@ -614,10 +614,9 @@ public class CanoniserDefinitions extends Definitions {
 
                     // Generate resource types for each pool and lane
                     for (JAXBElement<? extends TRootElement> rootElement2 : getRootElements()) {
-                        java.util.logging.Logger.getAnonymousLogger().info("Root element " + rootElement2.getValue().getId());
                         if (rootElement2.getValue() instanceof TCollaboration) {
                             for (Participant participant : ((TCollaboration) rootElement2.getValue()).getParticipants()) {
-                                if (process.getId().equals(participant.getProcessRef().toString())) {
+                                if (process.getId().equals(participant.getProcessRef().getLocalPart())) {
                                     addPools(participant, process, cpf, cpfIdFactory);
                                 }
                             }
@@ -633,11 +632,7 @@ public class CanoniserDefinitions extends Definitions {
                                 object.setConfigurable(false);  // BPMN doesn't have an obvious equivalent
 
                                 if (dataObject.isIsCollection()) {
-                                    //TODO depreciated
-//                                    TypeAttribute attribute = new TypeAttribute();
-//                                    attribute.setTypeRef("bpmn.isCollection");
-//                                    attribute.setValue("true");
-//                                    object.getAttribute().add(attribute);
+                                    // TODO - represent using some sort of extension element
                                 }
 
                                 populateFlowElement(object, dataObject);
@@ -863,10 +858,13 @@ public class CanoniserDefinitions extends Definitions {
                     for (Lane lane : laneSet.getLanes()) {
                         ResourceTypeType laneResourceType = new ResourceTypeType();
 
+                        // Add the resource type to the CPF model
                         laneResourceType.setId(cpfIdFactory.newId(lane.getId()));
                         laneResourceType.setName(requiredName(lane.getName()));
+                        specializationIds.add(laneResourceType.getId());
+                        cpf.getResourceType().add(laneResourceType);
 
-                        // Remember which elements should be in each lane
+                        // Populate laneMap so we'll know later on which lane each element belongs to
                         for (JAXBElement<Object> object : lane.getFlowNodeRefs()) {
                             TFlowNode flowNode = (TFlowNode) object.getValue();
                             laneMap.put(flowNode, lane);
@@ -878,10 +876,6 @@ public class CanoniserDefinitions extends Definitions {
                                 addLanes(lane.getChildLaneSet(), cpf, cpfIdFactory)
                             );
                         }
-
-                        cpf.getResourceType().add(laneResourceType);
-
-                        specializationIds.add(laneResourceType.getId());
                     }
 
                     return specializationIds;
