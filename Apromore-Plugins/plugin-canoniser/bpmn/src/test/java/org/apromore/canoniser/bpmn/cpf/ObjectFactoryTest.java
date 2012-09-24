@@ -69,14 +69,13 @@ public class ObjectFactoryTest {
         ClassLoader loader = getClass().getClassLoader();
 
         CPF_SCHEMA  = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(
-            new StreamSource(loader.getResourceAsStream("xsd/cpf_0.6.xsd"))
+            new StreamSource(loader.getResourceAsStream("xsd/cpf_1.0.xsd"))
         );
     }
 
     /**
      * Test CPF convenience methods.
      */
-    @Ignore // Fails with CPF v1.0
     @Test
     public void testParseCpf() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
 

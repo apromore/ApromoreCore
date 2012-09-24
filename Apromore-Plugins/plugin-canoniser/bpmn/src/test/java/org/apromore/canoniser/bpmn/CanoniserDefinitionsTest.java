@@ -423,7 +423,7 @@ public class CanoniserDefinitionsTest {
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 8.bpmn20.svg"/></div>
      */
-    //@Test
+    @Test
     public void testCanonise8() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
         CanonicalProcessType cpf = testCanonise("Case 8").getCpf(0);
 
@@ -432,15 +432,18 @@ public class CanoniserDefinitionsTest {
         assertEquals(2, cpf.getResourceType().size());
 
         // Pool "P"
-        ResourceTypeType p = cpf.getResourceType().get(1);
+        ResourceTypeType p = cpf.getResourceType().get(0);
         assertEquals("P", p.getName());
         assertEquals(ResourceTypeType.class, p.getClass());
-        //assertEquals(Collections.EMPTY_LIST, p.getSpecializationIds());
 
         // Implicit lane within "P"
-        ResourceTypeType p_lane = cpf.getResourceType().get(0);
+        ResourceTypeType p_lane = cpf.getResourceType().get(1);
         assertEquals("", p_lane.getName());
         assertEquals(ResourceTypeType.class, p_lane.getClass());
+
+        // Resource type specialization hierarchy: p_lane in p
+        assertEquals(Collections.emptyList(), p_lane.getSpecializationIds());
+        assertEquals(Collections.singletonList(p_lane.getId()), p.getSpecializationIds());
 
         // Expect 3 nodes
         NetType net = cpf.getNet().get(0);
@@ -488,26 +491,33 @@ public class CanoniserDefinitionsTest {
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 9.bpmn20.svg"/></div>
      */
-    //@Test
+    @Test
     public void testCanonise9() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
         CanonicalProcessType cpf = testCanonise("Case 9").getCpf(0);
 
-        // Expect 1 graph, 2 resource types
+        // Expect 1 graph, 3 resource types
         assertEquals(1, cpf.getNet().size());
-        assertEquals(4, cpf.getResourceType().size());
+        assertEquals(3, cpf.getResourceType().size());
 
         // Pool "P"
-        ResourceTypeType p = cpf.getResourceType().get(3);
+        ResourceTypeType p = cpf.getResourceType().get(0);
         assertEquals("P", p.getName());
         assertEquals(ResourceTypeType.class, p.getClass());
 
+        // Anonymous lane inside pool "P"
+        ResourceTypeType p_lane = cpf.getResourceType().get(1);
+        assertEquals("", p_lane.getName());
+        assertEquals(ResourceTypeType.class, p_lane.getClass());
+
         // Lane "L"
-        ResourceTypeType l = cpf.getResourceType().get(1);
+        ResourceTypeType l = cpf.getResourceType().get(2);
         assertEquals("L", l.getName());
         assertEquals(ResourceTypeType.class, l.getClass());
-        assertEquals(Collections.EMPTY_LIST, l.getSpecializationIds());
 
-        //assertEquals(Collections.singletonList(p.getId()), ((ResourceTypeType) l.getSpecializationIds()));
+        // Resource type specialization hierarchy: l in p_lane in p
+        assertEquals(Collections.emptyList(), l.getSpecializationIds());
+        assertEquals(Collections.singletonList(l.getId()), p_lane.getSpecializationIds());
+        assertEquals(Collections.singletonList(p_lane.getId()), p.getSpecializationIds());
 
         // Expect 3 nodes
         NetType net = cpf.getNet().get(0);
