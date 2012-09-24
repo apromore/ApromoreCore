@@ -6,15 +6,15 @@ import java.util.Set;
 
 // Local packages
 import org.apromore.cpf.EdgeType;
-import org.apromore.cpf.EventType;
+import org.apromore.cpf.XORSplitType;
 
 /**
- * CPF 0.6 event with convenience methods.
+ * CPF 0.6 task with convenience methods.
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  * @since 0.4
  */
-public class CpfEventType extends EventType implements CpfNodeType {
+public class CpfXORSplitType extends XORSplitType implements CpfNodeType {
 
     /** Incoming edges. */
     private Set<EdgeType> incomingEdges = new HashSet<EdgeType>();  // TODO - diamond operator

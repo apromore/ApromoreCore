@@ -17,10 +17,10 @@ import org.apromore.cpf.TaskType;
 public class CpfTaskType extends TaskType implements CpfNodeType {
 
     /** Incoming edges. */
-    Set<EdgeType> incomingEdges = new HashSet<EdgeType>();  // TODO - diamond operator
+    private Set<EdgeType> incomingEdges = new HashSet<EdgeType>();  // TODO - diamond operator
 
     /** Outgoing edges. */
-    Set<EdgeType> outgoingEdges = new HashSet<EdgeType>();  // TODO - diamond operator
+    private Set<EdgeType> outgoingEdges = new HashSet<EdgeType>();  // TODO - diamond operator
 
     /**
      * @return every edge which has this node as its target

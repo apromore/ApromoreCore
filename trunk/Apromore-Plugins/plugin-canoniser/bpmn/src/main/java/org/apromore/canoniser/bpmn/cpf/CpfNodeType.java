@@ -17,10 +17,10 @@ public interface CpfNodeType {
     /**
      * @return every edge which has this node as its target
      */
-    public Set<EdgeType> getIncomingEdges();
+    Set<EdgeType> getIncomingEdges();
 
     /**
      * @return every edge which has this node as its source
      */
-    public Set<EdgeType> getOutgoingEdges();
+    Set<EdgeType> getOutgoingEdges();
 }

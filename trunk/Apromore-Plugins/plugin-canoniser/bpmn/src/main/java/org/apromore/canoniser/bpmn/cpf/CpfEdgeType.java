@@ -29,12 +29,12 @@ public class CpfEdgeType extends EdgeType {
     }
 
     /** @param node  the new source node */
-    public void setSourceRef(NodeType node) {
+    public void setSourceRef(final NodeType node) {
         source = node;
     }
 
     /** @param node  the new target node */
-    public void setTargetRef(NodeType node) {
+    public void setTargetRef(final NodeType node) {
         target = node;
     }
 }

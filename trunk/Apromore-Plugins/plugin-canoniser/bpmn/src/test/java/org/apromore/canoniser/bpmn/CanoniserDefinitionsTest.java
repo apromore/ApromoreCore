@@ -120,7 +120,7 @@ public class CanoniserDefinitionsTest {
              * This switches to loading the BPMN schema from the filesystem, as so:
              */
             BPMN_SCHEMA = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(
-                new File("../../Apromore-Schema/bpmn-schema/src/main/resources/xsd/BPMN20.xsd")
+                new File("../../../Apromore-Schema/bpmn-schema/src/main/resources/xsd/BPMN20.xsd")
             );
             /* The reason this isn't the default behavior is because it only works when
              * executed from the complete Apromore checkout.  When Jenkins runs the
@@ -144,7 +144,7 @@ public class CanoniserDefinitionsTest {
         assert BPMN_SCHEMA != null;
 
         CPF_SCHEMA  = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(
-            new StreamSource(loader.getResourceAsStream("xsd/cpf_0.6.xsd"))
+            new StreamSource(loader.getResourceAsStream("xsd/cpf_1.0.xsd"))
         );
     }
 
@@ -167,7 +167,6 @@ public class CanoniserDefinitionsTest {
     /**
      * Test canonisation of <code>Test1.bpmn20.xml</code>.
      */
-    @Ignore // Fails with CPF v1.0
     @Test
     public final void test1() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
 
@@ -265,7 +264,6 @@ public class CanoniserDefinitionsTest {
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 1.bpmn20.svg"/></div>
      */
-    @Ignore // Fails with CPF v1.0
     @Test
     public void testCanonise1() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
 
@@ -309,7 +307,6 @@ public class CanoniserDefinitionsTest {
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 2.bpmn20.svg"/></div>
      */
-    @Ignore // Fails with CPF v1.0
     @Test
     public void testCanonise2() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
         NetType net = testCanonise("Case 2").getCpf(0).getNet().get(0);
@@ -344,19 +341,27 @@ public class CanoniserDefinitionsTest {
         EdgeType a_xor = net.getEdge().get(0);
         assertNull(a_xor.getConditionExpr());
         assertEquals(a.getId(), a_xor.getSourceId());
+        //assertEquals(a, a_xor.getSourceRef());
         assertEquals(xor.getId(), a_xor.getTargetId());
+        //assertEquals(xor, a_xor.getTargetRef());
 
         // Sequence flow "C1" from XOR to B
         EdgeType xor_b = net.getEdge().get(1);
-        assertEquals("C1", xor_b.getConditionExpr());
+        assertNotNull(xor_b.getConditionExpr());
+        assertNotNull(xor_b.getConditionExpr().getExpression());
+        assertEquals("C1", xor_b.getConditionExpr().getExpression());
         assertEquals(xor.getId(), xor_b.getSourceId());
+        //assertEquals(xor, xor_b.getSourceRef());
         assertEquals(b.getId(), xor_b.getTargetId());
+        //assertEquals(b, xor_b.getTargetRef());
 
         // Sequence flow "C2" from XOR to C
         EdgeType xor_c = net.getEdge().get(2);
-        assertEquals("C2", xor_c.getConditionExpr());
+        assertEquals("C2", xor_c.getConditionExpr().getExpression());
         assertEquals(xor.getId(), xor_c.getSourceId());
+        //assertEquals(xor, xor_c.getSourceRef());
         assertEquals(c.getId(), xor_c.getTargetId());
+        //assertEquals(c, xor_c.getTargetRef());
     }
 
     /**
@@ -364,7 +369,6 @@ public class CanoniserDefinitionsTest {
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 5.bpmn20.svg"/></div>
      */
-    @Ignore // Fails with CPF v1.0
     @Test
     public void testCanonise5() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
         NetType net = testCanonise("Case 5").getCpf(0).getNet().get(0);
@@ -551,7 +555,6 @@ public class CanoniserDefinitionsTest {
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 10.bpmn20.svg"/></div>
      */
-    @Ignore // Fails with CPF v1.0
     @Test
     public void testCanonise10() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
         testCanonise("Case 10");
@@ -564,7 +567,6 @@ public class CanoniserDefinitionsTest {
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 11.bpmn20.svg"/></div>
      */
-    @Ignore // Fails with CPF v1.0
     @Test
     public void testCanonise11() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
         testCanonise("Case 11");
@@ -577,7 +579,6 @@ public class CanoniserDefinitionsTest {
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 12.bpmn20.svg"/></div>
      */
-    @Ignore // Fails with CPF v1.0
     @Test
     public void testCanonise12() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
         //CanoniserDefinitions definitions = testCanonise("Case 12");
@@ -640,7 +641,6 @@ public class CanoniserDefinitionsTest {
     /**
      * Test decanonisation of <code>Basic.cpf</code> and <code>Basic.anf</code>.
      */
-    @Ignore //TODO fix this
     @Test
     public final void testDecanoniseBasic() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
 
@@ -691,7 +691,6 @@ public class CanoniserDefinitionsTest {
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Expected 1.bpmn20.svg"/></div>
      */
-    @Ignore // Fails with CPF v1.0
     @Test
     public final void testDecanonise1() {
         // not yet implemented
@@ -700,7 +699,6 @@ public class CanoniserDefinitionsTest {
     /**
      * Test decanonisation of <code>Pool.cpf</code> and <code>Pool.anf</code>.
      */
-    @Ignore // Fails with CPF v1.0
     @Test
     public final void testDecanonisePool() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
 
