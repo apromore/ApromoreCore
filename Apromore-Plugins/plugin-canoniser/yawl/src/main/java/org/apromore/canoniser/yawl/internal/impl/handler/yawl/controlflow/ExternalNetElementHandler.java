@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl.controlflow;
@@ -30,6 +30,7 @@ import org.apromore.anf.SizeType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.YAWLConversionHandler;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
+import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.cpf.DirectionType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
@@ -50,20 +51,24 @@ import org.yawlfoundation.yawlschema.LayoutVertexFactsType;
 
 /**
  * Base class for converting all external net elements
- * 
+ *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  * @param <T>
  *            type of Element to be converted
  */
 public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler<T, NetType> {
+
+    private static final String BACKGROUND_COLOR = "backgroundColor";
+
+    private static final String LINE_STYLE = "lineStyle";
 
     private static final int DEFAULT_LINE_SIZE = 11;
 
     /**
      * Simple connection between two already converted element. Source and Target have to be SESE, as we are not going to introduce any kind of
      * routing node.
-     * 
+     *
      * @param sourceNode
      *            of CPF
      * @param targetNode
@@ -88,7 +93,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
     /**
      * Generates a unique ID for an edge between source and target. Same edges (identical source and target) will always return the same generated
      * unique id.
-     * 
+     *
      * @param sourceNode
      *            of CPF element
      * @param targetNode
@@ -109,7 +114,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
     /**
      * Create a StateType node that was not part of the original YAWL specification. The node is already added to its parent Net.
-     * 
+     *
      * @return
      */
     protected StateType createState() {
@@ -122,7 +127,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
     /**
      * Create a EventType node that was not part of the original YAWL specification. The node is already added to its parent Net.
-     * 
+     *
      * @return
      */
     protected EventType createEvent() {
@@ -135,7 +140,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
     /**
      * Create a MessageType node that was not part of the original YAWL specification. The node is already added to its parent Net.
-     * 
+     *
      * @param direction
      * @return the converted MessageType
      */
@@ -190,7 +195,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
         final DocumentationType d = ANF_FACTORY.createDocumentationType();
         d.setCpfId(generateUUID(CONTROLFLOW_ID_PREFIX, element.getId()));
         d.setId(generateUUID());
-        d.getAny().add(ConversionUtils.marshalYAWLFragment("documentation", documentation, String.class));
+        d.getAny().add(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.DOCUMENTATION, documentation, String.class));
         getContext().getAnnotationResult().getAnnotation().add(d);
     }
 
@@ -206,12 +211,12 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
         final Collection<LayoutDecoratorFactsType> layoutDecorators = getContext().getLayoutDecoratorForElement(element.getId());
         if (layoutDecorators != null) {
             for (final LayoutDecoratorFactsType decorator : layoutDecorators) {
-                graphics.getAny().add(ConversionUtils.marshalYAWLFragment("decorator", decorator, LayoutDecoratorFactsType.class));
+                graphics.getAny().add(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.DECORATOR, decorator, LayoutDecoratorFactsType.class));
             }
         }
         if (getContext().getLayoutLabelForElement(element.getId()) != null) {
             graphics.getAny().add(
-                    ConversionUtils.marshalYAWLFragment("label", getContext().getLayoutLabelForElement(element.getId()), LayoutLabelFactsType.class));
+                    ExtensionUtils.marshalYAWLFragment(ExtensionUtils.LABEL, getContext().getLayoutLabelForElement(element.getId()), LayoutLabelFactsType.class));
         }
 
         getContext().getAnnotationResult().getAnnotation().add(graphics);
@@ -219,7 +224,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
     /**
      * Create the graphical annotation for a YAWL edge.
-     * 
+     *
      * @param sourceId
      *            of the YAWL source
      * @param targetId
@@ -237,7 +242,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
         // Convert and add YAWL specific extension
         if (flowLayout != null) {
             graphics.getAny().add(
-                    ConversionUtils.marshalYAWLFragment("flow", getContext().getLayoutFlow(getContext().buildEdgeId(sourceId, targetId)),
+                    ExtensionUtils.marshalYAWLFragment(ExtensionUtils.FLOW, getContext().getLayoutFlow(getContext().buildEdgeId(sourceId, targetId)),
                             LayoutFlowFactsType.class));
             graphics.setLine(convertFlowLineStyle(flowLayout));
             try {
@@ -270,7 +275,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
         final LineType lineType = ANF_FACTORY.createLineType();
         lineType.setWidth(new BigDecimal(DEFAULT_LINE_SIZE));
         for (final JAXBElement<?> obj : flowLayout.getAttributes().getAutosizeOrBackgroundColorOrBendable()) {
-            if (obj.getName().getLocalPart().equalsIgnoreCase("lineStyle")) {
+            if (obj.getName().getLocalPart().equalsIgnoreCase(LINE_STYLE)) {
                 lineType.setWidth(new BigDecimal((BigInteger) obj.getValue()));
             }
         }
@@ -292,7 +297,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
                         throw new CanoniserException("Could not convert layout of element " + vertex.getId(), e);
                     }
                 }
-                if (element.getName().getLocalPart().equals("backgroundColor") && element.getValue() != null) {
+                if (element.getName().getLocalPart().equals(BACKGROUND_COLOR) && element.getValue() != null) {
                     final BigInteger color = (BigInteger) element.getValue();
                     fill.setColor(ConversionUtils.convertColorToString(color.intValue()));
                 }

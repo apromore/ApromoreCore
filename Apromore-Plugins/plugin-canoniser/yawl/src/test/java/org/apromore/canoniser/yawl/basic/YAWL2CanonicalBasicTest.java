@@ -30,7 +30,7 @@ import org.apromore.anf.GraphicsType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.YAWL2Canonical;
 import org.apromore.canoniser.yawl.internal.impl.YAWL2CanonicalImpl;
-import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
+import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.canoniser.yawl.utils.GraphvizVisualiser;
 import org.apromore.canoniser.yawl.utils.NullOutputStream;
 import org.apromore.canoniser.yawl.utils.TestUtils;
@@ -175,7 +175,7 @@ public class YAWL2CanonicalBasicTest {
         assertTrue(outputAnnotation instanceof GraphicsType);
         assertNotNull(specAnnotation);
         assertEquals(1, specAnnotation.getAny().size());
-        final LayoutLocaleType locale = ConversionUtils.unmarshalYAWLFragment(specAnnotation.getAny().get(0), LayoutLocaleType.class);
+        final LayoutLocaleType locale = ExtensionUtils.unmarshalYAWLFragment(specAnnotation.getAny().get(0), LayoutLocaleType.class);
         assertNotNull(locale);
         assertEquals("de", locale.getLanguage());
         assertEquals("DE", locale.getCountry());

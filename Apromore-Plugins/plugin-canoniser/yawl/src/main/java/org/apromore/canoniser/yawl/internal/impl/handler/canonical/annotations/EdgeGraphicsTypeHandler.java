@@ -17,7 +17,7 @@ import javax.xml.bind.JAXBElement;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionContext.ElementInfo;
-import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
+import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.cpf.EdgeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -81,8 +81,8 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         // Search for YAWL annotation
         for (final Object obj : getObject().getAny()) {
             try {
-                if (ConversionUtils.isValidFragment(obj, ConversionUtils.YAWLSCHEMA_URL, "flow")) {
-                    final LayoutFlowFactsType flowLayout = ConversionUtils.unmarshalYAWLFragment(obj, LayoutFlowFactsType.class);
+                if (ExtensionUtils.isValidFragment(obj, ExtensionUtils.YAWLSCHEMA_URL, ExtensionUtils.FLOW)) {
+                    final LayoutFlowFactsType flowLayout = ExtensionUtils.unmarshalYAWLFragment(obj, LayoutFlowFactsType.class);
                     return YAWL_FACTORY.createLayoutNetFactsTypeFlow(flowLayout);
                 }
             } catch (final CanoniserException e) {

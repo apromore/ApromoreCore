@@ -21,9 +21,21 @@ import org.apromore.cpf.NetType;
  */
 public final class ExpressionUtils {
 
+    private ExpressionUtils() {
+    }
+
     public static String createExpressionReferencingNetObject(final String objectName, final NetType net) {
         // TODO look up Object
         return "/" + objectName;
+    }
+
+    public static String createQueryReferencingTaskVariables(final String xQuery) {
+        return xQuery;
+    }
+
+    public static String createQueryReferencingNetObjects(final String xQuery) {
+     // TODO look up Object
+        return xQuery;
     }
 
 }
