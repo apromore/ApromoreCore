@@ -16,6 +16,7 @@ import java.util.List;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionContext;
+import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
@@ -29,7 +30,7 @@ import org.slf4j.LoggerFactory;
  */
 public class CheckValidModelMacro extends ContextAwareRewriteMacro {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CheckValidModelMacro.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CheckValidModelMacro.class);
 
     public CheckValidModelMacro(final CanonicalConversionContext context) {
         super(context);
@@ -45,28 +46,33 @@ public class CheckValidModelMacro extends ContextAwareRewriteMacro {
         for (final NetType net : cpf.getNet()) {
             for (final EdgeType edge : net.getEdge()) {
                 if (edge.getSourceId() == null) {
-                    throw new CanoniserException("Invalid Canonical Process with Uri " + cpf.getUri() + "! Edge " + edge.getId()
-                            + " is missing a Source!");
+                    LOGGER.error("Missing source on Edge {} (Available Nodes: {})", ConversionUtils.toString(edge),
+                            ConversionUtils.nodesToString(net.getNode()));
+                    throw new CanoniserException("Invalid Canonical Process! Edge " + edge.getId() + " is missing a Source!");
                 }
                 if (edge.getTargetId() == null) {
-                    throw new CanoniserException("Invalid Canonical Process with Uri " + cpf.getUri() + "! Edge " + edge.getId()
-                            + " is missing a Target!");
+                    LOGGER.error("Missing target on Edge {} (Available Nodes: {})", ConversionUtils.toString(edge),
+                            ConversionUtils.nodesToString(net.getNode()));
+                    throw new CanoniserException("Invalid Canonical Process! Edge " + edge.getId() + " is missing a Target!");
                 }
             }
             for (final NodeType node : net.getNode()) {
                 final List<NodeType> postSet = getContext().getPostSet(node.getId());
                 final List<NodeType> preSet = getContext().getPreSet(node.getId());
                 if (postSet.isEmpty() && preSet.isEmpty()) {
-                    LOGGER.warn("Node " + node.getId() + " is disconnected!");
+                    // We want to be able to Canonise incomplete models
+                    LOGGER.warn("Node {} is disconnected!", ConversionUtils.toString(node));
                 }
             }
-            Collection<NodeType> sourceNodes = getContext().getSourceNodes(net);
+            final Collection<NodeType> sourceNodes = getContext().getSourceNodes(net);
             if (sourceNodes.isEmpty()) {
-                throw new CanoniserException("Can not canonise a process model without any source node!");
+                LOGGER.warn("Net {} contains no source nodes!", ConversionUtils.toString(net));
+                throw new CanoniserException("Net "+net.getId()+" contains no source nodes!");
             }
-            Collection<NodeType> sinkNodes = getContext().getSourceNodes(net);
+            final Collection<NodeType> sinkNodes = getContext().getSinkNodes(net);
             if (sinkNodes.isEmpty()) {
-                throw new CanoniserException("Can not canonise a process model without any sink node!");
+                LOGGER.warn("Net {} contains no sink nodes!", ConversionUtils.toString(net));
+                throw new CanoniserException("Net "+net.getId()+" contains no sink nodes!");
             }
         }
         return false;

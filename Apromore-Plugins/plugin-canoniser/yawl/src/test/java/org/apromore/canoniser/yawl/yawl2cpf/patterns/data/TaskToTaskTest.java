@@ -9,7 +9,7 @@ public class TaskToTaskTest extends BasePatternTest {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.BaseYAWL2CPFTest#getYAWLFile()
      */
     @Override

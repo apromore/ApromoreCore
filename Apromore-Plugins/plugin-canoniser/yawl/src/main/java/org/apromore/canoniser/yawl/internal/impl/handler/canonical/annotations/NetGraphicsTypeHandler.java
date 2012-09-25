@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations;
@@ -20,13 +20,12 @@ import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.yawlfoundation.yawlschema.LayoutFactsType.Specification;
 import org.yawlfoundation.yawlschema.LayoutFrameType;
 import org.yawlfoundation.yawlschema.LayoutNetFactsType;
-import org.yawlfoundation.yawlschema.ObjectFactory;
 
 /**
  * Convert the layout of a CPF NetType to YAWL
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  */
 public class NetGraphicsTypeHandler extends CanonicalElementHandler<GraphicsType, Specification> {
 
@@ -37,7 +36,7 @@ public class NetGraphicsTypeHandler extends CanonicalElementHandler<GraphicsType
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -48,8 +47,7 @@ public class NetGraphicsTypeHandler extends CanonicalElementHandler<GraphicsType
     }
 
     private LayoutNetFactsType createNetLayout(final GraphicsType graphic) {
-        final ObjectFactory oF = getContext().getYawlObjectFactory();
-        final LayoutNetFactsType netLayout = oF.createLayoutNetFactsType();
+        final LayoutNetFactsType netLayout = YAWL_FACTORY.createLayoutNetFactsType();
         netLayout.setId(generateUUID(graphic.getCpfId()));
 
         if (graphic.getFill() != null) {
@@ -58,26 +56,26 @@ public class NetGraphicsTypeHandler extends CanonicalElementHandler<GraphicsType
 
         // Create viewport, frame and bounds element with the same information as CPF only contains one size
         final LayoutFrameType viewport = convertFrame(graphic);
-        netLayout.getBoundsOrFrameOrViewport().add(oF.createLayoutNetFactsTypeViewport(viewport));
+        netLayout.getBoundsOrFrameOrViewport().add(YAWL_FACTORY.createLayoutNetFactsTypeViewport(viewport));
 
         final LayoutFrameType frame = convertFrame(graphic);
-        netLayout.getBoundsOrFrameOrViewport().add(oF.createLayoutNetFactsTypeFrame(frame));
+        netLayout.getBoundsOrFrameOrViewport().add(YAWL_FACTORY.createLayoutNetFactsTypeFrame(frame));
 
         final LayoutFrameType bounds = convertFrame(graphic);
-        netLayout.getBoundsOrFrameOrViewport().add(oF.createLayoutNetFactsTypeBounds(bounds));
+        netLayout.getBoundsOrFrameOrViewport().add(YAWL_FACTORY.createLayoutNetFactsTypeBounds(bounds));
 
         return netLayout;
     }
 
     /**
      * Converts the ANF GraphicsType to an YAWL frame omitting the position information.
-     *
+     * 
      * @param graphic
      *            of ANF
      * @return YAWL frame
      */
     private LayoutFrameType convertFrame(final GraphicsType graphic) {
-        final LayoutFrameType frame = getContext().getYawlObjectFactory().createLayoutFrameType();
+        final LayoutFrameType frame = YAWL_FACTORY.createLayoutFrameType();
 
         if (graphic.getSize() != null) {
             frame.setH(graphic.getSize().getHeight().toBigInteger());

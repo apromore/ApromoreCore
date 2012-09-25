@@ -4,14 +4,12 @@ import java.io.File;
 
 import org.apromore.canoniser.yawl.BaseCPF2YAWLTest;
 import org.apromore.canoniser.yawl.utils.TestUtils;
-import org.junit.Ignore;
 
-@Ignore
 public class YAWL4FilmTest extends BaseCPF2YAWLTest {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.BaseCPF2YAWLTest#getCPFFile()
      */
     @Override
@@ -21,7 +19,7 @@ public class YAWL4FilmTest extends BaseCPF2YAWLTest {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.BaseCPF2YAWLTest#getANFFile()
      */
     @Override

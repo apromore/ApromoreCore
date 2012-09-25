@@ -9,32 +9,41 @@
  *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.apromore.canoniser.yawl;
+package org.apromore.canoniser.yawl.basic;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 
 import javax.xml.bind.JAXBException;
 
+import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
+import org.apromore.anf.GraphicsType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.YAWL2Canonical;
 import org.apromore.canoniser.yawl.internal.impl.YAWL2CanonicalImpl;
+import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.canoniser.yawl.utils.GraphvizVisualiser;
+import org.apromore.canoniser.yawl.utils.NullOutputStream;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.cpf.CanonicalProcessType;
 import org.junit.Before;
 import org.junit.BeforeClass;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import org.yawlfoundation.yawlschema.DecompositionType;
 import org.yawlfoundation.yawlschema.ExternalConditionFactsType;
+import org.yawlfoundation.yawlschema.LayoutLocaleType;
 import org.yawlfoundation.yawlschema.NetFactsType;
 import org.yawlfoundation.yawlschema.NetFactsType.ProcessControlElements;
 import org.yawlfoundation.yawlschema.OutputConditionFactsType;
@@ -48,6 +57,8 @@ import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
  *
  */
 public class YAWL2CanonicalBasicTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(YAWL2CanonicalBasicTest.class);
 
     private static File emptyNet;
 
@@ -78,15 +89,27 @@ public class YAWL2CanonicalBasicTest {
             fail(e.getMessage());
         }
 
-        TestUtils.printAnf(yawl2Canonical.getAnf(), new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), "EmptyNet.yawl.anf")));
-        TestUtils.printCpf(yawl2Canonical.getCpf(), new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), "EmptyNet.yawl.cpf")));
 
-        // Just build image if Graphviz exists
-        if (new File(GraphvizVisualiser.DEFAULT_GRAPHVIZ_WINDOWS_PATH).exists()) {
-            final GraphvizVisualiser v = new GraphvizVisualiser();
-            v.createImageAsDOT(yawl2Canonical.getCpf().getNet().get(0),
-                    new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), "emptyNetCpf.dot")));
-            v.createImageAsPNG(yawl2Canonical.getCpf().getNet().get(0), TestUtils.createTestOutputFile(this.getClass(), "emptyNetCpf.png"));
+        OutputStream anfStream = null;
+        OutputStream cpfStream = null;
+        if (LOGGER.isDebugEnabled()) {
+            anfStream = new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), "EmptyNet.yawl.anf"));
+            cpfStream = new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), "EmptyNet.yawl.cpf"));
+        } else {
+            anfStream = new NullOutputStream();
+            cpfStream = new NullOutputStream();
+        }
+        TestUtils.printAnf(yawl2Canonical.getAnf(), anfStream);
+        TestUtils.printCpf(yawl2Canonical.getCpf(), cpfStream);
+
+        if (LOGGER.isDebugEnabled()) {
+         // Just build image if Graphviz exists
+            if (new File(GraphvizVisualiser.DEFAULT_GRAPHVIZ_WINDOWS_PATH).exists()) {
+                final GraphvizVisualiser v = new GraphvizVisualiser();
+                v.createImageAsDOT(yawl2Canonical.getCpf().getNet().get(0),
+                        new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), "emptyNetCpf.dot")));
+                v.createImageAsPNG(yawl2Canonical.getCpf().getNet().get(0), TestUtils.createTestOutputFile(this.getClass(), "emptyNetCpf.png"));
+            }
         }
     }
 
@@ -125,8 +148,37 @@ public class YAWL2CanonicalBasicTest {
         assertEquals("EmptyNet", anf.getName()); // Original Name is NULL, but we use the Uri instead
         assertEquals(mainSpecification.getUri(), anf.getUri());
 
-        // Just InputCondition and OutputCondition and the RootNet, each 1 Graphic-Annotations
-        assertEquals(3, anf.getAnnotation().size());
+        // Just InputCondition, OutputCondition, the RootNet and the Specification, each 1 Graphic-Annotations
+        assertEquals(4, anf.getAnnotation().size());
+
+        AnnotationType netAnnotation = null;
+        AnnotationType inputAnnotation = null;
+        AnnotationType outputAnnotation = null;
+        AnnotationType specAnnotation = null;
+
+        for (final AnnotationType ann : anf.getAnnotation()) {
+            if ("N-EmptyNet".equals(ann.getCpfId())) {
+                netAnnotation = ann;
+            } else if ("C-InputCondition".equals(ann.getCpfId())) {
+                inputAnnotation = ann;
+            } else if ("C-OutputCondition".equals(ann.getCpfId())) {
+                outputAnnotation = ann;
+            } else {
+                specAnnotation = ann;
+            }
+        }
+        assertNotNull(netAnnotation);
+        assertTrue(netAnnotation instanceof GraphicsType);
+        assertNotNull(inputAnnotation);
+        assertTrue(inputAnnotation instanceof GraphicsType);
+        assertNotNull(outputAnnotation);
+        assertTrue(outputAnnotation instanceof GraphicsType);
+        assertNotNull(specAnnotation);
+        assertEquals(1, specAnnotation.getAny().size());
+        final LayoutLocaleType locale = ConversionUtils.unmarshalYAWLFragment(specAnnotation.getAny().get(0), LayoutLocaleType.class);
+        assertNotNull(locale);
+        assertEquals("de", locale.getLanguage());
+        assertEquals("DE", locale.getCountry());
 
         // Basic check CPF
         final CanonicalProcessType cpf = yawl2Canonical.getCpf();

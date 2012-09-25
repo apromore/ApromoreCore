@@ -1,21 +1,17 @@
 /**
  * Copyright 2012, Felix Mannhardt
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer;
 
-import java.util.ListIterator;
-
-import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionContext;
-import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectFactory;
@@ -27,11 +23,11 @@ import org.yawlfoundation.yawlschema.TimerTriggerType;
 
 /**
  * Rewrite all other Timers that does not match a special category by introducing an artificial automated Task with an attached onEnablement Timer.
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  */
-public class MiscTimerMacro extends AbstractTimerMacro {
+public final class MiscTimerMacro extends AbstractTimerMacro {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MiscTimerMacro.class);
 
@@ -41,48 +37,34 @@ public class MiscTimerMacro extends AbstractTimerMacro {
 
     /*
      * (non-Javadoc)
-     *
-     * @see org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.RewriteMacro#rewrite(org.apromore.cpf.CanonicalProcessType)
+     * 
+     * @see org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer.AbstractTimerMacro#checkCondition(org.apromore.cpf.NodeType)
      */
     @Override
-    public boolean rewrite(final CanonicalProcessType cpf) throws CanoniserException {
-        boolean hasRewritten = false;
-
-        for (final NetType net : cpf.getNet()) {
-
-            final ListIterator<NodeType> nodeIterator = net.getNode().listIterator();
-            while (nodeIterator.hasNext()) {
-                final NodeType node = nodeIterator.next();
-                if (node instanceof TimerType) {
-                    hasRewritten = hasRewritten || rewriteMisc((TimerType) node, net, cpf);
-                }
-            }
-
-            if (hasRewritten) {
-                cleanupNet(net);
-            }
-        }
-
-        if (hasRewritten) {
-            getContext().invalidateCPFCaches();
-        }
-
-        return hasRewritten;
+    protected boolean checkCondition(final NodeType node) {
+        return node instanceof TimerType;
     }
 
-    private boolean rewriteMisc(final TimerType timer, final NetType net, final CanonicalProcessType cpf) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer.AbstractTimerMacro#rewriteTimer(org.apromore.cpf.NodeType,
+     * org.apromore.cpf.NetType)
+     */
+    @Override
+    protected boolean rewriteTimer(final NodeType node, final NetType net) {
         LOGGER.debug("Rewriting Timer (Misc)");
 
         final ObjectFactory oF = new ObjectFactory();
         final TaskType task = oF.createTaskType();
         task.setId(generateUUID());
-        task.setName(timer.getName());
+        task.setName(node.getName());
 
         addNodeLater(task);
-        deleteNodeLater(timer);
+        deleteNodeLater(node);
 
         // Set the correct YAWL Timer
-        final org.yawlfoundation.yawlschema.TimerType yawlTimer = createTimer(timer);
+        final org.yawlfoundation.yawlschema.TimerType yawlTimer = createTimer((TimerType) node);
         yawlTimer.setTrigger(TimerTriggerType.ON_ENABLED);
         getContext().getElementInfo(task.getId()).timer = yawlTimer;
         // Remember that this Task should be automatic
@@ -91,8 +73,11 @@ public class MiscTimerMacro extends AbstractTimerMacro {
         LOGGER.debug("Added YAWL Timer to introduced Task {}", task.getId());
 
         // Connect the Task correctly
-        addEdgeLater(createEdge(getContext().getFirstPredecessor(timer.getId()), task));
-        addEdgeLater(createEdge(task, getContext().getFirstSuccessor(timer.getId())));
+        addEdgeLater(createEdge(getContext().getFirstPredecessor(node.getId()), task));
+        addEdgeLater(createEdge(task, getContext().getFirstSuccessor(node.getId())));
+
+        // Do the changes and update our Maps
+        cleanupNet(net);
 
         return true;
     }

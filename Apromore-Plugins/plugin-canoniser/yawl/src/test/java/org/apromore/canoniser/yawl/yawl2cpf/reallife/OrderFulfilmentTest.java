@@ -9,7 +9,7 @@ public class OrderFulfilmentTest extends BaseYAWL2CPFTest {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.BaseYAWL2CPFTest#getYAWLFile()
      */
     @Override

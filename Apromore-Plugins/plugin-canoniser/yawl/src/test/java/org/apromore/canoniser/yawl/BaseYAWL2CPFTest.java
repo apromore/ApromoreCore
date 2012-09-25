@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.YAWL2Canonical;
 import org.apromore.canoniser.yawl.internal.impl.YAWL2CanonicalImpl;
 import org.apromore.canoniser.yawl.utils.GraphvizVisualiser;
+import org.apromore.canoniser.yawl.utils.NullOutputStream;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.HumanType;
@@ -29,9 +31,12 @@ import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeType;
+import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
 /**
@@ -41,6 +46,8 @@ import org.xml.sax.SAXException;
  *
  */
 public abstract class BaseYAWL2CPFTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseYAWL2CPFTest.class);
 
     protected YAWL2Canonical yawl2Canonical;
 
@@ -66,14 +73,22 @@ public abstract class BaseYAWL2CPFTest {
 
     @Test
     public void testSaveResult() throws JAXBException, IOException, SAXException {
-        TestUtils.printAnf(yawl2Canonical.getAnf(),
-                new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), getYAWLFile().getName() + ".anf")));
-        TestUtils.printCpf(yawl2Canonical.getCpf(),
-                new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), getYAWLFile().getName() + ".cpf")));
-
-        final List<NetType> netList = yawl2Canonical.getCpf().getNet();
-        for (final NetType net : netList) {
-            createGraphImages(net);
+        OutputStream anfStream = null;
+        OutputStream cpfStream = null;
+        if (LOGGER.isDebugEnabled()) {
+            anfStream = new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), getYAWLFile().getName() + ".anf"));
+            cpfStream = new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), getYAWLFile().getName() + ".cpf"));
+        } else {
+            anfStream = new NullOutputStream();
+            cpfStream = new NullOutputStream();
+        }
+        TestUtils.printAnf(yawl2Canonical.getAnf(), anfStream);
+        TestUtils.printCpf(yawl2Canonical.getCpf(), cpfStream);
+        if (LOGGER.isDebugEnabled()) {
+            final List<NetType> netList = yawl2Canonical.getCpf().getNet();
+            for (final NetType net : netList) {
+                createGraphImages(net);
+            }
         }
     }
 
@@ -134,7 +149,16 @@ public abstract class BaseYAWL2CPFTest {
 
     protected NodeType getNodeByName(final NetType net, final String nodeName) {
         for (final NodeType node : net.getNode()) {
-            if (node.getName() != null && node.getName().equals(nodeName)) {
+            if (nodeName.equals(node.getName())) {
+                return node;
+            }
+        }
+        return null;
+    }
+
+    protected NodeType getNodeById(final NetType net, final String nodeId) {
+        for (final NodeType node : net.getNode()) {
+            if (nodeId.equals(node.getId())) {
                 return node;
             }
         }
@@ -143,7 +167,7 @@ public abstract class BaseYAWL2CPFTest {
 
     protected ObjectType getObjectByName(final NetType net, final String objectName) {
         for (final ObjectType obj : net.getObject()) {
-            if (obj.getName() != null && obj.getName().equals(objectName)) {
+            if (objectName.equals(obj.getName())) {
                 return obj;
             }
         }
@@ -161,7 +185,7 @@ public abstract class BaseYAWL2CPFTest {
     private List<ObjectRefType> getObjectRef(final WorkType node, final ObjectType object, final InputOutputType type) {
         final List<ObjectRefType> objectRefList = new ArrayList<ObjectRefType>();
         for (final ObjectRefType objRef : node.getObjectRef()) {
-            if (objRef.getObjectId() != null && objRef.getObjectId().equals(object.getId())) {
+            if (object.getId().equals(objRef.getObjectId())) {
                 if (objRef.getType() == type) {
                     objectRefList.add(objRef);
                 }
@@ -172,7 +196,7 @@ public abstract class BaseYAWL2CPFTest {
 
     protected NodeType getNodeByID(final NetType net, final String nodeId) {
         for (final NodeType node : net.getNode()) {
-            if (node.getId() != null && node.getId().equals(nodeId)) {
+            if (nodeId.equals(node.getId())) {
                 return node;
             }
         }
@@ -190,7 +214,7 @@ public abstract class BaseYAWL2CPFTest {
     protected List<EdgeType> getOutgoingEdges(final NetType net, final String id) {
         final List<EdgeType> edgeList = new ArrayList<EdgeType>();
         for (final EdgeType edge : net.getEdge()) {
-            if (edge.getSourceId().equals(id)) {
+            if (id.equals(edge.getSourceId())) {
                 edgeList.add(edge);
             }
         }
@@ -200,23 +224,50 @@ public abstract class BaseYAWL2CPFTest {
     protected List<EdgeType> getIncomingEdges(final NetType net, final String id) {
         final List<EdgeType> edgeList = new ArrayList<EdgeType>();
         for (final EdgeType edge : net.getEdge()) {
-            if (edge.getTargetId().equals(id)) {
+            if (id.equals(edge.getTargetId())) {
                 edgeList.add(edge);
             }
         }
         return edgeList;
     }
 
-    protected NodeType checkNode(final NetType net, final String id, final Class<?> classz, final int inEdges, final int outEdges) {
-        final NodeType node = getNodeByName(net, id);
+    protected <T> T checkNode(final NetType net, final String name, final Class<? extends NodeType> classz, final int inEdges, final int outEdges) {
+        final NodeType node = getNodeByName(net, name);
+        assertNotNull("Could not find Node with name: " + name, node);
         return checkNode(net, node, classz, inEdges, outEdges);
     }
 
-    protected NodeType checkNode(final NetType net, final NodeType node, final Class<?> classz, final int inEdges, final int outEdges) {
-        assertTrue("Node " + node.getName() + " is not of class " + classz.getSimpleName(), classz.isInstance(node));
-        assertEquals("Wrong count of outgoing edges at " + node.getName(), outEdges, countOutgoingEdges(net, node.getId()));
-        assertEquals("Wrong count of incoming edges at " + node.getName(), inEdges, countIncomingEdges(net, node.getId()));
-        return node;
+    protected <T> T checkNodeById(final NetType net, final String id, final Class<? extends NodeType> classz, final int inEdges, final int outEdges) {
+        final NodeType node = getNodeById(net, id);
+        assertNotNull("Could not find Node with ID: " + id, node);
+        return checkNode(net, node, classz, inEdges, outEdges);
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <T> T checkNode(final NetType net, final NodeType node, final Class<? extends NodeType> classz, final int inEdges, final int outEdges) {
+        assertNotNull("Node is NULL", node);
+        final String nullSafeName = node.getName() != null ? node.getName() : "null";
+        assertTrue("Node " + nullSafeName + " is not of class " + classz.getSimpleName(), classz.isInstance(node));
+        assertEquals("Wrong count of outgoing edges at " + nullSafeName, outEdges, countOutgoingEdges(net, node.getId()));
+        assertEquals("Wrong count of incoming edges at " + nullSafeName, inEdges, countIncomingEdges(net, node.getId()));
+        return (T) node;
+    }
+
+    protected TypeAttribute findExtensionByName(final NodeType node, final String name) {
+        for (final TypeAttribute attr : node.getAttribute()) {
+            if (name.equals(attr.getName())) {
+                return attr;
+            }
+        }
+        return null;
+    }
+
+    protected NodeType getFirstPredecessor(final NetType rootNet, final NodeType a) {
+        return getNodeById(rootNet, getIncomingEdges(rootNet, a.getId()).get(0).getSourceId());
+    }
+
+    protected NodeType getFirstSuccessor(final NetType rootNet, final NodeType nodeA) {
+        return getNodeByID(rootNet, getOutgoingEdges(rootNet, nodeA.getId()).get(0).getTargetId());
     }
 
 }

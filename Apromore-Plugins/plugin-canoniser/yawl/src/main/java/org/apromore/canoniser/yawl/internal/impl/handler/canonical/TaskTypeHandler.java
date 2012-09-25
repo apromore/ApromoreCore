@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical;
@@ -15,6 +15,9 @@ import java.math.BigInteger;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.InputOutputType;
@@ -39,6 +42,7 @@ import org.yawlfoundation.yawlschema.ResourcingFactsType;
 import org.yawlfoundation.yawlschema.ResourcingInitiatorType;
 import org.yawlfoundation.yawlschema.ResourcingOfferFactsType;
 import org.yawlfoundation.yawlschema.ResourcingStartFactsType;
+import org.yawlfoundation.yawlschema.TimerTriggerType;
 import org.yawlfoundation.yawlschema.TimerType;
 import org.yawlfoundation.yawlschema.VarMappingSetType;
 import org.yawlfoundation.yawlschema.VariableBaseType;
@@ -47,9 +51,9 @@ import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType.YawlService;
 
 /**
  * Converts a TaskType to a YAWL Task (Atomic/Composite)
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  */
 public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType> {
     // TODO refactor this class
@@ -58,7 +62,7 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -175,20 +179,20 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
     }
 
     private ResourcingFactsType convertResourceing() {
-        final ResourcingFactsType resourceing = getContext().getYawlObjectFactory().createResourcingFactsType();
+        final ResourcingFactsType resourceing = YAWL_FACTORY.createResourcingFactsType();
 
-        final ResourcingOfferFactsType offer = getContext().getYawlObjectFactory().createResourcingOfferFactsType();
+        final ResourcingOfferFactsType offer = YAWL_FACTORY.createResourcingOfferFactsType();
         offer.setInitiator(ResourcingInitiatorType.SYSTEM);
-        final ResourcingDistributionSetFactsType distributionSet = getContext().getYawlObjectFactory().createResourcingDistributionSetFactsType();
+        final ResourcingDistributionSetFactsType distributionSet = YAWL_FACTORY.createResourcingDistributionSetFactsType();
         distributionSet.setInitialSet(convertInitialDistributionSet());
         offer.setDistributionSet(distributionSet);
         resourceing.setOffer(offer);
 
-        final ResourcingStartFactsType start = getContext().getYawlObjectFactory().createResourcingStartFactsType();
+        final ResourcingStartFactsType start = YAWL_FACTORY.createResourcingStartFactsType();
         start.setInitiator(ResourcingInitiatorType.USER);
         resourceing.setStart(offer);
 
-        final ResourcingAllocateFactsType allocate = getContext().getYawlObjectFactory().createResourcingAllocateFactsType();
+        final ResourcingAllocateFactsType allocate = YAWL_FACTORY.createResourcingAllocateFactsType();
         allocate.setInitiator(ResourcingInitiatorType.USER);
         resourceing.setAllocate(allocate);
 
@@ -199,7 +203,7 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
     }
 
     private InitialSet convertInitialDistributionSet() {
-        final InitialSet initialDistributionSet = getContext().getYawlObjectFactory().createResourcingDistributionSetFactsTypeInitialSet();
+        final InitialSet initialDistributionSet = YAWL_FACTORY.createResourcingDistributionSetFactsTypeInitialSet();
         final List<ResourceTypeRefType> resourceRefList = getObject().getResourceTypeRef();
         if (resourceRefList.size() > 1) {
             // Not supported by YAWL
@@ -394,7 +398,7 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
         final SoftType obj = (SoftType) getContext().getObjectTypeById(ref.getObjectId());
 
         if (ref.getType() == InputOutputType.INPUT) {
-            final InputParameterFactsType param = getContext().getYawlObjectFactory().createInputParameterFactsType();
+            final InputParameterFactsType param = YAWL_FACTORY.createInputParameterFactsType();
             param.setName(obj.getName());
             param.setType(obj.getType());
             if (d != null) {
@@ -402,7 +406,7 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
             }
             return param;
         } else {
-            final OutputParameterFactsType param = getContext().getYawlObjectFactory().createOutputParameterFactsType();
+            final OutputParameterFactsType param = YAWL_FACTORY.createOutputParameterFactsType();
             param.setName(obj.getName());
             param.setType(obj.getType());
             if (d != null) {
@@ -473,6 +477,33 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
 
     private String buildOutputQuery(final String variableName) {
         return "/" + getObject().getId() + "/" + variableName;
+    }
+
+    protected TimerType createTimer(final NodeType node) {
+        TimerType yawlTimer = getTimerExtension(node);
+        if (yawlTimer == null) {
+            // Set Default Values
+            yawlTimer = YAWL_FACTORY.createTimerType();
+            yawlTimer.setTrigger(TimerTriggerType.ON_ENABLED);
+            try {
+                final DatatypeFactory factory = DatatypeFactory.newInstance();
+                yawlTimer.setDuration(factory.newDuration(6000));
+            } catch (final DatatypeConfigurationException e) {
+                LOGGER.warn("Could not set Timer duration.", e);
+            }
+
+        }
+        return yawlTimer;
+    }
+
+    /**
+     * Tries to find a YAWL Timer in the Extension
+     * 
+     * @param object
+     * @return
+     */
+    private TimerType getTimerExtension(final NodeType node) {
+        return getContext().getYAWLExtensionFromAnnotations(node.getId(), "timer", TimerType.class);
     }
 
 }

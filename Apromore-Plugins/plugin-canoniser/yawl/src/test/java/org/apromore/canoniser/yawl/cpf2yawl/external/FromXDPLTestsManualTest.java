@@ -50,6 +50,7 @@ public class FromXDPLTestsManualTest extends WholeDirectoryTest {
 
     public FromXDPLTestsManualTest(final File testCPFFile, final File testANFFile) {
         super(testCPFFile, testANFFile);
+        shouldCanonisationFail = isName(testCPFFile, "Complex_GW.cpf");
     }
 
 }

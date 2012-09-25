@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WPD1TaskData" version="0.1" name="WPD1TaskData" author="Felix" rootIds="id-N-Net">
-    <Net id="id-N-Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-InputCondition" originalID="InputCondition">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WPD1TaskData" version="0.1" name="WPD1TaskData" author="Felix" rootIds="N-Net">
+    <Net id="N-Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-A" originalID="A">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
             <name>A</name>
-            <attribute name="inputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>0</index>
                     <name>t1</name>
@@ -14,7 +14,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <attribute name="inputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>1</index>
                     <name>t2</name>
@@ -22,7 +22,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <attribute name="inputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>2</index>
                     <name>t3</name>
@@ -30,7 +30,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <attribute name="outputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputParam">
                 <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>2</index>
                     <name>t3</name>
@@ -38,7 +38,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="outputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputParam">
                 <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>3</index>
                     <name>t4</name>
@@ -46,22 +46,22 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="resourcing">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
                 <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <offer initiator="user"/>
                     <allocate initiator="user"/>
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <attribute name="secondary">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
                 <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
             </attribute>
-            <objectRef id="id-3a335e1b-bc0e-4b93-8195-9ede9d4bc311" objectId="id-D-id-N-Net-n3" type="output" optional="false" consumed="true"/>
-            <objectRef id="id-65a4c670-4e5f-4a2c-84b0-20bafa385af5" objectId="id-D-id-N-Net-n2" type="output" optional="false" consumed="true"/>
-            <objectRef id="id-3533ba04-57f4-4bc3-9058-3e9f6809984f" objectId="id-D-id-N-Net-n4" type="output" optional="false" consumed="true"/>
-            <objectRef id="id-3797621c-7df3-4cbb-88a0-6578e7534a7f" objectId="id-D-id-N-Net-n3" type="input" optional="false" consumed="true"/>
-            <objectRef id="id-171df499-4ff6-4fc0-8916-c5df6d3b0a88" objectId="id-D-id-N-Net-n1" type="input" optional="false" consumed="true"/>
-            <objectRef id="id-bed6dfc9-672f-421f-bf64-aaf8721f47df" objectId="id-D-id-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="c4a51f52-a7a6-4e21-8aef-538861a35463" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
+            <objectRef id="d60df9e7-fa4b-4580-9e90-3c1929dfbd53" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
+            <objectRef id="idb7882230-9a77-4607-b319-5dbe96e8cb44" objectId="D-N-Net-n4" type="output" optional="false" consumed="true"/>
+            <objectRef id="ec0f50fa-1c0b-4ecf-ab7d-697a8107975a" objectId="D-N-Net-n3" type="input" optional="false" consumed="true"/>
+            <objectRef id="ide9f16c96-21ce-404f-84ee-88ed14a2bdbf" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="id40f5e3bc-bc9e-4927-99f7-0bcfe8e987b1" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>t3 = &lt;t3&gt;{/Net/n3/text()}&lt;/t3&gt;</expression>
@@ -87,9 +87,9 @@
                 <expression>n4 = &lt;n4&gt;{/A/t4/text()}&lt;/n4&gt;</expression>
             </outputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-B" originalID="B">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-B" originalID="B">
             <name>B</name>
-            <attribute name="inputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>0</index>
                     <name>t1</name>
@@ -97,7 +97,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <attribute name="inputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>1</index>
                     <name>t2</name>
@@ -105,7 +105,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <attribute name="outputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputParam">
                 <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>0</index>
                     <name>t1</name>
@@ -113,7 +113,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="outputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputParam">
                 <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>2</index>
                     <name>t3</name>
@@ -121,20 +121,20 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="resourcing">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
                 <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <offer initiator="user"/>
                     <allocate initiator="user"/>
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <attribute name="secondary">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
                 <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
             </attribute>
-            <objectRef id="id-6d1c8c1c-7e68-4aca-8da7-9df6dfa9f694" objectId="id-D-id-N-Net-n2" type="output" optional="false" consumed="true"/>
-            <objectRef id="id-906aaae2-be44-437e-aef1-367ba34ac402" objectId="id-D-id-N-Net-n3" type="output" optional="false" consumed="true"/>
-            <objectRef id="id-24f7b369-e7b3-4478-b433-b1f0e5c5fec9" objectId="id-D-id-N-Net-n2" type="input" optional="false" consumed="true"/>
-            <objectRef id="id-4fe9006d-5cb1-45b0-8f3d-ebf16e642408" objectId="id-D-id-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="id73f424b3-d039-4afc-b90a-751ad0551123" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
+            <objectRef id="e31422b6-8165-4cab-9945-241a3cbc0f57" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
+            <objectRef id="id876ba6d0-d465-46f9-a21d-b5d5af8de555" objectId="D-N-Net-n2" type="input" optional="false" consumed="true"/>
+            <objectRef id="id272e66d3-78cb-4b2f-b37b-4544ca136dbf" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>t2 = &lt;t2&gt;{/Net/n2/text()}&lt;/t2&gt;</expression>
@@ -152,29 +152,29 @@
                 <expression>n3 = &lt;n3&gt;{/B/t1/text()}&lt;/n3&gt;</expression>
             </outputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-OutputCondition" originalID="OutputCondition">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="id-C-InputCondition-A" default="true" sourceId="id-C-InputCondition" targetId="id-C-A"/>
-        <Edge id="id-C-A-B" default="true" sourceId="id-C-A" targetId="id-C-B"/>
-        <Edge id="id-C-B-OutputCondition" default="true" sourceId="id-C-B" targetId="id-C-OutputCondition"/>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D-id-N-Net-n2" originalID="id-N-Net_n2">
+        <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
+        <Edge id="C-A-B" default="true" sourceId="C-A" targetId="C-B"/>
+        <Edge id="C-B-OutputCondition" default="true" sourceId="C-B" targetId="C-OutputCondition"/>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-n2" originalID="N-Net_n2">
             <name>n2</name>
             <type>string</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D-id-N-Net-n4" originalID="id-N-Net_n4">
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-n4" originalID="N-Net_n4">
             <name>n4</name>
             <type>string</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D-id-N-Net-n5" originalID="id-N-Net_n5">
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-n5" originalID="N-Net_n5">
             <name>n5</name>
             <type>YDocumentType</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D-id-N-Net-n1" originalID="id-N-Net_n1">
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-n1" originalID="N-Net_n1">
             <name>n1</name>
             <type>boolean</type>
         </Object>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D-id-N-Net-n3" originalID="id-N-Net_n3">
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-n3" originalID="N-Net_n3">
             <name>n3</name>
             <type>byte</type>
         </Object>

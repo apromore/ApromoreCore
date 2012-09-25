@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WP1Sequence" version="0.1" name="WP1Sequence" author="Felix" rootIds="id-N-Net">
-    <Net id="id-N-Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-InputCondition" originalID="InputCondition">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WP1Sequence" version="0.1" name="WP1Sequence" author="Felix" rootIds="N-Net">
+    <Net id="N-Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-A" originalID="A">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
             <name>A</name>
-            <attribute name="inputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>0</index>
                     <name>c</name>
@@ -14,7 +14,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <attribute name="outputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputParam">
                 <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>0</index>
                     <name>c</name>
@@ -22,18 +22,18 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="resourcing">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
                 <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <offer initiator="user"/>
                     <allocate initiator="user"/>
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <attribute name="secondary">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
                 <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
             </attribute>
-            <objectRef id="id-b85d7b35-5a6f-4940-80cc-3cb755baa917" objectId="id-D-id-N-Net-c" type="output" optional="false" consumed="true"/>
-            <objectRef id="id-484bf59e-e063-4338-b12d-74d0c7524561" objectId="id-D-id-N-Net-c" type="input" optional="false" consumed="true"/>
+            <objectRef id="b933d8bd-e8e8-4cdb-88f6-927fd97c3518" objectId="D-N-Net-c" type="output" optional="false" consumed="true"/>
+            <objectRef id="b13ef1e2-52a2-4464-ad17-cefc3d38237e" objectId="D-N-Net-c" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>c = &lt;c&gt;{/Net/c/text()}&lt;/c&gt;</expression>
@@ -43,21 +43,21 @@
                 <expression>c = &lt;c&gt;{/C/c/text()}&lt;/c&gt;</expression>
             </outputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id-54cc5738-98ee-4fb2-a054-072bf618d299"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" subnetId="id-N-Net" id="id-C-Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="ide9f52edd-6bb7-40c4-9449-e4381a1ca680"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" subnetId="N-Net" id="C-Net" originalID="Net">
             <name>Net</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-OutputCondition" originalID="OutputCondition">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="id-3b98759c-5e73-4793-b755-57670be8a63c"/>
-        <Edge id="id-C-InputCondition-A" default="true" sourceId="id-C-InputCondition" targetId="id-C-A"/>
-        <Edge id="id-C-id-C-A-id-54cc5738-98ee-4fb2-a054-072bf618d299" default="true" sourceId="id-C-A" targetId="id-54cc5738-98ee-4fb2-a054-072bf618d299"/>
-        <Edge id="id-C-id-54cc5738-98ee-4fb2-a054-072bf618d299-id-C-Net" default="true" sourceId="id-54cc5738-98ee-4fb2-a054-072bf618d299" targetId="id-C-Net"/>
-        <Edge id="id-C-id-3b98759c-5e73-4793-b755-57670be8a63c-id-C-OutputCondition" default="true" sourceId="id-3b98759c-5e73-4793-b755-57670be8a63c" targetId="id-C-OutputCondition"/>
-        <Edge id="id-C-id-54cc5738-98ee-4fb2-a054-072bf618d299-id-3b98759c-5e73-4793-b755-57670be8a63c" default="true" sourceId="id-54cc5738-98ee-4fb2-a054-072bf618d299" targetId="id-3b98759c-5e73-4793-b755-57670be8a63c"/>
-        <Edge id="id-C-id-C-Net-id-3b98759c-5e73-4793-b755-57670be8a63c" default="true" sourceId="id-C-Net" targetId="id-3b98759c-5e73-4793-b755-57670be8a63c"/>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D-id-N-Net-c" originalID="id-N-Net_c">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="dd401155-499c-4f27-a423-0e901cc7027c"/>
+        <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
+        <Edge id="id5d28debc-95d7-4690-9180-7d5c95d2133b" default="true" sourceId="C-A" targetId="ide9f52edd-6bb7-40c4-9449-e4381a1ca680"/>
+        <Edge id="id7201dc8f-125e-40ee-9266-e91ad9945b04" default="true" sourceId="ide9f52edd-6bb7-40c4-9449-e4381a1ca680" targetId="C-Net"/>
+        <Edge id="id9a5ec68b-bc4a-433c-b78f-2e038ebb35f6" default="true" sourceId="dd401155-499c-4f27-a423-0e901cc7027c" targetId="C-OutputCondition"/>
+        <Edge id="idc1bb89d0-15ff-42f3-8ae4-d9ef2acecf8a" default="true" sourceId="ide9f52edd-6bb7-40c4-9449-e4381a1ca680" targetId="dd401155-499c-4f27-a423-0e901cc7027c"/>
+        <Edge id="id4f11c13d-f668-42be-bf1b-344c37eb3af4" default="true" sourceId="C-Net" targetId="dd401155-499c-4f27-a423-0e901cc7027c"/>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-c" originalID="N-Net_c">
             <name>c</name>
             <type>integer</type>
         </Object>

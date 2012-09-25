@@ -1,6 +1,8 @@
 package org.apromore.canoniser.yawl.internal.utils;
 
 import java.math.BigInteger;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -14,8 +16,18 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apache.commons.lang.builder.ToStringBuilder;
+import org.apache.commons.lang.builder.ToStringStyle;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.EdgeType;
+import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
+import org.apromore.cpf.ResourceTypeType;
+import org.apromore.cpf.TypeAttribute;
+import org.apromore.cpf.WorkType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
@@ -26,17 +38,21 @@ import org.w3c.dom.Node;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public class ConversionUtils {
+public final class ConversionUtils {
 
-    public static final String EXTENSION_DATA_TYPE_DEFINITIONS = "org.apromore.canoniser.yawl.dataTypeDefinitions";
+    private static final Logger LOGGER = LoggerFactory.getLogger(ConversionUtils.class);
 
-    public static final String YAWL_COMPLEX_MAPPING_EXTENSION = "yawlComplexMapping";
+    public static final org.apromore.cpf.ObjectFactory CPF_FACTORY = new org.apromore.cpf.ObjectFactory();
 
-    public static final String YAWL_EXPRESSION_EXTENSION = "yawlOriginalExpression";
+    public static final org.apromore.anf.ObjectFactory ANF_FACTORY = new org.apromore.anf.ObjectFactory();
+
+    public static final org.yawlfoundation.yawlschema.ObjectFactory YAWL_FACTORY = new org.yawlfoundation.yawlschema.ObjectFactory();
+
+    public static final org.yawlfoundation.yawlschema.orgdata.ObjectFactory YAWL_ORG_FACTORY = new org.yawlfoundation.yawlschema.orgdata.ObjectFactory();
 
     public static final String YAWLSCHEMA_URL = "http://www.yawlfoundation.org/yawlschema";
 
-    public static final String CONFIGURATION_EXTENSION = "configuration";
+    private static final int MAX_ITERATION_COUNT = 10000;
 
     private static final Pattern COLOR_REGEX = Pattern.compile("R:([0-9][0-9][0-9])G:([0-9][0-9][0-9])B:([0-9][0-9][0-9])");
 
@@ -53,7 +69,8 @@ public class ConversionUtils {
         try {
             return JAXBContext.newInstance("org.yawlfoundation.yawlschema");
         } catch (final JAXBException e) {
-            throw new RuntimeException("Could not create JAXBContext for YAWL Schema. This should never happen!", e);
+            LOGGER.error("Could not create JAXBContext for YAWL Schema. This should never happen!", e);
+            return null;
         }
     }
 
@@ -88,7 +105,7 @@ public class ConversionUtils {
     public static String generateUniqueName(final String originalName, final Set<String> nameSet) {
         int i = 1;
         String newName = originalName + i;
-        while (nameSet.contains(newName) && (i < 10000)) { // Prevent infinite loops on strange input data
+        while (nameSet.contains(newName) && (i < MAX_ITERATION_COUNT)) { // Prevent infinite loops on strange input data
             newName = originalName + (++i);
         }
         return newName;
@@ -110,11 +127,15 @@ public class ConversionUtils {
      */
     public static <T> T unmarshalYAWLFragment(final Object object, final Class<T> expectedClass) throws CanoniserException {
         try {
-            final Unmarshaller u = YAWL_CONTEXT.createUnmarshaller();
-            final JAXBElement<T> jaxbElement = u.unmarshal((Node) object, expectedClass);
-            return jaxbElement.getValue();
-        } catch (JAXBException e) {
-            throw new CanoniserException("Failed to parse YAWL extension with expected class "+expectedClass.getName(), e);
+            if (YAWL_CONTEXT != null) {
+                final Unmarshaller u = YAWL_CONTEXT.createUnmarshaller();
+                final JAXBElement<T> jaxbElement = u.unmarshal((Node) object, expectedClass);
+                return jaxbElement.getValue();
+            } else {
+                throw new CanoniserException("Missing JAXBContext for YAWL!");
+            }
+        } catch (final JAXBException e) {
+            throw new CanoniserException("Failed to parse YAWL extension with expected class " + expectedClass.getName(), e);
         }
     }
 
@@ -132,21 +153,188 @@ public class ConversionUtils {
      */
     public static <T> Element marshalYAWLFragment(final String elementName, final T object, final Class<T> expectedClass) throws CanoniserException {
         try {
-            final Marshaller m = YAWL_CONTEXT.createMarshaller();
-            m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-            JAXBElement<T> element = new JAXBElement<T>(new QName(YAWLSCHEMA_URL, elementName), expectedClass, object);
-            DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-            dbf.setNamespaceAware(false);
-            Document doc;
-            try {
-                doc = dbf.newDocumentBuilder().newDocument();
-            } catch (ParserConfigurationException e) {
-                throw new RuntimeException("Could not build document while marshalling YAWL fragment. This should never happen!", e);
+            if (YAWL_CONTEXT != null) {
+                final Marshaller m = YAWL_CONTEXT.createMarshaller();
+                m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+                final JAXBElement<T> element = new JAXBElement<T>(new QName(YAWLSCHEMA_URL, elementName), expectedClass, object);
+                final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                dbf.setNamespaceAware(false);
+                Document doc;
+                try {
+                    doc = dbf.newDocumentBuilder().newDocument();
+                } catch (final ParserConfigurationException e) {
+                    throw new RuntimeException("Could not build document while marshalling YAWL fragment. This should never happen!", e);
+                }
+                m.marshal(element, doc);
+                return doc.getDocumentElement();
+            } else {
+                throw new CanoniserException("Missing JAXBContext for YAWL!");
             }
-            m.marshal(element, doc);
-            return doc.getDocumentElement();
-        } catch (JAXBException e) {
-            throw new CanoniserException("Failed to add YAWL extension with name "+elementName, e);
+        } catch (final JAXBException e) {
+            throw new CanoniserException("Failed to add YAWL extension with name " + elementName, e);
         }
     }
+
+    /**
+     * Add the extension Element (XML) to the CPF Nodes attributes
+     *
+     * @param extensionElement
+     * @param node
+     */
+    public static void addToExtensions(final Element extensionElement, final NodeType node) {
+        node.getAttribute().add(createExtension(extensionElement));
+    }
+
+    /**
+     * Add the extension Element (XML) to the CPF attributes
+     *
+     * @param extensionElement
+     * @param cpt
+     */
+    public static void addToExtensions(final Element extensionElement, final CanonicalProcessType cpt) {
+        cpt.getAttribute().add(createExtension(extensionElement));
+    }
+
+    /**
+     * Add the extension Element (XML) to the CPF Net attributes
+     *
+     * @param extensionElement
+     * @param net
+     */
+    public static void addToExtensions(final Element extensionElement, final NetType net) {
+        net.getAttribute().add(createExtension(extensionElement));
+    }
+
+    /**
+     * Add the extension Element (XML) to the CPF ResourceType attributes
+     *
+     * @param extensionElement
+     * @param net
+     */
+    public static void addToExtensions(final Element extensionElement, final ResourceTypeType resourceType) {
+        resourceType.getAttribute().add(createExtension(extensionElement));
+    }
+
+    private static TypeAttribute createExtension(final Element extensionElement) {
+        final TypeAttribute attr = CPF_FACTORY.createTypeAttribute();
+        if (extensionElement.getNamespaceURI() != null) {
+            attr.setName(extensionElement.getNamespaceURI() + "/" + extensionElement.getLocalName());
+        } else {
+            attr.setName(extensionElement.getLocalName());
+        }
+        attr.setAny(extensionElement);
+        return attr;
+    }
+
+    /**
+     * Get an extension element from the Node
+     *
+     * @param node
+     * @param name
+     * @return
+     */
+    public static TypeAttribute getFromExtensions(final NodeType node, final String name) {
+        for (TypeAttribute attr: node.getAttribute()) {
+            if (name.equals(attr.getName())) {
+                return attr;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Returns a nicely formatted String with information about a Collection of Nodes
+     *
+     * @param nodes
+     *            Collection of Nodes
+     * @return
+     */
+    public static String nodesToString(final Collection<NodeType> nodes) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        final Iterator<NodeType> nodeIterator = nodes.iterator();
+        while (nodeIterator.hasNext()) {
+            final NodeType node = nodeIterator.next();
+            sb.append(toString(node));
+            if (nodeIterator.hasNext()) {
+                sb.append(",");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    /**
+     * Returns a nicely formatted String with information about a Collection of Edges
+     *
+     * @param edges
+     *            Collection of Edges
+     * @return
+     */
+    public static String edgesToString(final Collection<EdgeType> edges) {
+        final StringBuilder sb = new StringBuilder();
+        sb.append("[");
+        final Iterator<EdgeType> edgeIterator = edges.iterator();
+        while (edgeIterator.hasNext()) {
+            final EdgeType edge = edgeIterator.next();
+            sb.append(toString(edge));
+            if (edgeIterator.hasNext()) {
+                sb.append(",");
+            }
+        }
+        sb.append("]");
+        return sb.toString();
+    }
+
+    /**
+     * Returns a nicely formatted String with information about any Node
+     *
+     * @param node
+     *            NodeType
+     * @return
+     */
+    public static String toString(final NodeType node) {
+        final ToStringBuilder sb = new ToStringBuilder(node, ToStringStyle.MULTI_LINE_STYLE);
+        return sb.append("id", node.getId()).append("name", node.getName()).toString();
+    }
+
+    /**
+     * Returns a nicely formatted String with information about a Work Node
+     *
+     * @param node
+     *            NodeType
+     * @return
+     */
+    public static String toString(final WorkType node) {
+        final ToStringBuilder sb = new ToStringBuilder(node, ToStringStyle.MULTI_LINE_STYLE);
+        return sb.append("id", node.getId()).append("name", node.getName()).append("cancelNode", node.getCancelNodeId())
+                .append("cancelEdge", node.getCancelEdgeId()).append("inputExpr", node.getInputExpr()).append("outputExpr", node.getInputExpr())
+                .toString();
+    }
+
+    /**
+     * Returns a nicely formatted String with information about an Edge
+     *
+     * @param edge
+     *            EdgeType
+     * @return
+     */
+    public static String toString(final EdgeType edge) {
+        final ToStringBuilder sb = new ToStringBuilder(edge, ToStringStyle.MULTI_LINE_STYLE);
+        return sb.append("source", edge.getSourceId()).append("target", edge.getTargetId()).append("id", edge.getId()).toString();
+    }
+
+    /**
+     * Returns a nicely formatted String with information about an Net
+     *
+     * @param net
+     *            NetType
+     * @return
+     */
+    public static String toString(final NetType net) {
+        final ToStringBuilder sb = new ToStringBuilder(net, ToStringStyle.MULTI_LINE_STYLE);
+        return sb.append("id", net.getId()).append("name", net.getName()).append("nodes", nodesToString(net.getNode()))
+                .append("edge", edgesToString(net.getEdge())).toString();
+    }
+
 }

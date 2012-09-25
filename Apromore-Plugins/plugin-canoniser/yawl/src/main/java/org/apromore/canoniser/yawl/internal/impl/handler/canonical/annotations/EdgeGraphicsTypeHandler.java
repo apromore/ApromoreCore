@@ -29,7 +29,6 @@ import org.yawlfoundation.yawlschema.LayoutPointType;
 import org.yawlfoundation.yawlschema.LayoutPointsType;
 import org.yawlfoundation.yawlschema.LayoutPortsType;
 import org.yawlfoundation.yawlschema.LayoutRectangleType;
-import org.yawlfoundation.yawlschema.ObjectFactory;
 
 /**
  * Convert the layout for a CPF edge (YAWL Flow).
@@ -67,7 +66,10 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
                 netLayout.getBoundsOrFrameOrViewport().add(convertFlowLayout(existingFlowLayout, sourceElement, targetElement));
             } else {
                 LOGGER.debug("Added layout for flow using default settings. Source {} -> Target {}", sourceElement.getId(), targetElement.getId());
-                netLayout.getBoundsOrFrameOrViewport().add(createDefaultFlowLayout(sourceElement, targetElement, edge));
+                if ((getContext().getElementInfo(sourceElement.getId()).elementSize != null)
+                        && (getContext().getElementInfo(targetElement.getId()).elementSize != null)) {
+                    netLayout.getBoundsOrFrameOrViewport().add(createDefaultFlowLayout(sourceElement, targetElement, edge));
+                }
             }
 
         } else {
@@ -81,8 +83,7 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
             try {
                 if (ConversionUtils.isValidFragment(obj, ConversionUtils.YAWLSCHEMA_URL, "flow")) {
                     final LayoutFlowFactsType flowLayout = ConversionUtils.unmarshalYAWLFragment(obj, LayoutFlowFactsType.class);
-                    final ObjectFactory oF = getContext().getYawlObjectFactory();
-                    return oF.createLayoutNetFactsTypeFlow(flowLayout);
+                    return YAWL_FACTORY.createLayoutNetFactsTypeFlow(flowLayout);
                 }
             } catch (final CanoniserException e) {
                 LOGGER.warn("Error unmarshalling extension elements. This should not happen, but the conversion will still work.", e);
@@ -103,38 +104,37 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
     private JAXBElement<LayoutFlowFactsType> createDefaultFlowLayout(final ExternalNetElementType sourceElement,
             final ExternalNetElementType targetElement, final EdgeType edge) {
 
-        final ObjectFactory oF = getContext().getYawlObjectFactory();
-
-        final LayoutFlowFactsType flowLayout = oF.createLayoutFlowFactsType();
+        final LayoutFlowFactsType flowLayout = YAWL_FACTORY.createLayoutFlowFactsType();
 
         // Set source and target
         flowLayout.setSource(sourceElement.getId());
         flowLayout.setTarget(targetElement.getId());
 
         // Convert Ports
-        final LayoutPortsType ports = oF.createLayoutPortsType();
+        final LayoutPortsType ports = YAWL_FACTORY.createLayoutPortsType();
         // Set default port as we don't know better
         ports.setIn(BigInteger.valueOf(DEFAULT_YAWL_PORT));
         ports.setOut(BigInteger.valueOf(DEFAULT_YAWL_PORT));
         flowLayout.setPorts(ports);
 
         // Add default line style
-        final LayoutAttributesFactsType attributes = oF.createLayoutAttributesFactsType();
-        attributes.getAutosizeOrBackgroundColorOrBendable().add(oF.createLayoutAttributesFactsTypeLineStyle(BigInteger.valueOf(DEFAULT_LINE_SIZE)));
+        final LayoutAttributesFactsType attributes = YAWL_FACTORY.createLayoutAttributesFactsType();
+        attributes.getAutosizeOrBackgroundColorOrBendable().add(
+                YAWL_FACTORY.createLayoutAttributesFactsTypeLineStyle(BigInteger.valueOf(DEFAULT_LINE_SIZE)));
         flowLayout.setAttributes(attributes);
 
         // Set default sizes
-        final LayoutPointsType points = oF.createLayoutPointsType();
+        final LayoutPointsType points = YAWL_FACTORY.createLayoutPointsType();
         points.getValue().add(createPoint(edge.getSourceId()));
         points.getValue().add(createPoint(edge.getTargetId()));
 
-        attributes.getAutosizeOrBackgroundColorOrBendable().add(oF.createLayoutAttributesFactsTypePoints(points));
+        attributes.getAutosizeOrBackgroundColorOrBendable().add(YAWL_FACTORY.createLayoutAttributesFactsTypePoints(points));
 
-        return oF.createLayoutNetFactsTypeFlow(flowLayout);
+        return YAWL_FACTORY.createLayoutNetFactsTypeFlow(flowLayout);
     }
 
     private LayoutPointType createPoint(final String nodeId) {
-        final LayoutPointType point = getContext().getYawlObjectFactory().createLayoutPointType();
+        final LayoutPointType point = YAWL_FACTORY.createLayoutPointType();
 
         final ElementInfo elementInfo = getContext().getElementInfo(nodeId);
         final LayoutRectangleType elementSize = elementInfo.elementSize;

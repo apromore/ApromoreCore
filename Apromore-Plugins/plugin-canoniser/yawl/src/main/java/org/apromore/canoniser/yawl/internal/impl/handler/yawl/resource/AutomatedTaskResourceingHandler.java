@@ -40,7 +40,7 @@ public class AutomatedTaskResourceingHandler extends ResourceingHandler {
             }
         }
 
-        final ResourceTypeType resourceType = getContext().getCanonicalOF().createSoftwareSystemType();
+        final ResourceTypeType resourceType = CPF_FACTORY.createSoftwareSystemType();
         resourceType.setId(generateUUID());
         resourceType.setOriginalID(null);
         resourceType.setName(automaticName);

@@ -11,6 +11,8 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yawlfoundation.yawlschema.ExternalNetElementType;
 import org.yawlfoundation.yawlschema.NetFactsType;
 import org.yawlfoundation.yawlschema.NetFactsType.ProcessControlElements;
@@ -19,6 +21,8 @@ import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
 import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
 
 public class YAWLConversionContextTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(YAWLConversionContextTest.class);
 
     private YAWLConversionContext context;
     private YAWLSpecificationFactsType specUnderTest;
@@ -85,7 +89,7 @@ public class YAWLConversionContextTest {
     public void testGetSuccessors() {
         final NetFactsType net = (NetFactsType) specUnderTest.getDecomposition().get(0);
         final ProcessControlElements pcElements = net.getProcessControlElements();
-        System.out.println("Successors Map:");
+        LOGGER.debug("Successors Map:");
         checkSuccessors(pcElements.getInputCondition(), context.getSuccessors(pcElements.getInputCondition()));
         for (final ExternalNetElementType element : pcElements.getTaskOrCondition()) {
             checkSuccessors(element, context.getSuccessors(element));
@@ -134,7 +138,7 @@ public class YAWLConversionContextTest {
     public void testGetPredecessors() {
         final NetFactsType net = (NetFactsType) specUnderTest.getDecomposition().get(0);
         final ProcessControlElements pcElements = net.getProcessControlElements();
-        System.out.println("Predecessors Map:");
+        LOGGER.debug("Predecessors Map:");
         checkPredecessors(pcElements.getInputCondition(), context.getPredecessors(pcElements.getInputCondition()));
         for (final ExternalNetElementType element : pcElements.getTaskOrCondition()) {
             checkPredecessors(element, context.getPredecessors(element));
@@ -180,11 +184,15 @@ public class YAWLConversionContextTest {
     }
 
     private void printList(final ExternalNetElementType element, final Collection<ExternalNetElementType> list) {
-        System.out.print(element.getId() + ": [");
-        for (final ExternalNetElementType succElement : list) {
-            System.out.print(succElement.getId());
-            System.out.print(", ");
+        if (LOGGER.isDebugEnabled()) {
+            StringBuilder sb = new StringBuilder();
+            sb.append(element.getId() + ": [");
+            for (final ExternalNetElementType succElement : list) {
+                sb.append(succElement.getId());
+                sb.append(", ");
+            }
+            sb.append("]\n");
+            LOGGER.debug(sb.toString());
         }
-        System.out.print("]\n");
     }
 }

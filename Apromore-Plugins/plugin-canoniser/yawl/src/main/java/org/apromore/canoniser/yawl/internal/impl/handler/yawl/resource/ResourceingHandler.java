@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl.resource;
@@ -39,9 +39,9 @@ import org.yawlfoundation.yawlschema.orgdata.RoleType;
 
 /**
  * Converting YAWL resources to CPF
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  */
 public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsType, TaskType> {
 
@@ -51,7 +51,7 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -66,27 +66,31 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
             }
 
             if (offer.getFamiliarParticipant() != null) {
-                addToExtensions(ConversionUtils.marshalYAWLFragment("familiarParticipant", offer.getFamiliarParticipant(), FamiliarParticipant.class),
-                            getConvertedParent());
+                ConversionUtils.addToExtensions(
+                        ConversionUtils.marshalYAWLFragment("familiarParticipant", offer.getFamiliarParticipant(), FamiliarParticipant.class),
+                        getConvertedParent());
             }
 
         } else {
             // Distribution of work will be handled by User at Runtime, there is no way of capturing this in CPF
-            addToExtensions(ConversionUtils.marshalYAWLFragment("resourcing", getObject(), ResourcingFactsType.class), getConvertedParent());
+            ConversionUtils.addToExtensions(ConversionUtils.marshalYAWLFragment("resourcing", getObject(), ResourcingFactsType.class),
+                    getConvertedParent());
         }
 
         // TODO Deal with secondary resources in a more clever way
-        addToExtensions(ConversionUtils.marshalYAWLFragment("secondary", getObject().getSecondary(), ResourcingSecondaryFactsType.class), getConvertedParent());
+        ConversionUtils.addToExtensions(
+                ConversionUtils.marshalYAWLFragment("secondary", getObject().getSecondary(), ResourcingSecondaryFactsType.class),
+                getConvertedParent());
     }
 
     /**
      * Creates a reference to a ResourceType.
-     *
+     * 
      * @param canonicalResource
      * @param qualifier
      */
     protected void createResourceReference(final ResourceTypeType canonicalResource, final String qualifier) {
-        final ResourceTypeRefType resourceRef = getContext().getCanonicalOF().createResourceTypeRefType();
+        final ResourceTypeRefType resourceRef = CPF_FACTORY.createResourceTypeRefType();
         resourceRef.setId(generateUUID());
         resourceRef.setQualifier(qualifier);
         resourceRef.setResourceTypeId(canonicalResource.getId());
@@ -101,28 +105,29 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
 
         if (containsManyResources(initialSet)) {
             // Add reference to Distribution Set
-            final ResourceTypeType resourceType = getContext().getCanonicalOF().createResourceTypeType();
+            final ResourceTypeType resourceType = CPF_FACTORY.createResourceTypeType();
             resourceType.setName(DISTRIBUTION_SET_RESOURCE_NAME);
-            final DistributionSetType distributionSetExt = getContext().getCanonicalOF().createDistributionSetType();
+            final DistributionSetType distributionSetExt = CPF_FACTORY.createDistributionSetType();
             resourceType.setDistributionSet(distributionSetExt);
 
             // Add YAWL extension elements to ANF
-            addToExtensions(ConversionUtils.marshalYAWLFragment("constraints", distributionSet.getConstraints(), Constraints.class),
+            ConversionUtils.addToExtensions(ConversionUtils.marshalYAWLFragment("constraints", distributionSet.getConstraints(), Constraints.class),
                     resourceType);
-            addToExtensions(ConversionUtils.marshalYAWLFragment("filters", distributionSet.getFilters(), Filters.class), resourceType);
+            ConversionUtils
+                    .addToExtensions(ConversionUtils.marshalYAWLFragment("filters", distributionSet.getFilters(), Filters.class), resourceType);
 
             createResourceReference(resourceType, null);
 
             for (final String participantId : participantList) {
                 final ResourceTypeType resource = createResourceTypeForParticipant(getContext().getParticipantById(participantId));
-                final DistributionSetRef ref = getContext().getCanonicalOF().createDistributionSetRef();
+                final DistributionSetRef ref = CPF_FACTORY.createDistributionSetRef();
                 ref.setResourceTypeId(resource.getId());
                 distributionSetExt.getResourceTypeRef().add(ref);
             }
 
             for (final String roleId : roleList) {
                 final ResourceTypeType resource = createResourceTypeForRole(getContext().getRoleById(roleId));
-                final DistributionSetRef ref = getContext().getCanonicalOF().createDistributionSetRef();
+                final DistributionSetRef ref = CPF_FACTORY.createDistributionSetRef();
                 ref.setResourceTypeId(resource.getId());
                 distributionSetExt.getResourceTypeRef().add(ref);
             }
@@ -149,7 +154,7 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
         ResourceTypeType canonicalResource = getContext().getGeneratedResourceType(role.getId());
         if (canonicalResource == null) {
             // Create a new ResourceType only for this Role
-            canonicalResource = getContext().getCanonicalOF().createRoleType();
+            canonicalResource = CPF_FACTORY.createRoleType();
             canonicalResource.setId(generateUUID(RESOURCE_ID_PREFIX, role.getId()));
             canonicalResource.setOriginalID(role.getId());
             canonicalResource.setName(role.getName());
@@ -172,7 +177,7 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
         ResourceTypeType canonicalResource = getContext().getGeneratedResourceType(participant.getId());
         if (canonicalResource == null) {
             // Create a new ResourceType only for this Role
-            canonicalResource = getContext().getCanonicalOF().createParticipantType();
+            canonicalResource = CPF_FACTORY.createParticipantType();
             canonicalResource.setId(generateUUID(RESOURCE_ID_PREFIX, participant.getId()));
             canonicalResource.setOriginalID(participant.getId());
             canonicalResource.setName(participant.getFirstname() + " " + participant.getLastname());

@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WP1Sequence" version="0.1" name="WP1Sequence" author="Felix" rootIds="id-N-Net">
-    <Net id="id-N-Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-InputCondition" originalID="InputCondition">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WP1Sequence" version="0.1" name="WP1Sequence" author="Felix" rootIds="N-Net">
+    <Net id="N-Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-A" originalID="A">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
             <name>A</name>
-            <attribute name="inputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>0</index>
                     <name>var</name>
@@ -14,7 +14,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <attribute name="outputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputParam">
                 <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>0</index>
                     <name>var</name>
@@ -22,18 +22,18 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="resourcing">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
                 <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <offer initiator="user"/>
                     <allocate initiator="user"/>
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <attribute name="secondary">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
                 <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
             </attribute>
-            <objectRef id="id-28739102-eb76-48aa-b37a-bd44ffabc4a3" objectId="id-D-id-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="id-5401b7b4-bc47-4f0f-87e3-c48c29fd79f4" objectId="id-D-id-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="da201486-bdc8-4a03-b3f8-871c5ce72e72" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="id67be0591-3f67-4fb6-89d3-eea2a8bbcb9b" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = &lt;var&gt;{/Net/var/text()}&lt;/var&gt;</expression>
@@ -43,12 +43,12 @@
                 <expression>var = &lt;var&gt;{/A/var/text()}&lt;/var&gt;</expression>
             </outputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="id-C-B-1" originalID="B_1">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="C-B-1" originalID="B_1">
             <name>B</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-C-1" originalID="C_1">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-C-1" originalID="C_1">
             <name>C</name>
-            <attribute name="inputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>0</index>
                     <name>var</name>
@@ -56,7 +56,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <attribute name="outputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputParam">
                 <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>0</index>
                     <name>var</name>
@@ -64,18 +64,18 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="resourcing">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
                 <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <offer initiator="user"/>
                     <allocate initiator="user"/>
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <attribute name="secondary">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
                 <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
             </attribute>
-            <objectRef id="id-2a7ffe66-7885-47b9-b287-ce521166ed01" objectId="id-D-id-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="id-f764b5dd-8465-4ada-b464-4ced8cec01d3" objectId="id-D-id-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="a93c6663-fa66-47f7-bf78-d75574fd0885" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="idd101b8c1-e520-4288-90e7-5e0ea0c35217" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = &lt;var&gt;{/Net/var/text()}&lt;/var&gt;</expression>
@@ -85,21 +85,21 @@
                 <expression>var = &lt;var&gt;{/B/var/text()}&lt;/var&gt;</expression>
             </outputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-D-1" originalID="D_1">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-D-1" originalID="D_1">
             <name>D</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-OutputCondition" originalID="OutputCondition">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="id-0c1b09a1-65ed-42bb-ab00-060386d78997"/>
-        <Edge id="id-C-InputCondition-A" default="true" sourceId="id-C-InputCondition" targetId="id-C-A"/>
-        <Edge id="id-C-A-B-1" default="true" sourceId="id-C-A" targetId="id-C-B-1"/>
-        <Edge id="id-C-B-1-C-1" default="true" sourceId="id-C-B-1" targetId="id-C-C-1"/>
-        <Edge id="id-C-B-1-D-1" default="true" sourceId="id-C-B-1" targetId="id-C-D-1"/>
-        <Edge id="id-C-id-0c1b09a1-65ed-42bb-ab00-060386d78997-id-C-OutputCondition" default="true" sourceId="id-0c1b09a1-65ed-42bb-ab00-060386d78997" targetId="id-C-OutputCondition"/>
-        <Edge id="id-C-id-C-C-1-id-0c1b09a1-65ed-42bb-ab00-060386d78997" default="true" sourceId="id-C-C-1" targetId="id-0c1b09a1-65ed-42bb-ab00-060386d78997"/>
-        <Edge id="id-C-id-C-D-1-id-0c1b09a1-65ed-42bb-ab00-060386d78997" default="true" sourceId="id-C-D-1" targetId="id-0c1b09a1-65ed-42bb-ab00-060386d78997"/>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D-id-N-Net-var" originalID="id-N-Net_var">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="ida7df050b-424d-4fdb-932f-0e5eac83ab1f"/>
+        <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
+        <Edge id="C-A-B-1" default="true" sourceId="C-A" targetId="C-B-1"/>
+        <Edge id="C-B-1-C-1" default="true" sourceId="C-B-1" targetId="C-C-1"/>
+        <Edge id="C-B-1-D-1" default="true" sourceId="C-B-1" targetId="C-D-1"/>
+        <Edge id="idd45fd922-e363-4e08-a691-2bec32c4d335" default="true" sourceId="ida7df050b-424d-4fdb-932f-0e5eac83ab1f" targetId="C-OutputCondition"/>
+        <Edge id="id3ea1e990-c08e-45a8-ab35-62f6b8479c30" default="true" sourceId="C-C-1" targetId="ida7df050b-424d-4fdb-932f-0e5eac83ab1f"/>
+        <Edge id="id507ff2fd-50a1-4f80-bff5-bb23aea0055d" default="true" sourceId="C-D-1" targetId="ida7df050b-424d-4fdb-932f-0e5eac83ab1f"/>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-var" originalID="N-Net_var">
             <name>var</name>
             <type>string</type>
         </Object>

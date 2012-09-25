@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl;
@@ -38,9 +38,9 @@ import org.yawlfoundation.yawlschema.VariableBaseType;
 
 /**
  * Converting a YAWL (Sub)-Net
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  */
 public class NetHandler extends YAWLConversionHandler<NetFactsType, CanonicalProcessType> {
 
@@ -57,7 +57,6 @@ public class NetHandler extends YAWLConversionHandler<NetFactsType, CanonicalPro
         if (getObject().getDocumentation() != null) {
             anf.getAnnotation().add(convertDocumentation(canoncialNet, getObject().getDocumentation()));
         }
-
 
         // Set rootId of parent if this is the RootNet
         if (getObject().isIsRootNet() != null && getObject().isIsRootNet()) {
@@ -97,7 +96,7 @@ public class NetHandler extends YAWLConversionHandler<NetFactsType, CanonicalPro
     }
 
     private DocumentationType convertDocumentation(final NetType canoncialNet, final String documentation) throws CanoniserException {
-        final DocumentationType d = getContext().getAnnotationOF().createDocumentationType();
+        final DocumentationType d = ANF_FACTORY.createDocumentationType();
         d.setCpfId(generateUUID(NET_ID_PREFIX, canoncialNet.getId()));
         d.setId(generateUUID());
         d.getAny().add(ConversionUtils.marshalYAWLFragment("documentation", documentation, String.class));
@@ -105,19 +104,19 @@ public class NetHandler extends YAWLConversionHandler<NetFactsType, CanonicalPro
     }
 
     private GraphicsType convertGraphics(final LayoutNetFactsType netLayout) {
-        final GraphicsType g = getContext().getAnnotationOF().createGraphicsType();
+        final GraphicsType g = ANF_FACTORY.createGraphicsType();
         g.setCpfId(generateUUID(NET_ID_PREFIX, getObject().getId()));
         g.setId(generateUUID());
 
         if (netLayout.getBgColor() != null) {
-            final FillType fill = getContext().getAnnotationOF().createFillType();
+            final FillType fill = ANF_FACTORY.createFillType();
             final String color = ConversionUtils.convertColorToString(netLayout.getBgColor().intValue());
             fill.setColor(color);
             g.setFill(fill);
         }
 
         // Use size of viewport only, as CPF only supports one type of size
-        final SizeType size = getContext().getAnnotationOF().createSizeType();
+        final SizeType size = ANF_FACTORY.createSizeType();
         for (final JAXBElement<?> element : netLayout.getBoundsOrFrameOrViewport()) {
             if (element.getValue() instanceof LayoutFrameType) {
                 if (element.getName().getLocalPart().equals("viewport")) {
@@ -133,7 +132,7 @@ public class NetHandler extends YAWLConversionHandler<NetFactsType, CanonicalPro
     }
 
     private NetType createNet() {
-        final NetType net = getContext().getCanonicalOF().createNetType();
+        final NetType net = CPF_FACTORY.createNetType();
         net.setId(generateUUID(NET_ID_PREFIX, getObject().getId()));
         net.setOriginalID(getObject().getId());
         return net;

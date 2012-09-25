@@ -1,12 +1,13 @@
 package org.apromore.canoniser.yawl;
 
-import static org.junit.Assert.fail;
-
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
 import java.util.List;
 
 import javax.xml.bind.JAXBException;
@@ -17,12 +18,15 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.Canonical2YAWL;
 import org.apromore.canoniser.yawl.internal.impl.Canonical2YAWLImpl;
 import org.apromore.canoniser.yawl.utils.GraphvizVisualiser;
+import org.apromore.canoniser.yawl.utils.NullOutputStream;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
 import org.junit.Before;
 import org.junit.Test;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 import org.yawlfoundation.yawlschema.DecompositionType;
 import org.yawlfoundation.yawlschema.ExternalConditionFactsType;
@@ -37,6 +41,10 @@ import org.yawlfoundation.yawlschema.NetFactsType;
  *
  */
 public abstract class BaseCPF2YAWLTest {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(BaseCPF2YAWLTest.class);
+
+    protected boolean shouldCanonisationFail = false;
 
     protected Canonical2YAWL canonical2Yawl;
 
@@ -63,45 +71,56 @@ public abstract class BaseCPF2YAWLTest {
     @Before
     public void setUp() throws Exception {
         canonical2Yawl = new Canonical2YAWLImpl();
+        LOGGER.debug("Testing file {}", getCPFFile().getName());
+        cpfProcess = CPFSchema.unmarshalCanonicalFormat(new BufferedInputStream(new FileInputStream(getCPFFile())), false).getValue();
         try {
-            System.out.println("Testing file " + getCPFFile().getName());
-            cpfProcess = CPFSchema.unmarshalCanonicalFormat(new FileInputStream(getCPFFile()), false).getValue();
-            createGraphImages(cpfProcess.getNet().get(0));
-            try {
-                AnnotationsType anf = null;
-                if (getANFFile() != null) {
-                    anf = ANFSchema.unmarshalAnnotationFormat(new FileInputStream(getANFFile()), false).getValue();
-                }
-                if (anf != null) {
-                    canonical2Yawl.convertToYAWL(cpfProcess, anf);
-                } else {
-                    canonical2Yawl.convertToYAWL(cpfProcess);
-                }
-            } catch (final RuntimeException e) {
-                throw new RuntimeException(getCPFFile().getName(), e);
+            AnnotationsType anf = null;
+            if (getANFFile() != null) {
+                anf = ANFSchema.unmarshalAnnotationFormat(new BufferedInputStream(new FileInputStream(getANFFile())), false).getValue();
             }
+            if (anf != null) {
+                canonical2Yawl.convertToYAWL(cpfProcess, anf);
+            } else {
+                canonical2Yawl.convertToYAWL(cpfProcess);
+            }
+        } catch (final RuntimeException e) {
+            throw new RuntimeException(getCPFFile().getName(), e);
         } catch (final CanoniserException e) {
-            fail(e.getMessage());
+            if (!shouldCanonisationFail) {
+                throw e;
+            }
         }
     }
 
     @Test
     public void testSaveResult() throws JAXBException, IOException, SAXException {
-        TestUtils.printYawl(canonical2Yawl.getYAWL(),
-                new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), getCPFFile().getName() + ".yawl")));
-        TestUtils.printYawlOrgData(canonical2Yawl.getOrgData(),
-                new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), getCPFFile().getName() + ".ybkp")));
+        if (!shouldCanonisationFail) {
+            OutputStream yawlStream = null;
+            OutputStream orgStream = null;
+            if (LOGGER.isDebugEnabled()) {
+                yawlStream = new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), getCPFFile().getName() + ".yawl"));
+                orgStream = new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), getCPFFile().getName() + ".ybkp"));
+            } else {
+                yawlStream = new NullOutputStream();
+                orgStream = new NullOutputStream();
+            }
+            TestUtils.printYawl(canonical2Yawl.getYAWL(), yawlStream);
+            TestUtils.printYawlOrgData(canonical2Yawl.getOrgData(), orgStream);
+            if (LOGGER.isDebugEnabled()) {
+                createGraphImages(cpfProcess.getNet().get(0));
+            }
+        }
     }
 
     private void createGraphImages(final NetType net) throws FileNotFoundException, IOException {
         final GraphvizVisualiser v = new GraphvizVisualiser();
         v.createImageAsDOT(net,
-                new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), getCPFFile().getName() + "-" + net.getOriginalID() + ".dot")));
+                new BufferedOutputStream(new FileOutputStream(TestUtils.createTestOutputFile(this.getClass(), getCPFFile().getName() + "-" + net.getOriginalID() + ".dot"))));
         try {
             v.createImageAsPNG(net, TestUtils.createTestOutputFile(this.getClass(), getCPFFile().getName() + "-" + net.getOriginalID() + ".png"));
         } catch (final IOException e) {
             // Just build image if Graphviz exists
-            System.out.println("WARN: " + e.getMessage());
+            LOGGER.warn("WARN: " + e.getMessage());
         }
     }
 

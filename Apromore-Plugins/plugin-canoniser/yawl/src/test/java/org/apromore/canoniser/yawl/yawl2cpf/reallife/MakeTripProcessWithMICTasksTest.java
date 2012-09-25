@@ -9,7 +9,7 @@ public class MakeTripProcessWithMICTasksTest extends BaseYAWL2CPFTest {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.BaseYAWL2CPFTest#getYAWLFile()
      */
     @Override

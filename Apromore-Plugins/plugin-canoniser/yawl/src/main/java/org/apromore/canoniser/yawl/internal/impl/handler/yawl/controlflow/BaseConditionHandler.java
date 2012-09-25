@@ -37,7 +37,7 @@ public abstract class BaseConditionHandler<T> extends ExternalNetElementHandler<
     }
 
     protected EventType createEvent(final ExternalNetElementType eventElement, final String eventName) {
-        final EventType event = getContext().getCanonicalOF().createEventType();
+        final EventType event = CPF_FACTORY.createEventType();
         event.setId(generateUUID(CONTROLFLOW_ID_PREFIX, eventElement.getId()));
         event.setOriginalID(eventElement.getId());
         event.setName(eventName);
@@ -46,7 +46,7 @@ public abstract class BaseConditionHandler<T> extends ExternalNetElementHandler<
     }
 
     protected StateType createState(final ExternalConditionFactsType condition) {
-        final StateType state = getContext().getCanonicalOF().createStateType();
+        final StateType state = CPF_FACTORY.createStateType();
         if (condition == null) {
             state.setId(generateUUID());
             state.setOriginalID(null);

@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.factory;
@@ -53,9 +53,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Factory Class for Canonical Format through which all Handlers are created. Basically the mapping between Input objects and their Handler classes.
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  */
 public class CanonicalConversionFactory implements ConversionFactory {
 
@@ -100,7 +100,7 @@ public class CanonicalConversionFactory implements ConversionFactory {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.internal.impl.factory.ConversionFactory#createHandler(java.lang.Object, java.lang.Object, java.lang.Object,
      * java.lang.Class)
      */
@@ -120,7 +120,7 @@ public class CanonicalConversionFactory implements ConversionFactory {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.internal.impl.factory.ConversionFactory#createHandler(java.lang.Object, java.lang.Object, java.util.Set)
      */
     @Override
@@ -133,11 +133,7 @@ public class CanonicalConversionFactory implements ConversionFactory {
 
             if (obj instanceof NetType) {
                 final NetType net = (NetType) obj;
-                if (getContext().getSourceNodes(net).isEmpty() || getContext().getSinkNodes(net).isEmpty()) {
-                    throw new CanoniserException("CPF-Net " + net.getId() + " is missing at least one source or sink node. Can't convert to YAWL!");
-                } else {
-                    conversionHandler = new NetTypeHandler();
-                }
+                conversionHandler = new NetTypeHandler();
             } else if (obj instanceof GraphicsType) {
                 if (isNetLayout((GraphicsType) obj)) {
                     conversionHandler = new NetGraphicsTypeHandler();

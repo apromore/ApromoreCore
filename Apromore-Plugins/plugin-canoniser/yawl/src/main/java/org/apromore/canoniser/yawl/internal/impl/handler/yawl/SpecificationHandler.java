@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl;
@@ -16,18 +16,18 @@ import java.util.List;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.TypeAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yawlfoundation.yawlschema.DecompositionType;
+import org.yawlfoundation.yawlschema.LayoutLocaleType;
 import org.yawlfoundation.yawlschema.MetaDataType;
 import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
 
 /**
  * Converts the YAWL specification
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  */
 public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificationFactsType, Object> {
 
@@ -35,7 +35,7 @@ public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificatio
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -68,17 +68,11 @@ public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificatio
 
     }
 
-    private void convertAnnotations(final CanonicalProcessType c, final YAWLSpecificationFactsType object) {
+    private void convertAnnotations(final CanonicalProcessType c, final YAWLSpecificationFactsType object) throws CanoniserException {
         // Link to Annotations
         getContext().getAnnotationResult().setUri(c.getUri());
         getContext().getAnnotationResult().setName(c.getName());
-    }
-
-    private TypeAttribute convertDataTypeDefinitions(final Object dataTypeDefinitions) {
-        final TypeAttribute attr = getContext().getCanonicalOF().createTypeAttribute();
-        attr.setName(ConversionUtils.EXTENSION_DATA_TYPE_DEFINITIONS);
-        attr.setAny(dataTypeDefinitions);
-        return attr;
+        addToAnnotations(ConversionUtils.marshalYAWLFragment("locale", getContext().getLayoutLocaleElement(), LayoutLocaleType.class));
     }
 
     private String convertCreatorList(final List<String> creatorList) {

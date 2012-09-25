@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl;
@@ -43,9 +43,9 @@ import org.yawlfoundation.yawlschema.orgdata.YAWLOrgDataSchema;
 
 /**
  * Canoniser plugin for YAWL 2.2/2.3
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  */
 @Component("yawlCanoniser")
 public class YAWL22Canoniser extends DefaultAbstractCanoniser {
@@ -72,7 +72,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.Canoniser#canonise(java.io.InputStream, java.util.List, java.util.List)
      */
     @Override
@@ -112,7 +112,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.Canoniser#deCanonise(org.apromore.cpf.CanonicalProcessType, org.apromore.anf.AnnotationsType, java.io.OutputStream)
      */
     @Override
@@ -133,8 +133,8 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
             }
 
             marshalYAWLFormat(canonical2yawl.getYAWL(), nativeOutput);
-            //TODO
-            //YAWLOrgDataSchema.marshalYAWLOrgDataFormat((OutputStream) resourceDataOutput.getValue(), canonical2yawl.getOrgData(), true);
+            // TODO
+            // YAWLOrgDataSchema.marshalYAWLOrgDataFormat((OutputStream) resourceDataOutput.getValue(), canonical2yawl.getOrgData(), true);
 
         } catch (final JAXBException e) {
             throw new CanoniserException(e);

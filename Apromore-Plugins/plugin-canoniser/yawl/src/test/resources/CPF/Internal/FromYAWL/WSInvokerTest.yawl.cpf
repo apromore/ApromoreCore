@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WSInvokerTest" version="0.1" name="WSInvokerTest" author="Felix" rootIds="id-N-Net">
-    <Net id="id-N-Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-InputCondition-1" originalID="InputCondition_1">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WSInvokerTest" version="0.1" name="WSInvokerTest" author="Felix" rootIds="N-Net">
+    <Net id="N-Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition-1" originalID="InputCondition_1">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-A-3" originalID="A_3">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A-3" originalID="A_3">
             <name>A</name>
-            <attribute name="inputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>0</index>
                     <name>YawlWSInvokerWSDLLocation</name>
@@ -14,7 +14,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <attribute name="inputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>1</index>
                     <name>YawlWSInvokerPortName</name>
@@ -22,7 +22,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <attribute name="inputParam">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
                 <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <index>2</index>
                     <name>YawlWSInvokerOperationName</name>
@@ -30,7 +30,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <attribute name="yawlService">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/yawlService">
                 <yawlService:yawlService xmlns:yawlService="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" id="http://localhost:8080/yawlWSInvoker"/>
             </attribute>
             <inputExpr>
@@ -46,18 +46,18 @@
                 <expression>YawlWSInvokerPortName = &lt;YawlWSInvokerPortName&gt;80&lt;/YawlWSInvokerPortName&gt;</expression>
             </inputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="id-d7a5a1c0-569d-4b72-bcc9-06d750fba2c4">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="id195ee2fb-d9f7-4a56-b7ab-ab3a41600072">
             <direction>outgoing</direction>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="id-f4aa424b-4835-4291-9e77-937f74d51194">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="ed6a6513-647e-40c6-bde0-cd59eed882e4">
             <direction>incoming</direction>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-OutputCondition-2" originalID="OutputCondition_2">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2">
             <name>OUT</name>
         </Node>
-        <Edge id="id-C-id-d7a5a1c0-569d-4b72-bcc9-06d750fba2c4-id-C-A-3" default="true" sourceId="id-d7a5a1c0-569d-4b72-bcc9-06d750fba2c4" targetId="id-C-A-3"/>
-        <Edge id="id-C-id-C-A-3-id-f4aa424b-4835-4291-9e77-937f74d51194" default="true" sourceId="id-C-A-3" targetId="id-f4aa424b-4835-4291-9e77-937f74d51194"/>
-        <Edge id="id-C-id-C-InputCondition-1-id-d7a5a1c0-569d-4b72-bcc9-06d750fba2c4" default="true" sourceId="id-C-InputCondition-1" targetId="id-d7a5a1c0-569d-4b72-bcc9-06d750fba2c4"/>
-        <Edge id="id-C-id-f4aa424b-4835-4291-9e77-937f74d51194-id-C-OutputCondition-2" default="true" sourceId="id-f4aa424b-4835-4291-9e77-937f74d51194" targetId="id-C-OutputCondition-2"/>
+        <Edge id="idf0a690c5-e557-4269-ae62-60c45b430dae" default="true" sourceId="id195ee2fb-d9f7-4a56-b7ab-ab3a41600072" targetId="C-A-3"/>
+        <Edge id="id9523a0b3-b489-42f0-9fd3-c378e380a0b0" default="true" sourceId="C-A-3" targetId="ed6a6513-647e-40c6-bde0-cd59eed882e4"/>
+        <Edge id="id73273a4d-38ad-40d8-828a-8bf8d425462b" default="true" sourceId="C-InputCondition-1" targetId="id195ee2fb-d9f7-4a56-b7ab-ab3a41600072"/>
+        <Edge id="id2601c1f0-0f0d-4d41-8b02-822f492c76be" default="true" sourceId="ed6a6513-647e-40c6-bde0-cd59eed882e4" targetId="C-OutputCondition-2"/>
     </Net>
 </ns2:CanonicalProcess>

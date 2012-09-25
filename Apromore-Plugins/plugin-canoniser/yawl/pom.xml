@@ -67,7 +67,17 @@
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
 		</dependency>
-
+		
+		<!-- Commons -->
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>commons-collections</groupId>
+			<artifactId>commons-collections</artifactId>
+		</dependency>		
+		
 		<!-- Blueprint -->
 		<dependency>
 			<groupId>org.eclipse.gemini</groupId>
@@ -125,7 +135,7 @@
 		<dependency>
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
-		</dependency>
+		</dependency>			
 		<dependency>
 			<groupId>org.jbpt</groupId>
 			<artifactId>jbpt</artifactId>

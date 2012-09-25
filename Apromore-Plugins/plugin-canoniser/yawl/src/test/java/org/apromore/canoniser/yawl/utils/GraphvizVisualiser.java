@@ -1,5 +1,6 @@
 package org.apromore.canoniser.yawl.utils;
 
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -41,7 +42,7 @@ public class GraphvizVisualiser {
         pb.redirectOutput(file);
         pb.redirectErrorStream(false);
         final Process dotProcess = pb.start();
-        createImageAsDOT(net, dotProcess.getOutputStream());
+        createImageAsDOT(net, new BufferedOutputStream(dotProcess.getOutputStream()));
         while (dotProcess.getErrorStream().read() != -1) {
             // No Op
         }
