@@ -7,30 +7,12 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
-import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
-import org.apromore.cpf.ResourceTypeType;
-import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
 /**
  * Helper class for all kind of various static methods and constants
@@ -40,38 +22,15 @@ import org.w3c.dom.Node;
  */
 public final class ConversionUtils {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ConversionUtils.class);
-
-    public static final org.apromore.cpf.ObjectFactory CPF_FACTORY = new org.apromore.cpf.ObjectFactory();
-
-    public static final org.apromore.anf.ObjectFactory ANF_FACTORY = new org.apromore.anf.ObjectFactory();
-
-    public static final org.yawlfoundation.yawlschema.ObjectFactory YAWL_FACTORY = new org.yawlfoundation.yawlschema.ObjectFactory();
-
-    public static final org.yawlfoundation.yawlschema.orgdata.ObjectFactory YAWL_ORG_FACTORY = new org.yawlfoundation.yawlschema.orgdata.ObjectFactory();
-
-    public static final String YAWLSCHEMA_URL = "http://www.yawlfoundation.org/yawlschema";
-
     private static final int MAX_ITERATION_COUNT = 10000;
 
     private static final Pattern COLOR_REGEX = Pattern.compile("R:([0-9][0-9][0-9])G:([0-9][0-9][0-9])B:([0-9][0-9][0-9])");
-
-    private static final JAXBContext YAWL_CONTEXT = initYAWLContext();
 
     /**
      * Hidden constructor as this class is not meant to be instantiated
      */
     private ConversionUtils() {
         super();
-    }
-
-    private static JAXBContext initYAWLContext() {
-        try {
-            return JAXBContext.newInstance("org.yawlfoundation.yawlschema");
-        } catch (final JAXBException e) {
-            LOGGER.error("Could not create JAXBContext for YAWL Schema. This should never happen!", e);
-            return null;
-        }
     }
 
     public static String convertColorToString(final int colorAsInt) {
@@ -109,137 +68,6 @@ public final class ConversionUtils {
             newName = originalName + (++i);
         }
         return newName;
-    }
-
-    public static boolean isValidFragment(final Object obj, final String namespace, final String localPart) {
-        return ((Node) obj).getNamespaceURI().equals(namespace) && ((Node) obj).getLocalName().equals(localPart);
-    }
-
-    /**
-     * 'Unmarshal' a YAWL object to its expected class. Will throw an JAXBException is class is not known or wrong.
-     *
-     * @param object
-     *            returned of 'getAny' or similiar
-     * @param expectedClass
-     *            object of this class will be returned
-     * @return
-     * @throws CanoniserException
-     */
-    public static <T> T unmarshalYAWLFragment(final Object object, final Class<T> expectedClass) throws CanoniserException {
-        try {
-            if (YAWL_CONTEXT != null) {
-                final Unmarshaller u = YAWL_CONTEXT.createUnmarshaller();
-                final JAXBElement<T> jaxbElement = u.unmarshal((Node) object, expectedClass);
-                return jaxbElement.getValue();
-            } else {
-                throw new CanoniserException("Missing JAXBContext for YAWL!");
-            }
-        } catch (final JAXBException e) {
-            throw new CanoniserException("Failed to parse YAWL extension with expected class " + expectedClass.getName(), e);
-        }
-    }
-
-    /**
-     * 'Marshal' a JAXB object of the YAWL schema to DOM Node that can be added to 'xs:any'
-     *
-     * @param elementName
-     *            to use as local part
-     * @param object
-     *            to be marshaled
-     * @param expectedClass
-     *            class of the object
-     * @return
-     * @throws CanoniserException
-     */
-    public static <T> Element marshalYAWLFragment(final String elementName, final T object, final Class<T> expectedClass) throws CanoniserException {
-        try {
-            if (YAWL_CONTEXT != null) {
-                final Marshaller m = YAWL_CONTEXT.createMarshaller();
-                m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-                final JAXBElement<T> element = new JAXBElement<T>(new QName(YAWLSCHEMA_URL, elementName), expectedClass, object);
-                final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                dbf.setNamespaceAware(false);
-                Document doc;
-                try {
-                    doc = dbf.newDocumentBuilder().newDocument();
-                } catch (final ParserConfigurationException e) {
-                    throw new RuntimeException("Could not build document while marshalling YAWL fragment. This should never happen!", e);
-                }
-                m.marshal(element, doc);
-                return doc.getDocumentElement();
-            } else {
-                throw new CanoniserException("Missing JAXBContext for YAWL!");
-            }
-        } catch (final JAXBException e) {
-            throw new CanoniserException("Failed to add YAWL extension with name " + elementName, e);
-        }
-    }
-
-    /**
-     * Add the extension Element (XML) to the CPF Nodes attributes
-     *
-     * @param extensionElement
-     * @param node
-     */
-    public static void addToExtensions(final Element extensionElement, final NodeType node) {
-        node.getAttribute().add(createExtension(extensionElement));
-    }
-
-    /**
-     * Add the extension Element (XML) to the CPF attributes
-     *
-     * @param extensionElement
-     * @param cpt
-     */
-    public static void addToExtensions(final Element extensionElement, final CanonicalProcessType cpt) {
-        cpt.getAttribute().add(createExtension(extensionElement));
-    }
-
-    /**
-     * Add the extension Element (XML) to the CPF Net attributes
-     *
-     * @param extensionElement
-     * @param net
-     */
-    public static void addToExtensions(final Element extensionElement, final NetType net) {
-        net.getAttribute().add(createExtension(extensionElement));
-    }
-
-    /**
-     * Add the extension Element (XML) to the CPF ResourceType attributes
-     *
-     * @param extensionElement
-     * @param net
-     */
-    public static void addToExtensions(final Element extensionElement, final ResourceTypeType resourceType) {
-        resourceType.getAttribute().add(createExtension(extensionElement));
-    }
-
-    private static TypeAttribute createExtension(final Element extensionElement) {
-        final TypeAttribute attr = CPF_FACTORY.createTypeAttribute();
-        if (extensionElement.getNamespaceURI() != null) {
-            attr.setName(extensionElement.getNamespaceURI() + "/" + extensionElement.getLocalName());
-        } else {
-            attr.setName(extensionElement.getLocalName());
-        }
-        attr.setAny(extensionElement);
-        return attr;
-    }
-
-    /**
-     * Get an extension element from the Node
-     *
-     * @param node
-     * @param name
-     * @return
-     */
-    public static TypeAttribute getFromExtensions(final NodeType node, final String name) {
-        for (TypeAttribute attr: node.getAttribute()) {
-            if (name.equals(attr.getName())) {
-                return attr;
-            }
-        }
-        return null;
     }
 
     /**

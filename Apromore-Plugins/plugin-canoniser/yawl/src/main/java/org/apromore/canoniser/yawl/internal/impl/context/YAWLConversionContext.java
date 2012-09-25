@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.context;
@@ -25,10 +25,10 @@ import javax.xml.bind.JAXBElement;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.YAWL22Canoniser;
-import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
+import org.apromore.cpf.ObjectFactory;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.SoftType;
 import org.slf4j.Logger;
@@ -55,9 +55,9 @@ import org.yawlfoundation.yawlschema.orgdata.RoleType;
 
 /**
  * Context for a conversion from YAWL to Apromores canonical format. This is the glue for all handlers.
- * 
+ *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public final class YAWLConversionContext extends ConversionContext {
 
@@ -165,8 +165,8 @@ public final class YAWLConversionContext extends ConversionContext {
         this.setOrgDataType(orgDataType);
         this.setLayout(layoutFactsType);
         this.setSpecification(specification);
-        this.canonicalResult = ConversionUtils.CPF_FACTORY.createCanonicalProcessType();
-        this.annotationResult = ConversionUtils.ANF_FACTORY.createAnnotationsType();
+        this.canonicalResult = new ObjectFactory().createCanonicalProcessType();
+        this.annotationResult = new org.apromore.anf.ObjectFactory().createAnnotationsType();
     }
 
     public AnnotationsType getAnnotationResult() {
@@ -254,7 +254,7 @@ public final class YAWLConversionContext extends ConversionContext {
 
     /**
      * Get the successors of this YAWL element, will be initialised on the first call of this methods.
-     * 
+     *
      * @param netElement
      *            any element of a YAWL net
      * @return
@@ -265,14 +265,14 @@ public final class YAWLConversionContext extends ConversionContext {
         }
         Collection<ExternalNetElementType> c = successorsMap.get(new ElementAdapter(netElement));
         if (c == null) {
-            c = new ArrayList<ExternalNetElementType>(0);
+            c = new ArrayList<ExternalNetElementType>(3);
         }
         return Collections.unmodifiableCollection(c);
     }
 
     /**
      * Get the predecessors of this YAWL element, will be initialised on the firs call of this method.
-     * 
+     *
      * @param netElement
      *            any element of a YAWL net
      * @return
@@ -283,7 +283,7 @@ public final class YAWLConversionContext extends ConversionContext {
         }
         Collection<ExternalNetElementType> c = predecessorsMap.get(new ElementAdapter(netElement));
         if (c == null) {
-            c = new ArrayList<ExternalNetElementType>(0);
+            c = new ArrayList<ExternalNetElementType>(3);
         }
         return Collections.unmodifiableCollection(c);
     }
@@ -405,7 +405,7 @@ public final class YAWLConversionContext extends ConversionContext {
 
     private void initLayoutMap() {
         if (layoutMap == null) {
-            layoutMap = new HashMap<String, Object>(getSpecificationLayout().getNet().size() * 16);
+            layoutMap = new HashMap<String, Object>(getSpecification().getDecomposition().size() * 4);
             for (final LayoutNetFactsType netLayout : getSpecificationLayout().getNet()) {
                 for (final JAXBElement<?> elementLayout : netLayout.getBoundsOrFrameOrViewport()) {
                     if (elementLayout.getValue() instanceof LayoutContainerFactsType) {
@@ -425,7 +425,7 @@ public final class YAWLConversionContext extends ConversionContext {
 
     /**
      * Returns a specially concatenated Edge id
-     * 
+     *
      * @param sourceId
      * @param targetId
      * @return concatenated Edge id
@@ -445,7 +445,7 @@ public final class YAWLConversionContext extends ConversionContext {
         }
         Collection<NodeType> incomingQueue = this.incomingQueueMap.get(elementAdapter);
         if (incomingQueue == null) {
-            incomingQueue = new ArrayList<NodeType>(0);
+            incomingQueue = new ArrayList<NodeType>(2);
             this.incomingQueueMap.put(elementAdapter, incomingQueue);
         }
         return incomingQueue;
@@ -458,7 +458,7 @@ public final class YAWLConversionContext extends ConversionContext {
 
     private void initIntroducedPredecessor() {
         if (this.introducedPredecessorMap == null) {
-            this.introducedPredecessorMap = new HashMap<ElementAdapter, NodeType>();
+            this.introducedPredecessorMap = new HashMap<ElementAdapter, NodeType>(2);
         }
     }
 
@@ -524,7 +524,6 @@ public final class YAWLConversionContext extends ConversionContext {
     }
 
     public ParticipantType getParticipantById(final String participantId) {
-        // TODO optimize with hashmap
         for (final ParticipantType p : getOrgDataType().getParticipants().getParticipant()) {
             if (p.getId().equals(participantId)) {
                 return p;
@@ -534,7 +533,6 @@ public final class YAWLConversionContext extends ConversionContext {
     }
 
     public NetType getNetForTaskId(final String id) {
-        // TODO optimize with hashmap
         for (final NetType net : canonicalResult.getNet()) {
             for (final NodeType node : net.getNode()) {
                 if (node.getId().equals(id)) {
@@ -549,7 +547,7 @@ public final class YAWLConversionContext extends ConversionContext {
         initNetObjectsByName();
         Map<String, SoftType> objectsByName = netObjectsByName.get(net.getId());
         if (objectsByName == null) {
-            objectsByName = new HashMap<String, SoftType>();
+            objectsByName = new HashMap<String, SoftType>(net.getObject().size());
             netObjectsByName.put(net.getId(), objectsByName);
         }
         objectsByName.put(obj.getName(), obj);
