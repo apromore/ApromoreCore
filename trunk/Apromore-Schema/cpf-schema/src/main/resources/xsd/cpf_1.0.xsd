@@ -28,9 +28,10 @@
 -->
 
 <schema xmlns="http://www.w3.org/2001/XMLSchema" xmlns:cpf="http://www.apromore.org/CPF"
+	xmlns:jxb="http://java.sun.com/xml/ns/jaxb" jxb:version="1.0"
 	targetNamespace="http://www.apromore.org/CPF" attributeFormDefault="unqualified"
 	elementFormDefault="unqualified" version="1.0">
-
+	
 	<element name="CanonicalProcess" type="cpf:CanonicalProcessType">
 		<unique name="nIdUn"><!-- all net ids must be different -->
 			<selector xpath="./*" />
@@ -89,8 +90,14 @@
 		</keyref>
 	</element>
 
-	<!-- Language specific extension for any other XML -->
 	<complexType name="typeAttribute">
+		<annotation>
+			<documentation>
+<![CDATA[<p>
+Extension that contains language specific attributes that define the structure of a process model, but can not be expressed in terms of the canonical format.
+The extension can be in form of a simple name/value pair both of type String or a pair of name/any whereas any must refer to a valid XML namespace.]]>
+			</documentation>
+		</annotation>
 		<sequence>
 			<!-- Content has to be valid XML complying to a schema -->
 			<any namespace="##other" processContents="lax" minOccurs="0" />
@@ -102,10 +109,17 @@
 		 -->
 		<attribute name="name" type="string" use="required" />
 		<!-- Use this attribute if you only want to store simple Name/Value pairs without using XML -->
-		<attribute name="value" type="string" />
+		<attribute name="value" type="string" use="optional" />
 	</complexType>
 
 	<complexType name="CanonicalProcessType">
+		<annotation>
+			<documentation>
+<![CDATA[			
+A Canonical Process is the container for a set of Nets, ResourceTypes and Objects.
+]]>			
+			</documentation>
+		</annotation>	
 		<sequence>
 			<element name="Net" type="cpf:NetType" minOccurs="1"
 				maxOccurs="unbounded">
@@ -142,6 +156,14 @@
 	</complexType>
 
 	<complexType name="NetType">
+		<annotation>
+			<documentation>
+<![CDATA[
+A Net is a directed, attributed graph made up of Nodes {@see NodeType} and Edges {@see EdgeType}. It represents a process or a sub-process. All top processes are added to the root ids list of the Canonical Process.
+{@see CanonicalProcessType#rootIds}
+]]>  					
+			</documentation>
+		</annotation>	
 		<sequence>		
 			<element name="name" type="string" minOccurs="0"/>		
 			<element name="Node" minOccurs="1" maxOccurs="unbounded" 
@@ -158,6 +180,14 @@
 	</complexType>
 
 	<complexType name="EdgeType">
+		<annotation>
+			<documentation>
+<![CDATA[
+Edge between two Nodes {@see NodeType}. An Edge can specify a condition {@see #conditionExpr} 
+if it is an outgoing edge of a split {@see SplitType}. It can also be marked as default {@see #default} choice in this case. 
+]]>
+			</documentation>
+		</annotation>
 		<sequence>
 			<element name="conditionExpr" type="cpf:ConditionExpressionType" minOccurs="0" />
 			<element name="attribute" type="cpf:typeAttribute" minOccurs="0"
@@ -171,7 +201,7 @@
 		<attribute name="originalID" type="string" use="optional" />
 	</complexType>
 
-	<complexType name="NodeType">
+	<complexType name="NodeType"> <!-- TODO: should be abstract -->
 		<sequence>			
 		    <element name="name" type="string" minOccurs="0"/>
 			<element name="configurable" type="boolean" default="false"
@@ -183,7 +213,7 @@
 		<attribute name="originalID" type="string" use="optional" />			
 	</complexType>
 
-	<complexType name="WorkType">
+	<complexType name="WorkType"> <!-- TODO: should be abstract -->
 		<complexContent>
 			<extension base="cpf:NodeType">
 				<sequence>				
@@ -265,19 +295,46 @@
 	</complexType>
 
 	<complexType name="TimerType">
+	<annotation>
+		<documentation><![CDATA[<p>Timer that captures a timeout or a delay in the process model. If the source language supports specifying formal attributes for a timer, then one of the timer attributes should be used. 
+		<p>The attributes {@see #timeExpression}, {@see #timeDate}, {@see #timeDuration} are mutually exclusive.]]></documentation>
+	</annotation>
 		<complexContent>
 			<extension base="cpf:EventType">
 				<sequence>
-					<element name="timeExpression" type="cpf:TimerExpressionType" minOccurs="0" />
+					<element name="timeExpression" type="cpf:TimerExpressionType" minOccurs="0">
+					<annotation>
+						<appinfo>
+						<jxb:property>
+							<jxb:javadoc>Uses the expression to query the current data of the Net (@see NetType#Object) to retrieve a dateTime or duration.</jxb:javadoc>
+						</jxb:property>						
+						</appinfo>
+					</annotation>					
+					</element>
 				</sequence>
-				<!-- Only one of the following attributes MAY be set  -->
-				<attribute name="timeDate" type="dateTime" use="optional" />
-				<attribute name="timeDuration" type="duration" use="optional" />
+				<attribute name="timeDate" type="dateTime" use="optional">
+					<annotation>
+						<appinfo>
+						<jxb:property>
+							<jxb:javadoc>Specify the timer event to happen at an exact date and time.</jxb:javadoc>							
+						</jxb:property>						
+						</appinfo>
+					</annotation>
+				</attribute>
+				<attribute name="timeDuration" type="duration" use="optional">
+					<annotation>
+						<appinfo>
+						<jxb:property>
+							<jxb:javadoc>Specify the timer event to happen after a certain amount of time.</jxb:javadoc>							
+						</jxb:property>						
+						</appinfo>					
+					</annotation>				
+				</attribute>				
 			</extension>					
 		</complexContent>
 	</complexType>
 
-	<complexType name="RoutingType">
+	<complexType name="RoutingType" abstract="true">
 		<complexContent>
 			<extension base="cpf:NodeType" />
 		</complexContent>
@@ -343,7 +400,15 @@
 			<element name="configurable" type="boolean" default="false"
 				minOccurs="0" />
 			<element name="distributionSet" type="cpf:DistributionSetType" 
-				minOccurs="0" />
+				minOccurs="0">
+					<annotation>
+						<appinfo>
+						<jxb:property>
+							<jxb:javadoc>The distribution set of a resource type contains N other resource types. (N=0..*) During execution usually one of those resource types is selected to execute the work.</jxb:javadoc>							
+						</jxb:property>						
+						</appinfo>					
+					</annotation>					
+			</element>
 			<element name="attribute" type="cpf:typeAttribute" minOccurs="0"
 				maxOccurs="unbounded" />
 		</sequence>
@@ -481,6 +546,11 @@
 	</complexType>
 	
 	<complexType name="ExpressionType">
+		<annotation>
+			<documentation>An expression queries the data model of the process (i.e. Objects of the current Net) for a value. 
+An expression can either be an informal expression specified by a natural text description ({@see #description})
+or a formal expression specified by both language and the expression. ({@see #language}, {@see #expression})</documentation>
+		</annotation>
 		<sequence>		
 			<element name="description" type="string" minOccurs="0" />
 			<!-- 
