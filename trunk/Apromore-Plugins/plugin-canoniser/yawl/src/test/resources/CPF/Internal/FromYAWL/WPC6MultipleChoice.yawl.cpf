@@ -1,40 +1,40 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WP1SequencePattern" version="0.1" name="WP1SequencePattern" author="Felix" rootIds="id-N-Net">
-    <Net id="id-N-Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-InputCondition" originalID="InputCondition">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WP1SequencePattern" version="0.1" name="WP1SequencePattern" author="Felix" rootIds="N-Net">
+    <Net id="N-Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-A" originalID="A">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
             <name>A</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="id-7bee8369-b003-4cc7-9a19-a938efae2fdc"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-D-1" originalID="D_1">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="e57548da-14f8-44b7-90aa-c28dd9918210"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-D-1" originalID="D_1">
             <name>D</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-C-1" originalID="C_1">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-C-1" originalID="C_1">
             <name>C</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-B" originalID="B">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-B" originalID="B">
             <name>B</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-E" originalID="E">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-E" originalID="E">
             <name>E</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="id-da073194-706f-497f-8de5-cdfef8c88240"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-OutputCondition" originalID="OutputCondition">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="id817b0275-bd8a-4028-a04a-70181447e5a9"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="id-C-InputCondition-A" default="true" sourceId="id-C-InputCondition" targetId="id-C-A"/>
-        <Edge id="id-C-id-C-A-id-7bee8369-b003-4cc7-9a19-a938efae2fdc" default="true" sourceId="id-C-A" targetId="id-7bee8369-b003-4cc7-9a19-a938efae2fdc"/>
-        <Edge id="id-C-id-7bee8369-b003-4cc7-9a19-a938efae2fdc-id-C-D-1" default="true" sourceId="id-7bee8369-b003-4cc7-9a19-a938efae2fdc" targetId="id-C-D-1"/>
-        <Edge id="id-C-id-7bee8369-b003-4cc7-9a19-a938efae2fdc-id-C-C-1" default="true" sourceId="id-7bee8369-b003-4cc7-9a19-a938efae2fdc" targetId="id-C-C-1"/>
-        <Edge id="id-C-id-7bee8369-b003-4cc7-9a19-a938efae2fdc-id-C-B" default="true" sourceId="id-7bee8369-b003-4cc7-9a19-a938efae2fdc" targetId="id-C-B"/>
-        <Edge id="id-C-id-da073194-706f-497f-8de5-cdfef8c88240-id-C-E" default="true" sourceId="id-da073194-706f-497f-8de5-cdfef8c88240" targetId="id-C-E"/>
-        <Edge id="id-C-id-C-D-1-id-da073194-706f-497f-8de5-cdfef8c88240" default="true" sourceId="id-C-D-1" targetId="id-da073194-706f-497f-8de5-cdfef8c88240"/>
-        <Edge id="id-C-id-C-C-1-id-da073194-706f-497f-8de5-cdfef8c88240" default="true" sourceId="id-C-C-1" targetId="id-da073194-706f-497f-8de5-cdfef8c88240"/>
-        <Edge id="id-C-id-C-B-id-da073194-706f-497f-8de5-cdfef8c88240" default="true" sourceId="id-C-B" targetId="id-da073194-706f-497f-8de5-cdfef8c88240"/>
-        <Edge id="id-C-E-OutputCondition" default="true" sourceId="id-C-E" targetId="id-C-OutputCondition"/>
-        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="id-D-id-N-Net-cond" originalID="id-N-Net_cond">
+        <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
+        <Edge id="ida6ffca2f-bb33-4264-aeed-028c20cb085f" default="true" sourceId="C-A" targetId="e57548da-14f8-44b7-90aa-c28dd9918210"/>
+        <Edge id="idba7c69f8-3e9f-4202-9502-09b60e042fa5" default="true" sourceId="e57548da-14f8-44b7-90aa-c28dd9918210" targetId="C-D-1"/>
+        <Edge id="id855d7d8a-8a62-4c97-ad3d-a98780a0a316" default="true" sourceId="e57548da-14f8-44b7-90aa-c28dd9918210" targetId="C-C-1"/>
+        <Edge id="id8a36252f-7c99-4f52-88f9-6af8fc412928" default="true" sourceId="e57548da-14f8-44b7-90aa-c28dd9918210" targetId="C-B"/>
+        <Edge id="id8f5a7583-9128-4b54-9fc2-6cd5fe61b1f0" default="true" sourceId="id817b0275-bd8a-4028-a04a-70181447e5a9" targetId="C-E"/>
+        <Edge id="idc5116da1-5cc0-41da-8ae2-109cda1431ed" default="true" sourceId="C-D-1" targetId="id817b0275-bd8a-4028-a04a-70181447e5a9"/>
+        <Edge id="id9783bcf4-9b43-4806-8a2a-03d3bf730c8e" default="true" sourceId="C-C-1" targetId="id817b0275-bd8a-4028-a04a-70181447e5a9"/>
+        <Edge id="id39846f42-f900-437d-bb1e-99bac12f3711" default="true" sourceId="C-B" targetId="id817b0275-bd8a-4028-a04a-70181447e5a9"/>
+        <Edge id="C-E-OutputCondition" default="true" sourceId="C-E" targetId="C-OutputCondition"/>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-cond" originalID="N-Net_cond">
             <name>cond</name>
             <type>int</type>
         </Object>

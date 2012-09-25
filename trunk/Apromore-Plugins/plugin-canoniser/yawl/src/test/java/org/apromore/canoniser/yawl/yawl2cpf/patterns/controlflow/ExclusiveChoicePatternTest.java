@@ -36,9 +36,7 @@ public class ExclusiveChoicePatternTest extends BasePatternTest {
 
         final NodeType nodeA = checkNode(rootNet, "A", TaskType.class, 1, 1);
 
-        final List<EdgeType> edges = getOutgoingEdges(rootNet, nodeA.getId());
-        assertEquals(1, edges.size());
-        final NodeType routingNode = getNodeByID(rootNet, edges.get(0).getTargetId());
+        final NodeType routingNode = getFirstSuccessor(rootNet, nodeA);
         assertTrue("Routing node should be XORSplitType", routingNode instanceof XORSplitType);
         assertEquals(3, countOutgoingEdges(rootNet, routingNode.getId()));
 

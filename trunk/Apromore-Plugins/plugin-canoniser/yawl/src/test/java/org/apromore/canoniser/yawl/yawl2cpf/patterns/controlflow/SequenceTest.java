@@ -19,7 +19,7 @@ public class SequenceTest extends BasePatternTest {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.patterns.controlflow.PatternTest#getYAWLFile()
      */
     @Override

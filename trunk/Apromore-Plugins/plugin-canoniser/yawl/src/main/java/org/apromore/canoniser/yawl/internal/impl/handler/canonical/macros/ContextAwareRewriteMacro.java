@@ -19,6 +19,7 @@ import java.util.ListIterator;
 import java.util.Set;
 
 import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionContext;
+import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.MessageType;
@@ -44,6 +45,7 @@ public abstract class ContextAwareRewriteMacro implements RewriteMacro {
     private final CanonicalConversionContext context;
 
     private final Set<String> markNodeDeleted;
+    private final Set<String> markEdgeDeleted;
 
     private final Collection<NodeType> markNodeAdded;
     private final Collection<EdgeType> markEdgeAdded;
@@ -51,6 +53,7 @@ public abstract class ContextAwareRewriteMacro implements RewriteMacro {
     public ContextAwareRewriteMacro(final CanonicalConversionContext context) {
         this.context = context;
         this.markNodeDeleted = new HashSet<String>();
+        this.markEdgeDeleted = new HashSet<String>();
         this.markNodeAdded = new ArrayList<NodeType>();
         this.markEdgeAdded = new ArrayList<EdgeType>();
     }
@@ -75,6 +78,7 @@ public abstract class ContextAwareRewriteMacro implements RewriteMacro {
 
     protected void cleanupNet(final NetType net) {
         final Iterator<NodeType> nodeIterator = net.getNode().iterator();
+
         while (nodeIterator.hasNext()) {
             final NodeType nextNode = nodeIterator.next();
             if (markNodeDeleted.contains(nextNode.getId())) {
@@ -91,8 +95,9 @@ public abstract class ContextAwareRewriteMacro implements RewriteMacro {
         final ListIterator<EdgeType> iterator = net.getEdge().listIterator();
         while (iterator.hasNext()) {
             final EdgeType edge = iterator.next();
-            if (markNodeDeleted.contains(edge.getSourceId()) || markNodeDeleted.contains(edge.getTargetId())) {
-                LOGGER.debug("Removing Edge {} from {} to {}", new String[] { edge.getId(), edge.getSourceId(), edge.getTargetId() });
+            if (markNodeDeleted.contains(edge.getSourceId()) || markNodeDeleted.contains(edge.getTargetId())
+                    || markEdgeDeleted.contains(edge.getId())) {
+                LOGGER.debug("Removing Edge {}", new String[] { ConversionUtils.toString(edge) });
                 iterator.remove();
             }
         }
@@ -102,8 +107,12 @@ public abstract class ContextAwareRewriteMacro implements RewriteMacro {
             net.getEdge().add(edge);
         }
 
-        // Clearing for next Net
+        // Invalidate our Lookup Maps as we've changed Nodes/Edges
+        getContext().invalidateCPFCaches();
+
+        // Clearing for next Step
         markEdgeAdded.clear();
+        markEdgeDeleted.clear();
         markNodeAdded.clear();
         markNodeDeleted.clear();
     }
@@ -118,6 +127,10 @@ public abstract class ContextAwareRewriteMacro implements RewriteMacro {
 
     protected void deleteNodeLater(final NodeType node) {
         markNodeDeleted.add(node.getId());
+    }
+
+    protected void deleteEdgeLater(final EdgeType edge) {
+        markEdgeDeleted.add(edge.getId());
     }
 
     protected TaskType testFollowedByTask(final NodeType node) {

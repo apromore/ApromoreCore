@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl.controlflow;
@@ -41,15 +41,15 @@ import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType.YawlService;
 
 /**
  * Base class for converting a YAWL task
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  */
 public abstract class BaseTaskHandler extends ExternalNetElementHandler<ExternalTaskFactsType> {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -59,13 +59,13 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
 
     /**
      * Return a converted TaskType that is already added to its parent Net
-     *
+     * 
      * @param task
      * @return the CPF task
      * @throws CanoniserException
      */
     protected TaskType createTask(final ExternalTaskFactsType task) throws CanoniserException {
-        final TaskType taskNode = getContext().getCanonicalOF().createTaskType();
+        final TaskType taskNode = CPF_FACTORY.createTaskType();
         taskNode.setId(generateUUID(CONTROLFLOW_ID_PREFIX, task.getId()));
         taskNode.setOriginalID(task.getId());
         taskNode.setName(task.getName());
@@ -92,7 +92,7 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
 
     /**
      * Connect the specified Node to its sucessors
-     *
+     * 
      * @param taskExitNode
      * @throws CanoniserException
      */
@@ -111,7 +111,7 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
 
     /**
      * Connect the specified Node to its predecessors
-     *
+     * 
      * @param taskEntryNode
      * @throws CanoniserException
      */
@@ -129,7 +129,7 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
 
     /**
      * Create a Join Routing Node
-     *
+     * 
      * @return
      * @throws CanoniserException
      */
@@ -153,21 +153,21 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
     }
 
     protected XORJoinType createXORJoin() {
-        final XORJoinType xorJoin = getContext().getCanonicalOF().createXORJoinType();
+        final XORJoinType xorJoin = CPF_FACTORY.createXORJoinType();
         xorJoin.setId(generateUUID());
         getConvertedParent().getNode().add(xorJoin);
         return xorJoin;
     }
 
     protected ORJoinType createORJoin() {
-        final ORJoinType orJoin = getContext().getCanonicalOF().createORJoinType();
+        final ORJoinType orJoin = CPF_FACTORY.createORJoinType();
         orJoin.setId(generateUUID());
         getConvertedParent().getNode().add(orJoin);
         return orJoin;
     }
 
     protected ANDJoinType createANDJoin() {
-        final ANDJoinType andJoin = getContext().getCanonicalOF().createANDJoinType();
+        final ANDJoinType andJoin = CPF_FACTORY.createANDJoinType();
         andJoin.setId(generateUUID());
         getConvertedParent().getNode().add(andJoin);
         return andJoin;
@@ -175,7 +175,7 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
 
     /**
      * Create a Split Routing Node
-     *
+     * 
      * @return
      * @throws CanoniserException
      */
@@ -199,21 +199,21 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
     }
 
     protected XORSplitType createXORSplit() {
-        final XORSplitType xorSplit = getContext().getCanonicalOF().createXORSplitType();
+        final XORSplitType xorSplit = CPF_FACTORY.createXORSplitType();
         xorSplit.setId(generateUUID());
         getConvertedParent().getNode().add(xorSplit);
         return xorSplit;
     }
 
     protected ORSplitType createORSplit() {
-        final ORSplitType orSplit = getContext().getCanonicalOF().createORSplitType();
+        final ORSplitType orSplit = CPF_FACTORY.createORSplitType();
         orSplit.setId(generateUUID());
         getConvertedParent().getNode().add(orSplit);
         return orSplit;
     }
 
     protected ANDSplitType createANDSplit() {
-        final ANDSplitType andSplit = getContext().getCanonicalOF().createANDSplitType();
+        final ANDSplitType andSplit = CPF_FACTORY.createANDSplitType();
         andSplit.setId(generateUUID());
         getConvertedParent().getNode().add(andSplit);
         return andSplit;
@@ -221,7 +221,7 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
 
     /**
      * Convert the Annotations of the currently to be converted Object and adds them to the ANF.
-     *
+     * 
      * @throws CanoniserException
      *             in case the Annotations can not be converted
      */
@@ -234,8 +234,9 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
     }
 
     /**
-     * Converts the Tasks decomposition which may be a WebServiceGatewayFactsType in case of an AtomicTask or a NetFactsType in case of a CompositeTask.
-     *
+     * Converts the Tasks decomposition which may be a WebServiceGatewayFactsType in case of an AtomicTask or a NetFactsType in case of a
+     * CompositeTask.
+     * 
      * @param taskNode
      * @param decomposition
      * @throws CanoniserException
@@ -250,29 +251,33 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
             // Input Parameters / YAWL Task Variables
             if (taskDecomposition.getInputParam() != null) {
                 for (final InputParameterFactsType param : taskDecomposition.getInputParam()) {
-                    addToExtensions(ConversionUtils.marshalYAWLFragment("inputParam", param, InputParameterFactsType.class), taskNode);
+                    ConversionUtils
+                            .addToExtensions(ConversionUtils.marshalYAWLFragment("inputParam", param, InputParameterFactsType.class), taskNode);
                 }
             }
             // Output Parameters / YAWL Task Variables
             if (taskDecomposition.getOutputParam() != null) {
                 for (final OutputParameterFactsType param : taskDecomposition.getOutputParam()) {
-                    addToExtensions(ConversionUtils.marshalYAWLFragment("outputParam", param, OutputParameterFactsType.class), taskNode);
+                    ConversionUtils.addToExtensions(ConversionUtils.marshalYAWLFragment("outputParam", param, OutputParameterFactsType.class),
+                            taskNode);
                 }
             }
 
             if (taskDecomposition.getYawlService() != null) {
-                addToExtensions(ConversionUtils.marshalYAWLFragment("yawlService", taskDecomposition.getYawlService(), YawlService.class), taskNode);
+                ConversionUtils.addToExtensions(
+                        ConversionUtils.marshalYAWLFragment("yawlService", taskDecomposition.getYawlService(), YawlService.class), taskNode);
             }
 
             if (taskDecomposition.getCodelet() != null) {
-                addToExtensions(ConversionUtils.marshalYAWLFragment("codelet", taskDecomposition.getCodelet(), String.class), taskNode);
+                ConversionUtils.addToExtensions(ConversionUtils.marshalYAWLFragment("codelet", taskDecomposition.getCodelet(), String.class),
+                        taskNode);
             }
         }
     }
 
     /**
      * Converts the starting/completed mappings of the Task to input/output expressions
-     *
+     * 
      * @param taskNode
      * @param task
      * @throws CanoniserException
@@ -299,7 +304,8 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
     private void convertConfiguration(final TaskType taskNode, final ExternalTaskFactsType task) throws CanoniserException {
         if (task.getConfiguration() != null) {
             taskNode.setConfigurable(true);
-            addToExtensions(ConversionUtils.marshalYAWLFragment("configuration", task.getConfiguration(), ConfigurationType.class), taskNode);
+            ConversionUtils.addToExtensions(ConversionUtils.marshalYAWLFragment("configuration", task.getConfiguration(), ConfigurationType.class),
+                    taskNode);
         }
     }
 
@@ -308,7 +314,7 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
 
             // Add cancelled Nodes
             for (final ExternalNetElementType element : task.getRemovesTokens()) {
-                final CancellationRefType ref = getContext().getCanonicalOF().createCancellationRefType();
+                final CancellationRefType ref = CPF_FACTORY.createCancellationRefType();
                 ref.setRefId(generateUUID(CONTROLFLOW_ID_PREFIX, element.getId()));
                 taskNode.getCancelNodeId().add(ref);
             }
@@ -317,7 +323,7 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
             for (final RemovesTokensFromFlowType flow : task.getRemovesTokensFromFlow()) {
                 final String sourceId = flow.getFlowSource().getId();
                 final String targetId = flow.getFlowDestination().getId();
-                final CancellationRefType ref = getContext().getCanonicalOF().createCancellationRefType();
+                final CancellationRefType ref = CPF_FACTORY.createCancellationRefType();
                 ref.setRefId(generateEdgeId(sourceId, targetId));
                 taskNode.getCancelEdgeId().add(ref);
             }

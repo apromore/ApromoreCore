@@ -65,15 +65,4 @@ public class ConversionContext {
         return uuidGenerator;
     }
 
-    /**
-     * Returns a specially concatenated Edge id
-     * 
-     * @param sourceId
-     * @param targetId
-     * @return concatenated Edge id
-     */
-    public String buildEdgeId(final String sourceId, final String targetId) {
-        return sourceId + "-" + targetId;
-    }
-
 }

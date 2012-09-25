@@ -4,6 +4,7 @@ import java.util.Collection;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionContext;
+import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.NetType;
@@ -14,7 +15,7 @@ import org.slf4j.LoggerFactory;
 
 public class EnsureInputOutputCondition extends ContextAwareRewriteMacro {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CheckValidModelMacro.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(EnsureInputOutputCondition.class);
 
     public EnsureInputOutputCondition(final CanonicalConversionContext context) {
         super(context);
@@ -24,40 +25,72 @@ public class EnsureInputOutputCondition extends ContextAwareRewriteMacro {
     public boolean rewrite(final CanonicalProcessType cpf) throws CanoniserException {
         boolean hasRewritten = false;
         for (final NetType net : cpf.getNet()) {
-            ensureInputCondition(net);
-            ensureOutputCondition(net);
+            hasRewritten = ensureInputCondition(net);
+            hasRewritten = ensureOutputCondition(net);
         }
         return hasRewritten;
     }
 
-    private void ensureOutputCondition(final NetType net) {
-        Collection<NodeType> sinkNodes = getContext().getSinkNodes(net);
+    private boolean ensureOutputCondition(final NetType net) throws CanoniserException {
+        final Collection<NodeType> sinkNodes = getContext().getSinkNodes(net);
         if (sinkNodes.size() == 1) {
-            NodeType endNode = sinkNodes.iterator().next();
+            final NodeType endNode = sinkNodes.iterator().next();
             if (!(endNode instanceof EventType)) {
                 // Add start Event before this Node to ensure Net has a Input Condition
                 final EventType endEvent = createEvent();
-                createEdge(endNode, endEvent);
-                LOGGER.info("Ensure Net {} stops with an Ouput Condition, adding End Event {}", net.getId(), endEvent.getId());
+                addNodeLater(endEvent);
+                addEdgeLater(createEdge(endNode, endEvent));
+                LOGGER.info("Ensure Net {} stops with an Ouput Condition, adding End Event {}", net.getId(), ConversionUtils.toString(endEvent));
+                cleanupNet(net);
+                return true;
             }
         } else {
-            LOGGER.warn("Net {} contains multiple sink nodes, can't add an Output Condition", net.getId());
+            // Incomplete Net
+            LOGGER.error("Net {} contains multiple sink nodes ({}), can't add an Output Condition", net.getId(),
+                    ConversionUtils.nodesToString(sinkNodes));
+            throw new CanoniserException("Net "+net.getId()+" contains no sink nodes!");
+//            EventType endEvent = createEvent();
+//            endEvent.setName("end");
+//            TypeAttribute endAttribute = new TypeAttribute();
+//            endAttribute.setName("org.apromore.canoniser.yawl.artificalOutputCondition");
+//            endAttribute.setValue("true");
+//            endEvent.getAttribute().add(endAttribute);
+//            addNodeLater(endEvent);
+//            cleanupNet(net);
+//            return true;
         }
+        return false;
     }
 
-    private void ensureInputCondition(final NetType net) {
-        Collection<NodeType> sourceNodes = getContext().getSourceNodes(net);
+    private boolean ensureInputCondition(final NetType net) throws CanoniserException {
+        final Collection<NodeType> sourceNodes = getContext().getSourceNodes(net);
         if (sourceNodes.size() == 1) {
-            NodeType startNode = sourceNodes.iterator().next();
+            final NodeType startNode = sourceNodes.iterator().next();
             if (!(startNode instanceof EventType)) {
                 // Add start Event before this Node to ensure Net has a Input Condition
                 final EventType startEvent = createEvent();
-                createEdge(startEvent, startNode);
-                LOGGER.info("Ensure Net starts with an Input Condition, adding Start Event {}", net.getId(), startEvent.getId());
+                addNodeLater(startEvent);
+                addEdgeLater(createEdge(startEvent, startNode));
+                LOGGER.info("Ensure Net starts with an Input Condition, adding Start Event {}", net.getId(), ConversionUtils.toString(startEvent));
+                cleanupNet(net);
+                return true;
             }
         } else {
-            LOGGER.warn("Net {} contains multiple source nodes, can't add an Input Condition", net.getId());
+            // Incomplete Net
+            LOGGER.error("Net {} contains multiple source nodes ({}), adding a disconnected Input Condition", net.getId(),
+                    ConversionUtils.nodesToString(sourceNodes));
+            throw new CanoniserException("Net "+net.getId()+" contains no source nodes!");
+//            EventType startEvent = createEvent();
+//            startEvent.setName("start");
+//            TypeAttribute startAttribute = new TypeAttribute();
+//            startAttribute.setName("org.apromore.canoniser.yawl.artificalInputCondition");
+//            startAttribute.setValue("true");
+//            startEvent.getAttribute().add(startAttribute);
+//            addNodeLater(startEvent);
+//            cleanupNet(net);
+//            return true;
         }
+        return false;
     }
 
     private EventType createEvent() {

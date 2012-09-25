@@ -25,6 +25,7 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.CanonicalElementHandler;
+import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.slf4j.Logger;
@@ -51,10 +52,18 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
 
     private class BFSInfo {
         public BFSInfo(final int distance) {
-            this.depth = distance;
+            this.setDepth(distance);
         }
 
-        public int depth;
+        public int getDepth() {
+            return depth;
+        }
+
+        public void setDepth(final int depth) {
+            this.depth = depth;
+        }
+
+        private int depth;
     }
 
     /*
@@ -66,12 +75,12 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
     public void convert() throws CanoniserException {
 
         // Initalise layout element
-        final LayoutFactsType layoutFacts = getContext().getYawlObjectFactory().createLayoutFactsType();
+        final LayoutFactsType layoutFacts = YAWL_FACTORY.createLayoutFactsType();
         layoutFacts.setLocale(convertLocale());
         getContext().getYAWLSpecificationSet().setLayout(layoutFacts);
 
         // Initalise layout for this specification
-        final Specification specLayout = getContext().getYawlObjectFactory().createLayoutFactsTypeSpecification();
+        final Specification specLayout = YAWL_FACTORY.createLayoutFactsTypeSpecification();
         specLayout.setId(getContext().getYAWLRootSpecification().getUri());
         convertSize(specLayout);
         layoutFacts.getSpecification().add(specLayout);
@@ -125,9 +134,15 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
 
     private void convertNetElementsInBreadthFirstOrder(final Specification specLayout, final NetType net) throws CanoniserException {
 
-        final Collection<NodeType> sourceNodes = getContext().getSourceNodes(net);
-        if (sourceNodes.size() != 1) {
-            throw new CanoniserException("YAWL Net contains more than one source Node. Invalid!");
+        Collection<NodeType> sourceNodes = getContext().getSourceNodes(net);
+        if (sourceNodes.size() > 1) {
+            LOGGER.warn("YAWL Net {} contains more than one source Node {}", ConversionUtils.toString(net),
+                    ConversionUtils.nodesToString(sourceNodes));
+        } else if (sourceNodes.size() == 0) {
+            LOGGER.warn("YAWL Net {} contains no source Node {}", ConversionUtils.toString(net),
+                    ConversionUtils.nodesToString(sourceNodes));
+            // Just assume all nodes as valid start points
+            sourceNodes = net.getNode();
         }
 
         final NodeType sourceNode = sourceNodes.iterator().next();
@@ -150,12 +165,12 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
             final NodeType node = bfsQueue.peek();
             final BFSInfo currentNodeInfo = markedNodes.get(node.getId());
 
-            if (currentNodeInfo.depth > lastDepth) {
-                lastDepth = currentNodeInfo.depth;
+            if (currentNodeInfo.getDepth() > lastDepth) {
+                lastDepth = currentNodeInfo.getDepth();
                 getContext().getAutoLayoutInfo().setCurrentBreadth(bfsQueue.size());
             }
 
-            getContext().getAutoLayoutInfo().setCurrentDistance(currentNodeInfo.depth);
+            getContext().getAutoLayoutInfo().setCurrentDistance(currentNodeInfo.getDepth());
 
             convertNode(specLayout, node);
 
@@ -164,12 +179,12 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
             for (final NodeType nextNode : postSet) {
                 if (!markedNodes.containsKey(nextNode.getId())) {
                     bfsQueue.add(nextNode);
-                    final BFSInfo newNodeInfo = new BFSInfo(currentNodeInfo.depth + 1);
+                    final BFSInfo newNodeInfo = new BFSInfo(currentNodeInfo.getDepth() + 1);
                     markedNodes.put(nextNode.getId(), newNodeInfo);
                 }
             }
 
-            getContext().getAutoLayoutInfo().setLastElementDistance(currentNodeInfo.depth);
+            getContext().getAutoLayoutInfo().setLastElementDistance(currentNodeInfo.getDepth());
             bfsQueue.poll();
         }
 
@@ -232,7 +247,7 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
     }
 
     private void convertSize(final Specification specLayout) {
-        final LayoutDimensionType specDimension = getContext().getYawlObjectFactory().createLayoutDimensionType();
+        final LayoutDimensionType specDimension = YAWL_FACTORY.createLayoutDimensionType();
         // TODO what is the size of an specification?
         specDimension.setH(BigInteger.valueOf(DEFAULT_SPEC_HEIGHT));
         specDimension.setW(BigInteger.valueOf(DEFAULT_SPEC_WIDTH));
@@ -240,10 +255,15 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
     }
 
     private LayoutLocaleType convertLocale() {
-        final LayoutLocaleType layoutLocale = getContext().getYawlObjectFactory().createLayoutLocaleType();
-        layoutLocale.setCountry(getContext().getYawlLocale().getCountry());
-        layoutLocale.setLanguage(getContext().getYawlLocale().getLanguage());
-        return layoutLocale;
+        final LayoutLocaleType yawlLocale = getContext().getYAWLExtensionFromAnnotations(null, "locale", LayoutLocaleType.class);
+        if (yawlLocale != null) {
+            return yawlLocale;
+        } else {
+            final LayoutLocaleType layoutLocale = YAWL_FACTORY.createLayoutLocaleType();
+            layoutLocale.setCountry(getContext().getYawlLocale().getCountry());
+            layoutLocale.setLanguage(getContext().getYawlLocale().getLanguage());
+            return layoutLocale;
+        }
     }
 
 }

@@ -50,6 +50,14 @@ public class FromPNMLTestsManualTest extends WholeDirectoryTest {
 
     public FromPNMLTestsManualTest(final File testCPFFile, final File testANFFile) {
         super(testCPFFile, null);
+        shouldCanonisationFail = isName(testCPFFile, "01_Ballgame.cpf")
+                || isName(testCPFFile, "08_Mailbox.cpf")
+                || isName(testCPFFile, "09_MailboxBounded.cpf")
+                || isName(testCPFFile, "10_MailboxUnbounded.cpf")
+                || isName(testCPFFile, "11_TwoTrafficLightsSafeFair.cpf")
+                || isName(testCPFFile, "12_VendingMachine.cpf");
     }
+
+
 
 }

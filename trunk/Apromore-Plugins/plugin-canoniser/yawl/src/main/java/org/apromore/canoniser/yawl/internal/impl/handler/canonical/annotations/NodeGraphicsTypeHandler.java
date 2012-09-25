@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations;
@@ -34,13 +34,12 @@ import org.yawlfoundation.yawlschema.LayoutLabelFactsType;
 import org.yawlfoundation.yawlschema.LayoutNetFactsType;
 import org.yawlfoundation.yawlschema.LayoutRectangleType;
 import org.yawlfoundation.yawlschema.LayoutVertexFactsType;
-import org.yawlfoundation.yawlschema.ObjectFactory;
 
 /**
  * Convert the layout of an CPF node to YAWL
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  */
 public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
 
@@ -55,7 +54,7 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -83,12 +82,8 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         getContext().getAutoLayoutInfo().setLastElementBounds(elementBounds);
     }
 
-    private ObjectFactory getObjectFactory() {
-        return getContext().getYawlObjectFactory();
-    }
-
     private JAXBElement<LayoutContainerFactsType> createElementLayout(final GraphicsType graphic) throws CanoniserException {
-        final LayoutContainerFactsType layoutContainer = getObjectFactory().createLayoutContainerFactsType();
+        final LayoutContainerFactsType layoutContainer = YAWL_FACTORY.createLayoutContainerFactsType();
         layoutContainer.setId(generateUUID(graphic.getCpfId()));
         // First create Vertex as it will be used as reference for other conversion
         final LayoutVertexFactsType elementVertex = createVertex(graphic);
@@ -98,12 +93,12 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
             final List<LayoutDecoratorFactsType> decorators = createDecorator(graphic, (ExternalTaskFactsType) yawlElement);
             layoutContainer.getVertexOrLabelOrDecorator().addAll(decorators);
         }
-        return getObjectFactory().createLayoutNetFactsTypeContainer(layoutContainer);
+        return YAWL_FACTORY.createLayoutNetFactsTypeContainer(layoutContainer);
     }
 
     private LayoutVertexFactsType createVertex(final GraphicsType graphic) throws CanoniserException {
-        final LayoutVertexFactsType vertex = getObjectFactory().createLayoutVertexFactsType();
-        final LayoutAttributesFactsType attrs = getObjectFactory().createLayoutAttributesFactsType();
+        final LayoutVertexFactsType vertex = YAWL_FACTORY.createLayoutVertexFactsType();
+        final LayoutAttributesFactsType attrs = YAWL_FACTORY.createLayoutAttributesFactsType();
 
         attrs.getAutosizeOrBackgroundColorOrBendable().add(convertVertexBounds(graphic));
 
@@ -116,7 +111,7 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
             if (graphic.getFill().getColor() != null) {
                 final BigInteger bgColor = ConversionUtils.convertColorToBigInteger(graphic.getFill().getColor());
                 LOGGER.debug("Setting bgcolor {}", bgColor);
-                attrs.getAutosizeOrBackgroundColorOrBendable().add(getObjectFactory().createLayoutAttributesFactsTypeBackgroundColor(bgColor));
+                attrs.getAutosizeOrBackgroundColorOrBendable().add(YAWL_FACTORY.createLayoutAttributesFactsTypeBackgroundColor(bgColor));
             }
         }
 
@@ -125,7 +120,7 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
     }
 
     private JAXBElement<LayoutRectangleType> convertVertexBounds(final GraphicsType graphic) throws CanoniserException {
-        elementBounds = getObjectFactory().createLayoutRectangleType();
+        elementBounds = YAWL_FACTORY.createLayoutRectangleType();
         final NumberFormat nf = getContext().getYawlNumberFormat();
 
         if (graphic.getSize() != null) {
@@ -148,7 +143,7 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         LOGGER.debug("Setting size h: {}, w: {} and position x: {}, y: {}",
                 new String[] { elementBounds.getH(), elementBounds.getW(), elementBounds.getX(), elementBounds.getY() });
         getContext().setElementBounds(getObject().getCpfId(), elementBounds);
-        final JAXBElement<LayoutRectangleType> boundsAttribute = getObjectFactory().createLayoutAttributesFactsTypeBounds(elementBounds);
+        final JAXBElement<LayoutRectangleType> boundsAttribute = YAWL_FACTORY.createLayoutAttributesFactsTypeBounds(elementBounds);
         return boundsAttribute;
     }
 
@@ -179,12 +174,12 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
     }
 
     private LayoutLabelFactsType createDefaultLabel() throws CanoniserException {
-        final LayoutLabelFactsType label = getObjectFactory().createLayoutLabelFactsType();
-        final LayoutAttributesFactsType labelAttr = getObjectFactory().createLayoutAttributesFactsType();
+        final LayoutLabelFactsType label = YAWL_FACTORY.createLayoutLabelFactsType();
+        final LayoutAttributesFactsType labelAttr = YAWL_FACTORY.createLayoutAttributesFactsType();
         final NumberFormat nf = getContext().getYawlNumberFormat();
 
         // Guess reasonable defaults from GraphicsType
-        final LayoutRectangleType labelRect = getObjectFactory().createLayoutRectangleType();
+        final LayoutRectangleType labelRect = YAWL_FACTORY.createLayoutRectangleType();
         labelRect.setH(nf.format(this.autoLayoutInfo.getLabelHeight(yawlElement)));
         labelRect.setW(nf.format(this.autoLayoutInfo.getLabelWidth(yawlElement)));
         final boolean hasJoinRouting = getContext().hasJoinRouting(yawlElement.getId());
@@ -192,7 +187,7 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         labelRect.setX(nf.format(this.autoLayoutInfo.getLabelX(yawlElement, elementBounds, hasJoinRouting, hasSplitRouting)));
         labelRect.setY(nf.format(this.autoLayoutInfo.getLabelY(yawlElement, elementBounds, hasJoinRouting, hasSplitRouting)));
 
-        labelAttr.getAutosizeOrBackgroundColorOrBendable().add(getObjectFactory().createLayoutAttributesFactsTypeBounds(labelRect));
+        labelAttr.getAutosizeOrBackgroundColorOrBendable().add(YAWL_FACTORY.createLayoutAttributesFactsTypeBounds(labelRect));
         label.setAttributes(labelAttr);
         return label;
     }
@@ -232,10 +227,10 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         final List<LayoutDecoratorFactsType> decoratorList = new ArrayList<LayoutDecoratorFactsType>();
 
         if (getContext().hasJoinRouting(yawlElement.getId())) {
-            final LayoutDecoratorFactsType decorator = getObjectFactory().createLayoutDecoratorFactsType();
+            final LayoutDecoratorFactsType decorator = YAWL_FACTORY.createLayoutDecoratorFactsType();
             decorator.setType(convertJoinRouting(yawlElement));
             decorator.setPosition(BigInteger.valueOf(12));
-            final LayoutAttributesFactsType attributes = getContext().getYawlObjectFactory().createLayoutAttributesFactsType();
+            final LayoutAttributesFactsType attributes = YAWL_FACTORY.createLayoutAttributesFactsType();
             attributes.getAutosizeOrBackgroundColorOrBendable().add(createDefaultDecoratorBounds(graphic, JOIN_ROUTING_TYPE));
             attributes.getAutosizeOrBackgroundColorOrBendable().add(createDefaultDecoratorSize());
             decorator.setAttributes(attributes);
@@ -244,10 +239,10 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         }
 
         if (getContext().hasSplitRouting(yawlElement.getId())) {
-            final LayoutDecoratorFactsType decorator = getObjectFactory().createLayoutDecoratorFactsType();
+            final LayoutDecoratorFactsType decorator = YAWL_FACTORY.createLayoutDecoratorFactsType();
             decorator.setType(convertSplitRouting(yawlElement));
             decorator.setPosition(BigInteger.valueOf(13));
-            final LayoutAttributesFactsType attributes = getContext().getYawlObjectFactory().createLayoutAttributesFactsType();
+            final LayoutAttributesFactsType attributes = YAWL_FACTORY.createLayoutAttributesFactsType();
             attributes.getAutosizeOrBackgroundColorOrBendable().add(createDefaultDecoratorBounds(graphic, SPLIT_ROUTING_TYPE));
             attributes.getAutosizeOrBackgroundColorOrBendable().add(createDefaultDecoratorSize());
             decorator.setAttributes(attributes);
@@ -259,20 +254,20 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
     }
 
     private JAXBElement<?> createDefaultDecoratorBounds(final GraphicsType graphic, final String routingType) throws CanoniserException {
-        final LayoutRectangleType rect = getContext().getYawlObjectFactory().createLayoutRectangleType();
+        final LayoutRectangleType rect = YAWL_FACTORY.createLayoutRectangleType();
         final NumberFormat nf = getContext().getYawlNumberFormat();
         rect.setH(nf.format(autoLayoutInfo.getDecoratorHeight()));
         rect.setW(nf.format(autoLayoutInfo.getDecoratorWidth()));
         rect.setX(nf.format(autoLayoutInfo.getDecoratorX(routingType, yawlElement, elementBounds)));
         rect.setY(nf.format(autoLayoutInfo.getDecoratorY(routingType, yawlElement, elementBounds)));
-        return getContext().getYawlObjectFactory().createLayoutAttributesFactsTypeBounds(rect);
+        return YAWL_FACTORY.createLayoutAttributesFactsTypeBounds(rect);
     }
 
     private JAXBElement<?> createDefaultDecoratorSize() {
-        final LayoutDimensionType dimension = getObjectFactory().createLayoutDimensionType();
+        final LayoutDimensionType dimension = YAWL_FACTORY.createLayoutDimensionType();
         dimension.setH(BigInteger.valueOf(autoLayoutInfo.getDecoratorHeight()));
         dimension.setW(BigInteger.valueOf(autoLayoutInfo.getDecoratorWidth()));
-        return getContext().getYawlObjectFactory().createLayoutAttributesFactsTypeSize(dimension);
+        return YAWL_FACTORY.createLayoutAttributesFactsTypeSize(dimension);
     }
 
     private String convertSplitRouting(final ExternalTaskFactsType yawlTask) {
