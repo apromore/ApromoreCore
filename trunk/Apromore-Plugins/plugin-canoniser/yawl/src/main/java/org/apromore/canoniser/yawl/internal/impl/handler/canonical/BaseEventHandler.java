@@ -1,7 +1,7 @@
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical;
 
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
+import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.TypeAttribute;
 import org.slf4j.Logger;
@@ -42,12 +42,12 @@ public abstract class BaseEventHandler<T extends NodeType> extends CanonicalElem
     }
 
     private boolean isArtificialOutputCondition(final T object) {
-        TypeAttribute attribute = ConversionUtils.getFromExtensions(object, "org.apromore.canoniser.yawl.artificalOutputCondition");
+        TypeAttribute attribute = ExtensionUtils.getFromExtensions(object, "org.apromore.canoniser.yawl.artificalOutputCondition");
         return (attribute != null) && "true".equals(attribute.getValue());
     }
 
     private boolean isArtificialInputCondition(final T object) {
-        TypeAttribute attribute = ConversionUtils.getFromExtensions(object, "org.apromore.canoniser.yawl.artificalInputCondition");
+        TypeAttribute attribute = ExtensionUtils.getFromExtensions(object, "org.apromore.canoniser.yawl.artificalInputCondition");
         return (attribute != null) && "true".equals(attribute.getValue());
     }
 

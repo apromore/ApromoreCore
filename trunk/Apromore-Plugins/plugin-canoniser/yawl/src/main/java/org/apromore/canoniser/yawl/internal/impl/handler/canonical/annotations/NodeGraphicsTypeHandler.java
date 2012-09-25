@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations;
@@ -22,6 +22,7 @@ import org.apromore.anf.GraphicsType;
 import org.apromore.anf.PositionType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
+import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yawlfoundation.yawlschema.ExternalNetElementType;
@@ -37,14 +38,16 @@ import org.yawlfoundation.yawlschema.LayoutVertexFactsType;
 
 /**
  * Convert the layout of an CPF node to YAWL
- * 
+ *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeGraphicsTypeHandler.class);
 
+    private static final int JOIN_DECORATOR_DEFAULT_POSITION = 12;
+    private static final int SPLIT_DECORATOR_DEFAULT_POSITION = 13;
     private static final String JOIN_ROUTING_TYPE = "join";
     private static final String SPLIT_ROUTING_TYPE = "split";
 
@@ -54,7 +57,7 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -163,8 +166,8 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
     private LayoutLabelFactsType getYAWLGraphicsExtension(final GraphicsType graphic) {
         for (final Object extensionObj : graphic.getAny()) {
             try {
-                if (ConversionUtils.isValidFragment(extensionObj, ConversionUtils.YAWLSCHEMA_URL, "label")) {
-                    return ConversionUtils.unmarshalYAWLFragment(extensionObj, LayoutLabelFactsType.class);
+                if (ExtensionUtils.isValidFragment(extensionObj, ExtensionUtils.YAWLSCHEMA_URL, ExtensionUtils.LABEL)) {
+                    return ExtensionUtils.unmarshalYAWLFragment(extensionObj, LayoutLabelFactsType.class);
                 }
             } catch (final CanoniserException e) {
                 LOGGER.warn("Error unmarshalling extension elements. This should not happen, but the conversion will still work.", e);
@@ -206,8 +209,8 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         final List<LayoutDecoratorFactsType> decoratorList = new ArrayList<LayoutDecoratorFactsType>();
         for (final Object extensionObj : graphic.getAny()) {
             try {
-                if (ConversionUtils.isValidFragment(extensionObj, ConversionUtils.YAWLSCHEMA_URL, "decorator")) {
-                    final LayoutDecoratorFactsType decorator = ConversionUtils.unmarshalYAWLFragment(extensionObj, LayoutDecoratorFactsType.class);
+                if (ExtensionUtils.isValidFragment(extensionObj, ExtensionUtils.YAWLSCHEMA_URL, ExtensionUtils.DECORATOR)) {
+                    final LayoutDecoratorFactsType decorator = ExtensionUtils.unmarshalYAWLFragment(extensionObj, LayoutDecoratorFactsType.class);
                     decoratorList.add(decorator);
                     LOGGER.debug("Adding decorator layout using YAWL extension, type: {}", decorator.getType());
                 }
@@ -229,9 +232,9 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         if (getContext().hasJoinRouting(yawlElement.getId())) {
             final LayoutDecoratorFactsType decorator = YAWL_FACTORY.createLayoutDecoratorFactsType();
             decorator.setType(convertJoinRouting(yawlElement));
-            decorator.setPosition(BigInteger.valueOf(12));
+            decorator.setPosition(BigInteger.valueOf(JOIN_DECORATOR_DEFAULT_POSITION));
             final LayoutAttributesFactsType attributes = YAWL_FACTORY.createLayoutAttributesFactsType();
-            attributes.getAutosizeOrBackgroundColorOrBendable().add(createDefaultDecoratorBounds(graphic, JOIN_ROUTING_TYPE));
+            attributes.getAutosizeOrBackgroundColorOrBendable().add(createDefaultDecoratorBounds(JOIN_ROUTING_TYPE));
             attributes.getAutosizeOrBackgroundColorOrBendable().add(createDefaultDecoratorSize());
             decorator.setAttributes(attributes);
             LOGGER.debug("Adding decorator layout using default settings, type: {}", decorator.getType());
@@ -241,9 +244,9 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         if (getContext().hasSplitRouting(yawlElement.getId())) {
             final LayoutDecoratorFactsType decorator = YAWL_FACTORY.createLayoutDecoratorFactsType();
             decorator.setType(convertSplitRouting(yawlElement));
-            decorator.setPosition(BigInteger.valueOf(13));
+            decorator.setPosition(BigInteger.valueOf(SPLIT_DECORATOR_DEFAULT_POSITION));
             final LayoutAttributesFactsType attributes = YAWL_FACTORY.createLayoutAttributesFactsType();
-            attributes.getAutosizeOrBackgroundColorOrBendable().add(createDefaultDecoratorBounds(graphic, SPLIT_ROUTING_TYPE));
+            attributes.getAutosizeOrBackgroundColorOrBendable().add(createDefaultDecoratorBounds(SPLIT_ROUTING_TYPE));
             attributes.getAutosizeOrBackgroundColorOrBendable().add(createDefaultDecoratorSize());
             decorator.setAttributes(attributes);
             LOGGER.debug("Adding decorator layout using default settings, type: {}", decorator.getType());
@@ -253,7 +256,7 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         return decoratorList;
     }
 
-    private JAXBElement<?> createDefaultDecoratorBounds(final GraphicsType graphic, final String routingType) throws CanoniserException {
+    private JAXBElement<?> createDefaultDecoratorBounds(final String routingType) throws CanoniserException {
         final LayoutRectangleType rect = YAWL_FACTORY.createLayoutRectangleType();
         final NumberFormat nf = getContext().getYawlNumberFormat();
         rect.setH(nf.format(autoLayoutInfo.getDecoratorHeight()));

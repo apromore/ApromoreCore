@@ -1,18 +1,19 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer;
 
 import java.util.List;
 
+import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionContext;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CancellationRefType;
@@ -28,13 +29,13 @@ import org.yawlfoundation.yawlschema.TimerTriggerType;
 
 /**
  * Rewrites the canonical way of representing an OnEnablement Timer to a single YAWL Timer. In CPF it looks like this (& = parallel Nodes):
- * 
+ *
  * ANDSplit -> (Timer & Message) -> XORJoin -> Task <br />
- * 
+ *
  * In YAWL it is just a single Timer with attribute onEnablement set!
- * 
+ *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class TimerOnEnablementMacro extends AbstractTimerMacro {
 
@@ -44,9 +45,8 @@ public class TimerOnEnablementMacro extends AbstractTimerMacro {
         super(context);
     }
 
-    /*
-     * (non-Javadoc)
-     * 
+
+    /* (non-Javadoc)
      * @see org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer.AbstractTimerMacro#checkCondition(org.apromore.cpf.NodeType)
      */
     @Override
@@ -54,14 +54,12 @@ public class TimerOnEnablementMacro extends AbstractTimerMacro {
         return node instanceof ANDSplitType;
     }
 
-    /*
-     * (non-Javadoc)
-     * 
-     * @see org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer.AbstractTimerMacro#rewriteTimer(org.apromore.cpf.NodeType,
-     * org.apromore.cpf.NetType)
+
+    /* (non-Javadoc)
+     * @see org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer.AbstractTimerMacro#rewriteTimer(org.apromore.cpf.NodeType, org.apromore.cpf.NetType)
      */
     @Override
-    protected boolean rewriteTimer(final NodeType node, final NetType net) {
+    protected boolean rewriteTimer(final NodeType node, final NetType net) throws CanoniserException {
         final ANDSplitType splitNode = (ANDSplitType) node;
         final TimerType timer = testFollowedByTimer(splitNode);
         final MessageType message = testFollowedByMessage(splitNode);

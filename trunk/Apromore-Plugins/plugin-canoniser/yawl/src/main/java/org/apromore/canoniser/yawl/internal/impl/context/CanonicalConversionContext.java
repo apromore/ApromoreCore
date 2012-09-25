@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.context;
@@ -33,6 +33,7 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations.YAWLAutoLayouter;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUUIDGenerator;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
+import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.InputOutputType;
@@ -53,17 +54,19 @@ import org.yawlfoundation.yawlschema.LayoutFactsType.Specification;
 import org.yawlfoundation.yawlschema.LayoutNetFactsType;
 import org.yawlfoundation.yawlschema.LayoutRectangleType;
 import org.yawlfoundation.yawlschema.NetFactsType;
+import org.yawlfoundation.yawlschema.ObjectFactory;
 import org.yawlfoundation.yawlschema.SpecificationSetFactsType;
 import org.yawlfoundation.yawlschema.TimerTriggerType;
 import org.yawlfoundation.yawlschema.VariableBaseType;
+import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType.YawlService;
 import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
 import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
 
 /**
  * Context for a conversion CPF -> YAWL
- * 
+ *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public final class CanonicalConversionContext extends ConversionContext {
 
@@ -74,6 +77,7 @@ public final class CanonicalConversionContext extends ConversionContext {
         public ControlTypeType splitType;
         public org.yawlfoundation.yawlschema.TimerType timer;
         public boolean isAutomatic = false;
+        public YawlService yawlService;
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CanonicalConversionContext.class);
@@ -191,7 +195,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Create the Context for one CPF -> YAWL conversion
-     * 
+     *
      * @param canonicalProcess
      * @param annotationsType
      */
@@ -199,15 +203,15 @@ public final class CanonicalConversionContext extends ConversionContext {
         super();
         this.canonicalProcess = canonicalProcess;
         this.annotationsType = annotationsType;
-        this.yawlSpecification = ConversionUtils.YAWL_FACTORY.createSpecificationSetFactsType();
-        this.yawlOrgData = ConversionUtils.YAWL_ORG_FACTORY.createOrgDataType();
+        this.yawlSpecification = new ObjectFactory().createSpecificationSetFactsType();
+        this.yawlOrgData = new org.yawlfoundation.yawlschema.orgdata.ObjectFactory().createOrgDataType();
         this.uuidGenerator = new ConversionUUIDGenerator();
         this.setYawlLocale(DEFAULT_LOCALE);
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.context.ConversionContext#getUuidGenerator()
      */
     @Override
@@ -260,7 +264,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Sets the Locale used in the YAWL specification. (At the moment just in the Layout part)
-     * 
+     *
      * @param yawlLocale
      */
     public void setYawlLocale(final Locale yawlLocale) {
@@ -275,7 +279,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get Net of CPF by ID
-     * 
+     *
      * @param id
      *            of CPF Net
      * @return NetType or NULL
@@ -292,7 +296,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get Node of CPF by ID
-     * 
+     *
      * @param id
      *            of CPF Node
      * @return NodeType or NULL
@@ -317,7 +321,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get ResourceType of CPF by ID
-     * 
+     *
      * @param id
      *            of CPF ResourceType
      * @return ResourceTypeType or NULL
@@ -340,7 +344,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get ObjectType of CPF by ID
-     * 
+     *
      * @param id
      *            of CPF ObjectType
      * @return ObjectType or NULL
@@ -365,7 +369,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get Edge of CPF by ID
-     * 
+     *
      * @param id
      *            of CPF Edge
      * @return EdgeType or NULL
@@ -390,7 +394,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get all preceding elements of the Node with given ID. (i.e. the pre set)
-     * 
+     *
      * @param id
      *            of a CPF Node
      * @return UnmodifiableCollection of predecessors, empty if Node has none.
@@ -407,7 +411,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get all succeeding elements of the Node with given ID. (i.e. the post set)
-     * 
+     *
      * @param id
      *            of a CPF Node
      * @return UnmodifiableCollection of successors, empty if Node has none.
@@ -470,7 +474,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get the first Successor of CPF Node with given ID.
-     * 
+     *
      * @param id
      *            of a CPF Node
      * @return NodeType or NULL is no successor found
@@ -485,7 +489,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get the first Predecessor of CPF Node with given ID.
-     * 
+     *
      * @param id
      *            of a CPF Node
      * @return NodeType or NULL is no predecessor found
@@ -500,7 +504,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Checks if the given CPF Net has more than one Node that has no successors. Such a Net has multiple exit nodes and is Multiple Exit.
-     * 
+     *
      * @param net
      *            a CPF net
      * @return true if Net is MESE or MEME, false otherwise
@@ -511,13 +515,13 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get the Nodes of a CPF Net that just have one predecessor.
-     * 
+     *
      * @param net
      *            the CPF Net
      * @return Unmodifiable Collection of entry Nodes
      */
     public Collection<NodeType> getSinkNodes(final NetType net) {
-        final Collection<NodeType> exitNodes = new ArrayList<NodeType>();
+        final Collection<NodeType> exitNodes = new ArrayList<NodeType>(1);
         for (final NodeType node : net.getNode()) {
             if (getPostSet(node.getId()).isEmpty()) {
                 exitNodes.add(node);
@@ -528,7 +532,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Checks if the given CPF Net has more than one Node that has no predecessors. Such a Net has multiple starting nodes and is Multiple Entry.
-     * 
+     *
      * @param net
      *            the CPF Net
      * @return true if Net is SEME or MEME, false otherwise
@@ -539,13 +543,13 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get the Nodes of a CPF Net that don't have a predecessor.
-     * 
+     *
      * @param net
      *            the CPF Net
      * @return Unmodifiable Collection of entry Nodes
      */
     public Collection<NodeType> getSourceNodes(final NetType net) {
-        final Collection<NodeType> entryNodes = new ArrayList<NodeType>();
+        final Collection<NodeType> entryNodes = new ArrayList<NodeType>(1);
         for (final NodeType node : net.getNode()) {
             if (getPreSet(node.getId()).isEmpty()) {
                 entryNodes.add(node);
@@ -569,7 +573,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Add a NetFactsType for the given ID
-     * 
+     *
      * @param id
      *            of the CPF Net
      * @param net
@@ -582,7 +586,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get the already converted NetFactsType if CPF Net with ID is already converted.
-     * 
+     *
      * @param id
      *            of a CPF Net
      * @return NetFactsType or NULL
@@ -604,7 +608,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Remembers a YAWL variable/parameter
-     * 
+     *
      * @param id
      *            of the CPF Object
      * @param inputParam
@@ -616,7 +620,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get a YAWL variable/parameter by the CPF Object-ID
-     * 
+     *
      * @param id
      *            of the CPF Object
      * @return VariableBaseType
@@ -634,7 +638,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Add an element that just has been converted
-     * 
+     *
      * @param nodeId
      *            of the CPF node
      * @param element
@@ -646,7 +650,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Adds layout bounds to the element information.
-     * 
+     *
      * @param nodeId
      *            of the CPF node
      * @param elementSize
@@ -657,7 +661,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Adds the join type to the element information.
-     * 
+     *
      * @param nodeId
      *            of the CPF node
      * @param joinType
@@ -668,7 +672,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Adds the split type to the element information.
-     * 
+     *
      * @param nodeId
      *            of the CPF node
      * @param splitType
@@ -679,7 +683,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get information about the conversion of the CPF Node to an YAWL element.
-     * 
+     *
      * @param nodeId
      *            of CPF node
      * @return YAWL element information
@@ -705,7 +709,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Add an flow that just has been converted
-     * 
+     *
      * @param nodeId
      *            of the CPF node
      * @param element
@@ -718,7 +722,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Gets the converted flow for edge CPF id
-     * 
+     *
      * @param nodeId
      *            of CPF edge
      * @return YAWL flow
@@ -740,7 +744,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get the already converted LayoutNetFactsType for the Net with provided YAWL ID.
-     * 
+     *
      * @param id
      *            of YAWL Net
      * @return LayoutNetFactsType or NULL is none found
@@ -758,7 +762,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get the already converted LayoutContainerFactsType for the Element with provided YAWL ID.
-     * 
+     *
      * @param id
      *            of YAWL Element
      * @return LayoutContainerFactsType or NULL is none found
@@ -781,7 +785,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Adds the task element to a list of composite tasks that unfold to the sub net with given ID.
-     * 
+     *
      * @param subnetId
      *            of CPF net
      * @param taskFacts
@@ -800,7 +804,7 @@ public final class CanonicalConversionContext extends ConversionContext {
     /**
      * Returns a collection of already converted YAWL tasks that unfold to a given sub net. There may be tasks missing that have not been converted
      * yet.
-     * 
+     *
      * @param subnetId
      *            of the CPF net
      * @return unmodifiable collection of YAWL tasks that unfold to this sub net
@@ -823,7 +827,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Remember that a YAWL task (given by its ID) has a JOIN routing attached.
-     * 
+     *
      * @param yawlId
      */
     public void setSplitRouting(final String yawlId) {
@@ -832,7 +836,7 @@ public final class CanonicalConversionContext extends ConversionContext {
     }
 
     /**
-     * 
+     *
      * @param yawlId
      * @return true if Task has a SPLIT routing
      */
@@ -849,7 +853,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Remember that a YAWL task (given by its ID) has a JOIN routing attached.
-     * 
+     *
      * @param yawlId
      */
     public void setJoinRouting(final String yawlId) {
@@ -874,7 +878,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Checks if the Object with ID (in CPF) is used as input any composite task that points to the given Net
-     * 
+     *
      * @param objectId
      * @return
      */
@@ -899,7 +903,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Checks if the Object with ID (in CPF) is used as output in any composite task that points to the given Net
-     * 
+     *
      * @param objectId
      * @param netId
      * @return
@@ -926,7 +930,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Remembers a Variable that needs to be added to a sub net later on.
-     * 
+     *
      * @param subnetId
      *            CPF id of the Net
      * @param var
@@ -939,7 +943,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Get all Variables that need to be added to this sub net.
-     * 
+     *
      * @param subnetId
      *            CPF id of the Net
      * @return unmodifiableCollection of VariableBaseType
@@ -962,7 +966,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Searches for the YAWL extension element with specified class. If found it is returned with correct type, otherwise NULL is returned.
-     * 
+     *
      * @param cpfId
      *            of the Node or NULL for global annotations
      * @param elementName
@@ -976,8 +980,8 @@ public final class CanonicalConversionContext extends ConversionContext {
             if (!(ann instanceof DocumentationType || ann instanceof GraphicsType)) {
                 for (final Object extObj : ann.getAny()) {
                     try {
-                        if (ConversionUtils.isValidFragment(extObj, ConversionUtils.YAWLSCHEMA_URL, elementName)) {
-                            return ConversionUtils.unmarshalYAWLFragment(extObj, expectedClass);
+                        if (ExtensionUtils.isValidFragment(extObj, ExtensionUtils.YAWLSCHEMA_URL, elementName)) {
+                            return ExtensionUtils.unmarshalYAWLFragment(extObj, expectedClass);
                         }
                     } catch (final CanoniserException e) {
                         LOGGER.warn("Could not convert YAWL extension {} of Node {} with type {}",
@@ -992,7 +996,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     /**
      * Returns all Annotations that refer to the specified CPF ID.
-     * 
+     *
      * @param cpfId
      *            of the Node or NULL for global annotations
      * @return
