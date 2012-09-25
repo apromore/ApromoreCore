@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl;
@@ -25,19 +25,19 @@ import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
 
 /**
  * Converting the Canonical Process Format to YAWL
- * 
+ *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class Canonical2YAWLImpl implements Canonical2YAWL {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(Canonical2YAWLImpl.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(Canonical2YAWLImpl.class);
 
     private CanonicalConversionContext context;
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.Canonical2YAWL#convertToYAWL(org.apromore.cpf.CanonicalProcessType, org.apromore.anf.AnnotationsType)
      */
     @Override
@@ -70,7 +70,7 @@ public class Canonical2YAWLImpl implements Canonical2YAWL {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.Canonical2YAWL#convertToYAWL(org.apromore.cpf.CanonicalProcessType)
      */
     @Override
@@ -84,7 +84,7 @@ public class Canonical2YAWLImpl implements Canonical2YAWL {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.Canonical2YAWL#getYAWL()
      */
     @Override
@@ -94,7 +94,7 @@ public class Canonical2YAWLImpl implements Canonical2YAWL {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.Canonical2YAWL#getOrgData()
      */
     @Override

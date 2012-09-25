@@ -40,7 +40,7 @@ public class VariableHandler extends YAWLConversionHandler<VariableBaseType, Net
 
         final SoftType alreadyConvertedObject = getContext().getObjectByName(getObject().getName(), getConvertedParent());
         if (alreadyConvertedObject == null) {
-            final SoftType canonicalObject = getContext().getCanonicalOF().createSoftType();
+            final SoftType canonicalObject = CPF_FACTORY.createSoftType();
             final String generatedOriginalId = ConversionUtils.buildObjectId(getConvertedParent().getId(), getObject().getName());
             canonicalObject.setId(generateUUID(DATA_ID_PREFIX, generatedOriginalId));
             canonicalObject.setOriginalID(generatedOriginalId);

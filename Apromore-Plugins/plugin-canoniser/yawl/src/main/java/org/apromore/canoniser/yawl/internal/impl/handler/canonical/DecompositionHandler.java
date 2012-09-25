@@ -15,11 +15,13 @@ import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType;
 
 /**
  * Base class for NetType and TaskType which are both converting to a Decomposition in YAWL
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
- * @param <T> type of the Element to be converted
- * @param <E> type of the already converted parent
+ * 
+ * @param <T>
+ *            type of the Element to be converted
+ * @param <E>
+ *            type of the already converted parent
  */
 public abstract class DecompositionHandler<T, E> extends CanonicalElementHandler<T, E> {
 
@@ -30,7 +32,7 @@ public abstract class DecompositionHandler<T, E> extends CanonicalElementHandler
     }
 
     protected WebServiceGatewayFactsType createDecomposition(final NodeType node) {
-        final WebServiceGatewayFactsType decompositionType = getContext().getYawlObjectFactory().createWebServiceGatewayFactsType();
+        final WebServiceGatewayFactsType decompositionType = YAWL_FACTORY.createWebServiceGatewayFactsType();
         // Decompositions must have unique IDs, so we can't use the NetElement ID here!
         decompositionType.setId(generateUUID());
         LOGGER.debug("Creating decomposition for {} with ID {}", node.getName(), decompositionType.getId());
@@ -40,13 +42,13 @@ public abstract class DecompositionHandler<T, E> extends CanonicalElementHandler
     }
 
     protected InputParameterFactsType convertInputParameterObject(final SoftType obj, final int index, final Set<String> nameSet) {
-        final InputParameterFactsType param = getContext().getYawlObjectFactory().createInputParameterFactsType();
+        final InputParameterFactsType param = YAWL_FACTORY.createInputParameterFactsType();
         convertBaseVariable(obj, index, nameSet, param);
         return param;
     }
 
     protected OutputParameterFactsType convertOutputParameterObject(final SoftType obj, final int index, final Set<String> nameSet) {
-        final OutputParameterFactsType param = getContext().getYawlObjectFactory().createOutputParameterFactsType();
+        final OutputParameterFactsType param = YAWL_FACTORY.createOutputParameterFactsType();
         convertBaseVariable(obj, index, nameSet, param);
         return param;
     }

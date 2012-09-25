@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros;
@@ -20,9 +20,9 @@ import org.apromore.cpf.CanonicalProcessType;
 
 /**
  * Class controlling all Macros that are used in the conversion.
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  */
 public class MacroRewriter {
 
@@ -35,8 +35,9 @@ public class MacroRewriter {
 
     /**
      * Add Macro to our list of Macros
-     *
-     * @param m Macro
+     * 
+     * @param m
+     *            Macro
      */
     public void addMacro(final RewriteMacro m) {
         availableMacros.add(m);
@@ -44,8 +45,9 @@ public class MacroRewriter {
 
     /**
      * Executes all added Macros in the order they were added
-     *
-     * @param cpf Canonical Process all Macros will be applied to
+     * 
+     * @param cpf
+     *            Canonical Process all Macros will be applied to
      * @return a Collection of all Macros that rewrote someting
      * @throws CanoniserException
      */

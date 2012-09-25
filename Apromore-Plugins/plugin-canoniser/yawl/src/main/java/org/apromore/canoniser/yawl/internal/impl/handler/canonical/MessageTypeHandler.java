@@ -14,9 +14,9 @@ import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType;
 
 /**
  * TODO
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  */
 public class MessageTypeHandler extends DecompositionHandler<MessageType, NetFactsType> {
 
@@ -24,7 +24,7 @@ public class MessageTypeHandler extends DecompositionHandler<MessageType, NetFac
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override

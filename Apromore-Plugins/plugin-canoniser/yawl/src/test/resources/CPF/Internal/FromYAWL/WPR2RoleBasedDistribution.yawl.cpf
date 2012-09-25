@@ -1,23 +1,23 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WPR1DirectDistribution" version="0.1" name="WPR1DirectDistribution" author="Felix" rootIds="id-N-Net">
-    <Net id="id-N-Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-InputCondition" originalID="InputCondition">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WPR1DirectDistribution" version="0.1" name="WPR1DirectDistribution" author="Felix" rootIds="N-Net">
+    <Net id="N-Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="id-C-A" originalID="A">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
             <name>A</name>
-            <attribute name="secondary">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
                 <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
             </attribute>
-            <resourceTypeRef id="id-150f4628-7557-4a24-bfbd-7da2414cc90c" resourceTypeId="id-R-RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7"/>
+            <resourceTypeRef id="id54716e6a-cb27-4b7c-afe0-3d729bbd98b5" resourceTypeId="id4ba7ed61-074d-4f52-9787-9708814866d7"/>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="id-C-OutputCondition" originalID="OutputCondition">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="id-C-InputCondition-A" default="true" sourceId="id-C-InputCondition" targetId="id-C-A"/>
-        <Edge id="id-C-A-OutputCondition" default="true" sourceId="id-C-A" targetId="id-C-OutputCondition"/>
+        <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
+        <Edge id="C-A-OutputCondition" default="true" sourceId="C-A" targetId="C-OutputCondition"/>
     </Net>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:RoleType" id="id-R-RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:RoleType" id="id4ba7ed61-074d-4f52-9787-9708814866d7" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
         <name>RoleX</name>
     </ResourceType>
 </ns2:CanonicalProcess>

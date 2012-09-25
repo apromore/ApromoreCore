@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl.controlflow;
@@ -25,7 +25,6 @@ import org.apromore.anf.DocumentationType;
 import org.apromore.anf.FillType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.LineType;
-import org.apromore.anf.ObjectFactory;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SizeType;
 import org.apromore.canoniser.exception.CanoniserException;
@@ -51,9 +50,9 @@ import org.yawlfoundation.yawlschema.LayoutVertexFactsType;
 
 /**
  * Base class for converting all external net elements
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  * @param <T>
  *            type of Element to be converted
  */
@@ -64,7 +63,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
     /**
      * Simple connection between two already converted element. Source and Target have to be SESE, as we are not going to introduce any kind of
      * routing node.
-     *
+     * 
      * @param sourceNode
      *            of CPF
      * @param targetNode
@@ -73,7 +72,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
      * @throws CanoniserException
      */
     protected EdgeType createSimpleEdge(final NodeType sourceNode, final NodeType targetNode) throws CanoniserException {
-        final EdgeType edge = getContext().getCanonicalOF().createEdgeType();
+        final EdgeType edge = CPF_FACTORY.createEdgeType();
         // Assign unique ID that is reproducible by using sources and targets ID
         edge.setId(generateEdgeId(sourceNode, targetNode));
         edge.setSourceId(sourceNode.getId());
@@ -89,7 +88,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
     /**
      * Generates a unique ID for an edge between source and target. Same edges (identical source and target) will always return the same generated
      * unique id.
-     *
+     * 
      * @param sourceNode
      *            of CPF element
      * @param targetNode
@@ -110,11 +109,11 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
     /**
      * Create a StateType node that was not part of the original YAWL specification. The node is already added to its parent Net.
-     *
+     * 
      * @return
      */
     protected StateType createState() {
-        final StateType state = getContext().getCanonicalOF().createStateType();
+        final StateType state = CPF_FACTORY.createStateType();
         state.setId(generateUUID());
         state.setOriginalID(null);
         getConvertedParent().getNode().add(state);
@@ -123,11 +122,11 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
     /**
      * Create a EventType node that was not part of the original YAWL specification. The node is already added to its parent Net.
-     *
+     * 
      * @return
      */
     protected EventType createEvent() {
-        final EventType event = getContext().getCanonicalOF().createEventType();
+        final EventType event = CPF_FACTORY.createEventType();
         event.setId(generateUUID());
         event.setOriginalID(null);
         getConvertedParent().getNode().add(event);
@@ -136,12 +135,12 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
     /**
      * Create a MessageType node that was not part of the original YAWL specification. The node is already added to its parent Net.
-     *
+     * 
      * @param direction
      * @return the converted MessageType
      */
     protected MessageType createMessage(final DirectionType direction) {
-        final MessageType msg = getContext().getCanonicalOF().createMessageType();
+        final MessageType msg = CPF_FACTORY.createMessageType();
         msg.setId(generateUUID());
         msg.setOriginalID(null);
         msg.setDirection(direction);
@@ -188,7 +187,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
     }
 
     protected void createDocumentation(final ExternalNetElementType element, final String documentation) throws CanoniserException {
-        final DocumentationType d = getContext().getAnnotationOF().createDocumentationType();
+        final DocumentationType d = ANF_FACTORY.createDocumentationType();
         d.setCpfId(generateUUID(CONTROLFLOW_ID_PREFIX, element.getId()));
         d.setId(generateUUID());
         d.getAny().add(ConversionUtils.marshalYAWLFragment("documentation", documentation, String.class));
@@ -196,7 +195,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
     }
 
     protected void createGraphics(final ExternalNetElementType element) throws CanoniserException {
-        final GraphicsType graphics = getContext().getAnnotationOF().createGraphicsType();
+        final GraphicsType graphics = ANF_FACTORY.createGraphicsType();
         graphics.setCpfId(generateUUID(CONTROLFLOW_ID_PREFIX, element.getId()));
         graphics.setId(generateUUID());
 
@@ -220,7 +219,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
     /**
      * Create the graphical annotation for a YAWL edge.
-     *
+     * 
      * @param sourceId
      *            of the YAWL source
      * @param targetId
@@ -229,7 +228,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
      * @throws CanoniserException
      */
     protected void createGraphicsForFlow(final String sourceId, final String targetId) throws CanoniserException {
-        final GraphicsType graphics = getContext().getAnnotationOF().createGraphicsType();
+        final GraphicsType graphics = ANF_FACTORY.createGraphicsType();
         graphics.setCpfId(generateUUID(CONTROLFLOW_ID_PREFIX, getContext().buildEdgeId(sourceId, targetId)));
         graphics.setId(generateUUID());
 
@@ -257,7 +256,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
             if (obj.getValue() instanceof LayoutPointsType) {
                 final LayoutPointsType points = (LayoutPointsType) obj.getValue();
                 for (final LayoutPointType point : points.getValue()) {
-                    final PositionType position = getContext().getAnnotationOF().createPositionType();
+                    final PositionType position = ANF_FACTORY.createPositionType();
                     position.setX(convertToBigDecimal(point.getX()));
                     position.setY(convertToBigDecimal(point.getY()));
                     positions.add(position);
@@ -268,7 +267,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
     }
 
     private LineType convertFlowLineStyle(final LayoutFlowFactsType flowLayout) {
-        final LineType lineType = getContext().getAnnotationOF().createLineType();
+        final LineType lineType = ANF_FACTORY.createLineType();
         lineType.setWidth(new BigDecimal(DEFAULT_LINE_SIZE));
         for (final JAXBElement<?> obj : flowLayout.getAttributes().getAutosizeOrBackgroundColorOrBendable()) {
             if (obj.getName().getLocalPart().equalsIgnoreCase("lineStyle")) {
@@ -280,7 +279,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
     protected void convertVertexLayout(final LayoutVertexFactsType vertex, final GraphicsType graphics) throws CanoniserException {
         if (vertex != null) {
-            final FillType fill = getContext().getAnnotationOF().createFillType();
+            final FillType fill = ANF_FACTORY.createFillType();
 
             // Convert all Attributes
             final LayoutAttributesFactsType attr = vertex.getAttributes();
@@ -305,12 +304,11 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
     }
 
     private void convertLayoutRectangleAttribute(final LayoutRectangleType rect, final GraphicsType graphics) throws ParseException {
-        final ObjectFactory of = getContext().getAnnotationOF();
-        final PositionType position = of.createPositionType();
+        final PositionType position = ANF_FACTORY.createPositionType();
         position.setX(convertToBigDecimal(rect.getX()));
         position.setY(convertToBigDecimal(rect.getY()));
         graphics.getPosition().add(position);
-        final SizeType size = of.createSizeType();
+        final SizeType size = ANF_FACTORY.createSizeType();
         size.setHeight(convertToBigDecimal(rect.getH()));
         size.setWidth(convertToBigDecimal(rect.getW()));
         graphics.setSize(size);

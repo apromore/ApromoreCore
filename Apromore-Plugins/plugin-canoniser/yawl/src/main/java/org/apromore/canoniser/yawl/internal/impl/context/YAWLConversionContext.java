@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.context;
@@ -25,6 +25,7 @@ import javax.xml.bind.JAXBElement;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.YAWL22Canoniser;
+import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
@@ -54,13 +55,13 @@ import org.yawlfoundation.yawlschema.orgdata.RoleType;
 
 /**
  * Context for a conversion from YAWL to Apromores canonical format. This is the glue for all handlers.
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  */
 public final class YAWLConversionContext extends ConversionContext {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(YAWL22Canoniser.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(YAWL22Canoniser.class);
 
     public class ConvertedResource {
         private ResourceTypeType resource;
@@ -86,16 +87,6 @@ public final class YAWLConversionContext extends ConversionContext {
      */
     private final CanonicalProcessType canonicalResult;
 
-    /**
-     * Factory for ANF JAXB objects
-     */
-    private final org.apromore.anf.ObjectFactory annotationObjectFactory;
-
-    /**
-     * Factory for CPF JAXB objects
-     */
-    private final org.apromore.cpf.ObjectFactory canonicalObjectFactory;
-
     // ************ YAWL Specification & Organisational Data ***************
 
     /**
@@ -111,7 +102,7 @@ public final class YAWLConversionContext extends ConversionContext {
     /**
      * Stores the locale used in the YAWL layout
      */
-    private LayoutLocaleType layoutLocale;
+    private LayoutLocaleType layoutLocaleElement;
 
     /**
      * Stores the input organisational model
@@ -170,23 +161,12 @@ public final class YAWLConversionContext extends ConversionContext {
      */
     private Map<String, Map<String, SoftType>> netObjectsByName;
 
-
     public YAWLConversionContext(final YAWLSpecificationFactsType specification, final LayoutFactsType layoutFactsType, final OrgDataType orgDataType) {
         this.setOrgDataType(orgDataType);
         this.setLayout(layoutFactsType);
         this.setSpecification(specification);
-        this.annotationObjectFactory = new org.apromore.anf.ObjectFactory();
-        this.canonicalObjectFactory = new org.apromore.cpf.ObjectFactory();
-        this.canonicalResult = getCanonicalOF().createCanonicalProcessType();
-        this.annotationResult = getAnnotationOF().createAnnotationsType();
-    }
-
-    public org.apromore.anf.ObjectFactory getAnnotationOF() {
-        return annotationObjectFactory;
-    }
-
-    public org.apromore.cpf.ObjectFactory getCanonicalOF() {
-        return canonicalObjectFactory;
+        this.canonicalResult = ConversionUtils.CPF_FACTORY.createCanonicalProcessType();
+        this.annotationResult = ConversionUtils.ANF_FACTORY.createAnnotationsType();
     }
 
     public AnnotationsType getAnnotationResult() {
@@ -211,11 +191,14 @@ public final class YAWLConversionContext extends ConversionContext {
         throw new CanoniserException("Could not find layout for Net with ID " + id);
     }
 
-    /**
-     * @return locale used in the YAWL layout XML
-     */
-    public Locale getLayoutLocale() {
-        return new Locale(layoutLocale.getLanguage(), layoutLocale.getCountry());
+    private void setLayout(final LayoutFactsType layout) {
+        this.setLayoutLocaleElement(layout.getLocale());
+        this.setNumberFormat(NumberFormat.getInstance(getLayoutLocale()));
+        this.specificationLayout = layout.getSpecification().get(0);
+    }
+
+    private void setNumberFormat(final NumberFormat numberFormat) {
+        this.numberFormat = numberFormat;
     }
 
     /**
@@ -225,11 +208,37 @@ public final class YAWLConversionContext extends ConversionContext {
         return numberFormat;
     }
 
+    private void setLayoutLocaleElement(final LayoutLocaleType layoutLocale) {
+        this.layoutLocaleElement = layoutLocale;
+    }
+
+    /**
+     * @return locale element from YAWL layout XML
+     */
+    public LayoutLocaleType getLayoutLocaleElement() {
+        return layoutLocaleElement;
+    }
+
+    /**
+     * @return locale from YAWL layout XML converted to Java Locale
+     */
+    public Locale getLayoutLocale() {
+        return new Locale(layoutLocaleElement.getLanguage(), layoutLocaleElement.getCountry());
+    }
+
+    private void setSpecification(final YAWLSpecificationFactsType specification) {
+        this.specification = specification;
+    }
+
     /**
      * @return the to be converted YAWL specification
      */
     public YAWLSpecificationFactsType getSpecification() {
         return specification;
+    }
+
+    private void setOrgDataType(final OrgDataType orgDataType) {
+        this.orgDataType = orgDataType;
     }
 
     /**
@@ -243,31 +252,9 @@ public final class YAWLConversionContext extends ConversionContext {
         return orgDataType;
     }
 
-    private final void setLayout(final LayoutFactsType layout) {
-        this.setLayoutLocale(layout.getLocale());
-        this.setNumberFormat(NumberFormat.getInstance(getLayoutLocale()));
-        this.specificationLayout = layout.getSpecification().get(0);
-    }
-
-    private final void setNumberFormat(final NumberFormat numberFormat) {
-        this.numberFormat = numberFormat;
-    }
-
-    private final void setLayoutLocale(final LayoutLocaleType layoutLocale) {
-        this.layoutLocale = layoutLocale;
-    }
-
-    private final void setSpecification(final YAWLSpecificationFactsType specification) {
-        this.specification = specification;
-    }
-
-    private final void setOrgDataType(final OrgDataType orgDataType) {
-        this.orgDataType = orgDataType;
-    }
-
     /**
      * Get the successors of this YAWL element, will be initialised on the first call of this methods.
-     *
+     * 
      * @param netElement
      *            any element of a YAWL net
      * @return
@@ -278,14 +265,14 @@ public final class YAWLConversionContext extends ConversionContext {
         }
         Collection<ExternalNetElementType> c = successorsMap.get(new ElementAdapter(netElement));
         if (c == null) {
-            c = new ArrayList<ExternalNetElementType>();
+            c = new ArrayList<ExternalNetElementType>(0);
         }
         return Collections.unmodifiableCollection(c);
     }
 
     /**
      * Get the predecessors of this YAWL element, will be initialised on the firs call of this method.
-     *
+     * 
      * @param netElement
      *            any element of a YAWL net
      * @return
@@ -296,7 +283,7 @@ public final class YAWLConversionContext extends ConversionContext {
         }
         Collection<ExternalNetElementType> c = predecessorsMap.get(new ElementAdapter(netElement));
         if (c == null) {
-            c = new ArrayList<ExternalNetElementType>();
+            c = new ArrayList<ExternalNetElementType>(0);
         }
         return Collections.unmodifiableCollection(c);
     }
@@ -335,14 +322,14 @@ public final class YAWLConversionContext extends ConversionContext {
         Collection<ExternalNetElementType> predecessors = predecessorsMap.get(new ElementAdapter(element));
         if (predecessors == null) {
             // Create Collection if this is the first predecessor
-            predecessors = new ArrayList<ExternalNetElementType>();
+            predecessors = new ArrayList<ExternalNetElementType>(0);
             predecessorsMap.put(new ElementAdapter(element), predecessors);
         }
         return predecessors;
     }
 
     private Collection<ExternalNetElementType> initSuccessors(final ExternalNetElementFactsType netElement) {
-        final Collection<ExternalNetElementType> successors = new ArrayList<ExternalNetElementType>();
+        final Collection<ExternalNetElementType> successors = new ArrayList<ExternalNetElementType>(0);
         for (final FlowsIntoType f : netElement.getFlowsInto()) {
             successors.add(f.getNextElementRef());
         }
@@ -393,7 +380,7 @@ public final class YAWLConversionContext extends ConversionContext {
                 return null;
             } else if (layout instanceof LayoutContainerFactsType) {
                 final LayoutContainerFactsType container = (LayoutContainerFactsType) layout;
-                final Collection<LayoutDecoratorFactsType> resultList = new ArrayList<LayoutDecoratorFactsType>();
+                final Collection<LayoutDecoratorFactsType> resultList = new ArrayList<LayoutDecoratorFactsType>(0);
                 for (final Object obj : container.getVertexOrLabelOrDecorator()) {
                     if (obj instanceof LayoutDecoratorFactsType) {
                         resultList.add((LayoutDecoratorFactsType) obj);
@@ -436,6 +423,18 @@ public final class YAWLConversionContext extends ConversionContext {
         }
     }
 
+    /**
+     * Returns a specially concatenated Edge id
+     * 
+     * @param sourceId
+     * @param targetId
+     * @return concatenated Edge id
+     */
+    public String buildEdgeId(final String sourceId, final String targetId) {
+        // TODO why is this here?
+        return sourceId + "-" + targetId;
+    }
+
     public Collection<NodeType> getIncomingQueue(final ExternalNetElementType element) {
         return initIncomingQueue(new ElementAdapter(element));
     }
@@ -446,7 +445,7 @@ public final class YAWLConversionContext extends ConversionContext {
         }
         Collection<NodeType> incomingQueue = this.incomingQueueMap.get(elementAdapter);
         if (incomingQueue == null) {
-            incomingQueue = new ArrayList<NodeType>();
+            incomingQueue = new ArrayList<NodeType>(0);
             this.incomingQueueMap.put(elementAdapter, incomingQueue);
         }
         return incomingQueue;

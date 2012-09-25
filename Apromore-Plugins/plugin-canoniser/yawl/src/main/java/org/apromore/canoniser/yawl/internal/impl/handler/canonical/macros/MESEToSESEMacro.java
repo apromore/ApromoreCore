@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros;
@@ -15,6 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionContext;
+import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.ConditionExpressionType;
@@ -31,9 +32,9 @@ import org.slf4j.LoggerFactory;
 /**
  * Converts any multiple entry Net into a single entry Net. By default it only adds an OR-SPLIT, but more sophisticated techniques could be
  * implemented.
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  */
 public class MESEToSESEMacro extends ContextAwareRewriteMacro {
 
@@ -45,7 +46,7 @@ public class MESEToSESEMacro extends ContextAwareRewriteMacro {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.RewriteMacro#rewrite(org.apromore.cpf.CanonicalProcessType)
      */
     @Override
@@ -53,7 +54,7 @@ public class MESEToSESEMacro extends ContextAwareRewriteMacro {
 
         boolean hasRewritten = false;
 
-        //TODO check if net is not just work in progress
+        // TODO check if net is not just work in progress
 
         for (final NetType net : cpf.getNet()) {
             if (getContext().hasMultipleEntries(net)) {
@@ -65,7 +66,7 @@ public class MESEToSESEMacro extends ContextAwareRewriteMacro {
                     }
                 }
                 if (entryEvents.size() > 1) {
-                    LOGGER.info("Rewriting Net with multiple entry nodes");
+                    LOGGER.info("Rewriting Net with multiple entry Nodes ({})", ConversionUtils.nodesToString(entryEvents));
                     fixWithOrSplit(entryEvents);
                     hasRewritten = true;
                     cleanupNet(net);
@@ -73,12 +74,6 @@ public class MESEToSESEMacro extends ContextAwareRewriteMacro {
             }
 
         }
-
-        // Now invalidate all our CPF caches, as they are not valid anymore
-        if (hasRewritten) {
-            getContext().invalidateCPFCaches();
-        }
-
         return hasRewritten;
     }
 
@@ -91,13 +86,13 @@ public class MESEToSESEMacro extends ContextAwareRewriteMacro {
         final EventType startEvent = cpfFactory.createEventType();
         startEvent.setId(generateUUID());
 
-        LOGGER.debug("Added unique start event {}", startEvent.getId());
+        LOGGER.debug("Added unique start event {}", ConversionUtils.toString(startEvent));
 
         // Create ORSplit
         final ORSplitType orSplit = cpfFactory.createORSplitType();
         orSplit.setId(generateUUID());
 
-        LOGGER.debug("Added OR split {}", orSplit.getId());
+        LOGGER.debug("Added OR split {}", ConversionUtils.toString(orSplit));
 
         // Connect Start Event with ORJoin
         addNodeLater(startEvent);
@@ -108,7 +103,7 @@ public class MESEToSESEMacro extends ContextAwareRewriteMacro {
         for (final NodeType node : entryNodes) {
             final EdgeType edge = createEdge(orSplit, node);
             // By default activate all outgoing edges
-            ConditionExpressionType conditionExpr = cpfFactory.createConditionExpressionType();
+            final ConditionExpressionType conditionExpr = cpfFactory.createConditionExpressionType();
             conditionExpr.setExpression("true()");
             conditionExpr.setLanguage(CPFSchema.EXPRESSION_LANGUAGE_XPATH);
             edge.setConditionExpr(conditionExpr);

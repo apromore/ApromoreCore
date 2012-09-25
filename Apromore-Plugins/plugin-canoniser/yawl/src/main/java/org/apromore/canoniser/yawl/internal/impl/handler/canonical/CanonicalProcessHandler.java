@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical;
@@ -35,9 +35,9 @@ import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
 
 /**
  * Converts a CanonicalProcessType an all its children.
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  */
 public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalProcessType, Object> {
 
@@ -45,7 +45,7 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -55,7 +55,7 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
 
         specSet.setVersion("2.2");
 
-        final YAWLSpecificationFactsType spec = getContext().getYawlObjectFactory().createYAWLSpecificationFactsType();
+        final YAWLSpecificationFactsType spec = YAWL_FACTORY.createYAWLSpecificationFactsType();
         specSet.getSpecification().add(spec);
 
         spec.setName(getObject().getName());
@@ -95,7 +95,7 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
     }
 
     private MetaDataType convertMetaData() {
-        final MetaDataType metaData = getContext().getYawlObjectFactory().createMetaDataType();
+        final MetaDataType metaData = YAWL_FACTORY.createMetaDataType();
         // TODO convert metadata
         return metaData;
     }

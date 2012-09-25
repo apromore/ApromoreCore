@@ -1,5 +1,7 @@
 package org.apromore.canoniser.yawl.utils;
 
+import java.io.BufferedInputStream;
+import java.io.BufferedOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
@@ -31,7 +33,7 @@ public final class TestUtils {
     public static final String TEST_RESOURCES_DIRECTORY = "src/test/resources/";
 
     public static SpecificationSetFactsType unmarshalYAWL(final File yawlFile) throws JAXBException, FileNotFoundException, SAXException {
-        return YAWLSchema.unmarshalYAWLFormat(new FileInputStream(yawlFile), false).getValue();
+        return YAWLSchema.unmarshalYAWLFormat(new BufferedInputStream(new FileInputStream(yawlFile)), false).getValue();
     }
 
     public static OrgDataType unmarshalYAWLOrgData(final File orgDataFile) throws JAXBException, FileNotFoundException, SAXException {
@@ -40,7 +42,7 @@ public final class TestUtils {
         final XMLReader reader = XMLReaderFactory.createXMLReader();
         namespaceFilter.setParent(reader);
         // Prepare the input, in this case a java.io.File (output)
-        final InputSource is = new InputSource(new FileInputStream(orgDataFile));
+        final InputSource is = new InputSource(new BufferedInputStream(new FileInputStream(orgDataFile)));
         // Create a SAXSource specifying the filter
         final SAXSource source = new SAXSource(namespaceFilter, is);
 
@@ -48,25 +50,37 @@ public final class TestUtils {
     }
 
     public static void printAnf(final AnnotationsType anf, final OutputStream outputStream) throws JAXBException, IOException, SAXException {
-        ANFSchema.marshalAnnotationFormat(outputStream, anf, true);
-        outputStream.flush();
+        try {
+            ANFSchema.marshalAnnotationFormat(new BufferedOutputStream(outputStream), anf, true);
+        } finally {
+            outputStream.close();
+        }
     }
 
     public static void printCpf(final CanonicalProcessType cpf, final OutputStream outputStream) throws JAXBException, SAXException, IOException {
-        CPFSchema.marshalCanoncialFormat(outputStream, cpf, true);
-        outputStream.flush();
+        try {
+            CPFSchema.marshalCanoncialFormat(new BufferedOutputStream(outputStream), cpf, true);
+        } finally {
+            outputStream.close();
+        }
     }
 
     public static void printYawl(final SpecificationSetFactsType yawl, final OutputStream outputStream) throws JAXBException, SAXException,
             IOException {
-        YAWLSchema.marshalYAWLFormat(outputStream, yawl, true);
-        outputStream.flush();
+        try {
+            YAWLSchema.marshalYAWLFormat(new BufferedOutputStream(outputStream), yawl, true);
+        } finally {
+            outputStream.close();
+        }
     }
 
     public static void printYawlOrgData(final OrgDataType yawlOrgData, final OutputStream outputStream) throws JAXBException, SAXException,
             IOException {
-        YAWLOrgDataSchema.marshalYAWLOrgDataFormat(outputStream, yawlOrgData, true);
-        outputStream.flush();
+        try {
+            YAWLOrgDataSchema.marshalYAWLOrgDataFormat(new BufferedOutputStream(outputStream), yawlOrgData, true);
+        } finally {
+            outputStream.close();
+        }
     }
 
     public static File createTestOutputFile(final Class<?> testClass, final String fileName) {

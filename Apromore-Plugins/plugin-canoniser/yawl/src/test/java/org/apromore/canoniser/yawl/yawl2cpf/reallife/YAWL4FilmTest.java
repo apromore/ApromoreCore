@@ -9,7 +9,7 @@ public class YAWL4FilmTest extends BaseYAWL2CPFTest {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.BaseYAWL2CPFTest#getYAWLFile()
      */
     @Override
@@ -19,7 +19,7 @@ public class YAWL4FilmTest extends BaseYAWL2CPFTest {
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.BaseYAWL2CPFTest#getYAWLOrgDataFile()
      */
     @Override

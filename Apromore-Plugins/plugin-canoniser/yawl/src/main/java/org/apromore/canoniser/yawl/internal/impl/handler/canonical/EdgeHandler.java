@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- *
+ * 
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- *
+ * 
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- *
+ * 
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical;
@@ -30,9 +30,9 @@ import org.yawlfoundation.yawlschema.PredicateType;
 
 /**
  * Converts an EdgeType to YAWL 'flowsInto'.
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- *
+ * 
  */
 public class EdgeHandler extends CanonicalElementHandler<EdgeType, NetFactsType> {
 
@@ -40,7 +40,7 @@ public class EdgeHandler extends CanonicalElementHandler<EdgeType, NetFactsType>
 
     /*
      * (non-Javadoc)
-     *
+     * 
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -81,12 +81,12 @@ public class EdgeHandler extends CanonicalElementHandler<EdgeType, NetFactsType>
             return;
         }
 
-        final FlowsIntoType flowsIntoType = getContext().getYawlObjectFactory().createFlowsIntoType();
-        final ExternalNetElementType netElementType = getContext().getYawlObjectFactory().createExternalNetElementType();
+        final FlowsIntoType flowsIntoType = YAWL_FACTORY.createFlowsIntoType();
+        final ExternalNetElementType netElementType = YAWL_FACTORY.createExternalNetElementType();
         netElementType.setId(targetElement.getId());
         flowsIntoType.setNextElementRef(netElementType);
         if (getObject().getConditionExpr() != null) {
-            final PredicateType predicate = getContext().getYawlObjectFactory().createPredicateType();
+            final PredicateType predicate = YAWL_FACTORY.createPredicateType();
             predicate.setValue(convertCanonicalExpression(getObject().getConditionExpr()));
             final List<NodeType> postSet = getContext().getPostSet(getObject().getSourceId());
             if (postSet.size() > 1) {
@@ -109,7 +109,7 @@ public class EdgeHandler extends CanonicalElementHandler<EdgeType, NetFactsType>
     }
 
     private String convertCanonicalExpression(final ConditionExpressionType conditionExpr) {
-        //TODO check and convert XPath
+        // TODO check and convert XPath
         if (conditionExpr.getLanguage().equals(CPFSchema.EXPRESSION_LANGUAGE_XPATH)) {
             if (conditionExpr.getExpression() != null) {
                 return conditionExpr.getExpression();
