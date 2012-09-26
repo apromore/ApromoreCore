@@ -213,12 +213,12 @@ public class YAWL2CanonicalBasicTest {
         assertTrue(outputAnnotation instanceof GraphicsType);
         assertNotNull(specAnnotation);
         assertEquals(2, specAnnotation.getAny().size());
-        LayoutLocaleType locale = ExtensionUtils.getFromAnnotationsExtension(specAnnotation, ExtensionUtils.LOCALE, LayoutLocaleType.class);
+        LayoutLocaleType locale = ExtensionUtils.getFromAnnotationsExtension(specAnnotation, ExtensionUtils.LOCALE, LayoutLocaleType.class, null);
         assertNotNull(locale);
         assertEquals("de", locale.getLanguage());
         assertEquals("DE", locale.getCountry());
 
-        MetaDataType metaData = ExtensionUtils.getFromAnnotationsExtension(specAnnotation, ExtensionUtils.METADATA, MetaDataType.class);
+        MetaDataType metaData = ExtensionUtils.getFromAnnotationsExtension(specAnnotation, ExtensionUtils.METADATA, MetaDataType.class, null);
         assertNotNull("Missing Metadata", metaData);
         assertEquals(new BigDecimal("0.1"), metaData.getVersion());
     }

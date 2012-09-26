@@ -44,145 +44,139 @@ import de.hbrs.oryx.yawl.converter.exceptions.ConversionException;
 import de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandler;
 
 /**
- * Converts a YAWL net to an Oryx diagram and calling the converters of all
- * child elements of the YAWL net.
+ * Converts a YAWL net to an Oryx diagram and calling the converters of all child elements of the YAWL net.
  * 
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University of Applied Sciences)
  * 
  */
 public class NetHandler extends DecompositionHandler {
 
-	public NetHandler(YAWLConversionContext context, YDecomposition decomposition) {
-		super(context, decomposition);
-	}
+    public NetHandler(final YAWLConversionContext context, final YDecomposition decomposition) {
+        super(context, decomposition);
+    }
 
-	protected YNet getNet() {
-		return (YNet) getDecomposition();
-	}
+    protected YNet getNet() {
+        return (YNet) getDecomposition();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandler#convert(java.lang
-	 * .String)
-	 */
-	@Override
-	public void convert(String parentId) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandler#convert(java.lang .String)
+     */
+    @Override
+    public void convert(final String parentId) {
 
-		final String netId = getNet().getID();
-		
-		String stencilSetNs = "http://b3mn.org/stencilset/yawl2.2#";
-		StencilSetReference stencilSetRef = new StencilSetReference(stencilSetNs);
+        final String netId = getNet().getID();
 
-		final BasicDiagram netShape = new BasicDiagram(netId, "Diagram", stencilSetRef);
-		
-		netShape.setProperties(convertProperties());
-		netShape.setBounds(getNetLayout(getNet()));
-		getContext().addNet(netId, netShape);
+        String stencilSetNs = "http://b3mn.org/stencilset/yawl2.2#";
+        StencilSetReference stencilSetRef = new StencilSetReference(stencilSetNs);
 
-		// Convert all children (NetElements) of root net
-		for (Entry<String, YExternalNetElement> netElementEntry : getNet().getNetElements().entrySet()) {
-			YExternalNetElement yElement = netElementEntry.getValue();
+        final BasicDiagram netShape = new BasicDiagram(netId, "Diagram", stencilSetRef);
 
-			YAWLHandler netElementHandler = getContext().getHandlerFactory().createYAWLConverter(yElement);
-			netElementHandler.convert(netId);
+        netShape.setProperties(convertProperties());
+        netShape.setBounds(getNetLayout(getNet()));
+        getContext().addNet(netId, netShape);
 
-		}
+        // Convert all children (NetElements) of root net
+        for (Entry<String, YExternalNetElement> netElementEntry : getNet().getNetElements().entrySet()) {
+            YExternalNetElement yElement = netElementEntry.getValue();
 
-		// Convert all flows between the NetElements
-		for (YFlow yFlow : getContext().getNetLayout(netId).getFlowSet()) {
-			YAWLHandler flowHandler = getContext().getHandlerFactory().createYAWLConverter(yFlow);
-			flowHandler.convert(netId);
-		}
+            YAWLHandler netElementHandler = getContext().getHandlerFactory().createYAWLConverter(yElement);
+            netElementHandler.convert(netId);
 
-	}
+        }
 
-	/**
-	 * Converting the properties of a net.<br/>
-	 * CONTRACT: Sub-Classes have to call this method first, adding their
-	 * properties afterwards.
-	 * 
-	 * @return Oryx Property HashMap
-	 */
-	protected HashMap<String, String> convertProperties() {
-		HashMap<String, String> properties = new HashMap<String, String>();
-		properties.put("name", getNet().getName() != null ? getNet().getName() : "");
-		properties.put("yawlid", getNet().getID());
-		// Removed as every net could be a root net
-		//properties.put("isrootnet", "false");
-		properties.put("externaldatagateway", getNet().getExternalDataGateway());
-		properties.putAll(convertDecompositionProperties());
-		return properties;
-	}
+        // Convert all flows between the NetElements
+        for (YFlow yFlow : getContext().getNetLayout(netId).getFlowSet()) {
+            YAWLHandler flowHandler = getContext().getHandlerFactory().createYAWLConverter(yFlow);
+            flowHandler.convert(netId);
+        }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.hbrs.oryx.yawl.converter.handler.yawl.decomposition.DecompositionHandler
-	 * #convertDecompositionProperties()
-	 */
-	@Override
-	protected HashMap<String, String> convertDecompositionProperties() {
-		HashMap<String, String> properties = super.convertDecompositionProperties();
-		try {
-			properties.put("decompositionvariables", convertDecompositionVariables());
-		} catch (ConversionException e) {
-			getContext().addConversionWarnings("Could not convert decomposition variables.", e);
-		}
+    }
 
-		return properties;
-	}
+    /**
+     * Converting the properties of a net.<br/>
+     * CONTRACT: Sub-Classes have to call this method first, adding their properties afterwards.
+     * 
+     * @return Oryx Property HashMap
+     */
+    protected HashMap<String, String> convertProperties() {
+        HashMap<String, String> properties = new HashMap<String, String>();
+        properties.put("name", getNet().getName() != null ? getNet().getName() : "");
+        properties.put("yawlid", getNet().getID());
+        // Removed as every net could be a root net
+        // properties.put("isrootnet", "false");
+        properties.put("externaldatagateway", getNet().getExternalDataGateway());
+        properties.putAll(convertDecompositionProperties());
+        return properties;
+    }
 
-	private String convertDecompositionVariables() throws ConversionException {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.yawl.decomposition.DecompositionHandler #convertDecompositionProperties()
+     */
+    @Override
+    protected HashMap<String, String> convertDecompositionProperties() {
+        HashMap<String, String> properties = super.convertDecompositionProperties();
+        try {
+            properties.put("decompositionvariables", convertDecompositionVariables());
+        } catch (ConversionException e) {
+            getContext().addConversionWarnings("Could not convert decomposition variables.", e);
+        }
 
-		JSONObject variables = new JSONObject();
-		JSONArray items = new JSONArray();
+        return properties;
+    }
 
-		final Map<String, YParameter> inputParameters = getDecomposition().getInputParameters();
-		List<YParameter> inputParameterList = new ArrayList<YParameter>(inputParameters.values());
-		Collections.sort(inputParameterList);
+    private String convertDecompositionVariables() throws ConversionException {
 
-		final Map<String, YParameter> outputParameters = getDecomposition().getOutputParameters();
-		List<YParameter> outputParameterList = new ArrayList<YParameter>(outputParameters.values());
-		Collections.sort(outputParameterList);
+        JSONObject variables = new JSONObject();
+        JSONArray items = new JSONArray();
 
-		List<YVariable> variablesList = new ArrayList<YVariable>(getNet().getLocalVariables().values());
-		Collections.sort(variablesList);
+        final Map<String, YParameter> inputParameters = getDecomposition().getInputParameters();
+        List<YParameter> inputParameterList = new ArrayList<YParameter>(inputParameters.values());
+        Collections.sort(inputParameterList);
 
-		try {
-			for (YParameter inputParam : inputParameterList) {
-				if (outputParameters.containsKey(inputParam.getName())) {
-					items.put(convertParameter(inputParam, "inputandoutput"));
-				} else {
-					items.put(convertParameter(inputParam, "input"));
-				}
-			}
+        final Map<String, YParameter> outputParameters = getDecomposition().getOutputParameters();
+        List<YParameter> outputParameterList = new ArrayList<YParameter>(outputParameters.values());
+        Collections.sort(outputParameterList);
 
-			for (YParameter outputParam : outputParameterList) {
-				// Only if not already added as inputandoutput paramter
-				if (!inputParameters.containsKey(outputParam.getName())) {
-					items.put(convertParameter(outputParam, "output"));
-				}
-			}
+        List<YVariable> variablesList = new ArrayList<YVariable>(getNet().getLocalVariables().values());
+        Collections.sort(variablesList);
 
-			for (YVariable localVariable : variablesList) {
-				// Only if not already added above
-				if (!inputParameters.containsKey(localVariable.getName()) && !outputParameters.containsKey(localVariable.getName())) {
-					items.put(convertParameter(localVariable, "local"));
-				}
-			}
-			variables.put("items", items);
-		} catch (JSONException e) {
-			throw new ConversionException(e);
-		}
+        try {
+            for (YParameter inputParam : inputParameterList) {
+                if (outputParameters.containsKey(inputParam.getName())) {
+                    items.put(convertParameter(inputParam, "inputandoutput"));
+                } else {
+                    items.put(convertParameter(inputParam, "input"));
+                }
+            }
 
-		return variables.toString();
-	}
+            for (YParameter outputParam : outputParameterList) {
+                // Only if not already added as inputandoutput paramter
+                if (!inputParameters.containsKey(outputParam.getName())) {
+                    items.put(convertParameter(outputParam, "output"));
+                }
+            }
 
-	private Bounds getNetLayout(YNet net) {
-		return getContext().getNetLayout(net.getID()).getBounds();
-	}
+            for (YVariable localVariable : variablesList) {
+                // Only if not already added above
+                if (!inputParameters.containsKey(localVariable.getName()) && !outputParameters.containsKey(localVariable.getName())) {
+                    items.put(convertParameter(localVariable, "local"));
+                }
+            }
+            variables.put("items", items);
+        } catch (JSONException e) {
+            throw new ConversionException(e);
+        }
+
+        return variables.toString();
+    }
+
+    private Bounds getNetLayout(final YNet net) {
+        return getContext().getNetLayout(net.getID()).getBounds();
+    }
 
 }

@@ -19,7 +19,7 @@
  */
 package de.hbrs.oryx.yawl.converter.handler;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -40,61 +40,61 @@ import de.hbrs.oryx.yawl.converter.context.YAWLConversionContext;
 
 public class HandlerFactoryImplTest {
 
-	private static HandlerFactoryImpl factory;
+    private static HandlerFactoryImpl factory;
 
-	@BeforeClass
-	public static void setUpClass() throws Exception {
-		factory = new HandlerFactoryImpl(new YAWLConversionContext(), new OryxConversionContext());
-	}
+    @BeforeClass
+    public static void setUpClass() throws Exception {
+        factory = new HandlerFactoryImpl(new YAWLConversionContext(), new OryxConversionContext());
+    }
 
-	@Test
-	public void testCreateYAWLConverterYSpecification() {
-		assertNotNull(factory.createYAWLConverter(new YSpecification()));
-	}
+    @Test
+    public void testCreateYAWLConverterYSpecification() {
+        assertNotNull(factory.createYAWLConverter(new YSpecification()));
+    }
 
-	@Test
-	public void testCreateYAWLConverterYDecomposition() {
-		YNet net = new YNet("test", new YSpecification());
-		assertNotNull(factory.createYAWLConverter(net));
-		net.setAttribute("isRootNet", "true");
-		assertNotNull(factory.createYAWLConverter(net));
-	}
+    @Test
+    public void testCreateYAWLConverterYDecomposition() {
+        YNet net = new YNet("test", new YSpecification());
+        assertNotNull(factory.createYAWLConverter(net));
+        net.setAttribute("isRootNet", "true");
+        assertNotNull(factory.createYAWLConverter(net));
+    }
 
-	@Test
-	public void testCreateYAWLConverterYNetElement() {
-		YNet net = new YNet("test", new YSpecification());
-		assertNotNull(factory.createYAWLConverter(new YAtomicTask("test", 0, 0, net)));
-		assertNotNull(factory.createYAWLConverter(new YCompositeTask("test", 0, 0, net)));
-		assertNotNull(factory.createYAWLConverter(new YCondition("test", net)));
-		assertNotNull(factory.createYAWLConverter(new YInputCondition("test", net)));
-		assertNotNull(factory.createYAWLConverter(new YOutputCondition("test", net)));
-	}
+    @Test
+    public void testCreateYAWLConverterYNetElement() {
+        YNet net = new YNet("test", new YSpecification());
+        assertNotNull(factory.createYAWLConverter(new YAtomicTask("test", 0, 0, net)));
+        assertNotNull(factory.createYAWLConverter(new YCompositeTask("test", 0, 0, net)));
+        assertNotNull(factory.createYAWLConverter(new YCondition("test", net)));
+        assertNotNull(factory.createYAWLConverter(new YInputCondition("test", net)));
+        assertNotNull(factory.createYAWLConverter(new YOutputCondition("test", net)));
+    }
 
-	@Test
-	public void testCreateYAWLConverterYFlow() {
-		YNet net = new YNet("test", new YSpecification());
-		assertNotNull(factory.createYAWLConverter(new YFlow(new YCondition("test", net), new YCondition("test2", net))));
-	}
+    @Test
+    public void testCreateYAWLConverterYFlow() {
+        YNet net = new YNet("test", new YSpecification());
+        assertNotNull(factory.createYAWLConverter(new YFlow(new YCondition("test", net), new YCondition("test2", net))));
+    }
 
-	@Test
-	public void testCreateOryxConverterBasicDiagram() {
-		assertNotNull(factory.createOryxConverter(new BasicDiagram("test", "Diagram")));
-	}
+    @Test
+    public void testCreateOryxConverterBasicDiagram() {
+        assertNotNull(factory.createOryxConverter(new BasicDiagram("test", "Diagram")));
+    }
 
-	@Test
-	public void testCreateOryxConverterBasicShape() {
-		assertNotNull(factory.createOryxConverter(new BasicNode("test", "AtomicTask")));
-		assertNotNull(factory.createOryxConverter(new BasicNode("test", "CompositeTask")));
-		assertNotNull(factory.createOryxConverter(new BasicNode("test", "AtomicMultipleTask")));
-		assertNotNull(factory.createOryxConverter(new BasicNode("test", "CompositeMultipleTask")));
-		assertNotNull(factory.createOryxConverter(new BasicNode("test", "Condition")));
-		assertNotNull(factory.createOryxConverter(new BasicNode("test", "InputCondition")));
-		assertNotNull(factory.createOryxConverter(new BasicNode("test", "OutputCondition")));
-	}
+    @Test
+    public void testCreateOryxConverterBasicShape() {
+        assertNotNull(factory.createOryxConverter(new BasicNode("test", "AtomicTask")));
+        assertNotNull(factory.createOryxConverter(new BasicNode("test", "CompositeTask")));
+        assertNotNull(factory.createOryxConverter(new BasicNode("test", "AtomicMultipleTask")));
+        assertNotNull(factory.createOryxConverter(new BasicNode("test", "CompositeMultipleTask")));
+        assertNotNull(factory.createOryxConverter(new BasicNode("test", "Condition")));
+        assertNotNull(factory.createOryxConverter(new BasicNode("test", "InputCondition")));
+        assertNotNull(factory.createOryxConverter(new BasicNode("test", "OutputCondition")));
+    }
 
-	@Test
-	public void testCreateOryxConverterBasicEdgeBasicShape() {
-		assertNotNull(factory.createOryxConverter(new BasicEdge("test", "Flow")));
-	}
+    @Test
+    public void testCreateOryxConverterBasicEdgeBasicShape() {
+        assertNotNull(factory.createOryxConverter(new BasicEdge("test", "Flow")));
+    }
 
 }

@@ -26,6 +26,7 @@ import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.SoftType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yawlfoundation.yawlschema.DecompositionType;
 import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
 import org.yawlfoundation.yawlschema.InputParameterFactsType;
 import org.yawlfoundation.yawlschema.NetFactsType;
@@ -65,7 +66,7 @@ public class NetTypeHandler extends DecompositionHandler<NetType, YAWLSpecificat
         }
 
         // Remember our net so that composite tasks, which use it are able to find it
-        getContext().addConvertedNet(getObject().getId(), netFactsType);
+        getContext().addConvertedDecompositon(getObject().getId(), netFactsType);
         // Update all composite tasks that already have been converted
         updateCompositeTasks(netFactsType);
 
@@ -95,7 +96,7 @@ public class NetTypeHandler extends DecompositionHandler<NetType, YAWLSpecificat
             for (final ObjectType obj : getObject().getObject()) {
                 if (obj instanceof SoftType) {
                     final VariableFactsType var = convertLocalNetObject((SoftType) obj, i, localParamNameSet);
-                    getContext().addConvertedParameter(obj.getId(), var);
+                    getContext().addConvertedParameter(obj.getId(), getObject().getId(), var);
                     LOGGER.debug("Added local variable {} to Root-Net decomposition {}", var.getName(), netFactsType.getName());
                     netFactsType.getLocalVariable().add(var);
                 }
@@ -114,27 +115,27 @@ public class NetTypeHandler extends DecompositionHandler<NetType, YAWLSpecificat
                 if (getContext().isInputObjectForNet(obj.getId(), getObject().getId())
                         && getContext().isOutputObjectOfNet(obj.getId(), getObject().getId())) {
                     final InputParameterFactsType inputParam = convertInputParameterObject(softObject, i, inputParamNameSet);
-                    getContext().addConvertedParameter(obj.getId(), inputParam);
+                    getContext().addConvertedParameter(obj.getId(), getObject().getId(), inputParam);
                     LOGGER.debug("Added input parameter {} to Net decomposition {}", inputParam.getName(), netFactsType.getName());
                     netFactsType.getInputParam().add(inputParam);
                     final OutputParameterFactsType outputParam = convertOutputParameterObject(softObject, i, outputParamNameSet);
-                    getContext().addConvertedParameter(obj.getId(), outputParam);
+                    getContext().addConvertedParameter(obj.getId(), getObject().getId(), outputParam);
                     LOGGER.debug("Added output parameter {} to Net decomposition {}", outputParam.getName(), netFactsType.getName());
                     netFactsType.getOutputParam().add(outputParam);
                 } else if (getContext().isOutputObjectOfNet(obj.getId(), getObject().getId())) {
                     final OutputParameterFactsType outputParam = convertOutputParameterObject(softObject, i, outputParamNameSet);
-                    getContext().addConvertedParameter(obj.getId(), outputParam);
+                    getContext().addConvertedParameter(obj.getId(), getObject().getId(), outputParam);
                     LOGGER.debug("Added output parameter {} to Net decomposition {}", outputParam.getName(), netFactsType.getName());
                     netFactsType.getOutputParam().add(outputParam);
                 } else if (getContext().isInputObjectForNet(obj.getId(), getObject().getId())) {
                     final InputParameterFactsType inputParam = convertInputParameterObject(softObject, i, inputParamNameSet);
                     LOGGER.debug("Added input parameter {} to Net decomposition {}", inputParam.getName(), netFactsType.getName());
-                    getContext().addConvertedParameter(obj.getId(), inputParam);
+                    getContext().addConvertedParameter(obj.getId(), getObject().getId(), inputParam);
                     netFactsType.getInputParam().add(inputParam);
                 } else {
                     // Local
                     final VariableFactsType var = convertLocalNetObject(softObject, i, localParamNameSet);
-                    getContext().addConvertedParameter(obj.getId(), var);
+                    getContext().addConvertedParameter(obj.getId(), getObject().getId(), var);
                     LOGGER.debug("Added local variable {} to Net decomposition {}", var.getName(), netFactsType.getName());
                     netFactsType.getLocalVariable().add(var);
                 }
@@ -160,7 +161,9 @@ public class NetTypeHandler extends DecompositionHandler<NetType, YAWLSpecificat
     private void updateCompositeTasks(final NetFactsType netFactsType) {
         final Collection<ExternalTaskFactsType> compositeTasks = getContext().getCompositeTasks(getObject().getId());
         for (final ExternalTaskFactsType task : compositeTasks) {
-            task.setDecomposesTo(netFactsType);
+            DecompositionType dRef = YAWL_FACTORY.createDecompositionType();
+            dRef.setId(netFactsType.getId());
+            task.setDecomposesTo(dRef);
         }
     }
 

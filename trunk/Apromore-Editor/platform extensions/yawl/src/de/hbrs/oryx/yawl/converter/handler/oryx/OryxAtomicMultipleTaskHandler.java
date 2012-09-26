@@ -33,20 +33,19 @@ import de.hbrs.oryx.yawl.util.MultiInstanceConverter;
  */
 public class OryxAtomicMultipleTaskHandler extends OryxAtomicTaskHandler {
 
-	public OryxAtomicMultipleTaskHandler(OryxConversionContext context, BasicShape shape) {
-		super(context, shape);
-	}
+    public OryxAtomicMultipleTaskHandler(final OryxConversionContext context, final BasicShape shape) {
+        super(context, shape);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.hbrs.oryx.yawl.converter.handler.oryx.OryxAtomicTaskHandler#
-	 * convertTaskProperties(org.yawlfoundation.yawl.elements.YTask)
-	 */
-	@Override
-	protected void convertTaskProperties(YTask task) {
-		super.convertTaskProperties(task);
-		MultiInstanceConverter.convert(getShape(), task);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.oryx.OryxAtomicTaskHandler# convertTaskProperties(org.yawlfoundation.yawl.elements.YTask)
+     */
+    @Override
+    protected void convertTaskProperties(final YTask task) {
+        super.convertTaskProperties(task);
+        MultiInstanceConverter.convert(getShape(), task);
+    }
 
 }

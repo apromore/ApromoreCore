@@ -21,22 +21,22 @@ package de.hbrs.oryx.yawl.converter.exceptions;
 
 public class NoSubnetFoundException extends ConversionException {
 
-	private static final long serialVersionUID = 687413923047557816L;
+    private static final long serialVersionUID = 687413923047557816L;
 
-	public NoSubnetFoundException() {
-		super();
-	}
+    public NoSubnetFoundException() {
+        super();
+    }
 
-	public NoSubnetFoundException(String arg0, Throwable arg1) {
-		super(arg0, arg1);
-	}
+    public NoSubnetFoundException(final String arg0, final Throwable arg1) {
+        super(arg0, arg1);
+    }
 
-	public NoSubnetFoundException(String arg0) {
-		super(arg0);
-	}
+    public NoSubnetFoundException(final String arg0) {
+        super(arg0);
+    }
 
-	public NoSubnetFoundException(Throwable arg0) {
-		super(arg0);
-	}
+    public NoSubnetFoundException(final Throwable arg0) {
+        super(arg0);
+    }
 
 }

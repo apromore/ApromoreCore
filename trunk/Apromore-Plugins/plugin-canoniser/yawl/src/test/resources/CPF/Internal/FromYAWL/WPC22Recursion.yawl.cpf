@@ -29,31 +29,31 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <objectRef id="idb0b67a18-1812-44fc-915c-630c15816741" objectId="D-N-Net-c" type="output" optional="false" consumed="true"/>
-            <objectRef id="id660874e0-3260-441a-b4d1-521c8626e76f" objectId="D-N-Net-c" type="input" optional="false" consumed="true"/>
+            <objectRef id="idd9ea6b75-6142-44ec-92a9-68caaeecf25f" objectId="D-N-Net-c" type="output" optional="false" consumed="true"/>
+            <objectRef id="id241e9c64-376b-47bb-8370-0cb5416046d1" objectId="D-N-Net-c" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>c = &lt;c&gt;{/Net/c/text()}&lt;/c&gt;</expression>
+                <expression>c = {/Net/c/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>c = &lt;c&gt;{/C/c/text()}&lt;/c&gt;</expression>
+                <expression>c = {/C/c/text()}</expression>
             </outputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="ff43b6b7-35d6-4ec4-8399-104710e24ce3"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id4c17b6a6-ccb2-4995-9689-7bff4c1eb209"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" subnetId="N-Net" id="C-Net" originalID="Net">
             <name>Net</name>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="b8167dbe-5c34-4a47-8a86-02e6140f0aca"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="f23e3f5d-8c36-4ba7-9da8-303b5c2e9426"/>
         <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="ideee902bf-28b6-40e9-9c90-9153973d1ca2" default="true" sourceId="C-A" targetId="ff43b6b7-35d6-4ec4-8399-104710e24ce3"/>
-        <Edge id="id3b08f7f4-b09a-454d-9443-ecefcd71b293" default="true" sourceId="ff43b6b7-35d6-4ec4-8399-104710e24ce3" targetId="C-Net"/>
-        <Edge id="id6024c686-802a-40c0-a5c4-6a9d549d7a05" default="true" sourceId="b8167dbe-5c34-4a47-8a86-02e6140f0aca" targetId="C-OutputCondition"/>
-        <Edge id="id89a2280f-ffab-4d7e-8bfc-c88979bd741b" default="true" sourceId="ff43b6b7-35d6-4ec4-8399-104710e24ce3" targetId="b8167dbe-5c34-4a47-8a86-02e6140f0aca"/>
-        <Edge id="idc31e309c-f22f-44e8-b97d-a165b81f5147" default="true" sourceId="C-Net" targetId="b8167dbe-5c34-4a47-8a86-02e6140f0aca"/>
+        <Edge id="id0e2ddb9e-6dbe-4ac2-a8eb-eaf2400066b6" default="true" sourceId="C-A" targetId="id4c17b6a6-ccb2-4995-9689-7bff4c1eb209"/>
+        <Edge id="idd1b7c53f-a7aa-4b4c-92db-6def1d2177e7" default="true" sourceId="id4c17b6a6-ccb2-4995-9689-7bff4c1eb209" targetId="C-Net"/>
+        <Edge id="idc0b58524-69c0-4a71-94b6-c1bb202967f1" default="true" sourceId="f23e3f5d-8c36-4ba7-9da8-303b5c2e9426" targetId="C-OutputCondition"/>
+        <Edge id="idaae49ce3-4f22-4d8a-86be-445dac2c401a" default="true" sourceId="id4c17b6a6-ccb2-4995-9689-7bff4c1eb209" targetId="f23e3f5d-8c36-4ba7-9da8-303b5c2e9426"/>
+        <Edge id="id0814cc20-099c-45f9-b53d-239467ffc4c0" default="true" sourceId="C-Net" targetId="f23e3f5d-8c36-4ba7-9da8-303b5c2e9426"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-c" originalID="N-Net_c">
             <name>c</name>
             <type>integer</type>

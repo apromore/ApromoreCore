@@ -62,7 +62,7 @@ public class OutputVarMappingHandler extends BaseVarMappingHandler {
         }
     }
 
-    private OutputExpressionType convertXQuery(final String xQuery, final ObjectType mapsTo) {
+    private OutputExpressionType convertXQuery(final String xQuery, final ObjectType mapsTo) throws CanoniserException {
         final OutputExpressionType outputExpr = CPF_FACTORY.createOutputExpressionType();
         outputExpr.setLanguage(CPFSchema.EXPRESSION_LANGUAGE_XQUERY);
         outputExpr.setExpression(CPFSchema.createOuputExpression(mapsTo, ExpressionUtils.createQueryReferencingTaskVariables(xQuery)));

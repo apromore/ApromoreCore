@@ -33,35 +33,32 @@ import de.hbrs.oryx.yawl.converter.context.YAWLConversionContext;
  */
 public class RootNetHandler extends NetHandler {
 
-	public RootNetHandler(YAWLConversionContext context, YDecomposition decomposition) {
-		super(context, decomposition);
-	}
+    public RootNetHandler(final YAWLConversionContext context, final YDecomposition decomposition) {
+        super(context, decomposition);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.hbrs.oryx.yawl.converter.handler.yawl.decomposition.NetHandler#convert
-	 * (java.lang.String)
-	 */
-	@Override
-	public void convert(String parentId) {
-		super.convert(parentId);
-		getContext().setRootNetId(getNet().getID());
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.yawl.decomposition.NetHandler#convert (java.lang.String)
+     */
+    @Override
+    public void convert(final String parentId) {
+        super.convert(parentId);
+        getContext().setRootNetId(getNet().getID());
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.hbrs.oryx.yawl.converter.handler.yawl.decomposition.NetHandler#
-	 * convertProperties()
-	 */
-	@Override
-	protected HashMap<String, String> convertProperties() {
-		HashMap<String, String> metadata = super.convertProperties();
-		// Removed as every Net could be a Root Net
-		//metadata.put("isrootnet", "true");
-		return metadata;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.yawl.decomposition.NetHandler# convertProperties()
+     */
+    @Override
+    protected HashMap<String, String> convertProperties() {
+        HashMap<String, String> metadata = super.convertProperties();
+        // Removed as every Net could be a Root Net
+        // metadata.put("isrootnet", "true");
+        return metadata;
+    }
 
 }

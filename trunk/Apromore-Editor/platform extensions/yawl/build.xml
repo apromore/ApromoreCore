@@ -5,6 +5,7 @@
 	<property name="src" value="src" />
 	<property name="build" value="build" />
 	<property name="lib" value="lib" />
+	<property name="platform-build-lib" value="../../platform/lib" />
 	<property name="platform-lib" value="../../platform/WebContent/WEB-INF/lib" />
 	<property name="platform-web-inf" value="../../platform/WebContent/WEB-INF/" />
 
@@ -29,7 +30,7 @@
 					<include name="**/*.jar" />
 				</fileset>
 			</classpath>
-		</javac>
+		</javac>			
 	</target>
 
 	<!-- Generate the JAR file -->

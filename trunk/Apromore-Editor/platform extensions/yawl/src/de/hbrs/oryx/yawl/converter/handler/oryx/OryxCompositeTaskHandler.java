@@ -39,79 +39,75 @@ import de.hbrs.oryx.yawl.converter.exceptions.NoSubnetFoundException;
  */
 public class OryxCompositeTaskHandler extends OryxTaskHandler {
 
-	public OryxCompositeTaskHandler(OryxConversionContext context, BasicShape shape) {
-		super(context, shape);
-	}
+    public OryxCompositeTaskHandler(final OryxConversionContext context, final BasicShape shape) {
+        super(context, shape);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.hbrs.oryx.yawl.converter.handler.oryx.OryxTaskHandler#convertDecomposition
-	 * (org.oryxeditor.server.diagram.basic.BasicShape)
-	 */
-	@Override
-	protected YDecomposition createDecomposition(YDecomposition existingDecomposition) throws JSONException, ConversionException {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.oryx.OryxTaskHandler#convertDecomposition (org.oryxeditor.server.diagram.basic.BasicShape)
+     */
+    @Override
+    protected YDecomposition createDecomposition(final YDecomposition existingDecomposition) throws JSONException, ConversionException {
 
-		try {
-			BasicDiagram subnetDiagram = retrieveSubnetDiagram(getShape());
-			// Just find the contained subnet and ignore all Diagram properties
-			BasicShape subnet = findSubnetNet(subnetDiagram);
-			// Convert the Subnet with all its childShapes
-			getContext().getHandlerFactory().createOryxConverter(subnet).convert();
-			// Return to just created subnet, that should be already part of the
-			// specification decompositions
-			return super.createDecomposition(getContext().getNet(subnet));
-		} catch (NoSubnetFoundException e) {
-			getContext().addConversionWarnings("Could not find decomposition of composite task " + getShape().getProperty("yawlid"), e);
-			return null;
-		}
+        try {
+            BasicDiagram subnetDiagram = retrieveSubnetDiagram(getShape());
+            // Just find the contained subnet and ignore all Diagram properties
+            BasicShape subnet = findSubnetNet(subnetDiagram);
+            // Convert the Subnet with all its childShapes
+            getContext().getHandlerFactory().createOryxConverter(subnet).convert();
+            // Return to just created subnet, that should be already part of the
+            // specification decompositions
+            return super.createDecomposition(getContext().getNet(subnet));
+        } catch (NoSubnetFoundException e) {
+            getContext().addConversionWarnings("Could not find decomposition of composite task " + getShape().getProperty("yawlid"), e);
+            return null;
+        }
 
-	}
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.hbrs.oryx.yawl.converter.handler.oryx.OryxTaskHandler#createTask(java
-	 * .lang.String, org.yawlfoundation.yawl.elements.YNet,
-	 * org.oryxeditor.server.diagram.basic.BasicShape)
-	 */
-	@Override
-	protected YTask createTask(String taskId, YNet parentNet) throws JSONException, ConversionException {
-		int joinType = convertConnectorType(getShape().getProperty("join"), YTask._XOR);
-		int splitType = convertConnectorType(getShape().getProperty("split"), YTask._AND);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.oryx.OryxTaskHandler#createTask(java .lang.String, org.yawlfoundation.yawl.elements.YNet,
+     * org.oryxeditor.server.diagram.basic.BasicShape)
+     */
+    @Override
+    protected YTask createTask(final String taskId, final YNet parentNet) throws JSONException, ConversionException {
+        int joinType = convertConnectorType(getShape().getProperty("join"), YTask._XOR);
+        int splitType = convertConnectorType(getShape().getProperty("split"), YTask._AND);
 
-		YCompositeTask task = new YCompositeTask(taskId, joinType, splitType, parentNet);
+        YCompositeTask task = new YCompositeTask(taskId, joinType, splitType, parentNet);
 
-		if (hasDecomposition()) {
-			YDecomposition decomposition = createDecomposition(new YNet(getDecompositionId(), getContext().getSpecification()));
-			if (decomposition != null) {
-				task.setDecompositionPrototype(decomposition);
-			}
-		}
+        if (hasDecomposition()) {
+            YDecomposition decomposition = createDecomposition(new YNet(getDecompositionId(), getContext().getSpecification()));
+            if (decomposition != null) {
+                task.setDecompositionPrototype(decomposition);
+            }
+        }
 
-		return task;
-	}
+        return task;
+    }
 
-	private BasicShape findSubnetNet(BasicDiagram diagramShape) throws NoSubnetFoundException {
-		return diagramShape;
-	}
+    private BasicShape findSubnetNet(final BasicDiagram diagramShape) throws NoSubnetFoundException {
+        return diagramShape;
+    }
 
-	/**
-	 * Fetches the Subnet
-	 * 
-	 * @param BasicShape
-	 * @return
-	 * @throws NoSubnetFoundException
-	 */
-	private BasicDiagram retrieveSubnetDiagram(BasicShape shape) throws NoSubnetFoundException {
-		BasicDiagram subnetDiagram = getContext().getSubnetDiagram(getDecompositionId());
-		if (subnetDiagram != null) {
-			return subnetDiagram;
-		} else {
-			throw new NoSubnetFoundException("Could not find a Diagram for Subnet with ID: " + shape.getProperty("decomposesto"));
-		}
-	}
+    /**
+     * Fetches the Subnet
+     * 
+     * @param BasicShape
+     * @return
+     * @throws NoSubnetFoundException
+     */
+    private BasicDiagram retrieveSubnetDiagram(final BasicShape shape) throws NoSubnetFoundException {
+        BasicDiagram subnetDiagram = getContext().getSubnetDiagram(getDecompositionId());
+        if (subnetDiagram != null) {
+            return subnetDiagram;
+        } else {
+            throw new NoSubnetFoundException("Could not find a Diagram for Subnet with ID: " + shape.getProperty("decomposesto"));
+        }
+    }
 
 }

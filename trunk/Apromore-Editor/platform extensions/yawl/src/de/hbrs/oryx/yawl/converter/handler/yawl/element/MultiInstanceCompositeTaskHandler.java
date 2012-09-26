@@ -36,27 +36,26 @@ import de.hbrs.oryx.yawl.util.MultiInstanceConverter;
  */
 public class MultiInstanceCompositeTaskHandler extends CompositeTaskHandler {
 
-	public MultiInstanceCompositeTaskHandler(YAWLConversionContext context, YCompositeTask netElement) {
-		super(context, netElement);
-		// Override setting of CompositeTaskHandler
-		setTaskType("CompositeMultipleTask");
-	}
+    public MultiInstanceCompositeTaskHandler(final YAWLConversionContext context, final YCompositeTask netElement) {
+        super(context, netElement);
+        // Override setting of CompositeTaskHandler
+        setTaskType("CompositeMultipleTask");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.hbrs.oryx.yawl.converter.handler.yawl.element.AtomicTaskHandler#
-	 * convertTaskProperties
-	 * (de.hbrs.oryx.yawl.converter.layout.NetElementLayout)
-	 */
-	@Override
-	protected HashMap<String, String> convertTaskProperties(NetElementLayout layout) {
-		HashMap<String, String> properties = super.convertTaskProperties(layout);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.yawl.element.AtomicTaskHandler# convertTaskProperties
+     * (de.hbrs.oryx.yawl.converter.layout.NetElementLayout)
+     */
+    @Override
+    protected HashMap<String, String> convertTaskProperties(final NetElementLayout layout) {
+        HashMap<String, String> properties = super.convertTaskProperties(layout);
 
-		YTask task = (YTask) getNetElement();
-		properties.putAll(MultiInstanceConverter.convert(task));
+        YTask task = (YTask) getNetElement();
+        properties.putAll(MultiInstanceConverter.convert(task));
 
-		return properties;
-	}
+        return properties;
+    }
 
 }

@@ -19,28 +19,30 @@
  */
 package de.hbrs.oryx.yawl.converter.handler.yawl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
 import org.yawlfoundation.yawl.elements.YSpecification;
+
 import de.hbrs.orxy.yawl.YAWLTestData;
-import de.hbrs.oryx.yawl.converter.handler.yawl.SpecificationHandler;
 
 public class SpecificationHandlerTest extends YAWLHandlerTest {
 
-	@Test
-	public void testConvert() {
-		YSpecification spec = YAWLTestData.orderFulfillmentSpecification;
-		SpecificationHandler handler = new SpecificationHandler(orderFContext, spec);
-		handler.convert("");
-		BasicDiagram s = orderFContext.getSpecificationDiagram();
-		assertNotNull(s);
-		assertFalse(orderFContext.getConversionError());
-		assertEquals(spec.getName(), s.getProperty("specname"));
-		assertEquals(spec.getMetaData().getUniqueID(), s.getProperty("specid"));
-		assertEquals(spec.getMetaData().getTitle(), s.getProperty("spectitle"));
-		// TODO
-	}
+    @Test
+    public void testConvert() {
+        YSpecification spec = YAWLTestData.orderFulfillmentSpecification;
+        SpecificationHandler handler = new SpecificationHandler(orderFContext, spec);
+        handler.convert("");
+        BasicDiagram s = orderFContext.getSpecificationDiagram();
+        assertNotNull(s);
+        assertFalse(orderFContext.getConversionError());
+        assertEquals(spec.getName(), s.getProperty("specname"));
+        assertEquals(spec.getMetaData().getUniqueID(), s.getProperty("specid"));
+        assertEquals(spec.getMetaData().getTitle(), s.getProperty("spectitle"));
+        // TODO
+    }
 
 }

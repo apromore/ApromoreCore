@@ -22,6 +22,7 @@ package de.hbrs.oryx.yawl.converter.handler.oryx;
 import java.awt.Rectangle;
 
 import org.oryxeditor.server.diagram.basic.BasicShape;
+
 import de.hbrs.oryx.yawl.converter.context.OryxConversionContext;
 
 /**
@@ -32,23 +33,23 @@ import de.hbrs.oryx.yawl.converter.context.OryxConversionContext;
  */
 public abstract class OryxShapeHandler extends OryxHandlerImpl {
 
-	private final BasicShape shape;
+    private final BasicShape shape;
 
-	public OryxShapeHandler(OryxConversionContext context, BasicShape shape) {
-		super(context);
-		this.shape = shape;
-	}
+    public OryxShapeHandler(final OryxConversionContext context, final BasicShape shape) {
+        super(context);
+        this.shape = shape;
+    }
 
-	/**
-	 * @return the BasicShape to convert
-	 */
-	public BasicShape getShape() {
-		return shape;
-	}
+    /**
+     * @return the BasicShape to convert
+     */
+    public BasicShape getShape() {
+        return shape;
+    }
 
-	protected Rectangle convertShapeBounds(BasicShape shape) {
-		return new Rectangle(shape.getUpperLeft().getX().intValue(), shape.getUpperLeft().getY().intValue(), (int) shape.getHeight(),
-				(int) shape.getWidth());
-	}
+    protected Rectangle convertShapeBounds(final BasicShape shape) {
+        return new Rectangle(shape.getUpperLeft().getX().intValue(), shape.getUpperLeft().getY().intValue(), (int) shape.getHeight(),
+                (int) shape.getWidth());
+    }
 
 }

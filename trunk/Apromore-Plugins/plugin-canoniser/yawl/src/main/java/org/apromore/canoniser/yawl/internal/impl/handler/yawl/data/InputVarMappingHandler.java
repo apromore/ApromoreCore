@@ -63,10 +63,9 @@ public class InputVarMappingHandler extends BaseVarMappingHandler {
         task.getInputExpr().add(convertXQuery(xQuery, mapsTo));
     }
 
-    private InputExpressionType convertXQuery(final String xQuery, final String mapsTo) {
+    private InputExpressionType convertXQuery(final String xQuery, final String mapsTo) throws CanoniserException {
         final InputExpressionType inputExpr = CPF_FACTORY.createInputExpressionType();
         inputExpr.setLanguage(CPFSchema.EXPRESSION_LANGUAGE_XQUERY);
-        // TODO rewrite xQuery
         inputExpr.setExpression(CPFSchema.createInputExpression(mapsTo, ExpressionUtils.createQueryReferencingNetObjects(xQuery)));
         return inputExpr;
     }

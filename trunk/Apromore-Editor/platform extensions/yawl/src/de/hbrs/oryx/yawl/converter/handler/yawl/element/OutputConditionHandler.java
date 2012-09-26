@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -13,9 +13,9 @@
 
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * See: http://www.gnu.org/licenses/lgpl-3.0
- * 
+ *
  */
 package de.hbrs.oryx.yawl.converter.handler.yawl.element;
 
@@ -33,22 +33,20 @@ import de.hbrs.oryx.yawl.converter.context.YAWLConversionContext;
  */
 public class OutputConditionHandler extends ConditionHandler {
 
-	public OutputConditionHandler(YAWLConversionContext context, YNetElement netElement) {
-		super(context, netElement);
-	}
+    public OutputConditionHandler(final YAWLConversionContext context, final YNetElement netElement) {
+        super(context, netElement);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.hbrs.oryx.yawl.converter.handler.yawl.element.ConditionHandler#convert
-	 * (java.lang.String)
-	 */
-	@Override
-	public void convert(String parentId) {
-		BasicShape condition = convertCondition(parentId, "OutputCondition");
-		getContext().putShape(parentId, getNetElement().getID(), condition);
-		getContext().addPostsetFlows(parentId, ((YExternalNetElement) getNetElement()).getPostsetFlows());
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.yawl.element.ConditionHandler#convert (java.lang.String)
+     */
+    @Override
+    public void convert(final String parentId) {
+        BasicShape condition = convertCondition(parentId, "OutputCondition");
+        getContext().putShape(parentId, getNetElement().getID(), condition);
+        getContext().addPostsetFlows(parentId, ((YExternalNetElement) getNetElement()).getPostsetFlows());
+    }
 
 }

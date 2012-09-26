@@ -19,7 +19,8 @@
  */
 package de.hbrs.oryx.yawl.converter.handler.yawl.element;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
@@ -32,35 +33,35 @@ import de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandlerTest;
 
 public class OutputConditionHandlerTest extends YAWLHandlerTest {
 
-	@Test
-	public void testConvert() {
-		YNet net = (YNet) YAWLTestData.orderFulfillmentSpecification.getDecomposition("Freight_in_Transit");
-		// Adding stub Net
-		orderFContext.addNet("Freight_in_Transit", new BasicDiagram("Net"));
+    @Test
+    public void testConvert() {
+        YNet net = (YNet) YAWLTestData.orderFulfillmentSpecification.getDecomposition("Freight_in_Transit");
+        // Adding stub Net
+        orderFContext.addNet("Freight_in_Transit", new BasicDiagram("Net"));
 
-		YOutputCondition condition = (YOutputCondition) net.getNetElement("OutputCondition_47");
-		ConditionHandler handler = new OutputConditionHandler(orderFContext, condition);
-		handler.convert(net.getID());
+        YOutputCondition condition = (YOutputCondition) net.getNetElement("OutputCondition_47");
+        ConditionHandler handler = new OutputConditionHandler(orderFContext, condition);
+        handler.convert(net.getID());
 
-		BasicShape shape = findShapeInOrderF(net, condition);
-		assertNotNull("OutputCondition not found", shape);
-		assertEquals(shape.getStencilId(), "OutputCondition");
-	}
+        BasicShape shape = findShapeInOrderF(net, condition);
+        assertNotNull("OutputCondition not found", shape);
+        assertEquals(shape.getStencilId(), "OutputCondition");
+    }
 
-	@Test
-	public void testConvertWithName() {
-		YNet net = (YNet) YAWLTestData.orderFulfillmentSpecification.getDecomposition("Ordering");
-		// Adding stub Net
-		orderFContext.addNet("Ordering", new BasicDiagram("Net"));
+    @Test
+    public void testConvertWithName() {
+        YNet net = (YNet) YAWLTestData.orderFulfillmentSpecification.getDecomposition("Ordering");
+        // Adding stub Net
+        orderFContext.addNet("Ordering", new BasicDiagram("Net"));
 
-		YOutputCondition condition = (YOutputCondition) net.getNetElement("OutputCondition_17");
-		ConditionHandler handler = new OutputConditionHandler(orderFContext, condition);
-		handler.convert(net.getID());
+        YOutputCondition condition = (YOutputCondition) net.getNetElement("OutputCondition_17");
+        ConditionHandler handler = new OutputConditionHandler(orderFContext, condition);
+        handler.convert(net.getID());
 
-		BasicShape shape = findShapeInOrderF(net, condition);
-		assertNotNull("OutputCondition not found", shape);
-		assertEquals(condition.getName(), shape.getProperty("name"));
-		assertEquals(condition.getDocumentation(), shape.getProperty("documentation"));
-	}
+        BasicShape shape = findShapeInOrderF(net, condition);
+        assertNotNull("OutputCondition not found", shape);
+        assertEquals(condition.getName(), shape.getProperty("name"));
+        assertEquals(condition.getDocumentation(), shape.getProperty("documentation"));
+    }
 
 }

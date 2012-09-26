@@ -26,61 +26,60 @@ import de.hbrs.oryx.yawl.converter.exceptions.ConversionException;
 import de.hbrs.oryx.yawl.converter.handler.HandlerFactory;
 
 /**
- * Base class for conversion contexts. Sharing error/warning reporting and
- * access to HandlerFactory.
+ * Base class for conversion contexts. Sharing error/warning reporting and access to HandlerFactory.
  * 
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University of Applied Sciences)
  * 
  */
 public abstract class ConversionContext {
 
-	/**
-	 * Used to create new Handlers for YAWL Elements
-	 */
-	private HandlerFactory handlerFactory;
+    /**
+     * Used to create new Handlers for YAWL Elements
+     */
+    private HandlerFactory handlerFactory;
 
-	/**
-	 * True if conversion failed
-	 */
-	private Boolean conversionError;
+    /**
+     * True if conversion failed
+     */
+    private Boolean conversionError;
 
-	/**
-	 * May contain serveral warning or error messages
-	 */
-	private List<ConversionException> conversionWarnings;
+    /**
+     * May contain serveral warning or error messages
+     */
+    private final List<ConversionException> conversionWarnings;
 
-	public ConversionContext() {
-		super();
-		this.conversionWarnings = new ArrayList<ConversionException>();
-		this.conversionError = false;
-	}
+    public ConversionContext() {
+        super();
+        this.conversionWarnings = new ArrayList<ConversionException>();
+        this.conversionError = false;
+    }
 
-	public void setHandlerFactory(HandlerFactory handlerFactory) {
-		this.handlerFactory = handlerFactory;
-	}
+    public void setHandlerFactory(final HandlerFactory handlerFactory) {
+        this.handlerFactory = handlerFactory;
+    }
 
-	public HandlerFactory getHandlerFactory() {
-		return handlerFactory;
-	}
+    public HandlerFactory getHandlerFactory() {
+        return handlerFactory;
+    }
 
-	public void setConversionError(Boolean conversionError) {
-		this.conversionError = conversionError;
-	}
+    public void setConversionError(final Boolean conversionError) {
+        this.conversionError = conversionError;
+    }
 
-	public Boolean getConversionError() {
-		return conversionError;
-	}
+    public Boolean getConversionError() {
+        return conversionError;
+    }
 
-	public void addConversionWarnings(ConversionException e) {
-		this.conversionWarnings.add(e);
-	}
+    public void addConversionWarnings(final ConversionException e) {
+        this.conversionWarnings.add(e);
+    }
 
-	public void addConversionWarnings(String string, Exception e) {
-		this.conversionWarnings.add(new ConversionException(string, e));
-	}
+    public void addConversionWarnings(final String string, final Exception e) {
+        this.conversionWarnings.add(new ConversionException(string, e));
+    }
 
-	public List<ConversionException> getConversionWarnings() {
-		return conversionWarnings;
-	}
+    public List<ConversionException> getConversionWarnings() {
+        return conversionWarnings;
+    }
 
 }

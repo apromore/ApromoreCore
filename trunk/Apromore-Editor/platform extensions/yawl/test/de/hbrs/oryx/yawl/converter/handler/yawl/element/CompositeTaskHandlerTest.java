@@ -33,22 +33,22 @@ import de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandlerTest;
 
 public class CompositeTaskHandlerTest extends YAWLHandlerTest {
 
-	@Test
-	public void testConvert() {
-		YNet net = (YNet) YAWLTestData.orderFulfillmentSpecification.getDecomposition("Freight_Delivered");
-		// Adding stub Net
-		orderFContext.addNet("Freight_Delivered", new BasicDiagram("Net"));
+    @Test
+    public void testConvert() {
+        YNet net = (YNet) YAWLTestData.orderFulfillmentSpecification.getDecomposition("Freight_Delivered");
+        // Adding stub Net
+        orderFContext.addNet("Freight_Delivered", new BasicDiagram("Net"));
 
-		YCompositeTask task = (YCompositeTask) net.getNetElement("Return_Management_4045");
-		CompositeTaskHandler handler = new CompositeTaskHandler(orderFContext, task);
-		assertEquals("CompositeTask", handler.getTaskType());
-		handler.convert(net.getID());
+        YCompositeTask task = (YCompositeTask) net.getNetElement("Return_Management_4045");
+        CompositeTaskHandler handler = new CompositeTaskHandler(orderFContext, task);
+        assertEquals("CompositeTask", handler.getTaskType());
+        handler.convert(net.getID());
 
-		BasicShape shape = findShapeInOrderF(net, task);
-		assertNotNull("Composite Task not found", shape);
+        BasicShape shape = findShapeInOrderF(net, task);
+        assertNotNull("Composite Task not found", shape);
 
-		assertEquals("Return_Management", shape.getProperty("decompositionid"));
-		// Can not check decomposetolink here, 'cause it is set client-side
-	}
+        assertEquals("Return_Management", shape.getProperty("decompositionid"));
+        // Can not check decomposetolink here, 'cause it is set client-side
+    }
 
 }

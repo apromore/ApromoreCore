@@ -60,157 +60,144 @@ import de.hbrs.oryx.yawl.converter.handler.yawl.element.OutputConditionHandler;
 import de.hbrs.oryx.yawl.converter.handler.yawl.flow.FlowHandler;
 
 /**
- * Default conversion strategy of YAWL workflows to Oryx diagrams and Oryx
- * diagrams to YAWL workflows.
+ * Default conversion strategy of YAWL workflows to Oryx diagrams and Oryx diagrams to YAWL workflows.
  * 
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University of Applied Sciences)
  * 
  */
 public class HandlerFactoryImpl implements HandlerFactory {
 
-	private YAWLConversionContext yawlContext;
-	private OryxConversionContext oryxContext;
+    private final YAWLConversionContext yawlContext;
+    private final OryxConversionContext oryxContext;
 
-	public HandlerFactoryImpl(YAWLConversionContext yawlContext, OryxConversionContext oryxContext) {
-		super();
-		yawlContext.setHandlerFactory(this);
-		oryxContext.setHandlerFactory(this);
-		this.yawlContext = yawlContext;
-		this.oryxContext = oryxContext;
-	}
+    public HandlerFactoryImpl(final YAWLConversionContext yawlContext, final OryxConversionContext oryxContext) {
+        super();
+        yawlContext.setHandlerFactory(this);
+        oryxContext.setHandlerFactory(this);
+        this.yawlContext = yawlContext;
+        this.oryxContext = oryxContext;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.hbrs.oryx.yawl.converter.handler.HandlerFactory#createYAWLConverter
-	 * (org.yawlfoundation.yawl.elements.YSpecification)
-	 */
-	@Override
-	public YAWLHandler createYAWLConverter(YSpecification ySpec) {
-		return new SpecificationHandler(yawlContext, ySpec);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.HandlerFactory#createYAWLConverter (org.yawlfoundation.yawl.elements.YSpecification)
+     */
+    @Override
+    public YAWLHandler createYAWLConverter(final YSpecification ySpec) {
+        return new SpecificationHandler(yawlContext, ySpec);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.hbrs.oryx.yawl.converter.handler.YAWLHandlerFactory#createConverter
-	 * (org.yawlfoundation.yawl.elements.YDecomposition)
-	 */
-	@Override
-	public YAWLHandler createYAWLConverter(YDecomposition decomposition) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.YAWLHandlerFactory#createConverter (org.yawlfoundation.yawl.elements.YDecomposition)
+     */
+    @Override
+    public YAWLHandler createYAWLConverter(final YDecomposition decomposition) {
 
-		if (decomposition instanceof YNet) {
+        if (decomposition instanceof YNet) {
 
-			if (isRootNet(decomposition)) {
+            if (isRootNet(decomposition)) {
 
-				return new RootNetHandler(yawlContext, (YNet) decomposition);
+                return new RootNetHandler(yawlContext, decomposition);
 
-			} else {
-				return new NetHandler(yawlContext, decomposition);
-			}
-		}
+            } else {
+                return new NetHandler(yawlContext, decomposition);
+            }
+        }
 
-		// If everything else does not apply
-		return new NotImplementedHandler();
-	}
+        // If everything else does not apply
+        return new NotImplementedHandler();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.hbrs.oryx.yawl.converter.handler.YAWLHandlerFactory#createConverter
-	 * (org.yawlfoundation.yawl.elements.YNetElement)
-	 */
-	@Override
-	public YAWLHandler createYAWLConverter(YNetElement netElement) {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.YAWLHandlerFactory#createConverter (org.yawlfoundation.yawl.elements.YNetElement)
+     */
+    @Override
+    public YAWLHandler createYAWLConverter(final YNetElement netElement) {
 
-		if (netElement instanceof YAtomicTask) {
-			if (((YAtomicTask) netElement).isMultiInstance()) {
-				return new MultiInstanceAtomicTaskHandler(yawlContext, (YAtomicTask) netElement);
-			} else {
-				return new AtomicTaskHandler(yawlContext, (YAtomicTask) netElement);
-			}
-		} else if (netElement instanceof YCompositeTask) {
-			if (((YCompositeTask) netElement).isMultiInstance()) {
-				return new MultiInstanceCompositeTaskHandler(yawlContext, (YCompositeTask) netElement);
-			} else {
-				return new CompositeTaskHandler(yawlContext, (YCompositeTask) netElement);
-			}
-		} else if (netElement instanceof YInputCondition) {
-			return new InputConditionHandler(yawlContext, netElement);
-		} else if (netElement instanceof YOutputCondition) {
-			return new OutputConditionHandler(yawlContext, netElement);
-		} else if (netElement instanceof YCondition) {
-			return new ConditionHandler(yawlContext, netElement);
-		}
+        if (netElement instanceof YAtomicTask) {
+            if (((YAtomicTask) netElement).isMultiInstance()) {
+                return new MultiInstanceAtomicTaskHandler(yawlContext, (YAtomicTask) netElement);
+            } else {
+                return new AtomicTaskHandler(yawlContext, (YAtomicTask) netElement);
+            }
+        } else if (netElement instanceof YCompositeTask) {
+            if (((YCompositeTask) netElement).isMultiInstance()) {
+                return new MultiInstanceCompositeTaskHandler(yawlContext, (YCompositeTask) netElement);
+            } else {
+                return new CompositeTaskHandler(yawlContext, (YCompositeTask) netElement);
+            }
+        } else if (netElement instanceof YInputCondition) {
+            return new InputConditionHandler(yawlContext, netElement);
+        } else if (netElement instanceof YOutputCondition) {
+            return new OutputConditionHandler(yawlContext, netElement);
+        } else if (netElement instanceof YCondition) {
+            return new ConditionHandler(yawlContext, netElement);
+        }
 
-		// If everything else does not apply
-		return new NotImplementedHandler();
-	}
+        // If everything else does not apply
+        return new NotImplementedHandler();
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.hbrs.oryx.yawl.converter.handler.YAWLHandlerFactory#createConverter
-	 * (org.yawlfoundation.yawl.elements.YFlow)
-	 */
-	@Override
-	public YAWLHandler createYAWLConverter(YFlow yFlow) {
-		return new FlowHandler(yawlContext, yFlow);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.YAWLHandlerFactory#createConverter (org.yawlfoundation.yawl.elements.YFlow)
+     */
+    @Override
+    public YAWLHandler createYAWLConverter(final YFlow yFlow) {
+        return new FlowHandler(yawlContext, yFlow);
+    }
 
-	private boolean isRootNet(YDecomposition decomposition) {
-		return decomposition.getAttribute("isRootNet") != null && decomposition.getAttribute("isRootNet").equals("true");
-	}
+    private boolean isRootNet(final YDecomposition decomposition) {
+        return decomposition.getAttribute("isRootNet") != null && decomposition.getAttribute("isRootNet").equals("true");
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.hbrs.oryx.yawl.converter.handler.HandlerFactory#createOryxConverter
-	 * (org.oryxeditor.server.diagram.Diagram)
-	 */
-	@Override
-	public OryxHandler createOryxConverter(BasicDiagram diagramShape) {
-		return new OryxDiagramHandler(oryxContext, diagramShape);
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.HandlerFactory#createOryxConverter (org.oryxeditor.server.diagram.Diagram)
+     */
+    @Override
+    public OryxHandler createOryxConverter(final BasicDiagram diagramShape) {
+        return new OryxDiagramHandler(oryxContext, diagramShape);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.hbrs.oryx.yawl.converter.handler.HandlerFactory#createOryxConverter
-	 * (org.oryxeditor.server.diagram.Shape)
-	 */
-	@Override
-	public OryxHandler createOryxConverter(BasicShape shape) {
-		if (shape.getStencilId().equals("AtomicTask")) {
-			return new OryxAtomicTaskHandler(oryxContext, shape);
-		} else if (shape.getStencilId().equals("AtomicMultipleTask")) {
-			return new OryxAtomicMultipleTaskHandler(oryxContext, shape);
-		} else if (shape.getStencilId().equals("CompositeTask")) {
-			return new OryxCompositeTaskHandler(oryxContext, shape);
-		} else if (shape.getStencilId().equals("CompositeMultipleTask")) {
-			return new OryxCompositeMultipleTaskHandler(oryxContext, shape);
-		} else if (shape.getStencilId().equals("Condition")) {
-			return new OryxConditionHandler(oryxContext, shape);
-		} else if (shape.getStencilId().equals("InputCondition")) {
-			return new OryxInputConditionHandler(oryxContext, shape);
-		} else if (shape.getStencilId().equals("OutputCondition")) {
-			return new OryxOutputConditionHandler(oryxContext, shape);
-		} else if (shape.getStencilId().equals("Diagram")) {
-			return new OryxNetHandler(oryxContext, shape);
-		} else {
-			return new NotImplementedHandler();
-		}
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.HandlerFactory#createOryxConverter (org.oryxeditor.server.diagram.Shape)
+     */
+    @Override
+    public OryxHandler createOryxConverter(final BasicShape shape) {
+        if (shape.getStencilId().equals("AtomicTask")) {
+            return new OryxAtomicTaskHandler(oryxContext, shape);
+        } else if (shape.getStencilId().equals("AtomicMultipleTask")) {
+            return new OryxAtomicMultipleTaskHandler(oryxContext, shape);
+        } else if (shape.getStencilId().equals("CompositeTask")) {
+            return new OryxCompositeTaskHandler(oryxContext, shape);
+        } else if (shape.getStencilId().equals("CompositeMultipleTask")) {
+            return new OryxCompositeMultipleTaskHandler(oryxContext, shape);
+        } else if (shape.getStencilId().equals("Condition")) {
+            return new OryxConditionHandler(oryxContext, shape);
+        } else if (shape.getStencilId().equals("InputCondition")) {
+            return new OryxInputConditionHandler(oryxContext, shape);
+        } else if (shape.getStencilId().equals("OutputCondition")) {
+            return new OryxOutputConditionHandler(oryxContext, shape);
+        } else if (shape.getStencilId().equals("Diagram")) {
+            return new OryxNetHandler(oryxContext, shape);
+        } else {
+            return new NotImplementedHandler();
+        }
+    }
 
-	@Override
-	public OryxHandler createOryxConverter(BasicEdge flowShape, BasicShape netShape) {
-		return new OryxFlowHandler(oryxContext, flowShape, netShape);
-	}
+    @Override
+    public OryxHandler createOryxConverter(final BasicEdge flowShape, final BasicShape netShape) {
+        return new OryxFlowHandler(oryxContext, flowShape, netShape);
+    }
 
 }

@@ -35,66 +35,65 @@ import org.yawlfoundation.yawl.elements.YFlow;
  */
 public class NetLayout {
 
-	/**
-	 * Map of VertexID <-> LayoutInformation for Vertex (e.g. Task or Condition)
-	 */
-	private Map<String, NetElementLayout> vertexLayoutMap;
+    /**
+     * Map of VertexID <-> LayoutInformation for Vertex (e.g. Task or Condition)
+     */
+    private final Map<String, NetElementLayout> vertexLayoutMap;
 
-	/**
-	 * Map of "Prior Vertex ID"|"Next Vertex ID" <-> LayoutInformation for Flow
-	 */
-	private Map<String, FlowLayout> flowLayoutMap;
+    /**
+     * Map of "Prior Vertex ID"|"Next Vertex ID" <-> LayoutInformation for Flow
+     */
+    private final Map<String, FlowLayout> flowLayoutMap;
 
-	/**
-	 * Bounds of the Net itself
-	 */
-	private Bounds bounds;
+    /**
+     * Bounds of the Net itself
+     */
+    private Bounds bounds;
 
-	/**
-	 * Set of all flows (edges) between the YAWL elements of this net. TODO:
-	 * This is not a layout information, so maybe store it elsewhere!
-	 */
-	private final Set<YFlow> flowSet;
+    /**
+     * Set of all flows (edges) between the YAWL elements of this net. TODO: This is not a layout information, so maybe store it elsewhere!
+     */
+    private final Set<YFlow> flowSet;
 
-	public NetLayout(Bounds bounds) {
-		super();
-		this.bounds = bounds;
-		this.vertexLayoutMap = new HashMap<String, NetElementLayout>();
-		this.flowLayoutMap = new HashMap<String, FlowLayout>();
-		this.flowSet = new HashSet<YFlow>();
-	}
+    public NetLayout(final Bounds bounds) {
+        super();
+        this.bounds = bounds;
+        this.vertexLayoutMap = new HashMap<String, NetElementLayout>();
+        this.flowLayoutMap = new HashMap<String, FlowLayout>();
+        this.flowSet = new HashSet<YFlow>();
+    }
 
-	public void setBounds(Bounds bounds) {
-		this.bounds = bounds;
-	}
+    public void setBounds(final Bounds bounds) {
+        this.bounds = bounds;
+    }
 
-	public Bounds getBounds() {
-		return bounds;
-	}
+    public Bounds getBounds() {
+        return bounds;
+    }
 
-	public void putVertexLayout(String vertexID, NetElementLayout value) {
-		vertexLayoutMap.put(vertexID, value);
-	}
+    public void putVertexLayout(final String vertexID, final NetElementLayout value) {
+        vertexLayoutMap.put(vertexID, value);
+    }
 
-	public NetElementLayout getVertexLayout(String vertexID) {
-		return vertexLayoutMap.get(vertexID);
-	}
+    public NetElementLayout getVertexLayout(final String vertexID) {
+        return vertexLayoutMap.get(vertexID);
+    }
 
-	public void putFlowLayout(String flowID, FlowLayout value) {
-		flowLayoutMap.put(flowID, value);
-	}
+    public void putFlowLayout(final String flowID, final FlowLayout value) {
+        flowLayoutMap.put(flowID, value);
+    }
 
-	public FlowLayout getFlowLayout(String flowID) {
-		return flowLayoutMap.get(flowID);
-	}
+    public FlowLayout getFlowLayout(final String flowID) {
+        return flowLayoutMap.get(flowID);
+    }
 
-	public Set<YFlow> getFlowSet() {
-		return flowSet;
-	}
+    public Set<YFlow> getFlowSet() {
+        return flowSet;
+    }
 
-	public void addFlows(Set<YFlow> flows) {
-		flowSet.addAll(flows);
+    public void addFlows(final Set<YFlow> flows) {
+        flowSet.addAll(flows);
 
-	}
+    }
 
 }

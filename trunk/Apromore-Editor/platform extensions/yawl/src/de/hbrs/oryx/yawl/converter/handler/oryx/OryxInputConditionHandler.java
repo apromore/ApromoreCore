@@ -33,26 +33,26 @@ import de.hbrs.oryx.yawl.converter.context.OryxConversionContext;
  */
 public class OryxInputConditionHandler extends OryxConditionHandler {
 
-	public OryxInputConditionHandler(OryxConversionContext context, BasicShape shape) {
-		super(context, shape);
-	}
+    public OryxInputConditionHandler(final OryxConversionContext context, final BasicShape shape) {
+        super(context, shape);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.hbrs.oryx.yawl.converter.handler.oryx.OryxHandler#convert()
-	 */
-	@Override
-	public void convert() {
-		final BasicShape shape = getShape();
-		final YNet parentNet = getContext().getNet(shape.getParent());
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.oryx.OryxHandler#convert()
+     */
+    @Override
+    public void convert() {
+        final BasicShape shape = getShape();
+        final YNet parentNet = getContext().getNet(shape.getParent());
 
-		final String yawlId = convertYawlId(parentNet, shape);
-		final String name = (shape.hasProperty("name") && !shape.getProperty("name").isEmpty()) ? shape.getProperty("name") : null;
-		final YInputCondition inputCondition = new YInputCondition(yawlId, name, parentNet);
-		convertConditionProperties(inputCondition);
-		convertConditionLayout(inputCondition, parentNet);
-		parentNet.setInputCondition(inputCondition);
-	}
+        final String yawlId = convertYawlId(parentNet, shape);
+        final String name = (shape.hasProperty("name") && !shape.getProperty("name").isEmpty()) ? shape.getProperty("name") : null;
+        final YInputCondition inputCondition = new YInputCondition(yawlId, name, parentNet);
+        convertConditionProperties(inputCondition);
+        convertConditionLayout(inputCondition, parentNet);
+        parentNet.setInputCondition(inputCondition);
+    }
 
 }

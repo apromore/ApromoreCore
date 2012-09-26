@@ -24,7 +24,6 @@ import java.util.ArrayList;
 import org.oryxeditor.server.diagram.Bounds;
 import org.oryxeditor.server.diagram.Point;
 
-
 /**
  * Layout information of a Flow
  * 
@@ -33,41 +32,41 @@ import org.oryxeditor.server.diagram.Point;
  */
 public class FlowLayout {
 
-	private Bounds bounds;
-	private ArrayList<Point> dockers;
-	private String label;
-	private int lineStyle;
+    private Bounds bounds;
+    private ArrayList<Point> dockers;
+    private String label;
+    private int lineStyle;
 
-	public void setBounds(Bounds bounds) {
-		this.bounds = bounds;
-	}
+    public void setBounds(final Bounds bounds) {
+        this.bounds = bounds;
+    }
 
-	public Bounds getBounds() {
-		return bounds;
-	}
+    public Bounds getBounds() {
+        return bounds;
+    }
 
-	public void setDockers(ArrayList<Point> dockers) {
-		this.dockers = dockers;
-	}
+    public void setDockers(final ArrayList<Point> dockers) {
+        this.dockers = dockers;
+    }
 
-	public ArrayList<Point> getDockers() {
-		return dockers;
-	}
-	
-	public void setLabel(String label) {
-		this.label = label;
-	}
+    public ArrayList<Point> getDockers() {
+        return dockers;
+    }
 
-	public String getLabel() {
-		return label;
-	}
+    public void setLabel(final String label) {
+        this.label = label;
+    }
 
-	public void setLineStyle(int linestyle) {
-		this.lineStyle = linestyle;
-	}
+    public String getLabel() {
+        return label;
+    }
 
-	public int getLineStyle() {
-		return lineStyle;
-	}
+    public void setLineStyle(final int linestyle) {
+        this.lineStyle = linestyle;
+    }
+
+    public int getLineStyle() {
+        return lineStyle;
+    }
 
 }

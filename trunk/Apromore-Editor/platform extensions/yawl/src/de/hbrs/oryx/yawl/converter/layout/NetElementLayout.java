@@ -30,67 +30,67 @@ import org.oryxeditor.server.diagram.Bounds;
  */
 public class NetElementLayout {
 
-	public enum DecoratorType {
-		TOP, LEFT, RIGHT, BOTTOM, NONE
-	}
+    public enum DecoratorType {
+        TOP, LEFT, RIGHT, BOTTOM, NONE
+    }
 
-	/**
-	 * True if this element is a condition
-	 */
-	private final boolean isCondition;
+    /**
+     * True if this element is a condition
+     */
+    private final boolean isCondition;
 
-	private DecoratorType splitDecorator = DecoratorType.NONE;
-	private DecoratorType joinDecorator = DecoratorType.NONE;
-	private Bounds bounds;
-	private String iconPath;
+    private DecoratorType splitDecorator = DecoratorType.NONE;
+    private DecoratorType joinDecorator = DecoratorType.NONE;
+    private Bounds bounds;
+    private String iconPath;
 
-	public NetElementLayout(boolean isCondition) {
-		super();
-		this.isCondition = isCondition;
-	}
+    public NetElementLayout(final boolean isCondition) {
+        super();
+        this.isCondition = isCondition;
+    }
 
-	public void setBounds(Bounds bounds) {
-		this.bounds = bounds;
-	}
+    public void setBounds(final Bounds bounds) {
+        this.bounds = bounds;
+    }
 
-	public Bounds getBounds() {
-		return bounds;
-	}
+    public Bounds getBounds() {
+        return bounds;
+    }
 
-	public void setSplitDecorator(DecoratorType splitDecoratorType) {
-		this.splitDecorator = splitDecoratorType;
-	}
+    public void setSplitDecorator(final DecoratorType splitDecoratorType) {
+        this.splitDecorator = splitDecoratorType;
+    }
 
-	public DecoratorType getSplitDecorator() {
-		return splitDecorator;
-	}
+    public DecoratorType getSplitDecorator() {
+        return splitDecorator;
+    }
 
-	public void setJoinDecorator(DecoratorType joinDecoratorType) {
-		this.joinDecorator = joinDecoratorType;
-	}
+    public void setJoinDecorator(final DecoratorType joinDecoratorType) {
+        this.joinDecorator = joinDecoratorType;
+    }
 
-	public DecoratorType getJoinDecorator() {
-		return joinDecorator;
-	}
+    public DecoratorType getJoinDecorator() {
+        return joinDecorator;
+    }
 
-	public boolean isCondition() {
-		return isCondition;
-	}
+    public boolean isCondition() {
+        return isCondition;
+    }
 
-	public boolean hasJoinDecorator() {
-		return !getJoinDecorator().equals(DecoratorType.NONE);
-	}
+    public boolean hasJoinDecorator() {
+        return !getJoinDecorator().equals(DecoratorType.NONE);
+    }
 
-	public boolean hasSplitDecorator() {
-		return !getSplitDecorator().equals(DecoratorType.NONE);
-	}
+    public boolean hasSplitDecorator() {
+        return !getSplitDecorator().equals(DecoratorType.NONE);
+    }
 
-	public void setIconPath(String iconPath) {
-		this.iconPath = iconPath;
-	}
+    public void setIconPath(final String iconPath) {
+        this.iconPath = iconPath;
+    }
 
-	public String getIconPath() {
-		return iconPath;
-	}
+    public String getIconPath() {
+        return iconPath;
+    }
 
 }

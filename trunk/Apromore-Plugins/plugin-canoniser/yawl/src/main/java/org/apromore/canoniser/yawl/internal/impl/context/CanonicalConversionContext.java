@@ -45,6 +45,7 @@ import org.apromore.cpf.TaskType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yawlfoundation.yawlschema.ControlTypeType;
+import org.yawlfoundation.yawlschema.DecompositionFactsType;
 import org.yawlfoundation.yawlschema.ExternalNetElementType;
 import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
 import org.yawlfoundation.yawlschema.FlowsIntoType;
@@ -55,7 +56,6 @@ import org.yawlfoundation.yawlschema.LayoutRectangleType;
 import org.yawlfoundation.yawlschema.NetFactsType;
 import org.yawlfoundation.yawlschema.ObjectFactory;
 import org.yawlfoundation.yawlschema.SpecificationSetFactsType;
-import org.yawlfoundation.yawlschema.TimerTriggerType;
 import org.yawlfoundation.yawlschema.VariableBaseType;
 import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType.YawlService;
 import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
@@ -189,9 +189,9 @@ public final class CanonicalConversionContext extends ConversionContext {
     /* YAWL data structures */
 
     /**
-     * Map of all already converted NetFactsTypes by their CPF ID
+     * Map of all already converted DecompositionFactsType by their CPF ID
      */
-    private Map<String, NetFactsType> convertedNetMap;
+    private Map<String, DecompositionFactsType> convertedDecompositionMap;
 
     /**
      * Map of all already converted NetElements by their CPF ID
@@ -227,11 +227,6 @@ public final class CanonicalConversionContext extends ConversionContext {
      * TODO still used? Map of all artificial (non-existant in CPF) variables
      */
     private Map<String, Collection<VariableBaseType>> introducedVariableMap;
-
-    /**
-     * TODO still used?
-     */
-    private Map<String, TimerTriggerType> timerMap;
 
     /**
      * Used during Conversion of Layout
@@ -627,62 +622,68 @@ public final class CanonicalConversionContext extends ConversionContext {
     }
 
     /**
-     * Add a NetFactsType for the given ID
+     * Add a DecompositionFactsType for the given ID
      *
      * @param id
-     *            of the CPF Net
-     * @param net
-     *            the converted NetFactsType of YAWL
+     *            of the CPF Net or CPF Task
+     * @param decomposition
+     *            the converted NetFactsType or WebServiceGatewayFactsType of YAWL
      */
-    public void addConvertedNet(final String id, final NetFactsType net) {
-        initNetMap();
-        convertedNetMap.put(id, net);
+    public void addConvertedDecompositon(final String id, final DecompositionFactsType decomposition) {
+        initDecompositionMap();
+        convertedDecompositionMap.put(id, decomposition);
     }
 
     /**
      * Get the already converted NetFactsType if CPF Net with ID is already converted.
      *
      * @param id
-     *            of a CPF Net
-     * @return NetFactsType or NULL
+     *            of a CPF Net or a CPF Task
+     * @return NetFactsType or WebServiceGatewayFactsType or NULL
      */
-    public NetFactsType getConvertedNet(final String id) {
-        initNetMap();
-        return convertedNetMap.get(id);
+    public DecompositionFactsType getConvertedDecomposition(final String id) {
+        initDecompositionMap();
+        return convertedDecompositionMap.get(id);
     }
 
     public Set<Entry<String, NetFactsType>> getConvertedNets() {
-        return Collections.unmodifiableSet(convertedNetMap.entrySet());
+        Map<String, NetFactsType> netMap = new HashMap<String, NetFactsType>();
+        for (Entry<String, DecompositionFactsType> d: convertedDecompositionMap.entrySet()) {
+            if (d.getValue() instanceof NetFactsType) {
+                netMap.put(d.getKey(), (NetFactsType) d.getValue());
+            }
+        }
+        return Collections.unmodifiableSet(netMap.entrySet());
     }
 
-    private void initNetMap() {
-        if (convertedNetMap == null) {
-            convertedNetMap = new HashMap<String, NetFactsType>();
+    private void initDecompositionMap() {
+        if (convertedDecompositionMap == null) {
+            convertedDecompositionMap = new HashMap<String, DecompositionFactsType>();
         }
     }
 
     /**
      * Remembers a YAWL variable/parameter
      *
-     * @param id
+     * @param name
      *            of the CPF Object
-     * @param inputParam
+     * @param param
      */
-    public void addConvertedParameter(final String id, final VariableBaseType param) {
+    public void addConvertedParameter(final String name, final String netID, final VariableBaseType param) {
         initConvertedParameterMap();
-        convertedParameterMap.put(id, param);
+        convertedParameterMap.put(netID+"::"+name, param);
     }
 
     /**
      * Get a YAWL variable/parameter by the CPF Object-ID
      *
-     * @param id
+     * @param name
      *            of the CPF Object
      * @return VariableBaseType
      */
-    public VariableBaseType getConvertedParameter(final String id) {
+    public VariableBaseType getConvertedParameter(final String name, final String netID) {
         initConvertedParameterMap();
-        return convertedParameterMap.get(id);
+        return convertedParameterMap.get(netID+"::"+name);
     }
 
     private void initConvertedParameterMap() {
@@ -690,6 +691,7 @@ public final class CanonicalConversionContext extends ConversionContext {
             convertedParameterMap = new HashMap<String, VariableBaseType>();
         }
     }
+
 
     /**
      * Add an element that just has been converted
@@ -1020,7 +1022,7 @@ public final class CanonicalConversionContext extends ConversionContext {
     }
 
     /**
-     * Searches for the YAWL extension element with specified class. If found it is returned with correct type, otherwise NULL is returned.
+     * Searches for the YAWL extension element with specified class. If found it is returned with correct type, otherwise the default value is returned.
      *
      * @param cpfId
      *            of the Node or NULL for global annotations
@@ -1028,15 +1030,16 @@ public final class CanonicalConversionContext extends ConversionContext {
      *            of the element in the YAWL schema
      * @param expectedClass
      *            any class from the YAWL schema
-     * @return T or NULL
+     * @param defaultValue to return if not found
+     * @return always an object of type T
      */
-    public <T> T getExtensionFromAnnotations(final String cpfId, final String elementName, final Class<T> expectedClass) {
+    public <T> T getExtensionFromAnnotations(final String cpfId, final String elementName, final Class<T> expectedClass, final T defaultValue) {
         for (final AnnotationType ann : getAnnotations(cpfId)) {
             if (!(ann instanceof DocumentationType || ann instanceof GraphicsType)) {
-                return ExtensionUtils.getFromAnnotationsExtension(ann, elementName, expectedClass);
+                return ExtensionUtils.getFromAnnotationsExtension(ann, elementName, expectedClass, defaultValue);
             }
         }
-        return null;
+        return defaultValue;
     }
 
     /**
@@ -1077,30 +1080,5 @@ public final class CanonicalConversionContext extends ConversionContext {
         return autoLayoutInfo;
     }
 
-    public void setOnEnablementTimer(final String id) {
-        initTimerMap();
-        timerMap.put(id, TimerTriggerType.ON_ENABLED);
-    }
-
-    public void setOnStartTimer(final String id) {
-        initTimerMap();
-        timerMap.put(id, TimerTriggerType.ON_EXECUTING);
-    }
-
-    public boolean isOnEnablementTimer(final String id) {
-        initTimerMap();
-        return timerMap.get(id) == TimerTriggerType.ON_ENABLED;
-    }
-
-    public boolean isOnStartTimer(final String id) {
-        initTimerMap();
-        return timerMap.get(id) == TimerTriggerType.ON_EXECUTING;
-    }
-
-    private void initTimerMap() {
-        if (timerMap == null) {
-            timerMap = new HashMap<String, TimerTriggerType>();
-        }
-    }
 
 }
