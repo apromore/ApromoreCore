@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="pool" version="0.6" name="Pool" rootIds="c6">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="pool" version="1.0" name="Pool" rootIds="c6">
     <Net id="c6">
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="c1">
             <name>E1</name>

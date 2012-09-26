@@ -651,6 +651,7 @@ public class CanoniserDefinitionsTest {
     /**
      * Test decanonisation of <code>Basic.cpf</code> and <code>Basic.anf</code>.
      */
+    @Ignore
     @Test
     public final void testDecanoniseBasic() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
 
@@ -709,10 +710,33 @@ public class CanoniserDefinitionsTest {
     /**
      * Test decanonisation of <code>Pool.cpf</code> and <code>Pool.anf</code>.
      */
+    @Ignore
     @Test
     public final void testDecanonisePool() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
 
         // Obtain the test instance
         CanoniserDefinitions definitions = testDecanonise("Pool");
+    }
+
+    /**
+     * Test decanonisation of <code>TwoLanes.cpf</code> and <code>TwoLanes.anf</code>.
+     */
+    @Ignore
+    @Test
+    public final void testDecanoniseTwoLanes() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+
+        // Obtain the test instance
+        CanoniserDefinitions definitions = testDecanonise("TwoLanes");
+    }
+
+    /**
+     * Test decanonisation of <code>TwoPools.cpf</code> and <code>TwoPools.anf</code>.
+     */
+    @Ignore
+    @Test
+    public final void testDecanoniseTwoPools() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+
+        // Obtain the test instance
+        CanoniserDefinitions definitions = testDecanonise("TwoPools");
     }
 }

@@ -6,6 +6,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 // Local packages
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
+import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.XORSplitType;
 
@@ -26,6 +27,11 @@ public class ObjectFactory extends org.apromore.cpf.ObjectFactory {
     @Override
     public EventType createEventType() {
         return new CpfEventType();
+    }
+
+    @Override
+    public ResourceTypeType createResourceTypeType() {
+        return new CpfResourceTypeType();
     }
 
     @Override
