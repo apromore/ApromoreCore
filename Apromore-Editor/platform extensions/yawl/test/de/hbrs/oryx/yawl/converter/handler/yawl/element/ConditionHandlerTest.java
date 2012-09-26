@@ -32,18 +32,18 @@ import de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandlerTest;
 
 public class ConditionHandlerTest extends YAWLHandlerTest {
 
-	@Test
-	public void testConvert() {
-		YNet net = (YNet) YAWLTestData.orderFulfillmentSpecification.getDecomposition("Freight_in_Transit");
-		// Adding stub Net
-		orderFContext.addNet("Freight_in_Transit", new BasicDiagram("Net"));
+    @Test
+    public void testConvert() {
+        YNet net = (YNet) YAWLTestData.orderFulfillmentSpecification.getDecomposition("Freight_in_Transit");
+        // Adding stub Net
+        orderFContext.addNet("Freight_in_Transit", new BasicDiagram("Net"));
 
-		YCondition condition = (YCondition) net.getNetElement("null_4366");
-		ConditionHandler handler = new ConditionHandler(orderFContext, condition);
-		handler.convert(net.getID());
+        YCondition condition = (YCondition) net.getNetElement("null_4366");
+        ConditionHandler handler = new ConditionHandler(orderFContext, condition);
+        handler.convert(net.getID());
 
-		BasicShape shape = findShapeInOrderF(net, condition);
-		assertNotNull("Condition not found", shape);
-	}
+        BasicShape shape = findShapeInOrderF(net, condition);
+        assertNotNull("Condition not found", shape);
+    }
 
 }

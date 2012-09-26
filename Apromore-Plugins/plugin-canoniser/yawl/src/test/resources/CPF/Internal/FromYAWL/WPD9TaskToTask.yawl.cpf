@@ -22,10 +22,10 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <objectRef id="id6b7527b1-9619-4ace-95a3-e9f49277a840" objectId="D-N-Net-x" type="output" optional="false" consumed="true"/>
+            <objectRef id="id1826f0ef-f617-4699-b2b1-65512acee5d7" objectId="D-N-Net-x" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>x = &lt;x&gt;Boolean({/A/x/text()})&lt;/x&gt;</expression>
+                <expression>x = Boolean({/A/x/text()})</expression>
             </outputExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-B" originalID="B">
@@ -47,7 +47,7 @@
             </attribute>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>y = &lt;y&gt;{/Net/x}&lt;/y&gt;</expression>
+                <expression>y = {/Net/x}</expression>
             </inputExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">

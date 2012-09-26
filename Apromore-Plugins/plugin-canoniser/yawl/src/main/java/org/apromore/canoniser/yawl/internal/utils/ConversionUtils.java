@@ -12,6 +12,7 @@ import org.apache.commons.lang.builder.ToStringStyle;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
+import org.apromore.cpf.TaskType;
 import org.apromore.cpf.WorkType;
 
 /**
@@ -68,6 +69,10 @@ public final class ConversionUtils {
             newName = originalName + (++i);
         }
         return newName;
+    }
+
+    public static boolean isCompositeTask(final TaskType task) {
+        return task.getSubnetId() != null;
     }
 
     /**

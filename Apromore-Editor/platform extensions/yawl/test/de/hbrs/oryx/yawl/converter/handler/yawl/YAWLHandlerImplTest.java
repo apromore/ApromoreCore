@@ -19,23 +19,22 @@
  */
 package de.hbrs.oryx.yawl.converter.handler.yawl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
-import de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandlerImpl;
 
 public class YAWLHandlerImplTest extends YAWLHandlerTest {
 
-	@Test
-	public void testConvertNullable() {
-		assertNotNull(new YAWLHandlerImpl(orderFContext) {
+    @Test
+    public void testConvertNullable() {
+        assertNotNull(new YAWLHandlerImpl(orderFContext) {
 
-			@Override
-			public void convert(String parentId) {
-				// do nothing
-			}
+            @Override
+            public void convert(final String parentId) {
+                // do nothing
+            }
 
-		}.convertNullable(null));
-	}
+        }.convertNullable(null));
+    }
 
 }

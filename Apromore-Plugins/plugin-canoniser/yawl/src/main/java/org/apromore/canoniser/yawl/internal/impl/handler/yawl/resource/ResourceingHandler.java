@@ -45,7 +45,7 @@ import org.yawlfoundation.yawlschema.orgdata.RoleType;
  */
 public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsType, TaskType> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceingHandler.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceingHandler.class);
 
     private static final String DISTRIBUTION_SET_RESOURCE_NAME = "Distribution Set";
 

@@ -33,36 +33,35 @@ import de.hbrs.orxy.yawl.YAWLTestData;
 import de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandlerTest;
 
 public class MultiInstanceAtomicTaskHandlerTest extends YAWLHandlerTest {
-	@Test
-	public void testConvert() throws JSONException {
-		YNet net = (YNet) YAWLTestData.orderFulfillmentSpecification.getDecomposition("Freight_in_Transit");
-		// Adding stub Net
-		orderFContext.addNet("Freight_in_Transit", new BasicDiagram("Net"));
+    @Test
+    public void testConvert() throws JSONException {
+        YNet net = (YNet) YAWLTestData.orderFulfillmentSpecification.getDecomposition("Freight_in_Transit");
+        // Adding stub Net
+        orderFContext.addNet("Freight_in_Transit", new BasicDiagram("Net"));
 
-		YAtomicTask task = (YAtomicTask) net.getNetElement("Log_Trackpoint_Order_Entry_4514");
-		MultiInstanceAtomicTaskHandler handler = new MultiInstanceAtomicTaskHandler(orderFContext, task);
-		assertEquals("AtomicMultipleTask", handler.getTaskType());
-		handler.convert(net.getID());
+        YAtomicTask task = (YAtomicTask) net.getNetElement("Log_Trackpoint_Order_Entry_4514");
+        MultiInstanceAtomicTaskHandler handler = new MultiInstanceAtomicTaskHandler(orderFContext, task);
+        assertEquals("AtomicMultipleTask", handler.getTaskType());
+        handler.convert(net.getID());
 
-		BasicShape shape = findShapeInOrderF(net, task);
-		assertNotNull("Atomic Multiple Task not found", shape);
+        BasicShape shape = findShapeInOrderF(net, task);
+        assertNotNull("Atomic Multiple Task not found", shape);
 
-		assertEquals(new Integer(1), shape.getPropertyInteger("minimum"));
-		assertEquals(new Integer(Integer.MAX_VALUE), shape.getPropertyInteger("maximum"));
-		assertEquals(new Integer(Integer.MAX_VALUE), shape.getPropertyInteger("threshold"));
+        assertEquals(new Integer(1), shape.getPropertyInteger("minimum"));
+        assertEquals(new Integer(Integer.MAX_VALUE), shape.getPropertyInteger("maximum"));
+        assertEquals(new Integer(Integer.MAX_VALUE), shape.getPropertyInteger("threshold"));
 
-		assertEquals("static", shape.getProperty("creationmode"));
-		assertEquals("/Freight_in_Transit/TrackpointNotices", shape.getProperty("miinputexpression"));
-		assertEquals("for $i in /TrackpointNotices/* return $i", shape.getProperty("miinputsplittingexpression"));
-		assertEquals("TrackpointNotice", shape.getProperty("miinputformalinputparam"));
-		assertEquals(
-				"<TrackpointOrderEntry> <TrackpointNotice><OrderNumber>{/Log_Trackpoint_Order_Entry/TrackpointNotice/OrderNumber/text()}</OrderNumber><ShipmentNumber>{/Log_Trackpoint_Order_Entry/TrackpointNotice/ShipmentNumber/text()}</ShipmentNumber> <Trackpoint>{/Log_Trackpoint_Order_Entry/TrackpointNotice/Trackpoint/text()}</Trackpoint><ArrivalTime>{/Log_Trackpoint_Order_Entry/TrackpointNotice/ArrivalTime/text()}</ArrivalTime> <DepartureTime>{/Log_Trackpoint_Order_Entry/TrackpointNotice/DepartureTime/text()}</DepartureTime><Notes>{/Log_Trackpoint_Order_Entry/TrackpointNotice/Notes/text()}</Notes> </TrackpointNotice> <Report>{/Log_Trackpoint_Order_Entry/Report/text()}</Report> </TrackpointOrderEntry>",
-				shape.getProperty("mioutputformaloutputexpression"));
-		assertEquals(
-				"<TrackpointOrderEntries>{for $i in /Log_Trackpoint_Order_Entry/TrackpointOrderEntry return $i}</TrackpointOrderEntries>",
-				shape.getProperty("mioutputoutputjoiningexpression"));
-		assertEquals("TrackpointOrderEntries", shape.getProperty("mioutputresultappliedtolocalvariable"));
+        assertEquals("static", shape.getProperty("creationmode"));
+        assertEquals("/Freight_in_Transit/TrackpointNotices", shape.getProperty("miinputexpression"));
+        assertEquals("for $i in /TrackpointNotices/* return $i", shape.getProperty("miinputsplittingexpression"));
+        assertEquals("TrackpointNotice", shape.getProperty("miinputformalinputparam"));
+        assertEquals(
+                "<TrackpointOrderEntry> <TrackpointNotice><OrderNumber>{/Log_Trackpoint_Order_Entry/TrackpointNotice/OrderNumber/text()}</OrderNumber><ShipmentNumber>{/Log_Trackpoint_Order_Entry/TrackpointNotice/ShipmentNumber/text()}</ShipmentNumber> <Trackpoint>{/Log_Trackpoint_Order_Entry/TrackpointNotice/Trackpoint/text()}</Trackpoint><ArrivalTime>{/Log_Trackpoint_Order_Entry/TrackpointNotice/ArrivalTime/text()}</ArrivalTime> <DepartureTime>{/Log_Trackpoint_Order_Entry/TrackpointNotice/DepartureTime/text()}</DepartureTime><Notes>{/Log_Trackpoint_Order_Entry/TrackpointNotice/Notes/text()}</Notes> </TrackpointNotice> <Report>{/Log_Trackpoint_Order_Entry/Report/text()}</Report> </TrackpointOrderEntry>",
+                shape.getProperty("mioutputformaloutputexpression"));
+        assertEquals("<TrackpointOrderEntries>{for $i in /Log_Trackpoint_Order_Entry/TrackpointOrderEntry return $i}</TrackpointOrderEntries>",
+                shape.getProperty("mioutputoutputjoiningexpression"));
+        assertEquals("TrackpointOrderEntries", shape.getProperty("mioutputresultappliedtolocalvariable"));
 
-	}
+    }
 
 }

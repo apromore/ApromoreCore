@@ -33,29 +33,29 @@ import de.hbrs.oryx.yawl.util.YAWLUtils;
  */
 public abstract class OryxHandlerImpl implements OryxHandler {
 
-	private final OryxConversionContext context;
+    private final OryxConversionContext context;
 
-	public OryxHandlerImpl(OryxConversionContext context) {
-		this.context = context;
-	}
+    public OryxHandlerImpl(final OryxConversionContext context) {
+        this.context = context;
+    }
 
-	/**
-	 * @return current conversion context
-	 */
-	protected OryxConversionContext getContext() {
-		return context;
-	}
+    /**
+     * @return current conversion context
+     */
+    protected OryxConversionContext getContext() {
+        return context;
+    }
 
-	protected String convertYawlId(YNet net, BasicShape shape) {
-		return YAWLUtils.convertYawlId(net, shape);
-	}
-	
-	protected String convertYawlId(BasicShape shape) {
-		return YAWLUtils.convertYawlId(shape);
-	}
-	
-	protected String convertYawlId() {
-		return YAWLUtils.convertYawlId();
-	}
+    protected String convertYawlId(final YNet net, final BasicShape shape) {
+        return YAWLUtils.convertYawlId(net, shape);
+    }
+
+    protected String convertYawlId(final BasicShape shape) {
+        return YAWLUtils.convertYawlId(shape);
+    }
+
+    protected String convertYawlId() {
+        return YAWLUtils.convertYawlId();
+    }
 
 }

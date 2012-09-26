@@ -22,6 +22,7 @@ package de.hbrs.oryx.yawl.converter.handler.yawl.element;
 import java.util.HashMap;
 
 import org.yawlfoundation.yawl.elements.YCompositeTask;
+
 import de.hbrs.oryx.yawl.converter.context.YAWLConversionContext;
 import de.hbrs.oryx.yawl.converter.layout.NetElementLayout;
 
@@ -33,23 +34,21 @@ import de.hbrs.oryx.yawl.converter.layout.NetElementLayout;
  */
 public class CompositeTaskHandler extends TaskHandler {
 
-	public CompositeTaskHandler(YAWLConversionContext context, YCompositeTask compositeTask) {
-		super(context, compositeTask, "CompositeTask", compositeTask.getDecompositionPrototype());
-	}
+    public CompositeTaskHandler(final YAWLConversionContext context, final YCompositeTask compositeTask) {
+        super(context, compositeTask, "CompositeTask", compositeTask.getDecompositionPrototype());
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.hbrs.oryx.yawl.converter.handler.yawl.element.TaskHandler#
-	 * convertTaskProperties
-	 * (de.hbrs.oryx.yawl.converter.layout.NetElementLayout)
-	 */
-	@Override
-	protected HashMap<String, String> convertTaskProperties(NetElementLayout layout) {
-		// First convert all common task properties
-		HashMap<String, String> properties = super.convertTaskProperties(layout);
-		properties.putAll(convertDecompositionProperties());
-		return properties;
-	}
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.yawl.element.TaskHandler# convertTaskProperties (de.hbrs.oryx.yawl.converter.layout.NetElementLayout)
+     */
+    @Override
+    protected HashMap<String, String> convertTaskProperties(final NetElementLayout layout) {
+        // First convert all common task properties
+        HashMap<String, String> properties = super.convertTaskProperties(layout);
+        properties.putAll(convertDecompositionProperties());
+        return properties;
+    }
 
 }

@@ -97,7 +97,7 @@ public abstract class AbstractTimerMacro extends ContextAwareRewriteMacro {
      * @throws CanoniserException
      */
     protected org.yawlfoundation.yawlschema.TimerType createTimer(final TimerType timerNode) throws CanoniserException {
-        TypeAttribute timerExt = ExtensionUtils.getFromExtensions(timerNode, ExtensionUtils.TIMER);
+        TypeAttribute timerExt = ExtensionUtils.getExtensionAttribute(timerNode, ExtensionUtils.TIMER);
         if (timerExt != null) {
             return ExtensionUtils.unmarshalYAWLFragment(timerExt, org.yawlfoundation.yawlschema.TimerType.class);
         } else {

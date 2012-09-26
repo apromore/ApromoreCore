@@ -27,9 +27,9 @@ package de.hbrs.oryx.yawl.converter.handler.oryx;
  */
 public interface OryxHandler {
 
-	/**
-	 * Do the conversion and add result to context
-	 */
-	void convert();
+    /**
+     * Do the conversion and add result to context
+     */
+    void convert();
 
 }

@@ -19,7 +19,8 @@
  */
 package de.hbrs.orxy.yawl;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.yawlfoundation.yawl.elements.YAtomicTask;
@@ -32,19 +33,19 @@ import de.hbrs.oryx.yawl.util.YAWLUtils;
 
 public class YAWLUtilsTest {
 
-	@Test
-	public void testIsElementVisible() {
-		YTask task = new YAtomicTask("test", 0, 0, new YNet("test", new YSpecification()));
-		assertTrue(YAWLUtils.isElementVisible(task));
-		YCondition condition = new YCondition("test", new YNet("test", new YSpecification()));
-		assertTrue(YAWLUtils.isElementVisible(condition));
-		condition.setImplicit(true);
-		assertFalse(YAWLUtils.isElementVisible(condition));
-	}
+    @Test
+    public void testIsElementVisible() {
+        YTask task = new YAtomicTask("test", 0, 0, new YNet("test", new YSpecification()));
+        assertTrue(YAWLUtils.isElementVisible(task));
+        YCondition condition = new YCondition("test", new YNet("test", new YSpecification()));
+        assertTrue(YAWLUtils.isElementVisible(condition));
+        condition.setImplicit(true);
+        assertFalse(YAWLUtils.isElementVisible(condition));
+    }
 
-	@Test
-	public void testGetNextVisibleElement() {
-		// TODO
-	}
+    @Test
+    public void testGetNextVisibleElement() {
+        // TODO
+    }
 
 }

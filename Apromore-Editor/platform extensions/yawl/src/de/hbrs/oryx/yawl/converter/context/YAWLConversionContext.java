@@ -29,115 +29,113 @@ import org.oryxeditor.server.diagram.basic.BasicShape;
 import org.yawlfoundation.yawl.elements.YFlow;
 
 import de.hbrs.oryx.yawl.converter.layout.FlowLayout;
-import de.hbrs.oryx.yawl.converter.layout.NetLayout;
 import de.hbrs.oryx.yawl.converter.layout.NetElementLayout;
+import de.hbrs.oryx.yawl.converter.layout.NetLayout;
 
 /**
- * YAWLConversionContext is the "glue" for the various handlers during an
- * conversion YAWL -> Oryx. Information about the conversion and its results are
- * stored here.
+ * YAWLConversionContext is the "glue" for the various handlers during an conversion YAWL -> Oryx. Information about the conversion and its results
+ * are stored here.
  * 
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University of Applied Sciences)
  * 
  */
 public class YAWLConversionContext extends ConversionContext {
 
-	/**
-	 * Oryx Diagram with properties of the Specification. This Diagram will
-	 * contain the RootNet.
-	 */
-	private BasicDiagram specificationDiagram;
+    /**
+     * Oryx Diagram with properties of the Specification. This Diagram will contain the RootNet.
+     */
+    private BasicDiagram specificationDiagram;
 
-	/**
-	 * Contains the Oryx shapes of all YAWL nets
-	 */
-	private final HashMap<String, BasicDiagram> netMap;
+    /**
+     * Contains the Oryx shapes of all YAWL nets
+     */
+    private final HashMap<String, BasicDiagram> netMap;
 
-	/**
-	 * Layout information for each YAWL (sub)-net. (Net-ID -> Layout)
-	 */
-	private final Map<String, NetLayout> layoutMap;
+    /**
+     * Layout information for each YAWL (sub)-net. (Net-ID -> Layout)
+     */
+    private final Map<String, NetLayout> layoutMap;
 
-	/**
-	 * Map of all created Shapes during the conversion (Element-ID -> Shape)
-	 */
-	private final Map<String, BasicShape> shapeMap;
+    /**
+     * Map of all created Shapes during the conversion (Element-ID -> Shape)
+     */
+    private final Map<String, BasicShape> shapeMap;
 
-	/**
-	 * Identifier of the Root Net
-	 */
-	private String rootNetId;
+    /**
+     * Identifier of the Root Net
+     */
+    private String rootNetId;
 
-	/**
-	 * @param rootDir
-	 *            used to retrieve StencilSet to create new Shapes
-	 */
-	public YAWLConversionContext() {
-		super();
-		this.layoutMap = new HashMap<String, NetLayout>();
-		this.shapeMap = new HashMap<String, BasicShape>();
-		this.netMap = new HashMap<String, BasicDiagram>();
-	}
+    /**
+     * @param rootDir
+     *            used to retrieve StencilSet to create new Shapes
+     */
+    public YAWLConversionContext() {
+        super();
+        this.layoutMap = new HashMap<String, NetLayout>();
+        this.shapeMap = new HashMap<String, BasicShape>();
+        this.netMap = new HashMap<String, BasicDiagram>();
+    }
 
-	public void setSpecificationDiagram(BasicDiagram specificationDiagram) {
-		this.specificationDiagram = specificationDiagram;
-	}
+    public void setSpecificationDiagram(final BasicDiagram specificationDiagram) {
+        this.specificationDiagram = specificationDiagram;
+    }
 
-	public BasicDiagram getSpecificationDiagram() {
-		return specificationDiagram;
-	}
+    public BasicDiagram getSpecificationDiagram() {
+        return specificationDiagram;
+    }
 
-	public void addNet(String id, BasicDiagram shape) {
-		netMap.put(id, shape);
-	}
+    public void addNet(final String id, final BasicDiagram shape) {
+        netMap.put(id, shape);
+    }
 
-	public BasicDiagram getNet(String netId) {
-		return netMap.get(netId);
-	}
+    public BasicDiagram getNet(final String netId) {
+        return netMap.get(netId);
+    }
 
-	public Set<Entry<String, BasicDiagram>> getNetSet() {
-		return netMap.entrySet();
-	}
+    public Set<Entry<String, BasicDiagram>> getNetSet() {
+        return netMap.entrySet();
+    }
 
-	public void setRootNetId(String rootNetId) {
-		this.rootNetId = rootNetId;
-	}
+    public void setRootNetId(final String rootNetId) {
+        this.rootNetId = rootNetId;
+    }
 
-	public String getRootNetId() {
-		return rootNetId;
-	}
+    public String getRootNetId() {
+        return rootNetId;
+    }
 
-	public BasicDiagram getRootNet() {
-		return netMap.get(getRootNetId());
-	}
+    public BasicDiagram getRootNet() {
+        return netMap.get(getRootNetId());
+    }
 
-	public NetLayout getNetLayout(String id) {
-		return layoutMap.get(id);
-	}
+    public NetLayout getNetLayout(final String id) {
+        return layoutMap.get(id);
+    }
 
-	public NetElementLayout getVertexLayout(String netId, String id) {
-		return layoutMap.get(netId).getVertexLayout(id);
-	}
+    public NetElementLayout getVertexLayout(final String netId, final String id) {
+        return layoutMap.get(netId).getVertexLayout(id);
+    }
 
-	public void putNetLayout(String yawlId, NetLayout netLayout) {
-		layoutMap.put(yawlId, netLayout);
-	}
+    public void putNetLayout(final String yawlId, final NetLayout netLayout) {
+        layoutMap.put(yawlId, netLayout);
+    }
 
-	public BasicShape getShape(String id) {
-		return shapeMap.get(id);
-	}
+    public BasicShape getShape(final String id) {
+        return shapeMap.get(id);
+    }
 
-	public void putShape(String netId, String shapeId, BasicShape shape) {
-		getNet(netId).addChildShape(shape);
-		shapeMap.put(shapeId, shape);
-	}
+    public void putShape(final String netId, final String shapeId, final BasicShape shape) {
+        getNet(netId).addChildShape(shape);
+        shapeMap.put(shapeId, shape);
+    }
 
-	public FlowLayout getFlowLayout(String netId, String priorElementID, String nextElementID) {
-		return layoutMap.get(netId).getFlowLayout(priorElementID + "|" + nextElementID);
-	}
+    public FlowLayout getFlowLayout(final String netId, final String priorElementID, final String nextElementID) {
+        return layoutMap.get(netId).getFlowLayout(priorElementID + "|" + nextElementID);
+    }
 
-	public void addPostsetFlows(String netId, Set<YFlow> postsetFlows) {
-		layoutMap.get(netId).addFlows(postsetFlows);
-	}
+    public void addPostsetFlows(final String netId, final Set<YFlow> postsetFlows) {
+        layoutMap.get(netId).addFlows(postsetFlows);
+    }
 
 }

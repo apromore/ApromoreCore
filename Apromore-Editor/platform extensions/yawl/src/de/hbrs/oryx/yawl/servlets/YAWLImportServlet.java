@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -13,9 +13,9 @@
 
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * See: http://www.gnu.org/licenses/lgpl-3.0
- * 
+ *
  */
 package de.hbrs.oryx.yawl.servlets;
 
@@ -40,111 +40,113 @@ import de.hbrs.oryx.yawl.converter.YAWLConverter.OryxResult;
 import de.hbrs.oryx.yawl.converter.exceptions.ConversionException;
 
 /**
- * YAWLImportServlet converts a YAWL specification (.yawl file) to the JSON
- * representation of an Oryx diagram. It only supports POST requests with the
+ * YAWLImportServlet converts a YAWL specification (.yawl file) to the JSON representation of an Oryx diagram. It only supports POST requests with the
  * YAWL specification submitted as parameter "data".
- * 
+ *
  * It should be accessible at: /yawlimport
- * 
+ *
  * @author Felix Mannhardt (University of Applied Sciences Bonn-Rhein-Sieg)
- * 
+ *
  */
 public class YAWLImportServlet extends HttpServlet {
 
-	private static final long serialVersionUID = 3547545139919885168L;
+    private static final long serialVersionUID = 3547545139919885168L;
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest
-	 * , javax.servlet.http.HttpServletResponse)
-	 */
-	@Override
-	protected void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException {
+    /*
+     * (non-Javadoc)
+     *
+     * @see javax.servlet.http.HttpServlet#doPost(javax.servlet.http.HttpServletRequest , javax.servlet.http.HttpServletResponse)
+     */
+    @Override
+    protected void doPost(final HttpServletRequest req, final HttpServletResponse res) throws ServletException {
 
-		String yawlData = req.getParameter("data");
-		
+        String yawlData = req.getParameter("data");
+        String standalone = req.getParameter("standalone");
+        boolean isStandalone = (standalone != null && standalone.equals("true"));
 
-		/* Transform and return as JSON */
-		try {
-			
-			if (yawlData == null || yawlData.isEmpty()) {
-				res.setStatus(500);
-				res.setContentType("text/plain; charset=UTF-8");
-				res.getWriter().write("Empty or missing parameter 'data'!");
-			} else {
-				JSONObject importJson = getJsonFromYAWL(yawlData);
-				res.setContentType("application/json; charset=UTF-8");
-				res.setStatus(200);
-				importJson.write(res.getWriter());				
-			}
+        /* Transform and return as JSON */
+        try {
 
-		} catch (Exception e) {
-			try {
-				e.printStackTrace();
-				res.setStatus(500);
-				res.setContentType("text/plain; charset=UTF-8");
-				if (e.getCause() != null) {
-					res.getWriter().write(e.getCause().getMessage());	
-				} else {
-					res.getWriter().write(e.getMessage());
-				}
-			} catch (Exception e1) {
-				e1.printStackTrace();
-			}
-		}
+            if (yawlData == null || yawlData.isEmpty()) {
+                res.setStatus(500);
+                res.setContentType("text/plain; charset=UTF-8");
+                res.getWriter().write("Empty or missing parameter 'data'!");
+            } else {
+                JSONObject importJson = getJsonFromYAWL(yawlData, isStandalone);
+                res.setContentType("application/json; charset=UTF-8");
+                res.setStatus(200);
+                importJson.write(res.getWriter());
+            }
 
-	}
+        } catch (Exception e) {
+            try {
+                e.printStackTrace();
+                res.setStatus(500);
+                res.setContentType("text/plain; charset=UTF-8");
+                if (e.getCause() != null) {
+                    res.getWriter().write(e.getCause().getMessage());
+                } else {
+                    res.getWriter().write(e.getMessage());
+                }
+            } catch (Exception e1) {
+                e1.printStackTrace();
+            }
+        }
 
-	/**
-	 * Call the conversion from YAWL to the Oryx JSON format.
-	 * Default visibility to ease JUnit testing without having to mock a ServletRequest
-	 * 
-	 * @param yawlXml
-	 *            a valid YAWL specification
-	 * @return a valid Oryx diagram in its JSON representation
-	 * @throws JSONException
-	 *             in case of an invalid JSON conversion
-	 * @throws YSyntaxException
-	 *             in case of an invalid YAWL specification
-	 * @throws IOException
-	 *             in case of ?? (error in Loading Layout)
-	 * @throws JDOMException
-	 *             in case of ?? (error in Loading Layout)
-	 */
-	JSONObject getJsonFromYAWL(String yawlXml) throws JSONException, YSyntaxException, JDOMException, IOException {
+    }
 
-		// Convert YAWL Model
-		YAWLConverter yawlConverter = new YAWLConverter();
-		OryxResult oryxResult = yawlConverter.convertYAWLToOryx(yawlXml);
+    /**
+     * Call the conversion from YAWL to the Oryx JSON format. Default visibility to ease JUnit testing without having to mock a ServletRequest
+     *
+     * @param yawlXml
+     *            a valid YAWL specification
+     * @param isStandalone
+     * @return a valid Oryx diagram in its JSON representation
+     * @throws JSONException
+     *             in case of an invalid JSON conversion
+     * @throws YSyntaxException
+     *             in case of an invalid YAWL specification
+     * @throws IOException
+     *             in case of ?? (error in Loading Layout)
+     * @throws JDOMException
+     *             in case of ?? (error in Loading Layout)
+     */
+    JSONObject getJsonFromYAWL(final String yawlXml, final boolean isStandalone) throws JSONException, YSyntaxException, JDOMException, IOException {
 
-		String warningMessage = "";
-		for (ConversionException e : oryxResult.getWarnings()) {
-			warningMessage += "- ";
-			warningMessage += e.getMessage();
-			if (e.getCause() != null) {
-				warningMessage += " (" + e.getCause().getMessage();
-			}
-			warningMessage += ")\n";
-		}
+        // Convert YAWL Model
+        YAWLConverter yawlConverter = new YAWLConverter();
+        OryxResult oryxResult = yawlConverter.convertYAWLToOryx(yawlXml);
 
-		// Write Converted Model
-		JSONArray jsonDiagramList = new JSONArray();
+        if (isStandalone) {
+            String warningMessage = "";
+            for (ConversionException e : oryxResult.getWarnings()) {
+                warningMessage += "- ";
+                warningMessage += e.getMessage();
+                if (e.getCause() != null) {
+                    warningMessage += " (" + e.getCause().getMessage();
+                }
+                warningMessage += ")\n";
+            }
 
-		for (Entry<String, BasicDiagram> diagramEntry : oryxResult.getDiagrams()) {
-			JSONObject model = GenericJSONBuilder.parseModel(diagramEntry.getValue());
-			jsonDiagramList.put(model);
-		}
+            // Write Converted Model
+            JSONArray jsonDiagramList = new JSONArray();
 
-		JSONObject jsonImportObject = new JSONObject();
-		jsonImportObject.put("diagrams", jsonDiagramList);
-		jsonImportObject.put("rootNetName", oryxResult.getRootNetId());
-		jsonImportObject.put("hasFailed", oryxResult.hasFailed());
-		jsonImportObject.put("hasWarnings", oryxResult.hasWarnings());
-		jsonImportObject.put("warnings", warningMessage);
-		
-		return jsonImportObject;
-	}
+            for (Entry<String, BasicDiagram> diagramEntry : oryxResult.getDiagrams()) {
+                JSONObject model = GenericJSONBuilder.parseModel(diagramEntry.getValue());
+                jsonDiagramList.put(model);
+            }
+
+            JSONObject jsonImportObject = new JSONObject();
+            jsonImportObject.put("diagrams", jsonDiagramList);
+            jsonImportObject.put("rootNetName", oryxResult.getRootNetId());
+            jsonImportObject.put("hasFailed", oryxResult.hasFailed());
+            jsonImportObject.put("hasWarnings", oryxResult.hasWarnings());
+            jsonImportObject.put("warnings", warningMessage);
+
+            return jsonImportObject;
+        } else {
+            return GenericJSONBuilder.parseModel(oryxResult.getRootDiagram());
+        }
+    }
 
 }

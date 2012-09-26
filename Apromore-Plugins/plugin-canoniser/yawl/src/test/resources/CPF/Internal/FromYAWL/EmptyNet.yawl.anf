@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:Annotations xmlns:ns2="http://www.apromore.org/ANF" uri="EmptyNet" name="EmptyNet Workfow">
-    <Annotation id="id84ac03cf-2a4d-4f86-8fd0-312d27e9b74d">
+    <Annotation id="idaa3b39c5-5969-4fd7-af24-730ca276d8bb">
         <locale:locale xmlns:locale="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" country="DE" language="de"/>
         <metadata:metadata xmlns:metadata="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <title>EmptyNet Workfow</title>
@@ -13,16 +13,16 @@
             <identifier>UID_d1f45fda-5536-4bc7-b938-a2fbdacb2fb7</identifier>
         </metadata:metadata>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id17730278-a339-484b-a29e-449fa6794adb" cpfId="N-EmptyNet">
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="ida7106f8b-cb99-480d-963a-2c8fcb103b0d" cpfId="N-EmptyNet">
         <size width="1761" height="685"/>
         <fill color="R:204G:204B:204"/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="idcee6a4c2-cad1-4f71-8b6b-d3112e8ea6ab" cpfId="C-InputCondition">
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="a89b0621-2a69-46c3-aa53-f9dcd884c6ed" cpfId="C-InputCondition">
         <position x="36.0" y="372.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="abffd3cd-71d1-4f36-b4b8-83e27507b229" cpfId="C-OutputCondition">
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="bdd9e58d-62cf-4c69-8140-b39df1b55b40" cpfId="C-OutputCondition">
         <position x="1052.0" y="372.0"/>
         <size width="32.0" height="32.0"/>
         <fill/>

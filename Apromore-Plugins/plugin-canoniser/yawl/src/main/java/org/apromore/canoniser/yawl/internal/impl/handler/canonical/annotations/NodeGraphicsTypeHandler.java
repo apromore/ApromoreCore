@@ -44,6 +44,8 @@ import org.yawlfoundation.yawlschema.LayoutVertexFactsType;
  */
 public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
 
+    private static final String YAWL_ICON_PATH = "/org/yawlfoundation/yawl/";
+
     private static final Logger LOGGER = LoggerFactory.getLogger(NodeGraphicsTypeHandler.class);
 
     private static final int JOIN_DECORATOR_DEFAULT_POSITION = 12;
@@ -106,7 +108,7 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         attrs.getAutosizeOrBackgroundColorOrBendable().add(convertVertexBounds(graphic));
 
         if (graphic.getFill() != null) {
-            if (graphic.getFill().getImage() != null && graphic.getFill().getImage().startsWith("/org/yawlfoundation/yawl/")) {
+            if (graphic.getFill().getImage() != null && graphic.getFill().getImage().startsWith(YAWL_ICON_PATH)) {
                 // It was an YAWL icon
                 LOGGER.debug("Setting icon {}", graphic.getFill().getImage());
                 vertex.setIconpath(graphic.getFill().getImage());
@@ -146,8 +148,7 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         LOGGER.debug("Setting size h: {}, w: {} and position x: {}, y: {}",
                 new String[] { elementBounds.getH(), elementBounds.getW(), elementBounds.getX(), elementBounds.getY() });
         getContext().setElementBounds(getObject().getCpfId(), elementBounds);
-        final JAXBElement<LayoutRectangleType> boundsAttribute = YAWL_FACTORY.createLayoutAttributesFactsTypeBounds(elementBounds);
-        return boundsAttribute;
+        return YAWL_FACTORY.createLayoutAttributesFactsTypeBounds(elementBounds);
     }
 
     private LayoutLabelFactsType createLabel(final GraphicsType graphic) throws CanoniserException {

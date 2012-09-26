@@ -39,53 +39,53 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <objectRef id="id516af35d-bbed-4df2-a5bc-79d718414b27" objectId="D-N-make-trip-payAccNumber" type="output" optional="false" consumed="true"/>
-            <objectRef id="ideda0679e-1413-40e3-9ce0-6fbc3059ef6d" objectId="D-N-make-trip-customer" type="output" optional="false" consumed="true"/>
-            <objectRef id="d22d9d50-4473-43eb-9dfd-1438df72b805" objectId="D-N-make-trip-legs" type="output" optional="false" consumed="true"/>
-            <objectRef id="c2d1524a-0502-43c9-831f-baabb1464656" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="iddcf703e4-363c-41c2-a323-50e9dd54f672" objectId="D-N-make-trip-payAccNumber" type="output" optional="false" consumed="true"/>
+            <objectRef id="eb3e8f96-5ec9-49f6-b983-83a09e6e4fe3" objectId="D-N-make-trip-customer" type="output" optional="false" consumed="true"/>
+            <objectRef id="a14983c8-de7f-46e1-b5d0-3f2b948000f1" objectId="D-N-make-trip-legs" type="output" optional="false" consumed="true"/>
+            <objectRef id="id2814d927-2536-4e62-b753-307fdc7de3dc" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = &lt;customer&gt;{/make_trip/customer/text()}&lt;/customer&gt;</expression>
+                <expression>customer = {/make_trip/customer/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>payAccNumber = &lt;payAccNumber&gt;{/register/payAccNumber/text()}&lt;/payAccNumber&gt;</expression>
+                <expression>payAccNumber = {/register/payAccNumber/text()}</expression>
             </outputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = &lt;customer&gt;{/register/customer/text()}&lt;/customer&gt;</expression>
+                <expression>customer = {/register/customer/text()}</expression>
             </outputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>legs = &lt;legs&gt;{/register/legs/*}&lt;/legs&gt;</expression>
+                <expression>legs = {/register/legs/*}</expression>
             </outputExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" subnetId="N-do-itinerary-segment" id="C-do-itinerary-segment-5" originalID="do_itinerary_segment_5">
             <name>do itinerary segment</name>
-            <objectRef id="id9fcf3980-20a3-40ca-9ebe-1700ce4c292a" objectId="D-N-make-trip-subTotal" type="input" optional="false" consumed="true"/>
-            <objectRef id="id7ed1f1d6-ab5c-4b34-a2b3-470d353c7ac5" objectId="D-N-make-trip-hotelDetails" type="input" optional="false" consumed="true"/>
-            <objectRef id="idc1f02a67-e320-4f5a-8661-550bdefbc49f" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
-            <objectRef id="id3e09ec89-926c-46ea-bf28-a7a5863a3d6c" objectId="D-N-make-trip-carDetails" type="input" optional="false" consumed="true"/>
-            <objectRef id="eea22c53-fa44-4158-b522-33e47005dd4c" objectId="D-N-make-trip-flightDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="id00e05ac7-4f4a-42e6-a433-655a84a5982f" objectId="D-N-make-trip-subTotal" type="input" optional="false" consumed="true"/>
+            <objectRef id="c6f8801a-4740-423f-a662-35cbdc9be889" objectId="D-N-make-trip-hotelDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="a63d7569-d076-4f08-813f-85422458470c" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="id70d7de3b-e496-4b7b-9d10-63d943b18979" objectId="D-N-make-trip-carDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="a4335898-6f1d-4e60-a2ca-6ea1ebe73eea" objectId="D-N-make-trip-flightDetails" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>subTotal = &lt;subTotal&gt;{number(/make_trip/subTotal/text())}&lt;/subTotal&gt;</expression>
+                <expression>subTotal = {number(/make_trip/subTotal/text())}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>hotelDetails = &lt;hotelDetails&gt;{/make_trip/hotelDetails/text()}&lt;/hotelDetails&gt;</expression>
+                <expression>hotelDetails = {/make_trip/hotelDetails/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = &lt;customer&gt;{/make_trip/customer/text()}&lt;/customer&gt;</expression>
+                <expression>customer = {/make_trip/customer/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>carDetails = &lt;carDetails&gt;{/make_trip/carDetails/text()}&lt;/carDetails&gt;</expression>
+                <expression>carDetails = {/make_trip/carDetails/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>flightDetails = &lt;flightDetails&gt;{/make_trip/flightDetails/text()}&lt;/flightDetails&gt;</expression>
+                <expression>flightDetails = {/make_trip/flightDetails/text()}</expression>
             </inputExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-pay-4" originalID="pay_4">
@@ -125,25 +125,25 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <objectRef id="ee8b564a-4858-4f10-bedf-944cd9e50403" objectId="D-N-make-trip-itinerary" type="input" optional="false" consumed="true"/>
-            <objectRef id="add2867b-ceee-49e3-9e5d-68e164140a31" objectId="D-N-make-trip-itinerary" type="input" optional="false" consumed="true"/>
-            <objectRef id="id55016abe-273a-4427-a5e0-332fee9bb087" objectId="D-N-make-trip-payAccNumber" type="input" optional="false" consumed="true"/>
-            <objectRef id="b28f4736-b648-467c-b820-abd3baad95f7" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="id87b84d9c-a280-464c-93dc-a2a0d12d9426" objectId="D-N-make-trip-itinerary" type="input" optional="false" consumed="true"/>
+            <objectRef id="id478feadd-9a63-4289-bce6-ccb811a8e373" objectId="D-N-make-trip-itinerary" type="input" optional="false" consumed="true"/>
+            <objectRef id="id1f907cc8-0c26-4b59-8312-b8d3662d5a4f" objectId="D-N-make-trip-payAccNumber" type="input" optional="false" consumed="true"/>
+            <objectRef id="ida9867194-89b7-4a06-ae53-f3fbcdbe5f16" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>total = &lt;total&gt;{sum(/make_trip/itinerary/itinerarySegment/subTotal)}&lt;/total&gt;</expression>
+                <expression>total = {sum(/make_trip/itinerary/itinerarySegment/subTotal)}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>itinerary = &lt;itinerary&gt;{/make_trip/itinerary/*}&lt;/itinerary&gt;</expression>
+                <expression>itinerary = {/make_trip/itinerary/*}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>payAccNumber = &lt;payAccNumber&gt;{/make_trip/payAccNumber/text()}&lt;/payAccNumber&gt;</expression>
+                <expression>payAccNumber = {/make_trip/payAccNumber/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = &lt;customer&gt;{/make_trip/customer/text()}&lt;/customer&gt;</expression>
+                <expression>customer = {/make_trip/customer/text()}</expression>
             </inputExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2"/>
@@ -238,33 +238,33 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <objectRef id="idb94a36d5-5437-4591-a966-ba03c46ffd79" objectId="D-N-do-itinerary-segment-startDate" type="output" optional="false" consumed="true"/>
-            <objectRef id="idbaf6c287-47e0-4609-8eb6-81273b45f394" objectId="D-N-do-itinerary-segment-serviceRequired" type="output" optional="false" consumed="true"/>
-            <objectRef id="ab1b5530-10d7-465e-b4a0-d6feea3f2b31" objectId="D-N-do-itinerary-segment-endDate" type="output" optional="false" consumed="true"/>
-            <objectRef id="ffdd89e1-8b8f-4da3-a6b0-b7e3127c9e6e" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
-            <objectRef id="a97e81f4-e6bc-4ccf-91ab-3fcccdefb9e8" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="idbe5e7340-290c-4cef-917a-751ad4b37846" objectId="D-N-do-itinerary-segment-startDate" type="output" optional="false" consumed="true"/>
+            <objectRef id="id5933bc62-1271-43f2-b553-38cbd18faf83" objectId="D-N-do-itinerary-segment-serviceRequired" type="output" optional="false" consumed="true"/>
+            <objectRef id="idfce913d1-5a76-475c-bae9-d0bd3c809f36" objectId="D-N-do-itinerary-segment-endDate" type="output" optional="false" consumed="true"/>
+            <objectRef id="id1fc71998-0988-4842-abca-d3c163e11c96" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
+            <objectRef id="iddffa8820-a3ab-41c5-bf29-f02214a64bac" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>leg = &lt;leg&gt;{/do_itinerary_segment/leg/*}&lt;/leg&gt;</expression>
+                <expression>leg = {/do_itinerary_segment/leg/*}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = &lt;customer&gt;{/do_itinerary_segment/customer/text()}&lt;/customer&gt;</expression>
+                <expression>customer = {/do_itinerary_segment/customer/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>startDate = &lt;startDate&gt;{/register_itinerary/startDate/text()}&lt;/startDate&gt;</expression>
+                <expression>startDate = {/register_itinerary/startDate/text()}</expression>
             </outputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>serviceRequired = &lt;serviceRequired&gt;{/register_itinerary/serviceRequired/*}&lt;/serviceRequired&gt;</expression>
+                <expression>serviceRequired = {/register_itinerary/serviceRequired/*}</expression>
             </outputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>endDate = &lt;endDate&gt;{/register_itinerary/endDate/text()}&lt;/endDate&gt;</expression>
+                <expression>endDate = {/register_itinerary/endDate/text()}</expression>
             </outputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="e6a311a3-3638-4361-80c2-63fa3176ca5c"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="id9b9eba41-8a2e-45ad-b9f2-ba73a2396186"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-book-car-29" originalID="book_car_29">
             <name>book car</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -309,30 +309,30 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <objectRef id="id8ade73b1-7225-4ddb-8dc2-5cb46c166f84" objectId="D-N-do-itinerary-segment-carDetails" type="output" optional="false" consumed="true"/>
-            <objectRef id="id4a17bbe9-29bb-4c68-ab6e-dc71b02feef3" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
-            <objectRef id="idb97f3fea-be5e-4693-ac00-1cea728f8719" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="id174b902b-3c27-4687-820c-661919085511" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="cf9f4162-ef39-405e-b86f-3131971d1b70" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="ff26bf99-d069-4e5b-8b2f-37a109a1c9fe" objectId="D-N-do-itinerary-segment-carDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="idf26ca54d-ef3f-4346-8899-60feca5388a9" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
+            <objectRef id="daae5e84-e9e9-472a-817a-1b1c9e22aefc" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="id84c7671c-bfc4-4a11-b22f-9786bfdfe54f" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="id9ee7512b-8979-4759-b9ed-f16ade59eaa0" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>leg = &lt;leg&gt;{/do_itinerary_segment/leg/*}&lt;/leg&gt;</expression>
+                <expression>leg = {/do_itinerary_segment/leg/*}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>startDate = &lt;startDate&gt;{/do_itinerary_segment/startDate/text()}&lt;/startDate&gt;</expression>
+                <expression>startDate = {/do_itinerary_segment/startDate/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>endDate = &lt;endDate&gt;{/do_itinerary_segment/endDate/text()}&lt;/endDate&gt;</expression>
+                <expression>endDate = {/do_itinerary_segment/endDate/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = &lt;customer&gt;{/do_itinerary_segment/customer/text()}&lt;/customer&gt;</expression>
+                <expression>customer = {/do_itinerary_segment/customer/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>carDetails = &lt;carDetails&gt;{/book_car/carDetails/text()}&lt;/carDetails&gt;</expression>
+                <expression>carDetails = {/book_car/carDetails/text()}</expression>
             </outputExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-book-flight-27" originalID="book_flight_27">
@@ -379,30 +379,30 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <objectRef id="d1cf3807-a9bd-4748-99e6-a82ebf1d54be" objectId="D-N-do-itinerary-segment-flightDetails" type="output" optional="false" consumed="true"/>
-            <objectRef id="idc01364c1-713c-48bb-9cf9-d40aad275bcc" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
-            <objectRef id="id5d727d66-7324-4971-92ed-d34eeadb92af" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="id2f15e696-c893-4932-b3ce-dc47279fc296" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="id61afd9ee-f7d6-4934-8117-d4792d31692f" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="cdd5e44f-7435-4de8-addf-6dcebd335641" objectId="D-N-do-itinerary-segment-flightDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="ae70f4aa-47b7-40c5-9ddf-2d630b1155f0" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
+            <objectRef id="id4a53bbce-6a2a-41ad-b5a2-d439d9b6101f" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="b4000c2b-c301-4d84-9e2f-d3e8576d87ac" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="b3b95b69-ff00-42d8-8c0f-86901dcb525c" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>leg = &lt;leg&gt;{/do_itinerary_segment/leg/*}&lt;/leg&gt;</expression>
+                <expression>leg = {/do_itinerary_segment/leg/*}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>startDate = &lt;startDate&gt;{/do_itinerary_segment/startDate/text()}&lt;/startDate&gt;</expression>
+                <expression>startDate = {/do_itinerary_segment/startDate/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>endDate = &lt;endDate&gt;{/do_itinerary_segment/endDate/text()}&lt;/endDate&gt;</expression>
+                <expression>endDate = {/do_itinerary_segment/endDate/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = &lt;customer&gt;{/do_itinerary_segment/customer/text()}&lt;/customer&gt;</expression>
+                <expression>customer = {/do_itinerary_segment/customer/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>flightDetails = &lt;flightDetails&gt;{/book_flight/flightDetails/text()}&lt;/flightDetails&gt;</expression>
+                <expression>flightDetails = {/book_flight/flightDetails/text()}</expression>
             </outputExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-book-hotel-28" originalID="book_hotel_28">
@@ -449,30 +449,30 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <objectRef id="id3a9e83c6-53cb-4dfb-b670-fa2a15b695a9" objectId="D-N-do-itinerary-segment-hotelDetails" type="output" optional="false" consumed="true"/>
-            <objectRef id="c311a9d3-1da1-4c60-8ab6-a38b8919b951" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
-            <objectRef id="idd65ea454-93b2-4684-aaf4-7e2f783cc954" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="id7aaffcd6-ef5b-403a-bf6a-499e3e5c7809" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="id989e22e2-942f-45bf-8536-ca28ccb03e52" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="id565c6f31-2cbc-4857-a725-de62864e0be2" objectId="D-N-do-itinerary-segment-hotelDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="a94f569f-ef18-4364-9308-b44d28a0158b" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
+            <objectRef id="e8ea08f1-d0ad-44ba-96d6-4ca8ede9a110" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="ea53f0d8-6236-4da9-8e92-269c480dccdb" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="idfd63c2b6-2918-45e6-bcaf-5e09290ffd72" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>leg = &lt;leg&gt;{/do_itinerary_segment/leg/*}&lt;/leg&gt;</expression>
+                <expression>leg = {/do_itinerary_segment/leg/*}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>startDate = &lt;startDate&gt;{/do_itinerary_segment/startDate/text()}&lt;/startDate&gt;</expression>
+                <expression>startDate = {/do_itinerary_segment/startDate/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>endDate = &lt;endDate&gt;{/do_itinerary_segment/endDate/text()}&lt;/endDate&gt;</expression>
+                <expression>endDate = {/do_itinerary_segment/endDate/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = &lt;customer&gt;{/do_itinerary_segment/customer/text()}&lt;/customer&gt;</expression>
+                <expression>customer = {/do_itinerary_segment/customer/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>hotelDetails = &lt;hotelDetails&gt;{/book_hotel/hotelDetails/text()}&lt;/hotelDetails&gt;</expression>
+                <expression>hotelDetails = {/book_hotel/hotelDetails/text()}</expression>
             </outputExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-prepare-pay-30" originalID="prepare_pay_30">
@@ -519,43 +519,43 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <objectRef id="c6c4dc9b-cc23-4912-9c6c-3d3846f6bac3" objectId="D-N-do-itinerary-segment-subTotal" type="output" optional="false" consumed="true"/>
-            <objectRef id="d3dc5c0b-81ec-451d-8136-42ebdbffb985" objectId="D-N-do-itinerary-segment-hotelDetails" type="input" optional="false" consumed="true"/>
-            <objectRef id="id9fb467ad-84c6-4ca3-9480-31d108e9fa95" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
-            <objectRef id="idb4f0ca5a-f10f-4d1c-9f7e-c9c92b3a9fa1" objectId="D-N-do-itinerary-segment-carDetails" type="input" optional="false" consumed="true"/>
-            <objectRef id="id3d18604b-686c-494d-a3b3-22c7e1ecff0c" objectId="D-N-do-itinerary-segment-flightDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="b6ac2073-8817-4c8d-8b0f-272fabe67fb8" objectId="D-N-do-itinerary-segment-subTotal" type="output" optional="false" consumed="true"/>
+            <objectRef id="idf0726efe-a663-432c-8c2a-ffd21e34baff" objectId="D-N-do-itinerary-segment-hotelDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="ide11fd02a-0fae-4ff5-8f5e-e44a11586dc6" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="id65c62440-323b-44de-96ab-19643225a87b" objectId="D-N-do-itinerary-segment-carDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="f7bf800a-18b3-49b3-9ba1-b9001bab222c" objectId="D-N-do-itinerary-segment-flightDetails" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>hotelDetails = &lt;hotelDetails&gt;{/do_itinerary_segment/hotelDetails/text()}&lt;/hotelDetails&gt;</expression>
+                <expression>hotelDetails = {/do_itinerary_segment/hotelDetails/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = &lt;customer&gt;{/do_itinerary_segment/customer/text()}&lt;/customer&gt;</expression>
+                <expression>customer = {/do_itinerary_segment/customer/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>carDetails = &lt;carDetails&gt;{/do_itinerary_segment/carDetails/text()}&lt;/carDetails&gt;</expression>
+                <expression>carDetails = {/do_itinerary_segment/carDetails/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>flightDetails = &lt;flightDetails&gt;{/do_itinerary_segment/flightDetails/text()}&lt;/flightDetails&gt;</expression>
+                <expression>flightDetails = {/do_itinerary_segment/flightDetails/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>subTotal = &lt;subTotal&gt;{number(/prepare_pay/subTotal/text())}&lt;/subTotal&gt;</expression>
+                <expression>subTotal = {number(/prepare_pay/subTotal/text())}</expression>
             </outputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="idbc64f628-cb7e-4205-8162-b9fe811b3845"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="f79056b1-1f48-44d7-8efc-3941e838d091"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-9" originalID="OutputCondition_9"/>
         <Edge id="C-InputCondition-8-register-itinerary-26" default="true" sourceId="C-InputCondition-8" targetId="C-register-itinerary-26"/>
-        <Edge id="idebb6b8ec-2f51-49d0-b6ab-4fa197eec9d3" default="true" sourceId="C-register-itinerary-26" targetId="e6a311a3-3638-4361-80c2-63fa3176ca5c"/>
-        <Edge id="id37c8d11f-d049-46e7-9479-33d78c321013" default="true" sourceId="e6a311a3-3638-4361-80c2-63fa3176ca5c" targetId="C-book-car-29"/>
-        <Edge id="id9fa4dc04-173b-4207-9294-b52b2a532be8" default="true" sourceId="e6a311a3-3638-4361-80c2-63fa3176ca5c" targetId="C-book-flight-27"/>
-        <Edge id="id60c1da73-64ff-4543-aa8d-cb91b20fea5c" default="true" sourceId="e6a311a3-3638-4361-80c2-63fa3176ca5c" targetId="C-book-hotel-28"/>
-        <Edge id="id6c0b03a8-a3e7-497a-8c06-84cff96351e1" default="true" sourceId="idbc64f628-cb7e-4205-8162-b9fe811b3845" targetId="C-prepare-pay-30"/>
-        <Edge id="ide5b93c6a-3527-4cdf-9950-3c4248775b1d" default="true" sourceId="C-book-car-29" targetId="idbc64f628-cb7e-4205-8162-b9fe811b3845"/>
-        <Edge id="id7de32803-693b-4e04-94bf-5163c4aa8a22" default="true" sourceId="C-book-flight-27" targetId="idbc64f628-cb7e-4205-8162-b9fe811b3845"/>
-        <Edge id="id71bb3869-d28e-4647-965e-b32f5167f5f0" default="true" sourceId="C-book-hotel-28" targetId="idbc64f628-cb7e-4205-8162-b9fe811b3845"/>
+        <Edge id="id37811a1e-9597-486a-99f5-d0a919c1559e" default="true" sourceId="C-register-itinerary-26" targetId="id9b9eba41-8a2e-45ad-b9f2-ba73a2396186"/>
+        <Edge id="idd6d9afef-5b3d-4d53-8051-5a9bae1600df" default="true" sourceId="id9b9eba41-8a2e-45ad-b9f2-ba73a2396186" targetId="C-book-car-29"/>
+        <Edge id="id1c385c23-5edf-458b-9f40-5d1b396ab33d" default="true" sourceId="id9b9eba41-8a2e-45ad-b9f2-ba73a2396186" targetId="C-book-flight-27"/>
+        <Edge id="ide3451b18-2b06-4bec-85bf-6f45848b10a0" default="true" sourceId="id9b9eba41-8a2e-45ad-b9f2-ba73a2396186" targetId="C-book-hotel-28"/>
+        <Edge id="id514571ec-80f8-4329-b1ec-bd8002bf72d3" default="true" sourceId="f79056b1-1f48-44d7-8efc-3941e838d091" targetId="C-prepare-pay-30"/>
+        <Edge id="id90922ac8-a141-4825-9842-8fa977f0fcfa" default="true" sourceId="C-book-car-29" targetId="f79056b1-1f48-44d7-8efc-3941e838d091"/>
+        <Edge id="id9e86aea8-8495-414d-89d1-583c7a8ab2fd" default="true" sourceId="C-book-flight-27" targetId="f79056b1-1f48-44d7-8efc-3941e838d091"/>
+        <Edge id="id4e92fb11-a999-466c-a766-100e8f70b7de" default="true" sourceId="C-book-hotel-28" targetId="f79056b1-1f48-44d7-8efc-3941e838d091"/>
         <Edge id="C-prepare-pay-30-OutputCondition-9" default="true" sourceId="C-prepare-pay-30" targetId="C-OutputCondition-9"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-do-itinerary-segment-endDate" originalID="N-do-itinerary-segment_endDate">
             <name>endDate</name>

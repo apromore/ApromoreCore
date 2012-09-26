@@ -36,40 +36,40 @@ import de.hbrs.oryx.yawl.converter.layout.YAWLLayoutConverter;
 
 public abstract class YAWLHandlerTest {
 
-	protected YAWLConversionContext orderFContext;
-	protected YAWLConversionContext testContext;
+    protected YAWLConversionContext orderFContext;
+    protected YAWLConversionContext testContext;
 
-	@Before
-	public void setUp() throws JDOMException, IOException {
-		orderFContext = new YAWLConversionContext();
-		orderFContext.setHandlerFactory(new HandlerFactoryImpl(orderFContext, new OryxConversionContext()));
-		new YAWLLayoutConverter(YAWLTestData.orderFulfillmentSource, orderFContext).convertLayout();
+    @Before
+    public void setUp() throws JDOMException, IOException {
+        orderFContext = new YAWLConversionContext();
+        orderFContext.setHandlerFactory(new HandlerFactoryImpl(orderFContext, new OryxConversionContext()));
+        new YAWLLayoutConverter(YAWLTestData.orderFulfillmentSource, orderFContext).convertLayout();
 
-		testContext = new YAWLConversionContext();
-		testContext.setHandlerFactory(new HandlerFactoryImpl(testContext, new OryxConversionContext()));
-		new YAWLLayoutConverter(YAWLTestData.testSource, testContext).convertLayout();
-	}
+        testContext = new YAWLConversionContext();
+        testContext.setHandlerFactory(new HandlerFactoryImpl(testContext, new OryxConversionContext()));
+        new YAWLLayoutConverter(YAWLTestData.testSource, testContext).convertLayout();
+    }
 
-	protected BasicShape findShapeInOrderF(YNet net, YNetElement task) {
-		Iterator<BasicShape> iterator = orderFContext.getNet(net.getID()).getChildShapesReadOnly().iterator();
-		while (iterator.hasNext()) {
-			BasicShape child = iterator.next();
-			if (child.getProperty("yawlid").equals(task.getID())) {
-				return child;
-			}
-		}
-		return null;
-	}
+    protected BasicShape findShapeInOrderF(final YNet net, final YNetElement task) {
+        Iterator<BasicShape> iterator = orderFContext.getNet(net.getID()).getChildShapesReadOnly().iterator();
+        while (iterator.hasNext()) {
+            BasicShape child = iterator.next();
+            if (child.getProperty("yawlid").equals(task.getID())) {
+                return child;
+            }
+        }
+        return null;
+    }
 
-	protected BasicShape findShapeInTest(YNet net, YNetElement task) {
-		Iterator<BasicShape> iterator = testContext.getNet(net.getID()).getChildShapesReadOnly().iterator();
-		while (iterator.hasNext()) {
-			BasicShape child = iterator.next();
-			if (child.getProperty("yawlid").equals(task.getID())) {
-				return child;
-			}
-		}
-		return null;
-	}
+    protected BasicShape findShapeInTest(final YNet net, final YNetElement task) {
+        Iterator<BasicShape> iterator = testContext.getNet(net.getID()).getChildShapesReadOnly().iterator();
+        while (iterator.hasNext()) {
+            BasicShape child = iterator.next();
+            if (child.getProperty("yawlid").equals(task.getID())) {
+                return child;
+            }
+        }
+        return null;
+    }
 
 }

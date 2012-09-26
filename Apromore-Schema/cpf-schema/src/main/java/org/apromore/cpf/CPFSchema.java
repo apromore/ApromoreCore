@@ -125,4 +125,30 @@ public class CPFSchema {
         return taskObjectName + " = " + expression;
     }
 
+    /**
+     * Gets the name of the Task Object from an input expression.
+     *
+     * @param expression a valid input expression
+     * @return object name
+     */
+    public static String getTaskObjectName(final String expression) {
+        String[] splittedExpr = expression.split(" = ");
+        if (splittedExpr.length > 1) {
+            return splittedExpr[0];
+        } else {
+            throw new IllegalArgumentException("Invalid expression as input");
+        }
+    }
+
+    /**
+     * Gets the name of the Net Object from an output expression.
+     *
+     * @param expression a valid output expression
+     * @return object name
+     */
+    public static String getNetObjectName(final String expression) {
+        // For now the same
+        return getTaskObjectName(expression);
+    }
+
 }

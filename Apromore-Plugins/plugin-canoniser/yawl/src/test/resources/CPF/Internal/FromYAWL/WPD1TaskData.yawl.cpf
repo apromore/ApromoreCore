@@ -53,35 +53,35 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <objectRef id="idf9fea33c-50f3-4634-9924-ce7c52b7ee14" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
-            <objectRef id="fdccd292-b3f1-4a2d-83a4-31a2aaf15452" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
-            <objectRef id="idf1c8ce92-a7ec-4cd8-9250-55543b68a73a" objectId="D-N-Net-n4" type="output" optional="false" consumed="true"/>
-            <objectRef id="bc4ea159-7387-4a5a-9701-ccbc2bf11b37" objectId="D-N-Net-n3" type="input" optional="false" consumed="true"/>
-            <objectRef id="d7fcbb4e-801a-4487-b9a5-2751fd928394" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
-            <objectRef id="da4224e6-60bb-4a70-8c33-0d693ad85618" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="id8563b2f7-3efd-45bf-858a-928685d8ee56" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
+            <objectRef id="idea6211b2-f31d-448e-9fd8-037709bbc683" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
+            <objectRef id="fdf3f1c3-32a0-4a55-bd29-5a9afe59b404" objectId="D-N-Net-n4" type="output" optional="false" consumed="true"/>
+            <objectRef id="bac2fa11-e2bd-4106-b487-47503789696d" objectId="D-N-Net-n3" type="input" optional="false" consumed="true"/>
+            <objectRef id="id32342c6d-8e9a-4a86-bf79-3f5a55082856" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="f9617a1a-14fc-48fe-b72e-4dac552d1399" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>t3 = &lt;t3&gt;{/Net/n3/text()}&lt;/t3&gt;</expression>
+                <expression>t3 = {/Net/n3/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>t2 = &lt;t2&gt;{/Net/n1/text()}&lt;/t2&gt;</expression>
+                <expression>t2 = {/Net/n1/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>t1 = &lt;t1&gt;{/Net/n1/text()}&lt;/t1&gt;</expression>
+                <expression>t1 = {/Net/n1/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>n3 = &lt;n3&gt;{/A/t3/text()}&lt;/n3&gt;</expression>
+                <expression>n3 = {/A/t3/text()}</expression>
             </outputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>n2 = &lt;n2&gt;{/A/t3/text()}&lt;/n2&gt;</expression>
+                <expression>n2 = {/A/t3/text()}</expression>
             </outputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>n4 = &lt;n4&gt;{/A/t4/text()}&lt;/n4&gt;</expression>
+                <expression>n4 = {/A/t4/text()}</expression>
             </outputExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-B" originalID="B">
@@ -125,25 +125,25 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <objectRef id="id79c74054-06b3-44ec-99d4-f20c2505ceb8" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
-            <objectRef id="f0d43d58-f096-4f8d-b8a9-99a742f61416" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
-            <objectRef id="id974db4af-6061-4e87-a130-70201286d2ec" objectId="D-N-Net-n2" type="input" optional="false" consumed="true"/>
-            <objectRef id="f929c80e-827b-46c9-b4a5-0dd4d77b2a47" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="e0190eec-1e2e-47d4-8f67-53119a8d78cc" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
+            <objectRef id="e7e7ac5a-1cdb-43f0-80a3-9f68018ecc13" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
+            <objectRef id="idce87ff92-880f-4917-8546-518f5d8dad36" objectId="D-N-Net-n2" type="input" optional="false" consumed="true"/>
+            <objectRef id="id0c9ba001-8782-4046-bd77-f812bedf545f" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>t2 = &lt;t2&gt;{/Net/n2/text()}&lt;/t2&gt;</expression>
+                <expression>t2 = {/Net/n2/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>t1 = &lt;t1&gt;{/Net/n1/text()}&lt;/t1&gt;</expression>
+                <expression>t1 = {/Net/n1/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>n2 = &lt;n2&gt;{/B/t1/text()}&lt;/n2&gt;</expression>
+                <expression>n2 = {/B/t1/text()}</expression>
             </outputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>n3 = &lt;n3&gt;{/B/t1/text()}&lt;/n3&gt;</expression>
+                <expression>n3 = {/B/t1/text()}</expression>
             </outputExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">

@@ -29,15 +29,15 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <objectRef id="id8710a3c3-343b-44e7-99f1-63fa8a2d7f4f" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="ac71c100-0204-4127-abd2-e736c9a5590d" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="idefdec323-c2ca-4f1b-83be-f0afc71a34ba" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="id87fc5a4f-5ee7-4d40-9d88-dc743b9aab34" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>var = &lt;var&gt;{/Net/var/text()}&lt;/var&gt;</expression>
+                <expression>var = {/Net/var/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>var = &lt;var&gt;{/A/var/text()}&lt;/var&gt;</expression>
+                <expression>var = {/A/var/text()}</expression>
             </outputExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="C-B-1" originalID="B_1">
@@ -68,15 +68,15 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <objectRef id="idbd91db47-15bb-4b9a-a009-c88e4f989bc3" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="id6848cf9f-3278-4276-b658-25514240ff51" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="e8754e41-2de5-47a3-8872-7b2fce9ed21d" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="id66ce5063-1ed1-4c28-b05e-5edf4e116aea" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>var = &lt;var&gt;{/Net/var/text()}&lt;/var&gt;</expression>
+                <expression>var = {/Net/var/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>var = &lt;var&gt;{/B/var/text()}&lt;/var&gt;</expression>
+                <expression>var = {/B/var/text()}</expression>
             </outputExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-D-1" originalID="D_1">
@@ -85,14 +85,14 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="e69b6888-1db4-4c19-9eaf-bc7cb65cd852"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="id8ce84425-c23d-4f3f-9a1b-eddbe42a0e59"/>
         <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
         <Edge id="C-A-B-1" default="true" sourceId="C-A" targetId="C-B-1"/>
         <Edge id="C-B-1-C-1" default="true" sourceId="C-B-1" targetId="C-C-1"/>
         <Edge id="C-B-1-D-1" default="true" sourceId="C-B-1" targetId="C-D-1"/>
-        <Edge id="idf9eba5e9-a93a-41d2-a2f2-c37eccfbe860" default="true" sourceId="e69b6888-1db4-4c19-9eaf-bc7cb65cd852" targetId="C-OutputCondition"/>
-        <Edge id="idd9e4e097-a21f-4a75-a72e-1851261a5f18" default="true" sourceId="C-C-1" targetId="e69b6888-1db4-4c19-9eaf-bc7cb65cd852"/>
-        <Edge id="idb992b072-bb02-41f7-981a-802b56001ece" default="true" sourceId="C-D-1" targetId="e69b6888-1db4-4c19-9eaf-bc7cb65cd852"/>
+        <Edge id="id38886252-4e68-4e85-9bf5-3fd48b438501" default="true" sourceId="id8ce84425-c23d-4f3f-9a1b-eddbe42a0e59" targetId="C-OutputCondition"/>
+        <Edge id="ide591a6dc-5607-4fe4-9e65-941ade2956d0" default="true" sourceId="C-C-1" targetId="id8ce84425-c23d-4f3f-9a1b-eddbe42a0e59"/>
+        <Edge id="idfd843001-5531-49bb-b597-fa187b3548ef" default="true" sourceId="C-D-1" targetId="id8ce84425-c23d-4f3f-9a1b-eddbe42a0e59"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-var" originalID="N-Net_var">
             <name>var</name>
             <type>string</type>

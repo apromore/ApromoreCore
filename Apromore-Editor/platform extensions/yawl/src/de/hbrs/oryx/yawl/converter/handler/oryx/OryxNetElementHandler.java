@@ -34,41 +34,41 @@ import de.hbrs.oryx.yawl.converter.context.OryxConversionContext;
  */
 public abstract class OryxNetElementHandler extends OryxDecompositionHandler {
 
-	public OryxNetElementHandler(OryxConversionContext context, BasicShape shape) {
-		super(context, shape);
-	}
-	
-	/**
-	 * Converting the incoming flowShapes to YFlows
-	 * 
-	 * @param element
-	 *            with incoming flows, should have been added to YNet already!
-	 */
-	protected void rememberIncomings() {
-		List<BasicShape> incomings = getShape().getIncomingsReadOnly();
-		addFlows(incomings);
-	}
+    public OryxNetElementHandler(final OryxConversionContext context, final BasicShape shape) {
+        super(context, shape);
+    }
 
-	/**
-	 * Converting the outgoing flowShapes to YFlows
-	 * 
-	 * @param element
-	 *            with incoming flows, should have been added to YNet already!
-	 */
-	protected void rememberOutgoings() {
-		List<BasicShape> outgoings = getShape().getOutgoingsReadOnly();
-		addFlows(outgoings);
-	}
+    /**
+     * Converting the incoming flowShapes to YFlows
+     * 
+     * @param element
+     *            with incoming flows, should have been added to YNet already!
+     */
+    protected void rememberIncomings() {
+        List<BasicShape> incomings = getShape().getIncomingsReadOnly();
+        addFlows(incomings);
+    }
 
-	private void addFlows(List<BasicShape> outgoings) {
-		for (BasicShape flowShape : outgoings) {
-			if (flowShape instanceof BasicEdge) {
-				getContext().addFlow(getShape().getParent(), (BasicEdge) flowShape);
-			} else {
-				// TODO check if these Shapes are still needed
-				getContext().addConversionWarnings("Edge was not added to FlowSet " + flowShape.toString(), null);
-			}
-		}
-	}
+    /**
+     * Converting the outgoing flowShapes to YFlows
+     * 
+     * @param element
+     *            with incoming flows, should have been added to YNet already!
+     */
+    protected void rememberOutgoings() {
+        List<BasicShape> outgoings = getShape().getOutgoingsReadOnly();
+        addFlows(outgoings);
+    }
+
+    private void addFlows(final List<BasicShape> outgoings) {
+        for (BasicShape flowShape : outgoings) {
+            if (flowShape instanceof BasicEdge) {
+                getContext().addFlow(getShape().getParent(), (BasicEdge) flowShape);
+            } else {
+                // TODO check if these Shapes are still needed
+                getContext().addConversionWarnings("Edge was not added to FlowSet " + flowShape.toString(), null);
+            }
+        }
+    }
 
 }

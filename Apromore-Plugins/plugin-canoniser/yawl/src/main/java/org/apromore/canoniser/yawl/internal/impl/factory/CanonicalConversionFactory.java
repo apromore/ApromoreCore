@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.factory;
@@ -34,16 +34,22 @@ import org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations.A
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations.EdgeGraphicsTypeHandler;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations.NetGraphicsTypeHandler;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations.NodeGraphicsTypeHandler;
+import org.apromore.canoniser.yawl.internal.impl.handler.canonical.data.InputExpressionTypeHandler;
+import org.apromore.canoniser.yawl.internal.impl.handler.canonical.data.ObjectRefTypeHandler;
+import org.apromore.canoniser.yawl.internal.impl.handler.canonical.data.OutputExpressionTypeHandler;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
+import org.apromore.cpf.InputExpressionType;
 import org.apromore.cpf.MessageType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ORJoinType;
 import org.apromore.cpf.ORSplitType;
+import org.apromore.cpf.ObjectRefType;
+import org.apromore.cpf.OutputExpressionType;
 import org.apromore.cpf.StateType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.XORJoinType;
@@ -53,9 +59,9 @@ import org.slf4j.LoggerFactory;
 
 /**
  * Factory Class for Canonical Format through which all Handlers are created. Basically the mapping between Input objects and their Handler classes.
- * 
+ *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class CanonicalConversionFactory implements ConversionFactory {
 
@@ -80,6 +86,10 @@ public class CanonicalConversionFactory implements ConversionFactory {
             put(ORJoinType.class.getName(), CanonicalNoOpHandler.class);
             put(ANDSplitType.class.getName(), CanonicalNoOpHandler.class);
             put(ANDJoinType.class.getName(), CanonicalNoOpHandler.class);
+            // Data
+            put(InputExpressionType.class.getName(), InputExpressionTypeHandler.class);
+            put(OutputExpressionType.class.getName(), OutputExpressionTypeHandler.class);
+            put(ObjectRefType.class.getName(), ObjectRefTypeHandler.class);
             // Annotations
             put(AnnotationsType.class.getName(), AnnotationsTypeHandler.class);
             put(DocumentationType.class.getName(), CanonicalNoOpHandler.class);
@@ -100,7 +110,7 @@ public class CanonicalConversionFactory implements ConversionFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.factory.ConversionFactory#createHandler(java.lang.Object, java.lang.Object, java.lang.Object,
      * java.lang.Class)
      */
@@ -120,7 +130,7 @@ public class CanonicalConversionFactory implements ConversionFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.factory.ConversionFactory#createHandler(java.lang.Object, java.lang.Object, java.util.Set)
      */
     @Override
@@ -132,7 +142,6 @@ public class CanonicalConversionFactory implements ConversionFactory {
         if (obj != null) {
 
             if (obj instanceof NetType) {
-                final NetType net = (NetType) obj;
                 conversionHandler = new NetTypeHandler();
             } else if (obj instanceof GraphicsType) {
                 if (isNetLayout((GraphicsType) obj)) {

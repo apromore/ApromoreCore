@@ -16,6 +16,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Queue;
@@ -26,6 +27,7 @@ import org.apromore.anf.GraphicsType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.CanonicalElementHandler;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
+import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.slf4j.Logger;
@@ -50,7 +52,7 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
     private static final int DEFAULT_SPEC_WIDTH = 100;
     private static final int DEFAULT_SPEC_HEIGHT = 100;
 
-    private class BFSInfo {
+    private final class BFSInfo {
         public BFSInfo(final int distance) {
             this.setDepth(distance);
         }
@@ -78,6 +80,8 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
         final LayoutFactsType layoutFacts = YAWL_FACTORY.createLayoutFactsType();
         layoutFacts.setLocale(convertLocale());
         getContext().getYAWLSpecificationSet().setLayout(layoutFacts);
+        // Remember our Locale for number conversions
+        getContext().setYawlLocale(new Locale(layoutFacts.getLocale().getLanguage(), layoutFacts.getLocale().getCountry()));
 
         // Initalise layout for this specification
         final Specification specLayout = YAWL_FACTORY.createLayoutFactsTypeSpecification();
@@ -139,8 +143,7 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
             LOGGER.warn("YAWL Net {} contains more than one source Node {}", ConversionUtils.toString(net),
                     ConversionUtils.nodesToString(sourceNodes));
         } else if (sourceNodes.size() == 0) {
-            LOGGER.warn("YAWL Net {} contains no source Node {}", ConversionUtils.toString(net),
-                    ConversionUtils.nodesToString(sourceNodes));
+            LOGGER.warn("YAWL Net {} contains no source Node {}", ConversionUtils.toString(net), ConversionUtils.nodesToString(sourceNodes));
             // Just assume all nodes as valid start points
             sourceNodes = net.getNode();
         }
@@ -255,15 +258,10 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
     }
 
     private LayoutLocaleType convertLocale() {
-        final LayoutLocaleType yawlLocale = getContext().getExtensionFromAnnotations(null, "locale", LayoutLocaleType.class);
-        if (yawlLocale != null) {
-            return yawlLocale;
-        } else {
-            final LayoutLocaleType layoutLocale = YAWL_FACTORY.createLayoutLocaleType();
-            layoutLocale.setCountry(getContext().getYawlLocale().getCountry());
-            layoutLocale.setLanguage(getContext().getYawlLocale().getLanguage());
-            return layoutLocale;
-        }
+        final LayoutLocaleType defaultLayoutLocale = YAWL_FACTORY.createLayoutLocaleType();
+        defaultLayoutLocale.setCountry(getContext().getYawlLocale().getCountry());
+        defaultLayoutLocale.setLanguage(getContext().getYawlLocale().getLanguage());
+        return getContext().getExtensionFromAnnotations(null, ExtensionUtils.LOCALE, LayoutLocaleType.class, defaultLayoutLocale);
     }
 
 }

@@ -27,8 +27,7 @@ import org.yawlfoundation.yawl.elements.YMultiInstanceAttributes;
 import org.yawlfoundation.yawl.elements.YTask;
 
 /**
- * Converts the MultiInstance attributes of both a AtomicTask and CompositeTask.
- * Would have needed multiple inheritance or another inheritance tree to
+ * Converts the MultiInstance attributes of both a AtomicTask and CompositeTask. Would have needed multiple inheritance or another inheritance tree to
  * integrate this class in the Handler logic.
  * 
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University of Applied Sciences)
@@ -36,52 +35,52 @@ import org.yawlfoundation.yawl.elements.YTask;
  */
 public class MultiInstanceConverter {
 
-	public static Map<String, String> convert(YTask task) {
-		HashMap<String, String> map = new HashMap<String, String>();
+    public static Map<String, String> convert(final YTask task) {
+        HashMap<String, String> map = new HashMap<String, String>();
 
-		if (task.isMultiInstance()) {
-			YMultiInstanceAttributes m = task.getMultiInstanceAttributes();
-			map.put("minimum", String.valueOf(m.getMinInstances()));
-			map.put("maximum", String.valueOf(m.getMaxInstances()));
-			map.put("threshold", String.valueOf(m.getThreshold()));
-			map.put("creationmode", m.getCreationMode());
-			map.put("miinputexpression", task.getPreSplittingMIQuery());
-			map.put("miinputsplittingexpression", m.getMISplittingQuery());
-			map.put("miinputformalinputparam", m.getMIFormalInputParam());
-			if (m.getMIFormalOutputQuery() != null) {
-				map.put("mioutputformaloutputexpression", m.getMIFormalOutputQuery());
-				map.put("mioutputoutputjoiningexpression", m.getMIJoiningQuery());
-				map.put("mioutputresultappliedtolocalvariable", task.getMIOutputAssignmentVar(m.getMIFormalOutputQuery()));
-			}
-		}
+        if (task.isMultiInstance()) {
+            YMultiInstanceAttributes m = task.getMultiInstanceAttributes();
+            map.put("minimum", String.valueOf(m.getMinInstances()));
+            map.put("maximum", String.valueOf(m.getMaxInstances()));
+            map.put("threshold", String.valueOf(m.getThreshold()));
+            map.put("creationmode", m.getCreationMode());
+            map.put("miinputexpression", task.getPreSplittingMIQuery());
+            map.put("miinputsplittingexpression", m.getMISplittingQuery());
+            map.put("miinputformalinputparam", m.getMIFormalInputParam());
+            if (m.getMIFormalOutputQuery() != null) {
+                map.put("mioutputformaloutputexpression", m.getMIFormalOutputQuery());
+                map.put("mioutputoutputjoiningexpression", m.getMIJoiningQuery());
+                map.put("mioutputresultappliedtolocalvariable", task.getMIOutputAssignmentVar(m.getMIFormalOutputQuery()));
+            }
+        }
 
-		return map;
-	}
+        return map;
+    }
 
-	public static void convert(BasicShape shape, YTask task) {
-		String min = shape.getProperty("minimum");
-		String max = shape.getProperty("maximum");
-		String threshold = shape.getProperty("threshold");
-		String creationMode = shape.getProperty("creationmode");
+    public static void convert(final BasicShape shape, final YTask task) {
+        String min = shape.getProperty("minimum");
+        String max = shape.getProperty("maximum");
+        String threshold = shape.getProperty("threshold");
+        String creationMode = shape.getProperty("creationmode");
 
-		task.setUpMultipleInstanceAttributes(min, max, threshold, creationMode);
+        task.setUpMultipleInstanceAttributes(min, max, threshold, creationMode);
 
-		String preSplittingMIQuery = shape.getProperty("miinputexpression");
-		String miSplittingQuery = shape.getProperty("miinputsplittingexpression");
-		String miFormalInputParam = shape.getProperty("miinputformalinputparam");
-		String miFormalOutputQuery = shape.getProperty("mioutputformaloutputexpression");
-		String miJoiningQuery = shape.getProperty("mioutputoutputjoiningexpression");
-		String mioutputAssignmentVar = shape.getProperty("mioutputresultappliedtolocalvariable");
+        String preSplittingMIQuery = shape.getProperty("miinputexpression");
+        String miSplittingQuery = shape.getProperty("miinputsplittingexpression");
+        String miFormalInputParam = shape.getProperty("miinputformalinputparam");
+        String miFormalOutputQuery = shape.getProperty("mioutputformaloutputexpression");
+        String miJoiningQuery = shape.getProperty("mioutputoutputjoiningexpression");
+        String mioutputAssignmentVar = shape.getProperty("mioutputresultappliedtolocalvariable");
 
-		YMultiInstanceAttributes m = task.getMultiInstanceAttributes();
-		m.setMIFormalInputParam(miFormalInputParam);
-		m.setMIFormalOutputQuery(miFormalOutputQuery);
+        YMultiInstanceAttributes m = task.getMultiInstanceAttributes();
+        m.setMIFormalInputParam(miFormalInputParam);
+        m.setMIFormalOutputQuery(miFormalOutputQuery);
 
-		m.setUniqueInputMISplittingQuery(miSplittingQuery);
-		m.setUniqueOutputMIJoiningQuery(miJoiningQuery);
+        m.setUniqueInputMISplittingQuery(miSplittingQuery);
+        m.setUniqueOutputMIJoiningQuery(miJoiningQuery);
 
-		task.setDataBindingForInputParam(preSplittingMIQuery, miFormalInputParam);
-		task.setDataBindingForOutputExpression(miFormalOutputQuery, mioutputAssignmentVar);
-	}
+        task.setDataBindingForInputParam(preSplittingMIQuery, miFormalInputParam);
+        task.setDataBindingForOutputExpression(miFormalOutputQuery, mioutputAssignmentVar);
+    }
 
 }

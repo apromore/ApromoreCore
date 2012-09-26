@@ -44,116 +44,112 @@ import de.hbrs.oryx.yawl.util.YAWLUtils;
  */
 public class AtomicTaskHandler extends TaskHandler {
 
-	public AtomicTaskHandler(YAWLConversionContext context, YAtomicTask atomicTask) {
-		super(context, atomicTask, "AtomicTask", atomicTask.getDecompositionPrototype());
-	}
+    public AtomicTaskHandler(final YAWLConversionContext context, final YAtomicTask atomicTask) {
+        super(context, atomicTask, "AtomicTask", atomicTask.getDecompositionPrototype());
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.hbrs.oryx.yawl.converter.handler.yawl.element.TaskHandler#
-	 * convertTaskProperties
-	 * (de.hbrs.oryx.yawl.converter.layout.NetElementLayout)
-	 */
-	@Override
-	protected HashMap<String, String> convertTaskProperties(NetElementLayout layout) {
-		HashMap<String, String> properties = super.convertTaskProperties(layout);
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.yawl.element.TaskHandler# convertTaskProperties (de.hbrs.oryx.yawl.converter.layout.NetElementLayout)
+     */
+    @Override
+    protected HashMap<String, String> convertTaskProperties(final NetElementLayout layout) {
+        HashMap<String, String> properties = super.convertTaskProperties(layout);
 
-		YAtomicTask task = (YAtomicTask) getNetElement();
+        YAtomicTask task = (YAtomicTask) getNetElement();
 
-		Element resourcingSpecs = task.getResourcingSpecs();
-		properties.putAll(convertResourcing(resourcingSpecs));
-		properties.putAll(convertDecompositionProperties());
+        Element resourcingSpecs = task.getResourcingSpecs();
+        properties.putAll(convertResourcing(resourcingSpecs));
+        properties.putAll(convertDecompositionProperties());
 
-		return properties;
-	}
+        return properties;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * de.hbrs.oryx.yawl.converter.handler.yawl.decomposition.DecompositionHandler
-	 * #convertDecompositionProperties()
-	 */
-	@Override
-	protected HashMap<String, String> convertDecompositionProperties() {
-		HashMap<String, String> properties = super.convertDecompositionProperties();
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.yawl.decomposition.DecompositionHandler #convertDecompositionProperties()
+     */
+    @Override
+    protected HashMap<String, String> convertDecompositionProperties() {
+        HashMap<String, String> properties = super.convertDecompositionProperties();
 
-		if (hasDecomposition()) {
-			try {
-				properties.put("decompositionvariables", convertDecompositionVariables());
-			} catch (ConversionException e) {
-				getContext().addConversionWarnings("Could not convert decomposition variables.", e);
-			}
-		}
+        if (hasDecomposition()) {
+            try {
+                properties.put("decompositionvariables", convertDecompositionVariables());
+            } catch (ConversionException e) {
+                getContext().addConversionWarnings("Could not convert decomposition variables.", e);
+            }
+        }
 
-		return properties;
-	}
+        return properties;
+    }
 
-	private HashMap<String, String> convertResourcing(Element resourcingSpecs) {
-		HashMap<String, String> properties = new HashMap<String, String>();
+    private HashMap<String, String> convertResourcing(final Element resourcingSpecs) {
+        HashMap<String, String> properties = new HashMap<String, String>();
 
-		if (resourcingSpecs == null) {
-			getContext().addConversionWarnings("No resourcing specification " + getNetElement().getID(), null);
-			return properties;
-		}
+        if (resourcingSpecs == null) {
+            getContext().addConversionWarnings("No resourcing specification " + getNetElement().getID(), null);
+            return properties;
+        }
 
-		Element offer = resourcingSpecs.getChild("offer", resourcingSpecs.getNamespace());
-		if (offer != null) {
-			properties.put("offerinitiator", offer.getAttributeValue("initiator"));
-			properties.put("offerinteraction", YAWLUtils.elementToString(offer.getChildren()));
-		}
+        Element offer = resourcingSpecs.getChild("offer", resourcingSpecs.getNamespace());
+        if (offer != null) {
+            properties.put("offerinitiator", offer.getAttributeValue("initiator"));
+            properties.put("offerinteraction", YAWLUtils.elementToString(offer.getChildren()));
+        }
 
-		Element allocate = resourcingSpecs.getChild("allocate", resourcingSpecs.getNamespace());
-		if (allocate != null) {
-			properties.put("allocateinitiator", allocate.getAttributeValue("initiator"));
-			properties.put("allocateinteraction", YAWLUtils.elementToString(allocate.getChildren()));
-		}
+        Element allocate = resourcingSpecs.getChild("allocate", resourcingSpecs.getNamespace());
+        if (allocate != null) {
+            properties.put("allocateinitiator", allocate.getAttributeValue("initiator"));
+            properties.put("allocateinteraction", YAWLUtils.elementToString(allocate.getChildren()));
+        }
 
-		Element start = resourcingSpecs.getChild("start", resourcingSpecs.getNamespace());
-		if (start != null) {
-			properties.put("startinitiator", start.getAttributeValue("initiator"));
-			properties.put("startinteraction", YAWLUtils.elementToString(start.getChildren()));
-		}
+        Element start = resourcingSpecs.getChild("start", resourcingSpecs.getNamespace());
+        if (start != null) {
+            properties.put("startinitiator", start.getAttributeValue("initiator"));
+            properties.put("startinteraction", YAWLUtils.elementToString(start.getChildren()));
+        }
 
-		Element privileges = resourcingSpecs.getChild("privileges", resourcingSpecs.getNamespace());
-		if (privileges != null) {
-			properties.put("privileges", YAWLUtils.elementToString(privileges.getChildren()));
-		}
+        Element privileges = resourcingSpecs.getChild("privileges", resourcingSpecs.getNamespace());
+        if (privileges != null) {
+            properties.put("privileges", YAWLUtils.elementToString(privileges.getChildren()));
+        }
 
-		return properties;
-	}
+        return properties;
+    }
 
-	private String convertDecompositionVariables() throws ConversionException {
-		JSONObject variables = new JSONObject();
-		JSONArray items = new JSONArray();
+    private String convertDecompositionVariables() throws ConversionException {
+        JSONObject variables = new JSONObject();
+        JSONArray items = new JSONArray();
 
-		List<YParameter> inputList = new ArrayList<YParameter>(getDecomposition().getInputParameters().values());
-		Collections.sort(inputList);
+        List<YParameter> inputList = new ArrayList<YParameter>(getDecomposition().getInputParameters().values());
+        Collections.sort(inputList);
 
-		List<YParameter> outputList = new ArrayList<YParameter>(getDecomposition().getOutputParameters().values());
-		Collections.sort(outputList);
+        List<YParameter> outputList = new ArrayList<YParameter>(getDecomposition().getOutputParameters().values());
+        Collections.sort(outputList);
 
-		try {
-			for (YParameter inputParam : inputList) {
-				if (getDecomposition().getOutputParameterNames().contains(inputParam.getName())) {
-					items.put(convertParameter(inputParam, "inputandoutput"));
-				} else {
-					items.put(convertParameter(inputParam, "input"));
-				}
-			}
-			for (YParameter outputParam : outputList) {
-				// Only if not already added as inputandoutput paramter
-				if (!getDecomposition().getInputParameterNames().contains(outputParam.getName())) {
-					items.put(convertParameter(outputParam, "output"));
-				}
-			}
-			variables.put("items", items);
-		} catch (JSONException e) {
-			throw new ConversionException(e);
-		}
+        try {
+            for (YParameter inputParam : inputList) {
+                if (getDecomposition().getOutputParameterNames().contains(inputParam.getName())) {
+                    items.put(convertParameter(inputParam, "inputandoutput"));
+                } else {
+                    items.put(convertParameter(inputParam, "input"));
+                }
+            }
+            for (YParameter outputParam : outputList) {
+                // Only if not already added as inputandoutput paramter
+                if (!getDecomposition().getInputParameterNames().contains(outputParam.getName())) {
+                    items.put(convertParameter(outputParam, "output"));
+                }
+            }
+            variables.put("items", items);
+        } catch (JSONException e) {
+            throw new ConversionException(e);
+        }
 
-		return variables.toString();
-	}
+        return variables.toString();
+    }
 
 }
