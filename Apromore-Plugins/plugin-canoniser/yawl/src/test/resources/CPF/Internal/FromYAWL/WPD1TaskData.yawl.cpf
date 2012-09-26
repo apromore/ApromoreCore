@@ -53,15 +53,12 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
-                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
-            </attribute>
-            <objectRef id="c4a51f52-a7a6-4e21-8aef-538861a35463" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
-            <objectRef id="d60df9e7-fa4b-4580-9e90-3c1929dfbd53" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
-            <objectRef id="idb7882230-9a77-4607-b319-5dbe96e8cb44" objectId="D-N-Net-n4" type="output" optional="false" consumed="true"/>
-            <objectRef id="ec0f50fa-1c0b-4ecf-ab7d-697a8107975a" objectId="D-N-Net-n3" type="input" optional="false" consumed="true"/>
-            <objectRef id="ide9f16c96-21ce-404f-84ee-88ed14a2bdbf" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
-            <objectRef id="id40f5e3bc-bc9e-4927-99f7-0bcfe8e987b1" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="idf9fea33c-50f3-4634-9924-ce7c52b7ee14" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
+            <objectRef id="fdccd292-b3f1-4a2d-83a4-31a2aaf15452" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
+            <objectRef id="idf1c8ce92-a7ec-4cd8-9250-55543b68a73a" objectId="D-N-Net-n4" type="output" optional="false" consumed="true"/>
+            <objectRef id="bc4ea159-7387-4a5a-9701-ccbc2bf11b37" objectId="D-N-Net-n3" type="input" optional="false" consumed="true"/>
+            <objectRef id="d7fcbb4e-801a-4487-b9a5-2751fd928394" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="da4224e6-60bb-4a70-8c33-0d693ad85618" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>t3 = &lt;t3&gt;{/Net/n3/text()}&lt;/t3&gt;</expression>
@@ -128,13 +125,10 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
-                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
-            </attribute>
-            <objectRef id="id73f424b3-d039-4afc-b90a-751ad0551123" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
-            <objectRef id="e31422b6-8165-4cab-9945-241a3cbc0f57" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
-            <objectRef id="id876ba6d0-d465-46f9-a21d-b5d5af8de555" objectId="D-N-Net-n2" type="input" optional="false" consumed="true"/>
-            <objectRef id="id272e66d3-78cb-4b2f-b37b-4544ca136dbf" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="id79c74054-06b3-44ec-99d4-f20c2505ceb8" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
+            <objectRef id="f0d43d58-f096-4f8d-b8a9-99a742f61416" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
+            <objectRef id="id974db4af-6061-4e87-a130-70201286d2ec" objectId="D-N-Net-n2" type="input" optional="false" consumed="true"/>
+            <objectRef id="f929c80e-827b-46c9-b4a5-0dd4d77b2a47" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>t2 = &lt;t2&gt;{/Net/n2/text()}&lt;/t2&gt;</expression>

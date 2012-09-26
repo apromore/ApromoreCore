@@ -17,10 +17,10 @@ import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.math.BigDecimal;
 
 import javax.xml.bind.JAXBException;
 
@@ -44,6 +44,7 @@ import org.xml.sax.SAXException;
 import org.yawlfoundation.yawlschema.DecompositionType;
 import org.yawlfoundation.yawlschema.ExternalConditionFactsType;
 import org.yawlfoundation.yawlschema.LayoutLocaleType;
+import org.yawlfoundation.yawlschema.MetaDataType;
 import org.yawlfoundation.yawlschema.NetFactsType;
 import org.yawlfoundation.yawlschema.NetFactsType.ProcessControlElements;
 import org.yawlfoundation.yawlschema.OutputConditionFactsType;
@@ -89,7 +90,6 @@ public class YAWL2CanonicalBasicTest {
             fail(e.getMessage());
         }
 
-
         OutputStream anfStream = null;
         OutputStream cpfStream = null;
         if (LOGGER.isDebugEnabled()) {
@@ -103,7 +103,7 @@ public class YAWL2CanonicalBasicTest {
         TestUtils.printCpf(yawl2Canonical.getCpf(), cpfStream);
 
         if (LOGGER.isDebugEnabled()) {
-         // Just build image if Graphviz exists
+            // Just build image if Graphviz exists
             if (new File(GraphvizVisualiser.DEFAULT_GRAPHVIZ_WINDOWS_PATH).exists()) {
                 final GraphvizVisualiser v = new GraphvizVisualiser();
                 v.createImageAsDOT(yawl2Canonical.getCpf().getNet().get(0),
@@ -114,7 +114,7 @@ public class YAWL2CanonicalBasicTest {
     }
 
     @Test
-    public void testConvertToCanonical() throws JAXBException, FileNotFoundException, SAXException {
+    public void testConvertToCanonical() throws JAXBException, SAXException, IOException {
         final SpecificationSetFactsType yawlSpec = TestUtils.unmarshalYAWL(emptyNet);
         try {
             yawl2Canonical.convertToCanonical(yawlSpec);
@@ -124,31 +124,69 @@ public class YAWL2CanonicalBasicTest {
     }
 
     @Test
-    public void testGetAnf() throws JAXBException, CanoniserException, FileNotFoundException, SAXException {
+    public void testGetAnf() throws JAXBException, CanoniserException, SAXException, IOException {
         final SpecificationSetFactsType yawlSpec = TestUtils.unmarshalYAWL(emptyNet);
         yawl2Canonical.convertToCanonical(yawlSpec);
         assertNotNull("Annotation Format should not be NULL", yawl2Canonical.getAnf());
     }
 
     @Test
-    public void testGetCpf() throws JAXBException, CanoniserException, FileNotFoundException, SAXException {
+    public void testGetCpf() throws JAXBException, CanoniserException, SAXException, IOException {
         final SpecificationSetFactsType yawlSpec = TestUtils.unmarshalYAWL(emptyNet);
         yawl2Canonical.convertToCanonical(yawlSpec);
         assertNotNull("Canonical Format should not be NULL", yawl2Canonical.getCpf());
     }
 
     @Test
-    public void testConvertEmptyNet() throws CanoniserException, JAXBException, FileNotFoundException, SAXException {
+    public void testConvertEmptyNet() throws CanoniserException, JAXBException, SAXException, IOException {
         final SpecificationSetFactsType yawlSpec = TestUtils.unmarshalYAWL(emptyNet);
         yawl2Canonical.convertToCanonical(yawlSpec);
 
         // Basic check ANF
         final AnnotationsType anf = yawl2Canonical.getAnf();
         final YAWLSpecificationFactsType mainSpecification = yawlSpec.getSpecification().get(0);
-        assertEquals("EmptyNet", anf.getName()); // Original Name is NULL, but we use the Uri instead
+
+        // Basic check CPF
+        final CanonicalProcessType cpf = yawl2Canonical.getCpf();
+
+        if (mainSpecification.getName() != null) {
+            assertEquals(mainSpecification.getName(), cpf.getName());
+        }
+        assertEquals(countSubnets(mainSpecification), cpf.getNet().size());
+
+        final NetFactsType rootNet = (NetFactsType) mainSpecification.getDecomposition().get(0);
+        final ProcessControlElements processControlElements = rootNet.getProcessControlElements();
+
+        assertEquals(0, processControlElements.getTaskOrCondition().size());
+
+        final ExternalConditionFactsType inputCondition = processControlElements.getInputCondition();
+        assertNotNull(inputCondition);
+
+        final OutputConditionFactsType outputCondition = processControlElements.getOutputCondition();
+        assertNotNull(outputCondition);
+    }
+
+    @Test
+    public void testMetaData() throws CanoniserException, JAXBException, SAXException, IOException {
+        final SpecificationSetFactsType yawlSpec = TestUtils.unmarshalYAWL(emptyNet);
+
+        yawl2Canonical.convertToCanonical(yawlSpec);
+
+        final CanonicalProcessType cpf = yawl2Canonical.getCpf();
+        final AnnotationsType anf = yawl2Canonical.getAnf();
+        final YAWLSpecificationFactsType mainSpecification = yawlSpec.getSpecification().get(0);
+
+        assertEquals("EmptyNet Workfow", anf.getName()); // Original Name is NULL, but we use the Uri instead
         assertEquals(mainSpecification.getUri(), anf.getUri());
 
-        // Just InputCondition, OutputCondition, the RootNet and the Specification, each 1 Graphic-Annotations
+        if (mainSpecification.getName() != null) {
+            assertEquals(mainSpecification.getName(), cpf.getName());
+        }
+
+        assertEquals(mainSpecification.getUri(), mainSpecification.getUri());
+        assertEquals(mainSpecification.getMetaData().getVersion().toPlainString(), cpf.getVersion());
+
+        // Just InputCondition, OutputCondition, the RootNet and the Specification, each 1 Graphic-Annotations (+ Metadata Extension)
         assertEquals(4, anf.getAnnotation().size());
 
         AnnotationType netAnnotation = null;
@@ -174,44 +212,15 @@ public class YAWL2CanonicalBasicTest {
         assertNotNull(outputAnnotation);
         assertTrue(outputAnnotation instanceof GraphicsType);
         assertNotNull(specAnnotation);
-        assertEquals(1, specAnnotation.getAny().size());
-        final LayoutLocaleType locale = ExtensionUtils.unmarshalYAWLFragment(specAnnotation.getAny().get(0), LayoutLocaleType.class);
+        assertEquals(2, specAnnotation.getAny().size());
+        LayoutLocaleType locale = ExtensionUtils.getFromAnnotationsExtension(specAnnotation, ExtensionUtils.LOCALE, LayoutLocaleType.class);
         assertNotNull(locale);
         assertEquals("de", locale.getLanguage());
         assertEquals("DE", locale.getCountry());
 
-        // Basic check CPF
-        final CanonicalProcessType cpf = yawl2Canonical.getCpf();
-
-        if (mainSpecification.getName() != null) {
-            assertEquals(mainSpecification.getName(), cpf.getName());
-        }
-        assertEquals(countSubnets(mainSpecification), cpf.getNet().size());
-
-        final NetFactsType rootNet = (NetFactsType) mainSpecification.getDecomposition().get(0);
-        final ProcessControlElements processControlElements = rootNet.getProcessControlElements();
-
-        assertEquals(0, processControlElements.getTaskOrCondition().size());
-
-        final ExternalConditionFactsType inputCondition = processControlElements.getInputCondition();
-        assertNotNull(inputCondition);
-
-        final OutputConditionFactsType outputCondition = processControlElements.getOutputCondition();
-        assertNotNull(outputCondition);
-    }
-
-    @Test
-    public void testConvertMetadata() throws JAXBException, CanoniserException, FileNotFoundException, SAXException {
-        final SpecificationSetFactsType yawlSpec = TestUtils.unmarshalYAWL(emptyNet);
-        yawl2Canonical.convertToCanonical(yawlSpec);
-        final CanonicalProcessType cpf = yawl2Canonical.getCpf();
-        final YAWLSpecificationFactsType specFacts = yawlSpec.getSpecification().get(0);
-        if (specFacts.getName() != null) {
-            assertEquals(specFacts.getName(), cpf.getName());
-        }
-        assertEquals(specFacts.getUri(), cpf.getUri());
-        assertEquals(specFacts.getMetaData().getVersion().toPlainString(), cpf.getVersion());
-        // TODO check other metadata
+        MetaDataType metaData = ExtensionUtils.getFromAnnotationsExtension(specAnnotation, ExtensionUtils.METADATA, MetaDataType.class);
+        assertNotNull("Missing Metadata", metaData);
+        assertEquals(new BigDecimal("0.1"), metaData.getVersion());
     }
 
     private int countSubnets(final YAWLSpecificationFactsType mainSpecification) {

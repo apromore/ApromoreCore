@@ -29,11 +29,8 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
-                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
-            </attribute>
-            <objectRef id="b933d8bd-e8e8-4cdb-88f6-927fd97c3518" objectId="D-N-Net-c" type="output" optional="false" consumed="true"/>
-            <objectRef id="b13ef1e2-52a2-4464-ad17-cefc3d38237e" objectId="D-N-Net-c" type="input" optional="false" consumed="true"/>
+            <objectRef id="idb0b67a18-1812-44fc-915c-630c15816741" objectId="D-N-Net-c" type="output" optional="false" consumed="true"/>
+            <objectRef id="id660874e0-3260-441a-b4d1-521c8626e76f" objectId="D-N-Net-c" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>c = &lt;c&gt;{/Net/c/text()}&lt;/c&gt;</expression>
@@ -43,20 +40,20 @@
                 <expression>c = &lt;c&gt;{/C/c/text()}&lt;/c&gt;</expression>
             </outputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="ide9f52edd-6bb7-40c4-9449-e4381a1ca680"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="ff43b6b7-35d6-4ec4-8399-104710e24ce3"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" subnetId="N-Net" id="C-Net" originalID="Net">
             <name>Net</name>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="dd401155-499c-4f27-a423-0e901cc7027c"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="b8167dbe-5c34-4a47-8a86-02e6140f0aca"/>
         <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="id5d28debc-95d7-4690-9180-7d5c95d2133b" default="true" sourceId="C-A" targetId="ide9f52edd-6bb7-40c4-9449-e4381a1ca680"/>
-        <Edge id="id7201dc8f-125e-40ee-9266-e91ad9945b04" default="true" sourceId="ide9f52edd-6bb7-40c4-9449-e4381a1ca680" targetId="C-Net"/>
-        <Edge id="id9a5ec68b-bc4a-433c-b78f-2e038ebb35f6" default="true" sourceId="dd401155-499c-4f27-a423-0e901cc7027c" targetId="C-OutputCondition"/>
-        <Edge id="idc1bb89d0-15ff-42f3-8ae4-d9ef2acecf8a" default="true" sourceId="ide9f52edd-6bb7-40c4-9449-e4381a1ca680" targetId="dd401155-499c-4f27-a423-0e901cc7027c"/>
-        <Edge id="id4f11c13d-f668-42be-bf1b-344c37eb3af4" default="true" sourceId="C-Net" targetId="dd401155-499c-4f27-a423-0e901cc7027c"/>
+        <Edge id="ideee902bf-28b6-40e9-9c90-9153973d1ca2" default="true" sourceId="C-A" targetId="ff43b6b7-35d6-4ec4-8399-104710e24ce3"/>
+        <Edge id="id3b08f7f4-b09a-454d-9443-ecefcd71b293" default="true" sourceId="ff43b6b7-35d6-4ec4-8399-104710e24ce3" targetId="C-Net"/>
+        <Edge id="id6024c686-802a-40c0-a5c4-6a9d549d7a05" default="true" sourceId="b8167dbe-5c34-4a47-8a86-02e6140f0aca" targetId="C-OutputCondition"/>
+        <Edge id="id89a2280f-ffab-4d7e-8bfc-c88979bd741b" default="true" sourceId="ff43b6b7-35d6-4ec4-8399-104710e24ce3" targetId="b8167dbe-5c34-4a47-8a86-02e6140f0aca"/>
+        <Edge id="idc31e309c-f22f-44e8-b97d-a165b81f5147" default="true" sourceId="C-Net" targetId="b8167dbe-5c34-4a47-8a86-02e6140f0aca"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-c" originalID="N-Net_c">
             <name>c</name>
             <type>integer</type>

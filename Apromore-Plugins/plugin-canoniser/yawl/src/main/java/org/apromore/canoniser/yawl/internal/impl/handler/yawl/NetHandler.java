@@ -21,7 +21,6 @@ import org.apromore.anf.FillType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.anf.SizeType;
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.canoniser.yawl.internal.impl.factory.ConversionFactory;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.cpf.CanonicalProcessType;
@@ -67,32 +66,31 @@ public class NetHandler extends YAWLConversionHandler<NetFactsType, CanonicalPro
         // First convert data as it is referenced by Tasks
         convertNetData(canoncialNet, getObject());
 
-        final ConversionFactory handlerFactory = getContext().getHandlerFactory();
         final ProcessControlElements processControlElements = getObject().getProcessControlElements();
 
         // Convert Input Condition
         final ExternalConditionFactsType inputCondition = processControlElements.getInputCondition();
-        handlerFactory.createHandler(inputCondition, canoncialNet, getObject()).convert();
+        getContext().createHandler(inputCondition, canoncialNet, getObject()).convert();
 
         // Convert Net Elements
         for (final ExternalNetElementFactsType element : processControlElements.getTaskOrCondition()) {
-            handlerFactory.createHandler(element, canoncialNet, getObject()).convert();
+            getContext().createHandler(element, canoncialNet, getObject()).convert();
         }
 
         // Convert Output Condition
         final OutputConditionFactsType outputCondition = processControlElements.getOutputCondition();
-        handlerFactory.createHandler(outputCondition, canoncialNet, getObject()).convert();
+        getContext().createHandler(outputCondition, canoncialNet, getObject()).convert();
     }
 
     private void convertNetData(final NetType canoncialNet, final NetFactsType netDecomposition) throws CanoniserException {
         for (final VariableBaseType var : netDecomposition.getLocalVariable()) {
-            getContext().getHandlerFactory().createHandler(var, canoncialNet, netDecomposition).convert();
+            getContext().createHandler(var, canoncialNet, netDecomposition).convert();
         }
         for (final InputParameterFactsType param : netDecomposition.getInputParam()) {
-            getContext().getHandlerFactory().createHandler(param, canoncialNet, getObject()).convert();
+            getContext().createHandler(param, canoncialNet, getObject()).convert();
         }
         for (final OutputParameterFactsType param : netDecomposition.getOutputParam()) {
-            getContext().getHandlerFactory().createHandler(param, canoncialNet, getObject()).convert();
+            getContext().createHandler(param, canoncialNet, getObject()).convert();
         }
     }
 

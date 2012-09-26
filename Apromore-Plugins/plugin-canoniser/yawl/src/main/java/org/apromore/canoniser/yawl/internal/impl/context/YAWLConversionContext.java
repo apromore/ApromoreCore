@@ -22,9 +22,11 @@ import java.util.Map.Entry;
 
 import javax.xml.bind.JAXBElement;
 
+import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
+import org.apromore.anf.DocumentationType;
+import org.apromore.anf.GraphicsType;
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.canoniser.yawl.YAWL22Canoniser;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
@@ -33,6 +35,7 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.SoftType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 import org.yawlfoundation.yawlschema.DecompositionType;
 import org.yawlfoundation.yawlschema.ExternalNetElementFactsType;
 import org.yawlfoundation.yawlschema.ExternalNetElementType;
@@ -61,7 +64,7 @@ import org.yawlfoundation.yawlschema.orgdata.RoleType;
  */
 public final class YAWLConversionContext extends ConversionContext {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(YAWL22Canoniser.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(YAWLConversionContext.class);
 
     public class ConvertedResource {
         private ResourceTypeType resource;
@@ -566,6 +569,53 @@ public final class YAWLConversionContext extends ConversionContext {
         if (netObjectsByName == null) {
             this.netObjectsByName = new HashMap<String, Map<String, SoftType>>();
         }
+    }
+
+    /**
+     * Add the extension Element (XML) to the ANF as xs:any
+     *
+     * @param element
+     *            any XML element
+     * @param nodeId
+     *            of the CPF element
+     */
+    public void addToAnnotations(final Element element, final String nodeId) {
+        AnnotationType extension = findAnnotation(nodeId);
+        if (extension == null) {
+            // Create new Annotation
+            extension = new org.apromore.anf.ObjectFactory().createAnnotationType();
+            extension.setCpfId(nodeId);
+            extension.setId(getUuidGenerator().getUUID(null));
+            extension.getAny().add(element);
+            getAnnotationResult().getAnnotation().add(extension);
+        } else {
+            extension.getAny().add(element);
+        }
+    }
+
+    /**
+     * Add the extension Element (XML) to the ANF as xs:any for the whole process model
+     *
+     * @param element
+     *            any XML element
+     */
+    public void addToAnnotations(final Element element) {
+        // Create new Annotation
+        addToAnnotations(element, null);
+    }
+
+    private AnnotationType findAnnotation(final String nodeId) {
+        for (final AnnotationType annotation : getAnnotationResult().getAnnotation()) {
+            if (!(annotation instanceof DocumentationType || annotation instanceof GraphicsType)) {
+                // We just want to add an plain 'AnnotationType'
+                if (nodeId == null && annotation.getCpfId() == null) {
+                    return annotation;
+                } else if (nodeId.equals(annotation.getCpfId())) {
+                    return annotation;
+                }
+            }
+        }
+        return null;
     }
 
 }

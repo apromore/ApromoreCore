@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl;
@@ -26,11 +26,11 @@ import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
 
 /**
  * Converting YAWL to the Canonical Process Format
- * 
+ *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
-public class YAWL2CanonicalImpl implements YAWL2Canonical {
+public final class YAWL2CanonicalImpl implements YAWL2Canonical {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(YAWL2CanonicalImpl.class);
 
@@ -46,7 +46,7 @@ public class YAWL2CanonicalImpl implements YAWL2Canonical {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.YAWL2Canonical#convertToCanonical(org.yawlfoundation.yawlschema.SpecificationSetFactsType)
      */
     @Override
@@ -65,9 +65,9 @@ public class YAWL2CanonicalImpl implements YAWL2Canonical {
 
         // First create the Context class for this conversion, the Context is used to store all kind of information that needs to be shared between
         // Handlers
-        this.context = new YAWLConversionContext(specification, value.getLayout(), orgDataType);
+        this.setContext(new YAWLConversionContext(specification, value.getLayout(), orgDataType));
         // Second create the Factory class that will create the conversion Handlers
-        final ConversionFactory factory = new YAWLConversionFactory(this.context);
+        final ConversionFactory factory = new YAWLConversionFactory(this.getContext());
 
         // Start conversion on the YAWL speciication
         factory.createHandler(specification, null, null).convert();
@@ -75,7 +75,7 @@ public class YAWL2CanonicalImpl implements YAWL2Canonical {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.YAWL2Canonical#convertToCanonical(org.yawlfoundation.yawlschema.SpecificationSetFactsType,
      * org.yawlfoundation.orgdataschema.OrgDataType)
      */
@@ -94,7 +94,7 @@ public class YAWL2CanonicalImpl implements YAWL2Canonical {
 
     /**
      * We're trying to be relaxed though it is not guaranteed that the conversion will work with any other version than 2.2!
-     * 
+     *
      * @param version
      * @throws CanoniserException
      */
@@ -112,22 +112,30 @@ public class YAWL2CanonicalImpl implements YAWL2Canonical {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.YAWL2Canonical#getAnf()
      */
     @Override
     public AnnotationsType getAnf() {
-        return context.getAnnotationResult();
+        return getContext().getAnnotationResult();
     }
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.YAWL2Canonical#getCpf()
      */
     @Override
     public CanonicalProcessType getCpf() {
-        return context.getCanonicalResult();
+        return getContext().getCanonicalResult();
+    }
+
+    public YAWLConversionContext getContext() {
+        return context;
+    }
+
+    private void setContext(final YAWLConversionContext context) {
+        this.context = context;
     }
 
 }

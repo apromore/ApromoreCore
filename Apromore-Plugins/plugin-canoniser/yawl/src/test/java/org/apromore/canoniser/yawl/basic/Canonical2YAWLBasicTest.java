@@ -5,19 +5,21 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 import java.io.File;
+import java.math.BigDecimal;
 
 import org.apromore.canoniser.yawl.BaseCPF2YAWLTest;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.junit.Test;
 import org.yawlfoundation.yawlschema.LayoutFactsType.Specification;
 import org.yawlfoundation.yawlschema.LayoutNetFactsType;
+import org.yawlfoundation.yawlschema.MetaDataType;
 import org.yawlfoundation.yawlschema.SpecificationSetFactsType;
 
 public class Canonical2YAWLBasicTest extends BaseCPF2YAWLTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.BaseCPF2YAWLTest#getCPFFile()
      */
     @Override
@@ -27,7 +29,7 @@ public class Canonical2YAWLBasicTest extends BaseCPF2YAWLTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.BaseCPF2YAWLTest#getANFFile()
      */
     @Override
@@ -46,6 +48,10 @@ public class Canonical2YAWLBasicTest extends BaseCPF2YAWLTest {
         assertEquals("DE", spec.getLayout().getLocale().getCountry());
         assertEquals("de", spec.getLayout().getLocale().getLanguage());
         assertNotNull(spec.getLayout().getSpecification().get(0).getNet().size() > 0);
+
+        LayoutNetFactsType rootNetLayout = spec.getLayout().getSpecification().get(0).getNet().get(0);
+        assertNotNull(rootNetLayout);
+        assertEquals(13421772, rootNetLayout.getBgColor().intValue());
     }
 
     @Test
@@ -63,6 +69,19 @@ public class Canonical2YAWLBasicTest extends BaseCPF2YAWLTest {
         assertEquals(204, red);
         assertEquals(204, green);
         assertEquals(204, blue);
+    }
+
+    @Test
+    public void testMetaData() {
+        final SpecificationSetFactsType spec = canonical2Yawl.getYAWL();
+        MetaDataType metaData = spec.getSpecification().get(0).getMetaData();
+        assertTrue(metaData.getContributor().size() == 1);
+        assertEquals("Firstname Lastname", metaData.getContributor().get(0));
+        // TODO Duplicate??
+        assertEquals("EmptyNet Workfow", metaData.getTitle());
+        assertEquals("EmptyNet Workfow", spec.getSpecification().get(0).getName());
+        assertEquals(new BigDecimal("0.1"), metaData.getVersion());
+        assertEquals("UID_d1f45fda-5536-4bc7-b938-a2fbdacb2fb7", metaData.getIdentifier());
     }
 
 }

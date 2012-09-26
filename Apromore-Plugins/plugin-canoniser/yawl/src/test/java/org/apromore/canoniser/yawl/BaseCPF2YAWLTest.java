@@ -44,6 +44,8 @@ public abstract class BaseCPF2YAWLTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(BaseCPF2YAWLTest.class);
 
+    private static final int BUFFER_SIZE = 8192*4;
+
     protected boolean shouldCanonisationFail = false;
 
     protected Canonical2YAWL canonical2Yawl;
@@ -72,11 +74,21 @@ public abstract class BaseCPF2YAWLTest {
     public void setUp() throws Exception {
         canonical2Yawl = new Canonical2YAWLImpl();
         LOGGER.debug("Testing file {}", getCPFFile().getName());
-        cpfProcess = CPFSchema.unmarshalCanonicalFormat(new BufferedInputStream(new FileInputStream(getCPFFile())), false).getValue();
+        BufferedInputStream canonicalFormat = new BufferedInputStream(new FileInputStream(getCPFFile()), BUFFER_SIZE);
+        try {
+            cpfProcess = CPFSchema.unmarshalCanonicalFormat(canonicalFormat, false).getValue();
+        } finally {
+            canonicalFormat.close();
+        }
         try {
             AnnotationsType anf = null;
             if (getANFFile() != null) {
-                anf = ANFSchema.unmarshalAnnotationFormat(new BufferedInputStream(new FileInputStream(getANFFile())), false).getValue();
+                BufferedInputStream annotationsFormat = new BufferedInputStream(new FileInputStream(getANFFile()), BUFFER_SIZE);
+                try {
+                    anf = ANFSchema.unmarshalAnnotationFormat(annotationsFormat, false).getValue();
+                } finally {
+                    annotationsFormat.close();
+                }
             }
             if (anf != null) {
                 canonical2Yawl.convertToYAWL(cpfProcess, anf);

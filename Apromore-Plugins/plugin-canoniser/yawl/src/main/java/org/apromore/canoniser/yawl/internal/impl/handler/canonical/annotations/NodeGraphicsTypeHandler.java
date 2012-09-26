@@ -63,8 +63,8 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
     @Override
     public void convert() throws CanoniserException {
 
-        if (getContext().getElementInfo(getObject().getCpfId()).element != null) {
-            this.yawlElement = getContext().getElementInfo(getObject().getCpfId()).element;
+        if (getContext().getElementInfo(getObject().getCpfId()).getElement() != null) {
+            this.yawlElement = getContext().getElementInfo(getObject().getCpfId()).getElement();
         } else {
             LOGGER.warn("Could not find converted YAWL element for CPF-ID {} while trying to convert GraphicsType annotation with ID {}.",
                     getObject().getCpfId(), getObject().getId());
