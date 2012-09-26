@@ -75,12 +75,13 @@
                                         }
 
                                         if (layouter) {
-                                            layouter.functionality();
-                                            Ext.select('svg').setVisible(true);
+                                            layouter.functionality();                                            
                                         } else {
                                         	// Could be already layouted model (for example YAWL)
                                             // alert("Did not find Layouter");
                                         }
+										
+										Ext.select('svg').setVisible(true);
 
                                         window.onbeforeunload = null;
                                     }, 1000);
