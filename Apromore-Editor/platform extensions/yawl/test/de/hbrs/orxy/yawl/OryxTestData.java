@@ -28,24 +28,24 @@ import org.json.JSONObject;
 
 public class OryxTestData {
 
-	public static String orderFulfillment;
-	public static JSONObject orderFulfillmentAsJson;
-	
-	public static String orderFulfillmentRequestData;
-	
-	public static String filmProduction;
+    public static String orderFulfillment;
+    public static JSONObject orderFulfillmentAsJson;
 
-	static {
-		try {
-			orderFulfillment = new Scanner(new File("resources/orderfulfillment.json"), "UTF-8").useDelimiter("\\A").next();
-			orderFulfillmentAsJson = new JSONObject(orderFulfillment);
-			orderFulfillmentRequestData = new Scanner(new File("resources/orderfulfillment.json"), "UTF-8").useDelimiter("\\A").next();
-			filmProduction = new Scanner(new File("resources/filmproduction.json"), "UTF-8").useDelimiter("\\A").next();
-		} catch (FileNotFoundException e) {
-			e.printStackTrace();
-		} catch (JSONException e) {
-			e.printStackTrace();
-		}
-	}
+    public static String orderFulfillmentRequestData;
+
+    public static String filmProduction;
+
+    static {
+        try {
+            orderFulfillment = new Scanner(new File("resources/orderfulfillment.json"), "UTF-8").useDelimiter("\\A").next();
+            orderFulfillmentAsJson = new JSONObject(orderFulfillment);
+            orderFulfillmentRequestData = new Scanner(new File("resources/orderfulfillment.json"), "UTF-8").useDelimiter("\\A").next();
+            filmProduction = new Scanner(new File("resources/filmproduction.json"), "UTF-8").useDelimiter("\\A").next();
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 }

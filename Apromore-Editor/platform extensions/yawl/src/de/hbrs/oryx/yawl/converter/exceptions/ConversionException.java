@@ -25,36 +25,36 @@ package de.hbrs.oryx.yawl.converter.exceptions;
  */
 public class ConversionException extends Exception {
 
-	private static final long serialVersionUID = 6191514454036901010L;
+    private static final long serialVersionUID = 6191514454036901010L;
 
-	/**
+    /**
 	 * 
 	 */
-	public ConversionException() {
-		super();
-	}
+    public ConversionException() {
+        super();
+    }
 
-	/**
-	 * @param message
-	 * @param cause
-	 */
-	public ConversionException(String message, Throwable cause) {
-		super(message, cause);
-	}
+    /**
+     * @param message
+     * @param cause
+     */
+    public ConversionException(final String message, final Throwable cause) {
+        super(message, cause);
+    }
 
-	/**
-	 * @param message
-	 */
-	public ConversionException(String message) {
-		super(message);
-	}
+    /**
+     * @param message
+     */
+    public ConversionException(final String message) {
+        super(message);
+    }
 
-	/**
-	 * @param cause
-	 */
-	public ConversionException(Throwable cause) {
-		super(cause);
+    /**
+     * @param cause
+     */
+    public ConversionException(final Throwable cause) {
+        super(cause);
 
-	}
+    }
 
 }

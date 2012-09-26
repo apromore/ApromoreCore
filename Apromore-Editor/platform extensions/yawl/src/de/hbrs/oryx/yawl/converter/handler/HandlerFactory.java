@@ -31,8 +31,7 @@ import de.hbrs.oryx.yawl.converter.handler.oryx.OryxHandler;
 import de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandler;
 
 /**
- * Interface for the Factory that creates the appropriate YAWL handler for each
- * type YAWL object and the appropriate Oryx handler for each shape.
+ * Interface for the Factory that creates the appropriate YAWL handler for each type YAWL object and the appropriate Oryx handler for each shape.
  * 
  * 
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University of Applied Sciences)
@@ -40,67 +39,63 @@ import de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandler;
  */
 public interface HandlerFactory {
 
-	/**
-	 * Return a YAWLHandler for a whole YSpecification
-	 * 
-	 * @param ySpec
-	 * @return
-	 */
-	YAWLHandler createYAWLConverter(YSpecification ySpec);
+    /**
+     * Return a YAWLHandler for a whole YSpecification
+     * 
+     * @param ySpec
+     * @return
+     */
+    YAWLHandler createYAWLConverter(YSpecification ySpec);
 
-	/**
-	 * Returns a YAWLHandler for each type of YDecomposition, which may be YNet
-	 * or YAWLServiceGatway
-	 * 
-	 * @param decomposition
-	 * @return an implementation of YAWLHandler
-	 */
-	YAWLHandler createYAWLConverter(YDecomposition decomposition);
+    /**
+     * Returns a YAWLHandler for each type of YDecomposition, which may be YNet or YAWLServiceGatway
+     * 
+     * @param decomposition
+     * @return an implementation of YAWLHandler
+     */
+    YAWLHandler createYAWLConverter(YDecomposition decomposition);
 
-	/**
-	 * Returns a YAWLHandler for each type of YNetElement, which may be
-	 * YAtomicTask, YCompositeTask, YInputCondition, YOutputCondition,
-	 * YCondition
-	 * 
-	 * @param netElement
-	 * @return an implementation of YAWLHandler
-	 */
-	YAWLHandler createYAWLConverter(YNetElement netElement);
+    /**
+     * Returns a YAWLHandler for each type of YNetElement, which may be YAtomicTask, YCompositeTask, YInputCondition, YOutputCondition, YCondition
+     * 
+     * @param netElement
+     * @return an implementation of YAWLHandler
+     */
+    YAWLHandler createYAWLConverter(YNetElement netElement);
 
-	/**
-	 * Returns a YAWLHandler for each type of flow
-	 * 
-	 * @param yFlow
-	 * @return an implementation of YAWLHandler
-	 */
-	YAWLHandler createYAWLConverter(YFlow yFlow);
+    /**
+     * Returns a YAWLHandler for each type of flow
+     * 
+     * @param yFlow
+     * @return an implementation of YAWLHandler
+     */
+    YAWLHandler createYAWLConverter(YFlow yFlow);
 
-	/**
-	 * Return a OryxHandler for a Diagram
-	 * 
-	 * @param diagramShape
-	 * @return an implementation of OryxHandler
-	 */
-	OryxHandler createOryxConverter(BasicDiagram diagramShape);
+    /**
+     * Return a OryxHandler for a Diagram
+     * 
+     * @param diagramShape
+     * @return an implementation of OryxHandler
+     */
+    OryxHandler createOryxConverter(BasicDiagram diagramShape);
 
-	/**
-	 * Return a OryxHandler for a non-edge Shape
-	 * 
-	 * @param shape
-	 * @return an implementation of OryxHandler
-	 */
-	OryxHandler createOryxConverter(BasicShape shape);
+    /**
+     * Return a OryxHandler for a non-edge Shape
+     * 
+     * @param shape
+     * @return an implementation of OryxHandler
+     */
+    OryxHandler createOryxConverter(BasicShape shape);
 
-	/**
-	 * Return a OryxHandler for a edge Shape
-	 * 
-	 * @param flowShape
-	 *            the egde in Oryx
-	 * @param shape
-	 *            of the parent net is needed as edges sometimes are not part of
-	 *            a net
-	 * @return an implementation of OryxHandler
-	 */
-	OryxHandler createOryxConverter(BasicEdge flowShape, BasicShape netShape);
+    /**
+     * Return a OryxHandler for a edge Shape
+     * 
+     * @param flowShape
+     *            the egde in Oryx
+     * @param shape
+     *            of the parent net is needed as edges sometimes are not part of a net
+     * @return an implementation of OryxHandler
+     */
+    OryxHandler createOryxConverter(BasicEdge flowShape, BasicShape netShape);
 
 }

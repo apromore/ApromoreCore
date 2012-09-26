@@ -28,9 +28,8 @@ import org.oryxeditor.server.diagram.Point;
 import de.hbrs.oryx.yawl.converter.layout.NetElementLayout.DecoratorType;
 
 /**
- * Contains static mappings between YAWL properties and their corresponding Oryx
- * counterparts. All properties are static and should be initialized using the
- * double bracket method.
+ * Contains static mappings between YAWL properties and their corresponding Oryx counterparts. All properties are static and should be initialized
+ * using the double bracket method.
  * 
  * 
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University of Applied Sciences)
@@ -38,118 +37,117 @@ import de.hbrs.oryx.yawl.converter.layout.NetElementLayout.DecoratorType;
  */
 public final class YAWLMapping {
 
-	public static final Map<Integer, DecoratorType> DECORATOR_TYPE_MAP = new HashMap<Integer, DecoratorType>() {
+    public static final Map<Integer, DecoratorType> DECORATOR_TYPE_MAP = new HashMap<Integer, DecoratorType>() {
 
-		private static final long serialVersionUID = 3887893686889925570L;
+        private static final long serialVersionUID = 3887893686889925570L;
 
-		{
-			put(10, DecoratorType.TOP);
-			put(11, DecoratorType.BOTTOM);
-			put(12, DecoratorType.LEFT);
-			put(13, DecoratorType.RIGHT);
-			put(14, DecoratorType.NONE);
-		}
-	};
+        {
+            put(10, DecoratorType.TOP);
+            put(11, DecoratorType.BOTTOM);
+            put(12, DecoratorType.LEFT);
+            put(13, DecoratorType.RIGHT);
+            put(14, DecoratorType.NONE);
+        }
+    };
 
-	public static final Map<Integer, Point> TASK_PORT_MAP = new HashMap<Integer, Point>() {
+    public static final Map<Integer, Point> TASK_PORT_MAP = new HashMap<Integer, Point>() {
 
-		private static final long serialVersionUID = -5420166595450623507L;
+        private static final long serialVersionUID = -5420166595450623507L;
 
-		{
-			// TOP
-			put(10, new Point(28.0, 12.0));
-			// BOTTOM
-			put(11, new Point(28.0, 44.0));
-			// LEFT
-			put(12, new Point(12.0, 28.0));
-			// RIGHT
-			put(13, new Point(44.0, 28.0));
-			// NOWHERE, maps to Oryx Default
-			put(14, new Point(28.0, 28.0));
-		}
-	};
-	public static final Map<Integer, Point> CONDITION_PORT_MAP = new HashMap<Integer, Point>() {
+        {
+            // TOP
+            put(10, new Point(28.0, 12.0));
+            // BOTTOM
+            put(11, new Point(28.0, 44.0));
+            // LEFT
+            put(12, new Point(12.0, 28.0));
+            // RIGHT
+            put(13, new Point(44.0, 28.0));
+            // NOWHERE, maps to Oryx Default
+            put(14, new Point(28.0, 28.0));
+        }
+    };
+    public static final Map<Integer, Point> CONDITION_PORT_MAP = new HashMap<Integer, Point>() {
 
-		private static final long serialVersionUID = -468390840359626099L;
+        private static final long serialVersionUID = -468390840359626099L;
 
-		{
-			// TOP
-			put(10, new Point(16.0, 0.0));
-			// BOTTOM
-			put(11, new Point(16.0, 32.0));
-			// LEFT
-			put(12, new Point(0.0, 16.0));
-			// RIGHT
-			put(13, new Point(32.0, 16.0));
-			// NOWHERE, maps to the Oryx Default
-			put(14, new Point(16.0, 16.0));
-		}
-	};
+        {
+            // TOP
+            put(10, new Point(16.0, 0.0));
+            // BOTTOM
+            put(11, new Point(16.0, 32.0));
+            // LEFT
+            put(12, new Point(0.0, 16.0));
+            // RIGHT
+            put(13, new Point(32.0, 16.0));
+            // NOWHERE, maps to the Oryx Default
+            put(14, new Point(16.0, 16.0));
+        }
+    };
 
-	public static final Map<Integer, Point> TOP_DECORATOR_PORT_MAP = new HashMap<Integer, Point>() {
+    public static final Map<Integer, Point> TOP_DECORATOR_PORT_MAP = new HashMap<Integer, Point>() {
 
-		private static final long serialVersionUID = 1164532423345798945L;
+        private static final long serialVersionUID = 1164532423345798945L;
 
-		{
-			// From Left to Right
-			put(0, new Point(12.0, 6.0));
-			put(1, new Point(20.0, 0.0));
-			put(2, new Point(28.0, 0.0));
-			put(3, new Point(36.0, 0.0));
-			put(4, new Point(44.0, 6.0));
-		}
-	};
+        {
+            // From Left to Right
+            put(0, new Point(12.0, 6.0));
+            put(1, new Point(20.0, 0.0));
+            put(2, new Point(28.0, 0.0));
+            put(3, new Point(36.0, 0.0));
+            put(4, new Point(44.0, 6.0));
+        }
+    };
 
-	public static final Map<Integer, Point> BOTTOM_DECORATOR_PORT_MAP = new HashMap<Integer, Point>() {
+    public static final Map<Integer, Point> BOTTOM_DECORATOR_PORT_MAP = new HashMap<Integer, Point>() {
 
-		private static final long serialVersionUID = -4866739586620322203L;
+        private static final long serialVersionUID = -4866739586620322203L;
 
-		{
-			// From Right to Left
-			put(0, new Point(44.0, 50.0));
-			put(1, new Point(36.0, 56.0));
-			put(2, new Point(28.0, 56.0));
-			put(3, new Point(20.0, 56.0));
-			put(4, new Point(12.0, 50.0));
-		}
-	};
+        {
+            // From Right to Left
+            put(0, new Point(44.0, 50.0));
+            put(1, new Point(36.0, 56.0));
+            put(2, new Point(28.0, 56.0));
+            put(3, new Point(20.0, 56.0));
+            put(4, new Point(12.0, 50.0));
+        }
+    };
 
-	public static final Map<Integer, Point> LEFT_DECORATOR_PORT_MAP = new HashMap<Integer, Point>() {
+    public static final Map<Integer, Point> LEFT_DECORATOR_PORT_MAP = new HashMap<Integer, Point>() {
 
-		private static final long serialVersionUID = -3451374695282471736L;
+        private static final long serialVersionUID = -3451374695282471736L;
 
-		{
-			// From Bottom to Top
-			put(0, new Point(6.0, 44.0));
-			put(1, new Point(0.0, 20.0));
-			put(2, new Point(0.0, 28.0));
-			put(3, new Point(0.0, 36.0));
-			put(4, new Point(6.0, 12.0));
-		}
-	};
+        {
+            // From Bottom to Top
+            put(0, new Point(6.0, 44.0));
+            put(1, new Point(0.0, 20.0));
+            put(2, new Point(0.0, 28.0));
+            put(3, new Point(0.0, 36.0));
+            put(4, new Point(6.0, 12.0));
+        }
+    };
 
-	public static final Map<Integer, Point> RIGHT_DECORATOR_PORT_MAP = new HashMap<Integer, Point>() {
+    public static final Map<Integer, Point> RIGHT_DECORATOR_PORT_MAP = new HashMap<Integer, Point>() {
 
-		private static final long serialVersionUID = -7299926129758801645L;
+        private static final long serialVersionUID = -7299926129758801645L;
 
-		{
-			// From Top to Bottom
-			put(0, new Point(50.0, 12.0));
-			put(1, new Point(56.0, 20.0));
-			put(2, new Point(56.0, 28.0));
-			put(3, new Point(56.0, 36.0));
-			put(4, new Point(50.0, 44.0));
-		}
-	};
-	
-	
-	public static <T, E> T getKeyByValue(Map<T, E> map, E value) {
-	    for (Entry<T, E> entry : map.entrySet()) {
-	        if (value.equals(entry.getValue())) {
-	            return entry.getKey();
-	        }
-	    }
-	    return null;
-	}
+        {
+            // From Top to Bottom
+            put(0, new Point(50.0, 12.0));
+            put(1, new Point(56.0, 20.0));
+            put(2, new Point(56.0, 28.0));
+            put(3, new Point(56.0, 36.0));
+            put(4, new Point(50.0, 44.0));
+        }
+    };
+
+    public static <T, E> T getKeyByValue(final Map<T, E> map, final E value) {
+        for (Entry<T, E> entry : map.entrySet()) {
+            if (value.equals(entry.getValue())) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
 
 }

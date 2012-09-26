@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -13,9 +13,9 @@
 
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * See: http://www.gnu.org/licenses/lgpl-3.0
- * 
+ *
  */
 package de.hbrs.oryx.yawl.converter.handler.oryx;
 
@@ -43,146 +43,157 @@ import de.hbrs.oryx.yawl.converter.exceptions.ConversionException;
 
 /**
  * Converts a (sub)-net
- * 
+ *
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University of Applied Sciences)
- * 
+ *
  */
 public class OryxNetHandler extends OryxDecompositionHandler {
 
-	public OryxNetHandler(OryxConversionContext context, BasicShape shape) {
-		super(context, shape);
-	}
+    public OryxNetHandler(final OryxConversionContext context, final BasicShape shape) {
+        super(context, shape);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.hbrs.oryx.yawl.converter.handler.oryx.OryxHandler#convert()
-	 */
-	@Override
-	public void convert() {
-		String yawlId = convertYawlId(getShape());
+    /*
+     * (non-Javadoc)
+     *
+     * @see de.hbrs.oryx.yawl.converter.handler.oryx.OryxHandler#convert()
+     */
+    @Override
+    public void convert() {
+        String yawlId = convertYawlId(getShape());
 
-		YNet net = new YNet(yawlId, getContext().getSpecification());
+        YNet net = new YNet(yawlId, getContext().getSpecification());
 
-		convertLayout(net);
+        convertLayout(net);
 
-		try {
-			convertProperties(net);
-		} catch (JSONException e) {
-			getContext().addConversionWarnings("Error converting Net properties", e);
-		} catch (ConversionException e) {
-			getContext().addConversionWarnings("Error converting Net properties", e);
-		}
+        try {
+            convertProperties(net);
+        } catch (JSONException e) {
+            getContext().addConversionWarnings("Error converting Net properties", e);
+        } catch (ConversionException e) {
+            getContext().addConversionWarnings("Error converting Net properties", e);
+        }
 
-		getContext().addNet(getShape(), net);
+        getContext().addNet(getShape(), net);
 
-		convertChildShapes();
-		convertFlows();
-		convertCancellationSets(net);
+        convertChildShapes();
+        convertFlows();
+        convertCancellationSets(net);
 
-		if (getContext().getRootNetID().equals(getShape().getProperty("yawlid"))) {
-			getContext().getSpecification().setRootNet(net);
-		} else {
-			getContext().getSpecification().addDecomposition(net);
-		}
-		
-		if (net.getInputCondition() == null) {
-			net.setInputCondition(new YInputCondition(convertYawlId(), net));
-			getContext().addConversionWarnings("Missing Input Condition in YAWL Net "+net.getID()+"!", null);
-		}
-		
-		if (net.getOutputCondition() == null) {
-			net.setOutputCondition(new YOutputCondition(convertYawlId(), net));
-			getContext().addConversionWarnings("Missing Output Condition in YAWL Net "+net.getID()+"!", null);
-		}
-		
-	}
+        if (getContext().getRootNetID().equals(getShape().getProperty("yawlid"))) {
+            getContext().getSpecification().setRootNet(net);
+        } else {
+            getContext().getSpecification().addDecomposition(net);
+        }
 
-	private void convertLayout(YNet net) {
-		YNetLayout netLayout = new YNetLayout(net, getContext().getNumberFormat());		
-		netLayout.setBounds(convertShapeBounds(getShape()));
-		netLayout.setViewport(convertShapeBounds(getShape()));
-		netLayout.setScale(1.00);
-		getContext().getLayout().addNetLayout(netLayout);
-	}
+        if (net.getInputCondition() == null) {
+            net.setInputCondition(new YInputCondition(convertYawlId(), net));
+            getContext().addConversionWarnings("Missing Input Condition in YAWL Net " + net.getID() + "!", null);
+        }
 
-	private void convertProperties(YNet net) throws JSONException, ConversionException {
-		JSONObject variables = getShape().getPropertyJsonObject("decompositionvariables");
-		if (variables != null) {
-			JSONArray varArray = variables.getJSONArray("items");
-			for (int index = 0; index < varArray.length(); index++) {
-				JSONObject varObject = varArray.getJSONObject(index);
-				String usage = varObject.getString("usage");
+        if (net.getOutputCondition() == null) {
+            net.setOutputCondition(new YOutputCondition(convertYawlId(), net));
+            getContext().addConversionWarnings("Missing Output Condition in YAWL Net " + net.getID() + "!", null);
+        }
 
-				if (usage.equals("local")) {
+    }
 
-					if (varObject.has("name")) {
-						YVariable convertVariable = convertVariable(net, varObject);
-						convertVariable.setOrdering(index);
-						net.getLocalVariables().put(varObject.getString("name"), convertVariable);
-					}
+    private void convertLayout(final YNet net) {
+        YNetLayout netLayout = new YNetLayout(net, getContext().getNumberFormat());
+        netLayout.setBounds(convertShapeBounds(getShape()));
+        netLayout.setViewport(convertShapeBounds(getShape()));
+        netLayout.setScale(1.00);
+        getContext().getLayout().addNetLayout(netLayout);
+    }
 
-				} else {
-					// TODO REFACTOR: is the same as in atomictask
-					YParameter convertParameter = convertParameter(net, varObject);
-					convertParameter.setOrdering(index);
+    private void convertProperties(final YNet net) throws JSONException, ConversionException {
+        JSONObject variables = getShape().getPropertyJsonObject("decompositionvariables");
+        if (variables != null) {
+            JSONArray varArray = variables.getJSONArray("items");
+            for (int index = 0; index < varArray.length(); index++) {
+                JSONObject varObject = varArray.getJSONObject(index);
+                String usage = varObject.getString("usage");
 
-					if (usage.equals("input")) {
-						net.addInputParameter(convertParameter);
-					} else if (usage.equals("output")) {
-						net.addOutputParameter(convertParameter);
+                if (usage.equals("local")) {
 
-						// Add local variable with index 0 as YAWL seems to do
-						// this. Seems to be useless!
-						YVariable convertVariable = convertVariable(net, varObject);
-						convertVariable.setOrdering(0);
-						net.getLocalVariables().put(varObject.getString("name"), convertVariable);
-					} else {
-						// Is Both
-						varObject.put("usage", "input");
-						YParameter inputParameter = convertParameter(net, varObject);
-						inputParameter.setOrdering(index);
-						net.addInputParameter(inputParameter);
+                    if (varObject.has("name")) {
+                        YVariable convertVariable = convertVariable(net, varObject);
+                        convertVariable.setOrdering(index);
+                        net.getLocalVariables().put(varObject.getString("name"), convertVariable);
+                    }
 
-						// Add both to Input and Output Parameters
-						varObject.put("usage", "output");
-						YParameter outputParameter = convertParameter(net, varObject);
-						outputParameter.setOrdering(index);
-						net.addOutputParameter(outputParameter);
-					}
-				}
+                } else {
+                    // TODO REFACTOR: is the same as in atomictask
+                    YParameter convertParameter = convertParameter(net, varObject);
+                    convertParameter.setOrdering(index);
 
-			}
-		}
-	}
+                    if (usage.equals("input")) {
+                        net.addInputParameter(convertParameter);
+                    } else if (usage.equals("output")) {
+                        net.addOutputParameter(convertParameter);
 
-	private void convertChildShapes() {
-		for (BasicShape shape : getShape().getChildShapesReadOnly()) {
-			OryxHandler handler = getContext().getHandlerFactory().createOryxConverter(shape);
-			handler.convert();
-		}
-	}
+                        // Add local variable with index 0 as YAWL seems to do
+                        // this. Seems to be useless!
+                        YVariable convertVariable = convertVariable(net, varObject);
+                        convertVariable.setOrdering(0);
+                        net.getLocalVariables().put(varObject.getString("name"), convertVariable);
+                    } else {
+                        // Is Both
+                        varObject.put("usage", "input");
+                        YParameter inputParameter = convertParameter(net, varObject);
+                        inputParameter.setOrdering(index);
+                        net.addInputParameter(inputParameter);
 
-	private void convertFlows() {
-		Set<BasicEdge> flowSet = getContext().getFlowSet(getShape());
+                        // Add both to Input and Output Parameters
+                        varObject.put("usage", "output");
+                        YParameter outputParameter = convertParameter(net, varObject);
+                        outputParameter.setOrdering(index);
+                        net.addOutputParameter(outputParameter);
+                    }
+                }
 
-		for (BasicEdge flowShape : flowSet) {
-			OryxHandler handler = getContext().getHandlerFactory().createOryxConverter(flowShape, getShape());
-			handler.convert();
-		}
+            }
+        }
+    }
 
-	}
+    private void convertChildShapes() {
+        for (BasicShape shape : getShape().getChildShapesReadOnly()) {
+            OryxHandler handler = getContext().getHandlerFactory().createOryxConverter(shape);
+            handler.convert();
+        }
+    }
 
-	private void convertCancellationSets(YNet net) {
-		for (Entry<YTask, List<String>> cancellationSet : getContext().getCancellationSets(net)) {
-			YTask task = cancellationSet.getKey();
-			List<String> cancelledIds = cancellationSet.getValue();
-			List<YExternalNetElement> removeSet = new ArrayList<YExternalNetElement>();
-			for (String id : cancelledIds) {
-				removeSet.add(net.getNetElement(id));
-			}
-			task.addRemovesTokensFrom(removeSet);
-		}
-	}
+    private void convertFlows() {
+        Set<BasicEdge> flowSet = getContext().getFlowSet(getShape());
+
+        for (BasicEdge flowShape : flowSet) {
+            OryxHandler handler = getContext().getHandlerFactory().createOryxConverter(flowShape, getShape());
+            handler.convert();
+        }
+
+    }
+
+    private void convertCancellationSets(final YNet net) {
+        for (Entry<YTask, List<String>> cancellationSet : getContext().getCancellationSets(net)) {
+            YTask task = cancellationSet.getKey();
+            List<String> cancelledIds = cancellationSet.getValue();
+            List<YExternalNetElement> removeSet = new ArrayList<YExternalNetElement>();
+            for (String id : cancelledIds) {
+                YExternalNetElement netElement = net.getNetElement(id);
+                if (netElement != null) {
+                    removeSet.add(netElement);
+                } else {
+                    // Try to prefix it
+                    netElement = net.getNetElement(net.getID()+"-"+id);
+                    if (netElement != null) {
+                        removeSet.add(netElement);
+                    } else {
+                        getContext().addConversionWarnings(new ConversionException("Could not find elment "+id+" in cancellation set!"));
+                    }
+                }
+            }
+            task.addRemovesTokensFrom(removeSet);
+        }
+    }
 
 }

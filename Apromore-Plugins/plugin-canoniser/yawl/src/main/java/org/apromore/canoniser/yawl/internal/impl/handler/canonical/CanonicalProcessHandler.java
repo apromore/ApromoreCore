@@ -101,10 +101,7 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
 
     private MetaDataType convertMetaData(final CanonicalProcessType c) {
         // First try to get our own Extension
-        MetaDataType metaData = getContext().getExtensionFromAnnotations(null, ExtensionUtils.METADATA, MetaDataType.class);
-        if (metaData == null) {
-            metaData = YAWL_FACTORY.createMetaDataType();
-        }
+        MetaDataType metaData = getContext().getExtensionFromAnnotations(null, ExtensionUtils.METADATA, MetaDataType.class, YAWL_FACTORY.createMetaDataType());
         // Now override with changes values on CPF
         try {
             if (c.getCreationDate() != null) {

@@ -27,8 +27,8 @@ import java.util.UUID;
  */
 public class OryxUUID {
 
-	public static String generate() {
-		return "oryx_" + UUID.randomUUID().toString();
-	}
-	
+    public static String generate() {
+        return "oryx_" + UUID.randomUUID().toString();
+    }
+
 }

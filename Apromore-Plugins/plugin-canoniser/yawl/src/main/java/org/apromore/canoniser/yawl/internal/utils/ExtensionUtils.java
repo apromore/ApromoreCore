@@ -56,7 +56,10 @@ public final class ExtensionUtils {
     public static final String OUTPUT_PARAM = "outputParam";
 
     public static final String INPUT_PARAM = "inputParam";
+
     public static final String TIMER = "timer";
+
+    public static final String METADATA = "metadata";
 
     public static final String YAWLSCHEMA_URL = "http://www.yawlfoundation.org/yawlschema";
 
@@ -71,10 +74,7 @@ public final class ExtensionUtils {
         }
     }
 
-    public static final String METADATA = "metadata";
-
     private ExtensionUtils() {
-
     }
 
     public static boolean isValidFragment(final Object obj, final String namespace, final String localPart) {
@@ -82,7 +82,8 @@ public final class ExtensionUtils {
     }
 
     /**
-     * 'Unmarshal' a YAWL object to its expected class. Will throw an JAXBException is class is not known. Note this method will also convert any non-matching Object!
+     * 'Unmarshal' a YAWL object to its expected class. Will throw an JAXBException is class is not known. Note this method will also convert any
+     * non-matching Object!
      *
      * @param object
      *            returned of 'getAny' or similiar
@@ -193,13 +194,15 @@ public final class ExtensionUtils {
     }
 
     /**
-     * Get an extension element from a CPF Node
+     * Get an extension attribute from a CPF Node
      *
-     * @param node any CPF node
-     * @param name name of the extension
+     * @param node
+     *            any CPF node
+     * @param name
+     *            name of the extension
      * @return
      */
-    public static TypeAttribute getFromExtensions(final NodeType node, final String name) {
+    public static TypeAttribute getExtensionAttribute(final NodeType node, final String name) {
         for (TypeAttribute attr : node.getAttribute()) {
             if (name.equals(attr.getName())) {
                 return attr;
@@ -208,27 +211,40 @@ public final class ExtensionUtils {
         return null;
     }
 
+    public static <T> T getFromNodeExtension(final NodeType node, final String elementName, final Class<T> excpectedClass, final T defaultValue) {
+        TypeAttribute attr = getExtensionAttribute(node, elementName);
+        if (attr != null && attr.getAny() != null) {
+            try {
+                return ExtensionUtils.unmarshalYAWLFragment(attr.getAny(), excpectedClass);
+            } catch (CanoniserException e) {
+                LOGGER.warn("Could unmarshal fragment from extension!", e);
+                return defaultValue;
+            }
+        }
+        return defaultValue;
+    }
+
     /**
-     * Get  an extension element from an AnnotationsType
+     * Get an extension element from an AnnotationsType
      *
      * @param annotation
      * @param elementName
      * @param expectedClass
-     * @return
+     * @param defaultValue
+     * @return an object of type T in any case
      */
-    public static <T> T getFromAnnotationsExtension(final AnnotationType annotation, final String elementName, final Class<T> expectedClass) {
+    public static <T> T getFromAnnotationsExtension(final AnnotationType annotation, final String elementName, final Class<T> expectedClass,
+            final T defaultValue) {
         for (final Object extObj : annotation.getAny()) {
             try {
                 if (ExtensionUtils.isValidFragment(extObj, ExtensionUtils.YAWLSCHEMA_URL, elementName)) {
                     return ExtensionUtils.unmarshalYAWLFragment(extObj, expectedClass);
                 }
             } catch (final CanoniserException e) {
-                LOGGER.warn("Could not convert YAWL extension {} with type {}",
-                        new String[] { elementName, expectedClass.getSimpleName() });
-                LOGGER.warn("Original Exception", e);
+                LOGGER.warn("Could not convert YAWL extension {} with type {}", new String[] { elementName, expectedClass.getSimpleName() }, e);
             }
         }
-        return null;
+        return defaultValue;
     }
 
 }

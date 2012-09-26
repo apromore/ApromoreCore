@@ -27,12 +27,12 @@ package de.hbrs.oryx.yawl.converter.handler.yawl;
  */
 public interface YAWLHandler {
 
-	/**
-	 * Starts the conversion of the Element
-	 * 
-	 * @param parentId
-	 *            the identifier of the parent element (e.g. net in YAWL)
-	 */
-	void convert(String parentId);
+    /**
+     * Starts the conversion of the Element
+     * 
+     * @param parentId
+     *            the identifier of the parent element (e.g. net in YAWL)
+     */
+    void convert(String parentId);
 
 }

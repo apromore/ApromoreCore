@@ -38,106 +38,105 @@ import de.hbrs.oryx.yawl.util.YAWLUtils;
 
 public class SpecificationHandler extends YAWLHandlerImpl {
 
-	YSpecification specification;
+    YSpecification specification;
 
-	public SpecificationHandler(YAWLConversionContext context, YSpecification ySpec) {
-		super(context);
-		this.specification = ySpec;
-	}
+    public SpecificationHandler(final YAWLConversionContext context, final YSpecification ySpec) {
+        super(context);
+        this.specification = ySpec;
+    }
 
-	public YSpecification getSpecification() {
-		return specification;
-	}
+    public YSpecification getSpecification() {
+        return specification;
+    }
 
-	@Override
-	public void convert(String parentId) {
-		BasicDiagram specDiagram = createEmptyDiagram("diagram-" + getSpecification().getURI());
+    @Override
+    public void convert(final String parentId) {
+        BasicDiagram specDiagram = createEmptyDiagram("diagram-" + getSpecification().getURI());
 
-		specDiagram.setProperties(convertProperties());
+        specDiagram.setProperties(convertProperties());
 
-		getContext().setSpecificationDiagram(specDiagram);
-	}
+        getContext().setSpecificationDiagram(specDiagram);
+    }
 
-	private HashMap<String, String> convertProperties() {
-		HashMap<String, String> props = new HashMap<String, String>();
+    private HashMap<String, String> convertProperties() {
+        HashMap<String, String> props = new HashMap<String, String>();
 
-		final YSpecification spec = getSpecification();
-		final YMetaData metaData = spec.getMetaData();
+        final YSpecification spec = getSpecification();
+        final YMetaData metaData = spec.getMetaData();
 
-		// General Properties
+        // General Properties
 
-		props.put("specname", convertNullable(spec.getName()));
-		props.put("specid", convertNullable(metaData.getUniqueID()));
+        props.put("specname", convertNullable(spec.getName()));
+        props.put("specid", convertNullable(metaData.getUniqueID()));
 
-		// Specification Related
+        // Specification Related
 
-		props.put("spectitle", convertNullable(metaData.getTitle()));
+        props.put("spectitle", convertNullable(metaData.getTitle()));
 
-		try {
-			props.put("speccreators", convertListOfNames(metaData.getCreators()));
-		} catch (JSONException e) {
-			getContext().addConversionWarnings("Could not convert YAWL specification 'creators'", e);
-		}
+        try {
+            props.put("speccreators", convertListOfNames(metaData.getCreators()));
+        } catch (JSONException e) {
+            getContext().addConversionWarnings("Could not convert YAWL specification 'creators'", e);
+        }
 
-		try {
-			props.put("specsubject", convertListOfNames(metaData.getSubjects()));
-		} catch (JSONException e) {
-			getContext().addConversionWarnings("Could not convert YAWL specification 'subject'", e);
-		}
+        try {
+            props.put("specsubject", convertListOfNames(metaData.getSubjects()));
+        } catch (JSONException e) {
+            getContext().addConversionWarnings("Could not convert YAWL specification 'subject'", e);
+        }
 
-		props.put("specdescription", convertNullable(metaData.getDescription()));
+        props.put("specdescription", convertNullable(metaData.getDescription()));
 
-		try {
-			props.put("speccontributor", convertListOfNames(metaData.getContributors()));
-		} catch (JSONException e) {
-			getContext().addConversionWarnings("Could not convert YAWL specification 'subject'", e);
-		}
+        try {
+            props.put("speccontributor", convertListOfNames(metaData.getContributors()));
+        } catch (JSONException e) {
+            getContext().addConversionWarnings("Could not convert YAWL specification 'subject'", e);
+        }
 
-		props.put("speccoverage", convertNullable(metaData.getCoverage()));
+        props.put("speccoverage", convertNullable(metaData.getCoverage()));
 
-		props.put("specvalidfrom",
-				metaData.getValidFrom() != null ? new SimpleDateFormat(YAWLUtils.DATE_FORMAT).format(metaData.getValidFrom()) : "");
-		props.put("specvaliduntil",
-				metaData.getValidUntil() != null ? new SimpleDateFormat(YAWLUtils.DATE_FORMAT).format(metaData.getValidUntil()) : "");
+        props.put("specvalidfrom", metaData.getValidFrom() != null ? new SimpleDateFormat(YAWLUtils.DATE_FORMAT).format(metaData.getValidFrom()) : "");
+        props.put("specvaliduntil", metaData.getValidUntil() != null ? new SimpleDateFormat(YAWLUtils.DATE_FORMAT).format(metaData.getValidUntil())
+                : "");
 
-		props.put("speccreated", metaData.getCreated() != null ? new SimpleDateFormat(YAWLUtils.DATE_FORMAT).format(metaData.getCreated()) : "");
+        props.put("speccreated", metaData.getCreated() != null ? new SimpleDateFormat(YAWLUtils.DATE_FORMAT).format(metaData.getCreated()) : "");
 
-		props.put("specversion", convertNullable(metaData.getVersion().toString()));
+        props.put("specversion", convertNullable(metaData.getVersion().toString()));
 
-		props.put("specstatus", convertNullable(metaData.getStatus()));
+        props.put("specstatus", convertNullable(metaData.getStatus()));
 
-		props.put("specpersistent", new Boolean(metaData.isPersistent()).toString());
+        props.put("specpersistent", new Boolean(metaData.isPersistent()).toString());
 
-		props.put("specuri", spec.getURI());
+        props.put("specuri", spec.getURI());
 
-		props.put("specdatatypedefinitions", convertNullable(spec.getDataValidator().getSchema()));
+        props.put("specdatatypedefinitions", convertNullable(spec.getDataValidator().getSchema()));
 
-		return props;
-	}
+        return props;
+    }
 
-	private String convertListOfNames(List<String> list) throws JSONException {
-		JSONObject listOfNames = new JSONObject();
-		JSONArray items = new JSONArray();
-		for (String creator : list) {
-			JSONObject obj = new JSONObject();
-			obj.put("name", creator);
-			items.put(obj);
-		}
-		listOfNames.put("items", items);
-		return listOfNames.toString();
-	}
+    private String convertListOfNames(final List<String> list) throws JSONException {
+        JSONObject listOfNames = new JSONObject();
+        JSONArray items = new JSONArray();
+        for (String creator : list) {
+            JSONObject obj = new JSONObject();
+            obj.put("name", creator);
+            items.put(obj);
+        }
+        listOfNames.put("items", items);
+        return listOfNames.toString();
+    }
 
-	private BasicDiagram createEmptyDiagram(String id) {
+    private BasicDiagram createEmptyDiagram(final String id) {
 
-		String stencilSetNs = "http://b3mn.org/stencilset/yawl2.2#";
-		StencilSetReference stencilSetRef = new StencilSetReference(stencilSetNs);
+        String stencilSetNs = "http://b3mn.org/stencilset/yawl2.2#";
+        StencilSetReference stencilSetRef = new StencilSetReference(stencilSetNs);
 
-		BasicDiagram diagram = new BasicDiagram(id, "Diagram", stencilSetRef);
-		// Set required properties to initial values
-		// TODO: probably not used anymore in SIGNAVIO CORE COMPONENTS
-		// diagram.setChildShapes(new ArrayList<Shape>());
-		diagram.setBounds(new Bounds(new Point(0.0, 0.0), new Point(0.0, 0.0)));
-		return diagram;
-	}
+        BasicDiagram diagram = new BasicDiagram(id, "Diagram", stencilSetRef);
+        // Set required properties to initial values
+        // TODO: probably not used anymore in SIGNAVIO CORE COMPONENTS
+        // diagram.setChildShapes(new ArrayList<Shape>());
+        diagram.setBounds(new Bounds(new Point(0.0, 0.0), new Point(0.0, 0.0)));
+        return diagram;
+    }
 
 }

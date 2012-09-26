@@ -33,15 +33,15 @@ import de.hbrs.oryx.yawl.converter.context.YAWLConversionContext;
  */
 public class InputConditionHandler extends ConditionHandler {
 
-	public InputConditionHandler(YAWLConversionContext context, YNetElement netElement) {
-		super(context, netElement);
-	}
+    public InputConditionHandler(final YAWLConversionContext context, final YNetElement netElement) {
+        super(context, netElement);
+    }
 
-	@Override
-	public void convert(String parentId) {
-		BasicShape condition = convertCondition(parentId, "InputCondition");
-		getContext().putShape(parentId, getNetElement().getID(), condition);
-		getContext().addPostsetFlows(parentId, ((YExternalNetElement) getNetElement()).getPostsetFlows());
-	}
+    @Override
+    public void convert(final String parentId) {
+        BasicShape condition = convertCondition(parentId, "InputCondition");
+        getContext().putShape(parentId, getNetElement().getID(), condition);
+        getContext().addPostsetFlows(parentId, ((YExternalNetElement) getNetElement()).getPostsetFlows());
+    }
 
 }

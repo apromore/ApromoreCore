@@ -6,7 +6,7 @@
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
             <name>A</name>
-            <resourceTypeRef id="idfc7ff291-9688-4170-b8cc-ce9cda8ef2c1" resourceTypeId="idbf372ec3-ecec-4ccd-bb20-3569fb222a9c"/>
+            <resourceTypeRef id="id50fc45c4-a57c-45a9-a6a9-ae2efd0d24cd" resourceTypeId="idac31a831-08b2-4395-8a24-5042698e0f6d"/>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
@@ -14,7 +14,7 @@
         <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
         <Edge id="C-A-OutputCondition" default="true" sourceId="C-A" targetId="C-OutputCondition"/>
     </Net>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:RoleType" id="idbf372ec3-ecec-4ccd-bb20-3569fb222a9c" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:RoleType" id="idac31a831-08b2-4395-8a24-5042698e0f6d" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
         <name>RoleX</name>
     </ResourceType>
 </ns2:CanonicalProcess>

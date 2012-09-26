@@ -19,7 +19,9 @@
  */
 package de.hbrs.oryx.yawl.converter.handler.yawl.flow;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 import org.oryxeditor.server.diagram.basic.BasicDiagram;
@@ -35,36 +37,36 @@ import de.hbrs.oryx.yawl.converter.handler.yawl.element.AtomicTaskHandler;
 
 public class FlowHandlerTest extends YAWLHandlerTest {
 
-	@Test
-	public void testConvert() {
+    @Test
+    public void testConvert() {
 
-		YNet net = (YNet) YAWLTestData.orderFulfillmentSpecification.getDecomposition("Ordering");
-		// Adding stub Net
-		orderFContext.addNet("Ordering", new BasicDiagram("Net"));
+        YNet net = (YNet) YAWLTestData.orderFulfillmentSpecification.getDecomposition("Ordering");
+        // Adding stub Net
+        orderFContext.addNet("Ordering", new BasicDiagram("Net"));
 
-		YAtomicTask sourceTask = (YAtomicTask) net.getNetElement("Create_Purchase_Order_104");
-		YAtomicTask targetTask = (YAtomicTask) net.getNetElement("Approve_Purchase_Order_1901");
+        YAtomicTask sourceTask = (YAtomicTask) net.getNetElement("Create_Purchase_Order_104");
+        YAtomicTask targetTask = (YAtomicTask) net.getNetElement("Approve_Purchase_Order_1901");
 
-		// Convert source and target
-		new AtomicTaskHandler(orderFContext, sourceTask).convert(net.getID());
-		new AtomicTaskHandler(orderFContext, targetTask).convert(net.getID());
+        // Convert source and target
+        new AtomicTaskHandler(orderFContext, sourceTask).convert(net.getID());
+        new AtomicTaskHandler(orderFContext, targetTask).convert(net.getID());
 
-		// Convert flow between
-		FlowHandler handler = new FlowHandler(orderFContext, new YFlow(sourceTask, targetTask));
-		handler.convert(net.getID());
+        // Convert flow between
+        FlowHandler handler = new FlowHandler(orderFContext, new YFlow(sourceTask, targetTask));
+        handler.convert(net.getID());
 
-		// Check for Edge
-		BasicShape sourceShape = findShapeInOrderF(net, sourceTask);
-		BasicShape targetShape = findShapeInOrderF(net, targetTask);
-		assertNotNull("Source not found", sourceShape);
-		assertNotNull("Target not found", targetShape);
+        // Check for Edge
+        BasicShape sourceShape = findShapeInOrderF(net, sourceTask);
+        BasicShape targetShape = findShapeInOrderF(net, targetTask);
+        assertNotNull("Source not found", sourceShape);
+        assertNotNull("Target not found", targetShape);
 
-		BasicShape edge = sourceShape.getOutgoingsReadOnly().get(0);
-		assertNotNull(edge);
-		assertTrue(edge instanceof BasicEdge);
+        BasicShape edge = sourceShape.getOutgoingsReadOnly().get(0);
+        assertNotNull(edge);
+        assertTrue(edge instanceof BasicEdge);
 
-		assertEquals(targetShape, ((BasicEdge) edge).getTarget());
+        assertEquals(targetShape, ((BasicEdge) edge).getTarget());
 
-	}
+    }
 
 }

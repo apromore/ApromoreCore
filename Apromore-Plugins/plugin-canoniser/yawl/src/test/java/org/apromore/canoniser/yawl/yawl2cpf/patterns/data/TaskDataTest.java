@@ -2,24 +2,29 @@ package org.apromore.canoniser.yawl.yawl2cpf.patterns.data;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
 
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.canoniser.yawl.yawl2cpf.patterns.BasePatternTest;
+import org.apromore.cpf.CPFSchema;
+import org.apromore.cpf.ExpressionType;
+import org.apromore.cpf.InputExpressionType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.ObjectRefType;
+import org.apromore.cpf.OutputExpressionType;
 import org.apromore.cpf.SoftType;
 import org.apromore.cpf.TaskType;
-import org.junit.Ignore;
 import org.junit.Test;
 
 public class TaskDataTest extends BasePatternTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.BaseYAWL2CPFTest#getYAWLFile()
      */
     @Override
@@ -51,42 +56,51 @@ public class TaskDataTest extends BasePatternTest {
         assertEquals("YDocumentType", n5.getType());
     }
 
-    @Ignore
     @Test
     public void testTaskVariables() {
         final NetType rootNet = yawl2Canonical.getCpf().getNet().get(0);
         final TaskType taskA = (TaskType) getNodeByName(rootNet, "A");
         assertNotNull(taskA);
-        final TaskType taskB = (TaskType) getNodeByName(rootNet, "B");
-        assertNotNull(taskB);
 
-        // final SoftType at1 = (SoftType) getObjectByName(taskA, "t1");
-        // assertNotNull(at1);
-        // final SoftType at2 = (SoftType) getObjectByName(taskA, "t2");
-        // assertNotNull(at2);
-        // final SoftType at3 = (SoftType) getObjectByName(taskA, "t3");
-        // assertNotNull(at3);
-        // final SoftType at4 = (SoftType) getObjectByName(taskA, "t4");
-        // assertNotNull(at4);
+        InputExpressionType t1 = findExpression("t1", taskA.getInputExpr());
+        assertNotNull(t1);
+        assertEquals("t1 = {/Net/n1/text()}", t1.getExpression());
+        InputExpressionType t2 = findExpression("t2", taskA.getInputExpr());
+        assertNotNull(t2);
+        assertEquals("t2 = {/Net/n1/text()}", t2.getExpression());
+        InputExpressionType t3 = findExpression("t3", taskA.getInputExpr());
+        assertNotNull(t3);
+        assertEquals("t3 = {/Net/n3/text()}", t3.getExpression());
 
-        // assertEquals("string", at1.getType());
-        // assertEquals("boolean", at2.getType());
-        // assertEquals("string", at3.getType());
-        // assertEquals("string", at4.getType());
-        //
-        // final SoftType bt1 = (SoftType) getObjectByName(taskB, "t1");
-        // assertNotNull(bt1);
-        // final SoftType bt2 = (SoftType) getObjectByName(taskB, "t2");
-        // assertNotNull(bt2);
-        // final SoftType bt3 = (SoftType) getObjectByName(taskB, "t3");
-        // assertNotNull(bt3);
+        InputExpressionType invalidExpr1 = findExpression("n3", taskA.getInputExpr());
+        assertNull(invalidExpr1);
 
-        // assertEquals("boolean", bt1.getType());
-        // assertEquals("string", bt2.getType());
-        // assertEquals("string", bt3.getType());
+        OutputExpressionType n3 = findExpression("n3", taskA.getOutputExpr());
+        assertNotNull(n3);
+        assertEquals("n3 = {/A/t3/text()}", n3.getExpression());
+        OutputExpressionType n2 = findExpression("n2", taskA.getOutputExpr());
+        assertNotNull(n2);
+        assertEquals("n2 = {/A/t3/text()}", n2.getExpression());
+        OutputExpressionType n4 = findExpression("n4", taskA.getOutputExpr());
+        assertNotNull(n4);
+        assertEquals("n4 = {/A/t4/text()}", n4.getExpression());
+
+        OutputExpressionType invalidExpr2 = findExpression("t1", taskA.getOutputExpr());
+        assertNull(invalidExpr2);
     }
 
-    @Ignore
+    private <T extends ExpressionType> T findExpression(final String taskVariableName, final List<T> taskExpressions) {
+        for (T expr: taskExpressions) {
+            assertTrue(expr.getLanguage().equals(CPFSchema.EXPRESSION_LANGUAGE_XQUERY));
+            String[] splittedExpr = expr.getExpression().split("=");
+            assertTrue(splittedExpr.length == 2);
+            if (splittedExpr[0].trim().equals(taskVariableName)) {
+                return expr;
+            }
+        }
+        return null;
+    }
+
     @Test
     public void testTaskMappings() {
         final NetType rootNet = yawl2Canonical.getCpf().getNet().get(0);
@@ -101,52 +115,41 @@ public class TaskDataTest extends BasePatternTest {
         assertEquals(6, taskA.getObjectRef().size());
 
         // Test Input
-
         final List<ObjectRefType> inRefA1 = getObjectInputRef(taskA, getObjectByName(rootNet, "n1"));
         assertEquals(2, inRefA1.size());
-        // assertNotNull(getObjectRefByTarget(inRefA1, getObjectByName(taskA, "t1")));
-        // assertNotNull(getObjectRefByTarget(inRefA1, getObjectByName(taskA, "t2")));
 
         final List<ObjectRefType> inRefA2 = getObjectInputRef(taskA, getObjectByName(rootNet, "n2"));
         assertEquals(0, inRefA2.size());
 
         final List<ObjectRefType> inRefA3 = getObjectInputRef(taskA, getObjectByName(rootNet, "n3"));
         assertEquals(1, inRefA3.size());
-        // assertEquals(getObjectByName(taskA, "t3").getId(), inRefA3.get(0).getMapsToObjectId());
 
         final List<ObjectRefType> inRefA4 = getObjectInputRef(taskA, getObjectByName(rootNet, "n4"));
         assertEquals(0, inRefA4.size());
 
         // Test Output
-
         final List<ObjectRefType> outRefA1 = getObjectOutputRef(taskA, getObjectByName(rootNet, "n1"));
         assertEquals(0, outRefA1.size());
 
         final List<ObjectRefType> outRefA2 = getObjectOutputRef(taskA, getObjectByName(rootNet, "n2"));
         assertEquals(1, outRefA2.size());
-        // assertEquals(getObjectByName(taskA, "t3").getId(), outRefA2.get(0).getMapsToObjectId());
 
         final List<ObjectRefType> outRefA3 = getObjectOutputRef(taskA, getObjectByName(rootNet, "n3"));
         assertEquals(1, outRefA3.size());
-        // assertEquals(getObjectByName(taskA, "t3").getId(), outRefA3.get(0).getMapsToObjectId());
 
         final List<ObjectRefType> outRefA4 = getObjectOutputRef(taskA, getObjectByName(rootNet, "n4"));
         assertEquals(1, outRefA4.size());
-        // assertEquals(getObjectByName(taskA, "t4").getId(), outRefA4.get(0).getMapsToObjectId());
 
         /********** TASK B *************/
 
         assertEquals(4, taskB.getObjectRef().size());
 
         // Test Input
-
         final List<ObjectRefType> inRefB1 = getObjectInputRef(taskB, getObjectByName(rootNet, "n1"));
         assertEquals(1, inRefB1.size());
-        // assertEquals(getObjectByName(taskB, "t1").getId(), inRefB1.get(0).getMapsToObjectId());
 
         final List<ObjectRefType> inRefB2 = getObjectInputRef(taskB, getObjectByName(rootNet, "n2"));
         assertEquals(1, inRefB2.size());
-        // assertEquals(getObjectByName(taskB, "t2").getId(), inRefB2.get(0).getMapsToObjectId());
 
         final List<ObjectRefType> inRefB3 = getObjectInputRef(taskB, getObjectByName(rootNet, "n3"));
         assertEquals(0, inRefB3.size());
@@ -155,17 +158,14 @@ public class TaskDataTest extends BasePatternTest {
         assertEquals(0, inRefB4.size());
 
         // Test Output
-
         final List<ObjectRefType> outRefB1 = getObjectOutputRef(taskB, getObjectByName(rootNet, "n1"));
         assertEquals(0, outRefB1.size());
 
         final List<ObjectRefType> outRefB2 = getObjectOutputRef(taskB, getObjectByName(rootNet, "n2"));
         assertEquals(1, outRefB2.size());
-        // assertEquals(getObjectByName(taskB, "t1").getId(), outRefB2.get(0).getMapsToObjectId());
 
         final List<ObjectRefType> outRefB3 = getObjectOutputRef(taskB, getObjectByName(rootNet, "n3"));
         assertEquals(1, outRefB3.size());
-        // assertEquals(getObjectByName(taskB, "t1").getId(), outRefB3.get(0).getMapsToObjectId());
 
         final List<ObjectRefType> outRefB4 = getObjectOutputRef(taskB, getObjectByName(rootNet, "n4"));
         assertEquals(0, outRefB4.size());

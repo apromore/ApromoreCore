@@ -35,48 +35,48 @@ import de.hbrs.oryx.yawl.converter.context.OryxConversionContext;
  */
 public class OryxConditionHandler extends OryxNetElementHandler {
 
-	public OryxConditionHandler(OryxConversionContext context, BasicShape shape) {
-		super(context, shape);
-	}
+    public OryxConditionHandler(final OryxConversionContext context, final BasicShape shape) {
+        super(context, shape);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.hbrs.oryx.yawl.converter.handler.oryx.OryxHandler#convert()
-	 */
-	@Override
-	public void convert() {
-		final BasicShape shape = getShape();
-		final YNet parentNet = getContext().getNet(shape.getParent());
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.oryx.OryxHandler#convert()
+     */
+    @Override
+    public void convert() {
+        final BasicShape shape = getShape();
+        final YNet parentNet = getContext().getNet(shape.getParent());
 
-		final String yawlId = convertYawlId(parentNet, shape);
-		final String name = (shape.hasProperty("name") && !shape.getProperty("name").isEmpty()) ? shape.getProperty("name") : null;
-		final YCondition condition = new YCondition(yawlId, name, parentNet);
-		convertConditionProperties(condition);
-		convertConditionLayout(condition, parentNet);
-		parentNet.addNetElement(condition);
+        final String yawlId = convertYawlId(parentNet, shape);
+        final String name = (shape.hasProperty("name") && !shape.getProperty("name").isEmpty()) ? shape.getProperty("name") : null;
+        final YCondition condition = new YCondition(yawlId, name, parentNet);
+        convertConditionProperties(condition);
+        convertConditionLayout(condition, parentNet);
+        parentNet.addNetElement(condition);
 
-		// Remember Flows for later conversion
-		rememberOutgoings();
-		rememberIncomings();
-	}
+        // Remember Flows for later conversion
+        rememberOutgoings();
+        rememberIncomings();
+    }
 
-	/**
-	 * Fills all properties of the YCondition
-	 * 
-	 * @param condition
-	 */
-	protected void convertConditionProperties(final YCondition condition) {
-		if (getShape().hasProperty("documentation")) {
-			condition.setDocumentation(getShape().getProperty("documentation"));
-		}
-	}
-	
-	protected void convertConditionLayout(YCondition condition, YNet parentNet) {
-		YNetLayout netLayout =  getContext().getLayout().getNetLayout(parentNet.getID());
-		YConditionLayout conditionLayout = new YConditionLayout(condition, getContext().getNumberFormat());
-		conditionLayout.setBounds(convertShapeBounds(getShape()));
-		netLayout.addConditionLayout(conditionLayout);
-	}
+    /**
+     * Fills all properties of the YCondition
+     * 
+     * @param condition
+     */
+    protected void convertConditionProperties(final YCondition condition) {
+        if (getShape().hasProperty("documentation")) {
+            condition.setDocumentation(getShape().getProperty("documentation"));
+        }
+    }
+
+    protected void convertConditionLayout(final YCondition condition, final YNet parentNet) {
+        YNetLayout netLayout = getContext().getLayout().getNetLayout(parentNet.getID());
+        YConditionLayout conditionLayout = new YConditionLayout(condition, getContext().getNumberFormat());
+        conditionLayout.setBounds(convertShapeBounds(getShape()));
+        netLayout.addConditionLayout(conditionLayout);
+    }
 
 }

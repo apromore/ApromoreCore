@@ -34,39 +34,38 @@ import de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandlerImpl;
  */
 public abstract class DecompositionHandler extends YAWLHandlerImpl {
 
-	private final YDecomposition decomposition;
+    private final YDecomposition decomposition;
 
-	public DecompositionHandler(YAWLConversionContext context, YDecomposition decomposition) {
-		super(context);
-		this.decomposition = decomposition;
-	}
+    public DecompositionHandler(final YAWLConversionContext context, final YDecomposition decomposition) {
+        super(context);
+        this.decomposition = decomposition;
+    }
 
-	protected YDecomposition getDecomposition() {
-		return decomposition;
-	}
+    protected YDecomposition getDecomposition() {
+        return decomposition;
+    }
 
-	/**
-	 * @return properties belonging to YDecomposition only
-	 */
-	protected HashMap<String, String> convertDecompositionProperties() {
-		HashMap<String, String> properties = new HashMap<String, String>();
+    /**
+     * @return properties belonging to YDecomposition only
+     */
+    protected HashMap<String, String> convertDecompositionProperties() {
+        HashMap<String, String> properties = new HashMap<String, String>();
 
-		if (hasDecomposition()) {
-			YDecomposition d = getDecomposition();
-			properties.put("decompositionid", d.getID());
-			properties.put("decompositionname", d.getName());
-			properties.put("decompositionexternalinteraction", d.requiresResourcingDecisions() ? "manual" : "automated");
-			properties.put("decompositioncodelet", d.getCodelet() != null ? d.getCodelet() : "");
-			properties.put("decompositionlogpredicate",
-					d.getLogPredicate() != null ? d.getLogPredicate().toXML().replace("<logPredicate>", "").replace("</logPredicate>", "")
-							: "");
-		}
+        if (hasDecomposition()) {
+            YDecomposition d = getDecomposition();
+            properties.put("decompositionid", d.getID());
+            properties.put("decompositionname", d.getName());
+            properties.put("decompositionexternalinteraction", d.requiresResourcingDecisions() ? "manual" : "automated");
+            properties.put("decompositioncodelet", d.getCodelet() != null ? d.getCodelet() : "");
+            properties.put("decompositionlogpredicate", d.getLogPredicate() != null ? d.getLogPredicate().toXML().replace("<logPredicate>", "")
+                    .replace("</logPredicate>", "") : "");
+        }
 
-		return properties;
-	}
+        return properties;
+    }
 
-	protected boolean hasDecomposition() {
-		return getDecomposition() != null;
-	}
+    protected boolean hasDecomposition() {
+        return getDecomposition() != null;
+    }
 
 }

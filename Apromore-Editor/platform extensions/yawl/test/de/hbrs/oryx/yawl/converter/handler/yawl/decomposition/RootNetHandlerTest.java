@@ -19,7 +19,8 @@
  */
 package de.hbrs.oryx.yawl.converter.handler.yawl.decomposition;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 import org.junit.Test;
 import org.yawlfoundation.yawl.elements.YNet;
@@ -29,14 +30,14 @@ import de.hbrs.oryx.yawl.converter.handler.yawl.YAWLHandlerTest;
 
 public class RootNetHandlerTest extends YAWLHandlerTest {
 
-	@Test
-	public void testConvert() {
-		YNet decomp = (YNet) YAWLTestData.orderFulfillmentSpecification.getDecomposition("Overall");
-		RootNetHandler handler = new RootNetHandler(orderFContext, decomp);
-		handler.convert(YAWLTestData.orderFulfillmentSpecification.getID());
-		assertNotNull(orderFContext.getNet("Overall"));
-		assertNotNull(orderFContext.getRootNet());
-		assertEquals(orderFContext.getRootNet(), orderFContext.getNet("Overall"));	
-	}
+    @Test
+    public void testConvert() {
+        YNet decomp = (YNet) YAWLTestData.orderFulfillmentSpecification.getDecomposition("Overall");
+        RootNetHandler handler = new RootNetHandler(orderFContext, decomp);
+        handler.convert(YAWLTestData.orderFulfillmentSpecification.getID());
+        assertNotNull(orderFContext.getNet("Overall"));
+        assertNotNull(orderFContext.getRootNet());
+        assertEquals(orderFContext.getRootNet(), orderFContext.getNet("Overall"));
+    }
 
 }

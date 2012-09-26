@@ -48,160 +48,158 @@ import de.hbrs.oryx.yawl.util.YAWLUtils;
  */
 public class OryxConversionContext extends ConversionContext {
 
-	private YSpecification specification;
+    private YSpecification specification;
 
-	/**
-	 * Contains all (Sub-)Nets
-	 */
-	final private Map<String, YNet> netMap;
+    /**
+     * Contains all (Sub-)Nets
+     */
+    final private Map<String, YNet> netMap;
 
-	/**
-	 * Contains all Shapes an their connected Edges
-	 */
-	final private Map<String, Set<BasicEdge>> flowMap;
+    /**
+     * Contains all Shapes an their connected Edges
+     */
+    final private Map<String, Set<BasicEdge>> flowMap;
 
-	final private Map<String, BasicDiagram> subnetDiagramMap;
+    final private Map<String, BasicDiagram> subnetDiagramMap;
 
-	final private Map<YNet, Map<YTask, List<String>>> cancellationSetMap;
+    final private Map<YNet, Map<YTask, List<String>>> cancellationSetMap;
 
-	final private NumberFormat numberFormat;
+    final private NumberFormat numberFormat;
 
-	private YLayout layout;
+    private YLayout layout;
 
-	private String rootNetID;
+    private String rootNetID;
 
-	/**
-	 * Create a new OryxConversionContext used to store information about the
-	 * conversion.
-	 * 
-	 * @param oryxBackendUrl
-	 */
-	public OryxConversionContext() {
-		super();
-		this.netMap = new HashMap<String, YNet>();
-		this.flowMap = new HashMap<String, Set<BasicEdge>>();
-		this.subnetDiagramMap = new HashMap<String, BasicDiagram>();
-		this.cancellationSetMap = new HashMap<YNet, Map<YTask, List<String>>>();
-		this.numberFormat = NumberFormat.getInstance(Locale.GERMANY);
-		this.numberFormat.setMinimumFractionDigits(1);
-	}
+    /**
+     * Create a new OryxConversionContext used to store information about the conversion.
+     * 
+     * @param oryxBackendUrl
+     */
+    public OryxConversionContext() {
+        super();
+        this.netMap = new HashMap<String, YNet>();
+        this.flowMap = new HashMap<String, Set<BasicEdge>>();
+        this.subnetDiagramMap = new HashMap<String, BasicDiagram>();
+        this.cancellationSetMap = new HashMap<YNet, Map<YTask, List<String>>>();
+        this.numberFormat = NumberFormat.getInstance(Locale.GERMANY);
+        this.numberFormat.setMinimumFractionDigits(1);
+    }
 
-	public void setSpecification(YSpecification yawlSpec) {
-		this.specification = yawlSpec;
-		this.layout = new YLayout(yawlSpec);
-	}
+    public void setSpecification(final YSpecification yawlSpec) {
+        this.specification = yawlSpec;
+        this.layout = new YLayout(yawlSpec);
+    }
 
-	public YSpecification getSpecification() {
-		return specification;
-	}
+    public YSpecification getSpecification() {
+        return specification;
+    }
 
-	public void addNet(BasicShape shape, YNet net) {
-		netMap.put(YAWLUtils.convertYawlId(shape), net);
-	}
+    public void addNet(final BasicShape shape, final YNet net) {
+        netMap.put(YAWLUtils.convertYawlId(shape), net);
+    }
 
-	public YNet getNet(BasicShape shape) {
-		return netMap.get(YAWLUtils.convertYawlId(shape));
-	}
+    public YNet getNet(final BasicShape shape) {
+        return netMap.get(YAWLUtils.convertYawlId(shape));
+    }
 
-	public void addFlow(BasicShape net, BasicEdge flow) {
-		String netId = YAWLUtils.convertYawlId(net);
-		if (flowMap.get(netId) != null) {
-			flowMap.get(netId).add(flow);
-		} else {
-			Set<BasicEdge> flowSet = new HashSet<BasicEdge>();
-			flowSet.add(flow);
-			flowMap.put(netId, flowSet);
-		}
-	}
+    public void addFlow(final BasicShape net, final BasicEdge flow) {
+        String netId = YAWLUtils.convertYawlId(net);
+        if (flowMap.get(netId) != null) {
+            flowMap.get(netId).add(flow);
+        } else {
+            Set<BasicEdge> flowSet = new HashSet<BasicEdge>();
+            flowSet.add(flow);
+            flowMap.put(netId, flowSet);
+        }
+    }
 
-	public Set<BasicEdge> getFlowSet(BasicShape shape) {
-		String shapeId = YAWLUtils.convertYawlId(shape);
-		if (flowMap.get(shapeId) != null) {
-			return flowMap.get(shapeId);
-		} else {
-			// Create empty one
-			Set<BasicEdge> flowSet = new HashSet<BasicEdge>();
-			flowMap.put(shapeId, flowSet);
-			return Collections.unmodifiableSet(flowSet);
-		}
-	}
+    public Set<BasicEdge> getFlowSet(final BasicShape shape) {
+        String shapeId = YAWLUtils.convertYawlId(shape);
+        if (flowMap.get(shapeId) != null) {
+            return flowMap.get(shapeId);
+        } else {
+            // Create empty one
+            Set<BasicEdge> flowSet = new HashSet<BasicEdge>();
+            flowMap.put(shapeId, flowSet);
+            return Collections.unmodifiableSet(flowSet);
+        }
+    }
 
-	/**
-	 * Adds a Oryx Diagram of a YAWL Subnet, that will later be used to compile
-	 * subnets for each composite task.
-	 * 
-	 * @param id
-	 *            of the YAWL subnet
-	 * @param subnetDiagram
-	 *            of a YAWL subnet used in the specification to be converted
-	 */
-	public void addSubnetDiagram(String id, BasicDiagram subnetDiagram) {
-		subnetDiagramMap.put(id, subnetDiagram);
-	}
+    /**
+     * Adds a Oryx Diagram of a YAWL Subnet, that will later be used to compile subnets for each composite task.
+     * 
+     * @param id
+     *            of the YAWL subnet
+     * @param subnetDiagram
+     *            of a YAWL subnet used in the specification to be converted
+     */
+    public void addSubnetDiagram(final String id, final BasicDiagram subnetDiagram) {
+        subnetDiagramMap.put(id, subnetDiagram);
+    }
 
-	public BasicDiagram getSubnetDiagram(String id) {
-		return subnetDiagramMap.get(id);
-	}
+    public BasicDiagram getSubnetDiagram(final String id) {
+        return subnetDiagramMap.get(id);
+    }
 
-	/**
-	 * Add the Element with ID to the Elements cancelled by task.
-	 * 
-	 * @param task
-	 *            the Task that cancels the Element
-	 * @param id
-	 *            of the Element to be cancelled
-	 */
-	public void addToCancellationSet(YTask task, String id) {
-		if (!cancellationSetMap.containsKey(task.getNet())) {
-			cancellationSetMap.put(task.getNet(), new HashMap<YTask, List<String>>());
-		}
+    /**
+     * Add the Element with ID to the Elements cancelled by task.
+     * 
+     * @param task
+     *            the Task that cancels the Element
+     * @param id
+     *            of the Element to be cancelled
+     */
+    public void addToCancellationSet(final YTask task, final String id) {
+        if (!cancellationSetMap.containsKey(task.getNet())) {
+            cancellationSetMap.put(task.getNet(), new HashMap<YTask, List<String>>());
+        }
 
-		Map<YTask, List<String>> cancellationSetForNet = cancellationSetMap.get(task.getNet());
+        Map<YTask, List<String>> cancellationSetForNet = cancellationSetMap.get(task.getNet());
 
-		if (!cancellationSetForNet.containsKey(task)) {
-			cancellationSetForNet.put(task, new ArrayList<String>());
-		}
+        if (!cancellationSetForNet.containsKey(task)) {
+            cancellationSetForNet.put(task, new ArrayList<String>());
+        }
 
-		cancellationSetForNet.get(task).add(id);
-	}
+        cancellationSetForNet.get(task).add(id);
+    }
 
-	/**
-	 * Get a unmodifiable view on the Cancellation Set
-	 * 
-	 * @param net
-	 * 
-	 * @return
-	 */
-	public Set<Entry<YTask, List<String>>> getCancellationSets(YNet net) {
-		if (cancellationSetMap.get(net) != null) {
-			return Collections.unmodifiableSet(cancellationSetMap.get(net).entrySet());
-		} else {
-			return Collections.unmodifiableSet(new HashSet<Entry<YTask, List<String>>>());
-		}
-	}
+    /**
+     * Get a unmodifiable view on the Cancellation Set
+     * 
+     * @param net
+     * 
+     * @return
+     */
+    public Set<Entry<YTask, List<String>>> getCancellationSets(final YNet net) {
+        if (cancellationSetMap.get(net) != null) {
+            return Collections.unmodifiableSet(cancellationSetMap.get(net).entrySet());
+        } else {
+            return Collections.unmodifiableSet(new HashSet<Entry<YTask, List<String>>>());
+        }
+    }
 
-	public List<String> getCancellationSet(YNet net, YTask task) {
-		if (cancellationSetMap.get(net) != null) {
-			return cancellationSetMap.get(net).get(task);
-		} else {
-			return new ArrayList<String>();
-		}
-	}
+    public List<String> getCancellationSet(final YNet net, final YTask task) {
+        if (cancellationSetMap.get(net) != null) {
+            return cancellationSetMap.get(net).get(task);
+        } else {
+            return new ArrayList<String>();
+        }
+    }
 
-	public YLayout getLayout() {
-		return layout;
-	}
+    public YLayout getLayout() {
+        return layout;
+    }
 
-	public NumberFormat getNumberFormat() {
-		return numberFormat;
-	}
+    public NumberFormat getNumberFormat() {
+        return numberFormat;
+    }
 
-	public void setRootNetID(String rootId) {
-		this.rootNetID = rootId;
-	}
+    public void setRootNetID(final String rootId) {
+        this.rootNetID = rootId;
+    }
 
-	public String getRootNetID() {
-		return rootNetID;
-	}
+    public String getRootNetID() {
+        return rootNetID;
+    }
 
 }

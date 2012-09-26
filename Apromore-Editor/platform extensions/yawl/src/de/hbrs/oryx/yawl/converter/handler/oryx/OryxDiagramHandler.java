@@ -49,135 +49,134 @@ import de.hbrs.oryx.yawl.util.YAWLUtils;
  */
 public class OryxDiagramHandler extends OryxHandlerImpl {
 
-	private final BasicDiagram diagramShape;
+    private final BasicDiagram diagramShape;
 
-	public OryxDiagramHandler(OryxConversionContext context, BasicDiagram diagramShape) {
-		super(context);
-		this.diagramShape = diagramShape;
-	}
+    public OryxDiagramHandler(final OryxConversionContext context, final BasicDiagram diagramShape) {
+        super(context);
+        this.diagramShape = diagramShape;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see de.hbrs.oryx.yawl.converter.handler.oryx.OryxHandler#convert()
-	 */
-	@Override
-	public void convert() {
+    /*
+     * (non-Javadoc)
+     * 
+     * @see de.hbrs.oryx.yawl.converter.handler.oryx.OryxHandler#convert()
+     */
+    @Override
+    public void convert() {
 
-		BasicShape rootNet = diagramShape;
+        BasicShape rootNet = diagramShape;
 
-		// First extract specification details
-		YSpecification yawlSpec = convertSpecification();
-		getContext().setSpecification(yawlSpec);
+        // First extract specification details
+        YSpecification yawlSpec = convertSpecification();
+        getContext().setSpecification(yawlSpec);
 
-		// Then go on converting the root net
-		HandlerFactory handlerFactory = getContext().getHandlerFactory();
-		handlerFactory.createOryxConverter(rootNet).convert();
+        // Then go on converting the root net
+        HandlerFactory handlerFactory = getContext().getHandlerFactory();
+        handlerFactory.createOryxConverter(rootNet).convert();
 
-		// Then convert layout using the stored information about net
-		// layouts
-		convertLayout();
+        // Then convert layout using the stored information about net
+        // layouts
+        convertLayout();
 
-	}
+    }
 
-	private void convertLayout() {
-		YLayout layout = getContext().getLayout();
-		layout.setLocale(Locale.GERMANY);
-		layout.setSize(800, 600); // ??
-		layout.setGlobalFontSize(12);
-	}
+    private void convertLayout() {
+        YLayout layout = getContext().getLayout();
+        layout.setLocale(Locale.GERMANY);
+        layout.setSize(800, 600); // ??
+        layout.setGlobalFontSize(12);
+    }
 
-	private YSpecification convertSpecification() {
-		YSpecification spec = new YSpecification(diagramShape.getProperty("specuri"));
+    private YSpecification convertSpecification() {
+        YSpecification spec = new YSpecification(diagramShape.getProperty("specuri"));
 
-		spec.setName(diagramShape.getProperty("specname"));
+        spec.setName(diagramShape.getProperty("specname"));
 
-		try {
-			if (diagramShape.hasProperty("specdatatypedefinitions")) {
-				spec.setSchema(diagramShape.getProperty("specdatatypedefinitions"));
-			}
-		} catch (YSyntaxException e) {
-			getContext().addConversionWarnings("Invalid Data Definitions", e);
-		}
+        try {
+            if (diagramShape.hasProperty("specdatatypedefinitions")) {
+                spec.setSchema(diagramShape.getProperty("specdatatypedefinitions"));
+            }
+        } catch (YSyntaxException e) {
+            getContext().addConversionWarnings("Invalid Data Definitions", e);
+        }
 
-		YMetaData metaData = new YMetaData();
-		metaData.setTitle(diagramShape.getProperty("spectitle"));
-		metaData.setUniqueID(diagramShape.getProperty("specid") != null ? diagramShape.getProperty("specid") : "id"
-				+ UUID.randomUUID().toString());
-		metaData.setDescription(diagramShape.getProperty("description"));
+        YMetaData metaData = new YMetaData();
+        metaData.setTitle(diagramShape.getProperty("spectitle"));
+        metaData.setUniqueID(diagramShape.getProperty("specid") != null ? diagramShape.getProperty("specid") : "id" + UUID.randomUUID().toString());
+        metaData.setDescription(diagramShape.getProperty("description"));
 
-		try {
-			metaData.setVersion(new YSpecVersion(diagramShape.getProperty("specversion")));
-		} catch (Exception e) {
-			getContext().addConversionWarnings("Could not convert metadata 'specversion' of specification", e);
-			metaData.setVersion(new YSpecVersion());
-		}
+        try {
+            metaData.setVersion(new YSpecVersion(diagramShape.getProperty("specversion")));
+        } catch (Exception e) {
+            getContext().addConversionWarnings("Could not convert metadata 'specversion' of specification", e);
+            metaData.setVersion(new YSpecVersion());
+        }
 
-		try {
-			if (diagramShape.getProperty("specvalidfrom") != null) {
-				metaData.setValidFrom(new SimpleDateFormat(YAWLUtils.DATE_FORMAT).parse(diagramShape.getProperty("specvalidfrom")));
-			}
-		} catch (ParseException e) {
-			// getContext().addConversionWarnings("Invalid Date-Format specvalidfrom",
-			// e);
-		}
+        try {
+            if (diagramShape.getProperty("specvalidfrom") != null) {
+                metaData.setValidFrom(new SimpleDateFormat(YAWLUtils.DATE_FORMAT).parse(diagramShape.getProperty("specvalidfrom")));
+            }
+        } catch (ParseException e) {
+            // getContext().addConversionWarnings("Invalid Date-Format specvalidfrom",
+            // e);
+        }
 
-		try {
-			if (diagramShape.getProperty("specvaliduntil") != null) {
-				metaData.setValidUntil(new SimpleDateFormat(YAWLUtils.DATE_FORMAT).parse(diagramShape.getProperty("specvaliduntil")));
-			}
-		} catch (ParseException e) {
-			// Ignore
-		}
+        try {
+            if (diagramShape.getProperty("specvaliduntil") != null) {
+                metaData.setValidUntil(new SimpleDateFormat(YAWLUtils.DATE_FORMAT).parse(diagramShape.getProperty("specvaliduntil")));
+            }
+        } catch (ParseException e) {
+            // Ignore
+        }
 
-		try {
-			if (diagramShape.getProperty("speccreated") != null) {
-				metaData.setValidUntil(new SimpleDateFormat(YAWLUtils.DATE_FORMAT).parse(diagramShape.getProperty("speccreated")));
-			}
-		} catch (ParseException e) {
-			// Ignore
-		}
+        try {
+            if (diagramShape.getProperty("speccreated") != null) {
+                metaData.setValidUntil(new SimpleDateFormat(YAWLUtils.DATE_FORMAT).parse(diagramShape.getProperty("speccreated")));
+            }
+        } catch (ParseException e) {
+            // Ignore
+        }
 
-		try {
-			metaData.setCreators(convertListOfNames(diagramShape.getPropertyJsonObject("speccreators")));
-		} catch (JSONException e) {
-			getContext().addConversionWarnings("Could not convert metadata 'creators' of specification", e);
-		}
+        try {
+            metaData.setCreators(convertListOfNames(diagramShape.getPropertyJsonObject("speccreators")));
+        } catch (JSONException e) {
+            getContext().addConversionWarnings("Could not convert metadata 'creators' of specification", e);
+        }
 
-		try {
-			metaData.setContributors(convertListOfNames(diagramShape.getPropertyJsonObject("speccontributor")));
-		} catch (JSONException e) {
-			getContext().addConversionWarnings("Could not convert metadata 'contributor' of specification", e);
-		}
+        try {
+            metaData.setContributors(convertListOfNames(diagramShape.getPropertyJsonObject("speccontributor")));
+        } catch (JSONException e) {
+            getContext().addConversionWarnings("Could not convert metadata 'contributor' of specification", e);
+        }
 
-		try {
-			metaData.setSubjects(convertListOfNames(diagramShape.getPropertyJsonObject("specsubject")));
-		} catch (JSONException e) {
-			getContext().addConversionWarnings("Could not convert metadata 'subject' of specification", e);
-		}
+        try {
+            metaData.setSubjects(convertListOfNames(diagramShape.getPropertyJsonObject("specsubject")));
+        } catch (JSONException e) {
+            getContext().addConversionWarnings("Could not convert metadata 'subject' of specification", e);
+        }
 
-		metaData.setCoverage(diagramShape.getProperty("speccoverage"));
-		metaData.setStatus(diagramShape.getProperty("specstatus"));
-		if (diagramShape.hasProperty("specpersistent")) {
-			metaData.setPersistent(diagramShape.getPropertyBoolean("specpersistent"));
-		}
+        metaData.setCoverage(diagramShape.getProperty("speccoverage"));
+        metaData.setStatus(diagramShape.getProperty("specstatus"));
+        if (diagramShape.hasProperty("specpersistent")) {
+            metaData.setPersistent(diagramShape.getPropertyBoolean("specpersistent"));
+        }
 
-		spec.setMetaData(metaData);
-		return spec;
-	}
+        spec.setMetaData(metaData);
+        return spec;
+    }
 
-	private List<String> convertListOfNames(JSONObject prop) throws JSONException {
-		List<String> listOfNames = new ArrayList<String>();
-		if (prop != null) {
+    private List<String> convertListOfNames(final JSONObject prop) throws JSONException {
+        List<String> listOfNames = new ArrayList<String>();
+        if (prop != null) {
 
-			JSONArray jsonArray = prop.getJSONArray("items");
-			for (int i = 0; i < jsonArray.length(); i++) {
-				JSONObject obj = jsonArray.getJSONObject(i);
-				String name = obj.getString("name");
-				listOfNames.add(name);
-			}
-		}
-		return listOfNames;
-	}
+            JSONArray jsonArray = prop.getJSONArray("items");
+            for (int i = 0; i < jsonArray.length(); i++) {
+                JSONObject obj = jsonArray.getJSONObject(i);
+                String name = obj.getString("name");
+                listOfNames.add(name);
+            }
+        }
+        return listOfNames;
+    }
 
 }

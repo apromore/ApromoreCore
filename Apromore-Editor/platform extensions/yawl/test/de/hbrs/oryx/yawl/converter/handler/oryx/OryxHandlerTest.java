@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2011-2012 Felix Mannhardt, felix.mannhardt@smail.wir.h-brs.de
- * 
+ *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or
@@ -13,9 +13,9 @@
 
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  * See: http://www.gnu.org/licenses/lgpl-3.0
- * 
+ *
  */
 package de.hbrs.oryx.yawl.converter.handler.oryx;
 
@@ -39,67 +39,68 @@ import de.hbrs.oryx.yawl.converter.handler.HandlerFactoryImpl;
 
 public class OryxHandlerTest {
 
-	protected OryxConversionContext context;
+    protected OryxConversionContext context;
 
-	public OryxHandlerTest() {
-		super();
-	}
+    public OryxHandlerTest() {
+        super();
+    }
 
-	@Before
-	public void setUp() throws Exception {
-		context = new OryxConversionContext();
-		context.setHandlerFactory(new HandlerFactoryImpl(new YAWLConversionContext(), context));
-	}
+    @Before
+    public void setUp() throws Exception {
+        context = new OryxConversionContext();
+        context.setHandlerFactory(new HandlerFactoryImpl(new YAWLConversionContext(), context));
+    }
 
-	protected void mockParentNet(BasicShape parentShape) {
-		YSpecification specification = new YSpecification("test");
-		context.setSpecification(specification);
-		YNet net = new YNet(parentShape.getProperty("yawlid"), specification);
-		context.addNet(parentShape, net);
-		context.getLayout().addNetLayout(new YNetLayout(net, context.getNumberFormat()));
-	}
+    protected void mockParentNet(final BasicShape parentShape) {
+        YSpecification specification = new YSpecification("test");
+        context.setSpecification(specification);
+        YNet net = new YNet(parentShape.getProperty("yawlid"), specification);
+        context.addNet(parentShape, net);
+        context.getLayout().addNetLayout(new YNetLayout(net, context.getNumberFormat()));
+        context.setRootNetID(net.getID());
+    }
 
-	protected void mockSubnets() {
-		try {
-			// Get a list of all Diagrams representing Sub Nets and store them
-			// for later use
-			JSONArray subDiagramList = OryxTestData.orderFulfillmentAsJson.getJSONArray("subDiagrams");
-			for (int i = 0; i < subDiagramList.length(); i++) {
-				JSONObject subnetElement = (JSONObject) subDiagramList.get(i);
-				BasicDiagram subnetDiagram = BasicDiagramBuilder.parseJson(subnetElement.getJSONObject("diagram"));
-				context.addSubnetDiagram(subnetElement.getString("id"), subnetDiagram);
-			}
-		} catch (JSONException e) {
-			// Should not happen if test correct
-			throw new RuntimeException(e);
-		}
-	}
+    protected void mockSubnets() {
+        try {
+            // Get a list of all Diagrams representing Sub Nets and store them
+            // for later use
+            JSONArray subDiagramList = OryxTestData.orderFulfillmentAsJson.getJSONArray("subDiagrams");
+            for (int i = 0; i < subDiagramList.length(); i++) {
+                JSONObject subnetElement = (JSONObject) subDiagramList.get(i);
+                BasicDiagram subnetDiagram = BasicDiagramBuilder.parseJson(subnetElement.getJSONObject("diagram"));
+                context.addSubnetDiagram(subnetElement.getString("id"), subnetDiagram);
+            }
+        } catch (JSONException e) {
+            // Should not happen if test correct
+            throw new RuntimeException(e);
+        }
+    }
 
-	private BasicDiagram findDiagramByNetId(String id) throws JSONException {
+    private BasicDiagram findDiagramByNetId(final String id) throws JSONException {
 
-		JSONArray subDiagrams = OryxTestData.orderFulfillmentAsJson.getJSONArray("subDiagrams");
-		for (int i = 0; i < subDiagrams.length(); i++) {
-			JSONObject diagramData = subDiagrams.getJSONObject(i);
-			if (diagramData.getString("id").equals(id)) {
-				return BasicDiagramBuilder.parseJson(diagramData.getJSONObject("diagram"));
-			}
-		}
+        JSONArray subDiagrams = OryxTestData.orderFulfillmentAsJson.getJSONArray("subDiagrams");
+        for (int i = 0; i < subDiagrams.length(); i++) {
+            JSONObject diagramData = subDiagrams.getJSONObject(i);
+            if (diagramData.getString("id").equals(id)) {
+                return BasicDiagramBuilder.parseJson(diagramData.getJSONObject("diagram"));
+            }
+        }
 
-		return BasicDiagramBuilder.parseJson(OryxTestData.orderFulfillmentAsJson.getJSONObject("rootDiagram"));
-	}
+        return BasicDiagramBuilder.parseJson(OryxTestData.orderFulfillmentAsJson.getJSONObject("rootDiagram"));
+    }
 
-	protected BasicShape findShapeById(String id, String netId) {
-		try {
-			return findDiagramByNetId(netId).getShapeById(id);
-		} catch (JSONException e) {
-			// Should not happen if test correct
-			throw new RuntimeException(e);
-		}
-	}
+    protected BasicShape findShapeById(final String id, final String netId) {
+        try {
+            return findDiagramByNetId(netId).getShapeById(id);
+        } catch (JSONException e) {
+            // Should not happen if test correct
+            throw new RuntimeException(e);
+        }
+    }
 
-	protected YNetElement findNetElementById(String id, String netId) {
-		YNet net = (YNet) YAWLTestData.orderFulfillmentSpecification.getDecomposition(netId);
-		return net.getNetElement(id);
-	}
+    protected YNetElement findOriginalNetElementById(final String id, final String netId) {
+        YNet net = (YNet) YAWLTestData.orderFulfillmentSpecification.getDecomposition(netId);
+        return net.getNetElement(id);
+    }
 
 }
