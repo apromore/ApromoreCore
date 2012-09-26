@@ -6,10 +6,7 @@
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
             <name>A</name>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
-                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
-            </attribute>
-            <resourceTypeRef id="idebb86307-50f5-4b73-a509-b33930d487b5" resourceTypeId="id069a0cdd-14ae-463e-86f8-26a8f0073cea"/>
+            <resourceTypeRef id="idcd203f21-8a5b-4c5c-a648-9d56686d4301" resourceTypeId="id49fbe441-5103-4f1e-af57-0387c3cb142c"/>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
@@ -17,7 +14,7 @@
         <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
         <Edge id="C-A-OutputCondition" default="true" sourceId="C-A" targetId="C-OutputCondition"/>
     </Net>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:RoleType" id="id069a0cdd-14ae-463e-86f8-26a8f0073cea" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:RoleType" id="id49fbe441-5103-4f1e-af57-0387c3cb142c" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
         <name>RoleX</name>
     </ResourceType>
 </ns2:CanonicalProcess>

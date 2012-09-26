@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical;
@@ -36,9 +36,9 @@ import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
 
 /**
  * Converts a NetType to a YAWL NetFactsType
- * 
+ *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class NetTypeHandler extends DecompositionHandler<NetType, YAWLSpecificationFactsType> {
 
@@ -46,7 +46,7 @@ public class NetTypeHandler extends DecompositionHandler<NetType, YAWLSpecificat
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -75,11 +75,11 @@ public class NetTypeHandler extends DecompositionHandler<NetType, YAWLSpecificat
         netFactsType.setProcessControlElements(processControlElements);
 
         for (final NodeType node : getObject().getNode()) {
-            getContext().getHandlerFactory().createHandler(node, netFactsType, getObject()).convert();
+            getContext().createHandler(node, netFactsType, getObject()).convert();
         }
 
         for (final EdgeType egde : getObject().getEdge()) {
-            getContext().getHandlerFactory().createHandler(egde, netFactsType, getObject()).convert();
+            getContext().createHandler(egde, netFactsType, getObject()).convert();
         }
 
         LOGGER.debug("Added Net {}", netFactsType.getName());

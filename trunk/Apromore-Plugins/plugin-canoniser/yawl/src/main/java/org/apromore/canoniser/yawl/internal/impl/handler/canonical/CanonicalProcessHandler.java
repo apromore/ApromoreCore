@@ -1,17 +1,21 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical;
 
+import java.math.BigDecimal;
 import java.util.Collection;
+
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeFactory;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.CheckValidModelMacro;
@@ -25,6 +29,7 @@ import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer.
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer.MiscTimerMacro;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer.TimerOnEnablementMacro;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer.TimerOnStartMacro;
+import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
 import org.slf4j.Logger;
@@ -35,17 +40,17 @@ import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
 
 /**
  * Converts a CanonicalProcessType an all its children.
- * 
+ *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalProcessType, Object> {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(CanonicalProcessHandler.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(CanonicalProcessHandler.class);
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -61,7 +66,7 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
         spec.setName(getObject().getName());
         spec.setUri(getObject().getUri() != null ? getObject().getUri() : generateUUID());
 
-        spec.setMetaData(convertMetaData());
+        spec.setMetaData(convertMetaData(getObject()));
 
         LOGGER.debug("Added Specification {}", spec.getName());
 
@@ -76,7 +81,7 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
         }
 
         for (final NetType n : getObject().getNet()) {
-            getContext().getHandlerFactory().createHandler(n, spec, getObject()).convert();
+            getContext().createHandler(n, spec, getObject()).convert();
         }
     }
 
@@ -94,9 +99,36 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
         return patternRewriter;
     }
 
-    private MetaDataType convertMetaData() {
-        final MetaDataType metaData = YAWL_FACTORY.createMetaDataType();
-        // TODO convert metadata
+    private MetaDataType convertMetaData(final CanonicalProcessType c) {
+        // First try to get our own Extension
+        MetaDataType metaData = getContext().getExtensionFromAnnotations(null, ExtensionUtils.METADATA, MetaDataType.class);
+        if (metaData == null) {
+            metaData = YAWL_FACTORY.createMetaDataType();
+        }
+        // Now override with changes values on CPF
+        try {
+            if (c.getCreationDate() != null) {
+                DatatypeFactory datatypeFactory = DatatypeFactory.newInstance();
+                metaData.setCreated(datatypeFactory.newXMLGregorianCalendar(c.getCreationDate()));
+            }
+        } catch (DatatypeConfigurationException | IllegalArgumentException e) {
+            LOGGER.warn("Could not convert 'createdDate'!", e);
+        }
+        try {
+            if (c.getVersion() != null) {
+                metaData.setVersion(new BigDecimal(c.getVersion()));
+            } else {
+                metaData.setVersion(BigDecimal.ONE);
+            }
+        } catch (NumberFormatException e) {
+            metaData.setVersion(BigDecimal.ONE);
+        }
+        if (metaData.getIdentifier() == null) {
+            metaData.setIdentifier(c.getUri());
+        }
+        if (c.getAuthor() != null && metaData.getContributor().isEmpty()) {
+            metaData.getContributor().add(c.getAuthor());
+        }
         return metaData;
     }
 

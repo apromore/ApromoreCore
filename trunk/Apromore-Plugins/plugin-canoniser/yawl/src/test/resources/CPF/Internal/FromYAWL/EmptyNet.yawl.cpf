@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="EmptyNet" version="0.1" name="EmptyNet" author="Firstname Lastname" rootIds="N-EmptyNet">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="EmptyNet" version="0.1" name="EmptyNet Workfow" author="Firstname Lastname" rootIds="N-EmptyNet">
     <Net id="N-EmptyNet" originalID="EmptyNet">
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition"/>

@@ -29,7 +29,6 @@ import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.DocumentationType;
 import org.apromore.anf.GraphicsType;
-import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations.YAWLAutoLayouter;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUUIDGenerator;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
@@ -71,13 +70,69 @@ import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
 public final class CanonicalConversionContext extends ConversionContext {
 
     public final class ElementInfo {
-        public ExternalNetElementType element;
-        public LayoutRectangleType elementSize;
-        public ControlTypeType joinType;
-        public ControlTypeType splitType;
-        public org.yawlfoundation.yawlschema.TimerType timer;
-        public boolean isAutomatic = false;
-        public YawlService yawlService;
+        private ExternalNetElementType element;
+        private LayoutRectangleType elementSize;
+        private ControlTypeType joinType;
+        private ControlTypeType splitType;
+        private org.yawlfoundation.yawlschema.TimerType timer;
+        private boolean isAutomatic = false;
+        private YawlService yawlService;
+
+        public ExternalNetElementType getElement() {
+            return element;
+        }
+
+        public void setElement(final ExternalNetElementType element) {
+            this.element = element;
+        }
+
+        public LayoutRectangleType getElementSize() {
+            return elementSize;
+        }
+
+        public void setElementSize(final LayoutRectangleType elementSize) {
+            this.elementSize = elementSize;
+        }
+
+        public ControlTypeType getJoinType() {
+            return joinType;
+        }
+
+        public void setJoinType(final ControlTypeType joinType) {
+            this.joinType = joinType;
+        }
+
+        public ControlTypeType getSplitType() {
+            return splitType;
+        }
+
+        public void setSplitType(final ControlTypeType splitType) {
+            this.splitType = splitType;
+        }
+
+        public org.yawlfoundation.yawlschema.TimerType getTimer() {
+            return timer;
+        }
+
+        public void setTimer(final org.yawlfoundation.yawlschema.TimerType timer) {
+            this.timer = timer;
+        }
+
+        public boolean isAutomatic() {
+            return isAutomatic;
+        }
+
+        public void setAutomatic(final boolean isAutomatic) {
+            this.isAutomatic = isAutomatic;
+        }
+
+        public YawlService getYawlService() {
+            return yawlService;
+        }
+
+        public void setYawlService(final YawlService yawlService) {
+            this.yawlService = yawlService;
+        }
     }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CanonicalConversionContext.class);
@@ -656,7 +711,7 @@ public final class CanonicalConversionContext extends ConversionContext {
      * @param elementSize
      */
     public void setElementBounds(final String nodeId, final LayoutRectangleType elementSize) {
-        initElementMap(nodeId).elementSize = elementSize;
+        initElementMap(nodeId).setElementSize(elementSize);
     }
 
     /**
@@ -667,7 +722,7 @@ public final class CanonicalConversionContext extends ConversionContext {
      * @param joinType
      */
     public void setElementJoinType(final String nodeId, final ControlTypeType joinType) {
-        initElementMap(nodeId).joinType = joinType;
+        initElementMap(nodeId).setJoinType(joinType);
     }
 
     /**
@@ -678,7 +733,7 @@ public final class CanonicalConversionContext extends ConversionContext {
      * @param splitType
      */
     public void setElementSplitType(final String nodeId, final ControlTypeType splitType) {
-        initElementMap(nodeId).splitType = splitType;
+        initElementMap(nodeId).setSplitType(splitType);
     }
 
     /**
@@ -975,20 +1030,10 @@ public final class CanonicalConversionContext extends ConversionContext {
      *            any class from the YAWL schema
      * @return T or NULL
      */
-    public <T> T getYAWLExtensionFromAnnotations(final String cpfId, final String elementName, final Class<T> expectedClass) {
+    public <T> T getExtensionFromAnnotations(final String cpfId, final String elementName, final Class<T> expectedClass) {
         for (final AnnotationType ann : getAnnotations(cpfId)) {
             if (!(ann instanceof DocumentationType || ann instanceof GraphicsType)) {
-                for (final Object extObj : ann.getAny()) {
-                    try {
-                        if (ExtensionUtils.isValidFragment(extObj, ExtensionUtils.YAWLSCHEMA_URL, elementName)) {
-                            return ExtensionUtils.unmarshalYAWLFragment(extObj, expectedClass);
-                        }
-                    } catch (final CanoniserException e) {
-                        LOGGER.warn("Could not convert YAWL extension {} of Node {} with type {}",
-                                new String[] { elementName, cpfId, expectedClass.getSimpleName() });
-                        LOGGER.warn("Original Exception", e);
-                    }
-                }
+                return ExtensionUtils.getFromAnnotationsExtension(ann, elementName, expectedClass);
             }
         }
         return null;
@@ -1021,7 +1066,7 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     private void initialiseAnnotationsMap() {
         if (annotationMap == null) {
-            annotationMap = new HashMap<String, Collection<AnnotationType>>();
+            annotationMap = new HashMap<String, Collection<AnnotationType>>(getAnnotationsType().getAnnotation().size());
         }
     }
 

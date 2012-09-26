@@ -22,10 +22,7 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
-                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
-            </attribute>
-            <objectRef id="idf39d6f2d-5a2a-4803-a022-e9b21f023aba" objectId="D-N-Net-x" type="output" optional="false" consumed="true"/>
+            <objectRef id="id6b7527b1-9619-4ace-95a3-e9f49277a840" objectId="D-N-Net-x" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>x = &lt;x&gt;Boolean({/A/x/text()})&lt;/x&gt;</expression>
@@ -47,9 +44,6 @@
                     <allocate initiator="user"/>
                     <start initiator="user"/>
                 </resourcing:resourcing>
-            </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
-                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
             </attribute>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>

@@ -63,14 +63,14 @@ public class WSInvokerMacro extends ContextAwareRewriteMacro {
         if (serviceAttr != null) {
             YawlService service = ExtensionUtils
                     .unmarshalYAWLFragment(serviceAttr.getAny(), YawlService.class);
-            getContext().getElementInfo(nodeTask.getId()).yawlService = service;
+            getContext().getElementInfo(nodeTask.getId()).setYawlService(service);
         } else {
             YawlService defaultService = new ObjectFactory().createWebServiceGatewayFactsTypeYawlService();
             defaultService.setDocumentation("Unkown Service");
             defaultService.setId(generateUUID());
-            getContext().getElementInfo(nodeTask.getId()).yawlService = defaultService;
+            getContext().getElementInfo(nodeTask.getId()).setYawlService(defaultService);
         }
-        getContext().getElementInfo(nodeTask.getId()).isAutomatic = true;
+        getContext().getElementInfo(nodeTask.getId()).setAutomatic(true);
 
         cleanupNet(net);
 

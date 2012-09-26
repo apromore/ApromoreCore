@@ -54,8 +54,8 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
 
         final EdgeType edge = getContext().getEdgeById(getObject().getCpfId());
 
-        final ExternalNetElementType sourceElement = getContext().getElementInfo(edge.getSourceId()).element;
-        final ExternalNetElementType targetElement = getContext().getElementInfo(edge.getTargetId()).element;
+        final ExternalNetElementType sourceElement = getContext().getElementInfo(edge.getSourceId()).getElement();
+        final ExternalNetElementType targetElement = getContext().getElementInfo(edge.getTargetId()).getElement();
 
         if (sourceElement != null && targetElement != null) {
 
@@ -66,8 +66,8 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
                 netLayout.getBoundsOrFrameOrViewport().add(convertFlowLayout(existingFlowLayout, sourceElement, targetElement));
             } else {
                 LOGGER.debug("Added layout for flow using default settings. Source {} -> Target {}", sourceElement.getId(), targetElement.getId());
-                if ((getContext().getElementInfo(sourceElement.getId()).elementSize != null)
-                        && (getContext().getElementInfo(targetElement.getId()).elementSize != null)) {
+                if ((getContext().getElementInfo(sourceElement.getId()).getElementSize() != null)
+                        && (getContext().getElementInfo(targetElement.getId()).getElementSize() != null)) {
                     netLayout.getBoundsOrFrameOrViewport().add(createDefaultFlowLayout(sourceElement, targetElement, edge));
                 }
             }
@@ -137,7 +137,7 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         final LayoutPointType point = YAWL_FACTORY.createLayoutPointType();
 
         final ElementInfo elementInfo = getContext().getElementInfo(nodeId);
-        final LayoutRectangleType elementSize = elementInfo.elementSize;
+        final LayoutRectangleType elementSize = elementInfo.getElementSize();
 
         point.setX(elementSize.getX());
         point.setY(elementSize.getY());

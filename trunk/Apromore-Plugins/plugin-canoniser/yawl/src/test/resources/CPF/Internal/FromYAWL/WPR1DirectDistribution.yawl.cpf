@@ -6,10 +6,7 @@
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
             <name>A</name>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
-                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
-            </attribute>
-            <resourceTypeRef id="id65e1043b-6c57-4697-a489-db64116ecc87" resourceTypeId="id1f114e74-91d8-4461-a414-d403de2b8b8b"/>
+            <resourceTypeRef id="idca5cbc37-c380-43e8-a282-2c292be00e42" resourceTypeId="id8a762234-45ba-4f65-9f51-b24c039440a4"/>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
@@ -17,13 +14,13 @@
         <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
         <Edge id="C-A-OutputCondition" default="true" sourceId="C-A" targetId="C-OutputCondition"/>
     </Net>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ParticipantType" id="id1f114e74-91d8-4461-a414-d403de2b8b8b" originalID="PA-c5795783-3695-48ec-b798-aea7890b0988">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ParticipantType" id="id8a762234-45ba-4f65-9f51-b24c039440a4" originalID="PA-c5795783-3695-48ec-b798-aea7890b0988">
         <name>TestX TestX</name>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:RoleType" id="id3f2baac7-37a1-4c58-94df-343466151a45" specializationIds="id1f114e74-91d8-4461-a414-d403de2b8b8b" originalID="RO-176b14db-d9d7-4de0-8a5f-657a1103a814">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:RoleType" id="ide98c1fbe-10e2-49dc-abe1-694a22a38bef" specializationIds="id8a762234-45ba-4f65-9f51-b24c039440a4" originalID="RO-176b14db-d9d7-4de0-8a5f-657a1103a814">
         <name>RoleY</name>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:RoleType" id="id4d1e0a2a-554a-4c7d-857a-1d82b05fb9de" specializationIds="id3f2baac7-37a1-4c58-94df-343466151a45 id1f114e74-91d8-4461-a414-d403de2b8b8b" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:RoleType" id="id712065d9-966d-478e-bfbb-210df3a29237" specializationIds="ide98c1fbe-10e2-49dc-abe1-694a22a38bef id8a762234-45ba-4f65-9f51-b24c039440a4" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
         <name>RoleX</name>
     </ResourceType>
 </ns2:CanonicalProcess>

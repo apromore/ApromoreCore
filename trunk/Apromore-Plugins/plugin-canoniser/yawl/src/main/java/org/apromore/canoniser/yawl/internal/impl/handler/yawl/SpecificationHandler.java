@@ -42,7 +42,7 @@ public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificatio
     public void convert() throws CanoniserException {
         final CanonicalProcessType c = getContext().getCanonicalResult();
         // Canonical Process needs a name, so use URI if none specified
-        c.setName(getObject().getName() != null ? getObject().getName() : getObject().getUri());
+        c.setName(convertName(getObject()));
         c.setUri(getObject().getUri());
 
         final MetaDataType metaData = getObject().getMetaData();
@@ -63,16 +63,27 @@ public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificatio
 
         for (final DecompositionType d : getObject().getDecomposition()) {
             // Will also convert all nested elements
-            getContext().getHandlerFactory().createHandler(d, c, getObject()).convert();
+            getContext().createHandler(d, c, getObject()).convert();
         }
 
+    }
+
+    private String convertName(final YAWLSpecificationFactsType spec) {
+        if (spec.getName() != null) {
+            return spec.getName();
+        } else if (spec.getMetaData().getTitle() != null) {
+            return spec.getMetaData().getTitle();
+        } else {
+            return spec.getUri();
+        }
     }
 
     private void convertAnnotations(final CanonicalProcessType c, final YAWLSpecificationFactsType object) throws CanoniserException {
         // Link to Annotations
         getContext().getAnnotationResult().setUri(c.getUri());
         getContext().getAnnotationResult().setName(c.getName());
-        addToAnnotations(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.LOCALE, getContext().getLayoutLocaleElement(), LayoutLocaleType.class));
+        getContext().addToAnnotations(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.LOCALE, getContext().getLayoutLocaleElement(), LayoutLocaleType.class));
+        getContext().addToAnnotations(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.METADATA, object.getMetaData(), MetaDataType.class));
     }
 
     private String convertCreatorList(final List<String> creatorList) {

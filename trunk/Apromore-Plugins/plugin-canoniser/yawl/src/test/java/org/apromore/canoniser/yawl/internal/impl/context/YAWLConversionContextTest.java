@@ -8,12 +8,14 @@ import java.io.File;
 import java.util.Collection;
 
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yawlfoundation.yawlschema.ExternalNetElementType;
+import org.yawlfoundation.yawlschema.MetaDataType;
 import org.yawlfoundation.yawlschema.NetFactsType;
 import org.yawlfoundation.yawlschema.NetFactsType.ProcessControlElements;
 import org.yawlfoundation.yawlschema.SpecificationSetFactsType;
@@ -35,6 +37,11 @@ public class YAWLConversionContextTest {
         final OrgDataType orgDataXml = TestUtils.unmarshalYAWLOrgData(orgDatafile);
         specUnderTest = yawlXml.getSpecification().get(0);
         context = new YAWLConversionContext(specUnderTest, yawlXml.getLayout(), orgDataXml);
+    }
+
+    @Test
+    public void testAddAnnotations() throws CanoniserException {
+        context.addToAnnotations(ExtensionUtils.marshalYAWLFragment("test", new MetaDataType(), MetaDataType.class));
     }
 
     @Test

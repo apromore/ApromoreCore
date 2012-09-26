@@ -29,11 +29,8 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
-                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
-            </attribute>
-            <objectRef id="idd2b004f5-92be-4b8a-b262-4e096ed8d5c4" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="id2375b7eb-fb74-45c9-be39-b41fedcc93b7" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="id60474a1d-2a2e-4d6e-9992-2407bcee95be" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="c0bea875-dedc-4290-947c-c92756b6eeb9" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = &lt;var&gt;{/Net/var/text()}&lt;/var&gt;</expression>
@@ -68,11 +65,8 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
-                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
-            </attribute>
-            <objectRef id="id34c3503b-30f7-4e9f-9b3d-a4aab8371ca0" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="e65c1c44-c0ad-4b8f-a7d1-cef2830905d5" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="b76c64ec-5c47-4ec8-9f75-715d9c473b36" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="id74a78743-d0f2-4f8b-967e-73c950276380" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = &lt;var&gt;{/Net/var/text()}&lt;/var&gt;</expression>

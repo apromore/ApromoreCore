@@ -285,19 +285,19 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
     private void convertDataMappings(final TaskType taskNode, final ExternalTaskFactsType task) throws CanoniserException {
         if (task.getCompletedMappings() != null) {
             for (final VarMappingFactsType mapping : task.getCompletedMappings().getMapping()) {
-                getContext().getHandlerFactory().createHandler(mapping, taskNode, task, OutputVarMappingHandler.class).convert();
+                getContext().createHandler(mapping, taskNode, task, OutputVarMappingHandler.class).convert();
             }
         }
         if (task.getStartingMappings() != null) {
             for (final VarMappingFactsType mapping : task.getStartingMappings().getMapping()) {
-                getContext().getHandlerFactory().createHandler(mapping, taskNode, task, InputVarMappingHandler.class).convert();
+                getContext().createHandler(mapping, taskNode, task, InputVarMappingHandler.class).convert();
             }
         }
     }
 
     private void convertResources(final TaskType taskNode, final ExternalTaskFactsType task) throws CanoniserException {
         if (task.getResourcing() != null) {
-            getContext().getHandlerFactory().createHandler(task.getResourcing(), taskNode, task).convert();
+            getContext().createHandler(task.getResourcing(), taskNode, task).convert();
         }
     }
 
