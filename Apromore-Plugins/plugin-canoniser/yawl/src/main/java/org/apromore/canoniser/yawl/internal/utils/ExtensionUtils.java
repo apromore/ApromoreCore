@@ -9,6 +9,7 @@ import javax.xml.namespace.QName;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import org.apromore.anf.AnnotationType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
@@ -70,6 +71,8 @@ public final class ExtensionUtils {
         }
     }
 
+    public static final String METADATA = "metadata";
+
     private ExtensionUtils() {
 
     }
@@ -79,7 +82,7 @@ public final class ExtensionUtils {
     }
 
     /**
-     * 'Unmarshal' a YAWL object to its expected class. Will throw an JAXBException is class is not known or wrong.
+     * 'Unmarshal' a YAWL object to its expected class. Will throw an JAXBException is class is not known. Note this method will also convert any non-matching Object!
      *
      * @param object
      *            returned of 'getAny' or similiar
@@ -190,16 +193,39 @@ public final class ExtensionUtils {
     }
 
     /**
-     * Get an extension element from the Node
+     * Get an extension element from a CPF Node
      *
-     * @param node
-     * @param name
+     * @param node any CPF node
+     * @param name name of the extension
      * @return
      */
     public static TypeAttribute getFromExtensions(final NodeType node, final String name) {
         for (TypeAttribute attr : node.getAttribute()) {
             if (name.equals(attr.getName())) {
                 return attr;
+            }
+        }
+        return null;
+    }
+
+    /**
+     * Get  an extension element from an AnnotationsType
+     *
+     * @param annotation
+     * @param elementName
+     * @param expectedClass
+     * @return
+     */
+    public static <T> T getFromAnnotationsExtension(final AnnotationType annotation, final String elementName, final Class<T> expectedClass) {
+        for (final Object extObj : annotation.getAny()) {
+            try {
+                if (ExtensionUtils.isValidFragment(extObj, ExtensionUtils.YAWLSCHEMA_URL, elementName)) {
+                    return ExtensionUtils.unmarshalYAWLFragment(extObj, expectedClass);
+                }
+            } catch (final CanoniserException e) {
+                LOGGER.warn("Could not convert YAWL extension {} with type {}",
+                        new String[] { elementName, expectedClass.getSimpleName() });
+                LOGGER.warn("Original Exception", e);
             }
         }
         return null;

@@ -48,16 +48,16 @@ public class EdgeHandler extends CanonicalElementHandler<EdgeType, NetFactsType>
 
         // Find Source of Edge
         ExternalNetElementFactsType sourceElement;
-        if (getContext().getElementInfo(getObject().getSourceId()).element != null) {
+        if (getContext().getElementInfo(getObject().getSourceId()).getElement() != null) {
             // Source will always be ExternalNetElementFactsType, as OutputCondition has no successor
-            sourceElement = (ExternalNetElementFactsType) getContext().getElementInfo(getObject().getSourceId()).element;
+            sourceElement = (ExternalNetElementFactsType) getContext().getElementInfo(getObject().getSourceId()).getElement();
         } else {
             LOGGER.warn("Could not find source element {} for Edge {}.", getObject().getSourceId(), getObject().getId());
             return; // Ignore Edge
         }
 
         // Find Target of Edge
-        ExternalNetElementType targetElement = getContext().getElementInfo(getObject().getTargetId()).element;
+        ExternalNetElementType targetElement = getContext().getElementInfo(getObject().getTargetId()).getElement();
         if (targetElement == null) {
             final OutputConditionFactsType outputCondition = getConvertedParent().getProcessControlElements().getOutputCondition();
             if (outputCondition != null) {

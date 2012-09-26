@@ -29,7 +29,7 @@ import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public class Canonical2YAWLImpl implements Canonical2YAWL {
+public final class Canonical2YAWLImpl implements Canonical2YAWL {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(Canonical2YAWLImpl.class);
 

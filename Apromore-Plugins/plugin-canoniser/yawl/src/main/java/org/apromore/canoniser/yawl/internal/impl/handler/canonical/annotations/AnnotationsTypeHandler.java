@@ -92,7 +92,7 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
             boolean graphicsConverted = false;
             for (final AnnotationType ann : netAnnotations) {
                 LOGGER.debug("Trying to convert {} for CPF net: {}", ann.getClass().getSimpleName(), ann.getCpfId());
-                getContext().getHandlerFactory().createHandler(ann, specLayout, getObject()).convert();
+                getContext().createHandler(ann, specLayout, getObject()).convert();
                 if (ann instanceof GraphicsType) {
                     graphicsConverted = true;
                 }
@@ -102,7 +102,7 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
                 final GraphicsType fakeGraphic = new org.apromore.anf.ObjectFactory().createGraphicsType();
                 fakeGraphic.setCpfId(netEntry.getKey());
                 LOGGER.debug("Guessing graphics for CPF net: {}", netEntry.getKey());
-                getContext().getHandlerFactory().createHandler(fakeGraphic, specLayout, getObject()).convert();
+                getContext().createHandler(fakeGraphic, specLayout, getObject()).convert();
             }
 
             // Second convert Element Annotations
@@ -116,7 +116,7 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
             boolean graphicsConverted = false;
             for (final AnnotationType ann : elementAnnotations) {
                 LOGGER.debug("Trying to convert {} for CPF edge: {}", ann.getClass().getSimpleName(), ann.getCpfId());
-                getContext().getHandlerFactory().createHandler(ann, specLayout, getObject()).convert();
+                getContext().createHandler(ann, specLayout, getObject()).convert();
                 if (ann instanceof GraphicsType) {
                     graphicsConverted = true;
                 }
@@ -126,7 +126,7 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
                 final GraphicsType fakeGraphic = new org.apromore.anf.ObjectFactory().createGraphicsType();
                 fakeGraphic.setCpfId(edgeEntry.getKey());
                 LOGGER.debug("Guessing graphics for CPF edge: {}", edgeEntry.getKey());
-                getContext().getHandlerFactory().createHandler(fakeGraphic, specLayout, getObject()).convert();
+                getContext().createHandler(fakeGraphic, specLayout, getObject()).convert();
             }
         }
 
@@ -231,7 +231,7 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
         boolean graphicsConverted = false;
         for (final AnnotationType ann : elementAnnotations) {
             LOGGER.debug("Trying to convert {} for CPF element: {}", ann.getClass().getSimpleName(), ann.getCpfId());
-            getContext().getHandlerFactory().createHandler(ann, specLayout, getObject()).convert();
+            getContext().createHandler(ann, specLayout, getObject()).convert();
             if (ann instanceof GraphicsType) {
                 graphicsConverted = true;
             }
@@ -241,7 +241,7 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
             final GraphicsType fakeGraphic = new org.apromore.anf.ObjectFactory().createGraphicsType();
             fakeGraphic.setCpfId(node.getId());
             LOGGER.debug("Guessing graphics for CPF element: {}", node.getId());
-            getContext().getHandlerFactory().createHandler(fakeGraphic, specLayout, getObject()).convert();
+            getContext().createHandler(fakeGraphic, specLayout, getObject()).convert();
         }
 
     }
@@ -255,7 +255,7 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
     }
 
     private LayoutLocaleType convertLocale() {
-        final LayoutLocaleType yawlLocale = getContext().getYAWLExtensionFromAnnotations(null, "locale", LayoutLocaleType.class);
+        final LayoutLocaleType yawlLocale = getContext().getExtensionFromAnnotations(null, "locale", LayoutLocaleType.class);
         if (yawlLocale != null) {
             return yawlLocale;
         } else {

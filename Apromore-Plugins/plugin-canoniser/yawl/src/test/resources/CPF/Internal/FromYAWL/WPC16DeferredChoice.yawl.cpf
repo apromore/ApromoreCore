@@ -29,11 +29,8 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
-                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
-            </attribute>
-            <objectRef id="da201486-bdc8-4a03-b3f8-871c5ce72e72" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="id67be0591-3f67-4fb6-89d3-eea2a8bbcb9b" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="id8710a3c3-343b-44e7-99f1-63fa8a2d7f4f" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="ac71c100-0204-4127-abd2-e736c9a5590d" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = &lt;var&gt;{/Net/var/text()}&lt;/var&gt;</expression>
@@ -71,11 +68,8 @@
                     <start initiator="user"/>
                 </resourcing:resourcing>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/secondary">
-                <secondary:secondary xmlns:secondary="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" xsi:nil="true"/>
-            </attribute>
-            <objectRef id="a93c6663-fa66-47f7-bf78-d75574fd0885" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="idd101b8c1-e520-4288-90e7-5e0ea0c35217" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="idbd91db47-15bb-4b9a-a009-c88e4f989bc3" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="id6848cf9f-3278-4276-b658-25514240ff51" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = &lt;var&gt;{/Net/var/text()}&lt;/var&gt;</expression>
@@ -91,14 +85,14 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="ida7df050b-424d-4fdb-932f-0e5eac83ab1f"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="e69b6888-1db4-4c19-9eaf-bc7cb65cd852"/>
         <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
         <Edge id="C-A-B-1" default="true" sourceId="C-A" targetId="C-B-1"/>
         <Edge id="C-B-1-C-1" default="true" sourceId="C-B-1" targetId="C-C-1"/>
         <Edge id="C-B-1-D-1" default="true" sourceId="C-B-1" targetId="C-D-1"/>
-        <Edge id="idd45fd922-e363-4e08-a691-2bec32c4d335" default="true" sourceId="ida7df050b-424d-4fdb-932f-0e5eac83ab1f" targetId="C-OutputCondition"/>
-        <Edge id="id3ea1e990-c08e-45a8-ab35-62f6b8479c30" default="true" sourceId="C-C-1" targetId="ida7df050b-424d-4fdb-932f-0e5eac83ab1f"/>
-        <Edge id="id507ff2fd-50a1-4f80-bff5-bb23aea0055d" default="true" sourceId="C-D-1" targetId="ida7df050b-424d-4fdb-932f-0e5eac83ab1f"/>
+        <Edge id="idf9eba5e9-a93a-41d2-a2f2-c37eccfbe860" default="true" sourceId="e69b6888-1db4-4c19-9eaf-bc7cb65cd852" targetId="C-OutputCondition"/>
+        <Edge id="idd9e4e097-a21f-4a75-a72e-1851261a5f18" default="true" sourceId="C-C-1" targetId="e69b6888-1db4-4c19-9eaf-bc7cb65cd852"/>
+        <Edge id="idb992b072-bb02-41f7-981a-802b56001ece" default="true" sourceId="C-D-1" targetId="e69b6888-1db4-4c19-9eaf-bc7cb65cd852"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-var" originalID="N-Net_var">
             <name>var</name>
             <type>string</type>

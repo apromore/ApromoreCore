@@ -126,7 +126,7 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
     }
 
     private TimerType convertTimer(final TaskType task, final ExternalTaskFactsType taskFacts, final boolean isAutomatic) throws CanoniserException {
-        final TimerType timer = getContext().getElementInfo(task.getId()).timer;
+        final TimerType timer = getContext().getElementInfo(task.getId()).getTimer();
         if (timer != null) {
             return timer;
         }
@@ -151,7 +151,7 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
     }
 
     private ControlTypeType convertJoinType(final TaskType task, final ExternalTaskFactsType taskFacts) throws CanoniserException {
-        final ControlTypeType joinType = getContext().getElementInfo(task.getId()).joinType;
+        final ControlTypeType joinType = getContext().getElementInfo(task.getId()).getJoinType();
         if (joinType != null) {
             getContext().setJoinRouting(taskFacts.getId());
             LOGGER.debug("Added JOIN decorator of type {} to Task {}", joinType.getCode(), taskFacts.getName());
@@ -162,7 +162,7 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
     }
 
     private ControlTypeType convertSplitType(final TaskType task, final ExternalTaskFactsType taskFacts) throws CanoniserException {
-        final ControlTypeType splitType = getContext().getElementInfo(task.getId()).splitType;
+        final ControlTypeType splitType = getContext().getElementInfo(task.getId()).getSplitType();
         if (splitType != null) {
             getContext().setSplitRouting(taskFacts.getId());
             LOGGER.debug("Added SPLIT decorator of type {} to Task {}", splitType.getCode(), taskFacts.getName());
@@ -503,7 +503,7 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
      * @return
      */
     private TimerType getTimerExtension(final NodeType node) {
-        return getContext().getYAWLExtensionFromAnnotations(node.getId(), "timer", TimerType.class);
+        return getContext().getExtensionFromAnnotations(node.getId(), "timer", TimerType.class);
     }
 
 }
