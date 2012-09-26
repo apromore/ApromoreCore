@@ -25,6 +25,7 @@ import org.apromore.anf.PositionType;
 import org.apromore.anf.SimulationType;
 //import org.apromore.anf.SizeType;
 import org.apromore.canoniser.bpmn.cpf.CpfNodeType;
+import org.apromore.canoniser.bpmn.cpf.CpfResourceTypeType;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -77,127 +78,14 @@ import org.omg.spec.dd._20100524.di.DiagramElement;
 /**
  * BPMN 2.0 object model with canonisation methods.
  * <p>
- * Apromore's canonical format (CPF) describes an individual process.
- * The annotation format (ANF) is paired with a specific CPF document and currently describes diagram layout.
- * A BPMN document describes a collection of processes which may all feature in a single diagram.
- * Consequently one BPMN document may correspond to several CPF documents, and a single diagram element within
- * a BPMN document may correspond to several ANF documents.
- *
- * <h4>Usage</h4>
- *
  * To canonise a BPMN document, unmarshal the XML into an object of this class, and invoke the {@link #canonise} method.
+ * The resulting {@link CanoniserResult} represents a list of CPF/ANF pairs.
  * Because a BPMN document may describe a collection of processes (for example, in a collaboration) the resulting
  * {@link CanoniserResult} may contain several {@link CanonicalProcessType} instances.
  * <p>
- * To decanonise a canonical model into BPMN, invoke the constructor {@link CanoniserDefinitions(CanonicalProcessType, AnnotationsType}.
+ * To decanonise a canonical model into BPMN, invoke the constructor {@link #CanoniserDefinitions(CanonicalProcessType, AnnotationsType)}.
  * Only individual canonical models may be decanonised; there is no facility for generating a BPMN document containing
  * multiple top-level processes.
- *
- * <h4>Canonical mapping of BPMN elements</h4>
- *
- * All elements of the BPMN 2.0 Descriptive Process Modeling Conformance are mentioned in what follows.
- * <p>
- * A BPMN {@link TProcess} maps to the canonical {@link NetType} referenced by {@link CanonicalProcessType#getRootId}.
- * Note that this means that a separate {@link CanonicalProcessType} is produced for each BPMN {@link TProcess}.
- * <p>
- * A BPMN {@link TCallActivity} maps to a canonical {@link TaskType} with a non-<code>null</code>
- * {@list TaskType#getSubnetId} indicating the invoked subprocess {@link NetType}.
- * <p>
- * A BPMN {@link TSubProcess} is mapped in the same way as a BPMN {@link TCallActivity}, except that it should be
- * the sole referencer of the invoked subprocess.
- * <p>
- * A BPMN {@link TTask} maps to a canonical {@link TaskType}.
- * A BPMN {@link TServiceTask} is distinguished by...?
- * A BPMN {@link TUserTask} is distinguished by...?
- * <p>
- * A BPMN {@link TSequenceFlow} maps to a canonical {@link EdgeType}.
- * <p>
- * BPMN {@link MessageFlow}s are necessarily broken between distinct source and target {@link CanonicalProcessType} instances.
- * {@link ObjectType} instances with the same {@link ObjectType#getName} must occur in each {@CanonicalProcessType}.
- * An output {@link ObjectRefType} must occur on the source element within one of the {@CanonicalProcessType}s, and an
- * input {@link ObjectRefType} on the target element within the other {@CanonicalProcessType}.
- * BPMN message flows are never a result of decanonisation, since only a single {@link CanonicalProcessType} is involved.
- * <p>
- * The various BPMN {@link TGateway}s map to various canonical {@link RoutingType}s.
- * A BPMN {@link ExclusiveGateway} maps to an {@link XORJoinType} or {@link XORSplitType}, depending on the gateway direction.
- * A BPMN {@link ParallelGateway} maps similarly to an {@link ANDJoinType} or {@link ANDSplitType}.
- * <p>
- * The various BPMN {@link TEvent}s map to canonical {@link EventType}s.
- * A canonical event with outgoing edges only decanonises as a {@link TStartEvent}.
- * A canonical event with incoming edges only decanonises as a {@link TEndEvent}.
- *
- * Different types of event are distinguished by a {@link TCatchEvent#getEventDefinition} attribute.
- * If this attribute is absent, it indicates a start none or end none event type.
- * If this attribute is present, it means as follows:
- * <ul>
- * <li>{@link TMessageEventDefinition} maps to...?
- * <li>{@link TTimerEventDefinition} maps to...?
- * <li>{@link TTerminateEventDefinition} maps to populating the cancellation set of the {@link EventType} with
- *   all elements of the subprocess.  Beware that this introduces an issue if the canonical process is subsequently
- *   edited to add new elements: Apromore will not know that it should add these new elements to the cancellation set.
- * <li>Multiple start, multiple end map to...?
- * </ul>
- * <p>
- * BPMN participants (a.k.a. pools) and lanes map to canonical {@link ResourceTypeType}s.
- * The specialization relation {@link ResourceTypeType#getSpecializationIds} distinguishes participants from lanes.
- * Any {@link ResourceTypeType} which is a specialization of another is a lane; otherwise it is a participant.
- * <p>
- * A BPMN {@link LaneSet} does not map to any canonical element.
- * It is considered to be part of its parent BPMN process (in the case of a pool) or BPMN lane.
- * If present, a {link LaneSet}'s id, name, or documentation attributes are discarded during canonisation.
- * <p>
- * A BPMN {@link TDataObject}...
- * <p>
- * A BPMN {@link TDataStore}...
- *
- * <h4>Annotation mapping of BPMNDI elements</h4>
- *
- * BPMNDI elements are mapped exclusively to canonical annotation elements within {@link AnnotationsType}.
- * <p>
- * The BPMNDI {@link BPMNDiagram} and {@link BPMNPlane} elements are discarded during canonisation.
- * <p>
- * A BPMNDI {@link BPMNShape} maps to a canonical {@link GraphicsType}.
- * The {@link BPMNShape#bpmnElement bpmnElement} attribute maps to the canonical {@link AnnotationType#cpfId cpfId}.
- * The {@link Shape#getBounds bounds} subelement maps to a pair of canonical {@link PositionType} and {@link SizeType}.
- * <p>
- * A BPMNDI {@link BPMNEdge} maps to a canonical {@link GraphicsType}.
- * The {@link BPMNEdge#bpmnElement bpmnElement} attribute maps to the canonical {@link AnnotationType#cpfId cpfId} of
- * an {@link EdgeType} or an {@link ObjectRefType}.
- * The two or more {@link Edge#getWaypoints waypoints} subelements map to canonical {@link PositionType}s, ordered
- * from source to target.
- * <p>
- * BPMNDI {@link BPMNLabel}s and {@link BPMNLabelStyle}s are not implemented and are discarded during canonisation.
- *
- * <h4>Annotation mapping of BPMN elements</h4>
- *
- * The {@link AnnotationsType} contains some elements and attributes of the BPMN process semantics, in addition to the BPMNDI ones.
- * <p>
- * The BPMN documentation attributes {@link TBaseElement#getDocumentation} map to canonical {@link DocumentationType}s.
- * The {@link AnnotationType#cpfId cpfId} indicates which {@link TBaseElement} bears the documentation.
- * <p>
- * The various BPMN {@link TArtifact}s (that is, {@link TAssociation}, {@link TGroup}, {@link TTextAnnotation})
- * currently not implemented and are discarded during canonisation.
- *
- * <h4>BPMN elements outside the Descriptive subclass</h4>
- *
- * The following additional elements go beyond the BPMN 2.0 Descriptive Process Modeling Conformance subclass.
- * <p>
- * A BPMN {@link TDataInputObject} or {@link TDataOutputObject} maps to a canonical {@link ObjectType}.
- * <p>
- * A BPMN {@link TDataInputAssociation} does not map to any canonical element.
- * Instead, it maps to a {@link WorkType#getObjectRef} attribute with a {@link ObjectRefType#getType} of
- * {@link InputOutputType#INPUT}.
- * and a {@link ObjectRefType#mapsToObjectId}
- * <p>
- * A BPMN {@link TDataOutputAssociation} is mapped similarly to a {@link TDataInputAssociation}, except
- * that it uses {@link InputOutputType#OUTPUT}.
- * <p>
- * A BPMN {@link TTask} with a {@link TBoundaryEvent} is rewritten according to the following transformation:
- * <div>
- * <img src="{@docRoot}/../../../src/test/resources/BPMN_models/Expected 1.bpmn20.svg"/> becomes
- * <img src="{@docRoot}"/>.
- * </div>
- * In the canonical form, each branch appears in the cancellation set of the other.
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  * @version 0.4
@@ -223,9 +111,16 @@ public class CanoniserDefinitions extends Definitions {
     public static final String APROMORE_VERSION = "0.4";
 
     /**
+     * Namespace of the document root element.
+     *
+     * Chosen arbitrarily to match Signavio.
+     */
+    public static final String TARGET_NS = "http://www.signavio.com/bpmn20";
+
+    /**
      * BPMN 2.0 namespace.
      */
-    public static final String BPMN_NS = "http://www.signavio.com/bpmn20";
+    public static final String BPMN_NS = "http://www.omg.org/spec/BPMN/20100524/MODEL";
 
     /**
      * CPF schema version.
@@ -261,6 +156,9 @@ public class CanoniserDefinitions extends Definitions {
         // Generates all identifiers scoped to the BPMN document
         final IdFactory bpmnIdFactory = new IdFactory();
 
+        // Used to wrap BPMN elements in JAXBElements
+        final BpmnObjectFactory factory = new BpmnObjectFactory();
+
         // Map from CPF @cpfId node identifiers to BPMN ids
         final Map<String, TBaseElement> idMap = new HashMap<String, TBaseElement>();
 
@@ -273,151 +171,91 @@ public class CanoniserDefinitions extends Definitions {
         // Records the CPF cpfIds of BPMN sequence flows which need their @targetRef populated
         final Map<String, TSequenceFlow> flowWithoutTargetRefMap = new HashMap<String, TSequenceFlow>();
 
+        // We can get by without an ANF parameter, but we definitely need a CPF
+        if (cpf == null) {
+            throw new CanoniserException("Cannot create BPMN from null CPF");
+        }
+
         // Set attributes of the document root
         setExporter(APROMORE_URI);
         setExporterVersion(APROMORE_VERSION);
         setExpressionLanguage(XPATH_URI);
         setId(null);
         setName(cpf.getName());
-        setTargetNamespace(BPMN_NS);
+        setTargetNamespace(TARGET_NS);
         setTypeLanguage(XSD_URI);
 
-        // Process components
-        if (cpf != null) {
-            final BpmnObjectFactory factory = new BpmnObjectFactory();
+        /* TODO - add as extension attributes
+        String author = cpf.getAuthor();
+        String creationDate = cpf.getCreationDate();
+        String modificationDate = cpf.getModificationDate();
+        */
 
-            for (TypeAttribute attribute : cpf.getAttribute()) {
-                //logger.info("CanonicalProcess attribute typeRef=" + attribute.getTypeRef() + " value=" + attribute.getValue());
+        // Assume there will be pools, all of which belong to a single collaboration
+        TCollaboration collaboration = new TCollaboration();
+        getRootElements().add(factory.createCollaboration(collaboration));
+
+        // Translate CPF Nets as BPMN Processes
+        for (final NetType net : cpf.getNet()) {
+
+            // Add the BPMN Process element
+            final TProcess process = new TProcess();
+            process.setId(bpmnIdFactory.newId(net.getId()));
+            getRootElements().add(factory.createProcess(process));
+
+            // Add the BPMN Participant element
+            Participant participant = new Participant();
+            participant.setId(bpmnIdFactory.newId("participant"));
+            participant.setName(process.getName());  // TODO - use an extension element for pool name if it exists
+            participant.setProcessRef(new QName(BPMN_NS, process.getId()));
+            collaboration.getParticipants().add(participant);
+
+            // Add the CPF ResourceType lattice as a BPMN Lane hierarchy
+            LaneSet laneSet = new LaneSet();
+            for (ResourceTypeType resourceType : cpf.getResourceType()) {
+                CpfResourceTypeType cpfResourceType = (CpfResourceTypeType) resourceType;
+                if (cpfResourceType.getGeneralizationRefs().isEmpty()) {
+                     Lane lane = new Lane();
+                     lane.setId(bpmnIdFactory.newId(cpfResourceType.getId()));
+                     idMap.put(cpfResourceType.getId(), lane);
+                     addChildLanes(lane, cpf.getResourceType(), bpmnIdFactory, idMap);
+                     laneSet.getLanes().add(lane);
+                }
+            }
+            if (!laneSet.getLanes().isEmpty()) {
+                process.getLaneSets().add(laneSet);
             }
 
-            String author = cpf.getAuthor();
-            String creationDate = cpf.getCreationDate();
-            String modificationDate = cpf.getModificationDate();
-            String cpfName = cpf.getName();
+            // Add the CPF Edges as BPMN SequenceFlows
+            for (EdgeType edge : net.getEdge()) {
+                TSequenceFlow sequenceFlow = createSequenceFlow(edge, bpmnIdFactory, idMap, flowWithoutSourceRefMap, flowWithoutTargetRefMap);
+                edgeMap.put(edge.getId(), sequenceFlow);
+                process.getFlowElements().add(factory.createSequenceFlow(sequenceFlow));
+            }
 
-            for (NetType net : cpf.getNet()) {
-                //logger.info("Net id=" + net.getId() + " originalID=" + net.getOriginalID());
+            // Add the CPF Nodes as BPMN FlowNodes
+            for (NodeType node : net.getNode()) {
+                JAXBElement<? extends TFlowNode> flowNode = createFlowNode(node, bpmnIdFactory, idMap, factory);
+                process.getFlowElements().add(flowNode);
 
-                // Translate this CPF net to a BPMN process
-                final TProcess process = new TProcess();
-                process.setId(bpmnIdFactory.newId(net.getId()));
-                getRootElements().add(factory.createProcess(process));
-
-                for (TypeAttribute attribute : net.getAttribute()) {
-                    //logger.info("  attribute " + attribute.getTypeRef() + "=" + attribute.getValue());
+                // Fill any BPMN @sourceRef or @targetRef attributes referencing this node
+                if (flowWithoutSourceRefMap.containsKey(node.getId())) {
+                    flowWithoutSourceRefMap.get(node.getId()).setSourceRef((TFlowNode) idMap.get(node.getId()));
+                    flowWithoutSourceRefMap.remove(node.getId());
+                }
+                if (flowWithoutTargetRefMap.containsKey(node.getId())) {
+                    flowWithoutTargetRefMap.get(node.getId()).setTargetRef((TFlowNode) idMap.get(node.getId()));
+                    flowWithoutTargetRefMap.remove(node.getId());
                 }
 
-                for (EdgeType edge : net.getEdge()) {
-                    TSequenceFlow sequenceFlow = new TSequenceFlow();
-
-                    sequenceFlow.setId(bpmnIdFactory.newId(edge.getId()));
-                    edgeMap.put(edge.getId(), sequenceFlow);
-
-                    // Deal with @conditionExpression
-                    if (edge.getConditionExpr() != null) {
-                        TExpression expression = new TExpression();
-                        expression.getContent().add(edge.getConditionExpr().getExpression());
-                        sequenceFlow.setConditionExpression(expression);
-                    }
-
-                    // Deal with @sourceId
-                    if (idMap.containsKey(edge.getSourceId())) {
-                        sequenceFlow.setSourceRef((TFlowNode) idMap.get(edge.getSourceId()));
-                    } else {
-                        assert !flowWithoutSourceRefMap.containsKey(sequenceFlow);
-                        flowWithoutSourceRefMap.put(edge.getSourceId(), sequenceFlow);
-                    }
-
-                    // Deal with @targetId
-                    if (idMap.containsKey(edge.getTargetId())) {
-                        sequenceFlow.setTargetRef((TFlowNode) idMap.get(edge.getTargetId()));
-                    } else {
-                        assert !flowWithoutTargetRefMap.containsKey(sequenceFlow);
-                        flowWithoutTargetRefMap.put(edge.getTargetId(), sequenceFlow);
-                    }
-
-                    process.getFlowElements().add(factory.createSequenceFlow(sequenceFlow));
-                }
-
-                for (final NodeType node : net.getNode()) {
-                    //logger.info("  Node " + node.getId());
-
-                    for (TypeAttribute attribute : node.getAttribute()) {
-                        //logger.info("     attribute " + attribute.getTypeRef() + "=" + attribute.getValue());
-                    }
-
-                    node.accept(new org.apromore.cpf.BaseVisitor() {
-                        @Override public void visit(final EventType that) {
-                            logger.info("     Event " + that);
-
-                            // Count the incoming and outgoing edges to determine whether this is a start, end, or intermediate event
-                            CpfNodeType cpfNode = (CpfNodeType) that;
-                            logger.info("     - in=" + cpfNode.getIncomingEdges() + " out=" + cpfNode.getOutgoingEdges());
-                            if (cpfNode.getIncomingEdges().size() == 0 && cpfNode.getOutgoingEdges().size() > 0) {
-                                // assuming a StartEvent here, but could be TBoundaryEvent too
-                                TStartEvent event = new TStartEvent();
-                                event.setId(bpmnIdFactory.newId(node.getId()));
-                                idMap.put(node.getId(), event);
-                                process.getFlowElements().add(factory.createStartEvent(event));
-                            } else if (cpfNode.getIncomingEdges().size() > 0 && cpfNode.getOutgoingEdges().size() == 0) {
-                                TEndEvent event = new TEndEvent();
-                                event.setId(bpmnIdFactory.newId(node.getId()));
-                                idMap.put(node.getId(), event);
-                                process.getFlowElements().add(factory.createEndEvent(event));
-                            } else if (cpfNode.getIncomingEdges().size() > 0 && cpfNode.getOutgoingEdges().size() > 0) {
-                                throw new RuntimeException(
-                                    new CanoniserException("Intermediate event \"" + that.getId() + "\" not supported")
-                                );  // TODO - remove this wrapper hack
-                            } else {
-                                throw new RuntimeException(
-                                    new CanoniserException("Event \"" + that.getId() + "\" has no edges")
-                                );  // TODO - remove this wrapper hack
-                            }
-                        }
-
-                        @Override public void visit(final TaskType that) {
-                            //logger.info("     Task subnetId=" + ((TaskType) node).getSubnetId());
-
-                            TTask task = new TTask();
-                            task.setId(bpmnIdFactory.newId(node.getId()));
-                            idMap.put(node.getId(), task);
-                            process.getFlowElements().add(factory.createTask(task));
-                        }
-                    });
-
-                    // Fill any BPMN @sourceRef or @targetRef attributes referencing this node
-                    if (flowWithoutSourceRefMap.containsKey(node.getId())) {
-                        flowWithoutSourceRefMap.get(node.getId()).setSourceRef((TFlowNode) idMap.get(node.getId()));
-                        flowWithoutSourceRefMap.remove(node.getId());
-                    }
-                    if (flowWithoutTargetRefMap.containsKey(node.getId())) {
-                        flowWithoutTargetRefMap.get(node.getId()).setTargetRef((TFlowNode) idMap.get(node.getId()));
-                        flowWithoutTargetRefMap.remove(node.getId());
+                // Populate the lane flowNodeRefs
+                if (node instanceof WorkType) {
+                    for (ResourceTypeRefType resourceTypeRef : ((WorkType) node).getResourceTypeRef()) {
+                        Lane lane = (Lane) idMap.get(resourceTypeRef.getResourceTypeId());
+                        lane.getFlowNodeRefs().add(flowNode.getValue());  // TODO - you will regret trying to fix this typecast
                     }
                 }
             }
-
-            for (ResourceTypeType resource : cpf.getResourceType()) {
-                logger.info("Resource id=" + resource.getId() +
-                            " name=" + resource.getName() +
-                            " isConfigurable=" + resource.isConfigurable() +
-                            " originalID=" + resource.getOriginalID());
-
-                Participant participant = new Participant();
-                participant.setId(bpmnIdFactory.newId(resource.getId()));
-                idMap.put(resource.getId(), participant);
-
-                for (String id : resource.getSpecializationIds()) {
-                    logger.info("  specialization ID=" + id);
-                }
-
-                // TODO - insert pool/lane for this resource
-            }
-
-            //TODO changed to list
-            List<String> rootId = cpf.getRootIds();
-            String cpfUri = cpf.getUri();
-            String version = cpf.getVersion();
         }
 
         // Make sure all the deferred fields did eventually get filled in
@@ -428,149 +266,297 @@ public class CanoniserDefinitions extends Definitions {
             throw new CanoniserException("Missing target references: " + flowWithoutTargetRefMap.keySet());
         }
 
-        // Translate any ANF annotations into a BPMN diagram
+        // Translate any ANF annotations into a BPMNDI diagram element
         if (anf != null) {
-            final org.omg.spec.bpmn._20100524.di.ObjectFactory diObjectFactory = new org.omg.spec.bpmn._20100524.di.ObjectFactory();
+            getBPMNDiagrams().add(createBpmnDiagram(anf, bpmnIdFactory, idMap, edgeMap));
+        }
+    }
 
-            // Create BPMNDiagram
-            final BPMNDiagram bpmnDiagram = new BPMNDiagram();
-            bpmnDiagram.setId(bpmnIdFactory.newId("diagram"));
-            getBPMNDiagrams().add(bpmnDiagram);
+    /**
+     * Recursively populate a BPMN {@link Lane}'s child lanes.
+     *
+     * TODO - circular resource type chains cause non-termination!  Need to check for and prevent this.
+     */
+    private void addChildLanes(Lane parentLane,
+                               List<ResourceTypeType> resourceTypeList,
+                               IdFactory bpmnIdFactory,
+                               Map<String, TBaseElement> idMap) {
 
-            // Create BPMNPlane
-            final BPMNPlane bpmnPlane = new BPMNPlane();
-            bpmnPlane.setId(bpmnIdFactory.newId("plane"));
-            assert bpmnDiagram.getBPMNPlane() == null;
-            bpmnDiagram.setBPMNPlane(bpmnPlane);
+        LaneSet laneSet = new LaneSet();
+        for (ResourceTypeType resourceType : resourceTypeList) {
+            CpfResourceTypeType cpfResourceType = (CpfResourceTypeType) resourceType;
+            if (cpfResourceType.getGeneralizationRefs().contains(parentLane.getId())) {
+                Lane childLane = new Lane();
+                childLane.setId(bpmnIdFactory.newId(cpfResourceType.getId()));
+                idMap.put(cpfResourceType.getId(), childLane);
+                addChildLanes(childLane, resourceTypeList, bpmnIdFactory, idMap);
+                laneSet.getLanes().add(childLane);
+            }
+        }
+        if (!laneSet.getLanes().isEmpty()) {
+            parentLane.setChildLaneSet(laneSet);
+        }
+    }
 
-            for (final AnnotationType annotation : anf.getAnnotation()) {
-                //logger.info("Annotation id=" + annotation.getId() + " cpfId=" + annotation.getCpfId());
-                annotation.accept(new org.apromore.anf.BaseVisitor() {
-                    @Override public void visit(final DocumentationType that) {
-                        logger.info("  Documentation");
+    /**
+     * Translate a CPF {@link NodeType} into a BPMN {@link TFlowNode}.
+     *
+     * @param node  a CPF node
+     * @param bpmnIdFactory  generator for IDs unique within the BPMN document
+     * @param idMap  map from CPF @cpfId node identifiers to BPMN ids
+     * @param factory  used to wrap BPMN elements in {@link JAXBElement}s.
+     * @return a {@link TFlowElement} instance, wrapped in a {@link JAXBElement}
+     * @throws CanoniserException if <var>node</var> isn't an event or a task
+     */
+    private JAXBElement<? extends TFlowNode> createFlowNode(final NodeType node,
+                                                           final IdFactory bpmnIdFactory,
+                                                           final Map<String, TBaseElement> idMap,
+                                                           final BpmnObjectFactory factory) throws CanoniserException {
+
+        if (node instanceof EventType) {
+            // Count the incoming and outgoing edges to determine whether this is a start, end, or intermediate event
+            CpfNodeType cpfNode = (CpfNodeType) node;
+            if (cpfNode.getIncomingEdges().size() == 0 && cpfNode.getOutgoingEdges().size() > 0) {
+                // assuming a StartEvent here, but could be TBoundaryEvent too
+                TStartEvent event = new TStartEvent();
+                event.setId(bpmnIdFactory.newId(node.getId()));
+                idMap.put(node.getId(), event);
+                return factory.createStartEvent(event);
+            } else if (cpfNode.getIncomingEdges().size() > 0 && cpfNode.getOutgoingEdges().size() == 0) {
+                TEndEvent event = new TEndEvent();
+                event.setId(bpmnIdFactory.newId(node.getId()));
+                idMap.put(node.getId(), event);
+                return factory.createEndEvent(event);
+            } else if (cpfNode.getIncomingEdges().size() > 0 && cpfNode.getOutgoingEdges().size() > 0) {
+                throw new CanoniserException("Intermediate event \"" + node.getId() + "\" not supported");
+            } else {
+                throw new CanoniserException("Event \"" + node.getId() + "\" has no edges");
+            }
+        } else if (node instanceof TaskType) {
+            TaskType that = (TaskType) node;
+
+            // TODO - implement subprocesses
+            if (that.getSubnetId() != null) {
+                throw new CanoniserException("Subprocesses not supported");
+            }
+
+            TTask task = new TTask();
+            task.setId(bpmnIdFactory.newId(node.getId()));
+            idMap.put(node.getId(), task);
+            return factory.createTask(task);
+        } else {
+            throw new CanoniserException("Node " + node.getId() + " type not supported: " + node.getClass().getCanonicalName());
+        }
+
+        /*
+                    private void populateWork(final TFlowNode flowNode, final WorkType work) {
+                        for (ResourceTypeRefType resourceTypeRef : work.getResourceTypeRef()) {
+                            logger.info(work.getId() + " should be in lane " + resourceTypeRef.getResourceTypeId() + " with processRef " + net.getId());
+                        }
+                    }
+        */
+    }
+
+    /**
+     * Translate a CPF {@link EdgeType} into a BPMN {@link TSequenceFlow}.
+     *
+     * @param edge  a CPF edge
+     * @param bpmnIdFactory  generator for IDs unique within the BPMN document
+     * @param idMap  map from CPF @cpfId node identifiers to BPMN ids
+     * @param flowWithoutSourceRefMap  deferred source nodes
+     * @param flowWithoutTargetRefMap  deferred target nodes
+     * @return a BPMN sequence flow
+     */
+    private TSequenceFlow createSequenceFlow(final EdgeType edge,
+                                             final IdFactory bpmnIdFactory,
+                                             final Map<String, TBaseElement> idMap,
+                                             final Map<String, TSequenceFlow> flowWithoutSourceRefMap,
+                                             final Map<String, TSequenceFlow> flowWithoutTargetRefMap) {
+
+        TSequenceFlow sequenceFlow = new TSequenceFlow();
+        sequenceFlow.setId(bpmnIdFactory.newId(edge.getId()));
+
+        // Deal with @conditionExpression
+        if (edge.getConditionExpr() != null) {
+            TExpression expression = new TExpression();
+            expression.getContent().add(edge.getConditionExpr().getExpression());
+            sequenceFlow.setConditionExpression(expression);
+        }
+
+        // Deal with @sourceId
+        if (idMap.containsKey(edge.getSourceId())) {
+            sequenceFlow.setSourceRef((TFlowNode) idMap.get(edge.getSourceId()));
+        } else {
+            assert !flowWithoutSourceRefMap.containsKey(sequenceFlow);
+            flowWithoutSourceRefMap.put(edge.getSourceId(), sequenceFlow);
+        }
+
+        // Deal with @targetId
+        if (idMap.containsKey(edge.getTargetId())) {
+            sequenceFlow.setTargetRef((TFlowNode) idMap.get(edge.getTargetId()));
+        } else {
+            assert !flowWithoutTargetRefMap.containsKey(sequenceFlow);
+            flowWithoutTargetRefMap.put(edge.getTargetId(), sequenceFlow);
+        }
+
+        return sequenceFlow;
+    }
+
+    /**
+     * Translate an ANF annotation document into a BPMNDI Diagram element
+     *
+     * @param anf  an ANF model, never <code>null</code>
+     * @param bpmnIdFactory  generator for IDs unique within the diagram's intended BPMN document
+     * @param idMap  map from CPF @cpfId node identifiers to BPMN ids
+     * @param edgeMap  map from CPF @cpfId edge identifiers to BPMN ids
+     * @return a BPMNDI Diagram element
+     */
+    private BPMNDiagram createBpmnDiagram(final AnnotationsType anf,
+                                          final IdFactory bpmnIdFactory,
+                                          final Map<String, TBaseElement> idMap,
+                                          final Map<String, TSequenceFlow> edgeMap) {
+
+        final org.omg.spec.bpmn._20100524.di.ObjectFactory diObjectFactory = new org.omg.spec.bpmn._20100524.di.ObjectFactory();
+
+        // Create BPMNDiagram
+        final BPMNDiagram bpmnDiagram = new BPMNDiagram();
+        bpmnDiagram.setId(bpmnIdFactory.newId("diagram"));
+        bpmnDiagram.setName(anf.getName());
+
+        // Create BPMNPlane
+        final BPMNPlane bpmnPlane = new BPMNPlane();
+        bpmnPlane.setId(bpmnIdFactory.newId("plane"));
+        assert bpmnDiagram.getBPMNPlane() == null;
+        bpmnDiagram.setBPMNPlane(bpmnPlane);
+
+        // Populate the BPMNPlane with elements for each CPF Annotation
+        for (final AnnotationType annotation : anf.getAnnotation()) {
+            //logger.info("Annotation id=" + annotation.getId() + " cpfId=" + annotation.getCpfId());
+            annotation.accept(new org.apromore.anf.BaseVisitor() {
+                @Override public void visit(final DocumentationType that) {
+                    logger.info("  Documentation");
+                }
+
+                @Override public void visit(final GraphicsType that) {
+                    GraphicsType graphics = (GraphicsType) annotation;
+                    /*
+                    logger.info("  Graphics");
+
+                    FillType fill = graphics.getFill();
+                    if (fill != null) {
+                        logger.info("  Fill color=" + fill.getColor() +
+                                    " gradientColor=" + fill.getGradientColor() +
+                                    " gradientRotation=" + fill.getGradientRotation() +
+                                    " image=" + fill.getImage() +
+                                    " transparency=" + fill.getTransparency());
+                    };
+
+                    FontType font = graphics.getFont();
+                    if (font != null) {
+                        logger.info("  Font color=" + font.getColor() +
+                                    " decoration=" + font.getDecoration() +
+                                    " family=" + font.getFamily() +
+                                    " horizontalAlign=" + font.getHorizontalAlign() +
+                                    " rotation=" + font.getRotation() +
+                                    " size=" + font.getSize() +
+                                    " style=" + font.getStyle() +
+                                    " transparency=" + font.getTransparency() +
+                                    " verticalAlign= " + font.getVerticalAlign() +
+                                    " weight=" + font.getWeight() +
+                                    " xPosition=" + font.getXPosition() +
+                                    " yPosition=" + font.getYPosition());
+                    };
+
+                    LineType line = graphics.getLine();
+                    if (line != null) {
+                        logger.info("  Line color=" + line.getColor() +
+                                    " gradientColor=" + line.getGradientColor() +
+                                    " gradientRotation=" + line.getGradientRotation() +
+                                    " shape=" + line.getShape() +
+                                    " style=" + line.getStyle() +
+                                    " transparency=" + line.getTransparency() +
+                                    " width=" + line.getWidth());
+                    };
+
+                    for (PositionType position : graphics.getPosition()) {
+                        logger.info("  Position (" + position.getX() + ", " + position.getY() + ")");
                     }
 
-                    @Override public void visit(final GraphicsType that) {
-                        GraphicsType graphics = (GraphicsType) annotation;
-                        /*
-                        logger.info("  Graphics");
+                    SizeType size = graphics.getSize();
+                    if (size != null) {
+                        logger.info("  Size " + size.getWidth() + " x " + size.getHeight());
+                    };
+                    */
 
-                        FillType fill = graphics.getFill();
-                        if (fill != null) {
-                            logger.info("  Fill color=" + fill.getColor() +
-                                        " gradientColor=" + fill.getGradientColor() +
-                                        " gradientRotation=" + fill.getGradientRotation() +
-                                        " image=" + fill.getImage() +
-                                        " transparency=" + fill.getTransparency());
-                        };
+                    if (idMap.containsKey(annotation.getCpfId())) {
+                        BPMNShape shape = new BPMNShape();
+                        shape.setId(bpmnIdFactory.newId(annotation.getId()));
+                        shape.setBpmnElement(idMap.get(annotation.getCpfId()).getId());
 
-                        FontType font = graphics.getFont();
-                        if (font != null) {
-                            logger.info("  Font color=" + font.getColor() +
-                                        " decoration=" + font.getDecoration() +
-                                        " family=" + font.getFamily() +
-                                        " horizontalAlign=" + font.getHorizontalAlign() +
-                                        " rotation=" + font.getRotation() +
-                                        " size=" + font.getSize() +
-                                        " style=" + font.getStyle() +
-                                        " transparency=" + font.getTransparency() +
-                                        " verticalAlign= " + font.getVerticalAlign() +
-                                        " weight=" + font.getWeight() +
-                                        " xPosition=" + font.getXPosition() +
-                                        " yPosition=" + font.getYPosition());
-                        };
-
-                        LineType line = graphics.getLine();
-                        if (line != null) {
-                            logger.info("  Line color=" + line.getColor() +
-                                        " gradientColor=" + line.getGradientColor() +
-                                        " gradientRotation=" + line.getGradientRotation() +
-                                        " shape=" + line.getShape() +
-                                        " style=" + line.getStyle() +
-                                        " transparency=" + line.getTransparency() +
-                                        " width=" + line.getWidth());
-                        };
-
-                        for (PositionType position : graphics.getPosition()) {
-                            logger.info("  Position (" + position.getX() + ", " + position.getY() + ")");
-                        }
-
-                        SizeType size = graphics.getSize();
-                        if (size != null) {
-                            logger.info("  Size " + size.getWidth() + " x " + size.getHeight());
-                        };
-                        */
-
-                        if (idMap.containsKey(annotation.getCpfId())) {
-                            BPMNShape shape = new BPMNShape();
-                            shape.setId(bpmnIdFactory.newId(annotation.getId()));
-                            shape.setBpmnElement(idMap.get(annotation.getCpfId()).getId());
-
-                            // a shape requires a bounding box, defined by a top-left position and a size (width and height)
-                            if (graphics.getPosition().size() != 1) {
-                                throw new RuntimeException(
-                                    new CanoniserException("Annotation " + annotation.getId() + " for shape " +
-                                        annotation.getCpfId() + " should have just one origin position")
-                                );  // TODO - remove this wrapper hack
-                            }
-                            if (graphics.getSize() == null) {
-                                throw new RuntimeException(
-                                    new CanoniserException("Annotation " + annotation.getId() + " for shape " +
-                                        annotation.getCpfId() + " should specify a size")
-                                );  // TODO - remove this wrapper hack
-                            }
-
-                            // add the ANF position and size as a BPMNDI bounds
-                            Bounds bounds = new Bounds();
-                            bounds.setHeight(graphics.getSize().getHeight().doubleValue());
-                            bounds.setWidth(graphics.getSize().getWidth().doubleValue());
-                            bounds.setX(graphics.getPosition().get(0).getX().doubleValue());
-                            bounds.setY(graphics.getPosition().get(0).getY().doubleValue());
-                            shape.setBounds(bounds);
-
-                            bpmnPlane.getDiagramElements().add(diObjectFactory.createBPMNShape(shape));
-
-                        } else if (edgeMap.containsKey(annotation.getCpfId())) {
-                            BPMNEdge edge = new BPMNEdge();
-                            edge.setId(bpmnIdFactory.newId(annotation.getId()));
-                            edge.setBpmnElement(edgeMap.get(annotation.getCpfId()).getId());
-
-                            // an edge requires two or more waypoints
-                            if (graphics.getPosition().size() < 2) {
-                                throw new RuntimeException(
-                                    new CanoniserException("Annotation " + annotation.getId() + " for edge " +
-                                        annotation.getCpfId() + " should have at least two positions")
-                                );  // TODO - remove this wrapper hack
-                            }
-
-                            // add each ANF position as a BPMNDI waypoint
-                            for (PositionType position : graphics.getPosition()) {
-                                Point point = new Point();
-                                point.setX(position.getX().doubleValue());
-                                point.setY(position.getY().doubleValue());
-                                edge.getWaypoints().add(point);
-                            }
-
-                            bpmnPlane.getDiagramElements().add(diObjectFactory.createBPMNEdge(edge));
-                        } else {
+                        // a shape requires a bounding box, defined by a top-left position and a size (width and height)
+                        if (graphics.getPosition().size() != 1) {
                             throw new RuntimeException(
-                                new CanoniserException("CpfId \"" + annotation.getCpfId() + "\" in ANF document not found in CPF document")
+                                new CanoniserException("Annotation " + annotation.getId() + " for shape " +
+                                    annotation.getCpfId() + " should have just one origin position")
                             );  // TODO - remove this wrapper hack
                         }
-                    }
+                        if (graphics.getSize() == null) {
+                            throw new RuntimeException(
+                                new CanoniserException("Annotation " + annotation.getId() + " for shape " +
+                                    annotation.getCpfId() + " should specify a size")
+                            );  // TODO - remove this wrapper hack
+                        }
 
-                    @Override public void visit(final SimulationType that) {
-                        logger.info("  Simulation");
-                    }
-                });
+                        // add the ANF position and size as a BPMNDI bounds
+                        Bounds bounds = new Bounds();
+                        bounds.setHeight(graphics.getSize().getHeight().doubleValue());
+                        bounds.setWidth(graphics.getSize().getWidth().doubleValue());
+                        bounds.setX(graphics.getPosition().get(0).getX().doubleValue());
+                        bounds.setY(graphics.getPosition().get(0).getY().doubleValue());
+                        shape.setBounds(bounds);
 
-                for (Map.Entry<QName, String> entry : annotation.getOtherAttributes().entrySet()) {
-                    logger.info("  Annotation attribute " + entry.getKey() + "=" + entry.getValue());
+                        bpmnPlane.getDiagramElements().add(diObjectFactory.createBPMNShape(shape));
+
+                    } else if (edgeMap.containsKey(annotation.getCpfId())) {
+                        BPMNEdge edge = new BPMNEdge();
+                        edge.setId(bpmnIdFactory.newId(annotation.getId()));
+                        edge.setBpmnElement(edgeMap.get(annotation.getCpfId()).getId());
+
+                        // an edge requires two or more waypoints
+                        if (graphics.getPosition().size() < 2) {
+                            throw new RuntimeException(
+                                new CanoniserException("Annotation " + annotation.getId() + " for edge " +
+                                    annotation.getCpfId() + " should have at least two positions")
+                            );  // TODO - remove this wrapper hack
+                        }
+
+                        // add each ANF position as a BPMNDI waypoint
+                        for (PositionType position : graphics.getPosition()) {
+                            Point point = new Point();
+                            point.setX(position.getX().doubleValue());
+                            point.setY(position.getY().doubleValue());
+                            edge.getWaypoints().add(point);
+                        }
+
+                        bpmnPlane.getDiagramElements().add(diObjectFactory.createBPMNEdge(edge));
+                    } else {
+                        throw new RuntimeException(
+                            new CanoniserException("CpfId \"" + annotation.getCpfId() + "\" in ANF document not found in CPF document")
+                        );  // TODO - remove this wrapper hack
+                    }
                 }
+
+                @Override public void visit(final SimulationType that) {
+                    logger.info("  Simulation");
+                }
+            });
+
+            for (Map.Entry<QName, String> entry : annotation.getOtherAttributes().entrySet()) {
+                logger.info("  Annotation attribute " + entry.getKey() + "=" + entry.getValue());
             }
-            String anfName = anf.getName();
-            String anfUri = anf.getUri();
         }
+
+        return bpmnDiagram;
     }
 
     /**
@@ -865,8 +851,16 @@ public class CanoniserDefinitions extends Definitions {
                         cpf.getResourceType().add(laneResourceType);
 
                         // Populate laneMap so we'll know later on which lane each element belongs to
-                        for (JAXBElement<Object> object : lane.getFlowNodeRefs()) {
-                            TFlowNode flowNode = (TFlowNode) object.getValue();
+                        /*
+                        for(TFlowNode flowNode : lane.getFlowNodeRefs()) {
+                            laneMap.put(flowNode, lane);
+                        }
+                        */
+                        List list = lane.getFlowNodeRefs();
+                        for (Object object : list) {
+                            JAXBElement je = (JAXBElement) object;
+                            Object value = je.getValue();
+                            TFlowNode flowNode = (TFlowNode) value;
                             laneMap.put(flowNode, lane);
                         }
 

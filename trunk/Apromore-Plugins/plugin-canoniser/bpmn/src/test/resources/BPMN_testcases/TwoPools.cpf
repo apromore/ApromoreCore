@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="twopools" version="1.0" name="TwoPools" rootIds="c6 c16">
+    <Net id="c6">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="c1">
+            <name>S1</name>
+            <resourceTypeRef id="c8" resourceTypeId="c7"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="c2">
+            <name>T1</name>
+            <resourceTypeRef id="c9" resourceTypeId="c7"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="c3">
+            <name>E1</name>
+            <resourceTypeRef id="c10" resourceTypeId="c7"/>
+        </Node>
+        <Edge id="c4" sourceId="c1" targetId="c2"/>
+        <Edge id="c5" sourceId="c2" targetId="c3"/>
+    </Net>
+    <Net id="c16">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="c11">
+            <name>S2</name>
+            <resourceTypeRef id="c18" resourceTypeId="c17"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="c12">
+            <name>T2</name>
+            <resourceTypeRef id="c19" resourceTypeId="c17"/>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="c13">
+            <name>E2</name>
+            <resourceTypeRef id="c20" resourceTypeId="c17"/>
+        </Node>
+        <Edge id="c14" sourceId="c11" targetId="c12"/>
+        <Edge id="c15" sourceId="c12" targetId="c13"/>
+    </Net>
+    <ResourceType id="c7">
+        <name>P1</name>
+    </ResourceType>
+    <ResourceType id="c17">
+        <name>P2</name>
+    </ResourceType>
+</ns2:CanonicalProcess>

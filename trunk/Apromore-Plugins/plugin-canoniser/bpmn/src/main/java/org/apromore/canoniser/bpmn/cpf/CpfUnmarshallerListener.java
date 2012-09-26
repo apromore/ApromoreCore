@@ -37,7 +37,7 @@ public class CpfUnmarshallerListener extends Unmarshaller.Listener {
     public void afterUnmarshal(final Object target, final Object parent) {
         if (target instanceof EdgeType) {
             CpfEdgeType edge = (CpfEdgeType) target;
-            logger.info("Unmarshal edge " + edge + " from " + edge.getSourceId() + " -> " + edge.getTargetId());
+            //logger.info("Unmarshal edge " + edge + " from " + edge.getSourceId() + " -> " + edge.getTargetId());
 
             edge.setSourceRef(nodeMap.get(edge.getSourceId()));
             ((CpfNodeType) edge.getSourceRef()).getOutgoingEdges().add(edge);
@@ -52,13 +52,13 @@ public class CpfUnmarshallerListener extends Unmarshaller.Listener {
 
             if (target instanceof EventType) {
                 CpfEventType event = (CpfEventType) target;
-                logger.info("Unmarshal event " + event.getId());
+                //logger.info("Unmarshal event " + event.getId());
             } else if (target instanceof CpfTaskType) {
                 CpfTaskType task = (CpfTaskType) target;
-                logger.info("Unmarshal task " + task.getId());
+                //logger.info("Unmarshal task " + task.getId());
             } else if (target instanceof CpfXORSplitType) {
                 CpfXORSplitType xorSplit = (CpfXORSplitType) target;
-                logger.info("Unmarshal XOR split " + xorSplit.getId());
+                //logger.info("Unmarshal XOR split " + xorSplit.getId());
             } else {
                 throw new Error(getClass() + " does not handle the NodeType " + target.getClass());
             }

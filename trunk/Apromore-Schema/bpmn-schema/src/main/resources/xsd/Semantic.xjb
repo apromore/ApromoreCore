@@ -40,8 +40,8 @@
 
         <bindings node="xsd:complexType[@name='tLane']//xsd:element[@name='flowNodeRef']">
             <property name="flowNodeRefs">
-                <!-- <baseType name="TFlowNode"/> -->
-           </property>
+                <baseType name="TFlowNode"/>
+            </property>
         </bindings>
 
         <bindings node="xsd:complexType[@name='tParticipant']//xsd:attribute[@name='processRef']">
