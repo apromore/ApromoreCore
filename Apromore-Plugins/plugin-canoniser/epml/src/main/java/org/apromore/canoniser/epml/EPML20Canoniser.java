@@ -11,7 +11,6 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.apromore.anf.AnnotationsType;
-import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.DefaultAbstractCanoniser;
 import org.apromore.canoniser.epml.internal.Canonical2EPML;
 import org.apromore.canoniser.epml.internal.EPML2Canonical;
@@ -24,16 +23,16 @@ import de.epml.TypeEPML;
 
 /**
  * EPML 2.0 Canoniser Plugin
- * 
+ *
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
- * 
+ *
  */
 @Component("epmlCanoniser")
 public class EPML20Canoniser extends DefaultAbstractCanoniser {
 
 	public static final String EPML_CONTEXT = "de.epml";
 
-	private BooleanProperty fakeEventsProperty;
+	private final BooleanProperty fakeEventsProperty;
 
 	public EPML20Canoniser() {
 		super();
@@ -43,62 +42,11 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see org.apromore.plugin.Plugin#getType()
-	 */
-	@Override
-	public String getType() {
-		return Canoniser.class.getName();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apromore.plugin.Plugin#getName()
-	 */
-	@Override
-	public String getName() {
-		return EPML20Canoniser.class.getName();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apromore.plugin.Plugin#getVersion()
-	 */
-	@Override
-	public String getVersion() {
-		// TODO how to insert bundle version
-		return "1.0.0.SNAPSHOT";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apromore.plugin.Plugin#getDescription()
-	 */
-	@Override
-	public String getDescription() {
-		return "Default canoniser for EPML";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apromore.canoniser.Canoniser#getNativeType()
-	 */
-	@Override
-	public String getNativeType() {
-		return "EPML 2.0";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.apromore.canoniser.Canoniser#canonise(org.apromore.canoniser.NativeInput, java.io.OutputStream, java.io.OutputStream)
 	 */
 	@Override
-	public void canonise(InputStream nativeInput, List<AnnotationsType> annotationFormat, List<CanonicalProcessType> canonicalFormat) throws CanoniserException {
+	public void canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat, final List<CanonicalProcessType> canonicalFormat) throws CanoniserException {
 
 		try {
 			JAXBElement<TypeEPML> nativeElement = unmarshalNativeFormat(nativeInput);
@@ -115,11 +63,11 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.apromore.canoniser.Canoniser#deCanonise(java.io.InputStream, java.io.InputStream, org.apromore.canoniser.NativeOutput)
 	 */
 	@Override
-	public void deCanonise(CanonicalProcessType canonicalFormat, AnnotationsType annotationFormat, OutputStream nativeOutput) throws CanoniserException {
+	public void deCanonise(final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final OutputStream nativeOutput) throws CanoniserException {
 
 		try {
 			Canonical2EPML canonical2epml;
@@ -139,13 +87,13 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private JAXBElement<TypeEPML> unmarshalNativeFormat(InputStream nativeFormat) throws JAXBException {
+	private JAXBElement<TypeEPML> unmarshalNativeFormat(final InputStream nativeFormat) throws JAXBException {
 		JAXBContext jc1 = JAXBContext.newInstance(EPML_CONTEXT);
 		Unmarshaller u = jc1.createUnmarshaller();
 		return (JAXBElement<TypeEPML>) u.unmarshal(nativeFormat);
 	}
 
-	private void marshalEPMLFormat(TypeEPML epml, OutputStream nativeFormat) throws JAXBException {
+	private void marshalEPMLFormat(final TypeEPML epml, final OutputStream nativeFormat) throws JAXBException {
 		JAXBContext jc = JAXBContext.newInstance(EPML_CONTEXT);
 		Marshaller m = jc.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);

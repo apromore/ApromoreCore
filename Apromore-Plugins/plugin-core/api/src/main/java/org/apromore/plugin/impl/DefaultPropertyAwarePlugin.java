@@ -30,7 +30,7 @@ import org.apromore.plugin.property.PropertyType;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public abstract class DefaultPropertyAwarePlugin extends DefaultPlugin implements PropertyAwarePlugin {
+public abstract class DefaultPropertyAwarePlugin extends DefaultMessageAwarePlugin implements PropertyAwarePlugin {
 
     /**
      * Stores all properties

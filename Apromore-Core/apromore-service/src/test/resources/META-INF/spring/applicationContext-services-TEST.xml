@@ -100,4 +100,6 @@
     <bean id="ContainmentRelation" class="org.apromore.clustering.containment.ContainmentRelationImpl" />
     <bean id="DissimilarityMatrix" class="org.apromore.clustering.hierarchy.HierarchyAwareDissimMatrixGenerator" />
 
+	<!-- Plugin Beans (Workaround until OSGi is here) -->
+    <bean id="CanoniserProvider" class="org.apromore.canoniser.provider.impl.SimpleSpringCanoniserProvider" />
 </beans>

@@ -80,7 +80,7 @@
       <externalInteraction>manual</externalInteraction>
     </decomposition>
     <decomposition id="B" xsi:type="WebServiceGatewayFactsType">
-      <inputParam>
+      <inputParam optional="true">
         <index>0</index>
         <name>y</name>
         <type>boolean</type>
@@ -94,9 +94,9 @@
     <specification id="WPD9TaskToTask">
       <size w="65" h="28" />
       <net id="Net">
-        <bounds x="0" y="0" w="1764" h="682" />
-        <frame x="2" y="25" w="1767" h="685" />
-        <viewport x="0" y="0" w="1767" h="685" />
+        <bounds x="0" y="0" w="1524" h="697" />
+        <frame x="2" y="25" w="1527" h="700" />
+        <viewport x="0" y="0" w="1527" h="700" />
         <container id="InputCondition">
           <vertex>
             <attributes>
@@ -145,19 +145,6 @@
             </attributes>
           </label>
         </container>
-        <flow source="InputCondition" target="A">
-          <label>Task+A%3A+x%3A+string</label>
-          <ports in="13" out="12" />
-          <attributes>
-            <offset x="12,0" y="0,0" />
-            <labelposition x="950,6" y="-35,5" />
-            <lineStyle>11</lineStyle>
-            <points>
-              <value x="67,0" y="439,5" />
-              <value x="148,0" y="439,5" />
-            </points>
-          </attributes>
-        </flow>
         <flow source="B" target="OutputCondition">
           <label>Task+B%3A+y%3A+boolean</label>
           <ports in="13" out="12" />
@@ -168,6 +155,19 @@
             <points>
               <value x="315,0" y="439,5" />
               <value x="412,0" y="439,5" />
+            </points>
+          </attributes>
+        </flow>
+        <flow source="InputCondition" target="A">
+          <label>Task+A%3A+x%3A+string</label>
+          <ports in="13" out="12" />
+          <attributes>
+            <offset x="12,0" y="0,0" />
+            <labelposition x="950,6" y="-35,5" />
+            <lineStyle>11</lineStyle>
+            <points>
+              <value x="67,0" y="439,5" />
+              <value x="148,0" y="439,5" />
             </points>
           </attributes>
         </flow>

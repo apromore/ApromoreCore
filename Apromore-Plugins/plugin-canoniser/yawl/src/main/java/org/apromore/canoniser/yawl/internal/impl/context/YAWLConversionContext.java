@@ -27,6 +27,7 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.DocumentationType;
 import org.apromore.anf.GraphicsType;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.yawl.internal.MessageManager;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
@@ -164,7 +165,8 @@ public final class YAWLConversionContext extends ConversionContext {
      */
     private Map<String, Map<String, SoftType>> netObjectsByName;
 
-    public YAWLConversionContext(final YAWLSpecificationFactsType specification, final LayoutFactsType layoutFactsType, final OrgDataType orgDataType) {
+    public YAWLConversionContext(final YAWLSpecificationFactsType specification, final LayoutFactsType layoutFactsType, final OrgDataType orgDataType, final MessageManager messageManager) {
+        super(messageManager);
         this.setOrgDataType(orgDataType);
         this.setLayout(layoutFactsType);
         this.setSpecification(specification);

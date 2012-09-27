@@ -15,7 +15,7 @@ import org.junit.Test;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public class DefaultPropertyTest {
+public class DefaultPropertyUnitTest {
 
     private DefaultProperty defaultProperty;
     private DefaultProperty defaultProperty2;

@@ -12,6 +12,7 @@
 package org.apromore.canoniser.yawl.internal.impl.context;
 
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.yawl.internal.MessageManager;
 import org.apromore.canoniser.yawl.internal.impl.factory.ConversionFactory;
 import org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUUIDGenerator;
@@ -34,11 +35,15 @@ public class ConversionContext {
      */
     private final ConversionUUIDGenerator uuidGenerator;
 
+    private final MessageManager messageInterface;
+
     /**
      * Create a new ConversionContext for use during one conversion.
+     * @param messageInterface
      */
-    public ConversionContext() {
+    public ConversionContext(final MessageManager messageInterface) {
         super();
+        this.messageInterface = messageInterface;
         this.uuidGenerator = new ConversionUUIDGenerator();
     }
 
@@ -74,6 +79,10 @@ public class ConversionContext {
      */
     public ConversionUUIDGenerator getUuidGenerator() {
         return uuidGenerator;
+    }
+
+    public MessageManager getMessageInterface() {
+        return messageInterface;
     }
 
 }

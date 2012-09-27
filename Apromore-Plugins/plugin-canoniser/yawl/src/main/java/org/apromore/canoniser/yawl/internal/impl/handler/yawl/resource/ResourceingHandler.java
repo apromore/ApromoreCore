@@ -25,6 +25,7 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yawlfoundation.yawlschema.ResourcingAllocateFactsType;
 import org.yawlfoundation.yawlschema.ResourcingDistributionSetFactsType;
 import org.yawlfoundation.yawlschema.ResourcingDistributionSetFactsType.Constraints;
 import org.yawlfoundation.yawlschema.ResourcingDistributionSetFactsType.Filters;
@@ -73,8 +74,23 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
 
         } else {
             // Distribution of work will be handled by User at Runtime, there is no way of capturing this in CPF
-            ExtensionUtils.addToExtensions(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.RESOURCING, getObject(), ResourcingFactsType.class),
-                    getConvertedParent());
+            if (getObject().getOffer() != null) {
+                ExtensionUtils.addToExtensions(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.OFFER, getObject().getOffer(), ResourcingOfferFactsType.class),
+                        getConvertedParent());
+            }
+        }
+
+
+        ResourcingAllocateFactsType allocate = getObject().getAllocate();
+        if (allocate != null && allocate.getInitiator().equals(ResourcingInitiatorType.SYSTEM)) {
+
+            //TODO convert allocators
+
+        } else {
+            if (allocate != null) {
+                ExtensionUtils.addToExtensions(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.ALLOCATE, getObject().getOffer(), ResourcingOfferFactsType.class),
+                        getConvertedParent());
+            }
         }
 
         // Add Secondary Participant directly as Reference

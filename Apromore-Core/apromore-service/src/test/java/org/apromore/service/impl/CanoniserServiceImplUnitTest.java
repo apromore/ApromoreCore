@@ -19,6 +19,7 @@ import javax.xml.bind.Unmarshaller;
 
 import org.apromore.TestData;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.provider.impl.SimpleSpringCanoniserProvider;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.graph.JBPT.CPF;
@@ -55,6 +56,8 @@ public class CanoniserServiceImplUnitTest {
     @Before
     public final void setUp() throws Exception {
         service = new CanoniserServiceImpl();
+        //TODO this should be a MOCK instead!! as it is an integration test for now
+        service.setCanoniserProvider(new SimpleSpringCanoniserProvider());
     }
 
     @Test(expected = JAXBException.class)

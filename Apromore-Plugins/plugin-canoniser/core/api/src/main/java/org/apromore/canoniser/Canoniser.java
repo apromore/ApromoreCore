@@ -23,6 +23,7 @@ import java.util.List;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.plugin.MessageAwarePlugin;
 import org.apromore.plugin.PropertyAwarePlugin;
 
 /**
@@ -30,7 +31,7 @@ import org.apromore.plugin.PropertyAwarePlugin;
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  */
-public interface Canoniser extends PropertyAwarePlugin {
+public interface Canoniser extends PropertyAwarePlugin, MessageAwarePlugin {
 
     /**
      * Type of the native format which this canoniser can handle. For example "EPML 2.0" or "YAWL 2.2"

@@ -41,7 +41,7 @@ import org.junit.rules.ExpectedException;
  * @author <a href="felix.mannhardt@smail.wir.h-brs.de"><a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a></a>
  *
  */
-public class CanoniserProviderTest {
+public class OSGiCanoniserProviderTest {
 
 	private CanoniserProvider provider;
 
@@ -52,7 +52,7 @@ public class CanoniserProviderTest {
 
 	@Before
 	public void setUp() throws Exception {
-		final CanoniserProviderImpl cp = new CanoniserProviderImpl();
+		final OSGiCanoniserProvider cp = new OSGiCanoniserProvider();
 		final List<Canoniser> canoniserSet = new ArrayList<Canoniser>();
 		c1 = createMock(Canoniser.class);
 		expect(c1.getName()).andReturn("XPDL 2.0 - Canoniser XY");

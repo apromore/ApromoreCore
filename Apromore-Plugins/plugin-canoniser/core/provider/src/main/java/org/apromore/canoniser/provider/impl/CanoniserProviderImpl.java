@@ -11,121 +11,31 @@
  */
 package org.apromore.canoniser.provider.impl;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
-import javax.annotation.Resource;
-
-import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.Canoniser;
-import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.provider.CanoniserProvider;
-import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.exception.PluginNotFoundException;
-import org.springframework.stereotype.Service;
 
 /**
- * Providing the default CanoniserProvider implementation using OSGi services
+ * Providing the default CanoniserProvider implementation
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-@Service
-public class CanoniserProviderImpl implements CanoniserProvider {
+public abstract class CanoniserProviderImpl implements CanoniserProvider {
 
-    /**
-     * Will be injected by Gemini Blueprint OSGi Framework at runtime
-     */
-    @Resource
-    private List<Canoniser> canoniserList;
+    private List<Canoniser> internalCanoniserList;
 
-    // Getter and Setter need to be public for DI
-
-    public List<Canoniser> getCanoniserList() {
-        return canoniserList;
+    protected List<Canoniser> getInternalCanoniserList() {
+        return internalCanoniserList;
     }
 
-    public void setCanoniserList(final List<Canoniser> canoniserList) {
-        this.canoniserList = canoniserList;
-    }
-
-    /* (non-Javadoc)
-     * @see org.apromore.canoniser.provider.CanoniserProvider#canonise(java.lang.String, java.io.InputStream, java.util.List, java.util.List)
-     */
-    @Override
-    public final void canonise(final String nativeType, final InputStream nativeInput, final List<AnnotationsType> annotationFormat,
-            final List<CanonicalProcessType> canonicalFormat) throws CanoniserException, PluginNotFoundException {
-        final Canoniser c = findByNativeTypeAndNameAndVersion(nativeType, null, null);
-        c.canonise(nativeInput, annotationFormat, canonicalFormat);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apromore.canoniser.provider.CanoniserProvider#canonise(java.lang.String, java.lang.String, org.apromore.canoniser.NativeInput,
-     * java.io.OutputStream, java.io.OutputStream)
-     */
-    @Override
-    public final void canonise(final String nativeType, final String name, final InputStream nativeInput, final List<AnnotationsType> annotationFormat,
-            final List<CanonicalProcessType> canonicalFormat) throws CanoniserException, PluginNotFoundException {
-        final Canoniser c = findByNativeTypeAndNameAndVersion(nativeType, name, null);
-        c.canonise(nativeInput, annotationFormat, canonicalFormat);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apromore.canoniser.provider.CanoniserProvider#canonise(java.lang.String, java.lang.String, java.lang.String,
-     * org.apromore.canoniser.NativeInput, java.io.OutputStream, java.io.OutputStream)
-     */
-    @Override
-    public final void canonise(final String nativeType, final String name, final String version, final InputStream nativeInput,
-            final List<AnnotationsType> annotationFormat, final List<CanonicalProcessType> canonicalFormat) throws CanoniserException, PluginNotFoundException {
-        final Canoniser c = findByNativeTypeAndNameAndVersion(nativeType, name, version);
-        c.canonise(nativeInput, annotationFormat, canonicalFormat);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apromore.canoniser.provider.CanoniserProvider#deCanonise(java.lang.String, java.io.InputStream, java.io.InputStream,
-     * org.apromore.canoniser.NativeOutput)
-     */
-    @Override
-    public final void deCanonise(final String nativeType, final AnnotationsType annotationFormat, final CanonicalProcessType canonicalFormat,
-            final OutputStream nativeOutput) throws CanoniserException, PluginNotFoundException {
-        final Canoniser c = findByNativeTypeAndNameAndVersion(nativeType, null, null);
-        c.deCanonise(canonicalFormat, annotationFormat, nativeOutput);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apromore.canoniser.provider.CanoniserProvider#deCanonise(java.lang.String, java.lang.String, java.io.InputStream, java.io.InputStream,
-     * org.apromore.canoniser.NativeOutput)
-     */
-    @Override
-    public final void deCanonise(final String nativeType, final String name, final AnnotationsType annotationFormat,
-            final CanonicalProcessType canonicalFormat, final OutputStream nativeOutput) throws CanoniserException, PluginNotFoundException {
-        final Canoniser c = findByNativeTypeAndNameAndVersion(nativeType, name, null);
-        c.deCanonise(canonicalFormat, annotationFormat, nativeOutput);
-    }
-
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apromore.canoniser.provider.CanoniserProvider#deCanonise(java.lang.String, java.lang.String, java.lang.String, java.io.InputStream,
-     * java.io.InputStream, org.apromore.canoniser.NativeOutput)
-     */
-    @Override
-    public final void deCanonise(final String nativeType, final String name, final String version, final AnnotationsType annotationFormat,
-            final CanonicalProcessType canonicalFormat, final OutputStream nativeOutput) throws PluginNotFoundException, CanoniserException {
-        final Canoniser c = findByNativeTypeAndNameAndVersion(nativeType, name, version);
-        c.deCanonise(canonicalFormat, annotationFormat, nativeOutput);
+    protected void setInternalCanoniserList(final List<Canoniser> canoniserList) {
+        this.internalCanoniserList = canoniserList;
     }
 
     /*
@@ -135,7 +45,7 @@ public class CanoniserProviderImpl implements CanoniserProvider {
      */
     @Override
     public final Collection<Canoniser> listAll() {
-        return Collections.unmodifiableCollection(getCanoniserList());
+        return Collections.unmodifiableCollection(getInternalCanoniserList());
     }
 
     /*
@@ -207,7 +117,7 @@ public class CanoniserProviderImpl implements CanoniserProvider {
 
         final List<Canoniser> cList = new ArrayList<Canoniser>();
 
-        for (final Canoniser c : getCanoniserList()) {
+        for (final Canoniser c : getInternalCanoniserList()) {
             if (compareNullable(nativeType, c.getNativeType()) && compareNullable(name, c.getName()) && compareNullable(version, c.getVersion())) {
                 cList.add(c);
             }
