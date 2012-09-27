@@ -21,6 +21,7 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.YAWL2Canonical;
 import org.apromore.canoniser.yawl.internal.impl.YAWL2CanonicalImpl;
 import org.apromore.canoniser.yawl.utils.GraphvizVisualiser;
+import org.apromore.canoniser.yawl.utils.NoOpMessageManager;
 import org.apromore.canoniser.yawl.utils.NullOutputStream;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.cpf.EdgeType;
@@ -63,7 +64,7 @@ public abstract class BaseYAWL2CPFTest {
 
     @Before
     public void setUp() throws Exception {
-        yawl2Canonical = new YAWL2CanonicalImpl();
+        yawl2Canonical = new YAWL2CanonicalImpl(new NoOpMessageManager());
         try {
             yawl2Canonical.convertToCanonical(TestUtils.unmarshalYAWL(getYAWLFile()), TestUtils.unmarshalYAWLOrgData(getYAWLOrgDataFile()));
         } catch (final CanoniserException e) {

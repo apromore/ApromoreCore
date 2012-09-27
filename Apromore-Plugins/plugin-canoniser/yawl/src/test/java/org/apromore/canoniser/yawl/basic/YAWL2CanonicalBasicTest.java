@@ -32,6 +32,7 @@ import org.apromore.canoniser.yawl.internal.YAWL2Canonical;
 import org.apromore.canoniser.yawl.internal.impl.YAWL2CanonicalImpl;
 import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.canoniser.yawl.utils.GraphvizVisualiser;
+import org.apromore.canoniser.yawl.utils.NoOpMessageManager;
 import org.apromore.canoniser.yawl.utils.NullOutputStream;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.cpf.CanonicalProcessType;
@@ -72,7 +73,7 @@ public class YAWL2CanonicalBasicTest {
 
     @Before
     public void setUp() throws Exception {
-        yawl2Canonical = new YAWL2CanonicalImpl();
+        yawl2Canonical = new YAWL2CanonicalImpl(new NoOpMessageManager());
     }
 
     /**

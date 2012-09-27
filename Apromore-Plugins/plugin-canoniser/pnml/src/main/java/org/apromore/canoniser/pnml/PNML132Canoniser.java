@@ -12,7 +12,6 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.sax.SAXSource;
 
 import org.apromore.anf.AnnotationsType;
-import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.DefaultAbstractCanoniser;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.pnml.internal.Canonical2PNML;
@@ -27,9 +26,9 @@ import org.xml.sax.helpers.XMLReaderFactory;
 
 /**
  * PNML 1.3.2 Canoniser Plugin
- * 
+ *
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
- * 
+ *
  */
 @Component("pnmlCanoniser")
 public class PNML132Canoniser extends DefaultAbstractCanoniser {
@@ -38,61 +37,11 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
 
 	/*
 	 * (non-Javadoc)
-	 * 
-	 * @see org.apromore.plugin.Plugin#getName()
-	 */
-	@Override
-	public String getName() {
-		return PNML132Canoniser.class.getName();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apromore.plugin.Plugin#getVersion()
-	 */
-	@Override
-	public String getVersion() {
-		return "1.0.0-SNAPSHOT";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apromore.plugin.Plugin#getType()
-	 */
-	@Override
-	public String getType() {
-		return Canoniser.class.getName();
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apromore.plugin.Plugin#getDescription()
-	 */
-	@Override
-	public String getDescription() {
-		return "Default PNML 1.3.2 Canoniser";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.apromore.canoniser.Canoniser#getNativeType()
-	 */
-	@Override
-	public String getNativeType() {
-		return "PNML 1.3.2";
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.apromore.canoniser.Canoniser#canonise(org.apromore.canoniser.NativeInput, java.io.OutputStream, java.io.OutputStream)
 	 */
 	@Override
-	public void canonise(InputStream nativeInput, List<AnnotationsType> annotationFormat, List<CanonicalProcessType> canonicalFormat) throws CanoniserException {
+	public void canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat, final List<CanonicalProcessType> canonicalFormat) throws CanoniserException {
 		try {
 			XMLReader reader = XMLReaderFactory.createXMLReader();
 			NamespaceFilter inFilter = new NamespaceFilter("pnml.apromore.org", true);
@@ -114,11 +63,11 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
 
 	/*
 	 * (non-Javadoc)
-	 * 
+	 *
 	 * @see org.apromore.canoniser.Canoniser#deCanonise(java.io.InputStream, java.io.InputStream, org.apromore.canoniser.NativeOutput)
 	 */
 	@Override
-	public void deCanonise(CanonicalProcessType canonicalFormat, AnnotationsType annotationFormat, OutputStream nativeOutput) throws CanoniserException {
+	public void deCanonise(final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final OutputStream nativeOutput) throws CanoniserException {
 		try {
 			Canonical2PNML canonical2pnml;
 
@@ -135,13 +84,13 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
 	}
 
 	@SuppressWarnings("unchecked")
-	private JAXBElement<PnmlType> unmarshalNativeFormat(SAXSource nativeFormat) throws JAXBException {
+	private JAXBElement<PnmlType> unmarshalNativeFormat(final SAXSource nativeFormat) throws JAXBException {
 		JAXBContext jc1 = JAXBContext.newInstance(PNML_CONTEXT);
 		Unmarshaller u = jc1.createUnmarshaller();
 		return (JAXBElement<PnmlType>) u.unmarshal(nativeFormat);
 	}
 
-	private void marshalNativeFormat(PnmlType pnml, OutputStream nativeFormat) throws JAXBException {
+	private void marshalNativeFormat(final PnmlType pnml, final OutputStream nativeFormat) throws JAXBException {
 		JAXBContext jc = JAXBContext.newInstance(PNML_CONTEXT);
 		Marshaller m = jc.createMarshaller();
 		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);

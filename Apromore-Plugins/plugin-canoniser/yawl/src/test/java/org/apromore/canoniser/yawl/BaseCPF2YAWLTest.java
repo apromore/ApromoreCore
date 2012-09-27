@@ -18,6 +18,7 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.Canonical2YAWL;
 import org.apromore.canoniser.yawl.internal.impl.Canonical2YAWLImpl;
 import org.apromore.canoniser.yawl.utils.GraphvizVisualiser;
+import org.apromore.canoniser.yawl.utils.NoOpMessageManager;
 import org.apromore.canoniser.yawl.utils.NullOutputStream;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.cpf.CPFSchema;
@@ -72,7 +73,7 @@ public abstract class BaseCPF2YAWLTest {
 
     @Before
     public void setUp() throws Exception {
-        canonical2Yawl = new Canonical2YAWLImpl();
+        canonical2Yawl = new Canonical2YAWLImpl(new NoOpMessageManager());
         LOGGER.debug("Testing file {}", getCPFFile().getName());
         BufferedInputStream canonicalFormat = new BufferedInputStream(new FileInputStream(getCPFFile()), BUFFER_SIZE);
         try {

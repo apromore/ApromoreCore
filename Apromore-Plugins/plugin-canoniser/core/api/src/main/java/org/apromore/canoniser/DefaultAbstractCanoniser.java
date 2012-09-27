@@ -97,9 +97,7 @@ public abstract class DefaultAbstractCanoniser extends DefaultPropertyAwarePlugi
      */
     protected JAXBElement<AnnotationsType> unmarshalAnnotationFormat(final InputStream annotationFormat) throws JAXBException, SAXException {
         if (annotationFormat != null) {
-
             return ANFSchema.unmarshalAnnotationFormat(annotationFormat, false);
-
         } else {
             return null;
         }

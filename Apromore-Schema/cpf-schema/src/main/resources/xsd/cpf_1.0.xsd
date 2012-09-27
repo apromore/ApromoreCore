@@ -533,9 +533,20 @@ if it is an outgoing edge of a split {@see SplitType}. It can also be marked as 
 	<complexType name="DistributionSetType">
 		<sequence>
 			<element name="resourceTypeRef" type="cpf:distributionSetRef" maxOccurs="unbounded" />
+			<element name="filterByDataExpr" type="cpf:ResourceDataFilterExpressionType" minOccurs="0" />
+			<element name="filterByRuntimeExpr" type="cpf:ResourceRuntimeFilterExpressionType" minOccurs="0" />
+			<element name="allocationStrategy" type="cpf:AllocationStrategyType" minOccurs="0" />			
 			<element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded" />
 		</sequence>					
 	</complexType>	
+	
+	<simpleType name="AllocationStrategyType">
+		<restriction base="string">		
+			<enumeration value="Random" />
+			<enumeration value="RoundRobin" />
+			<enumeration value="ShortestQueue" />
+		</restriction>
+	</simpleType>	
 	
 	<complexType name="distributionSetRef">
 		<sequence>
@@ -557,7 +568,7 @@ or a formal expression specified by both language and the expression. ({@see #la
 				Defines the formal language of the expression. Examples could be:
 					http://www.w3.org/1999/xpath/
 					http://www.mvel.org/2.0
-					http://www.w3.org/2005/xpath-functions/		
+					http://www.w3.org/2005/xpath-functions/
 			 -->
 			<element name="language" type="anyURI" minOccurs="0" />						
 			<element name="expression" type="string" minOccurs="0" />			
@@ -617,5 +628,25 @@ or a formal expression specified by both language and the expression. ({@see #la
 			</extension>
 		</complexContent>
 	</complexType>
+	
+	<complexType name="ResourceDataFilterExpressionType">
+		<complexContent>
+			<extension base="cpf:ExpressionType">
+				<!-- 
+					ResourceQuery(Obj1, Obj2, ..., ObjN) 
+				-->
+			</extension>
+		</complexContent>
+	</complexType>
+	
+	<complexType name="ResourceRuntimeFilterExpressionType">
+		<complexContent>
+			<extension base="cpf:ExpressionType">
+				<!-- 
+					ResourceQuery(Obj1, Obj2, ..., ObjN) 
+				-->
+			</extension>
+		</complexContent>
+	</complexType>		
 
 </schema>

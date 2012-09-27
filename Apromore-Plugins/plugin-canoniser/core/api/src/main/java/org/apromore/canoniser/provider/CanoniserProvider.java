@@ -11,15 +11,9 @@
  */
 package org.apromore.canoniser.provider;
 
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.Collection;
-import java.util.List;
 
-import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.Canoniser;
-import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.exception.PluginNotFoundException;
 
 /**
@@ -29,96 +23,6 @@ import org.apromore.plugin.exception.PluginNotFoundException;
  *
  */
 public interface CanoniserProvider {
-
-    /**
-     * Convenience method to convert to canonical format with the first Canoniser that is found for given parameters.
-     *
-     * @param nativeType for example "EPML 2.0" or "YAWL 2.2"
-     * @param nativeInput stream of the native format
-     * @param annotationFormat list that the canonised Annotations are added to
-     * @param canonicalFormat list that the canonised Canonical Processes are added to
-     * @throws CanoniserException
-     * @throws PluginNotFoundException
-     */
-    void canonise(String nativeType, InputStream nativeInput, List<AnnotationsType> annotationFormat,
-            List<CanonicalProcessType> canonicalFormat) throws CanoniserException, PluginNotFoundException;
-
-    /**
-     * Convenience method to convert to canonical format with the first Canoniser that is found for given parameters.
-     *
-     * @param nativeType for example "EPML 2.0" or "YAWL 2.2"
-     * @param name usually the full class name of the Canoniser
-     * @param nativeInput stream of the native format
-     * @param annotationFormat list that the canonised Annotations are added to
-     * @param canonicalFormat list that the canonised Canonical Processes are added to
-     * @throws CanoniserException
-     * @throws PluginNotFoundException
-     */
-    void canonise(String nativeType, String name, InputStream nativeInput, List<AnnotationsType> annotationFormat,
-            List<CanonicalProcessType> canonicalFormat) throws CanoniserException, PluginNotFoundException;
-
-    /**
-     * Convenience method to convert to canonical format with the first Canoniser that is found for given parameters.
-     *
-     * @param nativeType for example "EPML 2.0" or "YAWL 2.2"
-     * @param name usually the full class name of the Canoniser
-     * @param version usually the bundle version (X.Y.Z-CLASSIFIER)
-     * @param nativeInput stream of the native format
-     * @param annotationFormat list that the canonised Annotations are added to
-     * @param canonicalFormat list that the canonised Canonical Processes are added to
-     * @throws CanoniserException
-     * @throws PluginNotFoundException
-     */
-    void canonise(final String nativeType, String name, String version, final InputStream nativeInput, List<AnnotationsType> annotationFormat,
-            List<CanonicalProcessType> canonicalFormat) throws CanoniserException, PluginNotFoundException;
-
-    /**
-     * Convenience method to convert to canonical format with the first Canoniser that is found for given parameters.
-     *
-     * @param nativeType for example "EPML 2.0" or "YAWL 2.2"
-     * @param annotationFormat list of Annotations to deCanonise
-     * @param canonicalFormat list of Canonical Process Types to deCanonise
-     * @param nativeOutput stream of the native format
-     * @throws CanoniserException
-     * @throws PluginNotFoundException
-     */
-    void deCanonise(final String nativeType, final AnnotationsType annotationFormat, final CanonicalProcessType canonicalFormat,
-            OutputStream nativeOutput) throws CanoniserException, PluginNotFoundException;
-
-    /**
-     * Convenience method to convert to canonical format with the first Canoniser that is found for given parameters.
-     *
-     * @param nativeType for example "EPML 2.0" or "YAWL 2.2"
-     * @param name usually the full class name of the Canoniser
-     * @param annotationFormat list of Annotations to deCanonise
-     * @param canonicalFormat list of Canonical Process Types to deCanonise
-     * @param nativeOutput stream of the native format
-     * @throws CanoniserException
-     * @throws PluginNotFoundException
-     */
-    void deCanonise(String nativeType, String name, AnnotationsType annotationFormat,
-            final CanonicalProcessType canonicalFormat, OutputStream nativeOutput) throws CanoniserException, PluginNotFoundException;
-
-    /**
-     * Convenience method to convert to canonical format with the first Canoniser that is found for given parameters.
-     *
-     * @param nativeType
-     *            for example "EPML 2.0" or "YAWL 2.2"
-     * @param name
-     *            usually the full class name of the Canoniser
-     * @param version
-     *            usually the bundle version (X.Y.Z-CLASSIFIER)
-     * @param annotationFormat
-     *            list of Annotations to deCanonise
-     * @param canonicalFormat
-     *            list of Canonical Process Types to deCanonise
-     * @param nativeOutput
-     *            stream of the native format
-     * @throws CanoniserException
-     * @throws PluginNotFoundException
-     */
-    void deCanonise(String nativeType, String name, String version, AnnotationsType annotationFormat,
-            final CanonicalProcessType canonicalFormat, OutputStream nativeOutput) throws CanoniserException, PluginNotFoundException;
 
     /**
      * List all available Canoniser

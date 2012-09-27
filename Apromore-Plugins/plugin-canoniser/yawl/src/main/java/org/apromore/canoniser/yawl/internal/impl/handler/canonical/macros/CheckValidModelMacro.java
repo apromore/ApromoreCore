@@ -61,6 +61,7 @@ public class CheckValidModelMacro extends ContextAwareRewriteMacro {
                 final List<NodeType> preSet = getContext().getPreSet(node.getId());
                 if (postSet.isEmpty() && preSet.isEmpty()) {
                     // We want to be able to Canonise incomplete models
+                    getContext().getMessageInterface().addMessage("Node %s is disconnected!", node.getId());
                     LOGGER.warn("Node {} is disconnected!", ConversionUtils.toString(node));
                 }
             }

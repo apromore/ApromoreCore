@@ -12,7 +12,7 @@
     <!-- enable classpath scanning -->
 	<context:component-scan base-package="org.apromore.canoniser.provider" />   
        
-    <service ref="canoniserProviderImpl" interface="org.apromore.canoniser.provider.CanoniserProvider" />
-    <list id="canoniserList" interface="org.apromore.canoniser.Canoniser" availability="optional" />
+    <service ref="osgiCanoniserProviderImpl" interface="org.apromore.canoniser.provider.CanoniserProvider" />
+    <list id="canoniserList" interface="org.apromore.canoniser.Canoniser" availability="optional"  />
 	
 </beans:beans>

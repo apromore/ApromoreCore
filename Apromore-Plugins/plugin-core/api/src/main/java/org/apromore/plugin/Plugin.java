@@ -17,7 +17,7 @@
 package org.apromore.plugin;
 
 /**
- * Interface implemented by every Apromore plugin. Each plugin offers theses methods, therefore it is possible to handle all plugins in a
+ * Interface implemented by every Apromore Plugin. Each Plugin offers theses methods, so it is possible to handle all Plugins in a
  * generic manner.
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
@@ -52,4 +52,11 @@ public interface Plugin {
 	 * @return description of the plugin
 	 */
 	String getDescription();
+
+    /**
+     * Name of the author(s) of this plugin.
+     *
+     * @return author of the plugin
+     */
+    String getAuthor();
 }

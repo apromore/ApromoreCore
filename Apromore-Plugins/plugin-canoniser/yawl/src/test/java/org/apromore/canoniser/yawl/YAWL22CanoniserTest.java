@@ -19,6 +19,7 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.plugin.property.PropertyType;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 import org.yawlfoundation.yawlschema.SpecificationSetFactsType;
@@ -37,9 +38,16 @@ public class YAWL22CanoniserTest {
         final List<CanonicalProcessType> cList = new ArrayList<CanonicalProcessType>(0);
         final List<AnnotationsType> aList = new ArrayList<AnnotationsType>(0);
         final File file = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "YAWL/Patterns/ControlFlow/WPC3Synchronization.yawl");
+        final File fileOrg = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "YAWL/OrganisationalData/YAWLDefaultOrgData.ybkp");
+        for (PropertyType prop: c.getAvailableProperties()) {
+            if (prop.getName().equals("Read Organisational Data")) {
+                prop.setValue(new FileInputStream(fileOrg));
+            }
+        }
         c.canonise(new BufferedInputStream(new FileInputStream(file)), aList, cList);
         assertEquals(1, cList.size());
         assertEquals(1, aList.size());
+        assertNotNull(c.getPluginMessages());
     }
 
     @Test
@@ -52,6 +60,7 @@ public class YAWL22CanoniserTest {
         final SpecificationSetFactsType yawlFormat = YAWLSchema.unmarshalYAWLFormat(new ByteArrayInputStream(nativeOutput.toByteArray()), true)
                 .getValue();
         assertNotNull(yawlFormat);
+        assertNotNull(c.getPluginMessages());
     }
 
 }
