@@ -13,6 +13,7 @@ package org.apromore.canoniser.yawl.internal.impl;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.yawl.internal.MessageManager;
 import org.apromore.canoniser.yawl.internal.YAWL2Canonical;
 import org.apromore.canoniser.yawl.internal.impl.context.YAWLConversionContext;
 import org.apromore.canoniser.yawl.internal.impl.factory.ConversionFactory;
@@ -44,6 +45,15 @@ public final class YAWL2CanonicalImpl implements YAWL2Canonical {
      */
     private YAWLConversionContext context;
 
+    /**
+     *
+     */
+    private final MessageManager messageManager;
+
+    public YAWL2CanonicalImpl(final MessageManager messageManager) {
+        this.messageManager = messageManager;
+    }
+
     /*
      * (non-Javadoc)
      *
@@ -65,7 +75,7 @@ public final class YAWL2CanonicalImpl implements YAWL2Canonical {
 
         // First create the Context class for this conversion, the Context is used to store all kind of information that needs to be shared between
         // Handlers
-        this.setContext(new YAWLConversionContext(specification, value.getLayout(), orgDataType));
+        this.setContext(new YAWLConversionContext(specification, value.getLayout(), orgDataType, messageManager));
         // Second create the Factory class that will create the conversion Handlers
         final ConversionFactory factory = new YAWLConversionFactory(this.getContext());
 

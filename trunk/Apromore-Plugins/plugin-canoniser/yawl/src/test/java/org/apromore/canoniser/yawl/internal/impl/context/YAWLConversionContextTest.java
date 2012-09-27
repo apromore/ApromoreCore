@@ -9,6 +9,7 @@ import java.util.Collection;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
+import org.apromore.canoniser.yawl.utils.NoOpMessageManager;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.junit.Before;
 import org.junit.Test;
@@ -36,7 +37,7 @@ public class YAWLConversionContextTest {
         final SpecificationSetFactsType yawlXml = TestUtils.unmarshalYAWL(file);
         final OrgDataType orgDataXml = TestUtils.unmarshalYAWLOrgData(orgDatafile);
         specUnderTest = yawlXml.getSpecification().get(0);
-        context = new YAWLConversionContext(specUnderTest, yawlXml.getLayout(), orgDataXml);
+        context = new YAWLConversionContext(specUnderTest, yawlXml.getLayout(), orgDataXml, new NoOpMessageManager());
     }
 
     @Test

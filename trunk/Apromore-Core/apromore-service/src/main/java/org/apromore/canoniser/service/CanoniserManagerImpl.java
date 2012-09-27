@@ -13,14 +13,9 @@ import javax.xml.bind.JAXBException;
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.Canoniser;
-import org.apromore.canoniser.bpmn.BPMN20Canoniser;
 import org.apromore.canoniser.da.CanoniserDataAccessClient;
-import org.apromore.canoniser.epml.EPML20Canoniser;
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.canoniser.pnml.PNML132Canoniser;
-import org.apromore.canoniser.provider.impl.CanoniserProviderImpl;
-import org.apromore.canoniser.xpdl.XPDL21Canoniser;
-import org.apromore.canoniser.yawl.YAWL22Canoniser;
+import org.apromore.canoniser.provider.CanoniserProvider;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.exception.ExceptionAdapters;
@@ -33,9 +28,10 @@ import org.apromore.model.GenerateAnnotationInputMsgType;
 import org.apromore.model.GenerateAnnotationOutputMsgType;
 import org.apromore.model.ResultType;
 import org.apromore.plugin.exception.PluginNotFoundException;
-import org.apromore.plugin.property.PropertyType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.xml.sax.SAXException;
 
@@ -48,6 +44,9 @@ public class CanoniserManagerImpl implements CanoniserManager {
     private static final Logger LOGGER = LoggerFactory.getLogger(CanoniserManagerImpl.class);
 
     private CanoniserDataAccessClient client;
+
+    @Autowired @Qualifier("CanoniserProvider")
+    private CanoniserProvider canoniserProvider;
 
     @Override
     public GenerateAnnotationOutputMsgType generateAnnotation(final GenerateAnnotationInputMsgType payload) {
@@ -157,29 +156,12 @@ public class CanoniserManagerImpl implements CanoniserManager {
         //TODO why and where is this method needed? there is another one in CanoniserServiceImpl
         LOGGER.warn("Using depreciated method Canonise");
 
-        CanoniserProviderImpl canoniserProvider = new CanoniserProviderImpl();
-        //TODO replace by OSGi DI
-        // Workaround until OSGi is there
-        ArrayList<Canoniser> canoniserList = new ArrayList<Canoniser>();
-        EPML20Canoniser epmlCanoniser = new EPML20Canoniser();
-        //TODO later all available properties can be shown to the user
-        for (PropertyType prop: epmlCanoniser.getAvailableProperties()) {
-            if (prop.getName().equalsIgnoreCase("addFakeProperties")) {
-                prop.setValue(addFakeEvents);
-            }
-        }
-        canoniserList.add(epmlCanoniser);
-        canoniserList.add(new XPDL21Canoniser());
-        canoniserList.add(new PNML132Canoniser());
-        canoniserList.add(new YAWL22Canoniser());
-        canoniserList.add(new BPMN20Canoniser());
-        canoniserProvider.setCanoniserList(canoniserList);
-
         List<CanonicalProcessType> cpfList = new ArrayList<CanonicalProcessType>();
         List<AnnotationsType> anfList = new ArrayList<AnnotationsType>();
 
         try {
-            canoniserProvider.canonise(nativeType, process_xml, anfList, cpfList);
+            Canoniser c = canoniserProvider.findByNativeType(nativeType);
+            c.canonise(process_xml, anfList, cpfList);
         } catch (org.apromore.canoniser.exception.CanoniserException | PluginNotFoundException e) {
             throw new CanoniserException("Could not canonise "+nativeType, e);
         }

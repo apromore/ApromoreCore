@@ -12,6 +12,7 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.BaseYAWL2CPFTest;
 import org.apromore.canoniser.yawl.internal.impl.context.YAWLConversionContext;
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.SpecificationHandler;
+import org.apromore.canoniser.yawl.utils.NoOpMessageManager;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -35,7 +36,7 @@ public class YAWLConversionFactoryTest extends BaseYAWL2CPFTest {
         final SpecificationSetFactsType yawlSpec = TestUtils.unmarshalYAWL(getYAWLFile());
         final YAWLSpecificationFactsType specification = yawlSpec.getSpecification().get(0);
         final YAWLConversionFactory factory = new YAWLConversionFactory(new YAWLConversionContext(specification, yawlSpec.getLayout(),
-                TestUtils.unmarshalYAWLOrgData(getYAWLOrgDataFile())));
+                TestUtils.unmarshalYAWLOrgData(getYAWLOrgDataFile()), new NoOpMessageManager()));
         assertNotNull(factory.getContext());
         assertNotNull(factory.createHandler(specification.getDecomposition().get(0), null, null));
         assertNotNull(factory.createHandler(specification, null, null, SpecificationHandler.class));

@@ -29,6 +29,7 @@ import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.DocumentationType;
 import org.apromore.anf.GraphicsType;
+import org.apromore.canoniser.yawl.internal.MessageManager;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations.YAWLAutoLayouter;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUUIDGenerator;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
@@ -248,9 +249,10 @@ public final class CanonicalConversionContext extends ConversionContext {
      *
      * @param canonicalProcess
      * @param annotationsType
+     * @param messageInterface
      */
-    public CanonicalConversionContext(final CanonicalProcessType canonicalProcess, final AnnotationsType annotationsType) {
-        super();
+    public CanonicalConversionContext(final CanonicalProcessType canonicalProcess, final AnnotationsType annotationsType, final MessageManager messageInterface) {
+        super(messageInterface);
         this.canonicalProcess = canonicalProcess;
         this.annotationsType = annotationsType;
         this.yawlSpecification = new ObjectFactory().createSpecificationSetFactsType();

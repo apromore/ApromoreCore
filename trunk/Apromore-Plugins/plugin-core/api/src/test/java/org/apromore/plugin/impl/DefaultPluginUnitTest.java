@@ -6,14 +6,16 @@ import static org.junit.Assert.assertNotNull;
 import org.junit.Before;
 import org.junit.Test;
 
-public class DefaultPluginTest {
+public class DefaultPluginUnitTest {
+
+    private final class DefaultPluginMock extends DefaultPlugin {
+    }
 
     private DefaultPlugin plugin;
 
     @Before
     public void setUp() {
-        plugin = new DefaultPlugin() {
-        };
+        plugin = new DefaultPluginMock();
     }
 
     @Test
@@ -49,6 +51,11 @@ public class DefaultPluginTest {
     @Test
     public void testGetConfigurationByNameStringString() {
         assertEquals("test", plugin.getConfigurationByName("not.found", "test"));
+    }
+
+    @Test
+    public void testGetAuthor() {
+        assertEquals("Smith", plugin.getAuthor());
     }
 
 }

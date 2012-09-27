@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <specificationSet xmlns="http://www.yawlfoundation.org/yawlschema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="2.2" xsi:schemaLocation="http://www.yawlfoundation.org/yawlschema http://www.yawlfoundation.org/yawlschema/YAWL_Schema2.2.xsd">
-  <specification uri="WPR1DirectDistribution">
+  <specification uri="WPR2RoleBasedDistribution">
     <metaData>
       <creator>Felix</creator>
       <description>No description has been given.</description>
@@ -48,43 +48,12 @@
   </specification>
   <layout>
     <locale language="de" country="DE" />
-    <specification id="WPR1DirectDistribution">
+    <specification id="WPR2RoleBasedDistribution">
       <size w="65" h="28" />
       <net id="Net">
-        <bounds x="0" y="0" w="1124" h="676" />
-        <frame x="2" y="25" w="1127" h="679" />
-        <viewport x="0" y="0" w="1127" h="679" />
-        <flow source="InputCondition" target="A">
-          <label>Allocated+to+Role+X</label>
-          <ports in="13" out="12" />
-          <attributes>
-            <offset x="18,0" y="0,0" />
-            <labelposition x="1000,0" y="-27,5" />
-            <lineStyle>11</lineStyle>
-            <points>
-              <value x="91,0" y="435,5" />
-              <value x="132,0" y="435,5" />
-            </points>
-          </attributes>
-        </flow>
-        <container id="A">
-          <vertex>
-            <attributes>
-              <bounds x="132,0" y="420,0" w="32,0" h="32,0" />
-            </attributes>
-          </vertex>
-          <label>
-            <attributes>
-              <bounds x="100,0" y="452,0" w="96,0" h="20,0" />
-            </attributes>
-          </label>
-        </container>
-        <flow source="A" target="OutputCondition">
-          <ports in="13" out="12" />
-          <attributes>
-            <lineStyle>11</lineStyle>
-          </attributes>
-        </flow>
+        <bounds x="0" y="0" w="1524" h="697" />
+        <frame x="2" y="25" w="1527" h="700" />
+        <viewport x="0" y="0" w="1527" h="700" />
         <container id="InputCondition">
           <vertex>
             <attributes>
@@ -109,6 +78,37 @@
             </attributes>
           </label>
         </container>
+        <container id="A">
+          <vertex>
+            <attributes>
+              <bounds x="132,0" y="420,0" w="32,0" h="32,0" />
+            </attributes>
+          </vertex>
+          <label>
+            <attributes>
+              <bounds x="100,0" y="452,0" w="96,0" h="20,0" />
+            </attributes>
+          </label>
+        </container>
+        <flow source="InputCondition" target="A">
+          <label>Allocated+to+Role+X</label>
+          <ports in="13" out="12" />
+          <attributes>
+            <offset x="18,0" y="0,0" />
+            <labelposition x="1000,0" y="-27,5" />
+            <lineStyle>11</lineStyle>
+            <points>
+              <value x="91,0" y="435,5" />
+              <value x="132,0" y="435,5" />
+            </points>
+          </attributes>
+        </flow>
+        <flow source="A" target="OutputCondition">
+          <ports in="13" out="12" />
+          <attributes>
+            <lineStyle>11</lineStyle>
+          </attributes>
+        </flow>
       </net>
     </specification>
   </layout>

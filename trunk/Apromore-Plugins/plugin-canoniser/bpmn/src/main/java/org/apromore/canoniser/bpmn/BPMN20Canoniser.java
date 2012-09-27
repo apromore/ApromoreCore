@@ -3,6 +3,7 @@ package org.apromore.canoniser.bpmn;
 // Java 2 Standard packages
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Set;
@@ -15,6 +16,7 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.plugin.message.PluginMessage;
 import org.apromore.plugin.property.PropertyType;
 
 /**
@@ -116,5 +118,17 @@ public class BPMN20Canoniser implements Canoniser {
     @Override
     public String getDescription() {
         return "Implements only the descriptive subclass of BPMN 2.0.";
+    }
+
+    @Override
+    public String getAuthor() {
+        // TODO Auto-generated method stub
+        return null;
+    }
+
+    @Override
+    public Collection<PluginMessage> getPluginMessages() {
+        // TODO Auto-generated method stub
+        return null;
     }
 }

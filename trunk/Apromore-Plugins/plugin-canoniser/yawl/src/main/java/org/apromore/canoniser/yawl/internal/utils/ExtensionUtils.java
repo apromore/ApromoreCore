@@ -43,7 +43,7 @@ public final class ExtensionUtils {
 
     public static final String CONSTRAINTS = "constraints";
 
-    public static final String RESOURCING = "resourcing";
+    public static final String OFFER = "offer";
 
     public static final String FAMILIAR_PARTICIPANT = "familiarParticipant";
 
@@ -64,6 +64,9 @@ public final class ExtensionUtils {
     public static final String YAWLSCHEMA_URL = "http://www.yawlfoundation.org/yawlschema";
 
     private static final JAXBContext YAWL_CONTEXT = initYAWLContext();
+
+    public static final String ALLOCATE = "allocate";
+
 
     private static JAXBContext initYAWLContext() {
         try {

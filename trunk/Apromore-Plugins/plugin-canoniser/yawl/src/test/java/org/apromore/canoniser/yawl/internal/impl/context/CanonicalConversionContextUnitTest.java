@@ -11,6 +11,7 @@ import java.io.File;
 import java.io.FileInputStream;
 
 import org.apromore.anf.AnnotationsType;
+import org.apromore.canoniser.yawl.utils.NoOpMessageManager;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
@@ -33,19 +34,19 @@ public class CanonicalConversionContextUnitTest {
     public void setUp() throws Exception {
         final File file = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/FromYAWL/WPC4ExclusiveChoice.yawl.cpf");
         final CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(new BufferedInputStream(new FileInputStream(file)), true).getValue();
-        context = new CanonicalConversionContext(cpf, new AnnotationsType());
+        context = new CanonicalConversionContext(cpf, new AnnotationsType(), new NoOpMessageManager());
 
         final File file2 = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/FromYAWL/WPR2RoleBasedDistribution.yawl.cpf");
         final CanonicalProcessType cpf2 = CPFSchema.unmarshalCanonicalFormat(new BufferedInputStream(new FileInputStream(file2)), true).getValue();
-        context2 = new CanonicalConversionContext(cpf2, new AnnotationsType());
+        context2 = new CanonicalConversionContext(cpf2, new AnnotationsType(), new NoOpMessageManager());
 
         final File file3 = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/FromYAWL/orderfulfillment.yawl.cpf");
         final CanonicalProcessType cpf3 = CPFSchema.unmarshalCanonicalFormat(new BufferedInputStream(new FileInputStream(file3)), true).getValue();
-        context3 = new CanonicalConversionContext(cpf3, new AnnotationsType());
+        context3 = new CanonicalConversionContext(cpf3, new AnnotationsType(), new NoOpMessageManager());
 
         final File file4 = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/External/PNML/13_AndSplitJoin.cpf");
         final CanonicalProcessType cpf4 = CPFSchema.unmarshalCanonicalFormat(new BufferedInputStream(new FileInputStream(file4)), false).getValue();
-        context4 = new CanonicalConversionContext(cpf4, new AnnotationsType());
+        context4 = new CanonicalConversionContext(cpf4, new AnnotationsType(), new NoOpMessageManager());
     }
 
     @Test

@@ -5,7 +5,7 @@ import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
-public class StringPropertyTest {
+public class StringPropertyUnitTest {
 
     @Test
     public void test() {

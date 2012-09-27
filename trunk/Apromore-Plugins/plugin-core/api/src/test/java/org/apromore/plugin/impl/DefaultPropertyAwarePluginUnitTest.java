@@ -17,7 +17,7 @@ import org.junit.Test;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public class DefaultPropertyAwarePluginTest {
+public class DefaultPropertyAwarePluginUnitTest {
 
     private DefaultPropertyAwarePlugin propertyAwarePlugin;
     private DefaultProperty mandatoryProperty;
