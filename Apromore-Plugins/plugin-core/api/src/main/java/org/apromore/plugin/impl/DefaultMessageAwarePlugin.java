@@ -1,5 +1,6 @@
 package org.apromore.plugin.impl;
 
+import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,11 +28,11 @@ public abstract class DefaultMessageAwarePlugin extends DefaultPlugin implements
     /**
      * Store a Messages to be retrieved by whoever is using this Plugin later on.
      *
-     * @param messageFormat content of the Message used in String.format
-     * @param args arguments of String.format
+     * @param messageFormat content of the Message used in {@see MessageFormat#format(String, Object...)}
+     * @param args second argument of {@see MessageFormat#format(String, Object...)}
      */
     public void addPluginMessage(final String messageFormat, final Object... args) {
-        addPluginMessage(String.format(messageFormat, args));
+        addPluginMessage(MessageFormat.format(messageFormat, args));
     }
 
     /**
