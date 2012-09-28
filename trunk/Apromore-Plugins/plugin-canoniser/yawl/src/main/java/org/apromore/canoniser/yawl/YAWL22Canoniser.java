@@ -66,7 +66,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
         resourceDataInput = new DefaultProperty("Read Organisational Data", InputStream.class,
                 "Reads a .ybkp file containing the organisational data used in this YAWL workflow.", false);
         resourceDataOutput = new DefaultProperty("Write Organisational Data", OutputStream.class,
-                "Writes a .ybkp file containing the organisational data used in this YAWL workflow.", false);
+                "YAWL Organisational data will be written to this file.", false);
         addProperty(resourceDataInput);
         addProperty(resourceDataOutput);
     }
@@ -83,7 +83,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
         LOGGER.info("Start canonising %s", getNativeType());
 
         try {
-            final JAXBElement<SpecificationSetFactsType> nativeElement = unmarshalNativeFormat(nativeInput);
+            final JAXBElement<SpecificationSetFactsType> nativeElement = YAWLSchema.unmarshalYAWLFormat(nativeInput, false);
 
             final YAWL2Canonical yawl2canonical = new YAWL2CanonicalImpl(new MessageManagerImpl(this));
 
@@ -132,10 +132,11 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
                 LOGGER.debug("Decanonising without Annotation");
                 canonical2yawl.convertToYAWL(canonicalFormat);
             }
+            YAWLSchema.marshalYAWLFormat(nativeOutput, canonical2yawl.getYAWL(), true);
 
-            marshalYAWLFormat(canonical2yawl.getYAWL(), nativeOutput);
-            // TODO
-            // YAWLOrgDataSchema.marshalYAWLOrgDataFormat((OutputStream) resourceDataOutput.getValue(), canonical2yawl.getOrgData(), true);
+            if (resourceDataOutput.getValue() != null) {
+                YAWLOrgDataSchema.marshalYAWLOrgDataFormat((OutputStream) resourceDataOutput.getValue(), canonical2yawl.getOrgData(), true);
+            }
 
         } catch (final JAXBException e) {
             throw new CanoniserException(e);
@@ -159,17 +160,6 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
         final SAXSource source = new SAXSource(namespaceFilter, is);
 
         return YAWLOrgDataSchema.unmarshalYAWLOrgDataFormat(source, false);
-    }
-
-    private JAXBElement<SpecificationSetFactsType> unmarshalNativeFormat(final InputStream nativeFormat) throws JAXBException, SAXException {
-        // Also try to parse non-valid YAWL XML
-        return YAWLSchema.unmarshalYAWLFormat(nativeFormat, false);
-    }
-
-    private void marshalYAWLFormat(final SpecificationSetFactsType yawlSpecification, final OutputStream nativeFormat) throws JAXBException,
-            SAXException {
-        // Always validate our own output
-        YAWLSchema.marshalYAWLFormat(nativeFormat, yawlSpecification, true);
     }
 
 }

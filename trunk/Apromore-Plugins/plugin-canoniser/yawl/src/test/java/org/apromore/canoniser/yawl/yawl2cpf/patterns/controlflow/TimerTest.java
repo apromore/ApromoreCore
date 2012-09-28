@@ -63,7 +63,7 @@ public class TimerTest extends BasePatternTest {
 
         // Timer onStart
         final TaskType taskB = (TaskType) checkNode(rootNet, "B", TaskType.class, 1, 1);
-        final ANDSplitType andSplit = checkNode(rootNet, getFirstPredecessor(rootNet, taskB), ANDSplitType.class, 1, 2);
+        checkNode(rootNet, getFirstPredecessor(rootNet, taskB), ANDSplitType.class, 1, 2);
         final XORJoinType xorJoin = checkNode(rootNet, getFirstSuccessor(rootNet, taskB), XORJoinType.class, 2, 1);
 
         final List<EdgeType> incomingXorJoin = getIncomingEdges(rootNet, xorJoin.getId());

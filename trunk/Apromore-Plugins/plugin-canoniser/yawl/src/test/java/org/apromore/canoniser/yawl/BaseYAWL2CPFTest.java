@@ -24,6 +24,7 @@ import org.apromore.canoniser.yawl.utils.GraphvizVisualiser;
 import org.apromore.canoniser.yawl.utils.NoOpMessageManager;
 import org.apromore.canoniser.yawl.utils.NullOutputStream;
 import org.apromore.canoniser.yawl.utils.TestUtils;
+import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.HumanType;
 import org.apromore.cpf.InputOutputType;
@@ -31,6 +32,7 @@ import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ObjectType;
+import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
@@ -106,7 +108,7 @@ public abstract class BaseYAWL2CPFTest {
     }
 
     @Test
-    public void testAllNodesReachable() {
+    public void testBasics() {
         final NetType rootNet = yawl2Canonical.getCpf().getNet().get(0);
         final Set<String> sourceSet = new HashSet<String>();
         final Set<String> targetSet = new HashSet<String>();
@@ -126,10 +128,7 @@ public abstract class BaseYAWL2CPFTest {
 
         assertTrue("Not all Nodes connected: " + printSet(sourceSet), sourceSet.size() == 1);
         assertTrue("Not all Nodes connected" + printSet(targetSet), targetSet.size() == 1);
-    }
 
-    @Test
-    public void testBasicResourceType() {
         final Set<String> resourceId = new HashSet<String>();
         final Set<String> resourceName = new HashSet<String>();
         for (final ResourceTypeType resource : yawl2Canonical.getCpf().getResourceType()) {
@@ -269,6 +268,26 @@ public abstract class BaseYAWL2CPFTest {
 
     protected NodeType getFirstSuccessor(final NetType rootNet, final NodeType nodeA) {
         return getNodeByID(rootNet, getOutgoingEdges(rootNet, nodeA.getId()).get(0).getTargetId());
+    }
+
+    protected ResourceTypeType getResourceById(final CanonicalProcessType process, final String resourceId) {
+        // Check Resource correct
+        for (final ResourceTypeType resource : process.getResourceType()) {
+            if (resource.getId().equals(resourceId)) {
+                return resource;
+            }
+        }
+        return null;
+    }
+
+    protected ResourceTypeType hasResourceType(final WorkType node, final CanonicalProcessType cpf, final String resourceName) {
+        for (ResourceTypeRefType ref: node.getResourceTypeRef()) {
+            ResourceTypeType r = getResourceById(cpf, ref.getResourceTypeId());
+            if (r != null && r.getName().equals(resourceName)) {
+                return r;
+            }
+        }
+        return null;
     }
 
 }
