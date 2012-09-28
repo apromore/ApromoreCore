@@ -245,17 +245,31 @@ public class CanoniserDefinitionsTest {
         assertNotNull(result.getAnf(0));
         assertNotNull(result.getCpf(0));
 
+        // Output the ANF
         Marshaller marshaller = JAXBContext.newInstance(ANFSchema.ANF_CONTEXT).createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setSchema(ANF_SCHEMA);
         marshaller.marshal(new JAXBElement<AnnotationsType>(ANF_ROOT, AnnotationsType.class, result.getAnf(0)),
                            new File(OUTPUT_DIR, filename + ".anf"));
 
+        // Output the CPF
+        marshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT).createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.marshal(new JAXBElement<CanonicalProcessType>(CPF_ROOT, CanonicalProcessType.class, result.getCpf(0)),
+                           new File(OUTPUT_DIR, filename + ".cpf"));
+
+        // Validate the ANF
+        marshaller = JAXBContext.newInstance(ANFSchema.ANF_CONTEXT).createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.setSchema(ANF_SCHEMA);
+        marshaller.marshal(new JAXBElement<AnnotationsType>(ANF_ROOT, AnnotationsType.class, result.getAnf(0)),
+                           new NullOutputStream());
+
+        // Validate the CPF
         marshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT).createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setSchema(CPF_SCHEMA);
         marshaller.marshal(new JAXBElement<CanonicalProcessType>(CPF_ROOT, CanonicalProcessType.class, result.getCpf(0)),
-                           new File(OUTPUT_DIR, filename + ".cpf"));
+                           new NullOutputStream());
 
         return result;
     }
