@@ -6,7 +6,9 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.OutputStreamWriter;
 import java.util.Arrays;
+import java.util.List;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -15,11 +17,18 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.ValidationEvent;
 import javax.xml.bind.util.ValidationEventCollector;
 import javax.xml.namespace.QName;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
 
 import org.junit.Before;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
@@ -33,6 +42,7 @@ import static org.junit.Assert.assertTrue;
 
 /**
  * Test suite for {@link TDefinitions}.
+ *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
 public class DefinitionsTest {
@@ -84,10 +94,10 @@ public class DefinitionsTest {
     @Test
     public final void test1() throws FileNotFoundException, JAXBException {
         // Obtain the test instance
-        Definitions definitions = context.createUnmarshaller().unmarshal(
-            new StreamSource(getClass().getClassLoader().getResourceAsStream("Test1.bpmn20.xml")),
-            Definitions.class
-        ).getValue();
+        JAXBElement<TDefinitions> element = (JAXBElement<TDefinitions>) context.createUnmarshaller().unmarshal(
+            new StreamSource(getClass().getClassLoader().getResourceAsStream("Test1.bpmn20.xml"))
+        );
+        TDefinitions definitions = element.getValue();
 
         // Serialize the test instance out again
         Marshaller marshaller = context.createMarshaller();
@@ -95,60 +105,60 @@ public class DefinitionsTest {
         marshaller.setEventHandler(vec);
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setSchema(bpmnSchema);
-        marshaller.marshal(definitions, new FileOutputStream("target/surefire/Test1.bpmn20.xml"));
+        marshaller.marshal(element, new FileOutputStream("target/surefire/Test1.bpmn20.xml"));
         assertFalse(formatValidationEvents(vec), vec.hasEvents());
 
         // Inspect the test instance
 
         // Expect a single <process> element
         assertNotNull(definitions);
-        assertNotNull(definitions.getRootElements());
-        assertEquals(1, definitions.getRootElements().size());
-        assertTrue(definitions.getRootElements().get(0).getValue() instanceof TProcess);
-        TProcess process = (TProcess) definitions.getRootElements().get(0).getValue();
+        assertNotNull(definitions.getRootElement());
+        assertEquals(1, definitions.getRootElement().size());
+        assertTrue(definitions.getRootElement().get(0).getValue() instanceof TProcess);
+        TProcess process = (TProcess) definitions.getRootElement().get(0).getValue();
         assertFalse(process.isIsClosed());
         assertFalse(process.isIsExecutable());
 
         // Expect process to have a <variants> extension element
         assertNotNull(process.getExtensionElements());
-        assertNotNull(process.getExtensionElements().getAnies());
-        assertEquals(1, process.getExtensionElements().getAnies().size());
+        assertNotNull(process.getExtensionElements().getAny());
+        assertEquals(1, process.getExtensionElements().getAny().size());
 
         /*
-        assertSame(Variants.class, process.getExtensionElements().getAnies().get(0).getClass());
-        Variants variants = (Variants) process.getExtensionElements().getAnies().get(0);
+        assertSame(Variants.class, process.getExtensionElements().getAny().get(0).getClass());
+        Variants variants = (Variants) process.getExtensionElements().getAny().get(0);
         assertEquals(3, variants.getVariant().size());
         assertEquals("vid-1940931807", variants.getVariant().get(0).getId());
         assertEquals("A", variants.getVariant().get(0).getName());
         */
 
         // Expect process to have 10 flow elements, the first of which is a task named "Airbus"
-        assertNotNull(process.getFlowElements());
-        assertEquals(10, process.getFlowElements().size());
-        TTask airbus = (TTask) process.getFlowElements().get(0).getValue();
+        assertNotNull(process.getFlowElement());
+        assertEquals(10, process.getFlowElement().size());
+        TTask airbus = (TTask) process.getFlowElement().get(0).getValue();
         assertEquals("Airbus", airbus.getName());
 
         // Expect "Airbus" to have two extension elements
-        assertEquals(2, airbus.getExtensionElements().getAnies().size());
+        assertEquals(2, airbus.getExtensionElements().getAny().size());
 
         /*
-        assertSame(SignavioMetaData.class,        airbus.getExtensionElements().getAnies().get(0).getClass());
-        assertSame(ConfigurationAnnotation.class, airbus.getExtensionElements().getAnies().get(1).getClass());
+        assertSame(SignavioMetaData.class,        airbus.getExtensionElements().getAny().get(0).getClass());
+        assertSame(ConfigurationAnnotation.class, airbus.getExtensionElements().getAny().get(1).getClass());
         */
 
         // Expect a single <BPMNDiagram> element
-        assertNotNull(definitions.getBPMNDiagrams());
-        assertEquals(1, definitions.getBPMNDiagrams().size());
-        assertEquals("sid-db4fcdfb-67a0-4ef0-9a45-3167bfd77e4f", definitions.getBPMNDiagrams().get(0).getId());
-        assertNotNull(definitions.getBPMNDiagrams().get(0).getBPMNPlane());
-        assertEquals("sid-69a9f6ba-9421-44ee-a6fb-f50fc5e881e4", definitions.getBPMNDiagrams().get(0).getBPMNPlane().getId());
+        assertNotNull(definitions.getBPMNDiagram());
+        assertEquals(1, definitions.getBPMNDiagram().size());
+        assertEquals("sid-db4fcdfb-67a0-4ef0-9a45-3167bfd77e4f", definitions.getBPMNDiagram().get(0).getId());
+        assertNotNull(definitions.getBPMNDiagram().get(0).getBPMNPlane());
+        assertEquals("sid-69a9f6ba-9421-44ee-a6fb-f50fc5e881e4", definitions.getBPMNDiagram().get(0).getBPMNPlane().getId());
         // TODO - the following result almost certainly has the wrong namespace for the QName
         assertEquals(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "sid-68aefed9-f32a-4503-895c-b26b0ee8dded"),
-                definitions.getBPMNDiagrams().get(0).getBPMNPlane().getBpmnElement());
-        assertNotNull(definitions.getBPMNDiagrams().get(0).getBPMNPlane().getDiagramElements());
+                definitions.getBPMNDiagram().get(0).getBPMNPlane().getBpmnElement());
+        assertNotNull(definitions.getBPMNDiagram().get(0).getBPMNPlane().getDiagramElement());
 
         // Expect 10 diagram elements to match the 10 process elements
-        assertEquals(10, definitions.getBPMNDiagrams().get(0).getBPMNPlane().getDiagramElements().size());
+        assertEquals(10, definitions.getBPMNDiagram().get(0).getBPMNPlane().getDiagramElement().size());
     }
 
     /**
@@ -160,10 +170,11 @@ public class DefinitionsTest {
     @Test
     public final void testTrivialGateway() throws FileNotFoundException, JAXBException {
         // Obtain the test instance
-        Definitions definitions = context.createUnmarshaller().unmarshal(
+        JAXBElement<TDefinitions> element = context.createUnmarshaller().unmarshal(
             new StreamSource(getClass().getClassLoader().getResourceAsStream("TrivialGateway.bpmn20.xml")),
-            Definitions.class
-        ).getValue();
+            TDefinitions.class
+        );
+        TDefinitions definitions = element.getValue();
 
         // Serialize the test instance out again
         Marshaller marshaller = context.createMarshaller();
@@ -171,7 +182,102 @@ public class DefinitionsTest {
         marshaller.setEventHandler(vec);
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         marshaller.setSchema(bpmnSchema);
-        marshaller.marshal(definitions, new FileOutputStream("target/surefire/TrivialGateway.bpmn20.xml"));
+        marshaller.marshal(element, new FileOutputStream("target/surefire/TrivialGateway.bpmn20.xml"));
+        assertFalse(formatValidationEvents(vec), vec.hasEvents());
+    }
+
+    /**
+     * Test parsing of <a href="{@docRoot}/Case 8.bpmn20.xml">Case 8.bpmn20.xml</a>.
+     *
+     * @throws FileNotFoundException if the input file of test data is absent
+     * @throws JAXBException
+     */
+    @Test
+    public final void testCase8() throws FileNotFoundException, JAXBException {
+        // Obtain the test instance
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        unmarshaller.setSchema(bpmnSchema);
+        JAXBElement<TDefinitions> element = (JAXBElement<TDefinitions>) unmarshaller.unmarshal(
+            new StreamSource(getClass().getClassLoader().getResourceAsStream("Case 8.bpmn20.xml"))
+        );
+        TDefinitions definitions = element.getValue();
+
+        // Inspect the test instance
+        TProcess process = (TProcess) definitions.getRootElement().get(1).getValue();
+        List<JAXBElement<Object>> list = process.getLaneSet().get(0).getLane().get(0).getFlowNodeRef();
+        JAXBElement<Object> e = list.get(0);
+        assertEquals(TStartEvent.class , e.getValue().getClass());
+        TStartEvent start = (TStartEvent) e.getValue();
+        assertEquals("sid-B7D16DE3-ADC1-4F94-9447-DB2DCC467CF1", start.getId());
+
+        // Modify the test instance
+        list.add(e);  // It's surprisingly easy to break this operation in the .xjb binding
+
+        // Serialize the test instance out again, with the duplicate flowNodeRef
+        Marshaller marshaller = context.createMarshaller();
+        ValidationEventCollector vec = new ValidationEventCollector();
+        marshaller.setEventHandler(vec);
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        marshaller.setSchema(bpmnSchema);
+        marshaller.marshal(element, new FileOutputStream("target/surefire/Case 8.bpmn20.xml"));
+        assertFalse(formatValidationEvents(vec), vec.hasEvents());
+    }
+
+    /**
+     * Test the construction of a BPMN document from scratch, rather than by unmarshalling.
+     */
+    @Test
+    public final void testConstruction() throws Exception {
+        ObjectFactory factory = new ObjectFactory();
+
+        TDefinitions definitions = factory.createTDefinitions();
+        definitions.setId("definitionsId");
+        definitions.setExporter("exporter");
+        definitions.setTargetNamespace("targetNS");
+
+        TProcess process = factory.createTProcess();
+        process.setId("processId");
+        definitions.getRootElement().add(factory.createProcess(process));
+
+        TLaneSet laneSet = factory.createTLaneSet();
+        laneSet.setId("laneSetId");
+        process.getLaneSet().add(laneSet);
+
+        TLane lane = factory.createTLane();
+        lane.setId("laneId");
+        laneSet.getLane().add(lane);
+
+        TTask task = factory.createTTask();
+        task.setId("taskId");
+        JAXBElement<TTask> wrappedTask = factory.createTask(task);
+        process.getFlowElement().add(wrappedTask);
+        lane.getFlowNodeRef().add((JAXBElement) wrappedTask);
+
+        // Serialize the constructed document into a DOM tree
+        DOMResult intermediateResult = new DOMResult();
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.marshal(factory.createDefinitions(definitions), intermediateResult);
+
+        // Because I can't figure out how to make JAXB do the right thing, I postprocess with XSLT
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        transformerFactory.setAttribute("indent-number", new Integer(2));
+        Transformer transformer = transformerFactory.newTransformer(new StreamSource(ClassLoader.getSystemResourceAsStream("xsd/fix-flowNodeRef.xsl")));
+        transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+        DOMSource finalSource = new DOMSource(intermediateResult.getNode());
+        DOMResult finalResult = new DOMResult();
+        transformer.transform(finalSource, new StreamResult(new OutputStreamWriter(new FileOutputStream("target/surefire/Construction.bpmn20.xml"), "utf-8")));
+        transformer.transform(finalSource, finalResult);
+
+        // Unmarshal back to JAXB
+        Object def2 = context.createUnmarshaller().unmarshal(finalResult.getNode());
+
+        // Serialize and validate the corrected document
+        marshaller = context.createMarshaller();
+        ValidationEventCollector vec = new ValidationEventCollector();
+        marshaller.setEventHandler(vec);
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        //marshaller.setSchema(bpmnSchema);
+        marshaller.marshal(def2, new FileOutputStream("target/surefire/Construction2.bpmn20.xml"));
         assertFalse(formatValidationEvents(vec), vec.hasEvents());
     }
 

@@ -16,7 +16,7 @@ import org.omg.spec.bpmn._20100524.model.ObjectFactory;
 public class BpmnObjectFactory extends ObjectFactory {
 
     @Override
-    public CanoniserDefinitions createDefinitions() {
+    public CanoniserDefinitions createTDefinitions() {
         return new CanoniserDefinitions();
     }
 }

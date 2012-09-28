@@ -15,6 +15,7 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.namespace.QName;
+import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -46,7 +47,7 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
-import org.omg.spec.bpmn._20100524.model.Definitions;
+import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
@@ -180,20 +181,20 @@ public class CanoniserDefinitionsTest {
         // Inspect the test instance
         assertNotNull(definitions);
 
-        assertNotNull(definitions.getRootElements());
-        assertEquals(1, definitions.getRootElements().size());
-        assertTrue(definitions.getRootElements().get(0).getValue() instanceof TProcess);
-        assertEquals(10, ((TProcess) definitions.getRootElements().get(0).getValue()).getFlowElements().size());
+        assertNotNull(definitions.getRootElement());
+        assertEquals(1, definitions.getRootElement().size());
+        assertTrue(definitions.getRootElement().get(0).getValue() instanceof TProcess);
+        assertEquals(10, ((TProcess) definitions.getRootElement().get(0).getValue()).getFlowElement().size());
 
-        assertNotNull(definitions.getBPMNDiagrams());
-        assertEquals(1, definitions.getBPMNDiagrams().size());
-        assertEquals("sid-db4fcdfb-67a0-4ef0-9a45-3167bfd77e4f", definitions.getBPMNDiagrams().get(0).getId());
-        assertNotNull(definitions.getBPMNDiagrams().get(0).getBPMNPlane());
-        assertEquals("sid-69a9f6ba-9421-44ee-a6fb-f50fc5e881e4", definitions.getBPMNDiagrams().get(0).getBPMNPlane().getId());
+        assertNotNull(definitions.getBPMNDiagram());
+        assertEquals(1, definitions.getBPMNDiagram().size());
+        assertEquals("sid-db4fcdfb-67a0-4ef0-9a45-3167bfd77e4f", definitions.getBPMNDiagram().get(0).getId());
+        assertNotNull(definitions.getBPMNDiagram().get(0).getBPMNPlane());
+        assertEquals("sid-69a9f6ba-9421-44ee-a6fb-f50fc5e881e4", definitions.getBPMNDiagram().get(0).getBPMNPlane().getId());
         assertEquals(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "sid-68aefed9-f32a-4503-895c-b26b0ee8dded"),
-                     definitions.getBPMNDiagrams().get(0).getBPMNPlane().getBpmnElement());
-        assertNotNull(definitions.getBPMNDiagrams().get(0).getBPMNPlane().getDiagramElements());
-        assertEquals(10, definitions.getBPMNDiagrams().get(0).getBPMNPlane().getDiagramElements().size());
+                     definitions.getBPMNDiagram().get(0).getBPMNPlane().getBpmnElement());
+        assertNotNull(definitions.getBPMNDiagram().get(0).getBPMNPlane().getDiagramElement());
+        assertEquals(10, definitions.getBPMNDiagram().get(0).getBPMNPlane().getDiagramElement().size());
 
         // Validate and serialize the canonised documents to be inspected offline
         CanoniserResult result = definitions.canonise();
@@ -596,6 +597,16 @@ public class CanoniserDefinitionsTest {
         // not yet implemented
     }
 
+    /**
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Subprocess.bpmn20.xml">subprocess</a>.
+     *
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Subprocess.bpmn20.svg"/></div>
+     */
+    @Test
+    public void testCanoniseSubprocess() throws Exception {
+        testCanonise("Subprocess");
+    }
+
     // Decanonisation tests
 
     /**
@@ -607,7 +618,7 @@ public class CanoniserDefinitionsTest {
      *     minus the respective <code>.cpf</code>, <code>.anf</code> and <code>.bpmn.xml</code> file extensions
      * @return the decanonised BPMN model
      */
-    private final CanoniserDefinitions testDecanonise(final String filename) throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    private final CanoniserDefinitions testDecanonise(final String filename) throws CanoniserException, FileNotFoundException, JAXBException, SAXException, TransformerException {
 
         // Read the CPF source file
         Unmarshaller cpfUnmarshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT).createUnmarshaller();
@@ -632,7 +643,7 @@ public class CanoniserDefinitionsTest {
         assertEquals(cpf.getUri(), anf.getUri());
         
         // Obtain the test instance
-        CanoniserDefinitions definitions = new CanoniserDefinitions(cpf, anf);
+        CanoniserDefinitions definitions = CanoniserDefinitions.correctFlowNodeRefs(new CanoniserDefinitions(cpf, anf), new BpmnObjectFactory());
 
         // Serialize the test instance for offline inspection
         Marshaller marshaller = context.createMarshaller();
@@ -653,7 +664,7 @@ public class CanoniserDefinitionsTest {
      */
     @Ignore
     @Test
-    public final void testDecanoniseBasic() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    public final void testDecanoniseBasic() throws Exception {
 
         // Obtain the test instance
         CanoniserDefinitions definitions = testDecanonise("Basic");
@@ -661,37 +672,37 @@ public class CanoniserDefinitionsTest {
         // Inspect the test instance
         assertNotNull(definitions);
 
-        assertNotNull(definitions.getRootElements());
-        assertEquals(1, definitions.getRootElements().size());
+        assertNotNull(definitions.getRootElement());
+        assertEquals(1, definitions.getRootElement().size());
 
         // Process c6
-        assertEquals(TProcess.class, definitions.getRootElements().get(0).getValue().getClass());
-        TProcess c6 = (TProcess) definitions.getRootElements().get(0).getValue();
+        assertEquals(TProcess.class, definitions.getRootElement().get(0).getValue().getClass());
+        TProcess c6 = (TProcess) definitions.getRootElement().get(0).getValue();
         assertEquals("c6", c6.getId());
 
         // Expect 5 flow elements
-        assertEquals(5, c6.getFlowElements().size());
+        assertEquals(5, c6.getFlowElement().size());
 
         // Start event c1
-        TStartEvent c1 = (TStartEvent) c6.getFlowElements().get(2).getValue();
+        TStartEvent c1 = (TStartEvent) c6.getFlowElement().get(2).getValue();
         assertEquals("c1", c1.getId());
 
         // Task c2
-        TTask c2 = (TTask) c6.getFlowElements().get(3).getValue();
+        TTask c2 = (TTask) c6.getFlowElement().get(3).getValue();
         assertEquals("c2", c2.getId());
 
         // End event c1
-        TEndEvent c3 = (TEndEvent) c6.getFlowElements().get(4).getValue();
+        TEndEvent c3 = (TEndEvent) c6.getFlowElement().get(4).getValue();
         assertEquals("c3", c3.getId());
 
         // Sequence flow c4
-        TSequenceFlow c4 = (TSequenceFlow) c6.getFlowElements().get(0).getValue();
+        TSequenceFlow c4 = (TSequenceFlow) c6.getFlowElement().get(0).getValue();
         assertEquals("c4", c4.getId());
         assertEquals(c1, c4.getSourceRef());
         assertEquals(c2, c4.getTargetRef());
 
         // Sequence flow c5
-        TSequenceFlow c5 = (TSequenceFlow) c6.getFlowElements().get(1).getValue();
+        TSequenceFlow c5 = (TSequenceFlow) c6.getFlowElement().get(1).getValue();
         assertEquals("c5", c5.getId());
         assertEquals(c2, c5.getSourceRef());
         assertEquals(c3, c5.getTargetRef());
@@ -710,9 +721,8 @@ public class CanoniserDefinitionsTest {
     /**
      * Test decanonisation of <code>Pool.cpf</code> and <code>Pool.anf</code>.
      */
-    @Ignore
     @Test
-    public final void testDecanonisePool() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    public final void testDecanonisePool() throws Exception {
 
         // Obtain the test instance
         CanoniserDefinitions definitions = testDecanonise("Pool");
@@ -721,9 +731,8 @@ public class CanoniserDefinitionsTest {
     /**
      * Test decanonisation of <code>TwoLanes.cpf</code> and <code>TwoLanes.anf</code>.
      */
-    @Ignore
     @Test
-    public final void testDecanoniseTwoLanes() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    public final void testDecanoniseTwoLanes() throws Exception {
 
         // Obtain the test instance
         CanoniserDefinitions definitions = testDecanonise("TwoLanes");
@@ -732,9 +741,8 @@ public class CanoniserDefinitionsTest {
     /**
      * Test decanonisation of <code>TwoPools.cpf</code> and <code>TwoPools.anf</code>.
      */
-    @Ignore
     @Test
-    public final void testDecanoniseTwoPools() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    public final void testDecanoniseTwoPools() throws Exception {
 
         // Obtain the test instance
         CanoniserDefinitions definitions = testDecanonise("TwoPools");
