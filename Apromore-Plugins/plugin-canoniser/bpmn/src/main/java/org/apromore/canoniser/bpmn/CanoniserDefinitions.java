@@ -8,10 +8,21 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
+import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.namespace.QName;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMResult;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 // Local packages
 import org.apromore.anf.AnnotationsType;
@@ -50,13 +61,10 @@ import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
 import org.omg.spec.bpmn._20100524.di.BPMNShape;
-import org.omg.spec.bpmn._20100524.model.Definitions;
-import org.omg.spec.bpmn._20100524.model.Lane;
-import org.omg.spec.bpmn._20100524.model.LaneSet;
-import org.omg.spec.bpmn._20100524.model.Participant;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
 import org.omg.spec.bpmn._20100524.model.TDataObject;
+import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TEvent;
 import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
@@ -64,11 +72,15 @@ import org.omg.spec.bpmn._20100524.model.TExpression;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
+import org.omg.spec.bpmn._20100524.model.TLane;
+import org.omg.spec.bpmn._20100524.model.TLaneSet;
 import org.omg.spec.bpmn._20100524.model.TParallelGateway;
+import org.omg.spec.bpmn._20100524.model.TParticipant;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TRootElement;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 import org.omg.spec.bpmn._20100524.model.TStartEvent;
+import org.omg.spec.bpmn._20100524.model.TSubProcess;
 import org.omg.spec.bpmn._20100524.model.TTask;
 import org.omg.spec.dd._20100524.dc.Bounds;
 import org.omg.spec.dd._20100524.dc.Point;
@@ -92,7 +104,7 @@ import org.omg.spec.dd._20100524.di.DiagramElement;
  * @since 0.3
  */
 @XmlRootElement(namespace = "http://www.omg.org/spec/BPMN/20100524/MODEL", name = "definitions")
-public class CanoniserDefinitions extends Definitions {
+public class CanoniserDefinitions extends TDefinitions {
 
     /**
      * Logger.  Named after the class.
@@ -192,8 +204,8 @@ public class CanoniserDefinitions extends Definitions {
         */
 
         // Assume there will be pools, all of which belong to a single collaboration
-        TCollaboration collaboration = new TCollaboration();
-        getRootElements().add(factory.createCollaboration(collaboration));
+        TCollaboration collaboration = factory.createTCollaboration();
+        getRootElement().add(factory.createCollaboration(collaboration));
 
         // Translate CPF Nets as BPMN Processes
         for (final NetType net : cpf.getNet()) {
@@ -201,42 +213,42 @@ public class CanoniserDefinitions extends Definitions {
             // Add the BPMN Process element
             final TProcess process = new TProcess();
             process.setId(bpmnIdFactory.newId(net.getId()));
-            getRootElements().add(factory.createProcess(process));
+            getRootElement().add(factory.createProcess(process));
 
             // Add the BPMN Participant element
-            Participant participant = new Participant();
+            TParticipant participant = new TParticipant();
             participant.setId(bpmnIdFactory.newId("participant"));
             participant.setName(process.getName());  // TODO - use an extension element for pool name if it exists
             participant.setProcessRef(new QName(BPMN_NS, process.getId()));
-            collaboration.getParticipants().add(participant);
+            collaboration.getParticipant().add(participant);
 
             // Add the CPF ResourceType lattice as a BPMN Lane hierarchy
-            LaneSet laneSet = new LaneSet();
+            TLaneSet laneSet = new TLaneSet();
             for (ResourceTypeType resourceType : cpf.getResourceType()) {
                 CpfResourceTypeType cpfResourceType = (CpfResourceTypeType) resourceType;
                 if (cpfResourceType.getGeneralizationRefs().isEmpty()) {
-                     Lane lane = new Lane();
+                     TLane lane = new TLane();
                      lane.setId(bpmnIdFactory.newId(cpfResourceType.getId()));
                      idMap.put(cpfResourceType.getId(), lane);
                      addChildLanes(lane, cpf.getResourceType(), bpmnIdFactory, idMap);
-                     laneSet.getLanes().add(lane);
+                     laneSet.getLane().add(lane);
                 }
             }
-            if (!laneSet.getLanes().isEmpty()) {
-                process.getLaneSets().add(laneSet);
+            if (!laneSet.getLane().isEmpty()) {
+                process.getLaneSet().add(laneSet);
             }
 
             // Add the CPF Edges as BPMN SequenceFlows
             for (EdgeType edge : net.getEdge()) {
                 TSequenceFlow sequenceFlow = createSequenceFlow(edge, bpmnIdFactory, idMap, flowWithoutSourceRefMap, flowWithoutTargetRefMap);
                 edgeMap.put(edge.getId(), sequenceFlow);
-                process.getFlowElements().add(factory.createSequenceFlow(sequenceFlow));
+                process.getFlowElement().add(factory.createSequenceFlow(sequenceFlow));
             }
 
             // Add the CPF Nodes as BPMN FlowNodes
             for (NodeType node : net.getNode()) {
                 JAXBElement<? extends TFlowNode> flowNode = createFlowNode(node, bpmnIdFactory, idMap, factory);
-                process.getFlowElements().add(flowNode);
+                process.getFlowElement().add(flowNode);
 
                 // Fill any BPMN @sourceRef or @targetRef attributes referencing this node
                 if (flowWithoutSourceRefMap.containsKey(node.getId())) {
@@ -251,8 +263,9 @@ public class CanoniserDefinitions extends Definitions {
                 // Populate the lane flowNodeRefs
                 if (node instanceof WorkType) {
                     for (ResourceTypeRefType resourceTypeRef : ((WorkType) node).getResourceTypeRef()) {
-                        Lane lane = (Lane) idMap.get(resourceTypeRef.getResourceTypeId());
-                        lane.getFlowNodeRefs().add(flowNode.getValue());  // TODO - you will regret trying to fix this typecast
+                        TLane lane = (TLane) idMap.get(resourceTypeRef.getResourceTypeId());
+                        JAXBElement<Object> jeo = (JAXBElement) flowNode;
+                        lane.getFlowNodeRef().add((JAXBElement) flowNode);
                     }
                 }
             }
@@ -268,32 +281,80 @@ public class CanoniserDefinitions extends Definitions {
 
         // Translate any ANF annotations into a BPMNDI diagram element
         if (anf != null) {
-            getBPMNDiagrams().add(createBpmnDiagram(anf, bpmnIdFactory, idMap, edgeMap));
+            getBPMNDiagram().add(createBpmnDiagram(anf, bpmnIdFactory, idMap, edgeMap));
         }
     }
 
     /**
-     * Recursively populate a BPMN {@link Lane}'s child lanes.
+     * Workaround for incorrect marshalling of {@link TLane#getFlowNodeRef} by JAXB.
+     *
+     * A flow node reference on a lane ought to be serialized as
+     * <pre>
+     * <lane>
+     *   <flowNodeRef>id-123</flowNodeRef>
+     * </lane>
+     * </pre>
+     * but instead they end up serialized as
+     * <pre>
+     * <lane>
+     *   <task id="id-123"/>
+     * </lane>
+     * </pre>
+     * This method applies an XSLT transform to correct things.
+     *
+     * @param definitions  the buggy JAXB document
+     * @throws JAXBException if <var>definitions</var> can't be marshalled to XML or unmarshalled back
+     * @throws TransformerException  if the XSLT transformation fails
+     * @return corrected JAXB document
+     */
+    public static CanoniserDefinitions correctFlowNodeRefs(CanoniserDefinitions definitions, /*org.apromore.cpf.ObjectFactory*/ BpmnObjectFactory factory)
+        throws JAXBException, TransformerException {
+
+        JAXBContext context = JAXBContext.newInstance(factory.getClass(),
+                                                      org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
+                                                      org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
+                                                      org.omg.spec.dd._20100524.dc.ObjectFactory.class,
+                                                      org.omg.spec.dd._20100524.di.ObjectFactory.class);
+
+        // Marshal the BPMN into a DOM tree
+        DOMResult intermediateResult = new DOMResult();
+        Marshaller marshaller = context.createMarshaller();
+        marshaller.marshal(factory.createDefinitions(definitions), intermediateResult);
+
+        // Apply the XSLT transformation, generating a new DOM tree
+        TransformerFactory transformerFactory = TransformerFactory.newInstance();
+        Transformer transformer = transformerFactory.newTransformer(new StreamSource(ClassLoader.getSystemResourceAsStream("xsd/fix-flowNodeRef.xsl")));
+        DOMSource finalSource = new DOMSource(intermediateResult.getNode());
+        DOMResult finalResult = new DOMResult();
+        transformer.transform(finalSource, finalResult);
+
+        // Unmarshal back to JAXB
+        Object def2 = context.createUnmarshaller().unmarshal(finalResult.getNode());
+        return ((JAXBElement<CanoniserDefinitions>) def2).getValue();
+    }
+
+    /**
+     * Recursively populate a BPMN {@link TLane}'s child lanes.
      *
      * TODO - circular resource type chains cause non-termination!  Need to check for and prevent this.
      */
-    private void addChildLanes(Lane parentLane,
+    private void addChildLanes(TLane parentLane,
                                List<ResourceTypeType> resourceTypeList,
                                IdFactory bpmnIdFactory,
                                Map<String, TBaseElement> idMap) {
 
-        LaneSet laneSet = new LaneSet();
+        TLaneSet laneSet = new TLaneSet();
         for (ResourceTypeType resourceType : resourceTypeList) {
             CpfResourceTypeType cpfResourceType = (CpfResourceTypeType) resourceType;
             if (cpfResourceType.getGeneralizationRefs().contains(parentLane.getId())) {
-                Lane childLane = new Lane();
+                TLane childLane = new TLane();
                 childLane.setId(bpmnIdFactory.newId(cpfResourceType.getId()));
                 idMap.put(cpfResourceType.getId(), childLane);
                 addChildLanes(childLane, resourceTypeList, bpmnIdFactory, idMap);
-                laneSet.getLanes().add(childLane);
+                laneSet.getLane().add(childLane);
             }
         }
-        if (!laneSet.getLanes().isEmpty()) {
+        if (!laneSet.getLane().isEmpty()) {
             parentLane.setChildLaneSet(laneSet);
         }
     }
@@ -304,14 +365,14 @@ public class CanoniserDefinitions extends Definitions {
      * @param node  a CPF node
      * @param bpmnIdFactory  generator for IDs unique within the BPMN document
      * @param idMap  map from CPF @cpfId node identifiers to BPMN ids
-     * @param factory  used to wrap BPMN elements in {@link JAXBElement}s.
+     * @param factory  the created object will have come from this factory
      * @return a {@link TFlowElement} instance, wrapped in a {@link JAXBElement}
      * @throws CanoniserException if <var>node</var> isn't an event or a task
      */
     private JAXBElement<? extends TFlowNode> createFlowNode(final NodeType node,
-                                                           final IdFactory bpmnIdFactory,
-                                                           final Map<String, TBaseElement> idMap,
-                                                           final BpmnObjectFactory factory) throws CanoniserException {
+                                                            final IdFactory bpmnIdFactory,
+                                                            final Map<String, TBaseElement> idMap,
+                                                            final BpmnObjectFactory factory) throws CanoniserException {
 
         if (node instanceof EventType) {
             // Count the incoming and outgoing edges to determine whether this is a start, end, or intermediate event
@@ -515,7 +576,7 @@ public class CanoniserDefinitions extends Definitions {
                         bounds.setY(graphics.getPosition().get(0).getY().doubleValue());
                         shape.setBounds(bounds);
 
-                        bpmnPlane.getDiagramElements().add(diObjectFactory.createBPMNShape(shape));
+                        bpmnPlane.getDiagramElement().add(diObjectFactory.createBPMNShape(shape));
 
                     } else if (edgeMap.containsKey(annotation.getCpfId())) {
                         BPMNEdge edge = new BPMNEdge();
@@ -535,10 +596,10 @@ public class CanoniserDefinitions extends Definitions {
                             Point point = new Point();
                             point.setX(position.getX().doubleValue());
                             point.setY(position.getY().doubleValue());
-                            edge.getWaypoints().add(point);
+                            edge.getWaypoint().add(point);
                         }
 
-                        bpmnPlane.getDiagramElements().add(diObjectFactory.createBPMNEdge(edge));
+                        bpmnPlane.getDiagramElement().add(diObjectFactory.createBPMNEdge(edge));
                     } else {
                         throw new RuntimeException(
                             new CanoniserException("CpfId \"" + annotation.getCpfId() + "\" in ANF document not found in CPF document")
@@ -576,10 +637,10 @@ public class CanoniserDefinitions extends Definitions {
         final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap = new HashMap<TFlowNode, NodeType>();
 
         // Map BPMN flow nodes to the CPF lanes containing them
-        final Map<TFlowNode, Lane> laneMap = new HashMap<TFlowNode, Lane>();
+        final Map<TFlowNode, TLane> laneMap = new HashMap<TFlowNode, TLane>();
 
         // Traverse processes
-        for (JAXBElement<? extends TRootElement> rootElement : getRootElements()) {
+        for (JAXBElement<? extends TRootElement> rootElement : getRootElement()) {
             rootElement.getValue().accept(new org.omg.spec.bpmn._20100524.model.BaseVisitor() {
                 @Override
                 public void visit(final TProcess process) {
@@ -599,9 +660,9 @@ public class CanoniserDefinitions extends Definitions {
                     cpf.getNet().add(net);
 
                     // Generate resource types for each pool and lane
-                    for (JAXBElement<? extends TRootElement> rootElement2 : getRootElements()) {
+                    for (JAXBElement<? extends TRootElement> rootElement2 : getRootElement()) {
                         if (rootElement2.getValue() instanceof TCollaboration) {
-                            for (Participant participant : ((TCollaboration) rootElement2.getValue()).getParticipants()) {
+                            for (TParticipant participant : ((TCollaboration) rootElement2.getValue()).getParticipant()) {
                                 if (process.getId().equals(participant.getProcessRef().getLocalPart())) {
                                     addPools(participant, process, cpf, cpfIdFactory);
                                 }
@@ -609,7 +670,7 @@ public class CanoniserDefinitions extends Definitions {
                         }
                     }
 
-                    for (JAXBElement<? extends TFlowElement> flowElement : process.getFlowElements()) {
+                    for (JAXBElement<? extends TFlowElement> flowElement : process.getFlowElement()) {
                         flowElement.getValue().accept(new org.omg.spec.bpmn._20100524.model.BaseVisitor() {
                             @Override
                             public void visit(final TDataObject dataObject) {
@@ -692,14 +753,6 @@ public class CanoniserDefinitions extends Definitions {
                             }
 
                             @Override
-                            public void visit(final TStartEvent startEvent) {
-                                EventType event = new EventType();
-                                populateFlowNode(event, startEvent);
-
-                                net.getNode().add(event);
-                            }
-
-                            @Override
                             public void visit(final TSequenceFlow sequenceFlow) {
                                 EdgeType edge = new EdgeType();
                                 populateFlowElement(edge, sequenceFlow);
@@ -723,6 +776,32 @@ public class CanoniserDefinitions extends Definitions {
                                 edge.setTargetId(((TFlowNode) sequenceFlow.getTargetRef()).getId());  // TODO - process through cpfIdFactory
 
                                 net.getEdge().add(edge);
+                            }
+
+                            @Override
+                            public void visit(final TStartEvent startEvent) {
+                                EventType event = new EventType();
+                                populateFlowNode(event, startEvent);
+
+                                net.getNode().add(event);
+                            }
+
+                            @Override
+                            public void visit(final TSubProcess subprocess) {
+                                NetType subnet = new NetType();
+                                subnet.setId("subnet");
+
+                                TaskType cpfTask = new TaskType();
+                                populateFlowNode(cpfTask, subprocess);
+                                cpfTask.setSubnetId(subnet.getId());
+
+                                net.getNode().add(cpfTask);
+                                cpf.getNet().add(subnet);
+
+                                // fake node to make subnet legal
+                                TaskType fake = new TaskType();
+                                fake.setId("fake");
+                                subnet.getNode().add(fake);
                             }
 
                             @Override
@@ -805,12 +884,12 @@ public class CanoniserDefinitions extends Definitions {
                  * @param cpf  the CPF document to populate
                  * @param cpfIdFactory  generator of identifiers for pools and lanes
                  */
-                private void addPools(final Participant          participant,
+                private void addPools(final TParticipant         participant,
                                       final TProcess             process,
                                       final CanonicalProcessType cpf,
                                       final IdFactory            cpfIdFactory) {
 
-                    for (LaneSet laneSet : process.getLaneSets()) {
+                    for (TLaneSet laneSet : process.getLaneSet()) {
 
                         // Create a pool
                         ResourceTypeType poolResourceType = new ResourceTypeType();
@@ -835,13 +914,13 @@ public class CanoniserDefinitions extends Definitions {
                  * @param cpfIdFactory  generator of identifiers for pools and lanes
                  * @return the CPF ids of all the added lanes (but not their sublanes)
                  */
-                private Set<String> addLanes(final LaneSet              laneSet,
+                private Set<String> addLanes(final TLaneSet             laneSet,
                                              final CanonicalProcessType cpf,
                                              final IdFactory            cpfIdFactory) {
 
                     Set<String> specializationIds = new HashSet<String>();  // TODO - diamond operator
 
-                    for (Lane lane : laneSet.getLanes()) {
+                    for (TLane lane : laneSet.getLane()) {
                         ResourceTypeType laneResourceType = new ResourceTypeType();
 
                         // Add the resource type to the CPF model
@@ -852,11 +931,11 @@ public class CanoniserDefinitions extends Definitions {
 
                         // Populate laneMap so we'll know later on which lane each element belongs to
                         /*
-                        for(TFlowNode flowNode : lane.getFlowNodeRefs()) {
+                        for(TFlowNode flowNode : lane.getFlowNodeRef()) {
                             laneMap.put(flowNode, lane);
                         }
                         */
-                        List list = lane.getFlowNodeRefs();
+                        List list = lane.getFlowNodeRef();
                         for (Object object : list) {
                             JAXBElement je = (JAXBElement) object;
                             Object value = je.getValue();
@@ -883,7 +962,7 @@ public class CanoniserDefinitions extends Definitions {
                  */
                 private void unwindLaneMap(final IdFactory cpfIdFactory) {
 
-                    for (Map.Entry<TFlowNode, Lane> entry : laneMap.entrySet()) {
+                    for (Map.Entry<TFlowNode, TLane> entry : laneMap.entrySet()) {
                         if (!bpmnFlowNodeToCpfNodeMap.containsKey(entry.getKey())) {
                             throw new RuntimeException(
                                 new CanoniserException("Lane " + entry.getValue().getId() + " contains " +
@@ -919,12 +998,12 @@ public class CanoniserDefinitions extends Definitions {
 
         final List<AnnotationsType> anfs = new ArrayList<AnnotationsType>();
 
-        for (BPMNDiagram diagram : getBPMNDiagrams()) {
-            //logger.info("Annotating a diagram " + ((Plane) diagram.getBPMNPlane()).getDiagramElements());
+        for (BPMNDiagram diagram : getBPMNDiagram()) {
+            //logger.info("Annotating a diagram " + ((Plane) diagram.getBPMNPlane()).getDiagramElement());
 
             final AnnotationsType anf = new AnnotationsType();
 
-            for (JAXBElement<? extends DiagramElement> element : diagram.getBPMNPlane().getDiagramElements()) {
+            for (JAXBElement<? extends DiagramElement> element : diagram.getBPMNPlane().getDiagramElement()) {
 
                 // Generator for identifiers scoped to this ANF document
                 final IdFactory anfIdFactory = new IdFactory();
