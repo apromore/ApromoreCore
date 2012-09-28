@@ -67,6 +67,8 @@ public final class ExtensionUtils {
 
     public static final String ALLOCATE = "allocate";
 
+    public static final String START = "start";
+
 
     private static JAXBContext initYAWLContext() {
         try {

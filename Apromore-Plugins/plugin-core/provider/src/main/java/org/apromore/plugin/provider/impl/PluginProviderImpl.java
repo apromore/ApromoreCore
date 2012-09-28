@@ -26,98 +26,96 @@ import javax.annotation.Resource;
 import org.apromore.plugin.Plugin;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.apromore.plugin.provider.PluginProvider;
+import org.apromore.plugin.provider.PluginProviderHelper;
 import org.springframework.stereotype.Service;
 
 /**
- * Default OSGi based implementation of the @link PluginProvider.
+ * Default OSGi based implementation of the {@link PluginProvider}
  *
  * @author Felix Mannhardt (Bonn-Rhein-Sieg University oAS)
  */
 @Service
 public class PluginProviderImpl implements PluginProvider {
 
-	/**
-	 * Will be injected by Eclipse Blueprint OSGi Framework at runtime
-	 */
-	@Resource
-	private List<Plugin> pluginList;
+    /**
+     * Will be injected by Eclipse Blueprint OSGi Framework at runtime
+     */
+    @Resource
+    private List<Plugin> pluginList;
 
-	// Getter and Setter need to be public for DI
+    // Getter and Setter need to be public for DI
 
-	public List<Plugin> getPluginList() {
-		return pluginList;
-	}
+    public List<Plugin> getPluginList() {
+        return pluginList;
+    }
 
-	public void setPluginList(final List<Plugin> pluginList) {
-		this.pluginList = pluginList;
-	}
+    public void setPluginList(final List<Plugin> pluginList) {
+        this.pluginList = pluginList;
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.apromore.plugin.provider.PluginProvider#listAll()
-	 */
-	@Override
-	public Collection<Plugin> listAll() {
-		return Collections.unmodifiableCollection(getPluginList());
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apromore.plugin.provider.PluginProvider#listAll()
+     */
+    @Override
+    public Collection<Plugin> listAll() {
+        return Collections.unmodifiableCollection(getPluginList());
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.apromore.plugin.provider.PluginProvider#listByType(java.lang.String)
-	 */
-	@Override
-	public Collection<Plugin> listByType(final String type) {
-		return Collections.unmodifiableList(findAllPlugin(null, type, null));
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apromore.plugin.provider.PluginProvider#listByType(java.lang.String)
+     */
+    @Override
+    public Collection<Plugin> listByType(final String type) {
+        return Collections.unmodifiableList(findAllPlugin(null, type, null));
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.apromore.plugin.provider.PluginProvider#listByName(java.lang.String)
-	 */
-	@Override
-	public Collection<Plugin> listByName(final String name) {
-		return Collections.unmodifiableList(findAllPlugin(name, null, null));
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apromore.plugin.provider.PluginProvider#listByName(java.lang.String)
+     */
+    @Override
+    public Collection<Plugin> listByName(final String name) {
+        return Collections.unmodifiableList(findAllPlugin(name, null, null));
+    }
 
-	@Override
-	public Plugin findByName(final String name) throws PluginNotFoundException {
-		return findByNameAndVersion(name, null);
-	}
+    @Override
+    public Plugin findByName(final String name) throws PluginNotFoundException {
+        return findByNameAndVersion(name, null);
+    }
 
-	/*
-	 * (non-Javadoc)
-	 *
-	 * @see org.apromore.plugin.provider.PluginProvider#findByNameAndVersion(java .lang.String, java.lang.String)
-	 */
-	@Override
-	public Plugin findByNameAndVersion(final String name, final String version) throws PluginNotFoundException {
-		final List<Plugin> resultList = findAllPlugin(name, null, version);
-		if (!resultList.isEmpty()) {
-			// Return first one found
-			return resultList.get(0);
-		}
-		throw new PluginNotFoundException("Could not find plugin with name: " + ((name != null) ? name : "null") + " version: "
-				+ ((version != null) ? version : "null"));
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apromore.plugin.provider.PluginProvider#findByNameAndVersion(java .lang.String, java.lang.String)
+     */
+    @Override
+    public Plugin findByNameAndVersion(final String name, final String version) throws PluginNotFoundException {
+        final List<Plugin> resultList = findAllPlugin(name, null, version);
+        if (!resultList.isEmpty()) {
+            // Return first one found
+            return resultList.get(0);
+        }
+        throw new PluginNotFoundException("Could not find plugin with name: " + ((name != null) ? name : "null") + " version: "
+                + ((version != null) ? version : "null"));
+    }
 
-	private List<Plugin> findAllPlugin(final String name, final String type, final String version) {
+    private List<Plugin> findAllPlugin(final String name, final String type, final String version) {
 
-		final List<Plugin> resultList = new ArrayList<Plugin>();
+        final List<Plugin> resultList = new ArrayList<Plugin>();
 
-		for (final Plugin c : getPluginList()) {
-			if (compareNullable(type, c.getType()) && compareNullable(name, c.getName()) && compareNullable(version, c.getVersion())) {
-				resultList.add(c);
-			}
-		}
+        for (final Plugin c : getPluginList()) {
+            if (PluginProviderHelper.compareNullable(type, c.getType()) && PluginProviderHelper.compareNullable(name, c.getName())
+                    && PluginProviderHelper.compareNullable(version, c.getVersion())) {
+                resultList.add(c);
+            }
+        }
 
-		return resultList;
-	}
-
-	private boolean compareNullable(final String expectedType, final String actualType) {
-		return expectedType == null ? true : expectedType.equals(actualType);
-	}
+        return resultList;
+    }
 
 }

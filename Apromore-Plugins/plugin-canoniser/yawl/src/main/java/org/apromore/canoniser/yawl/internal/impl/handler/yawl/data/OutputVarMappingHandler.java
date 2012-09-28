@@ -31,7 +31,7 @@ import org.slf4j.LoggerFactory;
  */
 public class OutputVarMappingHandler extends BaseVarMappingHandler {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(OutputVarMappingHandler.class.getName());
+    private static final Logger LOGGER = LoggerFactory.getLogger(OutputVarMappingHandler.class);
 
     /*
      * (non-Javadoc)

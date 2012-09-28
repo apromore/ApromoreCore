@@ -12,6 +12,8 @@
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical.annotations;
 
 import java.math.BigInteger;
+import java.text.NumberFormat;
+import java.text.ParseException;
 
 import javax.xml.bind.JAXBElement;
 
@@ -102,7 +104,7 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
     }
 
     private JAXBElement<LayoutFlowFactsType> createDefaultFlowLayout(final ExternalNetElementType sourceElement,
-            final ExternalNetElementType targetElement, final EdgeType edge) {
+            final ExternalNetElementType targetElement, final EdgeType edge) throws CanoniserException {
 
         final LayoutFlowFactsType flowLayout = YAWL_FACTORY.createLayoutFlowFactsType();
 
@@ -125,22 +127,32 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
 
         // Set default sizes
         final LayoutPointsType points = YAWL_FACTORY.createLayoutPointsType();
-        points.getValue().add(createPoint(edge.getSourceId()));
-        points.getValue().add(createPoint(edge.getTargetId()));
+        try {
+            points.getValue().add(createPoint(edge.getSourceId()));
+            points.getValue().add(createPoint(edge.getTargetId()));
+        } catch (ParseException e) {
+            throw new CanoniserException("Could not convert edge location", e);
+        }
 
         attributes.getAutosizeOrBackgroundColorOrBendable().add(YAWL_FACTORY.createLayoutAttributesFactsTypePoints(points));
 
         return YAWL_FACTORY.createLayoutNetFactsTypeFlow(flowLayout);
     }
 
-    private LayoutPointType createPoint(final String nodeId) {
+    private LayoutPointType createPoint(final String nodeId) throws ParseException {
         final LayoutPointType point = YAWL_FACTORY.createLayoutPointType();
 
         final ElementInfo elementInfo = getContext().getElementInfo(nodeId);
         final LayoutRectangleType elementSize = elementInfo.getElementSize();
 
-        point.setX(elementSize.getX());
-        point.setY(elementSize.getY());
+        NumberFormat nf = getContext().getYawlNumberFormat();
+        int width = nf.parse(elementSize.getW()).intValue();
+        int height = nf.parse(elementSize.getH()).intValue();
+        double x = nf.parse(elementSize.getX()).doubleValue();
+        double y = nf.parse(elementSize.getY()).doubleValue();
+
+        point.setX(nf.format(x + width));
+        point.setY(nf.format(y + (height / 2)));
 
         return point;
     }

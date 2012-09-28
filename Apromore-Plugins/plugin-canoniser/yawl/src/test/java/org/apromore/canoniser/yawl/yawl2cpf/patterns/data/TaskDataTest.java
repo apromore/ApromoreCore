@@ -3,15 +3,12 @@ package org.apromore.canoniser.yawl.yawl2cpf.patterns.data;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 import java.util.List;
 
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.canoniser.yawl.yawl2cpf.patterns.BasePatternTest;
-import org.apromore.cpf.CPFSchema;
-import org.apromore.cpf.ExpressionType;
 import org.apromore.cpf.InputExpressionType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.ObjectRefType;
@@ -87,18 +84,6 @@ public class TaskDataTest extends BasePatternTest {
 
         OutputExpressionType invalidExpr2 = findExpression("t1", taskA.getOutputExpr());
         assertNull(invalidExpr2);
-    }
-
-    private <T extends ExpressionType> T findExpression(final String taskVariableName, final List<T> taskExpressions) {
-        for (T expr: taskExpressions) {
-            assertTrue(expr.getLanguage().equals(CPFSchema.EXPRESSION_LANGUAGE_XQUERY));
-            String[] splittedExpr = expr.getExpression().split("=");
-            assertTrue(splittedExpr.length == 2);
-            if (splittedExpr[0].trim().equals(taskVariableName)) {
-                return expr;
-            }
-        }
-        return null;
     }
 
     @Test

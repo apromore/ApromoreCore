@@ -18,7 +18,7 @@ public class RoleBasedDistributionTest extends BasePatternTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.BaseYAWL2CPFTest#getYAWLFile()
      */
     @Override
@@ -44,14 +44,12 @@ public class RoleBasedDistributionTest extends BasePatternTest {
         final ResourceTypeRefType resourceRef = taskA.getResourceTypeRef().get(0);
         assertEquals(null, resourceRef.getQualifier());
 
-        // Check Resource correct
-        for (final ResourceTypeType resource : process.getResourceType()) {
-            if (resource.getId().equals(resourceRef.getResourceTypeId())) {
-                assertEquals("RoleX", resource.getName());
-                assertEquals(0, resource.getSpecializationIds().size());
-            }
-        }
+        ResourceTypeType resource = getResourceById(process, resourceRef.getResourceTypeId());
+        assertEquals("RoleX", resource.getName());
+        assertEquals(0, resource.getSpecializationIds().size());
 
     }
+
+
 
 }
