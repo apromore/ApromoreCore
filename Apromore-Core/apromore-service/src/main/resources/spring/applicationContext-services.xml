@@ -107,4 +107,5 @@
     
     <!-- Plugin Beans (Workaround until OSGi is here) -->
     <bean id="CanoniserProvider" class="org.apromore.canoniser.provider.impl.SimpleSpringCanoniserProvider" />
+    
 </beans>

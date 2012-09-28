@@ -101,6 +101,9 @@
             <plugin>
                 <artifactId>maven-javadoc-plugin</artifactId>
                 <version>${maven-javadoc-plugin.version}</version>
+				<configuration>
+					 <excludePackageNames>org.apromore.canoniser*</excludePackageNames>
+				</configuration>
                 <inherited>true</inherited>
             </plugin>
             <plugin>
@@ -143,12 +146,14 @@
                     <xmlOutputDirectory>${basedir}/target/site</xmlOutputDirectory>
                 </configuration>
             </plugin>
+			<!-- Does not work with Java 7
             <plugin>
                 <groupId>org.codehaus.mojo</groupId>
                 <artifactId>javancss-maven-plugin</artifactId>
                 <version>${javancss-maven-plugin.version}</version>
                 <inherited>true</inherited>
             </plugin>
+			 -->
         </plugins>
     </reporting>
 

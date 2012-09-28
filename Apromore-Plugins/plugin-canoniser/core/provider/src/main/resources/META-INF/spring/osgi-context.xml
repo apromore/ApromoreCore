@@ -13,6 +13,6 @@
 	<context:component-scan base-package="org.apromore.canoniser.provider" />   
        
     <service ref="osgiCanoniserProviderImpl" interface="org.apromore.canoniser.provider.CanoniserProvider" />
-    <list id="canoniserList" interface="org.apromore.canoniser.Canoniser" availability="optional"  />
+    <list id="canoniserList" interface="org.apromore.canoniser.Canoniser" availability="optional" />
 	
 </beans:beans>

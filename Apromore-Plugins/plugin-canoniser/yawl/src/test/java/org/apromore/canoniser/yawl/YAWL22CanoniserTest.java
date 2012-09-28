@@ -2,13 +2,16 @@ package org.apromore.canoniser.yawl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedInputStream;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,34 +36,64 @@ public class YAWL22CanoniserTest {
     }
 
     @Test
-    public void testCanonise() throws CanoniserException, FileNotFoundException {
+    public void testCanoniseWithOrgData() throws CanoniserException, IOException {
         final YAWL22Canoniser c = new YAWL22Canoniser();
         final List<CanonicalProcessType> cList = new ArrayList<CanonicalProcessType>(0);
         final List<AnnotationsType> aList = new ArrayList<AnnotationsType>(0);
         final File file = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "YAWL/Patterns/ControlFlow/WPC3Synchronization.yawl");
         final File fileOrg = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "YAWL/OrganisationalData/YAWLDefaultOrgData.ybkp");
         for (PropertyType prop: c.getAvailableProperties()) {
-            if (prop.getName().equals("Read Organisational Data")) {
+            if (prop.getValueType().equals(InputStream.class)) {
                 prop.setValue(new FileInputStream(fileOrg));
             }
         }
-        c.canonise(new BufferedInputStream(new FileInputStream(file)), aList, cList);
+        BufferedInputStream nativeInput = new BufferedInputStream(new FileInputStream(file));
+        c.canonise(nativeInput, aList, cList);
+        nativeInput.close();
         assertEquals(1, cList.size());
         assertEquals(1, aList.size());
         assertNotNull(c.getPluginMessages());
     }
 
     @Test
-    public void testDeCanonise() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    public void testCanoniseWithoutOrgData() throws CanoniserException, IOException {
+        final YAWL22Canoniser c = new YAWL22Canoniser();
+        final List<CanonicalProcessType> cList = new ArrayList<CanonicalProcessType>(0);
+        final List<AnnotationsType> aList = new ArrayList<AnnotationsType>(0);
+        final File file = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "YAWL/Patterns/ControlFlow/WPC3Synchronization.yawl");
+        BufferedInputStream nativeInput = new BufferedInputStream(new FileInputStream(file));
+        c.canonise(nativeInput, aList, cList);
+        nativeInput.close();
+        assertEquals(1, cList.size());
+        assertEquals(1, aList.size());
+        assertNotNull(c.getPluginMessages());
+    }
+
+    @Test
+    public void testDeCanoniseWithOrgData() throws CanoniserException, JAXBException, SAXException, IOException {
         final YAWL22Canoniser c = new YAWL22Canoniser();
         final File file = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/FromYAWL/WPC4ExclusiveChoice.yawl.cpf");
         final ByteArrayOutputStream nativeOutput = new ByteArrayOutputStream();
+        final File fileOrg = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "YAWL/OrganisationalData/YAWLDefaultOrgData.ybkp");
+        ByteArrayOutputStream orgData = new ByteArrayOutputStream();
+        for (PropertyType prop: c.getAvailableProperties()) {
+            if (prop.getValueType().equals(OutputStream.class)) {
+                prop.setValue(orgData);
+            }
+            if (prop.getValueType().equals(InputStream.class)) {
+                prop.setValue(new FileInputStream(fileOrg));
+            }
+        }
         c.deCanonise(CPFSchema.unmarshalCanonicalFormat(new BufferedInputStream(new FileInputStream(file)), true).getValue(), null, nativeOutput);
         assertNotNull(nativeOutput);
         final SpecificationSetFactsType yawlFormat = YAWLSchema.unmarshalYAWLFormat(new ByteArrayInputStream(nativeOutput.toByteArray()), true)
                 .getValue();
         assertNotNull(yawlFormat);
         assertNotNull(c.getPluginMessages());
+        assertNotNull(orgData);
+        assertTrue(orgData.size() > 0);
+        orgData.close();
+        nativeOutput.close();
     }
 
 }

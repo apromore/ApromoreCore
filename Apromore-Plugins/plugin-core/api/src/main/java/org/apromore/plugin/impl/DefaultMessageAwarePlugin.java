@@ -59,7 +59,7 @@ public abstract class DefaultMessageAwarePlugin extends DefaultPlugin implements
      */
     private void initMessageList() {
         if (messageList == null) {
-            messageList = new ArrayList<>();
+            messageList = new ArrayList<PluginMessage>();
         }
     }
 

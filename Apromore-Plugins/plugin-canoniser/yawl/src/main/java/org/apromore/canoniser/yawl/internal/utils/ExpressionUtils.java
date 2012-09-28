@@ -48,6 +48,10 @@ public final class ExpressionUtils {
     private ExpressionUtils() {
     }
 
+    public static String buildObjectId(final String netId, final String varName) {
+        return netId + "_" + varName;
+    }
+
     public static String createExpressionReferencingNetObject(final String objectName, final NetType net) {
         return "/" + objectName;
     }

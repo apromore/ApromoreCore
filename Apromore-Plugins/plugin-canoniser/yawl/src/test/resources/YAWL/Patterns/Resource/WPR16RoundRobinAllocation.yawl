@@ -6,7 +6,7 @@
       <description>No description has been given.</description>
       <version>0.1</version>
       <persistent>false</persistent>
-      <identifier>UID_1a5f4832-96c9-4d8a-a487-fcd0209705bb</identifier>
+      <identifier>UID_8ed66ac3-d372-4c90-beed-8e2b4784d338</identifier>
     </metaData>
     <xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema" />
     <decomposition id="Net" isRootNet="true" xsi:type="NetFactsType">
@@ -76,7 +76,7 @@
             </offer>
             <allocate initiator="system">
               <allocator>
-                <name>RoundRobinByTime</name>
+                <name>RoundRobinByExperience</name>
               </allocator>
             </allocate>
             <start initiator="user" />

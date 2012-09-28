@@ -19,7 +19,7 @@ public class DirectDistributionTest extends BasePatternTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.BaseYAWL2CPFTest#getYAWLFile()
      */
     @Override
@@ -42,6 +42,7 @@ public class DirectDistributionTest extends BasePatternTest {
         final TaskType taskA = (TaskType) nodeA;
         // Only linked to distribution set
         assertEquals(1, taskA.getResourceTypeRef().size());
+
         final ResourceTypeRefType resourceRef = taskA.getResourceTypeRef().get(0);
         assertEquals(null, resourceRef.getQualifier());
 

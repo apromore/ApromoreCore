@@ -54,14 +54,6 @@ public final class ConversionUtils {
         return BigInteger.valueOf(0);
     }
 
-    public static String buildObjectId(final String netId, final String varName) {
-        return netId + "_" + varName;
-    }
-
-    public static String buildObjectId(final NodeType parentTask, final String varName) {
-        return parentTask.getId() + "_" + varName;
-    }
-
     public static String generateUniqueName(final String originalName, final Set<String> nameSet) {
         int i = 1;
         String newName = originalName + i;

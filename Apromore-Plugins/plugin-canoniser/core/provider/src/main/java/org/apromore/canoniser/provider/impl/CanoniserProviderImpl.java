@@ -19,6 +19,7 @@ import java.util.List;
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.provider.CanoniserProvider;
 import org.apromore.plugin.exception.PluginNotFoundException;
+import org.apromore.plugin.provider.PluginProviderHelper;
 
 /**
  * Providing the default CanoniserProvider implementation
@@ -118,15 +119,11 @@ public abstract class CanoniserProviderImpl implements CanoniserProvider {
         final List<Canoniser> cList = new ArrayList<Canoniser>();
 
         for (final Canoniser c : getInternalCanoniserList()) {
-            if (compareNullable(nativeType, c.getNativeType()) && compareNullable(name, c.getName()) && compareNullable(version, c.getVersion())) {
+            if (PluginProviderHelper.compareNullable(nativeType, c.getNativeType()) && PluginProviderHelper.compareNullable(name, c.getName()) && PluginProviderHelper.compareNullable(version, c.getVersion())) {
                 cList.add(c);
             }
         }
         return cList;
-    }
-
-    private boolean compareNullable(final String expectedType, final String actualType) {
-        return expectedType == null ? true : expectedType.equals(actualType);
     }
 
 }
