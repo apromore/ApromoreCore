@@ -18,6 +18,7 @@
 			<plugin>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>maven-bundle-plugin</artifactId>
+				<!-- Plugin API Provider does not need to be visible -->
 			</plugin>
 		</plugins>
     </build>
@@ -53,10 +54,7 @@
 			<groupId>org.easymock</groupId>
 			<artifactId>easymock</artifactId>
 		</dependency>
-		<dependency>
-			<groupId>org.springframework</groupId>
-			<artifactId>spring-test</artifactId>
-		</dependency>		
+
     </dependencies>
     
 </project>

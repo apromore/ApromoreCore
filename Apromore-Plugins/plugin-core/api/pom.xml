@@ -23,9 +23,11 @@
 						<!-- Imports will be collected automatically -->
 						<Export-Package>
 							org.apromore.plugin,
+							org.apromore.plugin.impl,
 							org.apromore.plugin.provider,
 							org.apromore.plugin.exception,
-							org.apromore.plugin.property
+							org.apromore.plugin.property,
+							org.apromore.plugin.message											
 						</Export-Package>
 					</instructions>
 				</configuration>

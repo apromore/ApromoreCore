@@ -2,8 +2,8 @@ package org.apromore.plugin.impl;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.apromore.plugin.MessageAwarePlugin;
 import org.apromore.plugin.message.PluginMessage;
@@ -14,15 +14,15 @@ public abstract class DefaultMessageAwarePlugin extends DefaultPlugin implements
     /**
      * List of messages
      */
-    private Collection<PluginMessage> messageList;
+    private List<PluginMessage> messageList;
 
     /* (non-Javadoc)
      * @see org.apromore.plugin.MessageAwarePlugin#getPluginMessages()
      */
     @Override
-    public Collection<PluginMessage> getPluginMessages() {
+    public List<PluginMessage> getPluginMessages() {
         initMessageList();
-        return Collections.unmodifiableCollection(messageList);
+        return Collections.unmodifiableList(messageList);
     }
 
     /**

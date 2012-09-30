@@ -127,7 +127,7 @@ public class BPMN20Canoniser implements Canoniser {
     }
 
     @Override
-    public Collection<PluginMessage> getPluginMessages() {
+    public List<PluginMessage> getPluginMessages() {
         // TODO Auto-generated method stub
         return null;
     }

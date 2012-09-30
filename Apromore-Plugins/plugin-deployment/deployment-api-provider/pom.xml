@@ -1,0 +1,79 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>  
+	<parent>
+		<groupId>org.apromore.plugin</groupId>
+		<artifactId>plugin-parent</artifactId>
+		<version>1.0</version>
+	</parent>
+	
+	<artifactId>deployment-api-provider</artifactId>
+	<version>1.0</version>
+
+	<name>DeploymentPluginProvider</name>
+	<description>Provider for Deployment Plugins</description>
+
+    <build>
+        <plugins>
+			<plugin>
+				<!-- Usage guide: http://felix.apache.org/site/apache-felix-maven-bundle-plugin-bnd.html -->			
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<configuration>
+					<instructions>
+						<Export-Package>
+							<!-- Usually empty for an API Provider -->
+						</Export-Package>
+					</instructions>				
+				</configuration>		
+			</plugin>
+		</plugins>
+    </build>
+	
+	<dependencies>
+	<!-- Main dependencies -->
+		<!-- Plugin APIs -->
+		<dependency>
+			<groupId>org.apromore.plugin</groupId>
+			<artifactId>plugin-api</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope> <!-- Change to provided as deployed on Eclipse Virgo -->
+		</dependency>
+		
+		<!-- Your Plugin API -->
+		<dependency>
+			<groupId>org.apromore.plugin</groupId>
+			<artifactId>deployment-api</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope> <!-- Change to provided as deployed on Eclipse Virgo -->
+		</dependency>
+
+		<!-- Blueprint -->
+		<dependency>
+		  <groupId>org.eclipse.gemini</groupId>
+		  <artifactId>org.eclipse.gemini.blueprint.extender</artifactId>
+		</dependency>
+		<dependency>
+		  <groupId>org.eclipse.gemini</groupId>
+		  <artifactId>org.eclipse.gemini.blueprint.core</artifactId>
+		</dependency>
+		<dependency>
+		  <groupId>org.eclipse.gemini</groupId>
+		  <artifactId>org.eclipse.gemini.blueprint.io</artifactId>
+		</dependency>  
+
+	<!-- Test dependencies -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.easymock</groupId>
+			<artifactId>easymock</artifactId>
+		</dependency>
+		
+		<!-- Add your own Test dependencies here -->	
+			
+	</dependencies>
+	
+</project>
