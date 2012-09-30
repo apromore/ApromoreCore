@@ -109,7 +109,7 @@ public class DefaultProperty implements PropertyType {
      * @see org.apromore.plugin.property.PropertyType#isMandatory()
      */
     @Override
-    public Boolean isMandatory() {
+    public boolean isMandatory() {
         return this.isMandatory;
     }
 

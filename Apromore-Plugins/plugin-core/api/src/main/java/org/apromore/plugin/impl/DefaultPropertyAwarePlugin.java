@@ -42,7 +42,7 @@ public abstract class DefaultPropertyAwarePlugin extends DefaultMessageAwarePlug
      */
     public DefaultPropertyAwarePlugin() {
         super();
-        availableProperties = new HashSet<PropertyType>(0);
+        availableProperties = new HashSet<PropertyType>();
     }
 
     /*

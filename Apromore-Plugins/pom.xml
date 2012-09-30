@@ -41,7 +41,16 @@
 
     <modules>
 	
-		<!-- Plugin Interfaces -->
+		<!-- Maven Archetypes -->
+		
+			<!-- <module>plugin-core/module-archetype</module> -->
+			<module>plugin-core/plugin-archetype</module>
+			<module>plugin-core/plugin-api-archetype</module>
+			<module>plugin-core/plugin-api-provider-archetype</module>
+			
+		<!-- 	Plugin Interfaces
+			- http://code.google.com/p/apromore/wiki/PluginAPIHowTo
+		-->
 		
 			<!-- Core Plugin Interface -->
 			<module>plugin-core/api</module>
@@ -49,29 +58,37 @@
 
 			<!-- Canoniser Interface -->
 			<module>plugin-canoniser/core/api</module>
-			<module>plugin-canoniser/core/provider</module>		
+			<module>plugin-canoniser/core/provider</module>
+			
+			<!-- Deplyoment Interface -->
+			<module>plugin-deployment/deployment-api</module>			
+			<module>plugin-deployment/deployment-api-provider</module>				
+	
+		<!-- 	Modules 
+			- http://code.google.com/p/apromore/wiki/ModuleHowTo
+		-->	
+			
+			
+			
+		<!-- 
+				Plugin Implementations 
+			- http://code.google.com/p/apromore/wiki/PluginHowTo
+		-->
+			<!-- 
+				Note: 	I'm not sure if we should include those here, as then we'll always build all Plugins.
+						Maybe we should just add the "core" Plugins here so that these are always build. 
+			-->
 		
-		<!-- Plugin Implementations -->
-			<!-- Note: 	I'm not sure if we should include those here, as then we'll always build all Plugins.
-						Maybe we should just add the "core" Plugins here so that these are always build. -->
-			
-			<!-- Common Plugins (without own API) -->
-			<module>plugin-common/rpst</module>
-			
 			<!-- Canoniser Plugins -->
 			<module>plugin-canoniser/bpmn</module>
 			<module>plugin-canoniser/epml</module>
 			<module>plugin-canoniser/pnml</module>
 			<module>plugin-canoniser/xpdl</module>
 			<module>plugin-canoniser/yawl</module>
-			
-			<!-- Search Plugins -->
-			
-			
-			<!-- Cluster Plugins -->
-			
-			
-			<!-- Merge Plugins -->
+								
+			<!-- Deployment Plugins -->
+			<module>plugin-deployment/deployment-yawl</module>
+
 					
 			
     </modules>

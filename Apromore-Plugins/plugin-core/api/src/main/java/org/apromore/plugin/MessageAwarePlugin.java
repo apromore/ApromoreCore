@@ -16,7 +16,7 @@
  */
 package org.apromore.plugin;
 
-import java.util.Collection;
+import java.util.List;
 
 import org.apromore.plugin.message.PluginMessage;
 
@@ -30,10 +30,10 @@ import org.apromore.plugin.message.PluginMessage;
 public interface MessageAwarePlugin extends Plugin {
 
     /**
-     * Returns all messages of this Plugin. Note the returned Collection should not be modified!
+     * Returns all messages of this Plugin. Note the returned List should not be modified as it usually will be an unmodifiable List.
      *
-     * @return Collection of PluginMessage
+     * @return List of PluginMessage
      */
-    Collection<PluginMessage> getPluginMessages();
+    List<PluginMessage> getPluginMessages();
 
 }

@@ -37,7 +37,7 @@ public interface PropertyType {
 	/**
 	 * @return
 	 */
-	Boolean isMandatory();
+	boolean isMandatory();
 
 	/**
 	 * @return
