@@ -27,24 +27,26 @@ public class BooleanProperty extends DefaultProperty {
 	/**
 	 * Create a new BooleanProperty with given attributes and specify a default value.
 	 *
-	 * @param name
-	 * @param description
-	 * @param isMandatory
-	 * @param defaultValue
+	 * @param id of the property
+	 * @param name of the property
+	 * @param description of the property
+	 * @param isMandatory true if Plugin requires this property to work properly
+	 * @param defaultValue of the property
 	 */
-	public BooleanProperty(final String name, final String description, final Boolean isMandatory, final Object defaultValue) {
-		super(name, Boolean.class, description, isMandatory, defaultValue);
+	public BooleanProperty(final String id, final String name, final String description, final Boolean isMandatory, final Object defaultValue) {
+		super(id, name, Boolean.class, description, isMandatory, defaultValue);
 	}
 
 	/**
 	 * Create a new BooleanProperty with given attributes without specifying a default value. The value will be initialised with NULL.
 	 *
-	 * @param name
-	 * @param description
-	 * @param isMandatory
+	 * @param id of the property
+	 * @param name of the property
+	 * @param description of the property
+	 * @param isMandatory true if Plugin requires this property to work properly
 	 */
-	public BooleanProperty(final String name, final String description, final Boolean isMandatory) {
-		super(name, Boolean.class, description, isMandatory);
+	public BooleanProperty(final String id, final String name, final String description, final Boolean isMandatory) {
+		super(id, name, Boolean.class, description, isMandatory);
 	}
 
 	/**

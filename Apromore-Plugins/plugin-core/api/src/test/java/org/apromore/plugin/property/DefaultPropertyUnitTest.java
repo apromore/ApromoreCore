@@ -23,9 +23,9 @@ public class DefaultPropertyUnitTest {
 
     @Before
     public void setUp() {
-        defaultProperty = new DefaultProperty("test", String.class, "description", true);
-        defaultProperty2 = new DefaultProperty("test2", Integer.class, "description2", false, 2);
-        defaultProperty3 = new DefaultProperty("test3", InputStream.class, "description3", false);
+        defaultProperty = new DefaultProperty("t1", "test", String.class, "description", true);
+        defaultProperty2 = new DefaultProperty("t2", "test2", Integer.class, "description2", false, 2);
+        defaultProperty3 = new DefaultProperty("t3", "test3", InputStream.class, "description3", false);
     }
 
     @Test
@@ -34,7 +34,7 @@ public class DefaultPropertyUnitTest {
         assertNotNull(defaultProperty2);
         assertNotNull(defaultProperty3);
         try {
-            new DefaultProperty("test3", String.class, "description3", false, new Integer(1));
+            new DefaultProperty("t3", "test3", String.class, "description3", false, new Integer(1));
             fail();
         } catch (IllegalArgumentException e) {
             //Expected

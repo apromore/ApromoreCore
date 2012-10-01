@@ -63,9 +63,9 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
      */
     public YAWL22Canoniser() {
         super();
-        resourceDataInput = new DefaultProperty("Read Organisational Data", InputStream.class,
+        resourceDataInput = new DefaultProperty("readOrgData", "Read Organisational Data", InputStream.class,
                 "Reads a .ybkp file containing the organisational data used in this YAWL workflow.", false);
-        resourceDataOutput = new DefaultProperty("Write Organisational Data", OutputStream.class,
+        resourceDataOutput = new DefaultProperty("writeOrgData", "Write Organisational Data", OutputStream.class,
                 "YAWL Organisational data will be written to this file.", false);
         addProperty(resourceDataInput);
         addProperty(resourceDataOutput);

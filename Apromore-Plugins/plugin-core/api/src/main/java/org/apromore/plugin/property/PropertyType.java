@@ -24,28 +24,33 @@ package org.apromore.plugin.property;
  */
 public interface PropertyType {
 
+    /**
+     * @return a unique identifier (across the Plugin) for this property
+     */
+    String getId();
+
 	/**
-	 * @return
+	 * @return the human readable name of this property (may be presented in UI)
 	 */
 	String getName();
 
 	/**
-	 * @return
+	 * @return the class of the properties value
 	 */
 	Class<?> getValueType();
 
 	/**
-	 * @return
+	 * @return if the property is required for the Plugin to work
 	 */
 	boolean isMandatory();
 
 	/**
-	 * @return
+	 * @return the human readable description of this property (may be presented in UI)
 	 */
 	String getDescription();
 
 	/**
-	 * @return
+	 * @return the actual value, which always will be of the specified value type
 	 */
 	Object getValue();
 
@@ -55,7 +60,7 @@ public interface PropertyType {
 	void setValue(Object value);
 
 	/**
-	 * @return
+	 * @return false if the value is NULL, true otherwise
 	 */
 	boolean hasValue();
 }

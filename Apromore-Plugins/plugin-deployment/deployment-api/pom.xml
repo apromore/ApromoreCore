@@ -10,7 +10,7 @@
 	<artifactId>deployment-api</artifactId>
 	<version>1.0</version>
 
-	<name>DeploymentPlugin</name>
+	<name>Deployment Plugin</name>
 	<description>Deployment Plugin API, an interface to allow process deployment from Apromore.</description>
 
 	<build>
@@ -40,7 +40,18 @@
 			<scope>compile</scope> <!-- Change to provided as deployed on Eclipse Virgo -->
 		</dependency>
 		
-		<!-- Your own 3rd party dependencies -->
+		<dependency>
+			<groupId>org.apromore</groupId>
+			<artifactId>cpf-schema</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>
+		<dependency>
+			<groupId>org.apromore</groupId>
+			<artifactId>anf-schema</artifactId>
+			<version>1.0</version>
+			<scope>compile</scope>
+		</dependency>		
 		
 		<!-- Logging -->
 		<dependency>
