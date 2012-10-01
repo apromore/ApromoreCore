@@ -9,9 +9,11 @@ import org.apromore.canoniser.yawl.yawl2cpf.patterns.BasePatternTest;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
+import org.junit.Ignore;
 import org.junit.Test;
 
 // TODO implement test
+@Ignore
 public class RoleWithFilterTest extends BasePatternTest {
 
     @Override

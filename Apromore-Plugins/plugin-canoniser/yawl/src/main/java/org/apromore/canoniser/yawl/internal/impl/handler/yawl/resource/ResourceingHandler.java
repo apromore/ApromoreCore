@@ -11,7 +11,7 @@
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl.resource;
 
-import java.text.MessageFormat;
+import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
@@ -19,8 +19,8 @@ import javax.xml.bind.JAXBElement;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.YAWLConversionHandler;
 import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
-import org.apromore.cpf.DistributionSetRef;
-import org.apromore.cpf.DistributionSetType;
+import org.apromore.cpf.HumanType;
+import org.apromore.cpf.HumanTypeEnum;
 import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
@@ -49,8 +49,6 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ResourceingHandler.class);
 
-    private static final String DISTRIBUTION_SET_RESOURCE_NAME = "Distribution Set";
-
     /*
      * (non-Javadoc)
      *
@@ -59,32 +57,40 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
     @Override
     public void convert() throws CanoniserException {
 
-        if (isUserOffering(getObject())) {
+        TaskType task = getConvertedParent();
+
+        // In YAWL it is not Team Work usually
+        task.setTeamWork(false);
+
+        if (!isSystemOffered(getObject())) {
 
             // Distribution of work will be handled by User at Runtime, there is no way of capturing this in CPF
             if (getObject().getOffer() != null) {
-                ExtensionUtils.addToExtensions(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.OFFER, getObject(), ResourcingFactsType.class),
-                        getConvertedParent());
+                ExtensionUtils
+                        .addToExtensions(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.OFFER, getObject(), ResourcingFactsType.class), task);
             }
 
         } else {
-            if (hasDistributionSet(getObject())) {
-                final ResourcingOfferFactsType offer = getObject().getOffer();
-                final ResourcingAllocateFactsType allocate = getObject().getAllocate();
 
-                ResourceTypeType convertedDSet = convertOffer(offer);
+            List<HumanType> cpfResources = convertDistributionSet(getObject());
+            convertAllocation(getObject().getAllocate(), task);
 
-                if (convertedDSet != null) {
-                    convertAllocation(allocate, convertedDSet);
-
-                    // Add YAWL specific information about start
-                    ExtensionUtils.addToExtensions(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.START, getObject().getStart(), ResourcingInteractionInitiatorType.class),
-                            convertedDSet);
+            final ResourcingOfferFactsType offer = getObject().getOffer();
+            if (offer != null) {
+                ResourcingDistributionSetFactsType distributionSet = offer.getDistributionSet();
+                if (distributionSet != null) {
+                    if (hasFilter(offer.getDistributionSet())) {
+                        convertFilter(offer.getDistributionSet().getFilters(), task);
+                    }
+                    if (hasConstraints(offer.getDistributionSet())) {
+                        convertConstraints(offer.getDistributionSet().getConstraints(), task);
+                    }
                 }
-
-            } else {
-                convertWithoutDistributionSet(getObject());
             }
+
+            // Add YAWL specific information about start
+            ExtensionUtils.addToExtensions(
+                    ExtensionUtils.marshalYAWLFragment(ExtensionUtils.START, getObject().getStart(), ResourcingInteractionInitiatorType.class), task);
 
             // Add Secondary Participant directly as Reference
             if (getObject().getSecondary() != null) {
@@ -93,106 +99,51 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
         }
     }
 
-    private boolean isUserOffering(final ResourcingFactsType resourcing) {
-        return resourcing.getOffer() == null || resourcing.getOffer().getInitiator().equals(ResourcingInitiatorType.USER);
+    private boolean isSystemOffered(final ResourcingFactsType resourcing) {
+        return resourcing.getOffer() == null || resourcing.getOffer().getInitiator().equals(ResourcingInitiatorType.SYSTEM);
     }
 
-    private boolean hasDistributionSet(final ResourcingFactsType object) {
-        ResourcingOfferFactsType offer = getObject().getOffer();
-        final ResourcingAllocateFactsType allocate = getObject().getAllocate();
-
-        if (offer != null && offer.getInitiator().equals(ResourcingInitiatorType.SYSTEM)) {
-            ResourcingDistributionSetFactsType dSet = offer.getDistributionSet();
-            if (hasManyResources(dSet.getInitialSet()) || hasFilter(dSet) || hasConstraints(dSet) || hasAllocator(allocate)) {
-                return true;
-            }
-        }
-
-        // There is just a single resource without any complex conditions
-        return false;
-    }
-
-    private boolean hasAllocator(final ResourcingAllocateFactsType allocate) {
+    private boolean isSystemAllocated(final ResourcingAllocateFactsType allocate) {
         return allocate != null && allocate.getInitiator().equals(ResourcingInitiatorType.SYSTEM);
     }
 
-    private ResourceTypeType convertOffer(final ResourcingOfferFactsType offer) throws CanoniserException {
-
-        ResourcingDistributionSetFactsType dSet = offer.getDistributionSet();
-
-        if (dSet != null && (hasAtLeastOneResource(dSet.getInitialSet()) || hasFilter(dSet) || hasConstraints(dSet))) {
-            return convertWithDistributionSet(dSet);
-        } else {
-            getContext().getMessageInterface().addMessage(MessageFormat.format(
-                    "Empty distribution set, but filter/constraints/allocationStrategy defined. Can not convert resource information of task {0}!",
-                    getConvertedParent().getId()));
-            return null;
-        }
+    private boolean hasConstraints(final ResourcingDistributionSetFactsType distributionSet) {
+        return distributionSet.getConstraints() != null;
     }
 
-    private ResourceTypeType convertWithDistributionSet(final ResourcingDistributionSetFactsType distSet) throws CanoniserException {
-
-        List<String> participantList = distSet.getInitialSet().getParticipant();
-        List<String> roleList = distSet.getInitialSet().getRole();
-
-        final ResourceTypeType resourceType = createDistributionSet();
-        createResourceReference(resourceType, null);
-
-        for (final String participantId : participantList) {
-            final ResourceTypeType resource = createResourceTypeForParticipant(getContext().getParticipantById(participantId));
-            final DistributionSetRef ref = CPF_FACTORY.createDistributionSetRef();
-            ref.setResourceTypeId(resource.getId());
-            resourceType.getDistributionSet().getResourceTypeRef().add(ref);
-        }
-
-        for (final String roleId : roleList) {
-            final ResourceTypeType resource = createResourceTypeForRole(getContext().getRoleById(roleId));
-            final DistributionSetRef ref = CPF_FACTORY.createDistributionSetRef();
-            ref.setResourceTypeId(resource.getId());
-            resourceType.getDistributionSet().getResourceTypeRef().add(ref);
-        }
-
-        if (hasFilter(distSet)) {
-            convertFilter(distSet.getFilters());
-        }
-
-        if (hasConstraints(distSet)) {
-            convertConstraints(distSet.getConstraints());
-        }
-
-        return resourceType;
-
+    private boolean hasFilter(final ResourcingDistributionSetFactsType distributionSet) {
+        return distributionSet.getFilters() != null;
     }
 
-    private void convertAllocation(final ResourcingAllocateFactsType allocate, final ResourceTypeType distributionSet) throws CanoniserException {
-        if (allocate != null && allocate.getInitiator().equals(ResourcingInitiatorType.SYSTEM)) {
-            convertAllocator(allocate, distributionSet);
+    private void convertAllocation(final ResourcingAllocateFactsType allocate, final TaskType task) throws CanoniserException {
+        if (isSystemAllocated(allocate)) {
+            // TODO
         } else {
-         // Allocation of work will be handled by User at Runtime, there is no way of capturing this in CPF
+            // Allocation of work will be handled by User at Runtime, there is no way of capturing this in CPF
             if (allocate != null) {
-                ExtensionUtils.addToExtensions(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.ALLOCATE, getObject().getOffer(), ResourcingOfferFactsType.class),
-                        getConvertedParent());
+                ExtensionUtils.addToExtensions(
+                        ExtensionUtils.marshalYAWLFragment(ExtensionUtils.ALLOCATE, getObject().getOffer(), ResourcingOfferFactsType.class),
+                        task);
             }
         }
     }
 
-    private void convertAllocator(final ResourcingAllocateFactsType allocate, final ResourceTypeType distributionSet) {
-        if (distributionSet != null) {
-
-        }
-    }
-
-    private void convertConstraints(final Constraints constraints) {
+    private void convertConstraints(final Constraints constraints, final TaskType task) {
         LOGGER.error("Should convert constraints " + constraints.toString());
+        // TODO
     }
 
-    private void convertFilter(final Filters filters) {
+    private void convertFilter(final Filters filters, final TaskType task) {
         LOGGER.error("Should convert filters " + filters.toString());
+        // TODO
     }
 
-    private void convertWithoutDistributionSet(final ResourcingFactsType resourcing) {
+    private List<HumanType> convertDistributionSet(final ResourcingFactsType resourcing) {
 
-        if (resourcing.getOffer() != null && resourcing.getOffer().getDistributionSet() != null && resourcing.getOffer().getDistributionSet().getInitialSet() != null) {
+        List<HumanType> convertedDistributionSet = new ArrayList<HumanType>();
+
+        if (resourcing.getOffer() != null && resourcing.getOffer().getDistributionSet() != null
+                && resourcing.getOffer().getDistributionSet().getInitialSet() != null) {
             InitialSet initialSet = resourcing.getOffer().getDistributionSet().getInitialSet();
 
             List<String> participantList = initialSet.getParticipant();
@@ -200,47 +151,35 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
 
             // Add direct reference to Resource
             for (final String participantId : participantList) {
-                final ResourceTypeType resource = createResourceTypeForParticipant(getContext().getParticipantById(participantId));
-                createResourceReference(resource, null);
+                final HumanType resource = createResourceTypeForParticipant(getContext().getParticipantById(participantId));
+                createResourceReference(resource, "Primary");
+                convertedDistributionSet.add(resource);
             }
 
             for (final String roleId : roleList) {
-                final ResourceTypeType resource = createResourceTypeForRole(getContext().getRoleById(roleId));
-                createResourceReference(resource, null);
+                final HumanType resource = createResourceTypeForRole(getContext().getRoleById(roleId));
+                createResourceReference(resource, "Primary");
+                convertedDistributionSet.add(resource);
             }
-
         }
-    }
 
-    private boolean hasConstraints(final ResourcingDistributionSetFactsType distributionSet) {
-        return  distributionSet.getConstraints() != null;
-    }
-
-    private boolean hasFilter(final ResourcingDistributionSetFactsType distributionSet) {
-        return distributionSet.getFilters() != null;
-    }
-
-    private boolean hasManyResources(final InitialSet initialSet) {
-        return initialSet != null && initialSet.getParticipant().size() + initialSet.getRole().size() > 1;
-    }
-
-
-    private boolean hasAtLeastOneResource(final InitialSet initialSet) {
-        return initialSet != null && initialSet.getParticipant().size() + initialSet.getRole().size() >= 1;
+        return convertedDistributionSet;
     }
 
     private void convertSecondaryResources(final ResourcingSecondaryFactsType secondaryResources) {
+
         for (final String participantId : secondaryResources.getParticipant()) {
             final ResourceTypeType resource = createResourceTypeForParticipant(getContext().getParticipantById(participantId));
-            createResourceReference(resource, null);
+            createResourceReference(resource, "Secondary");
         }
 
         // Add Secondary Roles directly as Reference
         for (final String roleId : secondaryResources.getRole()) {
             final ResourceTypeType resource = createResourceTypeForRole(getContext().getRoleById(roleId));
-            createResourceReference(resource, null);
+            createResourceReference(resource, "Secondary");
         }
-        //TODO Non Human
+
+        // TODO Non Human
     }
 
     /**
@@ -257,22 +196,19 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
         getConvertedParent().getResourceTypeRef().add(resourceRef);
     }
 
-    private ResourceTypeType createDistributionSet() {
-        // Add reference to Distribution Set
-        final ResourceTypeType resourceType = CPF_FACTORY.createResourceTypeType();
-        resourceType.setId(generateUUID());
-        resourceType.setName(DISTRIBUTION_SET_RESOURCE_NAME+" for "+getConvertedParent().getName());
-        final DistributionSetType distributionSetExt = CPF_FACTORY.createDistributionSetType();
-        resourceType.setDistributionSet(distributionSetExt);
-        getContext().getCanonicalResult().getResourceType().add(resourceType);
-        return resourceType;
-    }
-
-    private ResourceTypeType createResourceTypeForRole(final RoleType role) {
-        ResourceTypeType canonicalResource = getContext().getGeneratedResourceType(role.getId());
+    /**
+     * Creates a HumanType resources for a YAWL role
+     *
+     * @param role
+     *            YAWL role
+     * @return CPFs HumanType
+     */
+    private HumanType createResourceTypeForRole(final RoleType role) {
+        HumanType canonicalResource = (HumanType) getContext().getGeneratedResourceType(role.getId());
         if (canonicalResource == null) {
             // Create a new ResourceType only for this Role
-            canonicalResource = CPF_FACTORY.createRoleType();
+            canonicalResource = CPF_FACTORY.createHumanType();
+            canonicalResource.setType(HumanTypeEnum.ROLE);
             canonicalResource.setId(generateUUID(RESOURCE_ID_PREFIX, role.getId()));
             canonicalResource.setOriginalID(role.getId());
             canonicalResource.setName(role.getName());
@@ -291,11 +227,19 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
         return canonicalResource;
     }
 
-    private ResourceTypeType createResourceTypeForParticipant(final ParticipantType participant) {
-        ResourceTypeType canonicalResource = getContext().getGeneratedResourceType(participant.getId());
+    /**
+     * Creates a HumanType resources for a YAWL participant
+     *
+     * @param participant
+     *            YAWL participant
+     * @return HumanType
+     */
+    private HumanType createResourceTypeForParticipant(final ParticipantType participant) {
+        HumanType canonicalResource = (HumanType) getContext().getGeneratedResourceType(participant.getId());
         if (canonicalResource == null) {
             // Create a new ResourceType only for this Role
-            canonicalResource = CPF_FACTORY.createParticipantType();
+            canonicalResource = CPF_FACTORY.createHumanType();
+            canonicalResource.setType(HumanTypeEnum.PARTICIPANT);
             canonicalResource.setId(generateUUID(RESOURCE_ID_PREFIX, participant.getId()));
             canonicalResource.setOriginalID(participant.getId());
             canonicalResource.setName(participant.getFirstname() + " " + participant.getLastname());

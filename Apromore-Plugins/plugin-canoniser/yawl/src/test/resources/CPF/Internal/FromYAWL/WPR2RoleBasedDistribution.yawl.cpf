@@ -1,12 +1,25 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WPR1DirectDistribution" version="0.1" name="WPR1DirectDistribution" author="Felix" rootIds="N-Net">
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WPR2RoleBasedDistribution" version="0.1" name="WPR2RoleBasedDistribution" author="Felix" rootIds="N-Net">
     <Net id="N-Net" originalID="Net">
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
             <name>A</name>
-            <resourceTypeRef id="id50fc45c4-a57c-45a9-a6a9-ae2efd0d24cd" resourceTypeId="idac31a831-08b2-4395-8a24-5042698e0f6d"/>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system">
+                    <distributionSet>
+                        <initialSet>
+                            <role>RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7</role>
+                        </initialSet>
+                    </distributionSet>
+                </allocate:allocate>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <resourceTypeRef id="id62651870-2741-45c2-9751-d970911dcb0e" resourceTypeId="ide891db14-9293-417e-96ca-b6d1faf3240a" qualifier="Primary"/>
+            <teamWork>false</teamWork>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
@@ -14,7 +27,8 @@
         <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
         <Edge id="C-A-OutputCondition" default="true" sourceId="C-A" targetId="C-OutputCondition"/>
     </Net>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:RoleType" id="idac31a831-08b2-4395-8a24-5042698e0f6d" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="ide891db14-9293-417e-96ca-b6d1faf3240a" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
         <name>RoleX</name>
+        <type>Role</type>
     </ResourceType>
 </ns2:CanonicalProcess>

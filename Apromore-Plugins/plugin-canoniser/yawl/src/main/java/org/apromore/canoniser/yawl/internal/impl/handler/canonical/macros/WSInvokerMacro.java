@@ -4,7 +4,7 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionContext;
 import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.DirectionType;
+import org.apromore.cpf.DirectionEnum;
 import org.apromore.cpf.MessageType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
@@ -39,7 +39,7 @@ public class WSInvokerMacro extends ContextAwareRewriteMacro {
     }
 
     private boolean checkCondition(final NodeType node) {
-        return node instanceof MessageType && ((MessageType) node).getDirection().equals(DirectionType.OUTGOING);
+        return node instanceof MessageType && ((MessageType) node).getDirection().equals(DirectionEnum.OUTGOING);
     }
 
     private boolean rewriteWSInvoker(final MessageType nodeMessageOutgoing, final NetType net) throws CanoniserException {

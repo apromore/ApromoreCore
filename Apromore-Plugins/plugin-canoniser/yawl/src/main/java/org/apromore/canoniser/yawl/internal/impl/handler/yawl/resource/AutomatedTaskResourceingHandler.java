@@ -1,18 +1,19 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl.resource;
 
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.ResourceTypeType;
+import org.apromore.cpf.NonhumanType;
+import org.apromore.cpf.NonhumanTypeEnum;
 import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
 import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType;
 
@@ -20,7 +21,7 @@ public class AutomatedTaskResourceingHandler extends ResourceingHandler {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.yawl.resource.ResourceingHandler#convert()
      */
     @Override
@@ -40,7 +41,8 @@ public class AutomatedTaskResourceingHandler extends ResourceingHandler {
             }
         }
 
-        final ResourceTypeType resourceType = CPF_FACTORY.createSoftwareSystemType();
+        final NonhumanType resourceType = CPF_FACTORY.createNonhumanType();
+        resourceType.setType(NonhumanTypeEnum.SOFTWARE_SYSTEM);
         resourceType.setId(generateUUID());
         resourceType.setOriginalID(null);
         resourceType.setName(automaticName);

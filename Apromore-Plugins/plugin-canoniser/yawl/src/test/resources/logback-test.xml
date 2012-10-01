@@ -23,9 +23,9 @@
         </encoder>
     </appender>
     
-    <logger name="org.apromore.canoniser.yawl" level="INFO"/>
+    <logger name="org.apromore.canoniser.yawl" level="DEBUG"/>
 
-    <root level="INFO">
+    <root level="DEBUG">
         <appender-ref ref="FILE"/>
         <appender-ref ref="STDOUT"/>
     </root>

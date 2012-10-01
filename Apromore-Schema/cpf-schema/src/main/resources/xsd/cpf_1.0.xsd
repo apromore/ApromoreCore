@@ -202,6 +202,13 @@ if it is an outgoing edge of a split {@see SplitType}. It can also be marked as 
 	</complexType>
 
 	<complexType name="NodeType"> <!-- TODO: should be abstract -->
+		<annotation>
+			<documentation>
+<![CDATA[
+Base type of all Nodes
+]]>
+			</documentation>
+		</annotation>	
 		<sequence>			
 		    <element name="name" type="string" minOccurs="0"/>
 			<element name="configurable" type="boolean" default="false"
@@ -214,27 +221,84 @@ if it is an outgoing edge of a split {@see SplitType}. It can also be marked as 
 	</complexType>
 
 	<complexType name="WorkType"> <!-- TODO: should be abstract -->
+		<annotation>
+			<documentation>
+<![CDATA[
+Base type of all Nodes that represent some Work
+]]>
+			</documentation>
+		</annotation>	
 		<complexContent>
 			<extension base="cpf:NodeType">
 				<sequence>				
-					<!-- Reference to a ResourceType, all referenced resources are needed for execution of this work  -->
 					<element name="resourceTypeRef" type="cpf:resourceTypeRefType"
-						minOccurs="0" maxOccurs="unbounded" />
-					<!-- Reference to data objects of a Net -->
+						minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+							<jxb:property>
+								<jxb:javadoc>Reference to a ResourceType, depending on the property {@see #teamWork} all or one of the referenced resources are needed for execution.</jxb:javadoc>
+							</jxb:property>						
+							</appinfo>
+						</annotation>
+					</element>
 					<element name="objectRef" type="cpf:objectRefType"
-						minOccurs="0" maxOccurs="unbounded" />		
-					<!-- Canceling the following Nodes -->
+						minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+							<jxb:property>
+								<jxb:javadoc>Reference to data objects of a Net.</jxb:javadoc>
+							</jxb:property>						
+							</appinfo>
+						</annotation>						
+					</element>		
 					<element name="cancelNodeId" type="cpf:cancellationRefType" 
-						minOccurs="0" maxOccurs="unbounded" />
-					<!-- Canceling the following Edges -->
+						minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+							<jxb:property>
+								<jxb:javadoc>Canceling the following Nodes.</jxb:javadoc>
+							</jxb:property>						
+							</appinfo>
+						</annotation>						
+					</element>
 					<element name="cancelEdgeId" type="cpf:cancellationRefType" 
-						minOccurs="0" maxOccurs="unbounded" />										
-					<!-- Input expressions referring to [0..*] Objects of the Net -->
+						minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+							<jxb:property>
+								<jxb:javadoc>Canceling the following Edges.</jxb:javadoc>
+							</jxb:property>						
+							</appinfo>
+						</annotation>		
+					</element>										
 					<element name="inputExpr" type="cpf:InputExpressionType" 
-						minOccurs="0" maxOccurs="unbounded" />
-					<!-- Output expressions referring to [1] Object of the Net -->
+						minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+							<jxb:property>
+								<jxb:javadoc>Input expressions referring to [0..*] Objects of the Net.</jxb:javadoc>
+							</jxb:property>						
+							</appinfo>
+						</annotation>							
+					</element>
 					<element name="outputExpr" type="cpf:OutputExpressionType"
-						minOccurs="0" maxOccurs="unbounded" />
+						minOccurs="0" maxOccurs="unbounded">
+						<annotation>
+							<appinfo>
+							<jxb:property>
+								<jxb:javadoc>Output expressions referring to [1] Object of the Net.</jxb:javadoc>
+							</jxb:property>						
+							</appinfo>
+						</annotation>							
+					</element>
+					<element name="teamWork" type="boolean" 
+						minOccurs="0" />						
+					<element name="filterByDataExpr" type="cpf:ResourceDataFilterExpressionType" 
+						minOccurs="0" />
+					<element name="filterByRuntimeExpr" type="cpf:ResourceRuntimeFilterExpressionType" 
+						minOccurs="0" />
+					<element name="allocationStrategy" type="cpf:AllocationStrategyEnum" 
+						minOccurs="0" />							
 				</sequence>
 			</extension>
 		</complexContent>
@@ -247,8 +311,6 @@ if it is an outgoing edge of a split {@see SplitType}. It can also be marked as 
 		</sequence>
 		<attribute name="id" type="string" />
 		<attribute name="resourceTypeId" type="string" />
-		<attribute name="optional" type="boolean" default="false"
-			use="optional" />
 		<attribute name="qualifier" type="string" use="optional" />
 	</complexType>
 
@@ -288,7 +350,7 @@ if it is an outgoing edge of a split {@see SplitType}. It can also be marked as 
 		<complexContent>
 			<extension base="cpf:EventType">
 				<sequence>
-					<element name="direction" type="cpf:DirectionType" />
+					<element name="direction" type="cpf:DirectionEnum" />
 				</sequence>
 			</extension>
 		</complexContent>
@@ -399,16 +461,6 @@ if it is an outgoing edge of a split {@see SplitType}. It can also be marked as 
 			<element name="name" type="string" />
 			<element name="configurable" type="boolean" default="false"
 				minOccurs="0" />
-			<element name="distributionSet" type="cpf:DistributionSetType" 
-				minOccurs="0">
-					<annotation>
-						<appinfo>
-						<jxb:property>
-							<jxb:javadoc>The distribution set of a resource type contains N other resource types. (N=0..*) During execution usually one of those resource types is selected to execute the work.</jxb:javadoc>							
-						</jxb:property>						
-						</appinfo>					
-					</annotation>					
-			</element>
 			<element name="attribute" type="cpf:typeAttribute" minOccurs="0"
 				maxOccurs="unbounded" />
 		</sequence>
@@ -419,69 +471,42 @@ if it is an outgoing edge of a split {@see SplitType}. It can also be marked as 
 
 	<complexType name="HumanType">
 		<complexContent>
-			<extension base="cpf:ResourceTypeType" />
+			<extension base="cpf:ResourceTypeType">
+				<sequence>
+					<element name="type" type="cpf:HumanTypeEnum" minOccurs="0" />
+				</sequence>
+			</extension>
 		</complexContent>
 	</complexType>
 
 	<complexType name="NonhumanType">
 		<complexContent>
-			<extension base="cpf:ResourceTypeType" />
+			<extension base="cpf:ResourceTypeType">
+				<sequence>
+					<element name="type" type="cpf:NonhumanTypeEnum" minOccurs="0" />
+				</sequence>
+			</extension>			
 		</complexContent>
 	</complexType>
+	
+	<simpleType name="HumanTypeEnum">
+		<restriction base="string">		
+			<enumeration value="Organisation" />
+			<enumeration value="Department" />
+			<enumeration value="Unit" />
+			<enumeration value="Team" />
+			<enumeration value="Group" />
+			<enumeration value="Role" />
+			<enumeration value="Participant" />
+		</restriction>
+	</simpleType>
 
-	<complexType name="OrganisationType">
-		<complexContent>
-			<extension base="cpf:HumanType" />
-		</complexContent>
-	</complexType>
-
-	<complexType name="DepartmentType">
-		<complexContent>
-			<extension base="cpf:HumanType" />
-		</complexContent>
-	</complexType>
-
-	<complexType name="UnitType">
-		<complexContent>
-			<extension base="cpf:HumanType" />
-		</complexContent>
-	</complexType>
-
-	<complexType name="TeamType">
-		<complexContent>
-			<extension base="cpf:HumanType" />
-		</complexContent>
-	</complexType>
-
-	<complexType name="GroupType">
-		<complexContent>
-			<extension base="cpf:HumanType" />
-		</complexContent>
-	</complexType>
-
-	<complexType name="RoleType">
-		<complexContent>
-			<extension base="cpf:HumanType" />
-		</complexContent>
-	</complexType>
-
-	<complexType name="ParticipantType">
-		<complexContent>
-			<extension base="cpf:HumanType" />
-		</complexContent>
-	</complexType>
-
-	<complexType name="SoftwareSystemType">
-		<complexContent>
-			<extension base="cpf:NonhumanType" />
-		</complexContent>
-	</complexType>
-
-	<complexType name="EquipmentType">
-		<complexContent>
-			<extension base="cpf:NonhumanType" />
-		</complexContent>
-	</complexType>
+	<simpleType name="NonhumanTypeEnum">
+		<restriction base="string">		
+			<enumeration value="SoftwareSystem" />
+			<enumeration value="Equipment" />
+		</restriction>
+	</simpleType>
 
 	<complexType name="ObjectType">
 		<sequence>
@@ -523,38 +548,20 @@ if it is an outgoing edge of a split {@see SplitType}. It can also be marked as 
 		<list itemType="string" />
 	</simpleType>
 
-	<simpleType name="DirectionType">
+	<simpleType name="DirectionEnum">
 		<restriction base="string">
 			<enumeration value="incoming" />
 			<enumeration value="outgoing" />
 		</restriction>
 	</simpleType>
 		
-	<complexType name="DistributionSetType">
-		<sequence>
-			<element name="resourceTypeRef" type="cpf:distributionSetRef" maxOccurs="unbounded" />
-			<element name="filterByDataExpr" type="cpf:ResourceDataFilterExpressionType" minOccurs="0" />
-			<element name="filterByRuntimeExpr" type="cpf:ResourceRuntimeFilterExpressionType" minOccurs="0" />
-			<element name="allocationStrategy" type="cpf:AllocationStrategyType" minOccurs="0" />			
-			<element name="attribute" type="cpf:typeAttribute" minOccurs="0" maxOccurs="unbounded" />
-		</sequence>					
-	</complexType>	
-	
-	<simpleType name="AllocationStrategyType">
+	<simpleType name="AllocationStrategyEnum">
 		<restriction base="string">		
 			<enumeration value="Random" />
 			<enumeration value="RoundRobin" />
 			<enumeration value="ShortestQueue" />
 		</restriction>
 	</simpleType>	
-	
-	<complexType name="distributionSetRef">
-		<sequence>
-			<element name="attribute" type="cpf:typeAttribute" minOccurs="0"
-				maxOccurs="unbounded" />
-		</sequence>
-		<attribute name="resourceTypeId" type="string" />
-	</complexType>
 	
 	<complexType name="ExpressionType">
 		<annotation>

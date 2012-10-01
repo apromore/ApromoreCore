@@ -42,7 +42,7 @@ public class RoleBasedDistributionTest extends BasePatternTest {
         final TaskType taskA = (TaskType) nodeA;
         assertEquals(1, taskA.getResourceTypeRef().size());
         final ResourceTypeRefType resourceRef = taskA.getResourceTypeRef().get(0);
-        assertEquals(null, resourceRef.getQualifier());
+        assertEquals("Primary", resourceRef.getQualifier());
 
         ResourceTypeType resource = getResourceById(process, resourceRef.getResourceTypeId());
         assertEquals("RoleX", resource.getName());

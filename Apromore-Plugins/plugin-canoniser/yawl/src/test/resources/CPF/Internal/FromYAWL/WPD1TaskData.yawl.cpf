@@ -46,19 +46,19 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
-                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
+                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <offer initiator="user"/>
                     <allocate initiator="user"/>
                     <start initiator="user"/>
-                </resourcing:resourcing>
+                </offer:offer>
             </attribute>
-            <objectRef id="id8563b2f7-3efd-45bf-858a-928685d8ee56" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
-            <objectRef id="idea6211b2-f31d-448e-9fd8-037709bbc683" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
-            <objectRef id="fdf3f1c3-32a0-4a55-bd29-5a9afe59b404" objectId="D-N-Net-n4" type="output" optional="false" consumed="true"/>
-            <objectRef id="bac2fa11-e2bd-4106-b487-47503789696d" objectId="D-N-Net-n3" type="input" optional="false" consumed="true"/>
-            <objectRef id="id32342c6d-8e9a-4a86-bf79-3f5a55082856" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
-            <objectRef id="f9617a1a-14fc-48fe-b72e-4dac552d1399" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="f4925fa6-0ef2-4769-b4d5-f256da781f7a" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
+            <objectRef id="b47919ee-d9c5-4ea2-aafe-239f1ac7adbb" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
+            <objectRef id="idc339bf81-2545-4201-ba55-350ea429892f" objectId="D-N-Net-n4" type="output" optional="false" consumed="true"/>
+            <objectRef id="id40ba52f0-f258-42d4-97ac-d3bf31f67a59" objectId="D-N-Net-n3" type="input" optional="false" consumed="true"/>
+            <objectRef id="b4034c9b-4687-4417-a94e-8c09cf6af5e6" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="idc8ea9da3-20d5-46c1-a0fb-6af8818d30cc" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>t3 = {/Net/n3/text()}</expression>
@@ -83,6 +83,7 @@
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>n4 = {/A/t4/text()}</expression>
             </outputExpr>
+            <teamWork>false</teamWork>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-B" originalID="B">
             <name>B</name>
@@ -118,17 +119,17 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
-                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
+                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <offer initiator="user"/>
                     <allocate initiator="user"/>
                     <start initiator="user"/>
-                </resourcing:resourcing>
+                </offer:offer>
             </attribute>
-            <objectRef id="e0190eec-1e2e-47d4-8f67-53119a8d78cc" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
-            <objectRef id="e7e7ac5a-1cdb-43f0-80a3-9f68018ecc13" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
-            <objectRef id="idce87ff92-880f-4917-8546-518f5d8dad36" objectId="D-N-Net-n2" type="input" optional="false" consumed="true"/>
-            <objectRef id="id0c9ba001-8782-4046-bd77-f812bedf545f" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="id481e386f-60c1-4676-b7e1-4f1314bae8b8" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
+            <objectRef id="id1bcc6902-230f-454c-b6ce-3a4d79116faa" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
+            <objectRef id="d8632edf-4798-4da5-b845-211c022e710e" objectId="D-N-Net-n2" type="input" optional="false" consumed="true"/>
+            <objectRef id="b0fb62d7-6bcc-4be6-866c-462e9c32d4fa" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>t2 = {/Net/n2/text()}</expression>
@@ -145,6 +146,7 @@
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>n3 = {/B/t1/text()}</expression>
             </outputExpr>
+            <teamWork>false</teamWork>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>

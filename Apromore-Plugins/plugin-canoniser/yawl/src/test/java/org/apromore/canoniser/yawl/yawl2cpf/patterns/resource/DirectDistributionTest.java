@@ -44,7 +44,7 @@ public class DirectDistributionTest extends BasePatternTest {
         assertEquals(1, taskA.getResourceTypeRef().size());
 
         final ResourceTypeRefType resourceRef = taskA.getResourceTypeRef().get(0);
-        assertEquals(null, resourceRef.getQualifier());
+        assertEquals("Primary", resourceRef.getQualifier());
 
         boolean foundResource = false;
         for (final ResourceTypeType resource : process.getResourceType()) {
