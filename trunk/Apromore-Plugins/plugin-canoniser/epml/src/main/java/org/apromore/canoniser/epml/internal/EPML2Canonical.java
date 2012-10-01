@@ -620,7 +620,8 @@ public class EPML2Canonical {
                         ref.getAttribute().add(att);
                         ref.setResourceTypeId(id_map.get(arc.getRelation().getTarget()));
                         if (role_ref.get(arc.getRelation().getSource()) != null) {
-                            ref.setOptional(role_ref.get(arc.getRelation().getSource()).isOptional());
+                            //TODO optional removed from CPF schema
+                            //ref.setOptional(role_ref.get(arc.getRelation().getSource()).isOptional());
                             ref.setQualifier(role_ref.get(arc.getRelation().getSource()).getDescription()); /// update
                         }
                         ((WorkType) node).getResourceTypeRef().add(ref);

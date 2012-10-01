@@ -15,40 +15,42 @@
                     <defaultValue>true</defaultValue>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
-                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
+                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <offer initiator="user"/>
                     <allocate initiator="user"/>
                     <start initiator="user"/>
-                </resourcing:resourcing>
+                </offer:offer>
             </attribute>
-            <objectRef id="id1826f0ef-f617-4699-b2b1-65512acee5d7" objectId="D-N-Net-x" type="output" optional="false" consumed="true"/>
+            <objectRef id="id5d7490d9-0323-4234-8bbf-d449088deb87" objectId="D-N-Net-x" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>x = Boolean({/A/x/text()})</expression>
             </outputExpr>
+            <teamWork>false</teamWork>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-B" originalID="B">
             <name>B</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
-                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" optional="true">
                     <index>0</index>
                     <name>y</name>
                     <type>boolean</type>
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
-                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
+                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <offer initiator="user"/>
                     <allocate initiator="user"/>
                     <start initiator="user"/>
-                </resourcing:resourcing>
+                </offer:offer>
             </attribute>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>y = {/Net/x}</expression>
             </inputExpr>
+            <teamWork>false</teamWork>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>

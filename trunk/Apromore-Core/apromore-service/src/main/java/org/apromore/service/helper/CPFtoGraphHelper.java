@@ -62,7 +62,7 @@ public class CPFtoGraphHelper {
      * @param cpf the cpf format from the canoniser.
      * @return the JBpt CPF Graph representation
      */
-    public static CPF createGraph(CanonicalProcessType cpf) {
+    public static CPF createGraph(final CanonicalProcessType cpf) {
         CPF g = new CPF();
 
         addProperties(cpf, g);
@@ -73,7 +73,7 @@ public class CPFtoGraphHelper {
     }
 
     /* populate the Graph with attributes. */
-    private static void addProperties(CanonicalProcessType cpf, CPF g) {
+    private static void addProperties(final CanonicalProcessType cpf, final CPF g) {
         List<TypeAttribute> ats = cpf.getAttribute();
         for (TypeAttribute attr : ats) {
             g.setProperty(attr.getName(), attr.getValue(), attr.getAny());
@@ -81,7 +81,7 @@ public class CPFtoGraphHelper {
     }
 
     /* Add Resources to the Graph.  TODO: Missing the specialisedId's */
-    private static List<ICpfResource> buildResourcesList(CanonicalProcessType cpf) {
+    private static List<ICpfResource> buildResourcesList(final CanonicalProcessType cpf) {
         ICpfResource rec;
         List<ResourceTypeType> rty = cpf.getResourceType();
         List<ICpfResource> attribs = new ArrayList<ICpfResource>(0);
@@ -138,7 +138,7 @@ public class CPFtoGraphHelper {
 
 
     /* Build the Node list for a single Net */
-    private static Map<String, FlowNode> buildNodeListFromNet(List<NodeType> nodes, List<ICpfResource> res, List<ICpfObject> obj) {
+    private static Map<String, FlowNode> buildNodeListFromNet(final List<NodeType> nodes, final List<ICpfResource> res, final List<ICpfObject> obj) {
         Map<String, FlowNode> flow = new HashMap<String, FlowNode>(0);
         for (NodeType node : nodes) {
             if (node instanceof MessageType) {
@@ -190,7 +190,7 @@ public class CPFtoGraphHelper {
     }
 
     /* Builds the list of Edges for this Model */
-    private static void buildEdges(List<EdgeType> edgeTypes, CPF graph, Map<String, FlowNode> nodes) {
+    private static void buildEdges(final List<EdgeType> edgeTypes, final CPF graph, final Map<String, FlowNode> nodes) {
         for (EdgeType edge : edgeTypes) {
             FlowNode source = nodes.get(edge.getSourceId());
             FlowNode target = nodes.get(edge.getTargetId());
@@ -204,7 +204,7 @@ public class CPFtoGraphHelper {
     }
 
     /* Adds the Objects to the Node */
-    private static void addObjects(CpfNode n, WorkType node, List<ICpfObject> objs) {
+    private static void addObjects(final CpfNode n, final WorkType node, final List<ICpfObject> objs) {
         CpfObject o;
         for (ObjectRefType ort : node.getObjectRef()) {
             for (ICpfObject obj : objs) {
@@ -226,7 +226,7 @@ public class CPFtoGraphHelper {
     }
 
     /* Adds the Resources to the Node */
-    private static void addResources(CpfNode n, WorkType node, List<ICpfResource> reses) {
+    private static void addResources(final CpfNode n, final WorkType node, final List<ICpfResource> reses) {
         CpfResource r;
         for (ResourceTypeRefType ort : node.getResourceTypeRef()) {
             for (ICpfResource res : reses) {
@@ -235,7 +235,8 @@ public class CPFtoGraphHelper {
                     r.setId(ort.getId());
                     r.setName(res.getId());
                     r.setConfigurable(res.isConfigurable());
-                    r.setOptional(Boolean.valueOf(ort.isOptional()));
+                    //TODO removed optional in CPF schema
+                    //r.setOptional(Boolean.valueOf(ort.isOptional()));
                     r.setOriginalId(res.getOriginalId());
                     r.setQualifier(ort.getQualifier());
                     r.setResourceTypeId(ort.getResourceTypeId());
@@ -247,7 +248,7 @@ public class CPFtoGraphHelper {
         }
     }
 
-    private static Map<String, ICpfAttribute> buildCombinedAttributeList(Map<String, ICpfAttribute> map, List<TypeAttribute> attr2) {
+    private static Map<String, ICpfAttribute> buildCombinedAttributeList(final Map<String, ICpfAttribute> map, final List<TypeAttribute> attr2) {
         Map<String, ICpfAttribute> results = new HashMap<String, ICpfAttribute>(0);
         results.putAll(map);
         for (TypeAttribute typAtt : attr2) {
@@ -258,7 +259,7 @@ public class CPFtoGraphHelper {
 
 
     /* Adds the Attributes to the Node */
-    private static void addAttributes(CpfNode n, NodeType node) {
+    private static void addAttributes(final CpfNode n, final NodeType node) {
         for (TypeAttribute attr : node.getAttribute()) {
             n.addAttribute(attr.getName(), attr.getValue(), attr.getAny());
         }

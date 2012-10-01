@@ -48,7 +48,7 @@ public class CPFModelParser {
     private static final String ATTRIBUTE_ADDED_NAME = "org.apromore.toolbox.similaritySearch.common.added";
     private static final String ATTRIBUTE_ANNOTATION_NAME = "org.apromore.toolbox.similaritySearch.common.annotation";
 
-    public static Graph readModel(CanonicalProcessType cpf) {
+    public static Graph readModel(final CanonicalProcessType cpf) {
         Graph epcGraph = new Graph();
         epcGraph.name = cpf.getName();
 
@@ -74,7 +74,7 @@ public class CPFModelParser {
         return epcGraph;
     }
 
-    public static List<Graph> readModels(CanonicalProcessType cpf) {
+    public static List<Graph> readModels(final CanonicalProcessType cpf) {
         LinkedList<Graph> l = new LinkedList<Graph>();
 
         for (NetType mainNet : cpf.getNet()) {
@@ -93,7 +93,7 @@ public class CPFModelParser {
         return l;
     }
 
-    private static void addObjectsAndResources(CanonicalProcessType cpf, Graph epcGraph) {
+    private static void addObjectsAndResources(final CanonicalProcessType cpf, final Graph epcGraph) {
 // TODO: FIX
 //        for (ObjectType o : cpf.getObject()) {
 //            epcGraph.addObject(new VertexObject(o.getId(), o.getName(), o.isConfigurable(),
@@ -110,7 +110,7 @@ public class CPFModelParser {
         }
     }
 
-    private static void addNodes(NetType mainNet, Graph epcGraph) {
+    private static void addNodes(final NetType mainNet, final Graph epcGraph) {
 
         for (NodeType n : mainNet.getNode()) {
             HashMap<String, String> annotationMap = parseAnnotationForEventsAndFunctions(getFromAnnotations(ATTRIBUTE_ANNOTATION_NAME, n.getAttribute()));
@@ -173,10 +173,11 @@ public class CPFModelParser {
         }
     }
 
-    private static void addResourcesAndObjects(WorkType n, Vertex v) {
+    private static void addResourcesAndObjects(final WorkType n, final Vertex v) {
         // add resources
         for (ResourceTypeRefType r : n.getResourceTypeRef()) {
-            v.resourceRefs.add(new VertexResourceRef(r.isOptional(),
+            //TODO removed optional in CPF schema
+            v.resourceRefs.add(new VertexResourceRef(false,
                     r.getResourceTypeId(),
                     r.getQualifier(),
                     parseModelsFromAnnotations(
@@ -197,7 +198,7 @@ public class CPFModelParser {
         }
     }
 
-    private static String getFromAnnotations(String typeRef, List<TypeAttribute> attributes) {
+    private static String getFromAnnotations(final String typeRef, final List<TypeAttribute> attributes) {
 
         for (TypeAttribute a : attributes) {
             if (a.getName().equals(typeRef)) {
@@ -210,7 +211,7 @@ public class CPFModelParser {
     // the annotation attribute for events and functions are in format
     // model1:name in model1;model2:name in modelass 2;
     // the names must not contain ';', otherwise the name parsing fails
-    private static HashMap<String, String> parseAnnotationForEventsAndFunctions(String nodeValue) {
+    private static HashMap<String, String> parseAnnotationForEventsAndFunctions(final String nodeValue) {
         HashMap<String, String> annotationMap = new HashMap<String, String>();
         if (nodeValue == null) {
             return annotationMap;
@@ -228,7 +229,7 @@ public class CPFModelParser {
         return annotationMap;
     }
 
-    private static void addEdges(NetType mainNet, Graph epcGraph) {
+    private static void addEdges(final NetType mainNet, final Graph epcGraph) {
 
         List<EdgeType> edges = mainNet.getEdge();
         HashSet<String> graphLabels = new HashSet<String>();
@@ -249,7 +250,7 @@ public class CPFModelParser {
         }
     }
 
-    private static HashSet<String> parseModelsFromAnnotations(String annotations) {
+    private static HashSet<String> parseModelsFromAnnotations(final String annotations) {
         HashSet<String> graphLabels = new HashSet<String>();
         if (annotations != null && annotations.length() > 0) {
             StringTokenizer st = new StringTokenizer(annotations, ";");
@@ -261,7 +262,7 @@ public class CPFModelParser {
         return graphLabels;
     }
 
-    public static CanonicalProcessType writeModel(Graph g, IdGeneratorHelper idGenerator) {
+    public static CanonicalProcessType writeModel(final Graph g, final IdGeneratorHelper idGenerator) {
         CanonicalProcessType toReturn = new CanonicalProcessType();
 
         // objects and resources
@@ -373,7 +374,8 @@ public class CPFModelParser {
                 for (VertexResourceRef r : v.resourceRefs) {
                     ResourceTypeRefType rRef = new ResourceTypeRefType();
                     rRef.setResourceTypeId(r.getresourceID());
-                    rRef.setOptional(r.isOptional());
+                    //TODO removed optional in CPF schema
+                    //rRef.setOptional(r.isOptional());
                     rRef.setQualifier(r.getQualifier());
                     // attrubutes
                     TypeAttribute a1 = new TypeAttribute();
@@ -405,7 +407,7 @@ public class CPFModelParser {
     }
 
     private static String parseAnnotationFromMap(
-            HashMap<String, String> annotationMap) {
+            final HashMap<String, String> annotationMap) {
         String toReturn = "";
         for (Map.Entry<String, String> a : annotationMap.entrySet()) {
             toReturn += a.getKey() + ":" + a.getValue() + ";";
@@ -413,7 +415,7 @@ public class CPFModelParser {
         return toReturn;
     }
 
-    private static String parseAnnotationFromSet(HashSet<String> annotationSet) {
+    private static String parseAnnotationFromSet(final HashSet<String> annotationSet) {
         String toReturn = "";
         for (String a : annotationSet) {
             toReturn += a + ";";

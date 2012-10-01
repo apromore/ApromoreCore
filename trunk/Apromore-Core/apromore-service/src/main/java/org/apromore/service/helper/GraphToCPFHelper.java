@@ -234,7 +234,8 @@ public class GraphToCPFHelper {
             resource = new ResourceTypeRefType();
             resource.setId(res.getId());
             resource.setQualifier(res.getQualifier());
-            resource.setOptional(res.getOptional());
+            //TODO removed option in CPF schema
+            //resource.setOptional(res.getOptional());
             resource.setResourceTypeId(res.getResourceTypeId());
             resource.getAttribute().addAll(buildAttributeList(res.getAttributes()));
             ress.add(resource);
