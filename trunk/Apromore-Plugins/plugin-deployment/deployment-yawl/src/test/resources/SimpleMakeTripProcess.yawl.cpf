@@ -1,0 +1,349 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="SimpleMakeTripProcess.ywl" version="1.3" name="Simple Make Trip Process" author="Chun Ouyang" rootIds="N-Make-Trip-Process">
+    <Net id="N-Make-Trip-Process" originalID="Make_Trip_Process">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition-1" originalID="InputCondition_1"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-register-3" originalID="register_3">
+            <name>register</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>customer</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputParam">
+                <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>customer</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputParam:outputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputParam">
+                <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>1</index>
+                    <name>registrInfo</name>
+                    <type>tripRegisterType</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputParam:outputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
+                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <offer initiator="user"/>
+                    <allocate initiator="user"/>
+                    <start initiator="user"/>
+                </resourcing:resourcing>
+            </attribute>
+            <objectRef id="b1ef65e3-7ea0-4c99-8d64-f7466c395516" objectId="D-N-Make-Trip-Process-registrInfo" type="output" optional="false" consumed="true"/>
+            <objectRef id="id82a415b5-32cc-4702-8928-4023521619cf" objectId="D-N-Make-Trip-Process-customer" type="output" optional="false" consumed="true"/>
+            <objectRef id="idaf77c348-3743-4fb3-8ec0-581c380cbd83" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>customer = {/Make_Trip_Process/customer/text()}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>registrInfo = {/register/registrInfo/*}</expression>
+            </outputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>customer = {/register/customer/text()}</expression>
+            </outputExpr>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="id0db6bb7f-3db1-4a5b-bbb8-63a13ab05373"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-book-hotel-9" originalID="book_hotel_9">
+            <name>book hotel</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>startDate</name>
+                    <type>date</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>2</index>
+                    <name>endDate</name>
+                    <type>date</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>3</index>
+                    <name>customer</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputParam">
+                <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>1</index>
+                    <name>hotelDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputParam:outputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
+                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <offer initiator="user"/>
+                    <allocate initiator="user"/>
+                    <start initiator="user"/>
+                </resourcing:resourcing>
+            </attribute>
+            <objectRef id="id20399ace-eca3-4b33-8899-4ba21c845ad1" objectId="D-N-Make-Trip-Process-hotelDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="id7234c774-0de2-427c-88b2-77b8952b6820" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="idd7b712c1-5078-4761-afd4-e673fb79b75f" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="ide7beb90f-9284-47ca-a521-98e2b34c240a" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>startDate = {/Make_Trip_Process/registrInfo/startDate/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>endDate = {/Make_Trip_Process/registrInfo/endDate/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>customer = {/Make_Trip_Process/customer/text()}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>hotelDetails = {/book_hotel/hotelDetails/text()}</expression>
+            </outputExpr>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-book-flight-8" originalID="book_flight_8">
+            <name>book flight</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>startDate</name>
+                    <type>date</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>2</index>
+                    <name>endDate</name>
+                    <type>date</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>3</index>
+                    <name>customer</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputParam">
+                <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>1</index>
+                    <name>flightDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputParam:outputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
+                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <offer initiator="user"/>
+                    <allocate initiator="user"/>
+                    <start initiator="user"/>
+                </resourcing:resourcing>
+            </attribute>
+            <objectRef id="e5e9723d-1b2d-48a2-bc50-72132048863d" objectId="D-N-Make-Trip-Process-flightDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="f66da54d-8636-47e6-babf-ada35e9c43e7" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="ida45d7def-2bb9-4a64-a0e3-6cfd31438c40" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="iddcf76831-e40f-4d8a-830d-5aaf7c2a6d3d" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>startDate = {/Make_Trip_Process/registrInfo/startDate/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>endDate = {/Make_Trip_Process/registrInfo/endDate/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>customer = {/Make_Trip_Process/customer/text()}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>flightDetails = {/book_flight/flightDetails/text()}</expression>
+            </outputExpr>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-book-car-10" originalID="book_car_10">
+            <name>book car</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>startDate</name>
+                    <type>date</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>2</index>
+                    <name>endDate</name>
+                    <type>date</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>3</index>
+                    <name>customer</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputParam">
+                <outputParam:outputParam xmlns:outputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>1</index>
+                    <name>carDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputParam:outputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
+                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <offer initiator="user"/>
+                    <allocate initiator="user"/>
+                    <start initiator="user"/>
+                </resourcing:resourcing>
+            </attribute>
+            <objectRef id="id2631bef9-fb20-4407-9ad2-553edb1d18ea" objectId="D-N-Make-Trip-Process-carDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="idb62b7a7e-9b78-4237-aa16-1b67d8095a93" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="idf3521ad5-dcd2-4ead-9f61-8ac82154b2d1" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="cb4cf3cf-42e1-4902-a6d3-a7ed6cb2b771" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>startDate = {/Make_Trip_Process/registrInfo/startDate/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>endDate = {/Make_Trip_Process/registrInfo/endDate/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>customer = {/Make_Trip_Process/customer/text()}</expression>
+            </inputExpr>
+            <outputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>carDetails = {/book_car/carDetails/text()}</expression>
+            </outputExpr>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-pay-11" originalID="pay_11">
+            <name>pay</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>hotelDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>1</index>
+                    <name>payAccNumber</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>2</index>
+                    <name>customer</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>3</index>
+                    <name>carDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
+                <inputParam:inputParam xmlns:inputParam="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>4</index>
+                    <name>flightDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputParam:inputParam>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
+                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <offer initiator="user"/>
+                    <allocate initiator="user"/>
+                    <start initiator="user"/>
+                </resourcing:resourcing>
+            </attribute>
+            <objectRef id="id2c298ea7-55e3-4ced-810b-3a16e3b7ea1d" objectId="D-N-Make-Trip-Process-hotelDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="idf0a6558a-1e83-4120-a2f1-5a9990edb0de" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="id6eaaf840-edfd-4991-b72d-050361583bef" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="d92e561e-d8a7-479e-9d92-54dd70482041" objectId="D-N-Make-Trip-Process-carDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="b32abd5e-e20a-4174-8378-a2ddfcd8f76f" objectId="D-N-Make-Trip-Process-flightDetails" type="input" optional="false" consumed="true"/>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>hotelDetails = {/Make_Trip_Process/hotelDetails/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>payAccNumber = {/Make_Trip_Process/registrInfo/payAccNumber/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>customer = {/Make_Trip_Process/customer/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>carDetails = {/Make_Trip_Process/carDetails/text()}</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>flightDetails = {/Make_Trip_Process/flightDetails/text()}</expression>
+            </inputExpr>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="ide6b92f0a-b248-4fb6-8df4-c7f98ba9bb2e"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2"/>
+        <Edge id="C-InputCondition-1-register-3" default="true" sourceId="C-InputCondition-1" targetId="C-register-3"/>
+        <Edge id="id630e5428-fb95-4ee7-bf76-7b45686d612a" default="true" sourceId="C-register-3" targetId="id0db6bb7f-3db1-4a5b-bbb8-63a13ab05373"/>
+        <Edge id="idc0dd4ada-8e52-4663-b277-6c59cbdd5ccc" default="true" sourceId="id0db6bb7f-3db1-4a5b-bbb8-63a13ab05373" targetId="C-book-hotel-9"/>
+        <Edge id="id2c8fca0b-8914-461c-a351-1cc74973a1d8" default="true" sourceId="id0db6bb7f-3db1-4a5b-bbb8-63a13ab05373" targetId="C-book-flight-8"/>
+        <Edge id="id399718a8-474d-4736-96c0-41ba361676ee" default="true" sourceId="id0db6bb7f-3db1-4a5b-bbb8-63a13ab05373" targetId="C-book-car-10"/>
+        <Edge id="idd3c8ffec-2543-41f1-9494-51490e2cb8b9" default="true" sourceId="ide6b92f0a-b248-4fb6-8df4-c7f98ba9bb2e" targetId="C-pay-11"/>
+        <Edge id="idef0cdec1-b431-4089-b81d-15ff3697324b" default="true" sourceId="C-book-hotel-9" targetId="ide6b92f0a-b248-4fb6-8df4-c7f98ba9bb2e"/>
+        <Edge id="idf35b9844-2cbf-451b-807d-9903a0eadc40" default="true" sourceId="C-book-flight-8" targetId="ide6b92f0a-b248-4fb6-8df4-c7f98ba9bb2e"/>
+        <Edge id="id62fca5f3-10f3-4118-b363-b157c8ea287f" default="true" sourceId="C-book-car-10" targetId="ide6b92f0a-b248-4fb6-8df4-c7f98ba9bb2e"/>
+        <Edge id="C-pay-11-OutputCondition-2" default="true" sourceId="C-pay-11" targetId="C-OutputCondition-2"/>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Make-Trip-Process-carDetails" originalID="N-Make-Trip-Process_carDetails">
+            <name>carDetails</name>
+            <type>string</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Make-Trip-Process-customer" originalID="N-Make-Trip-Process_customer">
+            <name>customer</name>
+            <type>string</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Make-Trip-Process-flightDetails" originalID="N-Make-Trip-Process_flightDetails">
+            <name>flightDetails</name>
+            <type>string</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Make-Trip-Process-hotelDetails" originalID="N-Make-Trip-Process_hotelDetails">
+            <name>hotelDetails</name>
+            <type>string</type>
+        </Object>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Make-Trip-Process-registrInfo" originalID="N-Make-Trip-Process_registrInfo">
+            <name>registrInfo</name>
+            <type>tripRegisterType</type>
+        </Object>
+    </Net>
+</ns2:CanonicalProcess>

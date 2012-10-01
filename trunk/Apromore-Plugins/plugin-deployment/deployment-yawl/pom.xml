@@ -47,11 +47,19 @@
 			<version>1.0</version>
 			<scope>compile</scope> <!-- Change to provided as deployed on Eclipse Virgo -->
 		</dependency>
-
-		<!-- Your own 3rd party dependencies -->
-
 		
-		
+		<!-- Your own dependencies -->
+		<dependency>
+			<groupId>org.apromore.plugin</groupId>
+			<artifactId>canoniser-yawl</artifactId>
+			<version>1.0</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.apache.httpcomponents</groupId>
+			<artifactId>httpclient-osgi</artifactId>
+			<version>4.2.1</version>
+		</dependency>
+			
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -81,7 +89,13 @@
 		</dependency>
 		
 		<!-- Add your own Test dependencies here -->	
-			
+		<dependency>
+		    <groupId>org.apache.httpcomponents</groupId>
+		    <artifactId>httpclient</artifactId>
+		    <version>4.2.1</version>
+		    <classifier>tests</classifier>
+		    <scope>test</scope>
+		</dependency>
 	</dependencies>
 	
 </project>
