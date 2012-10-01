@@ -26,6 +26,11 @@ package org.apromore.plugin.property;
 public class DefaultProperty implements PropertyType {
 
     /**
+     * ID of the Property
+     */
+    private final String id;
+
+    /**
      * Short name of the Property
      */
     private final String name;
@@ -53,14 +58,16 @@ public class DefaultProperty implements PropertyType {
     /**
      * Create a new Property with given attributes and specify a default value.
      *
-     * @param name
-     * @param valueType
-     * @param description
-     * @param isMandatory
-     * @param defaultValue
+     * @param id of the property
+     * @param name of the property
+     * @param valueType of the property
+     * @param description of the property
+     * @param isMandatory true if Plugin requires this property to work properly
+     * @param defaultValue of type {@see #getValueType()}
      */
-    public DefaultProperty(final String name, final Class<?> valueType, final String description, final Boolean isMandatory, final Object defaultValue) {
+    public DefaultProperty(final String id, final String name, final Class<?> valueType, final String description, final Boolean isMandatory, final Object defaultValue) {
         super();
+        this.id = id;
         this.name = name;
         this.valueType = valueType;
         this.description = description;
@@ -71,16 +78,26 @@ public class DefaultProperty implements PropertyType {
     /**
      * Create a new Property with given attributes without specifying a default value. The value will be initialised with NULL.
      *
-     * @param name
-     * @param valueType
-     * @param description
-     * @param isMandatory
+     * @param id of the property
+     * @param name of the property
+     * @param valueType of the property
+     * @param description of the property
+     * @param isMandatory true if Plugin requires this property to work properly
      */
-    public DefaultProperty(final String name, final Class<?> valueType, final String description, final Boolean isMandatory) {
+    public DefaultProperty(final String id, final String name, final Class<?> valueType, final String description, final Boolean isMandatory) {
+        this.id = id;
         this.name = name;
         this.valueType = valueType;
         this.description = description;
         this.isMandatory = isMandatory;
+    }
+
+    /* (non-Javadoc)
+     * @see org.apromore.plugin.property.PropertyType#getId()
+     */
+    @Override
+    public final String getId() {
+        return this.id;
     }
 
     /*
@@ -89,7 +106,7 @@ public class DefaultProperty implements PropertyType {
      * @see org.apromore.plugin.property.PropertyType#getName()
      */
     @Override
-    public String getName() {
+    public final String getName() {
         return this.name;
     }
 
@@ -99,7 +116,7 @@ public class DefaultProperty implements PropertyType {
      * @see org.apromore.plugin.property.PropertyType#getDescription()
      */
     @Override
-    public String getDescription() {
+    public final String getDescription() {
         return this.description;
     }
 
@@ -144,7 +161,7 @@ public class DefaultProperty implements PropertyType {
      * @see org.apromore.plugin.property.PropertyType#getValueType()
      */
     @Override
-    public Class<?> getValueType() {
+    public final Class<?> getValueType() {
         return valueType;
     }
 
@@ -167,7 +184,7 @@ public class DefaultProperty implements PropertyType {
     public final int hashCode() {
         final int prime = 31;
         int result = 1;
-        result = prime * result + ((name == null) ? 0 : name.hashCode());
+        result = prime * result + ((id == null) ? 0 : id.hashCode());
         return result;
     }
 
@@ -188,11 +205,11 @@ public class DefaultProperty implements PropertyType {
             return false;
         }
         DefaultProperty other = (DefaultProperty) obj;
-        if (name == null) {
-            if (other.name != null) {
+        if (id == null) {
+            if (other.id != null) {
                 return false;
             }
-        } else if (!name.equals(other.name)) {
+        } else if (!id.equals(other.id)) {
             return false;
         }
         return true;
@@ -205,7 +222,7 @@ public class DefaultProperty implements PropertyType {
      */
     @Override
     public String toString() {
-        return String.format("DefaultProperty [name=%s, isMandatory=%s, value=%s, valueType=%s]", name, isMandatory, value, valueType);
+        return String.format("DefaultProperty [id=%s, name=%s, isMandatory=%s, value=%s, valueType=%s]",id , name, isMandatory, value, valueType);
     }
 
 }

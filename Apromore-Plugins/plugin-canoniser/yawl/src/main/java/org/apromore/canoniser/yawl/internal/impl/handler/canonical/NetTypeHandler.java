@@ -18,6 +18,7 @@ import java.util.Set;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
+import org.apromore.canoniser.yawl.internal.utils.ExpressionUtils;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
@@ -154,7 +155,7 @@ public class NetTypeHandler extends DecompositionHandler<NetType, YAWLSpecificat
         nameSet.add(localVar.getName());
         localVar.setType(obj.getType());
         localVar.setIndex(BigInteger.valueOf(index));
-        // localVar.setInitialValue("");
+        localVar.setNamespace(ExpressionUtils.DEFAULT_TYPE_NAMESPACE);
         return localVar;
     }
 

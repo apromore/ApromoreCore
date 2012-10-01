@@ -11,9 +11,13 @@
  */
 package org.apromore.plugin.deployment;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.apromore.plugin.deployment.provider.DeploymentPluginProvider;
+import org.apromore.plugin.exception.PluginNotFoundException;
+import org.apromore.plugin.provider.PluginProviderHelper;
 
 /**
  * Providing the default Provider implementation
@@ -25,18 +29,73 @@ public abstract class DeploymentPluginProviderImpl implements DeploymentPluginPr
 
     private List<DeploymentPlugin> internalDeploymentPluginList;
 
-	@Override
-	public DeploymentPlugin findExamplePlugin(final String name) {
-		//TODO search in our list
-		return null;
-	}
-
     protected List<DeploymentPlugin> getInternalDeploymentPluginList() {
         return internalDeploymentPluginList;
     }
 
     protected void setInternalDeploymentPluginList(final List<DeploymentPlugin> internalDeploymentPluginList) {
         this.internalDeploymentPluginList = internalDeploymentPluginList;
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apromore.plugin.deployment.provider.DeploymentPluginProvider#listAll()
+     */
+    @Override
+    public Collection<DeploymentPlugin> listAll() {
+        return findAllDeploymentPlugins(null, null);
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apromore.plugin.deployment.provider.DeploymentPluginProvider#findByName(java.lang.String)
+     */
+    @Override
+    public DeploymentPlugin findByName(final String name) throws PluginNotFoundException {
+        List<DeploymentPlugin> list = findAllDeploymentPlugins(null, name);
+        if (list.isEmpty()) {
+            throw new PluginNotFoundException();
+        } else {
+            return list.get(0);
+        }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apromore.plugin.deployment.provider.DeploymentPluginProvider#findByNativeType(java.lang.String)
+     */
+    @Override
+    public DeploymentPlugin findByNativeType(final String nativeType) throws PluginNotFoundException {
+        List<DeploymentPlugin> list = findAllDeploymentPlugins(nativeType, null);
+        if (list.isEmpty()) {
+            throw new PluginNotFoundException();
+        } else {
+            return list.get(0);
+        }
+    }
+
+    /**
+     * Returns a List of DeploymentPlugin with matching parameters.
+     *
+     * @param nativeType
+     *            can be NULL
+     * @param name
+     *            can be NULL
+     * @return List of DeploymentPlugin or empty List
+     */
+    private List<DeploymentPlugin> findAllDeploymentPlugins(final String nativeType, final String name) {
+
+        final List<DeploymentPlugin> deploymentList = new ArrayList<DeploymentPlugin>();
+
+        for (final DeploymentPlugin d : getInternalDeploymentPluginList()) {
+            if (PluginProviderHelper.compareNullable(nativeType, d.getNativeType()) && PluginProviderHelper.compareNullable(name, d.getName())) {
+                deploymentList.add(d);
+            }
+        }
+        return deploymentList;
     }
 
 }

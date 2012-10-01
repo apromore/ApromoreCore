@@ -1,5 +1,8 @@
 package org.apromore.plugin.provider;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.config.BeanDefinition;
@@ -9,11 +12,28 @@ import org.springframework.context.annotation.ClassPathBeanDefinitionScanner;
 import org.springframework.core.type.filter.AssignableTypeFilter;
 import org.springframework.core.type.filter.TypeFilter;
 
-public class PluginProviderHelper {
+public final class PluginProviderHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PluginProviderHelper.class);
 
     private PluginProviderHelper() {
+    }
+
+    public static <T> List<T> findPluginsByClass(final Class<T> clazz) {
+        List<T> canoniserList = new ArrayList<T>();
+        Class<?>[] classes = PluginProviderHelper.getAllClassesImplementingInterfaceUsingSpring(clazz);
+        for (int i = 0; i < classes.length; i++) {
+            Class<?> canoniserClass = classes[i];
+            try {
+                Object canoniser = canoniserClass.newInstance();
+                if (clazz.isInstance(canoniser)) {
+                    canoniserList.add(clazz.cast(canoniser));
+                }
+            } catch (InstantiationException | IllegalAccessException e) {
+                LOGGER.warn("Could not instantiate "+clazz.getName()+": "+canoniserClass.getName());
+            }
+        }
+        return canoniserList;
     }
 
     public static Class<?>[] getAllClassesImplementingInterfaceUsingSpring(final Class<?> clazz) {

@@ -28,24 +28,25 @@ public class StringProperty extends DefaultProperty {
     /**
      * Create a new StringProperty with given attributes without specifying a default value. The value will be initialised with NULL.
      *
-     * @param name
-     * @param description
-     * @param isMandatory
+     * @param id of the property
+     * @param name of the property
+     * @param description of the property
+     * @param isMandatory true if Plugin requires this property to work properly
      */
-    public StringProperty(final String name, final String description, final Boolean isMandatory) {
-        super(name, String.class, description, isMandatory);
+    public StringProperty(final String id, final String name, final String description, final Boolean isMandatory) {
+        super(id, name, String.class, description, isMandatory);
     }
 
     /**
      * Create a new StringProperty with given attributes without specifying a default value. The value will be initialised with NULL.
      *
-     * @param name
-     * @param description
-     * @param isMandatory
-     * @param defaultValue
+     * @param name of the property
+     * @param description of the property
+     * @param isMandatory true if Plugin requires this property to work properly
+     * @param defaultValue of the property
      */
-    public StringProperty(final String name, final String description, final Boolean isMandatory, final Object defaultValue) {
-        super(name, String.class, description, isMandatory, defaultValue);
+    public StringProperty(final String id, final String name, final String description, final Boolean isMandatory, final Object defaultValue) {
+        super(id, name, String.class, description, isMandatory, defaultValue);
     }
 
 

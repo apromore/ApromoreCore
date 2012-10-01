@@ -5,7 +5,6 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.apromore.plugin.impl.DefaultPropertyAwarePlugin;
 import org.apromore.plugin.property.BooleanProperty;
 import org.apromore.plugin.property.DefaultProperty;
 import org.junit.Before;
@@ -27,8 +26,8 @@ public class DefaultPropertyAwarePluginUnitTest {
     public void setUp() {
         this.propertyAwarePlugin = new DefaultPropertyAwarePlugin() {
         };
-        mandatoryProperty = new DefaultProperty("test1", String.class, "test", true);
-        nonMandatoryProperty = new DefaultProperty("test2", String.class, "test", false);
+        mandatoryProperty = new DefaultProperty("t1", "test1", String.class, "test", true);
+        nonMandatoryProperty = new DefaultProperty("t2", "test2", String.class, "test", false);
         this.propertyAwarePlugin.addProperty(mandatoryProperty);
         this.propertyAwarePlugin.addProperty(nonMandatoryProperty);
     }
@@ -54,8 +53,8 @@ public class DefaultPropertyAwarePluginUnitTest {
     @Test
     public void testAddProperty() {
         assertFalse(this.propertyAwarePlugin.addProperty(null));
-        assertTrue(this.propertyAwarePlugin.addProperty(new BooleanProperty("test", "test", true)));
-        assertFalse(this.propertyAwarePlugin.addProperty(new BooleanProperty("test", "test", true)));
+        assertTrue(this.propertyAwarePlugin.addProperty(new BooleanProperty("t1", "test", "test", true)));
+        assertFalse(this.propertyAwarePlugin.addProperty(new BooleanProperty("t1", "test", "test", true)));
     }
 
 }

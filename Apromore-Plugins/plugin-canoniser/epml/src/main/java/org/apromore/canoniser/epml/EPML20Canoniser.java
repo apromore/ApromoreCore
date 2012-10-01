@@ -29,14 +29,15 @@ import de.epml.TypeEPML;
  */
 @Component("epmlCanoniser")
 public class EPML20Canoniser extends DefaultAbstractCanoniser {
+    public static final String EPML_CONTEXT = "de.epml";
 
-	public static final String EPML_CONTEXT = "de.epml";
+    private static final String ADD_FAKE_PROPERTY_ID = "addFakeProperties";
 
-	private final BooleanProperty fakeEventsProperty;
+    private final BooleanProperty fakeEventsProperty;
 
 	public EPML20Canoniser() {
 		super();
-		this.fakeEventsProperty = new BooleanProperty("addFakeProperties", "", false, true);
+		this.fakeEventsProperty = new BooleanProperty(ADD_FAKE_PROPERTY_ID,"Add Fake Events?", "", false, true);
 		addProperty(fakeEventsProperty);
 	}
 
