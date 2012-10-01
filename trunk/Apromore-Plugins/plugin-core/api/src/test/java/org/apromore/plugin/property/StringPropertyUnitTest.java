@@ -9,11 +9,11 @@ public class StringPropertyUnitTest {
 
     @Test
     public void test() {
-        StringProperty prop = new StringProperty("test", "test", false, "test");
+        StringProperty prop = new StringProperty("t1", "test", "test", false, "test");
         assertEquals("test", prop.getValueAsString());
         assertEquals("test", prop.getValue());
 
-        StringProperty prop2 = new StringProperty("test", "test", false);
+        StringProperty prop2 = new StringProperty("t1", "test", "test", false);
         try {
             prop2.setValue(false);
             fail();
@@ -21,7 +21,7 @@ public class StringPropertyUnitTest {
             // Expected
         }
 
-        StringProperty prop3 = new StringProperty("test", "test", false);
+        StringProperty prop3 = new StringProperty("t1", "test", "test", false);
         prop3.setValue("foobar");
         assertEquals("foobar", prop3.getValueAsString());
     }

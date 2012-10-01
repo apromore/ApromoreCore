@@ -1,36 +1,27 @@
 package org.apromore.canoniser.provider.impl;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.apromore.canoniser.Canoniser;
 import org.apromore.plugin.provider.PluginProviderHelper;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
+/**
+ * CanoniserProvider using Spring/Reflection to find installed Canonisers
+ *
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ *
+ */
 @Service
 public class SimpleSpringCanoniserProvider extends CanoniserProviderImpl {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(SimpleSpringCanoniserProvider.class);
-
+    /**
+     * Searchs for all installed Canonisers using Spring and Reflection
+     */
     public SimpleSpringCanoniserProvider() {
         super();
-        List<Canoniser> canoniserList = new ArrayList<Canoniser>();
-        Class<?>[] classes = PluginProviderHelper.getAllClassesImplementingInterfaceUsingSpring(Canoniser.class);
-        for (int i = 0; i < classes.length; i++) {
-            Class<?> canoniserClass = classes[i];
-            try {
-                Object canoniser = canoniserClass.newInstance();
-                if (canoniser instanceof Canoniser) {
-                    canoniserList.add((Canoniser) canoniser);
-                }
-            } catch (InstantiationException | IllegalAccessException e) {
-                LOGGER.warn("Could not instantiate Canoniser: "+canoniserClass.getName());
-            }
-        }
+        List<Canoniser> canoniserList = PluginProviderHelper.findPluginsByClass(Canoniser.class);
         setInternalCanoniserList(canoniserList);
     }
-
 
 }

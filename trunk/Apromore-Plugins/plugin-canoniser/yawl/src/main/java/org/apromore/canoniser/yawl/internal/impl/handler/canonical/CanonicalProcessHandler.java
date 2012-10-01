@@ -16,6 +16,8 @@ import java.util.Collection;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.CheckValidModelMacro;
@@ -34,6 +36,8 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
 import org.yawlfoundation.yawlschema.MetaDataType;
 import org.yawlfoundation.yawlschema.SpecificationSetFactsType;
 import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
@@ -68,6 +72,8 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
 
         spec.setMetaData(convertMetaData(getObject()));
 
+        spec.setAny(createDataTypeElement());
+
         LOGGER.debug("Added Specification {}", spec.getName());
 
         final MacroRewriter patternRewriter = createPatternRewriter();
@@ -83,6 +89,18 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
         for (final NetType n : getObject().getNet()) {
             getContext().createHandler(n, spec, getObject()).convert();
         }
+    }
+
+    private Element createDataTypeElement() {
+        final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+        dbf.setNamespaceAware(false);
+        Document doc;
+        try {
+            doc = dbf.newDocumentBuilder().newDocument();
+        } catch (final ParserConfigurationException e) {
+            throw new RuntimeException("Could not build document while creating YAWL data type fragment. This should never happen!", e);
+        }
+        return doc.createElementNS("http://www.w3.org/2001/XMLSchema","schema");
     }
 
     private MacroRewriter createPatternRewriter() {

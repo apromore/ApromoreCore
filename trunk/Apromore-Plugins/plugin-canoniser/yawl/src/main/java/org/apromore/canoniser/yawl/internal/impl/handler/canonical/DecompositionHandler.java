@@ -4,6 +4,7 @@ import java.math.BigInteger;
 import java.util.Set;
 
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
+import org.apromore.canoniser.yawl.internal.utils.ExpressionUtils;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.SoftType;
 import org.slf4j.Logger;
@@ -59,6 +60,7 @@ public abstract class DecompositionHandler<T, E> extends BaseTaskHandler<T, E> {
         nameSet.add(var.getName());
         var.setType(obj.getType());
         var.setIndex(BigInteger.valueOf(index));
+        var.setNamespace(ExpressionUtils.DEFAULT_TYPE_NAMESPACE);
     }
 
 }
