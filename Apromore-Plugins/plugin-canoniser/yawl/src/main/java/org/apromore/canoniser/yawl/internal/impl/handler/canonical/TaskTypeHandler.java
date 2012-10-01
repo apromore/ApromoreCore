@@ -205,8 +205,9 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
     }
 
     private boolean hasDistributionSet(final ResourceTypeType resourceType) {
-        return resourceType.getDistributionSet() != null && resourceType.getDistributionSet().getResourceTypeRef() != null
-                && !resourceType.getDistributionSet().getResourceTypeRef().isEmpty();
+        return false;
+//        return resourceType.getDistributionSet() != null && resourceType.getDistributionSet().getResourceTypeRef() != null
+//                && !resourceType.getDistributionSet().getResourceTypeRef().isEmpty();
     }
 
     private void convertDataObjects(final ExternalTaskFactsType taskFacts, final TaskType task) throws CanoniserException {

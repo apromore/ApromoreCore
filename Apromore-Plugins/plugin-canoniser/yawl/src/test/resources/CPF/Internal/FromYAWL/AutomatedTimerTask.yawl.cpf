@@ -4,7 +4,7 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TimerType" timeDuration="P30M" id="idceeec496-3e2b-4cbd-b67e-8ce97e462ee0"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TimerType" timeDuration="P30M" id="idba7be871-1c68-43e5-8821-55eb2ca4a6b7"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
             <name>A</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -34,16 +34,17 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/codelet">
                 <codelet:codelet xmlns:codelet="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">org.yawlfoundation.yawl.resourcing.codelets.RandomWait</codelet:codelet>
             </attribute>
-            <resourceTypeRef id="idbd6f3632-af9a-4f52-8558-fd8cfa25916b" resourceTypeId="id2ec5e588-79a0-454d-b2f2-53fc3275d3e6"/>
+            <resourceTypeRef id="ida820eaf3-772f-4b28-a986-5fc33e89fbaa" resourceTypeId="a63ea88f-fd14-4dc6-b6f2-1eba886562e7"/>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="idc77cb418-a746-4fe4-802b-3708177a906d" default="true" sourceId="idceeec496-3e2b-4cbd-b67e-8ce97e462ee0" targetId="C-A"/>
-        <Edge id="id362eed60-7865-4257-9e65-6bf67459be9b" default="true" sourceId="C-InputCondition" targetId="idceeec496-3e2b-4cbd-b67e-8ce97e462ee0"/>
+        <Edge id="idd58d55fb-9bd4-4405-b189-6bcdd1eb4568" default="true" sourceId="idba7be871-1c68-43e5-8821-55eb2ca4a6b7" targetId="C-A"/>
+        <Edge id="id045848d2-1b29-416b-977a-b077698540d7" default="true" sourceId="C-InputCondition" targetId="idba7be871-1c68-43e5-8821-55eb2ca4a6b7"/>
         <Edge id="C-A-OutputCondition" default="true" sourceId="C-A" targetId="C-OutputCondition"/>
     </Net>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftwareSystemType" id="id2ec5e588-79a0-454d-b2f2-53fc3275d3e6">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:NonhumanType" id="a63ea88f-fd14-4dc6-b6f2-1eba886562e7">
         <name>org.yawlfoundation.yawl.resourcing.codelets.RandomWait</name>
+        <type>SoftwareSystem</type>
     </ResourceType>
 </ns2:CanonicalProcess>

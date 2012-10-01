@@ -1025,7 +1025,7 @@ public class CanoniserDefinitions extends TDefinitions {
                 ResourceTypeRefType resourceTypeRef = new ResourceTypeRefType();
 
                 resourceTypeRef.setId(cpfIdFactory.newId(null));
-                resourceTypeRef.setOptional(false);  // redundant, since false is the default
+                //resourceTypeRef.setOptional(false);  // redundant, since false is the default
                 resourceTypeRef.setQualifier(null);
                 resourceTypeRef.setResourceTypeId(entry.getValue().getId());
 

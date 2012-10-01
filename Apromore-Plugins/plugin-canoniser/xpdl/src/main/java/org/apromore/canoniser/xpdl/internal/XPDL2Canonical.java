@@ -176,7 +176,7 @@ public class XPDL2Canonical {
                 ResourceTypeRefType ref = new ResourceTypeRefType();
                 if (res != null && res.getSpecializationIds().size() == 0) {
                     ref.setResourceTypeId(res.getId());
-                    ref.setOptional(false);
+                    //ref.setOptional(false);
                 } else {
                     ref = null;
                 }
@@ -424,7 +424,7 @@ public class XPDL2Canonical {
                     if (xCoordinate >= x && xCoordinate <= x + w && yCoordinate >= y && yCoordinate <= y + h) {
                         ResourceTypeRefType ref = new ResourceTypeRefType();
                         ref.setResourceTypeId(lane2resourceType.get(lane).getId());
-                        ref.setOptional(false);
+                        //ref.setOptional(false);
                         node.getResourceTypeRef().add(ref);
                     }
                 }

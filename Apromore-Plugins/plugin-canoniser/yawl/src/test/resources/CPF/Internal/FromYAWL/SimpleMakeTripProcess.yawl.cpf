@@ -28,16 +28,16 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
-                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
+                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <offer initiator="user"/>
                     <allocate initiator="user"/>
                     <start initiator="user"/>
-                </resourcing:resourcing>
+                </offer:offer>
             </attribute>
-            <objectRef id="b1ef65e3-7ea0-4c99-8d64-f7466c395516" objectId="D-N-Make-Trip-Process-registrInfo" type="output" optional="false" consumed="true"/>
-            <objectRef id="id82a415b5-32cc-4702-8928-4023521619cf" objectId="D-N-Make-Trip-Process-customer" type="output" optional="false" consumed="true"/>
-            <objectRef id="idaf77c348-3743-4fb3-8ec0-581c380cbd83" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="dfc791bb-16cb-4e88-b165-34a8c9e1d5c3" objectId="D-N-Make-Trip-Process-registrInfo" type="output" optional="false" consumed="true"/>
+            <objectRef id="id9523d079-361f-44d1-a1d0-0a5670ad3f83" objectId="D-N-Make-Trip-Process-customer" type="output" optional="false" consumed="true"/>
+            <objectRef id="c319ed91-65c1-4bd5-b5af-808dd3be5cd0" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>customer = {/Make_Trip_Process/customer/text()}</expression>
@@ -50,8 +50,9 @@
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>customer = {/register/customer/text()}</expression>
             </outputExpr>
+            <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="id0db6bb7f-3db1-4a5b-bbb8-63a13ab05373"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="a2cae0aa-308d-4403-8259-87710c715002"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-book-hotel-9" originalID="book_hotel_9">
             <name>book hotel</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -86,17 +87,17 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
-                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
+                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <offer initiator="user"/>
                     <allocate initiator="user"/>
                     <start initiator="user"/>
-                </resourcing:resourcing>
+                </offer:offer>
             </attribute>
-            <objectRef id="id20399ace-eca3-4b33-8899-4ba21c845ad1" objectId="D-N-Make-Trip-Process-hotelDetails" type="output" optional="false" consumed="true"/>
-            <objectRef id="id7234c774-0de2-427c-88b2-77b8952b6820" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
-            <objectRef id="idd7b712c1-5078-4761-afd4-e673fb79b75f" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
-            <objectRef id="ide7beb90f-9284-47ca-a521-98e2b34c240a" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="idf960ee0b-c074-4a95-a61f-56f8cb4c016e" objectId="D-N-Make-Trip-Process-hotelDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="id159aeebd-d65a-4c4e-92aa-76eadb380a72" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="idbda920a9-f1e8-4952-8d3c-4a717ffcbc55" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="id0827dca3-1a9b-4af4-8cb3-1b69434ec2af" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>startDate = {/Make_Trip_Process/registrInfo/startDate/text()}</expression>
@@ -113,6 +114,7 @@
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>hotelDetails = {/book_hotel/hotelDetails/text()}</expression>
             </outputExpr>
+            <teamWork>false</teamWork>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-book-flight-8" originalID="book_flight_8">
             <name>book flight</name>
@@ -148,17 +150,17 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
-                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
+                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <offer initiator="user"/>
                     <allocate initiator="user"/>
                     <start initiator="user"/>
-                </resourcing:resourcing>
+                </offer:offer>
             </attribute>
-            <objectRef id="e5e9723d-1b2d-48a2-bc50-72132048863d" objectId="D-N-Make-Trip-Process-flightDetails" type="output" optional="false" consumed="true"/>
-            <objectRef id="f66da54d-8636-47e6-babf-ada35e9c43e7" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
-            <objectRef id="ida45d7def-2bb9-4a64-a0e3-6cfd31438c40" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
-            <objectRef id="iddcf76831-e40f-4d8a-830d-5aaf7c2a6d3d" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="ca4d0aa9-82cd-47e1-abce-14fa7cda4a3c" objectId="D-N-Make-Trip-Process-flightDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="id9dcdbab2-22a0-44d6-b459-5ea2b206f2b2" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="e2e08542-6f2a-4985-8025-7209949505ea" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="ide66a381b-c8de-4894-aef5-ed5024e5936f" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>startDate = {/Make_Trip_Process/registrInfo/startDate/text()}</expression>
@@ -175,6 +177,7 @@
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>flightDetails = {/book_flight/flightDetails/text()}</expression>
             </outputExpr>
+            <teamWork>false</teamWork>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-book-car-10" originalID="book_car_10">
             <name>book car</name>
@@ -210,17 +213,17 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
-                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
+                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <offer initiator="user"/>
                     <allocate initiator="user"/>
                     <start initiator="user"/>
-                </resourcing:resourcing>
+                </offer:offer>
             </attribute>
-            <objectRef id="id2631bef9-fb20-4407-9ad2-553edb1d18ea" objectId="D-N-Make-Trip-Process-carDetails" type="output" optional="false" consumed="true"/>
-            <objectRef id="idb62b7a7e-9b78-4237-aa16-1b67d8095a93" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
-            <objectRef id="idf3521ad5-dcd2-4ead-9f61-8ac82154b2d1" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
-            <objectRef id="cb4cf3cf-42e1-4902-a6d3-a7ed6cb2b771" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="id796e8ea0-3724-4390-a3e6-2054e2171def" objectId="D-N-Make-Trip-Process-carDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="id66dd4438-b0d9-4217-9d62-24371d36f69d" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="id43bea949-8a88-409d-863e-1fb63ede43f9" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="f8b9276a-2c37-4744-8145-d19f80dc9c91" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>startDate = {/Make_Trip_Process/registrInfo/startDate/text()}</expression>
@@ -237,6 +240,7 @@
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>carDetails = {/book_car/carDetails/text()}</expression>
             </outputExpr>
+            <teamWork>false</teamWork>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-pay-11" originalID="pay_11">
             <name>pay</name>
@@ -280,18 +284,18 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/resourcing">
-                <resourcing:resourcing xmlns:resourcing="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
+                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
                     <offer initiator="user"/>
                     <allocate initiator="user"/>
                     <start initiator="user"/>
-                </resourcing:resourcing>
+                </offer:offer>
             </attribute>
-            <objectRef id="id2c298ea7-55e3-4ced-810b-3a16e3b7ea1d" objectId="D-N-Make-Trip-Process-hotelDetails" type="input" optional="false" consumed="true"/>
-            <objectRef id="idf0a6558a-1e83-4120-a2f1-5a9990edb0de" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
-            <objectRef id="id6eaaf840-edfd-4991-b72d-050361583bef" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
-            <objectRef id="d92e561e-d8a7-479e-9d92-54dd70482041" objectId="D-N-Make-Trip-Process-carDetails" type="input" optional="false" consumed="true"/>
-            <objectRef id="b32abd5e-e20a-4174-8378-a2ddfcd8f76f" objectId="D-N-Make-Trip-Process-flightDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="id2c320a80-791b-48fe-b860-8444fff09e93" objectId="D-N-Make-Trip-Process-hotelDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="a39447b1-d408-4b11-97a6-ac79f5d9c787" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="dd2cf97b-43f6-4ff4-a81f-33739c7dd408" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="id9b12da8b-48d5-4ede-9dac-1927135eaccc" objectId="D-N-Make-Trip-Process-carDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="e2e6381e-a340-405c-897e-e3a605a5eb48" objectId="D-N-Make-Trip-Process-flightDetails" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>hotelDetails = {/Make_Trip_Process/hotelDetails/text()}</expression>
@@ -312,18 +316,19 @@
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>flightDetails = {/Make_Trip_Process/flightDetails/text()}</expression>
             </inputExpr>
+            <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="ide6b92f0a-b248-4fb6-8df4-c7f98ba9bb2e"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="ide3e6a758-6331-45cc-b526-a9f9e129fd1d"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2"/>
         <Edge id="C-InputCondition-1-register-3" default="true" sourceId="C-InputCondition-1" targetId="C-register-3"/>
-        <Edge id="id630e5428-fb95-4ee7-bf76-7b45686d612a" default="true" sourceId="C-register-3" targetId="id0db6bb7f-3db1-4a5b-bbb8-63a13ab05373"/>
-        <Edge id="idc0dd4ada-8e52-4663-b277-6c59cbdd5ccc" default="true" sourceId="id0db6bb7f-3db1-4a5b-bbb8-63a13ab05373" targetId="C-book-hotel-9"/>
-        <Edge id="id2c8fca0b-8914-461c-a351-1cc74973a1d8" default="true" sourceId="id0db6bb7f-3db1-4a5b-bbb8-63a13ab05373" targetId="C-book-flight-8"/>
-        <Edge id="id399718a8-474d-4736-96c0-41ba361676ee" default="true" sourceId="id0db6bb7f-3db1-4a5b-bbb8-63a13ab05373" targetId="C-book-car-10"/>
-        <Edge id="idd3c8ffec-2543-41f1-9494-51490e2cb8b9" default="true" sourceId="ide6b92f0a-b248-4fb6-8df4-c7f98ba9bb2e" targetId="C-pay-11"/>
-        <Edge id="idef0cdec1-b431-4089-b81d-15ff3697324b" default="true" sourceId="C-book-hotel-9" targetId="ide6b92f0a-b248-4fb6-8df4-c7f98ba9bb2e"/>
-        <Edge id="idf35b9844-2cbf-451b-807d-9903a0eadc40" default="true" sourceId="C-book-flight-8" targetId="ide6b92f0a-b248-4fb6-8df4-c7f98ba9bb2e"/>
-        <Edge id="id62fca5f3-10f3-4118-b363-b157c8ea287f" default="true" sourceId="C-book-car-10" targetId="ide6b92f0a-b248-4fb6-8df4-c7f98ba9bb2e"/>
+        <Edge id="idc9f331a0-6456-438c-a71f-8105f78a8476" default="true" sourceId="C-register-3" targetId="a2cae0aa-308d-4403-8259-87710c715002"/>
+        <Edge id="id2009d260-f103-4657-9bbc-cb811257c45e" default="true" sourceId="a2cae0aa-308d-4403-8259-87710c715002" targetId="C-book-hotel-9"/>
+        <Edge id="id401577e8-5ef0-4fd2-ab0f-321eb06c3649" default="true" sourceId="a2cae0aa-308d-4403-8259-87710c715002" targetId="C-book-flight-8"/>
+        <Edge id="idb12503fd-5aef-4546-9938-1943bd5b390b" default="true" sourceId="a2cae0aa-308d-4403-8259-87710c715002" targetId="C-book-car-10"/>
+        <Edge id="ide2669c3e-b197-4419-bc59-b4c383ca831d" default="true" sourceId="ide3e6a758-6331-45cc-b526-a9f9e129fd1d" targetId="C-pay-11"/>
+        <Edge id="id520e334a-5174-4dd8-acb3-a1f24d62fd44" default="true" sourceId="C-book-hotel-9" targetId="ide3e6a758-6331-45cc-b526-a9f9e129fd1d"/>
+        <Edge id="id71269061-d1c8-429b-9b6c-a795235182af" default="true" sourceId="C-book-flight-8" targetId="ide3e6a758-6331-45cc-b526-a9f9e129fd1d"/>
+        <Edge id="ida22ca52d-6d62-4f09-a189-d4b61cc3c283" default="true" sourceId="C-book-car-10" targetId="ide3e6a758-6331-45cc-b526-a9f9e129fd1d"/>
         <Edge id="C-pay-11-OutputCondition-2" default="true" sourceId="C-pay-11" targetId="C-OutputCondition-2"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Make-Trip-Process-carDetails" originalID="N-Make-Trip-Process_carDetails">
             <name>carDetails</name>

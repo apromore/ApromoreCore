@@ -1,7 +1,7 @@
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical;
 
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.DirectionType;
+import org.apromore.cpf.DirectionEnum;
 import org.apromore.cpf.MessageType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.TaskType;
@@ -14,9 +14,9 @@ import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType;
 
 /**
  * TODO
- * 
+ *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class MessageTypeHandler extends DecompositionHandler<MessageType, NetFactsType> {
 
@@ -24,7 +24,7 @@ public class MessageTypeHandler extends DecompositionHandler<MessageType, NetFac
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -76,19 +76,19 @@ public class MessageTypeHandler extends DecompositionHandler<MessageType, NetFac
     }
 
     private boolean isIncomingMessage(final NodeType taskPredecessor) {
-        return taskPredecessor instanceof MessageType && ((MessageType) taskPredecessor).getDirection() == DirectionType.INCOMING;
+        return taskPredecessor instanceof MessageType && ((MessageType) taskPredecessor).getDirection() == DirectionEnum.INCOMING;
     }
 
     private boolean isTaskBeforeOutgoingMessage(final NodeType predecessor) {
-        return predecessor instanceof TaskType && getObject().getDirection() == DirectionType.OUTGOING;
+        return predecessor instanceof TaskType && getObject().getDirection() == DirectionEnum.OUTGOING;
     }
 
     private boolean isTaskAfterIncomingMessage(final NodeType successor) {
-        return successor instanceof TaskType && getObject().getDirection() == DirectionType.INCOMING;
+        return successor instanceof TaskType && getObject().getDirection() == DirectionEnum.INCOMING;
     }
 
     private boolean isOutgoingMessage(final NodeType taskSuccessor) {
-        return taskSuccessor instanceof MessageType && ((MessageType) taskSuccessor).getDirection() == DirectionType.OUTGOING;
+        return taskSuccessor instanceof MessageType && ((MessageType) taskSuccessor).getDirection() == DirectionEnum.OUTGOING;
     }
 
 }

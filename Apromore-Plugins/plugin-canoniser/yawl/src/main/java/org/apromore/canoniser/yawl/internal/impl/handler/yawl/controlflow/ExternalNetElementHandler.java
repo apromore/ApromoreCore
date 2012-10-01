@@ -31,7 +31,7 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.YAWLConversionHandler;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
-import org.apromore.cpf.DirectionType;
+import org.apromore.cpf.DirectionEnum;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.MessageType;
@@ -144,7 +144,7 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
      * @param direction
      * @return the converted MessageType
      */
-    protected MessageType createMessage(final DirectionType direction) {
+    protected MessageType createMessage(final DirectionEnum direction) {
         final MessageType msg = CPF_FACTORY.createMessageType();
         msg.setId(generateUUID());
         msg.setOriginalID(null);
