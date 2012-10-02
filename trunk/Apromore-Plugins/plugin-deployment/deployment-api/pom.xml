@@ -10,7 +10,7 @@
 	<artifactId>deployment-api</artifactId>
 	<version>1.0</version>
 
-	<name>Deployment Plugin</name>
+	<name>Apromore Deployment Plugin API</name>
 	<description>Deployment Plugin API, an interface to allow process deployment from Apromore.</description>
 
 	<build>

@@ -10,8 +10,8 @@
 	<artifactId>deployment-yawl</artifactId>
 	<version>1.0</version>
 
-	<name>YAWLDeploymentPlugin</name>
-	<description>Deploys Apromore processes to a running YAWL engine.</description>
+	<name>YAWL Deployment Plugin</name>
+	<description>Deploys processes from Apromore to a running YAWL engine.</description>
 
 	<build>
 		<plugins>
