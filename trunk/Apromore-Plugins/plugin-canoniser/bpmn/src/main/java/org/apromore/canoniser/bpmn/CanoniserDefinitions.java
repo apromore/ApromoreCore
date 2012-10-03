@@ -655,7 +655,7 @@ public class CanoniserDefinitions extends TDefinitions {
                 IdFactory cpfIdFactory = new IdFactory();  // Generate identifiers scoped to this single CPF document
                 cpf.setName(requiredName(getName()));
                 cpf.setVersion(CPF_VERSION);
-                addNet(cpf, cpfIdFactory, new ProcessWrapper(process), laneMap, bpmnFlowNodeToCpfNodeMap);
+                addNet(cpf, cpfIdFactory, new ProcessWrapper(process), laneMap, bpmnFlowNodeToCpfNodeMap, null);
 
                 // For each diagram in the BPMN, generate an ANF for this CPF
                 List<AnnotationsType> anfs = annotate();
@@ -709,17 +709,21 @@ public class CanoniserDefinitions extends TDefinitions {
      * Add a net to the CPF document, corresponding to a given BPMN process.
      *
      * @param process  the BPMN process to translate into a net
+     * @param parent  if this is a subnet, the parent net; if this is a root net, <code>null</code>
      * @return the new CPF net corresponding to the <var>process</var>
      */
     public NetType addNet(final CanonicalProcessType cpf,
                           final IdFactory cpfIdFactory,
                           final ProcessWrapper process,
                           final Map<TFlowNode, TLane> laneMap,
-                          final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap) throws CanoniserException {
+                          final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap,
+                          final NetType parent) throws CanoniserException {
 
         final NetType net = new NetType();
         net.setId(cpfIdFactory.newId(process.getId()));
-        cpf.getRootIds().add(net.getId());
+        if (parent == null) {
+            cpf.getRootIds().add(net.getId());
+        }
         cpf.getNet().add(net);
 
         // Generate resource types for each pool and lane
@@ -855,7 +859,7 @@ public class CanoniserDefinitions extends TDefinitions {
                     // Add the CPF child net
                     NetType subnet;
                     try {
-                        subnet = addNet(cpf, cpfIdFactory, new ProcessWrapper(subprocess), laneMap, bpmnFlowNodeToCpfNodeMap);
+                        subnet = addNet(cpf, cpfIdFactory, new ProcessWrapper(subprocess), laneMap, bpmnFlowNodeToCpfNodeMap, net);
                     } catch (CanoniserException e) {
                         throw new RuntimeException("Couldn't create CPF Net for BPMN SubProcess " + subprocess.getId(), e);  // TODO - remove wrapper hack
                     }

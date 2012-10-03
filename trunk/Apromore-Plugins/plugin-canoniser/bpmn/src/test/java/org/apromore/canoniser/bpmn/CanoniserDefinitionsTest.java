@@ -618,7 +618,30 @@ public class CanoniserDefinitionsTest {
      */
     @Test
     public void testCanoniseSubprocess() throws Exception {
-        testCanonise("Subprocess");
+        CanonicalProcessType cpf = testCanonise("Subprocess").getCpf(0);
+        assertEquals(2, cpf.getNet().size());  // Expecting 2 nets, the root and the BPMN SubProcess
+
+        // Root net
+        NetType net = cpf.getNet().get(0);
+        assertEquals(2, net.getEdge().size());
+        assertEquals(3, net.getNode().size());
+        assertEquals(Collections.singletonList(net.getId()), cpf.getRootIds());
+
+        assertEquals("Start", ((EventType) net.getNode().get(0)).getName());
+        assertTrue(net.getNode().get(1) instanceof TaskType);
+        TaskType task = (TaskType) net.getNode().get(1);  // CPF Task corresponding to the BPMN SubProcess
+        assertEquals("Subprocess", task.getName());
+        assertEquals("End", ((EventType) net.getNode().get(2)).getName());
+
+        // Subnet
+        NetType subnet = cpf.getNet().get(1);
+        assertEquals(2, subnet.getEdge().size());
+        assertEquals(3, subnet.getNode().size());
+        assertEquals(task.getSubnetId(), subnet.getId());
+
+        assertEquals("Start 2", ((EventType) subnet.getNode().get(0)).getName());
+        assertEquals("Task",    ((TaskType)  subnet.getNode().get(1)).getName());
+        assertEquals("End 2",   ((EventType) subnet.getNode().get(2)).getName());
     }
 
     // Decanonisation tests
