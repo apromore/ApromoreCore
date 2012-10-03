@@ -91,15 +91,15 @@ public class BPMN20Canoniser implements Canoniser {
                          final List<CanonicalProcessType> canonicalFormat) throws CanoniserException {
 
         try {
-            CanoniserResult result = JAXBContext.newInstance(BpmnObjectFactory.class,
-                                                             org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
-                                                             org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
-                                                             org.omg.spec.dd._20100524.dc.ObjectFactory.class,
-                                                             org.omg.spec.dd._20100524.di.ObjectFactory.class)
-                                                .createUnmarshaller()
-                                                .unmarshal(new StreamSource(bpmnInput), CanoniserDefinitions.class)
-                                                .getValue()  // discard the JAXBElement wrapper
-                                                .canonise();
+            CanoniserDefinitions definitions = JAXBContext.newInstance(BpmnObjectFactory.class,
+                                                                       org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
+                                                                       org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
+                                                                       org.omg.spec.dd._20100524.dc.ObjectFactory.class,
+                                                                       org.omg.spec.dd._20100524.di.ObjectFactory.class)
+                                                          .createUnmarshaller()
+                                                          .unmarshal(new StreamSource(bpmnInput), CanoniserDefinitions.class)
+                                                          .getValue();  // discard the JAXBElement wrapper
+            CanoniserResult result = canonise(definitions);
             for (int i = 0; i < result.size(); i++) {
                 annotationFormat.add(result.getAnf(i));
                 canonicalFormat.add(result.getCpf(i));
