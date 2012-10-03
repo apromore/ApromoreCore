@@ -15,13 +15,11 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
 import javax.xml.namespace.QName;
-import javax.xml.transform.OutputKeys;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 import javax.xml.transform.stream.StreamSource;
 
 // Local packages
@@ -52,7 +50,6 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TaskType;
-import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
@@ -67,7 +64,6 @@ import org.omg.spec.bpmn._20100524.model.TCollaboration;
 import org.omg.spec.bpmn._20100524.model.TDataObject;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
-import org.omg.spec.bpmn._20100524.model.TEvent;
 import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TExpression;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
@@ -291,25 +287,27 @@ public class CanoniserDefinitions extends TDefinitions {
      *
      * A flow node reference on a lane ought to be serialized as
      * <pre>
-     * <lane>
-     *   <flowNodeRef>id-123</flowNodeRef>
-     * </lane>
+     * &lt;lane&gt;
+     *   &lt;flowNodeRef&gt;id-123&lt;/flowNodeRef&gt;
+     * &lt;/lane&gt;
      * </pre>
      * but instead they end up serialized as
      * <pre>
-     * <lane>
-     *   <task id="id-123"/>
-     * </lane>
+     * &lt;lane&gt;
+     *   &lt;task id="id-123"/&gt;
+     * &lt;/lane&gt;
      * </pre>
      * This method applies an XSLT transform to correct things.
      *
      * @param definitions  the buggy JAXB document
-     * @throws JAXBException if <var>definitions</var> can't be marshalled to XML or unmarshalled back
+     * @param factory  source of elements for the result document
+     * @throws JAXBException if <code>definitions</code> can't be marshalled to XML or unmarshalled back
      * @throws TransformerException  if the XSLT transformation fails
      * @return corrected JAXB document
      */
-    public static CanoniserDefinitions correctFlowNodeRefs(CanoniserDefinitions definitions, /*org.apromore.cpf.ObjectFactory*/ BpmnObjectFactory factory)
-        throws JAXBException, TransformerException {
+    // TODO - change the return type and the factory parameter to be Defintions and ObjectFactory, and move to bpmn-schema
+    public static CanoniserDefinitions correctFlowNodeRefs(final CanoniserDefinitions definitions,
+                                                           final BpmnObjectFactory factory) throws JAXBException, TransformerException {
 
         JAXBContext context = JAXBContext.newInstance(factory.getClass(),
                                                       org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
@@ -324,7 +322,9 @@ public class CanoniserDefinitions extends TDefinitions {
 
         // Apply the XSLT transformation, generating a new DOM tree
         TransformerFactory transformerFactory = TransformerFactory.newInstance();
-        Transformer transformer = transformerFactory.newTransformer(new StreamSource(ClassLoader.getSystemResourceAsStream("xsd/fix-flowNodeRef.xsl")));
+        Transformer transformer = transformerFactory.newTransformer(
+            new StreamSource(ClassLoader.getSystemResourceAsStream("xsd/fix-flowNodeRef.xsl"))
+        );
         DOMSource finalSource = new DOMSource(intermediateResult.getNode());
         DOMResult finalResult = new DOMResult();
         transformer.transform(finalSource, finalResult);
@@ -339,10 +339,10 @@ public class CanoniserDefinitions extends TDefinitions {
      *
      * TODO - circular resource type chains cause non-termination!  Need to check for and prevent this.
      */
-    private void addChildLanes(TLane parentLane,
-                               List<ResourceTypeType> resourceTypeList,
-                               IdFactory bpmnIdFactory,
-                               Map<String, TBaseElement> idMap) {
+    private void addChildLanes(final TLane parentLane,
+                               final List<ResourceTypeType> resourceTypeList,
+                               final IdFactory bpmnIdFactory,
+                               final Map<String, TBaseElement> idMap) {
 
         TLaneSet laneSet = new TLaneSet();
         for (ResourceTypeType resourceType : resourceTypeList) {
@@ -409,14 +409,6 @@ public class CanoniserDefinitions extends TDefinitions {
         } else {
             throw new CanoniserException("Node " + node.getId() + " type not supported: " + node.getClass().getCanonicalName());
         }
-
-        /*
-                    private void populateWork(final TFlowNode flowNode, final WorkType work) {
-                        for (ResourceTypeRefType resourceTypeRef : work.getResourceTypeRef()) {
-                            logger.info(work.getId() + " should be in lane " + resourceTypeRef.getResourceTypeId() + " with processRef " + net.getId());
-                        }
-                    }
-        */
     }
 
     /**
@@ -675,42 +667,16 @@ public class CanoniserDefinitions extends TDefinitions {
     }
 
     /**
-     * Wrapper to provide a common interface to both {@link TProcess} and {@link TSubProcess}.
-     */
-    static class ProcessWrapper {
-        private final String id;
-        private final List<JAXBElement<? extends TArtifact>> artifact;
-        private final List<JAXBElement<? extends TFlowElement>> flowElement;
-        private final List<TLaneSet> laneSet;
-
-        /** @param process  wrapped instance */
-        ProcessWrapper(TProcess process) {
-            id = process.getId();
-            artifact = process.getArtifact();
-            flowElement = process.getFlowElement();
-            laneSet = process.getLaneSet();
-        }
-
-        /** @param subprocess  wrapped instance */
-        ProcessWrapper(TSubProcess subprocess) {
-            id = "subprocess";
-            artifact = subprocess.getArtifact();
-            flowElement = subprocess.getFlowElement();
-            laneSet = subprocess.getLaneSet();
-        }
-
-        String getId() { return id; }
-        List<JAXBElement<? extends TArtifact>> getArtifact() { return artifact; }
-        List<JAXBElement<? extends TFlowElement>> getFlowElement() { return flowElement; }
-        List<TLaneSet> getLaneSet() { return laneSet; }
-    }
-
-    /**
      * Add a net to the CPF document, corresponding to a given BPMN process.
      *
+     * @param cpf  The CPF document to populate
+     * @param cpfIdFactory  generator for CPF identifiers
      * @param process  the BPMN process to translate into a net
+     * @param laneMap  What BPMN lane does each flow node belong to?
+     * @param bpmnFlowNodeToCpfNodeMap  which BPMN nodes corresponding to which CPF nodes?
      * @param parent  if this is a subnet, the parent net; if this is a root net, <code>null</code>
-     * @return the new CPF net corresponding to the <var>process</var>
+     * @throws CanoniserException  if the new network cannot be added
+     * @return the new CPF net corresponding to the <code>process</code>
      */
     public NetType addNet(final CanonicalProcessType cpf,
                           final IdFactory cpfIdFactory,
@@ -861,7 +827,8 @@ public class CanoniserDefinitions extends TDefinitions {
                     try {
                         subnet = addNet(cpf, cpfIdFactory, new ProcessWrapper(subprocess), laneMap, bpmnFlowNodeToCpfNodeMap, net);
                     } catch (CanoniserException e) {
-                        throw new RuntimeException("Couldn't create CPF Net for BPMN SubProcess " + subprocess.getId(), e);  // TODO - remove wrapper hack
+                        throw new RuntimeException("Couldn't create CPF Net for BPMN SubProcess " + subprocess.getId(), e);
+                        // TODO - remove wrapper hack
                     }
 
                     // Add the CPF Task to the parent Net
@@ -1093,5 +1060,36 @@ public class CanoniserDefinitions extends TDefinitions {
      */
     static String requiredName(final String name) {
         return (name == null ? "" : name);
+    }
+
+    /**
+     * Wrapper to provide a common interface to both {@link TProcess} and {@link TSubProcess}.
+     */
+    static class ProcessWrapper {
+        private final String id;
+        private final List<JAXBElement<? extends TArtifact>> artifact;
+        private final List<JAXBElement<? extends TFlowElement>> flowElement;
+        private final List<TLaneSet> laneSet;
+
+        /** @param process  wrapped instance */
+        ProcessWrapper(final TProcess process) {
+            id = process.getId();
+            artifact = process.getArtifact();
+            flowElement = process.getFlowElement();
+            laneSet = process.getLaneSet();
+        }
+
+        /** @param subprocess  wrapped instance */
+        ProcessWrapper(final TSubProcess subprocess) {
+            id = "subprocess";
+            artifact = subprocess.getArtifact();
+            flowElement = subprocess.getFlowElement();
+            laneSet = subprocess.getLaneSet();
+        }
+
+        String getId() { return id; }
+        List<JAXBElement<? extends TArtifact>> getArtifact() { return artifact; }
+        List<JAXBElement<? extends TFlowElement>> getFlowElement() { return flowElement; }
+        List<TLaneSet> getLaneSet() { return laneSet; }
     }
 }
