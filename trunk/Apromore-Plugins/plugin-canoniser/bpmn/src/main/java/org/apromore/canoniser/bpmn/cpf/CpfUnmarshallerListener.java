@@ -10,7 +10,6 @@ import javax.xml.bind.Unmarshaller;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.NodeType;
-import org.apromore.cpf.TaskType;
 
 /**
  * As CPF elements are unmarshalled, populate their convenience fields.
