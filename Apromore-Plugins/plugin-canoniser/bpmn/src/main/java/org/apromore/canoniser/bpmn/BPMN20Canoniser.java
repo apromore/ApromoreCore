@@ -245,13 +245,13 @@ public class BPMN20Canoniser implements Canoniser {
      * @return the new CPF net corresponding to the <code>process</code>
      * @throws CanoniserException  if the net (and its subnets) can't be created and added
      */
-    public static NetType addNet(final CanonicalProcessType cpf,
-                                 final IdFactory cpfIdFactory,
-                                 final ProcessWrapper process,
-                                 final Map<TFlowNode, TLane> laneMap,
-                                 final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap,
-                                 final NetType parent,
-                                 final CanoniserDefinitions definitions) throws CanoniserException {
+    private static NetType addNet(final CanonicalProcessType cpf,
+                                  final IdFactory cpfIdFactory,
+                                  final ProcessWrapper process,
+                                  final Map<TFlowNode, TLane> laneMap,
+                                  final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap,
+                                  final NetType parent,
+                                  final CanoniserDefinitions definitions) throws CanoniserException {
 
         final NetType net = new NetType();
         net.setId(cpfIdFactory.newId(process.getId()));
