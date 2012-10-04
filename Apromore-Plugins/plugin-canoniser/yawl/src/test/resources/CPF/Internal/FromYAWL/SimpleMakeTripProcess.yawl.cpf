@@ -28,19 +28,12 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
-                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
-                    <offer initiator="user"/>
-                    <allocate initiator="user"/>
-                    <start initiator="user"/>
-                </offer:offer>
-            </attribute>
-            <objectRef id="dfc791bb-16cb-4e88-b165-34a8c9e1d5c3" objectId="D-N-Make-Trip-Process-registrInfo" type="output" optional="false" consumed="true"/>
-            <objectRef id="id9523d079-361f-44d1-a1d0-0a5670ad3f83" objectId="D-N-Make-Trip-Process-customer" type="output" optional="false" consumed="true"/>
-            <objectRef id="c319ed91-65c1-4bd5-b5af-808dd3be5cd0" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="idf6d63c7b-203a-4030-896e-36aaab4241da" objectId="D-N-Make-Trip-Process-registrInfo" type="output" optional="false" consumed="true"/>
+            <objectRef id="id92227bda-4855-479e-a07e-b5fec721cce5" objectId="D-N-Make-Trip-Process-customer" type="output" optional="false" consumed="true"/>
+            <objectRef id="a526e64b-a2d1-4168-9b05-d7463039356f" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = {/Make_Trip_Process/customer/text()}</expression>
+                <expression>customer = {cpf:getObjectValue('customer')/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
@@ -52,7 +45,7 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="a2cae0aa-308d-4403-8259-87710c715002"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="id20fd34a2-220e-43b3-9994-8b553ffb88b2"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-book-hotel-9" originalID="book_hotel_9">
             <name>book hotel</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -87,28 +80,21 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
-                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
-                    <offer initiator="user"/>
-                    <allocate initiator="user"/>
-                    <start initiator="user"/>
-                </offer:offer>
-            </attribute>
-            <objectRef id="idf960ee0b-c074-4a95-a61f-56f8cb4c016e" objectId="D-N-Make-Trip-Process-hotelDetails" type="output" optional="false" consumed="true"/>
-            <objectRef id="id159aeebd-d65a-4c4e-92aa-76eadb380a72" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
-            <objectRef id="idbda920a9-f1e8-4952-8d3c-4a717ffcbc55" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
-            <objectRef id="id0827dca3-1a9b-4af4-8cb3-1b69434ec2af" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="id595fa6ad-f8db-4225-8c82-65f1c269ea5f" objectId="D-N-Make-Trip-Process-hotelDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="b681cf6a-1883-44b4-a888-3670222311d1" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="idcad27f2b-9b7e-4956-9697-122eadc019b8" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="ida9430448-a735-401a-b1ad-dd437a89acaa" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>startDate = {/Make_Trip_Process/registrInfo/startDate/text()}</expression>
+                <expression>startDate = {cpf:getObjectValue('registrInfo')/startDate/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>endDate = {/Make_Trip_Process/registrInfo/endDate/text()}</expression>
+                <expression>endDate = {cpf:getObjectValue('registrInfo')/endDate/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = {/Make_Trip_Process/customer/text()}</expression>
+                <expression>customer = {cpf:getObjectValue('customer')/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
@@ -150,28 +136,21 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
-                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
-                    <offer initiator="user"/>
-                    <allocate initiator="user"/>
-                    <start initiator="user"/>
-                </offer:offer>
-            </attribute>
-            <objectRef id="ca4d0aa9-82cd-47e1-abce-14fa7cda4a3c" objectId="D-N-Make-Trip-Process-flightDetails" type="output" optional="false" consumed="true"/>
-            <objectRef id="id9dcdbab2-22a0-44d6-b459-5ea2b206f2b2" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
-            <objectRef id="e2e08542-6f2a-4985-8025-7209949505ea" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
-            <objectRef id="ide66a381b-c8de-4894-aef5-ed5024e5936f" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="f4ef06bc-f382-44c0-af13-7c8e6201fb33" objectId="D-N-Make-Trip-Process-flightDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="idb35dbb9d-a7d2-4f93-9336-4a3613b9e08c" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="fb1e34dc-f978-4913-bdd1-648214b13ef2" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="id6cc36c91-dc07-4e97-b40f-92a28362c6fd" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>startDate = {/Make_Trip_Process/registrInfo/startDate/text()}</expression>
+                <expression>startDate = {cpf:getObjectValue('registrInfo')/startDate/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>endDate = {/Make_Trip_Process/registrInfo/endDate/text()}</expression>
+                <expression>endDate = {cpf:getObjectValue('registrInfo')/endDate/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = {/Make_Trip_Process/customer/text()}</expression>
+                <expression>customer = {cpf:getObjectValue('customer')/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
@@ -213,28 +192,21 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
-                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
-                    <offer initiator="user"/>
-                    <allocate initiator="user"/>
-                    <start initiator="user"/>
-                </offer:offer>
-            </attribute>
-            <objectRef id="id796e8ea0-3724-4390-a3e6-2054e2171def" objectId="D-N-Make-Trip-Process-carDetails" type="output" optional="false" consumed="true"/>
-            <objectRef id="id66dd4438-b0d9-4217-9d62-24371d36f69d" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
-            <objectRef id="id43bea949-8a88-409d-863e-1fb63ede43f9" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
-            <objectRef id="f8b9276a-2c37-4744-8145-d19f80dc9c91" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="id457b482b-743d-45a9-b8c7-57c48a452bc4" objectId="D-N-Make-Trip-Process-carDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="idac839c4a-b39d-4b94-a7a8-3b4e3e17137e" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="idfbd943e4-4b9d-435c-b417-f111cecb60ff" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="ab8a5c4b-c2c3-40c5-9a02-e0dc28f54efc" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>startDate = {/Make_Trip_Process/registrInfo/startDate/text()}</expression>
+                <expression>startDate = {cpf:getObjectValue('registrInfo')/startDate/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>endDate = {/Make_Trip_Process/registrInfo/endDate/text()}</expression>
+                <expression>endDate = {cpf:getObjectValue('registrInfo')/endDate/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = {/Make_Trip_Process/customer/text()}</expression>
+                <expression>customer = {cpf:getObjectValue('customer')/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
@@ -284,70 +256,108 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
-                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
-                    <offer initiator="user"/>
-                    <allocate initiator="user"/>
-                    <start initiator="user"/>
-                </offer:offer>
-            </attribute>
-            <objectRef id="id2c320a80-791b-48fe-b860-8444fff09e93" objectId="D-N-Make-Trip-Process-hotelDetails" type="input" optional="false" consumed="true"/>
-            <objectRef id="a39447b1-d408-4b11-97a6-ac79f5d9c787" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
-            <objectRef id="dd2cf97b-43f6-4ff4-a81f-33739c7dd408" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
-            <objectRef id="id9b12da8b-48d5-4ede-9dac-1927135eaccc" objectId="D-N-Make-Trip-Process-carDetails" type="input" optional="false" consumed="true"/>
-            <objectRef id="e2e6381e-a340-405c-897e-e3a605a5eb48" objectId="D-N-Make-Trip-Process-flightDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="fe30242e-c601-4477-8d6c-b37f82cfd402" objectId="D-N-Make-Trip-Process-hotelDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="d38c1216-7b94-4522-9000-45312302e7db" objectId="D-N-Make-Trip-Process-registrInfo" type="input" optional="false" consumed="true"/>
+            <objectRef id="c94d1f7e-7320-4c78-a967-c792cc62adf9" objectId="D-N-Make-Trip-Process-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="id5ce2299b-c15b-440e-ba11-91b7e78d24b8" objectId="D-N-Make-Trip-Process-carDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="d751ceb9-f3c2-4349-af21-d66101cb0ade" objectId="D-N-Make-Trip-Process-flightDetails" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>hotelDetails = {/Make_Trip_Process/hotelDetails/text()}</expression>
+                <expression>hotelDetails = {cpf:getObjectValue('hotelDetails')/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>payAccNumber = {/Make_Trip_Process/registrInfo/payAccNumber/text()}</expression>
+                <expression>payAccNumber = {cpf:getObjectValue('registrInfo')/payAccNumber/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = {/Make_Trip_Process/customer/text()}</expression>
+                <expression>customer = {cpf:getObjectValue('customer')/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>carDetails = {/Make_Trip_Process/carDetails/text()}</expression>
+                <expression>carDetails = {cpf:getObjectValue('carDetails')/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>flightDetails = {/Make_Trip_Process/flightDetails/text()}</expression>
+                <expression>flightDetails = {cpf:getObjectValue('flightDetails')/text()}</expression>
             </inputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="ide3e6a758-6331-45cc-b526-a9f9e129fd1d"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="d2d2a1bc-75a5-4f1e-9447-ca7554831826"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2"/>
         <Edge id="C-InputCondition-1-register-3" default="true" sourceId="C-InputCondition-1" targetId="C-register-3"/>
-        <Edge id="idc9f331a0-6456-438c-a71f-8105f78a8476" default="true" sourceId="C-register-3" targetId="a2cae0aa-308d-4403-8259-87710c715002"/>
-        <Edge id="id2009d260-f103-4657-9bbc-cb811257c45e" default="true" sourceId="a2cae0aa-308d-4403-8259-87710c715002" targetId="C-book-hotel-9"/>
-        <Edge id="id401577e8-5ef0-4fd2-ab0f-321eb06c3649" default="true" sourceId="a2cae0aa-308d-4403-8259-87710c715002" targetId="C-book-flight-8"/>
-        <Edge id="idb12503fd-5aef-4546-9938-1943bd5b390b" default="true" sourceId="a2cae0aa-308d-4403-8259-87710c715002" targetId="C-book-car-10"/>
-        <Edge id="ide2669c3e-b197-4419-bc59-b4c383ca831d" default="true" sourceId="ide3e6a758-6331-45cc-b526-a9f9e129fd1d" targetId="C-pay-11"/>
-        <Edge id="id520e334a-5174-4dd8-acb3-a1f24d62fd44" default="true" sourceId="C-book-hotel-9" targetId="ide3e6a758-6331-45cc-b526-a9f9e129fd1d"/>
-        <Edge id="id71269061-d1c8-429b-9b6c-a795235182af" default="true" sourceId="C-book-flight-8" targetId="ide3e6a758-6331-45cc-b526-a9f9e129fd1d"/>
-        <Edge id="ida22ca52d-6d62-4f09-a189-d4b61cc3c283" default="true" sourceId="C-book-car-10" targetId="ide3e6a758-6331-45cc-b526-a9f9e129fd1d"/>
+        <Edge id="id32a3ce7f-5920-4a85-b401-b3aca5560c24" default="true" sourceId="C-register-3" targetId="id20fd34a2-220e-43b3-9994-8b553ffb88b2"/>
+        <Edge id="id0acba14c-344e-4725-9988-710fba0f11d3" default="true" sourceId="id20fd34a2-220e-43b3-9994-8b553ffb88b2" targetId="C-book-hotel-9"/>
+        <Edge id="idec13b0bf-557e-41fd-b95a-0cde5d73f28c" default="true" sourceId="id20fd34a2-220e-43b3-9994-8b553ffb88b2" targetId="C-book-flight-8"/>
+        <Edge id="idde18d318-3428-414b-a49d-2a72d4186bc8" default="true" sourceId="id20fd34a2-220e-43b3-9994-8b553ffb88b2" targetId="C-book-car-10"/>
+        <Edge id="id3eff80a6-49af-4653-8aa0-d6e488437bc9" default="true" sourceId="d2d2a1bc-75a5-4f1e-9447-ca7554831826" targetId="C-pay-11"/>
+        <Edge id="id6d9f5b27-6d18-4cde-91df-49028a56093c" default="true" sourceId="C-book-hotel-9" targetId="d2d2a1bc-75a5-4f1e-9447-ca7554831826"/>
+        <Edge id="id424f15c8-a722-43f6-b451-94f644bddea1" default="true" sourceId="C-book-flight-8" targetId="d2d2a1bc-75a5-4f1e-9447-ca7554831826"/>
+        <Edge id="id5be8b21e-3d48-4eb7-836f-15a208d7ac99" default="true" sourceId="C-book-car-10" targetId="d2d2a1bc-75a5-4f1e-9447-ca7554831826"/>
         <Edge id="C-pay-11-OutputCondition-2" default="true" sourceId="C-pay-11" targetId="C-OutputCondition-2"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Make-Trip-Process-carDetails" originalID="N-Make-Trip-Process_carDetails">
             <name>carDetails</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>3</index>
+                    <name>carDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue>n/a</initialValue>
+                </localVariable:localVariable>
+            </attribute>
             <type>string</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Make-Trip-Process-customer" originalID="N-Make-Trip-Process_customer">
             <name>customer</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>2</index>
+                    <name>customer</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue>Please type name ...</initialValue>
+                </localVariable:localVariable>
+            </attribute>
             <type>string</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Make-Trip-Process-flightDetails" originalID="N-Make-Trip-Process_flightDetails">
             <name>flightDetails</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>4</index>
+                    <name>flightDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue>n/a</initialValue>
+                </localVariable:localVariable>
+            </attribute>
             <type>string</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Make-Trip-Process-hotelDetails" originalID="N-Make-Trip-Process_hotelDetails">
             <name>hotelDetails</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>1</index>
+                    <name>hotelDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue>n/a</initialValue>
+                </localVariable:localVariable>
+            </attribute>
             <type>string</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Make-Trip-Process-registrInfo" originalID="N-Make-Trip-Process_registrInfo">
             <name>registrInfo</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>registrInfo</name>
+                    <type>tripRegisterType</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue/>
+                </localVariable:localVariable>
+            </attribute>
             <type>tripRegisterType</type>
         </Object>
     </Net>

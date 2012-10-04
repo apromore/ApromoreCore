@@ -1,3 +1,14 @@
+/**
+ * Copyright 2012, Felix Mannhardt
+ *
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
+ */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical.data;
 
 import org.apromore.canoniser.exception.CanoniserException;
@@ -8,12 +19,17 @@ import org.apromore.cpf.OutputExpressionType;
 import org.apromore.cpf.TaskType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yawlfoundation.yawlschema.DecompositionFactsType;
 import org.yawlfoundation.yawlschema.ExpressionType;
 import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
 import org.yawlfoundation.yawlschema.VarMappingFactsType;
 import org.yawlfoundation.yawlschema.VarMappingSetType;
 
+/**
+ * Convert Output Expressions to YAWL parameter mappings
+ *
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
+ *
+ */
 public class OutputExpressionTypeHandler extends ExpressionTypeHandler<OutputExpressionType> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(OutputExpressionTypeHandler.class);
@@ -37,44 +53,16 @@ public class OutputExpressionTypeHandler extends ExpressionTypeHandler<OutputExp
     }
 
     private void convertAtomicTaskOutputParameter(final OutputExpressionType expr, final ExternalTaskFactsType task) throws CanoniserException {
-        DecompositionFactsType d = getDecomposition(task);
-        String netObjectName = convertToOutputMapping(expr, task);
-
-        // Look if already added
-      //TODO create output parameter of used task variables and assure NET variable is present
-//        OutputParameterFactsType outputParam = YAWL_FACTORY.createOutputParameterFactsType();
-//        outputParam.setName(netObjectName);
-//        outputParam.setNamespace(ExpressionUtils.DEFAULT_TYPE_NAMESPACE);
-//        outputParam.setType(ExpressionUtils.determineResultType(expr));
-//        d.getOutputParam().add(outputParam);
+        convertToOutputMapping(expr, task);
     }
 
     private void convertCompositeTaskOutputParameter(final OutputExpressionType expr, final ExternalTaskFactsType task) throws CanoniserException {
-
-        String netObjectName = convertToOutputMapping(expr, task);
-        String subnetId = ((TaskType)getOriginalParent()).getSubnetId();
-
-        // Look if already converted
-        //TODO create output parameter of used task variables and assure NET variable is present
-//        if (getContext().getConvertedParameter(netObjectName, subnetId) == null) {
-//            OutputParameterFactsType outputParam = YAWL_FACTORY.createOutputParameterFactsType();
-//            outputParam.setName(netObjectName);
-//            outputParam.setNamespace(ExpressionUtils.DEFAULT_TYPE_NAMESPACE);
-//            outputParam.setType(ExpressionUtils.determineResultType(expr));
-//
-//            DecompositionFactsType d = getDecomposition(task);
-//            if (d != null) {
-//                d.getOutputParam().add(outputParam);
-//            } else {
-//                // Remember we need to add this variables later
-//                getContext().addIntroducedVariable(subnetId, outputParam);
-//            }
-//        }
+        convertToOutputMapping(expr, task);
     }
 
     private String convertToOutputMapping(final OutputExpressionType expr, final ExternalTaskFactsType task) throws CanoniserException {
         VarMappingFactsType outputMapping = YAWL_FACTORY.createVarMappingFactsType();
-        String yawlXQuery = ExpressionUtils.convertXQueryToYAWLTaskQuery(expr);
+        String yawlXQuery = ExpressionUtils.convertXQueryToYAWLTaskQuery(expr, task);
         ExpressionType yawlExpression = YAWL_FACTORY.createExpressionType();
         yawlExpression.setQuery(yawlXQuery);
         outputMapping.setExpression(yawlExpression);
@@ -90,7 +78,5 @@ public class OutputExpressionTypeHandler extends ExpressionTypeHandler<OutputExp
         }
         return task.getCompletedMappings();
     }
-
-
 
 }

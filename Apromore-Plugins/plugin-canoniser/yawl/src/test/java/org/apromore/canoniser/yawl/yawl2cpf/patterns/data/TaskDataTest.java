@@ -61,26 +61,26 @@ public class TaskDataTest extends BasePatternTest {
 
         InputExpressionType t1 = findExpression("t1", taskA.getInputExpr());
         assertNotNull(t1);
-        assertEquals("t1 = {/Net/n1/text()}", t1.getExpression());
+        assertEquals("t1 = {cpf:getObjectValue('n1')/text()}", t1.getExpression());
         InputExpressionType t2 = findExpression("t2", taskA.getInputExpr());
         assertNotNull(t2);
-        assertEquals("t2 = {/Net/n1/text()}", t2.getExpression());
+        assertEquals("t2 = {cpf:getObjectValue('n1')/text()}", t2.getExpression());
         InputExpressionType t3 = findExpression("t3", taskA.getInputExpr());
         assertNotNull(t3);
-        assertEquals("t3 = {/Net/n3/text()}", t3.getExpression());
+        assertEquals("t3 = {cpf:getObjectValue('n3')/text()}", t3.getExpression());
 
         InputExpressionType invalidExpr1 = findExpression("n3", taskA.getInputExpr());
         assertNull(invalidExpr1);
 
         OutputExpressionType n3 = findExpression("n3", taskA.getOutputExpr());
         assertNotNull(n3);
-        assertEquals("n3 = {/A/t3/text()}", n3.getExpression());
+        assertEquals("n3 = {cpf:getTaskObjectValue('t3')/text()}", n3.getExpression());
         OutputExpressionType n2 = findExpression("n2", taskA.getOutputExpr());
         assertNotNull(n2);
-        assertEquals("n2 = {/A/t3/text()}", n2.getExpression());
+        assertEquals("n2 = {cpf:getTaskObjectValue('t3')/text()}", n2.getExpression());
         OutputExpressionType n4 = findExpression("n4", taskA.getOutputExpr());
         assertNotNull(n4);
-        assertEquals("n4 = {/A/t4/text()}", n4.getExpression());
+        assertEquals("n4 = {cpf:getTaskObjectValue('t4')/text()}", n4.getExpression());
 
         OutputExpressionType invalidExpr2 = findExpression("t1", taskA.getOutputExpr());
         assertNull(invalidExpr2);

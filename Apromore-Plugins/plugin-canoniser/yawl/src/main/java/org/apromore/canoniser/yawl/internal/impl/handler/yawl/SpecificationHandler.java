@@ -16,6 +16,7 @@ import java.util.List;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.TypeAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yawlfoundation.yawlschema.DecompositionType;
@@ -58,7 +59,7 @@ public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificatio
 
         if (getObject().getAny() != null) {
             LOGGER.debug("Found DataTypeDefinitions: {}", getObject().getAny().toString());
-            // convertDataTypeDefinitions(getObject().getAny());
+            convertDataTypeDefinitions(getObject().getAny());
         }
 
         for (final DecompositionType d : getObject().getDecomposition()) {
@@ -66,6 +67,12 @@ public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificatio
             getContext().createHandler(d, c, getObject()).convert();
         }
 
+    }
+
+    private void convertDataTypeDefinitions(final Object any) {
+        TypeAttribute attr = CPF_FACTORY.createTypeAttribute();
+        attr.setName(ExtensionUtils.DATA_TYPE_DEFINITIONS);
+        attr.setAny(any);
     }
 
     private String convertName(final YAWLSpecificationFactsType spec) {

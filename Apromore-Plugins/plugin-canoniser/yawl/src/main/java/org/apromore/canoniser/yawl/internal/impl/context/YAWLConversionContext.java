@@ -34,8 +34,6 @@ import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectFactory;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.SoftType;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.w3c.dom.Element;
 import org.yawlfoundation.yawlschema.DecompositionType;
 import org.yawlfoundation.yawlschema.ExternalNetElementFactsType;
@@ -64,8 +62,6 @@ import org.yawlfoundation.yawlschema.orgdata.RoleType;
  *
  */
 public final class YAWLConversionContext extends ConversionContext {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(YAWLConversionContext.class);
 
     public class ConvertedResource {
         private ResourceTypeType resource;
@@ -243,7 +239,11 @@ public final class YAWLConversionContext extends ConversionContext {
     }
 
     private void setOrgDataType(final OrgDataType orgDataType) {
-        this.orgDataType = orgDataType;
+        if (orgDataType == null) {
+            this.orgDataType = new OrgDataType();
+        } else {
+            this.orgDataType = orgDataType;
+        }
     }
 
     /**
@@ -270,7 +270,7 @@ public final class YAWLConversionContext extends ConversionContext {
         }
         Collection<ExternalNetElementType> c = successorsMap.get(new ElementAdapter(netElement));
         if (c == null) {
-            c = new ArrayList<ExternalNetElementType>(3);
+            c = new ArrayList<ExternalNetElementType>();
         }
         return Collections.unmodifiableCollection(c);
     }
@@ -410,7 +410,7 @@ public final class YAWLConversionContext extends ConversionContext {
 
     private void initLayoutMap() {
         if (layoutMap == null) {
-            layoutMap = new HashMap<String, Object>(getSpecification().getDecomposition().size() * 4);
+            layoutMap = new HashMap<String, Object>();
             for (final LayoutNetFactsType netLayout : getSpecificationLayout().getNet()) {
                 for (final JAXBElement<?> elementLayout : netLayout.getBoundsOrFrameOrViewport()) {
                     if (elementLayout.getValue() instanceof LayoutContainerFactsType) {
@@ -487,8 +487,11 @@ public final class YAWLConversionContext extends ConversionContext {
     }
 
     public RoleType getRoleById(final String roleId) {
-        initRoleMap(getOrgDataType().getRoles().getRole().size());
-        return this.roleMap.get(roleId);
+        if (getOrgDataType().getRoles() != null) {
+            initRoleMap(getOrgDataType().getRoles().getRole().size());
+            return this.roleMap.get(roleId);
+        }
+        return null;
     }
 
     private void initRoleMap(final int initialSize) {
@@ -502,7 +505,6 @@ public final class YAWLConversionContext extends ConversionContext {
 
     public void setGeneratedResourceType(final String yawlId, final ResourceTypeType resourceType) {
         initSubResourceTypeMap();
-        LOGGER.debug("Adding ResourceType for YAWL (Name: {})", resourceType.getName());
         ConvertedResource convertedRole = generatedResourceTypeMap.get(yawlId);
         if (convertedRole != null) {
             convertedRole.setResource(resourceType);
@@ -529,9 +531,11 @@ public final class YAWLConversionContext extends ConversionContext {
     }
 
     public ParticipantType getParticipantById(final String participantId) {
-        for (final ParticipantType p : getOrgDataType().getParticipants().getParticipant()) {
-            if (p.getId().equals(participantId)) {
-                return p;
+        if (getOrgDataType().getParticipants() != null) {
+            for (final ParticipantType p : getOrgDataType().getParticipants().getParticipant()) {
+                if (p.getId().equals(participantId)) {
+                    return p;
+                }
             }
         }
         return null;

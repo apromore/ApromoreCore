@@ -44,6 +44,8 @@ import org.yawlfoundation.yawlschema.VariableBaseType;
  */
 public class NetHandler extends YAWLConversionHandler<NetFactsType, CanonicalProcessType> {
 
+    private static final String VIEWPORT = "viewport";
+
     @Override
     public void convert() throws CanoniserException {
         final CanonicalProcessType cpf = getContext().getCanonicalResult();
@@ -117,12 +119,10 @@ public class NetHandler extends YAWLConversionHandler<NetFactsType, CanonicalPro
         // Use size of viewport only, as CPF only supports one type of size
         final SizeType size = ANF_FACTORY.createSizeType();
         for (final JAXBElement<?> element : netLayout.getBoundsOrFrameOrViewport()) {
-            if (element.getValue() instanceof LayoutFrameType) {
-                if (element.getName().getLocalPart().equals(ExtensionUtils.VIEWPORT)) {
-                    final LayoutFrameType frame = (LayoutFrameType) element.getValue();
-                    size.setHeight(new BigDecimal(frame.getH()));
-                    size.setWidth(new BigDecimal(frame.getW()));
-                }
+            if (element.getValue() instanceof LayoutFrameType && element.getName().getLocalPart().equals(VIEWPORT)) {
+                final LayoutFrameType frame = (LayoutFrameType) element.getValue();
+                size.setHeight(new BigDecimal(frame.getH()));
+                size.setWidth(new BigDecimal(frame.getW()));
             }
         }
         g.setSize(size);

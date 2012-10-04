@@ -45,7 +45,7 @@ public class TaskToTaskTest extends BasePatternTest {
 
         OutputExpressionType xExpr = findExpression("x", taskA.getOutputExpr());
         assertNotNull(xExpr);
-        assertEquals("x = Boolean({/A/x/text()})",xExpr.getExpression());
+        assertEquals("x = Boolean({cpf:getTaskObjectValue('x')/text()})",xExpr.getExpression());
 
         TaskType taskB = (TaskType) getNodeByName(rootNet, "B");
         assertNotNull(taskB);
@@ -54,6 +54,6 @@ public class TaskToTaskTest extends BasePatternTest {
 
         InputExpressionType yExpr = findExpression("y", taskB.getInputExpr());
         assertNotNull(yExpr);
-        assertEquals("y = {/Net/x}", yExpr.getExpression());
+        assertEquals("y = {cpf:getObjectValue('x')}", yExpr.getExpression());
     }
 }

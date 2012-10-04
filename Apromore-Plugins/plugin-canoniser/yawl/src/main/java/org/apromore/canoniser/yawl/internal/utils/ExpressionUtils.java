@@ -14,6 +14,9 @@ package org.apromore.canoniser.yawl.internal.utils;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.StringWriter;
+import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -30,10 +33,13 @@ import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.ExpressionType;
 import org.apromore.cpf.InputExpressionType;
 import org.apromore.cpf.NetType;
+import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.OutputExpressionType;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
+import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
+import org.yawlfoundation.yawlschema.NetFactsType;
 
 /**
  * Helper class to generate correct CPF XPath/XQuery expressions and convert them back to YAWL expresssion
@@ -48,64 +54,174 @@ public final class ExpressionUtils {
     private ExpressionUtils() {
     }
 
+    /**
+     * Builds a unique Object ID using the Net ID as prefix
+     *
+     * @param netId
+     * @param varName
+     * @return netId_varName
+     */
     public static String buildObjectId(final String netId, final String varName) {
         return netId + "_" + varName;
     }
 
-    public static String createExpressionReferencingNetObject(final String objectName, final NetType net) {
-        return "/" + objectName;
-    }
-
-    public static String createQueryReferencingTaskVariables(final String xQuery) throws CanoniserException {
-        return getTextFromXMLFragment(xQuery);
-    }
-
-    private static String getTextFromXMLFragment(final String xQuery) throws CanoniserException {
-        try {
-            final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-            Element queryElement = docBuilder.parse(new ByteArrayInputStream(xQuery.getBytes())).getDocumentElement();
-            return queryElement.getTextContent();
-        } catch (SAXException | IOException | ParserConfigurationException e) {
-            throw new CanoniserException("Could not convert task parameter mapping query!", e);
+    /**
+     * Builds a XPath expression referencing an Object by its name
+     *
+     * @param objectName
+     *            name of Object
+     * @param net
+     *            CPF Net
+     * @return valid XPath
+     * @throws CanoniserException
+     *             in case the Object is not found
+     */
+    public static String createExpressionReferencingNetObject(final String objectName, final NetType net) throws CanoniserException {
+        for (ObjectType obj : net.getObject()) {
+            if (obj.getName().equals(objectName)) {
+                return CPFSchema.createGetObjectValueExpr(obj.getName());
+            }
         }
+        throw new CanoniserException("Referenced Net Object not found " + objectName);
     }
 
-    public static String createQueryReferencingNetObjects(final String xQuery) throws CanoniserException {
-        return getTextFromXMLFragment(xQuery);
-    }
-
-    public static String determineResultType(final ExpressionType expr) {
-        // TODO use xquery engine
-        if (expr.getExpression().contains("text(")) {
-            return "string";
-        } else if (expr.getExpression().startsWith("(Boolean)")) {
-            return "boolean";
+    /**
+     * Builds a XPath expression referencing a Task variable by its name.
+     *
+     * @param xQuery
+     *            in YAWL form <startTag>{XQuery}</endTag>
+     * @param yawlTask
+     *            the YAWL Task the query is of
+     * @return canonical XQuery
+     * @throws CanoniserException
+     *             in case the query can not be canonised
+     */
+    public static String createQueryReferencingTaskVariables(final String xQuery, final ExternalTaskFactsType yawlTask) throws CanoniserException {
+        String originalQuery = convertEmbeddedXQueryToStandalone(xQuery);
+        String yawlTaskId = yawlTask.getId();
+        // TODO this should be done with a XQuery parser, so we really just convert the Task-ID in canonical form!
+        Pattern taskIdPattern = Pattern.compile("/" + yawlTaskId + "/([^/]*)");
+        Matcher matcher = taskIdPattern.matcher(originalQuery);
+        if (matcher.find()) {
+            return matcher.replaceAll(CPFSchema.createGetTaskObjectValueExpr("$1"));
         } else {
-            return "any";
+            return originalQuery;
         }
     }
 
-    public static String convertXQueryToYAWLNetQuery(final InputExpressionType expr) throws CanoniserException {
-        String queryPart = getQueryPart(expr);
-        String taskName = CPFSchema.getTaskObjectName(expr.getExpression());
+    /**
+     * Builds a XPath expression referencing one or multiple Net Object by their name. The returned XQuery will reference Objects in this way:
+     *
+     * <pre>
+     * // Net[@id='%netId%']/Object[name/text()='%objectName%']
+     * </pre>
+     *
+     * @param xQuery
+     *            in YAWL form <startTag>{XQuery}</endTag>
+     * @param cpfNet
+     *            converted CPF Net
+     * @param objectNameList
+     *            converted CPF Objects that this query refers to
+     * @return canonical XQuery
+     * @throws CanoniserException
+     *             in case the query can not be canonised
+     */
+    public static String createQueryReferencingNetObjects(final String xQuery, final NetType cpfNet, final Set<String> objectNameList)
+            throws CanoniserException {
+        String originalQuery = convertEmbeddedXQueryToStandalone(xQuery);
+        String yawlNetId = cpfNet.getOriginalID();
+        String rewrittenQuery = originalQuery;
+
+        // TODO this should be done with a XQuery parser, so we really just the XPath lookups to Net Objects to canonical form!
+        for (String obj : objectNameList) {
+            Pattern objectPattern = Pattern.compile("/" + yawlNetId + "/" + obj);
+            Matcher objectMatcher = objectPattern.matcher(rewrittenQuery);
+            if (objectMatcher.find()) {
+                rewrittenQuery = objectMatcher.replaceAll(CPFSchema.createGetObjectValueExpr(obj));
+            }
+        }
+        return rewrittenQuery;
+    }
+
+    /**
+     * Tries to determine the result type of an Expression
+     *
+     * @param expression CPF expression in any language
+     * @return anyType if not able to determine the type, otherwise the XSD type
+     */
+    public static String determineResultType(final ExpressionType expression) {
+        if (expression.getLanguage().equals(CPFSchema.EXPRESSION_LANGUAGE_XPATH) || expression.getLanguage().equals(CPFSchema.EXPRESSION_LANGUAGE_XQUERY)) {
+            // TODO determine result type based on a real XQuery/XPath evaluation against a document, but at the moment there is not representation of
+            // the actual data in CPF
+            if (expression.getExpression().endsWith("text()") || expression.getExpression().endsWith("text()}")) {
+                return "string";
+            } else if (expression.getExpression().startsWith("boolean(")) {
+                return "boolean";
+            } else if (expression.getExpression().startsWith("number(")) {
+                return "double";
+            } else {
+                return "anyType";
+            }
+        } else {
+            // Giving up for now
+            return "anyType";
+        }
+    }
+
+    /**
+     * Takes a XQuery/XPath expression in Canonical Format and generates the corresponding YAWL expression.
+     *
+     * @param expression CPF expression in XQuery or XPath
+     * @param net which is the source of the expression
+     * @return YAWL XQuery
+     * @throws CanoniserException
+     */
+    public static String convertXQueryToYAWLNetQuery(final InputExpressionType expression, final NetFactsType net) throws CanoniserException {
+        if (!(expression.getLanguage().equals(CPFSchema.EXPRESSION_LANGUAGE_XPATH) || expression.getLanguage().equals(CPFSchema.EXPRESSION_LANGUAGE_XQUERY) )) {
+           throw new CanoniserException("Unsupported Language for YAWL: "+expression.getLanguage());
+        }
+        String queryPart = getQueryPart(expression);
+        // TODO this should be done with a XQuery parser, so we really just convert the user defined functions
+        Pattern netQueryPattern = Pattern.compile("cpf:getObjectValue\\('(.+)'\\)");
+        Matcher netQueryMatcher = netQueryPattern.matcher(queryPart);
+        String newQueryPart = netQueryMatcher.replaceAll("/"+net.getId()+"/$1");
+        String taskName = CPFSchema.getTaskObjectName(expression.getExpression());
         try {
-            Element queryElement = createYAWLExpressionElement(queryPart, taskName);
+            Element queryElement = createYAWLExpressionElement(newQueryPart, taskName);
             return elementToString(queryElement);
         } catch (ParserConfigurationException e) {
             throw new CanoniserException("Could not convert to YAWL net query!", e);
         }
     }
 
-    public static String convertXQueryToYAWLTaskQuery(final OutputExpressionType expr) throws CanoniserException {
-        String queryPart = getQueryPart(expr);
-        String netName = CPFSchema.getNetObjectName(expr.getExpression());
+    /**
+     * Takes a XQuery/XPath expression in Canonical Format and generates the corresponding YAWL expression.
+     *
+     * @param expression CPF expression in XQuery or XPath
+     * @param task which is the source for the expression
+     * @return YAWL XQuery
+     * @throws CanoniserException
+     */
+    public static String convertXQueryToYAWLTaskQuery(final OutputExpressionType expression, final ExternalTaskFactsType task) throws CanoniserException {
+        if (!(expression.getLanguage().equals(CPFSchema.EXPRESSION_LANGUAGE_XPATH) || expression.getLanguage().equals(CPFSchema.EXPRESSION_LANGUAGE_XQUERY) )) {
+            throw new CanoniserException("Unsupported Language for YAWL: "+expression.getLanguage());
+         }
+        String queryPart = getQueryPart(expression);
+        // TODO this should be done with a XQuery parser, so we really just convert the user defined functions
+        Pattern netQueryPattern = Pattern.compile("cpf:getTaskObjectValue\\('(.+)'\\)");
+        Matcher netQueryMatcher = netQueryPattern.matcher(queryPart);
+        String newQueryPart = netQueryMatcher.replaceAll("/"+task.getId()+"/$1");
+        String netObjectName = CPFSchema.getNetObjectName(expression.getExpression());
         try {
-            Element queryElement = createYAWLExpressionElement(queryPart, netName);
+            Element queryElement = createYAWLExpressionElement(newQueryPart, netObjectName);
             return elementToString(queryElement);
         } catch (ParserConfigurationException e) {
             throw new CanoniserException("Could not convert to YAWL task query!", e);
         }
     }
+
+
+
 
     private static String getQueryPart(final ExpressionType expr) {
         String[] splittedQuery = expr.getExpression().split(" = ");
@@ -145,6 +261,29 @@ public final class ExpressionUtils {
         } catch (final TransformerException e) {
             throw new IllegalArgumentException("Invalid Element!", e);
         }
+    }
+
+    private static String convertEmbeddedXQueryToStandalone(final String xQuery) throws CanoniserException {
+        try {
+            final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+            Element queryElement = docBuilder.parse(new ByteArrayInputStream(xQuery.getBytes())).getDocumentElement();
+            if (queryElement.hasChildNodes()) {
+                String outerTagName = queryElement.getNodeName();
+                return xQuery.replaceFirst("<" + outerTagName + ">", "").replaceFirst("</" + outerTagName + ">", "");
+            } else {
+                return queryElement.getTextContent();
+            }
+        } catch (SAXException | IOException | ParserConfigurationException e) {
+            return xQuery;
+        }
+    }
+
+    public static String createYAWLInputExpression(final ObjectType netObject, final NetFactsType net) {
+        return "/"+net.getId()+"/"+netObject.getName();
+    }
+
+    public static String createYAWLOutputExpression(final String taskObjectName, final ExternalTaskFactsType task) {
+        return "/"+task.getId()+"/"+taskObjectName;
     }
 
 }

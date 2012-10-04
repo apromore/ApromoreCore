@@ -32,20 +32,13 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
-                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
-                    <offer initiator="user"/>
-                    <allocate initiator="user"/>
-                    <start initiator="user"/>
-                </offer:offer>
-            </attribute>
-            <objectRef id="id7b30f736-baa0-4e75-a646-f1b88d9c995e" objectId="D-N-make-trip-payAccNumber" type="output" optional="false" consumed="true"/>
-            <objectRef id="e02fc41d-0719-409b-b164-120c6ad69098" objectId="D-N-make-trip-customer" type="output" optional="false" consumed="true"/>
-            <objectRef id="idef32ee38-2dbd-467f-a648-d0203cdbe178" objectId="D-N-make-trip-legs" type="output" optional="false" consumed="true"/>
-            <objectRef id="dbfc3499-9b81-4f86-86cf-a8502ba4aca2" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="id7e1bd62e-7664-44b4-81ab-9307a2a45761" objectId="D-N-make-trip-payAccNumber" type="output" optional="false" consumed="true"/>
+            <objectRef id="idb9a1170a-8780-4b9c-aa2e-af1389ab44de" objectId="D-N-make-trip-customer" type="output" optional="false" consumed="true"/>
+            <objectRef id="idc426df10-718a-4c32-aff0-0b76a5fef38d" objectId="D-N-make-trip-legs" type="output" optional="false" consumed="true"/>
+            <objectRef id="iddc9a33b4-4dfd-437a-8415-db7bb4da794f" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = {/make_trip/customer/text()}</expression>
+                <expression>customer = {cpf:getObjectValue('customer')/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
@@ -63,30 +56,30 @@
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" subnetId="N-do-itinerary-segment" id="C-do-itinerary-segment-5" originalID="do_itinerary_segment_5">
             <name>do itinerary segment</name>
-            <objectRef id="fe12a692-9244-47fe-8ad1-c3c4488fe944" objectId="D-N-make-trip-subTotal" type="input" optional="false" consumed="true"/>
-            <objectRef id="ed5ac1eb-6b5a-41bd-bd08-be2e88830eda" objectId="D-N-make-trip-hotelDetails" type="input" optional="false" consumed="true"/>
-            <objectRef id="id32780a6f-2544-40fd-b5fc-1c55f28c66dd" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
-            <objectRef id="idf1e88b9a-edfc-4004-816b-d9a28634583e" objectId="D-N-make-trip-carDetails" type="input" optional="false" consumed="true"/>
-            <objectRef id="id2f807b57-f88d-45c3-b36b-a0f98d0df038" objectId="D-N-make-trip-flightDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="id197f1e2b-972c-446c-bc62-f25801ce8eca" objectId="D-N-make-trip-subTotal" type="input" optional="false" consumed="true"/>
+            <objectRef id="id93bb8def-30c7-4f97-b349-1c2d35192bcd" objectId="D-N-make-trip-hotelDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="idabee9e30-1d66-4fcd-a23e-a0fa7ff59399" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="id8a618d54-bfcc-4e75-a668-16416fb0c6b9" objectId="D-N-make-trip-carDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="id7644f10a-7a47-4e1e-8b8e-00cf05ba04af" objectId="D-N-make-trip-flightDetails" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>subTotal = {number(/make_trip/subTotal/text())}</expression>
+                <expression>subTotal = {number(cpf:getObjectValue('subTotal')/text())}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>hotelDetails = {/make_trip/hotelDetails/text()}</expression>
+                <expression>hotelDetails = {cpf:getObjectValue('hotelDetails')/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = {/make_trip/customer/text()}</expression>
+                <expression>customer = {cpf:getObjectValue('customer')/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>carDetails = {/make_trip/carDetails/text()}</expression>
+                <expression>carDetails = {cpf:getObjectValue('carDetails')/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>flightDetails = {/make_trip/flightDetails/text()}</expression>
+                <expression>flightDetails = {cpf:getObjectValue('flightDetails')/text()}</expression>
             </inputExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-pay-4" originalID="pay_4">
@@ -119,32 +112,25 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
-                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
-                    <offer initiator="user"/>
-                    <allocate initiator="user"/>
-                    <start initiator="user"/>
-                </offer:offer>
-            </attribute>
-            <objectRef id="id3f83bdfd-3d01-49cb-a058-4ac746c87e16" objectId="D-N-make-trip-itinerary" type="input" optional="false" consumed="true"/>
-            <objectRef id="id95e64e94-2805-4c0d-a50e-ebd05ff38d76" objectId="D-N-make-trip-itinerary" type="input" optional="false" consumed="true"/>
-            <objectRef id="id72e26dbe-9fbc-404f-bc2b-fdf4da2a3e7c" objectId="D-N-make-trip-payAccNumber" type="input" optional="false" consumed="true"/>
-            <objectRef id="id75d8a712-b716-402f-b02e-697eea57d6f5" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="idfa6b7f74-7ea7-4a56-b336-bbda30754171" objectId="D-N-make-trip-itinerary" type="input" optional="false" consumed="true"/>
+            <objectRef id="e01481bd-f5ed-486c-84d5-7bc19d896e63" objectId="D-N-make-trip-itinerary" type="input" optional="false" consumed="true"/>
+            <objectRef id="ad6531b7-bfa8-4237-b58f-b0ab761efba8" objectId="D-N-make-trip-payAccNumber" type="input" optional="false" consumed="true"/>
+            <objectRef id="aca894a3-ecbf-4306-9d94-bcb6dc33b421" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>total = {sum(/make_trip/itinerary/itinerarySegment/subTotal)}</expression>
+                <expression>total = {sum(cpf:getObjectValue('itinerary')/itinerarySegment/subTotal)}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>itinerary = {/make_trip/itinerary/*}</expression>
+                <expression>itinerary = {cpf:getObjectValue('itinerary')/*}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>payAccNumber = {/make_trip/payAccNumber/text()}</expression>
+                <expression>payAccNumber = {cpf:getObjectValue('payAccNumber')/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = {/make_trip/customer/text()}</expression>
+                <expression>customer = {cpf:getObjectValue('customer')/text()}</expression>
             </inputExpr>
             <teamWork>false</teamWork>
         </Node>
@@ -155,42 +141,158 @@
         <Edge id="C-pay-4-OutputCondition-2" default="true" sourceId="C-pay-4" targetId="C-OutputCondition-2"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-make-trip-carDetails" originalID="N-make-trip_carDetails">
             <name>carDetails</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>carDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue>n/a</initialValue>
+                </localVariable:localVariable>
+            </attribute>
             <type>string</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-make-trip-customer" originalID="N-make-trip_customer">
             <name>customer</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>customer</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue>Please type name ...</initialValue>
+                </localVariable:localVariable>
+            </attribute>
             <type>string</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-make-trip-endDate" originalID="N-make-trip_endDate">
             <name>endDate</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>endDate</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </localVariable:localVariable>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable">
+                <outputVariable:outputVariable xmlns:outputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>endDate</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputVariable:outputVariable>
+            </attribute>
             <type>string</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-make-trip-flightDetails" originalID="N-make-trip_flightDetails">
             <name>flightDetails</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>flightDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue>n/a</initialValue>
+                </localVariable:localVariable>
+            </attribute>
             <type>string</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-make-trip-hotelDetails" originalID="N-make-trip_hotelDetails">
             <name>hotelDetails</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>hotelDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue>n/a</initialValue>
+                </localVariable:localVariable>
+            </attribute>
             <type>string</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-make-trip-itinerary" originalID="N-make-trip_itinerary">
             <name>itinerary</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>itinerary</name>
+                    <type>itineraryType</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </localVariable:localVariable>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable">
+                <outputVariable:outputVariable xmlns:outputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>itinerary</name>
+                    <type>itineraryType</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputVariable:outputVariable>
+            </attribute>
             <type>itineraryType</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-make-trip-legs" originalID="N-make-trip_legs">
             <name>legs</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>legs</name>
+                    <type>legsType</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </localVariable:localVariable>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable">
+                <outputVariable:outputVariable xmlns:outputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>legs</name>
+                    <type>legsType</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputVariable:outputVariable>
+            </attribute>
             <type>legsType</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-make-trip-payAccNumber" originalID="N-make-trip_payAccNumber">
             <name>payAccNumber</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>payAccNumber</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </localVariable:localVariable>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable">
+                <outputVariable:outputVariable xmlns:outputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>payAccNumber</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputVariable:outputVariable>
+            </attribute>
             <type>string</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-make-trip-startDate" originalID="N-make-trip_startDate">
             <name>startDate</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>startDate</name>
+                    <type>date</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </localVariable:localVariable>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable">
+                <outputVariable:outputVariable xmlns:outputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>startDate</name>
+                    <type>date</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputVariable:outputVariable>
+            </attribute>
             <type>date</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-make-trip-subTotal" originalID="N-make-trip_subTotal">
             <name>subTotal</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>subTotal</name>
+                    <type>double</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </localVariable:localVariable>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable">
+                <outputVariable:outputVariable xmlns:outputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>subTotal</name>
+                    <type>double</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputVariable:outputVariable>
+            </attribute>
             <type>double</type>
         </Object>
     </Net>
@@ -233,25 +335,18 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
-                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
-                    <offer initiator="user"/>
-                    <allocate initiator="user"/>
-                    <start initiator="user"/>
-                </offer:offer>
-            </attribute>
-            <objectRef id="ide5f22e1b-4646-421d-8b29-b31ad28c2fe3" objectId="D-N-do-itinerary-segment-startDate" type="output" optional="false" consumed="true"/>
-            <objectRef id="e933826d-d090-4fed-a30f-20192846ec48" objectId="D-N-do-itinerary-segment-serviceRequired" type="output" optional="false" consumed="true"/>
-            <objectRef id="f66a3164-5ea1-4f4a-b10b-db5a8c98fa6e" objectId="D-N-do-itinerary-segment-endDate" type="output" optional="false" consumed="true"/>
-            <objectRef id="id5a8f3724-19dc-4ab9-b60b-4a50cec1caa7" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
-            <objectRef id="a2251a6a-8b52-413a-bd29-b3685e566254" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="id66b68149-2f7b-48eb-acc3-66a33919aa60" objectId="D-N-do-itinerary-segment-startDate" type="output" optional="false" consumed="true"/>
+            <objectRef id="id2a60fb7e-6d75-4bcf-869c-eefc2fb2e92b" objectId="D-N-do-itinerary-segment-serviceRequired" type="output" optional="false" consumed="true"/>
+            <objectRef id="cdb8c65d-83a1-4fad-89cf-238aeaed32d4" objectId="D-N-do-itinerary-segment-endDate" type="output" optional="false" consumed="true"/>
+            <objectRef id="idc3deb2e1-bc1b-4299-bd7e-f510a24c19de" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
+            <objectRef id="id18c39ff3-d377-4267-8d0a-75ce8962dfc4" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>leg = {/do_itinerary_segment/leg/*}</expression>
+                <expression>leg = {cpf:getObjectValue('leg')/*}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = {/do_itinerary_segment/customer/text()}</expression>
+                <expression>customer = {cpf:getObjectValue('customer')/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
@@ -267,7 +362,7 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="ideb60465e-b5ad-4587-810c-5f3a22a9599b"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="id8f249e07-905e-4522-adb0-9ba65f2a8ed7"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-book-car-29" originalID="book_car_29">
             <name>book car</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -305,33 +400,26 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
-                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
-                    <offer initiator="user"/>
-                    <allocate initiator="user"/>
-                    <start initiator="user"/>
-                </offer:offer>
-            </attribute>
-            <objectRef id="idccca2526-d14a-4888-99f7-e011aa5f5ddf" objectId="D-N-do-itinerary-segment-carDetails" type="output" optional="false" consumed="true"/>
-            <objectRef id="idc7d276be-dec7-4c53-ae8f-c654deaead16" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
-            <objectRef id="id84b394a3-4b03-4f88-8dc5-f24b95b1f669" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="id65cf3a6b-8a94-4941-8d05-d98b04dcd032" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="a0939818-5656-4ecb-a8e2-da284cb29e1e" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="id6c3a96ca-9bf2-44be-9a7d-052d125265f5" objectId="D-N-do-itinerary-segment-carDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="id54c70b43-b1a9-469b-9b2d-34377aefecca" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
+            <objectRef id="id2bbb60a9-2fb2-4987-8a0c-26cbf4976907" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="id7eb0e2dc-3333-4969-a4ab-570857981ffe" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="idff170de9-4a0e-4794-9433-4db7b0ad7ab7" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>leg = {/do_itinerary_segment/leg/*}</expression>
+                <expression>leg = {cpf:getObjectValue('leg')/*}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>startDate = {/do_itinerary_segment/startDate/text()}</expression>
+                <expression>startDate = {cpf:getObjectValue('startDate')/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>endDate = {/do_itinerary_segment/endDate/text()}</expression>
+                <expression>endDate = {cpf:getObjectValue('endDate')/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = {/do_itinerary_segment/customer/text()}</expression>
+                <expression>customer = {cpf:getObjectValue('customer')/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
@@ -376,33 +464,26 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
-                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
-                    <offer initiator="user"/>
-                    <allocate initiator="user"/>
-                    <start initiator="user"/>
-                </offer:offer>
-            </attribute>
-            <objectRef id="id594aecb1-5e44-4f5e-816f-e8fa0ab18921" objectId="D-N-do-itinerary-segment-flightDetails" type="output" optional="false" consumed="true"/>
-            <objectRef id="id35fdd281-9a00-4d6d-aaaf-54f0e812d1fb" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
-            <objectRef id="id83cfdddc-a904-49b4-b9a9-31f26bd73cba" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="id535ee336-d945-4998-9d95-599ed26076b6" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="id5a6f1272-bc73-42a3-bf6d-ba96fa461827" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="ide881afe6-96c3-484d-a93a-7eb6a16f95e7" objectId="D-N-do-itinerary-segment-flightDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="id16d83a8b-c869-44e9-a7df-5a8f7343c226" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
+            <objectRef id="bc687758-77a6-429b-ab44-f96afdd53118" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="f72e659c-fda8-465f-85eb-e01c72d39adf" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="bb3abcfa-e67d-4403-ab66-3530cbc456bb" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>leg = {/do_itinerary_segment/leg/*}</expression>
+                <expression>leg = {cpf:getObjectValue('leg')/*}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>startDate = {/do_itinerary_segment/startDate/text()}</expression>
+                <expression>startDate = {cpf:getObjectValue('startDate')/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>endDate = {/do_itinerary_segment/endDate/text()}</expression>
+                <expression>endDate = {cpf:getObjectValue('endDate')/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = {/do_itinerary_segment/customer/text()}</expression>
+                <expression>customer = {cpf:getObjectValue('customer')/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
@@ -447,33 +528,26 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
-                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
-                    <offer initiator="user"/>
-                    <allocate initiator="user"/>
-                    <start initiator="user"/>
-                </offer:offer>
-            </attribute>
-            <objectRef id="id830128bf-ee69-4860-90fb-6070de4d1c54" objectId="D-N-do-itinerary-segment-hotelDetails" type="output" optional="false" consumed="true"/>
-            <objectRef id="id840544f0-9265-4051-b8e7-a0bd179180b0" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
-            <objectRef id="idf55e6bfa-67ab-43b8-b261-79c31c601f56" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="id259a22a8-3057-4561-a2fd-34a5a10f2531" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="id33c72a1a-6fc8-4865-a51a-c0442e9eea8f" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="da3fb614-cc9d-44de-b087-fdbd44ccb6e4" objectId="D-N-do-itinerary-segment-hotelDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="id38ec207a-1fad-47bf-b880-2ec24a72e015" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
+            <objectRef id="id66e9aed4-0457-4fda-b0fe-d20d975422ce" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="id460e839a-846a-4abd-8e61-62a2d2393d70" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="iddde111de-f8ca-430b-aab1-7e924c6707c3" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>leg = {/do_itinerary_segment/leg/*}</expression>
+                <expression>leg = {cpf:getObjectValue('leg')/*}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>startDate = {/do_itinerary_segment/startDate/text()}</expression>
+                <expression>startDate = {cpf:getObjectValue('startDate')/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>endDate = {/do_itinerary_segment/endDate/text()}</expression>
+                <expression>endDate = {cpf:getObjectValue('endDate')/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = {/do_itinerary_segment/customer/text()}</expression>
+                <expression>customer = {cpf:getObjectValue('customer')/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
@@ -518,33 +592,26 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
-                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
-                    <offer initiator="user"/>
-                    <allocate initiator="user"/>
-                    <start initiator="user"/>
-                </offer:offer>
-            </attribute>
-            <objectRef id="a7af3686-cf31-4e35-b0db-5f731ae02eaf" objectId="D-N-do-itinerary-segment-subTotal" type="output" optional="false" consumed="true"/>
-            <objectRef id="id427d2d0a-6cc1-47eb-aab7-2edf473368e1" objectId="D-N-do-itinerary-segment-hotelDetails" type="input" optional="false" consumed="true"/>
-            <objectRef id="df236b82-4d81-4c4f-91d9-aefb564e1b42" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
-            <objectRef id="idfcee0666-bfc0-4965-b930-7b4722a5a078" objectId="D-N-do-itinerary-segment-carDetails" type="input" optional="false" consumed="true"/>
-            <objectRef id="id384885bc-db3b-475a-900c-f187fd26d726" objectId="D-N-do-itinerary-segment-flightDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="id585d5807-6f8e-4aef-b89f-086fbebeefdf" objectId="D-N-do-itinerary-segment-subTotal" type="output" optional="false" consumed="true"/>
+            <objectRef id="e28b4f22-10cb-4326-bb33-928c35834553" objectId="D-N-do-itinerary-segment-hotelDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="id16369a2d-4870-45c3-ba0e-1cdc4585bcfc" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="c291db83-9b75-4f04-aa3f-c42be3f66b4f" objectId="D-N-do-itinerary-segment-carDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="id4ca75661-180f-4f00-8761-814b241cc2a4" objectId="D-N-do-itinerary-segment-flightDetails" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>hotelDetails = {/do_itinerary_segment/hotelDetails/text()}</expression>
+                <expression>hotelDetails = {cpf:getObjectValue('hotelDetails')/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>customer = {/do_itinerary_segment/customer/text()}</expression>
+                <expression>customer = {cpf:getObjectValue('customer')/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>carDetails = {/do_itinerary_segment/carDetails/text()}</expression>
+                <expression>carDetails = {cpf:getObjectValue('carDetails')/text()}</expression>
             </inputExpr>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>flightDetails = {/do_itinerary_segment/flightDetails/text()}</expression>
+                <expression>flightDetails = {cpf:getObjectValue('flightDetails')/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
@@ -552,52 +619,172 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="dbd1074d-ff83-4386-b390-eae5f903d780"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="dd059d70-d046-42d8-b2bd-767acbbf640d"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-9" originalID="OutputCondition_9"/>
         <Edge id="C-InputCondition-8-register-itinerary-26" default="true" sourceId="C-InputCondition-8" targetId="C-register-itinerary-26"/>
-        <Edge id="id5e39e280-6e8f-4924-9a75-cc94f6129099" default="true" sourceId="C-register-itinerary-26" targetId="ideb60465e-b5ad-4587-810c-5f3a22a9599b"/>
-        <Edge id="idcb9fcc3a-3b28-4c9c-882c-ecf64a70f692" default="true" sourceId="ideb60465e-b5ad-4587-810c-5f3a22a9599b" targetId="C-book-car-29"/>
-        <Edge id="idcacb9760-ccd4-4ef1-8bb6-ffd84d488a83" default="true" sourceId="ideb60465e-b5ad-4587-810c-5f3a22a9599b" targetId="C-book-flight-27"/>
-        <Edge id="idb4551b2c-633f-4ff3-a458-e661353cb9c2" default="true" sourceId="ideb60465e-b5ad-4587-810c-5f3a22a9599b" targetId="C-book-hotel-28"/>
-        <Edge id="idc58e37e4-c09d-4eda-8ca0-55880c31d29d" default="true" sourceId="dbd1074d-ff83-4386-b390-eae5f903d780" targetId="C-prepare-pay-30"/>
-        <Edge id="id7305d47c-f566-4adc-80e3-16b5652c35a6" default="true" sourceId="C-book-car-29" targetId="dbd1074d-ff83-4386-b390-eae5f903d780"/>
-        <Edge id="id855bd02a-6a39-4273-bc68-703813e5894f" default="true" sourceId="C-book-flight-27" targetId="dbd1074d-ff83-4386-b390-eae5f903d780"/>
-        <Edge id="idc441e58a-df61-4aec-b687-4d032c30bcd5" default="true" sourceId="C-book-hotel-28" targetId="dbd1074d-ff83-4386-b390-eae5f903d780"/>
+        <Edge id="idd04954a8-1bb3-4b0d-a90a-5f5e39491a01" default="true" sourceId="C-register-itinerary-26" targetId="id8f249e07-905e-4522-adb0-9ba65f2a8ed7"/>
+        <Edge id="idd2ab36b3-3174-40f1-a9cf-e3a79d87575f" default="true" sourceId="id8f249e07-905e-4522-adb0-9ba65f2a8ed7" targetId="C-book-car-29"/>
+        <Edge id="idc1dedd8f-b828-43d5-8445-acb3118cb88d" default="true" sourceId="id8f249e07-905e-4522-adb0-9ba65f2a8ed7" targetId="C-book-flight-27"/>
+        <Edge id="idd788157c-e8ce-4e3c-b5a7-7aec70a7ba87" default="true" sourceId="id8f249e07-905e-4522-adb0-9ba65f2a8ed7" targetId="C-book-hotel-28"/>
+        <Edge id="id9d9f5258-9b11-4541-86e3-49632df46716" default="true" sourceId="dd059d70-d046-42d8-b2bd-767acbbf640d" targetId="C-prepare-pay-30"/>
+        <Edge id="idac0dc37f-80ad-4c3f-80c0-d8aaa6741de9" default="true" sourceId="C-book-car-29" targetId="dd059d70-d046-42d8-b2bd-767acbbf640d"/>
+        <Edge id="id26aa9ac2-bbc8-4b82-bb93-0880640cb9d1" default="true" sourceId="C-book-flight-27" targetId="dd059d70-d046-42d8-b2bd-767acbbf640d"/>
+        <Edge id="idb1782082-00a3-4e02-82ad-c82d119f2ae4" default="true" sourceId="C-book-hotel-28" targetId="dd059d70-d046-42d8-b2bd-767acbbf640d"/>
         <Edge id="C-prepare-pay-30-OutputCondition-9" default="true" sourceId="C-prepare-pay-30" targetId="C-OutputCondition-9"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-do-itinerary-segment-endDate" originalID="N-do-itinerary-segment_endDate">
             <name>endDate</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>endDate</name>
+                    <type>date</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </localVariable:localVariable>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable">
+                <outputVariable:outputVariable xmlns:outputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>endDate</name>
+                    <type>date</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputVariable:outputVariable>
+            </attribute>
             <type>date</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-do-itinerary-segment-serviceRequired" originalID="N-do-itinerary-segment_serviceRequired">
             <name>serviceRequired</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>serviceRequired</name>
+                    <type>serviceType</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue/>
+                </localVariable:localVariable>
+            </attribute>
             <type>serviceType</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-do-itinerary-segment-startDate" originalID="N-do-itinerary-segment_startDate">
             <name>startDate</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>startDate</name>
+                    <type>date</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </localVariable:localVariable>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable">
+                <outputVariable:outputVariable xmlns:outputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>startDate</name>
+                    <type>date</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputVariable:outputVariable>
+            </attribute>
             <type>date</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-do-itinerary-segment-leg" originalID="N-do-itinerary-segment_leg">
             <name>leg</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable">
+                <inputVariable:inputVariable xmlns:inputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>leg</name>
+                    <type>legType</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputVariable:inputVariable>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable">
+                <outputVariable:outputVariable xmlns:outputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>leg</name>
+                    <type>legType</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputVariable:outputVariable>
+            </attribute>
             <type>legType</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-do-itinerary-segment-subTotal" originalID="N-do-itinerary-segment_subTotal">
             <name>subTotal</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable">
+                <inputVariable:inputVariable xmlns:inputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>subTotal</name>
+                    <type>double</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputVariable:inputVariable>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable">
+                <outputVariable:outputVariable xmlns:outputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>subTotal</name>
+                    <type>double</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputVariable:outputVariable>
+            </attribute>
             <type>double</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-do-itinerary-segment-hotelDetails" originalID="N-do-itinerary-segment_hotelDetails">
             <name>hotelDetails</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable">
+                <inputVariable:inputVariable xmlns:inputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>hotelDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputVariable:inputVariable>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable">
+                <outputVariable:outputVariable xmlns:outputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>hotelDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputVariable:outputVariable>
+            </attribute>
             <type>string</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-do-itinerary-segment-customer" originalID="N-do-itinerary-segment_customer">
             <name>customer</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable">
+                <inputVariable:inputVariable xmlns:inputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>customer</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputVariable:inputVariable>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable">
+                <outputVariable:outputVariable xmlns:outputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>customer</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputVariable:outputVariable>
+            </attribute>
             <type>string</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-do-itinerary-segment-carDetails" originalID="N-do-itinerary-segment_carDetails">
             <name>carDetails</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable">
+                <inputVariable:inputVariable xmlns:inputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>carDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputVariable:inputVariable>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable">
+                <outputVariable:outputVariable xmlns:outputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>carDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputVariable:outputVariable>
+            </attribute>
             <type>string</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-do-itinerary-segment-flightDetails" originalID="N-do-itinerary-segment_flightDetails">
             <name>flightDetails</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable">
+                <inputVariable:inputVariable xmlns:inputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>flightDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </inputVariable:inputVariable>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/outputVariable">
+                <outputVariable:outputVariable xmlns:outputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <name>flightDetails</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                </outputVariable:outputVariable>
+            </attribute>
             <type>string</type>
         </Object>
     </Net>

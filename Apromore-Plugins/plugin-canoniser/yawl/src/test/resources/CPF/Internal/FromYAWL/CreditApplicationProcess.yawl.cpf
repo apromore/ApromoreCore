@@ -13,21 +13,22 @@
                 </outputParam:outputParam>
             </attribute>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
-                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system">
-                    <distributionSet>
-                        <initialSet/>
-                    </distributionSet>
-                </allocate:allocate>
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <objectRef id="d01ba06c-84b2-47f3-8680-a39213877244" objectId="D-N-CreditApplication-loanAmt" type="output" optional="false" consumed="true"/>
+            <objectRef id="ida6ab444e-5a0b-402d-a72c-f8fe8b7b83d0" objectId="D-N-CreditApplication-loanAmt" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>loanAmt = {/receive_application/loanAmt/text()}</expression>
             </outputExpr>
             <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description></description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[]</expression>
+            </filterByDataExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-c1-13" originalID="c1_13">
             <name>c1</name>
@@ -43,24 +44,25 @@
                 </outputParam:outputParam>
             </attribute>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
-                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system">
-                    <distributionSet>
-                        <initialSet/>
-                    </distributionSet>
-                </allocate:allocate>
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <objectRef id="e075d882-ee3f-4602-a215-352a104ed222" objectId="D-N-CreditApplication-completeApp" type="output" optional="false" consumed="true"/>
+            <objectRef id="ideba558bb-c2e3-4e3e-b24c-a2482d2e789f" objectId="D-N-CreditApplication-completeApp" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>completeApp = {/check_for_completeness/completeApp/text()}</expression>
             </outputExpr>
             <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description></description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[]</expression>
+            </filterByDataExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="c58a3ab5-ed9d-4e79-955e-2bc4029c5692"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id2b073989-097c-42cb-bc05-55165c221ba7"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="idce3e66aa-1fb2-47b0-bf60-af228fb89c7d"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id6c2d5361-6a82-4070-8c06-d2f08ebc0c46"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-c4-16" originalID="c4_16">
             <name>c4</name>
         </Node>
@@ -70,31 +72,33 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-check-loan-amount-6" originalID="check_loan_amount_6">
             <name>check loan amount</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
-                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system">
-                    <distributionSet>
-                        <initialSet/>
-                    </distributionSet>
-                </allocate:allocate>
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description></description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[]</expression>
+            </filterByDataExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id194f3381-fda7-440e-8910-3ef5ee08e5bc"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="idd9b84282-41a6-4d4d-aaac-1b28a9cffe2a"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-get-more-info-5" originalID="get_more_info_5">
             <name>get more info</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
-                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system">
-                    <distributionSet>
-                        <initialSet/>
-                    </distributionSet>
-                </allocate:allocate>
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description></description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[]</expression>
+            </filterByDataExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-c5-27" originalID="c5_27">
             <name>c5</name>
@@ -108,30 +112,32 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-perform-checks-for-small-amount-8" originalID="perform_checks_for_small_amount_8">
             <name>perform checks for small amount</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
-                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system">
-                    <distributionSet>
-                        <initialSet/>
-                    </distributionSet>
-                </allocate:allocate>
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description></description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[]</expression>
+            </filterByDataExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-perform-checks-for-large-amount-7" originalID="perform_checks_for_large_amount_7">
             <name>perform checks for large amount</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
-                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system">
-                    <distributionSet>
-                        <initialSet/>
-                    </distributionSet>
-                </allocate:allocate>
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description></description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[]</expression>
+            </filterByDataExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-c8-29" originalID="c8_29">
             <name>c8</name>
@@ -150,24 +156,25 @@
                 </outputParam:outputParam>
             </attribute>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
-                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system">
-                    <distributionSet>
-                        <initialSet/>
-                    </distributionSet>
-                </allocate:allocate>
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <objectRef id="id181d15e4-c0c9-429d-bbe1-0bfcd52e4266" objectId="D-N-CreditApplication-decideApp" type="output" optional="false" consumed="true"/>
+            <objectRef id="ec46f2b3-badc-4a80-885d-d6441293f5ee" objectId="D-N-CreditApplication-decideApp" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>decideApp = {/make_decision/decideApp/text()}</expression>
             </outputExpr>
             <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description></description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[]</expression>
+            </filterByDataExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="idedd24306-073e-4509-ac2f-7cc67c62ef55"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="idbe1d4811-9384-4c87-9115-447b6f317841"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id38bad813-fc0c-49ae-a738-e0c1c333f239"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="idba3962b9-f206-4f00-9bc1-363bf4db1001"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-c9-18" originalID="c9_18">
             <name>c9</name>
         </Node>
@@ -177,31 +184,33 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-start-approval-23" originalID="start_approval_23">
             <name>start approval</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
-                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system">
-                    <distributionSet>
-                        <initialSet/>
-                    </distributionSet>
-                </allocate:allocate>
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description></description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[]</expression>
+            </filterByDataExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="id9944ef1a-d2fc-4094-96d3-fce7c31ceb17"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="e85c297c-8cda-4bb6-be22-5ff654d21b45"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-notify-rejection-12" originalID="notify_rejection_12">
             <name>notify rejection</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
-                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system">
-                    <distributionSet>
-                        <initialSet/>
-                    </distributionSet>
-                </allocate:allocate>
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description></description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[]</expression>
+            </filterByDataExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-c11-25" originalID="c11_25">
             <name>c11</name>
@@ -212,30 +221,32 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-deliver-credit-card-11" originalID="deliver_credit_card_11">
             <name>deliver credit card</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
-                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system">
-                    <distributionSet>
-                        <initialSet/>
-                    </distributionSet>
-                </allocate:allocate>
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description></description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[]</expression>
+            </filterByDataExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-notify-acceptance-10" originalID="notify_acceptance_10">
             <name>notify acceptance</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
-                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system">
-                    <distributionSet>
-                        <initialSet/>
-                    </distributionSet>
-                </allocate:allocate>
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description></description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[]</expression>
+            </filterByDataExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-c14-31" originalID="c14_31">
             <name>c14</name>
@@ -246,69 +257,97 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-complete-approval-21" originalID="complete_approval_21">
             <name>complete approval</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
-                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system">
-                    <distributionSet>
-                        <initialSet/>
-                    </distributionSet>
-                </allocate:allocate>
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description></description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[]</expression>
+            </filterByDataExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDJoinType" id="idc9662a48-0922-451d-849e-f61933eb1d91"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDJoinType" id="idb7f3ce70-7e45-4f7e-bdff-fda9ace58fd2"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="ide1415740-294d-4126-b9a6-1c78587b8863"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="id21d057f9-77bc-4c99-913c-528e7d47ef45"/>
         <Edge id="C-InputCondition-1-receive-application-3" default="true" sourceId="C-InputCondition-1" targetId="C-receive-application-3"/>
         <Edge id="C-receive-application-3-c1-13" default="true" sourceId="C-receive-application-3" targetId="C-c1-13"/>
-        <Edge id="id5917165d-fe95-4543-84ab-3f3c40f58a91" default="true" sourceId="c58a3ab5-ed9d-4e79-955e-2bc4029c5692" targetId="C-check-for-completeness-4"/>
-        <Edge id="idbb17417c-a8b6-4212-aecc-f149a9340826" default="true" sourceId="C-c1-13" targetId="c58a3ab5-ed9d-4e79-955e-2bc4029c5692"/>
-        <Edge id="id35189a8c-e6c2-4b76-9de7-cd2978890652" default="true" sourceId="C-check-for-completeness-4" targetId="id2b073989-097c-42cb-bc05-55165c221ba7"/>
-        <Edge id="id43ad916d-b969-41d5-b0d6-537d58de7564" default="true" sourceId="id2b073989-097c-42cb-bc05-55165c221ba7" targetId="C-c4-16"/>
-        <Edge id="idf861d9ea-1096-4684-86a1-1d65385fe36b" default="true" sourceId="id2b073989-097c-42cb-bc05-55165c221ba7" targetId="C-c2-15"/>
+        <Edge id="ide568b9f4-00ec-48b4-bf5b-9793b525aa52" default="true" sourceId="idce3e66aa-1fb2-47b0-bf60-af228fb89c7d" targetId="C-check-for-completeness-4"/>
+        <Edge id="id2bc55d91-f4ee-47c4-87ea-c4ccc37bd533" default="true" sourceId="C-c1-13" targetId="idce3e66aa-1fb2-47b0-bf60-af228fb89c7d"/>
+        <Edge id="id0a4364ea-4419-4a3e-83d2-d47167cb5b9c" default="true" sourceId="C-check-for-completeness-4" targetId="id6c2d5361-6a82-4070-8c06-d2f08ebc0c46"/>
+        <Edge id="id5e1f50ca-3353-4f1b-9fcb-b3eafeecc3c2" default="true" sourceId="id6c2d5361-6a82-4070-8c06-d2f08ebc0c46" targetId="C-c4-16"/>
+        <Edge id="idf65f09c2-0f99-4577-b517-a60027206150" default="true" sourceId="id6c2d5361-6a82-4070-8c06-d2f08ebc0c46" targetId="C-c2-15"/>
         <Edge id="C-c4-16-check-loan-amount-6" default="true" sourceId="C-c4-16" targetId="C-check-loan-amount-6"/>
-        <Edge id="id08186325-d377-4126-bd25-29e71fc5c354" default="true" sourceId="C-check-loan-amount-6" targetId="id194f3381-fda7-440e-8910-3ef5ee08e5bc"/>
+        <Edge id="idcc28332d-9545-407d-bb31-df2f0fabcf38" default="true" sourceId="C-check-loan-amount-6" targetId="idd9b84282-41a6-4d4d-aaac-1b28a9cffe2a"/>
         <Edge id="C-c2-15-get-more-info-5" default="true" sourceId="C-c2-15" targetId="C-get-more-info-5"/>
-        <Edge id="id61fda13a-3935-4e6b-8aa2-fba62b09b313" default="true" sourceId="id194f3381-fda7-440e-8910-3ef5ee08e5bc" targetId="C-c5-27"/>
-        <Edge id="idde59b022-4ca5-42fc-9ef5-4d869f5c9e85" default="true" sourceId="id194f3381-fda7-440e-8910-3ef5ee08e5bc" targetId="C-c7-28"/>
+        <Edge id="id77096a50-9152-4926-a116-ae023f6b2c4f" default="true" sourceId="idd9b84282-41a6-4d4d-aaac-1b28a9cffe2a" targetId="C-c5-27"/>
+        <Edge id="idd2c8e54e-57ef-4e20-a855-8598cf784f35" default="true" sourceId="idd9b84282-41a6-4d4d-aaac-1b28a9cffe2a" targetId="C-c7-28"/>
         <Edge id="C-get-more-info-5-c3-14" default="true" sourceId="C-get-more-info-5" targetId="C-c3-14"/>
-        <Edge id="id9a81a14d-7dde-40c7-a3ef-d0f215d92d71" default="true" sourceId="C-c3-14" targetId="c58a3ab5-ed9d-4e79-955e-2bc4029c5692"/>
-        <Edge id="idcf28419b-658b-4a17-b64f-f44cbdaecb96" default="true" sourceId="C-c7-28" targetId="C-perform-checks-for-small-amount-8"/>
-        <Edge id="id76490da0-d10b-46dd-8d16-86a2742e51d1" default="true" sourceId="C-c5-27" targetId="C-perform-checks-for-large-amount-7"/>
-        <Edge id="id5534c9bd-8828-47a7-a574-cfb6985efa56" default="true" sourceId="C-perform-checks-for-small-amount-8" targetId="C-c8-29"/>
-        <Edge id="idbf989aef-d4bd-485e-b61d-195ba35f80e6" default="true" sourceId="C-perform-checks-for-large-amount-7" targetId="C-c6-17"/>
-        <Edge id="id83ecbc3b-f1cd-4a54-9040-a61e09c2d248" default="true" sourceId="idedd24306-073e-4509-ac2f-7cc67c62ef55" targetId="C-make-decision-9"/>
-        <Edge id="idb9c93735-55e3-44b5-a0fc-574ad375c50c" default="true" sourceId="C-c8-29" targetId="idedd24306-073e-4509-ac2f-7cc67c62ef55"/>
-        <Edge id="ide071b76c-5441-4077-bbc5-c27934de1582" default="true" sourceId="C-c6-17" targetId="idedd24306-073e-4509-ac2f-7cc67c62ef55"/>
-        <Edge id="id7c9436f2-aa1c-49dd-8b7c-fc8c404c437d" default="true" sourceId="C-make-decision-9" targetId="idbe1d4811-9384-4c87-9115-447b6f317841"/>
-        <Edge id="idb0aee9ee-384a-422d-869f-420cb59a7617" default="true" sourceId="idbe1d4811-9384-4c87-9115-447b6f317841" targetId="C-c9-18"/>
-        <Edge id="id56c35320-65a0-472a-94bf-c49b092132ea" default="true" sourceId="idbe1d4811-9384-4c87-9115-447b6f317841" targetId="C-c10-20"/>
+        <Edge id="id57dffab8-7a3f-4aa9-9598-49c6c7d36f86" default="true" sourceId="C-c3-14" targetId="idce3e66aa-1fb2-47b0-bf60-af228fb89c7d"/>
+        <Edge id="id87be9f48-28e3-461c-a514-62a08bf68335" default="true" sourceId="C-c7-28" targetId="C-perform-checks-for-small-amount-8"/>
+        <Edge id="id0e791457-a47d-4d81-89c9-4364c6163bae" default="true" sourceId="C-c5-27" targetId="C-perform-checks-for-large-amount-7"/>
+        <Edge id="id32be529e-ad2e-4ec2-ab5e-8e6791a8ea7e" default="true" sourceId="C-perform-checks-for-small-amount-8" targetId="C-c8-29"/>
+        <Edge id="id60be58b8-8eb5-4813-8ce6-70d1b559902f" default="true" sourceId="C-perform-checks-for-large-amount-7" targetId="C-c6-17"/>
+        <Edge id="id1cf49fca-22eb-45ec-b35a-5d68bea9efdd" default="true" sourceId="id38bad813-fc0c-49ae-a738-e0c1c333f239" targetId="C-make-decision-9"/>
+        <Edge id="id7a6acfbf-865b-4f53-9168-be9f42bb4bf6" default="true" sourceId="C-c8-29" targetId="id38bad813-fc0c-49ae-a738-e0c1c333f239"/>
+        <Edge id="id29730d3c-ab38-4b4f-af49-33bc51678973" default="true" sourceId="C-c6-17" targetId="id38bad813-fc0c-49ae-a738-e0c1c333f239"/>
+        <Edge id="ida858f2d1-67ea-4c2d-8e91-fba76a4fdd6a" default="true" sourceId="C-make-decision-9" targetId="idba3962b9-f206-4f00-9bc1-363bf4db1001"/>
+        <Edge id="id2271c83b-4bc7-48a4-a684-15440412c838" default="true" sourceId="idba3962b9-f206-4f00-9bc1-363bf4db1001" targetId="C-c9-18"/>
+        <Edge id="idff0c8378-460d-42a6-be06-22ec729b7417" default="true" sourceId="idba3962b9-f206-4f00-9bc1-363bf4db1001" targetId="C-c10-20"/>
         <Edge id="C-c9-18-start-approval-23" default="true" sourceId="C-c9-18" targetId="C-start-approval-23"/>
-        <Edge id="id35a8dbbc-f492-4e60-a70d-071d3f1ae2c0" default="true" sourceId="C-start-approval-23" targetId="id9944ef1a-d2fc-4094-96d3-fce7c31ceb17"/>
+        <Edge id="idaef4f57a-6764-4c4f-8a9e-adc1765c3c73" default="true" sourceId="C-start-approval-23" targetId="e85c297c-8cda-4bb6-be22-5ff654d21b45"/>
         <Edge id="C-c10-20-notify-rejection-12" default="true" sourceId="C-c10-20" targetId="C-notify-rejection-12"/>
-        <Edge id="id2e6c8013-54c6-48f7-9dd5-e9247ed82f55" default="true" sourceId="id9944ef1a-d2fc-4094-96d3-fce7c31ceb17" targetId="C-c11-25"/>
-        <Edge id="id196a5894-d320-4bd3-be59-bac2b2a0f434" default="true" sourceId="id9944ef1a-d2fc-4094-96d3-fce7c31ceb17" targetId="C-c12-26"/>
+        <Edge id="id6b0f3d35-fa0e-4b2e-a17b-4a51e8690296" default="true" sourceId="e85c297c-8cda-4bb6-be22-5ff654d21b45" targetId="C-c11-25"/>
+        <Edge id="id74b41c04-75b3-4056-87a3-600f59840d4e" default="true" sourceId="e85c297c-8cda-4bb6-be22-5ff654d21b45" targetId="C-c12-26"/>
         <Edge id="C-c12-26-deliver-credit-card-11" default="true" sourceId="C-c12-26" targetId="C-deliver-credit-card-11"/>
         <Edge id="C-c11-25-notify-acceptance-10" default="true" sourceId="C-c11-25" targetId="C-notify-acceptance-10"/>
         <Edge id="C-deliver-credit-card-11-c14-31" default="true" sourceId="C-deliver-credit-card-11" targetId="C-c14-31"/>
         <Edge id="C-notify-acceptance-10-c13-19" default="true" sourceId="C-notify-acceptance-10" targetId="C-c13-19"/>
-        <Edge id="idc815e602-faa7-49d4-a1f1-802f9ec2263e" default="true" sourceId="idc9662a48-0922-451d-849e-f61933eb1d91" targetId="C-complete-approval-21"/>
-        <Edge id="idc9636a55-727d-4f27-851f-fac8a602b30c" default="true" sourceId="C-c14-31" targetId="idc9662a48-0922-451d-849e-f61933eb1d91"/>
-        <Edge id="ida0bf5a86-0ec6-4a83-afa3-1a13fe1ad856" default="true" sourceId="C-c13-19" targetId="idc9662a48-0922-451d-849e-f61933eb1d91"/>
-        <Edge id="id08fd32cb-5a0c-4d64-9917-5631fe3241fd" default="true" sourceId="ide1415740-294d-4126-b9a6-1c78587b8863" targetId="C-OutputCondition-2"/>
-        <Edge id="idaa01f72c-282b-4118-b965-00b3f5705b06" default="true" sourceId="C-notify-rejection-12" targetId="ide1415740-294d-4126-b9a6-1c78587b8863"/>
-        <Edge id="id149acb4e-0c21-4b5a-b24c-52f863bd60d0" default="true" sourceId="C-complete-approval-21" targetId="ide1415740-294d-4126-b9a6-1c78587b8863"/>
+        <Edge id="id9faa8dbf-c9b5-4e54-90eb-e5885df13b10" default="true" sourceId="idb7f3ce70-7e45-4f7e-bdff-fda9ace58fd2" targetId="C-complete-approval-21"/>
+        <Edge id="id81fc0764-8900-4e19-930f-8ac24ab3b31c" default="true" sourceId="C-c14-31" targetId="idb7f3ce70-7e45-4f7e-bdff-fda9ace58fd2"/>
+        <Edge id="idee76e558-9411-476c-9081-817621879b2b" default="true" sourceId="C-c13-19" targetId="idb7f3ce70-7e45-4f7e-bdff-fda9ace58fd2"/>
+        <Edge id="id20cf50f5-8c6c-4a9d-987d-0261ed4aba7c" default="true" sourceId="id21d057f9-77bc-4c99-913c-528e7d47ef45" targetId="C-OutputCondition-2"/>
+        <Edge id="id03b2ae1f-45c9-459a-9f63-85fecbd618e8" default="true" sourceId="C-notify-rejection-12" targetId="id21d057f9-77bc-4c99-913c-528e7d47ef45"/>
+        <Edge id="idb9fcee90-435b-4409-9388-9b70a7f1358e" default="true" sourceId="C-complete-approval-21" targetId="id21d057f9-77bc-4c99-913c-528e7d47ef45"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-CreditApplication-completeApp" originalID="N-CreditApplication_completeApp">
             <name>completeApp</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>completeApp</name>
+                    <type>boolean</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue>false</initialValue>
+                </localVariable:localVariable>
+            </attribute>
             <type>boolean</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-CreditApplication-decideApp" originalID="N-CreditApplication_decideApp">
             <name>decideApp</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>1</index>
+                    <name>decideApp</name>
+                    <type>boolean</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue>false</initialValue>
+                </localVariable:localVariable>
+            </attribute>
             <type>boolean</type>
         </Object>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-CreditApplication-loanAmt" originalID="N-CreditApplication_loanAmt">
             <name>loanAmt</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>2</index>
+                    <name>loanAmt</name>
+                    <type>double</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue>0.0</initialValue>
+                </localVariable:localVariable>
+            </attribute>
             <type>double</type>
         </Object>
     </Net>

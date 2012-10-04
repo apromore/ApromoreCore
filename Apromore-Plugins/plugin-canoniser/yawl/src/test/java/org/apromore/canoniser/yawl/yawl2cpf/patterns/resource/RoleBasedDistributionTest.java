@@ -35,8 +35,8 @@ public class RoleBasedDistributionTest extends BasePatternTest {
         // Check Resources available in Process
         final CanonicalProcessType process = yawl2Canonical.getCpf();
 
-        // Should contain the just the Role
-        assertEquals(1, process.getResourceType().size());
+        // Should contain the just the Role and the Participants
+        assertEquals(5, process.getResourceType().size());
 
         // Check Reference correct
         final TaskType taskA = (TaskType) nodeA;
@@ -46,7 +46,7 @@ public class RoleBasedDistributionTest extends BasePatternTest {
 
         ResourceTypeType resource = getResourceById(process, resourceRef.getResourceTypeId());
         assertEquals("RoleX", resource.getName());
-        assertEquals(0, resource.getSpecializationIds().size());
+        assertEquals(2, resource.getSpecializationIds().size());
 
     }
 

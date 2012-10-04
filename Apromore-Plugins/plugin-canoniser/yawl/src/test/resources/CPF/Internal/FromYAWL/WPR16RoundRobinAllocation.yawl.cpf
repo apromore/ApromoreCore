@@ -10,6 +10,12 @@
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description></description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[]</expression>
+            </filterByDataExpr>
+            <allocationStrategy>RoundRobinByTime</allocationStrategy>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-B" originalID="B">
             <name>B</name>
@@ -17,6 +23,12 @@
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description></description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[]</expression>
+            </filterByDataExpr>
+            <allocationStrategy>RoundRobinByFrequency</allocationStrategy>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-C" originalID="C">
             <name>C</name>
@@ -24,6 +36,12 @@
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description></description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[]</expression>
+            </filterByDataExpr>
+            <allocationStrategy>RoundRobinByExperience</allocationStrategy>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>

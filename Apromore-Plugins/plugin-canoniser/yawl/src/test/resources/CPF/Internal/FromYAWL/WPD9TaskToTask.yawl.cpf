@@ -15,17 +15,10 @@
                     <defaultValue>true</defaultValue>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
-                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
-                    <offer initiator="user"/>
-                    <allocate initiator="user"/>
-                    <start initiator="user"/>
-                </offer:offer>
-            </attribute>
-            <objectRef id="id5d7490d9-0323-4234-8bbf-d449088deb87" objectId="D-N-Net-x" type="output" optional="false" consumed="true"/>
+            <objectRef id="id809b5ebc-ad13-46df-adf2-6824a7940b42" objectId="D-N-Net-x" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>x = Boolean({/A/x/text()})</expression>
+                <expression>x = Boolean({cpf:getTaskObjectValue('x')/text()})</expression>
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
@@ -39,16 +32,10 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
-                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
-                    <offer initiator="user"/>
-                    <allocate initiator="user"/>
-                    <start initiator="user"/>
-                </offer:offer>
-            </attribute>
+            <objectRef id="id9f5995f8-e14a-4cee-ab8b-c8a997853ce6" objectId="D-N-Net-x" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>y = {/Net/x}</expression>
+                <expression>y = {cpf:getObjectValue('x')}</expression>
             </inputExpr>
             <teamWork>false</teamWork>
         </Node>
@@ -60,6 +47,15 @@
         <Edge id="C-B-OutputCondition" default="true" sourceId="C-B" targetId="C-OutputCondition"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-x" originalID="N-Net_x">
             <name>x</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>x</name>
+                    <type>boolean</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue>true</initialValue>
+                </localVariable:localVariable>
+            </attribute>
             <type>boolean</type>
         </Object>
     </Net>
