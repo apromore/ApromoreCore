@@ -61,6 +61,8 @@ import org.yawlfoundation.yawlschema.VariableBaseType;
 import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType.YawlService;
 import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
 import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
+import org.yawlfoundation.yawlschema.orgdata.ParticipantType;
+import org.yawlfoundation.yawlschema.orgdata.RoleType;
 
 /**
  * Context for a conversion CPF -> YAWL
@@ -78,6 +80,7 @@ public final class CanonicalConversionContext extends ConversionContext {
         private org.yawlfoundation.yawlschema.TimerType timer;
         private boolean isAutomatic = false;
         private YawlService yawlService;
+        private NetFactsType parent;
 
         public ExternalNetElementType getElement() {
             return element;
@@ -133,6 +136,14 @@ public final class CanonicalConversionContext extends ConversionContext {
 
         public void setYawlService(final YawlService yawlService) {
             this.yawlService = yawlService;
+        }
+
+        public NetFactsType getParent() {
+            return parent;
+        }
+
+        public void setParent(final NetFactsType parent) {
+            this.parent = parent;
         }
     }
 
@@ -205,9 +216,19 @@ public final class CanonicalConversionContext extends ConversionContext {
     private Map<String, FlowsIntoType> convertedFlowsMap;
 
     /**
-     * Map of all already converted Variables by their Object-ID (Both Net and Task Scope variables as all Objects have unique IDs)
+     * Map of all already converted Variables by their Object-ID
      */
     private Map<String, VariableBaseType> convertedParameterMap;
+
+    /**
+     * Map of all already converted YAWL Roles by their Resource-ID
+     */
+    private Map<String, RoleType> convertedRoleMap;
+
+    /**
+     * Map of all already converted YAWL Participants by their Resource-ID
+     */
+    private Map<String, ParticipantType> convertedParticipantMap;
 
     /**
      * Map containing the collection of all Composite Tasks that are using the Net with ID
@@ -243,6 +264,7 @@ public final class CanonicalConversionContext extends ConversionContext {
      * Number format that is used in YAWL file
      */
     private NumberFormat yawlNumberFormat;
+
 
     /**
      * Create the Context for one CPF -> YAWL conversion
@@ -694,6 +716,38 @@ public final class CanonicalConversionContext extends ConversionContext {
         }
     }
 
+
+    public void addConvertedRole(final String id, final RoleType r) {
+        initConvertedRoleMap();
+        convertedRoleMap.put(id, r);
+    }
+
+    public RoleType getConvertedRole(final String id) {
+        initConvertedRoleMap();
+        return convertedRoleMap.get(id);
+    }
+
+    private void initConvertedRoleMap() {
+        if (convertedRoleMap == null) {
+            convertedRoleMap = new HashMap<String, RoleType>();
+        }
+    }
+
+    public ParticipantType getConvertedParticipant(final String id) {
+        initConvertedParticipantMap();
+        return convertedParticipantMap.get(id);
+    }
+
+    public void addConvertedParticipant(final String id, final ParticipantType p) {
+        initConvertedParticipantMap();
+        convertedParticipantMap.put(id, p);
+    }
+
+    private void initConvertedParticipantMap() {
+        if (convertedParticipantMap == null) {
+            convertedParticipantMap = new HashMap<String, ParticipantType>();
+        }
+    }
 
     /**
      * Add an element that just has been converted

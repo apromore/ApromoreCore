@@ -7,7 +7,7 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
             <name>A</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="idbfb45699-eec3-4990-a3ae-2444aa64879f"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="idd63fc68d-3809-4d49-9838-05bf2bd4489a"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-D" originalID="D">
             <name>D</name>
         </Node>
@@ -20,18 +20,27 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="id9525d2ed-f003-4655-b3ff-4517eafc4b69"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="id02038c4c-14bd-4675-9723-12812eb867c5"/>
         <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="id1c4c9be5-f263-4c35-a4fa-4641db325b5b" default="true" sourceId="C-A" targetId="idbfb45699-eec3-4990-a3ae-2444aa64879f"/>
-        <Edge id="id3bc83934-e6cb-42de-9b54-6b1153753fe5" default="true" sourceId="idbfb45699-eec3-4990-a3ae-2444aa64879f" targetId="C-D"/>
-        <Edge id="id527b2f97-a7a3-4e60-bc85-760477ad6864" default="true" sourceId="idbfb45699-eec3-4990-a3ae-2444aa64879f" targetId="C-C"/>
-        <Edge id="id3da9be0b-cb97-4a9a-82a2-f901ec7e8f1d" default="true" sourceId="idbfb45699-eec3-4990-a3ae-2444aa64879f" targetId="C-B"/>
-        <Edge id="id0e687bd9-edc0-430e-8fc8-676809d5467c" default="true" sourceId="id9525d2ed-f003-4655-b3ff-4517eafc4b69" targetId="C-OutputCondition"/>
-        <Edge id="id3de3ee59-6320-4f72-acf6-fea298e54e97" default="true" sourceId="C-D" targetId="id9525d2ed-f003-4655-b3ff-4517eafc4b69"/>
-        <Edge id="id35ad8332-dcd8-42c0-9aa0-44b778847506" default="true" sourceId="C-C" targetId="id9525d2ed-f003-4655-b3ff-4517eafc4b69"/>
-        <Edge id="id5cc35757-380c-44d7-b5ce-eb2e41c7e6d4" default="true" sourceId="C-B" targetId="id9525d2ed-f003-4655-b3ff-4517eafc4b69"/>
+        <Edge id="id09078182-e94a-4e3b-86b0-33079409b06f" default="true" sourceId="C-A" targetId="idd63fc68d-3809-4d49-9838-05bf2bd4489a"/>
+        <Edge id="id18ecdd1e-62e4-42d6-a206-3fd055d23f7c" default="true" sourceId="idd63fc68d-3809-4d49-9838-05bf2bd4489a" targetId="C-D"/>
+        <Edge id="id87349356-9ad7-468d-a8a5-112166c5d082" default="true" sourceId="idd63fc68d-3809-4d49-9838-05bf2bd4489a" targetId="C-C"/>
+        <Edge id="id656ddac3-e73d-4d0f-a18b-1848059ac3b6" default="true" sourceId="idd63fc68d-3809-4d49-9838-05bf2bd4489a" targetId="C-B"/>
+        <Edge id="ide79dfcba-a62b-438e-bf4b-ec8065904da6" default="true" sourceId="id02038c4c-14bd-4675-9723-12812eb867c5" targetId="C-OutputCondition"/>
+        <Edge id="id6efcb0b6-7d5f-4ff8-b695-a64deecc2436" default="true" sourceId="C-D" targetId="id02038c4c-14bd-4675-9723-12812eb867c5"/>
+        <Edge id="id19793e46-cff2-48b3-9991-4b8383ec997d" default="true" sourceId="C-C" targetId="id02038c4c-14bd-4675-9723-12812eb867c5"/>
+        <Edge id="idee8360fa-f1ab-43ac-9095-7e52734487e8" default="true" sourceId="C-B" targetId="id02038c4c-14bd-4675-9723-12812eb867c5"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-c" originalID="N-Net_c">
             <name>c</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>c</name>
+                    <type>int</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue>0</initialValue>
+                </localVariable:localVariable>
+            </attribute>
             <type>int</type>
         </Object>
     </Net>

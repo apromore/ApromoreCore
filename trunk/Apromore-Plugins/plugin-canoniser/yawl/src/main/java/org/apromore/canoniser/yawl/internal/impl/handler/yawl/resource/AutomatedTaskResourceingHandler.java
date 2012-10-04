@@ -12,12 +12,17 @@
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl.resource;
 
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.cpf.NonhumanType;
 import org.apromore.cpf.NonhumanTypeEnum;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
 import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType;
 
 public class AutomatedTaskResourceingHandler extends ResourceingHandler {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(AutomatedTaskResourceingHandler.class);
 
     /*
      * (non-Javadoc)
@@ -48,6 +53,7 @@ public class AutomatedTaskResourceingHandler extends ResourceingHandler {
         resourceType.setName(automaticName);
         getContext().getCanonicalResult().getResourceType().add(resourceType);
         createResourceReference(resourceType, null);
+        LOGGER.debug("Converted YAWL codelet or service {} to CPF NonHumanType {}", automaticName, ConversionUtils.toString(resourceType));
     }
 
 }

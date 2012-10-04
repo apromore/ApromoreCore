@@ -11,7 +11,7 @@
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl.data;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.utils.ExpressionUtils;
@@ -48,11 +48,12 @@ public class InputVarMappingHandler extends BaseVarMappingHandler {
         final String xQuery = getObject().getExpression().getQuery();
         final String mapsTo = getObject().getMapsTo();
 
-        final List<ObjectType> variables = calculateUsedNetVariables(xQuery, parentNet);
+        final Set<String> cpfObjectList = calculateUsedNetVariables(xQuery, parentNet);
 
         // Create references to all Objects this mapping is referring to, note that we're missing CONSTANTs
-        for (final ObjectType var : variables) {
+        for (final String varName: cpfObjectList) {
             // TODO isConsumed??
+            ObjectType var = getContext().getObjectByName(varName, parentNet);
             final ObjectRefType objectRef = createObjectRef(var, InputOutputType.INPUT, false, true);
             LOGGER.debug("Adding Object Reference for YAWL Task {} (Type: {}, Source: {}, Target: {})", new String[] {
                     getConvertedParent().getName(), objectRef.getType().toString(), objectRef.getObjectId(), null });
@@ -60,13 +61,13 @@ public class InputVarMappingHandler extends BaseVarMappingHandler {
         }
 
         // Store the xQuery expression in a canonical way
-        task.getInputExpr().add(convertXQuery(xQuery, mapsTo));
+        task.getInputExpr().add(convertXQuery(xQuery, mapsTo, parentNet, cpfObjectList));
     }
 
-    private InputExpressionType convertXQuery(final String xQuery, final String mapsTo) throws CanoniserException {
+    private InputExpressionType convertXQuery(final String xQuery, final String mapsTo, final NetType parentNet, final Set<String> cpfObjectList) throws CanoniserException {
         final InputExpressionType inputExpr = CPF_FACTORY.createInputExpressionType();
         inputExpr.setLanguage(CPFSchema.EXPRESSION_LANGUAGE_XQUERY);
-        inputExpr.setExpression(CPFSchema.createInputExpression(mapsTo, ExpressionUtils.createQueryReferencingNetObjects(xQuery)));
+        inputExpr.setExpression(CPFSchema.createInputExpression(mapsTo, ExpressionUtils.createQueryReferencingNetObjects(xQuery, parentNet, cpfObjectList)));
         return inputExpr;
     }
 

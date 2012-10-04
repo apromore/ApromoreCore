@@ -124,8 +124,7 @@
 			<artifactId>yawl-schema</artifactId>
 			<version>1.0</version>
 			<scope>compile</scope>
-		</dependency>
-
+		</dependency>		
 
 	<!-- Test dependencies -->
 		<dependency>

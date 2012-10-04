@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="RoleWithDataFilter" version="0.1" name="RoleWithDataFilter" author="Felix" rootIds="N-Net">
+    <Net id="N-Net" originalID="Net">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition">
+            <name>IN</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
+            <name>A</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description>Of type PARTICIPANT choose by value of Object resource</description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[type/text()='Participant' and name/text()='cpf:getObjectValue(resource)']</expression>
+            </filterByDataExpr>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-B" originalID="B">
+            <name>B</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description>Of type ROLE choose by value of Object resource</description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[type/text()='Role' and name/text()='cpf:getObjectValue(resource)']</expression>
+            </filterByDataExpr>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
+            <name>OUT</name>
+        </Node>
+        <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
+        <Edge id="C-A-B" default="true" sourceId="C-A" targetId="C-B"/>
+        <Edge id="C-B-OutputCondition" default="true" sourceId="C-B" targetId="C-OutputCondition"/>
+        <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-resource" originalID="N-Net_resource">
+            <name>resource</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable">
+                <inputVariable:inputVariable xmlns:inputVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>resource</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue>test</initialValue>
+                </inputVariable:inputVariable>
+            </attribute>
+            <type>string</type>
+        </Object>
+    </Net>
+</ns2:CanonicalProcess>

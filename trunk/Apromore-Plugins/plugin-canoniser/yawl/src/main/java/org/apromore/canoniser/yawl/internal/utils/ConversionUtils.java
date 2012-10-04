@@ -10,8 +10,10 @@ import java.util.regex.Pattern;
 import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apache.commons.lang.builder.ToStringStyle;
 import org.apromore.cpf.EdgeType;
+import org.apromore.cpf.HumanType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
+import org.apromore.cpf.NonhumanType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.WorkType;
 
@@ -160,6 +162,30 @@ public final class ConversionUtils {
         final ToStringBuilder sb = new ToStringBuilder(net, ToStringStyle.MULTI_LINE_STYLE);
         return sb.append("id", net.getId()).append("name", net.getName()).append("nodes", nodesToString(net.getNode()))
                 .append("edge", edgesToString(net.getEdge())).toString();
+    }
+
+    /**
+     * Returns a nicely formatted String with information about a HumanType
+     *
+     * @param resource
+     *            HumanType
+     * @return
+     */
+    public static String toString(final HumanType resource) {
+        final ToStringBuilder sb = new ToStringBuilder(resource, ToStringStyle.MULTI_LINE_STYLE);
+        return sb.append("id", resource.getId()).append("name", resource.getName()).append("type", resource.getType()).toString();
+    }
+
+    /**
+     * Returns a nicely formatted String with information about a NonhumanType
+     *
+     * @param resource
+     *            NonhumanType
+     * @return
+     */
+    public static String toString(final NonhumanType resource) {
+        final ToStringBuilder sb = new ToStringBuilder(resource, ToStringStyle.MULTI_LINE_STYLE);
+        return sb.append("id", resource.getId()).append("name", resource.getName()).append("type", resource.getType()).toString();
     }
 
 }

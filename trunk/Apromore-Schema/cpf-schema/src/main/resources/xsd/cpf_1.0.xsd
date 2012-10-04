@@ -82,11 +82,6 @@
 		<keyref name="cancelNodes" refer="cpf:idNode">
 			<selector xpath="./Node/cancelNodeId" />
 			<field xpath="@refId" />
-		</keyref>		
-		<!-- Each element of a Distribution Set must reference a ResourceType -->
-		<keyref name="distributionSetRef" refer="cpf:resourceTypeIdUn">
-			<selector xpath="./ResourceType/distributionSet/resourceTypeRef" />
-			<field xpath="@resourceTypeId" />
 		</keyref>
 	</element>
 
@@ -530,8 +525,16 @@ Base type of all Nodes that represent some Work
 		<complexContent>
 			<extension base="cpf:ObjectType">
 				<sequence>
-					<!-- Use the type system of XML Schema -->
-					<element name="type" type="string" />
+					<element name="type" type="string">
+						<annotation>			
+							<appinfo>
+							<jxb:property>
+								<jxb:javadoc>Use the type system of XML Schema
+								</jxb:javadoc>							
+							</jxb:property>						
+							</appinfo>		
+						</annotation>						
+					</element>
 				</sequence>
 			</extension>
 		</complexContent>
@@ -558,8 +561,19 @@ Base type of all Nodes that represent some Work
 	<simpleType name="AllocationStrategyEnum">
 		<restriction base="string">		
 			<enumeration value="Random" />
-			<enumeration value="RoundRobin" />
+			<enumeration value="RoundRobinByTime" />
+			<enumeration value="RoundRobinByFrequency" />
+			<enumeration value="RoundRobinByExperience" />
 			<enumeration value="ShortestQueue" />
+			<enumeration value="Other">
+				<annotation>			
+					<appinfo>
+					<jxb:property>
+						<jxb:javadoc>No pre defined allocation strategy matches. Language specific allocation strategy may be added to the Tasks extension attributes.</jxb:javadoc>							
+					</jxb:property>						
+					</appinfo>		
+				</annotation>					
+			</enumeration>
 		</restriction>
 	</simpleType>	
 	
@@ -567,56 +581,43 @@ Base type of all Nodes that represent some Work
 		<annotation>
 			<documentation>An expression queries the data model of the process (i.e. Objects of the current Net) for a value. 
 An expression can either be an informal expression specified by a natural text description ({@see #description})
-or a formal expression specified by both language and the expression. ({@see #language}, {@see #expression})</documentation>
+or a formal expression specified by both language and the expression. ({@see #language}, {@see #expression})
+			</documentation>
 		</annotation>
 		<sequence>		
 			<element name="description" type="string" minOccurs="0" />
-			<!-- 
-				Defines the formal language of the expression. Examples could be:
-					http://www.w3.org/1999/xpath/
-					http://www.mvel.org/2.0
-					http://www.w3.org/2005/xpath-functions/
-			 -->
-			<element name="language" type="anyURI" minOccurs="0" />						
+			<element name="language" type="anyURI" minOccurs="0">
+				<annotation>
+					<appinfo>
+					<jxb:property>
+						<jxb:javadoc><![CDATA[Defines the formal language of the expression. Examples could be:
+<pre>
+	http://www.w3.org/1999/xpath/
+	http://www.mvel.org/2.0
+	http://www.w3.org/2005/xpath-functions/							
+</pre>]]>
+						</jxb:javadoc>							
+					</jxb:property>						
+					</appinfo>					
+				</annotation>			
+			</element>						
 			<element name="expression" type="string" minOccurs="0" />			
 		</sequence>
 	</complexType>
 
 	<complexType name="InputExpressionType">
 		<complexContent>
-			<restriction base="cpf:ExpressionType">
-				<sequence>
-					<element name="description" type="string" minOccurs="0" />				
-					<element name="language" type="anyURI" minOccurs="0" />	
-					<element name="expression" minOccurs="0">
-						<simpleType>
-							<restriction base="string">							
-								<!-- Internal Variable Name = Query(Obj1, Obj2, ..., ObjN) -->
-								<pattern value="[a-zA-z0-9_]+ = .*" />
-							</restriction>
-						</simpleType>
-					</element>
-				</sequence>
-			</restriction>
+			<extension base="cpf:ExpressionType">
+				<!-- Internal Variable Name = Query(Obj1, Obj2, ..., ObjN) -->
+			</extension>
 		</complexContent>
 	</complexType>
 
 	<complexType name="OutputExpressionType">
 		<complexContent>
-			<restriction base="cpf:ExpressionType">
-				<sequence>
-					<element name="description" type="string" minOccurs="0" />				
-					<element name="language" type="anyURI" minOccurs="0" />	
-					<element name="expression" minOccurs="0">
-						<simpleType>
-							<restriction base="string">
-								<!-- Net Object Name = Query(Var1, Var2, ..., VarN) -->
-								<pattern value="[a-zA-z0-9_]+ = .*" />
-							</restriction>
-						</simpleType>
-					</element>
-				</sequence>
-			</restriction>
+			<extension base="cpf:ExpressionType">
+				<!-- Net Object Name = Query(Var1, Var2, ..., VarN) -->
+			</extension>
 		</complexContent>
 	</complexType>	
 	

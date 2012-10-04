@@ -22,22 +22,15 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
-                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
-                    <offer initiator="user"/>
-                    <allocate initiator="user"/>
-                    <start initiator="user"/>
-                </offer:offer>
-            </attribute>
-            <objectRef id="d7f6c0bd-3dd8-400b-b98a-98b706c49856" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="fc108a51-dcfd-43fb-94ef-7184c1fdc72b" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="f99785dc-c9a9-4ba5-b89a-7c62bbee897e" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="eb2895d5-72b0-45fc-bd29-f9ab9137dd2a" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>var = {/Net/var/text()}</expression>
+                <expression>var = {cpf:getObjectValue('var')/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>var = {/A/var/text()}</expression>
+                <expression>var = {cpf:getTaskObjectValue('var')/text()}</expression>
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
@@ -62,18 +55,11 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <attribute name="http://www.yawlfoundation.org/yawlschema/offer">
-                <offer:offer xmlns:offer="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
-                    <offer initiator="user"/>
-                    <allocate initiator="user"/>
-                    <start initiator="user"/>
-                </offer:offer>
-            </attribute>
-            <objectRef id="id2371b655-48e3-4beb-81c8-fd3a804819ea" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="id3d3ea4bb-5906-4dd5-9bb1-2c992c261617" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="id29f6f0af-c6a9-41b2-a20b-c1cdccfcb647" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="c3265b51-c0bc-4759-a609-73087b34a5bf" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
-                <expression>var = {/Net/var/text()}</expression>
+                <expression>var = {cpf:getObjectValue('var')/text()}</expression>
             </inputExpr>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
@@ -87,16 +73,25 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="iddad97d80-9ae4-4af1-8ce8-4c81bc99fefa"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="idf28a8903-db52-4fb2-b7d9-650dc5ebec2c"/>
         <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
         <Edge id="C-A-B-1" default="true" sourceId="C-A" targetId="C-B-1"/>
         <Edge id="C-B-1-C-1" default="true" sourceId="C-B-1" targetId="C-C-1"/>
         <Edge id="C-B-1-D-1" default="true" sourceId="C-B-1" targetId="C-D-1"/>
-        <Edge id="idca80019a-290d-4252-8e3d-9bcd98a7d716" default="true" sourceId="iddad97d80-9ae4-4af1-8ce8-4c81bc99fefa" targetId="C-OutputCondition"/>
-        <Edge id="id6af692a9-1386-4990-8cb5-ebf4229b8d4b" default="true" sourceId="C-C-1" targetId="iddad97d80-9ae4-4af1-8ce8-4c81bc99fefa"/>
-        <Edge id="idf8fe8665-cbdf-4736-8c29-17de98aa89cc" default="true" sourceId="C-D-1" targetId="iddad97d80-9ae4-4af1-8ce8-4c81bc99fefa"/>
+        <Edge id="ide69887c0-a708-443d-9ad6-9d317b6cfeda" default="true" sourceId="idf28a8903-db52-4fb2-b7d9-650dc5ebec2c" targetId="C-OutputCondition"/>
+        <Edge id="idec91fcf6-cf97-49a3-870d-7ded53680446" default="true" sourceId="C-C-1" targetId="idf28a8903-db52-4fb2-b7d9-650dc5ebec2c"/>
+        <Edge id="idfa298d80-5a9e-46b9-8d9a-4da4bda5c6ed" default="true" sourceId="C-D-1" targetId="idf28a8903-db52-4fb2-b7d9-650dc5ebec2c"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-var" originalID="N-Net_var">
             <name>var</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>var</name>
+                    <type>string</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue>test</initialValue>
+                </localVariable:localVariable>
+            </attribute>
             <type>string</type>
         </Object>
     </Net>

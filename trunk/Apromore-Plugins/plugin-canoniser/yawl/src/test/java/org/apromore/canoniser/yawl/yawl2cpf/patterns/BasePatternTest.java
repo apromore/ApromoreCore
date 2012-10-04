@@ -42,7 +42,7 @@ public abstract class BasePatternTest extends BaseYAWL2CPFTest {
         for (T expr: taskExpressions) {
             assertTrue(expr.getLanguage().equals(CPFSchema.EXPRESSION_LANGUAGE_XQUERY));
             String[] splittedExpr = expr.getExpression().split("=");
-            assertTrue(splittedExpr.length == 2);
+            assertTrue(splittedExpr.length >= 2);
             if (splittedExpr[0].trim().equals(taskVariableName)) {
                 return expr;
             }

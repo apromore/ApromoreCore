@@ -28,18 +28,11 @@
             <offer initiator="system">
               <distributionSet>
                 <initialSet>
+                  <role>RO-176b14db-d9d7-4de0-8a5f-657a1103a814</role>
+                  <role>RO-c4671de9-56cc-4eb3-b625-00406479ed3d</role>
                   <role>RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7</role>
                 </initialSet>
                 <filters>
-                  <filter>
-                    <name>CapabilityFilter</name>
-                    <params>
-                      <param>
-                        <key>Capability</key>
-                        <value>CapabilityX</value>
-                      </param>
-                    </params>
-                  </filter>
                   <filter>
                     <name>OrgFilter</name>
                     <params>
@@ -50,6 +43,15 @@
                       <param>
                         <key>Position</key>
                         <value>PositionX</value>
+                      </param>
+                    </params>
+                  </filter>
+                  <filter>
+                    <name>CapabilityFilter</name>
+                    <params>
+                      <param>
+                        <key>Capability</key>
+                        <value>CapabilityX</value>
                       </param>
                     </params>
                   </filter>
@@ -75,9 +77,9 @@
     <specification id="RoleWithFilterAndConstraint">
       <size w="65" h="28" />
       <net id="Net">
-        <bounds x="0" y="0" w="786" h="668" />
-        <frame x="2" y="25" w="789" h="671" />
-        <viewport x="0" y="0" w="789" h="671" />
+        <bounds x="0" y="0" w="1524" h="880" />
+        <frame x="2" y="25" w="1527" h="883" />
+        <viewport x="0" y="0" w="1527" h="883" />
         <container id="InputCondition">
           <vertex>
             <attributes>
@@ -114,6 +116,12 @@
             </attributes>
           </label>
         </container>
+        <flow source="A" target="OutputCondition">
+          <ports in="13" out="12" />
+          <attributes>
+            <lineStyle>11</lineStyle>
+          </attributes>
+        </flow>
         <flow source="InputCondition" target="A">
           <label>Allocated+to+Role+X+with+CapabilityX+and+PositionX+of+OrgGroupX</label>
           <ports in="13" out="12" />
@@ -125,12 +133,6 @@
               <value x="91,0" y="435,5" />
               <value x="208,0" y="435,5" />
             </points>
-          </attributes>
-        </flow>
-        <flow source="A" target="OutputCondition">
-          <ports in="13" out="12" />
-          <attributes>
-            <lineStyle>11</lineStyle>
           </attributes>
         </flow>
       </net>
