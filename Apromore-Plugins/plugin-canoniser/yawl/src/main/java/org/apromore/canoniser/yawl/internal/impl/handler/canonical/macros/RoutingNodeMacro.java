@@ -65,13 +65,13 @@ public class RoutingNodeMacro extends ContextAwareRewriteMacro {
                 final NodeType node = net.getNode().get(i);
                 if (node instanceof JoinType) {
                     hasFoundRoutingNodes = true;
-                    handleJoinNode(net, (JoinType) node);
+                    handleJoinNode((JoinType) node);
                     cleanupNet(net);
                     // Restart scanning
                     i = -1;
                 } else if (node instanceof SplitType) {
                     hasFoundRoutingNodes = true;
-                    handleSplitNode(net, (SplitType) node);
+                    handleSplitNode((SplitType) node);
                     cleanupNet(net);
                     // Restart scanning
                     i = -1;
@@ -81,27 +81,27 @@ public class RoutingNodeMacro extends ContextAwareRewriteMacro {
         return hasFoundRoutingNodes;
     }
 
-    private void handleSplitNode(final NetType net, final SplitType splitNode) throws CanoniserException {
+    private void handleSplitNode(final SplitType splitNode) throws CanoniserException {
         final List<NodeType> preSet = getContext().getPreSet(splitNode.getId());
         if (preSet.size() != 1) {
             throw new CanoniserException("Split " + splitNode.getId() + " has more than 1 predecessors!");
         } else {
             final NodeType prevNode = preSet.get(0);
             if (prevNode instanceof TaskType) {
-                replaceSplitNodeBy(splitNode, (TaskType) prevNode, net);
+                replaceSplitNodeBy(splitNode, (TaskType) prevNode);
                 LOGGER.debug("Merged with previous Task {}", ConversionUtils.toString(prevNode));
             } else {
                 // Just replace the Split with a Task
                 final TaskType routingTask = convertRoutingToTask(splitNode);
                 addNodeLater(routingTask);
                 addEdgeLater(createEdge(prevNode, routingTask));
-                replaceSplitNodeBy(splitNode, routingTask, net);
+                replaceSplitNodeBy(splitNode, routingTask);
                 LOGGER.debug("Added artificial Task {}", ConversionUtils.toString(routingTask));
             }
         }
     }
 
-    private void replaceSplitNodeBy(final NodeType splitNode, final TaskType newNode, final NetType net) throws CanoniserException {
+    private void replaceSplitNodeBy(final NodeType splitNode, final TaskType newNode) throws CanoniserException {
         // First mark split node as deleted
         deleteNodeLater(splitNode);
 
@@ -118,27 +118,27 @@ public class RoutingNodeMacro extends ContextAwareRewriteMacro {
         }
     }
 
-    private void handleJoinNode(final NetType net, final JoinType joinNode) throws CanoniserException {
+    private void handleJoinNode(final JoinType joinNode) throws CanoniserException {
         final List<NodeType> postSet = getContext().getPostSet(joinNode.getId());
         if (postSet.size() != 1) {
             throw new CanoniserException("Join " + joinNode.getId() + " has more than 1 successors!");
         } else {
             final NodeType nextNode = postSet.get(0);
             if (nextNode instanceof TaskType) {
-                replaceJoinNodeBy(joinNode, (TaskType) nextNode, net);
+                replaceJoinNodeBy(joinNode, (TaskType) nextNode);
                 LOGGER.debug("Merged with next Task {}", ConversionUtils.toString(nextNode));
             } else {
                 // Just replace the Join with a Task
                 final TaskType routingTask = convertRoutingToTask(joinNode);
                 addNodeLater(routingTask);
                 addEdgeLater(createEdge(routingTask, nextNode));
-                replaceJoinNodeBy(joinNode, routingTask, net);
+                replaceJoinNodeBy(joinNode, routingTask);
                 LOGGER.debug("Added artificial Task {}", ConversionUtils.toString(routingTask));
             }
         }
     }
 
-    private void replaceJoinNodeBy(final NodeType joinNode, final TaskType newNode, final NetType net) throws CanoniserException {
+    private void replaceJoinNodeBy(final NodeType joinNode, final TaskType newNode) throws CanoniserException {
         // First mark split node as deleted
         deleteNodeLater(joinNode);
 

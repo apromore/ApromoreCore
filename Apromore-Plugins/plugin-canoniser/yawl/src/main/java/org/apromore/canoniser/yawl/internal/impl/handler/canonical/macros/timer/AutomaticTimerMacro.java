@@ -15,6 +15,7 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionContext;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
+import org.apromore.cpf.NonhumanType;
 import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
@@ -101,17 +102,7 @@ public final class AutomaticTimerMacro extends AbstractTimerMacro {
         // Try to prove the converse
         for (final ResourceTypeRefType ref : task.getResourceTypeRef()) {
             final ResourceTypeType resource = getContext().getResourceTypeById(ref.getResourceTypeId());
-            //TODO
-//            if (resource.getDistributionSet() != null && resource.getDistributionSet().getResourceTypeRef().isEmpty()) {
-//                // Check Distribution Set
-//                for (final DistributionSetRef distRef : resource.getDistributionSet().getResourceTypeRef()) {
-//                    final ResourceTypeType resourceInDistSet = getContext().getResourceTypeById(distRef.getResourceTypeId());
-//                    isAutomatic = isAutomatic && resourceInDistSet instanceof NonhumanType;
-//                }
-//            } else {
-//                // Check Resource itself
-//                isAutomatic = isAutomatic && resource instanceof NonhumanType;
-//            }
+            isAutomatic = isAutomatic && resource instanceof NonhumanType;
         }
         return isAutomatic;
     }

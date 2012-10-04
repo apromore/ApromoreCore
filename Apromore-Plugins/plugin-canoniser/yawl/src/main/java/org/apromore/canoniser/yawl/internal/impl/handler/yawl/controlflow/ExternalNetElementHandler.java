@@ -86,6 +86,8 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
         getConvertedParent().getEdge().add(edge);
         if (sourceNode.getOriginalID() != null && targetNode.getOriginalID() != null) {
             createGraphicsForFlow(sourceNode.getOriginalID(), targetNode.getOriginalID());
+        } else {
+            createGraphicsForFlow(sourceNode.getId(), targetNode.getId());
         }
         return edge;
     }

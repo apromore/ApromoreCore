@@ -11,14 +11,12 @@
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl.data;
 
-import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.YAWLConversionHandler;
 import org.apromore.canoniser.yawl.internal.utils.ExpressionUtils;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.SoftType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yawlfoundation.yawlschema.VariableBaseType;
 
 /**
  * Converts the variables of a YAWL Net to CPF Objects.
@@ -26,32 +24,27 @@ import org.yawlfoundation.yawlschema.VariableBaseType;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public class VariableHandler extends YAWLConversionHandler<VariableBaseType, NetType> {
+public abstract class VariableHandler<T> extends YAWLConversionHandler<T, NetType> {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(VariableHandler.class);
 
-    /*
-     * (non-Javadoc)
-     *
-     * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
-     */
-    @Override
-    public void convert() throws CanoniserException {
-
-        final SoftType alreadyConvertedObject = getContext().getObjectByName(getObject().getName(), getConvertedParent());
+    protected SoftType createSoftType(final String objectName, final String objectType) {
+        final SoftType alreadyConvertedObject = getContext().getObjectByName(objectName, getConvertedParent());
         if (alreadyConvertedObject == null) {
             final SoftType canonicalObject = CPF_FACTORY.createSoftType();
-            final String generatedOriginalId = ExpressionUtils.buildObjectId(getConvertedParent().getId(), getObject().getName());
+            final String generatedOriginalId = ExpressionUtils.buildObjectId(getConvertedParent().getId(), objectName);
             canonicalObject.setId(generateUUID(DATA_ID_PREFIX, generatedOriginalId));
             canonicalObject.setOriginalID(generatedOriginalId);
-            canonicalObject.setName(getObject().getName());
-            canonicalObject.setType(getObject().getType());
+            canonicalObject.setName(objectName);
+            canonicalObject.setType(objectType);
             getConvertedParent().getObject().add(canonicalObject);
             LOGGER.debug("Adding Object for YAWL Net {} (Name: {}, Type: {})", new String[] { getConvertedParent().getId(),
                     canonicalObject.getName(), canonicalObject.getType() });
             getContext().addObjectForNet(canonicalObject, getConvertedParent());
+            return canonicalObject;
+        } else {
+            return alreadyConvertedObject;
         }
-
     }
 
 }

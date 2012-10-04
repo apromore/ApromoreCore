@@ -36,8 +36,8 @@ public class DirectDistributionTest extends BasePatternTest {
         // Check Resources available in Process
         final CanonicalProcessType process = yawl2Canonical.getCpf();
 
-        // Should contain Distribution Set + 2 Roles
-        assertEquals(3, process.getResourceType().size());
+        // Should contain 2 Roles + 3 Participants
+        assertEquals(5, process.getResourceType().size());
 
         final TaskType taskA = (TaskType) nodeA;
         // Only linked to distribution set

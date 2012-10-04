@@ -5,6 +5,7 @@ import java.util.Set;
 
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.canoniser.yawl.internal.utils.ExpressionUtils;
+import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.SoftType;
 import org.slf4j.Logger;
@@ -40,13 +41,15 @@ public abstract class DecompositionHandler<T, E> extends BaseTaskHandler<T, E> {
     }
 
     protected InputParameterFactsType convertInputParameterObject(final SoftType obj, final int index, final Set<String> nameSet) {
-        final InputParameterFactsType param = YAWL_FACTORY.createInputParameterFactsType();
+        final InputParameterFactsType defaultParam = YAWL_FACTORY.createInputParameterFactsType();
+        InputParameterFactsType param = ExtensionUtils.getFromExtension(obj.getAttribute(), ExtensionUtils.INPUT_VARIABLE, InputParameterFactsType.class, defaultParam);
         convertBaseVariable(obj, index, nameSet, param);
         return param;
     }
 
     protected OutputParameterFactsType convertOutputParameterObject(final SoftType obj, final int index, final Set<String> nameSet) {
-        final OutputParameterFactsType param = YAWL_FACTORY.createOutputParameterFactsType();
+        final OutputParameterFactsType defaultParam = YAWL_FACTORY.createOutputParameterFactsType();
+        OutputParameterFactsType param = ExtensionUtils.getFromExtension(obj.getAttribute(), ExtensionUtils.OUTPUT_VARIABLE, OutputParameterFactsType.class, defaultParam);
         convertBaseVariable(obj, index, nameSet, param);
         return param;
     }

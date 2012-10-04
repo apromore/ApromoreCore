@@ -14,17 +14,20 @@ package org.apromore.canoniser.yawl.internal.impl.handler.canonical;
 import java.math.BigInteger;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.canoniser.yawl.internal.utils.ExpressionUtils;
+import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.SoftType;
+import org.apromore.cpf.TypeAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yawlfoundation.yawlschema.DecompositionType;
@@ -90,63 +93,80 @@ public class NetTypeHandler extends DecompositionHandler<NetType, YAWLSpecificat
 
     private void convertDataObjects(final NetFactsType netFactsType) throws CanoniserException {
 
+        // Both sets are used to keep YAWL variable names unique, which is not enforced by CPF
+        final Set<String> inputParamNameSet = new HashSet<String>();
+        final Set<String> outputParamNameSet = new HashSet<String>();
+        final Set<String> localParamNameSet = new HashSet<String>();
+
         if (isRootNet()) {
-            final Set<String> localParamNameSet = new HashSet<String>();
             int i = 0;
             // Convert all our objects as local variables, as CPF does not support "INPUT" or "OUTPUT" parameters to a case
             for (final ObjectType obj : getObject().getObject()) {
                 if (obj instanceof SoftType) {
-                    final VariableFactsType var = convertLocalNetObject((SoftType) obj, i, localParamNameSet);
-                    getContext().addConvertedParameter(obj.getId(), getObject().getId(), var);
-                    LOGGER.debug("Added local variable {} to Root-Net decomposition {}", var.getName(), netFactsType.getName());
-                    netFactsType.getLocalVariable().add(var);
+                    List<TypeAttribute> objectExt = obj.getAttribute();
+                    SoftType softObject = (SoftType) obj;
+                    if (ExtensionUtils.hasExtension(objectExt, ExtensionUtils.INPUT_VARIABLE) && ExtensionUtils.hasExtension(objectExt, ExtensionUtils.OUTPUT_VARIABLE)) {
+                        addInputParameter(netFactsType, inputParamNameSet, i, obj, softObject);
+                        addOutputParameter(netFactsType, outputParamNameSet, i, obj, softObject);
+                    } else if (ExtensionUtils.hasExtension(objectExt, ExtensionUtils.INPUT_VARIABLE)) {
+                        addInputParameter(netFactsType, inputParamNameSet, i, obj, softObject);
+                    } else if (ExtensionUtils.hasExtension(objectExt, ExtensionUtils.OUTPUT_VARIABLE)) {
+                        addOutputParameter(netFactsType, outputParamNameSet, i, obj, softObject);
+                    } else {
+                        addLocalParameter(netFactsType, localParamNameSet, i, obj, softObject);
+                    }
                 }
                 i++;
             }
         } else {
-
-            // Both sets are used to keep YAWL variable names unique, which is not enforced by CPF
-            final Set<String> inputParamNameSet = new HashSet<String>();
-            final Set<String> outputParamNameSet = new HashSet<String>();
-            final Set<String> localParamNameSet = new HashSet<String>();
 
             int i = 0;
             for (final ObjectType obj : getObject().getObject()) {
                 final SoftType softObject = (SoftType) obj;
                 if (getContext().isInputObjectForNet(obj.getId(), getObject().getId())
                         && getContext().isOutputObjectOfNet(obj.getId(), getObject().getId())) {
-                    final InputParameterFactsType inputParam = convertInputParameterObject(softObject, i, inputParamNameSet);
-                    getContext().addConvertedParameter(obj.getId(), getObject().getId(), inputParam);
-                    LOGGER.debug("Added input parameter {} to Net decomposition {}", inputParam.getName(), netFactsType.getName());
-                    netFactsType.getInputParam().add(inputParam);
-                    final OutputParameterFactsType outputParam = convertOutputParameterObject(softObject, i, outputParamNameSet);
-                    getContext().addConvertedParameter(obj.getId(), getObject().getId(), outputParam);
-                    LOGGER.debug("Added output parameter {} to Net decomposition {}", outputParam.getName(), netFactsType.getName());
-                    netFactsType.getOutputParam().add(outputParam);
+                    addInputParameter(netFactsType, inputParamNameSet, i, obj, softObject);
+                    addOutputParameter(netFactsType, outputParamNameSet, i, obj, softObject);
                 } else if (getContext().isOutputObjectOfNet(obj.getId(), getObject().getId())) {
-                    final OutputParameterFactsType outputParam = convertOutputParameterObject(softObject, i, outputParamNameSet);
-                    getContext().addConvertedParameter(obj.getId(), getObject().getId(), outputParam);
-                    LOGGER.debug("Added output parameter {} to Net decomposition {}", outputParam.getName(), netFactsType.getName());
-                    netFactsType.getOutputParam().add(outputParam);
+                    addOutputParameter(netFactsType, outputParamNameSet, i, obj, softObject);
                 } else if (getContext().isInputObjectForNet(obj.getId(), getObject().getId())) {
-                    final InputParameterFactsType inputParam = convertInputParameterObject(softObject, i, inputParamNameSet);
-                    LOGGER.debug("Added input parameter {} to Net decomposition {}", inputParam.getName(), netFactsType.getName());
-                    getContext().addConvertedParameter(obj.getId(), getObject().getId(), inputParam);
-                    netFactsType.getInputParam().add(inputParam);
+                    addInputParameter(netFactsType, inputParamNameSet, i, obj, softObject);
                 } else {
                     // Local
-                    final VariableFactsType var = convertLocalNetObject(softObject, i, localParamNameSet);
-                    getContext().addConvertedParameter(obj.getId(), getObject().getId(), var);
-                    LOGGER.debug("Added local variable {} to Net decomposition {}", var.getName(), netFactsType.getName());
-                    netFactsType.getLocalVariable().add(var);
+                    addLocalParameter(netFactsType, localParamNameSet, i, obj, softObject);
                 }
                 i++;
             }
         }
     }
 
+    private void addLocalParameter(final NetFactsType netFactsType, final Set<String> localParamNameSet, final int i, final ObjectType obj,
+            final SoftType softObject) {
+        final VariableFactsType var = convertLocalNetObject(softObject, i, localParamNameSet);
+        getContext().addConvertedParameter(obj.getName(), getObject().getId(), var);
+        LOGGER.debug("Added local variable {} to Net decomposition {}", var.getName(), netFactsType.getName());
+        netFactsType.getLocalVariable().add(var);
+    }
+
+    private void addOutputParameter(final NetFactsType netFactsType, final Set<String> outputParamNameSet, final int i, final ObjectType obj,
+            final SoftType softObject) {
+        final OutputParameterFactsType outputParam = convertOutputParameterObject(softObject, i, outputParamNameSet);
+        getContext().addConvertedParameter(obj.getName(), getObject().getId(), outputParam);
+        LOGGER.debug("Added output parameter {} to Net decomposition {}", outputParam.getName(), netFactsType.getName());
+        netFactsType.getOutputParam().add(outputParam);
+    }
+
+    private void addInputParameter(final NetFactsType netFactsType, final Set<String> inputParamNameSet, final int i, final ObjectType obj,
+            final SoftType softObject) {
+        final InputParameterFactsType inputParam = convertInputParameterObject(softObject, i, inputParamNameSet);
+        getContext().addConvertedParameter(obj.getName(), getObject().getId(), inputParam);
+        LOGGER.debug("Added input parameter {} to Net decomposition {}", inputParam.getName(), netFactsType.getName());
+        netFactsType.getInputParam().add(inputParam);
+    }
+
     private VariableFactsType convertLocalNetObject(final SoftType obj, final int index, final Set<String> nameSet) {
-        final VariableFactsType localVar = YAWL_FACTORY.createVariableFactsType();
+        final VariableFactsType defaultLocalVar = YAWL_FACTORY.createVariableFactsType();
+        VariableFactsType localVar = ExtensionUtils.getFromExtension(obj.getAttribute(), ExtensionUtils.LOCAL_VARIABLE, VariableFactsType.class, defaultLocalVar);
         if (nameSet.contains(obj.getName())) {
             localVar.setName(ConversionUtils.generateUniqueName(obj.getName(), nameSet));
         } else {

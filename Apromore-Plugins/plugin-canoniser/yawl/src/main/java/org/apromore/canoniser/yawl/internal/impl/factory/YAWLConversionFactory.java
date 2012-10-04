@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.factory;
@@ -27,7 +27,9 @@ import org.apromore.canoniser.yawl.internal.impl.handler.yawl.controlflow.Output
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.controlflow.TaskHandler;
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.controlflow.TimerTaskHandler;
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.controlflow.WSInvokerTaskHandler;
-import org.apromore.canoniser.yawl.internal.impl.handler.yawl.data.VariableHandler;
+import org.apromore.canoniser.yawl.internal.impl.handler.yawl.data.InputVariableHandler;
+import org.apromore.canoniser.yawl.internal.impl.handler.yawl.data.LocalVariableHandler;
+import org.apromore.canoniser.yawl.internal.impl.handler.yawl.data.OutputVariableHandler;
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.resource.AutomatedTaskResourceingHandler;
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.resource.ResourceingHandler;
 import org.yawlfoundation.yawlschema.DecompositionType;
@@ -40,16 +42,15 @@ import org.yawlfoundation.yawlschema.OutputConditionFactsType;
 import org.yawlfoundation.yawlschema.OutputParameterFactsType;
 import org.yawlfoundation.yawlschema.ResourcingExternalInteractionType;
 import org.yawlfoundation.yawlschema.ResourcingFactsType;
-import org.yawlfoundation.yawlschema.VariableBaseType;
 import org.yawlfoundation.yawlschema.VariableFactsType;
 import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType;
 import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
 
 /**
  * Factory Class for YAWL through which all Handlers are created. Basically the mapping between Input objects and their Handler classes.
- * 
+ *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class YAWLConversionFactory implements ConversionFactory {
 
@@ -67,10 +68,9 @@ public class YAWLConversionFactory implements ConversionFactory {
             put(WebServiceGatewayFactsType.class.getName(), YAWLNoOpHandler.class);
 
             // Data
-            put(VariableBaseType.class.getName(), VariableHandler.class);
-            put(VariableFactsType.class.getName(), VariableHandler.class);
-            put(InputParameterFactsType.class.getName(), VariableHandler.class);
-            put(OutputParameterFactsType.class.getName(), VariableHandler.class);
+            put(VariableFactsType.class.getName(), LocalVariableHandler.class);
+            put(InputParameterFactsType.class.getName(), InputVariableHandler.class);
+            put(OutputParameterFactsType.class.getName(), OutputVariableHandler.class);
         }
     };
 
@@ -94,7 +94,7 @@ public class YAWLConversionFactory implements ConversionFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.factory.ConversionFactory#createHandler(java.lang.Object, java.lang.Object, java.lang.Object,
      * java.lang.Class)
      */
@@ -114,7 +114,7 @@ public class YAWLConversionFactory implements ConversionFactory {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.factory.ConversionFactory#createHandler(java.lang.Object, java.lang.Object, java.util.Set)
      */
     @Override

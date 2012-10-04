@@ -22,6 +22,7 @@ import org.apromore.cpf.OutputExpressionType;
 import org.apromore.cpf.TaskType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
 
 /**
  * Converts the Output Mappings of a YAWL Task to Object references.
@@ -63,10 +64,12 @@ public class OutputVarMappingHandler extends BaseVarMappingHandler {
     }
 
     private OutputExpressionType convertXQuery(final String xQuery, final ObjectType mapsTo) throws CanoniserException {
-        final OutputExpressionType outputExpr = CPF_FACTORY.createOutputExpressionType();
-        outputExpr.setLanguage(CPFSchema.EXPRESSION_LANGUAGE_XQUERY);
-        outputExpr.setExpression(CPFSchema.createOuputExpression(mapsTo, ExpressionUtils.createQueryReferencingTaskVariables(xQuery)));
-        return outputExpr;
+        final OutputExpressionType outputExprType = CPF_FACTORY.createOutputExpressionType();
+        outputExprType.setLanguage(CPFSchema.EXPRESSION_LANGUAGE_XQUERY);
+        ExternalTaskFactsType task = (ExternalTaskFactsType) getOriginalParent();
+        String outputExpr = CPFSchema.createOuputExpression(mapsTo.getName(), ExpressionUtils.createQueryReferencingTaskVariables(xQuery, task));
+        outputExprType.setExpression(outputExpr);
+        return outputExprType;
     }
 
 }

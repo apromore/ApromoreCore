@@ -61,11 +61,11 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
 
         if (sourceElement != null && targetElement != null) {
 
-            final JAXBElement<LayoutFlowFactsType> existingFlowLayout = findLayoutFlowAnnotation();
+            final LayoutFlowFactsType existingFlowLayout = findLayoutFlowAnnotation();
             if (existingFlowLayout != null) {
                 LOGGER.debug("Added layout for flow using YAWL extension element. Source {} -> Target {}", sourceElement.getId(),
                         targetElement.getId());
-                netLayout.getBoundsOrFrameOrViewport().add(convertFlowLayout(existingFlowLayout, sourceElement, targetElement));
+                netLayout.getBoundsOrFrameOrViewport().add(convertFlowLayout(YAWL_FACTORY.createLayoutNetFactsTypeFlow(existingFlowLayout), sourceElement, targetElement));
             } else {
                 LOGGER.debug("Added layout for flow using default settings. Source {} -> Target {}", sourceElement.getId(), targetElement.getId());
                 if ((getContext().getElementInfo(sourceElement.getId()).getElementSize() != null)
@@ -79,13 +79,13 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         }
     }
 
-    private JAXBElement<LayoutFlowFactsType> findLayoutFlowAnnotation() {
+    private LayoutFlowFactsType findLayoutFlowAnnotation() {
         // Search for YAWL annotation
         for (final Object obj : getObject().getAny()) {
             try {
                 if (ExtensionUtils.isValidFragment(obj, ExtensionUtils.YAWLSCHEMA_URL, ExtensionUtils.FLOW)) {
                     final LayoutFlowFactsType flowLayout = ExtensionUtils.unmarshalYAWLFragment(obj, LayoutFlowFactsType.class);
-                    return YAWL_FACTORY.createLayoutNetFactsTypeFlow(flowLayout);
+                    return flowLayout;
                 }
             } catch (final CanoniserException e) {
                 LOGGER.warn("Error unmarshalling extension elements. This should not happen, but the conversion will still work.", e);

@@ -24,6 +24,7 @@ import org.apromore.cpf.OutputExpressionType;
 import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
+import org.apromore.cpf.TypeAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.yawlfoundation.yawlschema.ConfigurationType;
@@ -34,13 +35,6 @@ import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
 import org.yawlfoundation.yawlschema.InputParameterFactsType;
 import org.yawlfoundation.yawlschema.NetFactsType;
 import org.yawlfoundation.yawlschema.OutputParameterFactsType;
-import org.yawlfoundation.yawlschema.ResourcingAllocateFactsType;
-import org.yawlfoundation.yawlschema.ResourcingDistributionSetFactsType;
-import org.yawlfoundation.yawlschema.ResourcingDistributionSetFactsType.InitialSet;
-import org.yawlfoundation.yawlschema.ResourcingFactsType;
-import org.yawlfoundation.yawlschema.ResourcingInitiatorType;
-import org.yawlfoundation.yawlschema.ResourcingOfferFactsType;
-import org.yawlfoundation.yawlschema.ResourcingStartFactsType;
 import org.yawlfoundation.yawlschema.TimerType;
 import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType;
 import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType.YawlService;
@@ -64,6 +58,9 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
     public void convert() throws CanoniserException {
         final ExternalTaskFactsType taskFacts = createTask(getObject());
 
+        // Remember our parent
+        getContext().getElementInfo(getObject().getId()).setParent(getConvertedParent());
+
         if (ConversionUtils.isCompositeTask(getObject())) {
             final NetFactsType yawlNet = (NetFactsType) getContext().getConvertedDecomposition(getObject().getSubnetId());
             if (yawlNet != null) {
@@ -83,7 +80,7 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
             taskFacts.setDecomposesTo(refD);
 
             if (hasResources(getObject()) && !isAutomatic(getObject())) {
-                taskFacts.setResourcing(convertResourceing());
+                taskFacts.setResourcing(new ResourcingHelper(getContext()).convertResourceing(getObject()));
             } else {
                 convertCodelet(d, getObject());
                 convertYAWLService(d, getObject());
@@ -155,67 +152,36 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
         return task.getResourceTypeRef() != null && !task.getResourceTypeRef().isEmpty();
     }
 
-    private ResourcingFactsType convertResourceing() {
-        final ResourcingFactsType resourceing = YAWL_FACTORY.createResourcingFactsType();
-
-        final ResourcingOfferFactsType offer = YAWL_FACTORY.createResourcingOfferFactsType();
-        offer.setInitiator(ResourcingInitiatorType.SYSTEM);
-        final ResourcingDistributionSetFactsType distributionSet = YAWL_FACTORY.createResourcingDistributionSetFactsType();
-        distributionSet.setInitialSet(convertInitialDistributionSet());
-        offer.setDistributionSet(distributionSet);
-        resourceing.setOffer(offer);
-
-        final ResourcingStartFactsType start = YAWL_FACTORY.createResourcingStartFactsType();
-        start.setInitiator(ResourcingInitiatorType.USER);
-        resourceing.setStart(offer);
-
-        final ResourcingAllocateFactsType allocate = YAWL_FACTORY.createResourcingAllocateFactsType();
-        allocate.setInitiator(ResourcingInitiatorType.USER);
-        resourceing.setAllocate(allocate);
-
-        // TODO Secondary Resources
-        // resourceing.setSecondary();
-
-        return resourceing;
-    }
-
-    private InitialSet convertInitialDistributionSet() {
-        final InitialSet initialDistributionSet = YAWL_FACTORY.createResourcingDistributionSetFactsTypeInitialSet();
-        final List<ResourceTypeRefType> resourceRefList = getObject().getResourceTypeRef();
-        if (resourceRefList.size() > 1) {
-            // Not supported by YAWL
-            LOGGER.warn("Can not convert resource information of Task {}, as YAWL does not support teamwork!", getObject().getName());
-        } else if (resourceRefList.size() == 1) {
-            // Either single Resource or DistributionSet
-            final ResourceTypeRefType resourceReference = resourceRefList.get(0);
-            final ResourceTypeType resourceType = getContext().getResourceTypeById(resourceReference.getResourceTypeId());
-            if (resourceType != null) {
-                if (hasDistributionSet(resourceType)) {
-                    // Distribution Set
-                    LOGGER.debug("Would convert Distribution Set");
-                } else {
-                    // Single Role or Participant
-                    LOGGER.debug("Would convert single Role or Participant");
-                }
-            } else {
-                LOGGER.warn("Could not find ResourceType with ID {}! Invalid CPF!", resourceReference.getResourceTypeId());
-            }
-        }
-        return initialDistributionSet;
-    }
-
-    private boolean hasDistributionSet(final ResourceTypeType resourceType) {
-        return false;
-//        return resourceType.getDistributionSet() != null && resourceType.getDistributionSet().getResourceTypeRef() != null
-//                && !resourceType.getDistributionSet().getResourceTypeRef().isEmpty();
-    }
 
     private void convertDataObjects(final ExternalTaskFactsType taskFacts, final TaskType task) throws CanoniserException {
 
         if (hasExpressions(task)) {
             convertDataExpressions(taskFacts, task);
-        } else {
-            convertObjectReferences(taskFacts, task);
+        }
+
+        if (!ConversionUtils.isCompositeTask(task)) {
+            // First try to convert all YAWL extensions
+            DecompositionFactsType taskDecomposition = getContext().getConvertedDecomposition(task.getId());
+            if (ExtensionUtils.hasExtension(task.getAttribute(), ExtensionUtils.INPUT_PARAM)) {
+                List<TypeAttribute> inputParamList = ExtensionUtils.getExtensionAttributes(task, ExtensionUtils.INPUT_PARAM);
+                for (TypeAttribute inputParam: inputParamList) {
+                    taskDecomposition.getInputParam().add(ExtensionUtils.unmarshalYAWLFragment(inputParam.getAny(), InputParameterFactsType.class));
+                }
+            }
+
+            if (ExtensionUtils.hasExtension(task.getAttribute(), ExtensionUtils.OUTPUT_PARAM)) {
+                List<TypeAttribute> outputParamList = ExtensionUtils.getExtensionAttributes(task, ExtensionUtils.OUTPUT_PARAM);
+                for (TypeAttribute outputParam: outputParamList) {
+                    taskDecomposition.getOutputParam().add(ExtensionUtils.unmarshalYAWLFragment(outputParam.getAny(), OutputParameterFactsType.class));
+                }
+            }
+        }
+
+        if (!hasExpressions(task)) {
+            // CPF has no information about input/output expression, we'll guess defaults
+            for (ObjectRefType ref: task.getObjectRef()) {
+                getContext().createHandler(ref, taskFacts, task).convert();
+            }
         }
 
         if (taskFacts.getDecomposesTo() != null) {
@@ -240,12 +206,6 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
         }
     }
 
-    private void convertObjectReferences(final ExternalTaskFactsType taskFacts, final TaskType task) throws CanoniserException {
-        for (ObjectRefType objectRef: task.getObjectRef()) {
-            getContext().createHandler(objectRef, taskFacts, task).convert();
-        }
-    }
-
     private void convertDataExpressions(final ExternalTaskFactsType taskFacts, final TaskType task) throws CanoniserException {
         for (InputExpressionType inputExpr: task.getInputExpr()) {
             getContext().createHandler(inputExpr, taskFacts, task).convert();
@@ -256,8 +216,8 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
     }
 
     private boolean hasExpressions(final TaskType task) {
-        return (task.getInputExpr() != null && task.getInputExpr().size() > 1)
-                || (task.getOutputExpr() != null && task.getOutputExpr().size() > 1);
+        return (task.getInputExpr() != null && task.getInputExpr().size() > 0)
+                || (task.getOutputExpr() != null && task.getOutputExpr().size() > 0);
     }
 
 }

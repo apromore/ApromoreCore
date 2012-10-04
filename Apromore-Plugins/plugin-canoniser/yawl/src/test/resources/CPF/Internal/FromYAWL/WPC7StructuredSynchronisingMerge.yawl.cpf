@@ -7,7 +7,7 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
             <name>A</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="b937a32c-4bba-42e6-bc24-620f84df15c7"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="idfad6bd0d-3726-4745-8d52-4955939523df"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-D" originalID="D">
             <name>D</name>
         </Node>
@@ -20,22 +20,31 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-E" originalID="E">
             <name>E</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="id287a2c9b-7898-42cc-adcf-268ec03ea213"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="ide4d2d59e-f0b6-46f2-a8b6-674591a6c7b1"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
         <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="id024dccb9-a2ca-46bb-84cb-6bbc99e65785" default="true" sourceId="C-A" targetId="b937a32c-4bba-42e6-bc24-620f84df15c7"/>
-        <Edge id="id52cea3f1-d4cf-4d0b-a1a2-f5a3d496a4a9" default="true" sourceId="b937a32c-4bba-42e6-bc24-620f84df15c7" targetId="C-D"/>
-        <Edge id="id7f3939ba-557b-4f47-b05f-5f8b401754f2" default="true" sourceId="b937a32c-4bba-42e6-bc24-620f84df15c7" targetId="C-C"/>
-        <Edge id="id6d84a9f4-8339-42a5-b5c3-07fe91b7e8db" default="true" sourceId="b937a32c-4bba-42e6-bc24-620f84df15c7" targetId="C-B"/>
-        <Edge id="ide16b1419-1423-4def-979d-9e2a76d3d38f" default="true" sourceId="id287a2c9b-7898-42cc-adcf-268ec03ea213" targetId="C-E"/>
-        <Edge id="id0a1f1eb7-0964-49c2-b91d-214e527ad362" default="true" sourceId="C-D" targetId="id287a2c9b-7898-42cc-adcf-268ec03ea213"/>
-        <Edge id="idf6c27c23-dee9-4fc7-9bf9-5b7743250965" default="true" sourceId="C-C" targetId="id287a2c9b-7898-42cc-adcf-268ec03ea213"/>
-        <Edge id="ida302780b-f6b6-4f98-820f-829aee0d1b54" default="true" sourceId="C-B" targetId="id287a2c9b-7898-42cc-adcf-268ec03ea213"/>
+        <Edge id="idc090f1f7-d0f3-4031-9245-3703111934a0" default="true" sourceId="C-A" targetId="idfad6bd0d-3726-4745-8d52-4955939523df"/>
+        <Edge id="idbfd56236-1a6a-411a-b156-85d07f046a71" default="true" sourceId="idfad6bd0d-3726-4745-8d52-4955939523df" targetId="C-D"/>
+        <Edge id="id968d50c9-f207-4acc-8e06-e171718d7ae1" default="true" sourceId="idfad6bd0d-3726-4745-8d52-4955939523df" targetId="C-C"/>
+        <Edge id="id60900c81-2b2e-4ac3-b0de-34f31ac2a1e8" default="true" sourceId="idfad6bd0d-3726-4745-8d52-4955939523df" targetId="C-B"/>
+        <Edge id="idd4f67806-0547-443c-910c-abf0be57f365" default="true" sourceId="ide4d2d59e-f0b6-46f2-a8b6-674591a6c7b1" targetId="C-E"/>
+        <Edge id="id14dc5b2b-1879-4f15-ad67-006914cbbf3f" default="true" sourceId="C-D" targetId="ide4d2d59e-f0b6-46f2-a8b6-674591a6c7b1"/>
+        <Edge id="id38d1c133-4251-4304-8cd9-b0141bc32abe" default="true" sourceId="C-C" targetId="ide4d2d59e-f0b6-46f2-a8b6-674591a6c7b1"/>
+        <Edge id="id3c1fcf51-8fec-41f1-bf0b-c9a959b33bcc" default="true" sourceId="C-B" targetId="ide4d2d59e-f0b6-46f2-a8b6-674591a6c7b1"/>
         <Edge id="C-E-OutputCondition" default="true" sourceId="C-E" targetId="C-OutputCondition"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-c" originalID="N-Net_c">
             <name>c</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
+                <localVariable:localVariable xmlns:localVariable="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
+                    <index>0</index>
+                    <name>c</name>
+                    <type>int</type>
+                    <namespace>http://www.w3.org/2001/XMLSchema</namespace>
+                    <initialValue>0</initialValue>
+                </localVariable:localVariable>
+            </attribute>
             <type>int</type>
         </Object>
     </Net>

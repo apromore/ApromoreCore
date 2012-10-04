@@ -40,7 +40,14 @@ public class CPFSchema {
      */
     public static final String EXPRESSION_LANGUAGE_MVEL = "http://www.mvel.org/2.0";
 
+    /**
+     * URI used for Resource Runtime Expressions
+     */
+    public static final String EXPRESSION_LANGUAGE_APROMORE_RESOURCE_RUNTIME = "http://www.apromore.org/expressions/resources/runtime";
+
+
     private static final String CPF_SCHEMA_LOCATION = "/xsd/cpf_1.0.xsd";
+
 
     /**
      * Schema of CPF
@@ -108,10 +115,10 @@ public class CPFSchema {
      *
      * @param netObject the result of the expression will be assigned to
      * @param expression a String with an arbitrary expression
-     * @return a new expression in the form of 'netObject.getName() = expression'
+     * @return a new expression in the form of 'netObjectName = expression'
      */
-    public static String createOuputExpression(final ObjectType netObject, final String expression) {
-        return netObject.getName() + " = " + expression;
+    public static String createOuputExpression(final String netObjectName, final String expression) {
+        return netObjectName + " = " + expression;
     }
 
     /**
@@ -149,6 +156,34 @@ public class CPFSchema {
     public static String getNetObjectName(final String expression) {
         // For now the same
         return getTaskObjectName(expression);
+    }
+
+    /**
+     * Returns the canonical XPath expression that references the given cpfObject.
+     *
+     * <pre>
+     * cpf:getObjectValue(%s)
+     * </pre>
+     *
+     * @param objectName that is referenced
+     * @return canonical XPath expression
+     */
+    public static String createGetObjectValueExpr(final String objectName) {
+        return String.format("cpf:getObjectValue('%s')", objectName);
+    }
+
+    /**
+     * Returns the canonical XPath expression that references the given internal Object of a Task.
+     *
+     * <pre>
+     * cpf:getTaskObjectValue(%s)
+     * </pre>
+     *
+     * @param taskObjectName that is referenced
+     * @return canonical XPath expression
+     */
+    public static String createGetTaskObjectValueExpr(final String taskObjectName) {
+        return String.format("cpf:getTaskObjectValue('%s')", taskObjectName);
     }
 
 }

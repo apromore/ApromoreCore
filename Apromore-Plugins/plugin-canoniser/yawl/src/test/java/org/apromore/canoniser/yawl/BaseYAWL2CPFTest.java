@@ -41,6 +41,7 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
 
 /**
  * Base class for all Pattern based Unit tests
@@ -68,7 +69,12 @@ public abstract class BaseYAWL2CPFTest {
     public void setUp() throws Exception {
         yawl2Canonical = new YAWL2CanonicalImpl(new NoOpMessageManager());
         try {
-            yawl2Canonical.convertToCanonical(TestUtils.unmarshalYAWL(getYAWLFile()), TestUtils.unmarshalYAWLOrgData(getYAWLOrgDataFile()));
+            if (getYAWLOrgDataFile() != null) {
+                OrgDataType orgData = TestUtils.unmarshalYAWLOrgData(getYAWLOrgDataFile());
+                yawl2Canonical.convertToCanonical(TestUtils.unmarshalYAWL(getYAWLFile()), orgData);
+            } else {
+                yawl2Canonical.convertToCanonical(TestUtils.unmarshalYAWL(getYAWLFile()));
+            }
         } catch (final CanoniserException e) {
             fail(e.getMessage());
         }
@@ -280,6 +286,15 @@ public abstract class BaseYAWL2CPFTest {
         return null;
     }
 
+    protected ResourceTypeType getResourceByName(final CanonicalProcessType process, final String resourceName) {
+        for (final ResourceTypeType resource : process.getResourceType()) {
+            if (resource.getName().equals(resourceName)) {
+                return resource;
+            }
+        }
+        return null;
+    }
+
     protected ResourceTypeType hasResourceType(final WorkType node, final CanonicalProcessType cpf, final String resourceName) {
         for (ResourceTypeRefType ref: node.getResourceTypeRef()) {
             ResourceTypeType r = getResourceById(cpf, ref.getResourceTypeId());
@@ -287,7 +302,17 @@ public abstract class BaseYAWL2CPFTest {
                 return r;
             }
         }
+        fail("Node "+node.getName()+" is missing Resource "+resourceName);
         return null;
     }
 
+    protected TypeAttribute hasAttribute(final ResourceTypeType roleX, final String name, final String value) {
+        for (TypeAttribute attr: roleX.getAttribute()) {
+            if (name.equals(attr.getName()) && value.equals(attr.getValue())) {
+                return attr;
+            }
+        }
+        fail("Resource "+roleX.getName()+" is missing Attribute "+name+" with Value "+value);
+        return null;
+     }
 }

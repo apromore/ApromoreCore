@@ -46,18 +46,18 @@
                 <expression>YawlWSInvokerPortName = 80</expression>
             </inputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="id9ac4a523-596f-400b-92e3-692bb90fe61a">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="c45063cf-d3f9-4d72-8fa6-5f8f8ff6f007">
             <direction>outgoing</direction>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="id27b59ec5-9523-47a4-a817-28dece680fea">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="a65a8bd5-e349-4805-b150-3f75a02d6fef">
             <direction>incoming</direction>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2">
             <name>OUT</name>
         </Node>
-        <Edge id="id15655308-0b17-4be3-b86e-e82adaaf3337" default="true" sourceId="id9ac4a523-596f-400b-92e3-692bb90fe61a" targetId="C-A-3"/>
-        <Edge id="id3ba68412-1119-477d-9061-fa52d05bcc39" default="true" sourceId="C-A-3" targetId="id27b59ec5-9523-47a4-a817-28dece680fea"/>
-        <Edge id="id6a63cc2a-76ce-4009-86a5-a7f2c0285997" default="true" sourceId="C-InputCondition-1" targetId="id9ac4a523-596f-400b-92e3-692bb90fe61a"/>
-        <Edge id="id0f8366f5-670d-48ec-8304-e63eaf9e7374" default="true" sourceId="id27b59ec5-9523-47a4-a817-28dece680fea" targetId="C-OutputCondition-2"/>
+        <Edge id="id79c254c9-e7c8-48d4-b57f-bbcd35ee3306" default="true" sourceId="c45063cf-d3f9-4d72-8fa6-5f8f8ff6f007" targetId="C-A-3"/>
+        <Edge id="id67ff3573-4015-4059-aa7d-d19f6f68565a" default="true" sourceId="C-A-3" targetId="a65a8bd5-e349-4805-b150-3f75a02d6fef"/>
+        <Edge id="ida9b66a3f-5011-415c-8a0e-4084ec669ea1" default="true" sourceId="C-InputCondition-1" targetId="c45063cf-d3f9-4d72-8fa6-5f8f8ff6f007"/>
+        <Edge id="idf91ba2bc-4cb6-4a4e-9907-efb1c6840ada" default="true" sourceId="a65a8bd5-e349-4805-b150-3f75a02d6fef" targetId="C-OutputCondition-2"/>
     </Net>
 </ns2:CanonicalProcess>

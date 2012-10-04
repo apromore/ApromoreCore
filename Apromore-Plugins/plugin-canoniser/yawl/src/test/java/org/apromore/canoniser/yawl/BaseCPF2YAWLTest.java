@@ -1,5 +1,8 @@
 package org.apromore.canoniser.yawl;
 
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
+
 import java.io.BufferedInputStream;
 import java.io.BufferedOutputStream;
 import java.io.File;
@@ -29,11 +32,17 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+import org.yawlfoundation.yawlschema.DecompositionFactsType;
 import org.yawlfoundation.yawlschema.DecompositionType;
 import org.yawlfoundation.yawlschema.ExternalConditionFactsType;
 import org.yawlfoundation.yawlschema.ExternalNetElementFactsType;
 import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
+import org.yawlfoundation.yawlschema.InputParameterFactsType;
 import org.yawlfoundation.yawlschema.NetFactsType;
+import org.yawlfoundation.yawlschema.OutputParameterFactsType;
+import org.yawlfoundation.yawlschema.VarMappingFactsType;
+import org.yawlfoundation.yawlschema.VariableFactsType;
+import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType;
 
 /**
  * Base class for tests on CPF -> YAWL conversion
@@ -106,6 +115,18 @@ public abstract class BaseCPF2YAWLTest {
     }
 
     @Test
+    public void testNetInputOutputCondition() {
+        if (!shouldCanonisationFail) {
+            for (DecompositionType d: canonical2Yawl.getYAWL().getSpecification().get(0).getDecomposition()) {
+                if (d instanceof NetFactsType) {
+                    assertNotNull(((NetFactsType) d).getProcessControlElements().getInputCondition());
+                    assertNotNull(((NetFactsType) d).getProcessControlElements().getOutputCondition());
+                }
+            }
+        }
+    }
+
+    @Test
     public void testSaveResult() throws JAXBException, IOException, SAXException {
         if (!shouldCanonisationFail) {
             OutputStream yawlStream = null;
@@ -158,6 +179,7 @@ public abstract class BaseCPF2YAWLTest {
                 }
             }
         }
+        fail("Task "+name+" not found.");
         return null;
     }
 
@@ -169,6 +191,94 @@ public abstract class BaseCPF2YAWLTest {
                 }
             }
         }
+        fail("Condition "+name+" not found.");
+        return null;
+    }
+
+    protected VariableFactsType checkLocalVariable(final String name, final String type, final NetFactsType net) {
+        for (VariableFactsType var: net.getLocalVariable()) {
+            if (type.equals(var.getType()) && name.equals(var.getName())) {
+                return var;
+            }
+        }
+        fail("Local variable "+name+" with type "+type+" not found.");
+        return null;
+    }
+
+    protected OutputParameterFactsType checkOutputParameter(final String name, final String type, final DecompositionFactsType d) {
+        for (OutputParameterFactsType param: d.getOutputParam()) {
+            if (type.equals(param.getType()) && name.equals(param.getName())) {
+                return param;
+            }
+        }
+        fail("Output parameter "+name+" with type "+type+" not found.");
+        return null;
+    }
+
+    protected InputParameterFactsType checkInputParameter(final String name, final String type, final DecompositionFactsType d) {
+        for (InputParameterFactsType param: d.getInputParam()) {
+            if (type.equals(param.getType()) && name.equals(param.getName())) {
+                return param;
+            }
+        }
+        fail("Input parameter "+name+" with type "+type+" not found.");
+        return null;
+    }
+
+
+    protected VarMappingFactsType checkOutputMapping(final String name, final String mapping, final ExternalTaskFactsType task) {
+        String invalidMapping = null;
+        if (task.getCompletedMappings() == null) {
+            fail("No output mapping!");
+        }
+        for (VarMappingFactsType varMapping: task.getCompletedMappings().getMapping()) {
+            if (name.equals(varMapping.getMapsTo()) && mapping.equals(varMapping.getExpression().getQuery())) {
+                return varMapping;
+            }
+            if (name.equals(varMapping.getMapsTo())) {
+                invalidMapping = varMapping.getExpression().getQuery();
+            }
+        }
+        if (invalidMapping != null) {
+            fail("Output mapping "+name+" invalid "+invalidMapping);
+        } else {
+            fail("Output mapping not found "+name+" with expression "+mapping);
+        }
+        return null;
+    }
+
+    protected VarMappingFactsType checkInputMapping(final String name, final String mapping, final ExternalTaskFactsType task) {
+        String invalidMapping = null;
+        if (task.getStartingMappings() == null) {
+            fail("No input mapping!");
+        }
+        for (VarMappingFactsType varMapping: task.getStartingMappings().getMapping()) {
+            if (name.equals(varMapping.getMapsTo()) && mapping.equals(varMapping.getExpression().getQuery())) {
+                return varMapping;
+            }
+            if (name.equals(varMapping.getMapsTo())) {
+                invalidMapping = varMapping.getExpression().getQuery();
+            }
+        }
+        if (invalidMapping != null) {
+            fail("Input mapping "+name+" invalid "+invalidMapping);
+        } else {
+            fail("Input mapping not found "+name+" with expression "+mapping);
+        }
+        return null;
+    }
+
+    protected WebServiceGatewayFactsType findDecomposition(final ExternalTaskFactsType task) {
+        final List<DecompositionType> decompositionList = canonical2Yawl.getYAWL().getSpecification().get(0).getDecomposition();
+        for (final DecompositionType d : decompositionList) {
+            if (d instanceof WebServiceGatewayFactsType) {
+                final WebServiceGatewayFactsType taskD = (WebServiceGatewayFactsType) d;
+                if (taskD.getId().equals(task.getDecomposesTo().getId())) {
+                    return taskD;
+                }
+            }
+        }
+        fail("Could not find decomposition for Task "+task.getId());
         return null;
     }
 

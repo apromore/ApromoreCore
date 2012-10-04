@@ -255,6 +255,7 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
                             .addToExtensions(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.INPUT_PARAM, param, InputParameterFactsType.class), taskNode);
                 }
             }
+
             // Output Parameters / YAWL Task Variables
             if (taskDecomposition.getOutputParam() != null) {
                 for (final OutputParameterFactsType param : taskDecomposition.getOutputParam()) {

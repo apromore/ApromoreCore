@@ -7,19 +7,18 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
             <name>A</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
-                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="system">
-                    <distributionSet>
-                        <initialSet>
-                            <role>RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7</role>
-                        </initialSet>
-                    </distributionSet>
-                </allocate:allocate>
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <resourceTypeRef id="id62651870-2741-45c2-9751-d970911dcb0e" resourceTypeId="ide891db14-9293-417e-96ca-b6d1faf3240a" qualifier="Primary"/>
+            <resourceTypeRef id="id46b7080f-937e-4fe2-bf39-7f2efd3f1207" resourceTypeId="idaadba0d7-9744-4c00-ae34-c3448c28471e" qualifier="Primary"/>
             <teamWork>false</teamWork>
+            <filterByDataExpr>
+                <description></description>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>//ResourceType[]</expression>
+            </filterByDataExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
@@ -27,8 +26,28 @@
         <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
         <Edge id="C-A-OutputCondition" default="true" sourceId="C-A" targetId="C-OutputCondition"/>
     </Net>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="ide891db14-9293-417e-96ca-b6d1faf3240a" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="idaadba0d7-9744-4c00-ae34-c3448c28471e" specializationIds="id2a18f458-5ad8-4337-9663-04ef2c512ba6 iddcce8518-fc02-49ad-94a6-66e994464961" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
         <name>RoleX</name>
+        <type>Role</type>
+    </ResourceType>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="iddcce8518-fc02-49ad-94a6-66e994464961" originalID="PA-c5795783-3695-48ec-b798-aea7890b0988">
+        <name>TestX TestX</name>
+        <attribute name="Capability" value="CapabilityX"/>
+        <attribute name="Position" value="PositionX"/>
+        <type>Participant</type>
+    </ResourceType>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id2a18f458-5ad8-4337-9663-04ef2c512ba6" specializationIds="id23e53c54-5154-4fd3-9245-77f28cc16968 id396d3b90-ff64-47e7-9bff-9c34fa0e9034 iddcce8518-fc02-49ad-94a6-66e994464961" originalID="RO-176b14db-d9d7-4de0-8a5f-657a1103a814">
+        <name>RoleY</name>
+        <type>Role</type>
+    </ResourceType>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id23e53c54-5154-4fd3-9245-77f28cc16968" originalID="PA-09ef66e3-4f91-4a10-82de-19294ba87cd3">
+        <name>TestY TestY</name>
+        <attribute name="Capability" value="CapabilityY"/>
+        <attribute name="Capability" value="CapabilityX"/>
+        <type>Participant</type>
+    </ResourceType>
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id396d3b90-ff64-47e7-9bff-9c34fa0e9034" specializationIds="id23e53c54-5154-4fd3-9245-77f28cc16968" originalID="RO-c4671de9-56cc-4eb3-b625-00406479ed3d">
+        <name>RoleZ</name>
         <type>Role</type>
     </ResourceType>
 </ns2:CanonicalProcess>
