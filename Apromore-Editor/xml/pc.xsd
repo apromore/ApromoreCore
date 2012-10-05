@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<xsd:schema
+  xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+  xmlns:jaxb="http://java.sun.com/xml/ns/jaxb"
+  xmlns:pc="http://www.processconfiguration.com"
+  xmlns:xjc="http://java.sun.com/xml/ns/jaxb/xjc"
+  xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+  elementFormDefault="qualified"
+  attributeFormDefault="unqualified"
+  targetNamespace="http://www.processconfiguration.com"
+  jaxb:extensionBindingPrefixes="xjc"
+  jaxb:version="1.0">
+
+<xsd:import namespace="http://www.omg.org/spec/DD/20100524/DI" schemaLocation="DI.xsd"/>
+
+<xsd:annotation>
+  <xsd:appinfo>
+    <jaxb:globalBindings>
+      <xjc:superClass name="de.hpi.bpmn2_0.model.extension.AbstractExtensionElement"/>
+    </jaxb:globalBindings>
+  </xsd:appinfo>
+</xsd:annotation>
+
+<xsd:element name="variants">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="variant" minOccurs="1" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:attribute name="id" type="xsd:ID" use="required"/>
+          <xsd:attribute name="name" type="xsd:string" use="required"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="configurationAnnotation">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="configuration" minOccurs="1" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:attribute name="variantRef" type="xsd:IDREF" use="required"/>
+          <xsd:attribute name="name" type="xsd:string"/>
+          <xsd:attribute name="type" type="pc:tGatewayType">
+          </xsd:attribute>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:simpleType name="tGatewayType">
+  <xsd:restriction base="xsd:NMTOKEN">
+    <xsd:enumeration value="data-based_exclusive"/>
+    <xsd:enumeration value="event-based_exclusive"/>
+    <xsd:enumeration value="inclusive"/>
+    <xsd:enumeration value="parallel"/>
+  </xsd:restriction>
+</xsd:simpleType>
+
+<xsd:element name="configurable">
+  <xsd:complexType>
+    <xsd:sequence>
+      <xsd:element name="configuration" minOccurs="0">
+        <xsd:complexType>
+          <xsd:attribute name="type" type="pc:tGatewayType"/>
+          <xsd:attribute name="sourceRefs" type="xsd:IDREFS"/>
+          <xsd:attribute name="targetRefs" type="xsd:IDREFS"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="configurationAnnotationShape">
+  <xsd:complexType>
+    <xsd:complexContent>
+      <xsd:extension base="di:LabeledShape"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+</xsd:element>
+
+<xsd:element name="configurationAnnotationAssociation">
+  <xsd:complexType>
+    <xsd:complexContent>
+      <xsd:extension base="di:LabeledEdge"/>
+    </xsd:complexContent>
+  </xsd:complexType>
+</xsd:element>
+
+</xsd:schema>
