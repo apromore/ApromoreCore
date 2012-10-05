@@ -180,4 +180,55 @@
     <target name="build-and-deploy-all-war-files-to-tomcat"
             depends="build-and-deploy-editor-to-tomcat, build-and-deploy-explorer-to-tomcat, build-and-deploy-libs-to-tomcat, build-and-deploy-platform-to-tomcat, build-and-deploy-api-to-tomcat">
     </target>
+
+    <!-- Test targets for converting BPMN to Signavio JSON -->
+    
+    <path id="executable.path">
+        <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/platform-extension-diagram.jar"/>
+        <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/platform-extension-bpmn2_0.jar"/>
+        <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/jaxb-impl.jar"/>
+        <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/org.json.jar"/>
+        <pathelement location="${basedir}/platform/WebContent/WEB-INF/lib/log4j-1.2.15.jar"/>
+    </path>
+
+    <!-- Read test.bpmn.xml and generate test.json from it -->
+    <target name="bpmn2json">
+        <echo message="Executing from ${basedir}"/>
+        <java classname="de.hpi.bpmn2_0.transformation.BPMN2DiagramConverter" classpathref="executable.path" fork="yes" output="test.json" logError="yes">
+            <jvmarg value="-enableassertions"/>
+            <jvmarg value="-Djava.util.logging.config.file=logging.properties"/>
+            <arg value="/Users/raboczi/Project/signavio-configuration/test.bpmn.xml"/>
+        </java>
+    </target>
+
+    <!-- Read test2.json and generate test2.bpmn.xml from it -->
+    <target name="json2bpmn">
+        <echo message="Executing from ${basedir}"/>
+        <java classname="de.hpi.bpmn2_0.BPMNSerializationTest" classpathref="executable.path" fork="yes" output="test2.bpmn.xml" logError="yes">
+            <jvmarg value="-enableassertions"/>
+            <jvmarg value="-Djava.util.logging.config.file=logging.properties"/>
+            <arg value="/Users/raboczi/Project/signavio-configuration/test2.json"/>
+        </java>
+    </target>
+
+    <target name="test">
+        <mkdir dir="tests/out"/>
+        <mkdir dir="tests/reports"/>
+        <junit printsummary="yes" fork="yes">
+            <classpath>
+                <path refid="executable.path"/>
+                <pathelement location="${basedir}/platform/lib/junit-4.6.jar"/>
+            </classpath>
+            <formatter type="plain"/>
+            <jvmarg value="-enableassertions"/>
+            <jvmarg value="-Djava.util.logging.config.file=logging.properties"/>
+            <jvmarg value="-Dtests.dir=${basedir}/tests"/>
+            <batchtest fork="yes" todir="tests/reports">
+                <fileset dir="platform extensions/bpmn20xmlbasic/src">
+                    <include name="**/*Test.java"/>
+                    <exclude name="**/BPMNSerializationTest.java"/>
+                </fileset>
+            </batchtest>
+        </junit>
+    </target>
 </project>
