@@ -4,6 +4,9 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
 import org.apromore.plugin.Plugin;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -31,6 +34,14 @@ public abstract class DefaultPlugin implements Plugin {
 
     private static final String DEFAULT_VALUE = "N/A";
     private static final String CONFIG_SUFFIX = ".config";
+
+    protected static DefaultPluginResult newPluginResult() {
+        return new DefaultPluginResult();
+    }
+
+    protected static DefaultPluginRequest newPluginRequest() {
+        return new DefaultPluginRequest();
+    }
 
     /**
      * Properties of the Plugin
@@ -138,5 +149,38 @@ public abstract class DefaultPlugin implements Plugin {
     private Properties getPluginConfiguration() {
         return pluginConfiguration;
     }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#hashCode()
+     */
+    @Override
+    public int hashCode() {
+        return new HashCodeBuilder().append(getName()).append(getVersion()).toHashCode();
+    }
+
+    /* (non-Javadoc)
+     * @see java.lang.Object#equals(java.lang.Object)
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (obj == null) { return false; }
+        if (obj == this) { return true; }
+        if (obj.getClass() != getClass()) {
+          return false;
+        }
+        DefaultPlugin plugin = (DefaultPlugin) obj;
+        // We just compare Name and Version, a Plugin is equals to another is Name and Version match
+        return new EqualsBuilder()
+                      .appendSuper(super.equals(obj))
+                      .append(getName(), plugin.getName())
+                      .append(getVersion(), plugin.getVersion())
+                      .isEquals();
+    }
+
+    @Override
+    public String toString() {
+        return new ToStringBuilder(this).append("type",getType()).append("name",getName()).append("version",getVersion()).toString();
+    }
+
 
 }

@@ -4,10 +4,11 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apromore.plugin.deployment.provider.DeploymentPluginProvider;
+import org.apromore.plugin.deployment.provider.impl.OSGiDeploymentPluginProvider;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.junit.Before;
 import org.junit.Test;
@@ -19,9 +20,9 @@ public class OSGiDeploymentPluginProviderTest {
     @Before
     public void setUp() {
         final OSGiDeploymentPluginProvider dp = new OSGiDeploymentPluginProvider();
-        final List<DeploymentPlugin> deploymentPluginSet = new ArrayList<DeploymentPlugin>();
+        final Set<DeploymentPlugin> deploymentPluginSet = new HashSet<DeploymentPlugin>();
         deploymentPluginSet.add(new MockDeploymentPlugin());
-        dp.setDeploymentPluginList(deploymentPluginSet);
+        dp.setDeploymentPluginSet(deploymentPluginSet);
         this.provider = dp;
     }
 

@@ -42,16 +42,15 @@ import org.yawlfoundation.yawlschema.ResourcingSelectorFactsType;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public class ResourcingHelper {
+public class TaskResourcingHelper {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResourcingHelper.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(TaskResourcingHelper.class);
 
     private static final ObjectFactory YAWL_FACTORY = new ObjectFactory();
-    private static final org.yawlfoundation.yawlschema.orgdata.ObjectFactory ORGDATA_FACTORY = new org.yawlfoundation.yawlschema.orgdata.ObjectFactory();
 
     private final CanonicalConversionContext context;
 
-    public ResourcingHelper(final CanonicalConversionContext context) {
+    public TaskResourcingHelper(final CanonicalConversionContext context) {
         super();
         this.context = context;
     }

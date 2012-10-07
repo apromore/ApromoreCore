@@ -142,6 +142,26 @@
         <part name="payload" element="mgr:ExportFormatRequest">
         </part>
     </message>
+    <message name="ReadInstalledPluginsRequest">
+        <part name="payload" element="mgr:ReadInstalledPluginsRequest">
+        </part>
+    </message>    
+    <message name="ReadPluginInfoRequest">
+        <part name="payload" element="mgr:ReadPluginInfoRequest">
+        </part>
+    </message>
+    <message name="ReadCanoniserInfoRequest">
+        <part name="payload" element="mgr:ReadCanoniserInfoRequest">
+        </part>
+    </message>
+    <message name="ReadInitialNativeFormatRequest">
+        <part name="payload" element="mgr:ReadInitialNativeFormatRequest">
+        </part>
+    </message>
+    <message name="ReadNativeMetaDataRequest">
+        <part name="payload" element="mgr:ReadNativeMetaDataRequest">
+        </part>
+    </message>                    
 
     <portType name="Manager">
         <operation name="ReadProcessSummaries">
@@ -246,7 +266,37 @@
             <output name="MergeProcessesResponse" message="tns:MergeProcessesResponse">
             </output>
         </operation>
-    </portType>
+        <operation name="ReadInstalledPlugins">
+            <input name="ReadInstalledPluginsRequest" message="tns:ReadInstalledPluginsRequest">
+            </input>
+            <output name="ReadInstalledPluginsResponse" message="tns:ReadInstalledPluginsResponse">
+            </output>
+        </operation>        
+        <operation name="ReadPluginInfo">
+            <input name="ReadPluginInfoRequest" message="tns:ReadPluginInfoRequest">
+            </input>
+            <output name="ReadPluginInfoResponse" message="tns:ReadPluginInfoResponse">
+            </output>
+        </operation>		
+        <operation name="ReadCanoniserInfo">
+            <input name="ReadCanoniserInfoRequest" message="tns:ReadCanoniserInfoRequest">
+            </input>
+            <output name="ReadCanoniserInfoResponse" message="tns:ReadCanoniserInfoResponse">
+            </output>
+        </operation>
+        <operation name="ReadInitialNativeFormat">
+            <input name="ReadInitialNativeFormatRequest" message="tns:ReadInitialNativeFormatRequest">
+            </input>
+            <output name="ReadInitialNativeFormatResponse" message="tns:ReadInitialNativeFormatResponse">
+            </output>
+        </operation>   
+        <operation name="ReadNativeMetaData">
+            <input name="ReadNativeMetaDataRequest" message="tns:ReadNativeMetaDataRequest">
+            </input>
+            <output name="ReadNativeMetaDataResponse" message="tns:ReadNativeMetaDataResponse">
+            </output>
+        </operation>             
+    </portType>    
 
     <binding name="ManagerSoap11" type="tns:Manager">
         <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
@@ -403,7 +453,52 @@
                 <soap:body use="literal"/>
             </output>
         </operation>
-    </binding>
+        <operation name="ReadInstalledPlugins">
+            <soap:operation style="document"/>
+            <input name="ReadInstalledPluginsRequest">
+                <soap:body use="literal"/>
+            </input>
+            <output name="ReadInstalledPluginsResponse">
+                <soap:body use="literal"/>
+            </output>
+        </operation>        
+        <operation name="ReadPluginInfo">
+            <soap:operation style="document"/>
+            <input name="ReadPluginInfoRequest">
+                <soap:body use="literal"/>
+            </input>
+            <output name="ReadPluginInfoResponse">
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="ReadCanoniserInfo">
+            <soap:operation style="document"/>
+            <input name="ReadCanoniserInfoRequest">
+                <soap:body use="literal"/>
+            </input>
+            <output name="ReadCanoniserInfoResponse">
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="ReadInitialNativeFormat">
+            <soap:operation style="document"/>
+            <input name="ReadInitialNativeFormatRequest">
+                <soap:body use="literal"/>
+            </input>
+            <output name="ReadInitialNativeFormatResponse">
+                <soap:body use="literal"/>
+            </output>
+        </operation>      
+        <operation name="ReadNativeMetaData">
+            <soap:operation style="document"/>
+            <input name="ReadNativeMetaDataRequest">
+                <soap:body use="literal"/>
+            </input>
+            <output name="ReadNativeMetaDataResponse">
+                <soap:body use="literal"/>
+            </output>
+        </operation>             
+    </binding>   
 
     <service name="ManagerService">
         <port binding="tns:ManagerSoap11" name="ManagerSoap11">

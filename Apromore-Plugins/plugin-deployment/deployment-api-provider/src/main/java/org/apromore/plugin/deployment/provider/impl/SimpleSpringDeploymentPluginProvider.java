@@ -9,27 +9,25 @@
  *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.apromore.plugin.deployment;
+package org.apromore.plugin.deployment.provider.impl;
 
-import java.util.List;
-
+import org.apromore.plugin.deployment.DeploymentPlugin;
+import org.apromore.plugin.provider.PluginProviderHelper;
 import org.springframework.stereotype.Service;
 
 /**
- * Using OSGi to find all installed Deployment Plugins
+ * Using Spring/Reflection to find all installed Deployment Plugins
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt</a>
  *
  */
-@Service("osgiDeploymentPluginProviderImpl")
-public class OSGiDeploymentPluginProvider extends DeploymentPluginProviderImpl {
+@Service
+public class SimpleSpringDeploymentPluginProvider extends DeploymentPluginProviderImpl {
 
-    public List<DeploymentPlugin> getDeploymentPluginList() {
-        return getInternalDeploymentPluginList();
+    public SimpleSpringDeploymentPluginProvider() {
+        super();
+        setInternalDeploymentPluginSet(PluginProviderHelper.findPluginsByClass(DeploymentPlugin.class, "org.apromore.plugin.deployment"));
     }
 
-    public void setDeploymentPluginList(final List<DeploymentPlugin> newDeploymentPluginList) {
-        setInternalDeploymentPluginList(newDeploymentPluginList);
-    }
 
 }

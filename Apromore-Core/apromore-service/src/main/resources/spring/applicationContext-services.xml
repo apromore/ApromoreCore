@@ -85,6 +85,8 @@
     <bean id="MergeService" class="org.apromore.service.impl.MergeServiceImpl" />
     <bean id="SessionService" class="org.apromore.service.impl.SessionServiceImpl" />
     <bean id="UserService" class="org.apromore.service.impl.UserServiceImpl" />
+    <bean id="DeploymentService" class="org.apromore.service.impl.DeploymentServiceImpl" />
+    <bean id="PluginService" class="org.apromore.service.impl.PluginServiceImpl" />    
 
     <bean id="ComposerService" class="org.apromore.service.impl.ComposerServiceImpl" />
     <bean id="SimpleComposerService" class="org.apromore.service.impl.SimpleComposerImpl" />
@@ -106,6 +108,8 @@
     <bean id="DissimilarityMatrix" class="org.apromore.clustering.hierarchy.HierarchyAwareDissimMatrixGenerator" />
     
     <!-- Plugin Beans (Workaround until OSGi is here) -->
+	<bean id="PluginProvider" class="org.apromore.plugin.provider.impl.SimpleSpringPluginProvider" />
     <bean id="CanoniserProvider" class="org.apromore.canoniser.provider.impl.SimpleSpringCanoniserProvider" />
-    
+    <bean id="DeploymentProvider" class="org.apromore.plugin.deployment.provider.impl.SimpleSpringDeploymentPluginProvider" />
+        
 </beans>

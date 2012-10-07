@@ -20,10 +20,14 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.YAWL22Canoniser;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.plugin.PluginRequest;
+import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.deployment.exception.DeploymentException;
 import org.apromore.plugin.deployment.impl.DefaultDeploymentPlugin;
-import org.apromore.plugin.property.BooleanProperty;
-import org.apromore.plugin.property.StringProperty;
+import org.apromore.plugin.exception.PluginException;
+import org.apromore.plugin.impl.DefaultPluginResult;
+import org.apromore.plugin.property.PluginPropertyType;
+import org.apromore.plugin.property.PropertyType;
 import org.w3c.dom.Node;
 
 /**
@@ -44,21 +48,21 @@ public class YAWLDeploymentPlugin extends DefaultDeploymentPlugin {
     private static final String YAWL_ENGINE_URL_PROPERTY_NAME = "YAWL Engine URL";
     private static final String AUTOLAUNCH_PROPERTY_NAME = "Launch case automatically?";
 
-    private final StringProperty yawlEngineUrl;
-    private final StringProperty yawlEngineUsername;
-    private final StringProperty yawlEnginePassword;
-    private final BooleanProperty autoLaunch;
+    private final PluginPropertyType<String> yawlEngineUrl;
+    private final PluginPropertyType<String> yawlEngineUsername;
+    private final PluginPropertyType<String> yawlEnginePassword;
+    private final PluginPropertyType<Boolean> autoLaunch;
 
     public YAWLDeploymentPlugin() {
         super();
-        yawlEngineUrl = new StringProperty("yawlEngineUrl", YAWL_ENGINE_URL_PROPERTY_NAME, "", true, DEFAULT_YAWL_ENGINE_URL);
-        addProperty(yawlEngineUrl);
-        yawlEngineUsername = new StringProperty("yawlEngineUsername", YAWL_ENGINE_USERNAME_PROPERTY_NAME, "", true, ENGINE_USERNAME);
-        addProperty(yawlEngineUsername);
-        yawlEnginePassword = new StringProperty("yawlEnginePassword", YAWL_ENGINE_PASSWORD_PROPERTY_NAME, "", true, ENGINE_PASSWORD);
-        addProperty(yawlEnginePassword);
-        autoLaunch = new BooleanProperty("autoLaunch", AUTOLAUNCH_PROPERTY_NAME, "", false, false);
-        addProperty(autoLaunch);
+        yawlEngineUrl = new PluginPropertyType<String>("yawlEngineUrl", YAWL_ENGINE_URL_PROPERTY_NAME, "", true, DEFAULT_YAWL_ENGINE_URL);
+        registerProperty(yawlEngineUrl);
+        yawlEngineUsername = new PluginPropertyType<String>("yawlEngineUsername", YAWL_ENGINE_USERNAME_PROPERTY_NAME, "", true, ENGINE_USERNAME);
+        registerProperty(yawlEngineUsername);
+        yawlEnginePassword = new PluginPropertyType<String>("yawlEnginePassword", YAWL_ENGINE_PASSWORD_PROPERTY_NAME, "", true, ENGINE_PASSWORD);
+        registerProperty(yawlEnginePassword);
+        autoLaunch = new PluginPropertyType<Boolean>("autoLaunch", AUTOLAUNCH_PROPERTY_NAME, "", false, false);
+        registerProperty(autoLaunch);
     }
 
     /*
@@ -67,8 +71,8 @@ public class YAWLDeploymentPlugin extends DefaultDeploymentPlugin {
      * @see org.apromore.plugin.deployment.DeploymentPlugin#deployProcess(org.apromore.cpf.CanonicalProcessType)
      */
     @Override
-    public void deployProcess(final CanonicalProcessType canonicalProcess) throws DeploymentException {
-        deployProcess(canonicalProcess, null);
+    public PluginResult deployProcess(final CanonicalProcessType canonicalProcess, final PluginRequest request) throws PluginException {
+        return deployProcess(canonicalProcess, null, request);
     }
 
     /*
@@ -77,11 +81,17 @@ public class YAWLDeploymentPlugin extends DefaultDeploymentPlugin {
      * @see org.apromore.plugin.deployment.DeploymentPlugin#deployProcess(org.apromore.cpf.CanonicalProcessType, org.apromore.anf.AnnotationsType)
      */
     @Override
-    public void deployProcess(final CanonicalProcessType canonicalProcess, final AnnotationsType annotation) throws DeploymentException {
-        checkProperties();
+    public PluginResult deployProcess(final CanonicalProcessType canonicalProcess, final AnnotationsType annotation, final PluginRequest request) throws PluginException {
+        PropertyType<String> userEngineUrl = request.getRequestProperty(yawlEngineUrl);
+        PropertyType<String> userUsername = request.getRequestProperty(yawlEngineUsername);
+        PropertyType<String> userPassword = request.getRequestProperty(yawlEnginePassword);
 
-        YAWLEngineClient yawlEngineClient = new YAWLEngineClient(yawlEngineUrl.getValueAsString(), yawlEngineUsername.getValueAsString(),
-                yawlEnginePassword.getValueAsString());
+        checkProperties(userEngineUrl);
+
+        DefaultPluginResult pluginResult = newPluginResult();
+
+        YAWLEngineClient yawlEngineClient = new YAWLEngineClient(userEngineUrl.getValue(), userUsername.getValue(),
+                userPassword.getValue());
 
         Node connectResponse = yawlEngineClient.connectToYAWL();
         if (connectResponse.getNodeName().equals("failure")) {
@@ -94,13 +104,13 @@ public class YAWLDeploymentPlugin extends DefaultDeploymentPlugin {
                     Node uploadResponse = yawlEngineClient.uploadYAWLSpecification(yawlSpec, sessionHandle);
                     if (uploadResponse.getNodeName().equals("failure")) {
                         for (int i = 0; i < uploadResponse.getChildNodes().getLength(); i++) {
-                            convertToPluginMessage(uploadResponse.getChildNodes().item(i));
+                            convertToPluginMessage(pluginResult, uploadResponse.getChildNodes().item(i));
                         }
                     } else {
                         if (uploadResponse.getTextContent().isEmpty()) {
-                            addPluginMessage("Process {0} successfully deployed.", canonicalProcess.getName(), uploadResponse.getTextContent());
+                            pluginResult.addPluginMessage("Process {0} successfully deployed.", canonicalProcess.getName(), uploadResponse.getTextContent());
                         } else {
-                            addPluginMessage("YAWL Engine message: {0}", uploadResponse.getTextContent());
+                            pluginResult.addPluginMessage("YAWL Engine message: {0}", uploadResponse.getTextContent());
                         }
                     }
                 } else {
@@ -111,21 +121,24 @@ public class YAWLDeploymentPlugin extends DefaultDeploymentPlugin {
             }
         }
 
+        return pluginResult;
     }
 
-    private void convertToPluginMessage(final Node errorMessage) {
+    private void convertToPluginMessage(final DefaultPluginResult pluginResult, final Node errorMessage) {
         if (errorMessage.getChildNodes().getLength() > 1) {
-            addPluginMessage("Error in Node {0}: {1}", errorMessage.getFirstChild().getTextContent(), errorMessage.getLastChild().getTextContent());
+            pluginResult.addPluginMessage("Error in Node {0}: {1}", errorMessage.getFirstChild().getTextContent(), errorMessage.getLastChild().getTextContent());
         } else {
-            addPluginMessage("Error: {0}", errorMessage.getFirstChild().getTextContent());
+            pluginResult.addPluginMessage("Error: {0}", errorMessage.getFirstChild().getTextContent());
         }
     }
 
     private String deCanoniseYAWL(final CanonicalProcessType canonicalProcess, final AnnotationsType annotation) throws CanoniserException,
             DeploymentException {
+        //TODO replace with OSGi dependency injection of CanoniserProvider
         YAWL22Canoniser yawlCanoniser = new YAWL22Canoniser();
         ByteArrayOutputStream yawlSpecOS = new ByteArrayOutputStream();
-        yawlCanoniser.deCanonise(canonicalProcess, annotation, yawlSpecOS);
+        //TODO specify YAWL canoniser properties
+        yawlCanoniser.deCanonise(canonicalProcess, annotation, yawlSpecOS, newPluginRequest());
         try {
             return new String(yawlSpecOS.toByteArray(), "UTF-8");
         } catch (UnsupportedEncodingException e) {
@@ -135,16 +148,17 @@ public class YAWLDeploymentPlugin extends DefaultDeploymentPlugin {
 
     /**
      * Checks if the supplied properties are valid
+     * @param userEngineUrl
      *
      * @return
      * @throws DeploymentException
      */
-    private boolean checkProperties() throws DeploymentException {
-        if (!yawlEngineUrl.hasValue()) {
+    private boolean checkProperties(final PropertyType<String> userEngineUrl) throws DeploymentException {
+        if (!userEngineUrl.hasValue()) {
             throw new DeploymentException("Invalid parameter " + yawlEngineUrl.getName());
         }
         try {
-            new URL(yawlEngineUrl.getValueAsString());
+            new URL(userEngineUrl.getValue());
         } catch (MalformedURLException e) {
             throw new DeploymentException("Invalid URL: ", e);
         }

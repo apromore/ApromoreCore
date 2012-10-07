@@ -16,6 +16,8 @@ import org.apromore.model.ClusterFilterType;
 import org.apromore.model.DomainsType;
 import org.apromore.model.EditSessionType;
 import org.apromore.model.NativeTypesType;
+import org.apromore.model.PluginMessage;
+import org.apromore.model.PluginMessages;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.SearchHistoriesType;
@@ -29,7 +31,6 @@ import org.apromore.portal.dialogController.similarityclusters.SimilarityCluster
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
-import org.apromore.portal.exception.ExceptionWriteEditSession;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.event.ClientInfoEvent;
@@ -128,7 +129,7 @@ public class MainController extends BaseController {
      * register an event listener for the clientInfo event (to prevent user to
      * close the browser window)
      */
-    public void onClientInfo(ClientInfoEvent event) {
+    public void onClientInfo(final ClientInfoEvent event) {
         Clients.confirmClose(Constants.MSG_WHEN_CLOSE);
     }
 
@@ -141,8 +142,8 @@ public class MainController extends BaseController {
      * @param version
      * @throws Exception
      */
-    public void displayProcessSummaries(ProcessSummariesType processSummaries, Boolean isQueryResult,
-            ProcessSummaryType process, VersionSummaryType version) {
+    public void displayProcessSummaries(final ProcessSummariesType processSummaries, final Boolean isQueryResult,
+            final ProcessSummaryType process, final VersionSummaryType version) {
         if (isQueryResult) {
             clearProcessVersions();
         }
@@ -203,7 +204,7 @@ public class MainController extends BaseController {
      * process to the table
      * @param returnedProcess
      */
-    public void displayNewProcess(ProcessSummaryType returnedProcess) {
+    public void displayNewProcess(final ProcessSummaryType returnedProcess) {
         switchToProcessSummaryView();
         ((ProcessListboxController) this.baseListboxController)
                 .displayNewProcess(returnedProcess);
@@ -216,7 +217,7 @@ public class MainController extends BaseController {
      * @param processVersions
      * @throws InterruptedException
      */
-    public void deleteProcessVersions(Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws InterruptedException {
+    public void deleteProcessVersions(final Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws InterruptedException {
         try {
             getService().deleteProcessVersions(processVersions);
             switchToProcessSummaryView();
@@ -254,9 +255,9 @@ public class MainController extends BaseController {
      * @throws InterruptedException
      * @throws Exception
      */
-    public void editProcess(ProcessSummaryType process,
-                            VersionSummaryType version, String nativeType, String annotation,
-                            String readOnly) throws InterruptedException {
+    public void editProcess(final ProcessSummaryType process,
+                            final VersionSummaryType version, final String nativeType, final String annotation,
+                            final String readOnly) throws InterruptedException {
 
         String instruction = "", url = getHost();
         int offsetH = 100, offsetV = 200;
@@ -299,7 +300,7 @@ public class MainController extends BaseController {
         }
     }
 
-    public void displayMessage(String mes) {
+    public void displayMessage(final String mes) {
         this.shortmessageC.displayMessage(mes);
     }
 
@@ -311,7 +312,7 @@ public class MainController extends BaseController {
         return header;
     }
 
-    public void setHeader(HeaderController header) {
+    public void setHeader(final HeaderController header) {
         this.header = header;
     }
 
@@ -319,7 +320,7 @@ public class MainController extends BaseController {
         return menu;
     }
 
-    public void setMenu(MenuController menu) {
+    public void setMenu(final MenuController menu) {
         this.menu = menu;
     }
 
@@ -335,7 +336,7 @@ public class MainController extends BaseController {
         return simplesearch;
     }
 
-    public void setSimplesearch(SimpleSearchController simplesearch) {
+    public void setSimplesearch(final SimpleSearchController simplesearch) {
         this.simplesearch = simplesearch;
     }
 
@@ -343,7 +344,7 @@ public class MainController extends BaseController {
         return currentUser;
     }
 
-    public void setCurrentUser(UserType currentUser) {
+    public void setCurrentUser(final UserType currentUser) {
         this.currentUser = currentUser;
         if (currentUser == null) {
             this.msgWhenClose = null;
@@ -358,7 +359,7 @@ public class MainController extends BaseController {
         return shortmessageC;
     }
 
-    public void setShortmessageC(ShortMessageController shortmessageC) {
+    public void setShortmessageC(final ShortMessageController shortmessageC) {
         this.shortmessageC = shortmessageC;
     }
 
@@ -366,7 +367,7 @@ public class MainController extends BaseController {
         return shortmessageW;
     }
 
-    public void setShortmessageW(Window shortmessageW) {
+    public void setShortmessageW(final Window shortmessageW) {
         this.shortmessageW = shortmessageW;
     }
 
@@ -424,7 +425,7 @@ public class MainController extends BaseController {
         return formats;
     }
 
-    public void displayProcessVersions(ProcessSummaryType data) {
+    public void displayProcessVersions(final ProcessSummaryType data) {
         switchToProcessSummaryView();
         ((ProcessVersionDetailController) this.baseDetailController)
                 .displayProcessVersions(data);
@@ -436,7 +437,7 @@ public class MainController extends BaseController {
                 .clearProcesVersions();
     }
 
-    public void displaySimilarityClusters(ClusterFilterType filter) {
+    public void displaySimilarityClusters(final ClusterFilterType filter) {
         switchToSimilarityClusterView();
         ((SimilarityClustersListboxController) this.baseListboxController)
                 .displaySimilarityClusters(filter);
@@ -545,6 +546,22 @@ public class MainController extends BaseController {
         // TODO this should be done in ZUL or elsewhere
         ((South) getFellow("leftSouthPanel")).setTitle("Cluster Details");
         ((South) getFellow("leftInnerSouthPanel")).setOpen(true);
+    }
+
+    public void showCanoniserMessages(final PluginMessages messages) throws InterruptedException {
+        if (messages != null) {
+            StringBuilder sb = new StringBuilder();
+            Iterator<PluginMessage> iter = messages.getMessage().iterator();
+            while (iter.hasNext()) {
+                sb.append(iter.next().getValue());
+                if (iter.hasNext()) {
+                    sb.append("<br>");
+                }
+            }
+            if (sb.length() > 0) {
+                Messagebox.show(sb.toString(), "Canoniser Warnings", Messagebox.OK, Messagebox.EXCLAMATION);
+            }   
+        }
     }
 
 }

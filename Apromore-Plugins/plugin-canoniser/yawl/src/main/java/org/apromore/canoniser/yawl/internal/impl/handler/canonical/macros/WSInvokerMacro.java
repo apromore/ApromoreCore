@@ -26,11 +26,9 @@ public class WSInvokerMacro extends ContextAwareRewriteMacro {
         for (final NetType net : cpf.getNet()) {
             for (int i = 0; i < net.getNode().size(); i++) {
                 final NodeType node = net.getNode().get(i);
-                if (checkCondition(node)) {
-                    if (rewriteWSInvoker((MessageType) node, net)) {
-                        hasRewritten = true;
-                        i = -1;
-                    }
+                if (checkCondition(node) && rewriteWSInvoker((MessageType) node, net)) {
+                    hasRewritten = true;
+                    i = -1;
                 }
             }
         }
@@ -61,8 +59,7 @@ public class WSInvokerMacro extends ContextAwareRewriteMacro {
 
         TypeAttribute serviceAttr = ExtensionUtils.getExtensionAttribute(nodeTask, ExtensionUtils.YAWL_SERVICE);
         if (serviceAttr != null) {
-            YawlService service = ExtensionUtils
-                    .unmarshalYAWLFragment(serviceAttr.getAny(), YawlService.class);
+            YawlService service = ExtensionUtils.unmarshalYAWLFragment(serviceAttr.getAny(), YawlService.class);
             getContext().getElementInfo(nodeTask.getId()).setYawlService(service);
         } else {
             YawlService defaultService = new ObjectFactory().createWebServiceGatewayFactsTypeYawlService();

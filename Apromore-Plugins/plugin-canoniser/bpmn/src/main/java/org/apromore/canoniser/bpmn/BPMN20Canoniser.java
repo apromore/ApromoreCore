@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -20,6 +21,7 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.AnnotationType;
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
@@ -38,6 +40,10 @@ import org.apromore.cpf.TaskType;
 import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
+import org.apromore.plugin.PluginRequest;
+import org.apromore.plugin.PluginResult;
+import org.apromore.plugin.exception.PluginException;
+import org.apromore.plugin.impl.DefaultPluginResult;
 import org.apromore.plugin.message.PluginMessage;
 import org.apromore.plugin.property.PropertyType;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
@@ -86,9 +92,10 @@ public class BPMN20Canoniser implements Canoniser {
 
     /** {@inheritDoc} */
     @Override
-    public void canonise(final InputStream                bpmnInput,
+    public PluginResult canonise(final InputStream                bpmnInput,
                          final List<AnnotationsType>      annotationFormat,
-                         final List<CanonicalProcessType> canonicalFormat) throws CanoniserException {
+                         final List<CanonicalProcessType> canonicalFormat,
+                         final PluginRequest request) throws CanoniserException {
 
         try {
             CanoniserDefinitions definitions = JAXBContext.newInstance(BpmnObjectFactory.class,
@@ -104,6 +111,7 @@ public class BPMN20Canoniser implements Canoniser {
                 annotationFormat.add(result.getAnf(i));
                 canonicalFormat.add(result.getCpf(i));
             }
+            return new DefaultPluginResult();
         } catch (Exception e) {
             throw new CanoniserException("Could not canonise to BPMN stream", e);
         }
@@ -111,9 +119,10 @@ public class BPMN20Canoniser implements Canoniser {
 
     /** {@inheritDoc} */
     @Override
-    public void deCanonise(final CanonicalProcessType canonicalFormat,
+    public PluginResult deCanonise(final CanonicalProcessType canonicalFormat,
                            final AnnotationsType      annotationFormat,
-                           final OutputStream         bpmnOutput) throws CanoniserException {
+                           final OutputStream         bpmnOutput,
+                           final PluginRequest request) throws CanoniserException {
 
         try {
             Marshaller marshaller = JAXBContext.newInstance(org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
@@ -123,6 +132,8 @@ public class BPMN20Canoniser implements Canoniser {
                                                .createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(new CanoniserDefinitions(canonicalFormat, annotationFormat), bpmnOutput);
+            
+            return new DefaultPluginResult();
         } catch (Exception e) {
             throw new CanoniserException("Could not decanonise from BPMN stream", e);
         }
@@ -132,13 +143,15 @@ public class BPMN20Canoniser implements Canoniser {
 
     /** {@inheritDoc} */
     @Override
-    public Set<PropertyType> getAvailableProperties() {
+    public Set<PropertyType<?>> getAvailableProperties() {
+        // TODO please inherit from DefaultAbstractCanoniser
         return Collections.emptySet();
     }
 
     /** {@inheritDoc} */
     @Override
-    public Set<PropertyType> getMandatoryProperties() {
+    public Set<PropertyType<?>> getMandatoryProperties() {
+     // TODO please inherit from DefaultAbstractCanoniser
         return Collections.emptySet();
     }
 
@@ -147,6 +160,7 @@ public class BPMN20Canoniser implements Canoniser {
     /** {@inheritDoc} */
     @Override
     public String getName() {
+        // TODO please inherit from DefaultAbstractCanoniser and use .config file
         return BPMN20Canoniser.class.getCanonicalName();
     }
 
@@ -170,12 +184,6 @@ public class BPMN20Canoniser implements Canoniser {
 
     @Override
     public String getAuthor() {
-        // TODO Auto-generated method stub
-        return null;
-    }
-
-    @Override
-    public List<PluginMessage> getPluginMessages() {
         // TODO Auto-generated method stub
         return null;
     }
@@ -661,4 +669,24 @@ public class BPMN20Canoniser implements Canoniser {
         List<JAXBElement<? extends TFlowElement>> getFlowElement() { return flowElement; }
         List<TLaneSet> getLaneSet() { return laneSet; }
     }
+
+    @Override
+    public Set<PropertyType<?>> getOptionalProperties() {
+        // TODO please inherit from DefaultAbstractCanoniser
+        return null;
+    }
+
+    @Override
+    public PluginResult createInitialNativeFormat(OutputStream nativeOutput, String processName, String processVersion, String processAuthor,
+            Date processCreated, PluginRequest request) {
+        // TODO please implement
+        return null;
+    }
+
+    @Override
+    public CanoniserMetadataResult readMetaData(InputStream nativeInput, PluginRequest request) {
+        // TODO please implement
+        return null;
+    }
+
 }

@@ -1,6 +1,6 @@
 package org.apromore.canoniser.provider.impl;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apromore.canoniser.Canoniser;
 import org.springframework.stereotype.Service;
@@ -14,12 +14,12 @@ import org.springframework.stereotype.Service;
 @Service("osgiCanoniserProviderImpl")
 public class OSGiCanoniserProvider extends CanoniserProviderImpl {
 
-    public List<Canoniser> getCanoniserList() {
-        return getInternalCanoniserList();
+    public Set<Canoniser> getCanoniserList() {
+        return getInternalCanoniserSet();
     }
 
-    public void setCanoniserList(final List<Canoniser> canoniserList) {
-        setInternalCanoniserList(canoniserList);
+    public void setCanoniserSet(final Set<Canoniser> canoniserSet) {
+        setInternalCanoniserSet(canoniserSet);
     }
 
 }

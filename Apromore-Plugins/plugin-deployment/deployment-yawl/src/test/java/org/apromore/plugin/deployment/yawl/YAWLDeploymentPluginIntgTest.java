@@ -12,8 +12,10 @@ import org.apache.http.HttpVersion;
 import org.apache.http.client.fluent.Request;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.plugin.deployment.exception.DeploymentException;
-import org.apromore.plugin.property.PropertyType;
+import org.apromore.plugin.PluginResult;
+import org.apromore.plugin.exception.PluginException;
+import org.apromore.plugin.impl.DefaultPluginRequest;
+import org.apromore.plugin.property.RequestPropertyType;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -26,32 +28,26 @@ import org.xml.sax.SAXException;
  */
 public class YAWLDeploymentPluginIntgTest {
 
-
     private YAWLDeploymentPlugin deploymentPlugin;
 
     @Before
     public void setUp() throws Exception {
         deploymentPlugin = new YAWLDeploymentPlugin();
-        for (PropertyType p: deploymentPlugin.getMandatoryProperties()) {
-            if (p.getId().equals("yawlEngineUrl")) {
-                p.setValue("http://localhost:8080/yawl/ia");
-            } else if (p.getId().equals("yawlUsername")) {
-                p.setValue("admin");
-            } else if (p.getId().equals("yawlPassword")) {
-                p.setValue("YAWL");
-            }
-        }
     }
 
     @Test
-    public void testDeployProcessCanonicalProcessType() throws IOException, JAXBException, SAXException, DeploymentException {
+    public void testDeployProcessCanonicalProcessType() throws IOException, JAXBException, SAXException, PluginException {
         if (checkYAWLServerAvailable()) {
             BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/WPC1Sequence.yawl.cpf"));
             CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(cpfInputStream, true).getValue();
             cpfInputStream.close();
-            deploymentPlugin.deployProcess(cpf);
-            assertEquals(1, deploymentPlugin.getPluginMessages().size());
-            assertEquals("Process Simple Make Trip Process successfully deployed.", deploymentPlugin.getPluginMessages().get(0).getMessage());
+            DefaultPluginRequest request = new DefaultPluginRequest();
+            request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUrl", "http://localhost:8080/yawl/ia"));
+            request.addRequestProperty(new RequestPropertyType<String>("yawlUsername", "admin"));
+            request.addRequestProperty(new RequestPropertyType<String>("yawlPassword", "YAWL"));
+            PluginResult result = deploymentPlugin.deployProcess(cpf, request);
+            assertEquals(1, result.getPluginMessage().size());
+            assertEquals("Process Simple Make Trip Process successfully deployed.", result.getPluginMessage().get(0).getMessage());
         }
     }
 

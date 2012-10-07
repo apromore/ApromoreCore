@@ -11,17 +11,23 @@
  */
 package org.apromore.canoniser.yawl;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.transform.sax.SAXSource;
 
+import org.apache.commons.io.IOUtils;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.DefaultAbstractCanoniser;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.canoniser.yawl.internal.Canonical2YAWL;
 import org.apromore.canoniser.yawl.internal.YAWL2Canonical;
 import org.apromore.canoniser.yawl.internal.impl.Canonical2YAWLImpl;
@@ -29,7 +35,12 @@ import org.apromore.canoniser.yawl.internal.impl.MessageManagerImpl;
 import org.apromore.canoniser.yawl.internal.impl.YAWL2CanonicalImpl;
 import org.apromore.canoniser.yawl.internal.utils.NamespaceFilter;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.plugin.property.DefaultProperty;
+import org.apromore.plugin.PluginRequest;
+import org.apromore.plugin.PluginResult;
+import org.apromore.plugin.exception.PluginPropertyNotFoundException;
+import org.apromore.plugin.impl.DefaultPluginResult;
+import org.apromore.plugin.property.PluginPropertyType;
+import org.apromore.plugin.property.PropertyType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -37,8 +48,10 @@ import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
 import org.xml.sax.helpers.XMLReaderFactory;
+import org.yawlfoundation.yawlschema.MetaDataType;
 import org.yawlfoundation.yawlschema.SpecificationSetFactsType;
 import org.yawlfoundation.yawlschema.YAWLSchema;
+import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
 import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
 import org.yawlfoundation.yawlschema.orgdata.YAWLOrgDataSchema;
 
@@ -55,20 +68,16 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
 
     private static final String YAWL_ORGDATA_URI = "http://www.yawlfoundation.org/yawlschema/orgdata";
 
-    private final DefaultProperty resourceDataInput;
-    private final DefaultProperty resourceDataOutput;
+    private final PluginPropertyType<InputStream> resourceDataInput;
 
     /**
      * Default Constructor of YAWL Canoniser
      */
     public YAWL22Canoniser() {
         super();
-        resourceDataInput = new DefaultProperty("readOrgData", "Read Organisational Data", InputStream.class,
+        resourceDataInput = new PluginPropertyType<InputStream>("readOrgData", "Read Organisational Data", InputStream.class,
                 "Reads a .ybkp file containing the organisational data used in this YAWL workflow.", false);
-        resourceDataOutput = new DefaultProperty("writeOrgData", "Write Organisational Data", OutputStream.class,
-                "YAWL Organisational data will be written to this file.", false);
-        addProperty(resourceDataInput);
-        addProperty(resourceDataOutput);
+        registerProperty(resourceDataInput);
     }
 
     /*
@@ -77,7 +86,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
      * @see org.apromore.canoniser.Canoniser#canonise(java.io.InputStream, java.util.List, java.util.List)
      */
     @Override
-    public void canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat, final List<CanonicalProcessType> canonicalFormat)
+    public PluginResult canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat, final List<CanonicalProcessType> canonicalFormat, final PluginRequest request)
             throws CanoniserException {
 
         LOGGER.info("Start canonising %s", getNativeType());
@@ -85,16 +94,16 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
         try {
             final JAXBElement<SpecificationSetFactsType> nativeElement = YAWLSchema.unmarshalYAWLFormat(nativeInput, false);
 
-            final YAWL2Canonical yawl2canonical = new YAWL2CanonicalImpl(new MessageManagerImpl(this));
+            DefaultPluginResult canoniserResult = newPluginResult();
+            final YAWL2Canonical yawl2canonical = new YAWL2CanonicalImpl(new MessageManagerImpl(canoniserResult));
 
-            if (resourceDataInput.hasValue()) {
+            PropertyType<InputStream> orgDataProperty = request.getRequestProperty(resourceDataInput);
 
+            if (orgDataProperty.hasValue()) {
                 LOGGER.debug("Using provided organisational data in Canoniser");
-
-                final InputStream organisationalData = (InputStream) resourceDataInput.getValue();
+                final InputStream organisationalData = orgDataProperty.getValue();
                 final JAXBElement<OrgDataType> orgDataElement = unmarshalOrgDataFormat(organisationalData);
                 yawl2canonical.convertToCanonical(nativeElement.getValue(), orgDataElement.getValue());
-
             } else {
                 yawl2canonical.convertToCanonical(nativeElement.getValue());
             }
@@ -102,13 +111,16 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
             annotationFormat.add(yawl2canonical.getAnf());
             canonicalFormat.add(yawl2canonical.getCpf());
 
+            LOGGER.info("Finished canonising %s", getNativeType());
+            return canoniserResult;
+
         } catch (final JAXBException e) {
             throw new CanoniserException(e);
         } catch (final SAXException e) {
             throw new CanoniserException(e);
+        } catch (PluginPropertyNotFoundException e) {
+            throw new CanoniserException(e);
         }
-
-        LOGGER.info("Finished canonising %s", getNativeType());
     }
 
     /*
@@ -117,13 +129,14 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
      * @see org.apromore.canoniser.Canoniser#deCanonise(org.apromore.cpf.CanonicalProcessType, org.apromore.anf.AnnotationsType, java.io.OutputStream)
      */
     @Override
-    public void deCanonise(final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final OutputStream nativeOutput)
+    public PluginResult deCanonise(final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final OutputStream nativeOutput, final PluginRequest request)
             throws CanoniserException {
 
         LOGGER.info("Start decanonising %s", getNativeType());
 
         try {
-            final Canonical2YAWL canonical2yawl = new Canonical2YAWLImpl(new MessageManagerImpl(this));
+            YAWLCanoniserResult canoniserResult = new YAWLCanoniserResult();
+            final Canonical2YAWL canonical2yawl = new Canonical2YAWLImpl(new MessageManagerImpl(canoniserResult));
 
             if (annotationFormat != null) {
                 LOGGER.debug("Decanonising with Annotation");
@@ -134,18 +147,79 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
             }
             YAWLSchema.marshalYAWLFormat(nativeOutput, canonical2yawl.getYAWL(), true);
 
-            if (resourceDataOutput.getValue() != null) {
-                YAWLOrgDataSchema.marshalYAWLOrgDataFormat((OutputStream) resourceDataOutput.getValue(), canonical2yawl.getOrgData(), true);
-            }
+            OutputStream orgDataOutput = new ByteArrayOutputStream();
+            YAWLOrgDataSchema.marshalYAWLOrgDataFormat(orgDataOutput, canonical2yawl.getOrgData(), true);
+            canoniserResult.setYawlOrgData(orgDataOutput);
+
+            LOGGER.info("Finished decanonising %s", getNativeType());
+            return canoniserResult;
 
         } catch (final JAXBException e) {
             throw new CanoniserException(e);
         } catch (final SAXException e) {
             throw new CanoniserException(e);
         }
+    }
 
-        LOGGER.info("Finished decanonising %s", getNativeType());
+    /* (non-Javadoc)
+     * @see org.apromore.canoniser.Canoniser#createInitialNativeFormat(java.io.OutputStream, org.apromore.plugin.PluginRequest)
+     */
+    @Override
+    public PluginResult createInitialNativeFormat(final OutputStream nativeOutput, final String processName, final String processVersion, final String processAuthor,
+            final Date processCreated, final PluginRequest request) {
+        DefaultPluginResult result = newPluginResult();
+        try {
+            IOUtils.copy(getClass().getResourceAsStream("Initial.yawl"), nativeOutput);
+        } catch (IOException e) {
+            LOGGER.error("Could not create initial YAWL process", e);
+            result.addPluginMessage("Could not create initial YAWL process, reson: {0}",  e.getMessage());
+        }
+        return result;
+    }
 
+    /* (non-Javadoc)
+     * @see org.apromore.canoniser.Canoniser#readMetaData(java.io.InputStream, org.apromore.plugin.PluginRequest)
+     */
+    @Override
+    public CanoniserMetadataResult readMetaData(final InputStream nativeInput, final PluginRequest request) {
+        CanoniserMetadataResult result = new CanoniserMetadataResult();
+        try {
+            SpecificationSetFactsType yawlSpecs = YAWLSchema.unmarshalYAWLFormat(nativeInput, false).getValue();
+            if (!yawlSpecs.getSpecification().isEmpty()) {
+                YAWLSpecificationFactsType spec = yawlSpecs.getSpecification().get(0);
+                result.setProcessName(spec.getName() != null ? spec.getName() : spec.getUri());
+                if (spec.getMetaData() != null) {
+                    MetaDataType metaData = spec.getMetaData();
+                    result.setProcessAuthor(convertCreator(metaData.getCreator()));
+                    if (metaData.getVersion() != null) {
+                        result.setProcessVersion(metaData.getVersion().toPlainString());
+                    }
+                    result.setProcessDocumentation(metaData.getDescription());
+                    if (metaData.getCreated() !=null) {
+                        result.setProcessCreated(metaData.getCreated().toGregorianCalendar().getTime());
+                    }
+                }
+            }
+        } catch (JAXBException | SAXException e) {
+            LOGGER.error("Could not create initial YAWL process", e);
+            result.addPluginMessage("Could not read YAWL metadata, reson: {0}",  e.getMessage());
+        }
+        return result;
+    }
+
+    private String convertCreator(final List<String> creator) {
+        if (creator != null) {
+            StringBuilder authorSb = new StringBuilder();
+            Iterator<String> iter = creator.iterator();
+            while (iter.hasNext()) {
+                authorSb.append(iter.next());
+                if (iter.hasNext()) {
+                    authorSb.append(", ");
+                }
+            }
+            return authorSb.toString();
+        }
+        return "";
     }
 
     private JAXBElement<OrgDataType> unmarshalOrgDataFormat(final InputStream organisationalData) throws JAXBException, SAXException {

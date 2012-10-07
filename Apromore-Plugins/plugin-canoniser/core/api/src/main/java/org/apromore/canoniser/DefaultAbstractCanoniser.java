@@ -21,7 +21,6 @@ import java.io.OutputStream;
 
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.PropertyException;
 
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
@@ -55,7 +54,6 @@ public abstract class DefaultAbstractCanoniser extends DefaultPropertyAwarePlugi
      * @param canonicalFormat
      * @param cpf
      * @throws JAXBException
-     * @throws PropertyException
      * @throws SAXException
      */
     protected void marshalCanoncialFormat(final OutputStream canonicalFormat, final CanonicalProcessType cpf) throws JAXBException, SAXException {
@@ -68,7 +66,6 @@ public abstract class DefaultAbstractCanoniser extends DefaultPropertyAwarePlugi
      * @param annotationFormat
      * @param anf
      * @throws JAXBException
-     * @throws PropertyException
      * @throws SAXException
      */
     protected void marshalAnnotationFormat(final OutputStream annotationFormat, final AnnotationsType anf) throws JAXBException, SAXException {

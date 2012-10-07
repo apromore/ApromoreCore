@@ -143,8 +143,6 @@ public class YAWL2CanonicalBasicTest {
         final SpecificationSetFactsType yawlSpec = TestUtils.unmarshalYAWL(emptyNet);
         yawl2Canonical.convertToCanonical(yawlSpec);
 
-        // Basic check ANF
-        final AnnotationsType anf = yawl2Canonical.getAnf();
         final YAWLSpecificationFactsType mainSpecification = yawlSpec.getSpecification().get(0);
 
         // Basic check CPF

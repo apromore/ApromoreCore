@@ -223,10 +223,10 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
             return decoratorList;
         }
 
-        return createDefaultDecorator(graphic, yawlElement);
+        return createDefaultDecorator(yawlElement);
     }
 
-    private List<LayoutDecoratorFactsType> createDefaultDecorator(final GraphicsType graphic, final ExternalTaskFactsType yawlElement)
+    private List<LayoutDecoratorFactsType> createDefaultDecorator(final ExternalTaskFactsType yawlElement)
             throws CanoniserException {
         final List<LayoutDecoratorFactsType> decoratorList = new ArrayList<LayoutDecoratorFactsType>();
 

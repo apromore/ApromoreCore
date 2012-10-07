@@ -59,10 +59,139 @@
     <xs:element name="GetClustersResponse" type="tns:GetClustersResponseType"/>
     <xs:element name="FragmentResponse" type="tns:FragmentResponseType"/>
     <xs:element name="GetFragmentRequest" type="tns:GetFragmentRequestType"/>
+    
+	<!-- Plugins -->
+	<xs:element name="ReadInstalledPluginsRequest" type="tns:ReadInstalledPluginsInputMsgType" />
+	<xs:element name="ReadInstalledPluginsResponse" type="tns:ReadInstalledPluginsOutputMsgType" />	
+	<xs:element name="ReadPluginInfoRequest" type="tns:ReadPluginInfoInputMsgType" />
+	<xs:element name="ReadPluginInfoResponse" type="tns:ReadPluginInfoOutputMsgType" />	
 
+	<!-- Canoniser -->
+	<xs:element name="ReadCanoniserInfoRequest" type="tns:ReadCanoniserInfoInputMsgType" />
+	<xs:element name="ReadCanoniserInfoResponse" type="tns:ReadCanoniserInfoOutputMsgType" />
+	<xs:element name="ReadInitialNativeFormatRequest" type="tns:ReadInitialNativeFormatInputMsgType" />
+	<xs:element name="ReadInitialNativeFormatResponse" type="tns:ReadInitialNativeFormatOutputMsgType" />	
+	<xs:element name="ReadNativeMetaDataRequest" type="tns:ReadNativeMetaDataInputMsgType" />
+	<xs:element name="ReadNativeMetaDataResponse" type="tns:ReadNativeMetaDataOutputMsgType" />
 
-
-
+	<!-- Plugin Messages -->
+   	<xs:complexType name="ReadPluginInfoInputMsgType">
+	    <xs:attribute name="pluginName" type="xs:string" />
+	    <xs:attribute name="pluginVersion" type="xs:string" />
+    </xs:complexType>
+    <xs:complexType name="ReadPluginInfoOutputMsgType">
+	    <xs:sequence>
+	    	<xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+	    	<xs:element name="PluginInfoResult" type="tns:PluginInfoResult" />
+	    </xs:sequence>
+    </xs:complexType>   
+     
+   	<xs:complexType name="ReadInstalledPluginsInputMsgType">
+	    <xs:attribute name="typeFilter" type="xs:string" use="optional" />
+    </xs:complexType>
+    <xs:complexType name="ReadInstalledPluginsOutputMsgType">
+	    <xs:sequence>
+	    	<xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+	    	<xs:element name="PluginInfo" type="tns:PluginInfo" minOccurs="0" maxOccurs="unbounded" />
+	    </xs:sequence>
+    </xs:complexType>       
+    
+    <!-- Plugin Data Types -->
+    <xs:complexType name="PluginInfoResult">
+	    <xs:sequence>
+    	   	<xs:element name="MandatoryProperties" type="tns:PluginProperties" minOccurs="0" maxOccurs="1"/>
+	    	<xs:element name="OptionalProperties" type="tns:PluginProperties" minOccurs="0" maxOccurs="1"/>
+	    	<xs:element name="PluginInfo" type="tns:PluginInfo" minOccurs="1" maxOccurs="1"/>
+	    </xs:sequence>
+    </xs:complexType>  
+    	
+	<xs:complexType name="PluginInfo">
+		<xs:attribute name="name" type="xs:string" />		
+		<xs:attribute name="version" type="xs:string" />
+		<xs:attribute name="description" type="xs:string" />
+		<xs:attribute name="type" type="xs:string" />		
+		<xs:attribute name="author" type="xs:string" />		
+	</xs:complexType>
+	
+	<xs:complexType name="PluginProperties">
+		<xs:sequence>
+            <xs:element name="Property" type="tns:PluginProperty" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+	</xs:complexType>
+	
+	<xs:complexType name="PluginProperty">
+		<xs:sequence>
+            <xs:element name="value" type="xs:anySimpleType" />
+        </xs:sequence>
+		<xs:attribute name="id" type="xs:string" /> 
+		<xs:attribute name="name" type="xs:string" />
+		<xs:attribute name="description" type="xs:string" use="optional" />
+		<xs:attribute name="class" type="xs:string" /> 
+		<xs:attribute name="isMandatory" type="xs:boolean" />
+	</xs:complexType>
+	
+	<xs:complexType name="PluginMessages">
+		<xs:sequence>
+            <xs:element name="Message" type="tns:PluginMessage" minOccurs="0" maxOccurs="unbounded"/>
+        </xs:sequence>
+	</xs:complexType>
+	<xs:complexType name="PluginMessage">
+		<xs:sequence>
+            <xs:element name="value" type="xs:string" />
+        </xs:sequence>
+	</xs:complexType>
+	
+	<!-- Canoniser Message Types -->
+    <xs:complexType name="ReadCanoniserInfoInputMsgType">
+	    <xs:attribute name="nativeType" type="xs:string" />
+    </xs:complexType>
+    <xs:complexType name="ReadCanoniserInfoOutputMsgType">
+	    <xs:sequence>
+	    	<xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+	    	<xs:element name="PluginInfo" type="tns:PluginInfo" minOccurs="1" maxOccurs="unbounded"/>
+	    </xs:sequence>    
+    </xs:complexType>
+    
+    <xs:complexType name="ReadInitialNativeFormatInputMsgType">
+    	<xs:sequence>
+    		<xs:element name="NativeMetaData" type="tns:NativeMetaData" />
+    	</xs:sequence>
+	    <xs:attribute name="nativeType" type="xs:string" />
+	    <xs:attribute name="canoniserName" type="xs:string" use="optional" />
+	    <xs:attribute name="canoniserVersion" type="xs:string" use="optional" />
+    </xs:complexType>
+    <xs:complexType name="ReadInitialNativeFormatOutputMsgType">
+	    <xs:sequence>
+	    	<xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+	    	<xs:element name="NativeFormat" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
+	    </xs:sequence>    
+    </xs:complexType>
+    
+    <xs:complexType name="ReadNativeMetaDataInputMsgType">
+   	    <xs:sequence>
+	    	<xs:element name="NativeFormat" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream" />
+	    </xs:sequence> 
+	    <xs:attribute name="nativeType" type="xs:string" />
+	    <xs:attribute name="canoniserName" type="xs:string" use="optional" />
+	    <xs:attribute name="canoniserVersion" type="xs:string" use="optional" />	    
+    </xs:complexType>
+    <xs:complexType name="ReadNativeMetaDataOutputMsgType">
+	    <xs:sequence>
+	    	<xs:element name="Result" type="tns:ResultType" minOccurs="1" maxOccurs="1"/>
+	    	<xs:element name="NativeMetaData" type="tns:NativeMetaData" />
+	    </xs:sequence>    
+    </xs:complexType>
+    
+    <!-- Canoniser Data Type -->
+	<xs:complexType name="NativeMetaData">
+		<xs:attribute name="processName" type="xs:string" use="optional" /> 
+		<xs:attribute name="processAuthor" type="xs:string" use="optional" />
+		<xs:attribute name="processVersion" type="xs:string" use="optional" />
+		<xs:attribute name="processDocumentation" type="xs:string" use="optional" />
+		<xs:attribute name="processCreated" type="xs:dateTime" use="optional" /> 
+		<xs:attribute name="processLastUpdate" type="xs:dateTime" use="optional" />
+	</xs:complexType>    
+	
     <!-- Common Data Types -->
     <xs:complexType name="AnnotationsType">
         <xs:sequence>
@@ -201,7 +330,7 @@
         <xs:attribute name="VersionName" type="xs:string"/>
         <xs:attribute name="Score" type="xs:double"/>
     </xs:complexType>
-
+		
     <!-- Manager Data Types -->
     <xs:complexType name="ReadDomainsInputMsgType">
         <xs:attribute name="Empty" type="xs:string" use="optional"/>
@@ -326,8 +455,8 @@
         <xs:sequence>
             <xs:element name="ProcessDescription" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
             <xs:element name="EditSession" type="tns:EditSessionType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="CanoniserProperties" type="tns:PluginProperties" minOccurs="1" maxOccurs="1"/>
         </xs:sequence>
-        <xs:attribute name="AddFakeEvents" type="xs:boolean"/>
     </xs:complexType>
 
     <xs:complexType name="UpdateProcessInputMsgType">
@@ -342,26 +471,43 @@
     <xs:complexType name="ImportProcessOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType"/>
-            <xs:element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="1" maxOccurs="1"/>
+            <xs:element name="ImportProcessResult" type="tns:ImportProcessResultType" />
         </xs:sequence>
     </xs:complexType>
+    
+    <xs:complexType name="ImportProcessResultType">
+        <xs:sequence>
+            <xs:element name="ProcessSummary" type="tns:ProcessSummaryType" minOccurs="1" maxOccurs="1"/>
+			<xs:element name="Message" type="tns:PluginMessages" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>    
 
     <xs:complexType name="ExportFormatInputMsgType">
+		<xs:sequence>
+			<xs:element name="CanoniserProperties" type="tns:PluginProperties" minOccurs="1" maxOccurs="1"/>
+		</xs:sequence>
         <xs:attribute name="Format" type="xs:string"/>
         <xs:attribute name="ProcessId" type="xs:int"/>
         <xs:attribute name="ProcessName" type="xs:string"/>
         <xs:attribute name="VersionName" type="xs:string"/>
         <xs:attribute name="AnnotationName" type="xs:string"/>
         <xs:attribute name="withAnnotations" type="xs:boolean"/>
-        <xs:attribute name="Owner" type="xs:string"/>
+        <xs:attribute name="Owner" type="xs:string"/>		
     </xs:complexType>
 
     <xs:complexType name="ExportFormatOutputMsgType">
         <xs:sequence>
             <xs:element name="Result" type="tns:ResultType"/>
-            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+            <xs:element name="ExportResult" type="tns:ExportFormatResultType" />
         </xs:sequence>
     </xs:complexType>
+    
+    <xs:complexType name="ExportFormatResultType">
+        <xs:sequence>
+            <xs:element name="Native" type="xs:base64Binary" xmime:expectedContentTypes="application/octet-stream"/>
+			<xs:element name="Message" type="tns:PluginMessages" minOccurs="1" maxOccurs="1" />
+        </xs:sequence>
+    </xs:complexType>    
 
     <xs:complexType name="UpdateProcessOutputMsgType">
         <xs:sequence>

@@ -18,6 +18,8 @@
 			<menuseparator />
 			<menuitem id="processPaste" label="Paste" disabled="true"/>
 			<menuseparator />
+			<menuitem id="processDeploy" label="Deploy Process" disabled="true"/>
+			<menuseparator />			
 		</menupopup>
 	</menu>
 	<menu id="filtering" label="Filtering">

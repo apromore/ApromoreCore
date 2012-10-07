@@ -5,8 +5,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import org.apromore.plugin.property.BooleanProperty;
-import org.apromore.plugin.property.DefaultProperty;
+import org.apromore.plugin.property.PluginPropertyType;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -19,17 +18,17 @@ import org.junit.Test;
 public class DefaultPropertyAwarePluginUnitTest {
 
     private DefaultPropertyAwarePlugin propertyAwarePlugin;
-    private DefaultProperty mandatoryProperty;
-    private DefaultProperty nonMandatoryProperty;
+    private PluginPropertyType<String> mandatoryProperty;
+    private PluginPropertyType<String> nonMandatoryProperty;
 
     @Before
     public void setUp() {
         this.propertyAwarePlugin = new DefaultPropertyAwarePlugin() {
         };
-        mandatoryProperty = new DefaultProperty("t1", "test1", String.class, "test", true);
-        nonMandatoryProperty = new DefaultProperty("t2", "test2", String.class, "test", false);
-        this.propertyAwarePlugin.addProperty(mandatoryProperty);
-        this.propertyAwarePlugin.addProperty(nonMandatoryProperty);
+        mandatoryProperty = new PluginPropertyType<String>("t1", "test1", String.class, "test", true);
+        nonMandatoryProperty = new PluginPropertyType<String>("t2", "test2", String.class, "test", false);
+        this.propertyAwarePlugin.registerProperty(mandatoryProperty);
+        this.propertyAwarePlugin.registerProperty(nonMandatoryProperty);
     }
 
     @Test
@@ -52,9 +51,9 @@ public class DefaultPropertyAwarePluginUnitTest {
 
     @Test
     public void testAddProperty() {
-        assertFalse(this.propertyAwarePlugin.addProperty(null));
-        assertTrue(this.propertyAwarePlugin.addProperty(new BooleanProperty("t1", "test", "test", true)));
-        assertFalse(this.propertyAwarePlugin.addProperty(new BooleanProperty("t1", "test", "test", true)));
+        assertFalse(this.propertyAwarePlugin.registerProperty(null));
+        assertTrue(this.propertyAwarePlugin.registerProperty(new PluginPropertyType<Boolean>("t3", "test", Boolean.class, "test", true)));
+        assertFalse(this.propertyAwarePlugin.registerProperty(new PluginPropertyType<Boolean>("t3", "test", Boolean.class, "test", true)));
     }
 
 }

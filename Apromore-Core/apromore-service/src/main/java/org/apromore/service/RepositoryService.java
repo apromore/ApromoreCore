@@ -59,7 +59,7 @@ public interface RepositoryService {
     CPF getCanonicalFormat(ProcessModelVersion pmv);
 
     /**
-     * Using the Process Model Verison passed in we can get the CPF format.
+     * Using the Process Model Version passed in we can get the CPF format.
      * Used by a lot of methods in repoService and external.
      * @param pmv the process model version we want the CPF for.
      * @param processName

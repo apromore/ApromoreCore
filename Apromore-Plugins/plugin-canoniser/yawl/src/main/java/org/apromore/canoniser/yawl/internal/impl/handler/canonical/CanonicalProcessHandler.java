@@ -13,7 +13,6 @@ package org.apromore.canoniser.yawl.internal.impl.handler.canonical;
 
 import java.math.BigDecimal;
 import java.util.Collection;
-import java.util.List;
 
 import javax.xml.datatype.DatatypeConfigurationException;
 import javax.xml.datatype.DatatypeFactory;
@@ -34,10 +33,7 @@ import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer.
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.timer.TimerOnStartMacro;
 import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.HumanType;
 import org.apromore.cpf.NetType;
-import org.apromore.cpf.NonhumanType;
-import org.apromore.cpf.ResourceTypeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -45,12 +41,6 @@ import org.w3c.dom.Element;
 import org.yawlfoundation.yawlschema.MetaDataType;
 import org.yawlfoundation.yawlschema.SpecificationSetFactsType;
 import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
-import org.yawlfoundation.yawlschema.orgdata.CapabilityRef;
-import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
-import org.yawlfoundation.yawlschema.orgdata.ParticipantType;
-import org.yawlfoundation.yawlschema.orgdata.PositionRef;
-import org.yawlfoundation.yawlschema.orgdata.RoleRef;
-import org.yawlfoundation.yawlschema.orgdata.RoleType;
 
 /**
  * Converts a CanonicalProcessType an all its children.
@@ -70,7 +60,7 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
     @Override
     public void convert() throws CanoniserException {
 
-        convertOrganisationalData(getObject().getResourceType());
+        rewriteMacros();
 
         final SpecificationSetFactsType specSet = getContext().getYAWLSpecificationSet();
         specSet.setVersion("2.2");
@@ -81,9 +71,9 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
         spec.setUri(getObject().getUri() != null ? getObject().getUri() : generateUUID());
         spec.setMetaData(convertMetaData(getObject()));
         spec.setAny(createDataTypeElement());
-
         LOGGER.debug("Added Specification {}", spec.getName());
-        rewriteMacros();
+
+        new CanonicalProcessResourcingHelper(getContext()).convertOrganisationalData(getObject().getResourceType());
 
         for (final NetType n : getObject().getNet()) {
             getContext().createHandler(n, spec, getObject()).convert();
@@ -102,14 +92,14 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
         }
     }
 
-    private Element createDataTypeElement() {
+    private Element createDataTypeElement() throws CanoniserException {
         final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
         dbf.setNamespaceAware(false);
         Document doc;
         try {
             doc = dbf.newDocumentBuilder().newDocument();
         } catch (final ParserConfigurationException e) {
-            throw new RuntimeException("Could not build document while creating YAWL data type fragment. This should never happen!", e);
+            throw new CanoniserException("Could not build document while creating YAWL data type fragment. This should never happen!", e);
         }
         return doc.createElementNS("http://www.w3.org/2001/XMLSchema", "schema");
     }
@@ -157,90 +147,6 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
             metaData.getContributor().add(c.getAuthor());
         }
         return metaData;
-    }
-
-    private void convertOrganisationalData(final List<ResourceTypeType> resourceList) {
-        for (ResourceTypeType r : resourceList) {
-            convertSingleResource(r);
-        }
-    }
-
-    private String convertSingleResource(final ResourceTypeType r) {
-        if (r instanceof NonhumanType && ((NonhumanType)r).getType() != null) {
-            switch (((NonhumanType) r).getType()) {
-            case EQUIPMENT:
-                return "test";
-            case SOFTWARE_SYSTEM:
-                return "test";
-            }
-        } else if (r instanceof HumanType && ((HumanType)r).getType() != null) {
-            HumanType humanType = (HumanType) r;
-            switch (humanType.getType()) {
-            case DEPARTMENT:
-            case ORGANISATION:
-            case GROUP:
-            case TEAM:
-            case UNIT:
-                return "test";
-            case ROLE:
-                return convertRole(humanType);
-            case PARTICIPANT:
-                return convertParticipant(humanType);
-            }
-        }
-        // Assume it is a Role
-        return convertRole(r);
-    }
-
-    private String convertParticipant(final HumanType humanType) {
-        if (getContext().getConvertedParticipant(humanType.getId()) == null) {
-            OrgDataType orgData = getContext().getYawlOrgData();
-            if (orgData.getParticipants() == null) {
-                orgData.setParticipants(YAWL_ORG_FACTORY.createParticipantsType());
-            }
-            ParticipantType p = YAWL_ORG_FACTORY.createParticipantType();
-            p.setId(getContext().getUuidGenerator().getUUID(humanType.getOriginalID() != null ? humanType.getOriginalID() : humanType.getId()));
-            p.setUserid(humanType.getName());
-            p.setFirstname(humanType.getName());
-            p.setDescription("");
-            p.setLastname("");
-            p.setDescription("");
-            p.setNotes("");
-            p.setPrivileges(0);
-            p.setRoles(new RoleRef());
-            p.setPositions(new PositionRef());
-            p.setCapabilities(new CapabilityRef());
-            p.setPassword(humanType.getName());
-            orgData.getParticipants().getParticipant().add(p);
-            getContext().addConvertedParticipant(humanType.getId(), p);
-            return p.getId();
-        } else {
-            return getContext().getConvertedParticipant(humanType.getId()).getId();
-        }
-    }
-
-    private String convertRole(final ResourceTypeType resource) {
-        if (getContext().getConvertedRole(resource.getId()) == null) {
-            OrgDataType orgData = getContext().getYawlOrgData();
-            if (orgData.getRoles() == null) {
-                orgData.setRoles(YAWL_ORG_FACTORY.createRolesType());
-            }
-            RoleType r = YAWL_ORG_FACTORY.createRoleType();
-            r.setId(getContext().getUuidGenerator().getUUID(resource.getOriginalID() != null ? resource.getOriginalID() : resource.getId()));
-            r.setName(resource.getName());
-            r.setDescription("");
-            r.setNotes("");
-            getContext().addConvertedRole(resource.getId(), r);
-            orgData.getRoles().getRole().add(r);
-            for (String sId: resource.getSpecializationIds()) {
-                ResourceTypeType specialization = getContext().getResourceTypeById(sId);
-                String yawlId = convertSingleResource(specialization);
-            }
-            return r.getId();
-        } else {
-            return getContext().getConvertedRole(resource.getId()).getId();
-        }
-
     }
 
 }

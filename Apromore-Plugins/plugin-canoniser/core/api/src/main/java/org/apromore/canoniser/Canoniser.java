@@ -18,56 +18,91 @@ package org.apromore.canoniser;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.List;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.plugin.MessageAwarePlugin;
+import org.apromore.plugin.PluginRequest;
+import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.PropertyAwarePlugin;
 
 /**
  * Interface to an Apromore canoniser. Each canoniser is build as a OSGi plugin and has to implement this interface.
- *
+ * 
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  */
-public interface Canoniser extends PropertyAwarePlugin, MessageAwarePlugin {
+public interface Canoniser extends PropertyAwarePlugin {
 
     /**
      * Type of the native format which this canoniser can handle. For example "EPML 2.0" or "YAWL 2.2"
-     *
+     * 
      * @return the type of the native format
      */
     String getNativeType();
 
     /**
-     * Convert the data in native format to the canonical format and its annotation format.
-     *
+     * Converts the data in native format to the canonical format and its annotation format.
+     * 
      * @param nativeInput
      *            stream of the native format
      * @param annotationFormat
      *            list to which the canonized Annotations are added
      * @param canonicalFormat
      *            list to which the canonized Canonical Processes are added
+     * @param request
+     *            containing additional parameters
+     * @return a PluginResult with information about this operation
      * @throws CanoniserException
      *             in case of an Exception during conversion
      */
-    void canonise(final InputStream nativeInput, List<AnnotationsType> annotationFormat, List<CanonicalProcessType> canonicalFormat)
-            throws CanoniserException;
+    PluginResult canonise(InputStream nativeInput, List<AnnotationsType> annotationFormat, List<CanonicalProcessType> canonicalFormat,
+            PluginRequest request) throws CanoniserException;
 
     /**
-     * Convert the data in annotation format and canonical format to the native format.
-     *
+     * Converts the data in annotation format and canonical format to the native format.
+     * 
      * @param canonicalFormat
      *            Canonical Process Type to deCanonise
      * @param annotationFormat
      *            Annotations to deCanonise
      * @param nativeOutput
      *            stream of the native format
+     * @param request
+     *            containing additional parameters
+     * @return a PluginResult with information about this operation
      * @throws CanoniserException
      *             in case of an Exception during conversion
      */
-    void deCanonise(final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final OutputStream nativeOutput)
+    PluginResult deCanonise(CanonicalProcessType canonicalFormat, AnnotationsType annotationFormat, OutputStream nativeOutput, PluginRequest request)
             throws CanoniserException;
+
+    /**
+     * Creates an initial (empty) document of the supported native process format.
+     * 
+     * @param nativeOutput
+     * @param processName
+     * @param processVersion
+     * @param processAuthor
+     * @param processCreated
+     * @param request
+     *            containing additional parameters
+     * @return a PluginResult with information about this operation
+     */
+    PluginResult createInitialNativeFormat(OutputStream nativeOutput, String processName, String processVersion, String processAuthor,
+            Date processCreated, PluginRequest request);
+
+    /**
+     * Reads just the meta data from the native process.
+     * 
+     * @param nativeInput
+     *            stream of the native format
+     * @param request
+     *            containing additional parameters
+     * @return a CanoniserMetadataResult
+     */
+    CanoniserMetadataResult readMetaData(InputStream nativeInput, PluginRequest request);
 
 }

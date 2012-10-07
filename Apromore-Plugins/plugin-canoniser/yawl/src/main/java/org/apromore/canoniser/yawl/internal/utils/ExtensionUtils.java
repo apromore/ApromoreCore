@@ -74,13 +74,13 @@ public final class ExtensionUtils {
 
     public static final String OUTPUT_VARIABLE = "outputVariable";
 
-    public static final String YAWLSCHEMA_URL = "http://www.yawlfoundation.org/yawlschema";
-
-    private static final JAXBContext YAWL_CONTEXT = initYAWLContext();
-
     public static final String INPUT_PARAM = "inputParam";
 
     public static final String OUTPUT_PARAM = "outputParam";
+
+    public static final String YAWLSCHEMA_URL = "http://www.yawlfoundation.org/yawlschema";
+
+    private static final JAXBContext YAWL_CONTEXT = initYAWLContext();
 
     private static JAXBContext initYAWLContext() {
         try {
@@ -147,7 +147,7 @@ public final class ExtensionUtils {
                 try {
                     doc = dbf.newDocumentBuilder().newDocument();
                 } catch (final ParserConfigurationException e) {
-                    throw new RuntimeException("Could not build document while marshalling YAWL fragment. This should never happen!", e);
+                    throw new CanoniserException("Could not build document while marshalling YAWL fragment. This should never happen!", e);
                 }
                 m.marshal(element, doc);
                 return doc.getDocumentElement();

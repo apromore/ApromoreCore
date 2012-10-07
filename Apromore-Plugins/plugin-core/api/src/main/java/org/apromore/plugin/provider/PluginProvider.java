@@ -16,7 +16,7 @@
  */
 package org.apromore.plugin.provider;
 
-import java.util.Collection;
+import java.util.Set;
 
 import org.apromore.plugin.Plugin;
 import org.apromore.plugin.exception.PluginNotFoundException;
@@ -34,23 +34,23 @@ import org.apromore.plugin.exception.PluginNotFoundException;
 public interface PluginProvider {
 
 	/**
-	 * @return read-only collection of all currently available plugins
+	 * @return read-only Set of all currently available plugins
 	 */
-	Collection<Plugin> listAll();
+	Set<Plugin> listAll();
 
 	/**
 	 * @param type
 	 *            of the plugins
-	 * @return read-only collection of all plugins with specified type
+	 * @return read-only Set of all plugins with specified type
 	 */
-	Collection<Plugin> listByType(String type);
+	Set<Plugin> listByType(String type);
 
 	/**
 	 * @param name
 	 *            of the plugins, usually the symbolic bundle name
-	 * @return read-only collection of all plugins with specified name
+	 * @return read-only Set of all plugins with specified name
 	 */
-	Collection<Plugin> listByName(String name);
+	Set<Plugin> listByName(String name);
 
 	/**
 	 * @param name

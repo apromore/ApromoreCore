@@ -1,34 +1,37 @@
 package org.apromore.service.impl;
 
+import static org.easymock.EasyMock.expect;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replayAll;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashSet;
+import java.util.Set;
 
-import javax.activation.DataSource;
-import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
 import javax.xml.bind.Unmarshaller;
 
 import org.apromore.TestData;
-import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.canoniser.provider.impl.SimpleSpringCanoniserProvider;
+import org.apromore.canoniser.Canoniser;
+import org.apromore.canoniser.provider.CanoniserProvider;
+import org.apromore.canoniser.provider.impl.CanoniserProviderImpl;
+import org.apromore.canoniser.provider.impl.OSGiCanoniserProvider;
 import org.apromore.common.Constants;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.graph.JBPT.CPF;
 import org.apromore.plugin.exception.PluginNotFoundException;
-import org.apromore.service.impl.models.CanonicalNoAnnotationModel;
-import org.apromore.service.impl.models.CanonicalWithAnnotationModel;
-import org.apromore.service.model.CanonisedProcess;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
+import org.apromore.plugin.property.PluginPropertyType;
+import org.apromore.plugin.property.PropertyType;
 import org.jbpt.graph.algo.DirectedGraphAlgorithms;
 import org.jbpt.graph.algo.rpst.RPST;
 import org.jbpt.pm.ControlFlow;
@@ -51,158 +54,58 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 })
 public class CanoniserServiceImplUnitTest {
 
-    private CanoniserServiceImpl service;
+    private CanoniserServiceImpl myService;
+    private CanoniserProvider mockProvider;
+    private Canoniser mockCanoniser;
 
     @Before
     public final void setUp() throws Exception {
-        service = new CanoniserServiceImpl();
-        //TODO this should be a MOCK instead!! as it is an integration test for now
-        service.setCanoniserProvider(new SimpleSpringCanoniserProvider());
+        myService = new CanoniserServiceImpl();
+        mockProvider = createMock(CanoniserProvider.class);
+        mockCanoniser = createMock(Canoniser.class);
+        myService.setCanoniserProvider(mockProvider);
     }
-
-    @Test(expected = JAXBException.class)
-    public void deCanoniseWithoutAnnotationsFailure() throws Exception {
-        Integer processId = 123;
-        String version = "1.2";
-        String name = "Canonical";
-        InputStream cpf = new ByteArrayDataSource("<XML/>", "text/xml").getInputStream();
-
-        service.deCanonise(processId, version, name, getTypeFromXML(cpf), null);
-    }
-
+    
     @Test
-    public void deCanoniseWithIncorrectType() throws IOException {
-        Integer processId = 123;
-        String version = "1.2";
-        String name = "Canonical";
-        InputStream cpf = new ByteArrayDataSource(CanonicalNoAnnotationModel.CANONICAL_XML, "text/xml").getInputStream();
+    public void testFindByNativeType() throws PluginNotFoundException {
+        expect(mockProvider.findByNativeType("test")).andReturn(mockCanoniser).anyTimes();
+        expect(mockProvider.findByNativeType("invalid")).andThrow(new PluginNotFoundException());
 
-        DataSource data;
+        replayAll();
+        
+        Canoniser c = myService.findByNativeType("test");
+        assertNotNull(c);
+        assertEquals(mockCanoniser, c);
+
         try {
-            data = service.deCanonise(processId, version, name, getTypeFromXML(cpf), null);
+            myService.findByNativeType("invalid");
             fail();
-        } catch (CanoniserException e) {
-            assertTrue(e.getCause() instanceof PluginNotFoundException);
-        } catch (JAXBException e) {
-            fail();
+        } catch (PluginNotFoundException e) {
         }
+        
+        verifyAll();
     }
-
+    
     @Test
-    public void deCanoniseWithoutAnnotationsSuccessXPDL() throws Exception {
-        Integer processId = 123;
-        String version = "1.2";
-        String name = "XPDL 2.1";
-        InputStream cpf = new ByteArrayDataSource(CanonicalNoAnnotationModel.CANONICAL_XML, "text/xml").getInputStream();
+    public void testListByNativeType() throws PluginNotFoundException {
+        HashSet<Canoniser> canoniserSet = new HashSet<Canoniser>();
+        canoniserSet.add(mockCanoniser);
 
-        DataSource data = service.deCanonise(processId, version, name, getTypeFromXML(cpf), null);
+        expect(mockProvider.listByNativeType("test")).andReturn(canoniserSet).anyTimes();
+        expect(mockProvider.listByNativeType("invalid")).andReturn(new HashSet<Canoniser>());
 
-        MatcherAssert.assertThat(data, Matchers.notNullValue());
-    }
+        replayAll();
+        
+        Set<Canoniser> c = myService.listByNativeType("test");
+        assertNotNull(c);
+        assertEquals(1, c.size());
 
-    @Test
-    public void deCanoniseWithAnnotationsSuccessXPDL() throws Exception {
-        Integer processId = 123;
-        String version = "1.2";
-        String name = "XPDL 2.1";
-        InputStream cpf = new ByteArrayDataSource(CanonicalWithAnnotationModel.CANONICAL_XML, "text/xml").getInputStream();
-        DataSource anf = new ByteArrayDataSource(CanonicalWithAnnotationModel.ANNOTATION_XML, "text/xml");
-
-        DataSource data = service.deCanonise(processId, version, name, getTypeFromXML(cpf), anf);
-
-        MatcherAssert.assertThat(data, Matchers.notNullValue());
-    }
-
-
-    /*
-     * doesn't work, shouldn't be null.
-     */
-    @Test
-    public void deCanoniseWithoutAnnotationsSuccessEPML() throws Exception {
-        Integer processId = 123;
-        String version = "1.2";
-        String name = "EPML 2.0";
-        InputStream cpf = new ByteArrayDataSource(CanonicalNoAnnotationModel.CANONICAL_XML, "text/xml").getInputStream();
-
-        DataSource data = service.deCanonise(processId, version, name, getTypeFromXML(cpf), null);
-
-        MatcherAssert.assertThat(data, Matchers.notNullValue());
-    }
-
-    /*
-     * doesn't work, shouldn't be null.
-     */
-    @Test
-    public void deCanoniseWithAnnotationsSuccessEPML() throws Exception {
-        Integer processId = 123;
-        String version = "1.2";
-        String name = "EPML 2.0";
-        InputStream cpf = new ByteArrayDataSource(CanonicalWithAnnotationModel.CANONICAL_XML, "text/xml").getInputStream();
-        DataSource anf = new ByteArrayDataSource(CanonicalWithAnnotationModel.ANNOTATION_XML, "text/xml");
-
-        DataSource data = service.deCanonise(processId, version, name, getTypeFromXML(cpf), anf);
-
-        assertThat(data, notNullValue());
-    }
-
-
-    @Test(expected = CanoniserException.class)
-    public void canoniseFailureTypeNotFound() throws Exception {
-        String uri = "1234567890";
-        String nativeType = "PPPDL";
-
-        InputStream data = new ByteArrayInputStream(TestData.XPDL.getBytes());
-
-        service.canonise(nativeType, uri, data);
-    }
-
-    @Test
-    public void canoniseXPDL() throws Exception {
-        String uri = "1234567890";
-        String nativeType = "XPDL 2.1";
-
-        InputStream data = new ByteArrayInputStream(TestData.XPDL.getBytes());
-        CanonisedProcess cp = service.canonise(nativeType, uri, data);
-
-        assertThat(cp, notNullValue());
-        assertThat(cp.getCpt(), notNullValue());
-    }
-
-    @Test
-    public void canoniseEPML() throws Exception {
-        String uri = "1234567890";
-        String nativeType = "EPML 2.0";
-
-        InputStream data = new ByteArrayInputStream(TestData.EPML.getBytes());
-        CanonisedProcess cp = service.canonise(nativeType, uri, data);
-
-        assertThat(cp, notNullValue());
-        assertThat(cp.getCpt(), notNullValue());
-    }
-
-    @Test
-    public void canoniseEPML2() throws Exception {
-        String uri = "1234567890";
-        String nativeType = "EPML 2.0";
-
-        InputStream data = new ByteArrayInputStream(TestData.EPML2.getBytes());
-        CanonisedProcess cp = service.canonise(nativeType, uri, data);
-
-        assertThat(cp, notNullValue());
-        assertThat(cp.getCpt(), notNullValue());
-    }
-
-    @Test
-    public void canonisePNML() throws Exception {
-        String uri = "1234567890";
-        String nativeType = "PNML 1.3.2";
-
-        InputStream data = new ByteArrayInputStream(TestData.PNML.getBytes());
-        CanonisedProcess cp = service.canonise(nativeType, uri, data);
-
-        assertThat(cp, notNullValue());
-        assertThat(cp.getCpt(), notNullValue());
-    }
+        Set<Canoniser> c2 = myService.listByNativeType("invalid");
+        assertNotNull(c2);
+        assertTrue(c2.isEmpty());
+        
+        verifyAll();
+    }    
 
 
     @Test
@@ -214,7 +117,7 @@ public class CanoniserServiceImplUnitTest {
         JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u.unmarshal(data);
         CanonicalProcessType canType = rootElement.getValue();
 
-        CPF graph = service.deserializeCPF(canType);
+        CPF graph = myService.deserializeCPF(canType);
         assertThat(graph, notNullValue());
 
         DirectedGraphAlgorithms<ControlFlow<FlowNode>, FlowNode> dga = new DirectedGraphAlgorithms<ControlFlow<FlowNode>, FlowNode>();
@@ -233,21 +136,13 @@ public class CanoniserServiceImplUnitTest {
         JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u.unmarshal(data);
         CanonicalProcessType canType = rootElement.getValue();
 
-        CPF graph = service.deserializeCPF(canType);
+        CPF graph = myService.deserializeCPF(canType);
         assertThat(graph, notNullValue());
 
-        CanonicalProcessType canTyp2 = service.serializeCPF(graph);
+        CanonicalProcessType canTyp2 = myService.serializeCPF(graph);
         assertThat(canTyp2, notNullValue());
     }
 
-    private CanonicalProcessType getTypeFromXML(final InputStream cpf) throws JAXBException {
-        CanonicalProcessType type;
-        JAXBContext jc1 = JAXBContext.newInstance(Constants.CPF_CONTEXT);
-        Unmarshaller u = jc1.createUnmarshaller();
-        JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u.unmarshal(cpf);
-        type = rootElement.getValue();
-        return type;
-    }
 
 
 }

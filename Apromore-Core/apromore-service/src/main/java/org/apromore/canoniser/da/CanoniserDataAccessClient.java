@@ -2,6 +2,7 @@ package org.apromore.canoniser.da;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
@@ -21,11 +22,12 @@ import org.apromore.model.StoreVersionOutputMsgType;
 import org.apromore.model.WriteAnnotationInputMsgType;
 import org.apromore.model.WriteAnnotationOutputMsgType;
 
+@Deprecated //TODO this should not be used anymore!!
 public class CanoniserDataAccessClient {
 
     private DataAccessCanoniserManager manager;
 
-    public void StoreNative(int processId, String version, String nativeType, InputStream process)
+    public void StoreNative(final int processId, final String version, final String nativeType, final InputStream process)
             throws IOException, ExceptionStore {
         StoreNativeInputMsgType payload = new StoreNativeInputMsgType();
         payload.setProcessId(processId);
@@ -39,9 +41,9 @@ public class CanoniserDataAccessClient {
         }
     }
 
-    public void StoreVersion(int editSessionCode, EditSessionType editSession,
-                             String cpfURI, InputStream native_is, InputStream anf_xml_is,
-                             InputStream cpf_xml_is) throws IOException, ExceptionStore, ExceptionVersion {
+    public void StoreVersion(final int editSessionCode, final EditSessionType editSession,
+                             final String cpfURI, final InputStream native_is, final InputStream anf_xml_is,
+                             final InputStream cpf_xml_is) throws IOException, ExceptionStore, ExceptionVersion {
         StoreVersionInputMsgType payload = new StoreVersionInputMsgType();
         payload.setCpfURI(cpfURI);
         payload.setEditSession(editSession);
@@ -60,9 +62,9 @@ public class CanoniserDataAccessClient {
         }
     }
 
-    public void WriteAnnotation(Integer editSessionCode, String annotationName,
-                                Boolean isNew, Integer processId, String version, String cpfUri,
-                                String nativeType, InputStream inputStream, InputStream anf_is) throws IOException, ExceptionAnnotation {
+    public void WriteAnnotation(final Integer editSessionCode, final String annotationName,
+                                final Boolean isNew, final Integer processId, final String version, final String cpfUri,
+                                final String nativeType, final InputStream inputStream, final InputStream anf_is) throws IOException, ExceptionAnnotation {
         WriteAnnotationInputMsgType payload = new WriteAnnotationInputMsgType();
         payload.setAnnotationName(annotationName);
         payload.setEditSessionCode(editSessionCode);
@@ -79,7 +81,7 @@ public class CanoniserDataAccessClient {
         }
     }
 
-    public String GetCpfUri(Integer processId, String version) throws ExceptionCpfUri {
+    public String GetCpfUri(final Integer processId, final String version) throws ExceptionCpfUri {
         GetCpfUriInputMsgType payload = new GetCpfUriInputMsgType();
         payload.setProcessId(processId);
         payload.setVersion(version);
@@ -91,7 +93,7 @@ public class CanoniserDataAccessClient {
     }
 
 
-    public void setManager(DataAccessCanoniserManager manager) {
+    public void setManager(final DataAccessCanoniserManager manager) {
         this.manager = manager;
     }
 }

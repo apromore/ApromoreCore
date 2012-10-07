@@ -1,6 +1,6 @@
 package org.apromore.canoniser.provider.impl;
 
-import java.util.List;
+import java.util.Set;
 
 import org.apromore.canoniser.Canoniser;
 import org.apromore.plugin.provider.PluginProviderHelper;
@@ -20,8 +20,8 @@ public class SimpleSpringCanoniserProvider extends CanoniserProviderImpl {
      */
     public SimpleSpringCanoniserProvider() {
         super();
-        List<Canoniser> canoniserList = PluginProviderHelper.findPluginsByClass(Canoniser.class);
-        setInternalCanoniserList(canoniserList);
+        Set<Canoniser> canoniserList = PluginProviderHelper.findPluginsByClass(Canoniser.class, "org.apromore.canoniser");
+        setInternalCanoniserSet(canoniserList);
     }
 
 }

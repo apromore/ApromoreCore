@@ -1,8 +1,18 @@
 package org.apromore.service.impl;
 
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replayAll;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
+
+import java.util.HashSet;
+import java.util.Set;
+
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 
+import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.AnnotationDao;
 import org.apromore.dao.NativeDao;
@@ -11,10 +21,13 @@ import org.apromore.dao.jpa.NativeDaoJpa;
 import org.apromore.dao.jpa.ProcessDaoJpa;
 import org.apromore.dao.model.Native;
 import org.apromore.graph.JBPT.CPF;
+import org.apromore.model.ExportFormatResultType;
+import org.apromore.plugin.property.RequestPropertyType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.FormatService;
 import org.apromore.service.RepositoryService;
 import org.apromore.service.UserService;
+import org.apromore.service.model.DecanonisedProcess;
 import org.hamcrest.MatcherAssert;
 import org.hamcrest.Matchers;
 import org.junit.Before;
@@ -27,12 +40,6 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
-import static org.powermock.api.easymock.PowerMock.createMock;
-import static org.powermock.api.easymock.PowerMock.replayAll;
-import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 /**
  * Unit test the UserService Implementation.
@@ -95,16 +102,18 @@ public class ProcessServiceImplUnitTest {
         String format = "Canonical";
 
         DataSource result = new ByteArrayDataSource("<xml/>", "text/xml");
+        DecanonisedProcess dp = new DecanonisedProcess();
+        dp.setNativeFormat(result.getInputStream());
         CanonicalProcessType cpt = new CanonicalProcessType();
         CPF cpf = new CPF();
 
         expect(rSrv.getCurrentProcessModel(name, version, false)).andReturn(cpf);
         expect(canSrv.serializeCPF(cpf)).andReturn(cpt);
-        expect(canSrv.deCanonise(anyObject(Integer.class), anyObject(String.class), anyObject(String.class), anyObject(CanonicalProcessType.class), anyObject(DataSource.class))).andReturn(result);
+        expect(canSrv.deCanonise(anyObject(Integer.class), anyObject(String.class), anyObject(String.class), anyObject(CanonicalProcessType.class), anyObject(AnnotationsType.class), anyObject(Set.class))).andReturn(dp);
 
         replayAll();
 
-        DataSource data = service.exportFormat(name, processId, version, format, "", false);
+        ExportFormatResultType data = service.exportProcess(name, processId, version, format, "", false, new HashSet<RequestPropertyType<?>>());
 
         verifyAll();
 
@@ -132,7 +141,7 @@ public class ProcessServiceImplUnitTest {
 
         replayAll();
 
-        DataSource data = service.exportFormat(name, processId, version, format, subStr, true);
+        ExportFormatResultType data = service.exportProcess(name, processId, version, format, subStr, true, new HashSet<RequestPropertyType<?>>());
 
         verifyAll();
 
@@ -353,7 +362,7 @@ public class ProcessServiceImplUnitTest {
 //        assertThat(data.getAnf(), nullValue());
 //    }
 
-    
+
 //    @Test
 //    public void testImportProcess() throws Exception {
 //        String username = "bubba";

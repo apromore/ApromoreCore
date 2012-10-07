@@ -17,32 +17,36 @@
 package org.apromore.plugin.impl;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 
 import org.apromore.plugin.PropertyAwarePlugin;
+import org.apromore.plugin.property.PluginPropertyType;
 import org.apromore.plugin.property.PropertyType;
 
 /**
  * Default implementation of an Apromore Plugin that allows for runtime parameters. If your Plugin should be configurable by the User at runtime, then
- * you should inherit this class and add your parameters in the Constructor.
+ * you should inherit this class and register your parameters using {@see DefaultPropertyAwarePlugin#registerProperty(PropertyType)} in the Constructor.
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public abstract class DefaultPropertyAwarePlugin extends DefaultMessageAwarePlugin implements PropertyAwarePlugin {
+public abstract class DefaultPropertyAwarePlugin extends DefaultPlugin implements PropertyAwarePlugin {
 
     /**
      * Stores all properties
      */
-    private final Set<PropertyType> availableProperties;
+    private final Map<String, PropertyType<?>> availableProperties;
 
     /**
      * Creates a DefaultPropertyAwarePlugin
      */
     public DefaultPropertyAwarePlugin() {
         super();
-        availableProperties = new HashSet<PropertyType>();
+        availableProperties = new HashMap<String, PropertyType<?>>();
     }
 
     /*
@@ -51,14 +55,29 @@ public abstract class DefaultPropertyAwarePlugin extends DefaultMessageAwarePlug
      * @see org.apromore.plugin.PropertyAwarePlugin#getMandatoryProperties()
      */
     @Override
-    public Set<PropertyType> getMandatoryProperties() {
-        Set<PropertyType> mandatoryProperties = new HashSet<PropertyType>();
-        for (PropertyType property : getAvailableProperties()) {
+    public Set<PropertyType<?>> getMandatoryProperties() {
+        Set<PropertyType<?>> mandatoryProperties = new HashSet<PropertyType<?>>();
+        for (PropertyType<?> property : getAvailableProperties()) {
             if (property.isMandatory()) {
                 mandatoryProperties.add(property);
             }
         }
         return Collections.unmodifiableSet(mandatoryProperties);
+    }
+
+
+    /* (non-Javadoc)
+     * @see org.apromore.plugin.PropertyAwarePlugin#getOptionalProperties()
+     */
+    @Override
+    public Set<PropertyType<?>> getOptionalProperties() {
+        Set<PropertyType<?>> optionalProperties = new HashSet<PropertyType<?>>();
+        for (PropertyType<?> property : getAvailableProperties()) {
+            if (!property.isMandatory()) {
+                optionalProperties.add(property);
+            }
+        }
+        return Collections.unmodifiableSet(optionalProperties);
     }
 
     /*
@@ -67,20 +86,26 @@ public abstract class DefaultPropertyAwarePlugin extends DefaultMessageAwarePlug
      * @see org.apromore.plugin.PropertyAwarePlugin#getAvailableProperties()
      */
     @Override
-    public Set<PropertyType> getAvailableProperties() {
-        return Collections.unmodifiableSet(availableProperties);
+    public Set<PropertyType<?>> getAvailableProperties() {
+        Set<PropertyType<?>> allProperties = new HashSet<PropertyType<?>>();
+        for (Entry<String, PropertyType<?>> property : availableProperties.entrySet()) {
+            allProperties.add(property.getValue());
+        }
+        return Collections.unmodifiableSet(allProperties);
     }
 
+
+
     /**
-     * Add a property to our list of available properties.
+     * Adds a property to the list of available properties.
      *
      * @param property
      *            to be added
      * @return true if property was added, false if property was already available or NULL
      */
-    protected boolean addProperty(final PropertyType property) {
+    protected boolean registerProperty(final PluginPropertyType<?> property) {
         if (property != null) {
-            return this.availableProperties.add(property);
+            return this.availableProperties.put(property.getId(), property) == null;
         } else {
             return false;
         }

@@ -17,41 +17,46 @@
 package org.apromore.plugin;
 
 /**
- * Interface implemented by every Apromore Plugin. Each Plugin offers theses methods, so it is possible to handle all Plugins in a
- * generic manner.
+ * <p>
+ * Interface implemented by every Apromore Plugin. Each Plugin offers theses methods, so it is possible to handle all Plugins in a generic manner.
+ * Please note implementations should make sure they override {@see #equals(Object)} and {@see #hashCode()} in a way, that two Plugins are the same if
+ * their name and version match.
+ *
+ * <p>
+ * Plugins are usually only instantiated once in the whole system. (Singleton) So please be careful about the global state of the Plugin!
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public interface Plugin {
 
-	/**
-	 * Plugin name should be short and unique together with the version. The symbolic name of the OSGi bundle should be used.
-	 *
-	 * @return name of the plugin
-	 */
-	String getName();
+    /**
+     * Plugin name should be short and unique together with the version. The symbolic name of the OSGi bundle should be used.
+     *
+     * @return name of the plugin
+     */
+    String getName();
 
-	/**
-	 * Plugin version should be kept in sync with the OSGi bundle version.
-	 *
-	 * @return version of the plugin
-	 */
-	String getVersion();
+    /**
+     * Plugin version should be kept in sync with the OSGi bundle version.
+     *
+     * @return version of the plugin
+     */
+    String getVersion();
 
-	/**
-	 * Plugin type can be used to group plugins that provide similar functionality.
-	 *
-	 * @return type of the plugin
-	 */
-	String getType();
+    /**
+     * Plugin type can be used to group plugins that provide similar functionality.
+     *
+     * @return type of the plugin
+     */
+    String getType();
 
-	/**
-	 * Plugin description can be used to inform users about the functionality of a plugin.
-	 *
-	 * @return description of the plugin
-	 */
-	String getDescription();
+    /**
+     * Plugin description can be used to inform users about the functionality of a plugin.
+     *
+     * @return description of the plugin
+     */
+    String getDescription();
 
     /**
      * Name of the author(s) of this plugin.
@@ -59,4 +64,5 @@ public interface Plugin {
      * @return author of the plugin
      */
     String getAuthor();
+    
 }
