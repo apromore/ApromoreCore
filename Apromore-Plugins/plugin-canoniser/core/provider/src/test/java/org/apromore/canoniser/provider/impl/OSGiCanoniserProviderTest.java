@@ -24,8 +24,8 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.provider.CanoniserProvider;
@@ -53,7 +53,7 @@ public class OSGiCanoniserProviderTest {
 	@Before
 	public void setUp() throws Exception {
 		final OSGiCanoniserProvider cp = new OSGiCanoniserProvider();
-		final List<Canoniser> canoniserSet = new ArrayList<Canoniser>();
+		final Set<Canoniser> canoniserSet = new HashSet<Canoniser>();
 		c1 = createMock(Canoniser.class);
 		expect(c1.getName()).andReturn("XPDL 2.0 - Canoniser XY");
 		expect(c1.getVersion()).andReturn("1.0.0");
@@ -64,7 +64,7 @@ public class OSGiCanoniserProviderTest {
 		canoniserSet.add(c2);
 		c3 = createMock(Canoniser.class);
 		canoniserSet.add(c3);
-		cp.setCanoniserList(canoniserSet);
+		cp.setCanoniserSet(canoniserSet);
 		c4 = createMock(Canoniser.class);
 		this.provider = cp;
 	}

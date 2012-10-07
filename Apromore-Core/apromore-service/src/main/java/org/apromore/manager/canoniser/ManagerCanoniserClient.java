@@ -2,6 +2,7 @@ package org.apromore.manager.canoniser;
 
 import java.io.IOException;
 import java.io.InputStream;
+
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
@@ -16,12 +17,13 @@ import org.apromore.model.EditSessionType;
 import org.apromore.model.GenerateAnnotationInputMsgType;
 import org.apromore.model.GenerateAnnotationOutputMsgType;
 
+@Deprecated //TODO this should not be used anymore!!
 public class ManagerCanoniserClient {
 
     private CanoniserManager manager;
 
-    public void CanoniseVersion(Integer editSessionCode, EditSessionType editSession, String cpfURI,
-                                InputStream native_is) throws IOException, ExceptionCanoniseVersion, ExceptionVersion {
+    public void CanoniseVersion(final Integer editSessionCode, final EditSessionType editSession, final String cpfURI,
+                                final InputStream native_is) throws IOException, ExceptionCanoniseVersion, ExceptionVersion {
         CanoniseVersionInputMsgType payload = new CanoniseVersionInputMsgType();
         DataSource source = new ByteArrayDataSource(native_is, "text/xml");
         payload.setEditSessionCode(editSessionCode);
@@ -37,9 +39,9 @@ public class ManagerCanoniserClient {
         }
     }
 
-    public void GenerateAnnotation(String annotName, Integer editSessionCode,
-                                   Boolean isNew, Integer processId, String version, String nat_type,
-                                   InputStream native_is) throws IOException, ExceptionGenerateAnnotation {
+    public void GenerateAnnotation(final String annotName, final Integer editSessionCode,
+                                   final Boolean isNew, final Integer processId, final String version, final String nat_type,
+                                   final InputStream native_is) throws IOException, ExceptionGenerateAnnotation {
         GenerateAnnotationInputMsgType payload = new GenerateAnnotationInputMsgType();
         DataSource source = new ByteArrayDataSource(native_is, "text/xml");
         payload.setEditSessionCode(editSessionCode);
@@ -57,7 +59,7 @@ public class ManagerCanoniserClient {
     }
 
 
-    public void setManager(CanoniserManager manager) {
+    public void setManager(final CanoniserManager manager) {
         this.manager = manager;
     }
 }

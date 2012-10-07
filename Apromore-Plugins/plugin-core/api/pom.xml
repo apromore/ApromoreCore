@@ -38,6 +38,11 @@
     
 	<dependencies>
 	
+		<dependency>
+			<groupId>commons-lang</groupId>
+			<artifactId>commons-lang</artifactId>
+		</dependency>	
+	
 		<!-- Logging -->
 		<dependency>
 			<groupId>org.slf4j</groupId>
@@ -54,7 +59,7 @@
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
-		</dependency>	
+		</dependency>
 			
 		<!-- Test dependencies -->
 		<dependency>

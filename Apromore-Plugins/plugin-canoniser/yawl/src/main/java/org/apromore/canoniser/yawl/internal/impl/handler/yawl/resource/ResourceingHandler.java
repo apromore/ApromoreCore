@@ -92,8 +92,7 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
 
         } else {
 
-            List<HumanType> cpfResources = convertDistributionSet(getObject());
-
+            convertDistributionSet(getObject());
             convertAllocation(getObject().getAllocate(), task);
 
             final ResourcingOfferFactsType offer = getObject().getOffer();
@@ -101,10 +100,10 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
                 ResourcingDistributionSetFactsType distributionSet = offer.getDistributionSet();
                 if (distributionSet != null) {
                     if (hasFilter(offer.getDistributionSet())) {
-                        convertFilter(offer.getDistributionSet(), task, cpfResources);
+                        convertFilter(offer.getDistributionSet(), task);
                     }
                     if (hasConstraints(offer)) {
-                        convertConstraints(offer.getDistributionSet().getConstraints(), offer.getFamiliarParticipant(), task, cpfResources);
+                        convertConstraints(offer.getDistributionSet().getConstraints(), offer.getFamiliarParticipant(), task);
                     }
                 }
             }
@@ -153,7 +152,8 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
             // Allocation of work will be handled by User at Runtime, there is no way of capturing this in CPF
             if (allocate != null) {
                 ExtensionUtils.addToExtensions(
-                        ExtensionUtils.marshalYAWLFragment(ExtensionUtils.ALLOCATE, getObject().getAllocate(), ResourcingAllocateFactsType.class), task);
+                        ExtensionUtils.marshalYAWLFragment(ExtensionUtils.ALLOCATE, getObject().getAllocate(), ResourcingAllocateFactsType.class),
+                        task);
             }
         }
     }
@@ -174,7 +174,7 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
         }
     }
 
-    private void convertConstraints(final Constraints constraints, final FamiliarParticipant familiarParticipant, final TaskType task, final List<HumanType> cpfResources) {
+    private void convertConstraints(final Constraints constraints, final FamiliarParticipant familiarParticipant, final TaskType task) {
         ResourceRuntimeFilterExpressionType filterRuntimeExpr = CPF_FACTORY.createResourceRuntimeFilterExpressionType();
         filterRuntimeExpr.setLanguage(CPFSchema.EXPRESSION_LANGUAGE_APROMORE_RESOURCE_RUNTIME);
 
@@ -187,7 +187,7 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
                 if (c.getName().equals("SeparationOfDuties")) {
                     if (c.getParams().getParam().isEmpty()) {
                         String taskID = c.getParams().getParam().get(0).getValue();
-                        exprBuilder.append("separationOfDuties("+generateUUID(CONTROLFLOW_ID_PREFIX, taskID)+")");
+                        exprBuilder.append("separationOfDuties(" + generateUUID(CONTROLFLOW_ID_PREFIX, taskID) + ")");
                     }
                 } else if (c.getName().equals("PiledExecution")) {
                     exprBuilder.append("piledExecution");
@@ -199,105 +199,122 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
             }
         }
 
-        if (familiarParticipant != null) {
-            if (exprBuilder.length() > 0) {
-                exprBuilder.append(" AND ");
-                exprBuilder.append("familiarParticipant("+generateUUID(CONTROLFLOW_ID_PREFIX, familiarParticipant.getTaskID())+")");
-            }
+        if (familiarParticipant != null && exprBuilder.length() > 0) {
+            exprBuilder.append(" AND ");
+            exprBuilder.append("familiarParticipant(" + generateUUID(CONTROLFLOW_ID_PREFIX, familiarParticipant.getTaskID()) + ")");
         }
-
 
         filterRuntimeExpr.setExpression(exprBuilder.toString());
         task.setFilterByRuntimeExpr(filterRuntimeExpr);
     }
 
-    private void convertFilter(final ResourcingDistributionSetFactsType distributionSet, final TaskType task, final List<HumanType> cpfResources) throws CanoniserException {
+    private static final String FILTER_POSTFIX = "]";
+    private static final String FILTER_PREFIX = "//ResourceType[";
+
+    private void convertFilter(final ResourcingDistributionSetFactsType distributionSet, final TaskType task)
+            throws CanoniserException {
         ResourceDataFilterExpressionType filterDataExpr = CPF_FACTORY.createResourceDataFilterExpressionType();
         filterDataExpr.setLanguage(CPFSchema.EXPRESSION_LANGUAGE_XPATH);
 
-        StringBuilder exprBuilder = new StringBuilder("//ResourceType[");
+        StringBuilder exprBuilder = new StringBuilder(FILTER_PREFIX);
         StringBuilder descrBuilder = new StringBuilder();
 
         Filters filters = distributionSet.getFilters();
-        List<org.yawlfoundation.yawlschema.ResourcingDistributionSetFactsType.InitialSet.Param> dataParams = distributionSet.getInitialSet().getParam();
+        List<InitialSet.Param> dataParams = distributionSet.getInitialSet().getParam();
 
         if (dataParams != null) {
-            for (org.yawlfoundation.yawlschema.ResourcingDistributionSetFactsType.InitialSet.Param param: dataParams) {
-                exprBuilder.append(buildDataParamXPath(param.getName(), param.getRefers()));
-                descrBuilder.append(buildDataParamDescription(param.getName(), param.getRefers()));
-            }
+            appendAllDataParamExpr(exprBuilder, descrBuilder, dataParams);
         }
 
         if (filters != null) {
-            ListIterator<ResourcingSelectorFactsType> filterIter = filters.getFilter().listIterator();
-            while (filterIter.hasNext()) {
-                ResourcingSelectorFactsType filter = filterIter.next();
+            appendAllFilterExpr(task, exprBuilder, descrBuilder, filters);
+        }
+        exprBuilder.append(FILTER_POSTFIX);
 
-                if (filter.getName().equals("CapabilityFilter")) {
-                    if (!filter.getParams().getParam().isEmpty()) {
-                        Param param = filter.getParams().getParam().get(0);
-                        descrBuilder.append(buildCapabilityDescription(param));
-                        exprBuilder.append(buildParamXPath(param));
-                    }
-                } else if (filter.getName().equals("OrgFilter")) {
-                    if (!filter.getParams().getParam().isEmpty()) {
-                        ListIterator<Param> paramIter = filter.getParams().getParam().listIterator();
-                        while (paramIter.hasNext()) {
-                            Param param = paramIter.next();
-                            descrBuilder.append(buildOrgFilterDescription(param));
-                            exprBuilder.append(buildParamXPath(param));
+        filterDataExpr.setDescription(descrBuilder.toString());
+        filterDataExpr.setExpression(exprBuilder.toString());
 
-                            if (paramIter.hasNext()) {
-                                descrBuilder.append(" and ");
-                                exprBuilder.append(" and ");
-                            }
-                        }
-                    }
-                } else {
-                    // Unknown YAWL filter add to extension
-                    ExtensionUtils.addToExtensions(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.FILTER, filter, ResourcingSelectorFactsType.class),
-                            task);
-                }
+        if (!(filterDataExpr.getDescription().isEmpty() && (filterDataExpr.getExpression().length() == FILTER_PREFIX.length() + FILTER_POSTFIX.length()))) {
+            task.setFilterByDataExpr(filterDataExpr);
+        }
+    }
 
-                if (filterIter.hasNext()) {
+    private void appendAllDataParamExpr(final StringBuilder exprBuilder, final StringBuilder descrBuilder,
+            final List<org.yawlfoundation.yawlschema.ResourcingDistributionSetFactsType.InitialSet.Param> dataParams) {
+        for (org.yawlfoundation.yawlschema.ResourcingDistributionSetFactsType.InitialSet.Param param : dataParams) {
+            exprBuilder.append(buildDataParamXPath(param.getName(), param.getRefers()));
+            descrBuilder.append(buildDataParamDescription(param.getName(), param.getRefers()));
+        }
+    }
+
+    private void appendAllFilterExpr(final TaskType task, final StringBuilder exprBuilder, final StringBuilder descrBuilder, final Filters filters) throws CanoniserException {
+        ListIterator<ResourcingSelectorFactsType> filterIter = filters.getFilter().listIterator();
+        while (filterIter.hasNext()) {
+            ResourcingSelectorFactsType filter = filterIter.next();
+
+            if (filter.getName().equals("CapabilityFilter")) {
+                convertCapabilityFilter(exprBuilder, descrBuilder, filter);
+            } else if (filter.getName().equals("OrgFilter")) {
+                convertOrgFilter(exprBuilder, descrBuilder, filter);
+            } else {
+                // Unknown YAWL filter add to extension
+                ExtensionUtils.addToExtensions(
+                        ExtensionUtils.marshalYAWLFragment(ExtensionUtils.FILTER, filter, ResourcingSelectorFactsType.class), task);
+            }
+
+            if (filterIter.hasNext()) {
+                descrBuilder.append(" and ");
+                exprBuilder.append(" and ");
+            }
+        }
+    }
+
+    private void convertOrgFilter(final StringBuilder exprBuilder, final StringBuilder descrBuilder, final ResourcingSelectorFactsType filter) {
+        if (!filter.getParams().getParam().isEmpty()) {
+            ListIterator<Param> paramIter = filter.getParams().getParam().listIterator();
+            while (paramIter.hasNext()) {
+                Param param = paramIter.next();
+                descrBuilder.append(buildOrgFilterDescription(param));
+                exprBuilder.append(buildParamXPath(param));
+
+                if (paramIter.hasNext()) {
                     descrBuilder.append(" and ");
                     exprBuilder.append(" and ");
                 }
             }
         }
+    }
 
-        exprBuilder.append("]");
-
-        filterDataExpr.setDescription(descrBuilder.toString());
-        filterDataExpr.setExpression(exprBuilder.toString());
-
-        if (!(filterDataExpr.getDescription().isEmpty() && filterDataExpr.getExpression().isEmpty())) {
-            task.setFilterByDataExpr(filterDataExpr);
+    private void convertCapabilityFilter(final StringBuilder exprBuilder, final StringBuilder descrBuilder, final ResourcingSelectorFactsType filter) {
+        if (!filter.getParams().getParam().isEmpty()) {
+            Param param = filter.getParams().getParam().get(0);
+            descrBuilder.append(buildCapabilityDescription(param));
+            exprBuilder.append(buildParamXPath(param));
         }
     }
 
     private String buildDataParamXPath(final String name, final ResourcingResourceType refers) {
         if (refers.equals(ResourcingResourceType.PARTICIPANT)) {
-            return "type/text()='Participant' and name/text()='cpf:getObjectValue("+name+")'";
+            return "type/text()='Participant' and name/text()='cpf:getObjectValue(" + name + ")'";
         } else {
-            return "type/text()='Role' and name/text()='cpf:getObjectValue("+name+")'";
+            return "type/text()='Role' and name/text()='cpf:getObjectValue(" + name + ")'";
         }
     }
 
     private String buildDataParamDescription(final String name, final ResourcingResourceType refers) {
-        return "Of type "+refers.toString()+" choose by value of Object "+name;
+        return "of type " + refers.toString() + " choose by value of Object " + name;
     }
 
     private String buildOrgFilterDescription(final Param param) {
-        return "In organisational group '"+param.getValue()+"'";
+        return "in organisational group '" + param.getValue() + "'";
     }
 
     private String buildCapabilityDescription(final Param param) {
-        return "With capability '"+param.getValue()+"'";
+        return "with capability '" + param.getValue() + "'";
     }
 
     private String buildParamXPath(final Param param) {
-        return "attribute[@name='"+param.getKey()+"' and @value='"+param.getValue()+"']";
+        return "attribute[@name='" + param.getKey() + "' and @value='" + param.getValue() + "']";
     }
 
     private List<HumanType> convertDistributionSet(final ResourcingFactsType resourcing) {
@@ -404,7 +421,7 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
                 parentRole.getSpecializationIds().add(canonicalResource.getId());
             }
 
-            for (ParticipantType p: getContext().getOrgDataType().getParticipants().getParticipant()) {
+            for (ParticipantType p : getContext().getOrgDataType().getParticipants().getParticipant()) {
                 if (hasRole(role, p)) {
                     createResourceTypeForParticipant(p);
                 }
@@ -415,7 +432,7 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
     }
 
     private boolean hasRole(final RoleType role, final ParticipantType p) {
-        for (JAXBElement<Object> r: p.getRoles().getRole()) {
+        for (JAXBElement<Object> r : p.getRoles().getRole()) {
             if (r.getValue() instanceof RoleType) {
                 RoleType pRole = (RoleType) r.getValue();
                 if (pRole.getId().equals(role.getId())) {
@@ -469,7 +486,7 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
     }
 
     private void convertPositions(final HumanType canonicalResource, final ParticipantType participant) {
-        for (JAXBElement<Object> element: participant.getPositions().getPosition()) {
+        for (JAXBElement<Object> element : participant.getPositions().getPosition()) {
             if (element.getValue() instanceof PositionType) {
                 PositionType p = (PositionType) element.getValue();
                 TypeAttribute attr = CPF_FACTORY.createTypeAttribute();
@@ -481,7 +498,7 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
     }
 
     private void convertCapabilities(final HumanType canonicalResource, final ParticipantType participant) {
-        for (JAXBElement<Object> element: participant.getCapabilities().getCapability()) {
+        for (JAXBElement<Object> element : participant.getCapabilities().getCapability()) {
             if (element.getValue() instanceof CapabilityType) {
                 CapabilityType c = (CapabilityType) element.getValue();
                 TypeAttribute attr = CPF_FACTORY.createTypeAttribute();

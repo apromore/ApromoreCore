@@ -5,6 +5,7 @@ import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 import org.apromore.plugin.deployment.provider.DeploymentPluginProvider;
+import org.apromore.plugin.deployment.provider.impl.SimpleSpringDeploymentPluginProvider;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.junit.Before;
 import org.junit.Test;

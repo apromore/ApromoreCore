@@ -2,6 +2,7 @@ package org.apromore.canoniser.pnml;
 
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Date;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
@@ -17,8 +18,13 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.pnml.internal.Canonical2PNML;
 import org.apromore.canoniser.pnml.internal.PNML2Canonical;
 import org.apromore.canoniser.pnml.internal.pnml2canonical.NamespaceFilter;
+import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.plugin.PluginRequest;
+import org.apromore.plugin.PluginResult;
 import org.apromore.pnml.PnmlType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
 import org.xml.sax.SAXException;
 import org.xml.sax.XMLReader;
@@ -33,6 +39,8 @@ import org.xml.sax.helpers.XMLReaderFactory;
 @Component("pnmlCanoniser")
 public class PNML132Canoniser extends DefaultAbstractCanoniser {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PNML132Canoniser.class);
+
 	private static final String PNML_CONTEXT = "org.apromore.pnml";
 
 	/*
@@ -41,7 +49,7 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
 	 * @see org.apromore.canoniser.Canoniser#canonise(org.apromore.canoniser.NativeInput, java.io.OutputStream, java.io.OutputStream)
 	 */
 	@Override
-	public void canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat, final List<CanonicalProcessType> canonicalFormat) throws CanoniserException {
+	public PluginResult canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat, final List<CanonicalProcessType> canonicalFormat, final PluginRequest request) throws CanoniserException {
 		try {
 			XMLReader reader = XMLReaderFactory.createXMLReader();
 			NamespaceFilter inFilter = new NamespaceFilter("pnml.apromore.org", true);
@@ -53,6 +61,8 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
 
 			annotationFormat.add(pnml2canonical.getANF());
 			canonicalFormat.add(pnml2canonical.getCPF());
+
+			return newPluginResult();
 
 		} catch (JAXBException e) {
 			throw new CanoniserException(e);
@@ -67,7 +77,7 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
 	 * @see org.apromore.canoniser.Canoniser#deCanonise(java.io.InputStream, java.io.InputStream, org.apromore.canoniser.NativeOutput)
 	 */
 	@Override
-	public void deCanonise(final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final OutputStream nativeOutput) throws CanoniserException {
+	public PluginResult deCanonise(final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final OutputStream nativeOutput, final PluginRequest request) throws CanoniserException {
 		try {
 			Canonical2PNML canonical2pnml;
 
@@ -78,6 +88,8 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
 			}
 
 			marshalNativeFormat(canonical2pnml.getPNML(), nativeOutput);
+
+			return newPluginResult();
 		} catch (JAXBException e) {
 			throw new CanoniserException(e);
 		}
@@ -97,5 +109,29 @@ public class PNML132Canoniser extends DefaultAbstractCanoniser {
 		JAXBElement<PnmlType> rootepml = new org.apromore.pnml.ObjectFactory().createPnml(pnml);
 		m.marshal(rootepml, nativeFormat);
 	}
+
+    /* (non-Javadoc)
+     * @see org.apromore.canoniser.Canoniser#createInitialNativeFormat(java.io.OutputStream, org.apromore.plugin.PluginRequest)
+     */
+    @Override
+    public PluginResult createInitialNativeFormat(final OutputStream nativeOutput, final String processName, final String processVersion, final String processAuthor,
+            final Date processCreated, final PluginRequest request) {
+        //TODO generate initial empty PNML
+        try {
+            marshalNativeFormat(new PnmlType(), nativeOutput);
+        } catch (JAXBException e) {
+            LOGGER.error("Could not create initial PNML", e);
+        }
+        return newPluginResult();
+    }
+
+    /* (non-Javadoc)
+     * @see org.apromore.canoniser.Canoniser#readMetaData(java.io.InputStream, org.apromore.plugin.PluginRequest)
+     */
+    @Override
+    public CanoniserMetadataResult readMetaData(final InputStream nativeInput, final PluginRequest request) {
+        //TODO read metadata from PNML
+        return new CanoniserMetadataResult();
+    }
 
 }

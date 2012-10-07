@@ -19,20 +19,19 @@ import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionCont
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.plugin.impl.DefaultMessageAwarePlugin;
+import org.apromore.plugin.impl.DefaultPluginResult;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
 public class CheckValidModelMacroTest {
 
-    private DefaultMessageAwarePlugin pluginMock;
+    private DefaultPluginResult pluginMock;
     private MessageManagerImpl messageMock;
 
     @Before
     public void setUp() {
-        pluginMock = new DefaultMessageAwarePlugin() {
-        };
+        pluginMock = new DefaultPluginResult();
         messageMock = new MessageManagerImpl(pluginMock);
     }
 
@@ -44,7 +43,7 @@ public class CheckValidModelMacroTest {
 
         final CheckValidModelMacro m = new CheckValidModelMacro(context);
         assertFalse(m.rewrite(cpf));
-        assertTrue(pluginMock.getPluginMessages().isEmpty());
+        assertTrue(pluginMock.getPluginMessage().isEmpty());
     }
 
     @Test
@@ -71,8 +70,8 @@ public class CheckValidModelMacroTest {
         final CanonicalConversionContext invalidContext = new CanonicalConversionContext(warningCPF, new AnnotationsType(), messageMock);
         final CheckValidModelMacro m = new CheckValidModelMacro(invalidContext);
         assertFalse(m.rewrite(warningCPF));
-        assertFalse(pluginMock.getPluginMessages().isEmpty());
-        assertNotNull(pluginMock.getPluginMessages().iterator().next().getMessage());
+        assertFalse(pluginMock.getPluginMessage().isEmpty());
+        assertNotNull(pluginMock.getPluginMessage().iterator().next().getMessage());
     }
 
 }

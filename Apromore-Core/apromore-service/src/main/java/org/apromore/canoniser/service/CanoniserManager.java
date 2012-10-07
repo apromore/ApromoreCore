@@ -9,6 +9,7 @@ import org.apromore.model.GenerateAnnotationOutputMsgType;
  *
  *
  */
+@Deprecated //TODO this should not be used anymore!!
 public interface CanoniserManager {
 
     public GenerateAnnotationOutputMsgType generateAnnotation(GenerateAnnotationInputMsgType payload);

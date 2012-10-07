@@ -1,5 +1,17 @@
 package org.apromore.manager.service;
 
+import static org.easymock.EasyMock.expect;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replay;
+import static org.powermock.api.easymock.PowerMock.verify;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import javax.xml.bind.JAXBElement;
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
 import org.apromore.dao.model.User;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
 import org.apromore.model.ObjectFactory;
@@ -14,17 +26,6 @@ import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.w3c.dom.Document;
-
-import javax.xml.bind.JAXBElement;
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import java.util.ArrayList;
-import java.util.List;
-
-import static org.easymock.EasyMock.expect;
-import static org.powermock.api.easymock.PowerMock.createMock;
-import static org.powermock.api.easymock.PowerMock.replay;
-import static org.powermock.api.easymock.PowerMock.verify;
 
 /**
  * Test the Manager Portal Endpoint WebService.

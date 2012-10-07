@@ -93,6 +93,21 @@
     </developers>
 
     <dependencies>
+    
+        <!-- Plugin API -->
+		<dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>plugin-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+        
+        <!-- Canoniser API -->
+		<dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-api</artifactId>
+            <version>1.0</version>
+        </dependency>
+                
         <dependency>
             <groupId>javax.mail</groupId>
             <artifactId>mail</artifactId>
@@ -156,6 +171,11 @@
             <artifactId>spring-ws-support</artifactId>
             <scope>runtime</scope>
         </dependency>
+        
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+		</dependency>
     </dependencies>
 
     <build>

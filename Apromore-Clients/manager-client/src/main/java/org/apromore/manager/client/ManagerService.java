@@ -2,8 +2,11 @@ package org.apromore.manager.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import javax.activation.DataHandler;
 
 import org.apromore.model.ClusterFilterType;
@@ -13,14 +16,20 @@ import org.apromore.model.ClusterType;
 import org.apromore.model.ClusteringSummaryType;
 import org.apromore.model.DomainsType;
 import org.apromore.model.EditSessionType;
+import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.FragmentType;
+import org.apromore.model.ImportProcessResultType;
+import org.apromore.model.NativeMetaData;
 import org.apromore.model.NativeTypesType;
 import org.apromore.model.PairDistanceType;
+import org.apromore.model.PluginInfo;
+import org.apromore.model.PluginInfoResult;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.plugin.property.RequestPropertyType;
 
 /**
  * Manager interface.
@@ -165,12 +174,11 @@ public interface ManagerService {
      * @param withAnnotations with ot without annotations
      * @param owner the owner of the model
      * @return the request process model as a Stream
-     * @throws java.io.IOException if the streams cause issues
      * @throws Exception ... change to be something more relevant
      * TODO: Fix Exception
      */
-    DataHandler exportFormat(int processId, String processName, String versionName, String nativeType, String annotationName,
-        Boolean withAnnotations, String owner) throws IOException, Exception;
+    ExportFormatResultType exportFormat(int processId, String processName, String versionName, String nativeType, String annotationName,
+        Boolean withAnnotations, String owner, Set<RequestPropertyType<?>> canoniserProperties) throws Exception;
 
     /**
      * Import a process into the Apromore Repository.
@@ -189,8 +197,42 @@ public interface ManagerService {
      * @throws Exception ... change to be something more relevant
      * TODO: Fix Exception
      */
-    ProcessSummaryType importProcess(String username, String nativeType, String processName, String versionName, InputStream xml_process,
-        String domain, String documentation, String created, String lastUpdate, Boolean addFakeEvents) throws IOException, Exception;
+    ImportProcessResultType importProcess(String username, String nativeType, String processName, String versionName, InputStream xml_process,
+        String domain, String documentation, String created, String lastUpdate, Set<RequestPropertyType<?>> canoniserProperties) throws IOException, Exception;
+
+    /**
+     * Get list of all currently installed Plugins.
+     *
+     * @param typeFilter so filter by type of Plugin, shows all if NULL
+     * @return PluginInfo for Plugin that is found
+     * @throws Exception if communication failed
+     */
+     Collection<PluginInfo> readInstalledPlugins(String typeFilter) throws Exception;
+
+
+    /**
+     * Get information about the Plugin with given name and version.
+     *
+     * @param name of Plugin
+     * @param version of Plugin
+     * @return PluginInfo for Plugin that is found
+     * @throws Exception if Plugin is not found
+     */
+     PluginInfoResult readPluginInfo(String name, String version) throws Exception;
+
+    /**
+     * Get information about all installed Canoniser's for the specified native type.
+     *
+     * @param nativeType
+     * @return Set of PluginInfo
+     * @throws Exception
+     * TODO: Fix Exception
+     */
+    Set<PluginInfo> readCanoniserInfo(String nativeType) throws Exception;
+
+    NativeMetaData readNativeMetaData(String nativeType, String canoniserName, String canoniserVersion, InputStream nativeProcess) throws Exception;
+
+    DataHandler readInitialNativeFormat(String nativeType, String canoniserName, String canoniserVersion, String owner, String processName, String versionName, String creationDate) throws Exception;
 
     /**
      * Update a process in the apromore repository.
@@ -279,4 +321,5 @@ public interface ManagerService {
      * TODO: Fix Exception
      */
     void deleteProcessVersions(Map<ProcessSummaryType, List<VersionSummaryType>> processVersions) throws Exception;
+
 }

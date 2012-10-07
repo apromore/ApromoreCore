@@ -11,10 +11,10 @@
  */
 package org.apromore.canoniser.provider.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.provider.CanoniserProvider;
@@ -29,14 +29,14 @@ import org.apromore.plugin.provider.PluginProviderHelper;
  */
 public abstract class CanoniserProviderImpl implements CanoniserProvider {
 
-    private List<Canoniser> internalCanoniserList;
+    private Set<Canoniser> internalCanoniserSet;
 
-    protected List<Canoniser> getInternalCanoniserList() {
-        return internalCanoniserList;
+    protected Set<Canoniser> getInternalCanoniserSet() {
+        return internalCanoniserSet;
     }
 
-    protected void setInternalCanoniserList(final List<Canoniser> canoniserList) {
-        this.internalCanoniserList = canoniserList;
+    protected void setInternalCanoniserSet(final Set<Canoniser> canoniserSet) {
+        this.internalCanoniserSet = canoniserSet;
     }
 
     /*
@@ -45,8 +45,8 @@ public abstract class CanoniserProviderImpl implements CanoniserProvider {
      * @see org.apromore.canoniser.provider.CanoniserProvider#listAll()
      */
     @Override
-    public final Collection<Canoniser> listAll() {
-        return Collections.unmodifiableCollection(getInternalCanoniserList());
+    public final Set<Canoniser> listAll() {
+        return Collections.unmodifiableSet(getInternalCanoniserSet());
     }
 
     /*
@@ -55,8 +55,8 @@ public abstract class CanoniserProviderImpl implements CanoniserProvider {
      * @see org.apromore.canoniser.provider.CanoniserProvider#listByNativeType(java.lang.String)
      */
     @Override
-    public final Collection<Canoniser> listByNativeType(final String nativeType) {
-        return Collections.unmodifiableCollection(findAllCanoniser(nativeType, null, null));
+    public final Set<Canoniser> listByNativeType(final String nativeType) {
+        return Collections.unmodifiableSet(findAllCanoniser(nativeType, null, null));
     }
 
     /*
@@ -65,8 +65,8 @@ public abstract class CanoniserProviderImpl implements CanoniserProvider {
      * @see org.apromore.canoniser.provider.CanoniserProvider#listByNativeTypeAndName(java.lang.String, java.lang.String)
      */
     @Override
-    public final Collection<Canoniser> listByNativeTypeAndName(final String nativeType, final String name) {
-        return Collections.unmodifiableCollection(findAllCanoniser(nativeType, name, null));
+    public final Set<Canoniser> listByNativeTypeAndName(final String nativeType, final String name) {
+        return Collections.unmodifiableSet(findAllCanoniser(nativeType, name, null));
     }
 
     /*
@@ -97,10 +97,11 @@ public abstract class CanoniserProviderImpl implements CanoniserProvider {
     @Override
     public final Canoniser findByNativeTypeAndNameAndVersion(final String nativeType, final String name, final String version)
             throws PluginNotFoundException {
-        final List<Canoniser> resultList = findAllCanoniser(nativeType, name, version);
-        if (!resultList.isEmpty()) {
+        final Set<Canoniser> resultList = findAllCanoniser(nativeType, name, version);
+        Iterator<Canoniser> iter = resultList.iterator();
+        if (iter.hasNext()) {
             // Just return the first one
-            return resultList.get(0);
+            return iter.next();
         }
         throw new PluginNotFoundException("Could not find canoniser with name: " + ((name != null) ? name : "null") + " version: "
                 + ((version != null) ? version : "null") + " nativeType: " + ((nativeType != null) ? nativeType : "null"));
@@ -114,11 +115,11 @@ public abstract class CanoniserProviderImpl implements CanoniserProvider {
      * @param version can be NULL
      * @return List of Canonisers or empty List
      */
-    private List<Canoniser> findAllCanoniser(final String nativeType, final String name, final String version) {
+    private Set<Canoniser> findAllCanoniser(final String nativeType, final String name, final String version) {
 
-        final List<Canoniser> cList = new ArrayList<Canoniser>();
+        final Set<Canoniser> cList = new HashSet<Canoniser>();
 
-        for (final Canoniser c : getInternalCanoniserList()) {
+        for (final Canoniser c : getInternalCanoniserSet()) {
             if (PluginProviderHelper.compareNullable(nativeType, c.getNativeType()) && PluginProviderHelper.compareNullable(name, c.getName()) && PluginProviderHelper.compareNullable(version, c.getVersion())) {
                 cList.add(c);
             }

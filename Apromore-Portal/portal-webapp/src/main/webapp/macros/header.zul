@@ -4,6 +4,8 @@
     <toolbarbutton id="releaseNotes" label="Welcome to AProMoRe (v0.4 27/08/2012)" />
     <separator orient="vertical" bar="true" />
     <toolbarbutton id="moreButton" label="More info.." />
+    <separator orient="vertical" bar="true" />
+    <toolbarbutton id="installedPlugins" label="Active Plugins" />
     <div style="float:right">
         <toolbarbutton id="consultAccountButton" label="" visible="false" tooltiptext="Click here to access your account" />
         <separator id="consultAccountButtonSep" orient="vertical" bar="true" />
@@ -12,4 +14,5 @@
         <separator orient="vertical" bar="true" />
         <toolbarbutton id="createAccountButton" label="Create new account" visible="true" tooltiptext="Click here to create an account" />
     </div>
+    
 </window>

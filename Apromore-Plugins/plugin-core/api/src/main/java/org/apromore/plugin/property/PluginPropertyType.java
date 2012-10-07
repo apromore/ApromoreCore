@@ -16,14 +16,20 @@
  */
 package org.apromore.plugin.property;
 
+import org.apache.commons.lang.builder.EqualsBuilder;
+import org.apache.commons.lang.builder.HashCodeBuilder;
+import org.apache.commons.lang.builder.ToStringBuilder;
+
 /**
- * Default implementation of the PropertyType interface. It takes care of allowing values of specified Class only. Also two Properties are considered
- * 'equal' if there 'name' is the same.
+ * PropertyType used by a Plugin defining its properties (e.g. parameters). It takes care of allowing values of specified Class only. Also two
+ * Properties are considered 'equal' if their 'id' is the same.
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
+ * @param <T>
+ *            type of Property
  */
-public class DefaultProperty implements PropertyType {
+public class PluginPropertyType<T> implements PropertyType<T> {
 
     /**
      * ID of the Property
@@ -34,6 +40,11 @@ public class DefaultProperty implements PropertyType {
      * Short name of the Property
      */
     private final String name;
+
+    /**
+     * Type of the Property
+     */
+    private final Class<T> valueType;
 
     /**
      * Descriptive text of the Property that may be used on the UI.
@@ -48,51 +59,64 @@ public class DefaultProperty implements PropertyType {
     /**
      * Holding the actual value of the Property
      */
-    private Object value;
-
-    /**
-     * Type of the Property
-     */
-    private final Class<?> valueType;
+    private T value;
 
     /**
      * Create a new Property with given attributes and specify a default value.
      *
-     * @param id of the property
-     * @param name of the property
-     * @param valueType of the property
-     * @param description of the property
-     * @param isMandatory true if Plugin requires this property to work properly
-     * @param defaultValue of type {@see #getValueType()}
+     * @param id
+     *            of the property
+     * @param name
+     *            of the property
+     * @param valueType
+     *            of the property
+     * @param description
+     *            of the property
+     * @param isMandatory
+     *            true if Plugin requires this property to work properly
+     * @param defaultValue
+     *            of type {@see #getValueType()}
      */
-    public DefaultProperty(final String id, final String name, final Class<?> valueType, final String description, final Boolean isMandatory, final Object defaultValue) {
+    @SuppressWarnings("unchecked")
+    public PluginPropertyType(final String id, final String name, final String description, final Boolean isMandatory, final T defaultValue) {
         super();
         this.id = id;
         this.name = name;
-        this.valueType = valueType;
         this.description = description;
         this.isMandatory = isMandatory;
-        setValue(defaultValue);
+        if (defaultValue != null) {
+            this.valueType = (Class<T>) defaultValue.getClass();
+            setValue(defaultValue);
+        } else {
+            throw new IllegalArgumentException("Tried to initalize Property " + id + " with NULL default value!");
+        }
     }
 
     /**
      * Create a new Property with given attributes without specifying a default value. The value will be initialised with NULL.
      *
-     * @param id of the property
-     * @param name of the property
-     * @param valueType of the property
-     * @param description of the property
-     * @param isMandatory true if Plugin requires this property to work properly
+     * @param id
+     *            of the property
+     * @param name
+     *            of the property
+     * @param valueType
+     *            of the property
+     * @param description
+     *            of the property
+     * @param isMandatory
+     *            true if Plugin requires this property to work properly
      */
-    public DefaultProperty(final String id, final String name, final Class<?> valueType, final String description, final Boolean isMandatory) {
+    public PluginPropertyType(final String id, final String name, final Class<T> valueType, final String description, final Boolean isMandatory) {
         this.id = id;
         this.name = name;
-        this.valueType = valueType;
         this.description = description;
         this.isMandatory = isMandatory;
+        this.valueType = valueType;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see org.apromore.plugin.property.PropertyType#getId()
      */
     @Override
@@ -127,7 +151,11 @@ public class DefaultProperty implements PropertyType {
      */
     @Override
     public boolean isMandatory() {
-        return this.isMandatory;
+        if (isMandatory == null) {
+            return false;
+        } else {
+            return this.isMandatory;
+        }
     }
 
     /*
@@ -136,7 +164,7 @@ public class DefaultProperty implements PropertyType {
      * @see org.apromore.plugin.property.PropertyType#getValue()
      */
     @Override
-    public final Object getValue() {
+    public final T getValue() {
         return value;
     }
 
@@ -146,13 +174,8 @@ public class DefaultProperty implements PropertyType {
      * @see org.apromore.plugin.property.PropertyType#setValue(java.lang.Object)
      */
     @Override
-    public final void setValue(final Object value) {
-        if (getValueType().isInstance(value)) {
-            this.value = value;
-        } else {
-            throw new IllegalArgumentException("Wrong type " + value.getClass().getSimpleName() + " for property " + getName() + "Expected type is: "
-                    + getValueType().getSimpleName());
-        }
+    public final void setValue(final T value) {
+        this.value = value;
     }
 
     /*
@@ -161,7 +184,7 @@ public class DefaultProperty implements PropertyType {
      * @see org.apromore.plugin.property.PropertyType#getValueType()
      */
     @Override
-    public final Class<?> getValueType() {
+    public final Class<T> getValueType() {
         return valueType;
     }
 
@@ -182,10 +205,7 @@ public class DefaultProperty implements PropertyType {
      */
     @Override
     public final int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + ((id == null) ? 0 : id.hashCode());
-        return result;
+        return new HashCodeBuilder().append(getId()).toHashCode();
     }
 
     /*
@@ -195,24 +215,18 @@ public class DefaultProperty implements PropertyType {
      */
     @Override
     public final boolean equals(final Object obj) {
-        if (this == obj) {
-            return true;
-        }
         if (obj == null) {
             return false;
         }
-        if (getClass() != obj.getClass()) {
+        if (obj == this) {
+            return true;
+        }
+        if (obj.getClass() != getClass()) {
             return false;
         }
-        DefaultProperty other = (DefaultProperty) obj;
-        if (id == null) {
-            if (other.id != null) {
-                return false;
-            }
-        } else if (!id.equals(other.id)) {
-            return false;
-        }
-        return true;
+        PluginPropertyType<?> prop = (PluginPropertyType<?>) obj;
+        // We just compare Name and Version, a Plugin is equals to another is Name and Version match
+        return new EqualsBuilder().appendSuper(super.equals(obj)).append(getId(), prop.getId()).isEquals();
     }
 
     /*
@@ -222,7 +236,8 @@ public class DefaultProperty implements PropertyType {
      */
     @Override
     public String toString() {
-        return String.format("DefaultProperty [id=%s, name=%s, isMandatory=%s, value=%s, valueType=%s]",id , name, isMandatory, value, valueType);
+        return new ToStringBuilder(this).append("id", getId()).append("name", getName()).append("class", getValueType().getSimpleName())
+                .append("description", getDescription()).append("isMandatory", isMandatory()).toString();
     }
 
 }

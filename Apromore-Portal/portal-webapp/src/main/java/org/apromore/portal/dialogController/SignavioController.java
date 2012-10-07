@@ -1,11 +1,13 @@
 package org.apromore.portal.dialogController;
 
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
-import javax.activation.DataHandler;
 
+import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.plugin.property.RequestPropertyType;
 import org.apromore.portal.util.StreamUtil;
 import org.zkoss.zk.ui.Executions;
 
@@ -27,9 +29,10 @@ public class SignavioController extends BaseController {
         super();
         Map<String, String> param = new HashMap<String, String>();
         try {
-            DataHandler nativeDH = getService().exportFormat(process.getId(), process.getName(), version.getName(),
-                    nativeType, annotation, false, this.mainC.getCurrentUser().getUsername());
-            String data = StreamUtil.convertStreamToString(nativeDH.getInputStream());
+            ExportFormatResultType exportResult = getService().exportFormat(process.getId(), process.getName(), version.getName(),
+                    nativeType, annotation, false, this.mainC.getCurrentUser().getUsername(), new HashSet<RequestPropertyType<?>>());
+            String data = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
+            this.mainC.showCanoniserMessages(exportResult.getMessage());
             this.setTitle(process.getName());
             param.put(JSON_DATA, data.replace("\n", "").trim());
             param.put("url", getURL(nativeType));
@@ -42,7 +45,7 @@ public class SignavioController extends BaseController {
     }
 
 
-    private String getURL(String nativeType) {
+    private String getURL(final String nativeType) {
         String url = "";
         switch (nativeType) {
             case "XPDL 2.1":
@@ -65,7 +68,7 @@ public class SignavioController extends BaseController {
     }
 
 
-    private String getImportPath(String nativeType) {
+    private String getImportPath(final String nativeType) {
         String importPath = "";
         switch (nativeType) {
             case "XPDL 2.1":

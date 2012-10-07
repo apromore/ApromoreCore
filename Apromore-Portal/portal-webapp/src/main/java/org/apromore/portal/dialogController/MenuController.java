@@ -23,16 +23,16 @@ import org.zkoss.zul.Messagebox;
 
 public class MenuController extends Menubar {
 
-    private MainController mainC;
+    private final MainController mainC;
     private Menubar menuB;
 
-    private Menuitem mergeMI;
+    private final Menuitem mergeMI;
 
     private Menuitem evalQualityMI;
     private Menuitem evalCorrectnessMI;
     private Menuitem evalPerformanceMI;
 
-    public MenuController(MainController mainController) throws ExceptionFormats {
+    public MenuController(final MainController mainController) throws ExceptionFormats {
         this.mainC = mainController;
         this.menuB = (Menubar) this.mainC.getFellow("menucomp").getFellow("operationMenu");
 
@@ -44,6 +44,7 @@ public class MenuController extends Menubar {
         Menuitem deleteMI = (Menuitem) this.menuB.getFellow("processDelete");
         Menuitem copyMI = (Menuitem) this.menuB.getFellow("processCopy");
         Menuitem pasteMI = (Menuitem) this.menuB.getFellow("processPaste");
+        Menuitem deployMI = (Menuitem) this.menuB.getFellow("processDeploy");
 
         Menu evaluationM = (Menu) this.menuB.getFellow("evaluation");
 
@@ -57,50 +58,80 @@ public class MenuController extends Menubar {
         Menu presentationM = (Menu) this.menuB.getFellow("presentation");
 
         createMI.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
+            @Override
+            public void onEvent(final Event event) throws Exception {
                 createModel();
             }
         });
         importMI.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
+            @Override
+            public void onEvent(final Event event) throws Exception {
                 importModel();
             }
         });
         editModelMI.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
+            @Override
+            public void onEvent(final Event event) throws Exception {
                 editNative();
             }
         });
         editDataMI.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
+            @Override
+            public void onEvent(final Event event) throws Exception {
                 editData();
             }
         });
         exportMI.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
+            @Override
+            public void onEvent(final Event event) throws Exception {
                 exportNative();
             }
         });
         deleteMI.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
+            @Override
+            public void onEvent(final Event event) throws Exception {
                 deleteSelectedProcessVersions();
             }
         });
         similaritySearchMI.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
+            @Override
+            public void onEvent(final Event event) throws Exception {
                 searchSimilarProcesses();
             }
         });
         similarityClustersMI.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
+            @Override
+            public void onEvent(final Event event) throws Exception {
                 clusterSimilarProcesses();
             }
         });
         this.mergeMI.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
+            @Override
+            public void onEvent(final Event event) throws Exception {
                 mergeSelectedProcessVersions();
             }
         });
+
+        deployMI.addEventListener("onClick", new EventListener() {
+
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                deployProcessModel();
+            }
+        });
+    }
+
+    /**
+     * Deploy process mdel to a running process engine
+     */
+    protected void deployProcessModel() {
+        this.mainC.eraseMessage();
+        HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
+        if (selectedProcessVersions.size() == 1) {
+            new DeployProcessModelController(this.mainC, this, selectedProcessVersions.entrySet().iterator().next());
+        } else {
+            this.mainC.displayMessage("Please select exactly one process model!");
+        }
     }
 
 
@@ -318,7 +349,7 @@ public class MenuController extends Menubar {
         return menuB;
     }
 
-    public void setMenuB(Menubar menuB) {
+    public void setMenuB(final Menubar menuB) {
         this.menuB = menuB;
     }
 

@@ -9,12 +9,13 @@
  *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
-package org.apromore.plugin.deployment;
+package org.apromore.plugin.deployment.provider.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
+import org.apromore.plugin.deployment.DeploymentPlugin;
 import org.apromore.plugin.deployment.provider.DeploymentPluginProvider;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.apromore.plugin.provider.PluginProviderHelper;
@@ -27,14 +28,14 @@ import org.apromore.plugin.provider.PluginProviderHelper;
  */
 public abstract class DeploymentPluginProviderImpl implements DeploymentPluginProvider {
 
-    private List<DeploymentPlugin> internalDeploymentPluginList;
+    private Set<DeploymentPlugin> internalDeploymentPluginSet;
 
-    protected List<DeploymentPlugin> getInternalDeploymentPluginList() {
-        return internalDeploymentPluginList;
+    protected Set<DeploymentPlugin> getInternalDeploymentPluginSet() {
+        return internalDeploymentPluginSet;
     }
 
-    protected void setInternalDeploymentPluginList(final List<DeploymentPlugin> internalDeploymentPluginList) {
-        this.internalDeploymentPluginList = internalDeploymentPluginList;
+    protected void setInternalDeploymentPluginSet(final Set<DeploymentPlugin> internalDeploymentPluginSet) {
+        this.internalDeploymentPluginSet = internalDeploymentPluginSet;
     }
 
     /*
@@ -43,7 +44,7 @@ public abstract class DeploymentPluginProviderImpl implements DeploymentPluginPr
      * @see org.apromore.plugin.deployment.provider.DeploymentPluginProvider#listAll()
      */
     @Override
-    public Collection<DeploymentPlugin> listAll() {
+    public Set<DeploymentPlugin> listAll() {
         return findAllDeploymentPlugins(null, null);
     }
 
@@ -54,11 +55,12 @@ public abstract class DeploymentPluginProviderImpl implements DeploymentPluginPr
      */
     @Override
     public DeploymentPlugin findByName(final String name) throws PluginNotFoundException {
-        List<DeploymentPlugin> list = findAllDeploymentPlugins(null, name);
-        if (list.isEmpty()) {
+        Set<DeploymentPlugin> set = findAllDeploymentPlugins(null, name);
+        Iterator<DeploymentPlugin> iterator = set.iterator();
+        if (!iterator.hasNext()) {
             throw new PluginNotFoundException();
         } else {
-            return list.get(0);
+            return iterator.next();
         }
     }
 
@@ -69,11 +71,12 @@ public abstract class DeploymentPluginProviderImpl implements DeploymentPluginPr
      */
     @Override
     public DeploymentPlugin findByNativeType(final String nativeType) throws PluginNotFoundException {
-        List<DeploymentPlugin> list = findAllDeploymentPlugins(nativeType, null);
-        if (list.isEmpty()) {
+        Set<DeploymentPlugin> list = findAllDeploymentPlugins(nativeType, null);
+        Iterator<DeploymentPlugin> iterator = list.iterator();
+        if (!iterator.hasNext()) {
             throw new PluginNotFoundException();
         } else {
-            return list.get(0);
+            return iterator.next();
         }
     }
 
@@ -84,18 +87,18 @@ public abstract class DeploymentPluginProviderImpl implements DeploymentPluginPr
      *            can be NULL
      * @param name
      *            can be NULL
-     * @return List of DeploymentPlugin or empty List
+     * @return Set of DeploymentPlugin or empty Set
      */
-    private List<DeploymentPlugin> findAllDeploymentPlugins(final String nativeType, final String name) {
+    private Set<DeploymentPlugin> findAllDeploymentPlugins(final String nativeType, final String name) {
 
-        final List<DeploymentPlugin> deploymentList = new ArrayList<DeploymentPlugin>();
+        final Set<DeploymentPlugin> deploymentSet = new HashSet<DeploymentPlugin>();
 
-        for (final DeploymentPlugin d : getInternalDeploymentPluginList()) {
+        for (final DeploymentPlugin d : getInternalDeploymentPluginSet()) {
             if (PluginProviderHelper.compareNullable(nativeType, d.getNativeType()) && PluginProviderHelper.compareNullable(name, d.getName())) {
-                deploymentList.add(d);
+                deploymentSet.add(d);
             }
         }
-        return deploymentList;
+        return deploymentSet;
     }
 
 }

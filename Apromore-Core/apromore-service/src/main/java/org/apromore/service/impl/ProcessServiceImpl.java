@@ -10,6 +10,8 @@ import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBException;
 
+import org.apromore.anf.ANFSchema;
+import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.common.Constants;
 import org.apromore.dao.AnnotationDao;
@@ -29,8 +31,11 @@ import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.UpdateProcessException;
 import org.apromore.graph.JBPT.CPF;
+import org.apromore.manager.client.helper.PluginHelper;
+import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.plugin.property.RequestPropertyType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.FormatService;
 import org.apromore.service.ProcessService;
@@ -38,6 +43,7 @@ import org.apromore.service.RepositoryService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.UIHelper;
 import org.apromore.service.model.CanonisedProcess;
+import org.apromore.service.model.DecanonisedProcess;
 import org.apromore.service.search.SearchExpressionBuilder;
 import org.apromore.util.StreamUtil;
 import org.slf4j.Logger;
@@ -116,22 +122,21 @@ public class ProcessServiceImpl implements ProcessService {
      */
     @Override
     public ProcessSummaryType importProcess(final String username, final String processName, final String cpfURI, final String version, final String natType,
-            final DataHandler cpf, final String domain, final String documentation, final String created, final String lastUpdate) throws ImportException {
+            final CanonisedProcess cpf, final InputStream nativeXml, final String domain, final String documentation, final String created, final String lastUpdate) throws ImportException {
         LOGGER.info("Executing operation canoniseProcess");
         ProcessSummaryType pro;
 
         try {
-            CanonisedProcess cp = canSrv.canonise(natType, cpfURI, cpf.getInputStream());
-
             User user = usrSrv.findUserByLogin(username);
             NativeType nativeType = fmtSrv.findNativeType(natType);
-            CPF pg = canSrv.deserializeCPF(cp.getCpt());
+            CPF pg = canSrv.deserializeCPF(cpf.getCpt());
 
-            ProcessModelVersion pmv = rSrv.addProcessModel(processName, version, user.getUsername(), cpfURI, nativeType.getNatType(),
+            ProcessModelVersion pmv = rSrv.addProcessModel(processName, version, user.getUsername(), cpf.getCpt().getUri(), nativeType.getNatType(),
                     domain, documentation, created, lastUpdate, pg);
-            fmtSrv.storeNative(processName, version, pmv, cpf.getInputStream(), created, lastUpdate, user, nativeType, cp);
+            fmtSrv.storeNative(processName, version, pmv, nativeXml, created, lastUpdate, user, nativeType, cpf);
             pro = uiSrv.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(), version, nativeType.getNatType(),
                     domain, created, lastUpdate, user.getUsername());
+
         } catch (Exception e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
             LOGGER.error("Original exception was: ", e);
@@ -142,40 +147,43 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     /**
-     * @see org.apromore.service.ProcessService#exportFormat(String, Integer, String, String, String, boolean)
+     * @see org.apromore.service.ProcessService#exportProcess(String, Integer, String, String, String, boolean)
      * {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public DataSource exportFormat(final String name, final Integer processId, final String version, final String format,
-            final String annName, final boolean withAnn) throws ExportFormatException {
-        DataSource ds;
+    public ExportFormatResultType exportProcess(final String name, final Integer processId, final String version, final String format,
+            final String annName, final boolean withAnn, Set<RequestPropertyType<?>> canoniserProperties) throws ExportFormatException {        
         try {
             CPF cpf = rSrv.getCurrentProcessModel(name, version, false);
+            
+            //TODO XML model of web service should not already be used here, but in ManagerEndpoint
+            ExportFormatResultType exportResult = new ExportFormatResultType();
 
             if ((withAnn && format.startsWith(Constants.INITIAL_ANNOTATION)) || format.startsWith(Constants.ANNOTATIONS)) {
-                ds = new ByteArrayDataSource(natDao.getNative(processId, version, format).getContent(), "text/xml");
+                // Export Annotations only
+                exportResult.setNative(new DataHandler(new ByteArrayDataSource(natDao.getNative(processId, version, format).getContent(), "text/xml")));
             } else if (format.equals(Constants.CANONICAL)) {
-                ds = new ByteArrayDataSource(canSrv.CPFtoString(canSrv.serializeCPF(cpf)), "text/xml");
+                // Export the Canonical Format only
+                exportResult.setNative(new DataHandler(new ByteArrayDataSource(canSrv.CPFtoString(canSrv.serializeCPF(cpf)), "text/xml")));
             } else {
+                DecanonisedProcess dp = new DecanonisedProcess();
                 if (withAnn) {
                     String annotation = annDao.getAnnotation(processId, version, annName).getContent();
-                    DataSource anf = new ByteArrayDataSource(annotation, "text/xml");
-                    ds = canSrv.deCanonise(processId, version, format, canSrv.serializeCPF(cpf), anf);
+                    AnnotationsType anf = ANFSchema.unmarshalAnnotationFormat(new ByteArrayDataSource(annotation, "text/xml").getInputStream(), false).getValue();
+                    dp = canSrv.deCanonise(processId, version, format, canSrv.serializeCPF(cpf), anf, canoniserProperties);
                 } else {
-                    ds = canSrv.deCanonise(processId, version, format, canSrv.serializeCPF(cpf), null);
+                    dp = canSrv.deCanonise(processId, version, format, canSrv.serializeCPF(cpf), null, canoniserProperties);
                 }
+                exportResult.setMessage(PluginHelper.convertFromPluginMessages(dp.getMessages()));
+                exportResult.setNative(new DataHandler(new ByteArrayDataSource(dp.getNativeFormat(),"text/xml")));
             }
+            return exportResult;
         } catch (Exception e) {
             LOGGER.error("Failed to export process model {} to format {}", name, format);
             LOGGER.error("Original exception was: ", e);
-            if (e.getCause() != null) {
-                throw new ExportFormatException(e.getMessage(), e.getCause());
-            } else {
-                throw new ExportFormatException(e);
-            }
+            throw new ExportFormatException(e);
         }
-        return ds;
     }
 
 
@@ -237,7 +245,7 @@ public class ProcessServiceImpl implements ProcessService {
         for (Native n : natives) {
             String natType = n.getNativeType().getNatType();
             InputStream inStr = new ByteArrayInputStream(n.getContent().getBytes());
-            CanonisedProcess cp = canSrv.canonise(natType, n.getId().toString(), inStr);
+            CanonisedProcess cp = canSrv.canonise(natType, inStr, null);
 
             //TODO why is this done here? apromore should not know about native format outside of canonisers
             if (natType.compareTo("XPDL 2.1") == 0) {

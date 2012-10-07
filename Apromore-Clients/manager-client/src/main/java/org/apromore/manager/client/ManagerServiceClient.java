@@ -2,14 +2,19 @@ package org.apromore.manager.client;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
 
 import org.apromore.manager.client.helper.DeleteProcessVersionHelper;
 import org.apromore.manager.client.helper.MergeProcessesHelper;
+import org.apromore.manager.client.helper.PluginHelper;
 import org.apromore.manager.client.helper.SearchForSimilarProcessesHelper;
 import org.apromore.manager.client.util.StreamUtil;
 import org.apromore.model.ClusterFilterType;
@@ -29,6 +34,7 @@ import org.apromore.model.EditProcessDataOutputMsgType;
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatInputMsgType;
 import org.apromore.model.ExportFormatOutputMsgType;
+import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.FragmentIdsType;
 import org.apromore.model.FragmentResponseType;
 import org.apromore.model.FragmentType;
@@ -45,21 +51,35 @@ import org.apromore.model.GetPairwiseDistancesInputMsgType;
 import org.apromore.model.GetPairwiseDistancesOutputMsgType;
 import org.apromore.model.ImportProcessInputMsgType;
 import org.apromore.model.ImportProcessOutputMsgType;
+import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.MergeProcessesInputMsgType;
 import org.apromore.model.MergeProcessesOutputMsgType;
+import org.apromore.model.NativeMetaData;
 import org.apromore.model.NativeTypesType;
 import org.apromore.model.ObjectFactory;
 import org.apromore.model.PairDistanceType;
+import org.apromore.model.PluginInfo;
+import org.apromore.model.PluginInfoResult;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ReadAllUsersInputMsgType;
 import org.apromore.model.ReadAllUsersOutputMsgType;
+import org.apromore.model.ReadCanoniserInfoInputMsgType;
+import org.apromore.model.ReadCanoniserInfoOutputMsgType;
 import org.apromore.model.ReadDomainsInputMsgType;
 import org.apromore.model.ReadDomainsOutputMsgType;
 import org.apromore.model.ReadEditSessionInputMsgType;
 import org.apromore.model.ReadEditSessionOutputMsgType;
+import org.apromore.model.ReadInitialNativeFormatInputMsgType;
+import org.apromore.model.ReadInitialNativeFormatOutputMsgType;
+import org.apromore.model.ReadInstalledPluginsInputMsgType;
+import org.apromore.model.ReadInstalledPluginsOutputMsgType;
+import org.apromore.model.ReadNativeMetaDataInputMsgType;
+import org.apromore.model.ReadNativeMetaDataOutputMsgType;
 import org.apromore.model.ReadNativeTypesInputMsgType;
 import org.apromore.model.ReadNativeTypesOutputMsgType;
+import org.apromore.model.ReadPluginInfoInputMsgType;
+import org.apromore.model.ReadPluginInfoOutputMsgType;
 import org.apromore.model.ReadProcessSummariesInputMsgType;
 import org.apromore.model.ReadProcessSummariesOutputMsgType;
 import org.apromore.model.ReadUserInputMsgType;
@@ -77,6 +97,7 @@ import org.apromore.model.WriteEditSessionInputMsgType;
 import org.apromore.model.WriteEditSessionOutputMsgType;
 import org.apromore.model.WriteUserInputMsgType;
 import org.apromore.model.WriteUserOutputMsgType;
+import org.apromore.plugin.property.RequestPropertyType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ws.client.core.WebServiceTemplate;
@@ -89,9 +110,10 @@ import org.springframework.ws.client.core.WebServiceTemplate;
 public class ManagerServiceClient implements ManagerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagerServiceClient.class);
+
     private static final ObjectFactory WS_CLIENT_FACTORY = new ObjectFactory();
 
-    private WebServiceTemplate webServiceTemplate;
+    private final WebServiceTemplate webServiceTemplate;
 
     /**
      * Default Constructor.
@@ -396,8 +418,8 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public DataHandler exportFormat(final int processId, final String processName, final String versionName, final String nativeType,
-            final String annotationName, final Boolean withAnnotations, final String owner) throws IOException, Exception {
+    public ExportFormatResultType exportFormat(final int processId, final String processName, final String versionName, final String nativeType,
+            final String annotationName, final Boolean withAnnotations, final String owner, final Set<RequestPropertyType<?>> canoniserProperties) throws Exception {
         LOGGER.debug("Preparing ExportFormatRequest.....");
 
         ExportFormatInputMsgType msg = new ExportFormatInputMsgType();
@@ -409,13 +431,15 @@ public class ManagerServiceClient implements ManagerService {
         msg.setProcessName(processName);
         msg.setOwner(owner);
 
+        msg.setCanoniserProperties(PluginHelper.convertFromPluginProperties(canoniserProperties));
+
         JAXBElement<ExportFormatInputMsgType> request = WS_CLIENT_FACTORY.createExportFormatRequest(msg);
         JAXBElement<ExportFormatOutputMsgType> response = (JAXBElement<ExportFormatOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         } else {
-            LOGGER.info(StreamUtil.convertStreamToString(response.getValue().getNative()));
-            return response.getValue().getNative();
+            LOGGER.info(StreamUtil.convertStreamToString(response.getValue().getExportResult().getNative()));
+            return response.getValue().getExportResult();
         }
     }
 
@@ -425,9 +449,9 @@ public class ManagerServiceClient implements ManagerService {
      */
     @Override
     @SuppressWarnings("unchecked")
-    public ProcessSummaryType importProcess(final String username, final String nativeType, final String processName, final String versionName,
-            final InputStream xml_process, final String domain, final String documentation, final String created, final String lastUpdate,
-            final Boolean addFakeEvents) throws IOException, Exception {
+    public ImportProcessResultType importProcess(final String username, final String nativeType, final String processName, final String versionName,
+            final InputStream xmlProcess, final String domain, final String documentation, final String created, final String lastUpdate,
+            final Set<RequestPropertyType<?>> canoniserProperties) throws IOException, Exception {
         LOGGER.debug("Preparing ImportProcessRequest.....");
 
         EditSessionType editSession = new EditSessionType();
@@ -440,8 +464,8 @@ public class ManagerServiceClient implements ManagerService {
         editSession.setLastUpdate(lastUpdate);
 
         ImportProcessInputMsgType msg = new ImportProcessInputMsgType();
-        msg.setAddFakeEvents(addFakeEvents);
-        msg.setProcessDescription(new DataHandler(new ByteArrayDataSource(xml_process, "text/xml")));
+        msg.setCanoniserProperties(PluginHelper.convertFromPluginProperties(canoniserProperties));
+        msg.setProcessDescription(new DataHandler(new ByteArrayDataSource(xmlProcess, "text/xml")));
         msg.setEditSession(editSession);
 
         JAXBElement<ImportProcessInputMsgType> request = WS_CLIENT_FACTORY.createImportProcessRequest(msg);
@@ -450,7 +474,7 @@ public class ManagerServiceClient implements ManagerService {
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         } else {
-            return response.getValue().getProcessSummary();
+            return response.getValue().getImportProcessResult();
         }
     }
 
@@ -631,6 +655,130 @@ public class ManagerServiceClient implements ManagerService {
         if (response.getValue().getResult().getCode() == -1) {
             throw new Exception(response.getValue().getResult().getMessage());
         }
+    }
+
+    /* (non-Javadoc)
+     * @see org.apromore.manager.client.ManagerService#readCanoniserInfo(java.lang.String)
+     */
+    @Override
+    public Set<PluginInfo> readCanoniserInfo(final String nativeType) throws Exception {
+        LOGGER.debug("Preparing readCanoniserInfo ...");
+
+        ReadCanoniserInfoInputMsgType msg = new ReadCanoniserInfoInputMsgType();
+        msg.setNativeType(nativeType);
+
+        JAXBElement<ReadCanoniserInfoInputMsgType> request = WS_CLIENT_FACTORY.createReadCanoniserInfoRequest(msg);
+        @SuppressWarnings("unchecked")
+        JAXBElement<ReadCanoniserInfoOutputMsgType> response = (JAXBElement<ReadCanoniserInfoOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+        if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        } else {
+            Set<PluginInfo> infoSet = new HashSet<PluginInfo>();
+            for (PluginInfo pluginInfo: response.getValue().getPluginInfo()) {
+                infoSet.add(pluginInfo);
+            }
+            return infoSet;
+        }
+    }
+
+    /* (non-Javadoc)
+     * @see org.apromore.manager.client.ManagerService#readPluginInfo(java.lang.String, java.lang.String)
+     */
+    @Override
+    public PluginInfoResult readPluginInfo(final String name, final String version) throws Exception {
+
+        ReadPluginInfoInputMsgType msg = new ReadPluginInfoInputMsgType();
+        msg.setPluginName(name);
+        msg.setPluginVersion(version);
+
+        JAXBElement<ReadPluginInfoInputMsgType> request = WS_CLIENT_FACTORY.createReadPluginInfoRequest(msg);
+        @SuppressWarnings("unchecked")
+        JAXBElement<ReadPluginInfoOutputMsgType> response = (JAXBElement<ReadPluginInfoOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+        if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        } else {
+            return response.getValue().getPluginInfoResult();
+        }
+    }
+
+
+    /* (non-Javadoc)
+     * @see org.apromore.manager.client.ManagerService#readInstalledPlugins(java.lang.String)
+     */
+    @Override
+    public Collection<PluginInfo> readInstalledPlugins(final String typeFilter) throws Exception {
+
+        ReadInstalledPluginsInputMsgType msg = new ReadInstalledPluginsInputMsgType();
+        msg.setTypeFilter(typeFilter);
+
+        JAXBElement<ReadInstalledPluginsInputMsgType> request = WS_CLIENT_FACTORY.createReadInstalledPluginsRequest(msg);
+        @SuppressWarnings("unchecked")
+        JAXBElement<ReadInstalledPluginsOutputMsgType> response = (JAXBElement<ReadInstalledPluginsOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+        if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        } else {
+            return response.getValue().getPluginInfo();
+        }
+
+    }
+
+
+    /* (non-Javadoc)
+     * @see org.apromore.manager.client.ManagerService#readNativeMetaData(java.lang.String, java.lang.String, java.lang.String, java.io.InputStream)
+     */
+    @Override
+    public NativeMetaData readNativeMetaData(final String nativeType, final String canoniserName, final String canoniserVersion, final InputStream nativeProcess)
+            throws Exception {
+
+        ReadNativeMetaDataInputMsgType msg = new ReadNativeMetaDataInputMsgType();
+        msg.setCanoniserName(canoniserName);
+        msg.setCanoniserVersion(canoniserVersion);
+        msg.setNativeType(nativeType);
+        msg.setNativeFormat(new DataHandler(new ByteArrayDataSource(nativeProcess, "text/xml")));
+
+        JAXBElement<ReadNativeMetaDataInputMsgType> request = WS_CLIENT_FACTORY.createReadNativeMetaDataRequest(msg);
+        @SuppressWarnings("unchecked")
+        JAXBElement<ReadNativeMetaDataOutputMsgType> response = (JAXBElement<ReadNativeMetaDataOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+        if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        } else {
+            return response.getValue().getNativeMetaData();
+        }
+
+    }
+
+
+    /* (non-Javadoc)
+     * @see org.apromore.manager.client.ManagerService#readInitialNativeFormat(java.lang.String, java.lang.String, java.lang.String)
+     */
+    @Override
+    public DataHandler readInitialNativeFormat(final String nativeType, final String canoniserName, final String canoniserVersion, final String owner, final String processName, final String versionName, final String creationDate) throws Exception {
+
+        ReadInitialNativeFormatInputMsgType msg = new ReadInitialNativeFormatInputMsgType();
+        msg.setCanoniserName(canoniserName);
+        msg.setCanoniserVersion(canoniserVersion);
+        msg.setNativeType(nativeType);
+
+        NativeMetaData metaData = new NativeMetaData();
+        metaData.setProcessAuthor(owner);
+        metaData.setProcessVersion(versionName);
+        metaData.setProcessName(processName);
+        msg.setNativeMetaData(metaData);
+
+        JAXBElement<ReadInitialNativeFormatInputMsgType> request = WS_CLIENT_FACTORY.createReadInitialNativeFormatRequest(msg);
+        @SuppressWarnings("unchecked")
+        JAXBElement<ReadInitialNativeFormatOutputMsgType> response = (JAXBElement<ReadInitialNativeFormatOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+        if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        } else {
+            return response.getValue().getNativeFormat();
+        }
+
     }
 
 }

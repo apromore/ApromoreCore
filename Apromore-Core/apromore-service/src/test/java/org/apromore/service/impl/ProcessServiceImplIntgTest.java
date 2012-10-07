@@ -1,8 +1,20 @@
 package org.apromore.service.impl;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
+
+import java.util.HashSet;
+
+import javax.activation.DataHandler;
+import javax.mail.util.ByteArrayDataSource;
+
 import org.apromore.TestData;
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
+import org.apromore.service.model.CanonisedProcess;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -11,13 +23,6 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.activation.DataHandler;
-import javax.mail.util.ByteArrayDataSource;
-
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Unit test the UserService Implementation.
@@ -33,12 +38,13 @@ import static org.hamcrest.Matchers.notNullValue;
 public class ProcessServiceImplIntgTest {
 
     @Autowired
-    private ProcessService pSrv;
+    private CanoniserService cSrv;
 
+    @Autowired
+    private ProcessService pSrv;
 
     @Test
     @Rollback(true)
-    @SuppressWarnings("unchecked")
     public void TestStandardImportProcess() throws Exception {
         String username = "james";
         String name = "Test Version Control";
@@ -50,7 +56,9 @@ public class ProcessServiceImplIntgTest {
         String lastUpdate = "12/12/2011";
         DataHandler stream = new DataHandler(new ByteArrayDataSource(TestData.XPDL2.getBytes(), "text/xml"));
 
-        ProcessSummaryType pst = pSrv.importProcess(username, name, cpfURI, version, natType, stream, domain, "", created, lastUpdate);
+        CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestPropertyType<?>>());
+
+        ProcessSummaryType pst = pSrv.importProcess(username, name, cpfURI, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
 
         assertThat(pst, notNullValue());
         assertThat(pst.getDomain(), equalTo(domain));

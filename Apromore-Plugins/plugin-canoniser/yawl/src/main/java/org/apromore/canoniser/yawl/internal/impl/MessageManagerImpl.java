@@ -12,7 +12,7 @@
 package org.apromore.canoniser.yawl.internal.impl;
 
 import org.apromore.canoniser.yawl.internal.MessageManager;
-import org.apromore.plugin.impl.DefaultMessageAwarePlugin;
+import org.apromore.plugin.impl.DefaultPluginResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -26,10 +26,10 @@ public class MessageManagerImpl implements MessageManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MessageManagerImpl.class);
 
-    private final DefaultMessageAwarePlugin messageAwarePlugin;
+    private final DefaultPluginResult pluginResult;
 
-    public MessageManagerImpl(final DefaultMessageAwarePlugin messageAwarePlugin) {
-        this.messageAwarePlugin = messageAwarePlugin;
+    public MessageManagerImpl(final DefaultPluginResult pluginResult) {
+        this.pluginResult = pluginResult;
     }
 
     /* (non-Javadoc)
@@ -37,7 +37,7 @@ public class MessageManagerImpl implements MessageManager {
      */
     @Override
     public void addMessage(final String message) {
-        messageAwarePlugin.addPluginMessage(message);
+        pluginResult.addPluginMessage(message);
         LOGGER.warn(message);
     }
 
@@ -46,7 +46,7 @@ public class MessageManagerImpl implements MessageManager {
      */
     @Override
     public void addMessage(final String message, final Object... args) {
-        messageAwarePlugin.addPluginMessage(message, args);
+        pluginResult.addPluginMessage(message, args);
         LOGGER.warn(message, args);
     }
 

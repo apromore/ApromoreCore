@@ -3,6 +3,7 @@ package org.apromore.canoniser.yawl.yawl2cpf.patterns.resource;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
@@ -44,8 +45,7 @@ public class RoleWithFilterTest extends BasePatternTest {
         assertNotNull(filter);
 
         assertEquals(CPFSchema.EXPRESSION_LANGUAGE_XPATH, filter.getLanguage());
-        assertEquals("In organisational group 'OrgGroupX' and In organisational group 'PositionX' and With capability 'CapabilityX'",
-                filter.getDescription());
+        assertTrue(filter.getDescription().contains("OrgGroupX") && filter.getDescription().contains("PositionX") && filter.getDescription().contains("CapabilityX"));
         assertEquals(
                 "//ResourceType[attribute[@name='OrgGroup' and @value='OrgGroupX'] and " +
                 "attribute[@name='Position' and @value='PositionX'] and " +

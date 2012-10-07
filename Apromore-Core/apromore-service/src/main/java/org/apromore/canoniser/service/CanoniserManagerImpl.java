@@ -28,6 +28,7 @@ import org.apromore.model.GenerateAnnotationInputMsgType;
 import org.apromore.model.GenerateAnnotationOutputMsgType;
 import org.apromore.model.ResultType;
 import org.apromore.plugin.exception.PluginNotFoundException;
+import org.apromore.plugin.impl.DefaultPluginRequest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -39,6 +40,7 @@ import org.xml.sax.SAXException;
  *
  */
 @Service("CanoniserManager")
+@Deprecated //TODO this should not be used anymore!!
 public class CanoniserManagerImpl implements CanoniserManager {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CanoniserManagerImpl.class);
@@ -161,7 +163,7 @@ public class CanoniserManagerImpl implements CanoniserManager {
 
         try {
             Canoniser c = canoniserProvider.findByNativeType(nativeType);
-            c.canonise(process_xml, anfList, cpfList);
+            c.canonise(process_xml, anfList, cpfList, new DefaultPluginRequest());
         } catch (org.apromore.canoniser.exception.CanoniserException | PluginNotFoundException e) {
             throw new CanoniserException("Could not canonise "+nativeType, e);
         }
