@@ -2,10 +2,13 @@ package org.apromore.portal.dialogController;
 
 import java.io.InputStream;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.apromore.model.AnnotationsType;
+import org.apromore.model.ExportFormatResultType;
+import org.apromore.plugin.property.RequestPropertyType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionExport;
 import org.zkoss.zk.ui.Executions;
@@ -25,22 +28,22 @@ import org.zkoss.zul.api.Row;
 
 public class ExportOneNativeController extends BaseController {
 
-    private Window exportNativeW;
-    private MainController mainC;
-    private ExportListNativeController exportListControllerC;
-    private Label processNameL;
-    private Row annotationsR;
-    private Listbox annotationsLB;
-    private Button okB;
-    private Listbox formatsLB;
-    private int processId;
-    private String versionName;
-    private HashMap<String, String> formats_ext;
+    private final Window exportNativeW;
+    private final MainController mainC;
+    private final ExportListNativeController exportListControllerC;
+    private final Label processNameL;
+    private final Row annotationsR;
+    private final Listbox annotationsLB;
+    private final Button okB;
+    private final Listbox formatsLB;
+    private final int processId;
+    private final String versionName;
+    private final HashMap<String, String> formats_ext;
     // <k, v> belongs to nativeTypes: the file extension k
     // is associated with the native type v (<xpdl,XPDL 1.2>)
 
-    public ExportOneNativeController(ExportListNativeController exportListControllerC, MainController mainC, int processId, String processName,
-            String originalType, String versionName, List<AnnotationsType> annotations, HashMap<String, String> formats_ext)
+    public ExportOneNativeController(final ExportListNativeController exportListControllerC, final MainController mainC, final int processId, final String processName,
+            final String originalType, final String versionName, final List<AnnotationsType> annotations, final HashMap<String, String> formats_ext)
             throws SuspendNotAllowedException, InterruptedException {
 
         this.mainC = mainC;
@@ -113,27 +116,32 @@ public class ExportOneNativeController extends BaseController {
 
         this.formatsLB.setSelectedItem((Listitem) this.formatsLB.getFirstChild());
         this.formatsLB.addEventListener("onSelect", new EventListener() {
-                    public void onEvent(Event event) throws Exception {
+                    @Override
+                    public void onEvent(final Event event) throws Exception {
                         updateActions();
                     }
                 });
         this.okB.addEventListener("onClick", new EventListener() {
-                    public void onEvent(Event event) throws Exception {
+                    @Override
+                    public void onEvent(final Event event) throws Exception {
                         export();
                     }
                 });
         this.exportNativeW.addEventListener("onOK", new EventListener() {
-                    public void onEvent(Event event) throws Exception {
+                    @Override
+                    public void onEvent(final Event event) throws Exception {
                         export();
                     }
                 });
         cancelB.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
+            @Override
+            public void onEvent(final Event event) throws Exception {
                 cancel();
             }
         });
         cancelAllB.addEventListener("onClick", new EventListener() {
-            public void onEvent(Event event) throws Exception {
+            @Override
+            public void onEvent(final Event event) throws Exception {
                 cancelAll();
             }
         });
@@ -199,8 +207,10 @@ public class ExportOneNativeController extends BaseController {
                 } else {
                     withAnnotation = false;
                 }
-                InputStream native_is = getService().exportFormat(this.processId, processname, this.versionName, format, annotation, withAnnotation,
-                        this.mainC.getCurrentUser().getUsername()).getInputStream();
+                ExportFormatResultType exportResult = getService().exportFormat(this.processId, processname, this.versionName, format, annotation, withAnnotation,
+                        this.mainC.getCurrentUser().getUsername(), new HashSet<RequestPropertyType<?>>());
+                InputStream native_is = exportResult.getNative().getInputStream();
+                this.mainC.showCanoniserMessages(exportResult.getMessage());
                 Filedownload.save(native_is, "text.xml", filename);
             }
         } catch (Exception e) {

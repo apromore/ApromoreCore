@@ -1,23 +1,25 @@
 package org.apromore.portal.dialogController;
 
-import de.epml.TypeCoordinates;
-import de.epml.TypeDirectory;
-import de.epml.TypeEPC;
-import de.epml.TypeEPML;
-import org.apromore.manager.client.ManagerService;
+import java.io.IOException;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Set;
+
+import javax.activation.DataHandler;
+
+import org.apromore.model.ImportProcessResultType;
+import org.apromore.model.ProcessSummaryType;
+import org.apromore.model.VersionSummaryType;
+import org.apromore.plugin.property.RequestPropertyType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
-import org.apromore.model.ProcessSummaryType;
-import org.apromore.model.VersionSummaryType;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.wfmc._2008.xpdl2.Author;
-import org.wfmc._2008.xpdl2.Created;
-import org.wfmc._2008.xpdl2.PackageHeader;
-import org.wfmc._2008.xpdl2.PackageType;
-import org.wfmc._2008.xpdl2.RedefinableHeader;
-import org.wfmc._2008.xpdl2.Version;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
@@ -34,46 +36,29 @@ import org.zkoss.zul.Rows;
 import org.zkoss.zul.Textbox;
 import org.zkoss.zul.Window;
 
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.Marshaller;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigInteger;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
-
 public class CreateProcessController extends BaseController {
 
-    private Window createProcessW;
+    private final Window createProcessW;
 
-    private MainController mainC;
-    private Button okB;
-    private Button cancelB;
-    private Button resetB;
-    private Textbox processNameT;
-    private Textbox versionNameT;
-    private Radiogroup rankingRG;
-    private Row domainR;
-    private Row ownerR;
-    private Row nativeTypesR;
-    private Listbox nativeTypesLB;
-    private HashMap<String, String> formats_ext; // <k, v> belongs to nativeTypes: the file extension k
+    private final MainController mainC;
+    private final Button okB;
+    private final Button cancelB;
+    private final Button resetB;
+    private final Textbox processNameT;
+    private final Textbox versionNameT;
+    private final Radiogroup rankingRG;
+    private final Row domainR;
+    private final Row ownerR;
+    private final Row nativeTypesR;
+    private final Listbox nativeTypesLB;
+    private final HashMap<String, String> formats_ext; // <k, v> belongs to nativeTypes: the file extension k
     // is associated with the native type v (<xpdl,XPDL 1.2>)
 
-    private SelectDynamicListController ownerCB;
-    private SelectDynamicListController domainCB;
+    private final SelectDynamicListController ownerCB;
+    private final SelectDynamicListController domainCB;
 
-
-    public CreateProcessController(MainController mainC, HashMap<String, String> formats_ext)
-            throws SuspendNotAllowedException, InterruptedException, ExceptionAllUsers, ExceptionDomains {
+    public CreateProcessController(final MainController mainC, final HashMap<String, String> formats_ext) throws SuspendNotAllowedException,
+            InterruptedException, ExceptionAllUsers, ExceptionDomains {
         this.mainC = mainC;
         this.formats_ext = formats_ext;
 
@@ -135,43 +120,40 @@ public class CreateProcessController extends BaseController {
         // empty fields
         reset();
 
-        this.okB.addEventListener("onClick",
-                new EventListener() {
-                    public void onEvent(Event event) throws Exception {
-                        createProcess();
-                    }
-                });
+        this.okB.addEventListener("onClick", new EventListener() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                createProcess();
+            }
+        });
 
-        this.createProcessW.addEventListener("onOK",
-                new EventListener() {
-                    public void onEvent(Event event) throws Exception {
-                        createProcess();
-                    }
-                });
+        this.createProcessW.addEventListener("onOK", new EventListener() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                createProcess();
+            }
+        });
 
-        this.cancelB.addEventListener("onClick",
-                new EventListener() {
-                    public void onEvent(Event event) throws Exception {
-                        cancel();
-                    }
-                });
-        this.resetB.addEventListener("onClick",
-                new EventListener() {
-                    public void onEvent(Event event) throws Exception {
-                        reset();
-                    }
-                });
+        this.cancelB.addEventListener("onClick", new EventListener() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                cancel();
+            }
+        });
+        this.resetB.addEventListener("onClick", new EventListener() {
+            @Override
+            public void onEvent(final Event event) throws Exception {
+                reset();
+            }
+        });
         this.createProcessW.doModal();
     }
 
     protected void createProcess() throws Exception {
         try {
-            if (this.processNameT.getValue().compareTo("") == 0
-                    || this.nativeTypesLB.getSelectedItem() == null
-                    || this.nativeTypesLB.getSelectedItem() != null
-                    && this.nativeTypesLB.getSelectedItem().getLabel().compareTo("") == 0) {
-                Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK,
-                        Messagebox.ERROR);
+            if (this.processNameT.getValue().compareTo("") == 0 || this.nativeTypesLB.getSelectedItem() == null
+                    || this.nativeTypesLB.getSelectedItem() != null && this.nativeTypesLB.getSelectedItem().getLabel().compareTo("") == 0) {
+                Messagebox.show("Please enter a value for each mandatory field.", "Attention", Messagebox.OK, Messagebox.ERROR);
             } else {
                 String domain = this.domainCB.getValue();
                 String processName = this.processNameT.getValue();
@@ -180,68 +162,21 @@ public class CreateProcessController extends BaseController {
                 String versionName = "0.0";
                 DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH-mm-ss");
                 String creationDate = dateFormat.format(new Date());
-                InputStream nativeProcess = null;
-                // build an empty native with the minimum content:
-                // owner, native type
-                // create new native process, as this import if for process creation purpose
-                if ("XPDL 2.1".compareTo(nativeType) == 0) {
-                    PackageType pkg = new PackageType();
-                    pkg.setName(processName);
-                    PackageHeader hder = new PackageHeader();
-                    pkg.setPackageHeader(hder);
-                    RedefinableHeader rhder = new RedefinableHeader();
-                    pkg.setRedefinableHeader(rhder);
-                    Author author = new Author();
-                    rhder.setAuthor(author);
-                    author.setValue(owner);
-                    Version version = new Version();
-                    rhder.setVersion(version);
-                    version.setValue(versionName);
-                    Created created = new Created();
-                    hder.setCreated(created);
-                    created.setValue(creationDate);
-                    JAXBContext jc = JAXBContext.newInstance("org.wfmc._2008.xpdl2");
-                    Marshaller m = jc.createMarshaller();
-                    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-                    JAXBElement<PackageType> rootxpdl = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(pkg);
-                    ByteArrayOutputStream xpdl_xml = new ByteArrayOutputStream();
-                    m.marshal(rootxpdl, xpdl_xml);
-                    nativeProcess = new ByteArrayInputStream(xpdl_xml.toByteArray());
 
-                } else if ("EPML 2.0".compareTo(nativeType) == 0) {
-                    // create an empty epml process (see issue 129)
-                    // then just creation of an empty process.
-                    TypeEPML epml = new TypeEPML();
-                    TypeCoordinates coordinates = new TypeCoordinates();
-                    coordinates.setXOrigin("leftToRight");
-                    coordinates.setYOrigin("topToBottom");
-                    epml.setCoordinates(coordinates);
-                    TypeDirectory directory = new TypeDirectory();
-                    directory.setName("Root");
-                    epml.getDirectory().add(directory);
-                    TypeEPC epc = new TypeEPC();
-                    epc.setEpcId(new BigInteger("1"));
-                    epc.setName("");
-                    directory.getEpcOrDirectory().add(epc);
+                DataHandler initialNativeFormat = getService().readInitialNativeFormat(nativeType, null, null, owner, processName, versionName, creationDate);
 
-                    JAXBContext jc = JAXBContext.newInstance("de.epml");
-                    Marshaller m = jc.createMarshaller();
-                    m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-                    JAXBElement<TypeEPML> rootepml = new de.epml.ObjectFactory().createEpml(epml);
-                    ByteArrayOutputStream epml_xml = new ByteArrayOutputStream();
-                    m.marshal(rootepml, epml_xml);
-                    nativeProcess = new ByteArrayInputStream(epml_xml.toByteArray());
-                }
-                // documentation and lastupdate are set to null, addFakeEvent is set to false
-                ProcessSummaryType process = getService().importProcess(owner, nativeType, processName, versionName,
-                                nativeProcess, domain, null, creationDate, null, false);
+                // Documentation and Last Update are set to NULL & No Canoniser properties are used
+                ImportProcessResultType importResult = getService().importProcess(owner, nativeType, processName, versionName, initialNativeFormat.getInputStream(), domain,
+                        null, creationDate, null, new HashSet<RequestPropertyType<?>>());
 
-                this.mainC.displayNewProcess(process);
+                this.mainC.displayNewProcess(importResult.getProcessSummary());
+                this.mainC.showCanoniserMessages(importResult.getMessage());
+
                 /* keep list of domains update */
                 this.domainCB.addItem(domain);
 
                 /* call editor */
-                editProcess(process);
+                editProcess(importResult.getProcessSummary());
                 closePopup();
             }
         } catch (WrongValueException e) {
@@ -256,7 +191,7 @@ public class CreateProcessController extends BaseController {
         }
     }
 
-    protected void editProcess(ProcessSummaryType process) throws Exception {
+    protected void editProcess(final ProcessSummaryType process) throws Exception {
         Listitem cbi = this.nativeTypesLB.getSelectedItem();
         // normally, only one version...
         VersionSummaryType version = process.getVersionSummaries().get(0);

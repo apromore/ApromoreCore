@@ -20,8 +20,10 @@ import org.apache.http.protocol.HttpRequestHandler;
 import org.apache.http.util.EntityUtils;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.plugin.deployment.exception.DeploymentException;
-import org.apromore.plugin.property.PropertyType;
+import org.apromore.plugin.PluginResult;
+import org.apromore.plugin.exception.PluginException;
+import org.apromore.plugin.impl.DefaultPluginRequest;
+import org.apromore.plugin.property.RequestPropertyType;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -44,17 +46,7 @@ public class YAWLDeploymentPluginUnitTest {
     public void setUp() throws Exception {
         server = new LocalTestServer(null, null);
         server.start();
-
         deploymentPlugin = new YAWLDeploymentPlugin();
-        for (PropertyType p: deploymentPlugin.getMandatoryProperties()) {
-            if (p.getId().equals("yawlEngineUrl")) {
-                p.setValue("http://localhost:"+server.getServiceAddress().getPort()+"/yawl/ia");
-            } else if (p.getId().equals("yawlUsername")) {
-                p.setValue("admin");
-            } else if (p.getId().equals("yawlPassword")) {
-                p.setValue("YAWL");
-            }
-        }
     }
 
     @After
@@ -70,7 +62,7 @@ public class YAWLDeploymentPluginUnitTest {
     }
 
     @Test
-    public void testDeployProcessCanonicalProcessType() throws IOException, JAXBException, SAXException, DeploymentException {
+    public void testDeployProcessCanonicalProcessType() throws IOException, JAXBException, SAXException, PluginException {
         server.register("/yawl/*", new HttpRequestHandler() {
 
             @Override
@@ -97,11 +89,14 @@ public class YAWLDeploymentPluginUnitTest {
         BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/SimpleMakeTripProcess.yawl.cpf"));
         CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(cpfInputStream, true).getValue();
         cpfInputStream.close();
-        deploymentPlugin.deployProcess(cpf);
-        assertEquals(1, deploymentPlugin.getPluginMessages().size());
-        assertEquals("YAWL Engine message: test", deploymentPlugin.getPluginMessages().get(0).getMessage());
+        DefaultPluginRequest request = new DefaultPluginRequest();
+        request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUrl", "http://localhost:"+server.getServiceAddress().getPort()+"/yawl/ia"));
+        request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUsername", "admin"));
+        request.addRequestProperty(new RequestPropertyType<String>("yawlEnginePassword", "YAWL"));
+        PluginResult result = deploymentPlugin.deployProcess(cpf, request);
+        assertEquals(1, result.getPluginMessage().size());
+        assertEquals("YAWL Engine message: test", result.getPluginMessage().get(0).getMessage());
     }
-
 
     @Test
     public void testGetNativeType() {

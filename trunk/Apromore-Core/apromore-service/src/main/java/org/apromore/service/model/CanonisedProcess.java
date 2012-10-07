@@ -1,9 +1,11 @@
 package org.apromore.service.model;
 
 import java.io.InputStream;
+import java.util.List;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.plugin.message.PluginMessage;
 
 /**
  * Stores the Canonical Format and the Annotation.
@@ -20,6 +22,8 @@ public class CanonisedProcess {
 
     private InputStream anf;
     private AnnotationsType ant;
+
+    private List<PluginMessage> messages;
 
     /**
      * Public Constructor.
@@ -42,7 +46,7 @@ public class CanonisedProcess {
      *
      * @param anf the annotation
      */
-    public void setAnf(InputStream anf) {
+    public void setAnf(final InputStream anf) {
         this.anf = anf;
     }
 
@@ -50,7 +54,7 @@ public class CanonisedProcess {
         return cpt;
     }
 
-    public void setCpt(CanonicalProcessType cpt) {
+    public void setCpt(final CanonicalProcessType cpt) {
         this.cpt = cpt;
     }
 
@@ -58,7 +62,7 @@ public class CanonisedProcess {
         return ant;
     }
 
-    public void setAnt(AnnotationsType ant) {
+    public void setAnt(final AnnotationsType ant) {
         this.ant = ant;
     }
 
@@ -76,7 +80,17 @@ public class CanonisedProcess {
      *
      * @param cpf the canonical format
      */
-    public void setCpf(InputStream cpf) {
+    public void setCpf(final InputStream cpf) {
         this.cpf = cpf;
+    }
+
+
+    public List<PluginMessage> getMessages() {
+        return messages;
+    }
+
+
+    public void setMessages(final List<PluginMessage> messages) {
+        this.messages = messages;
     }
 }

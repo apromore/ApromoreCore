@@ -1,8 +1,8 @@
 package org.apromore.plugin.property;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 import org.junit.Test;
 
@@ -10,21 +10,14 @@ public class BooleanPropertyUnitTest {
 
     @Test
     public void test() {
-        BooleanProperty prop = new BooleanProperty("t1", "test", "test", false, false);
-        assertFalse(prop.getValueAsBoolean());
-        assertFalse((Boolean)prop.getValue());
+        PluginPropertyType<Boolean> prop = new PluginPropertyType<Boolean>("t1", "test", "test", false, false);
+        assertFalse(prop.getValue());
+        assertFalse(prop.getValue());
 
-        BooleanProperty prop2 = new BooleanProperty("t1", "test", "test", false);
-        try {
-            prop2.setValue("String");
-            fail();
-        } catch (IllegalArgumentException e) {
-            // Expected
-        }
-
-        BooleanProperty prop3 = new BooleanProperty("t1", "test", "test", false);
+        PluginPropertyType<Boolean> prop3 = new PluginPropertyType<Boolean>("t1", "test", Boolean.class, "test", false);
         prop3.setValue(new Boolean(true));
-        assertTrue(prop3.getValueAsBoolean());
+        assertTrue(prop3.getValue());
+        assertEquals(Boolean.class, prop3.getValueType());
     }
 
 }

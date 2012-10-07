@@ -1,6 +1,8 @@
 package org.apromore.service;
 
-import javax.activation.DataHandler;
+import java.io.InputStream;
+import java.util.Set;
+
 import javax.activation.DataSource;
 
 import org.apromore.dao.model.ProcessBranch;
@@ -9,8 +11,11 @@ import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.UpdateProcessException;
+import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
+import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.service.model.CanonisedProcess;
 
 /**
  * Interface for the Process Service. Defines all the methods that will do the majority of the work for
@@ -30,37 +35,40 @@ public interface ProcessService {
 
     /**
      * Import a Process.
+     *
      * @param username      The user doing the importing.
      * @param processName   the name of the process being imported.
      * @param cpfURI        the Canonical URI
      * @param versionName   the version of the Process
      * @param nativeType    the native process format type
-     * @param cpf           the dataHandler of the Process to import (the actual process model)
+     * @param cpf           the canonised process
+     * @param nativeXml     the original native process XML
      * @param domain        the domain of the model
      * @param documentation any documentation that is required
      * @param created       the time created
      * @param lastUpdate    the time last updated
      * @return the processSummaryType
      * @throws ImportException if the import process failed for any reason.
-     * <p/>
-     * Deprecated - Use the insertProcess Instead.
+     *
      */
     ProcessSummaryType importProcess(String username, String processName, String cpfURI, String versionName, String nativeType,
-            DataHandler cpf, String domain, String documentation, String created, String lastUpdate) throws ImportException;
+            CanonisedProcess cpf, InputStream nativeXml, String domain, String documentation, String created, String lastUpdate) throws ImportException;
 
     /**
      * Export a BMP Model but in a particular format.
+     *
      * @param name       the process model name
      * @param processId  the processId
      * @param version    the version of the process model
      * @param nativeType the format of the model
      * @param annName    the annotation format
      * @param withAnn    do we export annotations as well.
+     * @param canoniserProperties 
      * @return the XML but as a dataSource object
      * @throws ExportFormatException if for some reason the process model can not be found.
      */
-    DataSource exportFormat(final String name, final Integer processId, final String version, final String nativeType,
-            final String annName, boolean withAnn) throws ExportFormatException;
+    ExportFormatResultType exportProcess(final String name, final Integer processId, final String version, final String nativeType,
+            final String annName, boolean withAnn, Set<RequestPropertyType<?>> canoniserProperties) throws ExportFormatException;
 
     /**
      * Updates a processes meta data, this is the Name, Version, domain, rating and then updated the Native xml with these details.

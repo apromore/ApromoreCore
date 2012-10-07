@@ -12,7 +12,7 @@ public class SimpleSpringCanoniserProviderIntgTest {
     @Test
     public void testSimpleSpringCanoniserProvider() throws PluginNotFoundException {
         SimpleSpringCanoniserProvider canoniserProvider = new SimpleSpringCanoniserProvider();
-        assertNotNull(canoniserProvider.getInternalCanoniserList());
+        assertNotNull(canoniserProvider.getInternalCanoniserSet());
         assertEquals(1, canoniserProvider.listAll().size());
         assertNotNull(canoniserProvider.findByNativeType("testType"));
         assertNotNull(canoniserProvider.findByNativeTypeAndName("testType", "test"));

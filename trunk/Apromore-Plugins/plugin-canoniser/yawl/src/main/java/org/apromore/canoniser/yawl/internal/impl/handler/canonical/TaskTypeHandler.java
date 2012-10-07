@@ -80,7 +80,7 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
             taskFacts.setDecomposesTo(refD);
 
             if (hasResources(getObject()) && !isAutomatic(getObject())) {
-                taskFacts.setResourcing(new ResourcingHelper(getContext()).convertResourceing(getObject()));
+                taskFacts.setResourcing(new TaskResourcingHelper(getContext()).convertResourceing(getObject()));
             } else {
                 convertCodelet(d, getObject());
                 convertYAWLService(d, getObject());

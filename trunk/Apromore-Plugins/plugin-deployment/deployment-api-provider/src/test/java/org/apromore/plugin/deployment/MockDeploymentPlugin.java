@@ -1,20 +1,15 @@
 package org.apromore.plugin.deployment;
 
-import java.util.List;
 import java.util.Set;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.plugin.PluginRequest;
+import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.deployment.exception.DeploymentException;
-import org.apromore.plugin.message.PluginMessage;
 import org.apromore.plugin.property.PropertyType;
 
 public class MockDeploymentPlugin implements DeploymentPlugin {
-
-    @Override
-    public List<PluginMessage> getPluginMessages() {
-        return null;
-    }
 
     @Override
     public String getName() {
@@ -42,28 +37,36 @@ public class MockDeploymentPlugin implements DeploymentPlugin {
     }
 
     @Override
-    public Set<PropertyType> getAvailableProperties() {
-        return null;
-    }
-
-    @Override
-    public Set<PropertyType> getMandatoryProperties() {
-        return null;
-    }
-
-    @Override
     public String getNativeType() {
         return "YAWL 2.2";
     }
 
-    @Override
-    public void deployProcess(final CanonicalProcessType canonicalProcess) throws DeploymentException {
 
+    @Override
+    public PluginResult deployProcess(final CanonicalProcessType canonicalProcess, final PluginRequest request) throws DeploymentException {
+        return null;
     }
 
     @Override
-    public void deployProcess(final CanonicalProcessType canonicalProcess, final AnnotationsType annotation) throws DeploymentException {
-
+    public PluginResult deployProcess(final CanonicalProcessType canonicalProcess, final AnnotationsType annotation, final PluginRequest request)
+            throws DeploymentException {
+        return null;
     }
+
+    @Override
+    public Set<PropertyType<?>> getAvailableProperties() {
+        return null;
+    }
+
+    @Override
+    public Set<PropertyType<?>> getMandatoryProperties() {
+        return null;
+    }
+
+    @Override
+    public Set<PropertyType<?>> getOptionalProperties() {
+        return null;
+    }
+
 
 }

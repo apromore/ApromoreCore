@@ -13,9 +13,11 @@ package org.apromore.plugin.deployment;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.plugin.MessageAwarePlugin;
+import org.apromore.plugin.PluginRequest;
+import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.PropertyAwarePlugin;
 import org.apromore.plugin.deployment.exception.DeploymentException;
+import org.apromore.plugin.exception.PluginException;
 
 /**
  * Interface for Deployment Plugins, that support deploying processes to a process/work-flow engine.
@@ -23,7 +25,7 @@ import org.apromore.plugin.deployment.exception.DeploymentException;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt</a>
  *
  */
-public interface DeploymentPlugin extends MessageAwarePlugin, PropertyAwarePlugin {
+public interface DeploymentPlugin extends PropertyAwarePlugin {
 
     /**
      * Native type the Deployment Plugin uses
@@ -37,8 +39,9 @@ public interface DeploymentPlugin extends MessageAwarePlugin, PropertyAwarePlugi
 	 *
 	 * @param canonicalProcess the process to be deployed
      * @throws DeploymentException in case of an error during deployment
+	 * @throws PluginException in case of an error related to Plugins
 	 */
-	void deployProcess(CanonicalProcessType canonicalProcess) throws DeploymentException;
+	PluginResult deployProcess(CanonicalProcessType canonicalProcess, PluginRequest request) throws DeploymentException, PluginException;
 
 	/**
      * Deploys the process in canonical process format to a process/work-flow engine.
@@ -46,7 +49,8 @@ public interface DeploymentPlugin extends MessageAwarePlugin, PropertyAwarePlugi
      * @param canonicalProcess the process to be deployed
      * @param annotation to be used during deployment
      * @throws DeploymentException in case of an error during deployment
+	 * @throws PluginException in case of an error related to Plugins
      */
-    void deployProcess(CanonicalProcessType canonicalProcess, AnnotationsType annotation) throws DeploymentException;
+	PluginResult deployProcess(CanonicalProcessType canonicalProcess, AnnotationsType annotation, PluginRequest request) throws DeploymentException, PluginException;
 
 }

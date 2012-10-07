@@ -16,12 +16,10 @@
  */
 package org.apromore.plugin.provider.impl;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.List;
-
-import javax.annotation.Resource;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
 
 import org.apromore.plugin.Plugin;
 import org.apromore.plugin.exception.PluginNotFoundException;
@@ -40,17 +38,15 @@ public class PluginProviderImpl implements PluginProvider {
     /**
      * Will be injected by Eclipse Blueprint OSGi Framework at runtime
      */
-    @Resource
-    private List<Plugin> pluginList;
+    private Set<Plugin> pluginSet;
 
     // Getter and Setter need to be public for DI
-
-    public List<Plugin> getPluginList() {
-        return pluginList;
+    public Set<Plugin> getInternalPluginSet() {
+        return pluginSet;
     }
 
-    public void setPluginList(final List<Plugin> pluginList) {
-        this.pluginList = pluginList;
+    public void setInternalPluginList(final Set<Plugin> pluginSet) {
+        this.pluginSet = pluginSet;
     }
 
     /*
@@ -59,8 +55,8 @@ public class PluginProviderImpl implements PluginProvider {
      * @see org.apromore.plugin.provider.PluginProvider#listAll()
      */
     @Override
-    public Collection<Plugin> listAll() {
-        return Collections.unmodifiableCollection(getPluginList());
+    public Set<Plugin> listAll() {
+        return Collections.unmodifiableSet(getInternalPluginSet());
     }
 
     /*
@@ -69,8 +65,8 @@ public class PluginProviderImpl implements PluginProvider {
      * @see org.apromore.plugin.provider.PluginProvider#listByType(java.lang.String)
      */
     @Override
-    public Collection<Plugin> listByType(final String type) {
-        return Collections.unmodifiableList(findAllPlugin(null, type, null));
+    public Set<Plugin> listByType(final String type) {
+        return Collections.unmodifiableSet(findAllPlugin(null, type, null));
     }
 
     /*
@@ -79,10 +75,13 @@ public class PluginProviderImpl implements PluginProvider {
      * @see org.apromore.plugin.provider.PluginProvider#listByName(java.lang.String)
      */
     @Override
-    public Collection<Plugin> listByName(final String name) {
-        return Collections.unmodifiableList(findAllPlugin(name, null, null));
+    public Set<Plugin> listByName(final String name) {
+        return Collections.unmodifiableSet(findAllPlugin(name, null, null));
     }
 
+    /* (non-Javadoc)
+     * @see org.apromore.plugin.provider.PluginProvider#findByName(java.lang.String)
+     */
     @Override
     public Plugin findByName(final String name) throws PluginNotFoundException {
         return findByNameAndVersion(name, null);
@@ -95,20 +94,21 @@ public class PluginProviderImpl implements PluginProvider {
      */
     @Override
     public Plugin findByNameAndVersion(final String name, final String version) throws PluginNotFoundException {
-        final List<Plugin> resultList = findAllPlugin(name, null, version);
-        if (!resultList.isEmpty()) {
+        final Set<Plugin> resultList = findAllPlugin(name, null, version);
+        Iterator<Plugin> iterator = resultList.iterator();
+        if (iterator.hasNext()) {
             // Return first one found
-            return resultList.get(0);
+            return iterator.next();
         }
         throw new PluginNotFoundException("Could not find plugin with name: " + ((name != null) ? name : "null") + " version: "
                 + ((version != null) ? version : "null"));
     }
 
-    private List<Plugin> findAllPlugin(final String name, final String type, final String version) {
+    private Set<Plugin> findAllPlugin(final String name, final String type, final String version) {
 
-        final List<Plugin> resultList = new ArrayList<Plugin>();
+        final Set<Plugin> resultList = new HashSet<Plugin>();
 
-        for (final Plugin c : getPluginList()) {
+        for (final Plugin c : getInternalPluginSet()) {
             if (PluginProviderHelper.compareNullable(type, c.getType()) && PluginProviderHelper.compareNullable(name, c.getName())
                     && PluginProviderHelper.compareNullable(version, c.getVersion())) {
                 resultList.add(c);

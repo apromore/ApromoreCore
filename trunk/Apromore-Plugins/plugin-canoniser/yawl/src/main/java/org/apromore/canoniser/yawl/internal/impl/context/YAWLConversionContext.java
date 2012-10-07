@@ -288,7 +288,7 @@ public final class YAWLConversionContext extends ConversionContext {
         }
         Collection<ExternalNetElementType> c = predecessorsMap.get(new ElementAdapter(netElement));
         if (c == null) {
-            c = new ArrayList<ExternalNetElementType>(3);
+            c = new ArrayList<ExternalNetElementType>();
         }
         return Collections.unmodifiableCollection(c);
     }

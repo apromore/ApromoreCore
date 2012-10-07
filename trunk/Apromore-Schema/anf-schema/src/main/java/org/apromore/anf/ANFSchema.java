@@ -7,7 +7,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
-import javax.xml.bind.PropertyException;
 import javax.xml.bind.Unmarshaller;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
@@ -56,11 +55,10 @@ public class ANFSchema {
      * @param anf
      * @param isValidating
      * @throws JAXBException
-     * @throws PropertyException
      * @throws SAXException
      */
     public static void marshalAnnotationFormat(final OutputStream annotationFormat, final AnnotationsType anf, final boolean isValidating)
-            throws JAXBException, PropertyException, SAXException {
+            throws JAXBException, SAXException {
         final JAXBContext context = JAXBContext.newInstance(ANF_CONTEXT);
         final Marshaller marshaller = context.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);

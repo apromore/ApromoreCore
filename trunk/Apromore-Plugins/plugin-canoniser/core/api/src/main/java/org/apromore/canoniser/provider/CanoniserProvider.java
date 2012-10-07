@@ -11,7 +11,7 @@
  */
 package org.apromore.canoniser.provider;
 
-import java.util.Collection;
+import java.util.Set;
 
 import org.apromore.canoniser.Canoniser;
 import org.apromore.plugin.exception.PluginNotFoundException;
@@ -27,18 +27,18 @@ public interface CanoniserProvider {
     /**
      * List all available Canoniser
      *
-     * @return Collection of Canoniser
+     * @return Set of Canoniser
      */
-    Collection<Canoniser> listAll();
+    Set<Canoniser> listAll();
 
     /**
      * List all available Canoniser converting the specified native type.
      *
      * @param nativeType
      *            for example "EPML 2.0" or "YAWL 2.2"
-     * @return Collection of Canoniser
+     * @return Set of Canoniser
      */
-    Collection<Canoniser> listByNativeType(String nativeType);
+    Set<Canoniser> listByNativeType(String nativeType);
 
     /**
      * List all available Canoniser converting the specified native type with the exact name. Please note there could be multiple versions installed,
@@ -48,9 +48,9 @@ public interface CanoniserProvider {
      *            for example "EPML 2.0" or "YAWL 2.2"
      * @param name
      *            usually the full class name of the Canoniser
-     * @return Collection of Canoniser
+     * @return Set of Canoniser
      */
-    Collection<Canoniser> listByNativeTypeAndName(String nativeType, String name);
+    Set<Canoniser> listByNativeTypeAndName(String nativeType, String name);
 
     /**
      * Return the first Canoniser that is found with the given parameters.

@@ -17,50 +17,59 @@
 package org.apromore.plugin.property;
 
 /**
- * Property of a Plugin
+ * <p>
+ * Defines a single Property of a Plugin. Contains both meta data (name, description, ..) and the value of the Property. Subclasses MUST provide a
+ * valid {@see Object#equals(Object)} and {@see Object#hashCode()) implementation, see {@see DefaultProperty} for an example.
+ *
+ * <p>
+ * Please not you should only use basic Java classes as properties, as properties often have to be converted to XML during Web Service invocation.
+ * {@see: InputStream} and {@see: OutputStream} are OK to use!
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
+ * @param <T> type of Property
  */
-public interface PropertyType {
+public interface PropertyType<T> {
 
     /**
+     * Identifier of the PropertyType. Two properties with the same identifier are "equal"!
+     *
      * @return a unique identifier (across the Plugin) for this property
      */
     String getId();
 
-	/**
-	 * @return the human readable name of this property (may be presented in UI)
-	 */
-	String getName();
+    /**
+     * @return the human readable name of this property (may be presented in UI)
+     */
+    String getName();
 
-	/**
-	 * @return the class of the properties value
-	 */
-	Class<?> getValueType();
+    /**
+     * @return the class of the properties value
+     */
+    Class<T> getValueType();
 
-	/**
-	 * @return if the property is required for the Plugin to work
-	 */
-	boolean isMandatory();
+    /**
+     * @return if the property is required for the Plugin to work
+     */
+    boolean isMandatory();
 
-	/**
-	 * @return the human readable description of this property (may be presented in UI)
-	 */
-	String getDescription();
+    /**
+     * @return the human readable description of this property (may be presented in UI)
+     */
+    String getDescription();
 
-	/**
-	 * @return the actual value, which always will be of the specified value type
-	 */
-	Object getValue();
+    /**
+     * @return the actual value, which always will be of the specified value type
+     */
+    T getValue();
 
-	/**
-	 * @param value
-	 */
-	void setValue(Object value);
+    /**
+     * @param value
+     */
+    void setValue(T value);
 
-	/**
-	 * @return false if the value is NULL, true otherwise
-	 */
-	boolean hasValue();
+    /**
+     * @return false if the value is NULL, true otherwise
+     */
+    boolean hasValue();
 }

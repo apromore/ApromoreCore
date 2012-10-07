@@ -59,7 +59,7 @@ public class ExpressionUtilsTest {
                     return new XPathFunction() {
 
                         @Override
-                        public Object evaluate(final List args) throws XPathFunctionException {
+                        public Object evaluate(@SuppressWarnings("rawtypes") final List args) throws XPathFunctionException {
                             if (args.size() == 1 && args.get(0) instanceof String) {
                                 String objectName = (String)args.get(0);
                                 if (objectName.equals("test")) {
@@ -197,7 +197,7 @@ public class ExpressionUtilsTest {
         ExternalTaskFactsType task = new ExternalTaskFactsType();
         task.setId("taskId");
         try {
-            String yawlXQuery = ExpressionUtils.convertXQueryToYAWLTaskQuery(expr, task);
+            ExpressionUtils.convertXQueryToYAWLTaskQuery(expr, task);
             fail();
         } catch (CanoniserException e) {
         }

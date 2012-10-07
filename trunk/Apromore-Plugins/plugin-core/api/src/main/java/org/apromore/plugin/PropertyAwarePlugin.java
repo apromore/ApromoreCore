@@ -21,25 +21,33 @@ import java.util.Set;
 import org.apromore.plugin.property.PropertyType;
 
 /**
- * A PropertyAwarePlugin defines a Set of properties that can or must be provided by the caller for proper operation of the Plugin.
+ * A PropertyAwarePlugin defines a Set of properties that may or must be provided by the caller for proper operation of the Plugin.
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
 public interface PropertyAwarePlugin extends Plugin {
 
-	/**
-	 * Returns the Set of all available properties for this Plugin.
-	 *
-	 * @return Set of property names
-	 */
-	Set<PropertyType> getAvailableProperties();
+    /**
+     * Returns the Set of all available properties for this Plugin.
+     *
+     * @return Set of PropertyType that contains both mandatory and optional properties.
+     */
+    Set<PropertyType<?>> getAvailableProperties();
 
-	/**
-	 * Returns the Set of all required properties for this Plugin.
-	 *
-	 * @return Set of required property names
-	 */
-	Set<PropertyType> getMandatoryProperties();
+    /**
+     * Returns the Set of all required properties for this Plugin.
+     *
+     * @return Set of PropertyType that are mandatory
+     */
+    Set<PropertyType<?>> getMandatoryProperties();
+
+    /**
+     * Returns the Set of all optional properties for this Plugin. That should be the result of {@see #getAvailableProperties()} minus the result of
+     * {@see #getMandatoryProperties()}.
+     *
+     * @return Set of PropertyType that are optional
+     */
+    Set<PropertyType<?>> getOptionalProperties();
 
 }

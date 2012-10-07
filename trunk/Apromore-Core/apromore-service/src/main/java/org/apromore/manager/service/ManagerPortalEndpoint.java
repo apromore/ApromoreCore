@@ -1,18 +1,25 @@
 package org.apromore.manager.service;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.activation.DataHandler;
 import javax.activation.DataSource;
+import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
 
+import org.apromore.canoniser.Canoniser;
+import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
 import org.apromore.dao.model.EditSession;
@@ -21,6 +28,8 @@ import org.apromore.exception.ExceptionVersion;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
+import org.apromore.manager.client.helper.CanoniserHelper;
+import org.apromore.manager.client.helper.PluginHelper;
 import org.apromore.mapper.ClusterMapper;
 import org.apromore.mapper.DomainMapper;
 import org.apromore.mapper.NativeTypeMapper;
@@ -40,6 +49,7 @@ import org.apromore.model.EditProcessDataOutputMsgType;
 import org.apromore.model.EditSessionType;
 import org.apromore.model.ExportFormatInputMsgType;
 import org.apromore.model.ExportFormatOutputMsgType;
+import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.FragmentResponseType;
 import org.apromore.model.FragmentType;
 import org.apromore.model.GetClusterInputMsgType;
@@ -55,13 +65,18 @@ import org.apromore.model.GetPairwiseDistancesInputMsgType;
 import org.apromore.model.GetPairwiseDistancesOutputMsgType;
 import org.apromore.model.ImportProcessInputMsgType;
 import org.apromore.model.ImportProcessOutputMsgType;
+import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.MergeProcessesInputMsgType;
 import org.apromore.model.MergeProcessesOutputMsgType;
+import org.apromore.model.NativeMetaData;
 import org.apromore.model.NativeTypesType;
 import org.apromore.model.ObjectFactory;
 import org.apromore.model.PairDistancesType;
 import org.apromore.model.ParameterType;
 import org.apromore.model.ParametersType;
+import org.apromore.model.PluginInfo;
+import org.apromore.model.PluginInfoResult;
+import org.apromore.model.PluginProperties;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ProcessVersionIdType;
@@ -69,12 +84,22 @@ import org.apromore.model.ProcessVersionIdentifierType;
 import org.apromore.model.ProcessVersionIdsType;
 import org.apromore.model.ReadAllUsersInputMsgType;
 import org.apromore.model.ReadAllUsersOutputMsgType;
+import org.apromore.model.ReadCanoniserInfoInputMsgType;
+import org.apromore.model.ReadCanoniserInfoOutputMsgType;
 import org.apromore.model.ReadDomainsInputMsgType;
 import org.apromore.model.ReadDomainsOutputMsgType;
 import org.apromore.model.ReadEditSessionInputMsgType;
 import org.apromore.model.ReadEditSessionOutputMsgType;
+import org.apromore.model.ReadInitialNativeFormatInputMsgType;
+import org.apromore.model.ReadInitialNativeFormatOutputMsgType;
+import org.apromore.model.ReadInstalledPluginsInputMsgType;
+import org.apromore.model.ReadInstalledPluginsOutputMsgType;
+import org.apromore.model.ReadNativeMetaDataInputMsgType;
+import org.apromore.model.ReadNativeMetaDataOutputMsgType;
 import org.apromore.model.ReadNativeTypesInputMsgType;
 import org.apromore.model.ReadNativeTypesOutputMsgType;
+import org.apromore.model.ReadPluginInfoInputMsgType;
+import org.apromore.model.ReadPluginInfoOutputMsgType;
 import org.apromore.model.ReadProcessSummariesInputMsgType;
 import org.apromore.model.ReadProcessSummariesOutputMsgType;
 import org.apromore.model.ReadUserInputMsgType;
@@ -92,16 +117,24 @@ import org.apromore.model.WriteEditSessionInputMsgType;
 import org.apromore.model.WriteEditSessionOutputMsgType;
 import org.apromore.model.WriteUserInputMsgType;
 import org.apromore.model.WriteUserOutputMsgType;
+import org.apromore.plugin.Plugin;
+import org.apromore.plugin.PropertyAwarePlugin;
+import org.apromore.plugin.impl.DefaultPluginRequest;
+import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.service.CanoniserService;
 import org.apromore.service.ClusterService;
+import org.apromore.service.DeploymentService;
 import org.apromore.service.DomainService;
 import org.apromore.service.FormatService;
 import org.apromore.service.FragmentService;
 import org.apromore.service.MergeService;
+import org.apromore.service.PluginService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.RepositoryService;
 import org.apromore.service.SessionService;
 import org.apromore.service.SimilarityService;
 import org.apromore.service.UserService;
+import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.ClusterFilter;
 import org.apromore.service.model.ClusterSettings;
 import org.apromore.service.model.NameValuePair;
@@ -125,11 +158,18 @@ public class ManagerPortalEndpoint {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ManagerPortalEndpoint.class.getName());
 
+    private static final ObjectFactory WS_OBJECT_FACTORY = new ObjectFactory();
+
     private static final String NAMESPACE = "urn:qut-edu-au:schema:apromore:manager";
 
-
+    @Autowired @Qualifier("DeploymentService")
+    private DeploymentService deploymentService;
+    @Autowired @Qualifier("PluginService")
+    private PluginService pluginService;
     @Autowired @Qualifier("FragmentService")
     private FragmentService fragmentSrv;
+    @Autowired @Qualifier("CanoniserService")
+    private CanoniserService canoniserService;
     @Autowired @Qualifier("ProcessService")
     private ProcessService procSrv;
     @Autowired @Qualifier("RepositoryService")
@@ -175,11 +215,11 @@ public class ManagerPortalEndpoint {
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error("", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
-        return new ObjectFactory().createEditProcessDataResponse(res);
+        return WS_OBJECT_FACTORY.createEditProcessDataResponse(res);
     }
 
     @PayloadRoot(localPart = "MergeProcessesRequest", namespace = NAMESPACE)
@@ -218,11 +258,11 @@ public class ManagerPortalEndpoint {
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error("", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
-        return new ObjectFactory().createMergeProcessesResponse(res);
+        return WS_OBJECT_FACTORY.createMergeProcessesResponse(res);
     }
 
 
@@ -255,11 +295,11 @@ public class ManagerPortalEndpoint {
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error("", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
-        return new ObjectFactory().createSearchForSimilarProcessesResponse(res);
+        return WS_OBJECT_FACTORY.createSearchForSimilarProcessesResponse(res);
     }
 
     @PayloadRoot(localPart = "WriteAnnotationRequest", namespace = NAMESPACE)
@@ -279,15 +319,16 @@ public class ManagerPortalEndpoint {
             Boolean isNew = payload.isIsNew();
             DataHandler handler = payload.getNative();
             InputStream native_is = handler.getInputStream();
+            //TODO use CanoniserService instead
             caClient.GenerateAnnotation(annotName, editSessionCode, isNew, processId, version, nat_type, native_is);
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error("", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
-        return new ObjectFactory().createWriteAnnotationResponse(res);
+        return WS_OBJECT_FACTORY.createWriteAnnotationResponse(res);
     }
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "GetAllClustersRequest")
@@ -310,7 +351,7 @@ public class ManagerPortalEndpoint {
         res.setUsernames(allUsers);
         result.setCode(0);
         result.setMessage("");
-        return new ObjectFactory().createReadAllUsersResponse(res);
+        return WS_OBJECT_FACTORY.createReadAllUsersResponse(res);
     }
 
     @PayloadRoot(localPart = "DeleteEditSessionRequest", namespace = NAMESPACE)
@@ -327,11 +368,11 @@ public class ManagerPortalEndpoint {
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error("", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
-        return new ObjectFactory().createDeleteEditSessionResponse(res);
+        return WS_OBJECT_FACTORY.createDeleteEditSessionResponse(res);
     }
 
     @PayloadRoot(localPart = "DeleteProcessVersionsRequest", namespace = NAMESPACE)
@@ -353,11 +394,11 @@ public class ManagerPortalEndpoint {
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error("", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
-        return new ObjectFactory().createDeleteProcessVersionsResponse(res);
+        return WS_OBJECT_FACTORY.createDeleteProcessVersionsResponse(res);
     }
 
 
@@ -383,20 +424,24 @@ public class ManagerPortalEndpoint {
             editSessionC.setProcessName(editSessionP.getProcessName());
             editSessionC.setUsername(editSessionP.getUsername());
             editSessionC.setVersionName(editSessionP.getVersionName());
+            //TODO use CanoniserService instead
             caClient.CanoniseVersion(editSessionCode, editSessionC, newCpfURI(), native_is);
             result.setCode(0);
             result.setMessage("");
         } catch (ExceptionVersion ex) {
+            LOGGER.error("", ex);
             result.setCode(-3);
             result.setMessage(ex.getMessage());
         } catch (IOException ex){
+            LOGGER.error("", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         } catch (ExceptionCanoniseVersion ex) {
+            LOGGER.error("", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
-        return new ObjectFactory().createUpdateProcessResponse(res);
+        return WS_OBJECT_FACTORY.createUpdateProcessResponse(res);
     }
 
 
@@ -432,11 +477,11 @@ public class ManagerPortalEndpoint {
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error("", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
-        return new ObjectFactory().createReadEditSessionResponse(res);
+        return WS_OBJECT_FACTORY.createReadEditSessionResponse(res);
     }
 
     @PayloadRoot(localPart = "WriteEditSessionRequest", namespace = NAMESPACE)
@@ -467,11 +512,11 @@ public class ManagerPortalEndpoint {
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error("", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
-        return new ObjectFactory().createWriteEditSessionResponse(res);
+        return WS_OBJECT_FACTORY.createWriteEditSessionResponse(res);
     }
 
     @PayloadRoot(localPart = "GetFragmentRequest", namespace = NAMESPACE)
@@ -492,7 +537,7 @@ public class ManagerPortalEndpoint {
         }
 
         res.setFragment(fragment);
-        return new ObjectFactory().createFragmentResponse(res);
+        return WS_OBJECT_FACTORY.createFragmentResponse(res);
     }
 
 
@@ -515,9 +560,10 @@ public class ManagerPortalEndpoint {
             String annName = payload.getAnnotationName();
             boolean withAnn = payload.isWithAnnotations();
 
-            source = procSrv.exportFormat(name, processId, version, format, annName, withAnn);
+            Set<RequestPropertyType<?>> requestProperties = PluginHelper.convertToRequestProperties(payload.getCanoniserProperties());
+            ExportFormatResultType exportResult = procSrv.exportProcess(name, processId, version, format, annName, withAnn, requestProperties);
+            res.setExportResult(exportResult);
 
-            res.setNative(new DataHandler(source));
             result.setCode(0);
             result.setMessage("");
         } catch (ExportFormatException efe) {
@@ -527,7 +573,7 @@ public class ManagerPortalEndpoint {
         }
 
         res.setResult(result);
-        return new ObjectFactory().createExportFormatResponse(res);
+        return WS_OBJECT_FACTORY.createExportFormatResponse(res);
     }
 
     @PayloadRoot(localPart = "ImportProcessRequest", namespace = NAMESPACE)
@@ -549,23 +595,32 @@ public class ManagerPortalEndpoint {
             String creationDate = editSession.getCreationDate();
             String lastUpdate = editSession.getLastUpdate();
 
-            //Boolean addFakeEvents = payload.isAddFakeEvents();
             DataHandler handler = payload.getProcessDescription();
+            PluginProperties xmlCanoniserProperties = payload.getCanoniserProperties();
+
+            Set<RequestPropertyType<?>> canoniserProperties = PluginHelper.convertToRequestProperties(xmlCanoniserProperties);
+            CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, handler.getInputStream(), canoniserProperties);
 
             ProcessSummaryType process = procSrv.importProcess(username, processName, newCpfURI(), versionName,
-                    nativeType, handler, domain, "", creationDate, lastUpdate);
+                    nativeType, canonisedProcess, handler.getInputStream(), domain, "", creationDate, lastUpdate);
 
-            res.setProcessSummary(process);
+            ImportProcessResultType importResult = new ImportProcessResultType();
+            if (canonisedProcess.getMessages() != null) {
+                importResult.setMessage(PluginHelper.convertFromPluginMessages(canonisedProcess.getMessages()));
+            }
+            importResult.setProcessSummary(process);
+            res.setImportProcessResult(importResult);
+
             result.setCode(0);
             result.setMessage("");
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error("", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
 
         res.setResult(result);
-        return new ObjectFactory().createImportProcessResponse(res);
+        return WS_OBJECT_FACTORY.createImportProcessResponse(res);
     }
 
     @PayloadRoot(localPart = "CreateClustersRequest", namespace = NAMESPACE)
@@ -588,7 +643,7 @@ public class ManagerPortalEndpoint {
         clusterSummaries.setNumClusters(numClusters);
         res.setClusterSummaries(clusterSummaries);
 
-        return new ObjectFactory().createCreateClustersResponse(res);
+        return WS_OBJECT_FACTORY.createCreateClustersResponse(res);
     }
 
     @PayloadRoot(localPart = "PairwiseDistancesRequest", namespace = NAMESPACE)
@@ -607,7 +662,7 @@ public class ManagerPortalEndpoint {
             LOGGER.error("Failed to get pairwise distances. " + e.getMessage());
         }
 
-        return new ObjectFactory().createPairwiseDistancesResponse(res);
+        return WS_OBJECT_FACTORY.createPairwiseDistancesResponse(res);
     }
 
     @PayloadRoot(localPart = "GetClusteringSummaryRequest", namespace = NAMESPACE)
@@ -621,7 +676,7 @@ public class ManagerPortalEndpoint {
         ClusteringSummaryType summaryType = ClusterMapper.convertClusteringSummaryToClusteringSummaryType(summary);
         res.setClusteringSummary(summaryType);
 
-        return new ObjectFactory().createGetClusteringSummaryResponse(res);
+        return WS_OBJECT_FACTORY.createGetClusteringSummaryResponse(res);
     }
 
     @PayloadRoot(localPart = "GetClusterSummariesRequest", namespace = NAMESPACE)
@@ -637,7 +692,7 @@ public class ManagerPortalEndpoint {
             ClusterSummaryType ctype = ClusterMapper.convertClusterInfoToClusterSummaryType(c);
             res.getClusterSummaries().add(ctype);
         }
-        return new ObjectFactory().createGetClusterSummariesResponse(res);
+        return WS_OBJECT_FACTORY.createGetClusterSummariesResponse(res);
     }
 
     @PayloadRoot(localPart = "GetClusterRequest", namespace = NAMESPACE)
@@ -651,7 +706,7 @@ public class ManagerPortalEndpoint {
         org.apromore.service.model.Cluster cluster = clusterService.getCluster(clusterId);
         ClusterType ctype = ClusterMapper.convertClusterToClusterType(cluster);
         res.setCluster(ctype);
-        return new ObjectFactory().createGetClusterResponse(res);
+        return WS_OBJECT_FACTORY.createGetClusterResponse(res);
     }
 
 
@@ -668,7 +723,7 @@ public class ManagerPortalEndpoint {
             ClusterType ctype = ClusterMapper.convertClusterToClusterType(c);
             res.getClusters().add(ctype);
         }
-        return new ObjectFactory().createGetClustersResponse(res);
+        return WS_OBJECT_FACTORY.createGetClustersResponse(res);
     }
 
     @PayloadRoot(localPart = "WriteUserRequest", namespace = NAMESPACE)
@@ -688,7 +743,7 @@ public class ManagerPortalEndpoint {
             result.setCode(0);
             result.setMessage(ex.getMessage());
         }
-        return new ObjectFactory().createWriteUserResponse(res);
+        return WS_OBJECT_FACTORY.createWriteUserResponse(res);
     }
 
     @PayloadRoot(localPart = "ReadNativeTypesRequest", namespace = NAMESPACE)
@@ -708,7 +763,7 @@ public class ManagerPortalEndpoint {
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
-        return new ObjectFactory().createReadNativeTypesResponse(res);
+        return WS_OBJECT_FACTORY.createReadNativeTypesResponse(res);
     }
 
     /* (non-Javadoc)
@@ -727,11 +782,11 @@ public class ManagerPortalEndpoint {
             result.setMessage("");
             res.setDomains(domains);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error("", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
-        return new ObjectFactory().createReadDomainsResponse(res);
+        return WS_OBJECT_FACTORY.createReadDomainsResponse(res);
     }
 
     /* (non-Javadoc)
@@ -751,11 +806,11 @@ public class ManagerPortalEndpoint {
             result.setMessage("");
             res.setUser(user);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error("", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
-        return new ObjectFactory().createReadUserResponse(res);
+        return WS_OBJECT_FACTORY.createReadUserResponse(res);
     }
 
     /* (non-Javadoc)
@@ -777,28 +832,200 @@ public class ManagerPortalEndpoint {
             result.setMessage("");
             res.setProcessSummaries(processes);
         } catch (Exception ex) {
-            ex.printStackTrace();
+            LOGGER.error("ReadProcessSummaries", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
         }
-        return new ObjectFactory().createReadProcessSummariesResponse(res);
+        return WS_OBJECT_FACTORY.createReadProcessSummariesResponse(res);
     }
 
+    @PayloadRoot(localPart = "ReadInstalledPluginsRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<ReadInstalledPluginsOutputMsgType> readInstalledPlugins(@RequestPayload final JAXBElement<ReadInstalledPluginsInputMsgType> req) {
+        LOGGER.info("Executing operation 'ReadInstalledPlugins'");
+        ReadInstalledPluginsOutputMsgType res = new ReadInstalledPluginsOutputMsgType();
+        ResultType result = new ResultType();
+        try {
+            Set<Plugin> plugins;
 
+            String pluginTypeFilter = req.getValue().getTypeFilter();
+            if (pluginTypeFilter != null) {
+                plugins = pluginService.listByType(pluginTypeFilter);
+            } else {
+                plugins = pluginService.listAll();
+            }
+
+            for (Plugin p: plugins) {
+                res.getPluginInfo().add(PluginHelper.convertPluginInfo(p));
+            }
+
+            result.setCode(0);
+            result.setMessage("Successfully read plugin info!");
+        } catch (Exception ex) {
+            LOGGER.error("ReadInstalledPlugins", ex);
+            result.setCode(-1);
+            result.setMessage(ex.getMessage());
+        }
+
+        res.setResult(result);
+        return WS_OBJECT_FACTORY.createReadInstalledPluginsResponse(res);
+    }
+
+    @PayloadRoot(localPart = "ReadPluginInfoRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<ReadPluginInfoOutputMsgType> readPluginInfo(@RequestPayload final JAXBElement<ReadPluginInfoInputMsgType> req) {
+        LOGGER.info("Executing operation 'ReadPluginInfo'");
+        ReadPluginInfoOutputMsgType res = new ReadPluginInfoOutputMsgType();
+        ResultType result = new ResultType();
+        try {
+            String pluginName = req.getValue().getPluginName();
+            String pluginVersion = req.getValue().getPluginVersion();
+            Plugin plugin = pluginService.findByNameAndVersion(pluginName, pluginVersion);
+
+            PluginInfo pluginInfo = PluginHelper.convertPluginInfo(plugin);
+            PluginInfoResult infoResult = new PluginInfoResult();
+
+            infoResult.setPluginInfo(pluginInfo);
+            if (plugin instanceof PropertyAwarePlugin) {
+                PropertyAwarePlugin propertyAwarePlugin = (PropertyAwarePlugin) plugin;
+                infoResult.setMandatoryProperties(PluginHelper.convertFromPluginProperties(propertyAwarePlugin.getMandatoryProperties()));
+                infoResult.setOptionalProperties(PluginHelper.convertFromPluginProperties(propertyAwarePlugin.getOptionalProperties()));
+            }
+
+            res.setPluginInfoResult(infoResult);
+            result.setCode(0);
+            result.setMessage("Successfully read plugin info!");
+        } catch (Exception ex) {
+            LOGGER.error("ReadPluginInfo", ex);
+            result.setCode(-1);
+            result.setMessage(ex.getMessage());
+        }
+
+        res.setResult(result);
+        return WS_OBJECT_FACTORY.createReadPluginInfoResponse(res);
+    }
+
+    @PayloadRoot(localPart = "ReadCanoniserInfoRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<ReadCanoniserInfoOutputMsgType> readCanoniserInfo(@RequestPayload final JAXBElement<ReadCanoniserInfoInputMsgType> req) {
+        LOGGER.info("Executing operation 'ReadCanoniserInfo'");
+        ReadCanoniserInfoOutputMsgType res = new ReadCanoniserInfoOutputMsgType();
+        ResultType result = new ResultType();
+        try {
+            String nativeType = req.getValue().getNativeType();
+            Set<Canoniser> cList = canoniserService.listByNativeType(nativeType);
+            Iterator<Canoniser> iter = cList.iterator();
+            while (iter.hasNext()) {
+                Canoniser c = iter.next();
+                res.getPluginInfo().add(PluginHelper.convertPluginInfo(c));
+            }
+            result.setCode(0);
+            result.setMessage("Successfully read plugin info!");
+        } catch (Exception ex) {
+            LOGGER.error("ReadCanoniserInfo", ex);
+            result.setCode(-1);
+            result.setMessage(ex.getMessage());
+        }
+
+        res.setResult(result);
+        return WS_OBJECT_FACTORY.createReadCanoniserInfoResponse(res);
+    }
+
+    @PayloadRoot(localPart = "ReadNativeMetaDataRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<ReadNativeMetaDataOutputMsgType> readNativeMetaData(@RequestPayload final JAXBElement<ReadNativeMetaDataInputMsgType> req) {
+        LOGGER.info("Executing operation 'ReadNativeMetaData'");
+        ReadNativeMetaDataOutputMsgType res = new ReadNativeMetaDataOutputMsgType();
+        ResultType result = new ResultType();
+        try {
+            Canoniser c = null;
+            String nativeType = req.getValue().getNativeType();
+            String canoniserName = req.getValue().getCanoniserName();
+            String canoniserVersion = req.getValue().getCanoniserVersion();
+            if (canoniserName != null && canoniserVersion != null) {
+                c = canoniserService.findByNativeTypeAndNameAndVersion(nativeType, canoniserName, canoniserName);
+            } else {
+                c = canoniserService.findByNativeType(nativeType);
+            }
+
+            CanoniserMetadataResult metaData = c.readMetaData(req.getValue().getNativeFormat().getInputStream(), new DefaultPluginRequest());
+            res.setNativeMetaData(CanoniserHelper.convertFromCanoniserMetaData(metaData));
+
+            result.setCode(0);
+            result.setMessage("Success 'ReadNativeMetaData'!");
+        } catch (Exception ex) {
+            LOGGER.error("ReadNativeMetaData", ex);
+            result.setCode(-1);
+            result.setMessage(ex.getMessage());
+        }
+
+        res.setResult(result);
+        return WS_OBJECT_FACTORY.createReadNativeMetaDataResponse(res);
+    }
+
+    @PayloadRoot(localPart = "ReadInitialNativeFormatRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<ReadInitialNativeFormatOutputMsgType> readInitialNativeFormat(@RequestPayload final JAXBElement<ReadInitialNativeFormatInputMsgType> req) {
+        LOGGER.info("Executing operation 'ReadInitialNativeFormat'");
+        ReadInitialNativeFormatOutputMsgType  res = new ReadInitialNativeFormatOutputMsgType();
+        ResultType result = new ResultType();
+        try {
+
+            Canoniser c = null;
+            String nativeType = req.getValue().getNativeType();
+            String canoniserName = req.getValue().getCanoniserName();
+            String canoniserVersion = req.getValue().getCanoniserVersion();
+            if (canoniserName != null && canoniserVersion != null) {
+                c = canoniserService.findByNativeTypeAndNameAndVersion(nativeType, canoniserName, canoniserName);
+            } else {
+                c = canoniserService.findByNativeType(nativeType);
+            }
+
+            ByteArrayOutputStream nativeXml = new ByteArrayOutputStream();
+
+            String processAuthor = null;
+            String processVersion = null;
+            String processName = null;
+            Date processCreated = null;
+
+            NativeMetaData nativeMetaData = req.getValue().getNativeMetaData();
+            if (nativeMetaData != null) {
+                processName = nativeMetaData.getProcessName();
+                processVersion = nativeMetaData.getProcessVersion();
+                processAuthor = nativeMetaData.getProcessAuthor();
+                if (nativeMetaData.getProcessCreated() != null) {
+                    processCreated = nativeMetaData.getProcessCreated().toGregorianCalendar().getTime();
+                }
+            }
+
+            c.createInitialNativeFormat(nativeXml, processName, processVersion, processAuthor, processCreated, new DefaultPluginRequest());
+            InputStream nativeXmlInputStream = new ByteArrayInputStream(nativeXml.toByteArray());
+
+            res.setNativeFormat(new DataHandler(new ByteArrayDataSource(nativeXmlInputStream, "text/xml")));
+
+            result.setCode(0);
+            result.setMessage("Success 'ReadNativeMetaData'!");
+        } catch (Exception ex) {
+            LOGGER.error("ReadInitialNativeFormat", ex);
+            result.setCode(-1);
+            result.setMessage(ex.getMessage());
+        }
+
+        res.setResult(result);
+        return WS_OBJECT_FACTORY.createReadInitialNativeFormatResponse(res);
+    }
 
     /**
      * Generate a cpf uri for version of processId
      *
      * @return the new cpf uri
      */
+    @Deprecated //TODO should CPF uri really be determined by date???
     private static String newCpfURI() {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmsSSS");
         Date date = new Date();
         return dateFormat.format(date);
     }
-
-
-
 
     public void setCaClient(final ManagerCanoniserClient caClient) {
         this.caClient = caClient;
@@ -830,5 +1057,29 @@ public class ManagerPortalEndpoint {
 
     public void setSesSrv(final SessionService sessionService) {
         this.sesSrv = sessionService;
+    }
+
+    public DeploymentService getDeploymentService() {
+        return deploymentService;
+    }
+
+    public void setDeploymentService(final DeploymentService deploymentService) {
+        this.deploymentService = deploymentService;
+    }
+
+    public PluginService getPluginService() {
+        return pluginService;
+    }
+
+    public void setPluginService(final PluginService pluginService) {
+        this.pluginService = pluginService;
+    }
+
+    public CanoniserService getCanoniserService() {
+        return canoniserService;
+    }
+
+    public void setCanoniserService(final CanoniserService canoniserService) {
+        this.canoniserService = canoniserService;
     }
 }
