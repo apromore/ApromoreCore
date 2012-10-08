@@ -29,7 +29,7 @@ import org.apromore.plugin.property.PropertyType;
 
 /**
  * Default implementation of an Apromore Plugin that allows for runtime parameters. If your Plugin should be configurable by the User at runtime, then
- * you should inherit this class and register your parameters using {@see DefaultPropertyAwarePlugin#registerProperty(PropertyType)} in the Constructor.
+ * you should inherit this class and register your parameters using {@link DefaultPropertyAwarePlugin#registerProperty(PluginPropertyType)} in the Constructor.
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
@@ -93,8 +93,6 @@ public abstract class DefaultPropertyAwarePlugin extends DefaultPlugin implement
         }
         return Collections.unmodifiableSet(allProperties);
     }
-
-
 
     /**
      * Adds a property to the list of available properties.
