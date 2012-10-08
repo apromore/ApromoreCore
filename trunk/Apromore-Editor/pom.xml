@@ -14,7 +14,7 @@
     <packaging>pom</packaging>
 
     <url>http://apromore.org/</url>
-    <name>Apromore Editor (Signarvio)</name>
+    <name>Apromore Editor (Signavio)</name>
     <description>The editor used by Apromore to display and edit the models.</description>
 
     <scm>
