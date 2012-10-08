@@ -48,12 +48,14 @@ import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TExpression;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
+import org.omg.spec.bpmn._20100524.model.TIntermediateThrowEvent;
 import org.omg.spec.bpmn._20100524.model.TLane;
 import org.omg.spec.bpmn._20100524.model.TLaneSet;
 import org.omg.spec.bpmn._20100524.model.TParticipant;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 import org.omg.spec.bpmn._20100524.model.TStartEvent;
+import org.omg.spec.bpmn._20100524.model.TSubProcess;
 import org.omg.spec.bpmn._20100524.model.TTask;
 import org.omg.spec.dd._20100524.dc.Bounds;
 import org.omg.spec.dd._20100524.dc.Point;
@@ -177,10 +179,15 @@ public class CanoniserDefinitions extends TDefinitions {
 
         // Assume there will be pools, all of which belong to a single collaboration
         TCollaboration collaboration = factory.createTCollaboration();
-        getRootElement().add(factory.createCollaboration(collaboration));
+        JAXBElement<TCollaboration> wrapperCollaboration = factory.createCollaboration(collaboration);
 
         // Translate CPF Nets as BPMN Processes
         for (final NetType net : cpf.getNet()) {
+
+            // Only root elements are decanonised here; subnets are dealt with by recursion
+            if (!cpf.getRootIds().contains(net.getId())) {
+                continue;
+            }
 
             // Add the BPMN Process element
             final TProcess process = new TProcess();
@@ -194,53 +201,16 @@ public class CanoniserDefinitions extends TDefinitions {
             participant.setProcessRef(new QName(BPMN_NS, process.getId()));
             collaboration.getParticipant().add(participant);
 
-            // Add the CPF ResourceType lattice as a BPMN Lane hierarchy
-            TLaneSet laneSet = new TLaneSet();
-            for (ResourceTypeType resourceType : cpf.getResourceType()) {
-                CpfResourceTypeType cpfResourceType = (CpfResourceTypeType) resourceType;
-                if (cpfResourceType.getGeneralizationRefs().isEmpty()) {
-                     TLane lane = new TLane();
-                     lane.setId(bpmnIdFactory.newId(cpfResourceType.getId()));
-                     idMap.put(cpfResourceType.getId(), lane);
-                     addChildLanes(lane, cpf.getResourceType(), bpmnIdFactory, idMap);
-                     laneSet.getLane().add(lane);
-                }
-            }
-            if (!laneSet.getLane().isEmpty()) {
-                process.getLaneSet().add(laneSet);
-            }
+            // Populate the BPMN Process element
+            populateProcess(new ProcessWrapper(process),
+                            net, cpf, factory, bpmnIdFactory, idMap, edgeMap, flowWithoutSourceRefMap, flowWithoutTargetRefMap);
 
-            // Add the CPF Edges as BPMN SequenceFlows
-            for (EdgeType edge : net.getEdge()) {
-                TSequenceFlow sequenceFlow = createSequenceFlow(edge, bpmnIdFactory, idMap, flowWithoutSourceRefMap, flowWithoutTargetRefMap);
-                edgeMap.put(edge.getId(), sequenceFlow);
-                process.getFlowElement().add(factory.createSequenceFlow(sequenceFlow));
+            /*
+            // If we haven't added the collaboration yet and this process is a pool, add the collaboration
+            if (!getRootElement().contains(wrapperCollaboration)) {
+                getRootElement().add(wrapperCollaboration);
             }
-
-            // Add the CPF Nodes as BPMN FlowNodes
-            for (NodeType node : net.getNode()) {
-                JAXBElement<? extends TFlowNode> flowNode = createFlowNode(node, bpmnIdFactory, idMap, factory);
-                process.getFlowElement().add(flowNode);
-
-                // Fill any BPMN @sourceRef or @targetRef attributes referencing this node
-                if (flowWithoutSourceRefMap.containsKey(node.getId())) {
-                    flowWithoutSourceRefMap.get(node.getId()).setSourceRef((TFlowNode) idMap.get(node.getId()));
-                    flowWithoutSourceRefMap.remove(node.getId());
-                }
-                if (flowWithoutTargetRefMap.containsKey(node.getId())) {
-                    flowWithoutTargetRefMap.get(node.getId()).setTargetRef((TFlowNode) idMap.get(node.getId()));
-                    flowWithoutTargetRefMap.remove(node.getId());
-                }
-
-                // Populate the lane flowNodeRefs
-                if (node instanceof WorkType) {
-                    for (ResourceTypeRefType resourceTypeRef : ((WorkType) node).getResourceTypeRef()) {
-                        TLane lane = (TLane) idMap.get(resourceTypeRef.getResourceTypeId());
-                        JAXBElement<Object> jeo = (JAXBElement) flowNode;
-                        lane.getFlowNodeRef().add((JAXBElement) flowNode);
-                    }
-                }
-            }
+            */
         }
 
         // Make sure all the deferred fields did eventually get filled in
@@ -346,9 +316,13 @@ public class CanoniserDefinitions extends TDefinitions {
      * @throws CanoniserException if <var>node</var> isn't an event or a task
      */
     private JAXBElement<? extends TFlowNode> createFlowNode(final NodeType node,
+                                                            final CanonicalProcessType cpf,
                                                             final IdFactory bpmnIdFactory,
                                                             final Map<String, TBaseElement> idMap,
-                                                            final BpmnObjectFactory factory) throws CanoniserException {
+                                                            final BpmnObjectFactory factory,
+                                                            final Map<String, TSequenceFlow> edgeMap,
+                                                            final Map<String, TSequenceFlow> flowWithoutSourceRefMap,
+                                                            final Map<String, TSequenceFlow> flowWithoutTargetRefMap) throws CanoniserException {
 
         if (node instanceof EventType) {
             // Count the incoming and outgoing edges to determine whether this is a start, end, or intermediate event
@@ -365,25 +339,118 @@ public class CanoniserDefinitions extends TDefinitions {
                 idMap.put(node.getId(), event);
                 return factory.createEndEvent(event);
             } else if (cpfNode.getIncomingEdges().size() > 0 && cpfNode.getOutgoingEdges().size() > 0) {
-                throw new CanoniserException("Intermediate event \"" + node.getId() + "\" not supported");
+                // assuming all intermediate events are ThrowEvents
+                TIntermediateThrowEvent event = new TIntermediateThrowEvent();
+                event.setId(bpmnIdFactory.newId(node.getId()));
+                idMap.put(node.getId(), event);
+                return factory.createIntermediateThrowEvent(event);
             } else {
                 throw new CanoniserException("Event \"" + node.getId() + "\" has no edges");
             }
         } else if (node instanceof TaskType) {
             TaskType that = (TaskType) node;
 
-            // TODO - implement subprocesses
             if (that.getSubnetId() != null) {
-                throw new CanoniserException("Subprocesses not supported");
+                TSubProcess subProcess = factory.createTSubProcess();
+                subProcess.setId(bpmnIdFactory.newId(node.getId()));
+                idMap.put(node.getId(), subProcess);
+                populateProcess(new ProcessWrapper(subProcess, "subprocess"),
+                                findNet(cpf, that.getSubnetId()),
+                                cpf, factory, bpmnIdFactory, idMap, edgeMap, flowWithoutSourceRefMap, flowWithoutTargetRefMap);
+                return factory.createSubProcess(subProcess);
+            } else {
+                TTask task = new TTask();
+                task.setId(bpmnIdFactory.newId(node.getId()));
+                idMap.put(node.getId(), task);
+                return factory.createTask(task);
             }
-
-            TTask task = new TTask();
-            task.setId(bpmnIdFactory.newId(node.getId()));
-            idMap.put(node.getId(), task);
-            return factory.createTask(task);
         } else {
             throw new CanoniserException("Node " + node.getId() + " type not supported: " + node.getClass().getCanonicalName());
         }
+    }
+
+    /**
+     * Find a {@link NetType} given its identifier.
+     *
+     * @param cpf  the CPF model to search
+     * @param id  the identifier attribute of the sought net
+     * @return the net in <code>cpf</code> with the identifier <code>id</code>
+     * @throws CanoniserException if <code>id</code> doesn't identify a net in <code>cpf</code>
+     */
+    private NetType findNet(final CanonicalProcessType cpf, final String id) throws CanoniserException {
+
+        for (final NetType net : cpf.getNet()) {
+            if (id.equals(net.getId())) {
+                return net;
+            }
+        }
+
+        // Failed to find the desired name
+        throw new CanoniserException("CPF model has no net with id " + id);
+    }
+
+    /**
+     * Add the lanes, nodes and so forth to a {@link TProcess} or {@link TSubProcess}.
+     *
+     * @param process  the {@link TProcess} or {@link TSubProcess} to be populated
+     */
+    private void populateProcess(final ProcessWrapper process,
+                                 final NetType net,
+                                 final CanonicalProcessType cpf,
+                                 final BpmnObjectFactory factory,
+                                 final IdFactory bpmnIdFactory,
+                                 final Map<String, TBaseElement> idMap,
+                                 final Map<String, TSequenceFlow> edgeMap,
+                                 final Map<String, TSequenceFlow> flowWithoutSourceRefMap,
+                                 final Map<String, TSequenceFlow> flowWithoutTargetRefMap) throws CanoniserException {
+
+            // Add the CPF ResourceType lattice as a BPMN Lane hierarchy
+            TLaneSet laneSet = new TLaneSet();
+            for (ResourceTypeType resourceType : cpf.getResourceType()) {
+                CpfResourceTypeType cpfResourceType = (CpfResourceTypeType) resourceType;
+                if (cpfResourceType.getGeneralizationRefs().isEmpty()) {
+                     TLane lane = new TLane();
+                     lane.setId(bpmnIdFactory.newId(cpfResourceType.getId()));
+                     idMap.put(cpfResourceType.getId(), lane);
+                     addChildLanes(lane, cpf.getResourceType(), bpmnIdFactory, idMap);
+                     laneSet.getLane().add(lane);
+                }
+            }
+            if (!laneSet.getLane().isEmpty()) {
+                process.getLaneSet().add(laneSet);
+            }
+
+            // Add the CPF Edges as BPMN SequenceFlows
+            for (EdgeType edge : net.getEdge()) {
+                TSequenceFlow sequenceFlow = createSequenceFlow(edge, bpmnIdFactory, idMap, flowWithoutSourceRefMap, flowWithoutTargetRefMap);
+                edgeMap.put(edge.getId(), sequenceFlow);
+                process.getFlowElement().add(factory.createSequenceFlow(sequenceFlow));
+            }
+
+            // Add the CPF Nodes as BPMN FlowNodes
+            for (NodeType node : net.getNode()) {
+                JAXBElement<? extends TFlowNode> flowNode = createFlowNode(node, cpf, bpmnIdFactory, idMap, factory, edgeMap, flowWithoutSourceRefMap, flowWithoutTargetRefMap);
+                process.getFlowElement().add(flowNode);
+
+                // Fill any BPMN @sourceRef or @targetRef attributes referencing this node
+                if (flowWithoutSourceRefMap.containsKey(node.getId())) {
+                    flowWithoutSourceRefMap.get(node.getId()).setSourceRef((TFlowNode) idMap.get(node.getId()));
+                    flowWithoutSourceRefMap.remove(node.getId());
+                }
+                if (flowWithoutTargetRefMap.containsKey(node.getId())) {
+                    flowWithoutTargetRefMap.get(node.getId()).setTargetRef((TFlowNode) idMap.get(node.getId()));
+                    flowWithoutTargetRefMap.remove(node.getId());
+                }
+
+                // Populate the lane flowNodeRefs
+                if (node instanceof WorkType) {
+                    for (ResourceTypeRefType resourceTypeRef : ((WorkType) node).getResourceTypeRef()) {
+                        TLane lane = (TLane) idMap.get(resourceTypeRef.getResourceTypeId());
+                        JAXBElement<Object> jeo = (JAXBElement) flowNode;
+                        lane.getFlowNodeRef().add((JAXBElement) flowNode);
+                    }
+                }
+            }
     }
 
     /**

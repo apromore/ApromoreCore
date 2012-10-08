@@ -1,13 +1,18 @@
 package org.apromore.canoniser.bpmn;
 
 // Java 2 Standard packages
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Date;
+import java.util.List;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -47,6 +52,8 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
+import org.apromore.plugin.PluginRequest;
+import org.apromore.plugin.PluginResult;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TProcess;
@@ -163,7 +170,77 @@ public class BPMN20CanoniserTest {
                                           org.omg.spec.dd._20100524.di.ObjectFactory.class);
     }
 
-    // Canonisation tests
+    // Tests
+
+    /**
+     * Test {@link BPMN20Canoniser#canonise(InputStream, List<AnnotationsType>, List<CanonicalProcessType>, PluginRequest)}.
+     */
+    @Test
+    public final void testCanonise() throws Exception {
+
+        // Construct test instance
+        BPMN20Canoniser canoniser = new BPMN20Canoniser();
+        PluginRequest request = null;
+        InputStream bpmnInput = new FileInputStream(new File(MODELS_DIR, "Case 1.bpmn20.xml"));
+        List<AnnotationsType> anfs = new ArrayList<AnnotationsType>();
+        List<CanonicalProcessType> cpfs = new ArrayList<CanonicalProcessType>();
+        PluginResult result = canoniser.canonise(bpmnInput, anfs, cpfs, request);
+
+        // Inspect the result
+        assertEquals(1, anfs.size());
+        assertEquals(1, cpfs.size());
+        testCanonise1(cpfs.get(0));
+    }
+
+    /**
+     * Test {@link BPMN20Canoniser#createInitialNativeFormat}.
+     */
+    @Test
+    public final void testCreateInitialNativeFormat() throws Exception {
+
+        // Construct test instance
+        ByteArrayOutputStream initialBPMN = new ByteArrayOutputStream();
+        BPMN20Canoniser canoniser = new BPMN20Canoniser();
+        Date now = new Date();
+        PluginRequest request = null;
+        PluginResult result = canoniser.createInitialNativeFormat(initialBPMN,
+                                                                  "Test",                         // process name
+                                                                  "0.0",                          // process version
+                                                                  getClass().getCanonicalName(),  // process author
+                                                                  now,                            // creation timestamp
+                                                                  request);
+        initialBPMN.close();
+
+        // Serialize out the empty BPMN model for offline inspection
+        OutputStream out = new FileOutputStream(new File(OUTPUT_DIR, "initial.bpmn20.xml"));
+        out.write(initialBPMN.toByteArray());
+        out.close();
+
+        // Validate the empty BPMN model
+        Unmarshaller unmarshaller = context.createUnmarshaller();
+        if (System.getProperty("bpmnvalidation") != null) {
+            unmarshaller.setSchema(BPMN_SCHEMA);
+        }
+        TDefinitions definitions = unmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(initialBPMN.toByteArray())),
+                                                          TDefinitions.class)
+                                               .getValue();
+    }
+
+    /**
+     * Test {@link BPMN20Canoniser#deCanonise}.
+     */
+    @Test
+    public final void testDeCanonise() throws Exception {
+
+        CanonicalProcessType cpf = marshalCPF(new File(TESTCASES_DIR, "Basic.cpf"));
+        AnnotationsType anf = null;
+        ByteArrayOutputStream bpmnOutput = new ByteArrayOutputStream();
+        PluginRequest request = null;
+        BPMN20Canoniser canoniser = new BPMN20Canoniser();
+        PluginResult result = canoniser.deCanonise(cpf, anf, bpmnOutput, request);
+    }
+
+    // Canonisation tests - these exercise the static version of BPMN20Canoniser#canonise, rather than the API method
 
     /**
      * Test canonisation of <code>Test1.bpmn20.xml</code>.
@@ -275,15 +352,38 @@ public class BPMN20CanoniserTest {
     }
 
     /**
+     * @param file  a CPF-formatted file
+     * @return JAXB object model of the parsed <code>file</code>
+     * @throws FileNotFoundException  if <code>file</code> doesn't exist
+     * @throws JAXBException if <code>file</code> can't be unmarshalled as CPF
+     */
+    private CanonicalProcessType marshalCPF(File file) throws FileNotFoundException, JAXBException {
+        Unmarshaller unmarshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT)
+                                               .createUnmarshaller();
+        unmarshaller.setListener(new CpfUnmarshallerListener());
+        unmarshaller.setProperty(OBJECT_FACTORY, new org.apromore.canoniser.bpmn.cpf.ObjectFactory());
+        return unmarshaller.unmarshal(new StreamSource(new FileInputStream(file)), CanonicalProcessType.class)
+                           .getValue();
+    }
+
+    /**
      * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 1.bpmn20.xml">case #1</a>.
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 1.bpmn20.svg"/></div>
      */
     @Test
-    public void testCanonise1() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    public void testCanonise1() throws Exception {
+        testCanonise1(testCanonise("Case 1").getCpf(0));
+    }
+
+    /**
+     * Shared code between {@link testCanonise()} and {@link testCanonise1()}, since they both read
+     * <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 1.bpmn20.xml">case #1</a>.
+     */
+    private void testCanonise1(CanonicalProcessType cpf) throws Exception {
 
         // Expect 3 nodes
-        NetType net = testCanonise("Case 1").getCpf(0).getNet().get(0);
+        NetType net = cpf.getNet().get(0);
         assertEquals(3, net.getNode().size());
 
         // Start event "E1"
