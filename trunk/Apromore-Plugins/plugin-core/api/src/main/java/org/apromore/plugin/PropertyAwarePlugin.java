@@ -43,8 +43,8 @@ public interface PropertyAwarePlugin extends Plugin {
     Set<PropertyType<?>> getMandatoryProperties();
 
     /**
-     * Returns the Set of all optional properties for this Plugin. That should be the result of {@see #getAvailableProperties()} minus the result of
-     * {@see #getMandatoryProperties()}.
+     * Returns the Set of all optional properties for this Plugin. That should be the result of {@link #getAvailableProperties()} minus the result of
+     * {@link #getMandatoryProperties()}.
      *
      * @return Set of PropertyType that are optional
      */

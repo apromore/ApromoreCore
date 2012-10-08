@@ -58,9 +58,10 @@ public abstract class DefaultPlugin implements Plugin {
         try {
             String pluginConfigName = getConfigFileName();
             if (this.getClass().getResource(pluginConfigName) != null) {
-                InputStream configStream = this.getClass().getResourceAsStream(pluginConfigName);
-                getPluginConfiguration().load(configStream);
-                configStream.close();
+                try (InputStream configStream = this.getClass().getResourceAsStream(pluginConfigName)) {
+                    getPluginConfiguration().load(configStream);
+                    configStream.close();
+                }
             }
         } catch (IOException e) {
             LOGGER.warn("Could not load config file with name " + getConfigFileName() + " for Plugin " + getClass().getName()
@@ -127,7 +128,7 @@ public abstract class DefaultPlugin implements Plugin {
      *
      * @param name
      *            of the configuration option
-     * @return
+     * @return value of the configuration
      */
     public String getConfigurationByName(final String name) {
         return pluginConfiguration.getProperty(name);
@@ -140,7 +141,7 @@ public abstract class DefaultPlugin implements Plugin {
      *            of the configuration option
      * @param defaultValue
      *            if no configuration option is found
-     * @return
+     * @return value of the configuration
      */
     public String getConfigurationByName(final String name, final String defaultValue) {
         return pluginConfiguration.getProperty(name, defaultValue);
@@ -150,7 +151,9 @@ public abstract class DefaultPlugin implements Plugin {
         return pluginConfiguration;
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see java.lang.Object#hashCode()
      */
     @Override
@@ -158,29 +161,34 @@ public abstract class DefaultPlugin implements Plugin {
         return new HashCodeBuilder().append(getName()).append(getVersion()).toHashCode();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see java.lang.Object#equals(java.lang.Object)
      */
     @Override
     public boolean equals(final Object obj) {
-        if (obj == null) { return false; }
-        if (obj == this) { return true; }
+        if (obj == null) {
+            return false;
+        }
+        if (obj == this) {
+            return true;
+        }
         if (obj.getClass() != getClass()) {
-          return false;
+            return false;
         }
         DefaultPlugin plugin = (DefaultPlugin) obj;
         // We just compare Name and Version, a Plugin is equals to another is Name and Version match
-        return new EqualsBuilder()
-                      .appendSuper(super.equals(obj))
-                      .append(getName(), plugin.getName())
-                      .append(getVersion(), plugin.getVersion())
-                      .isEquals();
+        return new EqualsBuilder().appendSuper(super.equals(obj)).append(getName(), plugin.getName()).append(getVersion(), plugin.getVersion())
+                .isEquals();
     }
 
+    /* (non-Javadoc)
+     * @see java.lang.Object#toString()
+     */
     @Override
     public String toString() {
-        return new ToStringBuilder(this).append("type",getType()).append("name",getName()).append("version",getVersion()).toString();
+        return new ToStringBuilder(this).append("type", getType()).append("name", getName()).append("version", getVersion()).toString();
     }
-
 
 }

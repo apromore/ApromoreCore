@@ -16,14 +16,16 @@
  */
 package org.apromore.plugin.property;
 
+import java.io.InputStream;
+
 /**
  * <p>
  * Defines a single Property of a Plugin. Contains both meta data (name, description, ..) and the value of the Property. Subclasses MUST provide a
- * valid {@see Object#equals(Object)} and {@see Object#hashCode()) implementation, see {@see DefaultProperty} for an example.
+ * valid {@link Object#equals(Object)} and {@link Object#hashCode()} implementation, see {@link PluginPropertyType} for an example.
  *
  * <p>
  * Please not you should only use basic Java classes as properties, as properties often have to be converted to XML during Web Service invocation.
- * {@see: InputStream} and {@see: OutputStream} are OK to use!
+ * {@link InputStream} is OK to use and will be shown as a file upload!
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *

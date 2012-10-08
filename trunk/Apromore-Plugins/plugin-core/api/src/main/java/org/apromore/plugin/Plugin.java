@@ -19,7 +19,7 @@ package org.apromore.plugin;
 /**
  * <p>
  * Interface implemented by every Apromore Plugin. Each Plugin offers theses methods, so it is possible to handle all Plugins in a generic manner.
- * Please note implementations should make sure they override {@see #equals(Object)} and {@see #hashCode()} in a way, that two Plugins are the same if
+ * Please note implementations should make sure they override {@link #equals(Object)} and {@link #hashCode()} in a way, that two Plugins are the same if
  * their name and version match.
  *
  * <p>
@@ -64,5 +64,5 @@ public interface Plugin {
      * @return author of the plugin
      */
     String getAuthor();
-    
+
 }

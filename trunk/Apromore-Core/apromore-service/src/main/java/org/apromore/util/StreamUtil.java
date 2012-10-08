@@ -265,9 +265,8 @@ public class StreamUtil {
      * @param xpdl the XPDL
      * @return the output stream of the XPDL object as xml.
      */
-    @SuppressWarnings("unchecked")
     public static String marshallXPDL(final PackageType xpdl) throws JAXBException {
-        ByteArrayOutputStream native_xml = null;
+        ByteArrayOutputStream native_xml = new ByteArrayOutputStream();
         JAXBContext jc = JAXBContext.newInstance(Constants.XPDL2_CONTEXT);
         Marshaller m = jc.createMarshaller();
         m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);

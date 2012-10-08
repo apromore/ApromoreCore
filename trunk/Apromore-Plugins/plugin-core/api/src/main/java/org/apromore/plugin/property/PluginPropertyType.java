@@ -68,14 +68,12 @@ public class PluginPropertyType<T> implements PropertyType<T> {
      *            of the property
      * @param name
      *            of the property
-     * @param valueType
-     *            of the property
      * @param description
      *            of the property
      * @param isMandatory
      *            true if Plugin requires this property to work properly
      * @param defaultValue
-     *            of type {@see #getValueType()}
+     *            of type T
      */
     @SuppressWarnings("unchecked")
     public PluginPropertyType(final String id, final String name, final String description, final Boolean isMandatory, final T defaultValue) {

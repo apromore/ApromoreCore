@@ -1,6 +1,6 @@
 package ${package};
 
-import java.util.List;
+import java.util.Set;
 
 import ${apiPackage}.${apiName};
 import org.springframework.stereotype.Service;
@@ -8,12 +8,12 @@ import org.springframework.stereotype.Service;
 @Service("osgi${apiName}ProviderImpl")
 public class OSGi${apiName}Provider extends ${apiName}ProviderImpl {
 
-    public List<${apiName}> get${apiName}List() {
-        return getInternal${apiName}List();
+    public Set<${apiName}> get${apiName}Set() {
+        return getInternal${apiName}Set();
     }
 
-    public void set${apiName}List(final List<${apiName}> new${apiName}List) {
-        setInternal${apiName}List(new${apiName}List);
+    public void set${apiName}Set(final Set<${apiName}> new${apiName}Set) {
+        setInternal${apiName}Set(new${apiName}Set);
     }
 
 }
