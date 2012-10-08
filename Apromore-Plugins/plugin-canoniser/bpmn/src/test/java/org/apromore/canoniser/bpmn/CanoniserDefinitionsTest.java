@@ -52,6 +52,7 @@ import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 import org.omg.spec.bpmn._20100524.model.TStartEvent;
+import org.omg.spec.bpmn._20100524.model.TSubProcess;
 import org.omg.spec.bpmn._20100524.model.TTask;
 import org.omg.spec.dd._20100524.di.Plane;
 
@@ -218,7 +219,6 @@ public class CanoniserDefinitionsTest {
     /**
      * Test decanonisation of <code>Basic.cpf</code> and <code>Basic.anf</code>.
      */
-    @Ignore
     @Test
     public final void testDecanoniseBasic() throws Exception {
 
@@ -302,5 +302,32 @@ public class CanoniserDefinitionsTest {
 
         // Obtain the test instance
         CanoniserDefinitions definitions = testDecanonise("TwoPools");
+    }
+
+    /**
+     * Test decanonisaztion of <code>Subprocess.cpf</code> and <code>Subprocess.and</code>.
+     */
+    @Test
+    public final void testDecanoniseSubprocess() throws Exception {
+        
+        // Obtain the test instance
+        CanoniserDefinitions definitions = testDecanonise("Subprocess");
+
+        // Process c6
+        assertEquals(TProcess.class, definitions.getRootElement().get(0).getValue().getClass());
+        TProcess c6 = (TProcess) definitions.getRootElement().get(0).getValue();
+        assertEquals("c6", c6.getId());
+
+        // Expect 5 flow elements
+        assertEquals(5, c6.getFlowElement().size());
+
+        // Start event c1
+        TStartEvent c1 = (TStartEvent) c6.getFlowElement().get(2).getValue();
+        assertEquals("c1", c1.getId());
+
+        // SubProcess c2
+        TSubProcess c2 = (TSubProcess) c6.getFlowElement().get(3).getValue();
+        assertEquals("c2", c2.getId());
+        assertEquals(5, c2.getFlowElement().size());
     }
 }
