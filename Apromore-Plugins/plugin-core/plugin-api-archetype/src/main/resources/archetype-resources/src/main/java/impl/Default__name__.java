@@ -6,7 +6,7 @@ import ${package}.${name};
 /**
  * <p>
  * Default implementation of your new Plugin API. It extends from {@see DefaultPropertyAwarePlugin} which provides
- * the basic default implementation for handling Messages and Properties.
+ * the default implementation for handling runtime properties of your Plugin.
  *
  * <p>
  * Note that you don't have to inherit all these default implementations and interfaces. For a simple Plugin API

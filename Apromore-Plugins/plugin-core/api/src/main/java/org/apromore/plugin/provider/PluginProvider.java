@@ -26,7 +26,7 @@ import org.apromore.plugin.exception.PluginNotFoundException;
  * services (Gemini Blueprint) to pick up availables plugins automatically. Though it would also be possible to provide non-OSGi based
  * implementations.
  *
- * @see http://www.eclipse.org/gemini/blueprint/
+ * @see "http://www.eclipse.org/gemini/blueprint/"
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
