@@ -2,9 +2,9 @@ package org.apromore.canoniser.result;
 
 import java.util.Date;
 
-import org.apromore.plugin.impl.DefaultPluginResult;
+import org.apromore.plugin.impl.PluginResultImpl;
 
-public class CanoniserMetadataResult extends DefaultPluginResult {
+public class CanoniserMetadataResult extends PluginResultImpl {
 
     private String processAuthor;
     private String processName;

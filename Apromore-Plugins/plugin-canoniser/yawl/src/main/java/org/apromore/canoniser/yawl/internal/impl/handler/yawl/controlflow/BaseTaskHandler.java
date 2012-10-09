@@ -60,7 +60,7 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
     /**
      * Return a converted TaskType that is already added to its parent Net
      *
-     * @param task
+     * @param task to convert
      * @return the CPF task
      * @throws CanoniserException
      */

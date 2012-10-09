@@ -2,6 +2,7 @@ package org.apromore.plugin.deployment;
 
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.util.HashSet;
@@ -16,12 +17,14 @@ import org.junit.Test;
 public class OSGiDeploymentPluginProviderTest {
 
     private DeploymentPluginProvider provider;
+    private MockDeploymentPlugin mockPlugin;
 
     @Before
     public void setUp() {
         final OSGiDeploymentPluginProvider dp = new OSGiDeploymentPluginProvider();
         final Set<DeploymentPlugin> deploymentPluginSet = new HashSet<DeploymentPlugin>();
-        deploymentPluginSet.add(new MockDeploymentPlugin());
+        mockPlugin = new MockDeploymentPlugin();
+        deploymentPluginSet.add(mockPlugin);
         dp.setDeploymentPluginSet(deploymentPluginSet);
         this.provider = dp;
     }
@@ -33,10 +36,10 @@ public class OSGiDeploymentPluginProviderTest {
     }
 
     @Test
-    public void testFindByName() throws PluginNotFoundException {
-        assertNotNull(provider.findByName("test"));
+    public void testFindByNativeTypeAndNameAndVersion() throws PluginNotFoundException {
+        assertNotNull(provider.findByNativeTypeAndNameAndVersion("YAWL 2.2","test","1.0"));
         try {
-            provider.findByName("invalid");
+            provider.findByNativeTypeAndNameAndVersion("YAWL 2.2","invalid","1.0");
             fail();
           } catch (PluginNotFoundException e) {
           }
@@ -51,5 +54,15 @@ public class OSGiDeploymentPluginProviderTest {
         } catch (PluginNotFoundException e) {
         }
     }
+
+    @Test
+    public void testListByNativeType() {
+        assertNotNull(provider.listByNativeType("YAWL 2.2"));
+        assertNotNull(provider.listAll());
+        assertTrue(provider.listByNativeType("YAWL 2.2").size() == 1);
+        assertTrue(provider.listAll().size() == 1);
+    }
+
+
 
 }

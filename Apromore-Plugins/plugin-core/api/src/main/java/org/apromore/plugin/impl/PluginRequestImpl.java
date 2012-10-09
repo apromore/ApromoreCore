@@ -17,7 +17,7 @@ import org.apromore.plugin.property.RequestPropertyType;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public class DefaultPluginRequest implements PluginRequest {
+public class PluginRequestImpl implements PluginRequest {
 
     /**
      * Map of request properties by their ID

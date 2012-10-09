@@ -26,7 +26,7 @@ import org.apromore.model.PluginMessages;
 import org.apromore.model.PluginProperties;
 import org.apromore.model.PluginProperty;
 import org.apromore.plugin.message.PluginMessage;
-import org.apromore.plugin.message.SimplePluginMessage;
+import org.apromore.plugin.message.PluginMessageImpl;
 import org.apromore.service.impl.ProcessServiceImpl;
 import org.apromore.service.model.CanonisedProcess;
 import org.easymock.EasyMock;
@@ -80,7 +80,7 @@ public class ExportProcessEndpointTest {
 
         CanonisedProcess cp = new CanonisedProcess();
         ArrayList<PluginMessage> pluginMsg = new ArrayList<PluginMessage>();
-        pluginMsg.add(new SimplePluginMessage("test"));
+        pluginMsg.add(new PluginMessageImpl("test"));
         cp.setMessages(pluginMsg);
 
         ExportFormatResultType exportFormatResultType = new ExportFormatResultType();

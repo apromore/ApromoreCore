@@ -2,6 +2,7 @@ package org.apromore.plugin.deployment.yawl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -21,12 +22,15 @@ import org.apache.http.util.EntityUtils;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginResult;
+import org.apromore.plugin.deployment.exception.DeploymentException;
 import org.apromore.plugin.exception.PluginException;
-import org.apromore.plugin.impl.DefaultPluginRequest;
+import org.apromore.plugin.impl.PluginRequestImpl;
 import org.apromore.plugin.property.RequestPropertyType;
+import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.w3c.dom.Node;
 import org.xml.sax.SAXException;
 
 /**
@@ -86,21 +90,113 @@ public class YAWLDeploymentPluginUnitTest {
             }
 
         });
-        BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/SimpleMakeTripProcess.yawl.cpf"));
-        CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(cpfInputStream, true).getValue();
-        cpfInputStream.close();
-        DefaultPluginRequest request = new DefaultPluginRequest();
-        request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUrl", "http://localhost:"+server.getServiceAddress().getPort()+"/yawl/ia"));
-        request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUsername", "admin"));
-        request.addRequestProperty(new RequestPropertyType<String>("yawlEnginePassword", "YAWL"));
-        PluginResult result = deploymentPlugin.deployProcess(cpf, request);
-        assertEquals(1, result.getPluginMessage().size());
-        assertEquals("YAWL Engine message: test", result.getPluginMessage().get(0).getMessage());
+        try (BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/SimpleMakeTripProcess.yawl.cpf"))) {
+            CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(cpfInputStream, true).getValue();
+            PluginRequestImpl request = new PluginRequestImpl();
+            request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUrl", "http://localhost:"+server.getServiceAddress().getPort()+"/yawl/ia"));
+            request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUsername", "admin"));
+            request.addRequestProperty(new RequestPropertyType<String>("yawlEnginePassword", "YAWL"));
+            PluginResult result = deploymentPlugin.deployProcess(cpf, request);
+            assertEquals(1, result.getPluginMessage().size());
+            assertEquals("YAWL Engine message: test", result.getPluginMessage().get(0).getMessage());
+        }
+    }
+
+    @Test
+    public void testDeployProcessCanonicalProcessTypeFailure() throws IOException, JAXBException, SAXException, PluginException {
+        server.register("/yawl/*", new HttpRequestHandler() {
+
+            @Override
+            public void handle(final HttpRequest request, final HttpResponse response, final HttpContext context) throws HttpException, IOException {
+                String str = EntityUtils.toString( ((HttpEntityEnclosingRequest)request).getEntity());
+                if (str.contains("action=connect")) {
+                    if (str.contains("userID=admin") && str.contains("password=Se4tMaQCi9gr0Q2usp7P56Sk5vM%3D")) {
+                        response.setEntity(new StringEntity("<response>"+TESTSESSIONHANDLE+"</response>", "UTF-8"));
+                    } else {
+                        response.setStatusCode(500);
+                    }
+                } else if (str.contains("action=upload")) {
+                    if (str.contains("sessionHandle="+TESTSESSIONHANDLE) && str.contains("specXML=")) {
+                        response.setEntity(new StringEntity("<response><failure><reason><error><message>There is a specification with an identical id to [UID: WP1Sequence- Version: 0.1] already loaded into the engine.</message></error></reason></failure></response>", "UTF-8"));
+                    } else {
+                        response.setStatusCode(500);
+                    }
+                } else {
+                    response.setStatusCode(500);
+                }
+            }
+
+        });
+        try (BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/SimpleMakeTripProcess.yawl.cpf"))) {
+            CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(cpfInputStream, true).getValue();
+            PluginRequestImpl request = new PluginRequestImpl();
+            request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUrl", "http://localhost:"+server.getServiceAddress().getPort()+"/yawl/ia"));
+            request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUsername", "admin"));
+            request.addRequestProperty(new RequestPropertyType<String>("yawlEnginePassword", "YAWL"));
+            PluginResult result = deploymentPlugin.deployProcess(cpf, request);
+            assertEquals(1, result.getPluginMessage().size());
+            assertEquals("Error: There is a specification with an identical id to [UID: WP1Sequence- Version: 0.1] already loaded into the engine.", result.getPluginMessage().get(0).getMessage());
+        }
     }
 
     @Test
     public void testGetNativeType() {
         assertEquals("YAWL 2.2", deploymentPlugin.getNativeType());
+    }
+
+    @Test
+    public void testWrongParameters() {
+        try {
+            deploymentPlugin.deployProcess(new CanonicalProcessType(), new PluginRequestImpl());
+            fail("Should have failed because of missing mandatory properties!");
+        } catch (PluginException e) {
+        }
+        PluginRequestImpl request = new PluginRequestImpl();
+        request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUrl", "localhost/yawl/ia"));
+        request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUsername", "admin"));
+        request.addRequestProperty(new RequestPropertyType<String>("yawlEnginePassword", "YAWL"));
+        try {
+            deploymentPlugin.deployProcess(new CanonicalProcessType(), request);
+            fail("Should have failed because of wrong URL!");
+        } catch (PluginException e) {
+        }
+    }
+
+    @Test
+    public void testConnectionIssues() throws IOException, JAXBException, SAXException, PluginException {
+        YAWLEngineClientFactory mockClientFactory = EasyMock.createMock(YAWLEngineClientFactory.class);
+        YAWLEngineClient mockClient = EasyMock.createMock(YAWLEngineClient.class);
+
+        EasyMock.expect(mockClientFactory.newInstance(EasyMock.anyObject(String.class), EasyMock.anyObject(String.class), EasyMock.anyObject(String.class))).andReturn(mockClient);
+        Node response = EasyMock.createMock(Node.class);
+        EasyMock.expect(response.getNodeName()).andReturn("failure");
+        EasyMock.expect(response.getTextContent()).andReturn("Could not connect");
+        EasyMock.expect(mockClient.connectToYAWL()).andReturn(response);
+
+        EasyMock.replay(mockClientFactory);
+        EasyMock.replay(mockClient);
+        EasyMock.replay(response);
+
+        deploymentPlugin.setEngineClientFactory(mockClientFactory);
+
+        try (BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/SimpleMakeTripProcess.yawl.cpf"))) {
+            CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(cpfInputStream, true).getValue();
+            PluginRequestImpl request = new PluginRequestImpl();
+            request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUrl", "http://localhost:"+server.getServiceAddress().getPort()+"/yawl/ia"));
+            request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUsername", "admin"));
+            request.addRequestProperty(new RequestPropertyType<String>("yawlEnginePassword", "YAWL"));
+
+            try {
+                deploymentPlugin.deployProcess(cpf, request);
+                fail("Should have thrown DeploymentException!");
+            } catch (DeploymentException e) {
+            }
+
+        }
+
+        EasyMock.verify(mockClientFactory);
+        EasyMock.verify(mockClient);
+        EasyMock.verify(response);
     }
 
 }

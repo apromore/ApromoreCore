@@ -35,12 +35,12 @@ public abstract class DefaultPlugin implements Plugin {
     private static final String DEFAULT_VALUE = "N/A";
     private static final String CONFIG_SUFFIX = ".config";
 
-    protected static DefaultPluginResult newPluginResult() {
-        return new DefaultPluginResult();
+    protected static PluginResultImpl newPluginResult() {
+        return new PluginResultImpl();
     }
 
-    protected static DefaultPluginRequest newPluginRequest() {
-        return new DefaultPluginRequest();
+    protected static PluginRequestImpl newPluginRequest() {
+        return new PluginRequestImpl();
     }
 
     /**
@@ -183,7 +183,9 @@ public abstract class DefaultPlugin implements Plugin {
                 .isEquals();
     }
 
-    /* (non-Javadoc)
+    /*
+     * (non-Javadoc)
+     *
      * @see java.lang.Object#toString()
      */
     @Override

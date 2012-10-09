@@ -19,19 +19,19 @@ import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionCont
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.plugin.impl.DefaultPluginResult;
+import org.apromore.plugin.impl.PluginResultImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 
 public class CheckValidModelMacroTest {
 
-    private DefaultPluginResult pluginMock;
+    private PluginResultImpl pluginMock;
     private MessageManagerImpl messageMock;
 
     @Before
     public void setUp() {
-        pluginMock = new DefaultPluginResult();
+        pluginMock = new PluginResultImpl();
         messageMock = new MessageManagerImpl(pluginMock);
     }
 

@@ -2,9 +2,9 @@ package org.apromore.canoniser.yawl;
 
 import java.io.OutputStream;
 
-import org.apromore.plugin.impl.DefaultPluginResult;
+import org.apromore.plugin.impl.PluginResultImpl;
 
-public class YAWLCanoniserResult extends DefaultPluginResult {
+public class YAWLCanoniserResult extends PluginResultImpl {
 
     private OutputStream yawlOrgData;
 

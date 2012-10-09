@@ -1,44 +1,35 @@
 package org.apromore.portal.dialogController;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.text.MessageFormat;
 import java.util.ArrayList;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import org.apromore.manager.client.helper.PluginHelper;
+import org.apache.commons.io.IOUtils;
 import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.NativeMetaData;
 import org.apromore.model.PluginInfo;
-import org.apromore.model.PluginInfoResult;
-import org.apromore.model.PluginProperty;
-import org.apromore.plugin.property.RequestPropertyType;
 import org.apromore.portal.common.Utils;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionImport;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
 import org.zkoss.zk.ui.WrongValueException;
-import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.Events;
-import org.zkoss.zk.ui.event.InputEvent;
 import org.zkoss.zk.ui.event.SelectEvent;
 import org.zkoss.zk.ui.util.Clients;
 import org.zkoss.zul.Button;
-import org.zkoss.zul.Checkbox;
 import org.zkoss.zul.Div;
 import org.zkoss.zul.Grid;
-import org.zkoss.zul.Intbox;
 import org.zkoss.zul.Label;
-import org.zkoss.zul.Longbox;
 import org.zkoss.zul.Messagebox;
 import org.zkoss.zul.Row;
 import org.zkoss.zul.Rows;
@@ -79,19 +70,19 @@ public class ImportOneProcessController extends BaseController {
     private String readAuthor;
 
     private Set<PluginInfo> canoniserInfos;
-
-    private PluginInfoResult currentCanoniserInfo;
+    private final PluginPropertiesHelper pluginPropertiesHelper;
 
     public ImportOneProcessController(final MainController mainC, final ImportListProcessesController importProcessesC, final InputStream xml_is,
             final String processName, final String nativeType, final String fileName) throws SuspendNotAllowedException, InterruptedException,
-            ExceptionDomains, ExceptionAllUsers {
+            ExceptionDomains, ExceptionAllUsers, IOException {
 
         this.importProcessesC = importProcessesC;
         this.mainC = mainC;
         this.username = this.mainC.getCurrentUser().getUsername();
         this.fileName = fileName;
         this.processName = processName;
-        this.nativeProcess = xml_is;
+        // Buffer process in memory, we'll need it multiple times
+        this.nativeProcess = new ByteArrayInputStream(IOUtils.toByteArray(xml_is));
         this.nativeType = nativeType;
         this.importOneProcessWindow = (Window) Executions.createComponents("macros/importOneProcess.zul", null, null);
         this.importOneProcessWindow.setTitle(this.importOneProcessWindow.getTitle() + " (file: " + this.fileName + ")");
@@ -140,73 +131,79 @@ public class ImportOneProcessController extends BaseController {
         reset();
 
         readMetaData(nativeType, ownerNames);
-        readCanoniserInfos(nativeType);
 
-        this.importOneProcessWindow.addEventListener("onLater", new EventListener() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                importAllProcess();
-                Clients.clearBusy();
-            }
-        });
+        pluginPropertiesHelper = new PluginPropertiesHelper(getService(), (Grid) this.importOneProcessWindow.getFellow("canoniserPropertiesGrid"));
 
-        this.ownerCB.addEventListener("onChange", new EventListener() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                SelectDynamicListController cb = (SelectDynamicListController) event.getTarget();
-                updateOwner(cb.getValue());
-            }
-        });
+        if (readCanoniserInfos(nativeType)) {
+            this.importOneProcessWindow.addEventListener("onLater", new EventListener() {
+                @Override
+                public void onEvent(final Event event) throws Exception {
+                    importAllProcess();
+                    Clients.clearBusy();
+                }
+            });
 
-        this.okButton.addEventListener("onClick", new EventListener() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                importProcess(domainCB.getValue(), username);
-            }
-        });
+            this.ownerCB.addEventListener("onChange", new EventListener() {
+                @Override
+                public void onEvent(final Event event) throws Exception {
+                    SelectDynamicListController cb = (SelectDynamicListController) event.getTarget();
+                    updateOwner(cb.getValue());
+                }
+            });
 
-        this.okForAllButton.addEventListener("onClick", new EventListener() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                Clients.showBusy("Processing...");
-                Events.echoEvent("onLater", importOneProcessWindow, null);
-            }
-        });
-
-        this.importOneProcessWindow.addEventListener("onOK", new EventListener() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                if (processNameTb.getValue().compareTo("") == 0 || versionNameTb.getValue().compareTo("") == 0) {
-                    Messagebox.show("Please enter a value for each field.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
-                } else {
+            this.okButton.addEventListener("onClick", new EventListener() {
+                @Override
+                public void onEvent(final Event event) throws Exception {
                     importProcess(domainCB.getValue(), username);
                 }
-            }
-        });
-        this.cancelButton.addEventListener("onClick", new EventListener() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                cancel();
-            }
-        });
-        this.cancelAllButton.addEventListener("onClick", new EventListener() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                cancelAll();
-            }
-        });
-        this.resetButton.addEventListener("onClick", new EventListener() {
-            @Override
-            public void onEvent(final Event event) throws Exception {
-                reset();
-            }
-        });
-        this.importOneProcessWindow.doModal();
+            });
+
+            this.okForAllButton.addEventListener("onClick", new EventListener() {
+                @Override
+                public void onEvent(final Event event) throws Exception {
+                    Clients.showBusy("Processing...");
+                    Events.echoEvent("onLater", importOneProcessWindow, null);
+                }
+            });
+
+            this.importOneProcessWindow.addEventListener("onOK", new EventListener() {
+                @Override
+                public void onEvent(final Event event) throws Exception {
+                    if (processNameTb.getValue().compareTo("") == 0 || versionNameTb.getValue().compareTo("") == 0) {
+                        Messagebox.show("Please enter a value for each field.", "Attention", Messagebox.OK, Messagebox.EXCLAMATION);
+                    } else {
+                        importProcess(domainCB.getValue(), username);
+                    }
+                }
+            });
+            this.cancelButton.addEventListener("onClick", new EventListener() {
+                @Override
+                public void onEvent(final Event event) throws Exception {
+                    cancel();
+                }
+            });
+            this.cancelAllButton.addEventListener("onClick", new EventListener() {
+                @Override
+                public void onEvent(final Event event) throws Exception {
+                    cancelAll();
+                }
+            });
+            this.resetButton.addEventListener("onClick", new EventListener() {
+                @Override
+                public void onEvent(final Event event) throws Exception {
+                    reset();
+                }
+            });
+            this.importOneProcessWindow.doModal();
+        }
     }
 
-    private void readCanoniserInfos(final String nativeType) throws InterruptedException {
+    private boolean readCanoniserInfos(final String nativeType) throws InterruptedException {
         try {
+            Row canoniserSelectionRow = (Row) this.importOneProcessWindow.getFellow("canoniserSelectionRow");
+            Clients.showBusy(canoniserSelectionRow, "Reading available Canoniser for "+nativeType+"...");
             canoniserInfos = getService().readCanoniserInfo(nativeType);
+            Clients.clearBusy(canoniserSelectionRow);
 
             if (canoniserInfos.size() >= 1) {
 
@@ -215,7 +212,6 @@ public class ImportOneProcessController extends BaseController {
                     canoniserNames.add(cInfo.getName());
                 }
 
-                Row canoniserSelectionRow = (Row) this.importOneProcessWindow.getFellow("canoniserSelectionRow");
                 SelectDynamicListController canoniserCB = new SelectDynamicListController(canoniserNames);
                 canoniserCB.setAutodrop(true);
                 canoniserCB.setWidth("85%");
@@ -231,7 +227,7 @@ public class ImportOneProcessController extends BaseController {
                             String selectedCanoniser = ((SelectEvent) event).getSelectedItems().iterator().next().toString();
                             for (PluginInfo info: canoniserInfos) {
                                 if (info.getName().equals(selectedCanoniser)) {
-                                    showCanoniserProperties(info);
+                                    pluginPropertiesHelper.showPluginProperties(info);
                                 }
                             }
                         }
@@ -239,149 +235,23 @@ public class ImportOneProcessController extends BaseController {
                 });
 
                 PluginInfo canoniserInfo = canoniserInfos.iterator().next();
-                showCanoniserProperties(canoniserInfo);
+                pluginPropertiesHelper.showPluginProperties(canoniserInfo);
 
+                return true;
             } else {
                 Messagebox.show(MessageFormat.format("Import failed (No Canoniser found for native type {0})", this.nativeType), "Attention", Messagebox.OK, Messagebox.ERROR);
-                closePopup();
+                return false;
             }
         } catch (Exception e) {
             Messagebox.show("Reading Canoniser info failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-        }
-    }
-
-    private void showCanoniserProperties(final PluginInfo canoniserInfo) throws Exception {
-        currentCanoniserInfo = getService().readPluginInfo(canoniserInfo.getName(), canoniserInfo.getVersion());
-        Grid propertyGrid = (Grid) this.importOneProcessWindow.getFellow("canoniserPropertiesGrid");
-        Rows gridRows = new Rows();
-        propertyGrid.appendChild(gridRows);
-
-        for (PluginProperty prop: currentCanoniserInfo.getMandatoryProperties().getProperty()) {
-            Row propertyRow = new Row();
-            Label labelName = new Label(prop.getName());
-            if (prop.getDescription() != null) {
-                labelName.setTooltip(prop.getDescription());
-            }
-            propertyRow.appendChild(labelName);
-            Component inputValue = createInputComponent(prop, true);
-            propertyRow.appendChild(inputValue);
-            gridRows.appendChild(propertyRow);
-        }
-
-        for (PluginProperty prop: currentCanoniserInfo.getOptionalProperties().getProperty()) {
-            Row propertyRow = new Row();
-            Label labelName = new Label(prop.getName() + " *");
-            if (prop.getDescription() != null) {
-                labelName.setTooltip(prop.getDescription());
-            }
-            propertyRow.appendChild(labelName);
-            Component inputValue = createInputComponent(prop, false);
-            propertyRow.appendChild(inputValue);
-            gridRows.appendChild(propertyRow);
-        }
-    }
-
-    private Component createInputComponent(final PluginProperty prop, final boolean isRequired) {
-        if (prop.getValue() instanceof String) {
-            Textbox textBox = new Textbox();
-            if (prop.getValue() != null) {
-                textBox.setValue(prop.getValue().toString());
-            }
-            if (isRequired) {
-                textBox.setConstraint("no empty");
-            }
-            textBox.addEventListener("onChange", new EventListener() {
-
-                @Override
-                public void onEvent(final Event event) throws Exception {
-                    if (event instanceof InputEvent) {
-                        InputEvent inputEvent = (InputEvent) event;
-                        prop.setValue(inputEvent.getValue());
-                    }
-                }
-            });
-            return textBox;
-        } else if (prop.getValue() instanceof Long) {
-            Longbox longBox = new Longbox();
-            if (prop.getValue() != null) {
-                longBox.setValue((Long)prop.getValue());
-            }
-            if (isRequired) {
-                longBox.setConstraint("no empty");
-            }
-            longBox.addEventListener("onChange", new EventListener() {
-
-                @Override
-                public void onEvent(final Event event) throws Exception {
-                    if (event instanceof InputEvent) {
-                        InputEvent inputEvent = (InputEvent) event;
-                        prop.setValue(new Long(inputEvent.getValue()));
-                    }
-                }
-            });
-            return longBox;
-        } else if (prop.getValue() instanceof Integer) {
-            Intbox intBox = new Intbox();
-            if (prop.getValue() != null) {
-                intBox.setValue((Integer)prop.getValue());
-            }
-            if (isRequired) {
-                intBox.setConstraint("no empty");
-            }
-            intBox.addEventListener("onChange", new EventListener() {
-
-                @Override
-                public void onEvent(final Event event) throws Exception {
-                    if (event instanceof InputEvent) {
-                        InputEvent inputEvent = (InputEvent) event;
-                        prop.setValue(new Integer(inputEvent.getValue()));
-                    }
-                }
-            });
-            return intBox;
-        } else if (prop.getValue() instanceof Boolean) {
-            Checkbox booleanBox = new Checkbox();
-            if (prop.getValue() != null) {
-                booleanBox.setChecked((Boolean)prop.getValue());
-            }
-            booleanBox.addEventListener("onCheck", new EventListener() {
-
-                @Override
-                public void onEvent(final Event event) throws Exception {
-                    if (event instanceof CheckEvent) {
-                        CheckEvent checkEvent = (CheckEvent) event;
-                        prop.setValue(new Boolean(checkEvent.isChecked()));
-                    }
-                }
-            });
-            return booleanBox;
-        } else if (prop.getClazz().equals("java.io.InputStream")) {
-            Textbox textBox = new Textbox();
-            if (prop.getValue() != null) {
-                textBox.setValue("java.io.InputStream");
-            }
-            if (isRequired) {
-                textBox.setConstraint("no empty");
-            }
-            //TODO
-            return textBox;
-        } else {
-            Textbox textBox = new Textbox();
-            if (prop.getValue() != null) {
-                textBox.setValue(prop.getValue().toString());
-            }
-            if (isRequired) {
-                textBox.setConstraint("no empty");
-            }
-            //TODO
-            return textBox;
+            return false;
         }
     }
 
     private void readMetaData(final String nativeType, final List<String> ownerNames) throws InterruptedException {
 
         try {
-            NativeMetaData readNativeMetaData = getService().readNativeMetaData(nativeType, null, null, this.nativeProcess);
+            NativeMetaData readNativeMetaData = getService().readNativeMetaData(nativeType, null, null, getNativeProcess());
             // Reset Input Stream because, we'll need it later for the "real" conversion!
             this.nativeProcess.reset();
             this.processNameTb.setValue(readNativeMetaData.getProcessName());
@@ -442,15 +312,11 @@ public class ImportOneProcessController extends BaseController {
 
     public void importProcess(final String domain, final String owner) throws InterruptedException, IOException {
         try {
-            Set<RequestPropertyType<?>> mandatoryProperties = PluginHelper.convertToRequestProperties(this.currentCanoniserInfo.getMandatoryProperties());
-            Set<RequestPropertyType<?>> optionalProperties = PluginHelper.convertToRequestProperties(this.currentCanoniserInfo.getOptionalProperties());
-            Set<RequestPropertyType<?>> requestProperties = new HashSet<>(mandatoryProperties);
-            requestProperties.addAll(optionalProperties);
             ImportProcessResultType importResult = getService().importProcess(owner, this.nativeType, this.processNameTb.getValue(),
-                    this.versionNameTb.getValue(), this.nativeProcess, domain, this.documentationTb.getValue(),
-                    this.creationDateTb.getValue().toString(), this.lastUpdateTb.getValue().toString(), requestProperties);
+                    this.versionNameTb.getValue(), getNativeProcess(), domain, this.documentationTb.getValue(),
+                    this.creationDateTb.getValue().toString(), this.lastUpdateTb.getValue().toString(), pluginPropertiesHelper.readPluginProperties());
             // process successfully imported
-            this.mainC.showCanoniserMessages(importResult.getMessage());
+            this.mainC.showPluginMessages(importResult.getMessage());
             this.importProcessesC.getImportedList().add(this);
             this.mainC.displayNewProcess(importResult.getProcessSummary());
             /* keep list of domains update */
@@ -509,7 +375,7 @@ public class ImportOneProcessController extends BaseController {
         return creationDateTb.getValue();
     }
 
-    public InputStream getNativeProcess() {
+    public InputStream getNativeProcess() throws IOException {
         return nativeProcess;
     }
 

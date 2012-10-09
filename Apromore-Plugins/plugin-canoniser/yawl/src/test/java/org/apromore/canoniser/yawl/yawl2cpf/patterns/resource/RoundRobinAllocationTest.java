@@ -27,7 +27,6 @@ public class RoundRobinAllocationTest extends BasePatternTest {
         assertEquals(AllocationStrategyEnum.ROUND_ROBIN_BY_TIME, taskA.getAllocationStrategy());
         assertEquals(AllocationStrategyEnum.ROUND_ROBIN_BY_FREQUENCY, taskB.getAllocationStrategy());
         assertEquals(AllocationStrategyEnum.ROUND_ROBIN_BY_EXPERIENCE, taskC.getAllocationStrategy());
-
     }
 
 }

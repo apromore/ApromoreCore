@@ -22,11 +22,11 @@ package org.apromore.plugin.message;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public class SimplePluginMessage implements PluginMessage {
+public class PluginMessageImpl implements PluginMessage {
 
     private final String message;
 
-    public SimplePluginMessage(final String message) {
+    public PluginMessageImpl(final String message) {
         super();
         this.message = message;
     }

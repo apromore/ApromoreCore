@@ -32,7 +32,7 @@ public class SignavioController extends BaseController {
             ExportFormatResultType exportResult = getService().exportFormat(process.getId(), process.getName(), version.getName(),
                     nativeType, annotation, false, this.mainC.getCurrentUser().getUsername(), new HashSet<RequestPropertyType<?>>());
             String data = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
-            this.mainC.showCanoniserMessages(exportResult.getMessage());
+            this.mainC.showPluginMessages(exportResult.getMessage());
             this.setTitle(process.getName());
             param.put(JSON_DATA, data.replace("\n", "").trim());
             param.put("url", getURL(nativeType));

@@ -11,6 +11,7 @@
  */
 package org.apromore.plugin.deployment.provider.impl;
 
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Set;
@@ -26,7 +27,7 @@ import org.apromore.plugin.provider.PluginProviderHelper;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt</a>
  *
  */
-public abstract class DeploymentPluginProviderImpl implements DeploymentPluginProvider {
+public class DeploymentPluginProviderImpl implements DeploymentPluginProvider {
 
     private Set<DeploymentPlugin> internalDeploymentPluginSet;
 
@@ -45,17 +46,28 @@ public abstract class DeploymentPluginProviderImpl implements DeploymentPluginPr
      */
     @Override
     public Set<DeploymentPlugin> listAll() {
-        return findAllDeploymentPlugins(null, null);
+        return Collections.unmodifiableSet(findAllDeploymentPlugins(null, null, null));
     }
 
     /*
      * (non-Javadoc)
      *
-     * @see org.apromore.plugin.deployment.provider.DeploymentPluginProvider#findByName(java.lang.String)
+     * @see org.apromore.plugin.deployment.provider.DeploymentPluginProvider#listByNativeType(java.lang.String)
      */
     @Override
-    public DeploymentPlugin findByName(final String name) throws PluginNotFoundException {
-        Set<DeploymentPlugin> set = findAllDeploymentPlugins(null, name);
+    public Set<DeploymentPlugin> listByNativeType(final String nativeType) {
+        return Collections.unmodifiableSet(findAllDeploymentPlugins(nativeType, null, null));
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apromore.plugin.deployment.provider.DeploymentPluginProvider#findByNameAndVersion(java.lang.String, java.lang.String)
+     */
+    @Override
+    public DeploymentPlugin findByNativeTypeAndNameAndVersion(final String nativeType, final String name, final String version)
+            throws PluginNotFoundException {
+        Set<DeploymentPlugin> set = findAllDeploymentPlugins(nativeType, name, version);
         Iterator<DeploymentPlugin> iterator = set.iterator();
         if (!iterator.hasNext()) {
             throw new PluginNotFoundException();
@@ -71,7 +83,7 @@ public abstract class DeploymentPluginProviderImpl implements DeploymentPluginPr
      */
     @Override
     public DeploymentPlugin findByNativeType(final String nativeType) throws PluginNotFoundException {
-        Set<DeploymentPlugin> list = findAllDeploymentPlugins(nativeType, null);
+        Set<DeploymentPlugin> list = findAllDeploymentPlugins(nativeType, null, null);
         Iterator<DeploymentPlugin> iterator = list.iterator();
         if (!iterator.hasNext()) {
             throw new PluginNotFoundException();
@@ -87,14 +99,17 @@ public abstract class DeploymentPluginProviderImpl implements DeploymentPluginPr
      *            can be NULL
      * @param name
      *            can be NULL
+     * @param version
+     *            can be NULL
      * @return Set of DeploymentPlugin or empty Set
      */
-    private Set<DeploymentPlugin> findAllDeploymentPlugins(final String nativeType, final String name) {
+    private Set<DeploymentPlugin> findAllDeploymentPlugins(final String nativeType, final String name, final String version) {
 
         final Set<DeploymentPlugin> deploymentSet = new HashSet<DeploymentPlugin>();
 
         for (final DeploymentPlugin d : getInternalDeploymentPluginSet()) {
-            if (PluginProviderHelper.compareNullable(nativeType, d.getNativeType()) && PluginProviderHelper.compareNullable(name, d.getName())) {
+            if (PluginProviderHelper.compareNullable(nativeType, d.getNativeType()) && PluginProviderHelper.compareNullable(name, d.getName())
+                    && PluginProviderHelper.compareNullable(version, d.getVersion())) {
                 deploymentSet.add(d);
             }
         }

@@ -21,7 +21,7 @@ import org.apromore.graph.JBPT.CPF;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.exception.PluginException;
 import org.apromore.plugin.exception.PluginNotFoundException;
-import org.apromore.plugin.impl.DefaultPluginRequest;
+import org.apromore.plugin.impl.PluginRequestImpl;
 import org.apromore.plugin.property.PropertyType;
 import org.apromore.plugin.property.RequestPropertyType;
 import org.apromore.service.CanoniserService;
@@ -98,7 +98,7 @@ public class CanoniserServiceImpl implements CanoniserService {
 
         try {
             Canoniser c = getCanoniserProvider().findByNativeType(nativeType);
-            DefaultPluginRequest canoniserRequest = new DefaultPluginRequest();
+            PluginRequestImpl canoniserRequest = new PluginRequestImpl();
             canoniserRequest.addRequestProperty(canoniserProperties);
             PluginResult canoniserResult = c.canonise(processXml, anfList, cpfList, canoniserRequest);
             cp.setMessages(canoniserResult.getPluginMessage());
@@ -151,7 +151,7 @@ public class CanoniserServiceImpl implements CanoniserService {
 
         try {
             Canoniser c = getCanoniserProvider().findByNativeType(nativeType);
-            DefaultPluginRequest canoniserRequest = new DefaultPluginRequest();
+            PluginRequestImpl canoniserRequest = new PluginRequestImpl();
             canoniserRequest.addRequestProperty(canoniserProperties);            
             PluginResult pluginResult = c.deCanonise(canonicalFormat, annotationFormat, nativeXml, canoniserRequest);
             InputStream nativeXmlIs = new ByteArrayInputStream(nativeXml.toByteArray());

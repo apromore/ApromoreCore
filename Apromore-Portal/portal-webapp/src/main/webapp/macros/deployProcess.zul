@@ -7,14 +7,6 @@
 			</columns>
 			<rows>
 				<row>
-					<label value="Process name*" width="100%"/>
-					<textbox id="nameBox" width="100%"/>
-				</row>
-				<row>
-					<label value="Version name*" width="100%"/>
-					<textbox id="versionBox" width="100%" />
-				</row>	
-				<row>
 					<label value="Native type*" />
 					<textbox id="nativeTypeBox" width="100%" />
 				</row>
