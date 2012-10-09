@@ -38,7 +38,7 @@ import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 
 /**
- * Test suite for {@link CanoniserDefinitions}.
+ * Test suite for {@link ObjectFactory}.
  *
  * A number of these tests are from <cite>Canonization Service for AProMoRe</cite>.
  *
