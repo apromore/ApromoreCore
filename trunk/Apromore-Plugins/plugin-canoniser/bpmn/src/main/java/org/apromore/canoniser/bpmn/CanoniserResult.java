@@ -9,7 +9,7 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
 
 /**
- * Compound result type returned by the BPMN to CPF/ANF {@link CanoniserDefinitions#canonise} method.
+ * Compound result type returned by the BPMN to CPF/ANF {@link BpmnDefinitions#canonise} method.
  *
  * This is a collection of CPF/ANF pairs, each pair corresponding to a different process view occurring within the BPMN document.
  *

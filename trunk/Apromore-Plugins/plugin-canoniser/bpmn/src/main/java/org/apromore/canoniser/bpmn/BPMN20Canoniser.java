@@ -98,14 +98,14 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
                          final PluginRequest request) throws CanoniserException {
 
         try {
-            CanoniserDefinitions definitions = JAXBContext.newInstance(BpmnObjectFactory.class,
-                                                                       org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
-                                                                       org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
-                                                                       org.omg.spec.dd._20100524.dc.ObjectFactory.class,
-                                                                       org.omg.spec.dd._20100524.di.ObjectFactory.class)
-                                                          .createUnmarshaller()
-                                                          .unmarshal(new StreamSource(bpmnInput), CanoniserDefinitions.class)
-                                                          .getValue();  // discard the JAXBElement wrapper
+            BpmnDefinitions definitions = JAXBContext.newInstance(BpmnObjectFactory.class,
+                                                                  org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
+                                                                  org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
+                                                                  org.omg.spec.dd._20100524.dc.ObjectFactory.class,
+                                                                  org.omg.spec.dd._20100524.di.ObjectFactory.class)
+                                                     .createUnmarshaller()
+                                                     .unmarshal(new StreamSource(bpmnInput), BpmnDefinitions.class)
+                                                     .getValue();  // discard the JAXBElement wrapper
             CanoniserResult result = canonise(definitions);
             for (int i = 0; i < result.size(); i++) {
                 annotationFormat.add(result.getAnf(i));
@@ -135,7 +135,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
         PluginResultImpl result = newPluginResult();
         try {
             // Construct an empty BPMN model
-            CanoniserDefinitions definitions = new CanoniserDefinitions();
+            BpmnDefinitions definitions = new BpmnDefinitions();
             definitions.setId("dummy-id");
             definitions.setName(processName);
             definitions.setExporter(getClass().getCanonicalName());
@@ -173,7 +173,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
                                                             org.omg.spec.dd._20100524.di.ObjectFactory.class)
                                                .createMarshaller();
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(new CanoniserDefinitions(canonicalFormat, annotationFormat), bpmnOutput);
+            marshaller.marshal(new BpmnDefinitions(canonicalFormat, annotationFormat), bpmnOutput);
             
             return new PluginResultImpl();
         } catch (Exception e) {
@@ -200,7 +200,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
      * @throws CanoniserException  if the translation can't be performed
      * @return a result containing CPF and ANF documents equivalent to this BPMN
      */
-    public static CanoniserResult canonise(final CanoniserDefinitions definitions) throws CanoniserException {
+    public static CanoniserResult canonise(final BpmnDefinitions definitions) throws CanoniserException {
 
         // Generate identifiers for @uri scoped across all generated CPF and ANF documents
         final IdFactory linkUriFactory = new IdFactory();
@@ -262,7 +262,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
                                   final Map<TFlowNode, TLane> laneMap,
                                   final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap,
                                   final NetType parent,
-                                  final CanoniserDefinitions definitions) throws CanoniserException {
+                                  final BpmnDefinitions definitions) throws CanoniserException {
 
         final NetType net = new NetType();
         net.setId(cpfIdFactory.newId(process.getId()));
@@ -597,7 +597,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
      * @param definitions  a BPMN document
      * @return an ANF document
      */
-    private static List<AnnotationsType> annotate(final CanoniserDefinitions definitions) {
+    private static List<AnnotationsType> annotate(final BpmnDefinitions definitions) {
 
         final List<AnnotationsType> anfs = new ArrayList<AnnotationsType>();
 

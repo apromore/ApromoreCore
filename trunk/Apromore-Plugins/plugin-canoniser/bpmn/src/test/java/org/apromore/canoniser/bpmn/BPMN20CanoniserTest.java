@@ -249,10 +249,10 @@ public class BPMN20CanoniserTest {
     public final void test1() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
 
         // Obtain the test instance
-        CanoniserDefinitions definitions =
+        BpmnDefinitions definitions =
             context.createUnmarshaller()
                    .unmarshal(new StreamSource(new FileInputStream(new File(MODELS_DIR, "Test1.bpmn20.xml"))),
-                              CanoniserDefinitions.class)
+                              BpmnDefinitions.class)
                    .getValue();
 
         // Inspect the test instance
@@ -311,9 +311,9 @@ public class BPMN20CanoniserTest {
         if (System.getProperty("bpmnvalidation") != null) {
             unmarshaller.setSchema(BPMN_SCHEMA);
         }
-        CanoniserDefinitions definitions = unmarshaller.unmarshal(
+        BpmnDefinitions definitions = unmarshaller.unmarshal(
             new StreamSource(new FileInputStream(new File(MODELS_DIR, filename + ".bpmn20.xml"))),
-            CanoniserDefinitions.class
+            BpmnDefinitions.class
         ).getValue();
 
         // Validate and serialize the canonised documents to be inspected offline
@@ -706,7 +706,7 @@ public class BPMN20CanoniserTest {
      */
     @Test
     public void testCanonise12() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
-        //CanoniserDefinitions definitions = testCanonise("Case 12");
+        //BpmnDefinitions definitions = testCanonise("Case 12");
 
         // not yet implemented
     }

@@ -68,7 +68,7 @@ import org.omg.spec.dd._20100524.dc.Point;
  * Because a BPMN document may describe a collection of processes (for example, in a collaboration) the resulting
  * {@link CanoniserResult} may contain several {@link CanonicalProcessType} instances.
  * <p>
- * To decanonise a canonical model into BPMN, invoke the constructor {@link #CanoniserDefinitions(CanonicalProcessType, AnnotationsType)}.
+ * To decanonise a canonical model into BPMN, invoke the constructor {@link #BpmnDefinitions(CanonicalProcessType, AnnotationsType)}.
  * Only individual canonical models may be decanonised; there is no facility for generating a BPMN document containing
  * multiple top-level processes.
  *
@@ -77,13 +77,13 @@ import org.omg.spec.dd._20100524.dc.Point;
  * @since 0.3
  */
 @XmlRootElement(namespace = "http://www.omg.org/spec/BPMN/20100524/MODEL", name = "definitions")
-public class CanoniserDefinitions extends TDefinitions {
+public class BpmnDefinitions extends TDefinitions {
 
     /**
      * Logger.  Named after the class.
      */
     @XmlTransient
-    private final Logger logger = Logger.getLogger(CanoniserDefinitions.class.getCanonicalName());
+    private final Logger logger = Logger.getLogger(BpmnDefinitions.class.getCanonicalName());
 
     /**
      * Apromore URI.
@@ -127,7 +127,7 @@ public class CanoniserDefinitions extends TDefinitions {
      *
      * Required for JUnit to work.
      */
-    public CanoniserDefinitions() { }
+    public BpmnDefinitions() { }
 
     /**
      * Construct a BPMN model from a canonical form.
@@ -137,7 +137,7 @@ public class CanoniserDefinitions extends TDefinitions {
      * @param anf  annotations for the canonical process model
      * @throws CanoniserException if unable to generate BPMN from the given CPF and ANF arguments
      */
-    public CanoniserDefinitions(final CanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
+    public BpmnDefinitions(final CanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
 
         // Generates all identifiers scoped to the BPMN document
         final IdFactory bpmnIdFactory = new IdFactory();
@@ -251,8 +251,8 @@ public class CanoniserDefinitions extends TDefinitions {
      * @return corrected JAXB document
      */
     // TODO - change the return type and the factory parameter to be Defintions and ObjectFactory, and move to bpmn-schema
-    public static CanoniserDefinitions correctFlowNodeRefs(final CanoniserDefinitions definitions,
-                                                           final BpmnObjectFactory factory) throws JAXBException, TransformerException {
+    public static BpmnDefinitions correctFlowNodeRefs(final BpmnDefinitions definitions,
+                                                      final BpmnObjectFactory factory) throws JAXBException, TransformerException {
 
         JAXBContext context = JAXBContext.newInstance(factory.getClass(),
                                                       org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
@@ -276,7 +276,7 @@ public class CanoniserDefinitions extends TDefinitions {
 
         // Unmarshal back to JAXB
         Object def2 = context.createUnmarshaller().unmarshal(finalResult.getNode());
-        return ((JAXBElement<CanoniserDefinitions>) def2).getValue();
+        return ((JAXBElement<BpmnDefinitions>) def2).getValue();
     }
 
     /**
