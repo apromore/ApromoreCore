@@ -19,8 +19,8 @@ public interface PluginRequest {
      * Get the current value for the given {@link PropertyType} in form of a {@link PropertyType}. Please not the returned {@link PropertyType} will
      * usually just holding the value, all other methods may just return NULL.
      *
-     * @param pluginProperty that the Plugin defined
-     * @return PropertyType holding the request value
+     * @param pluginProperty which the Plugin defined
+     * @return PropertyType holding the request value or the default PropertyType if request does not contain the property
      * @throws PluginPropertyNotFoundException if the property was not set and {link {@link PropertyType#isMandatory()} was true
      */
     <T> PropertyType<T> getRequestProperty(PropertyType<T> pluginProperty) throws PluginPropertyNotFoundException;

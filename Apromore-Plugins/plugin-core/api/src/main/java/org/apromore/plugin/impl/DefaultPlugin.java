@@ -179,7 +179,7 @@ public abstract class DefaultPlugin implements Plugin {
         }
         DefaultPlugin plugin = (DefaultPlugin) obj;
         // We just compare Name and Version, a Plugin is equals to another is Name and Version match
-        return new EqualsBuilder().appendSuper(super.equals(obj)).append(getName(), plugin.getName()).append(getVersion(), plugin.getVersion())
+        return new EqualsBuilder().append(getName(), plugin.getName()).append(getVersion(), plugin.getVersion())
                 .isEquals();
     }
 
