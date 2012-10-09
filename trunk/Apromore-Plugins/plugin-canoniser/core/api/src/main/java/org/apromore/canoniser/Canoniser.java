@@ -31,21 +31,21 @@ import org.apromore.plugin.PropertyAwarePlugin;
 
 /**
  * Interface to an Apromore canoniser. Each canoniser is build as a OSGi plugin and has to implement this interface.
- * 
+ *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  */
 public interface Canoniser extends PropertyAwarePlugin {
 
     /**
      * Type of the native format which this canoniser can handle. For example "EPML 2.0" or "YAWL 2.2"
-     * 
+     *
      * @return the type of the native format
      */
     String getNativeType();
 
     /**
      * Converts the data in native format to the canonical format and its annotation format.
-     * 
+     *
      * @param nativeInput
      *            stream of the native format
      * @param annotationFormat
@@ -63,7 +63,7 @@ public interface Canoniser extends PropertyAwarePlugin {
 
     /**
      * Converts the data in annotation format and canonical format to the native format.
-     * 
+     *
      * @param canonicalFormat
      *            Canonical Process Type to deCanonise
      * @param annotationFormat
@@ -81,7 +81,7 @@ public interface Canoniser extends PropertyAwarePlugin {
 
     /**
      * Creates an initial (empty) document of the supported native process format.
-     * 
+     *
      * @param nativeOutput
      * @param processName
      * @param processVersion
@@ -95,8 +95,8 @@ public interface Canoniser extends PropertyAwarePlugin {
             Date processCreated, PluginRequest request);
 
     /**
-     * Reads just the meta data from the native process.
-     * 
+     * Reads just the meta data from the native process. Please do not close the InputStream as it may be used later on.
+     *
      * @param nativeInput
      *            stream of the native format
      * @param request

@@ -22,7 +22,7 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.exception.PluginPropertyNotFoundException;
-import org.apromore.plugin.impl.DefaultPluginResult;
+import org.apromore.plugin.impl.PluginResultImpl;
 import org.apromore.plugin.property.PluginPropertyType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,7 +149,7 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
         }
         directory.getEpcOrDirectory().add(epc);
         
-        DefaultPluginResult newPluginResult = newPluginResult();
+        PluginResultImpl newPluginResult = newPluginResult();
 
         try {
             marshalEPMLFormat(epml, nativeOutput);

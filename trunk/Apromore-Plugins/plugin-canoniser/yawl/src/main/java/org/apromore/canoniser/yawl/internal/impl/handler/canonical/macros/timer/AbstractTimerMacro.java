@@ -38,7 +38,7 @@ public abstract class AbstractTimerMacro extends ContextAwareRewriteMacro {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTimerMacro.class);
 
-    private static final int DEFAULT_TIMER_DURATIOn = 3600;
+    private static final int DEFAULT_TIMER_DURATION = 3600;
 
     public AbstractTimerMacro(final CanonicalConversionContext context) {
         super(context);
@@ -105,7 +105,7 @@ public abstract class AbstractTimerMacro extends ContextAwareRewriteMacro {
             final org.yawlfoundation.yawlschema.TimerType yawlTimer = new ObjectFactory().createTimerType();
             try {
                 final DatatypeFactory factory = DatatypeFactory.newInstance();
-                yawlTimer.setDuration(factory.newDuration(DEFAULT_TIMER_DURATIOn));
+                yawlTimer.setDuration(factory.newDuration(DEFAULT_TIMER_DURATION));
             } catch (final DatatypeConfigurationException e) {
                 LOGGER.warn("Could not set Timer duration.", e);
             }

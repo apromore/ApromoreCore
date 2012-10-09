@@ -548,7 +548,7 @@ public class MainController extends BaseController {
         ((South) getFellow("leftInnerSouthPanel")).setOpen(true);
     }
 
-    public void showCanoniserMessages(final PluginMessages messages) throws InterruptedException {
+    public void showPluginMessages(final PluginMessages messages) throws InterruptedException {
         if (messages != null) {
             StringBuilder sb = new StringBuilder();
             Iterator<PluginMessage> iter = messages.getMessage().iterator();
@@ -559,8 +559,8 @@ public class MainController extends BaseController {
                 }
             }
             if (sb.length() > 0) {
-                Messagebox.show(sb.toString(), "Canoniser Warnings", Messagebox.OK, Messagebox.EXCLAMATION);
-            }   
+                Messagebox.show(sb.toString(), "Plugin Warnings", Messagebox.OK, Messagebox.EXCLAMATION);
+            }
         }
     }
 

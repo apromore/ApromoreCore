@@ -14,6 +14,7 @@ import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
 import org.apromore.portal.exception.ExceptionFormats;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
+import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zul.Menu;
@@ -123,12 +124,14 @@ public class MenuController extends Menubar {
 
     /**
      * Deploy process mdel to a running process engine
+     * @throws InterruptedException
+     * @throws WrongValueException
      */
-    protected void deployProcessModel() {
+    protected void deployProcessModel() throws WrongValueException, InterruptedException {
         this.mainC.eraseMessage();
         HashMap<ProcessSummaryType, List<VersionSummaryType>> selectedProcessVersions = getSelectedProcessVersions();
         if (selectedProcessVersions.size() == 1) {
-            new DeployProcessModelController(this.mainC, this, selectedProcessVersions.entrySet().iterator().next());
+            new DeployProcessModelController(this.mainC, selectedProcessVersions.entrySet().iterator().next());
         } else {
             this.mainC.displayMessage("Please select exactly one process model!");
         }

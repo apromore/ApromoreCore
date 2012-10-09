@@ -21,7 +21,7 @@ import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginResult;
-import org.apromore.plugin.impl.DefaultPluginRequest;
+import org.apromore.plugin.impl.PluginRequestImpl;
 import org.apromore.plugin.property.RequestPropertyType;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -43,7 +43,7 @@ public class YAWL22CanoniserTest {
         final File file = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "YAWL/Patterns/ControlFlow/WPC3Synchronization.yawl");
         final File fileOrg = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "YAWL/OrganisationalData/YAWLDefaultOrgData.ybkp");
         BufferedInputStream nativeInput = new BufferedInputStream(new FileInputStream(file));
-        DefaultPluginRequest request = new DefaultPluginRequest();
+        PluginRequestImpl request = new PluginRequestImpl();
         request.addRequestProperty(new RequestPropertyType<InputStream>("readOrgData", new FileInputStream(fileOrg)));
         PluginResult result = c.canonise(nativeInput, aList, cList, request);
         nativeInput.close();
@@ -59,7 +59,7 @@ public class YAWL22CanoniserTest {
         final List<AnnotationsType> aList = new ArrayList<AnnotationsType>(0);
         final File file = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "YAWL/Patterns/ControlFlow/WPC3Synchronization.yawl");
         BufferedInputStream nativeInput = new BufferedInputStream(new FileInputStream(file));
-        DefaultPluginRequest request = new DefaultPluginRequest();
+        PluginRequestImpl request = new PluginRequestImpl();
         PluginResult result = c.canonise(nativeInput, aList, cList, request);
         nativeInput.close();
         assertEquals(1, cList.size());
@@ -73,7 +73,7 @@ public class YAWL22CanoniserTest {
         final File file = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/FromYAWL/WPC4ExclusiveChoice.yawl.cpf");
         final ByteArrayOutputStream nativeOutput = new ByteArrayOutputStream();
         final File fileOrg = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "YAWL/OrganisationalData/YAWLDefaultOrgData.ybkp");
-        DefaultPluginRequest request = new DefaultPluginRequest();
+        PluginRequestImpl request = new PluginRequestImpl();
         request.addRequestProperty(new RequestPropertyType<InputStream>("readOrgData", new FileInputStream(fileOrg)));
         PluginResult result = c.deCanonise(CPFSchema.unmarshalCanonicalFormat(new BufferedInputStream(new FileInputStream(file)), true).getValue(), null, nativeOutput, request);
         assertNotNull(nativeOutput);

@@ -220,9 +220,6 @@ public final class ExpressionUtils {
         }
     }
 
-
-
-
     private static String getQueryPart(final ExpressionType expr) {
         String[] splittedQuery = expr.getExpression().split(" = ");
         StringBuilder queryBuilder = new StringBuilder(expr.getExpression().length());

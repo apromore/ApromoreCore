@@ -28,7 +28,7 @@ import org.apromore.model.GenerateAnnotationInputMsgType;
 import org.apromore.model.GenerateAnnotationOutputMsgType;
 import org.apromore.model.ResultType;
 import org.apromore.plugin.exception.PluginNotFoundException;
-import org.apromore.plugin.impl.DefaultPluginRequest;
+import org.apromore.plugin.impl.PluginRequestImpl;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -163,7 +163,7 @@ public class CanoniserManagerImpl implements CanoniserManager {
 
         try {
             Canoniser c = canoniserProvider.findByNativeType(nativeType);
-            c.canonise(process_xml, anfList, cpfList, new DefaultPluginRequest());
+            c.canonise(process_xml, anfList, cpfList, new PluginRequestImpl());
         } catch (org.apromore.canoniser.exception.CanoniserException | PluginNotFoundException e) {
             throw new CanoniserException("Could not canonise "+nativeType, e);
         }

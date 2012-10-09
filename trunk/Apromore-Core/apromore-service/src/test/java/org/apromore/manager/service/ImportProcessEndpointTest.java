@@ -25,7 +25,7 @@ import org.apromore.model.PluginProperties;
 import org.apromore.model.PluginProperty;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.plugin.message.PluginMessage;
-import org.apromore.plugin.message.SimplePluginMessage;
+import org.apromore.plugin.message.PluginMessageImpl;
 import org.apromore.service.impl.CanoniserServiceImpl;
 import org.apromore.service.impl.ProcessServiceImpl;
 import org.apromore.service.model.CanonisedProcess;
@@ -84,7 +84,7 @@ public class ImportProcessEndpointTest {
 
         CanonisedProcess cp = new CanonisedProcess();
         ArrayList<PluginMessage> pluginMsg = new ArrayList<PluginMessage>();
-        pluginMsg.add(new SimplePluginMessage("test"));
+        pluginMsg.add(new PluginMessageImpl("test"));
         cp.setMessages(pluginMsg);
         expect(canoniserService.canonise(eq(edit.getNativeType()), anyObject(InputStream.class), anyObject(java.util.Set.class))).andReturn(cp);
 
