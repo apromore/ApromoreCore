@@ -7,7 +7,9 @@ import java.util.List;
 
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.message.PluginMessage;
-import org.apromore.plugin.message.SimplePluginMessage;
+import org.apromore.plugin.message.PluginMessageImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Default implementation of the {@link PluginResult} interface providing management of {@link PluginMessage}.
@@ -15,7 +17,9 @@ import org.apromore.plugin.message.SimplePluginMessage;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public class DefaultPluginResult implements PluginResult {
+public class PluginResultImpl implements PluginResult {
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(PluginResultImpl.class);
 
     private List<PluginMessage> pluginMessages;
 
@@ -36,7 +40,8 @@ public class DefaultPluginResult implements PluginResult {
      */
     public void addPluginMessage(final String message, final Object... args) {
        initPluginMessages();
-       pluginMessages.add(new SimplePluginMessage(MessageFormat.format(message, args)));
+       LOGGER.debug(MessageFormat.format(message, args));
+       pluginMessages.add(new PluginMessageImpl(MessageFormat.format(message, args)));
     }
 
     /**
@@ -46,7 +51,8 @@ public class DefaultPluginResult implements PluginResult {
      */
     public void addPluginMessage(final String message) {
         initPluginMessages();
-        pluginMessages.add(new SimplePluginMessage(message));
+        LOGGER.debug(message);
+        pluginMessages.add(new PluginMessageImpl(message));
      }
 
     private void initPluginMessages() {

@@ -38,7 +38,7 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.exception.PluginPropertyNotFoundException;
-import org.apromore.plugin.impl.DefaultPluginResult;
+import org.apromore.plugin.impl.PluginResultImpl;
 import org.apromore.plugin.property.PluginPropertyType;
 import org.apromore.plugin.property.PropertyType;
 import org.slf4j.Logger;
@@ -75,8 +75,8 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
      */
     public YAWL22Canoniser() {
         super();
-        resourceDataInput = new PluginPropertyType<InputStream>("readOrgData", "Read Organisational Data", InputStream.class,
-                "Reads a .ybkp file containing the organisational data used in this YAWL workflow.", false);
+        resourceDataInput = new PluginPropertyType<InputStream>("readOrgData", "YAWL Organisational Data (Import only)", InputStream.class,
+                "File (.ybkp) containing the organisational data used during import of the YAWL workflow.", false);
         registerProperty(resourceDataInput);
     }
 
@@ -94,16 +94,20 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
         try {
             final JAXBElement<SpecificationSetFactsType> nativeElement = YAWLSchema.unmarshalYAWLFormat(nativeInput, false);
 
-            DefaultPluginResult canoniserResult = newPluginResult();
+            PluginResultImpl canoniserResult = newPluginResult();
             final YAWL2Canonical yawl2canonical = new YAWL2CanonicalImpl(new MessageManagerImpl(canoniserResult));
 
             PropertyType<InputStream> orgDataProperty = request.getRequestProperty(resourceDataInput);
 
             if (orgDataProperty.hasValue()) {
-                LOGGER.debug("Using provided organisational data in Canoniser");
-                final InputStream organisationalData = orgDataProperty.getValue();
-                final JAXBElement<OrgDataType> orgDataElement = unmarshalOrgDataFormat(organisationalData);
-                yawl2canonical.convertToCanonical(nativeElement.getValue(), orgDataElement.getValue());
+                LOGGER.debug("Using provided organisational data in YAWL Canoniser");
+                try (InputStream organisationalData = orgDataProperty.getValue()) {
+                    final JAXBElement<OrgDataType> orgDataElement = unmarshalOrgDataFormat(organisationalData);
+                    yawl2canonical.convertToCanonical(nativeElement.getValue(), orgDataElement.getValue());
+                } catch (IOException e) {
+                    canoniserResult.addPluginMessage("Could not read provided organisational data for YAWL Canoniser. Canonise without organisational model.");
+                    yawl2canonical.convertToCanonical(nativeElement.getValue());
+                }
             } else {
                 yawl2canonical.convertToCanonical(nativeElement.getValue());
             }
@@ -167,7 +171,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
     @Override
     public PluginResult createInitialNativeFormat(final OutputStream nativeOutput, final String processName, final String processVersion, final String processAuthor,
             final Date processCreated, final PluginRequest request) {
-        DefaultPluginResult result = newPluginResult();
+        PluginResultImpl result = newPluginResult();
         try {
             IOUtils.copy(getClass().getResourceAsStream("Initial.yawl"), nativeOutput);
         } catch (IOException e) {

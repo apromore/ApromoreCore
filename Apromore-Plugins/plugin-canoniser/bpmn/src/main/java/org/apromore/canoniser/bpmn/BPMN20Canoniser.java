@@ -46,7 +46,7 @@ import org.apromore.cpf.XORSplitType;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.exception.PluginException;
-import org.apromore.plugin.impl.DefaultPluginResult;
+import org.apromore.plugin.impl.PluginResultImpl;
 import org.apromore.plugin.message.PluginMessage;
 import org.apromore.plugin.property.PropertyType;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
@@ -111,7 +111,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
                 annotationFormat.add(result.getAnf(i));
                 canonicalFormat.add(result.getCpf(i));
             }
-            return new DefaultPluginResult();
+            return new PluginResultImpl();
         } catch (Exception e) {
             throw new CanoniserException("Could not canonise to BPMN stream", e);
         }
@@ -132,7 +132,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
                                                   final Date processCreated,
                                                   final PluginRequest request) {
 
-        DefaultPluginResult result = newPluginResult();
+        PluginResultImpl result = newPluginResult();
         try {
             // Construct an empty BPMN model
             CanoniserDefinitions definitions = new CanoniserDefinitions();
@@ -175,7 +175,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
             marshaller.marshal(new CanoniserDefinitions(canonicalFormat, annotationFormat), bpmnOutput);
             
-            return new DefaultPluginResult();
+            return new PluginResultImpl();
         } catch (Exception e) {
             throw new CanoniserException("Could not decanonise from BPMN stream", e);
         }

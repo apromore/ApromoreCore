@@ -161,7 +161,15 @@
     <message name="ReadNativeMetaDataRequest">
         <part name="payload" element="mgr:ReadNativeMetaDataRequest">
         </part>
-    </message>                    
+    </message>
+    <message name="ReadDeploymentPluginInfoRequest">
+        <part name="payload" element="mgr:ReadDeploymentPluginInfoRequest">
+        </part>
+    </message>
+    <message name="DeployProcessRequest">
+        <part name="payload" element="mgr:DeployProcessRequestRequest">
+        </part>
+    </message>
 
     <portType name="Manager">
         <operation name="ReadProcessSummaries">
@@ -295,7 +303,19 @@
             </input>
             <output name="ReadNativeMetaDataResponse" message="tns:ReadNativeMetaDataResponse">
             </output>
-        </operation>             
+        </operation>
+        <operation name="ReadDeploymentPluginInfo">
+            <input name="ReadDeploymentPluginInfoRequest" message="tns:ReadDeploymentPluginInfoRequest">
+            </input>
+            <output name="ReadDeploymentPluginInfoResponse" message="tns:ReadDeploymentPluginInfoResponse">
+            </output>
+        </operation>
+        <operation name="DeployProcess">
+            <input name="DeployProcessRequest" message="tns:DeployProcessRequest">
+            </input>
+            <output name="DeployProcessResponse" message="tns:DeployProcessResponse">
+            </output>
+        </operation>
     </portType>    
 
     <binding name="ManagerSoap11" type="tns:Manager">
@@ -497,7 +517,25 @@
             <output name="ReadNativeMetaDataResponse">
                 <soap:body use="literal"/>
             </output>
-        </operation>             
+        </operation>
+        <operation name="ReadDeploymentPluginInfo">
+            <soap:operation style="document"/>
+            <input name="ReadDeploymentPluginInfoRequest">
+                <soap:body use="literal"/>
+            </input>
+            <output name="ReadDeploymentPluginInfoResponse">
+                <soap:body use="literal"/>
+            </output>
+        </operation>
+        <operation name="DeployProcess">
+            <soap:operation style="document"/>
+            <input name="DeployProcessRequest">
+                <soap:body use="literal"/>
+            </input>
+            <output name="DeployProcessResponse">
+                <soap:body use="literal"/>
+            </output>
+        </operation>
     </binding>   
 
     <service name="ManagerService">

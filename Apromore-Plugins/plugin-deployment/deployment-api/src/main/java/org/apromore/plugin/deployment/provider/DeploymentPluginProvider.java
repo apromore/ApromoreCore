@@ -11,7 +11,7 @@
  */
 package org.apromore.plugin.deployment.provider;
 
-import java.util.Collection;
+import java.util.Set;
 
 import org.apromore.plugin.deployment.DeploymentPlugin;
 import org.apromore.plugin.exception.PluginNotFoundException;
@@ -29,23 +29,39 @@ public interface DeploymentPluginProvider {
      *
      * @return Collection of DeploymentPlugin
      */
-    Collection<DeploymentPlugin> listAll();
+    Set<DeploymentPlugin> listAll();
 
     /**
-     * Finds a special Deployment Plugin by its Name
+     * List all available Deployment Plugins supporting native type
      *
-     * @param name of the Deployment Plugin
+     * @param nativeType
+     *            of the process to be deployed
+     * @return Collection of DeploymentPlugin
+     */
+    Set<DeploymentPlugin> listByNativeType(String nativeType);
+
+    /**
+     * Finds a special Deployment Plugin by its Name and Version
+     *
+     * @param nativeType
+     *            of the process to be deployed
+     * @param name
+     *            of the Deployment Plugin
+     * @param version
+     *            of the Deployment Plugin
      * @return DeploymentPlugin
      */
-    DeploymentPlugin findByName(String name)  throws PluginNotFoundException;
+    DeploymentPlugin findByNativeTypeAndNameAndVersion(String nativeType, String name, String version) throws PluginNotFoundException;
 
-	/**
-	 *  Finds a special Deployment Plugin by its supported native type.
-	 *
-	 * @param nativeType of the process to be deployed
-	 * @return DeploymentPlugin
-	 * @throws PluginNotFoundException
-	 */
-	DeploymentPlugin findByNativeType(String nativeType) throws PluginNotFoundException;
+    /**
+     * Returns the first available Deployment Plugin that supports the native type.
+     *
+     * @param nativeType
+     *            of the process to be deployed
+     * @return DeploymentPlugin that supports deploying native type
+     * @throws PluginNotFoundException
+     *             in case no Plugin is found
+     */
+    DeploymentPlugin findByNativeType(String nativeType) throws PluginNotFoundException;
 
 }

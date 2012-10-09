@@ -14,12 +14,12 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.activation.DataHandler;
-import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
 
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
+import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.dao.model.Cluster;
 import org.apromore.dao.model.ClusteringSummary;
 import org.apromore.dao.model.EditSession;
@@ -27,6 +27,7 @@ import org.apromore.exception.ExceptionCanoniseVersion;
 import org.apromore.exception.ExceptionVersion;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.RepositoryException;
+import org.apromore.graph.JBPT.CPF;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
 import org.apromore.manager.client.helper.CanoniserHelper;
 import org.apromore.manager.client.helper.PluginHelper;
@@ -43,6 +44,8 @@ import org.apromore.model.DeleteEditSessionInputMsgType;
 import org.apromore.model.DeleteEditSessionOutputMsgType;
 import org.apromore.model.DeleteProcessVersionsInputMsgType;
 import org.apromore.model.DeleteProcessVersionsOutputMsgType;
+import org.apromore.model.DeployProcessInputMsgType;
+import org.apromore.model.DeployProcessOutputMsgType;
 import org.apromore.model.DomainsType;
 import org.apromore.model.EditProcessDataInputMsgType;
 import org.apromore.model.EditProcessDataOutputMsgType;
@@ -86,6 +89,8 @@ import org.apromore.model.ReadAllUsersInputMsgType;
 import org.apromore.model.ReadAllUsersOutputMsgType;
 import org.apromore.model.ReadCanoniserInfoInputMsgType;
 import org.apromore.model.ReadCanoniserInfoOutputMsgType;
+import org.apromore.model.ReadDeploymentPluginInfoInputMsgType;
+import org.apromore.model.ReadDeploymentPluginInfoOutputMsgType;
 import org.apromore.model.ReadDomainsInputMsgType;
 import org.apromore.model.ReadDomainsOutputMsgType;
 import org.apromore.model.ReadEditSessionInputMsgType;
@@ -119,7 +124,9 @@ import org.apromore.model.WriteUserInputMsgType;
 import org.apromore.model.WriteUserOutputMsgType;
 import org.apromore.plugin.Plugin;
 import org.apromore.plugin.PropertyAwarePlugin;
-import org.apromore.plugin.impl.DefaultPluginRequest;
+import org.apromore.plugin.deployment.DeploymentPlugin;
+import org.apromore.plugin.impl.PluginRequestImpl;
+import org.apromore.plugin.message.PluginMessage;
 import org.apromore.plugin.property.RequestPropertyType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ClusterService;
@@ -162,36 +169,48 @@ public class ManagerPortalEndpoint {
 
     private static final String NAMESPACE = "urn:qut-edu-au:schema:apromore:manager";
 
-    @Autowired @Qualifier("DeploymentService")
+    @Autowired
+    @Qualifier("DeploymentService")
     private DeploymentService deploymentService;
-    @Autowired @Qualifier("PluginService")
+    @Autowired
+    @Qualifier("PluginService")
     private PluginService pluginService;
-    @Autowired @Qualifier("FragmentService")
+    @Autowired
+    @Qualifier("FragmentService")
     private FragmentService fragmentSrv;
-    @Autowired @Qualifier("CanoniserService")
+    @Autowired
+    @Qualifier("CanoniserService")
     private CanoniserService canoniserService;
-    @Autowired @Qualifier("ProcessService")
+    @Autowired
+    @Qualifier("ProcessService")
     private ProcessService procSrv;
-    @Autowired @Qualifier("RepositoryService")
+    @Autowired
+    @Qualifier("RepositoryService")
     private RepositoryService repSrv;
-    @Autowired @Qualifier("ClusterService")
+    @Autowired
+    @Qualifier("ClusterService")
     private ClusterService clusterService;
-    @Autowired @Qualifier("FormatService")
+    @Autowired
+    @Qualifier("FormatService")
     private FormatService frmSrv;
-    @Autowired @Qualifier("DomainService")
+    @Autowired
+    @Qualifier("DomainService")
     private DomainService domSrv;
-    @Autowired @Qualifier("UserService")
+    @Autowired
+    @Qualifier("UserService")
     private UserService userSrv;
-    @Autowired @Qualifier("SimilarityService")
+    @Autowired
+    @Qualifier("SimilarityService")
     private SimilarityService simSrv;
-    @Autowired @Qualifier("MergeService")
+    @Autowired
+    @Qualifier("MergeService")
     private MergeService merSrv;
-    @Autowired @Qualifier("SessionService")
+    @Autowired
+    @Qualifier("SessionService")
     private SessionService sesSrv;
 
     @Autowired
     private ManagerCanoniserClient caClient;
-
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "EditProcessDataRequest")
     @ResponsePayload
@@ -265,10 +284,11 @@ public class ManagerPortalEndpoint {
         return WS_OBJECT_FACTORY.createMergeProcessesResponse(res);
     }
 
-
-    /* (non-Javadoc)
-      * @see org.apromore.manager.service_portal1.ManagerPortalPortType#searchForSimilarProcesses(SearchForSimilarProcessesInputMsgType  payload )*
-      */
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apromore.manager.service_portal1.ManagerPortalPortType#searchForSimilarProcesses(SearchForSimilarProcessesInputMsgType payload )*
+     */
     @PayloadRoot(localPart = "SearchForSimilarProcessesRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<SearchForSimilarProcessesOutputMsgType> searchForSimilarProcesses(
@@ -319,7 +339,7 @@ public class ManagerPortalEndpoint {
             Boolean isNew = payload.isIsNew();
             DataHandler handler = payload.getNative();
             InputStream native_is = handler.getInputStream();
-            //TODO use CanoniserService instead
+            // TODO use CanoniserService instead
             caClient.GenerateAnnotation(annotName, editSessionCode, isNew, processId, version, nat_type, native_is);
             result.setCode(0);
             result.setMessage("");
@@ -401,7 +421,6 @@ public class ManagerPortalEndpoint {
         return WS_OBJECT_FACTORY.createDeleteProcessVersionsResponse(res);
     }
 
-
     @PayloadRoot(localPart = "UpdateProcessRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<UpdateProcessOutputMsgType> updateProcess(@RequestPayload final JAXBElement<UpdateProcessInputMsgType> req) {
@@ -424,7 +443,7 @@ public class ManagerPortalEndpoint {
             editSessionC.setProcessName(editSessionP.getProcessName());
             editSessionC.setUsername(editSessionP.getUsername());
             editSessionC.setVersionName(editSessionP.getVersionName());
-            //TODO use CanoniserService instead
+            // TODO use CanoniserService instead
             caClient.CanoniseVersion(editSessionCode, editSessionC, newCpfURI(), native_is);
             result.setCode(0);
             result.setMessage("");
@@ -432,7 +451,7 @@ public class ManagerPortalEndpoint {
             LOGGER.error("", ex);
             result.setCode(-3);
             result.setMessage(ex.getMessage());
-        } catch (IOException ex){
+        } catch (IOException ex) {
             LOGGER.error("", ex);
             result.setCode(-1);
             result.setMessage(ex.getMessage());
@@ -443,7 +462,6 @@ public class ManagerPortalEndpoint {
         }
         return WS_OBJECT_FACTORY.createUpdateProcessResponse(res);
     }
-
 
     @PayloadRoot(localPart = "ReadEditSessionRequest", namespace = NAMESPACE)
     @ResponsePayload
@@ -540,7 +558,6 @@ public class ManagerPortalEndpoint {
         return WS_OBJECT_FACTORY.createFragmentResponse(res);
     }
 
-
     @PayloadRoot(localPart = "ExportFormatRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ExportFormatOutputMsgType> exportFormat(@RequestPayload final JAXBElement<ExportFormatInputMsgType> req) {
@@ -552,7 +569,6 @@ public class ManagerPortalEndpoint {
 
         // Search for Native
         try {
-            DataSource source;
             Integer processId = payload.getProcessId();
             String name = payload.getProcessName();
             String version = payload.getVersionName();
@@ -601,8 +617,8 @@ public class ManagerPortalEndpoint {
             Set<RequestPropertyType<?>> canoniserProperties = PluginHelper.convertToRequestProperties(xmlCanoniserProperties);
             CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, handler.getInputStream(), canoniserProperties);
 
-            ProcessSummaryType process = procSrv.importProcess(username, processName, newCpfURI(), versionName,
-                    nativeType, canonisedProcess, handler.getInputStream(), domain, "", creationDate, lastUpdate);
+            ProcessSummaryType process = procSrv.importProcess(username, processName, newCpfURI(), versionName, nativeType, canonisedProcess,
+                    handler.getInputStream(), domain, "", creationDate, lastUpdate);
 
             ImportProcessResultType importResult = new ImportProcessResultType();
             if (canonisedProcess.getMessages() != null) {
@@ -709,7 +725,6 @@ public class ManagerPortalEndpoint {
         return WS_OBJECT_FACTORY.createGetClusterResponse(res);
     }
 
-
     @PayloadRoot(localPart = "GetClustersRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<GetClustersResponseType> getClusters(@RequestPayload final JAXBElement<GetClustersRequestType> req) {
@@ -766,9 +781,11 @@ public class ManagerPortalEndpoint {
         return WS_OBJECT_FACTORY.createReadNativeTypesResponse(res);
     }
 
-    /* (non-Javadoc)
-      * @see org.apromore.manager.service.ManagerPortalPortType#readDomains(ReadDomainsInputMsgType  payload )*
-      */
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apromore.manager.service.ManagerPortalPortType#readDomains(ReadDomainsInputMsgType payload )*
+     */
     @PayloadRoot(localPart = "ReadDomainsRequest", namespace = NAMESPACE)
     @ResponsePayload
     public JAXBElement<ReadDomainsOutputMsgType> readDomains(@RequestPayload final JAXBElement<ReadDomainsInputMsgType> req) {
@@ -789,8 +806,10 @@ public class ManagerPortalEndpoint {
         return WS_OBJECT_FACTORY.createReadDomainsResponse(res);
     }
 
-    /* (non-Javadoc)
-     * @see org.apromore.manager.service.ManagerPortalPortType#readUser(ReadUserInputMsgType  payload )
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apromore.manager.service.ManagerPortalPortType#readUser(ReadUserInputMsgType payload )
      */
     @PayloadRoot(localPart = "ReadUserRequest", namespace = NAMESPACE)
     @ResponsePayload
@@ -813,13 +832,14 @@ public class ManagerPortalEndpoint {
         return WS_OBJECT_FACTORY.createReadUserResponse(res);
     }
 
-    /* (non-Javadoc)
-      * @see org.apromore.manager.service.ManagerPortalPortType#readProcessSummaries(ReadProcessSummariesInputMsgType  payload )*
-      */
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apromore.manager.service.ManagerPortalPortType#readProcessSummaries(ReadProcessSummariesInputMsgType payload )*
+     */
     @PayloadRoot(localPart = "ReadProcessSummariesRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<ReadProcessSummariesOutputMsgType> readProcessSummaries(
-            @RequestPayload final JAXBElement<ReadProcessSummariesInputMsgType> req) {
+    public JAXBElement<ReadProcessSummariesOutputMsgType> readProcessSummaries(@RequestPayload final JAXBElement<ReadProcessSummariesInputMsgType> req) {
         LOGGER.info("Executing operation readProcessSummaries");
         ReadProcessSummariesInputMsgType payload = req.getValue();
         ReadProcessSummariesOutputMsgType res = new ReadProcessSummariesOutputMsgType();
@@ -855,7 +875,7 @@ public class ManagerPortalEndpoint {
                 plugins = pluginService.listAll();
             }
 
-            for (Plugin p: plugins) {
+            for (Plugin p : plugins) {
                 res.getPluginInfo().add(PluginHelper.convertPluginInfo(p));
             }
 
@@ -948,7 +968,7 @@ public class ManagerPortalEndpoint {
                 c = canoniserService.findByNativeType(nativeType);
             }
 
-            CanoniserMetadataResult metaData = c.readMetaData(req.getValue().getNativeFormat().getInputStream(), new DefaultPluginRequest());
+            CanoniserMetadataResult metaData = c.readMetaData(req.getValue().getNativeFormat().getInputStream(), new PluginRequestImpl());
             res.setNativeMetaData(CanoniserHelper.convertFromCanoniserMetaData(metaData));
 
             result.setCode(0);
@@ -965,9 +985,10 @@ public class ManagerPortalEndpoint {
 
     @PayloadRoot(localPart = "ReadInitialNativeFormatRequest", namespace = NAMESPACE)
     @ResponsePayload
-    public JAXBElement<ReadInitialNativeFormatOutputMsgType> readInitialNativeFormat(@RequestPayload final JAXBElement<ReadInitialNativeFormatInputMsgType> req) {
+    public JAXBElement<ReadInitialNativeFormatOutputMsgType> readInitialNativeFormat(
+            @RequestPayload final JAXBElement<ReadInitialNativeFormatInputMsgType> req) {
         LOGGER.info("Executing operation 'ReadInitialNativeFormat'");
-        ReadInitialNativeFormatOutputMsgType  res = new ReadInitialNativeFormatOutputMsgType();
+        ReadInitialNativeFormatOutputMsgType res = new ReadInitialNativeFormatOutputMsgType();
         ResultType result = new ResultType();
         try {
 
@@ -998,13 +1019,13 @@ public class ManagerPortalEndpoint {
                 }
             }
 
-            c.createInitialNativeFormat(nativeXml, processName, processVersion, processAuthor, processCreated, new DefaultPluginRequest());
+            c.createInitialNativeFormat(nativeXml, processName, processVersion, processAuthor, processCreated, new PluginRequestImpl());
             InputStream nativeXmlInputStream = new ByteArrayInputStream(nativeXml.toByteArray());
 
             res.setNativeFormat(new DataHandler(new ByteArrayDataSource(nativeXmlInputStream, "text/xml")));
 
             result.setCode(0);
-            result.setMessage("Success 'ReadNativeMetaData'!");
+            result.setMessage("Success 'ReadInitialNativeFormat'!");
         } catch (Exception ex) {
             LOGGER.error("ReadInitialNativeFormat", ex);
             result.setCode(-1);
@@ -1015,12 +1036,82 @@ public class ManagerPortalEndpoint {
         return WS_OBJECT_FACTORY.createReadInitialNativeFormatResponse(res);
     }
 
+    @PayloadRoot(localPart = "ReadDeploymentPluginInfoRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<ReadDeploymentPluginInfoOutputMsgType> readDeploymentPluginInfo(
+            @RequestPayload final JAXBElement<ReadDeploymentPluginInfoInputMsgType> req) {
+        LOGGER.info("Executing operation 'ReadDeploymentPluginInfo'");
+        ReadDeploymentPluginInfoOutputMsgType res = new ReadDeploymentPluginInfoOutputMsgType();
+        ResultType result = new ResultType();
+        try {
+            String nativeType = req.getValue().getNativeType();
+            Set<DeploymentPlugin> dList = deploymentService.listDeploymentPlugin(nativeType);
+            Iterator<DeploymentPlugin> iter = dList.iterator();
+            while (iter.hasNext()) {
+                DeploymentPlugin d = iter.next();
+                res.getPluginInfo().add(PluginHelper.convertPluginInfo(d));
+            }
+            result.setCode(0);
+            result.setMessage("Successfully read deployment plugin info!");
+        } catch (Exception ex) {
+            LOGGER.error("ReadDeploymentPluginInfo", ex);
+            result.setCode(-1);
+            result.setMessage(ex.getMessage());
+        }
+
+        res.setResult(result);
+        return WS_OBJECT_FACTORY.createReadDeploymentPluginResponse(res);
+    }
+
+    @PayloadRoot(localPart = "DeployProcessRequest", namespace = NAMESPACE)
+    @ResponsePayload
+    public JAXBElement<DeployProcessOutputMsgType> deployProcess(@RequestPayload final JAXBElement<DeployProcessInputMsgType> req) {
+        LOGGER.info("Executing operation 'DeployProcess'");
+        DeployProcessOutputMsgType res = new DeployProcessOutputMsgType();
+        ResultType result = new ResultType();
+        try {
+            String nativeType = req.getValue().getNativeType();
+            String processName = req.getValue().getProcessName();
+            String versionName = req.getValue().getVersionName();
+            String branchName = req.getValue().getBranchName();
+            PluginProperties deploymentProperties = req.getValue().getDeploymentProperties();
+            Set<RequestPropertyType<?>> requestProperties = PluginHelper.convertToRequestProperties(deploymentProperties);
+            String deploymentPluginName = req.getValue().getDeploymentPluginName();
+            String deploymentPluginVersion = req.getValue().getDeploymentPluginVersion();
+
+            //TODO change to also use version
+            CPF cpf = repSrv.getCurrentProcessModel(processName, false);
+            CanonicalProcessType canonialProcess = canoniserService.serializeCPF(cpf);
+
+            List<PluginMessage> deployProcess;
+            // TODO add ANF
+            if (deploymentPluginName != null && deploymentPluginVersion != null) {
+                deployProcess = deploymentService.deployProcess(nativeType, deploymentPluginName, deploymentPluginVersion, canonialProcess, null,
+                        requestProperties);
+            } else {
+                deployProcess = deploymentService.deployProcess(nativeType, canonialProcess, null, requestProperties);
+            }
+
+            res.setMessage(PluginHelper.convertFromPluginMessages(deployProcess));
+            result.setCode(0);
+            result.setMessage("Successfully read plugin info!");
+        } catch (Exception ex) {
+            LOGGER.error("DeployProcess", ex);
+            result.setCode(-1);
+            result.setMessage(ex.getMessage());
+        }
+
+        res.setResult(result);
+        return WS_OBJECT_FACTORY.createDeployProcessResponse(res);
+    }
+
     /**
      * Generate a cpf uri for version of processId
      *
      * @return the new cpf uri
      */
-    @Deprecated //TODO should CPF uri really be determined by date???
+    @Deprecated
+    // TODO should CPF uri really be determined by date???
     private static String newCpfURI() {
         DateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmsSSS");
         Date date = new Date();
@@ -1081,5 +1172,9 @@ public class ManagerPortalEndpoint {
 
     public void setCanoniserService(final CanoniserService canoniserService) {
         this.canoniserService = canoniserService;
+    }
+
+    public void setRepSrv(final RepositoryService repositoryService) {
+        this.repSrv = repositoryService;
     }
 }

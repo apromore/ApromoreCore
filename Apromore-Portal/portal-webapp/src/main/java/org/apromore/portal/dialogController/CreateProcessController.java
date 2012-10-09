@@ -166,11 +166,12 @@ public class CreateProcessController extends BaseController {
                 DataHandler initialNativeFormat = getService().readInitialNativeFormat(nativeType, null, null, owner, processName, versionName, creationDate);
 
                 // Documentation and Last Update are set to NULL & No Canoniser properties are used
+                //TODO show canoniser properties
                 ImportProcessResultType importResult = getService().importProcess(owner, nativeType, processName, versionName, initialNativeFormat.getInputStream(), domain,
                         null, creationDate, null, new HashSet<RequestPropertyType<?>>());
 
                 this.mainC.displayNewProcess(importResult.getProcessSummary());
-                this.mainC.showCanoniserMessages(importResult.getMessage());
+                this.mainC.showPluginMessages(importResult.getMessage());
 
                 /* keep list of domains update */
                 this.domainCB.addItem(domain);

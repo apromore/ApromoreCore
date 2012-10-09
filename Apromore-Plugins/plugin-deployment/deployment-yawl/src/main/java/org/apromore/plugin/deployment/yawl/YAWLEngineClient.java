@@ -39,12 +39,24 @@ import org.xml.sax.SAXException;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt</a>
  *
  */
-public final class YAWLEngineClient {
+public class YAWLEngineClient {
+
+    private static final String ENCODING = "UTF-8";
 
     private final String engineUrl;
     private final String username;
     private final String password;
 
+    /**
+     * Stateful YAWL Engine Client
+     *
+     * @param engineUrl
+     *            full URL to YAWL Engine
+     * @param username
+     *            of YAWL user
+     * @param password
+     *            of YAWL user
+     */
     public YAWLEngineClient(final String engineUrl, final String username, final String password) {
         super();
         this.engineUrl = engineUrl;
@@ -52,8 +64,18 @@ public final class YAWLEngineClient {
         this.password = password;
     }
 
-    public Node uploadYAWLSpecification(final String yawlSpec, final String sessionHandle)
-            throws DeploymentException {
+    /**
+     * Upload YAWL specification
+     *
+     * @param yawlSpec
+     *            XML of YAWL
+     * @param sessionHandle
+     *            retrieved by {@link #connectToYAWL()}
+     * @return Message of YAWL Engine
+     * @throws DeploymentException
+     *             if YAWL engine not available
+     */
+    public Node uploadYAWLSpecification(final String yawlSpec, final String sessionHandle) throws DeploymentException {
         try {
             String uploadRequest = prepareUploadRequestBody(yawlSpec, sessionHandle);
             String response = sendRequestToYAWL(uploadRequest);
@@ -67,6 +89,13 @@ public final class YAWLEngineClient {
         }
     }
 
+    /**
+     * Connect to YAWL Engine an return a Session handle
+     *
+     * @return Node containing Session handle
+     * @throws DeploymentException
+     *             if YAWL engine not available
+     */
     public Node connectToYAWL() throws DeploymentException {
         try {
             String connectRequest = prepareConnectRequestBody(username, password);
@@ -99,7 +128,7 @@ public final class YAWLEngineClient {
 
     private String sendRequestToYAWL(final String request) throws DeploymentException {
         try {
-            return Request.Post(engineUrl).useExpectContinue().addHeader("Accept-Charset", "UTF-8").version(HttpVersion.HTTP_1_1)
+            return Request.Post(engineUrl).useExpectContinue().addHeader("Accept-Charset", ENCODING).version(HttpVersion.HTTP_1_1)
                     .bodyString(request, ContentType.APPLICATION_FORM_URLENCODED).execute().returnContent().asString();
         } catch (IOException e) {
             throw new DeploymentException("Request to YAWL engine failed.", e);
@@ -109,8 +138,8 @@ public final class YAWLEngineClient {
     private String prepareUploadRequestBody(final String yawlSpec, final String sessionHandle) throws UnsupportedEncodingException {
         StringBuilder sb = new StringBuilder();
         sb.append("action=upload&");
-        sb.append(String.format("sessionHandle=%s&", URLEncoder.encode(sessionHandle, "UTF-8")));
-        sb.append(String.format("specXML=%s", URLEncoder.encode(yawlSpec, "UTF-8")));
+        sb.append(String.format("sessionHandle=%s&", URLEncoder.encode(sessionHandle, ENCODING)));
+        sb.append(String.format("specXML=%s", URLEncoder.encode(yawlSpec, ENCODING)));
         return sb.toString();
     }
 
@@ -118,15 +147,15 @@ public final class YAWLEngineClient {
             DeploymentException {
         StringBuilder sb = new StringBuilder();
         sb.append("action=connect&");
-        sb.append(String.format("userID=%s&", URLEncoder.encode(yawlUsername, "UTF-8")));
-        sb.append(String.format("password=%s", URLEncoder.encode(getEncryptedYAWLPassword(yawlPassword), "UTF-8")));
+        sb.append(String.format("userID=%s&", URLEncoder.encode(yawlUsername, ENCODING)));
+        sb.append(String.format("password=%s", URLEncoder.encode(getEncryptedYAWLPassword(yawlPassword), ENCODING)));
         return sb.toString();
     }
 
     private String getEncryptedYAWLPassword(final String yawlPassword) throws DeploymentException {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA");
-            byte[] cryptedPW = digest.digest(yawlPassword.getBytes("UTF-8"));
+            byte[] cryptedPW = digest.digest(yawlPassword.getBytes(ENCODING));
             return new Base64(-1).encodeAsString(cryptedPW);
         } catch (NoSuchAlgorithmException | UnsupportedEncodingException e) {
             throw new DeploymentException("Could not encrypt YAWL password.", e);

@@ -11,6 +11,7 @@
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.apromore.canoniser.exception.CanoniserException;
@@ -69,6 +70,14 @@ public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificatio
 
     }
 
+    private void convertAnnotations(final CanonicalProcessType c, final YAWLSpecificationFactsType object) throws CanoniserException {
+        // Link to Annotations
+        getContext().getAnnotationResult().setUri(c.getUri());
+        getContext().getAnnotationResult().setName(c.getName());
+        getContext().addToAnnotations(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.LOCALE, getContext().getLayoutLocaleElement(), LayoutLocaleType.class));
+        getContext().addToAnnotations(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.METADATA, object.getMetaData(), MetaDataType.class));
+    }
+
     private void convertDataTypeDefinitions(final Object any) {
         TypeAttribute attr = CPF_FACTORY.createTypeAttribute();
         attr.setName(ExtensionUtils.DATA_TYPE_DEFINITIONS);
@@ -85,21 +94,16 @@ public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificatio
         }
     }
 
-    private void convertAnnotations(final CanonicalProcessType c, final YAWLSpecificationFactsType object) throws CanoniserException {
-        // Link to Annotations
-        getContext().getAnnotationResult().setUri(c.getUri());
-        getContext().getAnnotationResult().setName(c.getName());
-        getContext().addToAnnotations(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.LOCALE, getContext().getLayoutLocaleElement(), LayoutLocaleType.class));
-        getContext().addToAnnotations(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.METADATA, object.getMetaData(), MetaDataType.class));
-    }
-
     private String convertCreatorList(final List<String> creatorList) {
         final StringBuilder sb = new StringBuilder();
-        for (final String creator : creatorList) {
-            sb.append(creator);
-            sb.append(" ,");
+        Iterator<String> iterator = creatorList.iterator();
+        while (iterator.hasNext()) {
+            sb.append(iterator.next());
+            if (iterator.hasNext()) {
+                sb.append(" ,");
+            }
         }
-        return sb.substring(0, sb.length() - 2);
+        return sb.toString();
     }
 
 }

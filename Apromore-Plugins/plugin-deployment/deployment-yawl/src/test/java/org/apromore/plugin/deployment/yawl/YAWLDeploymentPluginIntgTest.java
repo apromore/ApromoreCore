@@ -1,6 +1,7 @@
 package org.apromore.plugin.deployment.yawl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -14,7 +15,7 @@ import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.exception.PluginException;
-import org.apromore.plugin.impl.DefaultPluginRequest;
+import org.apromore.plugin.impl.PluginRequestImpl;
 import org.apromore.plugin.property.RequestPropertyType;
 import org.junit.Before;
 import org.junit.Test;
@@ -38,16 +39,17 @@ public class YAWLDeploymentPluginIntgTest {
     @Test
     public void testDeployProcessCanonicalProcessType() throws IOException, JAXBException, SAXException, PluginException {
         if (checkYAWLServerAvailable()) {
-            BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/WPC1Sequence.yawl.cpf"));
-            CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(cpfInputStream, true).getValue();
-            cpfInputStream.close();
-            DefaultPluginRequest request = new DefaultPluginRequest();
-            request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUrl", "http://localhost:8080/yawl/ia"));
-            request.addRequestProperty(new RequestPropertyType<String>("yawlUsername", "admin"));
-            request.addRequestProperty(new RequestPropertyType<String>("yawlPassword", "YAWL"));
-            PluginResult result = deploymentPlugin.deployProcess(cpf, request);
-            assertEquals(1, result.getPluginMessage().size());
-            assertEquals("Process Simple Make Trip Process successfully deployed.", result.getPluginMessage().get(0).getMessage());
+            try (BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/WPC1Sequence.yawl.cpf"))) {
+                CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(cpfInputStream, true).getValue();
+                PluginRequestImpl request = new PluginRequestImpl();
+                request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUrl", "http://localhost:8080/yawl/ia"));
+                request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUsername", "admin"));
+                request.addRequestProperty(new RequestPropertyType<String>("yawlEnginePassword", "YAWL"));
+                PluginResult result = deploymentPlugin.deployProcess(cpf, request);
+                assertEquals(1, result.getPluginMessage().size());
+                assertTrue("Process Simple Make Trip Process successfully deployed.".equals(result.getPluginMessage().get(0).getMessage())
+                        || "Error: There is a specification with an identical id to [UID: WP1Sequence- Version: 0.1] already loaded into the engine.".equals(result.getPluginMessage().get(0).getMessage()));
+            }
         }
     }
 

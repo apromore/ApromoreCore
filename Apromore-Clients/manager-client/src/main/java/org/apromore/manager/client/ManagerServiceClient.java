@@ -28,6 +28,8 @@ import org.apromore.model.DeleteEditSessionInputMsgType;
 import org.apromore.model.DeleteEditSessionOutputMsgType;
 import org.apromore.model.DeleteProcessVersionsInputMsgType;
 import org.apromore.model.DeleteProcessVersionsOutputMsgType;
+import org.apromore.model.DeployProcessInputMsgType;
+import org.apromore.model.DeployProcessOutputMsgType;
 import org.apromore.model.DomainsType;
 import org.apromore.model.EditProcessDataInputMsgType;
 import org.apromore.model.EditProcessDataOutputMsgType;
@@ -60,12 +62,15 @@ import org.apromore.model.ObjectFactory;
 import org.apromore.model.PairDistanceType;
 import org.apromore.model.PluginInfo;
 import org.apromore.model.PluginInfoResult;
+import org.apromore.model.PluginMessages;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ReadAllUsersInputMsgType;
 import org.apromore.model.ReadAllUsersOutputMsgType;
 import org.apromore.model.ReadCanoniserInfoInputMsgType;
 import org.apromore.model.ReadCanoniserInfoOutputMsgType;
+import org.apromore.model.ReadDeploymentPluginInfoInputMsgType;
+import org.apromore.model.ReadDeploymentPluginInfoOutputMsgType;
 import org.apromore.model.ReadDomainsInputMsgType;
 import org.apromore.model.ReadDomainsOutputMsgType;
 import org.apromore.model.ReadEditSessionInputMsgType;
@@ -658,31 +663,6 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     /* (non-Javadoc)
-     * @see org.apromore.manager.client.ManagerService#readCanoniserInfo(java.lang.String)
-     */
-    @Override
-    public Set<PluginInfo> readCanoniserInfo(final String nativeType) throws Exception {
-        LOGGER.debug("Preparing readCanoniserInfo ...");
-
-        ReadCanoniserInfoInputMsgType msg = new ReadCanoniserInfoInputMsgType();
-        msg.setNativeType(nativeType);
-
-        JAXBElement<ReadCanoniserInfoInputMsgType> request = WS_CLIENT_FACTORY.createReadCanoniserInfoRequest(msg);
-        @SuppressWarnings("unchecked")
-        JAXBElement<ReadCanoniserInfoOutputMsgType> response = (JAXBElement<ReadCanoniserInfoOutputMsgType>)
-                webServiceTemplate.marshalSendAndReceive(request);
-        if (response.getValue().getResult().getCode() == -1) {
-            throw new Exception(response.getValue().getResult().getMessage());
-        } else {
-            Set<PluginInfo> infoSet = new HashSet<PluginInfo>();
-            for (PluginInfo pluginInfo: response.getValue().getPluginInfo()) {
-                infoSet.add(pluginInfo);
-            }
-            return infoSet;
-        }
-    }
-
-    /* (non-Javadoc)
      * @see org.apromore.manager.client.ManagerService#readPluginInfo(java.lang.String, java.lang.String)
      */
     @Override
@@ -725,6 +705,30 @@ public class ManagerServiceClient implements ManagerService {
 
     }
 
+    /* (non-Javadoc)
+     * @see org.apromore.manager.client.ManagerService#readCanoniserInfo(java.lang.String)
+     */
+    @Override
+    public Set<PluginInfo> readCanoniserInfo(final String nativeType) throws Exception {
+        LOGGER.debug("Preparing readCanoniserInfo ...");
+
+        ReadCanoniserInfoInputMsgType msg = new ReadCanoniserInfoInputMsgType();
+        msg.setNativeType(nativeType);
+
+        JAXBElement<ReadCanoniserInfoInputMsgType> request = WS_CLIENT_FACTORY.createReadCanoniserInfoRequest(msg);
+        @SuppressWarnings("unchecked")
+        JAXBElement<ReadCanoniserInfoOutputMsgType> response = (JAXBElement<ReadCanoniserInfoOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+        if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        } else {
+            Set<PluginInfo> infoSet = new HashSet<PluginInfo>();
+            for (PluginInfo pluginInfo: response.getValue().getPluginInfo()) {
+                infoSet.add(pluginInfo);
+            }
+            return infoSet;
+        }
+    }
 
     /* (non-Javadoc)
      * @see org.apromore.manager.client.ManagerService#readNativeMetaData(java.lang.String, java.lang.String, java.lang.String, java.io.InputStream)
@@ -750,7 +754,6 @@ public class ManagerServiceClient implements ManagerService {
         }
 
     }
-
 
     /* (non-Javadoc)
      * @see org.apromore.manager.client.ManagerService#readInitialNativeFormat(java.lang.String, java.lang.String, java.lang.String)
@@ -780,5 +783,58 @@ public class ManagerServiceClient implements ManagerService {
         }
 
     }
+
+
+    /* (non-Javadoc)
+     * @see org.apromore.manager.client.ManagerService#readCanoniserInfo(java.lang.String)
+     */
+    @Override
+    public Set<PluginInfo> readDeploymentPluginInfo(final String nativeType) throws Exception {
+        LOGGER.debug("Preparing readDeploymentPlugin ...");
+
+        ReadDeploymentPluginInfoInputMsgType msg = new ReadDeploymentPluginInfoInputMsgType();
+        msg.setNativeType(nativeType);
+
+        JAXBElement<ReadDeploymentPluginInfoInputMsgType> request = WS_CLIENT_FACTORY.createReadDeploymentPluginInfoRequest(msg);
+        @SuppressWarnings("unchecked")
+        JAXBElement<ReadDeploymentPluginInfoOutputMsgType> response = (JAXBElement<ReadDeploymentPluginInfoOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+        if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        } else {
+            Set<PluginInfo> infoSet = new HashSet<PluginInfo>();
+            for (PluginInfo pluginInfo: response.getValue().getPluginInfo()) {
+                infoSet.add(pluginInfo);
+            }
+            return infoSet;
+        }
+    }
+
+    @Override
+    public PluginMessages deployProcess(final String branchName, final String processName, final String versionName, final String nativeType, final String pluginName, final String pluginVersion, final Set<RequestPropertyType<?>> deploymentProperties) throws Exception {
+        LOGGER.debug("Preparing deployProcess ...");
+
+        DeployProcessInputMsgType msg = new DeployProcessInputMsgType();
+        msg.setBranchName(branchName);
+        msg.setProcessName(processName);
+        msg.setVersionName(versionName);
+        msg.setNativeType(nativeType);
+
+        msg.setDeploymentPluginName(pluginName);
+        msg.setDeploymentPluginVersion(pluginVersion);
+
+        msg.setDeploymentProperties(PluginHelper.convertFromPluginProperties(deploymentProperties));
+
+        JAXBElement<DeployProcessInputMsgType> request = WS_CLIENT_FACTORY.createDeployProcessRequest(msg);
+        @SuppressWarnings("unchecked")
+        JAXBElement<DeployProcessOutputMsgType> response = (JAXBElement<DeployProcessOutputMsgType>)
+                webServiceTemplate.marshalSendAndReceive(request);
+        if (response.getValue().getResult().getCode() == -1) {
+            throw new Exception(response.getValue().getResult().getMessage());
+        } else {
+            return response.getValue().getMessage();
+        }
+    }
+
 
 }

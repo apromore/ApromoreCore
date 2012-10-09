@@ -15,8 +15,10 @@ import org.apromore.model.PluginMessages;
 import org.apromore.model.PluginProperties;
 import org.apromore.model.PluginProperty;
 import org.apromore.plugin.Plugin;
+import org.apromore.plugin.PluginRequest;
+import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.message.PluginMessage;
-import org.apromore.plugin.message.SimplePluginMessage;
+import org.apromore.plugin.message.PluginMessageImpl;
 import org.apromore.plugin.property.PropertyType;
 import org.apromore.plugin.property.RequestPropertyType;
 import org.slf4j.Logger;
@@ -24,21 +26,27 @@ import org.slf4j.LoggerFactory;
 
 
 /**
- * Helps converting the XML representation of Messages and Properties of {@see PluginResult} and {@see PluginRequest} forth and back.
+ * Helps converting the XML representation of Messages and Properties of {@link PluginResult} and {@link PluginRequest} forth and back.
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public class PluginHelper {
+public final class PluginHelper {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PluginHelper.class);
 
-    private static ObjectFactory OBJECT_FACTORY = new ObjectFactory();
+    private static final ObjectFactory OBJECT_FACTORY = new ObjectFactory();
 
     private PluginHelper() {
         super();
     }
 
+    /**
+     * Converts the XML representation of Plugin properties to a Set of RequestPropertyType for usage in Plugins
+     *
+     * @param xmlProperties from web service
+     * @return Set of RequestPropertyType
+     */
     public static Set<RequestPropertyType<?>> convertToRequestProperties(final PluginProperties xmlProperties) {
         Set<RequestPropertyType<?>> properties = new HashSet<RequestPropertyType<?>>();
         if (xmlProperties != null) {
@@ -47,8 +55,11 @@ public class PluginHelper {
                 Class<?> propertyClass;
                 try {
                     propertyClass = PropertyType.class.getClassLoader().loadClass(clazz);
-                    RequestPropertyType<?> property = createPluginProperty(xmlProp, propertyClass);
-                    properties.add(property);
+                    if (xmlProp.getValue() != null) {
+                        properties.add(createPluginProperty(xmlProp, propertyClass));
+                    } else {
+                        LOGGER.warn("Request property {} is NULL", xmlProp.getName());
+                    }
                 } catch (ClassNotFoundException e) {
                     LOGGER.error("Could not convert request property", e);
                 }
@@ -69,10 +80,15 @@ public class PluginHelper {
         } else {
             convertedValue = value;
         }
-        RequestPropertyType<?> property = new RequestPropertyType<Object>(xmlProp.getId(), convertedValue);
-        return property;
+        return new RequestPropertyType<Object>(xmlProp.getId(), convertedValue);
     }
 
+    /**
+     * Converts the PropertyType of a Plugin to XML representation for transport through web service
+     *
+     * @param pluginProperties from Plugin
+     * @return XML representation for use in web service
+     */
     public static PluginProperties convertFromPluginProperties(final Set<? extends PropertyType<?>> pluginProperties) {
         PluginProperties xmlProperties = OBJECT_FACTORY.createPluginProperties();
         for (PropertyType<?> p : pluginProperties) {
@@ -81,7 +97,7 @@ public class PluginHelper {
             xmlProp.setName(p.getName());
             xmlProp.setDescription(p.getDescription());
             xmlProp.setIsMandatory(p.isMandatory());
-            xmlProp.setClazz(p.getValueType().getName());
+            xmlProp.setClazz(p.getValueType().getCanonicalName());
             if (p.getValue() instanceof InputStream) {
                 // Property will be rendered as FileInput
                 xmlProp.setValue(null);
@@ -107,7 +123,7 @@ public class PluginHelper {
         List<PluginMessage> messageList = new ArrayList<PluginMessage>();
         if (message != null) {
             for (org.apromore.model.PluginMessage msg : message.getMessage()) {
-                messageList.add(new SimplePluginMessage(msg.getValue()));
+                messageList.add(new PluginMessageImpl(msg.getValue()));
             }
         }
         return messageList;
