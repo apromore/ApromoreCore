@@ -57,8 +57,8 @@ import org.omg.spec.bpmn._20100524.model.TTask;
 import org.omg.spec.dd._20100524.di.Plane;
 
 /**
- * Test suite for {@link CanoniserDefinitions}.
- * These are decanonization tests, exercising the constructor {@link CanoniserDefinitions#(CanonicalProcessType, AnnotationsType)}.
+ * Test suite for {@link BpmnDefinitions}.
+ * These are decanonization tests, exercising the constructor {@link BpmnDefinitions#(CanonicalProcessType, AnnotationsType)}.
  * Canonization is tested instead by {@link BPMN20CanoniserTest}.
  *
  * A number of these tests are from <cite>Canonization Service for AProMoRe</cite>.
@@ -68,7 +68,7 @@ import org.omg.spec.dd._20100524.di.Plane;
  * @see <a href="http://apromore.org/wp-content/uploads/2010/12/AProMoReCanonization_v1.0.pdf">Canonization
  *     Service for AProMoRe</a>, page 24-25
  */
-public class CanoniserDefinitionsTest {
+public class BpmnDefinitionsTest {
 
     /** Source for BPMN test data. */
     final static File MODELS_DIR = new File("src/test/resources/BPMN_models/");
@@ -175,7 +175,7 @@ public class CanoniserDefinitionsTest {
      *     minus the respective <code>.cpf</code>, <code>.anf</code> and <code>.bpmn.xml</code> file extensions
      * @return the decanonised BPMN model
      */
-    private final CanoniserDefinitions testDecanonise(final String filename) throws CanoniserException, FileNotFoundException, JAXBException, SAXException, TransformerException {
+    private final BpmnDefinitions testDecanonise(final String filename) throws CanoniserException, FileNotFoundException, JAXBException, SAXException, TransformerException {
 
         // Read the CPF source file
         Unmarshaller cpfUnmarshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT).createUnmarshaller();
@@ -200,7 +200,7 @@ public class CanoniserDefinitionsTest {
         assertEquals(cpf.getUri(), anf.getUri());
         
         // Obtain the test instance
-        CanoniserDefinitions definitions = CanoniserDefinitions.correctFlowNodeRefs(new CanoniserDefinitions(cpf, anf), new BpmnObjectFactory());
+        BpmnDefinitions definitions = BpmnDefinitions.correctFlowNodeRefs(new BpmnDefinitions(cpf, anf), new BpmnObjectFactory());
 
         // Serialize the test instance for offline inspection
         Marshaller marshaller = context.createMarshaller();
@@ -223,7 +223,7 @@ public class CanoniserDefinitionsTest {
     public final void testDecanoniseBasic() throws Exception {
 
         // Obtain the test instance
-        CanoniserDefinitions definitions = testDecanonise("Basic");
+        BpmnDefinitions definitions = testDecanonise("Basic");
 
         // Inspect the test instance
         assertNotNull(definitions);
@@ -281,7 +281,7 @@ public class CanoniserDefinitionsTest {
     public final void testDecanonisePool() throws Exception {
 
         // Obtain the test instance
-        CanoniserDefinitions definitions = testDecanonise("Pool");
+        BpmnDefinitions definitions = testDecanonise("Pool");
     }
 
     /**
@@ -291,7 +291,7 @@ public class CanoniserDefinitionsTest {
     public final void testDecanoniseTwoLanes() throws Exception {
 
         // Obtain the test instance
-        CanoniserDefinitions definitions = testDecanonise("TwoLanes");
+        BpmnDefinitions definitions = testDecanonise("TwoLanes");
     }
 
     /**
@@ -301,7 +301,7 @@ public class CanoniserDefinitionsTest {
     public final void testDecanoniseTwoPools() throws Exception {
 
         // Obtain the test instance
-        CanoniserDefinitions definitions = testDecanonise("TwoPools");
+        BpmnDefinitions definitions = testDecanonise("TwoPools");
     }
 
     /**
@@ -311,7 +311,7 @@ public class CanoniserDefinitionsTest {
     public final void testDecanoniseSubprocess() throws Exception {
         
         // Obtain the test instance
-        CanoniserDefinitions definitions = testDecanonise("Subprocess");
+        BpmnDefinitions definitions = testDecanonise("Subprocess");
 
         // Process c6
         assertEquals(TProcess.class, definitions.getRootElement().get(0).getValue().getClass());
