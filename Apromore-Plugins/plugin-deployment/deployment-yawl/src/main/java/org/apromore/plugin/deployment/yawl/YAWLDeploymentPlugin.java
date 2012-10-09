@@ -24,7 +24,7 @@ import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.deployment.exception.DeploymentException;
 import org.apromore.plugin.deployment.impl.DefaultDeploymentPlugin;
-import org.apromore.plugin.exception.PluginException;
+import org.apromore.plugin.exception.PluginPropertyNotFoundException;
 import org.apromore.plugin.impl.PluginResultImpl;
 import org.apromore.plugin.property.PluginPropertyType;
 import org.apromore.plugin.property.PropertyType;
@@ -78,7 +78,7 @@ public class YAWLDeploymentPlugin extends DefaultDeploymentPlugin {
      * @see org.apromore.plugin.deployment.DeploymentPlugin#deployProcess(org.apromore.cpf.CanonicalProcessType)
      */
     @Override
-    public PluginResult deployProcess(final CanonicalProcessType canonicalProcess, final PluginRequest request) throws PluginException {
+    public PluginResult deployProcess(final CanonicalProcessType canonicalProcess, final PluginRequest request) throws DeploymentException, PluginPropertyNotFoundException {
         return deployProcess(canonicalProcess, null, request);
     }
 
@@ -89,7 +89,7 @@ public class YAWLDeploymentPlugin extends DefaultDeploymentPlugin {
      */
     @Override
     public PluginResult deployProcess(final CanonicalProcessType canonicalProcess, final AnnotationsType annotation, final PluginRequest request)
-            throws PluginException {
+            throws DeploymentException, PluginPropertyNotFoundException {
         PropertyType<String> userEngineUrl = request.getRequestProperty(yawlEngineUrl);
         PropertyType<String> userUsername = request.getRequestProperty(yawlEngineUsername);
         PropertyType<String> userPassword = request.getRequestProperty(yawlEnginePassword);

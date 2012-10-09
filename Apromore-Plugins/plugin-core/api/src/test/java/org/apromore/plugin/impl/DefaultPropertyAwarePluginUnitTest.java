@@ -40,6 +40,7 @@ public class DefaultPropertyAwarePluginUnitTest {
     public void testGetMandatoryProperties() {
         assertEquals(1, this.propertyAwarePlugin.getMandatoryProperties().size());
         assertTrue(this.propertyAwarePlugin.getMandatoryProperties().contains(mandatoryProperty));
+        assertFalse(this.propertyAwarePlugin.getMandatoryProperties().contains(nonMandatoryProperty));
     }
 
     @Test
@@ -47,6 +48,14 @@ public class DefaultPropertyAwarePluginUnitTest {
         assertEquals(2, this.propertyAwarePlugin.getAvailableProperties().size());
         assertTrue(this.propertyAwarePlugin.getAvailableProperties().contains(nonMandatoryProperty));
         assertTrue(this.propertyAwarePlugin.getAvailableProperties().contains(mandatoryProperty));
+    }
+
+
+    @Test
+    public void testGetOptionalProperties() {
+        assertEquals(1, this.propertyAwarePlugin.getOptionalProperties().size());
+        assertTrue(this.propertyAwarePlugin.getOptionalProperties().contains(nonMandatoryProperty));
+        assertFalse(this.propertyAwarePlugin.getOptionalProperties().contains(mandatoryProperty));
     }
 
     @Test

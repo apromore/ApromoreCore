@@ -96,6 +96,7 @@ public class YAWLDeploymentPluginUnitTest {
             request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUrl", "http://localhost:"+server.getServiceAddress().getPort()+"/yawl/ia"));
             request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUsername", "admin"));
             request.addRequestProperty(new RequestPropertyType<String>("yawlEnginePassword", "YAWL"));
+            request.addRequestProperty(new RequestPropertyType<Boolean>("doAutoLaunch", true));
             PluginResult result = deploymentPlugin.deployProcess(cpf, request);
             assertEquals(1, result.getPluginMessage().size());
             assertEquals("YAWL Engine message: test", result.getPluginMessage().get(0).getMessage());
@@ -133,6 +134,7 @@ public class YAWLDeploymentPluginUnitTest {
             request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUrl", "http://localhost:"+server.getServiceAddress().getPort()+"/yawl/ia"));
             request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUsername", "admin"));
             request.addRequestProperty(new RequestPropertyType<String>("yawlEnginePassword", "YAWL"));
+            request.addRequestProperty(new RequestPropertyType<Boolean>("doAutoLaunch", false));
             PluginResult result = deploymentPlugin.deployProcess(cpf, request);
             assertEquals(1, result.getPluginMessage().size());
             assertEquals("Error: There is a specification with an identical id to [UID: WP1Sequence- Version: 0.1] already loaded into the engine.", result.getPluginMessage().get(0).getMessage());
