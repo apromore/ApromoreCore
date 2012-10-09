@@ -17,7 +17,7 @@ import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.PropertyAwarePlugin;
 import org.apromore.plugin.deployment.exception.DeploymentException;
-import org.apromore.plugin.exception.PluginException;
+import org.apromore.plugin.exception.PluginPropertyNotFoundException;
 
 /**
  * Interface for Deployment Plugins, that support deploying processes to a process/work-flow engine.
@@ -39,9 +39,9 @@ public interface DeploymentPlugin extends PropertyAwarePlugin {
 	 *
 	 * @param canonicalProcess the process to be deployed
      * @throws DeploymentException in case of an error during deployment
-	 * @throws PluginException in case of an error related to Plugins
+	 * @throws PluginPropertyNotFoundException in case a mandatory property was not found
 	 */
-	PluginResult deployProcess(CanonicalProcessType canonicalProcess, PluginRequest request) throws DeploymentException, PluginException;
+	PluginResult deployProcess(CanonicalProcessType canonicalProcess, PluginRequest request) throws DeploymentException, PluginPropertyNotFoundException;
 
 	/**
      * Deploys the process in canonical process format to a process/work-flow engine.
@@ -49,8 +49,8 @@ public interface DeploymentPlugin extends PropertyAwarePlugin {
      * @param canonicalProcess the process to be deployed
      * @param annotation to be used during deployment
      * @throws DeploymentException in case of an error during deployment
-	 * @throws PluginException in case of an error related to Plugins
+	 * @throws PluginPropertyNotFoundException in case a mandatory property was not found
      */
-	PluginResult deployProcess(CanonicalProcessType canonicalProcess, AnnotationsType annotation, PluginRequest request) throws DeploymentException, PluginException;
+	PluginResult deployProcess(CanonicalProcessType canonicalProcess, AnnotationsType annotation, PluginRequest request) throws DeploymentException, PluginPropertyNotFoundException;
 
 }

@@ -38,13 +38,13 @@ public class DefaultAbstractCanoniserTest {
             }
 
             @Override
-            public PluginResult createInitialNativeFormat(OutputStream nativeOutput, String processName, String processVersion, String processAuthor,
-                    Date processCreated, PluginRequest request) {
+            public PluginResult createInitialNativeFormat(final OutputStream nativeOutput, final String processName, final String processVersion, final String processAuthor,
+                    final Date processCreated, final PluginRequest request) {
                 return null;
             }
 
             @Override
-            public CanoniserMetadataResult readMetaData(InputStream nativeInput, PluginRequest request) {
+            public CanoniserMetadataResult readMetaData(final InputStream nativeInput, final PluginRequest request) {
                 return null;
             }
         };

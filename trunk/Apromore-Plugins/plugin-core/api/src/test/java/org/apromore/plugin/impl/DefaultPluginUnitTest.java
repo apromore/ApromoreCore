@@ -1,6 +1,7 @@
 package org.apromore.plugin.impl;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 
 import org.junit.Before;
@@ -56,6 +57,23 @@ public class DefaultPluginUnitTest {
     @Test
     public void testGetAuthor() {
         assertEquals("Smith", plugin.getAuthor());
+    }
+
+    @Test
+    public void testEquals() {
+        DefaultPluginMock plugin2 = new DefaultPluginMock();
+        assertEquals(plugin, plugin2);
+        assertEquals(plugin.hashCode(), plugin2.hashCode());
+        DefaultPlugin plugin3 = new DefaultPlugin() {
+
+            @Override
+            public String getName() {
+                return "___anothername";
+            }
+
+        };
+        assertFalse(plugin3.equals(plugin));
+        assertFalse(plugin3.hashCode() == plugin.hashCode());
     }
 
 }
