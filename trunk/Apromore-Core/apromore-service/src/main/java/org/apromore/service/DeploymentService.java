@@ -20,6 +20,8 @@ import org.apromore.plugin.property.RequestPropertyType;
 public interface DeploymentService {
 
     /**
+     * List all available Deployment Plugins for the specified native type
+     *
      * @param nativeType
      *            to be deployed
      * @return installed deployment plugins for requested native type
