@@ -192,17 +192,17 @@ public class TaskResourcingHelper {
         for (ResourceTypeRefType ref: resourceRefList) {
             if (ref.getQualifier() != null && ref.getQualifier().equals("Primary")) {
                 ResourceTypeType resource = getContext().getResourceTypeById(ref.getResourceTypeId());
-                if (resource != null && resource instanceof HumanType) {
+                if (resource instanceof HumanType) {
                     primaryResources.add((HumanType) resource);
                 } else {
-                    getContext().getMessageInterface().addMessage("Found primary non-human resource {0}! Invalid!", resource.getName());
+                    getContext().getMessageInterface().addMessage("Found primary non-human resource {0}! Invalid!", ref.getResourceTypeId());
                 }
             }
         }
         // Fallback to the first resource if it is of HumanType
         if (primaryResources.isEmpty() && !resourceRefList.isEmpty()) {
             ResourceTypeType resource = getContext().getResourceTypeById(resourceRefList.get(0).getResourceTypeId());
-            if (resource != null && resource instanceof HumanType) {
+            if (resource instanceof HumanType) {
                 primaryResources.add((HumanType) resource);
             }
         } else {

@@ -1,6 +1,6 @@
 package org.apromore.canoniser.yawl.internal.utils;
 
-public class YAWLConstants {
+public final class YAWLConstants {
 
     public static final String YAWL_ALLOCATOR_RANDOM = "Random";
 
@@ -11,7 +11,7 @@ public class YAWLConstants {
     public static final String YAWL_ALLOCATOR_ROUND_ROBIN_BY_TIME = "RoundRobinByTime";
 
     public static final String YAWL_ALLOCATOR_SHORTEST_QUEUE = "ShortestQueue";
-    
+
     private YAWLConstants() {
     }
 

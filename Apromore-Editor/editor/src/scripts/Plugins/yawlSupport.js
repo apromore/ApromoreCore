@@ -562,7 +562,8 @@ ORYX.Plugins.YAWLSupport = ORYX.Plugins.AbstractPlugin.extend({
 							},
 							params : {
 								data : yawlString,
-								action : "Import"
+								action : "Import",
+								standalone : "true"
 							}
 						});
 
@@ -745,7 +746,8 @@ ORYX.Plugins.YAWLSupport = ORYX.Plugins.AbstractPlugin.extend({
 			},
 			params : {
 				data : yawlExportJson,
-				action : "Export"
+				action : "Export",
+				standalone : "true"
 			}
 		});			
 		

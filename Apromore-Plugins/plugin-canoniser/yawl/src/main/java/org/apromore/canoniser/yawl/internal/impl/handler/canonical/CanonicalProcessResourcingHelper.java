@@ -50,29 +50,43 @@ public class CanonicalProcessResourcingHelper {
 
     private String convertSingleResource(final ResourceTypeType r) {
         if (r instanceof NonhumanType && ((NonhumanType)r).getType() != null) {
-            switch (((NonhumanType) r).getType()) {
-            case EQUIPMENT:
-                return "test";
-            case SOFTWARE_SYSTEM:
-                return "test";
-            }
+            return convertSingleNonHuman((NonhumanType)r);
         } else if (r instanceof HumanType && ((HumanType)r).getType() != null) {
-            HumanType humanType = (HumanType) r;
-            switch (humanType.getType()) {
-            case DEPARTMENT:
-            case ORGANISATION:
-            case GROUP:
-            case TEAM:
-            case UNIT:
-                return "test";
-            case ROLE:
-                return convertRole(humanType);
-            case PARTICIPANT:
-                return convertParticipant(humanType);
-            }
+            return convertSingleHuman((HumanType)r);
+        } else {
+            // Assume it is a Role
+            return convertRole(r);
         }
-        // Assume it is a Role
-        return convertRole(r);
+    }
+
+    private String convertSingleHuman(final HumanType humanType) {
+        switch (humanType.getType()) {
+        case DEPARTMENT:
+        case ORGANISATION:
+        case GROUP:
+        case TEAM:
+        case UNIT:
+            return "test";
+        case ROLE:
+            return convertRole(humanType);
+        case PARTICIPANT:
+            return convertParticipant(humanType);
+        default:
+            // Assume it is a Role
+            return convertRole(humanType);
+        }
+    }
+
+    private String convertSingleNonHuman(final NonhumanType r) {
+        switch (r.getType()) {
+        case EQUIPMENT:
+            return "test";
+        case SOFTWARE_SYSTEM:
+            return "test";
+        default:
+            // Assume it is a Role
+            return convertRole(r);
+        }
     }
 
     private String convertParticipant(final HumanType humanType) {

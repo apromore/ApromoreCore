@@ -47,9 +47,9 @@ public class RoleWithFilterTest extends BasePatternTest {
         assertEquals(CPFSchema.EXPRESSION_LANGUAGE_XPATH, filter.getLanguage());
         assertTrue(filter.getDescription().contains("OrgGroupX") && filter.getDescription().contains("PositionX") && filter.getDescription().contains("CapabilityX"));
         assertEquals(
-                "//ResourceType[attribute[@name='OrgGroup' and @value='OrgGroupX'] and " +
-                "attribute[@name='Position' and @value='PositionX'] and " +
-                "attribute[@name='Capability' and @value='CapabilityX']]",
+                "//ResourceType[attribute[@name='OrgGroup' AND @value='OrgGroupX'] AND " +
+                "attribute[@name='Position' AND @value='PositionX'] AND " +
+                "attribute[@name='Capability' AND @value='CapabilityX']]",
                 filter.getExpression());
 
         assertNull(task.getFilterByRuntimeExpr());

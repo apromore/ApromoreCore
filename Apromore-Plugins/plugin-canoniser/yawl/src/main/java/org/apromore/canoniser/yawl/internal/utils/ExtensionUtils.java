@@ -106,7 +106,7 @@ public final class ExtensionUtils {
      *            returned of 'getAny' or similiar
      * @param expectedClass
      *            object of this class will be returned
-     * @return
+     * @return YAWL Object matching excpected class
      * @throws CanoniserException
      */
     public static <T> T unmarshalYAWLFragment(final Object object, final Class<T> expectedClass) throws CanoniserException {
@@ -132,7 +132,7 @@ public final class ExtensionUtils {
      *            to be marshaled
      * @param expectedClass
      *            class of the object
-     * @return
+     * @return XML Element containing the YAWL fragment
      * @throws CanoniserException
      */
     public static <T> Element marshalYAWLFragment(final String elementName, final T object, final Class<T> expectedClass) throws CanoniserException {
@@ -206,8 +206,8 @@ public final class ExtensionUtils {
     /**
      * Add the extension Element (XML) to the CPF ResourceType attributes
      *
-     * @param extensionElement
-     * @param net
+     * @param extensionElement any XML Element
+     * @param resourceType CPF resource
      */
     public static void addToExtensions(final Element extensionElement, final ResourceTypeType resourceType) {
         LOGGER.debug("Added YAWL extension {} to Resource {}", extensionElement.getNodeName(), resourceType.getId());

@@ -689,6 +689,21 @@
 							"value":"none",
 							"refToView":"none"
 						},
+                        {
+                            "title":"AND-Split-RIGHT",
+                            "value":"andR",
+                            "refToView":"andsplitR"
+                        },
+                        {
+                            "title":"OR-Split-RIGHT",
+                            "value":"orR",
+                            "refToView":"orsplitR"
+                        },
+                        {
+                            "title":"XOR-Split-RIGHT",
+                            "value":"xorR",
+                            "refToView":"xorsplitR"
+                        },
 						{
 							"title":"AND-Split-LEFT",
 							"value":"andL",
@@ -703,21 +718,6 @@
 							"title":"XOR-Split-LEFT",
 							"value":"xorL",
 							"refToView":"xorsplitL"
-						},
-						{
-							"title":"AND-Split-RIGHT",
-							"value":"andR",
-							"refToView":"andsplitR"
-						},
-						{
-							"title":"OR-Split-RIGHT",
-							"value":"orR",
-							"refToView":"orsplitR"
-						},
-						{
-							"title":"XOR-Split-RIGHT",
-							"value":"xorR",
-							"refToView":"xorsplitR"
 						},
 						{
 							"title":"AND-Split-TOP",
