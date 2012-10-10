@@ -712,7 +712,7 @@ public class BPMN20CanoniserTest {
     }
 
     /**
-     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Subprocess.bpmn20.xml">subprocess</a>.
+     * Test canonization of a <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Subprocess.bpmn20.xml">subprocess</a>.
      *
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Subprocess.bpmn20.svg"/></div>
      */
@@ -742,5 +742,15 @@ public class BPMN20CanoniserTest {
         assertEquals("Start 2", ((EventType) subnet.getNode().get(0)).getName());
         assertEquals("Task",    ((TaskType)  subnet.getNode().get(1)).getName());
         assertEquals("End 2",   ((EventType) subnet.getNode().get(2)).getName());
+    }
+
+    /**
+     * Test canonization of a <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Call Activity.bpmn20.xml">call activity</a>.
+     *
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Call Activity.bpmn20.svg"/></div>
+     */
+    @Test
+    public void testCanoniseCallActivity() throws Exception {
+        CanonicalProcessType cpf = testCanonise("Call Activity").getCpf(0);
     }
 }
