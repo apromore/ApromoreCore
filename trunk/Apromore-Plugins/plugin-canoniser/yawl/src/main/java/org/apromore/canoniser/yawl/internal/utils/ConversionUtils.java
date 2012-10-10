@@ -74,7 +74,7 @@ public final class ConversionUtils {
      *
      * @param nodes
      *            Collection of Nodes
-     * @return
+     * @return readable String
      */
     public static String nodesToString(final Collection<NodeType> nodes) {
         final StringBuilder sb = new StringBuilder();
@@ -96,7 +96,7 @@ public final class ConversionUtils {
      *
      * @param edges
      *            Collection of Edges
-     * @return
+     * @return readable String
      */
     public static String edgesToString(final Collection<EdgeType> edges) {
         final StringBuilder sb = new StringBuilder();
@@ -118,7 +118,7 @@ public final class ConversionUtils {
      *
      * @param node
      *            NodeType
-     * @return
+     * @return readable String
      */
     public static String toString(final NodeType node) {
         final ToStringBuilder sb = new ToStringBuilder(node, ToStringStyle.MULTI_LINE_STYLE);
@@ -130,7 +130,7 @@ public final class ConversionUtils {
      *
      * @param node
      *            NodeType
-     * @return
+     * @return readable String
      */
     public static String toString(final WorkType node) {
         final ToStringBuilder sb = new ToStringBuilder(node, ToStringStyle.MULTI_LINE_STYLE);
@@ -144,7 +144,7 @@ public final class ConversionUtils {
      *
      * @param edge
      *            EdgeType
-     * @return
+     * @return readable String
      */
     public static String toString(final EdgeType edge) {
         final ToStringBuilder sb = new ToStringBuilder(edge, ToStringStyle.MULTI_LINE_STYLE);
@@ -156,7 +156,7 @@ public final class ConversionUtils {
      *
      * @param net
      *            NetType
-     * @return
+     * @return readable String
      */
     public static String toString(final NetType net) {
         final ToStringBuilder sb = new ToStringBuilder(net, ToStringStyle.MULTI_LINE_STYLE);
@@ -169,7 +169,7 @@ public final class ConversionUtils {
      *
      * @param resource
      *            HumanType
-     * @return
+     * @return readable String
      */
     public static String toString(final HumanType resource) {
         final ToStringBuilder sb = new ToStringBuilder(resource, ToStringStyle.MULTI_LINE_STYLE);
@@ -181,7 +181,7 @@ public final class ConversionUtils {
      *
      * @param resource
      *            NonhumanType
-     * @return
+     * @return readable String
      */
     public static String toString(final NonhumanType resource) {
         final ToStringBuilder sb = new ToStringBuilder(resource, ToStringStyle.MULTI_LINE_STYLE);

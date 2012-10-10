@@ -76,7 +76,7 @@ public abstract class AbstractTimerMacro extends ContextAwareRewriteMacro {
     protected abstract boolean checkCondition(final NodeType node);
 
     /**
-     * Rewrite the Timer pattern if it matches in complete. Please note as CONTRACT this method MUST call {@see #cleanNet(NetType)} if any Nodes or
+     * Rewrite the Timer pattern if it matches in complete. Please note as CONTRACT this method MUST call {@link #cleanNet(NetType)} if any Nodes or
      * Edges are modified.
      *
      * @param node

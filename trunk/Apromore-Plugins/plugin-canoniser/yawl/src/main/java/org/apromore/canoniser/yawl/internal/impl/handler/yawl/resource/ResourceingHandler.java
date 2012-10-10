@@ -61,11 +61,15 @@ import org.yawlfoundation.yawlschema.orgdata.RoleType;
  */
 public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsType, TaskType> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceingHandler.class);
+
+    private static final String AND_DESCRIPTION = " and ";
+
+    private static final Object AND_EXPRESSION = " AND ";
+
     public static final String SECONDARY_QUALIFIER = "Secondary";
 
     public static final String PRIMARY_QUALIFIER = "Primary";
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(ResourceingHandler.class);
 
     /*
      * (non-Javadoc)
@@ -194,13 +198,13 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
                 }
 
                 if (constraintIter.hasNext()) {
-                    exprBuilder.append(" AND ");
+                    exprBuilder.append(AND_EXPRESSION);
                 }
             }
         }
 
         if (familiarParticipant != null && exprBuilder.length() > 0) {
-            exprBuilder.append(" AND ");
+            exprBuilder.append(AND_EXPRESSION);
             exprBuilder.append("familiarParticipant(" + generateUUID(CONTROLFLOW_ID_PREFIX, familiarParticipant.getTaskID()) + ")");
         }
 
@@ -263,8 +267,8 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
             }
 
             if (filterIter.hasNext()) {
-                descrBuilder.append(" and ");
-                exprBuilder.append(" and ");
+                descrBuilder.append(AND_DESCRIPTION);
+                exprBuilder.append(AND_EXPRESSION);
             }
         }
     }
@@ -278,8 +282,8 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
                 exprBuilder.append(buildParamXPath(param));
 
                 if (paramIter.hasNext()) {
-                    descrBuilder.append(" and ");
-                    exprBuilder.append(" and ");
+                    descrBuilder.append(AND_DESCRIPTION);
+                    exprBuilder.append(AND_EXPRESSION);
                 }
             }
         }
@@ -295,9 +299,9 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
 
     private String buildDataParamXPath(final String name, final ResourcingResourceType refers) {
         if (refers.equals(ResourcingResourceType.PARTICIPANT)) {
-            return "type/text()='Participant' and name/text()='cpf:getObjectValue(" + name + ")'";
+            return "type/text()='Participant'"+AND_EXPRESSION+"name/text()='cpf:getObjectValue(" + name + ")'";
         } else {
-            return "type/text()='Role' and name/text()='cpf:getObjectValue(" + name + ")'";
+            return "type/text()='Role'"+AND_EXPRESSION+"name/text()='cpf:getObjectValue(" + name + ")'";
         }
     }
 
@@ -314,7 +318,7 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
     }
 
     private String buildParamXPath(final Param param) {
-        return "attribute[@name='" + param.getKey() + "' and @value='" + param.getValue() + "']";
+        return "attribute[@name='" + param.getKey() + "'"+AND_EXPRESSION+"@value='" + param.getValue() + "']";
     }
 
     private List<HumanType> convertDistributionSet(final ResourcingFactsType resourcing) {
