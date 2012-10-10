@@ -66,15 +66,15 @@ public class YAWLExportServlet extends HttpServlet {
                 res.setContentType("text/plain; charset=UTF-8");
                 res.getWriter().write("Empty or missing parameter 'data'!");
             } else if (isStandalone) {
-                String yawlXml = getYAWLXmlFromJSON(jsonData);
-                res.setContentType("application/xml; charset=UTF-8");
-                res.setStatus(200);
-                res.getWriter().write(yawlXml);
-            } else {
                 JSONObject exportJson = getYAWLFromJSON(jsonData);
                 res.setContentType("application/json; charset=UTF-8");
                 res.setStatus(200);
                 exportJson.write(res.getWriter());
+            } else {
+                String yawlXml = getYAWLXmlFromJSON(jsonData);
+                res.setContentType("application/xml; charset=UTF-8");
+                res.setStatus(200);
+                res.getWriter().write(yawlXml);
             }
 
         } catch (Exception e) {
