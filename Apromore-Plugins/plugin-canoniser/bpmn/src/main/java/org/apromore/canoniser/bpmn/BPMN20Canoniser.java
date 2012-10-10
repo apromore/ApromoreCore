@@ -40,6 +40,7 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TaskType;
+import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
@@ -54,6 +55,7 @@ import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.di.BPMNShape;
 import org.omg.spec.bpmn._20100524.model.TArtifact;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
+import org.omg.spec.bpmn._20100524.model.TCallActivity;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
 import org.omg.spec.bpmn._20100524.model.TDataObject;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
@@ -93,9 +95,9 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
     /** {@inheritDoc} */
     @Override
     public PluginResult canonise(final InputStream                bpmnInput,
-                         final List<AnnotationsType>      annotationFormat,
-                         final List<CanonicalProcessType> canonicalFormat,
-                         final PluginRequest request) throws CanoniserException {
+                                 final List<AnnotationsType>      annotationFormat,
+                                 final List<CanonicalProcessType> canonicalFormat,
+                                 final PluginRequest request) throws CanoniserException {
 
         try {
             BpmnDefinitions definitions = JAXBContext.newInstance(BpmnObjectFactory.class,
@@ -284,6 +286,24 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
 
         for (JAXBElement<? extends TFlowElement> flowElement : process.getFlowElement()) {
             flowElement.getValue().accept(new org.omg.spec.bpmn._20100524.model.BaseVisitor() {
+                @Override
+                public void visit(final TCallActivity callActivity) {
+                    TaskType task = new TaskType();
+                    populateFlowNode(task, callActivity);
+
+                    if (false) {
+                        // The called element is a process or global task within this same BPMN document
+                        task.setSubnetId(callActivity.getId());
+                    } else {
+                        // The called element is NOT a process or global task within this same BPMN document
+                        TypeAttribute attribute = new TypeAttribute();
+                        attribute.setName("extension");
+                        task.getAttribute().add(attribute);
+                    }
+
+                    net.getNode().add(task);
+                }
+
                 @Override
                 public void visit(final TDataObject dataObject) {
                     ObjectType object = new ObjectType();

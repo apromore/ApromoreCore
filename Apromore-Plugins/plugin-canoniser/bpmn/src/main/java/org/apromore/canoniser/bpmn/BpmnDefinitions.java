@@ -36,6 +36,7 @@ import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.TaskType;
+import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
@@ -43,6 +44,7 @@ import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
 import org.omg.spec.bpmn._20100524.di.BPMNShape;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
+import org.omg.spec.bpmn._20100524.model.TCallActivity;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
@@ -328,7 +330,7 @@ public class BpmnDefinitions extends TDefinitions {
             // Count the incoming and outgoing edges to determine whether this is a start, end, or intermediate event
             CpfNodeType cpfNode = (CpfNodeType) node;
             if (cpfNode.getIncomingEdges().size() == 0 && cpfNode.getOutgoingEdges().size() > 0) {
-                // assuming a StartEvent here, but could be TBoundaryEvent too
+                // Assuming a StartEvent here, but could be TBoundaryEvent too
                 TStartEvent event = new TStartEvent();
                 event.setId(bpmnIdFactory.newId(node.getId()));
                 idMap.put(node.getId(), event);
@@ -339,7 +341,7 @@ public class BpmnDefinitions extends TDefinitions {
                 idMap.put(node.getId(), event);
                 return factory.createEndEvent(event);
             } else if (cpfNode.getIncomingEdges().size() > 0 && cpfNode.getOutgoingEdges().size() > 0) {
-                // assuming all intermediate events are ThrowEvents
+                // Assuming all intermediate events are ThrowEvents
                 TIntermediateThrowEvent event = new TIntermediateThrowEvent();
                 event.setId(bpmnIdFactory.newId(node.getId()));
                 idMap.put(node.getId(), event);
@@ -350,7 +352,16 @@ public class BpmnDefinitions extends TDefinitions {
         } else if (node instanceof TaskType) {
             TaskType that = (TaskType) node;
 
-            if (that.getSubnetId() != null) {
+            TypeAttribute calledElement = null;
+            if (calledElement != null) {
+                // This CPF Task is a BPMN CallActivity
+                TCallActivity callActivity = factory.createTCallActivity();
+                callActivity.setId(bpmnIdFactory.newId(node.getId()));
+                idMap.put(node.getId(), callActivity);
+                callActivity.setCalledElement(new QName("dummy_calledElement"));
+                return factory.createCallActivity(callActivity);
+            } else if (that.getSubnetId() != null) {
+                // This CPF Task is a BPMN SubProcess
                 TSubProcess subProcess = factory.createTSubProcess();
                 subProcess.setId(bpmnIdFactory.newId(node.getId()));
                 idMap.put(node.getId(), subProcess);
@@ -359,6 +370,7 @@ public class BpmnDefinitions extends TDefinitions {
                                 cpf, factory, bpmnIdFactory, idMap, edgeMap, flowWithoutSourceRefMap, flowWithoutTargetRefMap);
                 return factory.createSubProcess(subProcess);
             } else {
+                // This CPF Task is a BPMN Task
                 TTask task = new TTask();
                 task.setId(bpmnIdFactory.newId(node.getId()));
                 idMap.put(node.getId(), task);
