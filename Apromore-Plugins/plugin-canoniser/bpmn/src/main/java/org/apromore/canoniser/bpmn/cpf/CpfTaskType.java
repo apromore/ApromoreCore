@@ -49,6 +49,7 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
 
     // Accessors for CPF extension attributes
 
+    /** @return the identifier of the called element of a BPMN Call Activity */
     public QName getCalledElement() {
 
         // Check for an existing attribute with the right name
@@ -62,7 +63,8 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
         return null;
     }
 
-    public void setCalledElement(QName id) {
+    /** @param id  The identifier of the called element, or <code>null</code> to clear the property */
+    public void setCalledElement(final QName id) {
 
         // Remove any existing attribute
         Iterator<TypeAttribute> i = getAttribute().iterator();
@@ -95,7 +97,8 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
         return false;
     }
 
-    public void setTriggeredByEvent(Boolean value) {
+    /** @param value  whether this CPF task corresponds to a BPMN event-triggered subprocess */
+    public void setTriggeredByEvent(final Boolean value) {
 
         if (value) {
             // Check whether there's already an existing flag
