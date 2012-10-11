@@ -39,6 +39,7 @@ import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.bpmn.cpf.CpfTaskType;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
@@ -350,20 +351,21 @@ public class BpmnDefinitions extends TDefinitions {
                 throw new CanoniserException("Event \"" + node.getId() + "\" has no edges");
             }
         } else if (node instanceof TaskType) {
-            TaskType that = (TaskType) node;
+            CpfTaskType that = (CpfTaskType) node;
 
-            TypeAttribute calledElement = null;
-            if (calledElement != null) {
+            QName calledElement = that.getCalledElement();
+            if (that.getCalledElement() != null) {
                 // This CPF Task is a BPMN CallActivity
                 TCallActivity callActivity = factory.createTCallActivity();
                 callActivity.setId(bpmnIdFactory.newId(node.getId()));
                 idMap.put(node.getId(), callActivity);
-                callActivity.setCalledElement(new QName("dummy_calledElement"));
+                callActivity.setCalledElement(calledElement);
                 return factory.createCallActivity(callActivity);
             } else if (that.getSubnetId() != null) {
                 // This CPF Task is a BPMN SubProcess
                 TSubProcess subProcess = factory.createTSubProcess();
                 subProcess.setId(bpmnIdFactory.newId(node.getId()));
+                subProcess.setTriggeredByEvent(that.isTriggeredByEvent());
                 idMap.put(node.getId(), subProcess);
                 populateProcess(new ProcessWrapper(subProcess, "subprocess"),
                                 findNet(cpf, that.getSubnetId()),
