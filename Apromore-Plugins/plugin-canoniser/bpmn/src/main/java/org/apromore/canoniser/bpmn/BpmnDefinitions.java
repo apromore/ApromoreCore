@@ -36,7 +36,6 @@ import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.TaskType;
-import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.bpmn.cpf.CpfTaskType;
@@ -443,7 +442,8 @@ public class BpmnDefinitions extends TDefinitions {
 
             // Add the CPF Nodes as BPMN FlowNodes
             for (NodeType node : net.getNode()) {
-                JAXBElement<? extends TFlowNode> flowNode = createFlowNode(node, cpf, bpmnIdFactory, idMap, factory, edgeMap, flowWithoutSourceRefMap, flowWithoutTargetRefMap);
+                JAXBElement<? extends TFlowNode> flowNode =
+                    createFlowNode(node, cpf, bpmnIdFactory, idMap, factory, edgeMap, flowWithoutSourceRefMap, flowWithoutTargetRefMap);
                 process.getFlowElement().add(flowNode);
 
                 // Fill any BPMN @sourceRef or @targetRef attributes referencing this node
