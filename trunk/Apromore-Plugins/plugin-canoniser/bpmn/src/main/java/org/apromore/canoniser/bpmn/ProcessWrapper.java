@@ -42,10 +42,10 @@ public class ProcessWrapper {
      * Wrap a {@link TSubProcess}.
      *
      * @param subprocess  wrapped instance
-     * @param id  identifier to be used for the implicit process within the subprocess
+     * @param processId  identifier to be used for the implicit process within the subprocess
      */
-    public ProcessWrapper(final TSubProcess subprocess, final String id) {
-        this.id     = id;
+    public ProcessWrapper(final TSubProcess subprocess, final String processId) {
+        id          = processId;
         artifact    = subprocess.getArtifact();
         flowElement = subprocess.getFlowElement();
         laneSet     = subprocess.getLaneSet();
