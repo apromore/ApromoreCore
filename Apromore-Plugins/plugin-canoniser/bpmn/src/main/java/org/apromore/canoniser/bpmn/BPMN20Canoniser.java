@@ -18,6 +18,8 @@ import javax.xml.transform.stream.StreamSource;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.AnnotationType;
 import org.apromore.canoniser.DefaultAbstractCanoniser;
+import org.apromore.canoniser.bpmn.anf.AnfAnnotationsType;
+import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
 import org.apromore.canoniser.bpmn.cpf.CpfNetType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
@@ -144,12 +146,28 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
 
     /**
      * {@inheritDoc}
-     * @return <code>null</code> always (not yet implemented)
+     * @return a result expressing just the name of the BPMN process, or <code>null</code> if any exception occurs internally
      */
     @Override
-    public CanoniserMetadataResult readMetaData(final InputStream nativeInput, final PluginRequest request) {
-        // TODO please implement
-        return null;
+    public CanoniserMetadataResult readMetaData(final InputStream bpmnInput, final PluginRequest request) {
+        try {
+            BpmnDefinitions definitions = JAXBContext.newInstance(BpmnObjectFactory.class,
+                                                                  org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
+                                                                  org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
+                                                                  org.omg.spec.dd._20100524.dc.ObjectFactory.class,
+                                                                  org.omg.spec.dd._20100524.di.ObjectFactory.class)
+                                                     .createUnmarshaller()
+                                                     .unmarshal(new StreamSource(bpmnInput), BpmnDefinitions.class)
+                                                     .getValue();  // discard the JAXBElement wrapper
+
+            // Fill in the metadata
+            CanoniserMetadataResult result = new CanoniserMetadataResult();
+            result.setProcessName(definitions.getName());
+
+            return result;
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     // Implementation of canonisation
@@ -169,86 +187,19 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
         // This instance will be populated and returned at the end of this method
         final CanoniserResult result = new CanoniserResult();
 
-        // Map BPMN flow nodes to the CPF lanes containing them
-        final Map<TFlowNode, TLane> laneMap = new HashMap<TFlowNode, TLane>();
+        // Create the CPF
+        CanonicalProcessType cpf = new CpfCanonicalProcessType(definitions);
+        cpf.setUri(linkUriFactory.newId(null));
 
-        // Map BPMN flow nodes to CPF nodes
-        final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap = new HashMap<TFlowNode, NodeType>();
-
-        // Traverse processes
-        for (JAXBElement<? extends TRootElement> rootElement : definitions.getRootElement()) {
-            if (rootElement.getValue() instanceof TProcess) {
-                TProcess process = (TProcess) rootElement.getValue();
-
-                // Create this process and its subprocesses
-                CanonicalProcessType cpf = new CanonicalProcessType();
-                IdFactory cpfIdFactory = new IdFactory();  // Generate identifiers scoped to this single CPF document
-                cpf.setName(requiredName(definitions.getName()));
-                cpf.setVersion(CPF_VERSION);
-                new CpfNetType(cpf, cpfIdFactory, new ProcessWrapper(process), laneMap, bpmnFlowNodeToCpfNodeMap, null, definitions);
-
-                // For each diagram in the BPMN, generate an ANF for this CPF
-                List<AnnotationsType> anfs = annotate(definitions);
-
-                // Link the ANF to the CPF so that @cpfId attributes are meaningful
-                String linkUri = linkUriFactory.newId(null);
-                cpf.setUri(linkUri);
-                for (AnnotationsType anf : anfs) {
-                    anf.setUri(linkUri);
-                    result.put(cpf, anf);
-                }
-            }
+        // Create the ANF
+        for (BPMNDiagram diagram : definitions.getBPMNDiagram()) {
+            final AnnotationsType anf = new AnfAnnotationsType(diagram);
+            anf.setUri(cpf.getUri());
+            result.put(cpf, anf);
         }
 
         // Dummy return value
         return result;
-    }
-
-    /**
-     * Traverse the BPMN diagram elements, converting them into ANF documents.
-     *
-     * @param definitions  a BPMN document
-     * @return an ANF document
-     */
-    private static List<AnnotationsType> annotate(final BpmnDefinitions definitions) {
-
-        final List<AnnotationsType> anfs = new ArrayList<AnnotationsType>();
-
-        for (BPMNDiagram diagram : definitions.getBPMNDiagram()) {
-            //logger.info("Annotating a diagram " + ((Plane) diagram.getBPMNPlane()).getDiagramElement());
-
-            final AnnotationsType anf = new AnnotationsType();
-
-            for (JAXBElement<? extends DiagramElement> element : diagram.getBPMNPlane().getDiagramElement()) {
-
-                // Generator for identifiers scoped to this ANF document
-                final IdFactory anfIdFactory = new IdFactory();
-
-                //logger.info("Annotating an element " + element);
-                element.getValue().accept(new org.omg.spec.bpmn._20100524.model.BaseVisitor() {
-                    @Override
-                    public void visit(final BPMNEdge edge) {
-                        //logger.info("Annotating an edge");
-                        AnnotationType annotation = new AnnotationType();
-                        annotation.setId(anfIdFactory.newId(edge.getId()));
-                        annotation.setCpfId(edge.getBpmnElement().toString());  // TODO - process through cpfIdFactory instead
-                        anf.getAnnotation().add(annotation);
-                    }
-                    @Override
-                    public void visit(final BPMNShape shape) {
-                        //logger.info("Annotating a shape");
-                        AnnotationType annotation = new AnnotationType();
-                        annotation.setId(anfIdFactory.newId(shape.getId()));
-                        annotation.setCpfId(shape.getBpmnElement().toString());  // TODO - process through cpfIdFactory instead
-                        anf.getAnnotation().add(annotation);
-                    }
-                });
-            }
-
-            anfs.add(anf);
-        }
-
-        return anfs;
     }
 
     /**
