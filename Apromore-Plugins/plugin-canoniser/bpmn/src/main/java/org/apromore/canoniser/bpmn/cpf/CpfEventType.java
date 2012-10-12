@@ -7,12 +7,13 @@ import java.util.Set;
 // Local packages
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
+import org.omg.spec.bpmn._20100524.model.TEndEvent;
+import org.omg.spec.bpmn._20100524.model.TStartEvent;
 
 /**
- * CPF 0.6 event with convenience methods.
+ * CPF 1.0 event with convenience methods.
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
- * @since 0.4
  */
 public class CpfEventType extends EventType implements CpfNodeType {
 
@@ -21,6 +22,35 @@ public class CpfEventType extends EventType implements CpfNodeType {
 
     /** Outgoing edges. */
     private Set<EdgeType> outgoingEdges = new HashSet<EdgeType>();  // TODO - diamond operator
+
+    // Constructors
+
+    /** No-arg constructor. */
+    public CpfEventType() {
+        super();
+    }
+
+    /**
+     * Construct a CPF Task corresponding to a BPMN End Event.
+     *
+     * @param endEvent  a BPMN End Event
+     */
+    public CpfEventType(final TEndEvent endEvent, final CpfNetType.Initializer initializer) {
+        super();
+        initializer.populateFlowNode(this, endEvent);
+    }
+
+    /**
+     * Construct a CPF Task corresponding to a BPMN Start Event.
+     *
+     * @param startEvent  a BPMN Start Event
+     */
+    public CpfEventType(final TStartEvent startEvent, final CpfNetType.Initializer initializer) {
+        super();
+        initializer.populateFlowNode(this, startEvent);
+    }
+
+    // Accessor methods
 
     /**
      * @return every edge which has this node as its target
