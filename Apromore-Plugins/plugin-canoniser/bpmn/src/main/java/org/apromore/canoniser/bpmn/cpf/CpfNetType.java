@@ -53,6 +53,8 @@ public class CpfNetType extends NetType {
 
         final NetType net = this;  // needed so that the inner classes can reference this instance
 
+        final Initializer initializer = new Initializer(cpfIdFactory, bpmnFlowNodeToCpfNodeMap);
+
         net.setId(cpfIdFactory.newId(process.getId()));
         if (parent == null) {
             cpf.getRootIds().add(net.getId());
@@ -74,18 +76,7 @@ public class CpfNetType extends NetType {
             flowElement.getValue().accept(new org.omg.spec.bpmn._20100524.model.BaseVisitor() {
                 @Override
                 public void visit(final TCallActivity callActivity) {
-                    CpfTaskType task = new CpfTaskType();
-                    populateFlowNode(task, callActivity);
-
-                    if (false) {
-                        // The called element is a process or global task within this same BPMN document
-                        task.setSubnetId(callActivity.getId());
-                    } else {
-                        // The called element is NOT a process or global task within this same BPMN document
-                        task.setCalledElement(new QName("dummy"));
-                    }
-
-                    net.getNode().add(task);
+                    net.getNode().add(new CpfTaskType(callActivity, initializer));
                 }
 
                 @Override
@@ -98,7 +89,7 @@ public class CpfNetType extends NetType {
                         // TODO - represent using some sort of extension element
                     }
 
-                    populateFlowElement(object, dataObject);
+                    initializer.populateFlowElement(object, dataObject);
 
                     net.getObject().add(object);
                 }
@@ -106,7 +97,7 @@ public class CpfNetType extends NetType {
                 @Override
                 public void visit(final TEndEvent endEvent) {
                     EventType event = new EventType();
-                    populateFlowNode(event, endEvent);
+                    initializer.populateFlowNode(event, endEvent);
 
                     net.getNode().add(event);
                 }
@@ -125,7 +116,7 @@ public class CpfNetType extends NetType {
                     }
                     assert routing != null;
 
-                    populateFlowElement(routing, exclusiveGateway);
+                    initializer.populateFlowElement(routing, exclusiveGateway);
 
                     net.getNode().add(routing);
                 }
@@ -144,7 +135,7 @@ public class CpfNetType extends NetType {
                     }
                     assert routing != null;
 
-                    populateFlowElement(routing, inclusiveGateway);
+                    initializer.populateFlowElement(routing, inclusiveGateway);
 
                     net.getNode().add(routing);
                 }
@@ -163,7 +154,7 @@ public class CpfNetType extends NetType {
                     }
                     assert routing != null;
 
-                    populateFlowElement(routing, parallelGateway);
+                    initializer.populateFlowElement(routing, parallelGateway);
 
                     net.getNode().add(routing);
                 }
@@ -171,7 +162,7 @@ public class CpfNetType extends NetType {
                 @Override
                 public void visit(final TSequenceFlow sequenceFlow) {
                     EdgeType edge = new EdgeType();
-                    populateFlowElement(edge, sequenceFlow);
+                    initializer.populateFlowElement(edge, sequenceFlow);
 
                     if (sequenceFlow.getConditionExpression() != null) {
 
@@ -197,7 +188,7 @@ public class CpfNetType extends NetType {
                 @Override
                 public void visit(final TStartEvent startEvent) {
                     EventType event = new EventType();
-                    populateFlowNode(event, startEvent);
+                    initializer.populateFlowNode(event, startEvent);
 
                     net.getNode().add(event);
                 }
@@ -223,7 +214,7 @@ public class CpfNetType extends NetType {
 
                     // Add the CPF Task to the parent Net
                     TaskType cpfTask = new TaskType();
-                    populateFlowNode(cpfTask, subprocess);
+                    initializer.populateFlowNode(cpfTask, subprocess);
                     cpfTask.setSubnetId(subnet.getId());
                     net.getNode().add(cpfTask);
                 }
@@ -231,57 +222,9 @@ public class CpfNetType extends NetType {
                 @Override
                 public void visit(final TTask bpmnTask) {
                     TaskType cpfTask = new TaskType();
-                    populateFlowNode(cpfTask, bpmnTask);
+                    initializer.populateFlowNode(cpfTask, bpmnTask);
 
                     net.getNode().add(cpfTask);
-                }
-
-                // Edge supertype handlers
-
-                private void populateBaseElement(final EdgeType edge, final TBaseElement baseElement) {
-                    edge.setId(cpfIdFactory.newId(baseElement.getId()));
-                    edge.setOriginalID(baseElement.getId());
-                }
-
-                private void populateFlowElement(final EdgeType edge, final TFlowElement flowElement) {
-                    populateBaseElement(edge, flowElement);
-                }
-
-                // Node supertype handlers
-
-                private void populateBaseElement(final NodeType node, final TBaseElement baseElement) {
-                    node.setId(cpfIdFactory.newId(baseElement.getId()));
-                    node.setOriginalID(baseElement.getId());
-                }
-
-                private void populateFlowElement(final NodeType node, final TFlowElement flowElement) {
-                    populateBaseElement(node, flowElement);
-                    node.setName(flowElement.getName());
-                }
-
-                // Work supertype handler
-
-                private void populateFlowNode(final WorkType work, final TFlowNode flowNode) {
-                    populateFlowElement(work, flowNode);
-                    bpmnFlowNodeToCpfNodeMap.put(flowNode, work);
-                }
-
-                // Object supertype handlers
-
-                private void populateBaseElement(final ObjectType object, final TBaseElement baseElement) {
-                    object.setId(cpfIdFactory.newId(baseElement.getId()));
-                }
-
-                private void populateFlowElement(final ObjectType object, final TFlowElement flowElement) {
-                    populateBaseElement(object, flowElement);
-                    object.setName(flowElement.getName());
-                }
-
-                // ResourceType supertype handlers
-
-                private void populateBaseElement(final ResourceTypeType resourceType, final TBaseElement baseElement) {
-                    resourceType.setId(cpfIdFactory.newId(baseElement.getId()));
-                    resourceType.setOriginalID(baseElement.getId());
                 }
             });
         }
@@ -386,6 +329,77 @@ public class CpfNetType extends NetType {
 
                 ((WorkType) node).getResourceTypeRef().add(resourceTypeRef);
             }
+        }
+    }
+
+    /**
+     * This class is a clunky way of doing the work that <code>super</code> calls normally would in the constructors of the CPF elements.
+     * The CPF extension classes in {@link org.apromore.canoniser.bpmn.cpf} can't inherit from one another since they each must extend
+     * from the corresponding classes in {@link org.apromore.cpf}.
+     */
+    public static class Initializer {
+
+        private final IdFactory                cpfIdFactory;
+        private final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap;
+
+        /**
+         * Sole constructor.
+         *
+         * @param bpmnFlowNodeToCpfNodeMap
+         */
+        public Initializer(final IdFactory                cpfIdFactory,
+                           final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap) {
+
+            this.cpfIdFactory             = cpfIdFactory;
+            this.bpmnFlowNodeToCpfNodeMap = bpmnFlowNodeToCpfNodeMap;
+        }
+
+        // Edge supertype handlers
+
+        void populateBaseElement(final EdgeType edge, final TBaseElement baseElement) {
+            edge.setId(cpfIdFactory.newId(baseElement.getId()));
+            edge.setOriginalID(baseElement.getId());
+        }
+
+        void populateFlowElement(final EdgeType edge, final TFlowElement flowElement) {
+            populateBaseElement(edge, flowElement);
+        }
+
+        // Node supertype handlers
+
+        void populateBaseElement(final NodeType node, final TBaseElement baseElement) {
+            node.setId(cpfIdFactory.newId(baseElement.getId()));
+            node.setOriginalID(baseElement.getId());
+        }
+
+        void populateFlowElement(final NodeType node, final TFlowElement flowElement) {
+            populateBaseElement(node, flowElement);
+            node.setName(flowElement.getName());
+        }
+
+        // Work supertype handler
+
+        void populateFlowNode(final WorkType work, final TFlowNode flowNode) {
+            populateFlowElement(work, flowNode);
+            bpmnFlowNodeToCpfNodeMap.put(flowNode, work);
+        }
+
+        // Object supertype handlers
+
+        void populateBaseElement(final ObjectType object, final TBaseElement baseElement) {
+            object.setId(cpfIdFactory.newId(baseElement.getId()));
+        }
+
+        void populateFlowElement(final ObjectType object, final TFlowElement flowElement) {
+            populateBaseElement(object, flowElement);
+            object.setName(flowElement.getName());
+        }
+
+        // ResourceType supertype handlers
+
+        void populateBaseElement(final ResourceTypeType resourceType, final TBaseElement baseElement) {
+            resourceType.setId(cpfIdFactory.newId(baseElement.getId()));
+            resourceType.setOriginalID(baseElement.getId());
         }
     }
 }
