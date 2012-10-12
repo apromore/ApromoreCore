@@ -81,25 +81,12 @@ public class CpfNetType extends NetType {
 
                 @Override
                 public void visit(final TDataObject dataObject) {
-                    ObjectType object = new ObjectType();
-
-                    object.setConfigurable(false);  // BPMN doesn't have an obvious equivalent
-
-                    if (dataObject.isIsCollection()) {
-                        // TODO - represent using some sort of extension element
-                    }
-
-                    initializer.populateFlowElement(object, dataObject);
-
-                    net.getObject().add(object);
+                    net.getObject().add(new CpfObjectType(dataObject, initializer));
                 }
 
                 @Override
                 public void visit(final TEndEvent endEvent) {
-                    EventType event = new EventType();
-                    initializer.populateFlowNode(event, endEvent);
-
-                    net.getNode().add(event);
+                    net.getNode().add(new CpfEventType(endEvent, initializer));
                 }
 
                 @Override
@@ -187,10 +174,7 @@ public class CpfNetType extends NetType {
 
                 @Override
                 public void visit(final TStartEvent startEvent) {
-                    EventType event = new EventType();
-                    initializer.populateFlowNode(event, startEvent);
-
-                    net.getNode().add(event);
+                    net.getNode().add(new CpfEventType(startEvent, initializer));
                 }
 
                 @Override

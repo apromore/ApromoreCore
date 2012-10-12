@@ -39,6 +39,7 @@ import org.junit.Test;
 import org.apromore.anf.ANFSchema;
 // Local packages
 import org.apromore.anf.AnnotationsType;
+import org.apromore.canoniser.bpmn.cpf.CpfEventType;
 import org.apromore.canoniser.bpmn.cpf.CpfIDResolver;
 import org.apromore.canoniser.bpmn.cpf.CpfUnmarshallerListener;
 import org.apromore.canoniser.exception.CanoniserException;
@@ -389,7 +390,7 @@ public class BPMN20CanoniserTest {
         // Start event "E1"
         NodeType e1 = net.getNode().get(0);
         assertEquals("E1", e1.getName());
-        assertEquals(EventType.class, e1.getClass());
+        assertEquals(CpfEventType.class, e1.getClass());
 
         // Task "A"
         NodeType a = net.getNode().get(1);
@@ -399,7 +400,7 @@ public class BPMN20CanoniserTest {
         // End event "E2"
         NodeType e2 = net.getNode().get(2);
         assertEquals("E2", e2.getName());
-        assertEquals(EventType.class, e2.getClass());
+        assertEquals(CpfEventType.class, e2.getClass());
 
         // Expect 2 edges
         assertEquals(2, net.getEdge().size());
@@ -567,7 +568,7 @@ public class BPMN20CanoniserTest {
         // Start event "E1"
         NodeType e1 = net.getNode().get(0);
         assertEquals("E1", e1.getName());
-        assertEquals(EventType.class, e1.getClass());
+        assertEquals(CpfEventType.class, e1.getClass());
         assertEquals(1, ((EventType) e1).getResourceTypeRef().size()); 
         assertEquals(p_lane.getId(), ((EventType) e1).getResourceTypeRef().get(0).getResourceTypeId()); 
 
@@ -581,7 +582,7 @@ public class BPMN20CanoniserTest {
         // End event "E2"
         NodeType e2 = net.getNode().get(2);
         assertEquals("E2", e2.getName());
-        assertEquals(EventType.class, e2.getClass());
+        assertEquals(CpfEventType.class, e2.getClass());
         assertEquals(1, ((EventType) e2).getResourceTypeRef().size()); 
         assertEquals(p_lane.getId(), ((EventType) e2).getResourceTypeRef().get(0).getResourceTypeId()); 
 
@@ -641,7 +642,7 @@ public class BPMN20CanoniserTest {
         // Start event "E1"
         NodeType e1 = net.getNode().get(0);
         assertEquals("E1", e1.getName());
-        assertEquals(EventType.class, e1.getClass());
+        assertEquals(CpfEventType.class, e1.getClass());
         assertEquals(1, ((EventType) e1).getResourceTypeRef().size()); 
         assertEquals(l.getId(), ((EventType) e1).getResourceTypeRef().get(0).getResourceTypeId()); 
 
@@ -655,7 +656,7 @@ public class BPMN20CanoniserTest {
         // End event "E2"
         NodeType e2 = net.getNode().get(2);
         assertEquals("E2", e2.getName());
-        assertEquals(EventType.class, e2.getClass());
+        assertEquals(CpfEventType.class, e2.getClass());
         assertEquals(1, ((EventType) e2).getResourceTypeRef().size()); 
         assertEquals(l.getId(), ((EventType) e2).getResourceTypeRef().get(0).getResourceTypeId()); 
 
