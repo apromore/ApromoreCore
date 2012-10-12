@@ -8,6 +8,7 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.NetType;
+import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.XORSplitType;
@@ -39,6 +40,11 @@ public class ObjectFactory extends org.apromore.cpf.ObjectFactory {
     @Override
     public NetType createNetType() {
         return new CpfNetType();
+    }
+
+    @Override
+    public ObjectType createObjectType() {
+        return new CpfObjectType();
     }
 
     @Override
