@@ -10,12 +10,12 @@ import javax.xml.namespace.QName;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TypeAttribute;
+import org.omg.spec.bpmn._20100524.model.TCallActivity;
 
 /**
- * CPF 0.6 task with convenience methods.
+ * CPF 1.0 task with convenience methods.
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
- * @since 0.4
  */
 public class CpfTaskType extends TaskType implements CpfNodeType {
 
@@ -34,6 +34,29 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
 
     /** Outgoing edges. */
     private Set<EdgeType> outgoingEdges = new HashSet<EdgeType>();  // TODO - diamond operator
+
+    // Constructors
+
+    /** No-arg constructor. */
+    public CpfTaskType() {
+        super();
+    }
+
+    /**
+     * Construct a CPF Task corresponding to a BPMN Call Activity.
+     *
+     * @param task  a BPMN Call Activity
+     */
+    public CpfTaskType(final TCallActivity callActivity, final CpfNetType.Initializer initializer) {
+        initializer.populateFlowNode(this, callActivity);
+        if (false) {
+            // The called element is a process or global task within this same BPMN document
+            setSubnetId(callActivity.getId());  // TODO - process through CpfIdFactory
+        } else {
+            // The called element is NOT a process or global task within this same BPMN document
+            setCalledElement(new QName("dummy"));
+        }
+    }
 
     // Accessor methods
 
