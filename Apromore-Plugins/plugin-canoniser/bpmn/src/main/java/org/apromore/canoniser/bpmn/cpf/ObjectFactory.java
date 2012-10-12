@@ -4,6 +4,7 @@ package org.apromore.canoniser.bpmn.cpf;
 import javax.xml.bind.annotation.XmlRegistry;
 
 // Local packages
+import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.apromore.cpf.NetType;
@@ -19,6 +20,11 @@ import org.apromore.cpf.XORSplitType;
  */
 @XmlRegistry
 public class ObjectFactory extends org.apromore.cpf.ObjectFactory {
+
+    @Override
+    public CanonicalProcessType createCanonicalProcessType() {
+        return new CpfCanonicalProcessType();
+    }
 
     @Override
     public EdgeType createEdgeType() {
