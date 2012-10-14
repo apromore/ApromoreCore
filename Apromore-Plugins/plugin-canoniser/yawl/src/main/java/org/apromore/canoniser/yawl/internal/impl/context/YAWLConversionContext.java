@@ -51,6 +51,7 @@ import org.yawlfoundation.yawlschema.LayoutVertexFactsType;
 import org.yawlfoundation.yawlschema.NetFactsType;
 import org.yawlfoundation.yawlschema.NetFactsType.ProcessControlElements;
 import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
+import org.yawlfoundation.yawlschema.orgdata.NonHumanResourceType;
 import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
 import org.yawlfoundation.yawlschema.orgdata.ParticipantType;
 import org.yawlfoundation.yawlschema.orgdata.RoleType;
@@ -124,12 +125,12 @@ public final class YAWLConversionContext extends ConversionContext {
     /**
      * Successors of each Node in the whole YAWL specification.
      */
-    private Map<ElementAdapter, Collection<ExternalNetElementType>> successorsMap;
+    private Map<ElementAdapter, Collection<ExternalNetElementType>> postSetMap;
 
     /**
      * Predeccessors of each NetElement in the whole YAWL specification
      */
-    private Map<ElementAdapter, Collection<ExternalNetElementType>> predecessorsMap;
+    private Map<ElementAdapter, Collection<ExternalNetElementType>> preSetMap;
 
     /**
      * Map with yet to be added predecessors per YAWL element
@@ -161,7 +162,8 @@ public final class YAWLConversionContext extends ConversionContext {
      */
     private Map<String, Map<String, SoftType>> netObjectsByName;
 
-    public YAWLConversionContext(final YAWLSpecificationFactsType specification, final LayoutFactsType layoutFactsType, final OrgDataType orgDataType, final MessageManager messageManager) {
+    public YAWLConversionContext(final YAWLSpecificationFactsType specification, final LayoutFactsType layoutFactsType,
+            final OrgDataType orgDataType, final MessageManager messageManager) {
         super(messageManager);
         this.setOrgDataType(orgDataType);
         this.setLayout(layoutFactsType);
@@ -179,8 +181,8 @@ public final class YAWLConversionContext extends ConversionContext {
     }
 
     /**
-     * @param id
-     * @return
+     * @param id of YAWL net
+     * @return layout of YAWL net
      * @throws CanoniserException
      */
     public LayoutNetFactsType getLayoutForNet(final String id) throws CanoniserException {
@@ -262,13 +264,13 @@ public final class YAWLConversionContext extends ConversionContext {
      *
      * @param netElement
      *            any element of a YAWL net
-     * @return
+     * @return post set of YAWL element as unmodifiable Collection
      */
-    public Collection<ExternalNetElementType> getSuccessors(final ExternalNetElementType netElement) {
-        if (successorsMap == null) {
+    public Collection<ExternalNetElementType> getPostSet(final ExternalNetElementType netElement) {
+        if (postSetMap == null) {
             initNeighborsMap();
         }
-        Collection<ExternalNetElementType> c = successorsMap.get(new ElementAdapter(netElement));
+        Collection<ExternalNetElementType> c = postSetMap.get(new ElementAdapter(netElement));
         if (c == null) {
             c = new ArrayList<ExternalNetElementType>();
         }
@@ -276,17 +278,17 @@ public final class YAWLConversionContext extends ConversionContext {
     }
 
     /**
-     * Get the predecessors of this YAWL element, will be initialised on the firs call of this method.
+     * Get the predecessors of this YAWL element, will be initialized on the first call of this method.
      *
      * @param netElement
      *            any element of a YAWL net
-     * @return
+     * @return pre set of YAWL element as unmodifiable Collection
      */
-    public Collection<ExternalNetElementType> getPredecessors(final ExternalNetElementType netElement) {
-        if (predecessorsMap == null) {
+    public Collection<ExternalNetElementType> getPreSet(final ExternalNetElementType netElement) {
+        if (preSetMap == null) {
             initNeighborsMap();
         }
-        Collection<ExternalNetElementType> c = predecessorsMap.get(new ElementAdapter(netElement));
+        Collection<ExternalNetElementType> c = preSetMap.get(new ElementAdapter(netElement));
         if (c == null) {
             c = new ArrayList<ExternalNetElementType>();
         }
@@ -294,46 +296,46 @@ public final class YAWLConversionContext extends ConversionContext {
     }
 
     private void initNeighborsMap() {
-        successorsMap = new HashMap<ElementAdapter, Collection<ExternalNetElementType>>();
-        predecessorsMap = new HashMap<ElementAdapter, Collection<ExternalNetElementType>>();
+        postSetMap = new HashMap<ElementAdapter, Collection<ExternalNetElementType>>();
+        preSetMap = new HashMap<ElementAdapter, Collection<ExternalNetElementType>>();
 
         // First get successors
         for (final DecompositionType d : getSpecification().getDecomposition()) {
             // Only NetFactsType contains Elements
             if (d instanceof NetFactsType) {
                 final ProcessControlElements netElements = ((NetFactsType) d).getProcessControlElements();
-                successorsMap.put(new ElementAdapter(netElements.getInputCondition()), initSuccessors(netElements.getInputCondition()));
+                postSetMap.put(new ElementAdapter(netElements.getInputCondition()), initPostSet(netElements.getInputCondition()));
                 // No need to initalise for OutputCondition as it has no successors
                 for (final ExternalNetElementFactsType element : netElements.getTaskOrCondition()) {
-                    successorsMap.put(new ElementAdapter(element), initSuccessors(element));
+                    postSetMap.put(new ElementAdapter(element), initPostSet(element));
                 }
             }
         }
 
         // Now caluclate predecessors based on the successor map
-        for (final Entry<ElementAdapter, Collection<ExternalNetElementType>> entry : successorsMap.entrySet()) {
+        for (final Entry<ElementAdapter, Collection<ExternalNetElementType>> entry : postSetMap.entrySet()) {
             final ElementAdapter currentElement = entry.getKey();
             // For all our successors
             for (final ExternalNetElementType successor : entry.getValue()) {
-                final Collection<ExternalNetElementType> predecessors = initPredecessors(successor);
+                final Collection<ExternalNetElementType> predecessors = initPreSet(successor);
                 // Add ourself as predecessors
                 predecessors.add(currentElement.getObj());
             }
         }
     }
 
-    private Collection<ExternalNetElementType> initPredecessors(final ExternalNetElementType element) {
+    private Collection<ExternalNetElementType> initPreSet(final ExternalNetElementType element) {
         // Get Collection of already added predecessors
-        Collection<ExternalNetElementType> predecessors = predecessorsMap.get(new ElementAdapter(element));
+        Collection<ExternalNetElementType> predecessors = preSetMap.get(new ElementAdapter(element));
         if (predecessors == null) {
             // Create Collection if this is the first predecessor
             predecessors = new ArrayList<ExternalNetElementType>(0);
-            predecessorsMap.put(new ElementAdapter(element), predecessors);
+            preSetMap.put(new ElementAdapter(element), predecessors);
         }
         return predecessors;
     }
 
-    private Collection<ExternalNetElementType> initSuccessors(final ExternalNetElementFactsType netElement) {
+    private Collection<ExternalNetElementType> initPostSet(final ExternalNetElementFactsType netElement) {
         final Collection<ExternalNetElementType> successors = new ArrayList<ExternalNetElementType>(0);
         for (final FlowsIntoType f : netElement.getFlowsInto()) {
             successors.add(f.getNextElementRef());
@@ -503,6 +505,18 @@ public final class YAWLConversionContext extends ConversionContext {
         }
     }
 
+    public NonHumanResourceType getNonHumanById(final String nonHumanId) {
+        //TODO optimize
+        if (getOrgDataType().getNonhumanresources() != null) {
+            for (NonHumanResourceType nonHuman : getOrgDataType().getNonhumanresources().getNonhumanresource()) {
+                if (nonHumanId.equals(nonHuman.getId())) {
+                    return nonHuman;
+                }
+            }
+        }
+        return null;
+    }
+
     public void setGeneratedResourceType(final String yawlId, final ResourceTypeType resourceType) {
         initSubResourceTypeMap();
         ConvertedResource convertedRole = generatedResourceTypeMap.get(yawlId);
@@ -616,7 +630,7 @@ public final class YAWLConversionContext extends ConversionContext {
                 // We just want to add an plain 'AnnotationType'
                 if (nodeId == null && annotation.getCpfId() == null) {
                     return annotation;
-                } else if (nodeId.equals(annotation.getCpfId())) {
+                } else if (nodeId != null && nodeId.equals(annotation.getCpfId())) {
                     return annotation;
                 }
             }

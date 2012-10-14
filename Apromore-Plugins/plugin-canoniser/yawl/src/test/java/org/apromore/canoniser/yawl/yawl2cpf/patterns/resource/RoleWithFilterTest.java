@@ -31,13 +31,15 @@ public class RoleWithFilterTest extends BasePatternTest {
 
         TaskType task = (TaskType) getNodeByName(rootNet, "A");
 
-        ResourceTypeType roleX = hasResourceType(task, cpf, "RoleX");
-        ResourceTypeType roleZ = hasResourceType(task, cpf, "RoleZ");
-        ResourceTypeType roleY = hasResourceType(task, cpf, "RoleY");
+        ResourceTypeType roleX = hasResourceType(task, cpf, "RoleX", "Primary");
+        ResourceTypeType roleZ = hasResourceType(task, cpf, "RoleZ", "Primary");
+        ResourceTypeType roleY = hasResourceType(task, cpf, "RoleY", "Primary");
+        ResourceTypeType resourceA = hasResourceType(task, cpf, "ResourceA", "Secondary");
 
         assertNotNull(roleX);
         assertNotNull(roleY);
         assertNotNull(roleZ);
+        assertNotNull(resourceA);
 
         assertNull(task.getAllocationStrategy());
 
@@ -53,6 +55,7 @@ public class RoleWithFilterTest extends BasePatternTest {
                 filter.getExpression());
 
         assertNull(task.getFilterByRuntimeExpr());
+
     }
 
 }

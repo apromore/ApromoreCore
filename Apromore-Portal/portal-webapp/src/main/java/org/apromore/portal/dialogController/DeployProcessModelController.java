@@ -125,6 +125,7 @@ public class DeployProcessModelController extends BaseController {
                 canoniserCB.setWidth("85%");
                 canoniserCB.setHeight("100%");
                 canoniserCB.setAttribute("hflex", "1");
+                canoniserCB.setSelectedIndex(0);
                 canoniserSelectionRow.appendChild(canoniserCB);
 
                 canoniserCB.addEventListener("onSelect", new EventListener() {

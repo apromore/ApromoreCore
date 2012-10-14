@@ -27,7 +27,7 @@ public abstract class ExpressionTypeHandler<T> extends CanonicalElementHandler<T
         if (task.getDecomposesTo() == null) {
             return null;
         } else {
-            return getContext().getConvertedDecomposition(task.getId());
+            return getContext().getControlFlowContext().getConvertedDecomposition(task.getId());
         }
     }
 

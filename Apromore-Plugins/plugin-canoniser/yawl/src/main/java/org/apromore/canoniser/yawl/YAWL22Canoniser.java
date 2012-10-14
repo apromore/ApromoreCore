@@ -75,7 +75,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
      */
     public YAWL22Canoniser() {
         super();
-        resourceDataInput = new PluginPropertyType<InputStream>("readOrgData", "YAWL Organisational Data (Import only)", InputStream.class,
+        resourceDataInput = new PluginPropertyType<InputStream>("readOrgData", "YAWL Organisational Data", InputStream.class,
                 "File (.ybkp) containing the organisational data used during import of the YAWL workflow.", false);
         registerProperty(resourceDataInput);
     }

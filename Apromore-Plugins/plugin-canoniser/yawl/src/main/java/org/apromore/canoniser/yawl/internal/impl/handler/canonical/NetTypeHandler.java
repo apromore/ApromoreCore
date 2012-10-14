@@ -70,7 +70,7 @@ public class NetTypeHandler extends DecompositionHandler<NetType, YAWLSpecificat
         }
 
         // Remember our net so that composite tasks, which use it are able to find it
-        getContext().addConvertedDecompositon(getObject().getId(), netFactsType);
+        getContext().getControlFlowContext().addConvertedDecompositon(getObject().getId(), netFactsType);
         // Update all composite tasks that already have been converted
         updateCompositeTasks(netFactsType);
 
@@ -180,7 +180,7 @@ public class NetTypeHandler extends DecompositionHandler<NetType, YAWLSpecificat
     }
 
     private void updateCompositeTasks(final NetFactsType netFactsType) {
-        final Collection<ExternalTaskFactsType> compositeTasks = getContext().getCompositeTasks(getObject().getId());
+        final Collection<ExternalTaskFactsType> compositeTasks = getContext().getControlFlowContext().getCompositeTasks(getObject().getId());
         for (final ExternalTaskFactsType task : compositeTasks) {
             DecompositionType dRef = YAWL_FACTORY.createDecompositionType();
             dRef.setId(netFactsType.getId());

@@ -106,7 +106,7 @@ public final class Canonical2YAWLImpl implements Canonical2YAWL {
      */
     @Override
     public OrgDataType getOrgData() {
-        return getContext().getYawlOrgData();
+        return getContext().getResourceContext().getYawlOrgData();
     }
 
     /**

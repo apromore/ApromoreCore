@@ -192,7 +192,7 @@ public class YAWLConversionFactory implements ConversionFactory {
     }
 
     private boolean isInputCondition(final ExternalConditionFactsType obj) {
-        return getContext().getPredecessors(obj).size() == 0;
+        return getContext().getPreSet(obj).size() == 0;
     }
 
     protected boolean isAutomaticTask(final ExternalTaskFactsType task) {

@@ -296,23 +296,34 @@ public abstract class BaseYAWL2CPFTest {
     }
 
     protected ResourceTypeType hasResourceType(final WorkType node, final CanonicalProcessType cpf, final String resourceName) {
-        for (ResourceTypeRefType ref: node.getResourceTypeRef()) {
+        for (ResourceTypeRefType ref : node.getResourceTypeRef()) {
             ResourceTypeType r = getResourceById(cpf, ref.getResourceTypeId());
             if (r != null && r.getName().equals(resourceName)) {
                 return r;
             }
         }
-        fail("Node "+node.getName()+" is missing Resource "+resourceName);
+        fail("Node " + node.getName() + " is missing Resource " + resourceName);
+        return null;
+    }
+
+    protected ResourceTypeType hasResourceType(final WorkType node, final CanonicalProcessType cpf, final String resourceName, final String qualifier) {
+        for (ResourceTypeRefType ref : node.getResourceTypeRef()) {
+            ResourceTypeType r = getResourceById(cpf, ref.getResourceTypeId());
+            if (r != null && r.getName().equals(resourceName) && qualifier.equals(ref.getQualifier())) {
+                return r;
+            }
+        }
+        fail("Node " + node.getName() + " is missing Resource " + resourceName);
         return null;
     }
 
     protected TypeAttribute hasAttribute(final ResourceTypeType roleX, final String name, final String value) {
-        for (TypeAttribute attr: roleX.getAttribute()) {
+        for (TypeAttribute attr : roleX.getAttribute()) {
             if (name.equals(attr.getName()) && value.equals(attr.getValue())) {
                 return attr;
             }
         }
-        fail("Resource "+roleX.getName()+" is missing Attribute "+name+" with Value "+value);
+        fail("Resource " + roleX.getName() + " is missing Attribute " + name + " with Value " + value);
         return null;
-     }
+    }
 }

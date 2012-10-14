@@ -11,15 +11,24 @@
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.yawl;
 
+import java.io.StringWriter;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.TransformerFactoryConfigurationError;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.TypeAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.w3c.dom.Element;
 import org.yawlfoundation.yawlschema.DecompositionType;
 import org.yawlfoundation.yawlschema.LayoutLocaleType;
 import org.yawlfoundation.yawlschema.MetaDataType;
@@ -60,7 +69,10 @@ public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificatio
 
         if (getObject().getAny() != null) {
             LOGGER.debug("Found DataTypeDefinitions: {}", getObject().getAny().toString());
-            convertDataTypeDefinitions(getObject().getAny());
+            if (getObject().getAny() instanceof Element) {
+                String dataTypes = convertDataTypesToString((Element)getObject().getAny());
+                c.setDataTypes(dataTypes);
+            }
         }
 
         for (final DecompositionType d : getObject().getDecomposition()) {
@@ -70,18 +82,29 @@ public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificatio
 
     }
 
+    private String convertDataTypesToString(final Element dataTypesElement) throws CanoniserException  {
+        try {
+            final DOMSource domSource = new DOMSource(dataTypesElement);
+            final StringWriter writer = new StringWriter();
+            final StreamResult result = new StreamResult(writer);
+            final TransformerFactory tf = TransformerFactory.newInstance();
+            final Transformer transformer = tf.newTransformer();
+            transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+            transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+            transformer.transform(domSource, result);
+            String dataTypes = writer.toString();
+            return dataTypes;
+        } catch (IllegalArgumentException | TransformerFactoryConfigurationError | TransformerException e) {
+            throw new CanoniserException(e);
+        }
+    }
+
     private void convertAnnotations(final CanonicalProcessType c, final YAWLSpecificationFactsType object) throws CanoniserException {
         // Link to Annotations
         getContext().getAnnotationResult().setUri(c.getUri());
         getContext().getAnnotationResult().setName(c.getName());
         getContext().addToAnnotations(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.LOCALE, getContext().getLayoutLocaleElement(), LayoutLocaleType.class));
         getContext().addToAnnotations(ExtensionUtils.marshalYAWLFragment(ExtensionUtils.METADATA, object.getMetaData(), MetaDataType.class));
-    }
-
-    private void convertDataTypeDefinitions(final Object any) {
-        TypeAttribute attr = CPF_FACTORY.createTypeAttribute();
-        attr.setName(ExtensionUtils.DATA_TYPE_DEFINITIONS);
-        attr.setAny(any);
     }
 
     private String convertName(final YAWLSpecificationFactsType spec) {

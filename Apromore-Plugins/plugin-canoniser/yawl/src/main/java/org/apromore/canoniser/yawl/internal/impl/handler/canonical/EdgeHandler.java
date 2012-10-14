@@ -1,12 +1,12 @@
 /**
  * Copyright 2012, Felix Mannhardt
- * 
+ *
  * This program is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License as published by
  * the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or
  * FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU Lesser General Public License along with this program. If not, see <http://www.gnu.org/licenses/>.
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical;
@@ -30,9 +30,9 @@ import org.yawlfoundation.yawlschema.PredicateType;
 
 /**
  * Converts an EdgeType to YAWL 'flowsInto'.
- * 
+ *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
- * 
+ *
  */
 public class EdgeHandler extends CanonicalElementHandler<EdgeType, NetFactsType> {
 
@@ -40,7 +40,7 @@ public class EdgeHandler extends CanonicalElementHandler<EdgeType, NetFactsType>
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.internal.impl.handler.ConversionHandler#convert()
      */
     @Override
@@ -48,16 +48,16 @@ public class EdgeHandler extends CanonicalElementHandler<EdgeType, NetFactsType>
 
         // Find Source of Edge
         ExternalNetElementFactsType sourceElement;
-        if (getContext().getElementInfo(getObject().getSourceId()).getElement() != null) {
+        if (getContext().getControlFlowContext().getElementInfo(getObject().getSourceId()).getElement() != null) {
             // Source will always be ExternalNetElementFactsType, as OutputCondition has no successor
-            sourceElement = (ExternalNetElementFactsType) getContext().getElementInfo(getObject().getSourceId()).getElement();
+            sourceElement = (ExternalNetElementFactsType) getContext().getControlFlowContext().getElementInfo(getObject().getSourceId()).getElement();
         } else {
             LOGGER.warn("Could not find source element {} for Edge {}.", getObject().getSourceId(), getObject().getId());
             return; // Ignore Edge
         }
 
         // Find Target of Edge
-        ExternalNetElementType targetElement = getContext().getElementInfo(getObject().getTargetId()).getElement();
+        ExternalNetElementType targetElement = getContext().getControlFlowContext().getElementInfo(getObject().getTargetId()).getElement();
         if (targetElement == null) {
             final OutputConditionFactsType outputCondition = getConvertedParent().getProcessControlElements().getOutputCondition();
             if (outputCondition != null) {
@@ -105,7 +105,7 @@ public class EdgeHandler extends CanonicalElementHandler<EdgeType, NetFactsType>
 
         sourceElement.getFlowsInto().add(flowsIntoType);
 
-        getContext().addConvertedFlow(getObject().getId(), flowsIntoType);
+        getContext().getControlFlowContext().addConvertedFlow(getObject().getId(), flowsIntoType);
     }
 
     private String convertCanonicalExpression(final ConditionExpressionType conditionExpr) {

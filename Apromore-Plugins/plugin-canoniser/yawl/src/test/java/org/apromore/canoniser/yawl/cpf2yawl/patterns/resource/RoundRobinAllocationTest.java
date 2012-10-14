@@ -7,7 +7,6 @@ import java.io.File;
 
 import org.apromore.canoniser.yawl.BaseCPF2YAWLTest;
 import org.apromore.canoniser.yawl.utils.TestUtils;
-import org.junit.Ignore;
 import org.junit.Test;
 import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
 import org.yawlfoundation.yawlschema.NetFactsType;
@@ -34,7 +33,6 @@ public class RoundRobinAllocationTest extends BaseCPF2YAWLTest {
         return new File(TestUtils.TEST_RESOURCES_DIRECTORY + "CPF/Internal/FromYAWL/WPR16RoundRobinAllocation.yawl.anf");
     }
 
-    @Ignore //TODO
     @Test
     public void testAllocationStrategy() {
         NetFactsType net = findRootNet();

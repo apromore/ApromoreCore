@@ -43,6 +43,11 @@ import org.yawlfoundation.yawlschema.OutputParameterFactsType;
 import org.yawlfoundation.yawlschema.VarMappingFactsType;
 import org.yawlfoundation.yawlschema.VariableFactsType;
 import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType;
+import org.yawlfoundation.yawlschema.orgdata.CapabilityType;
+import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
+import org.yawlfoundation.yawlschema.orgdata.ParticipantType;
+import org.yawlfoundation.yawlschema.orgdata.PositionType;
+import org.yawlfoundation.yawlschema.orgdata.RoleType;
 
 /**
  * Base class for tests on CPF -> YAWL conversion
@@ -171,7 +176,7 @@ public abstract class BaseCPF2YAWLTest {
         throw new IllegalStateException("Can't find a root net, invalid YAWL specification!");
     }
 
-    protected ExternalTaskFactsType findTaskByName(final String name, final NetFactsType net) {
+    protected static ExternalTaskFactsType findTaskByName(final String name, final NetFactsType net) {
         for (final ExternalNetElementFactsType element : net.getProcessControlElements().getTaskOrCondition()) {
             if (element instanceof ExternalTaskFactsType) {
                 if (element.getName() != null && element.getName().equals(name)) {
@@ -183,7 +188,7 @@ public abstract class BaseCPF2YAWLTest {
         return null;
     }
 
-    protected ExternalConditionFactsType findConditonByName(final String name, final NetFactsType net) {
+    protected static ExternalConditionFactsType findConditonByName(final String name, final NetFactsType net) {
         for (final ExternalNetElementFactsType element : net.getProcessControlElements().getTaskOrCondition()) {
             if (element instanceof ExternalConditionFactsType) {
                 if (element.getName() != null && element.getName().equals(name)) {
@@ -195,7 +200,7 @@ public abstract class BaseCPF2YAWLTest {
         return null;
     }
 
-    protected VariableFactsType checkLocalVariable(final String name, final String type, final NetFactsType net) {
+    protected static VariableFactsType checkLocalVariable(final String name, final String type, final NetFactsType net) {
         for (VariableFactsType var: net.getLocalVariable()) {
             if (type.equals(var.getType()) && name.equals(var.getName())) {
                 return var;
@@ -205,7 +210,7 @@ public abstract class BaseCPF2YAWLTest {
         return null;
     }
 
-    protected OutputParameterFactsType checkOutputParameter(final String name, final String type, final DecompositionFactsType d) {
+    protected static OutputParameterFactsType checkOutputParameter(final String name, final String type, final DecompositionFactsType d) {
         for (OutputParameterFactsType param: d.getOutputParam()) {
             if (type.equals(param.getType()) && name.equals(param.getName())) {
                 return param;
@@ -215,7 +220,7 @@ public abstract class BaseCPF2YAWLTest {
         return null;
     }
 
-    protected InputParameterFactsType checkInputParameter(final String name, final String type, final DecompositionFactsType d) {
+    protected static InputParameterFactsType checkInputParameter(final String name, final String type, final DecompositionFactsType d) {
         for (InputParameterFactsType param: d.getInputParam()) {
             if (type.equals(param.getType()) && name.equals(param.getName())) {
                 return param;
@@ -226,7 +231,7 @@ public abstract class BaseCPF2YAWLTest {
     }
 
 
-    protected VarMappingFactsType checkOutputMapping(final String name, final String mapping, final ExternalTaskFactsType task) {
+    protected static VarMappingFactsType checkOutputMapping(final String name, final String mapping, final ExternalTaskFactsType task) {
         String invalidMapping = null;
         if (task.getCompletedMappings() == null) {
             fail("No output mapping!");
@@ -247,7 +252,7 @@ public abstract class BaseCPF2YAWLTest {
         return null;
     }
 
-    protected VarMappingFactsType checkInputMapping(final String name, final String mapping, final ExternalTaskFactsType task) {
+    protected static VarMappingFactsType checkInputMapping(final String name, final String mapping, final ExternalTaskFactsType task) {
         String invalidMapping = null;
         if (task.getStartingMappings() == null) {
             fail("No input mapping!");
@@ -279,6 +284,46 @@ public abstract class BaseCPF2YAWLTest {
             }
         }
         fail("Could not find decomposition for Task "+task.getId());
+        return null;
+    }
+
+    protected static PositionType checkPosition(final OrgDataType yawlOrgData, final String title) {
+        for (PositionType position: yawlOrgData.getPositions().getPosition()) {
+            if (title.equals(position.getTitle())) {
+                return position;
+            }
+        }
+        fail("Missing position "+title);
+        return null;
+    }
+
+    protected static CapabilityType checkCapability(final OrgDataType yawlOrgData, final String name) {
+        for (CapabilityType c: yawlOrgData.getCapabilities().getCapability()) {
+            if (name.equals(c.getName())) {
+                return c;
+            }
+        }
+        fail("Missing capability "+name);
+        return null;
+    }
+
+    protected static ParticipantType checkParticipant(final OrgDataType yawlOrgData, final String firstName) {
+        for (ParticipantType p: yawlOrgData.getParticipants().getParticipant()) {
+            if (firstName.equals(p.getFirstname())) {
+                return p;
+            }
+        }
+        fail("Missing participant "+firstName);
+        return null;
+    }
+
+    protected static RoleType checkRole(final OrgDataType yawlOrgData, final String name) {
+        for (RoleType role: yawlOrgData.getRoles().getRole()) {
+            if (name.equals(role.getName())) {
+                return role;
+            }
+        }
+        fail("Missing role "+name);
         return null;
     }
 

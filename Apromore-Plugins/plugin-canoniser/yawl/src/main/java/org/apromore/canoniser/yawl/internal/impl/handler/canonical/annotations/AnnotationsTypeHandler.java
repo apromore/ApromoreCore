@@ -90,7 +90,7 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
         layoutFacts.getSpecification().add(specLayout);
 
         // First convert Net and their Elements Annotations
-        for (final Entry<String, NetFactsType> netEntry : getContext().getConvertedNets()) {
+        for (final Entry<String, NetFactsType> netEntry : getContext().getControlFlowContext().getConvertedNets()) {
             final Collection<AnnotationType> netAnnotations = getContext().getAnnotations(netEntry.getKey());
 
             boolean graphicsConverted = false;
@@ -114,7 +114,7 @@ public class AnnotationsTypeHandler extends CanonicalElementHandler<AnnotationsT
         }
 
         // Third convert all Edge Annotations
-        for (final Entry<String, FlowsIntoType> edgeEntry : getContext().getConvertedFlows()) {
+        for (final Entry<String, FlowsIntoType> edgeEntry : getContext().getControlFlowContext().getConvertedFlows()) {
             final Collection<AnnotationType> elementAnnotations = getContext().getAnnotations(edgeEntry.getKey());
 
             boolean graphicsConverted = false;

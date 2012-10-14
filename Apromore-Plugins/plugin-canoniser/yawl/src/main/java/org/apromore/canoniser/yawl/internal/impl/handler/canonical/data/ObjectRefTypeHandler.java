@@ -33,7 +33,7 @@ public class ObjectRefTypeHandler extends CanonicalElementHandler<ObjectRefType,
     public void convert() throws CanoniserException {
         ObjectRefType ref = getObject();
         TaskType originalTask = (TaskType) getOriginalParent();
-        NetFactsType net = getContext().getElementInfo(originalTask.getId()).getParent();
+        NetFactsType net = getContext().getControlFlowContext().getElementInfo(originalTask.getId()).getParent();
 
         ObjectType netObject = getContext().getObjectTypeById(ref.getObjectId());
 
@@ -41,7 +41,7 @@ public class ObjectRefTypeHandler extends CanonicalElementHandler<ObjectRefType,
             if (ref.getType().equals(InputOutputType.INPUT)) {
                 // Add Input Mapping + Task Variable
                 if (!ConversionUtils.isCompositeTask(originalTask)) {
-                    DecompositionFactsType d = getContext().getConvertedDecomposition(originalTask.getId());
+                    DecompositionFactsType d = getContext().getControlFlowContext().getConvertedDecomposition(originalTask.getId());
                     String varName = addInputMapping(ref, netObject, net, getConvertedParent(), d);
                     addTaskInputParameter(ref, netObject, varName, d);
                 } else {
@@ -52,7 +52,7 @@ public class ObjectRefTypeHandler extends CanonicalElementHandler<ObjectRefType,
             } else {
                 // Add Output Mapping + Task Variable
                 if (!ConversionUtils.isCompositeTask(originalTask)) {
-                    DecompositionFactsType d = getContext().getConvertedDecomposition(originalTask.getId());
+                    DecompositionFactsType d = getContext().getControlFlowContext().getConvertedDecomposition(originalTask.getId());
                     String varName = addOutputMapping(ref, netObject, net, getConvertedParent(), d);
                     addTaskOutputParameter(ref, netObject, varName, d);
                 } else {
