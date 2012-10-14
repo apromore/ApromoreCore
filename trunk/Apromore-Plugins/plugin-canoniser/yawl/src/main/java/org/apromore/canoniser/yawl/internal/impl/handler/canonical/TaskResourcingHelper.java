@@ -16,6 +16,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionContext;
+import org.apromore.canoniser.yawl.internal.impl.context.CanonicalResourceConversionContext;
 import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.canoniser.yawl.internal.utils.YAWLConstants;
 import org.apromore.cpf.HumanType;
@@ -114,11 +115,11 @@ public class TaskResourcingHelper {
     private void addPrimaryResource(final HumanType humanType, final InitialSet initialDistributionSet) {
         if (humanType.getType() == null) {
             // Assume Role
-            initialDistributionSet.getRole().add(getContext().getConvertedRole(humanType.getId()).getId());
+            initialDistributionSet.getRole().add(getResourceContext().getConvertedRole(humanType.getId()).getId());
         } else if (humanType.getType().equals(HumanTypeEnum.ROLE)) {
-            initialDistributionSet.getRole().add(getContext().getConvertedRole(humanType.getId()).getId());
+            initialDistributionSet.getRole().add(getResourceContext().getConvertedRole(humanType.getId()).getId());
         } else if (humanType.getType().equals(HumanTypeEnum.PARTICIPANT)) {
-            initialDistributionSet.getParticipant().add(getContext().getConvertedParticipant(humanType.getId()).getId());
+            initialDistributionSet.getParticipant().add(getResourceContext().getConvertedParticipant(humanType.getId()).getId());
         } else {
             // Do not add directly in YAWL
             getContext().getMessageInterface().addMessage("Can not add resource {0} of type {1} to YAWL Task", humanType.getName(), humanType.getType());
@@ -213,6 +214,10 @@ public class TaskResourcingHelper {
 
     public CanonicalConversionContext getContext() {
         return context;
+    }
+
+    public CanonicalResourceConversionContext getResourceContext() {
+        return context.getResourceContext();
     }
 
 }

@@ -59,17 +59,17 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
         final ExternalTaskFactsType taskFacts = createTask(getObject());
 
         // Remember our parent
-        getContext().getElementInfo(getObject().getId()).setParent(getConvertedParent());
+        getContext().getControlFlowContext().getElementInfo(getObject().getId()).setParent(getConvertedParent());
 
         if (ConversionUtils.isCompositeTask(getObject())) {
-            final NetFactsType yawlNet = (NetFactsType) getContext().getConvertedDecomposition(getObject().getSubnetId());
+            final NetFactsType yawlNet = (NetFactsType) getContext().getControlFlowContext().getConvertedDecomposition(getObject().getSubnetId());
             if (yawlNet != null) {
                 DecompositionType refD = YAWL_FACTORY.createDecompositionType();
                 refD.setId(yawlNet.getId());
                 taskFacts.setDecomposesTo(refD);
             } else {
                 // Remember Task points to a Net. Can not convert now, as Net not have been converted yet.
-                getContext().addCompositeTask(getObject().getSubnetId(), taskFacts);
+                getContext().getControlFlowContext().addCompositeTask(getObject().getSubnetId(), taskFacts);
             }
         } else {
             final WebServiceGatewayFactsType d = createDecomposition(getObject());
@@ -103,7 +103,7 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
     }
 
     private void convertTimer(final TaskType task, final ExternalTaskFactsType taskFacts) {
-        TimerType timer = getContext().getElementInfo(task.getId()).getTimer();
+        TimerType timer = getContext().getControlFlowContext().getElementInfo(task.getId()).getTimer();
         if (timer != null) {
             taskFacts.setTimer(timer);
         }
@@ -118,9 +118,9 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
     }
 
     private ControlTypeType convertJoinType(final TaskType task, final ExternalTaskFactsType taskFacts) throws CanoniserException {
-        final ControlTypeType joinType = getContext().getElementInfo(task.getId()).getJoinType();
+        final ControlTypeType joinType = getContext().getControlFlowContext().getElementInfo(task.getId()).getJoinType();
         if (joinType != null) {
-            getContext().setJoinRouting(taskFacts.getId());
+            getContext().getControlFlowContext().setJoinRouting(taskFacts.getId());
             LOGGER.debug("Added JOIN decorator of type {} to Task {}", joinType.getCode(), taskFacts.getName());
             return joinType;
         } else {
@@ -129,9 +129,9 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
     }
 
     private ControlTypeType convertSplitType(final TaskType task, final ExternalTaskFactsType taskFacts) throws CanoniserException {
-        final ControlTypeType splitType = getContext().getElementInfo(task.getId()).getSplitType();
+        final ControlTypeType splitType = getContext().getControlFlowContext().getElementInfo(task.getId()).getSplitType();
         if (splitType != null) {
-            getContext().setSplitRouting(taskFacts.getId());
+            getContext().getControlFlowContext().setSplitRouting(taskFacts.getId());
             LOGGER.debug("Added SPLIT decorator of type {} to Task {}", splitType.getCode(), taskFacts.getName());
             return splitType;
         } else {
@@ -149,7 +149,7 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
     }
 
     private boolean hasResources(final TaskType task) {
-        return task.getResourceTypeRef() != null && !task.getResourceTypeRef().isEmpty();
+        return true;
     }
 
 
@@ -161,7 +161,7 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
 
         if (!ConversionUtils.isCompositeTask(task)) {
             // First try to convert all YAWL extensions
-            DecompositionFactsType taskDecomposition = getContext().getConvertedDecomposition(task.getId());
+            DecompositionFactsType taskDecomposition = getContext().getControlFlowContext().getConvertedDecomposition(task.getId());
             if (ExtensionUtils.hasExtension(task.getAttribute(), ExtensionUtils.INPUT_PARAM)) {
                 List<TypeAttribute> inputParamList = ExtensionUtils.getExtensionAttributes(task, ExtensionUtils.INPUT_PARAM);
                 for (TypeAttribute inputParam: inputParamList) {
@@ -186,9 +186,9 @@ public class TaskTypeHandler extends DecompositionHandler<TaskType, NetFactsType
 
         if (taskFacts.getDecomposesTo() != null) {
             if (ConversionUtils.isCompositeTask(task)) {
-                updateParamIndexes(getContext().getConvertedDecomposition(task.getSubnetId()));
+                updateParamIndexes(getContext().getControlFlowContext().getConvertedDecomposition(task.getSubnetId()));
             } else {
-                updateParamIndexes(getContext().getConvertedDecomposition(task.getId()));
+                updateParamIndexes(getContext().getControlFlowContext().getConvertedDecomposition(task.getId()));
             }
         }
     }

@@ -1,12 +1,15 @@
 package org.apromore.canoniser.yawl.yawl2cpf.patterns.resource;
 
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 import java.io.File;
 
 import org.apromore.canoniser.yawl.BaseYAWL2CPFTest;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.NonhumanType;
+import org.apromore.cpf.NonhumanTypeEnum;
 import org.apromore.cpf.ResourceTypeType;
 import org.junit.Test;
 
@@ -18,7 +21,7 @@ public class OrgDataConversionTest extends BaseYAWL2CPFTest {
     }
 
     @Test
-    public void test() {
+    public void testBasicResourceConversion() {
         CanonicalProcessType cpf = yawl2Canonical.getCpf();
 
         ResourceTypeType roleX = getResourceByName(cpf, "RoleX");
@@ -39,6 +42,11 @@ public class OrgDataConversionTest extends BaseYAWL2CPFTest {
         assertNotNull(participantX);
         hasAttribute(participantX, "Capability", "CapabilityX");
         hasAttribute(participantX, "Position", "PositionX");
+
+        ResourceTypeType resourceA = getResourceByName(cpf, "ResourceA");
+        assertNotNull(resourceA);
+        assertTrue(resourceA instanceof NonhumanType);
+        assertTrue(NonhumanTypeEnum.EQUIPMENT.equals(((NonhumanType)resourceA).getType()));
     }
 
 

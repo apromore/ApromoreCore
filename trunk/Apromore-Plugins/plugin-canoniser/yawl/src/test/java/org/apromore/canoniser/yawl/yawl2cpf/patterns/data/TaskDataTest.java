@@ -4,8 +4,14 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
+import java.io.ByteArrayInputStream;
 import java.io.File;
+import java.io.IOException;
 import java.util.List;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.canoniser.yawl.yawl2cpf.patterns.BasePatternTest;
@@ -16,6 +22,8 @@ import org.apromore.cpf.OutputExpressionType;
 import org.apromore.cpf.SoftType;
 import org.apromore.cpf.TaskType;
 import org.junit.Test;
+import org.w3c.dom.Element;
+import org.xml.sax.SAXException;
 
 public class TaskDataTest extends BasePatternTest {
 
@@ -27,6 +35,21 @@ public class TaskDataTest extends BasePatternTest {
     @Override
     protected File getYAWLFile() {
         return new File(TestUtils.TEST_RESOURCES_DIRECTORY + "YAWL/Patterns/Data/WPD1TaskData.yawl");
+    }
+
+    @Test
+    public void testDataTypeDefinitions() throws SAXException, IOException, ParserConfigurationException {
+        String dataTypes = yawl2Canonical.getCpf().getDataTypes();
+        assertNotNull(dataTypes);
+        final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+        Element element = docBuilder.parse(new ByteArrayInputStream(dataTypes.getBytes())).getDocumentElement();
+        assertNotNull(element);
+        assertEquals("xs:schema", element.getNodeName());
+
+//        String yawlDataType = "<xs:schema xmlns:xs=\"http://www.w3.org/2001/XMLSchema\"><xs:complexType name=\"YDocumentType\"><xs:sequence><xs:element name=\"id\" type=\"xs:long\" minOccurs=\"0\" /><xs:element name=\"name\" type=\"xs:string\" /></xs:sequence></xs:complexType></xs:schema>";
+//        // Otherwise return XML representation
+//        Element yawlElement = docBuilder.parse(new ByteArrayInputStream(yawlDataType.getBytes())).getDocumentElement();
+//        assertTrue(yawlElement.isEqualNode(element));
     }
 
     @Test

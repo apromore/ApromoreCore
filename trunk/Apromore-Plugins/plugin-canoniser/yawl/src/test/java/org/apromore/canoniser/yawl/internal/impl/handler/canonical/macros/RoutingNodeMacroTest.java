@@ -58,7 +58,7 @@ public class RoutingNodeMacroTest {
 
         // Some manual checks
         assertNotNull(context.getNodeById("C-Issue-Trackpoint-Notice-813"));
-        assertEquals(ControlTypeCodeType.XOR, context.getElementInfo("C-Issue-Trackpoint-Notice-813").getJoinType().getCode());
+        assertEquals(ControlTypeCodeType.XOR, context.getControlFlowContext().getElementInfo("C-Issue-Trackpoint-Notice-813").getJoinType().getCode());
 
         // No Split or Joins should be present anymore
         for (final NetType net : cpf.getNet()) {

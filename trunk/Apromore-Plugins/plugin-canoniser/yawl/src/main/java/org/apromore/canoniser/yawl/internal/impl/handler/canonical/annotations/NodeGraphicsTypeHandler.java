@@ -65,8 +65,8 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
     @Override
     public void convert() throws CanoniserException {
 
-        if (getContext().getElementInfo(getObject().getCpfId()).getElement() != null) {
-            this.yawlElement = getContext().getElementInfo(getObject().getCpfId()).getElement();
+        if (getContext().getControlFlowContext().getElementInfo(getObject().getCpfId()).getElement() != null) {
+            this.yawlElement = getContext().getControlFlowContext().getElementInfo(getObject().getCpfId()).getElement();
         } else {
             LOGGER.warn("Could not find converted YAWL element for CPF-ID {} while trying to convert GraphicsType annotation with ID {}.",
                     getObject().getCpfId(), getObject().getId());
@@ -147,7 +147,7 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
 
         LOGGER.debug("Setting size h: {}, w: {} and position x: {}, y: {}",
                 new String[] { elementBounds.getH(), elementBounds.getW(), elementBounds.getX(), elementBounds.getY() });
-        getContext().setElementBounds(getObject().getCpfId(), elementBounds);
+        getContext().getControlFlowContext().setElementBounds(getObject().getCpfId(), elementBounds);
         return YAWL_FACTORY.createLayoutAttributesFactsTypeBounds(elementBounds);
     }
 
@@ -186,8 +186,8 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         final LayoutRectangleType labelRect = YAWL_FACTORY.createLayoutRectangleType();
         labelRect.setH(nf.format(this.autoLayoutInfo.getLabelHeight(yawlElement)));
         labelRect.setW(nf.format(this.autoLayoutInfo.getLabelWidth(yawlElement)));
-        final boolean hasJoinRouting = getContext().hasJoinRouting(yawlElement.getId());
-        final boolean hasSplitRouting = getContext().hasSplitRouting(yawlElement.getId());
+        final boolean hasJoinRouting = getContext().getControlFlowContext().hasJoinRouting(yawlElement.getId());
+        final boolean hasSplitRouting = getContext().getControlFlowContext().hasSplitRouting(yawlElement.getId());
         labelRect.setX(nf.format(this.autoLayoutInfo.getLabelX(yawlElement, elementBounds, hasJoinRouting, hasSplitRouting)));
         labelRect.setY(nf.format(this.autoLayoutInfo.getLabelY(yawlElement, elementBounds, hasJoinRouting, hasSplitRouting)));
 
@@ -199,7 +199,7 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
     private boolean hasRoutingElement() {
         if (yawlElement instanceof ExternalTaskFactsType) {
             final ExternalTaskFactsType task = (ExternalTaskFactsType) yawlElement;
-            return getContext().hasJoinRouting(task.getId()) || getContext().hasSplitRouting(task.getId());
+            return getContext().getControlFlowContext().hasJoinRouting(task.getId()) || getContext().getControlFlowContext().hasSplitRouting(task.getId());
         }
         return false;
     }
@@ -230,7 +230,7 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
             throws CanoniserException {
         final List<LayoutDecoratorFactsType> decoratorList = new ArrayList<LayoutDecoratorFactsType>();
 
-        if (getContext().hasJoinRouting(yawlElement.getId())) {
+        if (getContext().getControlFlowContext().hasJoinRouting(yawlElement.getId())) {
             final LayoutDecoratorFactsType decorator = YAWL_FACTORY.createLayoutDecoratorFactsType();
             decorator.setType(convertJoinRouting(yawlElement));
             decorator.setPosition(BigInteger.valueOf(JOIN_DECORATOR_DEFAULT_POSITION));
@@ -242,7 +242,7 @@ public class NodeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
             decoratorList.add(decorator);
         }
 
-        if (getContext().hasSplitRouting(yawlElement.getId())) {
+        if (getContext().getControlFlowContext().hasSplitRouting(yawlElement.getId())) {
             final LayoutDecoratorFactsType decorator = YAWL_FACTORY.createLayoutDecoratorFactsType();
             decorator.setType(convertSplitRouting(yawlElement));
             decorator.setPosition(BigInteger.valueOf(SPLIT_DECORATOR_DEFAULT_POSITION));

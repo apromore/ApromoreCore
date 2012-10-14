@@ -155,7 +155,7 @@ public class CanonicalConversionFactory implements ConversionFactory {
                     conversionHandler = new CanonicalNoOpHandler();
                 }
             } else if (obj instanceof NodeType) {
-                if (getContext().getElementInfo(((NodeType) obj).getId()) != null) {
+                if (getContext().getControlFlowContext().getElementInfo(((NodeType) obj).getId()) != null) {
                     // Node has already been converted i.e. merged with another Node -> Do nothing
                     conversionHandler = new CanonicalNoOpHandler();
                 }

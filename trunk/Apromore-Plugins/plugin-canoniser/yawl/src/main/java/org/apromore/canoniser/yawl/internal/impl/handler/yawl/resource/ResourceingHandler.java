@@ -26,6 +26,8 @@ import org.apromore.cpf.AllocationStrategyEnum;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.HumanType;
 import org.apromore.cpf.HumanTypeEnum;
+import org.apromore.cpf.NonhumanType;
+import org.apromore.cpf.NonhumanTypeEnum;
 import org.apromore.cpf.ResourceDataFilterExpressionType;
 import org.apromore.cpf.ResourceRuntimeFilterExpressionType;
 import org.apromore.cpf.ResourceTypeRefType;
@@ -49,6 +51,7 @@ import org.yawlfoundation.yawlschema.ResourcingResourceType;
 import org.yawlfoundation.yawlschema.ResourcingSecondaryFactsType;
 import org.yawlfoundation.yawlschema.ResourcingSelectorFactsType;
 import org.yawlfoundation.yawlschema.orgdata.CapabilityType;
+import org.yawlfoundation.yawlschema.orgdata.NonHumanResourceType;
 import org.yawlfoundation.yawlschema.orgdata.ParticipantType;
 import org.yawlfoundation.yawlschema.orgdata.PositionType;
 import org.yawlfoundation.yawlschema.orgdata.RoleType;
@@ -371,11 +374,18 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
             }
         }
 
-        // Add Secondary Roles directly as Reference
         for (final String roleId : secondaryResources.getRole()) {
             RoleType role = getContext().getRoleById(roleId);
             if (role != null) {
                 final ResourceTypeType resource = createResourceTypeForRole(role);
+                createResourceReference(resource, SECONDARY_QUALIFIER);
+            }
+        }
+
+        for (final String nonHumanId: secondaryResources.getNonHumanResource()) {
+            NonHumanResourceType nonHumanResource = getContext().getNonHumanById(nonHumanId);
+            if (nonHumanResource != null) {
+                final ResourceTypeType resource = createResourceTypeForNonHuman(nonHumanResource);
                 createResourceReference(resource, SECONDARY_QUALIFIER);
             }
         }
@@ -404,25 +414,25 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
      * @return CPFs HumanType
      */
     private HumanType createResourceTypeForRole(final RoleType role) {
-        HumanType canonicalResource = (HumanType) getContext().getGeneratedResourceType(role.getId());
-        if (canonicalResource == null) {
+        ResourceTypeType resource = getContext().getGeneratedResourceType(role.getId());
+        if (!(resource instanceof HumanType)) {
             // Create a new ResourceType only for this Role
-            canonicalResource = CPF_FACTORY.createHumanType();
-            canonicalResource.setType(HumanTypeEnum.ROLE);
-            canonicalResource.setId(generateUUID(RESOURCE_ID_PREFIX, role.getId()));
-            canonicalResource.setOriginalID(role.getId());
-            canonicalResource.setName(role.getName());
+            HumanType roleResource = CPF_FACTORY.createHumanType();
+            roleResource.setType(HumanTypeEnum.ROLE);
+            roleResource.setId(generateUUID(RESOURCE_ID_PREFIX, role.getId()));
+            roleResource.setOriginalID(role.getId());
+            roleResource.setName(role.getName());
             // Add new Resource as generated Resource
-            getContext().setGeneratedResourceType(role.getId(), canonicalResource);
+            getContext().setGeneratedResourceType(role.getId(), roleResource);
             // Add the ResourceType to the CanonicalProcess
-            getContext().getCanonicalResult().getResourceType().add(canonicalResource);
+            getContext().getCanonicalResult().getResourceType().add(roleResource);
 
-            LOGGER.debug("Converted YAWL role {} to CPF HumanType {}", role.getName(), ConversionUtils.toString(canonicalResource));
+            LOGGER.debug("Converted YAWL role {} to CPF HumanType {}", role.getName(), ConversionUtils.toString(roleResource));
 
             if (role.getBelongsToID() != null) {
                 // Recursion is safe here, as we're keeping track of already converted Roles
                 final ResourceTypeType parentRole = createResourceTypeForRole(role.getBelongsToID());
-                parentRole.getSpecializationIds().add(canonicalResource.getId());
+                parentRole.getSpecializationIds().add(roleResource.getId());
             }
 
             for (ParticipantType p : getContext().getOrgDataType().getParticipants().getParticipant()) {
@@ -431,8 +441,9 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
                 }
             }
 
+            return roleResource;
         }
-        return canonicalResource;
+        return (HumanType) resource;
     }
 
     private boolean hasRole(final RoleType role, final ParticipantType p) {
@@ -455,29 +466,29 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
      * @return HumanType
      */
     private HumanType createResourceTypeForParticipant(final ParticipantType participant) {
-        HumanType canonicalResource = (HumanType) getContext().getGeneratedResourceType(participant.getId());
-        if (canonicalResource == null) {
+        ResourceTypeType resource = getContext().getGeneratedResourceType(participant.getId());
+        if (!(resource instanceof HumanType)) {
             // Create a new ResourceType only for this Role
-            canonicalResource = CPF_FACTORY.createHumanType();
-            canonicalResource.setType(HumanTypeEnum.PARTICIPANT);
-            canonicalResource.setId(generateUUID(RESOURCE_ID_PREFIX, participant.getId()));
-            canonicalResource.setOriginalID(participant.getId());
-            canonicalResource.setName(participant.getFirstname() + " " + participant.getLastname());
-            convertCapabilities(canonicalResource, participant);
-            convertPositions(canonicalResource, participant);
+            HumanType participantResource = CPF_FACTORY.createHumanType();
+            participantResource.setType(HumanTypeEnum.PARTICIPANT);
+            participantResource.setId(generateUUID(RESOURCE_ID_PREFIX, participant.getId()));
+            participantResource.setOriginalID(participant.getId());
+            participantResource.setName(participant.getFirstname() + " " + participant.getLastname());
+            convertCapabilities(participantResource, participant);
+            convertPositions(participantResource, participant);
             // Add new Resource as generated Resource
-            getContext().setGeneratedResourceType(participant.getId(), canonicalResource);
+            getContext().setGeneratedResourceType(participant.getId(), participantResource);
             // Add the ResourceType to the CanonicalProcess
-            getContext().getCanonicalResult().getResourceType().add(canonicalResource);
+            getContext().getCanonicalResult().getResourceType().add(participantResource);
 
-            LOGGER.debug("Converted YAWL participant {} to CPF HumanType {}", participant.getFirstname(), ConversionUtils.toString(canonicalResource));
+            LOGGER.debug("Converted YAWL participant {} to CPF HumanType {}", participant.getFirstname(), ConversionUtils.toString(participantResource));
 
             if (participant.getRoles() != null) {
                 // Add my Roles
                 for (final JAXBElement<Object> role : participant.getRoles().getRole()) {
                     if (role.getValue() instanceof RoleType) {
                         final ResourceTypeType parentRole = createResourceTypeForRole((RoleType) role.getValue());
-                        parentRole.getSpecializationIds().add(canonicalResource.getId());
+                        parentRole.getSpecializationIds().add(participantResource.getId());
                     } else {
                         LOGGER.warn("Wrong type of JAXBElement " + role.toString() + " expected RoleType");
                     }
@@ -485,9 +496,32 @@ public class ResourceingHandler extends YAWLConversionHandler<ResourcingFactsTyp
                 }
             }
 
+            return participantResource;
         }
-        return canonicalResource;
+        return (HumanType) resource;
     }
+
+
+    private NonhumanType createResourceTypeForNonHuman(final NonHumanResourceType yawlResource) {
+        ResourceTypeType resource = getContext().getGeneratedResourceType(yawlResource.getId());
+        if (!(resource instanceof NonhumanType)) {
+            // Create a new ResourceType only for this Role
+            NonhumanType nonHumanResource = CPF_FACTORY.createNonhumanType();
+            nonHumanResource.setType(NonhumanTypeEnum.EQUIPMENT);
+            nonHumanResource.setId(generateUUID(RESOURCE_ID_PREFIX, yawlResource.getId()));
+            nonHumanResource.setOriginalID(yawlResource.getId());
+            nonHumanResource.setName(yawlResource.getName());
+            // Add new Resource as generated Resource
+            getContext().setGeneratedResourceType(yawlResource.getId(), nonHumanResource);
+            // Add the ResourceType to the CanonicalProcess
+            getContext().getCanonicalResult().getResourceType().add(nonHumanResource);
+
+            LOGGER.debug("Converted YAWL secondary resource {} to CPF NonhumanType {}", yawlResource.getName(), ConversionUtils.toString(nonHumanResource));
+            return nonHumanResource;
+        }
+        return (NonhumanType) resource;
+    }
+
 
     private void convertPositions(final HumanType canonicalResource, final ParticipantType participant) {
         for (JAXBElement<Object> element : participant.getPositions().getPosition()) {

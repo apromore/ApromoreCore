@@ -32,11 +32,11 @@ public class RoleWithDataDistributionSet extends BaseYAWL2CPFTest {
 
         // Should have no resources and a "data" filter expression
         assertTrue(taskA.getResourceTypeRef().isEmpty());
-        assertEquals("//ResourceType[type/text()='Participant' and name/text()='cpf:getObjectValue(resource)']", taskA.getFilterByDataExpr().getExpression());
+        assertEquals("//ResourceType[type/text()='Participant' AND name/text()='cpf:getObjectValue(resource)']", taskA.getFilterByDataExpr().getExpression());
 
         // Should have no resources and a "data" filter expression
         assertTrue(taskB.getResourceTypeRef().isEmpty());
-        assertEquals("//ResourceType[type/text()='Role' and name/text()='cpf:getObjectValue(resource)']", taskB.getFilterByDataExpr().getExpression());
+        assertEquals("//ResourceType[type/text()='Role' AND name/text()='cpf:getObjectValue(resource)']", taskB.getFilterByDataExpr().getExpression());
 
     }
 

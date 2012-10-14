@@ -43,7 +43,7 @@ public class InputExpressionTypeHandler extends ExpressionTypeHandler<InputExpre
 
         if (getObject().getLanguage().equals(CPFSchema.EXPRESSION_LANGUAGE_XQUERY) ) {
             TaskType originalParent = (TaskType) getOriginalParent();
-            NetFactsType parentNet = getContext().getElementInfo(originalParent.getId()).getParent();
+            NetFactsType parentNet = getContext().getControlFlowContext().getElementInfo(originalParent.getId()).getParent();
             if (ConversionUtils.isCompositeTask(originalParent)) {
                 convertCompositeTaskInputParameter(getObject(), getConvertedParent(), parentNet);
             } else {

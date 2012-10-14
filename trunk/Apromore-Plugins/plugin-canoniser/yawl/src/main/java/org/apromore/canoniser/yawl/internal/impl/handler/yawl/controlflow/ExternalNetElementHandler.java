@@ -156,11 +156,11 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
     }
 
     protected boolean checkSingleEntry(final ExternalNetElementType netElement) {
-        return getContext().getPredecessors(netElement).size() <= 1;
+        return getContext().getPreSet(netElement).size() <= 1;
     }
 
     protected boolean checkSingleExit(final ExternalNetElementType netElement) {
-        return getContext().getSuccessors(netElement).size() <= 1;
+        return getContext().getPostSet(netElement).size() <= 1;
     }
 
     protected boolean hasIncomingQueue(final ExternalNetElementType netElement) {
@@ -231,7 +231,6 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
      *            of the YAWL source
      * @param targetId
      *            of the YAWL target
-     * @return
      * @throws CanoniserException
      */
     protected void createGraphicsForFlow(final String sourceId, final String targetId) throws CanoniserException {
