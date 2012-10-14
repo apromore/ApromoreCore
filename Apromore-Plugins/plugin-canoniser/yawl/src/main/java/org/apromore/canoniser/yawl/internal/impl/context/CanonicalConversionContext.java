@@ -16,12 +16,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
-import java.util.Map.Entry;
-import java.util.Set;
 
 import javax.xml.bind.JAXBElement;
 
@@ -45,24 +42,13 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.yawlfoundation.yawlschema.ControlTypeType;
-import org.yawlfoundation.yawlschema.DecompositionFactsType;
-import org.yawlfoundation.yawlschema.ExternalNetElementType;
-import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
-import org.yawlfoundation.yawlschema.FlowsIntoType;
 import org.yawlfoundation.yawlschema.LayoutContainerFactsType;
 import org.yawlfoundation.yawlschema.LayoutFactsType.Specification;
 import org.yawlfoundation.yawlschema.LayoutNetFactsType;
-import org.yawlfoundation.yawlschema.LayoutRectangleType;
-import org.yawlfoundation.yawlschema.NetFactsType;
 import org.yawlfoundation.yawlschema.ObjectFactory;
 import org.yawlfoundation.yawlschema.SpecificationSetFactsType;
 import org.yawlfoundation.yawlschema.VariableBaseType;
-import org.yawlfoundation.yawlschema.WebServiceGatewayFactsType.YawlService;
 import org.yawlfoundation.yawlschema.YAWLSpecificationFactsType;
-import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
-import org.yawlfoundation.yawlschema.orgdata.ParticipantType;
-import org.yawlfoundation.yawlschema.orgdata.RoleType;
 
 /**
  * Context for a conversion CPF -> YAWL
@@ -71,81 +57,6 @@ import org.yawlfoundation.yawlschema.orgdata.RoleType;
  *
  */
 public final class CanonicalConversionContext extends ConversionContext {
-
-    public final class ElementInfo {
-        private ExternalNetElementType element;
-        private LayoutRectangleType elementSize;
-        private ControlTypeType joinType;
-        private ControlTypeType splitType;
-        private org.yawlfoundation.yawlschema.TimerType timer;
-        private boolean isAutomatic = false;
-        private YawlService yawlService;
-        private NetFactsType parent;
-
-        public ExternalNetElementType getElement() {
-            return element;
-        }
-
-        public void setElement(final ExternalNetElementType element) {
-            this.element = element;
-        }
-
-        public LayoutRectangleType getElementSize() {
-            return elementSize;
-        }
-
-        public void setElementSize(final LayoutRectangleType elementSize) {
-            this.elementSize = elementSize;
-        }
-
-        public ControlTypeType getJoinType() {
-            return joinType;
-        }
-
-        public void setJoinType(final ControlTypeType joinType) {
-            this.joinType = joinType;
-        }
-
-        public ControlTypeType getSplitType() {
-            return splitType;
-        }
-
-        public void setSplitType(final ControlTypeType splitType) {
-            this.splitType = splitType;
-        }
-
-        public org.yawlfoundation.yawlschema.TimerType getTimer() {
-            return timer;
-        }
-
-        public void setTimer(final org.yawlfoundation.yawlschema.TimerType timer) {
-            this.timer = timer;
-        }
-
-        public boolean isAutomatic() {
-            return isAutomatic;
-        }
-
-        public void setAutomatic(final boolean isAutomatic) {
-            this.isAutomatic = isAutomatic;
-        }
-
-        public YawlService getYawlService() {
-            return yawlService;
-        }
-
-        public void setYawlService(final YawlService yawlService) {
-            this.yawlService = yawlService;
-        }
-
-        public NetFactsType getParent() {
-            return parent;
-        }
-
-        public void setParent(final NetFactsType parent) {
-            this.parent = parent;
-        }
-    }
 
     private static final Logger LOGGER = LoggerFactory.getLogger(CanonicalConversionContext.class);
 
@@ -157,11 +68,17 @@ public final class CanonicalConversionContext extends ConversionContext {
 
     private final SpecificationSetFactsType yawlSpecification;
 
-    private final OrgDataType yawlOrgData;
-
     private final ConversionUUIDGenerator uuidGenerator;
 
-    /* CPF data structures */
+    /**
+     * Context of resource conversion, storing YAWL resource data structures
+     */
+    private final CanonicalResourceConversionContext resourceContext;
+
+    /**
+     * Context of control flow conversion, storing YAWL control flow data structures
+     */
+    private final CanonicalControlFlowConversionContext controlFlowContext;
 
     /**
      * Successors of each Node in the CPF
@@ -198,52 +115,10 @@ public final class CanonicalConversionContext extends ConversionContext {
      */
     private Map<String, Collection<AnnotationType>> annotationMap;
 
-    /* YAWL data structures */
-
-    /**
-     * Map of all already converted DecompositionFactsType by their CPF ID
-     */
-    private Map<String, DecompositionFactsType> convertedDecompositionMap;
-
-    /**
-     * Map of all already converted NetElements by their CPF ID
-     */
-    private Map<String, ElementInfo> elementInfoMap;
-
-    /**
-     * Map of all already converted Flows by their CPF ID
-     */
-    private Map<String, FlowsIntoType> convertedFlowsMap;
-
     /**
      * Map of all already converted Variables by their Object-ID
      */
     private Map<String, VariableBaseType> convertedParameterMap;
-
-    /**
-     * Map of all already converted YAWL Roles by their Resource-ID
-     */
-    private Map<String, RoleType> convertedRoleMap;
-
-    /**
-     * Map of all already converted YAWL Participants by their Resource-ID
-     */
-    private Map<String, ParticipantType> convertedParticipantMap;
-
-    /**
-     * Map containing the collection of all Composite Tasks that are using the Net with ID
-     */
-    private Map<String, Collection<ExternalTaskFactsType>> compositeTaskMap;
-
-    /**
-     * Set of all YAWL tasks (by their YAWL ID) that have a split routing
-     */
-    private Set<String> splitRoutingSet;
-
-    /**
-     * Set of all YAWL tasks (by their YAWL ID) that have a join routing
-     */
-    private Set<String> joinRoutingSet;
 
     /**
      * TODO still used? Map of all artificial (non-existant in CPF) variables
@@ -265,7 +140,6 @@ public final class CanonicalConversionContext extends ConversionContext {
      */
     private NumberFormat yawlNumberFormat;
 
-
     /**
      * Create the Context for one CPF -> YAWL conversion
      *
@@ -278,9 +152,10 @@ public final class CanonicalConversionContext extends ConversionContext {
         this.canonicalProcess = canonicalProcess;
         this.annotationsType = annotationsType;
         this.yawlSpecification = new ObjectFactory().createSpecificationSetFactsType();
-        this.yawlOrgData = new org.yawlfoundation.yawlschema.orgdata.ObjectFactory().createOrgDataType();
         this.uuidGenerator = new ConversionUUIDGenerator();
         this.setYawlLocale(DEFAULT_LOCALE);
+        this.resourceContext = new CanonicalResourceConversionContext();
+        this.controlFlowContext = new CanonicalControlFlowConversionContext();
     }
 
     /*
@@ -347,8 +222,12 @@ public final class CanonicalConversionContext extends ConversionContext {
         this.yawlNumberFormat.setMinimumFractionDigits(1);
     }
 
-    public OrgDataType getYawlOrgData() {
-        return yawlOrgData;
+    public CanonicalControlFlowConversionContext getControlFlowContext() {
+        return controlFlowContext;
+    }
+
+    public CanonicalResourceConversionContext getResourceContext() {
+        return resourceContext;
     }
 
     /**
@@ -645,46 +524,7 @@ public final class CanonicalConversionContext extends ConversionContext {
         this.resourceTypeMap = null;
     }
 
-    /**
-     * Add a DecompositionFactsType for the given ID
-     *
-     * @param id
-     *            of the CPF Net or CPF Task
-     * @param decomposition
-     *            the converted NetFactsType or WebServiceGatewayFactsType of YAWL
-     */
-    public void addConvertedDecompositon(final String id, final DecompositionFactsType decomposition) {
-        initDecompositionMap();
-        convertedDecompositionMap.put(id, decomposition);
-    }
 
-    /**
-     * Get the already converted NetFactsType if CPF Net with ID is already converted.
-     *
-     * @param id
-     *            of a CPF Net or a CPF Task
-     * @return NetFactsType or WebServiceGatewayFactsType or NULL
-     */
-    public DecompositionFactsType getConvertedDecomposition(final String id) {
-        initDecompositionMap();
-        return convertedDecompositionMap.get(id);
-    }
-
-    public Set<Entry<String, NetFactsType>> getConvertedNets() {
-        Map<String, NetFactsType> netMap = new HashMap<String, NetFactsType>();
-        for (Entry<String, DecompositionFactsType> d: convertedDecompositionMap.entrySet()) {
-            if (d.getValue() instanceof NetFactsType) {
-                netMap.put(d.getKey(), (NetFactsType) d.getValue());
-            }
-        }
-        return Collections.unmodifiableSet(netMap.entrySet());
-    }
-
-    private void initDecompositionMap() {
-        if (convertedDecompositionMap == null) {
-            convertedDecompositionMap = new HashMap<String, DecompositionFactsType>();
-        }
-    }
 
     /**
      * Remembers a YAWL variable/parameter
@@ -713,145 +553,6 @@ public final class CanonicalConversionContext extends ConversionContext {
     private void initConvertedParameterMap() {
         if (convertedParameterMap == null) {
             convertedParameterMap = new HashMap<String, VariableBaseType>();
-        }
-    }
-
-
-    public void addConvertedRole(final String id, final RoleType r) {
-        initConvertedRoleMap();
-        convertedRoleMap.put(id, r);
-    }
-
-    public RoleType getConvertedRole(final String id) {
-        initConvertedRoleMap();
-        return convertedRoleMap.get(id);
-    }
-
-    private void initConvertedRoleMap() {
-        if (convertedRoleMap == null) {
-            convertedRoleMap = new HashMap<String, RoleType>();
-        }
-    }
-
-    public ParticipantType getConvertedParticipant(final String id) {
-        initConvertedParticipantMap();
-        return convertedParticipantMap.get(id);
-    }
-
-    public void addConvertedParticipant(final String id, final ParticipantType p) {
-        initConvertedParticipantMap();
-        convertedParticipantMap.put(id, p);
-    }
-
-    private void initConvertedParticipantMap() {
-        if (convertedParticipantMap == null) {
-            convertedParticipantMap = new HashMap<String, ParticipantType>();
-        }
-    }
-
-    /**
-     * Add an element that just has been converted
-     *
-     * @param nodeId
-     *            of the CPF node
-     * @param element
-     *            the converted YAWL element
-     */
-    public void setElement(final String nodeId, final ExternalNetElementType element) {
-        initElementMap(nodeId).element = element;
-    }
-
-    /**
-     * Adds layout bounds to the element information.
-     *
-     * @param nodeId
-     *            of the CPF node
-     * @param elementSize
-     */
-    public void setElementBounds(final String nodeId, final LayoutRectangleType elementSize) {
-        initElementMap(nodeId).setElementSize(elementSize);
-    }
-
-    /**
-     * Adds the join type to the element information.
-     *
-     * @param nodeId
-     *            of the CPF node
-     * @param joinType
-     */
-    public void setElementJoinType(final String nodeId, final ControlTypeType joinType) {
-        initElementMap(nodeId).setJoinType(joinType);
-    }
-
-    /**
-     * Adds the split type to the element information.
-     *
-     * @param nodeId
-     *            of the CPF node
-     * @param splitType
-     */
-    public void setElementSplitType(final String nodeId, final ControlTypeType splitType) {
-        initElementMap(nodeId).setSplitType(splitType);
-    }
-
-    /**
-     * Get information about the conversion of the CPF Node to an YAWL element.
-     *
-     * @param nodeId
-     *            of CPF node
-     * @return YAWL element information
-     */
-    public ElementInfo getElementInfo(final String nodeId) {
-        return initElementMap(nodeId);
-    }
-
-    private ElementInfo initElementMap(final String nodeId) {
-        if (elementInfoMap == null) {
-            elementInfoMap = new HashMap<String, ElementInfo>();
-        }
-        final ElementInfo elemenInfo = elementInfoMap.get(nodeId);
-        if (elemenInfo != null) {
-            return elemenInfo;
-        } else {
-            final ElementInfo newElementInfo = new ElementInfo();
-            elementInfoMap.put(nodeId, newElementInfo);
-            return newElementInfo;
-        }
-
-    }
-
-    /**
-     * Add an flow that just has been converted
-     *
-     * @param nodeId
-     *            of the CPF node
-     * @param element
-     *            the converted YAWL element
-     */
-    public void addConvertedFlow(final String edgeId, final FlowsIntoType flow) {
-        initConvertedFlowsMap();
-        convertedFlowsMap.put(edgeId, flow);
-    }
-
-    /**
-     * Gets the converted flow for edge CPF id
-     *
-     * @param nodeId
-     *            of CPF edge
-     * @return YAWL flow
-     */
-    public FlowsIntoType getConvertedFlow(final String edgeId) {
-        initConvertedFlowsMap();
-        return convertedFlowsMap.get(edgeId);
-    }
-
-    public Set<Entry<String, FlowsIntoType>> getConvertedFlows() {
-        return Collections.unmodifiableSet(convertedFlowsMap.entrySet());
-    }
-
-    private void initConvertedFlowsMap() {
-        if (convertedFlowsMap == null) {
-            convertedFlowsMap = new HashMap<String, FlowsIntoType>();
         }
     }
 
@@ -897,103 +598,10 @@ public final class CanonicalConversionContext extends ConversionContext {
     }
 
     /**
-     * Adds the task element to a list of composite tasks that unfold to the sub net with given ID.
-     *
-     * @param subnetId
-     *            of CPF net
-     * @param taskFacts
-     *            the YAWL element
-     */
-    public void addCompositeTask(final String subnetId, final ExternalTaskFactsType taskFacts) {
-        initCompositeTaskMap();
-        Collection<ExternalTaskFactsType> collection = compositeTaskMap.get(subnetId);
-        if (collection == null) {
-            collection = new ArrayList<ExternalTaskFactsType>(0);
-            compositeTaskMap.put(subnetId, collection);
-        }
-        collection.add(taskFacts);
-    }
-
-    /**
-     * Returns a collection of already converted YAWL tasks that unfold to a given sub net. There may be tasks missing that have not been converted
-     * yet.
-     *
-     * @param subnetId
-     *            of the CPF net
-     * @return unmodifiable collection of YAWL tasks that unfold to this sub net
-     */
-    public Collection<ExternalTaskFactsType> getCompositeTasks(final String subnetId) {
-        initCompositeTaskMap();
-        final Collection<ExternalTaskFactsType> collection = compositeTaskMap.get(subnetId);
-        if (collection != null) {
-            return Collections.unmodifiableCollection(collection);
-        } else {
-            return Collections.unmodifiableCollection(new ArrayList<ExternalTaskFactsType>());
-        }
-    }
-
-    private void initCompositeTaskMap() {
-        if (compositeTaskMap == null) {
-            compositeTaskMap = new HashMap<String, Collection<ExternalTaskFactsType>>();
-        }
-    }
-
-    /**
-     * Remember that a YAWL task (given by its ID) has a JOIN routing attached.
-     *
-     * @param yawlId
-     */
-    public void setSplitRouting(final String yawlId) {
-        initSplitRoutingMap();
-        splitRoutingSet.add(yawlId);
-    }
-
-    /**
-     *
-     * @param yawlId
-     * @return true if Task has a SPLIT routing
-     */
-    public boolean hasSplitRouting(final String yawlId) {
-        initSplitRoutingMap();
-        return splitRoutingSet.contains(yawlId);
-    }
-
-    private void initSplitRoutingMap() {
-        if (splitRoutingSet == null) {
-            splitRoutingSet = new HashSet<String>();
-        }
-    }
-
-    /**
-     * Remember that a YAWL task (given by its ID) has a JOIN routing attached.
-     *
-     * @param yawlId
-     */
-    public void setJoinRouting(final String yawlId) {
-        initJoinRoutingMap();
-        joinRoutingSet.add(yawlId);
-    }
-
-    /**
-     * @param yawlId
-     * @return true if Task has a JOIN routing
-     */
-    public boolean hasJoinRouting(final String yawlId) {
-        initJoinRoutingMap();
-        return joinRoutingSet.contains(yawlId);
-    }
-
-    private void initJoinRoutingMap() {
-        if (joinRoutingSet == null) {
-            joinRoutingSet = new HashSet<String>();
-        }
-    }
-
-    /**
      * Checks if the Object with ID (in CPF) is used as input any composite task that points to the given Net
      *
-     * @param objectId
-     * @return
+     * @param objectId of the Object in CPF
+     * @return is Object with ID objectId is used as Input
      */
     public boolean isInputObjectForNet(final String objectId, final String netId) {
         // TODO optimize
@@ -1017,9 +625,9 @@ public final class CanonicalConversionContext extends ConversionContext {
     /**
      * Checks if the Object with ID (in CPF) is used as output in any composite task that points to the given Net
      *
-     * @param objectId
-     * @param netId
-     * @return
+     * @param objectId in CPF
+     * @param netId in CPF
+     * @return if the Object with objectId is used as output
      */
     public boolean isOutputObjectOfNet(final String objectId, final String netId) {
         // TODO optimize
@@ -1103,7 +711,7 @@ public final class CanonicalConversionContext extends ConversionContext {
      *
      * @param cpfId
      *            of the Node or NULL for global annotations
-     * @return
+     * @return Collection of all Annotations for CPF ID
      */
     public Collection<AnnotationType> getAnnotations(final String cpfId) {
         initialiseAnnotationsMap();
@@ -1135,6 +743,5 @@ public final class CanonicalConversionContext extends ConversionContext {
         }
         return autoLayoutInfo;
     }
-
 
 }

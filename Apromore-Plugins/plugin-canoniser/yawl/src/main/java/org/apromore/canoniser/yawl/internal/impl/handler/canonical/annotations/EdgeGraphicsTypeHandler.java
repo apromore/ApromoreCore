@@ -18,7 +18,7 @@ import java.text.ParseException;
 import javax.xml.bind.JAXBElement;
 
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.canoniser.yawl.internal.impl.context.CanonicalConversionContext.ElementInfo;
+import org.apromore.canoniser.yawl.internal.impl.context.CanonicalToYAWLElementInfo;
 import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.cpf.EdgeType;
 import org.slf4j.Logger;
@@ -56,8 +56,8 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
 
         final EdgeType edge = getContext().getEdgeById(getObject().getCpfId());
 
-        final ExternalNetElementType sourceElement = getContext().getElementInfo(edge.getSourceId()).getElement();
-        final ExternalNetElementType targetElement = getContext().getElementInfo(edge.getTargetId()).getElement();
+        final ExternalNetElementType sourceElement = getContext().getControlFlowContext().getElementInfo(edge.getSourceId()).getElement();
+        final ExternalNetElementType targetElement = getContext().getControlFlowContext().getElementInfo(edge.getTargetId()).getElement();
 
         if (sourceElement != null && targetElement != null) {
 
@@ -68,8 +68,8 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
                 netLayout.getBoundsOrFrameOrViewport().add(convertFlowLayout(YAWL_FACTORY.createLayoutNetFactsTypeFlow(existingFlowLayout), sourceElement, targetElement));
             } else {
                 LOGGER.debug("Added layout for flow using default settings. Source {} -> Target {}", sourceElement.getId(), targetElement.getId());
-                if ((getContext().getElementInfo(sourceElement.getId()).getElementSize() != null)
-                        && (getContext().getElementInfo(targetElement.getId()).getElementSize() != null)) {
+                if ((getContext().getControlFlowContext().getElementInfo(sourceElement.getId()).getElementSize() != null)
+                        && (getContext().getControlFlowContext().getElementInfo(targetElement.getId()).getElementSize() != null)) {
                     netLayout.getBoundsOrFrameOrViewport().add(createDefaultFlowLayout(sourceElement, targetElement, edge));
                 }
             }
@@ -142,7 +142,7 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
     private LayoutPointType createPoint(final String nodeId) throws ParseException {
         final LayoutPointType point = YAWL_FACTORY.createLayoutPointType();
 
-        final ElementInfo elementInfo = getContext().getElementInfo(nodeId);
+        final CanonicalToYAWLElementInfo elementInfo = getContext().getControlFlowContext().getElementInfo(nodeId);
         final LayoutRectangleType elementSize = elementInfo.getElementSize();
 
         NumberFormat nf = getContext().getYawlNumberFormat();

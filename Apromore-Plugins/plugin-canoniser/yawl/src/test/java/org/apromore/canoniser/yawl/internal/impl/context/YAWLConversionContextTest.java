@@ -98,11 +98,11 @@ public class YAWLConversionContextTest {
         final NetFactsType net = (NetFactsType) specUnderTest.getDecomposition().get(0);
         final ProcessControlElements pcElements = net.getProcessControlElements();
         LOGGER.debug("Successors Map:");
-        checkSuccessors(pcElements.getInputCondition(), context.getSuccessors(pcElements.getInputCondition()));
+        checkSuccessors(pcElements.getInputCondition(), context.getPostSet(pcElements.getInputCondition()));
         for (final ExternalNetElementType element : pcElements.getTaskOrCondition()) {
-            checkSuccessors(element, context.getSuccessors(element));
+            checkSuccessors(element, context.getPostSet(element));
         }
-        checkSuccessors(pcElements.getOutputCondition(), context.getSuccessors(pcElements.getOutputCondition()));
+        checkSuccessors(pcElements.getOutputCondition(), context.getPostSet(pcElements.getOutputCondition()));
     }
 
     private void checkSuccessors(final ExternalNetElementType element, final Collection<ExternalNetElementType> successors) {
@@ -147,11 +147,11 @@ public class YAWLConversionContextTest {
         final NetFactsType net = (NetFactsType) specUnderTest.getDecomposition().get(0);
         final ProcessControlElements pcElements = net.getProcessControlElements();
         LOGGER.debug("Predecessors Map:");
-        checkPredecessors(pcElements.getInputCondition(), context.getPredecessors(pcElements.getInputCondition()));
+        checkPredecessors(pcElements.getInputCondition(), context.getPreSet(pcElements.getInputCondition()));
         for (final ExternalNetElementType element : pcElements.getTaskOrCondition()) {
-            checkPredecessors(element, context.getPredecessors(element));
+            checkPredecessors(element, context.getPreSet(element));
         }
-        checkPredecessors(pcElements.getOutputCondition(), context.getPredecessors(pcElements.getOutputCondition()));
+        checkPredecessors(pcElements.getOutputCondition(), context.getPreSet(pcElements.getOutputCondition()));
     }
 
     private void checkPredecessors(final ExternalNetElementType element, final Collection<ExternalNetElementType> predecessors) {

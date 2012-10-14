@@ -177,8 +177,7 @@ public class PluginPropertiesHelper {
             });
             return booleanBox;
         } else if (prop.getClazz().equals("java.io.InputStream")) {
-            Fileupload fileButton = new Fileupload(prop.getName());
-            fileButton.setSclass("attachBtn");
+            Fileupload fileButton = new Fileupload("Upload file");
             fileButton.setAttribute("upload", "true");
             fileButton.addEventListener("onUpload", new EventListener() {
 

@@ -36,7 +36,7 @@ public abstract class DecompositionHandler<T, E> extends BaseTaskHandler<T, E> {
         LOGGER.debug("Creating decomposition for {} with ID {}", node.getName(), decompositionType.getId());
         decompositionType.setName(node.getName());
         getContext().getYAWLRootSpecification().getDecomposition().add(decompositionType);
-        getContext().addConvertedDecompositon(node.getId(), decompositionType);
+        getContext().getControlFlowContext().addConvertedDecompositon(node.getId(), decompositionType);
         return decompositionType;
     }
 

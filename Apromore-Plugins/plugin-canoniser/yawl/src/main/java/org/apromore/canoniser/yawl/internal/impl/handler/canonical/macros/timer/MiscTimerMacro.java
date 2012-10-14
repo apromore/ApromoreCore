@@ -64,9 +64,9 @@ public final class MiscTimerMacro extends AbstractTimerMacro {
         // Set the correct YAWL Timer
         final org.yawlfoundation.yawlschema.TimerType yawlTimer = createTimer((TimerType) node);
         yawlTimer.setTrigger(TimerTriggerType.ON_ENABLED);
-        getContext().getElementInfo(task.getId()).setTimer(yawlTimer);
+        getContext().getControlFlowContext().getElementInfo(task.getId()).setTimer(yawlTimer);
         // Remember that this Task should be automatic
-        getContext().getElementInfo(task.getId()).setAutomatic(true);
+        getContext().getControlFlowContext().getElementInfo(task.getId()).setAutomatic(true);
 
         LOGGER.debug("Added YAWL Timer to introduced Task {}", task.getId());
 

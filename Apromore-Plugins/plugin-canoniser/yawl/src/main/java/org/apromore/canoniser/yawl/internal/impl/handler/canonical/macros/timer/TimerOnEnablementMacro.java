@@ -96,7 +96,7 @@ public class TimerOnEnablementMacro extends AbstractTimerMacro {
         // Set the correct YAWL Timer
         final org.yawlfoundation.yawlschema.TimerType yawlTimer = createTimer(timer);
         yawlTimer.setTrigger(TimerTriggerType.ON_ENABLED);
-        getContext().getElementInfo(task.getId()).setTimer(yawlTimer);
+        getContext().getControlFlowContext().getElementInfo(task.getId()).setTimer(yawlTimer);
 
         LOGGER.debug("Added YAWL Timer to Task {}", task.getId());
 

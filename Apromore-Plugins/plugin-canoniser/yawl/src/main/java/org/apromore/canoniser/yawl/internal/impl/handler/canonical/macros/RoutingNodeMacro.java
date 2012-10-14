@@ -108,7 +108,7 @@ public class RoutingNodeMacro extends ContextAwareRewriteMacro {
         // Set correct split on new Task
         final ControlTypeType splitCode = convertSplitCode(splitNode);
         LOGGER.debug("Rewriting SPLIT of type {}", splitCode.getCode());
-        getContext().setElementSplitType(newNode.getId(), splitCode);
+        getContext().getControlFlowContext().setElementSplitType(newNode.getId(), splitCode);
 
         // Connect the post set of the former split node with the new node
         final List<NodeType> postSet = getContext().getPostSet(splitNode.getId());
@@ -145,7 +145,7 @@ public class RoutingNodeMacro extends ContextAwareRewriteMacro {
         // Set correct split on new Task
         final ControlTypeType joinCode = convertJoinCode(joinNode);
         LOGGER.debug("Rewriting JOIN of type {}", joinCode.getCode());
-        getContext().setElementJoinType(newNode.getId(), joinCode);
+        getContext().getControlFlowContext().setElementJoinType(newNode.getId(), joinCode);
 
         // Connect the pre set of the former join node with the new node
         final List<NodeType> preSet = getContext().getPreSet(joinNode.getId());
