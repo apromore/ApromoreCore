@@ -102,7 +102,7 @@ import org.apromore.model.WriteEditSessionInputMsgType;
 import org.apromore.model.WriteEditSessionOutputMsgType;
 import org.apromore.model.WriteUserInputMsgType;
 import org.apromore.model.WriteUserOutputMsgType;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.ws.client.core.WebServiceTemplate;
@@ -424,7 +424,7 @@ public class ManagerServiceClient implements ManagerService {
     @Override
     @SuppressWarnings("unchecked")
     public ExportFormatResultType exportFormat(final int processId, final String processName, final String versionName, final String nativeType,
-            final String annotationName, final Boolean withAnnotations, final String owner, final Set<RequestPropertyType<?>> canoniserProperties) throws Exception {
+            final String annotationName, final Boolean withAnnotations, final String owner, final Set<RequestParameterType<?>> canoniserProperties) throws Exception {
         LOGGER.debug("Preparing ExportFormatRequest.....");
 
         ExportFormatInputMsgType msg = new ExportFormatInputMsgType();
@@ -436,7 +436,7 @@ public class ManagerServiceClient implements ManagerService {
         msg.setProcessName(processName);
         msg.setOwner(owner);
 
-        msg.setCanoniserProperties(PluginHelper.convertFromPluginProperties(canoniserProperties));
+        msg.setCanoniserParameters(PluginHelper.convertFromPluginParameters(canoniserProperties));
 
         JAXBElement<ExportFormatInputMsgType> request = WS_CLIENT_FACTORY.createExportFormatRequest(msg);
         JAXBElement<ExportFormatOutputMsgType> response = (JAXBElement<ExportFormatOutputMsgType>) webServiceTemplate.marshalSendAndReceive(request);
@@ -456,7 +456,7 @@ public class ManagerServiceClient implements ManagerService {
     @SuppressWarnings("unchecked")
     public ImportProcessResultType importProcess(final String username, final String nativeType, final String processName, final String versionName,
             final InputStream xmlProcess, final String domain, final String documentation, final String created, final String lastUpdate,
-            final Set<RequestPropertyType<?>> canoniserProperties) throws IOException, Exception {
+            final Set<RequestParameterType<?>> canoniserProperties) throws IOException, Exception {
         LOGGER.debug("Preparing ImportProcessRequest.....");
 
         EditSessionType editSession = new EditSessionType();
@@ -469,7 +469,7 @@ public class ManagerServiceClient implements ManagerService {
         editSession.setLastUpdate(lastUpdate);
 
         ImportProcessInputMsgType msg = new ImportProcessInputMsgType();
-        msg.setCanoniserProperties(PluginHelper.convertFromPluginProperties(canoniserProperties));
+        msg.setCanoniserParameters(PluginHelper.convertFromPluginParameters(canoniserProperties));
         msg.setProcessDescription(new DataHandler(new ByteArrayDataSource(xmlProcess, "text/xml")));
         msg.setEditSession(editSession);
 
@@ -811,7 +811,7 @@ public class ManagerServiceClient implements ManagerService {
     }
 
     @Override
-    public PluginMessages deployProcess(final String branchName, final String processName, final String versionName, final String nativeType, final String pluginName, final String pluginVersion, final Set<RequestPropertyType<?>> deploymentProperties) throws Exception {
+    public PluginMessages deployProcess(final String branchName, final String processName, final String versionName, final String nativeType, final String pluginName, final String pluginVersion, final Set<RequestParameterType<?>> deploymentProperties) throws Exception {
         LOGGER.debug("Preparing deployProcess ...");
 
         DeployProcessInputMsgType msg = new DeployProcessInputMsgType();
@@ -823,7 +823,7 @@ public class ManagerServiceClient implements ManagerService {
         msg.setDeploymentPluginName(pluginName);
         msg.setDeploymentPluginVersion(pluginVersion);
 
-        msg.setDeploymentProperties(PluginHelper.convertFromPluginProperties(deploymentProperties));
+        msg.setDeploymentParameters(PluginHelper.convertFromPluginParameters(deploymentProperties));
 
         JAXBElement<DeployProcessInputMsgType> request = WS_CLIENT_FACTORY.createDeployProcessRequest(msg);
         @SuppressWarnings("unchecked")

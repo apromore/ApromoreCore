@@ -35,7 +35,7 @@ import org.apromore.manager.client.helper.PluginHelper;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.FormatService;
 import org.apromore.service.ProcessService;
@@ -153,7 +153,7 @@ public class ProcessServiceImpl implements ProcessService {
     @Override
     @Transactional(readOnly = true)
     public ExportFormatResultType exportProcess(final String name, final Integer processId, final String version, final String format,
-            final String annName, final boolean withAnn, Set<RequestPropertyType<?>> canoniserProperties) throws ExportFormatException {        
+            final String annName, final boolean withAnn, Set<RequestParameterType<?>> canoniserProperties) throws ExportFormatException {        
         try {
             CPF cpf = rSrv.getCurrentProcessModel(name, version, false);
             

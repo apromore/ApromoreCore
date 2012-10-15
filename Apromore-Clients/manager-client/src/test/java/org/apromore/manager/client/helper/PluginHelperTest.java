@@ -18,40 +18,40 @@ import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 
 import org.apromore.model.PluginMessages;
-import org.apromore.model.PluginProperties;
-import org.apromore.model.PluginProperty;
+import org.apromore.model.PluginParameter;
+import org.apromore.model.PluginParameters;
 import org.apromore.plugin.Plugin;
 import org.apromore.plugin.message.PluginMessage;
-import org.apromore.plugin.property.PluginPropertyType;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.PluginParameterType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.junit.Test;
 
 public class PluginHelperTest {
 
     @Test
     public void testConvertToRequestProperties() throws IOException {
-        PluginProperties xmlProperties = new PluginProperties();
+        PluginParameters xmlProperties = new PluginParameters();
 
-        PluginProperty prop1 = new PluginProperty();
+        PluginParameter prop1 = new PluginParameter();
         prop1.setClazz(Integer.class.getName());
         prop1.setId("test");
         prop1.setValue(new Integer(2));
 
-        PluginProperty prop2 = new PluginProperty();
+        PluginParameter prop2 = new PluginParameter();
         prop2.setClazz(InputStream.class.getName());
         prop2.setId("test2");
         byte[] byteInput = new byte[20];
 
         prop2.setValue(new DataHandler(new ByteArrayDataSource(new ByteArrayInputStream(byteInput), "application/octet-stream")));
-        xmlProperties.getProperty().add(prop1);
-        xmlProperties.getProperty().add(prop2);
+        xmlProperties.getParameter().add(prop1);
+        xmlProperties.getParameter().add(prop2);
 
-        Set<RequestPropertyType<?>> requestProperties = PluginHelper.convertToRequestProperties(xmlProperties);
+        Set<RequestParameterType<?>> requestProperties = PluginHelper.convertToRequestProperties(xmlProperties);
         assertNotNull(requestProperties);
         assertTrue(requestProperties.size() == 2);
 
-        RequestPropertyType<?> rProp1 = getPropertyById("test", requestProperties);
-        RequestPropertyType<?> rProp2 = getPropertyById("test2", requestProperties);
+        RequestParameterType<?> rProp1 = getPropertyById("test", requestProperties);
+        RequestParameterType<?> rProp2 = getPropertyById("test2", requestProperties);
 
         assertNotNull(rProp1);
         assertEquals(new Integer(2), rProp1.getValue());
@@ -59,8 +59,8 @@ public class PluginHelperTest {
         assertTrue(rProp2.getValue() instanceof InputStream);
     }
 
-    private static RequestPropertyType<?> getPropertyById(final String id, final Set<RequestPropertyType<?>> requestProperties) {
-        for (RequestPropertyType<?> prop: requestProperties) {
+    private static RequestParameterType<?> getPropertyById(final String id, final Set<RequestParameterType<?>> requestProperties) {
+        for (RequestParameterType<?> prop: requestProperties) {
             if (id.equals(prop.getId())) {
                 return prop;
             }
@@ -71,16 +71,16 @@ public class PluginHelperTest {
 
     @Test
     public void testConvertFromPluginProperties() {
-        HashSet<PluginPropertyType<?>> hashSet = new HashSet<PluginPropertyType<?>>();
-        hashSet.add(new PluginPropertyType<InputStream>("test", "testName", InputStream.class, "testDescr", true));
-        hashSet.add(new PluginPropertyType<String>("test2", "testName", String.class, "testDescr", false));
-        PluginProperties pluginProperties = PluginHelper.convertFromPluginProperties(hashSet);
+        HashSet<PluginParameterType<?>> hashSet = new HashSet<PluginParameterType<?>>();
+        hashSet.add(new PluginParameterType<InputStream>("test", "testName", InputStream.class, "testDescr", true));
+        hashSet.add(new PluginParameterType<String>("test2", "testName", String.class, "testDescr", false));
+        PluginParameters pluginProperties = PluginHelper.convertFromPluginParameters(hashSet);
         assertNotNull(pluginProperties);
 
-        assertEquals(2, pluginProperties.getProperty().size());
+        assertEquals(2, pluginProperties.getParameter().size());
 
-        PluginProperty prop1 = getPropertyById("test", pluginProperties.getProperty());
-        PluginProperty prop2 = getPropertyById("test2", pluginProperties.getProperty());
+        PluginParameter prop1 = getPropertyById("test", pluginProperties.getParameter());
+        PluginParameter prop2 = getPropertyById("test2", pluginProperties.getParameter());
 
         assertNotNull(prop1);
         assertEquals(InputStream.class.getName(), prop1.getClazz());
@@ -94,8 +94,8 @@ public class PluginHelperTest {
         assertEquals(String.class.getName(), prop2.getClazz());
     }
 
-    private static PluginProperty getPropertyById(final String id, final List<PluginProperty> propertyList) {
-        for (PluginProperty prop: propertyList) {
+    private static PluginParameter getPropertyById(final String id, final List<PluginParameter> propertyList) {
+        for (PluginParameter prop: propertyList) {
             if (id.equals(prop.getId())) {
                 return prop;
             }
@@ -140,6 +140,11 @@ public class PluginHelperTest {
 
             @Override
             public String getAuthor() {
+                return "";
+            }
+
+            @Override
+            public String getEMail() {
                 return "";
             }
         }));

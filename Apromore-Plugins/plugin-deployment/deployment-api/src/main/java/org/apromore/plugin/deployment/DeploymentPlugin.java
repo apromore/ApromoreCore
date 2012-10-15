@@ -15,7 +15,7 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
-import org.apromore.plugin.PropertyAwarePlugin;
+import org.apromore.plugin.ParameterAwarePlugin;
 import org.apromore.plugin.deployment.exception.DeploymentException;
 import org.apromore.plugin.exception.PluginPropertyNotFoundException;
 
@@ -25,7 +25,7 @@ import org.apromore.plugin.exception.PluginPropertyNotFoundException;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt</a>
  *
  */
-public interface DeploymentPlugin extends PropertyAwarePlugin {
+public interface DeploymentPlugin extends ParameterAwarePlugin {
 
     /**
      * Native type the Deployment Plugin uses

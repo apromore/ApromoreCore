@@ -20,18 +20,20 @@ import java.io.InputStream;
 
 /**
  * <p>
- * Defines a single Property of a Plugin. Contains both meta data (name, description, ..) and the value of the Property. Subclasses MUST provide a
- * valid {@link Object#equals(Object)} and {@link Object#hashCode()} implementation, see {@link PluginPropertyType} for an example.
+ * Defines a single parameter of a Plugin. Contains both meta data (name, description, ..) and the value of the parameter. Subclasses MUST provide a
+ * valid {@link Object#equals(Object)} and {@link Object#hashCode()} implementation, see {@link PluginParameterType} for an example.
  *
  * <p>
- * Please not you should only use basic Java classes as properties, as properties often have to be converted to XML during Web Service invocation.
+ * Please not you should only use basic Java classes as properties, as parameters often have to be converted to XML during Web Service invocation.
  * {@link InputStream} is OK to use and will be shown as a file upload!
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
- * @param <T> type of Property
+ * @param <T> type of parameter
  */
-public interface PropertyType<T> {
+public interface ParameterType<T> {
+
+    final static String DEFAULT_CATEGORY = "org.apromore.plugin.property.default";
 
     /**
      * Identifier of the PropertyType. Two properties with the same identifier are "equal"!
@@ -44,6 +46,11 @@ public interface PropertyType<T> {
      * @return the human readable name of this property (may be presented in UI)
      */
     String getName();
+
+    /**
+     * @return the category of this property
+     */
+    String getCategory();
 
     /**
      * @return the class of the properties value

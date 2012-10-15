@@ -13,7 +13,7 @@ import org.apromore.plugin.exception.PluginException;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.apromore.plugin.impl.PluginRequestImpl;
 import org.apromore.plugin.message.PluginMessage;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.DeploymentService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -49,7 +49,7 @@ public class DeploymentServiceImpl implements DeploymentService {
      */
     @Override
     public List<PluginMessage> deployProcess(final String nativeType, final CanonicalProcessType cpf, final AnnotationsType anf,
-            final Set<RequestPropertyType<?>> deploymentProperties) throws DeploymentException {
+            final Set<RequestParameterType<?>> deploymentProperties) throws DeploymentException {
         try {
             DeploymentPlugin deploymentPlugin = deploymentProvider.findByNativeType(nativeType);
             return deployProcess(cpf, anf, deploymentProperties, deploymentPlugin);
@@ -68,7 +68,7 @@ public class DeploymentServiceImpl implements DeploymentService {
      */
     @Override
     public List<PluginMessage> deployProcess(final String nativeType, final String pluginName, final String pluginVersion,
-            final CanonicalProcessType cpf, final AnnotationsType anf, final Set<RequestPropertyType<?>> deploymentProperties)
+            final CanonicalProcessType cpf, final AnnotationsType anf, final Set<RequestParameterType<?>> deploymentProperties)
             throws DeploymentException {
         try {
             DeploymentPlugin deploymentPlugin = deploymentProvider.findByNativeTypeAndNameAndVersion(nativeType, pluginName, pluginVersion);
@@ -81,7 +81,7 @@ public class DeploymentServiceImpl implements DeploymentService {
     }
 
     private static List<PluginMessage> deployProcess(final CanonicalProcessType cpf, final AnnotationsType anf,
-            final Set<RequestPropertyType<?>> deploymentProperties, final DeploymentPlugin deploymentPlugin) throws DeploymentException,
+            final Set<RequestParameterType<?>> deploymentProperties, final DeploymentPlugin deploymentPlugin) throws DeploymentException,
             PluginException {
         PluginRequestImpl pluginRequest = new PluginRequestImpl();
         pluginRequest.addRequestProperty(deploymentProperties);

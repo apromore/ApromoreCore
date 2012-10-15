@@ -26,7 +26,7 @@ import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.plugin.impl.DefaultPropertyAwarePlugin;
+import org.apromore.plugin.impl.DefaultParameterAwarePlugin;
 import org.xml.sax.SAXException;
 
 /**
@@ -36,7 +36,7 @@ import org.xml.sax.SAXException;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public abstract class DefaultAbstractCanoniser extends DefaultPropertyAwarePlugin implements Canoniser {
+public abstract class DefaultAbstractCanoniser extends DefaultParameterAwarePlugin implements Canoniser {
 
     /*
      * (non-Javadoc)

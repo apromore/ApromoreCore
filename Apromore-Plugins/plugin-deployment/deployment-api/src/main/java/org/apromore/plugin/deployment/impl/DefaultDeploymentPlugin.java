@@ -12,7 +12,7 @@
 package org.apromore.plugin.deployment.impl;
 
 import org.apromore.plugin.deployment.DeploymentPlugin;
-import org.apromore.plugin.impl.DefaultPropertyAwarePlugin;
+import org.apromore.plugin.impl.DefaultParameterAwarePlugin;
 
 /**
  * Default implementation of the Deployment Plugin.
@@ -20,7 +20,7 @@ import org.apromore.plugin.impl.DefaultPropertyAwarePlugin;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt</a>
  *
  */
-public abstract class DefaultDeploymentPlugin extends DefaultPropertyAwarePlugin implements DeploymentPlugin {
+public abstract class DefaultDeploymentPlugin extends DefaultParameterAwarePlugin implements DeploymentPlugin {
 
     /*
      * (non-Javadoc)

@@ -56,6 +56,7 @@ public class ReadCanoniserInfoEndpointTest {
         expect(mockCanoniser.getAuthor()).andReturn("Scott");
         expect(mockCanoniser.getDescription()).andReturn("Beam me up");
         expect(mockCanoniser.getType()).andReturn("Starship");
+        expect(mockCanoniser.getEMail()).andReturn("scott@mail.com");
         replay(mockCanoniser);
 
         Set<Canoniser> canoniserSet = new HashSet<Canoniser>();
@@ -77,6 +78,7 @@ public class ReadCanoniserInfoEndpointTest {
         Assert.assertEquals("Plugin author does not match", info.getAuthor(), "Scott");
         Assert.assertEquals("Plugin descr does not match", info.getDescription(), "Beam me up");
         Assert.assertEquals("Plugin type does not match", info.getType(), "Starship");
+        Assert.assertEquals("Plugin type does not match", info.getEmail(), "scott@mail.com");
 
         verify(mockCanoniser);
     }

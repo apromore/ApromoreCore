@@ -21,15 +21,15 @@ import org.apache.commons.lang.builder.HashCodeBuilder;
 import org.apache.commons.lang.builder.ToStringBuilder;
 
 /**
- * PropertyType used by a Plugin defining its properties (e.g. parameters). It takes care of allowing values of specified Class only. Also two
- * Properties are considered 'equal' if their 'id' is the same.
+ * ParameterType used by a Plugin defining its parameters. It takes care of allowing values of specified Class only. Also two parameters are
+ * considered 'equal' if their 'id' is the same.
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  * @param <T>
- *            type of Property
+ *            type of ParameterType
  */
-public class PluginPropertyType<T> implements PropertyType<T> {
+public class PluginParameterType<T> implements ParameterType<T> {
 
     /**
      * ID of the Property
@@ -40,6 +40,11 @@ public class PluginPropertyType<T> implements PropertyType<T> {
      * Short name of the Property
      */
     private final String name;
+
+    /**
+     * Category of the Property
+     */
+    private final String category;
 
     /**
      * Type of the Property
@@ -76,7 +81,7 @@ public class PluginPropertyType<T> implements PropertyType<T> {
      *            of type T
      */
     @SuppressWarnings("unchecked")
-    public PluginPropertyType(final String id, final String name, final String description, final Boolean isMandatory, final T defaultValue) {
+    public PluginParameterType(final String id, final String name, final String description, final Boolean isMandatory, final T defaultValue) {
         super();
         this.id = id;
         this.name = name;
@@ -86,8 +91,9 @@ public class PluginPropertyType<T> implements PropertyType<T> {
             this.valueType = (Class<T>) defaultValue.getClass();
             setValue(defaultValue);
         } else {
-            throw new IllegalArgumentException("Tried to initalize Property " + id + " with NULL default value!");
+            throw new IllegalArgumentException("Tried to initalize parameter " + id + " with NULL default value!");
         }
+        this.category = ParameterType.DEFAULT_CATEGORY;
     }
 
     /**
@@ -104,12 +110,70 @@ public class PluginPropertyType<T> implements PropertyType<T> {
      * @param isMandatory
      *            true if Plugin requires this property to work properly
      */
-    public PluginPropertyType(final String id, final String name, final Class<T> valueType, final String description, final Boolean isMandatory) {
+    public PluginParameterType(final String id, final String name, final Class<T> valueType, final String description, final Boolean isMandatory) {
         this.id = id;
         this.name = name;
         this.description = description;
         this.isMandatory = isMandatory;
         this.valueType = valueType;
+        this.category = ParameterType.DEFAULT_CATEGORY;
+    }
+
+    /**
+     * Create a new Property with given attributes and specify a default value.
+     *
+     * @param id
+     *            of the parameter
+     * @param name
+     *            of the parameter
+     * @param description
+     *            of the parameter
+     * @param isMandatory
+     *            true if Plugin requires this parameter to work properly
+     * @param category of the parameter
+     * @param defaultValue
+     *            of type T
+     */
+    @SuppressWarnings("unchecked")
+    public PluginParameterType(final String id, final String name, final String description, final Boolean isMandatory, final String category, final T defaultValue) {
+        super();
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.isMandatory = isMandatory;
+        if (defaultValue != null) {
+            this.valueType = (Class<T>) defaultValue.getClass();
+            setValue(defaultValue);
+        } else {
+            throw new IllegalArgumentException("Tried to initalize parameter " + id + " with NULL default value!");
+        }
+        this.category = category;
+    }
+
+    /**
+     * Create a new Property with given attributes without specifying a default value. The value will be initialised with NULL.
+     *
+     * @param id
+     *            of the parameter
+     * @param name
+     *            of the parameter
+     * @param valueType
+     *            of the parameter
+     * @param description
+     *            of the parameter
+     * @param category
+     *            of the parameter
+     * @param isMandatory
+     *            true if Plugin requires this parameter to work properly
+     */
+    public PluginParameterType(final String id, final String name, final Class<T> valueType, final String description, final Boolean isMandatory,
+            final String category) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
+        this.isMandatory = isMandatory;
+        this.valueType = valueType;
+        this.category = category;
     }
 
     /*
@@ -154,6 +218,16 @@ public class PluginPropertyType<T> implements PropertyType<T> {
         } else {
             return this.isMandatory;
         }
+    }
+
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.apromore.plugin.property.PropertyType#getCategory()
+     */
+    @Override
+    public String getCategory() {
+        return this.category;
     }
 
     /*
@@ -222,7 +296,7 @@ public class PluginPropertyType<T> implements PropertyType<T> {
         if (obj.getClass() != getClass()) {
             return false;
         }
-        PluginPropertyType<?> prop = (PluginPropertyType<?>) obj;
+        PluginParameterType<?> prop = (PluginParameterType<?>) obj;
         // We just compare Name and Version, a Plugin is equals to another is Name and Version match
         return new EqualsBuilder().appendSuper(super.equals(obj)).append(getId(), prop.getId()).isEquals();
     }

@@ -13,17 +13,17 @@ import org.junit.Test;
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public class DefaultPropertyUnitTest {
+public class DefaultParameterUnitTest {
 
-    private PluginPropertyType<String> defaultProperty;
-    private PluginPropertyType<Integer> defaultProperty2;
-    private PluginPropertyType<InputStream> defaultProperty3;
+    private PluginParameterType<String> defaultProperty;
+    private PluginParameterType<Integer> defaultProperty2;
+    private PluginParameterType<InputStream> defaultProperty3;
 
     @Before
     public void setUp() {
-        defaultProperty = new PluginPropertyType<String>("t1", "test",String.class, "description", true);
-        defaultProperty2 = new PluginPropertyType<Integer>("t2", "test2","description2", false, 2);
-        defaultProperty3 = new PluginPropertyType<InputStream>("t3", "test3", InputStream.class, "description3", false);
+        defaultProperty = new PluginParameterType<String>("t1", "test",String.class, "description", true);
+        defaultProperty2 = new PluginParameterType<Integer>("t2", "test2","description2", false, 2);
+        defaultProperty3 = new PluginParameterType<InputStream>("t3", "test3", InputStream.class, "description3", false);
     }
 
     @Test
@@ -59,6 +59,14 @@ public class DefaultPropertyUnitTest {
         assertEquals(String.class, defaultProperty.getValueType());
         assertEquals(Integer.class, defaultProperty2.getValueType());
         assertEquals(InputStream.class, defaultProperty3.getValueType());
+    }
+
+
+    @Test
+    public void testGetCategory() {
+        assertEquals(ParameterType.DEFAULT_CATEGORY, defaultProperty.getCategory());
+        assertEquals(ParameterType.DEFAULT_CATEGORY, defaultProperty2.getCategory());
+        assertEquals(ParameterType.DEFAULT_CATEGORY, defaultProperty3.getCategory());
     }
 
 }

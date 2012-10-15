@@ -60,6 +60,11 @@ public class DefaultPluginUnitTest {
     }
 
     @Test
+    public void testGetEMail() {
+        assertEquals("smith@mail.com", plugin.getEMail());
+    }
+
+    @Test
     public void testEquals() {
         DefaultPluginMock plugin2 = new DefaultPluginMock();
         assertEquals(plugin, plugin2);

@@ -26,8 +26,8 @@ import org.apromore.plugin.deployment.exception.DeploymentException;
 import org.apromore.plugin.deployment.impl.DefaultDeploymentPlugin;
 import org.apromore.plugin.exception.PluginPropertyNotFoundException;
 import org.apromore.plugin.impl.PluginResultImpl;
-import org.apromore.plugin.property.PluginPropertyType;
-import org.apromore.plugin.property.PropertyType;
+import org.apromore.plugin.property.PluginParameterType;
+import org.apromore.plugin.property.ParameterType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -52,23 +52,23 @@ public class YAWLDeploymentPlugin extends DefaultDeploymentPlugin {
     private static final String YAWL_ENGINE_URL_PROPERTY_NAME = "YAWL Engine URL";
     private static final String AUTOLAUNCH_PROPERTY_NAME = "Launch case automatically? (Not yet available)";
 
-    private final PluginPropertyType<String> yawlEngineUrl;
-    private final PluginPropertyType<String> yawlEngineUsername;
-    private final PluginPropertyType<String> yawlEnginePassword;
-    private final PluginPropertyType<Boolean> autoLaunch;
+    private final PluginParameterType<String> yawlEngineUrl;
+    private final PluginParameterType<String> yawlEngineUsername;
+    private final PluginParameterType<String> yawlEnginePassword;
+    private final PluginParameterType<Boolean> autoLaunch;
 
     private YAWLEngineClientFactory engineClientFactory;
 
     public YAWLDeploymentPlugin() {
         super();
-        yawlEngineUrl = new PluginPropertyType<String>("yawlEngineUrl", YAWL_ENGINE_URL_PROPERTY_NAME, "", true, DEFAULT_YAWL_ENGINE_URL);
-        registerProperty(yawlEngineUrl);
-        yawlEngineUsername = new PluginPropertyType<String>("yawlEngineUsername", YAWL_ENGINE_USERNAME_PROPERTY_NAME, "", true, ENGINE_USERNAME);
-        registerProperty(yawlEngineUsername);
-        yawlEnginePassword = new PluginPropertyType<String>("yawlEnginePassword", YAWL_ENGINE_PASSWORD_PROPERTY_NAME, "", true, ENGINE_PASSWORD);
-        registerProperty(yawlEnginePassword);
-        autoLaunch = new PluginPropertyType<Boolean>("autoLaunch", AUTOLAUNCH_PROPERTY_NAME, "", false, false);
-        registerProperty(autoLaunch);
+        yawlEngineUrl = new PluginParameterType<String>("yawlEngineUrl", YAWL_ENGINE_URL_PROPERTY_NAME, "", true, DEFAULT_YAWL_ENGINE_URL);
+        registerParameter(yawlEngineUrl);
+        yawlEngineUsername = new PluginParameterType<String>("yawlEngineUsername", YAWL_ENGINE_USERNAME_PROPERTY_NAME, "", true, ENGINE_USERNAME);
+        registerParameter(yawlEngineUsername);
+        yawlEnginePassword = new PluginParameterType<String>("yawlEnginePassword", YAWL_ENGINE_PASSWORD_PROPERTY_NAME, "", true, ENGINE_PASSWORD);
+        registerParameter(yawlEnginePassword);
+        autoLaunch = new PluginParameterType<Boolean>("autoLaunch", AUTOLAUNCH_PROPERTY_NAME, "", false, false);
+        registerParameter(autoLaunch);
         engineClientFactory = new YAWLEngineClientFactory();
     }
 
@@ -90,10 +90,10 @@ public class YAWLDeploymentPlugin extends DefaultDeploymentPlugin {
     @Override
     public PluginResult deployProcess(final CanonicalProcessType canonicalProcess, final AnnotationsType annotation, final PluginRequest request)
             throws DeploymentException, PluginPropertyNotFoundException {
-        PropertyType<String> userEngineUrl = request.getRequestProperty(yawlEngineUrl);
-        PropertyType<String> userUsername = request.getRequestProperty(yawlEngineUsername);
-        PropertyType<String> userPassword = request.getRequestProperty(yawlEnginePassword);
-        PropertyType<Boolean> doAutoLaunch = request.getRequestProperty(autoLaunch);
+        ParameterType<String> userEngineUrl = request.getRequestParameter(yawlEngineUrl);
+        ParameterType<String> userUsername = request.getRequestParameter(yawlEngineUsername);
+        ParameterType<String> userPassword = request.getRequestParameter(yawlEnginePassword);
+        ParameterType<Boolean> doAutoLaunch = request.getRequestParameter(autoLaunch);
 
         checkProperties(userEngineUrl);
 
@@ -173,7 +173,7 @@ public class YAWLDeploymentPlugin extends DefaultDeploymentPlugin {
      * @return
      * @throws DeploymentException
      */
-    private boolean checkProperties(final PropertyType<String> userEngineUrl) throws DeploymentException {
+    private boolean checkProperties(final ParameterType<String> userEngineUrl) throws DeploymentException {
         if (!userEngineUrl.hasValue()) {
             throw new DeploymentException("Invalid parameter " + yawlEngineUrl.getName());
         }

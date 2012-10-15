@@ -18,36 +18,36 @@ package org.apromore.plugin;
 
 import java.util.Set;
 
-import org.apromore.plugin.property.PropertyType;
+import org.apromore.plugin.property.ParameterType;
 
 /**
- * A PropertyAwarePlugin defines a Set of properties that may or must be provided by the caller for proper operation of the Plugin.
+ * A {@link ParameterAwarePlugin} defines a Set of parameters that may or must be provided by the caller for proper operation of the {@link Plugin}.
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *
  */
-public interface PropertyAwarePlugin extends Plugin {
+public interface ParameterAwarePlugin extends Plugin {
 
     /**
-     * Returns the Set of all available properties for this Plugin.
+     * Returns the Set of all available parameters for this {@link Plugin}.
      *
-     * @return Set of PropertyType that contains both mandatory and optional properties.
+     * @return Set of {@link ParameterType} that contains both mandatory and optional parameters.
      */
-    Set<PropertyType<?>> getAvailableProperties();
+    Set<ParameterType<?>> getAvailableParameters();
 
     /**
-     * Returns the Set of all required properties for this Plugin.
+     * Returns the Set of all required parameters for this {@link Plugin}.
      *
-     * @return Set of PropertyType that are mandatory
+     * @return Set of {@link ParameterType} that are mandatory
      */
-    Set<PropertyType<?>> getMandatoryProperties();
+    Set<ParameterType<?>> getMandatoryParameters();
 
     /**
-     * Returns the Set of all optional properties for this Plugin. That should be the result of {@link #getAvailableProperties()} minus the result of
-     * {@link #getMandatoryProperties()}.
+     * Returns the Set of all optional parameters for this {@link Plugin}. That should be the result of {@link #getAvailableParameters()} minus the result of
+     * {@link #getMandatoryParameters()}.
      *
-     * @return Set of PropertyType that are optional
+     * @return Set of {@link ParameterType} that are optional
      */
-    Set<PropertyType<?>> getOptionalProperties();
+    Set<ParameterType<?>> getOptionalParameters();
 
 }

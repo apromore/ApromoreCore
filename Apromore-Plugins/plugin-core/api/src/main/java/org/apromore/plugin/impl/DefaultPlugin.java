@@ -123,6 +123,14 @@ public abstract class DefaultPlugin implements Plugin {
         return getPluginConfiguration().getProperty("plugin.author", DEFAULT_VALUE);
     }
 
+    /* (non-Javadoc)
+     * @see org.apromore.plugin.Plugin#getEMail()
+     */
+    @Override
+    public String getEMail() {
+        return getPluginConfiguration().getProperty("plugin.email", DEFAULT_VALUE);
+    }
+
     /**
      * Returns the configuration option with the specified name. If no configuration option is found, then NULL is returned.
      *

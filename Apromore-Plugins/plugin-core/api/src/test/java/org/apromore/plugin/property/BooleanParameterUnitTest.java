@@ -6,15 +6,15 @@ import static org.junit.Assert.assertTrue;
 
 import org.junit.Test;
 
-public class BooleanPropertyUnitTest {
+public class BooleanParameterUnitTest {
 
     @Test
     public void test() {
-        PluginPropertyType<Boolean> prop = new PluginPropertyType<Boolean>("t1", "test", "test", false, false);
+        PluginParameterType<Boolean> prop = new PluginParameterType<Boolean>("t1", "test", "test", false, false);
         assertFalse(prop.getValue());
         assertFalse(prop.getValue());
 
-        PluginPropertyType<Boolean> prop3 = new PluginPropertyType<Boolean>("t1", "test", Boolean.class, "test", false);
+        PluginParameterType<Boolean> prop3 = new PluginParameterType<Boolean>("t1", "test", Boolean.class, "test", false);
         prop3.setValue(new Boolean(true));
         assertTrue(prop3.getValue());
         assertEquals(Boolean.class, prop3.getValueType());

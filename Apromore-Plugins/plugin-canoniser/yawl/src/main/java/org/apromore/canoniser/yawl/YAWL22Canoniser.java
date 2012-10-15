@@ -25,6 +25,7 @@ import javax.xml.transform.sax.SAXSource;
 
 import org.apache.commons.io.IOUtils;
 import org.apromore.anf.AnnotationsType;
+import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.DefaultAbstractCanoniser;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
@@ -39,8 +40,8 @@ import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.exception.PluginPropertyNotFoundException;
 import org.apromore.plugin.impl.PluginResultImpl;
-import org.apromore.plugin.property.PluginPropertyType;
-import org.apromore.plugin.property.PropertyType;
+import org.apromore.plugin.property.ParameterType;
+import org.apromore.plugin.property.PluginParameterType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -68,16 +69,16 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
 
     private static final String YAWL_ORGDATA_URI = "http://www.yawlfoundation.org/yawlschema/orgdata";
 
-    private final PluginPropertyType<InputStream> resourceDataInput;
+    private final PluginParameterType<InputStream> resourceDataInput;
 
     /**
      * Default Constructor of YAWL Canoniser
      */
     public YAWL22Canoniser() {
         super();
-        resourceDataInput = new PluginPropertyType<InputStream>("readOrgData", "YAWL Organisational Data", InputStream.class,
-                "File (.ybkp) containing the organisational data used during import of the YAWL workflow.", false);
-        registerProperty(resourceDataInput);
+        resourceDataInput = new PluginParameterType<InputStream>("readOrgData", "YAWL Organisational Data", InputStream.class,
+                "File (.ybkp) containing the organisational data used during import of the YAWL workflow.", false, Canoniser.CANONISE_PARAMETER);
+        registerParameter(resourceDataInput);
     }
 
     /*
@@ -97,7 +98,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
             PluginResultImpl canoniserResult = newPluginResult();
             final YAWL2Canonical yawl2canonical = new YAWL2CanonicalImpl(new MessageManagerImpl(canoniserResult));
 
-            PropertyType<InputStream> orgDataProperty = request.getRequestProperty(resourceDataInput);
+            ParameterType<InputStream> orgDataProperty = request.getRequestParameter(resourceDataInput);
 
             if (orgDataProperty.hasValue()) {
                 LOGGER.debug("Using provided organisational data in YAWL Canoniser");
