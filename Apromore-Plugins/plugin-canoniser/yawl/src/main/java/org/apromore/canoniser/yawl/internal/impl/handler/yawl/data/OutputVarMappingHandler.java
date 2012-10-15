@@ -59,7 +59,9 @@ public class OutputVarMappingHandler extends BaseVarMappingHandler {
             task.getOutputExpr().add(convertXQuery(xQuery, netVariable));
 
         } else {
-            throw new CanoniserException("Could not find Net variable " + getObject().getMapsTo() + " for output mapping in Task " + task.getName());
+            // Referred Net Object is not converted, either the YAWL model is incomplete or there is a conversion issue -> Issue warning message
+            LOGGER.warn("Could not find Net variable {} for output mapping in Task {}", getObject().getMapsTo(), task.getName());
+            getContext().getMessageInterface().addMessage("Could not find Net variable {0} for output mapping in Task {1}", getObject().getMapsTo(), task.getName());
         }
     }
 

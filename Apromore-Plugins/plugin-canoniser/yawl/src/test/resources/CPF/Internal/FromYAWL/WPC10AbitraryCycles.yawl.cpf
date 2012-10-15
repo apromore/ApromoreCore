@@ -22,8 +22,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id5f6296f6-3f52-4e20-bfa2-d3cbe2894ce2" objectId="D-N-Net-cond" type="output" optional="false" consumed="true"/>
-            <objectRef id="f646b56e-d50c-4a2f-b0c8-8beb74646b35" objectId="D-N-Net-cond" type="input" optional="false" consumed="true"/>
+            <objectRef id="fcf028a3-c23e-480b-8023-1d6ea1abeda2" objectId="D-N-Net-cond" type="output" optional="false" consumed="true"/>
+            <objectRef id="ff9da267-dd24-48c9-ba6a-4c0d47f89e9c" objectId="D-N-Net-cond" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>cond = {cpf:getObjectValue('cond')/text()}</expression>
@@ -34,7 +34,7 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="ide40f5864-536c-4465-9446-87c70620a028"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="d26c5164-cc2c-4523-a0fe-eaa33bf93486"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-B" originalID="B">
             <name>B</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -55,7 +55,7 @@
             </attribute>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="ida844c26d-3c0f-43d6-a87b-1fd2992c544b"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="idcf34109d-652c-477c-ade6-c824d110a367"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-C" originalID="C">
             <name>C</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -76,7 +76,7 @@
             </attribute>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="f8e6c3e6-b469-4310-84f9-b1571d71cd81"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id9432db34-272d-46d3-800b-176e35aee64c"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-D" originalID="D">
             <name>D</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -97,7 +97,7 @@
             </attribute>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="f2f003a0-2b34-4f3b-808d-459ea9f9651a"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id389c556c-056b-47ad-b516-65bb8c58ea28"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-E" originalID="E">
             <name>E</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -116,8 +116,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="d60faf26-a331-4b9c-97a0-1a302055f041" objectId="D-N-Net-cond" type="output" optional="false" consumed="true"/>
-            <objectRef id="idd3e78c57-1239-49db-a075-995ecee025c7" objectId="D-N-Net-cond" type="input" optional="false" consumed="true"/>
+            <objectRef id="df80d24e-bb34-4278-baaa-fadce2f8be77" objectId="D-N-Net-cond" type="output" optional="false" consumed="true"/>
+            <objectRef id="e814ecd6-669d-41cf-9b84-be6a0b49c1d0" objectId="D-N-Net-cond" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>cond = {cpf:getObjectValue('cond')/text()}</expression>
@@ -131,18 +131,18 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="iddc3fb350-5cec-4f6e-94e6-741f1c4a4de3" default="true" sourceId="ide40f5864-536c-4465-9446-87c70620a028" targetId="C-A"/>
-        <Edge id="id57caf721-dc66-4547-9e1f-d6f6c8c307bd" default="true" sourceId="C-InputCondition" targetId="ide40f5864-536c-4465-9446-87c70620a028"/>
-        <Edge id="id4ee7a6ec-a747-4aa9-83f3-c09f28f1b409" default="true" sourceId="ida844c26d-3c0f-43d6-a87b-1fd2992c544b" targetId="C-B"/>
-        <Edge id="id1da43037-9c34-45ae-86da-6f2ef1e66ba9" default="true" sourceId="C-A" targetId="ida844c26d-3c0f-43d6-a87b-1fd2992c544b"/>
+        <Edge id="idd62e1930-0b5d-4f98-82d7-159542141a52" default="true" sourceId="d26c5164-cc2c-4523-a0fe-eaa33bf93486" targetId="C-A"/>
+        <Edge id="id8dd74283-f020-4267-9f7d-5b6bdf3564be" default="true" sourceId="C-InputCondition" targetId="d26c5164-cc2c-4523-a0fe-eaa33bf93486"/>
+        <Edge id="id7e1c7a82-d403-45e3-aead-7932cd6b992e" default="true" sourceId="idcf34109d-652c-477c-ade6-c824d110a367" targetId="C-B"/>
+        <Edge id="id8f70f5f8-9e71-4b85-97fa-530c28e590f1" default="true" sourceId="C-A" targetId="idcf34109d-652c-477c-ade6-c824d110a367"/>
         <Edge id="C-B-C" default="true" sourceId="C-B" targetId="C-C"/>
-        <Edge id="idd7030704-3d23-4921-b40d-2cd44e998c49" default="true" sourceId="C-C" targetId="f8e6c3e6-b469-4310-84f9-b1571d71cd81"/>
-        <Edge id="id678e26f8-8f8a-4366-b9a4-0564cad08319" default="true" sourceId="f8e6c3e6-b469-4310-84f9-b1571d71cd81" targetId="ide40f5864-536c-4465-9446-87c70620a028"/>
-        <Edge id="ide154b3d5-beab-49c6-bb71-3cd31654d9f2" default="true" sourceId="f8e6c3e6-b469-4310-84f9-b1571d71cd81" targetId="C-D"/>
-        <Edge id="id72cf8296-619c-485d-afa2-b61daf5f3733" default="true" sourceId="C-D" targetId="f2f003a0-2b34-4f3b-808d-459ea9f9651a"/>
-        <Edge id="ide842919d-3579-4c05-8759-35a48822e397" default="true" sourceId="f2f003a0-2b34-4f3b-808d-459ea9f9651a" targetId="C-E"/>
-        <Edge id="idf7b8a318-b71b-4642-b67e-1b7e81b1ed38" default="true" sourceId="C-E" targetId="ida844c26d-3c0f-43d6-a87b-1fd2992c544b"/>
-        <Edge id="idfa753153-a5b0-4c1f-b238-fa24653d43ec" default="true" sourceId="f2f003a0-2b34-4f3b-808d-459ea9f9651a" targetId="C-OutputCondition"/>
+        <Edge id="id28d81edb-d7e0-4837-971b-5c7a9b4d0389" default="true" sourceId="C-C" targetId="id9432db34-272d-46d3-800b-176e35aee64c"/>
+        <Edge id="id39a95b04-add6-4422-88f2-983557cc01c0" default="true" sourceId="id9432db34-272d-46d3-800b-176e35aee64c" targetId="d26c5164-cc2c-4523-a0fe-eaa33bf93486"/>
+        <Edge id="id848664ed-e37a-48b0-8290-a42242aa9d34" default="true" sourceId="id9432db34-272d-46d3-800b-176e35aee64c" targetId="C-D"/>
+        <Edge id="id54e56e60-0183-4d09-b003-e01f5f0beb28" default="true" sourceId="C-D" targetId="id389c556c-056b-47ad-b516-65bb8c58ea28"/>
+        <Edge id="id21ce4350-c30a-4c27-bfb5-ae8d126a8bf3" default="true" sourceId="id389c556c-056b-47ad-b516-65bb8c58ea28" targetId="C-E"/>
+        <Edge id="id4ccbf788-0e8e-4391-853f-a8cb2442e270" default="true" sourceId="C-E" targetId="idcf34109d-652c-477c-ade6-c824d110a367"/>
+        <Edge id="id28fa8be8-7a29-4c7a-8bbd-0ff13256f2a9" default="true" sourceId="id389c556c-056b-47ad-b516-65bb8c58ea28" targetId="C-OutputCondition"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-cond" originalID="N-Net_cond">
             <name>cond</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
@@ -157,4 +157,5 @@
             <type>int</type>
         </Object>
     </Net>
+    <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </ns2:CanonicalProcess>

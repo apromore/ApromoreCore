@@ -55,12 +55,22 @@ public class InputExpressionTypeHandler extends ExpressionTypeHandler<InputExpre
 
     }
 
-    private void convertAtomicTaskInputParameter(final InputExpressionType expr, final ExternalTaskFactsType task, final NetFactsType parentNet) throws CanoniserException {
-        convertToInputMapping(expr, task, parentNet);
+    private void convertAtomicTaskInputParameter(final InputExpressionType expr, final ExternalTaskFactsType task, final NetFactsType parentNet) {
+        try {
+            convertToInputMapping(expr, task, parentNet);
+        } catch (CanoniserException e) {
+            LOGGER.warn("Could not convert input expression for task", e);
+            getContext().getMessageInterface().addMessage("Could not convert input expression {0} for task {1}", expr.getExpression(), task.getId());
+        }
     }
 
-    private void convertCompositeTaskInputParameter(final InputExpressionType expr, final ExternalTaskFactsType task, final NetFactsType parentNet) throws CanoniserException {
-        convertToInputMapping(expr, task, parentNet);
+    private void convertCompositeTaskInputParameter(final InputExpressionType expr, final ExternalTaskFactsType task, final NetFactsType parentNet) {
+        try {
+            convertToInputMapping(expr, task, parentNet);
+        } catch (CanoniserException e) {
+            LOGGER.warn("Could not convert input expression for task", e);
+            getContext().getMessageInterface().addMessage("Could not convert input expression {0} for task {1}", expr.getExpression(), task.getId());
+        }
 
     }
 

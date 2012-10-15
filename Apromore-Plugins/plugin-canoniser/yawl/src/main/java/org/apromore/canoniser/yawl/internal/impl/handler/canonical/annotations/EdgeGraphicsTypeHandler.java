@@ -84,8 +84,7 @@ public class EdgeGraphicsTypeHandler extends ElementGraphicsTypeHandler {
         for (final Object obj : getObject().getAny()) {
             try {
                 if (ExtensionUtils.isValidFragment(obj, ExtensionUtils.YAWLSCHEMA_URL, ExtensionUtils.FLOW)) {
-                    final LayoutFlowFactsType flowLayout = ExtensionUtils.unmarshalYAWLFragment(obj, LayoutFlowFactsType.class);
-                    return flowLayout;
+                    return ExtensionUtils.unmarshalYAWLFragment(obj, LayoutFlowFactsType.class);
                 }
             } catch (final CanoniserException e) {
                 LOGGER.warn("Error unmarshalling extension elements. This should not happen, but the conversion will still work.", e);

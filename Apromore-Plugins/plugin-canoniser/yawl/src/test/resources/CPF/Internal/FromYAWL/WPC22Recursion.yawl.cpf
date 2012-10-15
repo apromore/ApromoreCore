@@ -22,8 +22,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id7a075223-1cd2-47ac-94e3-30dd2598093c" objectId="D-N-Net-c" type="output" optional="false" consumed="true"/>
-            <objectRef id="id8562afa1-f226-4126-95d3-93d8f9277430" objectId="D-N-Net-c" type="input" optional="false" consumed="true"/>
+            <objectRef id="id8e9e1225-740b-4159-994e-ec075b5fdd13" objectId="D-N-Net-c" type="output" optional="false" consumed="true"/>
+            <objectRef id="id1e9fbc04-6395-4406-bad0-aa50ad4469d2" objectId="D-N-Net-c" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>c = {cpf:getObjectValue('c')/text()}</expression>
@@ -34,20 +34,20 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="ida561242c-5147-4e97-9b84-698c37ceda33"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id8ca8cf38-bc95-4233-8a86-c0ee6bca61fb"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" subnetId="N-Net" id="C-Net" originalID="Net">
             <name>Net</name>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="c282ebaf-2262-484e-a1a2-45359272bd53"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="id9a2f6cee-cf80-4c62-8acb-19ee1ebd6695"/>
         <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="id64b04a71-fb1d-4720-9988-af8367199611" default="true" sourceId="C-A" targetId="ida561242c-5147-4e97-9b84-698c37ceda33"/>
-        <Edge id="id4878e871-8a8e-428d-8998-50d331d01005" default="true" sourceId="ida561242c-5147-4e97-9b84-698c37ceda33" targetId="C-Net"/>
-        <Edge id="idcd28466e-0d06-474e-8fe4-d738efc3a0e7" default="true" sourceId="c282ebaf-2262-484e-a1a2-45359272bd53" targetId="C-OutputCondition"/>
-        <Edge id="idfe328f57-e7a7-4556-a368-55d0edb89d42" default="true" sourceId="ida561242c-5147-4e97-9b84-698c37ceda33" targetId="c282ebaf-2262-484e-a1a2-45359272bd53"/>
-        <Edge id="id9d8717e6-d0ca-403c-916a-00db70744be5" default="true" sourceId="C-Net" targetId="c282ebaf-2262-484e-a1a2-45359272bd53"/>
+        <Edge id="id83cd9210-3068-479e-959b-96f891283a70" default="true" sourceId="C-A" targetId="id8ca8cf38-bc95-4233-8a86-c0ee6bca61fb"/>
+        <Edge id="id6de3bb69-bfa4-48c9-bbf5-b9ddafc7a7f0" default="true" sourceId="id8ca8cf38-bc95-4233-8a86-c0ee6bca61fb" targetId="C-Net"/>
+        <Edge id="id23039ddb-4b6e-433f-b760-cb7727248ebf" default="true" sourceId="id9a2f6cee-cf80-4c62-8acb-19ee1ebd6695" targetId="C-OutputCondition"/>
+        <Edge id="id64dc5a9e-0243-40ae-86bd-b082fa1ccd75" default="true" sourceId="id8ca8cf38-bc95-4233-8a86-c0ee6bca61fb" targetId="id9a2f6cee-cf80-4c62-8acb-19ee1ebd6695"/>
+        <Edge id="id27cea041-bdc4-4c62-8041-4014e0e210d5" default="true" sourceId="C-Net" targetId="id9a2f6cee-cf80-4c62-8acb-19ee1ebd6695"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-c" originalID="N-Net_c">
             <name>c</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
@@ -62,4 +62,5 @@
             <type>integer</type>
         </Object>
     </Net>
+    <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </ns2:CanonicalProcess>

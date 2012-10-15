@@ -21,6 +21,7 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TypeAttribute;
 import org.yawlfoundation.yawlschema.orgdata.CapabilityRef;
 import org.yawlfoundation.yawlschema.orgdata.CapabilityType;
+import org.yawlfoundation.yawlschema.orgdata.CategoryType;
 import org.yawlfoundation.yawlschema.orgdata.NonHumanResourceType;
 import org.yawlfoundation.yawlschema.orgdata.ObjectFactory;
 import org.yawlfoundation.yawlschema.orgdata.OrgDataType;
@@ -133,12 +134,17 @@ public class CanonicalProcessResourcingHelper {
 
     private String convertSecondaryResource(final NonhumanType r) {
         OrgDataType orgData = getResourceContext().getYawlOrgData();
-        if (orgData.getNonhumanresources() != null) {
+        if (orgData.getNonhumanresources() == null) {
             orgData.setNonhumanresources(YAWL_ORG_FACTORY.createNonHumanResourcesType());
         }
         NonHumanResourceType resource = YAWL_ORG_FACTORY.createNonHumanResourceType();
         resource.setId(generateResourceUUID(r));
         resource.setName(r.getName());
+        resource.setNotes("");
+        resource.setDescription("");
+        //TODO categories
+        resource.setCategory(new CategoryType());
+        resource.setSubcategory("None");
         orgData.getNonhumanresources().getNonhumanresource().add(resource);
         return resource.getId();
     }

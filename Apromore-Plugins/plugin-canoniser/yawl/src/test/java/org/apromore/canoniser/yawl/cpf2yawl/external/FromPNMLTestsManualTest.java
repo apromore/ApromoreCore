@@ -11,7 +11,7 @@ import org.junit.runners.Parameterized;
 import org.junit.runners.Parameterized.Parameters;
 
 /**
- * This test is just checking if any exceptions occur during conversion. No structural checks are done.
+ * This test is just checking if any exceptions occur during conversion. Just basic structural checks are done.
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  *

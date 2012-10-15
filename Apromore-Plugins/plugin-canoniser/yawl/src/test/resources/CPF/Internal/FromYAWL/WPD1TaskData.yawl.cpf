@@ -46,12 +46,12 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="b33b6e03-7f22-4bfb-b257-0d40d6886bce" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
-            <objectRef id="id4f450f57-c8d7-4a7c-aca8-8af05a34121c" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
-            <objectRef id="id4d5faab8-5fa1-4a2c-9186-df240d14129d" objectId="D-N-Net-n4" type="output" optional="false" consumed="true"/>
-            <objectRef id="iddf04d455-e0b4-4a1d-bb9d-116f572f9d5c" objectId="D-N-Net-n3" type="input" optional="false" consumed="true"/>
-            <objectRef id="id93436a84-cea6-4372-a1fb-4792fc29ec7c" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
-            <objectRef id="e0e00dde-cada-4ad8-9831-2c6e6d83038a" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="f066ec06-1421-418a-b9a1-f41253aa7d89" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
+            <objectRef id="c4ef036a-b949-41ac-8b05-60a6ee41a57d" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
+            <objectRef id="d382abac-06ed-4d1b-afc0-3398967749a8" objectId="D-N-Net-n4" type="output" optional="false" consumed="true"/>
+            <objectRef id="id46dfd124-edd1-4edd-8b8a-5f1578383083" objectId="D-N-Net-n3" type="input" optional="false" consumed="true"/>
+            <objectRef id="f36b8520-ab77-4454-9e7d-4fa8b644b9f3" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="b07fa00f-3899-47b1-ad79-a1bc36388d3a" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>t3 = {cpf:getObjectValue('n3')/text()}</expression>
@@ -112,10 +112,10 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id098118d9-c470-43cf-92c8-20f79a25248f" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
-            <objectRef id="idf61b8765-2343-4ebc-b1a6-a82d26ddad4d" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
-            <objectRef id="id43927dab-9cb5-4b76-b65a-db08764b6c77" objectId="D-N-Net-n2" type="input" optional="false" consumed="true"/>
-            <objectRef id="id72a13f5b-3896-47e2-989f-a90c378024c1" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="id2a2d8e6c-99b0-4044-8cf0-3c45059f6fcc" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
+            <objectRef id="id3046fd9b-0434-41ef-b9f6-08a9f94020b8" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
+            <objectRef id="id72b08ccf-d5a8-466a-85b6-2d2ff7ee5a69" objectId="D-N-Net-n2" type="input" optional="false" consumed="true"/>
+            <objectRef id="b397fe48-56a2-4083-bd23-7c4348ad7f8a" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>t2 = {cpf:getObjectValue('n2')/text()}</expression>
@@ -220,4 +220,8 @@
             <type>byte</type>
         </Object>
     </Net>
+    <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;&gt;&lt;xs:complexType name=&quot;YDocumentType&quot;&gt;&lt;xs:sequence&gt;&lt;xs:element minOccurs=&quot;0&quot; name=&quot;id&quot; type=&quot;xs:long&quot;/&gt;&lt;xs:element name=&quot;name&quot; type=&quot;xs:string&quot;/&gt;&#xD;
+        &lt;/xs:sequence&gt;&#xD;
+      &lt;/xs:complexType&gt;&#xD;
+    &lt;/xs:schema&gt;</dataTypes>
 </ns2:CanonicalProcess>
