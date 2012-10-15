@@ -10,8 +10,8 @@ import org.apromore.manager.client.ManagerService;
 import org.apromore.manager.client.helper.PluginHelper;
 import org.apromore.model.PluginInfo;
 import org.apromore.model.PluginInfoResult;
-import org.apromore.model.PluginProperty;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.model.PluginParameter;
+import org.apromore.plugin.property.RequestParameterType;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -49,15 +49,16 @@ public class PluginPropertiesHelper {
         this.propertiesGrid = propertiesGrid;
     }
 
-
     /**
-     *  Show properties of Plugin in Grid
+     * Show parameters of Plugin in Grid
      *
-     * @param info basic info about a Plugin
+     * @param info
+     *            basic info about a Plugin
+     * @param parameterCategory
      * @return more info about the selected Plugin
      * @throws InterruptedException
      */
-    public PluginInfoResult showPluginProperties(final PluginInfo info) throws InterruptedException  {
+    public PluginInfoResult showPluginProperties(final PluginInfo info, final String parameterCategory) throws InterruptedException {
         try {
             if (gridRows != null) {
                 propertiesGrid.removeChild(gridRows);
@@ -65,33 +66,20 @@ public class PluginPropertiesHelper {
             gridRows = new Rows();
             propertiesGrid.appendChild(gridRows);
 
-            Clients.showBusy(this.gridRows, "Reading available properties for "+info.getName()+"...");
+            Clients.showBusy(this.gridRows, "Reading available properties for " + info.getName() + "...");
             currentPluginInfo = service.readPluginInfo(info.getName(), info.getVersion());
             Clients.clearBusy(this.gridRows);
 
-
-            for (PluginProperty prop: currentPluginInfo.getMandatoryProperties().getProperty()) {
-                Row propertyRow = new Row();
-                Label labelName = new Label(prop.getName());
-                if (prop.getDescription() != null) {
-                    labelName.setTooltip(prop.getDescription());
+            for (PluginParameter prop : currentPluginInfo.getMandatoryParameters().getParameter()) {
+                if (prop.getCategory().equals(parameterCategory) || parameterCategory == null) {
+                    addMandatoryParameter(prop);
                 }
-                propertyRow.appendChild(labelName);
-                Component inputValue = createInputComponent(prop, true);
-                propertyRow.appendChild(inputValue);
-                gridRows.appendChild(propertyRow);
             }
 
-            for (PluginProperty prop: currentPluginInfo.getOptionalProperties().getProperty()) {
-                Row propertyRow = new Row();
-                Label labelName = new Label(prop.getName() + " *");
-                if (prop.getDescription() != null) {
-                    labelName.setTooltip(prop.getDescription());
+            for (PluginParameter prop : currentPluginInfo.getOptionalParameters().getParameter()) {
+                if (prop.getCategory().equals(parameterCategory) || parameterCategory == null) {
+                    addOptionalParameter(prop);
                 }
-                propertyRow.appendChild(labelName);
-                Component inputValue = createInputComponent(prop, false);
-                propertyRow.appendChild(inputValue);
-                gridRows.appendChild(propertyRow);
             }
 
             return currentPluginInfo;
@@ -101,8 +89,31 @@ public class PluginPropertiesHelper {
         return null;
     }
 
+    private void addOptionalParameter(final PluginParameter prop) throws InterruptedException {
+        Row propertyRow = new Row();
+        Label labelName = new Label(prop.getName() + " *");
+        if (prop.getDescription() != null) {
+            labelName.setTooltip(prop.getDescription());
+        }
+        propertyRow.appendChild(labelName);
+        Component inputValue = createInputComponent(prop, false);
+        propertyRow.appendChild(inputValue);
+        gridRows.appendChild(propertyRow);
+    }
 
-    private static Component createInputComponent(final PluginProperty prop, final boolean isRequired) throws InterruptedException {
+    private void addMandatoryParameter(final PluginParameter prop) throws InterruptedException {
+        Row propertyRow = new Row();
+        Label labelName = new Label(prop.getName());
+        if (prop.getDescription() != null) {
+            labelName.setTooltip(prop.getDescription());
+        }
+        propertyRow.appendChild(labelName);
+        Component inputValue = createInputComponent(prop, true);
+        propertyRow.appendChild(inputValue);
+        gridRows.appendChild(propertyRow);
+    }
+
+    private static Component createInputComponent(final PluginParameter prop, final boolean isRequired) throws InterruptedException {
         if (prop.getValue() instanceof String) {
             Textbox textBox = new Textbox();
             if (prop.getValue() != null) {
@@ -125,7 +136,7 @@ public class PluginPropertiesHelper {
         } else if (prop.getValue() instanceof Long) {
             Longbox longBox = new Longbox();
             if (prop.getValue() != null) {
-                longBox.setValue((Long)prop.getValue());
+                longBox.setValue((Long) prop.getValue());
             }
             if (isRequired) {
                 longBox.setConstraint("no empty");
@@ -144,7 +155,7 @@ public class PluginPropertiesHelper {
         } else if (prop.getValue() instanceof Integer) {
             Intbox intBox = new Intbox();
             if (prop.getValue() != null) {
-                intBox.setValue((Integer)prop.getValue());
+                intBox.setValue((Integer) prop.getValue());
             }
             if (isRequired) {
                 intBox.setConstraint("no empty");
@@ -163,7 +174,7 @@ public class PluginPropertiesHelper {
         } else if (prop.getValue() instanceof Boolean) {
             Checkbox booleanBox = new Checkbox();
             if (prop.getValue() != null) {
-                booleanBox.setChecked((Boolean)prop.getValue());
+                booleanBox.setChecked((Boolean) prop.getValue());
             }
             booleanBox.addEventListener("onCheck", new EventListener() {
 
@@ -191,19 +202,17 @@ public class PluginPropertiesHelper {
             });
             return fileButton;
         } else {
-            Messagebox.show("Unkown property type: "+prop.getClazz()+", name: "+prop.getName(), "Attention", Messagebox.OK, Messagebox.ERROR);
+            Messagebox.show("Unkown property type: " + prop.getClazz() + ", name: " + prop.getName(), "Attention", Messagebox.OK, Messagebox.ERROR);
             return new Textbox();
         }
     }
 
-    public Set<RequestPropertyType<?>> readPluginProperties() {
-        Set<RequestPropertyType<?>> mandatoryProperties = PluginHelper.convertToRequestProperties(this.currentPluginInfo.getMandatoryProperties());
-        Set<RequestPropertyType<?>> optionalProperties = PluginHelper.convertToRequestProperties(this.currentPluginInfo.getOptionalProperties());
-        Set<RequestPropertyType<?>> requestProperties = new HashSet<>(mandatoryProperties);
+    public Set<RequestParameterType<?>> readPluginProperties() {
+        Set<RequestParameterType<?>> mandatoryProperties = PluginHelper.convertToRequestProperties(this.currentPluginInfo.getMandatoryParameters());
+        Set<RequestParameterType<?>> optionalProperties = PluginHelper.convertToRequestProperties(this.currentPluginInfo.getOptionalParameters());
+        Set<RequestParameterType<?>> requestProperties = new HashSet<>(mandatoryProperties);
         requestProperties.addAll(optionalProperties);
         return requestProperties;
     }
-
-
 
 }

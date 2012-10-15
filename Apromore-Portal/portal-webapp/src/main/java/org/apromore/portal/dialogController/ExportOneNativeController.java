@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Set;
 
+import org.apromore.canoniser.Canoniser;
 import org.apromore.model.AnnotationsType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.PluginInfo;
@@ -209,7 +210,7 @@ public class ExportOneNativeController extends BaseController {
                             String selectedCanoniser = ((SelectEvent) event).getSelectedItems().iterator().next().toString();
                             for (PluginInfo info: canoniserInfos) {
                                 if (info.getName().equals(selectedCanoniser)) {
-                                    pluginPropertiesHelper.showPluginProperties(info);
+                                    pluginPropertiesHelper.showPluginProperties(info, Canoniser.DECANONISE_PARAMETER);
                                 }
                             }
                         }
@@ -217,7 +218,7 @@ public class ExportOneNativeController extends BaseController {
                 });
 
                 PluginInfo canoniserInfo = canoniserInfos.iterator().next();
-                pluginPropertiesHelper.showPluginProperties(canoniserInfo);
+                pluginPropertiesHelper.showPluginProperties(canoniserInfo, Canoniser.DECANONISE_PARAMETER);
 
             } else {
                 Messagebox.show(MessageFormat.format("Import failed (No Canoniser found for native type {0})", nativeType), "Attention", Messagebox.OK, Messagebox.ERROR);
