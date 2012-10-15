@@ -30,7 +30,7 @@ import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.UserType;
 import org.apromore.model.UsernamesType;
 import org.apromore.model.VersionSummaryType;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.RequestParameterType;
 
 /**
  * Manager interface.
@@ -232,7 +232,7 @@ public interface ManagerService {
      *             ... change to be something more relevant TODO: Fix Exception
      */
     ExportFormatResultType exportFormat(int processId, String processName, String versionName, String nativeType, String annotationName,
-            Boolean withAnnotations, String owner, Set<RequestPropertyType<?>> canoniserProperties) throws Exception;
+            Boolean withAnnotations, String owner, Set<RequestParameterType<?>> canoniserProperties) throws Exception;
 
     /**
      * Import a process into the Apromore Repository.
@@ -264,7 +264,7 @@ public interface ManagerService {
      *             ... change to be something more relevant TODO: Fix Exception
      */
     ImportProcessResultType importProcess(String username, String nativeType, String processName, String versionName, InputStream xml_process,
-            String domain, String documentation, String created, String lastUpdate, Set<RequestPropertyType<?>> canoniserProperties)
+            String domain, String documentation, String created, String lastUpdate, Set<RequestParameterType<?>> canoniserProperties)
             throws IOException, Exception;
 
     /**
@@ -376,7 +376,7 @@ public interface ManagerService {
      *             in case of any error
      */
     PluginMessages deployProcess(String branchName, String processName, String versionName, String nativeType, String pluginName,
-            String pluginVersion, Set<RequestPropertyType<?>> deploymentProperties) throws Exception;
+            String pluginVersion, Set<RequestParameterType<?>> deploymentProperties) throws Exception;
 
     /**
      * Update a process in the apromore repository.

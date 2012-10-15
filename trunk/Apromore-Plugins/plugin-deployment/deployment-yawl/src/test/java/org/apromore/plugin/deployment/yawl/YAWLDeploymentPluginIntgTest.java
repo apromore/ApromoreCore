@@ -16,7 +16,7 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.exception.PluginException;
 import org.apromore.plugin.impl.PluginRequestImpl;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.junit.Before;
 import org.junit.Test;
 import org.xml.sax.SAXException;
@@ -42,9 +42,9 @@ public class YAWLDeploymentPluginIntgTest {
             try (BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/WPC1Sequence.yawl.cpf"))) {
                 CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(cpfInputStream, true).getValue();
                 PluginRequestImpl request = new PluginRequestImpl();
-                request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUrl", "http://localhost:8080/yawl/ia"));
-                request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUsername", "admin"));
-                request.addRequestProperty(new RequestPropertyType<String>("yawlEnginePassword", "YAWL"));
+                request.addRequestProperty(new RequestParameterType<String>("yawlEngineUrl", "http://localhost:8080/yawl/ia"));
+                request.addRequestProperty(new RequestParameterType<String>("yawlEngineUsername", "admin"));
+                request.addRequestProperty(new RequestParameterType<String>("yawlEnginePassword", "YAWL"));
                 PluginResult result = deploymentPlugin.deployProcess(cpf, request);
                 assertEquals(1, result.getPluginMessage().size());
                 assertTrue("Process Simple Make Trip Process successfully deployed.".equals(result.getPluginMessage().get(0).getMessage())

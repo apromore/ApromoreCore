@@ -22,8 +22,8 @@ import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.exception.PluginException;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.apromore.plugin.impl.PluginRequestImpl;
-import org.apromore.plugin.property.PropertyType;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.ParameterType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.helper.CPFtoGraphHelper;
 import org.apromore.service.helper.GraphToCPFHelper;
@@ -87,7 +87,7 @@ public class CanoniserServiceImpl implements CanoniserService {
      */
     @Override
     @Transactional(readOnly = true)
-    public CanonisedProcess canonise(final String nativeType, final InputStream processXml, final Set<RequestPropertyType<?>> canoniserProperties)
+    public CanonisedProcess canonise(final String nativeType, final InputStream processXml, final Set<RequestParameterType<?>> canoniserProperties)
             throws CanoniserException {
 
         LOGGER.info("Canonising process with native type {}", nativeType);
@@ -141,7 +141,7 @@ public class CanoniserServiceImpl implements CanoniserService {
     @Override
     @Transactional(readOnly = true)
     public DecanonisedProcess deCanonise(final Integer processId, final String version, final String nativeType,
-            final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final Set<RequestPropertyType<?>> canoniserProperties)
+            final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final Set<RequestParameterType<?>> canoniserProperties)
             throws CanoniserException {
 
         LOGGER.info("DeCanonising process with native type {}", nativeType);

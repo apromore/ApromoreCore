@@ -22,7 +22,7 @@ import org.apromore.graph.JBPT.CPF;
 import org.apromore.model.DeployProcessInputMsgType;
 import org.apromore.model.DeployProcessOutputMsgType;
 import org.apromore.model.ObjectFactory;
-import org.apromore.model.PluginProperties;
+import org.apromore.model.PluginParameters;
 import org.apromore.plugin.deployment.exception.DeploymentException;
 import org.apromore.plugin.message.PluginMessage;
 import org.apromore.service.CanoniserService;
@@ -77,8 +77,8 @@ public class DeployProcessEndpointTest {
         request.getValue().setVersionName(versionName);
         String nativeType = "Test 2.1";
         request.getValue().setNativeType(nativeType);
-        PluginProperties pluginProperties = new PluginProperties();
-        request.getValue().setDeploymentProperties(pluginProperties);
+        PluginParameters pluginProperties = new PluginParameters();
+        request.getValue().setDeploymentParameters(pluginProperties);
 
         CPF cpf = new CPF();
         expect(repositoryService.getCurrentProcessModel(processName, false)).andReturn(cpf);

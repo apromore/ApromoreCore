@@ -4,9 +4,9 @@ import java.util.Collections;
 import java.util.Set;
 
 import org.apromore.plugin.Plugin;
-import org.apromore.plugin.PropertyAwarePlugin;
+import org.apromore.plugin.ParameterAwarePlugin;
 import org.apromore.plugin.exception.PluginNotFoundException;
-import org.apromore.plugin.property.PropertyType;
+import org.apromore.plugin.property.ParameterType;
 import org.apromore.plugin.provider.PluginProvider;
 import org.apromore.service.PluginService;
 import org.slf4j.Logger;
@@ -75,12 +75,12 @@ public class PluginServiceImpl implements PluginService {
      * @see org.apromore.service.PluginService#getOptionalProperties(java.lang.String, java.lang.String)
      */
     @Override
-    public Set<PropertyType<?>> getOptionalProperties(final String name, final String version) throws PluginNotFoundException {
+    public Set<ParameterType<?>> getOptionalProperties(final String name, final String version) throws PluginNotFoundException {
         Plugin plugin = canoniserProvider.findByNameAndVersion(name, version);
-        if (plugin instanceof PropertyAwarePlugin) {
-            return ((PropertyAwarePlugin) plugin).getOptionalProperties();
+        if (plugin instanceof ParameterAwarePlugin) {
+            return ((ParameterAwarePlugin) plugin).getOptionalParameters();
         } else {
-            Set<PropertyType<?>> emptySet = Collections.emptySet();
+            Set<ParameterType<?>> emptySet = Collections.emptySet();
             return Collections.unmodifiableSet(emptySet);
         }
     }
@@ -89,12 +89,12 @@ public class PluginServiceImpl implements PluginService {
      * @see org.apromore.service.PluginService#getMandatoryProperties(java.lang.String, java.lang.String)
      */
     @Override
-    public Set<PropertyType<?>> getMandatoryProperties(final String name, final String version) throws PluginNotFoundException {
+    public Set<ParameterType<?>> getMandatoryProperties(final String name, final String version) throws PluginNotFoundException {
         Plugin plugin = canoniserProvider.findByNameAndVersion(name, version);
-        if (plugin instanceof PropertyAwarePlugin) {
-            return ((PropertyAwarePlugin) plugin).getMandatoryProperties();
+        if (plugin instanceof ParameterAwarePlugin) {
+            return ((ParameterAwarePlugin) plugin).getMandatoryParameters();
         } else {
-            Set<PropertyType<?>> emptySet = Collections.emptySet();
+            Set<ParameterType<?>> emptySet = Collections.emptySet();
             return Collections.unmodifiableSet(emptySet);
         }
     }

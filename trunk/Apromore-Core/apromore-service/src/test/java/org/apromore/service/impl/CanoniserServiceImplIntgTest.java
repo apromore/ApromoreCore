@@ -29,8 +29,8 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.exception.ImportException;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.plugin.exception.PluginNotFoundException;
-import org.apromore.plugin.property.PropertyType;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.ParameterType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.impl.models.CanonicalNoAnnotationModel;
@@ -69,15 +69,15 @@ public class CanoniserServiceImplIntgTest {
     @Autowired
     private ProcessService pSrv;
 
-    private HashSet<RequestPropertyType<?>> epmlCanoniserRequest;
+    private HashSet<RequestParameterType<?>> epmlCanoniserRequest;
 
-    private HashSet<RequestPropertyType<?>> emptyCanoniserRequest;
+    private HashSet<RequestParameterType<?>> emptyCanoniserRequest;
 
     @Before
     public void setUp() {
-        epmlCanoniserRequest = new HashSet<RequestPropertyType<?>>();
-        epmlCanoniserRequest.add(new RequestPropertyType<Boolean>("addFakeEvents", true));
-        emptyCanoniserRequest = new HashSet<RequestPropertyType<?>>();
+        epmlCanoniserRequest = new HashSet<RequestParameterType<?>>();
+        epmlCanoniserRequest.add(new RequestParameterType<Boolean>("addFakeEvents", true));
+        emptyCanoniserRequest = new HashSet<RequestParameterType<?>>();
     }
 
     @Rollback(true)
@@ -176,8 +176,8 @@ public class CanoniserServiceImplIntgTest {
         Canoniser c = iter.next();
         assertNotNull(c);
         assertEquals(name, c.getNativeType());
-        assertEquals(0, c.getMandatoryProperties().size());
-        assertEquals(1, c.getOptionalProperties().size());
+        assertEquals(0, c.getMandatoryParameters().size());
+        assertEquals(1, c.getOptionalParameters().size());
 
         DecanonisedProcess dp = cSrv.deCanonise(processId, version, name, getTypeFromXML(cpf), null, epmlCanoniserRequest);
 
@@ -200,10 +200,10 @@ public class CanoniserServiceImplIntgTest {
         Canoniser c = iter.next();
         assertNotNull(c);
         assertEquals(name, c.getNativeType());
-        assertEquals(0, c.getMandatoryProperties().size());
-        assertEquals(1, c.getOptionalProperties().size());
+        assertEquals(0, c.getMandatoryParameters().size());
+        assertEquals(1, c.getOptionalParameters().size());
 
-        Set<PropertyType<?>> optionalProperties = c.getOptionalProperties();
+        Set<ParameterType<?>> optionalProperties = c.getOptionalParameters();
         assertEquals(1, optionalProperties.size());
 
 

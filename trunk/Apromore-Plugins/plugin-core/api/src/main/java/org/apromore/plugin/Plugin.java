@@ -16,9 +16,10 @@
  */
 package org.apromore.plugin;
 
+
 /**
  * <p>
- * Interface implemented by every Apromore Plugin. Each Plugin offers theses methods, so it is possible to handle all Plugins in a generic manner.
+ * Interface implemented by every Apromore {@link Plugin}. Each {@link Plugin} offers theses methods, so it is possible to handle all Plugins in a generic manner.
  * Please note implementations should make sure they override {@link #equals(Object)} and {@link #hashCode()} in a way, that two Plugins are the same if
  * their name and version match.
  *
@@ -38,31 +39,39 @@ public interface Plugin {
     String getName();
 
     /**
-     * Plugin version should be kept in sync with the OSGi bundle version.
+     * {@link Plugin} version should be kept in sync with the OSGi bundle version.
      *
-     * @return version of the plugin
+     * @return version of the {@link Plugin}
      */
     String getVersion();
 
     /**
-     * Plugin type can be used to group plugins that provide similar functionality.
+     * {@link Plugin} type can be used to group plugins that provide similar functionality.
      *
-     * @return type of the plugin
+     * @return type of the {@link Plugin}
      */
     String getType();
 
     /**
-     * Plugin description can be used to inform users about the functionality of a plugin.
+     * {@link Plugin} description can be used to inform users about the functionality of a plugin.
      *
-     * @return description of the plugin
+     * @return description of the {@link Plugin}
      */
     String getDescription();
 
     /**
-     * Name of the author(s) of this plugin.
+     * Name of the author(s) of this {@link Plugin}.
      *
-     * @return author of the plugin
+     * @return author of the {@link Plugin}
      */
     String getAuthor();
+
+
+    /**
+     * E-Mail of the author(s) of this {@link Plugin}
+     *
+     * @return email of the author of the {@link Plugin}
+     */
+    String getEMail();
 
 }

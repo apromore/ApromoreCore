@@ -13,6 +13,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 
 import org.apromore.anf.AnnotationsType;
+import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.DefaultAbstractCanoniser;
 import org.apromore.canoniser.epml.internal.Canonical2EPML;
 import org.apromore.canoniser.epml.internal.EPML2Canonical;
@@ -23,7 +24,7 @@ import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.exception.PluginPropertyNotFoundException;
 import org.apromore.plugin.impl.PluginResultImpl;
-import org.apromore.plugin.property.PluginPropertyType;
+import org.apromore.plugin.property.PluginParameterType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Component;
@@ -41,19 +42,19 @@ import de.epml.TypeEPML;
  */
 @Component("epmlCanoniser")
 public class EPML20Canoniser extends DefaultAbstractCanoniser {
-    
+
     private static final Logger LOGGER = LoggerFactory.getLogger(EPML20Canoniser.class);
 
     public static final String EPML_CONTEXT = "de.epml";
 
     public static final String ADD_FAKE_PROPERTY_ID = "addFakeProperties";
 
-    private final PluginPropertyType<Boolean> fakeEventsProperty;
+    private final PluginParameterType<Boolean> fakeEventsProperty;
 
 	public EPML20Canoniser() {
 		super();
-		this.fakeEventsProperty = new PluginPropertyType<Boolean>(ADD_FAKE_PROPERTY_ID,"Add Fake Events?", "", false, true);
-		registerProperty(fakeEventsProperty);
+		this.fakeEventsProperty = new PluginParameterType<Boolean>(ADD_FAKE_PROPERTY_ID,"Add Fake Events?", "", false, Canoniser.CANONISE_PARAMETER, true);
+		registerParameter(fakeEventsProperty);
 	}
 
 	/*
@@ -92,9 +93,9 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
 
 			if (annotationFormat != null) {
 				canonical2epml = new Canonical2EPML(canonicalFormat, annotationFormat,
-						request.getRequestProperty(fakeEventsProperty).getValue());
+						request.getRequestParameter(fakeEventsProperty).getValue());
 			} else {
-				canonical2epml = new Canonical2EPML(canonicalFormat, request.getRequestProperty(fakeEventsProperty).getValue());
+				canonical2epml = new Canonical2EPML(canonicalFormat, request.getRequestParameter(fakeEventsProperty).getValue());
 			}
 
 			marshalEPMLFormat(canonical2epml.getEPML(), nativeOutput);
@@ -143,12 +144,12 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
         TypeEPC epc = new TypeEPC();
         epc.setEpcId(new BigInteger("1"));
         if (processName != null) {
-            epc.setName(processName);   
+            epc.setName(processName);
         } else {
             epc.setName("");
         }
         directory.getEpcOrDirectory().add(epc);
-        
+
         PluginResultImpl newPluginResult = newPluginResult();
 
         try {
@@ -157,7 +158,7 @@ public class EPML20Canoniser extends DefaultAbstractCanoniser {
             LOGGER.error("Could not create initial EPML", e);
             newPluginResult.addPluginMessage("Could not create initial EPML, reason: {0}", e.getMessage());
         }
-        
+
         return newPluginResult;
     }
 

@@ -21,9 +21,9 @@ import org.apromore.plugin.exception.PluginException;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.apromore.plugin.impl.PluginResultImpl;
 import org.apromore.plugin.message.PluginMessage;
-import org.apromore.plugin.property.PluginPropertyType;
-import org.apromore.plugin.property.PropertyType;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.PluginParameterType;
+import org.apromore.plugin.property.ParameterType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.easymock.EasyMock;
 import org.junit.Before;
 import org.junit.Test;
@@ -59,13 +59,13 @@ public class DeploymentServiceImplTest {
     @Test
     public void testFindDeploymentPlugins() throws PluginNotFoundException {
 
-        HashSet<PropertyType<?>> mandatoryProperties = new HashSet<PropertyType<?>>();
-        PropertyType<String> prop = new PluginPropertyType<String>("test", "test", String.class, "test", true);
+        HashSet<ParameterType<?>> mandatoryProperties = new HashSet<ParameterType<?>>();
+        ParameterType<String> prop = new PluginParameterType<String>("test", "test", String.class, "test", true);
         mandatoryProperties.add(prop);
         expect(mockDeploymentPlugin.getNativeType()).andReturn("test");
         expect(mockDeploymentPlugin.getName()).andReturn("test");
         expect(mockDeploymentPlugin.getVersion()).andReturn("1.0");
-        expect(mockDeploymentPlugin.getMandatoryProperties()).andReturn(mandatoryProperties);
+        expect(mockDeploymentPlugin.getMandatoryParameters()).andReturn(mandatoryProperties);
 
         replayAll();
 
@@ -73,7 +73,7 @@ public class DeploymentServiceImplTest {
         assertNotNull(deploymentPlugin);
         assertTrue(!deploymentPlugin.isEmpty());
         assertEquals(mockDeploymentPlugin, deploymentPlugin.iterator().next());
-        assertTrue(deploymentPlugin.iterator().next().getMandatoryProperties().contains(prop));
+        assertTrue(deploymentPlugin.iterator().next().getMandatoryParameters().contains(prop));
 
         verifyAll();
     }
@@ -81,8 +81,8 @@ public class DeploymentServiceImplTest {
     @Test
     public void testDeployProcess() throws PluginException {
 
-        HashSet<RequestPropertyType<?>> mandatoryProperties = new HashSet<RequestPropertyType<?>>();
-        RequestPropertyType<String> prop = new RequestPropertyType<String>("test", "test");
+        HashSet<RequestParameterType<?>> mandatoryProperties = new HashSet<RequestParameterType<?>>();
+        RequestParameterType<String> prop = new RequestParameterType<String>("test", "test");
         mandatoryProperties.add(prop);
 
         CanonicalProcessType cpf = new CanonicalProcessType();

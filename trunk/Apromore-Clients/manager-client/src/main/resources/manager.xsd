@@ -116,9 +116,9 @@
     <!-- Plugin Data Types -->
     <xs:complexType name="PluginInfoResult">
         <xs:sequence>
-            <xs:element name="MandatoryProperties" type="tns:PluginProperties"
+            <xs:element name="MandatoryParameters" type="tns:PluginParameters"
                 minOccurs="0" maxOccurs="1" />
-            <xs:element name="OptionalProperties" type="tns:PluginProperties"
+            <xs:element name="OptionalParameters" type="tns:PluginParameters"
                 minOccurs="0" maxOccurs="1" />
             <xs:element name="PluginInfo" type="tns:PluginInfo"
                 minOccurs="1" maxOccurs="1" />
@@ -131,16 +131,17 @@
         <xs:attribute name="description" type="xs:string" />
         <xs:attribute name="type" type="xs:string" />
         <xs:attribute name="author" type="xs:string" />
+        <xs:attribute name="email" type="xs:string" />
     </xs:complexType>
 
-    <xs:complexType name="PluginProperties">
+    <xs:complexType name="PluginParameters">
         <xs:sequence>
-            <xs:element name="Property" type="tns:PluginProperty"
+            <xs:element name="Parameter" type="tns:PluginParameter"
                 minOccurs="0" maxOccurs="unbounded" />
         </xs:sequence>
     </xs:complexType>
 
-    <xs:complexType name="PluginProperty">
+    <xs:complexType name="PluginParameter">
         <xs:sequence>
             <xs:element name="value" type="xs:anySimpleType" />
         </xs:sequence>
@@ -150,6 +151,7 @@
             use="optional" />
         <xs:attribute name="class" type="xs:string" />
         <xs:attribute name="isMandatory" type="xs:boolean" />
+        <xs:attribute name="category" type="xs:string" />
     </xs:complexType>
 
     <xs:complexType name="PluginMessages">
@@ -246,7 +248,7 @@
 
     <xs:complexType name="DeployProcessInputMsgType">
         <xs:sequence>
-            <xs:element name="DeploymentProperties" type="tns:PluginProperties"
+            <xs:element name="DeploymentParameters" type="tns:PluginParameters"
                 minOccurs="1" maxOccurs="1" />
         </xs:sequence>
         <xs:attribute name="processName" type="xs:string" />
@@ -560,7 +562,7 @@
                 xmime:expectedContentTypes="application/octet-stream" />
             <xs:element name="EditSession" type="tns:EditSessionType"
                 minOccurs="1" maxOccurs="1" />
-            <xs:element name="CanoniserProperties" type="tns:PluginProperties"
+            <xs:element name="CanoniserParameters" type="tns:PluginParameters"
                 minOccurs="1" maxOccurs="1" />
         </xs:sequence>
     </xs:complexType>
@@ -594,7 +596,7 @@
 
     <xs:complexType name="ExportFormatInputMsgType">
         <xs:sequence>
-            <xs:element name="CanoniserProperties" type="tns:PluginProperties"
+            <xs:element name="CanoniserParameters" type="tns:PluginParameters"
                 minOccurs="1" maxOccurs="1" />
         </xs:sequence>
         <xs:attribute name="Format" type="xs:string" />

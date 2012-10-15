@@ -13,7 +13,7 @@ import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
-import org.apromore.plugin.property.PropertyType;
+import org.apromore.plugin.property.ParameterType;
 
 public class TestCanoniser implements Canoniser {
 
@@ -60,29 +60,34 @@ public class TestCanoniser implements Canoniser {
     }
 
     @Override
-    public Set<PropertyType<?>> getAvailableProperties() {
+    public Set<ParameterType<?>> getAvailableParameters() {
         return null;
     }
 
     @Override
-    public Set<PropertyType<?>> getMandatoryProperties() {
+    public Set<ParameterType<?>> getMandatoryParameters() {
         return null;
     }
 
     @Override
-    public Set<PropertyType<?>> getOptionalProperties() {
+    public Set<ParameterType<?>> getOptionalParameters() {
         return null;
     }
 
     @Override
-    public PluginResult createInitialNativeFormat(OutputStream nativeOutput, String processName, String processVersion, String processAuthor,
-            Date processCreated, PluginRequest request) {
+    public PluginResult createInitialNativeFormat(final OutputStream nativeOutput, final String processName, final String processVersion, final String processAuthor,
+            final Date processCreated, final PluginRequest request) {
         return null;
     }
 
     @Override
-    public CanoniserMetadataResult readMetaData(InputStream nativeInput, PluginRequest request) {
+    public CanoniserMetadataResult readMetaData(final InputStream nativeInput, final PluginRequest request) {
         return null;
+    }
+
+    @Override
+    public String getEMail() {
+        return "";
     }
 
 }

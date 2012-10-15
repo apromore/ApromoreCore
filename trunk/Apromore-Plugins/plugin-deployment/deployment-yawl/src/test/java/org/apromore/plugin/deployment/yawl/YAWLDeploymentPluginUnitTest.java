@@ -25,7 +25,7 @@ import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.deployment.exception.DeploymentException;
 import org.apromore.plugin.exception.PluginException;
 import org.apromore.plugin.impl.PluginRequestImpl;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.easymock.EasyMock;
 import org.junit.After;
 import org.junit.Before;
@@ -61,8 +61,8 @@ public class YAWLDeploymentPluginUnitTest {
     @Test
     public void testYAWLDeploymentPlugin() {
         assertNotNull(deploymentPlugin);
-        assertEquals(4, deploymentPlugin.getAvailableProperties().size());
-        assertEquals(3, deploymentPlugin.getMandatoryProperties().size());
+        assertEquals(4, deploymentPlugin.getAvailableParameters().size());
+        assertEquals(3, deploymentPlugin.getMandatoryParameters().size());
     }
 
     @Test
@@ -93,10 +93,10 @@ public class YAWLDeploymentPluginUnitTest {
         try (BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/SimpleMakeTripProcess.yawl.cpf"))) {
             CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(cpfInputStream, true).getValue();
             PluginRequestImpl request = new PluginRequestImpl();
-            request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUrl", "http://localhost:"+server.getServiceAddress().getPort()+"/yawl/ia"));
-            request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUsername", "admin"));
-            request.addRequestProperty(new RequestPropertyType<String>("yawlEnginePassword", "YAWL"));
-            request.addRequestProperty(new RequestPropertyType<Boolean>("doAutoLaunch", true));
+            request.addRequestProperty(new RequestParameterType<String>("yawlEngineUrl", "http://localhost:"+server.getServiceAddress().getPort()+"/yawl/ia"));
+            request.addRequestProperty(new RequestParameterType<String>("yawlEngineUsername", "admin"));
+            request.addRequestProperty(new RequestParameterType<String>("yawlEnginePassword", "YAWL"));
+            request.addRequestProperty(new RequestParameterType<Boolean>("doAutoLaunch", true));
             PluginResult result = deploymentPlugin.deployProcess(cpf, request);
             assertEquals(1, result.getPluginMessage().size());
             assertEquals("YAWL Engine message: test", result.getPluginMessage().get(0).getMessage());
@@ -131,10 +131,10 @@ public class YAWLDeploymentPluginUnitTest {
         try (BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/SimpleMakeTripProcess.yawl.cpf"))) {
             CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(cpfInputStream, true).getValue();
             PluginRequestImpl request = new PluginRequestImpl();
-            request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUrl", "http://localhost:"+server.getServiceAddress().getPort()+"/yawl/ia"));
-            request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUsername", "admin"));
-            request.addRequestProperty(new RequestPropertyType<String>("yawlEnginePassword", "YAWL"));
-            request.addRequestProperty(new RequestPropertyType<Boolean>("doAutoLaunch", false));
+            request.addRequestProperty(new RequestParameterType<String>("yawlEngineUrl", "http://localhost:"+server.getServiceAddress().getPort()+"/yawl/ia"));
+            request.addRequestProperty(new RequestParameterType<String>("yawlEngineUsername", "admin"));
+            request.addRequestProperty(new RequestParameterType<String>("yawlEnginePassword", "YAWL"));
+            request.addRequestProperty(new RequestParameterType<Boolean>("doAutoLaunch", false));
             PluginResult result = deploymentPlugin.deployProcess(cpf, request);
             assertEquals(1, result.getPluginMessage().size());
             assertEquals("Error: There is a specification with an identical id to [UID: WP1Sequence- Version: 0.1] already loaded into the engine.", result.getPluginMessage().get(0).getMessage());
@@ -154,9 +154,9 @@ public class YAWLDeploymentPluginUnitTest {
         } catch (PluginException e) {
         }
         PluginRequestImpl request = new PluginRequestImpl();
-        request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUrl", "localhost/yawl/ia"));
-        request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUsername", "admin"));
-        request.addRequestProperty(new RequestPropertyType<String>("yawlEnginePassword", "YAWL"));
+        request.addRequestProperty(new RequestParameterType<String>("yawlEngineUrl", "localhost/yawl/ia"));
+        request.addRequestProperty(new RequestParameterType<String>("yawlEngineUsername", "admin"));
+        request.addRequestProperty(new RequestParameterType<String>("yawlEnginePassword", "YAWL"));
         try {
             deploymentPlugin.deployProcess(new CanonicalProcessType(), request);
             fail("Should have failed because of wrong URL!");
@@ -184,9 +184,9 @@ public class YAWLDeploymentPluginUnitTest {
         try (BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/SimpleMakeTripProcess.yawl.cpf"))) {
             CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(cpfInputStream, true).getValue();
             PluginRequestImpl request = new PluginRequestImpl();
-            request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUrl", "http://localhost:"+server.getServiceAddress().getPort()+"/yawl/ia"));
-            request.addRequestProperty(new RequestPropertyType<String>("yawlEngineUsername", "admin"));
-            request.addRequestProperty(new RequestPropertyType<String>("yawlEnginePassword", "YAWL"));
+            request.addRequestProperty(new RequestParameterType<String>("yawlEngineUrl", "http://localhost:"+server.getServiceAddress().getPort()+"/yawl/ia"));
+            request.addRequestProperty(new RequestParameterType<String>("yawlEngineUsername", "admin"));
+            request.addRequestProperty(new RequestParameterType<String>("yawlEnginePassword", "YAWL"));
 
             try {
                 deploymentPlugin.deployProcess(cpf, request);

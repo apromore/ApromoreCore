@@ -23,8 +23,8 @@ import org.apromore.model.ExportFormatOutputMsgType;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ObjectFactory;
 import org.apromore.model.PluginMessages;
-import org.apromore.model.PluginProperties;
-import org.apromore.model.PluginProperty;
+import org.apromore.model.PluginParameter;
+import org.apromore.model.PluginParameters;
 import org.apromore.plugin.message.PluginMessage;
 import org.apromore.plugin.message.PluginMessageImpl;
 import org.apromore.service.impl.ProcessServiceImpl;
@@ -65,16 +65,16 @@ public class ExportProcessEndpointTest {
         msg.setVersionName("1.0");
         msg.setWithAnnotations(true);
 
-        PluginProperties properties = new PluginProperties();
-        PluginProperty property = new PluginProperty();
+        PluginParameters properties = new PluginParameters();
+        PluginParameter property = new PluginParameter();
         property.setId("test");
         property.setClazz("java.lang.String");
         property.setName("test");
         property.setValue("");
         property.setIsMandatory(false);
         property.setDescription("");
-        properties.getProperty().add(property);
-        msg.setCanoniserProperties(properties);
+        properties.getParameter().add(property);
+        msg.setCanoniserParameters(properties);
 
         JAXBElement<ExportFormatInputMsgType> request = new ObjectFactory().createExportFormatRequest(msg);
 

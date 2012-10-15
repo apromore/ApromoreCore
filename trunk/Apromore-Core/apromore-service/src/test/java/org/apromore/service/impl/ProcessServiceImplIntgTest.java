@@ -11,7 +11,7 @@ import javax.mail.util.ByteArrayDataSource;
 
 import org.apromore.TestData;
 import org.apromore.model.ProcessSummaryType;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
 import org.apromore.service.model.CanonisedProcess;
@@ -56,7 +56,7 @@ public class ProcessServiceImplIntgTest {
         String lastUpdate = "12/12/2011";
         DataHandler stream = new DataHandler(new ByteArrayDataSource(TestData.XPDL2.getBytes(), "text/xml"));
 
-        CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestPropertyType<?>>());
+        CanonisedProcess cp = cSrv.canonise(natType, stream.getInputStream(), new HashSet<RequestParameterType<?>>());
 
         ProcessSummaryType pst = pSrv.importProcess(username, name, cpfURI, version, natType, cp, stream.getInputStream(), domain, "", created, lastUpdate);
 
