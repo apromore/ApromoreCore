@@ -7,7 +7,7 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
             <name>A</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="id52e64b87-8e9a-4eb8-8797-9d49503945a4"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="c40bd175-6d26-47d1-b097-29d60ea5e005"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-D-1" originalID="D_1">
             <name>D</name>
         </Node>
@@ -20,19 +20,19 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-E" originalID="E">
             <name>E</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="idc4e50992-19b0-4b45-8057-e5f662be56f5"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="a75c6e54-97ec-43a4-a4fe-4f19ebf26755"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
         <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="id966a5006-69a9-41c3-83b7-8c3a7dfea300" default="true" sourceId="C-A" targetId="id52e64b87-8e9a-4eb8-8797-9d49503945a4"/>
-        <Edge id="id38e08db3-52df-4def-9a6f-a4ebc78a8ff1" default="true" sourceId="id52e64b87-8e9a-4eb8-8797-9d49503945a4" targetId="C-D-1"/>
-        <Edge id="ida2e59635-3c07-4ddd-a404-440999d58220" default="true" sourceId="id52e64b87-8e9a-4eb8-8797-9d49503945a4" targetId="C-C-1"/>
-        <Edge id="id744796b8-5587-493b-a13c-1d67c5f0a9c3" default="true" sourceId="id52e64b87-8e9a-4eb8-8797-9d49503945a4" targetId="C-B"/>
-        <Edge id="id0e421437-b6d3-4cd7-9dcf-7ffbec025529" default="true" sourceId="idc4e50992-19b0-4b45-8057-e5f662be56f5" targetId="C-E"/>
-        <Edge id="idc4fdca7a-f69a-4a1c-a7c4-f3fbd86d72c5" default="true" sourceId="C-D-1" targetId="idc4e50992-19b0-4b45-8057-e5f662be56f5"/>
-        <Edge id="ide3cda20e-92aa-4eea-9b4e-45d115e78372" default="true" sourceId="C-C-1" targetId="idc4e50992-19b0-4b45-8057-e5f662be56f5"/>
-        <Edge id="id5059ed4f-0712-4456-8515-4e1e562f7db6" default="true" sourceId="C-B" targetId="idc4e50992-19b0-4b45-8057-e5f662be56f5"/>
+        <Edge id="idd9c867da-4c8f-4c1d-8da3-f695cd5b49ce" default="true" sourceId="C-A" targetId="c40bd175-6d26-47d1-b097-29d60ea5e005"/>
+        <Edge id="id120583b2-7eb4-4165-b05f-9c514fb14282" default="true" sourceId="c40bd175-6d26-47d1-b097-29d60ea5e005" targetId="C-D-1"/>
+        <Edge id="id74142925-dbf6-4bfb-98b3-4f4a53b3024e" default="true" sourceId="c40bd175-6d26-47d1-b097-29d60ea5e005" targetId="C-C-1"/>
+        <Edge id="id1d0ddfb3-1ae8-4d1b-83d6-f5ea1b2c9f29" default="true" sourceId="c40bd175-6d26-47d1-b097-29d60ea5e005" targetId="C-B"/>
+        <Edge id="id0f969ade-ea22-4b80-a238-650c1b410aef" default="true" sourceId="a75c6e54-97ec-43a4-a4fe-4f19ebf26755" targetId="C-E"/>
+        <Edge id="id6a9e99d1-f0a8-46c9-ad17-4ccba03eab73" default="true" sourceId="C-D-1" targetId="a75c6e54-97ec-43a4-a4fe-4f19ebf26755"/>
+        <Edge id="idff766298-92b4-4a08-9b81-00a5df1cf736" default="true" sourceId="C-C-1" targetId="a75c6e54-97ec-43a4-a4fe-4f19ebf26755"/>
+        <Edge id="id5726d63f-7836-4adb-b3e8-b2c7615b52d3" default="true" sourceId="C-B" targetId="a75c6e54-97ec-43a4-a4fe-4f19ebf26755"/>
         <Edge id="C-E-OutputCondition" default="true" sourceId="C-E" targetId="C-OutputCondition"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-cond" originalID="N-Net_cond">
             <name>cond</name>
@@ -48,4 +48,5 @@
             <type>int</type>
         </Object>
     </Net>
+    <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </ns2:CanonicalProcess>

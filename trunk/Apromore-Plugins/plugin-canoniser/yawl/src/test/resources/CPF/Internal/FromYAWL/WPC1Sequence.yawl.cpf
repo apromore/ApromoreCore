@@ -22,8 +22,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id44551884-d403-4b9a-9c25-6f142bac1a65" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="id5f5a53af-2ea8-470b-9876-cb8775fb2d1a" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="baf2affc-2426-4b7d-a9d9-c770cc8641d0" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="id89fbb438-7dad-471a-bfa9-87cddf5b810f" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = {cpf:getObjectValue('var')/text()}</expression>
@@ -52,8 +52,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="e86c77d4-0747-413a-8eed-99f48659eed5" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="id545a3a32-ee7e-4331-8214-85efccd5ea99" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="id57a2a7de-53b9-4532-85de-38c2cdae6936" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="id54b77e3c-633f-4f1a-9336-03e8e7f9176d" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = {cpf:getObjectValue('var')/text()}</expression>
@@ -84,4 +84,5 @@
             <type>string</type>
         </Object>
     </Net>
+    <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </ns2:CanonicalProcess>
