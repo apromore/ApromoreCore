@@ -13,6 +13,7 @@ import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.bpmn.ProcessWrapper;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TLane;
@@ -62,5 +63,25 @@ public class CpfCanonicalProcessType extends CanonicalProcessType {
                 new CpfNetType(this, cpfIdFactory, new ProcessWrapper(process), laneMap, bpmnFlowNodeToCpfNodeMap, null, definitions);
             }
         }
+    }
+
+    /**
+     * Find a {@link NetType} given its identifier.
+     *
+     * @param cpf  the CPF model to search
+     * @param id  the identifier attribute of the sought net
+     * @return the net in <code>cpf</code> with the identifier <code>id</code>
+     * @throws CanoniserException if <code>id</code> doesn't identify a net in <code>cpf</code>
+     */
+    public NetType findNet(final String id) throws CanoniserException {
+
+        for (final NetType net : getNet()) {
+            if (id.equals(net.getId())) {
+                return net;
+            }
+        }
+
+        // Failed to find the desired name
+        throw new CanoniserException("CPF model has no net with id " + id);
     }
 }
