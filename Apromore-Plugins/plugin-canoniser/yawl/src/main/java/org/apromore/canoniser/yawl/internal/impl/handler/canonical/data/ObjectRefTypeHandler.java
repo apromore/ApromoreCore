@@ -42,8 +42,8 @@ public class ObjectRefTypeHandler extends CanonicalElementHandler<ObjectRefType,
                 // Add Input Mapping + Task Variable
                 if (!ConversionUtils.isCompositeTask(originalTask)) {
                     DecompositionFactsType d = getContext().getControlFlowContext().getConvertedDecomposition(originalTask.getId());
-                    String varName = addInputMapping(ref, netObject, net, getConvertedParent(), d);
-                    addTaskInputParameter(ref, netObject, varName, d);
+                    String varName = addInputMapping(netObject, net, getConvertedParent(), d);
+                    addTaskInputParameter(netObject, varName, d);
                 } else {
                     getContext().getMessageInterface().addMessage(
                             "Ignoring the reference to Object {0} as Object conversion for composite task {1} is ambiguous!", netObject.getName(),
@@ -53,8 +53,8 @@ public class ObjectRefTypeHandler extends CanonicalElementHandler<ObjectRefType,
                 // Add Output Mapping + Task Variable
                 if (!ConversionUtils.isCompositeTask(originalTask)) {
                     DecompositionFactsType d = getContext().getControlFlowContext().getConvertedDecomposition(originalTask.getId());
-                    String varName = addOutputMapping(ref, netObject, net, getConvertedParent(), d);
-                    addTaskOutputParameter(ref, netObject, varName, d);
+                    String varName = addOutputMapping(netObject, net, getConvertedParent(), d);
+                    addTaskOutputParameter(netObject, varName, d);
                 } else {
                     getContext().getMessageInterface().addMessage(
                             "Ignoring the reference to Object {0} as Object conversion for composite task {1} is ambiguous!", netObject.getName(),
@@ -67,7 +67,7 @@ public class ObjectRefTypeHandler extends CanonicalElementHandler<ObjectRefType,
 
     }
 
-    private void addTaskOutputParameter(final ObjectRefType ref, final ObjectType netObject, final String varName, final DecompositionFactsType taskDecomposition) {
+    private void addTaskOutputParameter(final ObjectType netObject, final String varName, final DecompositionFactsType taskDecomposition) {
         OutputParameterFactsType outputParam = YAWL_FACTORY.createOutputParameterFactsType();
         outputParam.setName(varName);
         if (netObject instanceof SoftType) {
@@ -80,7 +80,7 @@ public class ObjectRefTypeHandler extends CanonicalElementHandler<ObjectRefType,
         taskDecomposition.getOutputParam().add(outputParam);
     }
 
-    private String addOutputMapping(final ObjectRefType ref, final ObjectType netObject, final NetFactsType net, final ExternalTaskFactsType task, final DecompositionFactsType d) {
+    private String addOutputMapping(final ObjectType netObject, final NetFactsType net, final ExternalTaskFactsType task, final DecompositionFactsType d) {
         VarMappingFactsType outputMapping = YAWL_FACTORY.createVarMappingFactsType();
         ExpressionType yawlExpression = YAWL_FACTORY.createExpressionType();
         String generateUniqueName = ConversionUtils.generateUniqueName(netObject.getName(), getNameSet(d.getOutputParam()));
@@ -92,7 +92,7 @@ public class ObjectRefTypeHandler extends CanonicalElementHandler<ObjectRefType,
         return generateUniqueName;
     }
 
-    private void addTaskInputParameter(final ObjectRefType ref, final ObjectType netObject, final String varName, final DecompositionFactsType taskDecomposition) {
+    private void addTaskInputParameter(final ObjectType netObject, final String varName, final DecompositionFactsType taskDecomposition) {
         InputParameterFactsType inputParam = YAWL_FACTORY.createInputParameterFactsType();
         inputParam.setName(varName);
         if (netObject instanceof SoftType) {
@@ -105,7 +105,7 @@ public class ObjectRefTypeHandler extends CanonicalElementHandler<ObjectRefType,
         taskDecomposition.getInputParam().add(inputParam);
     }
 
-    private String addInputMapping(final ObjectRefType ref, final ObjectType netObject, final NetFactsType net, final ExternalTaskFactsType task, final DecompositionFactsType d) {
+    private String addInputMapping(final ObjectType netObject, final NetFactsType net, final ExternalTaskFactsType task, final DecompositionFactsType d) {
         VarMappingFactsType inputMapping = YAWL_FACTORY.createVarMappingFactsType();
         ExpressionType yawlExpression = YAWL_FACTORY.createExpressionType();
         String yawlXQuery = ExpressionUtils.createYAWLInputExpression(netObject, net);

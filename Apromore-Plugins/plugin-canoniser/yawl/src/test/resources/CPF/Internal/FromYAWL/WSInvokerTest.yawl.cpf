@@ -46,18 +46,19 @@
                 <expression>YawlWSInvokerPortName = 80</expression>
             </inputExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="c45063cf-d3f9-4d72-8fa6-5f8f8ff6f007">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="dcf2b9a8-7eb5-4bf0-aca1-c1d24015e06e">
             <direction>outgoing</direction>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="a65a8bd5-e349-4805-b150-3f75a02d6fef">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="id40db6b6e-d6d0-4bb3-adca-f745c17820bb">
             <direction>incoming</direction>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2">
             <name>OUT</name>
         </Node>
-        <Edge id="id79c254c9-e7c8-48d4-b57f-bbcd35ee3306" default="true" sourceId="c45063cf-d3f9-4d72-8fa6-5f8f8ff6f007" targetId="C-A-3"/>
-        <Edge id="id67ff3573-4015-4059-aa7d-d19f6f68565a" default="true" sourceId="C-A-3" targetId="a65a8bd5-e349-4805-b150-3f75a02d6fef"/>
-        <Edge id="ida9b66a3f-5011-415c-8a0e-4084ec669ea1" default="true" sourceId="C-InputCondition-1" targetId="c45063cf-d3f9-4d72-8fa6-5f8f8ff6f007"/>
-        <Edge id="idf91ba2bc-4cb6-4a4e-9907-efb1c6840ada" default="true" sourceId="a65a8bd5-e349-4805-b150-3f75a02d6fef" targetId="C-OutputCondition-2"/>
+        <Edge id="id66e9e0cc-e463-4dd4-990b-9a87ed7ac991" default="true" sourceId="dcf2b9a8-7eb5-4bf0-aca1-c1d24015e06e" targetId="C-A-3"/>
+        <Edge id="iddaa1a05f-d1fb-4809-b8b7-46a1b4e276da" default="true" sourceId="C-A-3" targetId="id40db6b6e-d6d0-4bb3-adca-f745c17820bb"/>
+        <Edge id="idfd19ed78-e040-4608-94c6-a30c0431a6c7" default="true" sourceId="C-InputCondition-1" targetId="dcf2b9a8-7eb5-4bf0-aca1-c1d24015e06e"/>
+        <Edge id="id1cdeab5e-8815-49db-a2f6-1357547f37f4" default="true" sourceId="id40db6b6e-d6d0-4bb3-adca-f745c17820bb" targetId="C-OutputCondition-2"/>
     </Net>
+    <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </ns2:CanonicalProcess>

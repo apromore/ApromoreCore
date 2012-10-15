@@ -26,7 +26,6 @@ import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.anf.DocumentationType;
 import org.apromore.anf.GraphicsType;
-import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.MessageManager;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
@@ -181,23 +180,34 @@ public final class YAWLConversionContext extends ConversionContext {
     }
 
     /**
+     * Gets the layout element of a YAWL net
+     *
      * @param id of YAWL net
-     * @return layout of YAWL net
-     * @throws CanoniserException
+     * @return layout of YAWL net or NULL if not found
      */
-    public LayoutNetFactsType getLayoutForNet(final String id) throws CanoniserException {
+    public LayoutNetFactsType getLayoutForNet(final String id) {
         for (final LayoutNetFactsType netLayout : getSpecificationLayout().getNet()) {
             if (netLayout.getId().equals(id)) {
                 return netLayout;
             }
         }
-        throw new CanoniserException("Could not find layout for Net with ID " + id);
+        return null;
     }
 
     private void setLayout(final LayoutFactsType layout) {
-        this.setLayoutLocaleElement(layout.getLocale());
-        this.setNumberFormat(NumberFormat.getInstance(getLayoutLocale()));
-        this.specificationLayout = layout.getSpecification().get(0);
+        if (layout != null) {
+            this.setLayoutLocaleElement(layout.getLocale());
+            this.setNumberFormat(NumberFormat.getInstance(getLayoutLocale()));
+            this.specificationLayout = layout.getSpecification().get(0);
+        } else {
+            LayoutLocaleType locale = new LayoutLocaleType();
+            locale.setCountry("AU");
+            locale.setLanguage("en");
+            this.setLayoutLocaleElement(locale);
+            this.setNumberFormat(NumberFormat.getInstance(Locale.ENGLISH));
+            this.specificationLayout = new Specification();
+
+        }
     }
 
     private void setNumberFormat(final NumberFormat numberFormat) {

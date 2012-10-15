@@ -92,8 +92,7 @@ public class SpecificationHandler extends YAWLConversionHandler<YAWLSpecificatio
             transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
             transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
             transformer.transform(domSource, result);
-            String dataTypes = writer.toString();
-            return dataTypes;
+            return writer.toString();
         } catch (IllegalArgumentException | TransformerFactoryConfigurationError | TransformerException e) {
             throw new CanoniserException(e);
         }

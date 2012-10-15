@@ -15,7 +15,7 @@
                     <defaultValue>true</defaultValue>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id809b5ebc-ad13-46df-adf2-6824a7940b42" objectId="D-N-Net-x" type="output" optional="false" consumed="true"/>
+            <objectRef id="ided941793-45a5-4b28-b6b3-6063f11428a9" objectId="D-N-Net-x" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>x = Boolean({cpf:getTaskObjectValue('x')/text()})</expression>
@@ -32,7 +32,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <objectRef id="id9f5995f8-e14a-4cee-ab8b-c8a997853ce6" objectId="D-N-Net-x" type="input" optional="false" consumed="true"/>
+            <objectRef id="c2e06b81-09bc-419d-a77d-c4f9424d4bef" objectId="D-N-Net-x" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>y = {cpf:getObjectValue('x')}</expression>
@@ -59,4 +59,5 @@
             <type>boolean</type>
         </Object>
     </Net>
+    <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </ns2:CanonicalProcess>

@@ -17,19 +17,14 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <objectRef id="id7e105ef6-19df-4efb-a047-80302f96eeb4" objectId="D-N-Credit-Rating-Process-ssn" type="output" optional="false" consumed="true"/>
+            <objectRef id="id5464bd33-5efe-4137-9356-a373be88536d" objectId="D-N-Credit-Rating-Process-ssn" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>ssn = {/ReceiveSSN/ssn/text()}</expression>
             </outputExpr>
             <teamWork>false</teamWork>
-            <filterByDataExpr>
-                <description></description>
-                <language>http://www.w3.org/1999/xpath/</language>
-                <expression>//ResourceType[]</expression>
-            </filterByDataExpr>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id986ad548-7dfe-4304-9c16-c138386f4317"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="idfdcac98c-685c-4680-a4d7-3e30a734978b"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-ReportFault-4" originalID="ReportFault_4">
             <name>ReportFault</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -39,7 +34,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <objectRef id="cc209bf3-a653-4ebb-a3fd-bef0ac4dc5a7" objectId="D-N-Credit-Rating-Process-fault" type="input" optional="false" consumed="true"/>
+            <objectRef id="idd7c00097-2b8c-4a15-bb84-f03b03d6f949" objectId="D-N-Credit-Rating-Process-fault" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>fault = {cpf:getObjectValue('fault')/text()}</expression>
@@ -55,7 +50,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <objectRef id="a4f1bc55-cae0-4fc9-ad6f-c51839c18f55" objectId="D-N-Credit-Rating-Process-rating" type="input" optional="false" consumed="true"/>
+            <objectRef id="idab4cb53d-4762-4e10-b894-d68fc3454c1d" objectId="D-N-Credit-Rating-Process-rating" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>rating = {cpf:getObjectValue('rating')/text()}</expression>
@@ -63,15 +58,15 @@
             <teamWork>false</teamWork>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-null-5" originalID="null_5"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id41411cd7-0f60-42f1-aea7-49145a783954"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id3d59b838-dcd6-4c61-a3a6-e87a8aac86c1"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2"/>
         <Edge id="C-InputCondition-1-ReceiveSSN-3" default="true" sourceId="C-InputCondition-1" targetId="C-ReceiveSSN-3"/>
-        <Edge id="idfaae9ad7-7dc8-4ba3-b604-4b7584a58a26" default="true" sourceId="C-ReceiveSSN-3" targetId="id986ad548-7dfe-4304-9c16-c138386f4317"/>
-        <Edge id="ided165628-dada-4bf6-b9fa-b5576392b4b6" default="true" sourceId="id986ad548-7dfe-4304-9c16-c138386f4317" targetId="C-ReportFault-4"/>
-        <Edge id="id85f0d129-97e7-44bd-9fee-726374dee283" default="true" sourceId="id986ad548-7dfe-4304-9c16-c138386f4317" targetId="C-DecideRating-6"/>
-        <Edge id="id5c427ffa-6a7e-4acc-88b8-883b9012f96c" default="true" sourceId="id41411cd7-0f60-42f1-aea7-49145a783954" targetId="C-null-5"/>
-        <Edge id="id9106f9f9-45ee-4627-b58c-a439368de9c2" default="true" sourceId="C-ReportFault-4" targetId="id41411cd7-0f60-42f1-aea7-49145a783954"/>
-        <Edge id="idc307f07c-9ce2-47a6-88e2-b9d282668906" default="true" sourceId="C-DecideRating-6" targetId="id41411cd7-0f60-42f1-aea7-49145a783954"/>
+        <Edge id="idfc996ba3-36d0-462b-847d-999bbe6fbeb6" default="true" sourceId="C-ReceiveSSN-3" targetId="idfdcac98c-685c-4680-a4d7-3e30a734978b"/>
+        <Edge id="id1fa04464-ba1e-4d3a-89dc-88ac1ba67e8e" default="true" sourceId="idfdcac98c-685c-4680-a4d7-3e30a734978b" targetId="C-ReportFault-4"/>
+        <Edge id="id6f1d0eeb-db30-486e-b39d-57208b6aa2d3" default="true" sourceId="idfdcac98c-685c-4680-a4d7-3e30a734978b" targetId="C-DecideRating-6"/>
+        <Edge id="ide402da17-abcb-4c53-b897-62b1fa736f90" default="true" sourceId="id3d59b838-dcd6-4c61-a3a6-e87a8aac86c1" targetId="C-null-5"/>
+        <Edge id="id3f690773-ab13-44b0-9430-d68c9cd71cce" default="true" sourceId="C-ReportFault-4" targetId="id3d59b838-dcd6-4c61-a3a6-e87a8aac86c1"/>
+        <Edge id="ida154d246-196e-4a1f-9e53-d9291527bd78" default="true" sourceId="C-DecideRating-6" targetId="id3d59b838-dcd6-4c61-a3a6-e87a8aac86c1"/>
         <Edge id="C-null-5-OutputCondition-2" default="true" sourceId="C-null-5" targetId="C-OutputCondition-2"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Credit-Rating-Process-fault" originalID="N-Credit-Rating-Process_fault">
             <name>fault</name>
@@ -110,4 +105,5 @@
             <type>string</type>
         </Object>
     </Net>
+    <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </ns2:CanonicalProcess>

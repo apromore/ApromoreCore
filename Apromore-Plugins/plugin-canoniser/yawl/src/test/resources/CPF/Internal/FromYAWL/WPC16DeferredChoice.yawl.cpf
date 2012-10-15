@@ -22,8 +22,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="f99785dc-c9a9-4ba5-b89a-7c62bbee897e" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="eb2895d5-72b0-45fc-bd29-f9ab9137dd2a" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="de51bf89-7453-4f43-aa31-bdc69504362f" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="e27d2e59-03a2-422f-b1ea-b0824dd750e2" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = {cpf:getObjectValue('var')/text()}</expression>
@@ -55,8 +55,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id29f6f0af-c6a9-41b2-a20b-c1cdccfcb647" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="c3265b51-c0bc-4759-a609-73087b34a5bf" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="id9f679f8a-b6d2-4789-bd7d-d9af352efaf3" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="idffe12d56-bb16-4caf-a45f-a88b99db538b" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = {cpf:getObjectValue('var')/text()}</expression>
@@ -73,14 +73,14 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="idf28a8903-db52-4fb2-b7d9-650dc5ebec2c"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="c2955e4f-a9ca-4ed7-9345-dfe1a4e30ed2"/>
         <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
         <Edge id="C-A-B-1" default="true" sourceId="C-A" targetId="C-B-1"/>
         <Edge id="C-B-1-C-1" default="true" sourceId="C-B-1" targetId="C-C-1"/>
         <Edge id="C-B-1-D-1" default="true" sourceId="C-B-1" targetId="C-D-1"/>
-        <Edge id="ide69887c0-a708-443d-9ad6-9d317b6cfeda" default="true" sourceId="idf28a8903-db52-4fb2-b7d9-650dc5ebec2c" targetId="C-OutputCondition"/>
-        <Edge id="idec91fcf6-cf97-49a3-870d-7ded53680446" default="true" sourceId="C-C-1" targetId="idf28a8903-db52-4fb2-b7d9-650dc5ebec2c"/>
-        <Edge id="idfa298d80-5a9e-46b9-8d9a-4da4bda5c6ed" default="true" sourceId="C-D-1" targetId="idf28a8903-db52-4fb2-b7d9-650dc5ebec2c"/>
+        <Edge id="idc500edd4-4a0f-4629-a839-87f33d6d4bda" default="true" sourceId="c2955e4f-a9ca-4ed7-9345-dfe1a4e30ed2" targetId="C-OutputCondition"/>
+        <Edge id="id15a5a5c0-95d6-4295-b9b8-bf4129a5ffbb" default="true" sourceId="C-C-1" targetId="c2955e4f-a9ca-4ed7-9345-dfe1a4e30ed2"/>
+        <Edge id="id95883272-8326-4be2-a33a-85b4f0db7988" default="true" sourceId="C-D-1" targetId="c2955e4f-a9ca-4ed7-9345-dfe1a4e30ed2"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-var" originalID="N-Net_var">
             <name>var</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
@@ -95,4 +95,5 @@
             <type>string</type>
         </Object>
     </Net>
+    <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </ns2:CanonicalProcess>

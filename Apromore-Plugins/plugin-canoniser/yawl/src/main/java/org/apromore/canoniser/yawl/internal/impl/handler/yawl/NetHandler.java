@@ -55,7 +55,9 @@ public class NetHandler extends YAWLConversionHandler<NetFactsType, CanonicalPro
         cpf.getNet().add(canoncialNet);
 
         final LayoutNetFactsType netLayout = getContext().getLayoutForNet(getObject().getId());
-        anf.getAnnotation().add(convertGraphics(netLayout));
+        if (netLayout != null) {
+            anf.getAnnotation().add(convertGraphics(netLayout));
+        }
         if (getObject().getDocumentation() != null) {
             anf.getAnnotation().add(convertDocumentation(canoncialNet, getObject().getDocumentation()));
         }

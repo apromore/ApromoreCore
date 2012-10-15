@@ -68,7 +68,7 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
         final YAWLSpecificationFactsType spec = YAWL_FACTORY.createYAWLSpecificationFactsType();
         specSet.getSpecification().add(spec);
         spec.setName(getObject().getName());
-        spec.setUri(getObject().getUri() != null ? getObject().getUri() : generateUUID());
+        spec.setUri(generateUUID(getObject().getUri()));
         spec.setMetaData(convertMetaData(getObject()));
         spec.setAny(createDataTypeElement());
         LOGGER.debug("Added Specification {}", spec.getName());
@@ -141,7 +141,7 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
             metaData.setVersion(BigDecimal.ONE);
         }
         if (metaData.getIdentifier() == null) {
-            metaData.setIdentifier(c.getUri());
+            metaData.setIdentifier(generateUUID(c.getUri()));
         }
         if (c.getAuthor() != null && metaData.getContributor().isEmpty()) {
             metaData.getContributor().add(c.getAuthor());

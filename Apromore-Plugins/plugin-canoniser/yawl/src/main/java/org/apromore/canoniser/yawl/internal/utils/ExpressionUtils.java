@@ -49,6 +49,8 @@ import org.yawlfoundation.yawlschema.NetFactsType;
  */
 public final class ExpressionUtils {
 
+    private static final Pattern NCNAME = Pattern.compile("[\\p{Alpha}_][\\p{Alnum}-_\\x2E]*");
+
     public static final String DEFAULT_TYPE_NAMESPACE = "http://www.w3.org/2001/XMLSchema";
 
     private ExpressionUtils() {
@@ -229,12 +231,16 @@ public final class ExpressionUtils {
         return queryBuilder.toString();
     }
 
-    private static Element createYAWLExpressionElement(final String queryPart, final String netName) throws ParserConfigurationException {
+    private static Element createYAWLExpressionElement(final String queryPart, final String targetName) throws ParserConfigurationException, CanoniserException {
         DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         Document queryDoc = docBuilder.newDocument();
-        Element queryElement = queryDoc.createElement(netName);
-        queryElement.setTextContent(queryPart);
-        return queryElement;
+        if (!NCNAME.matcher(targetName).matches()) {
+            throw new CanoniserException("Could not created YAWL expression element for Object "+targetName+". Invalid name for use in YAWL XML!");
+        } else {
+            Element queryElement = queryDoc.createElement(targetName);
+            queryElement.setTextContent(queryPart);
+            return queryElement;
+        }
     }
 
     /**
@@ -261,6 +267,9 @@ public final class ExpressionUtils {
     }
 
     private static String convertEmbeddedXQueryToStandalone(final String xQuery) throws CanoniserException {
+        if (!xQuery.startsWith("<")) {
+            return xQuery;
+        }
         try {
             final DocumentBuilder docBuilder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
             Element queryElement = docBuilder.parse(new ByteArrayInputStream(xQuery.getBytes())).getDocumentElement();

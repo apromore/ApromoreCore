@@ -52,12 +52,22 @@ public class OutputExpressionTypeHandler extends ExpressionTypeHandler<OutputExp
 
     }
 
-    private void convertAtomicTaskOutputParameter(final OutputExpressionType expr, final ExternalTaskFactsType task) throws CanoniserException {
-        convertToOutputMapping(expr, task);
+    private void convertAtomicTaskOutputParameter(final OutputExpressionType expr, final ExternalTaskFactsType task) {
+        try {
+            convertToOutputMapping(expr, task);
+        } catch (CanoniserException e) {
+            LOGGER.warn("Could not convert output expression for task", e);
+            getContext().getMessageInterface().addMessage("Could not convert output expression {0} for task {1}", expr.getExpression(), task.getId());
+        }
     }
 
-    private void convertCompositeTaskOutputParameter(final OutputExpressionType expr, final ExternalTaskFactsType task) throws CanoniserException {
-        convertToOutputMapping(expr, task);
+    private void convertCompositeTaskOutputParameter(final OutputExpressionType expr, final ExternalTaskFactsType task) {
+        try {
+            convertToOutputMapping(expr, task);
+        } catch (CanoniserException e) {
+            LOGGER.warn("Could not convert output expression for task", e);
+            getContext().getMessageInterface().addMessage("Could not convert output expression {0} for task {1}", expr.getExpression(), task.getId());
+        }
     }
 
     private String convertToOutputMapping(final OutputExpressionType expr, final ExternalTaskFactsType task) throws CanoniserException {
