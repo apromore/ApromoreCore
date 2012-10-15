@@ -19,9 +19,10 @@ public class AnfAnnotationType extends AnnotationType {
     }
 
     /**
-     * Construct an annotation for a BPMN edge.
+     * Construct an annotation for a BPMNDI Edge.
      *
-     * @param edge  a BPMN edge
+     * @param edge  a BPMNDI Edge
+     * @param anfIdFactory  generator for identifiers
      */
     public AnfAnnotationType(final BPMNEdge edge, final IdFactory anfIdFactory) {
         setId(anfIdFactory.newId(edge.getId()));
@@ -29,9 +30,10 @@ public class AnfAnnotationType extends AnnotationType {
     }
 
     /**
-     * Construct an annotation for a BPMN edge.
+     * Construct an annotation for a BPMNDI Shape.
      *
-     * @param edge  a BPMN edge
+     * @param shape  a BPMNDI Shape
+     * @param anfIdFactory  generator for identifiers
      */
     public AnfAnnotationType(final BPMNShape shape, final IdFactory anfIdFactory) {
         setId(anfIdFactory.newId(shape.getId()));

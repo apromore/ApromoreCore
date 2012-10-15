@@ -58,8 +58,9 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
      * Construct a CPF Task corresponding to a BPMN Call Activity.
      *
      * @param callActivity  a BPMN Call Activity
+     * @param initializer  global construction state
      */
-    public CpfTaskType(final TCallActivity callActivity, final CpfNetType.Initializer initializer) {
+    public CpfTaskType(final TCallActivity callActivity, final Initializer initializer) {
         initializer.populateFlowNode(this, callActivity);
         if (false) {
             // The called element is a process or global task within this same BPMN document
@@ -74,10 +75,17 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
      * Construct a CPF Task corresponding to a BPMN SubProcess.
      *
      * @param subProcess  a BPMN SubProcess
+     * @param initializer  global construction state
+     * @param cpf  the CPF document under construction
+     * @param cpfIdFactory  generator for CPF identifiers
+     * @param laneMap  assignment of BPMN elements to lanes
+     * @param bpmnFlowNodeToCpfNodeMap  mapping between BPMN and CPF graph vertices
+     * @param net  parent net
+     * @param definitions  a BPMN document
      * @throws CanoniserException if the task's subnet can't be constructed
      */
     public CpfTaskType(final TSubProcess subProcess,
-                       final CpfNetType.Initializer initializer,
+                       final Initializer initializer,
                        final CanonicalProcessType cpf,
                        final IdFactory cpfIdFactory,
                        final Map<TFlowNode, TLane> laneMap,
@@ -104,8 +112,9 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
      * Construct a CPF Task corresponding to a BPMN Task.
      *
      * @param task  a BPMN Task
+     * @param initializer  global construction state
      */
-    public CpfTaskType(final TTask task, final CpfNetType.Initializer initializer) {
+    public CpfTaskType(final TTask task, final Initializer initializer) {
         initializer.populateFlowNode(this, task);
     }
 

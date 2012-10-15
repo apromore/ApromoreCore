@@ -33,10 +33,10 @@ public class CpfEdgeType extends EdgeType {
      * Construct a CPF Edge from a BPMN Sequence Flow.
      *
      * @param sequenceFlow  a BPMN Sequence Flow
-     * @param initializer
+     * @param initializer  global construction state
      * @throws CanoniserException if the <code>sequenceFlow</code> has more than one condition expression
      */
-    public CpfEdgeType(final TSequenceFlow sequenceFlow, final CpfNetType.Initializer initializer) throws CanoniserException {
+    public CpfEdgeType(final TSequenceFlow sequenceFlow, final Initializer initializer) throws CanoniserException {
         EdgeType edge = this;
         initializer.populateFlowElement(edge, sequenceFlow);
 
