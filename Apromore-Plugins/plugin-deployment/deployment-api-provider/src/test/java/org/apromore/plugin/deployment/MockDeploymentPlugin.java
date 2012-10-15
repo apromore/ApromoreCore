@@ -7,7 +7,7 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.deployment.exception.DeploymentException;
-import org.apromore.plugin.property.PropertyType;
+import org.apromore.plugin.property.ParameterType;
 
 public class MockDeploymentPlugin implements DeploymentPlugin {
 
@@ -54,19 +54,25 @@ public class MockDeploymentPlugin implements DeploymentPlugin {
     }
 
     @Override
-    public Set<PropertyType<?>> getAvailableProperties() {
+    public Set<ParameterType<?>> getAvailableParameters() {
         return null;
     }
 
     @Override
-    public Set<PropertyType<?>> getMandatoryProperties() {
+    public Set<ParameterType<?>> getMandatoryParameters() {
         return null;
     }
 
     @Override
-    public Set<PropertyType<?>> getOptionalProperties() {
+    public Set<ParameterType<?>> getOptionalParameters() {
         return null;
     }
+
+    @Override
+    public String getEMail() {
+        return "test@test.com";
+    }
+
 
 
 }

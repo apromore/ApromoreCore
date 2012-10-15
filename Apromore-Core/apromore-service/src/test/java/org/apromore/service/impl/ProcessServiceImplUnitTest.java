@@ -22,7 +22,7 @@ import org.apromore.dao.jpa.ProcessDaoJpa;
 import org.apromore.dao.model.Native;
 import org.apromore.graph.JBPT.CPF;
 import org.apromore.model.ExportFormatResultType;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.FormatService;
 import org.apromore.service.RepositoryService;
@@ -113,7 +113,7 @@ public class ProcessServiceImplUnitTest {
 
         replayAll();
 
-        ExportFormatResultType data = service.exportProcess(name, processId, version, format, "", false, new HashSet<RequestPropertyType<?>>());
+        ExportFormatResultType data = service.exportProcess(name, processId, version, format, "", false, new HashSet<RequestParameterType<?>>());
 
         verifyAll();
 
@@ -141,7 +141,7 @@ public class ProcessServiceImplUnitTest {
 
         replayAll();
 
-        ExportFormatResultType data = service.exportProcess(name, processId, version, format, subStr, true, new HashSet<RequestPropertyType<?>>());
+        ExportFormatResultType data = service.exportProcess(name, processId, version, format, subStr, true, new HashSet<RequestParameterType<?>>());
 
         verifyAll();
 

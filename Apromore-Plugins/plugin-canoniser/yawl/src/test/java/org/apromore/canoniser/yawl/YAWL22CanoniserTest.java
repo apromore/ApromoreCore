@@ -22,7 +22,7 @@ import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.impl.PluginRequestImpl;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.junit.Test;
 import org.xml.sax.SAXException;
 import org.yawlfoundation.yawlschema.SpecificationSetFactsType;
@@ -44,7 +44,7 @@ public class YAWL22CanoniserTest {
         final File fileOrg = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "YAWL/OrganisationalData/YAWLDefaultOrgData.ybkp");
         BufferedInputStream nativeInput = new BufferedInputStream(new FileInputStream(file));
         PluginRequestImpl request = new PluginRequestImpl();
-        request.addRequestProperty(new RequestPropertyType<InputStream>("readOrgData", new FileInputStream(fileOrg)));
+        request.addRequestProperty(new RequestParameterType<InputStream>("readOrgData", new FileInputStream(fileOrg)));
         PluginResult result = c.canonise(nativeInput, aList, cList, request);
         nativeInput.close();
         assertEquals(1, cList.size());
@@ -74,7 +74,7 @@ public class YAWL22CanoniserTest {
         final ByteArrayOutputStream nativeOutput = new ByteArrayOutputStream();
         final File fileOrg = new File(TestUtils.TEST_RESOURCES_DIRECTORY + "YAWL/OrganisationalData/YAWLDefaultOrgData.ybkp");
         PluginRequestImpl request = new PluginRequestImpl();
-        request.addRequestProperty(new RequestPropertyType<InputStream>("readOrgData", new FileInputStream(fileOrg)));
+        request.addRequestProperty(new RequestParameterType<InputStream>("readOrgData", new FileInputStream(fileOrg)));
         PluginResult result = c.deCanonise(CPFSchema.unmarshalCanonicalFormat(new BufferedInputStream(new FileInputStream(file)), true).getValue(), null, nativeOutput, request);
         assertNotNull(nativeOutput);
         final SpecificationSetFactsType yawlFormat = YAWLSchema.unmarshalYAWLFormat(new ByteArrayInputStream(nativeOutput.toByteArray()), true)

@@ -79,7 +79,7 @@ import org.apromore.model.ParameterType;
 import org.apromore.model.ParametersType;
 import org.apromore.model.PluginInfo;
 import org.apromore.model.PluginInfoResult;
-import org.apromore.model.PluginProperties;
+import org.apromore.model.PluginParameters;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ProcessVersionIdType;
@@ -122,12 +122,12 @@ import org.apromore.model.WriteEditSessionInputMsgType;
 import org.apromore.model.WriteEditSessionOutputMsgType;
 import org.apromore.model.WriteUserInputMsgType;
 import org.apromore.model.WriteUserOutputMsgType;
+import org.apromore.plugin.ParameterAwarePlugin;
 import org.apromore.plugin.Plugin;
-import org.apromore.plugin.PropertyAwarePlugin;
 import org.apromore.plugin.deployment.DeploymentPlugin;
 import org.apromore.plugin.impl.PluginRequestImpl;
 import org.apromore.plugin.message.PluginMessage;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ClusterService;
 import org.apromore.service.DeploymentService;
@@ -576,7 +576,7 @@ public class ManagerPortalEndpoint {
             String annName = payload.getAnnotationName();
             boolean withAnn = payload.isWithAnnotations();
 
-            Set<RequestPropertyType<?>> requestProperties = PluginHelper.convertToRequestProperties(payload.getCanoniserProperties());
+            Set<RequestParameterType<?>> requestProperties = PluginHelper.convertToRequestProperties(payload.getCanoniserParameters());
             ExportFormatResultType exportResult = procSrv.exportProcess(name, processId, version, format, annName, withAnn, requestProperties);
             res.setExportResult(exportResult);
 
@@ -612,9 +612,9 @@ public class ManagerPortalEndpoint {
             String lastUpdate = editSession.getLastUpdate();
 
             DataHandler handler = payload.getProcessDescription();
-            PluginProperties xmlCanoniserProperties = payload.getCanoniserProperties();
+            PluginParameters xmlCanoniserProperties = payload.getCanoniserParameters();
 
-            Set<RequestPropertyType<?>> canoniserProperties = PluginHelper.convertToRequestProperties(xmlCanoniserProperties);
+            Set<RequestParameterType<?>> canoniserProperties = PluginHelper.convertToRequestProperties(xmlCanoniserProperties);
             CanonisedProcess canonisedProcess = canoniserService.canonise(nativeType, handler.getInputStream(), canoniserProperties);
 
             ProcessSummaryType process = procSrv.importProcess(username, processName, newCpfURI(), versionName, nativeType, canonisedProcess,
@@ -906,10 +906,10 @@ public class ManagerPortalEndpoint {
             PluginInfoResult infoResult = new PluginInfoResult();
 
             infoResult.setPluginInfo(pluginInfo);
-            if (plugin instanceof PropertyAwarePlugin) {
-                PropertyAwarePlugin propertyAwarePlugin = (PropertyAwarePlugin) plugin;
-                infoResult.setMandatoryProperties(PluginHelper.convertFromPluginProperties(propertyAwarePlugin.getMandatoryProperties()));
-                infoResult.setOptionalProperties(PluginHelper.convertFromPluginProperties(propertyAwarePlugin.getOptionalProperties()));
+            if (plugin instanceof ParameterAwarePlugin) {
+                ParameterAwarePlugin propertyAwarePlugin = (ParameterAwarePlugin) plugin;
+                infoResult.setMandatoryParameters(PluginHelper.convertFromPluginParameters(propertyAwarePlugin.getMandatoryParameters()));
+                infoResult.setOptionalParameters(PluginHelper.convertFromPluginParameters(propertyAwarePlugin.getOptionalParameters()));
             }
 
             res.setPluginInfoResult(infoResult);
@@ -1074,8 +1074,8 @@ public class ManagerPortalEndpoint {
             String processName = req.getValue().getProcessName();
             String versionName = req.getValue().getVersionName();
             String branchName = req.getValue().getBranchName();
-            PluginProperties deploymentProperties = req.getValue().getDeploymentProperties();
-            Set<RequestPropertyType<?>> requestProperties = PluginHelper.convertToRequestProperties(deploymentProperties);
+            PluginParameters deploymentProperties = req.getValue().getDeploymentParameters();
+            Set<RequestParameterType<?>> requestProperties = PluginHelper.convertToRequestProperties(deploymentProperties);
             String deploymentPluginName = req.getValue().getDeploymentPluginName();
             String deploymentPluginVersion = req.getValue().getDeploymentPluginVersion();
 

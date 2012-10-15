@@ -30,4 +30,9 @@ public class TestPlugin implements Plugin {
         return "test";
     }
 
+    @Override
+    public String getEMail() {
+        return "test@test.com";
+    }
+
 }

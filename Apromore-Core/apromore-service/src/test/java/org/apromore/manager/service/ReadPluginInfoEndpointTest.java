@@ -51,6 +51,7 @@ public class ReadPluginInfoEndpointTest {
         expect(mockPlugin.getAuthor()).andReturn("Scott");
         expect(mockPlugin.getDescription()).andReturn("Beam me up");
         expect(mockPlugin.getType()).andReturn("Starship");
+        expect(mockPlugin.getEMail()).andReturn("scott@enterprise.com");
         replay(mockPlugin);
 
         expect(pluginService.findByNameAndVersion(msg.getPluginName(), msg.getPluginVersion())).andReturn(mockPlugin);
@@ -62,13 +63,14 @@ public class ReadPluginInfoEndpointTest {
         Assert.assertNotNull(infoResult);
         PluginInfo info = infoResult.getPluginInfo();
         Assert.assertNotNull(info);
-        Assert.assertNull(infoResult.getMandatoryProperties());
-        Assert.assertNull(infoResult.getOptionalProperties());
+        Assert.assertNull(infoResult.getMandatoryParameters());
+        Assert.assertNull(infoResult.getOptionalParameters());
         Assert.assertEquals("Plugin name does not match", info.getName(), "Test Plugin");
         Assert.assertEquals("Plugin version does not match", info.getVersion(), "1.0");
         Assert.assertEquals("Plugin author does not match", info.getAuthor(), "Scott");
         Assert.assertEquals("Plugin descr does not match", info.getDescription(), "Beam me up");
         Assert.assertEquals("Plugin type does not match", info.getType(), "Starship");
+        Assert.assertEquals("Plugin email does not match", info.getEmail(), "scott@enterprise.com");
 
         verify(pluginService);
         verify(mockPlugin);

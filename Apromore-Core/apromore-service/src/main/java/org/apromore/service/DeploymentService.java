@@ -9,7 +9,7 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.deployment.DeploymentPlugin;
 import org.apromore.plugin.deployment.exception.DeploymentException;
 import org.apromore.plugin.message.PluginMessage;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.RequestParameterType;
 
 /**
  * Interface to access Deployment Plugins
@@ -46,7 +46,7 @@ public interface DeploymentService {
      *             in case of an error during deployment
      */
     List<PluginMessage> deployProcess(String nativeType, CanonicalProcessType cpf, AnnotationsType anf,
-            Set<RequestPropertyType<?>> deploymentProperties) throws DeploymentException;
+            Set<RequestParameterType<?>> deploymentProperties) throws DeploymentException;
 
     /**
      * Deploys a process in canonical format to a process engine supporting the native type. It is up to the {@link DeploymentPlugin} to call any
@@ -70,6 +70,6 @@ public interface DeploymentService {
      *             in case of an error during deployment
      */
     List<PluginMessage> deployProcess(String nativeType, String pluginName, String pluginVersion, CanonicalProcessType cpf, AnnotationsType anf,
-            Set<RequestPropertyType<?>> deploymentProperties) throws DeploymentException;
+            Set<RequestParameterType<?>> deploymentProperties) throws DeploymentException;
 
 }

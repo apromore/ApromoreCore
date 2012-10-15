@@ -14,7 +14,7 @@ import org.apromore.exception.UpdateProcessException;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.model.CanonisedProcess;
 
 /**
@@ -68,7 +68,7 @@ public interface ProcessService {
      * @throws ExportFormatException if for some reason the process model can not be found.
      */
     ExportFormatResultType exportProcess(final String name, final Integer processId, final String version, final String nativeType,
-            final String annName, boolean withAnn, Set<RequestPropertyType<?>> canoniserProperties) throws ExportFormatException;
+            final String annName, boolean withAnn, Set<RequestParameterType<?>> canoniserProperties) throws ExportFormatException;
 
     /**
      * Updates a processes meta data, this is the Name, Version, domain, rating and then updated the Native xml with these details.

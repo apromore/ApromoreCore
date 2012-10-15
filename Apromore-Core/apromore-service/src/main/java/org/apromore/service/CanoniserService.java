@@ -12,8 +12,8 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.exception.SerializationException;
 import org.apromore.graph.JBPT.CPF;
 import org.apromore.plugin.exception.PluginNotFoundException;
-import org.apromore.plugin.property.PropertyType;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.ParameterType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.DecanonisedProcess;
 
@@ -66,7 +66,7 @@ public interface CanoniserService {
      * @throws CanoniserException
      *             something failed
      */
-    CanonisedProcess canonise(String nativeType, InputStream nativeXml, Set<RequestPropertyType<?>> canoniserProperties)
+    CanonisedProcess canonise(String nativeType, InputStream nativeXml, Set<RequestParameterType<?>> canoniserProperties)
             throws CanoniserException;
 
     /**
@@ -88,7 +88,7 @@ public interface CanoniserService {
      *             something failed
      */
     DecanonisedProcess deCanonise(final Integer processId, final String version, final String nativeType, final CanonicalProcessType canonicalFormat,
-            final AnnotationsType annotationFormat, Set<RequestPropertyType<?>> canoniserProperties) throws CanoniserException;
+            final AnnotationsType annotationFormat, Set<RequestParameterType<?>> canoniserProperties) throws CanoniserException;
 
     /**
      * Convert the CPF Graph to XML.

@@ -4,7 +4,7 @@ import java.util.Set;
 
 import org.apromore.plugin.Plugin;
 import org.apromore.plugin.exception.PluginNotFoundException;
-import org.apromore.plugin.property.PropertyType;
+import org.apromore.plugin.property.ParameterType;
 
 /**
  *
@@ -25,8 +25,8 @@ public interface PluginService {
 
     Plugin findByNameAndVersion(String name, String version) throws PluginNotFoundException;
 
-    Set<PropertyType<?>> getOptionalProperties(String name, String version) throws PluginNotFoundException;
+    Set<ParameterType<?>> getOptionalProperties(String name, String version) throws PluginNotFoundException;
 
-    Set<PropertyType<?>> getMandatoryProperties(String name, String version) throws PluginNotFoundException;
+    Set<ParameterType<?>> getMandatoryProperties(String name, String version) throws PluginNotFoundException;
 
 }

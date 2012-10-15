@@ -25,16 +25,19 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.plugin.ParameterAwarePlugin;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
-import org.apromore.plugin.PropertyAwarePlugin;
 
 /**
  * Interface to an Apromore canoniser. Each canoniser is build as a OSGi plugin and has to implement this interface.
  *
  * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt (Bonn-Rhein-Sieg University oAS)</a>
  */
-public interface Canoniser extends PropertyAwarePlugin {
+public interface Canoniser extends ParameterAwarePlugin {
+
+    static final String CANONISE_PARAMETER = "org.apromore.canoniser.canonise";
+    static final String DECANONISE_PARAMETER = "org.apromore.canoniser.decanonise";
 
     /**
      * Type of the native format which this canoniser can handle. For example "EPML 2.0" or "YAWL 2.2"

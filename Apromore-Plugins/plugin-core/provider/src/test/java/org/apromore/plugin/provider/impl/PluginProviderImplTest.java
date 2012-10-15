@@ -47,6 +47,11 @@ public class PluginProviderImplTest {
                 return "author";
             }
 
+            @Override
+            public String getEMail() {
+                return "test@test.com";
+            }
+
         });
 		mockProvider.setInternalPluginList(pluginList);
 	}

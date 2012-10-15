@@ -12,15 +12,15 @@ import javax.activation.DataHandler;
 import org.apromore.model.ObjectFactory;
 import org.apromore.model.PluginInfo;
 import org.apromore.model.PluginMessages;
-import org.apromore.model.PluginProperties;
-import org.apromore.model.PluginProperty;
+import org.apromore.model.PluginParameter;
+import org.apromore.model.PluginParameters;
 import org.apromore.plugin.Plugin;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.message.PluginMessage;
 import org.apromore.plugin.message.PluginMessageImpl;
-import org.apromore.plugin.property.PropertyType;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.ParameterType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,14 +47,14 @@ public final class PluginHelper {
      * @param xmlProperties from web service
      * @return Set of RequestPropertyType
      */
-    public static Set<RequestPropertyType<?>> convertToRequestProperties(final PluginProperties xmlProperties) {
-        Set<RequestPropertyType<?>> properties = new HashSet<RequestPropertyType<?>>();
+    public static Set<RequestParameterType<?>> convertToRequestProperties(final PluginParameters xmlProperties) {
+        Set<RequestParameterType<?>> properties = new HashSet<RequestParameterType<?>>();
         if (xmlProperties != null) {
-            for (PluginProperty xmlProp : xmlProperties.getProperty()) {
+            for (PluginParameter xmlProp : xmlProperties.getParameter()) {
                 String clazz = xmlProp.getClazz();
                 Class<?> propertyClass;
                 try {
-                    propertyClass = PropertyType.class.getClassLoader().loadClass(clazz);
+                    propertyClass = ParameterType.class.getClassLoader().loadClass(clazz);
                     if (xmlProp.getValue() != null) {
                         properties.add(createPluginProperty(xmlProp, propertyClass));
                     } else {
@@ -68,7 +68,7 @@ public final class PluginHelper {
         return properties;
     }
 
-    private static RequestPropertyType<?> createPluginProperty(final PluginProperty xmlProp, final Class<?> propertyClass) {
+    private static RequestParameterType<?> createPluginProperty(final PluginParameter xmlProp, final Class<?> propertyClass) {
         Object value = xmlProp.getValue();
         Object convertedValue = null;
         if (value instanceof DataHandler) {
@@ -80,7 +80,7 @@ public final class PluginHelper {
         } else {
             convertedValue = value;
         }
-        return new RequestPropertyType<Object>(xmlProp.getId(), convertedValue);
+        return new RequestParameterType<Object>(xmlProp.getId(), convertedValue);
     }
 
     /**
@@ -89,10 +89,10 @@ public final class PluginHelper {
      * @param pluginProperties from Plugin
      * @return XML representation for use in web service
      */
-    public static PluginProperties convertFromPluginProperties(final Set<? extends PropertyType<?>> pluginProperties) {
-        PluginProperties xmlProperties = OBJECT_FACTORY.createPluginProperties();
-        for (PropertyType<?> p : pluginProperties) {
-            PluginProperty xmlProp = OBJECT_FACTORY.createPluginProperty();
+    public static PluginParameters convertFromPluginParameters(final Set<? extends ParameterType<?>> pluginProperties) {
+        PluginParameters xmlProperties = OBJECT_FACTORY.createPluginParameters();
+        for (ParameterType<?> p : pluginProperties) {
+            PluginParameter xmlProp = OBJECT_FACTORY.createPluginParameter();
             xmlProp.setId(p.getId());
             xmlProp.setName(p.getName());
             xmlProp.setDescription(p.getDescription());
@@ -104,7 +104,8 @@ public final class PluginHelper {
             } else {
                 xmlProp.setValue(p.getValue());
             }
-            xmlProperties.getProperty().add(xmlProp);
+            xmlProp.setCategory(p.getCategory());
+            xmlProperties.getParameter().add(xmlProp);
         }
         return xmlProperties;
     }
@@ -136,6 +137,7 @@ public final class PluginHelper {
         pluginInfo.setDescription(plugin.getDescription());
         pluginInfo.setType(plugin.getType());
         pluginInfo.setAuthor(plugin.getAuthor());
+        pluginInfo.setEmail(plugin.getEMail());
         return pluginInfo;
     }
 
