@@ -14,8 +14,40 @@ import org.apromore.canoniser.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.bpmn.ProcessWrapper;
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.*;
-import org.omg.spec.bpmn._20100524.model.*;
+import org.apromore.cpf.ANDJoinType;
+import org.apromore.cpf.ANDSplitType;
+import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.EdgeType;
+import org.apromore.cpf.NetType;
+import org.apromore.cpf.NodeType;
+import org.apromore.cpf.ObjectType;
+import org.apromore.cpf.ORJoinType;
+import org.apromore.cpf.ORSplitType;
+import org.apromore.cpf.ResourceTypeRefType;
+import org.apromore.cpf.ResourceTypeType;
+import org.apromore.cpf.RoutingType;
+import org.apromore.cpf.WorkType;
+import org.apromore.cpf.XORJoinType;
+import org.apromore.cpf.XORSplitType;
+import org.omg.spec.bpmn._20100524.model.BaseVisitor;
+import org.omg.spec.bpmn._20100524.model.TBaseElement;
+import org.omg.spec.bpmn._20100524.model.TCallActivity;
+import org.omg.spec.bpmn._20100524.model.TCollaboration;
+import org.omg.spec.bpmn._20100524.model.TDataObject;
+import org.omg.spec.bpmn._20100524.model.TEndEvent;
+import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
+import org.omg.spec.bpmn._20100524.model.TFlowElement;
+import org.omg.spec.bpmn._20100524.model.TFlowNode;
+import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
+import org.omg.spec.bpmn._20100524.model.TLane;
+import org.omg.spec.bpmn._20100524.model.TLaneSet;
+import org.omg.spec.bpmn._20100524.model.TParallelGateway;
+import org.omg.spec.bpmn._20100524.model.TParticipant;
+import org.omg.spec.bpmn._20100524.model.TRootElement;
+import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
+import org.omg.spec.bpmn._20100524.model.TStartEvent;
+import org.omg.spec.bpmn._20100524.model.TSubProcess;
+import org.omg.spec.bpmn._20100524.model.TTask;
 
 /**
  * CPF 1.0 net with convenience methods.
@@ -73,7 +105,7 @@ public class CpfNetType extends NetType {
         }
 
         for (JAXBElement<? extends TFlowElement> flowElement : process.getFlowElement()) {
-            flowElement.getValue().accept(new org.omg.spec.bpmn._20100524.model.BaseVisitor() {
+            flowElement.getValue().accept(new BaseVisitor() {
                 @Override
                 public void visit(final TCallActivity callActivity) {
                     net.getNode().add(new CpfTaskType(callActivity, initializer));
@@ -148,28 +180,11 @@ public class CpfNetType extends NetType {
 
                 @Override
                 public void visit(final TSequenceFlow sequenceFlow) {
-                    EdgeType edge = new EdgeType();
-                    initializer.populateFlowElement(edge, sequenceFlow);
-
-                    if (sequenceFlow.getConditionExpression() != null) {
-
-                        // We don't handle multiple conditions
-                        if (sequenceFlow.getConditionExpression().getContent().size() != 1) {
-                            throw new RuntimeException(
-                                                       new CanoniserException("BPMN sequence flow " + sequenceFlow.getId() + " has " +
-                                                                              sequenceFlow.getConditionExpression().getContent().size() +
-                                                                              " conditions, which the canoniser doesn't implement")
-                                                       );  // TODO - remove wrapper hack
-                        }
-
-                        ConditionExpressionType conditionExpr = new ConditionExpressionType();
-                        conditionExpr.setExpression(sequenceFlow.getConditionExpression().getContent().get(0).toString());
-                        edge.setConditionExpr(conditionExpr);
+                    try {
+                        net.getEdge().add(new CpfEdgeType(sequenceFlow, initializer));
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }
-                    edge.setSourceId(((TFlowNode) sequenceFlow.getSourceRef()).getId());  // TODO - process through cpfIdFactory
-                    edge.setTargetId(((TFlowNode) sequenceFlow.getTargetRef()).getId());  // TODO - process through cpfIdFactory
-
-                    net.getEdge().add(edge);
                 }
 
                 @Override
@@ -178,37 +193,24 @@ public class CpfNetType extends NetType {
                 }
 
                 @Override
-                public void visit(final TSubProcess subprocess) {
-
-                    // Add the CPF child net
-                    NetType subnet;
+                public void visit(final TSubProcess subProcess) {
                     try {
-                        subnet = new CpfNetType(cpf,
-                                                cpfIdFactory,
-                                                new ProcessWrapper(subprocess, cpfIdFactory.newId("subprocess")),
-                                                laneMap,
-                                                bpmnFlowNodeToCpfNodeMap,
-                                                net,
-                                                definitions);
+                        net.getNode().add(new CpfTaskType(subProcess,
+                                                          initializer,
+                                                          cpf,
+                                                          cpfIdFactory,
+                                                          laneMap,
+                                                          bpmnFlowNodeToCpfNodeMap,
+                                                          net,
+                                                          definitions));
                     } catch (CanoniserException e) {
-                        throw new RuntimeException("Couldn't create CPF Net for BPMN SubProcess " + subprocess.getId(), e);
-                        // TODO - remove wrapper hack
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }
-                    assert subnet != null;
-
-                    // Add the CPF Task to the parent Net
-                    TaskType cpfTask = new TaskType();
-                    initializer.populateFlowNode(cpfTask, subprocess);
-                    cpfTask.setSubnetId(subnet.getId());
-                    net.getNode().add(cpfTask);
                 }
 
                 @Override
-                public void visit(final TTask bpmnTask) {
-                    TaskType cpfTask = new TaskType();
-                    initializer.populateFlowNode(cpfTask, bpmnTask);
-
-                    net.getNode().add(cpfTask);
+                public void visit(final TTask task) {
+                    net.getNode().add(new CpfTaskType(task, initializer));
                 }
             });
         }
