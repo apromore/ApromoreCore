@@ -9,6 +9,7 @@ import java.util.List;
 import java.util.Set;
 
 import org.apache.commons.io.IOUtils;
+import org.apromore.canoniser.Canoniser;
 import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.NativeMetaData;
 import org.apromore.model.PluginInfo;
@@ -228,7 +229,7 @@ public class ImportOneProcessController extends BaseController {
                             String selectedCanoniser = ((SelectEvent) event).getSelectedItems().iterator().next().toString();
                             for (PluginInfo info: canoniserInfos) {
                                 if (info.getName().equals(selectedCanoniser)) {
-                                    pluginPropertiesHelper.showPluginProperties(info);
+                                    pluginPropertiesHelper.showPluginProperties(info, Canoniser.CANONISE_PARAMETER);
                                 }
                             }
                         }
@@ -236,7 +237,7 @@ public class ImportOneProcessController extends BaseController {
                 });
 
                 PluginInfo canoniserInfo = canoniserInfos.iterator().next();
-                pluginPropertiesHelper.showPluginProperties(canoniserInfo);
+                pluginPropertiesHelper.showPluginProperties(canoniserInfo, Canoniser.CANONISE_PARAMETER);
 
                 return true;
             } else {
