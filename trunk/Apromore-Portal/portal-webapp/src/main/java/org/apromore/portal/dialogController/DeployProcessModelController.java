@@ -10,7 +10,7 @@ import org.apromore.model.PluginInfo;
 import org.apromore.model.PluginMessages;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
@@ -104,7 +104,7 @@ public class DeployProcessModelController extends BaseController {
         }
     }
 
-    protected Set<RequestPropertyType<?>> convertProperties() {
+    protected Set<RequestParameterType<?>> convertProperties() {
         return propertiesHelper.readPluginProperties();
     }
 
@@ -137,7 +137,7 @@ public class DeployProcessModelController extends BaseController {
                             selectedDeploymentPLugin = cbItem.getLabel();
                             for (PluginInfo info: deploymentPluginInfos) {
                                 if (info.getName().equals(selectedDeploymentPLugin)) {
-                                    propertiesHelper.showPluginProperties(info);
+                                    propertiesHelper.showPluginProperties(info, null);
                                 }
                             }
                         }
@@ -145,7 +145,7 @@ public class DeployProcessModelController extends BaseController {
                 });
 
                 PluginInfo deploymentPluginInfo = deploymentPluginInfos.iterator().next();
-                propertiesHelper.showPluginProperties(deploymentPluginInfo);
+                propertiesHelper.showPluginProperties(deploymentPluginInfo, null);
                 selectedDeploymentPLugin = deploymentPluginInfo.getName() + ":"+ deploymentPluginInfo.getVersion();
 
             } else {

@@ -7,7 +7,7 @@ import java.util.Map;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.util.StreamUtil;
 import org.zkoss.zk.ui.Executions;
 
@@ -30,7 +30,7 @@ public class SignavioController extends BaseController {
         Map<String, String> param = new HashMap<String, String>();
         try {
             ExportFormatResultType exportResult = getService().exportFormat(process.getId(), process.getName(), version.getName(),
-                    nativeType, annotation, false, this.mainC.getCurrentUser().getUsername(), new HashSet<RequestPropertyType<?>>());
+                    nativeType, annotation, false, this.mainC.getCurrentUser().getUsername(), new HashSet<RequestParameterType<?>>());
             String data = StreamUtil.convertStreamToString(exportResult.getNative().getInputStream());
             this.mainC.showPluginMessages(exportResult.getMessage());
             this.setTitle(process.getName());

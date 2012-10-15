@@ -132,6 +132,7 @@ public class HeaderController extends BaseController {
                         dCell.appendChild(dLabel);
                         item.appendChild(dCell);
                         item.appendChild(new Listcell(info.getAuthor()));
+                        item.appendChild(new Listcell(info.getEmail()));
                     }
                 }
             });

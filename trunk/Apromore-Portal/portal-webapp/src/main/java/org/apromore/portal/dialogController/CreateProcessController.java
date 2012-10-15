@@ -15,7 +15,7 @@ import javax.activation.DataHandler;
 import org.apromore.model.ImportProcessResultType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
-import org.apromore.plugin.property.RequestPropertyType;
+import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.portal.common.Constants;
 import org.apromore.portal.exception.ExceptionAllUsers;
 import org.apromore.portal.exception.ExceptionDomains;
@@ -168,7 +168,7 @@ public class CreateProcessController extends BaseController {
                 // Documentation and Last Update are set to NULL & No Canoniser properties are used
                 //TODO show canoniser properties
                 ImportProcessResultType importResult = getService().importProcess(owner, nativeType, processName, versionName, initialNativeFormat.getInputStream(), domain,
-                        null, creationDate, null, new HashSet<RequestPropertyType<?>>());
+                        null, creationDate, null, new HashSet<RequestParameterType<?>>());
 
                 this.mainC.displayNewProcess(importResult.getProcessSummary());
                 this.mainC.showPluginMessages(importResult.getMessage());
