@@ -41,6 +41,7 @@ import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.bpmn.cpf.CpfEventType;
 import org.apromore.canoniser.bpmn.cpf.CpfIDResolver;
+import org.apromore.canoniser.bpmn.cpf.CpfTaskType;
 import org.apromore.canoniser.bpmn.cpf.CpfUnmarshallerListener;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CPFSchema;
@@ -395,7 +396,7 @@ public class BPMN20CanoniserTest {
         // Task "A"
         NodeType a = net.getNode().get(1);
         assertEquals("A", a.getName());
-        assertEquals(TaskType.class, a.getClass());
+        assertEquals(CpfTaskType.class, a.getClass());
 
         // End event "E2"
         NodeType e2 = net.getNode().get(2);
@@ -433,7 +434,7 @@ public class BPMN20CanoniserTest {
         // Task "A"
         NodeType a = net.getNode().get(0);
         assertEquals("A", a.getName());
-        assertEquals(TaskType.class, a.getClass());
+        assertEquals(CpfTaskType.class, a.getClass());
 
         // XOR Split
         NodeType xor = net.getNode().get(1);
@@ -443,12 +444,12 @@ public class BPMN20CanoniserTest {
         // Task "B"
         NodeType b = net.getNode().get(2);
         assertEquals("B", b.getName());
-        assertEquals(TaskType.class, b.getClass());
+        assertEquals(CpfTaskType.class, b.getClass());
 
         // Task "C"
         NodeType c = net.getNode().get(3);
         assertEquals("C", c.getName());
-        assertEquals(TaskType.class, c.getClass());
+        assertEquals(CpfTaskType.class, c.getClass());
 
         // Expect 3 edges
         assertEquals(3, net.getEdge().size());
@@ -495,7 +496,7 @@ public class BPMN20CanoniserTest {
         // Task "A"
         NodeType a = net.getNode().get(0);
         assertEquals("A", a.getName());
-        assertEquals(TaskType.class, a.getClass());
+        assertEquals(CpfTaskType.class, a.getClass());
 
         // XOR Join
         NodeType xor = net.getNode().get(1);
@@ -505,12 +506,12 @@ public class BPMN20CanoniserTest {
         // Task "B"
         NodeType b = net.getNode().get(2);
         assertEquals("B", b.getName());
-        assertEquals(TaskType.class, b.getClass());
+        assertEquals(CpfTaskType.class, b.getClass());
 
         // Task "C"
         NodeType c = net.getNode().get(3);
         assertEquals("C", c.getName());
-        assertEquals(TaskType.class, c.getClass());
+        assertEquals(CpfTaskType.class, c.getClass());
 
         // Expect 3 edges
         assertEquals(3, net.getEdge().size());
@@ -575,7 +576,7 @@ public class BPMN20CanoniserTest {
         // Task "A"
         NodeType a = net.getNode().get(1);
         assertEquals("A", a.getName());
-        assertEquals(TaskType.class, a.getClass());
+        assertEquals(CpfTaskType.class, a.getClass());
         assertEquals(1, ((TaskType) a).getResourceTypeRef().size()); 
         assertEquals(p_lane.getId(), ((TaskType) a).getResourceTypeRef().get(0).getResourceTypeId()); 
 
@@ -649,7 +650,7 @@ public class BPMN20CanoniserTest {
         // Task "A"
         NodeType a = net.getNode().get(1);
         assertEquals("A", a.getName());
-        assertEquals(TaskType.class, a.getClass());
+        assertEquals(CpfTaskType.class, a.getClass());
         assertEquals(1, ((TaskType) a).getResourceTypeRef().size()); 
         assertEquals(l.getId(), ((TaskType) a).getResourceTypeRef().get(0).getResourceTypeId()); 
 

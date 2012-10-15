@@ -3,14 +3,26 @@ package org.apromore.canoniser.bpmn.cpf;
 // Java 2 Standard packages
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
 // Local packages
+import org.apromore.canoniser.bpmn.BpmnDefinitions;
+import org.apromore.canoniser.bpmn.IdFactory;
+import org.apromore.canoniser.bpmn.ProcessWrapper;
+import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
+import org.apromore.cpf.NetType;
+import org.apromore.cpf.NodeType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TypeAttribute;
 import org.omg.spec.bpmn._20100524.model.TCallActivity;
+import org.omg.spec.bpmn._20100524.model.TFlowNode;
+import org.omg.spec.bpmn._20100524.model.TLane;
+import org.omg.spec.bpmn._20100524.model.TSubProcess;
+import org.omg.spec.bpmn._20100524.model.TTask;
 
 /**
  * CPF 1.0 task with convenience methods.
@@ -45,7 +57,7 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
     /**
      * Construct a CPF Task corresponding to a BPMN Call Activity.
      *
-     * @param task  a BPMN Call Activity
+     * @param callActivity  a BPMN Call Activity
      */
     public CpfTaskType(final TCallActivity callActivity, final CpfNetType.Initializer initializer) {
         initializer.populateFlowNode(this, callActivity);
@@ -56,6 +68,45 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
             // The called element is NOT a process or global task within this same BPMN document
             setCalledElement(new QName("dummy"));
         }
+    }
+
+    /**
+     * Construct a CPF Task corresponding to a BPMN SubProcess.
+     *
+     * @param subProcess  a BPMN SubProcess
+     * @throws CanoniserException if the task's subnet can't be constructed
+     */
+    public CpfTaskType(final TSubProcess subProcess,
+                       final CpfNetType.Initializer initializer,
+                       final CanonicalProcessType cpf,
+                       final IdFactory cpfIdFactory,
+                       final Map<TFlowNode, TLane> laneMap,
+                       final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap,
+                       final NetType net,
+                       final BpmnDefinitions definitions) throws CanoniserException {
+
+        // Add the CPF child net
+        NetType subnet = new CpfNetType(cpf,
+                                        cpfIdFactory,
+                                        new ProcessWrapper(subProcess, cpfIdFactory.newId("subprocess")),
+                                        laneMap,
+                                        bpmnFlowNodeToCpfNodeMap,
+                                        net,
+                                        definitions);
+        assert subnet != null;
+
+        // Add the CPF Task to the parent Net
+        initializer.populateFlowNode(this, subProcess);
+        setSubnetId(subnet.getId());
+    }
+
+    /**
+     * Construct a CPF Task corresponding to a BPMN Task.
+     *
+     * @param task  a BPMN Task
+     */
+    public CpfTaskType(final TTask task, final CpfNetType.Initializer initializer) {
+        initializer.populateFlowNode(this, task);
     }
 
     // Accessor methods
