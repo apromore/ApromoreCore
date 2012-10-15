@@ -1,7 +1,6 @@
 package org.apromore.canoniser.bpmn.anf;
 
 // Java 2 Standard packages
-import java.util.List;
 import javax.xml.bind.JAXBElement;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
@@ -10,7 +9,6 @@ import org.omg.spec.bpmn._20100524.model.BaseVisitor;
 import org.omg.spec.dd._20100524.di.DiagramElement;
 
 // Local packages
-import org.apromore.anf.AnnotationType;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.bpmn.IdFactory;
 

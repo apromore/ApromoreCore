@@ -3,39 +3,25 @@ package org.apromore.canoniser.bpmn;
 // Java 2 Standard packages
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Marshaller;
 import javax.xml.transform.stream.StreamSource;
 
 // Local packages
 import org.apromore.anf.AnnotationsType;
-import org.apromore.anf.AnnotationType;
 import org.apromore.canoniser.DefaultAbstractCanoniser;
 import org.apromore.canoniser.bpmn.anf.AnfAnnotationsType;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
-import org.apromore.canoniser.bpmn.cpf.CpfNetType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.result.CanoniserMetadataResult;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.NodeType;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.impl.PluginResultImpl;
 import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
-import org.omg.spec.bpmn._20100524.di.BPMNEdge;
-import org.omg.spec.bpmn._20100524.di.BPMNShape;
-import org.omg.spec.bpmn._20100524.model.TFlowNode;
-import org.omg.spec.bpmn._20100524.model.TLane;
-import org.omg.spec.bpmn._20100524.model.TProcess;
-import org.omg.spec.bpmn._20100524.model.TRootElement;
-import org.omg.spec.dd._20100524.di.DiagramElement;
 import org.springframework.stereotype.Component;
 
 /**

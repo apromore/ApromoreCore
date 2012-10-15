@@ -34,8 +34,9 @@ public class CpfEventType extends EventType implements CpfNodeType {
      * Construct a CPF Task corresponding to a BPMN End Event.
      *
      * @param endEvent  a BPMN End Event
+     * @param initializer  global construction state
      */
-    public CpfEventType(final TEndEvent endEvent, final CpfNetType.Initializer initializer) {
+    public CpfEventType(final TEndEvent endEvent, final Initializer initializer) {
         super();
         initializer.populateFlowNode(this, endEvent);
     }
@@ -44,8 +45,9 @@ public class CpfEventType extends EventType implements CpfNodeType {
      * Construct a CPF Task corresponding to a BPMN Start Event.
      *
      * @param startEvent  a BPMN Start Event
+     * @param initializer  global construction state
      */
-    public CpfEventType(final TStartEvent startEvent, final CpfNetType.Initializer initializer) {
+    public CpfEventType(final TStartEvent startEvent, final Initializer initializer) {
         super();
         initializer.populateFlowNode(this, startEvent);
     }

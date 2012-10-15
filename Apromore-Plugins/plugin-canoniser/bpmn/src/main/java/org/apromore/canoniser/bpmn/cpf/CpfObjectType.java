@@ -30,9 +30,10 @@ public class CpfObjectType extends ObjectType {
     /**
      * Construct a CPF Task corresponding to a BPMN Call Activity.
      *
-     * @param task  a BPMN Call Activity
+     * @param dataObject  a BPMN Data Object
+     * @param initializer  global construction state
      */
-    public CpfObjectType(final TDataObject dataObject, final CpfNetType.Initializer initializer) {
+    public CpfObjectType(final TDataObject dataObject, final Initializer initializer) {
 
         setConfigurable(false);  // BPMN doesn't have an obvious equivalent
         setIsCollection(dataObject.isIsCollection());
