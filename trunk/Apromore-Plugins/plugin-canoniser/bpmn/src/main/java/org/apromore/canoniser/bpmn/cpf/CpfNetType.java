@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
 
 // Local packages
 import static org.apromore.canoniser.bpmn.BPMN20Canoniser.requiredName;
@@ -17,10 +16,8 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
-import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ORJoinType;
 import org.apromore.cpf.ORSplitType;
 import org.apromore.cpf.ResourceTypeRefType;
@@ -30,7 +27,6 @@ import org.apromore.cpf.WorkType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
 import org.omg.spec.bpmn._20100524.model.BaseVisitor;
-import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TCallActivity;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
 import org.omg.spec.bpmn._20100524.model.TDataObject;
@@ -315,77 +311,6 @@ public class CpfNetType extends NetType {
 
                 ((WorkType) node).getResourceTypeRef().add(resourceTypeRef);
             }
-        }
-    }
-
-    /**
-     * This class is a clunky way of doing the work that <code>super</code> calls normally would in the constructors of the CPF elements.
-     * The CPF extension classes in {@link org.apromore.canoniser.bpmn.cpf} can't inherit from one another since they each must extend
-     * from the corresponding classes in {@link org.apromore.cpf}.
-     */
-    public static class Initializer {
-
-        private final IdFactory                cpfIdFactory;
-        private final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap;
-
-        /**
-         * Sole constructor.
-         *
-         * @param bpmnFlowNodeToCpfNodeMap
-         */
-        public Initializer(final IdFactory                cpfIdFactory,
-                           final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap) {
-
-            this.cpfIdFactory             = cpfIdFactory;
-            this.bpmnFlowNodeToCpfNodeMap = bpmnFlowNodeToCpfNodeMap;
-        }
-
-        // Edge supertype handlers
-
-        void populateBaseElement(final EdgeType edge, final TBaseElement baseElement) {
-            edge.setId(cpfIdFactory.newId(baseElement.getId()));
-            edge.setOriginalID(baseElement.getId());
-        }
-
-        void populateFlowElement(final EdgeType edge, final TFlowElement flowElement) {
-            populateBaseElement(edge, flowElement);
-        }
-
-        // Node supertype handlers
-
-        void populateBaseElement(final NodeType node, final TBaseElement baseElement) {
-            node.setId(cpfIdFactory.newId(baseElement.getId()));
-            node.setOriginalID(baseElement.getId());
-        }
-
-        void populateFlowElement(final NodeType node, final TFlowElement flowElement) {
-            populateBaseElement(node, flowElement);
-            node.setName(flowElement.getName());
-        }
-
-        // Work supertype handler
-
-        void populateFlowNode(final WorkType work, final TFlowNode flowNode) {
-            populateFlowElement(work, flowNode);
-            bpmnFlowNodeToCpfNodeMap.put(flowNode, work);
-        }
-
-        // Object supertype handlers
-
-        void populateBaseElement(final ObjectType object, final TBaseElement baseElement) {
-            object.setId(cpfIdFactory.newId(baseElement.getId()));
-        }
-
-        void populateFlowElement(final ObjectType object, final TFlowElement flowElement) {
-            populateBaseElement(object, flowElement);
-            object.setName(flowElement.getName());
-        }
-
-        // ResourceType supertype handlers
-
-        void populateBaseElement(final ResourceTypeType resourceType, final TBaseElement baseElement) {
-            resourceType.setId(cpfIdFactory.newId(baseElement.getId()));
-            resourceType.setOriginalID(baseElement.getId());
         }
     }
 }
