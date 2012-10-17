@@ -44,25 +44,20 @@ public class BpmndiDiagram extends BPMNDiagram {
      * Construct a BPMNDI Diagram corresponding to an ANF AnnotationsType.
      *
      * @param anf  an ANF model, never <code>null</code>
-     * @param bpmnIdFactory  generator for IDs unique within the diagram's intended BPMN document
-     * @param idMap  map from CPF @cpfId node identifiers to BPMN ids
-     * @param edgeMap  map from CPF @cpfId edge identifiers to BPMN ids
+     * @param initializer  BPMN document construction state
      */
-    public BpmndiDiagram(final AnnotationsType anf,
-                         final IdFactory bpmnIdFactory,
-                         final Map<String, TBaseElement> idMap,
-                         final Map<String, TSequenceFlow> edgeMap) {
+    public BpmndiDiagram(final AnnotationsType anf, final Initializer initializer) {
 
         final BpmndiObjectFactory bpmndiObjectFactory = new BpmndiObjectFactory();
 
         // Create BPMNDiagram
         final BPMNDiagram bpmnDiagram = this;
-        bpmnDiagram.setId(bpmnIdFactory.newId("diagram"));
+        bpmnDiagram.setId(initializer.bpmnIdFactory.newId("diagram"));
         bpmnDiagram.setName(anf.getName());
 
         // Create BPMNPlane
         final BPMNPlane bpmnPlane = new BPMNPlane();
-        bpmnPlane.setId(bpmnIdFactory.newId("plane"));
+        bpmnPlane.setId(initializer.bpmnIdFactory.newId("plane"));
         assert bpmnDiagram.getBPMNPlane() == null;
         bpmnDiagram.setBPMNPlane(bpmnPlane);
 
@@ -125,10 +120,10 @@ public class BpmndiDiagram extends BPMNDiagram {
                     };
                     */
 
-                    if (idMap.containsKey(annotation.getCpfId())) {
+                    if (initializer.idMap.containsKey(annotation.getCpfId())) {
                         BPMNShape shape = new BPMNShape();
-                        shape.setId(bpmnIdFactory.newId(annotation.getId()));
-                        shape.setBpmnElement(idMap.get(annotation.getCpfId()).getId());
+                        shape.setId(initializer.bpmnIdFactory.newId(annotation.getId()));
+                        shape.setBpmnElement(initializer.idMap.get(annotation.getCpfId()).getId());
 
                         // a shape requires a bounding box, defined by a top-left position and a size (width and height)
                         if (graphics.getPosition().size() != 1) {
@@ -154,10 +149,10 @@ public class BpmndiDiagram extends BPMNDiagram {
 
                         bpmnPlane.getDiagramElement().add(bpmndiObjectFactory.createBPMNShape(shape));
 
-                    } else if (edgeMap.containsKey(annotation.getCpfId())) {
+                    } else if (initializer.edgeMap.containsKey(annotation.getCpfId())) {
                         BPMNEdge edge = new BPMNEdge();
-                        edge.setId(bpmnIdFactory.newId(annotation.getId()));
-                        edge.setBpmnElement(edgeMap.get(annotation.getCpfId()).getId());
+                        edge.setId(initializer.bpmnIdFactory.newId(annotation.getId()));
+                        edge.setBpmnElement(initializer.edgeMap.get(annotation.getCpfId()).getId());
 
                         // an edge requires two or more waypoints
                         if (graphics.getPosition().size() < 2) {
