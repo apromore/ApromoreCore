@@ -129,23 +129,7 @@ public class BpmnDefinitions extends TDefinitions {
      */
     public BpmnDefinitions(final CanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
 
-        // Generates all identifiers scoped to the BPMN document
-        final IdFactory bpmnIdFactory = new IdFactory();
-
-        // Used to wrap BPMN elements in JAXBElements
-        final BpmnObjectFactory factory = new BpmnObjectFactory();
-
-        // Map from CPF @cpfId node identifiers to BPMN ids
-        final Map<String, TBaseElement> idMap = new HashMap<String, TBaseElement>();
-
-        // Map from CPF @cpfId edge identifiers to BPMN ids
-        final Map<String, TSequenceFlow> edgeMap = new HashMap<String, TSequenceFlow>();
-
-        // Records the CPF cpfIds of BPMN sequence flows which need their @sourceRef populated
-        final Map<String, TSequenceFlow> flowWithoutSourceRefMap = new HashMap<String, TSequenceFlow>();
-
-        // Records the CPF cpfIds of BPMN sequence flows which need their @targetRef populated
-        final Map<String, TSequenceFlow> flowWithoutTargetRefMap = new HashMap<String, TSequenceFlow>();
+        Initializer initializer = new Initializer(cpf);
 
         // We can get by without an ANF parameter, but we definitely need a CPF
         if (cpf == null) {
@@ -168,26 +152,18 @@ public class BpmnDefinitions extends TDefinitions {
         */
 
         // Assume there will be pools, all of which belong to a single collaboration
-        TCollaboration collaboration = factory.createTCollaboration();
-        JAXBElement<TCollaboration> wrapperCollaboration = factory.createCollaboration(collaboration);
+        TCollaboration collaboration = initializer.factory.createTCollaboration();
+        JAXBElement<TCollaboration> wrapperCollaboration = initializer.factory.createCollaboration(collaboration);
 
         // Translate CPF Nets as BPMN Processes
-        for (final NetType net : cpf.getNet()) {
+        for (final NetType net : initializer.cpf.getNet()) {
 
             // Only root elements are decanonised here; subnets are dealt with by recursion
             if (!cpf.getRootIds().contains(net.getId())) {
                 continue;
             }
 
-            getRootElement().add(factory.createProcess(new BpmnProcess(net,
-                                                                       cpf,
-                                                                       factory,
-                                                                       bpmnIdFactory,
-                                                                       idMap,
-                                                                       edgeMap,
-                                                                       flowWithoutSourceRefMap,
-                                                                       flowWithoutTargetRefMap,
-                                                                       collaboration)));
+            getRootElement().add(initializer.factory.createProcess(new BpmnProcess(net, initializer, collaboration)));
 
             /*
             // If we haven't added the collaboration yet and this process is a pool, add the collaboration
@@ -198,16 +174,11 @@ public class BpmnDefinitions extends TDefinitions {
         }
 
         // Make sure all the deferred fields did eventually get filled in
-        if (!flowWithoutSourceRefMap.isEmpty()) {
-            throw new CanoniserException("Missing source references: " + flowWithoutSourceRefMap.keySet());
-        }
-        if (!flowWithoutTargetRefMap.isEmpty()) {
-            throw new CanoniserException("Missing target references: " + flowWithoutTargetRefMap.keySet());
-        }
+        initializer.close();
 
         // Translate any ANF annotations into a BPMNDI diagram element
         if (anf != null) {
-            getBPMNDiagram().add(new BpmndiDiagram(anf, bpmnIdFactory, idMap, edgeMap));
+            getBPMNDiagram().add(new BpmndiDiagram(anf, initializer));
         }
     }
 

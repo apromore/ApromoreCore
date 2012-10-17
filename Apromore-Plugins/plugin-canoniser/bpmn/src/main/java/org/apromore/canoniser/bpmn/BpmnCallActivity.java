@@ -25,27 +25,18 @@ public class BpmnCallActivity extends TCallActivity {
      * Construct a BPMN SubProcess corresponding to a CPF Task.
      *
      * @param task  a CPF Task with a defined subnet
-     * @param cpf  the parent CPF model
-     * @param factory  BPMN element factory
-     * @param bpmnIdFactory  generator for IDs unique within the BPMN document
-     * @param idMap  map from CPF @cpfId node identifiers to BPMN ids
-     * @param edgeMap  map from CPF @cpfId edge identifiers to BPMN ids
-     * @param flowWithoutSourceRefMap  deferred source nodes
-     * @param flowWithoutTargetRefMap  deferred target nodes
-     * @param collaboration  element accumulating pool participants
+     * @param initializer  BPMN document construction state
      * @throws CanoniserException  if the subprocess can't be constructed
      */
-    public BpmnCallActivity(final CpfTaskType               task,
-                            final IdFactory                 bpmnIdFactory,
-                            final Map<String, TBaseElement> idMap) throws CanoniserException {
+    public BpmnCallActivity(final CpfTaskType task,
+                            final Initializer initializer) throws CanoniserException {
 
         // Ensure that the CPF task has a called Element
         if (task.getCalledElement() == null) {
             throw new CanoniserException("CPF task " + task.getId() + " has no called element");
         }
 
-        setId(bpmnIdFactory.newId(task.getId()));
-        idMap.put(task.getId(), this);
+        initializer.populateBaseElement(this, task);
         setCalledElement(task.getCalledElement());
     }
 }
