@@ -392,7 +392,7 @@ public class ProcessModelVersionDaoJpaUnitTest {
         e.setNumEdges(2);
         e.setNumVertices(2);
         e.setVersionName("name");
-        e.setVersionNumber(2);
+        e.setVersionNumber(2d);
         return e;
     }
 

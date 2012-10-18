@@ -94,7 +94,7 @@ public interface ProcessService {
      * @return
      * @throws ExceptionDao
      */
-    ProcessModelVersion addProcessModelVersion(ProcessBranch branch, String rootFragmentVersionUri, int versionNumber, String versionName,
+    ProcessModelVersion addProcessModelVersion(ProcessBranch branch, String rootFragmentVersionUri, Double versionNumber, String versionName,
             int numVertices, int numEdges) throws ExceptionDao;
 
 

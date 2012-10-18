@@ -40,8 +40,8 @@ public class ProcessBranch implements Serializable {
     private String ranking;
 
     private Process process;
-    private ProcessModelVersion currentProcessModelVersionId;
-    private ProcessModelVersion sourceProcessModelVersionId;
+    private ProcessModelVersion currentProcessModelVersion;
+    private ProcessModelVersion sourceProcessModelVersion;
     private Set<ProcessModelVersion> processModelVersions = new HashSet<ProcessModelVersion>(0);
 
 
@@ -131,23 +131,23 @@ public class ProcessBranch implements Serializable {
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "currentProcessModelVersionId")
-    public ProcessModelVersion getCurrentProcessModelVersionId() {
-        return this.currentProcessModelVersionId;
+    @JoinColumn(name = "currentProcessModelVersion")
+    public ProcessModelVersion getCurrentProcessModelVersion() {
+        return this.currentProcessModelVersion;
     }
 
-    public void setCurrentProcessModelVersionId(final ProcessModelVersion newCurrentProcessModelVersionId) {
-        this.currentProcessModelVersionId = newCurrentProcessModelVersionId;
+    public void setCurrentProcessModelVersion(final ProcessModelVersion newCurrentProcessModelVersion) {
+        this.currentProcessModelVersion = newCurrentProcessModelVersion;
     }
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "sourceProcessModelVersionId")
-    public ProcessModelVersion getSourceProcessModelVersionId() {
-        return this.sourceProcessModelVersionId;
+    @JoinColumn(name = "sourceProcessModelVersion")
+    public ProcessModelVersion getSourceProcessModelVersion() {
+        return this.sourceProcessModelVersion;
     }
 
-    public void setSourceProcessModelVersionId(final ProcessModelVersion newSourceProcessModelVersionId) {
-        this.sourceProcessModelVersionId = newSourceProcessModelVersionId;
+    public void setSourceProcessModelVersion(final ProcessModelVersion newSourceProcessModelVersion) {
+        this.sourceProcessModelVersion = newSourceProcessModelVersion;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "processBranch")

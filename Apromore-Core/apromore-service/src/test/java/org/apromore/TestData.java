@@ -1445,6 +1445,78 @@ public interface TestData {
             "</directory>\n" +
             "</ns2:epml>";
 
+    public final static String EPML3 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<epml:epml xmlns:epml=\"http://www.epml.de\"\n" +
+            "    xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.epml.de epml_12.xsd\">\n" +
+            "  <epc epcId=\"1\" name=\"Test EPML 1\">\n" +
+            "    <function id=\"1\">\n" +
+            "      <name>FUNCTION 1</name>\n" +
+            "    </function>\n" +
+            "    <function id=\"3\">\n" +
+            "      <name>FUNCTION 3</name>\n" +
+            "    </function>\n" +
+            "    <function id=\"4\">\n" +
+            "      <name>FUNCTION 4</name>\n" +
+            "    </function>\n" +
+            "    <function id=\"6\">\n" +
+            "      <name>FUNCTION 6</name>\n" +
+            "    </function>\n" +
+            "    <xor id=\"2\">\n" +
+            "      <name>SPLIT</name>\n" +
+            "    </xor>\n" +
+            "    <xor id=\"5\">\n" +
+            "      <name>JOIN</name>\n" +
+            "    </xor>\n" +
+            "    <arc id=\"7\">\n" +
+            "      <flow source=\"1\" target=\"2\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"8\">\n" +
+            "      <flow source=\"2\" target=\"3\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"9\">\n" +
+            "      <flow source=\"2\" target=\"4\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"10\">\n" +
+            "      <flow source=\"3\" target=\"5\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"11\">\n" +
+            "      <flow source=\"4\" target=\"5\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"12\">\n" +
+            "      <flow source=\"5\" target=\"6\"/>\n" +
+            "    </arc>\n" +
+            "  </epc>\n" +
+            "</epml:epml>";
+
+    public final static String EPML4 = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
+            "<epml:epml xmlns:epml=\"http://www.epml.de\"\n" +
+            "     xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.epml.de epml_12.xsd\">\n" +
+            "  <epc epcId=\"1\" name=\"Test EPML 2\">\n" +
+            "    <function id=\"1\">\n" +
+            "      <name>FUNCTION 1</name>\n" +
+            "    </function>\n" +
+            "    <function id=\"2\">\n" +
+            "      <name>FUNCTION 2</name>\n" +
+            "    </function>\n" +
+            "    <function id=\"3\">\n" +
+            "      <name>FUNCTION 3</name>\n" +
+            "    </function>\n" +
+            "    <function id=\"4\">\n" +
+            "      <name>FUNCTION 4</name>\n" +
+            "    </function>\n" +
+            "    <arc id=\"5\">\n" +
+            "      <flow source=\"1\" target=\"2\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"6\">\n" +
+            "      <flow source=\"2\" target=\"3\"/>\n" +
+            "    </arc>\n" +
+            "    <arc id=\"7\">\n" +
+            "      <flow source=\"3\" target=\"4\"/>\n" +
+            "    </arc>\n" +
+            "  </epc>\n" +
+            "</epml:epml>";
+
+
     public final static String PNML = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
             "<pnml>\n" +
             "  <net type=\"http://www.informatik.hu-berlin.de/top/pntd/ptNetb\" id=\"noID\">\n" +

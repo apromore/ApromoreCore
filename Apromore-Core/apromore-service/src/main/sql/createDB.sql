@@ -159,7 +159,7 @@ CREATE TABLE `process_model_version` (
     `id`                             int(11) NOT NULL AUTO_INCREMENT,
     `branchId`                       int(11),
     `rootFragmentVersionId`          int(11),
-    `version_number`                 int,
+    `version_number`                 double,
     `version_name`                   varchar(200),
     `change_propagation`             int,
     `lock_status`                    int,

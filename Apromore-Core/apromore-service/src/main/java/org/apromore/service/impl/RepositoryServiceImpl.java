@@ -41,7 +41,6 @@ import org.apromore.service.RepositoryService;
 import org.apromore.service.UserService;
 import org.apromore.service.helper.ChangePropagator;
 import org.apromore.service.model.NameValuePair;
-import org.apromore.util.VersionNameUtil;
 import org.apromore.util.XMLUtils;
 import org.jbpt.pm.FlowNode;
 import org.slf4j.Logger;
@@ -103,9 +102,9 @@ public class RepositoryServiceImpl implements RepositoryService {
      *      {@inheritDoc}
      */
     @Override
-    public ProcessModelVersion addProcessModel(final String processName, final String versionName, final String username, final String cpfURI,
-            final String nativeType, final String domain, final String documentation, final String created, final String lastUpdated, final CPF proModGrap)
-            throws ImportException {
+    public ProcessModelVersion addProcessModel(final String processName, final String versionName, final String username, final String uri,
+            final String nativeType, final String domain, final String documentation, final String created, final String lastUpdated,
+            final CPF proModGrap) throws ImportException {
         if (proModGrap == null || proModGrap.getVertices().isEmpty() || proModGrap.getEdges().isEmpty()) {
             LOGGER.error("Process " + processName + " Failed to import correctly.");
             throw new ImportException("Process " + processName + " Failed to import correctly.");
@@ -120,11 +119,11 @@ public class RepositoryServiceImpl implements RepositoryService {
             int numEdges = proModGrap.countEdges();
 
             Process process = insertProcess(processName, username, nativeType, domain);
-            ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, versionName);
+            ProcessBranch branch = insertProcessBranch(process, created, lastUpdated, Constants.TRUNK_NAME);
 
             List<String> composingFragmentIds = new ArrayList<String>(0);
             FragmentVersion rootFV = decomposer.decompose(proModGrap, composingFragmentIds);
-            ProcessModelVersion pdo = insertProcessModelVersion(proModGrap, branch, rootFV.getId(), numVertices, numEdges);
+            ProcessModelVersion pdo = insertProcessModelVersion(proModGrap, branch, rootFV.getId(), numVertices, numEdges, versionName);
             insertProcessFragmentMappings(pdo, composingFragmentIds);
             result = pdo;
         } catch (Exception re) {
@@ -238,7 +237,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             processModelGraph.setProperty(Constants.PROCESS_NAME, processName);
             processModelGraph.setProperty(Constants.BRANCH_NAME, branchName);
             processModelGraph.setProperty(Constants.BRANCH_ID, pmv.getProcessBranch().getId().toString());
-            processModelGraph.setProperty(Constants.VERSION_NUMBER, Integer.toString(pmv.getVersionNumber()));
+            processModelGraph.setProperty(Constants.VERSION_NUMBER, Double.toString(pmv.getVersionNumber()));
             processModelGraph.setProperty(Constants.PROCESS_MODEL_VERSION_ID, pmv.getId().toString());
             processModelGraph.setProperty(Constants.ROOT_FRAGMENT_ID, pmv.getRootFragmentVersion().getId().toString());
             if (lock) {
@@ -422,7 +421,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 
         } else {
             ProcessModelVersion pmv = pmvDao.getCurrentProcessModelVersion(pBranch.getId());
-            pBranch.setCurrentProcessModelVersionId(pmv);
+            pBranch.setCurrentProcessModelVersion(pmv);
             pbDao.update(pBranch);
         }
     }
@@ -450,14 +449,14 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     /* inserts a new branch into the DB. */
-    private ProcessBranch insertProcessBranch(final Process process, final String created, final String lastUpdated, final String branchName)
+    private ProcessBranch insertProcessBranch(final Process process, final String created, final String lastUpdated, final String name)
             throws ImportException {
         LOGGER.info("Executing operation Insert Branch");
         ProcessBranch branch = new ProcessBranch();
 
         try {
             branch.setProcess(process);
-            branch.setBranchName(branchName);
+            branch.setBranchName(name);
             branch.setCreationDate(created);
             branch.setLastUpdate(lastUpdated);
             bDao.save(branch);
@@ -469,24 +468,13 @@ public class RepositoryServiceImpl implements RepositoryService {
     }
 
     /* inserts a new process model into the repository */
-    private ProcessModelVersion insertProcessModelVersion(final CPF proModGrap, final ProcessBranch branch, final Integer rootFragmentVersionId, final int numVertices,
-            final int numEdges) {
+    private ProcessModelVersion insertProcessModelVersion(final CPF proModGrap, final ProcessBranch branch,
+            final Integer rootFragmentVersionId, final int numVertices, final int numEdges, final String versionNumber) {
         ProcessModelVersion process = new ProcessModelVersion();
-        ProcessModelVersion pmv = pmvDao.getMaxVersionProcessModel(branch);
+        //ProcessModelVersion pmv = pmvDao.getMaxVersionProcessModel(branch);
 
-        int versionNumber = 0;
-        String lastVersionName = branch.getBranchName();
-        if (pmv != null) {
-            versionNumber = pmv.getVersionNumber() + 1;
-            lastVersionName = pmv.getVersionName();
-        } else {
-            if (!lastVersionName.equals("0.1")) {
-                lastVersionName = VersionNameUtil.getNextVersionName(lastVersionName);
-            }
-        }
-
-        process.setVersionName(lastVersionName);
-        process.setVersionNumber(versionNumber);
+        process.setVersionName(branch.getBranchName());
+        process.setVersionNumber(Double.valueOf(versionNumber));
         process.setProcessBranch(branch);
         process.setRootFragmentVersion(fvDao.findFragmentVersion(rootFragmentVersionId));
         process.setNumEdges(numEdges);
@@ -496,8 +484,10 @@ public class RepositoryServiceImpl implements RepositoryService {
         addAttributesToProcessModel(proModGrap, process);
         addObjectsToProcessModel(proModGrap, process);
         addResourcesToProcessModel(proModGrap, process);
-
         pmvDao.save(process);
+
+        branch.setCurrentProcessModelVersion(process);
+        bDao.save(branch);
 
         return process;
     }

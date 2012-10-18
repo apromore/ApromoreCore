@@ -34,7 +34,7 @@ public class ProcessModelVersion implements Serializable {
     private static final long serialVersionUID = -1172538404638485548L;
 
     private Integer id;
-    private Integer versionNumber;
+    private Double versionNumber;
     private String versionName;
     private Integer changePropagation;
     private Integer lockStatus;
@@ -49,8 +49,8 @@ public class ProcessModelVersion implements Serializable {
     private Set<EditSession> editSessions = new HashSet<EditSession>(0);
     private Set<Node> parentProcesses = new HashSet<Node>(0);
     private Set<ProcessFragmentMap> processFragmentMaps = new HashSet<ProcessFragmentMap>(0);
-    private Set<ProcessBranch> currentProcessModelVersionId = new HashSet<ProcessBranch>(0);
-    private Set<ProcessBranch> sourceProcessModelVersionId = new HashSet<ProcessBranch>(0);
+    private Set<ProcessBranch> currentProcessModelVersion = new HashSet<ProcessBranch>(0);
+    private Set<ProcessBranch> sourceProcessModelVersion = new HashSet<ProcessBranch>(0);
 
     private Set<ProcessModelAttribute> processModelAttributes = new HashSet<ProcessModelAttribute>(0);
     private Set<ObjectType> objectTypes = new HashSet<ObjectType>(0);
@@ -84,11 +84,11 @@ public class ProcessModelVersion implements Serializable {
 
 
     @Column(name = "version_number")
-    public Integer getVersionNumber() {
+    public Double getVersionNumber() {
         return this.versionNumber;
     }
 
-    public void setVersionNumber(final Integer newVersionNumber) {
+    public void setVersionNumber(final Double newVersionNumber) {
         this.versionNumber = newVersionNumber;
     }
 
@@ -210,22 +210,22 @@ public class ProcessModelVersion implements Serializable {
         this.processFragmentMaps = newProcessFragmentMaps;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "currentProcessModelVersionId")
-    public Set<ProcessBranch> getCurrentProcessModelVersionId() {
-        return this.currentProcessModelVersionId;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "currentProcessModelVersion")
+    public Set<ProcessBranch> getCurrentProcessModelVersion() {
+        return this.currentProcessModelVersion;
     }
 
-    public void setCurrentProcessModelVersionId(final Set<ProcessBranch> newCurrentIds) {
-        this.currentProcessModelVersionId = newCurrentIds;
+    public void setCurrentProcessModelVersion(final Set<ProcessBranch> newCurrentIds) {
+        this.currentProcessModelVersion = newCurrentIds;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sourceProcessModelVersionId")
-    public Set<ProcessBranch> getSourceProcessModelVersionId() {
-        return this.sourceProcessModelVersionId;
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "sourceProcessModelVersion")
+    public Set<ProcessBranch> getSourceProcessModelVersion() {
+        return this.sourceProcessModelVersion;
     }
 
-    public void setSourceProcessModelVersionId(final Set<ProcessBranch> newSourceIds) {
-        this.sourceProcessModelVersionId = newSourceIds;
+    public void setSourceProcessModelVersion(final Set<ProcessBranch> newSourceIds) {
+        this.sourceProcessModelVersion = newSourceIds;
     }
 
 
