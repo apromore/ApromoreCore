@@ -4,7 +4,6 @@ package org.apromore.canoniser.bpmn;
 import javax.xml.namespace.QName;
 
 // Local packages
-import static org.apromore.canoniser.bpmn.BpmnDefinitions.BPMN_NS;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.NetType;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
@@ -37,27 +36,17 @@ public class BpmnProcess extends TProcess {
                        final Initializer    initializer,
                        final TCollaboration collaboration) throws CanoniserException {
 
-            // Add the BPMN Process element
-            final TProcess process = this;
-            process.setId(initializer.bpmnIdFactory.newId(net.getId()));
-            //getRootElement().add(factory.createProcess(process));
+        // Add the BPMN Process element
+        initializer.populateBaseElement(this, net);
 
-            // Add the BPMN Participant element
-            TParticipant participant = new TParticipant();
-            participant.setId(initializer.bpmnIdFactory.newId("participant"));
-            participant.setName(process.getName());  // TODO - use an extension element for pool name if it exists
-            participant.setProcessRef(new QName(BPMN_NS, process.getId()));
-            collaboration.getParticipant().add(participant);
+        // Add the BPMN Participant element
+        TParticipant participant = new TParticipant();
+        participant.setId(initializer.bpmnIdFactory.newId("participant"));
+        participant.setName(getName());  // TODO - use an extension element for pool name if it exists
+        participant.setProcessRef(new QName(initializer.getTargetNamespace(), getId()));
+        collaboration.getParticipant().add(participant);
 
-            // Populate the BPMN Process element
-            ProcessWrapper.populateProcess(new ProcessWrapper(process), net, initializer);
-
-            /*
-            // If we haven't added the collaboration yet and this process is a pool, add the collaboration
-            if (!getRootElement().contains(wrapperCollaboration)) {
-                getRootElement().add(wrapperCollaboration);
-            }
-            */
-
+        // Populate the BPMN Process element
+        initializer.populateProcess(new ProcessWrapper(this), net);
     }
 }
