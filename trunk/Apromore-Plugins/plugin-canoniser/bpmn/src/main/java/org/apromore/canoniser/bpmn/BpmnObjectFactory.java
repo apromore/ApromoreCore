@@ -5,6 +5,7 @@ import javax.xml.bind.annotation.XmlRegistry;
 
 // Local packages
 import org.omg.spec.bpmn._20100524.model.ObjectFactory;
+import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 
 /**
  * Element factory for a BPMN 2.0 object model with canonisation methods.
@@ -18,5 +19,10 @@ public class BpmnObjectFactory extends ObjectFactory {
     @Override
     public BpmnDefinitions createTDefinitions() {
         return new BpmnDefinitions();
+    }
+
+    @Override
+    public TSequenceFlow createTSequenceFlow() {
+        return new BpmnSequenceFlow();
     }
 }

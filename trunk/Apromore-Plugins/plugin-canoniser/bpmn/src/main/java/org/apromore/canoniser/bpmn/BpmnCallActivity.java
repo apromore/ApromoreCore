@@ -1,12 +1,8 @@
 package org.apromore.canoniser.bpmn;
 
-// Java 2 Standard packages
-import java.util.Map;
-
 // Local packages
 import org.apromore.canoniser.bpmn.cpf.CpfTaskType;
 import org.apromore.canoniser.exception.CanoniserException;
-import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TCallActivity;
 
 /**

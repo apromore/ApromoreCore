@@ -2,9 +2,7 @@ package org.apromore.canoniser.bpmn;
 
 // Java 2 Standard packages
 import java.util.List;
-import java.util.Map;
 import javax.xml.bind.JAXBElement;
-import javax.xml.namespace.QName;
 
 // Local packages
 import org.apromore.canoniser.bpmn.cpf.*;
@@ -67,7 +65,7 @@ public class ProcessWrapper {
 
     // Constructor methods used by subclasses
 
-   /**
+    /**
      * Recursively populate a BPMN {@link TLane}'s child lanes.
      *
      * TODO - circular resource type chains cause non-termination!  Need to check for and prevent this.
@@ -138,7 +136,11 @@ public class ProcessWrapper {
      * Add the lanes, nodes and so forth to a {@link TProcess} or {@link TSubProcess}.
      *
      * @param process  the {@link TProcess} or {@link TSubProcess} to be populated
+     * @param net  the CPF net which the <code>process</code> corresponds to
+     * @param initializer  BPMN document construction state
+     * @throws CanoniserException if the child elements can't be added
      */
+    // TODO - make this an instance method of ProcessWrapper, replacing the "process" parameter
     public static void populateProcess(final ProcessWrapper process,
                                        final NetType net,
                                        final Initializer initializer) throws CanoniserException {
@@ -160,7 +162,7 @@ public class ProcessWrapper {
 
         // Add the CPF Edges as BPMN SequenceFlows
         for (EdgeType edge : net.getEdge()) {
-            TSequenceFlow sequenceFlow = new BpmnSequenceFlow(edge, initializer.bpmnIdFactory, initializer.idMap, initializer.flowWithoutSourceRefMap, initializer.flowWithoutTargetRefMap);
+            TSequenceFlow sequenceFlow = new BpmnSequenceFlow(edge, initializer);
             initializer.edgeMap.put(edge.getId(), sequenceFlow);
             process.getFlowElement().add(initializer.factory.createSequenceFlow(sequenceFlow));
         }
