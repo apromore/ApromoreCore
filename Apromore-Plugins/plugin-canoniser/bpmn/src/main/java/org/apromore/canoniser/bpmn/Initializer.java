@@ -51,7 +51,7 @@ class Initializer {
     }
 
     /**
-     * Initialize a BPMN element, based on the CPF node it corresponds to. 
+     * Initialize a BPMN element, based on the CPF node it corresponds to.
      *
      * @param baseElement  the BPMN element e set
      * @param cpfNode  the CPF element which <code>baseElement</code> corresponds to
@@ -64,7 +64,7 @@ class Initializer {
     };
 
     /**
-     * Initialize a BPMN element, based on the CPF resource it corresponds to. 
+     * Initialize a BPMN element, based on the CPF resource it corresponds to.
      *
      * @param baseElement  the BPMN element e set
      * @param cpfResourceType  the CPF element which <code>baseElement</code> corresponds to

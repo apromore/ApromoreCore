@@ -39,6 +39,8 @@ import org.junit.Test;
 import org.apromore.anf.ANFSchema;
 // Local packages
 import org.apromore.anf.AnnotationsType;
+import org.apromore.canoniser.bpmn.anf.AnfAnnotationsType;
+import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
 import org.apromore.canoniser.bpmn.cpf.CpfEventType;
 import org.apromore.canoniser.bpmn.cpf.CpfIDResolver;
 import org.apromore.canoniser.bpmn.cpf.CpfTaskType;
@@ -84,93 +86,6 @@ public class BPMN20CanoniserTest {
 
     /** Source for ANF and CPF test data. */
     final static File TESTCASES_DIR = new File("src/test/resources/BPMN_testcases/");
-
-    /** XML schema for ANF 0.3. */
-    private Schema ANF_SCHEMA;
-
-    /** Qualified name of the root element <code>anf:Annotations</code>. */
-    final static QName ANF_ROOT = new QName("http://www.apromore.org/ANF", "Annotations");
-
-    /** XML schema for BPMN 2.0. */
-    private Schema BPMN_SCHEMA;
-
-    /** XML schema for CPF 0.5. */
-    private Schema CPF_SCHEMA;
-
-    /** Qualified name of the root element <code>cpf:CanonicalProcess</code>. */
-    final static QName CPF_ROOT = new QName("http://www.apromore.org/CPF", "CanonicalProcess");
-
-    /** Property name for use with {@link Unmarshaller#setProperty} to configure a {@link com.sun.xml.bind.IDResolver}. */
-    final static String ID_RESOLVER = "com.sun.xml.bind.IDResolver";
-
-    /** Property name for use with {@link Unmarshaller#setProperty} to configure an alternate JAXB ObjectFactory. */
-    final static String OBJECT_FACTORY = "com.sun.xml.bind.ObjectFactory";
-
-    /**
-     * Shared JAXB context/
-     */
-    private JAXBContext context;
-
-    /**
-     * Initialize {@link #ANF_SCHEMA}, {@link #BPMN_SCHEMA} and {@link #CPF_SCHEMA}.
-     */
-    @Before
-    public void initializeDefinitionsSchema() throws SAXException {
-        ClassLoader loader = getClass().getClassLoader();
-
-        ANF_SCHEMA  = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(
-            new StreamSource(loader.getResourceAsStream("xsd/anf_0.3.xsd"))
-        );
-
-        if (System.getProperty("bpmnvalidation") != null) {
-
-            /* By default, marshallers and unmarshallers don't validate BPMN documents.
-             * Validation can be enabled by passing a -Dbpmnvalidation flag to Maven.
-             *
-             * This switches to loading the BPMN schema from the filesystem, as so:
-             */
-            BPMN_SCHEMA = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(
-                new File("../../../Apromore-Schema/bpmn-schema/src/main/resources/xsd/BPMN20.xsd")
-            );
-            /* The reason this isn't the default behavior is because it only works when
-             * executed from the complete Apromore checkout.  When Jenkins runs the
-             * tests, it tests each element in isolation and so the BPMN schema can't be loaded.
-             *
-             * Hence, we have the following code which loads the BPMN from the classpath:
-             */
-        } else {
-            BPMN_SCHEMA = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new StreamSource[] {
-                new StreamSource(loader.getResourceAsStream("xsd/DC.xsd")),
-                new StreamSource(loader.getResourceAsStream("xsd/DI.xsd")),
-                new StreamSource(loader.getResourceAsStream("xsd/BPMNDI.xsd")),
-                new StreamSource(loader.getResourceAsStream("xsd/Semantic.xsd")),
-                new StreamSource(loader.getResourceAsStream("xsd/BPMN20.xsd"))
-            });
-            /* Unfortunately, the above code doesn't work; it fails to parse the root <definitions>.
-             * Until someone can figure out why it fails, BPMN validation is off unless explicitly
-             * requested by -Dbpmnvalidation.
-             */
-        }
-        assert BPMN_SCHEMA != null;
-
-        CPF_SCHEMA  = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(
-            new StreamSource(loader.getResourceAsStream("xsd/cpf_1.0.xsd"))
-        );
-    }
-
-    /**
-     * Initialize {@link #context}.
-     *
-     * @throws JAXBException
-     */
-    @Before
-    public void initializeContext() throws JAXBException {
-        context = JAXBContext.newInstance(BpmnObjectFactory.class,
-                                          org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
-                                          org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
-                                          org.omg.spec.dd._20100524.dc.ObjectFactory.class,
-                                          org.omg.spec.dd._20100524.di.ObjectFactory.class);
-    }
 
     // Tests
 
@@ -219,13 +134,8 @@ public class BPMN20CanoniserTest {
         out.close();
 
         // Validate the empty BPMN model
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        if (System.getProperty("bpmnvalidation") != null) {
-            unmarshaller.setSchema(BPMN_SCHEMA);
-        }
-        TDefinitions definitions = unmarshaller.unmarshal(new StreamSource(new ByteArrayInputStream(initialBPMN.toByteArray())),
-                                                          TDefinitions.class)
-                                               .getValue();
+        TDefinitions definitions = BpmnDefinitions.newInstance(new ByteArrayInputStream(initialBPMN.toByteArray()),
+                                                               System.getProperty("bpmnvalidation") != null);
     }
 
     /**
@@ -234,7 +144,7 @@ public class BPMN20CanoniserTest {
     @Test
     public final void testDeCanonise() throws Exception {
 
-        CanonicalProcessType cpf = marshalCPF(new File(TESTCASES_DIR, "Basic.cpf"));
+        CanonicalProcessType cpf = CpfCanonicalProcessType.newInstance(new FileInputStream(new File(TESTCASES_DIR, "Basic.cpf")), true);
         AnnotationsType anf = null;
         ByteArrayOutputStream bpmnOutput = new ByteArrayOutputStream();
         PluginRequest request = null;
@@ -251,11 +161,7 @@ public class BPMN20CanoniserTest {
     public final void test1() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
 
         // Obtain the test instance
-        BpmnDefinitions definitions =
-            context.createUnmarshaller()
-                   .unmarshal(new StreamSource(new FileInputStream(new File(MODELS_DIR, "Test1.bpmn20.xml"))),
-                              BpmnDefinitions.class)
-                   .getValue();
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Test1.bpmn20.xml")), false);
 
         // Inspect the test instance
         assertNotNull(definitions);
@@ -281,17 +187,8 @@ public class BPMN20CanoniserTest {
         assertNotNull(result.getAnf(0));
         assertNotNull(result.getCpf(0));
 
-        Marshaller marshaller = JAXBContext.newInstance(ANFSchema.ANF_CONTEXT).createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setSchema(ANF_SCHEMA);
-        marshaller.marshal(new JAXBElement<AnnotationsType>(ANF_ROOT, AnnotationsType.class, result.getAnf(0)),
-                           new File(OUTPUT_DIR, "Test1.anf"));
-
-        marshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT).createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setSchema(CPF_SCHEMA);
-        marshaller.marshal(new JAXBElement<CanonicalProcessType>(CPF_ROOT, CanonicalProcessType.class, result.getCpf(0)),
-                           new File(OUTPUT_DIR, "Test1.cpf"));
+        ((AnfAnnotationsType) result.getAnf(0)).marshal(new FileOutputStream(new File(OUTPUT_DIR, "Test1.anf")), true);
+        ((CpfCanonicalProcessType) result.getCpf(0)).marshal(new FileOutputStream(new File(OUTPUT_DIR, "Test1.cpf")), true);
     }
 
     /**
@@ -309,14 +206,8 @@ public class BPMN20CanoniserTest {
     private CanoniserResult testCanonise(String filename) throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
 
         // Obtain the test instance
-        Unmarshaller unmarshaller = context.createUnmarshaller();
-        if (System.getProperty("bpmnvalidation") != null) {
-            unmarshaller.setSchema(BPMN_SCHEMA);
-        }
-        BpmnDefinitions definitions = unmarshaller.unmarshal(
-            new StreamSource(new FileInputStream(new File(MODELS_DIR, filename + ".bpmn20.xml"))),
-            BpmnDefinitions.class
-        ).getValue();
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, filename + ".bpmn20.xml")),
+                                                                  System.getProperty("bpmnvalidation") != null);
 
         // Validate and serialize the canonised documents to be inspected offline
         CanoniserResult result = BPMN20Canoniser.canonise(definitions);
@@ -325,47 +216,18 @@ public class BPMN20CanoniserTest {
         assertNotNull(result.getCpf(0));
 
         // Output the ANF
-        Marshaller marshaller = JAXBContext.newInstance(ANFSchema.ANF_CONTEXT).createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.marshal(new JAXBElement<AnnotationsType>(ANF_ROOT, AnnotationsType.class, result.getAnf(0)),
-                           new File(OUTPUT_DIR, filename + ".anf"));
+        ((AnfAnnotationsType) result.getAnf(0)).marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".anf")), false);
 
         // Output the CPF
-        marshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT).createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.marshal(new JAXBElement<CanonicalProcessType>(CPF_ROOT, CanonicalProcessType.class, result.getCpf(0)),
-                           new File(OUTPUT_DIR, filename + ".cpf"));
+        ((CpfCanonicalProcessType) result.getCpf(0)).marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".cpf")), false);
 
         // Validate the ANF
-        marshaller = JAXBContext.newInstance(ANFSchema.ANF_CONTEXT).createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setSchema(ANF_SCHEMA);
-        marshaller.marshal(new JAXBElement<AnnotationsType>(ANF_ROOT, AnnotationsType.class, result.getAnf(0)),
-                           new NullOutputStream());
+        ((AnfAnnotationsType) result.getAnf(0)).marshal(new NullOutputStream(), true);
 
         // Validate the CPF
-        marshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT).createMarshaller();
-        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-        marshaller.setSchema(CPF_SCHEMA);
-        marshaller.marshal(new JAXBElement<CanonicalProcessType>(CPF_ROOT, CanonicalProcessType.class, result.getCpf(0)),
-                           new NullOutputStream());
+        ((CpfCanonicalProcessType) result.getCpf(0)).marshal(new NullOutputStream(), true);
 
         return result;
-    }
-
-    /**
-     * @param file  a CPF-formatted file
-     * @return JAXB object model of the parsed <code>file</code>
-     * @throws FileNotFoundException  if <code>file</code> doesn't exist
-     * @throws JAXBException if <code>file</code> can't be unmarshalled as CPF
-     */
-    private CanonicalProcessType marshalCPF(File file) throws FileNotFoundException, JAXBException {
-        Unmarshaller unmarshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT)
-                                               .createUnmarshaller();
-        unmarshaller.setListener(new CpfUnmarshallerListener());
-        unmarshaller.setProperty(OBJECT_FACTORY, new org.apromore.canoniser.bpmn.cpf.ObjectFactory());
-        return unmarshaller.unmarshal(new StreamSource(new FileInputStream(file)), CanonicalProcessType.class)
-                           .getValue();
     }
 
     /**
@@ -754,5 +616,14 @@ public class BPMN20CanoniserTest {
     @Test
     public void testCanoniseCallActivity() throws Exception {
         CanonicalProcessType cpf = testCanonise("Call Activity").getCpf(0);
+    }
+
+    /**
+     * Test canonization of a <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Request_For_Advance_Payment.bpmn20.xml">request for advance payment</a>.
+     */
+    @Ignore
+    @Test
+    public void testCanoniseRequestForAdvancePayment() throws Exception {
+        CanonicalProcessType cpf = testCanonise("Request_For_Advance_Payment").getCpf(0);
     }
 }

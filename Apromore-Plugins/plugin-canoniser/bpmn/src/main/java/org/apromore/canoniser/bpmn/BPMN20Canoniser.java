@@ -6,9 +6,6 @@ import java.io.OutputStream;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.Marshaller;
-import javax.xml.transform.stream.StreamSource;
 
 // Local packages
 import org.apromore.anf.AnnotationsType;
@@ -47,14 +44,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
                                  final PluginRequest request) throws CanoniserException {
 
         try {
-            BpmnDefinitions definitions = JAXBContext.newInstance(BpmnObjectFactory.class,
-                                                                  org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
-                                                                  org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
-                                                                  org.omg.spec.dd._20100524.dc.ObjectFactory.class,
-                                                                  org.omg.spec.dd._20100524.di.ObjectFactory.class)
-                                                     .createUnmarshaller()
-                                                     .unmarshal(new StreamSource(bpmnInput), BpmnDefinitions.class)
-                                                     .getValue();  // discard the JAXBElement wrapper
+            BpmnDefinitions definitions = BpmnDefinitions.newInstance(bpmnInput, false);
             CanoniserResult result = canonise(definitions);
             for (int i = 0; i < result.size(); i++) {
                 annotationFormat.add(result.getAnf(i));
@@ -92,14 +82,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
             definitions.setTargetNamespace("http://apromore.org/" + UUID.randomUUID() + "#");
 
             // Serialize out the BPMN model
-            Marshaller marshaller = JAXBContext.newInstance(BpmnObjectFactory.class,
-                                                            org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
-                                                            org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
-                                                            org.omg.spec.dd._20100524.dc.ObjectFactory.class,
-                                                            org.omg.spec.dd._20100524.di.ObjectFactory.class)
-                                               .createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(definitions, bpmnOutput);
+            definitions.marshal(bpmnOutput, false);
 
         } catch (Exception e) {
             result.addPluginMessage("Failed to create empty BPMN model: {0}", e.getMessage());
@@ -115,14 +98,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
                            final PluginRequest request) throws CanoniserException {
 
         try {
-            Marshaller marshaller = JAXBContext.newInstance(BpmnObjectFactory.class,
-                                                            org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
-                                                            org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
-                                                            org.omg.spec.dd._20100524.dc.ObjectFactory.class,
-                                                            org.omg.spec.dd._20100524.di.ObjectFactory.class)
-                                               .createMarshaller();
-            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
-            marshaller.marshal(new BpmnDefinitions(canonicalFormat, annotationFormat), bpmnOutput);
+            new BpmnDefinitions(canonicalFormat, annotationFormat).marshal(bpmnOutput, false);
 
             return new PluginResultImpl();
         } catch (Exception e) {
@@ -137,14 +113,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
     @Override
     public CanoniserMetadataResult readMetaData(final InputStream bpmnInput, final PluginRequest request) {
         try {
-            BpmnDefinitions definitions = JAXBContext.newInstance(BpmnObjectFactory.class,
-                                                                  org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
-                                                                  org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
-                                                                  org.omg.spec.dd._20100524.dc.ObjectFactory.class,
-                                                                  org.omg.spec.dd._20100524.di.ObjectFactory.class)
-                                                     .createUnmarshaller()
-                                                     .unmarshal(new StreamSource(bpmnInput), BpmnDefinitions.class)
-                                                     .getValue();  // discard the JAXBElement wrapper
+            BpmnDefinitions definitions = BpmnDefinitions.newInstance(bpmnInput, false);
 
             // Fill in the metadata
             CanoniserMetadataResult result = new CanoniserMetadataResult();
