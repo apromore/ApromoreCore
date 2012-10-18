@@ -60,6 +60,9 @@ public class BpmnDefinitions extends TDefinitions {
     /** Apromore version. */
     public static final String APROMORE_VERSION = "0.4";
 
+    /** Property name for use with {@link Unmarshaller#setProperty} to configure a {@link com.sun.xml.bind.IDResolver}. */
+    private static final String ID_RESOLVER = "com.sun.xml.bind.IDResolver";
+
     /**
      * Namespace of the document root element.
      *
@@ -205,7 +208,9 @@ public class BpmnDefinitions extends TDefinitions {
                                                             org.omg.spec.dd._20100524.dc.ObjectFactory.class,
                                                             org.omg.spec.dd._20100524.di.ObjectFactory.class)
                                                .createUnmarshaller();
-        unmarshaller.setListener(new BpmnUnmarshallerListener());
+        BpmnIDResolver resolver = new BpmnIDResolver();
+        unmarshaller.setListener(new BpmnUnmarshallerListener(resolver));
+        unmarshaller.setProperty(ID_RESOLVER, resolver);
         if (validate) {
             unmarshaller.setSchema(BPMN_SCHEMA);
         }
@@ -259,7 +264,7 @@ public class BpmnDefinitions extends TDefinitions {
      * @throws TransformerException  if the XSLT transformation fails
      * @return corrected JAXB document
      */
-    // TODO - change the return type and the factory parameter to be Defintions and ObjectFactory, and move to bpmn-schema
+    // TODO - change the return type and the factory parameter to be Definitions and ObjectFactory, and move to bpmn-schema
     public static BpmnDefinitions correctFlowNodeRefs(final BpmnDefinitions definitions,
                                                       final BpmnObjectFactory factory) throws JAXBException, TransformerException {
 

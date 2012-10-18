@@ -113,6 +113,36 @@ public class BpmnDefinitionsTest {
     }
 
     /**
+     * Test parsing of <code>Case 2.bpmn20.xml</code> via {@link BpmnDefinitions#newInstance}.
+     *
+     * Looking primarily to see that the lists of incoming and outgoing sequence flows on the flow nodes are correct, as
+     * as the gateway direction on the XOR gateway.
+     */
+    @Test
+    public final void testNewInstance() throws Exception {
+
+        // Obtain the test instance
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Case 2.bpmn20.xml")), true);
+
+        // Inspect the test instance
+
+        // Serialize the test instance
+        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "Case 2.bpmn20.xml")), true);
+    }
+
+    @Test
+    public final void testNewInstance2() throws Exception {
+
+        // Obtain the test instance
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Request_For_Advance_Payment.bpmn20.xml")), true);
+
+        // Inspect the test instance
+
+        // Serialize the test instance
+        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "Request_For_Advance_Payment.bpmn20.xml")), true);
+    }
+
+    /**
      * Test decanonisation of <code>Basic.cpf</code> and <code>Basic.anf</code>.
      */
     @Test
