@@ -81,7 +81,7 @@ public class ChangePropagator {
 
     private void createNewProcessModelVersion(ProcessModelVersion pmv, String rootFragmentUri, List<String> composingFragmentIds)
             throws ExceptionDao {
-        int versionNumber = pmv.getVersionNumber() + 1;
+        Double versionNumber = pmv.getVersionNumber() + 1;
         String versionName = VersionNameUtil.getNextVersionName(pmv.getVersionName());
         ProcessModelVersion pv = pSrv.addProcessModelVersion(pmv.getProcessBranch(), rootFragmentUri, versionNumber, versionName, 0, 0);
         fSrv.addProcessFragmentMappings(pv.getId(), composingFragmentIds);

@@ -4,9 +4,7 @@ import java.io.ByteArrayInputStream;
 import java.io.InputStream;
 import java.io.UnsupportedEncodingException;
 import java.util.Set;
-
 import javax.activation.DataHandler;
-import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBException;
 
@@ -117,8 +115,8 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /**
-     * @see org.apromore.service.ProcessService#importProcess(String, String, String, String, String, DataHandler, String, String, String, String)
-     * {@inheritDoc}
+     * @see org.apromore.service.ProcessService#importProcess(String, String, String, String, String, org.apromore.service.model.CanonisedProcess, java.io.InputStream, String, String, String, String)
+     * * {@inheritDoc}
      */
     @Override
     public ProcessSummaryType importProcess(final String username, final String processName, final String cpfURI, final String version, final String natType,
@@ -131,11 +129,11 @@ public class ProcessServiceImpl implements ProcessService {
             NativeType nativeType = fmtSrv.findNativeType(natType);
             CPF pg = canSrv.deserializeCPF(cpf.getCpt());
 
-            ProcessModelVersion pmv = rSrv.addProcessModel(processName, version, user.getUsername(), cpf.getCpt().getUri(), nativeType.getNatType(),
-                    domain, documentation, created, lastUpdate, pg);
+            ProcessModelVersion pmv = rSrv.addProcessModel(processName, version, user.getUsername(), cpf.getCpt().getUri(),
+                    nativeType.getNatType(), domain, documentation, created, lastUpdate, pg);
             fmtSrv.storeNative(processName, version, pmv, nativeXml, created, lastUpdate, user, nativeType, cpf);
-            pro = uiSrv.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(), version, nativeType.getNatType(),
-                    domain, created, lastUpdate, user.getUsername());
+            pro = uiSrv.createProcessSummary(processName, pmv.getProcessBranch().getProcess().getId(), pmv.getVersionName(), version,
+                    nativeType.getNatType(), domain, created, lastUpdate, user.getUsername());
 
         } catch (Exception e) {
             LOGGER.error("Failed to import process {} with native type {}", processName, natType);
@@ -147,7 +145,7 @@ public class ProcessServiceImpl implements ProcessService {
     }
 
     /**
-     * @see org.apromore.service.ProcessService#exportProcess(String, Integer, String, String, String, boolean)
+     * @see org.apromore.service.ProcessService#exportProcess(String, Integer, String, String, String, boolean, java.util.Set)
      * {@inheritDoc}
      */
     @Override
@@ -219,12 +217,12 @@ public class ProcessServiceImpl implements ProcessService {
 
 
     /**
-     * @see org.apromore.service.ProcessService#addProcessModelVersion(ProcessBranch, String, int, String, int, int)
+     * @see org.apromore.service.ProcessService#addProcessModelVersion(ProcessBranch, String, Double, String, int, int)
      * {@inheritDoc}
      */
     @Override
-    public ProcessModelVersion addProcessModelVersion(final ProcessBranch branch, final String rootFragmentVersionUri, final int versionNumber,
-            final String versionName, final int numVertices, final int numEdges) throws ExceptionDao {
+    public ProcessModelVersion addProcessModelVersion(final ProcessBranch branch, final String rootFragmentVersionUri,
+            final Double versionNumber, final String versionName, final int numVertices, final int numEdges) throws ExceptionDao {
         ProcessModelVersion pmv = new ProcessModelVersion();
 
         pmv.setProcessBranch(branch);

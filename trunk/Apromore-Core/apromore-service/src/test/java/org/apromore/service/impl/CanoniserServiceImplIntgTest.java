@@ -87,7 +87,7 @@ public class CanoniserServiceImplIntgTest {
         String name ="_____test";
         String version = "0.1";
 
-        InputStream data = new ByteArrayInputStream(TestData.EPML2.getBytes());
+        InputStream data = new ByteArrayInputStream(TestData.EPML3.getBytes());
         CanonisedProcess cp = cSrv.canonise(nativeType, data, emptyCanoniserRequest);
 
         assertThat(cp, notNullValue());

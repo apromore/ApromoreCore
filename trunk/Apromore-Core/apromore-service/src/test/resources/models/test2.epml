@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<epml:epml xmlns:epml="http://www.epml.de"
+                xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.epml.de epml_12.xsd">
+  
+  <epc epcId="1" name="Test EPML 1">
+    <event id="1">
+      <name>Event 1</name>
+    </event>
+    <function id="3">
+      <name>Function 1</name>
+    </function>
+    <arc id="5">
+      <flow source="1" target="3"/>
+    </arc>
+  </epc>
+</epml:epml>

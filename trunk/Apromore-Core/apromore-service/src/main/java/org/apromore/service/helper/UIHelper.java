@@ -12,6 +12,7 @@ import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.model.AnnotationsType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
@@ -54,7 +55,7 @@ public class UIHelper {
      * @param username   the user who updated the
      * @return the created Process Summary
      */
-    public ProcessSummaryType createProcessSummary(String name, Integer processId, String version, String nativeType,
+    public ProcessSummaryType createProcessSummary(String name, Integer processId, String version, String versionName, String nativeType,
             String domain, String created, String lastUpdate, String username) {
         ProcessSummaryType proType = new ProcessSummaryType();
         VersionSummaryType verType = new VersionSummaryType();
@@ -64,7 +65,7 @@ public class UIHelper {
         proType.setName(name);
         proType.setDomain(domain);
         proType.setRanking("");
-        proType.setLastVersion(version);
+        proType.setLastVersion(versionName);
         proType.setOriginalNativeType(nativeType);
         proType.setOwner(username);
 
@@ -132,17 +133,18 @@ public class UIHelper {
             versionSummary.setCreationDate(branch.getCreationDate());
             versionSummary.setLastUpdate(branch.getLastUpdate());
             versionSummary.setRanking(branch.getRanking());
-            buildNativeSummaryList(processSummary.getId(), versionSummary);
+            buildNativeSummaryList(processSummary, versionSummary);
 
             processSummary.getVersionSummaries().add(versionSummary);
-            processSummary.setLastVersion(versionSummary.getName());
+
+            processSummary.setLastVersion(branch.getCurrentProcessModelVersion().getVersionNumber().toString());
         }
     }
 
     /* Builds the list of Native Summaries for a version summary. */
-    private void buildNativeSummaryList(Integer id, VersionSummaryType versionSummary) {
+    private void buildNativeSummaryList(ProcessSummaryType processSummary, VersionSummaryType versionSummary) {
         AnnotationsType annotation;
-        List<Native> natives = natDao.findNativeByCanonical(id, versionSummary.getName());
+        List<Native> natives = natDao.findNativeByCanonical(processSummary.getId(), versionSummary.getName());
 
         for (Native nat : natives) {
             annotation = new AnnotationsType();
