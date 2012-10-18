@@ -117,14 +117,14 @@ public class ClusterServiceImpl implements ClusterService {
             Set<ProcessFragmentMap> pmap = f.getProcessFragmentMaps();
             for (ProcessFragmentMap m : pmap) {
                 Integer pmvid = m.getProcessModelVersion().getId();
-                int pmvNumber = m.getProcessModelVersion().getVersionNumber();
+                Double pmvNumber = m.getProcessModelVersion().getVersionNumber();
                 String branchName = m.getProcessModelVersion().getProcessBranch().getBranchName();
                 Integer processId = m.getProcessModelVersion().getProcessBranch().getProcess().getId();
                 String processName = m.getProcessModelVersion().getProcessBranch().getProcess().getName();
 
                 ProcessAssociation pa = new ProcessAssociation();
                 pa.setProcessVersionId(pmvid);
-                pa.setProcessVersionNumber(Integer.toString(pmvNumber));
+                pa.setProcessVersionNumber(pmvNumber);
                 pa.setProcessBranchName(branchName);
                 pa.setProcessId(processId);
                 pa.setProcessName(processName);
@@ -164,14 +164,14 @@ public class ClusterServiceImpl implements ClusterService {
                 Set<ProcessFragmentMap> pmap = f.getProcessFragmentMaps();
                 for (ProcessFragmentMap m : pmap) {
                     Integer pmvid = m.getProcessModelVersion().getId();
-                    int pmvNumber = m.getProcessModelVersion().getVersionNumber();
+                    Double pmvNumber = m.getProcessModelVersion().getVersionNumber();
                     String branchName = m.getProcessModelVersion().getProcessBranch().getBranchName();
                     Integer processId = m.getProcessModelVersion().getProcessBranch().getProcess().getId();
                     String processName = m.getProcessModelVersion().getProcessBranch().getProcess().getName();
 
                     ProcessAssociation pa = new ProcessAssociation();
                     pa.setProcessVersionId(pmvid);
-                    pa.setProcessVersionNumber(Integer.toString(pmvNumber));
+                    pa.setProcessVersionNumber(pmvNumber);
                     pa.setProcessBranchName(branchName);
                     pa.setProcessId(processId);
                     pa.setProcessName(processName);

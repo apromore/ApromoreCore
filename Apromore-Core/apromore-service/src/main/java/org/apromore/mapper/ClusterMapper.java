@@ -67,7 +67,7 @@ public class ClusterMapper {
                 patype.setProcessName(pa.getProcessName());
                 patype.setBranchName(pa.getProcessBranchName());
                 patype.setProcessVersionId(pa.getProcessVersionId());
-                patype.setProcessVersionNumber(pa.getProcessVersionNumber());
+                patype.setProcessVersionNumber(pa.getProcessVersionNumber().toString());
                 fd.getProcessAssociations().add(patype);
             }
 

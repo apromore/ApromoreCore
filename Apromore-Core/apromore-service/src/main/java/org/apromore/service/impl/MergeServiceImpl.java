@@ -75,7 +75,7 @@ public class MergeServiceImpl implements MergeService {
             SimpleDateFormat sf = new SimpleDateFormat(Constants.DATE_FORMAT);
             String created = sf.format(new Date());
             ProcessModelVersion pmv = rSrv.addProcessModel(processName, version, username, null, null, domain, "", created, created, pg);
-            pst = uiSrv.createProcessSummary(processName, pmv.getId(), version, null, domain, created, created, username);
+            pst = uiSrv.createProcessSummary(processName, pmv.getId(), pmv.getVersionName(), version, null, domain, created, created, username);
         } catch (SerializationException se) {
             LOGGER.error("Failed to convert the models into the Canonical Format.", se);
         } catch (ImportException ie) {

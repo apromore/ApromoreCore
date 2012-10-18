@@ -9,7 +9,7 @@ package org.apromore.service.model;
 public class ProcessAssociation {
 
     private Integer processVersionId;
-    private String processVersionNumber;
+    private Double processVersionNumber;
     private String processBranchName;
     private Integer processId;
     private String processName;
@@ -32,11 +32,11 @@ public class ProcessAssociation {
         this.processVersionId = newProcessVersionId;
     }
 
-    public String getProcessVersionNumber() {
+    public Double getProcessVersionNumber() {
         return processVersionNumber;
     }
 
-    public void setProcessVersionNumber(final String newProcessVersionNumber) {
+    public void setProcessVersionNumber(final Double newProcessVersionNumber) {
         this.processVersionNumber = newProcessVersionNumber;
     }
 
