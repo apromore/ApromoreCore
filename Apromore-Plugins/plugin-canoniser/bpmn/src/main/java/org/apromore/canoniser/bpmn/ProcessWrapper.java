@@ -140,7 +140,8 @@ public class ProcessWrapper {
      * @param initializer  BPMN document construction state
      * @throws CanoniserException if the child elements can't be added
      */
-    // TODO - make this an instance method of ProcessWrapper, replacing the "process" parameter
+    // TODO - EITHER - make this an instance method of ProcessWrapper, replacing the "process" parameter
+    //      - OR     - make this an instance method of Initializer, replacing the "initializer" parameter
     public static void populateProcess(final ProcessWrapper process,
                                        final NetType net,
                                        final Initializer initializer) throws CanoniserException {
