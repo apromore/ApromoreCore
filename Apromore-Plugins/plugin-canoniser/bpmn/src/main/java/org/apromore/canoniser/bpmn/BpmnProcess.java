@@ -1,22 +1,15 @@
 package org.apromore.canoniser.bpmn;
 
 // Java 2 Standard packages
-import java.util.Map;
 import javax.xml.namespace.QName;
 
 // Local packages
 import static org.apromore.canoniser.bpmn.BpmnDefinitions.BPMN_NS;
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
-import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
-import org.omg.spec.bpmn._20100524.model.TExpression;
-import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TParticipant;
 import org.omg.spec.bpmn._20100524.model.TProcess;
-import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 
 /**
  * BPMN Process element with canonisation methods.

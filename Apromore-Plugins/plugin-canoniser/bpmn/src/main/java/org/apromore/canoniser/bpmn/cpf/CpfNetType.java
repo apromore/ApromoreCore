@@ -93,7 +93,7 @@ public class CpfNetType extends NetType {
         for (JAXBElement<? extends TRootElement> rootElement2 : definitions.getRootElement()) {
             if (rootElement2.getValue() instanceof TCollaboration) {
                 for (TParticipant participant : ((TCollaboration) rootElement2.getValue()).getParticipant()) {
-                    if (process.getId().equals(participant.getProcessRef().getLocalPart())) {
+                    if (participant.getProcessRef() != null && process.getId().equals(participant.getProcessRef().getLocalPart())) {
                         addPools(participant, process.getLaneSet(), cpf, cpfIdFactory, laneMap);
                     }
                 }

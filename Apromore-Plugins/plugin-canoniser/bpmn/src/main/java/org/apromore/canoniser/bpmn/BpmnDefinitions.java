@@ -1,54 +1,35 @@
 package org.apromore.canoniser.bpmn;
 
 // Java 2 Standard packges
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.io.File;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.util.logging.Logger;
+import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.bind.annotation.XmlTransient;
-import javax.xml.namespace.QName;
 import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerException;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMResult;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamSource;
+import javax.xml.validation.Schema;
+import javax.xml.validation.SchemaFactory;
+import org.xml.sax.SAXException;
 
 // Local packages
 import org.apromore.anf.AnnotationsType;
-import org.apromore.canoniser.bpmn.cpf.CpfNodeType;
-import org.apromore.canoniser.bpmn.cpf.CpfResourceTypeType;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.EdgeType;
-import org.apromore.cpf.EventType;
 import org.apromore.cpf.NetType;
-import org.apromore.cpf.NodeType;
-import org.apromore.cpf.ResourceTypeType;
-import org.apromore.cpf.ResourceTypeRefType;
-import org.apromore.cpf.TaskType;
-import org.apromore.cpf.WorkType;
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.canoniser.bpmn.cpf.CpfTaskType;
-import org.omg.spec.bpmn._20100524.model.TBaseElement;
-import org.omg.spec.bpmn._20100524.model.TCallActivity;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
-import org.omg.spec.bpmn._20100524.model.TEndEvent;
-import org.omg.spec.bpmn._20100524.model.TFlowNode;
-import org.omg.spec.bpmn._20100524.model.TIntermediateThrowEvent;
-import org.omg.spec.bpmn._20100524.model.TLane;
-import org.omg.spec.bpmn._20100524.model.TLaneSet;
-import org.omg.spec.bpmn._20100524.model.TParticipant;
-import org.omg.spec.bpmn._20100524.model.TProcess;
-import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
-import org.omg.spec.bpmn._20100524.model.TStartEvent;
-import org.omg.spec.bpmn._20100524.model.TSubProcess;
-import org.omg.spec.bpmn._20100524.model.TTask;
 
 /**
  * BPMN 2.0 object model with canonisation methods.
@@ -69,20 +50,14 @@ import org.omg.spec.bpmn._20100524.model.TTask;
 @XmlRootElement(namespace = "http://www.omg.org/spec/BPMN/20100524/MODEL", name = "definitions")
 public class BpmnDefinitions extends TDefinitions {
 
-    /**
-     * Logger.  Named after the class.
-     */
+    /** Logger.  Named after the class. */
     @XmlTransient
     private final Logger logger = Logger.getLogger(BpmnDefinitions.class.getCanonicalName());
 
-    /**
-     * Apromore URI.
-     */
+    /** Apromore URI. */
     public static final String APROMORE_URI = "http://apromore.org";
 
-    /**
-     * Apromore version.
-     */
+    /** Apromore version. */
     public static final String APROMORE_VERSION = "0.4";
 
     /**
@@ -92,25 +67,58 @@ public class BpmnDefinitions extends TDefinitions {
      */
     public static final String TARGET_NS = "http://www.signavio.com/bpmn20";
 
-    /**
-     * BPMN 2.0 namespace.
-     */
+    /** BPMN 2.0 namespace. */
     public static final String BPMN_NS = "http://www.omg.org/spec/BPMN/20100524/MODEL";
 
-    /**
-     * CPF schema version.
-     */
+    /** XML schema for BPMN 2.0. */
+    private static final Schema BPMN_SCHEMA;
+
+    /** CPF schema version. */
     public static final String CPF_VERSION = "1.0";
 
-    /**
-     * XPath expression language URI.
-     */
+    /** XPath expression language URI. */
     public static final String XPATH_URI = "http://www.w3.org/1999/XPath";
 
-    /**
-     * XML Schema datatype language URI.
-     */
+    /** XML Schema datatype language URI. */
     public static final String XSD_URI = "http://www.w3.org/2001/XMLSchema";
+
+    static {
+        try {
+            if (System.getProperty("bpmnvalidation") != null) {
+                /* By default, marshallers and unmarshallers don't validate BPMN documents.
+                 * Validation can be enabled by passing a -Dbpmnvalidation flag to Maven.
+                 *
+                 * This switches to loading the BPMN schema from the filesystem, as so:
+                 */
+                BPMN_SCHEMA = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(
+                    new File("../../../Apromore-Schema/bpmn-schema/src/main/resources/xsd/BPMN20.xsd")
+                );
+                /* The reason this isn't the default behavior is because it only works when
+                 * executed from the complete Apromore checkout.  When Jenkins runs the
+                 * tests, it tests each element in isolation and so the BPMN schema can't be loaded.
+                 *
+                 * Hence, we have the following code which loads the BPMN from the classpath:
+                 */
+            } else {
+                ClassLoader loader = BpmnDefinitions.class.getClassLoader();
+                BPMN_SCHEMA = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(new StreamSource[] {
+                    new StreamSource(loader.getResourceAsStream("xsd/DC.xsd")),
+                    new StreamSource(loader.getResourceAsStream("xsd/DI.xsd")),
+                    new StreamSource(loader.getResourceAsStream("xsd/BPMNDI.xsd")),
+                    new StreamSource(loader.getResourceAsStream("xsd/Semantic.xsd")),
+                    new StreamSource(loader.getResourceAsStream("xsd/BPMN20.xsd"))
+                });
+                /* Unfortunately, the above code doesn't work; it fails to parse the root <definitions>.
+                 * Until someone can figure out why it fails, BPMN validation is off unless explicitly
+                 * requested by -Dbpmnvalidation.
+                 */
+            }
+            assert BPMN_SCHEMA != null;
+
+        } catch (SAXException e) {
+            throw new RuntimeException("Couldn't parse BPMN XML schema", e);
+        }
+    }
 
     /**
      * No-arg constructor.
@@ -180,6 +188,52 @@ public class BpmnDefinitions extends TDefinitions {
         if (anf != null) {
             getBPMNDiagram().add(new BpmndiDiagram(anf, initializer));
         }
+    }
+
+    /**
+     * Construct an instance from a stream.
+     *
+     * @param in  a BPMN-formatted stream
+     * @param validate  whether to perform schema validation
+     * @throws JAXBException if the stream can't be parsed as BPMN
+     * @return the parsed instance
+     */
+    public static BpmnDefinitions newInstance(final InputStream in, final Boolean validate) throws JAXBException {
+        Unmarshaller unmarshaller = JAXBContext.newInstance(BpmnObjectFactory.class,
+                                                            org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
+                                                            org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
+                                                            org.omg.spec.dd._20100524.dc.ObjectFactory.class,
+                                                            org.omg.spec.dd._20100524.di.ObjectFactory.class)
+                                               .createUnmarshaller();
+        unmarshaller.setListener(new BpmnUnmarshallerListener());
+        if (validate) {
+            unmarshaller.setSchema(BPMN_SCHEMA);
+        }
+        return unmarshaller.unmarshal(new StreamSource(in), BpmnDefinitions.class)
+                           .getValue();  // discard the JAXBElement wrapper
+    }
+
+    /**
+     * Serialize this instance to a steam.
+     *
+     * Default deserialization is pretty-printed but not schema-validated.
+     *
+     * @param out  the stream for writing
+     * @param validate  whether to perform schema validation
+     * @throws JAXBException if the steam can't be written to
+     */
+    public void marshal(final OutputStream out, final Boolean validate) throws JAXBException {
+        Marshaller marshaller = JAXBContext.newInstance(BpmnObjectFactory.class,
+                                                        org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
+                                                        org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
+                                                        org.omg.spec.dd._20100524.dc.ObjectFactory.class,
+                                                        org.omg.spec.dd._20100524.di.ObjectFactory.class)
+                                           .createMarshaller();
+        marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
+        if (validate) {
+            marshaller.setSchema(BPMN_SCHEMA);
+        }
+        marshaller.marshal(this, out);
     }
 
     /**
