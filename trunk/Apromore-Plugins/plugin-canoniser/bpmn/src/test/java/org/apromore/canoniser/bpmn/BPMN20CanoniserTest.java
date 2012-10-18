@@ -621,7 +621,6 @@ public class BPMN20CanoniserTest {
     /**
      * Test canonization of a <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Request_For_Advance_Payment.bpmn20.xml">request for advance payment</a>.
      */
-    @Ignore
     @Test
     public void testCanoniseRequestForAdvancePayment() throws Exception {
         CanonicalProcessType cpf = testCanonise("Request_For_Advance_Payment").getCpf(0);

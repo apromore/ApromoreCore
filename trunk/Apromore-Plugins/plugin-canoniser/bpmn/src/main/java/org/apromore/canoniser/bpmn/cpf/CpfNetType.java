@@ -13,37 +13,9 @@ import org.apromore.canoniser.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.bpmn.ProcessWrapper;
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.ANDJoinType;
-import org.apromore.cpf.ANDSplitType;
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.NetType;
-import org.apromore.cpf.NodeType;
-import org.apromore.cpf.ORJoinType;
-import org.apromore.cpf.ORSplitType;
-import org.apromore.cpf.ResourceTypeRefType;
-import org.apromore.cpf.ResourceTypeType;
-import org.apromore.cpf.RoutingType;
-import org.apromore.cpf.WorkType;
-import org.apromore.cpf.XORJoinType;
-import org.apromore.cpf.XORSplitType;
+import org.apromore.cpf.*;
+import org.omg.spec.bpmn._20100524.model.*;
 import org.omg.spec.bpmn._20100524.model.BaseVisitor;
-import org.omg.spec.bpmn._20100524.model.TCallActivity;
-import org.omg.spec.bpmn._20100524.model.TCollaboration;
-import org.omg.spec.bpmn._20100524.model.TDataObject;
-import org.omg.spec.bpmn._20100524.model.TEndEvent;
-import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
-import org.omg.spec.bpmn._20100524.model.TFlowElement;
-import org.omg.spec.bpmn._20100524.model.TFlowNode;
-import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
-import org.omg.spec.bpmn._20100524.model.TLane;
-import org.omg.spec.bpmn._20100524.model.TLaneSet;
-import org.omg.spec.bpmn._20100524.model.TParallelGateway;
-import org.omg.spec.bpmn._20100524.model.TParticipant;
-import org.omg.spec.bpmn._20100524.model.TRootElement;
-import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
-import org.omg.spec.bpmn._20100524.model.TStartEvent;
-import org.omg.spec.bpmn._20100524.model.TSubProcess;
-import org.omg.spec.bpmn._20100524.model.TTask;
 
 /**
  * CPF 1.0 net with convenience methods.
@@ -103,6 +75,11 @@ public class CpfNetType extends NetType {
         for (JAXBElement<? extends TFlowElement> flowElement : process.getFlowElement()) {
             flowElement.getValue().accept(new BaseVisitor() {
                 @Override
+                public void visit(final TBusinessRuleTask businessRuleTask) {
+                    net.getNode().add(new CpfTaskType(businessRuleTask, initializer));
+                }
+
+                @Override
                 public void visit(final TCallActivity callActivity) {
                     net.getNode().add(new CpfTaskType(callActivity, initializer));
                 }
@@ -126,7 +103,8 @@ public class CpfNetType extends NetType {
                         case DIVERGING:  routing = new XORSplitType();  break;
                         default:
                             throw new RuntimeException(
-                                new CanoniserException("Unimplemented gateway direction " + exclusiveGateway.getGatewayDirection())
+                                new CanoniserException("Gateway " + exclusiveGateway.getId() +
+                                                       " unimplemented gateway direction " + exclusiveGateway.getGatewayDirection())
                             );  // TODO - remove wrapper hack
                     }
                     assert routing != null;
@@ -145,7 +123,8 @@ public class CpfNetType extends NetType {
                         case DIVERGING:  routing = new ORSplitType();  break;
                         default:
                             throw new RuntimeException(
-                                new CanoniserException("Unimplemented gateway direction " + inclusiveGateway.getGatewayDirection())
+                                new CanoniserException("Gateway " + inclusiveGateway.getId() +
+                                                       " unimplemented gateway direction " + inclusiveGateway.getGatewayDirection())
                             );  // TODO - remove wrapper hack
                     }
                     assert routing != null;
@@ -153,6 +132,11 @@ public class CpfNetType extends NetType {
                     initializer.populateFlowElement(routing, inclusiveGateway);
 
                     net.getNode().add(routing);
+                }
+
+                @Override
+                public void visit(final TManualTask manualTask) {
+                    net.getNode().add(new CpfTaskType(manualTask, initializer));
                 }
 
                 @Override
@@ -164,7 +148,8 @@ public class CpfNetType extends NetType {
                         case DIVERGING:  routing = new ANDSplitType();  break;
                         default:
                             throw new RuntimeException(
-                                new CanoniserException("Unimplemented gateway direction " + parallelGateway.getGatewayDirection())
+                                new CanoniserException("Gateway " + parallelGateway.getId() +
+                                                       " unimplemented gateway direction " + parallelGateway.getGatewayDirection())
                             );  // TODO - remove wrapper hack
                     }
                     assert routing != null;
@@ -175,12 +160,32 @@ public class CpfNetType extends NetType {
                 }
 
                 @Override
+                public void visit(final TReceiveTask receiveTask) {
+                    net.getNode().add(new CpfTaskType(receiveTask, initializer));
+                }
+
+                @Override
+                public void visit(final TScriptTask scriptTask) {
+                    net.getNode().add(new CpfTaskType(scriptTask, initializer));
+                }
+
+                @Override
+                public void visit(final TSendTask sendTask) {
+                    net.getNode().add(new CpfTaskType(sendTask, initializer));
+                }
+
+                @Override
                 public void visit(final TSequenceFlow sequenceFlow) {
                     try {
                         net.getEdge().add(new CpfEdgeType(sequenceFlow, initializer));
                     } catch (CanoniserException e) {
                         throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }
+                }
+
+                @Override
+                public void visit(final TServiceTask serviceTask) {
+                    net.getNode().add(new CpfTaskType(serviceTask, initializer));
                 }
 
                 @Override
@@ -207,6 +212,11 @@ public class CpfNetType extends NetType {
                 @Override
                 public void visit(final TTask task) {
                     net.getNode().add(new CpfTaskType(task, initializer));
+                }
+
+                @Override
+                public void visit(final TUserTask userTask) {
+                    net.getNode().add(new CpfTaskType(userTask, initializer));
                 }
             });
         }
