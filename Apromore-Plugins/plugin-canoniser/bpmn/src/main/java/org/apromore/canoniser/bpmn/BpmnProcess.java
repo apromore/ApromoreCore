@@ -40,11 +40,7 @@ public class BpmnProcess extends TProcess {
         initializer.populateBaseElement(this, net);
 
         // Add the BPMN Participant element
-        TParticipant participant = new TParticipant();
-        participant.setId(initializer.bpmnIdFactory.newId("participant"));
-        participant.setName(getName());  // TODO - use an extension element for pool name if it exists
-        participant.setProcessRef(new QName(initializer.getTargetNamespace(), getId()));
-        collaboration.getParticipant().add(participant);
+        collaboration.getParticipant().add(new BpmnParticipant(this, initializer));
 
         // Populate the BPMN Process element
         initializer.populateProcess(new ProcessWrapper(this), net);
