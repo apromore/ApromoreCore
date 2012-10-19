@@ -88,6 +88,8 @@ public class CpfCanonicalProcessType extends CanonicalProcessType {
         // Map BPMN flow nodes to CPF nodes
         final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap = new HashMap<TFlowNode, NodeType>();
 
+        final Initializer initializer = new Initializer(this, cpfIdFactory, definitions, laneMap, bpmnFlowNodeToCpfNodeMap);
+
         // Populate attributes
         setName(requiredName(definitions.getName()));
         setVersion(CPF_VERSION);
@@ -96,7 +98,7 @@ public class CpfCanonicalProcessType extends CanonicalProcessType {
         for (JAXBElement<? extends TRootElement> rootElement : definitions.getRootElement()) {
             if (rootElement.getValue() instanceof TProcess) {
                 TProcess process = (TProcess) rootElement.getValue();
-                new CpfNetType(this, cpfIdFactory, new ProcessWrapper(process), laneMap, bpmnFlowNodeToCpfNodeMap, null, definitions);
+                new CpfNetType(new ProcessWrapper(process), null, initializer);
             }
         }
     }
