@@ -118,6 +118,7 @@ public class BpmnDefinitionsTest {
      * Looking primarily to see that the lists of incoming and outgoing sequence flows on the flow nodes are correct, as
      * as the gateway direction on the XOR gateway.
      */
+    @Ignore
     @Test
     public final void testNewInstance() throws Exception {
 
@@ -130,6 +131,7 @@ public class BpmnDefinitionsTest {
         definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "Case 2.bpmn20.xml")), true);
     }
 
+    @Ignore
     @Test
     public final void testNewInstance2() throws Exception {
 
