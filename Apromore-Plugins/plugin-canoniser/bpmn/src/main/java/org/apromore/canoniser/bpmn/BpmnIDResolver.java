@@ -52,9 +52,9 @@ public class BpmnIDResolver extends IDResolver {
         gatewaySet.add(gateway);
     }
 
-    /** @param s  the target namespace for QName identifiers in the parsed BPMN doument */
-    void setTargetNamespace(final String s) {
-        targetNamespace = s;
+    /** @param namespace  the target namespace for QName identifiers in the parsed BPMN doument */
+    void setTargetNamespace(final String namespace) {
+        targetNamespace = namespace;
     }
 
     // Methods that JAXB-RI magically knows about (pseudo-interface of IDResolver)

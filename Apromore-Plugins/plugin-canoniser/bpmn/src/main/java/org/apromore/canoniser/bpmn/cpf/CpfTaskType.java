@@ -76,31 +76,17 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
      *
      * @param subProcess  a BPMN SubProcess
      * @param initializer  global construction state
-     * @param cpf  the CPF document under construction
-     * @param cpfIdFactory  generator for CPF identifiers
-     * @param laneMap  assignment of BPMN elements to lanes
-     * @param bpmnFlowNodeToCpfNodeMap  mapping between BPMN and CPF graph vertices
      * @param net  parent net
-     * @param definitions  a BPMN document
      * @throws CanoniserException if the task's subnet can't be constructed
      */
     public CpfTaskType(final TSubProcess subProcess,
                        final Initializer initializer,
-                       final CanonicalProcessType cpf,
-                       final IdFactory cpfIdFactory,
-                       final Map<TFlowNode, TLane> laneMap,
-                       final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap,
-                       final NetType net,
-                       final BpmnDefinitions definitions) throws CanoniserException {
+                       final NetType     net) throws CanoniserException {
 
         // Add the CPF child net
-        NetType subnet = new CpfNetType(cpf,
-                                        cpfIdFactory,
-                                        new ProcessWrapper(subProcess, cpfIdFactory.newId("subprocess")),
-                                        laneMap,
-                                        bpmnFlowNodeToCpfNodeMap,
+        NetType subnet = new CpfNetType(new ProcessWrapper(subProcess, initializer.cpfIdFactory.newId("subprocess")),
                                         net,
-                                        definitions);
+                                        initializer);
         assert subnet != null;
 
         // Add the CPF Task to the parent Net
