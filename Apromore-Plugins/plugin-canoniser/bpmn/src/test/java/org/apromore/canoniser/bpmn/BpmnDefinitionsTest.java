@@ -118,30 +118,32 @@ public class BpmnDefinitionsTest {
      * Looking primarily to see that the lists of incoming and outgoing sequence flows on the flow nodes are correct, as
      * as the gateway direction on the XOR gateway.
      */
-    @Ignore
     @Test
     public final void testNewInstance() throws Exception {
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Case 2.bpmn20.xml")), true);
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Case 2.bpmn20.xml")),
+                                                                  System.getProperty("bpmnvalidation") != null);
 
         // Inspect the test instance
 
         // Serialize the test instance
-        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "Case 2.bpmn20.xml")), true);
+        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "Case 2.bpmn20.xml")),
+                            System.getProperty("bpmnvalidation") != null);
     }
 
-    @Ignore
     @Test
     public final void testNewInstance2() throws Exception {
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Request_For_Advance_Payment.bpmn20.xml")), true);
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Request_For_Advance_Payment.bpmn20.xml")),
+                                                                  System.getProperty("bpmnvalidation") != null);
 
         // Inspect the test instance
 
         // Serialize the test instance
-        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "Request_For_Advance_Payment.bpmn20.xml")), true);
+        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "Request_For_Advance_Payment.bpmn20.xml")),
+                                                 System.getProperty("bpmnvalidation") != null);
     }
 
     /**
