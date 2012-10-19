@@ -1,12 +1,5 @@
 SET FOREIGN_KEY_CHECKS=0;
 
-CREATE DATABASE `apromore` /*!40100 DEFAULT CHARACTER SET utf8 */;
-
-CREATE USER 'apromore'@'localhost' IDENTIFIED BY 'MAcri';
-CREATE USER 'apromore'@'%' IDENTIFIED BY 'MAcri';
-GRANT ALL PRIVILEGES ON apromore.* TO 'apromore'@'localhost' WITH GRANT OPTION;
-GRANT ALL PRIVILEGES ON apromore.* TO 'apromore'@'%' WITH GRANT OPTION;
-
 USE `apromore`;
 
 DROP TABLE IF EXISTS `merged_version`;
@@ -146,12 +139,10 @@ CREATE TABLE `process_branch` (
   `creation_date`                     varchar(35) DEFAULT NULL,
   `last_update`                       varchar(35) DEFAULT NULL,
   `ranking`                           varchar(10) DEFAULT NULL,
-  `sourceProcessModelVersionId`       int(11) NULL,
-  `currentProcessModelVersionId`      int(11) NULL,
+  `sourceProcessModelVersion`         int(11) NULL,
+  `currentProcessModelVersion`        int(11) NULL,
   PRIMARY KEY (`id`),
-  CONSTRAINT `fk_process_branch` FOREIGN KEY (`processId`) REFERENCES `process` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_process_branch2` FOREIGN KEY (`sourceProcessModelVersionId`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_process_branch3` FOREIGN KEY (`currentProcessModelVersionId`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_process_branch` FOREIGN KEY (`processId`) REFERENCES `process` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 )  engine=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -171,8 +162,8 @@ CREATE TABLE `process_model_version` (
 )  engine=InnoDB DEFAULT CHARSET=utf8;
 
 
-ALTER TABLE `process_branch` ADD CONSTRAINT `fk_source_version` FOREIGN KEY (`sourceProcessModelVersionId`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-ALTER TABLE `process_branch` ADD CONSTRAINT `fk_current_version` FOREIGN KEY (`currentProcessModelVersionId`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `process_branch` ADD CONSTRAINT `fk_source_version` FOREIGN KEY (`sourceProcessModelVersion`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `process_branch` ADD CONSTRAINT `fk_current_version` FOREIGN KEY (`currentProcessModelVersion`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 CREATE TABLE `annotation` (
   `id`                          int(11) NOT NULL AUTO_INCREMENT,
