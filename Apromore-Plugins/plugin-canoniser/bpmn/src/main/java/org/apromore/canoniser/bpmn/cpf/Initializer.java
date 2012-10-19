@@ -4,15 +4,18 @@ package org.apromore.canoniser.bpmn.cpf;
 import java.util.Map;
 
 // Local packages
+import org.apromore.canoniser.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeType;
+import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.WorkType;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
+import org.omg.spec.bpmn._20100524.model.TLane;
 
 /**
  * This class is a clunky way of doing the work that <code>super</code> calls normally would in the constructors of the CPF elements.
@@ -23,8 +26,11 @@ import org.omg.spec.bpmn._20100524.model.TFlowNode;
  */
 public class Initializer {
 
-    private final IdFactory                cpfIdFactory;
-    private final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap;
+    final CpfCanonicalProcessType  cpf;
+    final IdFactory                cpfIdFactory;
+    final BpmnDefinitions          definitions;
+    final Map<TFlowNode, TLane>    laneMap;
+    final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap;
 
     /**
      * Sole constructor.
@@ -32,10 +38,16 @@ public class Initializer {
      * @param newCpfIdFactory  generator for CPF identifier
      * @param newBpmnFlowNodeToCpfNodeMap  mapping from BPMN to CPF graph vertices
      */
-    public Initializer(final IdFactory                newCpfIdFactory,
+    public Initializer(final CpfCanonicalProcessType  newCpf,
+                       final IdFactory                newCpfIdFactory,
+                       final BpmnDefinitions          newDefinitions,
+                       final Map<TFlowNode, TLane>    newLaneMap,
                        final Map<TFlowNode, NodeType> newBpmnFlowNodeToCpfNodeMap) {
 
+        cpf                      = newCpf;
         cpfIdFactory             = newCpfIdFactory;
+        definitions              = newDefinitions;
+        laneMap                  = newLaneMap;
         bpmnFlowNodeToCpfNodeMap = newBpmnFlowNodeToCpfNodeMap;
     }
 

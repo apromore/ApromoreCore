@@ -33,40 +33,31 @@ public class CpfNetType extends NetType {
      * Add a net to the CPF document, corresponding to a given BPMN process.
      *
      * @param cpf  the CPF document to populate
-     * @param cpfIdFactory  generator for CPF identifiers
      * @param process  the BPMN process to translate into a net
-     * @param laneMap  which BPMN nodes belong in which lanes?
-     * @param bpmnFlowNodeToCpfNodeMap  which BPMN nodes correspond to which CPF nodes?
      * @param parent  if this is a subnet, the parent net; if this is a root net, <code>null</code>
      * @param definitions  the BPMN document
      * @throws CanoniserException  if the net (and its subnets) can't be created and added
      */
-    public CpfNetType(final CanonicalProcessType cpf,
-                      final IdFactory cpfIdFactory,
-                      final ProcessWrapper process,
-                      final Map<TFlowNode, TLane> laneMap,
-                      final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap,
+    public CpfNetType(final ProcessWrapper process,
                       final NetType parent,
-                      final BpmnDefinitions definitions) throws CanoniserException {
+                      final Initializer initializer) throws CanoniserException {
 
         super();
 
         final NetType net = this;  // needed so that the inner classes can reference this instance
 
-        final Initializer initializer = new Initializer(cpfIdFactory, bpmnFlowNodeToCpfNodeMap);
-
-        net.setId(cpfIdFactory.newId(process.getId()));
+        net.setId(initializer.cpfIdFactory.newId(process.getId()));
         if (parent == null) {
-            cpf.getRootIds().add(net.getId());
+            initializer.cpf.getRootIds().add(net.getId());
         }
-        cpf.getNet().add(net);
+        initializer.cpf.getNet().add(net);
 
         // Generate resource types for each pool and lane
-        for (JAXBElement<? extends TRootElement> rootElement2 : definitions.getRootElement()) {
+        for (JAXBElement<? extends TRootElement> rootElement2 : initializer.definitions.getRootElement()) {
             if (rootElement2.getValue() instanceof TCollaboration) {
                 for (TParticipant participant : ((TCollaboration) rootElement2.getValue()).getParticipant()) {
                     if (participant.getProcessRef() != null && process.getId().equals(participant.getProcessRef().getLocalPart())) {
-                        addPools(participant, process.getLaneSet(), cpf, cpfIdFactory, laneMap);
+                        addPools(participant, process.getLaneSet(), initializer);
                     }
                 }
             }
@@ -74,28 +65,60 @@ public class CpfNetType extends NetType {
 
         for (JAXBElement<? extends TFlowElement> flowElement : process.getFlowElement()) {
             flowElement.getValue().accept(new BaseVisitor() {
-                @Override
-                public void visit(final TBusinessRuleTask businessRuleTask) {
+
+                @Override public void visit(final TAdHocSubProcess adHocSubProcess) {
+                    try {
+                        net.getNode().add(new CpfTaskType(adHocSubProcess, initializer, net));
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
+                }
+
+                @Override public void visit(final TBoundaryEvent that) {
+                    unimplemented(that);
+                }
+
+                @Override public void visit(final TBusinessRuleTask businessRuleTask) {
                     net.getNode().add(new CpfTaskType(businessRuleTask, initializer));
                 }
 
-                @Override
-                public void visit(final TCallActivity callActivity) {
+                @Override public void visit(final TCallActivity callActivity) {
                     net.getNode().add(new CpfTaskType(callActivity, initializer));
                 }
 
-                @Override
-                public void visit(final TDataObject dataObject) {
+                @Override public void visit(final TCallChoreography that) {
+                    unimplemented(that);
+                }
+
+                @Override public void visit(final TChoreographyTask that) {
+                    unimplemented(that);
+                }
+
+                @Override public void visit(final TComplexGateway that) {
+                    unimplemented(that);
+                }
+
+                @Override public void visit(final TDataObject dataObject) {
                     net.getObject().add(new CpfObjectType(dataObject, initializer));
                 }
 
-                @Override
-                public void visit(final TEndEvent endEvent) {
+                @Override public void visit(final TDataObjectReference dataObjectReference) {
+                    unimplemented(dataObjectReference);
+                }
+
+                @Override public void visit(final TDataStoreReference dataStoreReference) {
+                    unimplemented(dataStoreReference);
+                }
+
+                @Override public void visit(final TEndEvent endEvent) {
                     net.getNode().add(new CpfEventType(endEvent, initializer));
                 }
 
-                @Override
-                public void visit(final TExclusiveGateway exclusiveGateway) {
+                @Override public void visit(final TEventBasedGateway that) {
+                    unimplemented(that);
+                }
+
+                @Override public void visit(final TExclusiveGateway exclusiveGateway) {
                     RoutingType routing;
 
                     switch (exclusiveGateway.getGatewayDirection()) {
@@ -114,8 +137,11 @@ public class CpfNetType extends NetType {
                     net.getNode().add(routing);
                 }
 
-                @Override
-                public void visit(final TInclusiveGateway inclusiveGateway) {
+                @Override public void visit(final TImplicitThrowEvent that) {
+                    unimplemented(that);
+                }
+
+                @Override public void visit(final TInclusiveGateway inclusiveGateway) {
                     RoutingType routing;
 
                     switch (inclusiveGateway.getGatewayDirection()) {
@@ -134,13 +160,19 @@ public class CpfNetType extends NetType {
                     net.getNode().add(routing);
                 }
 
-                @Override
-                public void visit(final TManualTask manualTask) {
+                @Override public void visit(final TIntermediateCatchEvent that) {
+                    unimplemented(that);
+                }
+
+                @Override public void visit(final TIntermediateThrowEvent that) {
+                    unimplemented(that);
+                }
+
+                @Override public void visit(final TManualTask manualTask) {
                     net.getNode().add(new CpfTaskType(manualTask, initializer));
                 }
 
-                @Override
-                public void visit(final TParallelGateway parallelGateway) {
+                @Override public void visit(final TParallelGateway parallelGateway) {
                     RoutingType routing;
 
                     switch (parallelGateway.getGatewayDirection()) {
@@ -159,23 +191,19 @@ public class CpfNetType extends NetType {
                     net.getNode().add(routing);
                 }
 
-                @Override
-                public void visit(final TReceiveTask receiveTask) {
+                @Override public void visit(final TReceiveTask receiveTask) {
                     net.getNode().add(new CpfTaskType(receiveTask, initializer));
                 }
 
-                @Override
-                public void visit(final TScriptTask scriptTask) {
+                @Override public void visit(final TScriptTask scriptTask) {
                     net.getNode().add(new CpfTaskType(scriptTask, initializer));
                 }
 
-                @Override
-                public void visit(final TSendTask sendTask) {
+                @Override public void visit(final TSendTask sendTask) {
                     net.getNode().add(new CpfTaskType(sendTask, initializer));
                 }
 
-                @Override
-                public void visit(final TSequenceFlow sequenceFlow) {
+                @Override public void visit(final TSequenceFlow sequenceFlow) {
                     try {
                         net.getEdge().add(new CpfEdgeType(sequenceFlow, initializer));
                     } catch (CanoniserException e) {
@@ -183,45 +211,41 @@ public class CpfNetType extends NetType {
                     }
                 }
 
-                @Override
-                public void visit(final TServiceTask serviceTask) {
+                @Override public void visit(final TServiceTask serviceTask) {
                     net.getNode().add(new CpfTaskType(serviceTask, initializer));
                 }
 
-                @Override
-                public void visit(final TStartEvent startEvent) {
+                @Override public void visit(final TStartEvent startEvent) {
                     net.getNode().add(new CpfEventType(startEvent, initializer));
                 }
 
-                @Override
-                public void visit(final TSubProcess subProcess) {
+                @Override public void visit(final TSubChoreography that) { unimplemented(that); }
+
+                @Override public void visit(final TSubProcess subProcess) {
                     try {
-                        net.getNode().add(new CpfTaskType(subProcess,
-                                                          initializer,
-                                                          cpf,
-                                                          cpfIdFactory,
-                                                          laneMap,
-                                                          bpmnFlowNodeToCpfNodeMap,
-                                                          net,
-                                                          definitions));
+                        net.getNode().add(new CpfTaskType(subProcess, initializer, net));
                     } catch (CanoniserException e) {
                         throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }
                 }
 
-                @Override
-                public void visit(final TTask task) {
+                @Override public void visit(final TTask task) {
                     net.getNode().add(new CpfTaskType(task, initializer));
                 }
 
-                @Override
-                public void visit(final TUserTask userTask) {
+                @Override public void visit(final TUserTask userTask) {
                     net.getNode().add(new CpfTaskType(userTask, initializer));
+                }
+
+                // Internal methods
+
+                private void unimplemented(Object o) {
+                    throw new RuntimeException(new CanoniserException("Unimplemented BPMN element: " + o));
                 }
             });
         }
 
-        unwindLaneMap(cpfIdFactory, laneMap, bpmnFlowNodeToCpfNodeMap);
+        unwindLaneMap(initializer);
     }
 
     /**
@@ -234,20 +258,18 @@ public class CpfNetType extends NetType {
      */
     private static void addPools(final TParticipant          participant,
                                  final List<TLaneSet>        laneSets,
-                                 final CanonicalProcessType  cpf,
-                                 final IdFactory             cpfIdFactory,
-                                 final Map<TFlowNode, TLane> laneMap) {
+                                 final Initializer           initializer) {
 
         for (TLaneSet laneSet : laneSets) {
 
             // Create a pool
             ResourceTypeType poolResourceType = new ResourceTypeType();
-            poolResourceType.setId(cpfIdFactory.newId(participant.getId()));
+            poolResourceType.setId(initializer.cpfIdFactory.newId(participant.getId()));
             poolResourceType.setName(requiredName(participant.getName()));
-            cpf.getResourceType().add(poolResourceType);
+            initializer.cpf.getResourceType().add(poolResourceType);
 
             // Create the lanes within the pool
-            poolResourceType.getSpecializationIds().addAll(addLanes(laneSet, cpf, cpfIdFactory, laneMap));
+            poolResourceType.getSpecializationIds().addAll(addLanes(laneSet, initializer));
         }
     }
 
@@ -262,9 +284,7 @@ public class CpfNetType extends NetType {
      * @return the CPF ids of all the added lanes (but not their sublanes)
      */
     private static Set<String> addLanes(final TLaneSet              laneSet,
-                                        final CanonicalProcessType  cpf,
-                                        final IdFactory             cpfIdFactory,
-                                        final Map<TFlowNode, TLane> laneMap) {
+                                        final Initializer           initializer) {
 
         Set<String> specializationIds = new HashSet<String>();  // TODO - diamond operator
 
@@ -272,10 +292,10 @@ public class CpfNetType extends NetType {
             ResourceTypeType laneResourceType = new ResourceTypeType();
 
             // Add the resource type to the CPF model
-            laneResourceType.setId(cpfIdFactory.newId(lane.getId()));
+            laneResourceType.setId(initializer.cpfIdFactory.newId(lane.getId()));
             laneResourceType.setName(requiredName(lane.getName()));
             specializationIds.add(laneResourceType.getId());
-            cpf.getResourceType().add(laneResourceType);
+            initializer.cpf.getResourceType().add(laneResourceType);
 
             // Populate laneMap so we'll know later on which lane each element belongs to
             List list = lane.getFlowNodeRef();
@@ -283,12 +303,12 @@ public class CpfNetType extends NetType {
                 JAXBElement je = (JAXBElement) object;
                 Object value = je.getValue();
                 TFlowNode flowNode = (TFlowNode) value;
-                laneMap.put(flowNode, lane);
+                initializer.laneMap.put(flowNode, lane);
             }
 
             // recurse on any child lane sets
             if (lane.getChildLaneSet() != null) {
-                laneResourceType.getSpecializationIds().addAll(addLanes(lane.getChildLaneSet(), cpf, cpfIdFactory, laneMap));
+                laneResourceType.getSpecializationIds().addAll(addLanes(lane.getChildLaneSet(), initializer));
             }
         }
 
@@ -301,25 +321,16 @@ public class CpfNetType extends NetType {
      * @param cpfIdFactory  generator for {@link ResourceTypeRefType#id}s
      * @throws CanoniserException  if the {@link #laneMap} contains a lane mapping to a node that doesn't exist
      */
-    private static void unwindLaneMap(final IdFactory cpfIdFactory,
-                                      final Map<TFlowNode, TLane> laneMap,
-                                      final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap) throws CanoniserException {
+    private static void unwindLaneMap(final Initializer initializer) throws CanoniserException {
 
-        for (Map.Entry<TFlowNode, TLane> entry : laneMap.entrySet()) {
-            if (!bpmnFlowNodeToCpfNodeMap.containsKey(entry.getKey())) {
+        for (Map.Entry<TFlowNode, TLane> entry : initializer.laneMap.entrySet()) {
+            if (!initializer.bpmnFlowNodeToCpfNodeMap.containsKey(entry.getKey())) {
                 throw new CanoniserException("Lane " + entry.getValue().getId() + " contains " +
                                              entry.getKey().getId() + " which is not present");
             }
-            NodeType node = bpmnFlowNodeToCpfNodeMap.get(entry.getKey());  // get the CPF node corresponding to the BPMN flow node
+            NodeType node = initializer.bpmnFlowNodeToCpfNodeMap.get(entry.getKey());  // get the CPF node corresponding to the BPMN flow node
             if (node instanceof WorkType) {
-                ResourceTypeRefType resourceTypeRef = new ResourceTypeRefType();
-
-                resourceTypeRef.setId(cpfIdFactory.newId(null));
-                //resourceTypeRef.setOptional(false);  // redundant, since false is the default
-                resourceTypeRef.setQualifier(null);
-                resourceTypeRef.setResourceTypeId(entry.getValue().getId());
-
-                ((WorkType) node).getResourceTypeRef().add(resourceTypeRef);
+                ((WorkType) node).getResourceTypeRef().add(new CpfResourceTypeRefType(entry.getValue(), initializer));
             }
         }
     }
