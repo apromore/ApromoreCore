@@ -81,7 +81,7 @@ public class DeployProcessEndpointTest {
         request.getValue().setDeploymentParameters(pluginProperties);
 
         CPF cpf = new CPF();
-        expect(repositoryService.getCurrentProcessModel(processName, false)).andReturn(cpf);
+        expect(repositoryService.getCurrentProcessModel(processName, branchName, false)).andReturn(cpf);
         expect(canoniserService.serializeCPF(cpf)).andReturn(new CanonicalProcessType());
         expect(deploymentService.deployProcess(eq(nativeType), anyObject(CanonicalProcessType.class), isNull(AnnotationsType.class), anyObject(HashSet.class))).andReturn(new ArrayList<PluginMessage>());
 

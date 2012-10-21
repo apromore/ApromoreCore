@@ -12,36 +12,36 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <resourceTypeRef id="id442a8984-4c4c-47a9-90ab-20bc99172c39" resourceTypeId="id7e2a44e5-da5c-4ee5-83ff-0cfa127d9ae2" qualifier="Primary"/>
+            <resourceTypeRef id="ide2b7e860-6bd0-4a9b-865e-93f49636dbe8" resourceTypeId="id4a2d81c0-3044-4a46-9176-87f46519aa71" qualifier="Primary"/>
             <teamWork>false</teamWork>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="C-A-OutputCondition" default="true" sourceId="C-A" targetId="C-OutputCondition"/>
+        <Edge id="C-InputCondition-A" sourceId="C-InputCondition" targetId="C-A"/>
+        <Edge id="C-A-OutputCondition" sourceId="C-A" targetId="C-OutputCondition"/>
     </Net>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id7e2a44e5-da5c-4ee5-83ff-0cfa127d9ae2" specializationIds="id5a34e22e-0d30-4b03-a85a-e380a0b47cb3 idff52c3c5-4d27-409a-addb-0ac69c37eae9" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id4a2d81c0-3044-4a46-9176-87f46519aa71" specializationIds="id9a350fc8-a606-4cd3-ba18-1a607dbf80a5 ide2e968e0-d39e-44f0-9a88-f5ed0f836dd3" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
         <name>RoleX</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="idff52c3c5-4d27-409a-addb-0ac69c37eae9" originalID="PA-c5795783-3695-48ec-b798-aea7890b0988">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="ide2e968e0-d39e-44f0-9a88-f5ed0f836dd3" originalID="PA-c5795783-3695-48ec-b798-aea7890b0988">
         <name>TestX TestX</name>
         <attribute name="Capability" value="CapabilityX"/>
         <attribute name="Position" value="PositionX"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id5a34e22e-0d30-4b03-a85a-e380a0b47cb3" specializationIds="id9a03430e-a363-48dd-b905-a2ca4376b3cf id84fde622-d051-4875-8491-d39863881801 idff52c3c5-4d27-409a-addb-0ac69c37eae9" originalID="RO-176b14db-d9d7-4de0-8a5f-657a1103a814">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id9a350fc8-a606-4cd3-ba18-1a607dbf80a5" specializationIds="id10707e70-d12a-427d-ad54-4d895f694117 idbf9f64fd-b61a-4fe3-81c1-5b45bde896f4 ide2e968e0-d39e-44f0-9a88-f5ed0f836dd3" originalID="RO-176b14db-d9d7-4de0-8a5f-657a1103a814">
         <name>RoleY</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id9a03430e-a363-48dd-b905-a2ca4376b3cf" originalID="PA-09ef66e3-4f91-4a10-82de-19294ba87cd3">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id10707e70-d12a-427d-ad54-4d895f694117" originalID="PA-09ef66e3-4f91-4a10-82de-19294ba87cd3">
         <name>TestY TestY</name>
         <attribute name="Capability" value="CapabilityY"/>
         <attribute name="Capability" value="CapabilityX"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id84fde622-d051-4875-8491-d39863881801" specializationIds="id9a03430e-a363-48dd-b905-a2ca4376b3cf" originalID="RO-c4671de9-56cc-4eb3-b625-00406479ed3d">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="idbf9f64fd-b61a-4fe3-81c1-5b45bde896f4" specializationIds="id10707e70-d12a-427d-ad54-4d895f694117" originalID="RO-c4671de9-56cc-4eb3-b625-00406479ed3d">
         <name>RoleZ</name>
         <type>Role</type>
     </ResourceType>

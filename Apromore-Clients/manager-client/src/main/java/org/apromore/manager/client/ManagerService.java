@@ -355,7 +355,7 @@ public interface ManagerService {
     Set<PluginInfo> readDeploymentPluginInfo(String nativeType) throws Exception;
 
     /**
-     * Deploy process to a runnning process engine
+     * Deploy process to a running process engine
      *
      * @param branchName
      *            of the process to be deployed
@@ -379,7 +379,7 @@ public interface ManagerService {
             String pluginVersion, Set<RequestParameterType<?>> deploymentProperties) throws Exception;
 
     /**
-     * Update a process in the apromore repository.
+     * Update a process in the Apromore repository.
      *
      * @param sessionCode
      *            The Session Code

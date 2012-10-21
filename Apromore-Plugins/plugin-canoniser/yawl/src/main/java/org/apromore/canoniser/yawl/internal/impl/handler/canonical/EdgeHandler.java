@@ -21,8 +21,10 @@ import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NodeType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.yawlfoundation.yawlschema.ControlTypeCodeType;
 import org.yawlfoundation.yawlschema.ExternalNetElementFactsType;
 import org.yawlfoundation.yawlschema.ExternalNetElementType;
+import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
 import org.yawlfoundation.yawlschema.FlowsIntoType;
 import org.yawlfoundation.yawlschema.NetFactsType;
 import org.yawlfoundation.yawlschema.OutputConditionFactsType;
@@ -48,6 +50,7 @@ public class EdgeHandler extends CanonicalElementHandler<EdgeType, NetFactsType>
 
         // Find Source of Edge
         ExternalNetElementFactsType sourceElement;
+
         if (getContext().getControlFlowContext().getElementInfo(getObject().getSourceId()).getElement() != null) {
             // Source will always be ExternalNetElementFactsType, as OutputCondition has no successor
             sourceElement = (ExternalNetElementFactsType) getContext().getControlFlowContext().getElementInfo(getObject().getSourceId()).getElement();
@@ -90,22 +93,43 @@ public class EdgeHandler extends CanonicalElementHandler<EdgeType, NetFactsType>
             predicate.setValue(convertCanonicalExpression(getObject().getConditionExpr()));
             final List<NodeType> postSet = getContext().getPostSet(getObject().getSourceId());
             if (postSet.size() > 1) {
-                predicate.setOrdering(determineTargetIndex(postSet));
+                BigInteger targetIndex = determineTargetIndex(postSet);
+                predicate.setOrdering(targetIndex);
             } else {
                 predicate.setOrdering(BigInteger.valueOf(1));
-                // flowsIntoType.setIsDefaultFlow("");
             }
             flowsIntoType.setPredicate(predicate);
             LOGGER.debug("Adding Flow from {} to {} with condition {}",
                     new String[] { sourceElement.getName(), targetElement.getId(), predicate.getValue() });
         } else {
-            // flowsIntoType.setIsDefaultFlow("");
-            LOGGER.debug("Adding Flow from {} to {}", sourceElement.getName(), targetElement.getId());
+            decideDefaultFlowWithOutCondition(sourceElement, targetElement, flowsIntoType);
         }
 
         sourceElement.getFlowsInto().add(flowsIntoType);
 
         getContext().getControlFlowContext().addConvertedFlow(getObject().getId(), flowsIntoType);
+    }
+
+    private void decideDefaultFlowWithOutCondition(final ExternalNetElementFactsType sourceElement, final ExternalNetElementType targetElement,
+            final FlowsIntoType flowsIntoType) throws CanoniserException {
+        final List<NodeType> postSet = getContext().getPostSet(getObject().getSourceId());
+        if (postSet.size() > 1) {
+            if (!isAndSplit(sourceElement)) {
+                //TODO infer default flow if not correctly set
+                flowsIntoType.setIsDefaultFlow("");
+                LOGGER.debug("Adding Flow from {} to {} as default flow", sourceElement.getName(), targetElement.getId());
+            }
+        } else {
+            LOGGER.debug("Adding Flow from {} to {}", sourceElement.getName(), targetElement.getId());
+        }
+    }
+
+    private boolean isAndSplit(final ExternalNetElementFactsType sourceElement) {
+        if (sourceElement instanceof ExternalTaskFactsType) {
+            ExternalTaskFactsType task = (ExternalTaskFactsType) sourceElement;
+            return task.getSplit().equals(ControlTypeCodeType.AND);
+        }
+        return false;
     }
 
     private String convertCanonicalExpression(final ConditionExpressionType conditionExpr) {

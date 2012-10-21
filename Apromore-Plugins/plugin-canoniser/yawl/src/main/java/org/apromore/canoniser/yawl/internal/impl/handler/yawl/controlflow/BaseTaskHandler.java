@@ -91,7 +91,7 @@ public abstract class BaseTaskHandler extends ExternalNetElementHandler<External
     }
 
     /**
-     * Connect the specified Node to its sucessors
+     * Connect the specified Node to its successors
      *
      * @param taskExitNode
      * @throws CanoniserException

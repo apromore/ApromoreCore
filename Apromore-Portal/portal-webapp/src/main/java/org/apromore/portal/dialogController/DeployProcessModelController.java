@@ -10,12 +10,12 @@ import org.apromore.model.PluginInfo;
 import org.apromore.model.PluginMessages;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.VersionSummaryType;
+import org.apromore.plugin.property.ParameterType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Executions;
 import org.zkoss.zk.ui.SuspendNotAllowedException;
-import org.zkoss.zk.ui.WrongValueException;
 import org.zkoss.zk.ui.event.Event;
 import org.zkoss.zk.ui.event.EventListener;
 import org.zkoss.zk.ui.event.SelectEvent;
@@ -51,7 +51,10 @@ public class DeployProcessModelController extends BaseController {
     private final Entry<ProcessSummaryType, List<VersionSummaryType>> selectedProcess;
     private String selectedDeploymentPLugin;
 
-    public DeployProcessModelController(final MainController mainController, final Entry<ProcessSummaryType, List<VersionSummaryType>> process) throws WrongValueException, InterruptedException {
+    private final MainController mainController;
+
+    public DeployProcessModelController(final MainController mainController, final Entry<ProcessSummaryType, List<VersionSummaryType>> process) throws InterruptedException {
+        this.mainController = mainController;
         this.selectedProcess = process;
 
         deployProcessW = (Window) Executions.createComponents("macros/deployProcess.zul", null, null);
@@ -71,21 +74,7 @@ public class DeployProcessModelController extends BaseController {
 
             @Override
             public void onEvent(final Event event) throws InterruptedException {
-                String lastVersion = selectedProcess.getKey().getLastVersion();
-                String name = selectedProcess.getKey().getName();
-                //TODO include branch
-                Clients.showBusy(deployProcessW, "Deploying process...");
-                PluginMessages deploymentMessages;
-                try {
-                    deploymentMessages = getService().deployProcess(null, name, lastVersion, nativeTypeBox.getValue(), getSelectedPluginName(), getSelectedPluginVersion(), convertProperties());
-                    deployProcessW.detach();
-                    Clients.clearBusy(deployProcessW);
-                    mainController.showPluginMessages(deploymentMessages);
-                } catch (Exception e) {
-                    Clients.clearBusy(deployProcessW);
-                    closeWindow();
-                    Messagebox.show("Deploy process failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
-                }
+                deployProcess(event);
             }
         });
 
@@ -105,7 +94,7 @@ public class DeployProcessModelController extends BaseController {
     }
 
     protected Set<RequestParameterType<?>> convertProperties() {
-        return propertiesHelper.readPluginProperties();
+        return propertiesHelper.readPluginProperties(ParameterType.DEFAULT_CATEGORY);
     }
 
     private void readDeploymentPluginInfos(final String nativeType) throws InterruptedException {
@@ -175,6 +164,24 @@ public class DeployProcessModelController extends BaseController {
             return selectedDeploymentPLugin.split(":")[0];
         } else {
             return null;
+        }
+    }
+
+    private void deployProcess(final Event event) throws InterruptedException {
+        String lastVersion = selectedProcess.getKey().getLastVersion();
+        String name = selectedProcess.getKey().getName();
+        String branch = "MAIN";
+        Clients.showBusy(deployProcessW, "Deploying process...");
+        PluginMessages deploymentMessages;
+        try {
+            deploymentMessages = getService().deployProcess(branch, name, lastVersion, nativeTypeBox.getValue(), getSelectedPluginName(), getSelectedPluginVersion(), convertProperties());
+            deployProcessW.detach();
+            Clients.clearBusy(deployProcessW);
+            mainController.showPluginMessages(deploymentMessages);
+        } catch (Exception e) {
+            Clients.clearBusy(deployProcessW);
+            closeWindow();
+            Messagebox.show("Deploy process failed (" + e.getMessage() + ")", "Attention", Messagebox.OK, Messagebox.ERROR);
         }
     }
 

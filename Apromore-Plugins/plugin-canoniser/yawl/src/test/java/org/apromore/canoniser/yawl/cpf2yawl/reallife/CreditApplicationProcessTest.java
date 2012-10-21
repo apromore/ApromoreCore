@@ -8,6 +8,8 @@ import java.io.File;
 import org.apromore.canoniser.yawl.BaseCPF2YAWLTest;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.junit.Test;
+import org.yawlfoundation.yawlschema.ControlTypeCodeType;
+import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
 import org.yawlfoundation.yawlschema.NetFactsType;
 
 public class CreditApplicationProcessTest extends BaseCPF2YAWLTest {
@@ -46,6 +48,19 @@ public class CreditApplicationProcessTest extends BaseCPF2YAWLTest {
         assertNotNull(findTaskByName("receive application", rootNet));
         assertNotNull(findTaskByName("get more info", rootNet));
         assertNotNull(findTaskByName("check for completeness", rootNet));
+    }
+
+    @Test
+    public void testRoutingConditions() {
+        NetFactsType net = findRootNet();
+        ExternalTaskFactsType makeDecision = checkTask(net, "make decision", ControlTypeCodeType.XOR, ControlTypeCodeType.XOR, 2);
+        checkAtLeastOneDefaultFlow(makeDecision);
+        checkOnlyOneDefaultFlow(makeDecision);
+        checkNoMissingPredicate(makeDecision);
+        ExternalTaskFactsType checkLoanAmount = checkTask(net, "check loan amount", ControlTypeCodeType.XOR, ControlTypeCodeType.XOR, 2);
+        checkAtLeastOneDefaultFlow(checkLoanAmount);
+        checkOnlyOneDefaultFlow(checkLoanAmount);
+        checkNoMissingPredicate(checkLoanAmount);
     }
 
 }

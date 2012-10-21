@@ -26,8 +26,8 @@ import org.apromore.plugin.deployment.exception.DeploymentException;
 import org.apromore.plugin.deployment.impl.DefaultDeploymentPlugin;
 import org.apromore.plugin.exception.PluginPropertyNotFoundException;
 import org.apromore.plugin.impl.PluginResultImpl;
-import org.apromore.plugin.property.PluginParameterType;
 import org.apromore.plugin.property.ParameterType;
+import org.apromore.plugin.property.PluginParameterType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Node;
@@ -112,8 +112,12 @@ public class YAWLDeploymentPlugin extends DefaultDeploymentPlugin {
                     String yawlSpec = deCanoniseYAWL(canonicalProcess, annotation);
                     Node uploadResponse = yawlEngineClient.uploadYAWLSpecification(yawlSpec, sessionHandle);
                     if (uploadResponse.getNodeName().equals("failure")) {
-                        for (int i = 0; i < uploadResponse.getChildNodes().getLength(); i++) {
-                            convertToPluginMessage(pluginResult, uploadResponse.getChildNodes().item(i));
+                        pluginResult.addPluginMessage("Failure deploying process {0}", canonicalProcess.getName());
+                        if (uploadResponse.getChildNodes().getLength() > 0) {
+                            Node reasonNode = uploadResponse.getChildNodes().item(0);
+                            for (int i = 0; i < reasonNode.getChildNodes().getLength(); i++) {
+                                convertToPluginMessage(pluginResult, reasonNode.getChildNodes().item(i));
+                            }
                         }
                     } else {
                         if (uploadResponse.getTextContent().isEmpty()) {
@@ -144,7 +148,7 @@ public class YAWLDeploymentPlugin extends DefaultDeploymentPlugin {
 
     private void convertToPluginMessage(final PluginResultImpl pluginResult, final Node errorMessage) {
         if (errorMessage.getChildNodes().getLength() > 1) {
-            pluginResult.addPluginMessage("Error in Node {0}: {1}", errorMessage.getFirstChild().getTextContent(), errorMessage.getLastChild()
+            pluginResult.addPluginMessage("{0}: {1}", errorMessage.getFirstChild().getTextContent(), errorMessage.getLastChild()
                     .getTextContent());
         } else {
             pluginResult.addPluginMessage("Error: {0}", errorMessage.getFirstChild().getTextContent());

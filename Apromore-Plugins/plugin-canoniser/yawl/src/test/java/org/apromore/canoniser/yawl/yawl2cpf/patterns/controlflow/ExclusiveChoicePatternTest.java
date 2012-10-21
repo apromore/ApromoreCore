@@ -20,7 +20,7 @@ public class ExclusiveChoicePatternTest extends BasePatternTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.apromore.canoniser.yawl.BaseYAWL2CPFTest#getYAWLFile()
      */
     @Override
@@ -40,15 +40,21 @@ public class ExclusiveChoicePatternTest extends BasePatternTest {
         assertTrue("Routing node should be XORSplitType", routingNode instanceof XORSplitType);
         assertEquals(3, countOutgoingEdges(rootNet, routingNode.getId()));
 
+        final TaskType nodeB = checkNode(rootNet, "B", TaskType.class, 1, 1);
+        final NodeType nodeC = checkNode(rootNet, "C", TaskType.class, 1, 1);
+        final TaskType nodeD = checkNode(rootNet, "D", TaskType.class, 1, 1);
+
+
         final List<EdgeType> routingEdges = getOutgoingEdges(rootNet, routingNode.getId());
         for (final EdgeType edge : routingEdges) {
-            assertTrue("Each edge from a XOR split should have a condition or isDefault enabled", edge.isDefault()
-                    || (edge.getConditionExpr() != null));
+            if (edge.getTargetId().equals(nodeB.getId())) {
+                assertTrue("Edge to Node B should be default", edge.getConditionExpr() != null);
+            } else if (edge.getTargetId().equals(nodeC.getId())) {
+                assertTrue("Edge to Node C should have a condition", edge.getConditionExpr() != null);
+            } else if (edge.getTargetId().equals(nodeD.getId())) {
+                assertTrue("Edge to Node D  should have a condition", edge.isDefault());
+            }
         }
-
-        checkNode(rootNet, "B", TaskType.class, 1, 1);
-        final NodeType nodeC = checkNode(rootNet, "C", TaskType.class, 1, 1);
-        checkNode(rootNet, "D", TaskType.class, 1, 1);
 
         final List<EdgeType> cEdges = getOutgoingEdges(rootNet, nodeC.getId());
         assertEquals(1, cEdges.size());

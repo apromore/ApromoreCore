@@ -46,9 +46,14 @@ public class YAWLDeploymentPluginIntgTest {
                 request.addRequestProperty(new RequestParameterType<String>("yawlEngineUsername", "admin"));
                 request.addRequestProperty(new RequestParameterType<String>("yawlEnginePassword", "YAWL"));
                 PluginResult result = deploymentPlugin.deployProcess(cpf, request);
-                assertEquals(1, result.getPluginMessage().size());
-                assertTrue("Process Simple Make Trip Process successfully deployed.".equals(result.getPluginMessage().get(0).getMessage())
-                        || "Error: There is a specification with an identical id to [UID: WP1Sequence- Version: 0.1] already loaded into the engine.".equals(result.getPluginMessage().get(0).getMessage()));
+                assertTrue(result.getPluginMessage().size() == 1 || result.getPluginMessage().size() == 2);
+                if (result.getPluginMessage().size() == 2) {
+                    assertEquals("Failure deploying process WP1Sequence", result.getPluginMessage().get(0).getMessage());
+                    assertEquals("Error: There is a specification with an identical id to [UID: WP1Sequence- Version: 0.1] already loaded into the engine.", result.getPluginMessage().get(1).getMessage());
+                } else {
+                    assertTrue("Process Simple Make Trip Process successfully deployed.".equals(result.getPluginMessage().get(0).getMessage())
+                            || "Error: There is a specification with an identical id to [UID: WP1Sequence- Version: 0.1] already loaded into the engine.".equals(result.getPluginMessage().get(0).getMessage()));
+                }
             }
         }
     }

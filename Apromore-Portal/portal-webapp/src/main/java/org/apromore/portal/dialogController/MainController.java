@@ -555,7 +555,7 @@ public class MainController extends BaseController {
             while (iter.hasNext()) {
                 sb.append(iter.next().getValue());
                 if (iter.hasNext()) {
-                    sb.append("<br>");
+                    sb.append("\n\n");
                 }
             }
             if (sb.length() > 0) {

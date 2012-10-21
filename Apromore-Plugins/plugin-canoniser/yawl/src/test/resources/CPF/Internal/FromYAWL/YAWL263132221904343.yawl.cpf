@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="263132221721661.yawl" version="0.1" name="263132221721661" author="yawl model generator" rootIds="N-YAWL263132221904343">
+    <Net id="N-YAWL263132221904343" originalID="YAWL263132221904343">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132221934311" originalID="263132221934311">
+            <name>Start</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132221954426" originalID="263132221954426">
+            <name>MCb</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>X = X</expression>
+            </inputExpr>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="ad5312bc-e040-4a31-977c-15e75642e845"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132222087024" originalID="263132222087024"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132222111655" originalID="263132222111655"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132222119044" originalID="263132222119044">
+            <name>1Rt</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>u = u</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>Rx = Rx</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>c = c</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>C = C</expression>
+            </inputExpr>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>Z = Z</expression>
+            </inputExpr>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132222020109" originalID="263132222020109">
+            <name>Ukd</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <inputExpr>
+                <language>http://www.w3.org/2005/xpath-functions/</language>
+                <expression>Rx = Rx</expression>
+            </inputExpr>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="id83a93c8b-9805-4368-9685-8b23a9984d80"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132222182264" originalID="263132222182264"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132222155581" originalID="263132222155581">
+            <name>V</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132222009846" originalID="263132222009846"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132221944163" originalID="263132221944163">
+            <name>End</name>
+        </Node>
+        <Edge id="C-263132221934311-263132221954426" sourceId="C-263132221934311" targetId="C-263132221954426"/>
+        <Edge id="id200a6395-03e7-4000-bcc7-b4ac9a40a328" sourceId="C-263132221954426" targetId="ad5312bc-e040-4a31-977c-15e75642e845"/>
+        <Edge id="id2ba70f27-6af2-49f7-b75a-fc77ca767553" sourceId="ad5312bc-e040-4a31-977c-15e75642e845" targetId="C-263132222087024"/>
+        <Edge id="id34812716-4efc-460f-9a43-ef94b6333317" sourceId="ad5312bc-e040-4a31-977c-15e75642e845" targetId="C-263132222111655"/>
+        <Edge id="C-263132222111655-263132222119044" sourceId="C-263132222111655" targetId="C-263132222119044"/>
+        <Edge id="id3a6a4a1c-86be-4cb1-99ca-9066b752ddd7" sourceId="id83a93c8b-9805-4368-9685-8b23a9984d80" targetId="C-263132222020109"/>
+        <Edge id="id54ec6381-72e6-4614-8a70-9d7d928fa278" sourceId="C-263132222087024" targetId="id83a93c8b-9805-4368-9685-8b23a9984d80"/>
+        <Edge id="C-263132222119044-263132222182264" sourceId="C-263132222119044" targetId="C-263132222182264"/>
+        <Edge id="C-263132222182264-263132222155581" sourceId="C-263132222182264" targetId="C-263132222155581"/>
+        <Edge id="C-263132222155581-263132222009846" sourceId="C-263132222155581" targetId="C-263132222009846"/>
+        <Edge id="id50f6b442-833e-4ab9-a4f1-3b78fea7f243" sourceId="C-263132222009846" targetId="id83a93c8b-9805-4368-9685-8b23a9984d80"/>
+        <Edge id="C-263132222020109-263132221944163" sourceId="C-263132222020109" targetId="C-263132221944163"/>
+    </Net>
+    <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
+</ns2:CanonicalProcess>
