@@ -15,7 +15,7 @@
                     <defaultValue>true</defaultValue>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="ided941793-45a5-4b28-b6b3-6063f11428a9" objectId="D-N-Net-x" type="output" optional="false" consumed="true"/>
+            <objectRef id="c638e9a4-4287-4307-8814-4d05466b6c74" objectId="D-N-Net-x" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>x = Boolean({cpf:getTaskObjectValue('x')/text()})</expression>
@@ -32,7 +32,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <objectRef id="c2e06b81-09bc-419d-a77d-c4f9424d4bef" objectId="D-N-Net-x" type="input" optional="false" consumed="true"/>
+            <objectRef id="ac4dae72-5783-4139-aa86-2aacb9a45d78" objectId="D-N-Net-x" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>y = {cpf:getObjectValue('x')}</expression>
@@ -42,9 +42,9 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="C-A-B" default="true" sourceId="C-A" targetId="C-B"/>
-        <Edge id="C-B-OutputCondition" default="true" sourceId="C-B" targetId="C-OutputCondition"/>
+        <Edge id="C-InputCondition-A" sourceId="C-InputCondition" targetId="C-A"/>
+        <Edge id="C-A-B" sourceId="C-A" targetId="C-B"/>
+        <Edge id="C-B-OutputCondition" sourceId="C-B" targetId="C-OutputCondition"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-x" originalID="N-Net_x">
             <name>x</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">

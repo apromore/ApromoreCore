@@ -51,24 +51,36 @@ public final class PluginHelper {
         Set<RequestParameterType<?>> properties = new HashSet<RequestParameterType<?>>();
         if (xmlProperties != null) {
             for (PluginParameter xmlProp : xmlProperties.getParameter()) {
-                String clazz = xmlProp.getClazz();
-                Class<?> propertyClass;
-                try {
-                    propertyClass = ParameterType.class.getClassLoader().loadClass(clazz);
-                    if (xmlProp.getValue() != null) {
-                        properties.add(createPluginProperty(xmlProp, propertyClass));
-                    } else {
-                        LOGGER.warn("Request property {} is NULL", xmlProp.getName());
-                    }
-                } catch (ClassNotFoundException e) {
-                    LOGGER.error("Could not convert request property", e);
+                RequestParameterType<?> requestParam = convertToRequestProperty(xmlProp);
+                if (requestParam != null) {
+                    properties.add(requestParam);
                 }
             }
         }
         return properties;
     }
 
-    private static RequestParameterType<?> createPluginProperty(final PluginParameter xmlProp, final Class<?> propertyClass) {
+    /**
+     * Converts the XML representation of a Plug-in property to a RequestPropertyType for usage in Plug-ins
+     *
+     * @param xmlProp single property from web service
+     * @return null if conversion failed
+     */
+    public static RequestParameterType<?> convertToRequestProperty(final PluginParameter xmlProp) {
+        String clazz = xmlProp.getClazz();
+        if (clazz != null && xmlProp.getId() != null && xmlProp.getValue() != null) {
+            try {
+                // Look if class is valid
+                ParameterType.class.getClassLoader().loadClass(clazz);
+                return createPluginProperty(xmlProp);
+            } catch (ClassNotFoundException e) {
+                LOGGER.error("Could not convert request property", e);
+            }
+        }
+        return null;
+    }
+
+    private static RequestParameterType<?> createPluginProperty(final PluginParameter xmlProp) {
         Object value = xmlProp.getValue();
         Object convertedValue = null;
         if (value instanceof DataHandler) {
@@ -80,7 +92,11 @@ public final class PluginHelper {
         } else {
             convertedValue = value;
         }
-        return new RequestParameterType<Object>(xmlProp.getId(), convertedValue);
+        if (convertedValue != null) {
+            return new RequestParameterType<Object>(xmlProp.getId(), convertedValue);
+        } else {
+            return null;
+        }
     }
 
     /**

@@ -19,6 +19,7 @@ import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.cpf.ANDJoinType;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.JoinType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
@@ -65,13 +66,13 @@ public class RoutingNodeMacro extends ContextAwareRewriteMacro {
                 final NodeType node = net.getNode().get(i);
                 if (node instanceof JoinType) {
                     hasFoundRoutingNodes = true;
-                    handleJoinNode((JoinType) node);
+                    handleJoinNode((JoinType) node, net);
                     cleanupNet(net);
                     // Restart scanning
                     i = -1;
                 } else if (node instanceof SplitType) {
                     hasFoundRoutingNodes = true;
-                    handleSplitNode((SplitType) node);
+                    handleSplitNode((SplitType) node, net);
                     cleanupNet(net);
                     // Restart scanning
                     i = -1;
@@ -81,27 +82,27 @@ public class RoutingNodeMacro extends ContextAwareRewriteMacro {
         return hasFoundRoutingNodes;
     }
 
-    private void handleSplitNode(final SplitType splitNode) throws CanoniserException {
+    private void handleSplitNode(final SplitType splitNode, final NetType net) throws CanoniserException {
         final List<NodeType> preSet = getContext().getPreSet(splitNode.getId());
         if (preSet.size() != 1) {
             throw new CanoniserException("Split " + splitNode.getId() + " has more than 1 predecessors!");
         } else {
             final NodeType prevNode = preSet.get(0);
             if (prevNode instanceof TaskType) {
-                replaceSplitNodeBy(splitNode, (TaskType) prevNode);
+                replaceSplitNodeBy(splitNode, (TaskType) prevNode, net);
                 LOGGER.debug("Merged with previous Task {}", ConversionUtils.toString(prevNode));
             } else {
                 // Just replace the Split with a Task
                 final TaskType routingTask = convertRoutingToTask(splitNode);
                 addNodeLater(routingTask);
                 addEdgeLater(createEdge(prevNode, routingTask));
-                replaceSplitNodeBy(splitNode, routingTask);
+                replaceSplitNodeBy(splitNode, routingTask, net);
                 LOGGER.debug("Added artificial Task {}", ConversionUtils.toString(routingTask));
             }
         }
     }
 
-    private void replaceSplitNodeBy(final NodeType splitNode, final TaskType newNode) throws CanoniserException {
+    private void replaceSplitNodeBy(final NodeType splitNode, final TaskType newNode, final NetType net) throws CanoniserException {
         // First mark split node as deleted
         deleteNodeLater(splitNode);
 
@@ -114,31 +115,52 @@ public class RoutingNodeMacro extends ContextAwareRewriteMacro {
         final List<NodeType> postSet = getContext().getPostSet(splitNode.getId());
         LOGGER.debug("Handling post set of removed SPLIT {}", ConversionUtils.nodesToString(postSet));
         for (final NodeType postNode : postSet) {
-            addEdgeLater(createEdge(newNode, postNode));
+            EdgeType newEdge = createEdge(newNode, postNode);
+            EdgeType oldEdge = findEdgeBetween(net, splitNode, postNode);
+            copyEdge(newEdge, oldEdge);
+            addEdgeLater(newEdge);
         }
     }
 
-    private void handleJoinNode(final JoinType joinNode) throws CanoniserException {
+    private void copyEdge(final EdgeType newEdge, final EdgeType oldEdge) {
+        newEdge.setConditionExpr(oldEdge.getConditionExpr());
+        newEdge.setDefault(oldEdge.isDefault());
+        newEdge.setOriginalID(oldEdge.getOriginalID());
+        for (TypeAttribute attr: oldEdge.getAttribute()) {
+            newEdge.getAttribute().add(attr);
+        }
+    }
+
+    private EdgeType findEdgeBetween(final NetType net, final NodeType sourceNode, final NodeType targetNode) {
+        for (EdgeType edge: net.getEdge()) {
+            if (edge.getSourceId().equals(sourceNode.getId()) && edge.getTargetId().equals(targetNode.getId())) {
+                return edge;
+            }
+        }
+        throw new IllegalArgumentException("No edge between source and target node. Invalid use of 'findEdgeBetween'!");
+    }
+
+    private void handleJoinNode(final JoinType joinNode, final NetType net) throws CanoniserException {
         final List<NodeType> postSet = getContext().getPostSet(joinNode.getId());
         if (postSet.size() != 1) {
             throw new CanoniserException("Join " + joinNode.getId() + " has more than 1 successors!");
         } else {
             final NodeType nextNode = postSet.get(0);
             if (nextNode instanceof TaskType) {
-                replaceJoinNodeBy(joinNode, (TaskType) nextNode);
+                replaceJoinNodeBy(joinNode, (TaskType) nextNode, net);
                 LOGGER.debug("Merged with next Task {}", ConversionUtils.toString(nextNode));
             } else {
                 // Just replace the Join with a Task
                 final TaskType routingTask = convertRoutingToTask(joinNode);
                 addNodeLater(routingTask);
                 addEdgeLater(createEdge(routingTask, nextNode));
-                replaceJoinNodeBy(joinNode, routingTask);
+                replaceJoinNodeBy(joinNode, routingTask, net);
                 LOGGER.debug("Added artificial Task {}", ConversionUtils.toString(routingTask));
             }
         }
     }
 
-    private void replaceJoinNodeBy(final NodeType joinNode, final TaskType newNode) throws CanoniserException {
+    private void replaceJoinNodeBy(final NodeType joinNode, final TaskType newNode, final NetType net) throws CanoniserException {
         // First mark split node as deleted
         deleteNodeLater(joinNode);
 
@@ -151,7 +173,10 @@ public class RoutingNodeMacro extends ContextAwareRewriteMacro {
         final List<NodeType> preSet = getContext().getPreSet(joinNode.getId());
         LOGGER.debug("Handling pre set of removed JOIN {}", ConversionUtils.nodesToString(preSet));
         for (final NodeType preNode : preSet) {
-            addEdgeLater(createEdge(preNode, newNode));
+            EdgeType newEdge = createEdge(preNode, newNode);
+            EdgeType oldEdge = findEdgeBetween(net, preNode, joinNode);
+            copyEdge(newEdge, oldEdge);
+            addEdgeLater(newEdge);
         }
     }
 

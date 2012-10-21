@@ -1079,12 +1079,11 @@ public class ManagerPortalEndpoint {
             String deploymentPluginName = req.getValue().getDeploymentPluginName();
             String deploymentPluginVersion = req.getValue().getDeploymentPluginVersion();
 
-            //TODO change to also use version
-            CPF cpf = repSrv.getCurrentProcessModel(processName, false);
+            CPF cpf = repSrv.getCurrentProcessModel(processName, branchName, false);
             CanonicalProcessType canonialProcess = canoniserService.serializeCPF(cpf);
 
             List<PluginMessage> deployProcess;
-            // TODO add ANF
+            // TODO Add ANF
             if (deploymentPluginName != null && deploymentPluginVersion != null) {
                 deployProcess = deploymentService.deployProcess(nativeType, deploymentPluginName, deploymentPluginVersion, canonialProcess, null,
                         requestProperties);

@@ -90,7 +90,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
     public PluginResult canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat, final List<CanonicalProcessType> canonicalFormat, final PluginRequest request)
             throws CanoniserException {
 
-        LOGGER.info("Start canonising %s", getNativeType());
+        LOGGER.info("Start canonising {0}", getNativeType());
 
         try {
             final JAXBElement<SpecificationSetFactsType> nativeElement = YAWLSchema.unmarshalYAWLFormat(nativeInput, false);
@@ -116,7 +116,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
             annotationFormat.add(yawl2canonical.getAnf());
             canonicalFormat.add(yawl2canonical.getCpf());
 
-            LOGGER.info("Finished canonising %s", getNativeType());
+            LOGGER.info("Finished canonising {0}", getNativeType());
             return canoniserResult;
 
         } catch (final JAXBException e) {
@@ -137,7 +137,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
     public PluginResult deCanonise(final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final OutputStream nativeOutput, final PluginRequest request)
             throws CanoniserException {
 
-        LOGGER.info("Start decanonising %s", getNativeType());
+        LOGGER.info("Start decanonising {0}", getNativeType());
 
         try {
             YAWLCanoniserResult canoniserResult = new YAWLCanoniserResult();
@@ -156,7 +156,7 @@ public class YAWL22Canoniser extends DefaultAbstractCanoniser {
             YAWLOrgDataSchema.marshalYAWLOrgDataFormat(orgDataOutput, canonical2yawl.getOrgData(), true);
             canoniserResult.setYawlOrgData(orgDataOutput);
 
-            LOGGER.info("Finished decanonising %s", getNativeType());
+            LOGGER.info("Finished decanonising {0}", getNativeType());
             return canoniserResult;
 
         } catch (final JAXBException e) {

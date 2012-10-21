@@ -46,12 +46,12 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="f066ec06-1421-418a-b9a1-f41253aa7d89" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
-            <objectRef id="c4ef036a-b949-41ac-8b05-60a6ee41a57d" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
-            <objectRef id="d382abac-06ed-4d1b-afc0-3398967749a8" objectId="D-N-Net-n4" type="output" optional="false" consumed="true"/>
-            <objectRef id="id46dfd124-edd1-4edd-8b8a-5f1578383083" objectId="D-N-Net-n3" type="input" optional="false" consumed="true"/>
-            <objectRef id="f36b8520-ab77-4454-9e7d-4fa8b644b9f3" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
-            <objectRef id="b07fa00f-3899-47b1-ad79-a1bc36388d3a" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="b31eb65e-2a33-4521-8e7c-5e37c397492b" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
+            <objectRef id="c5c816c9-fbb9-4f07-bba3-754c043b29b9" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
+            <objectRef id="f7a8bd97-daf6-4cf6-afe7-a78dfc159f1b" objectId="D-N-Net-n4" type="output" optional="false" consumed="true"/>
+            <objectRef id="idbe5ff4e7-6ec8-4498-ad9e-36880f3959e8" objectId="D-N-Net-n3" type="input" optional="false" consumed="true"/>
+            <objectRef id="idacc18d07-8b62-4160-b671-4a267456523a" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="idbac3d2d4-1742-43f4-8aa6-3a3a39e20772" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>t3 = {cpf:getObjectValue('n3')/text()}</expression>
@@ -112,10 +112,10 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id2a2d8e6c-99b0-4044-8cf0-3c45059f6fcc" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
-            <objectRef id="id3046fd9b-0434-41ef-b9f6-08a9f94020b8" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
-            <objectRef id="id72b08ccf-d5a8-466a-85b6-2d2ff7ee5a69" objectId="D-N-Net-n2" type="input" optional="false" consumed="true"/>
-            <objectRef id="b397fe48-56a2-4083-bd23-7c4348ad7f8a" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
+            <objectRef id="ideba9f985-dbfb-4ca3-b596-1dfb3e32b829" objectId="D-N-Net-n2" type="output" optional="false" consumed="true"/>
+            <objectRef id="id7ac362c4-db7d-49be-903a-d49796641313" objectId="D-N-Net-n3" type="output" optional="false" consumed="true"/>
+            <objectRef id="fb2a770c-5ac0-41ce-bd7a-d581f0ef6413" objectId="D-N-Net-n2" type="input" optional="false" consumed="true"/>
+            <objectRef id="d72f174b-1168-420d-aed6-862c096a7808" objectId="D-N-Net-n1" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>t2 = {cpf:getObjectValue('n2')/text()}</expression>
@@ -137,9 +137,9 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="C-A-B" default="true" sourceId="C-A" targetId="C-B"/>
-        <Edge id="C-B-OutputCondition" default="true" sourceId="C-B" targetId="C-OutputCondition"/>
+        <Edge id="C-InputCondition-A" sourceId="C-InputCondition" targetId="C-A"/>
+        <Edge id="C-A-B" sourceId="C-A" targetId="C-B"/>
+        <Edge id="C-B-OutputCondition" sourceId="C-B" targetId="C-OutputCondition"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-n2" originalID="N-Net_n2">
             <name>n2</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">

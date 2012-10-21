@@ -1,5 +1,6 @@
 package org.apromore.portal.dialogController;
 
+import java.io.IOException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -11,7 +12,10 @@ import org.apromore.manager.client.helper.PluginHelper;
 import org.apromore.model.PluginInfo;
 import org.apromore.model.PluginInfoResult;
 import org.apromore.model.PluginParameter;
+import org.apromore.model.PluginParameters;
 import org.apromore.plugin.property.RequestParameterType;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.zkoss.zk.ui.Component;
 import org.zkoss.zk.ui.event.CheckEvent;
 import org.zkoss.zk.ui.event.Event;
@@ -38,23 +42,31 @@ import org.zkoss.zul.Textbox;
  */
 public class PluginPropertiesHelper {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(PluginPropertiesHelper.class);
+
     private final ManagerService service;
     private final Grid propertiesGrid;
 
     private PluginInfoResult currentPluginInfo;
     private Rows gridRows;
 
+    /**
+     * Helper class that builds up a ZK Grid with inputs for Plugin properties.
+     *
+     * @param service
+     * @param propertiesGrid the grid to be filled
+     */
     public PluginPropertiesHelper(final ManagerService service, final Grid propertiesGrid) {
         this.service = service;
         this.propertiesGrid = propertiesGrid;
     }
 
     /**
-     * Show parameters of Plugin in Grid
+     * Show parameters of Plugin in a dynamically build ZK grid.
      *
      * @param info
      *            basic info about a Plugin
-     * @param parameterCategory
+     * @param parameterCategory to filter by a category
      * @return more info about the selected Plugin
      * @throws InterruptedException
      */
@@ -113,6 +125,14 @@ public class PluginPropertiesHelper {
         gridRows.appendChild(propertyRow);
     }
 
+    /**
+     * Creates an ZK input component based on the property type
+     *
+     * @param prop
+     * @param isRequired
+     * @return
+     * @throws InterruptedException
+     */
     private static Component createInputComponent(final PluginParameter prop, final boolean isRequired) throws InterruptedException {
         if (prop.getValue() instanceof String) {
             Textbox textBox = new Textbox();
@@ -166,7 +186,7 @@ public class PluginPropertiesHelper {
                 public void onEvent(final Event event) {
                     if (event instanceof InputEvent) {
                         InputEvent inputEvent = (InputEvent) event;
-                        prop.setValue(new Integer(inputEvent.getValue()));
+                        prop.setValue(Integer.valueOf(inputEvent.getValue()));
                     }
                 }
             });
@@ -182,7 +202,7 @@ public class PluginPropertiesHelper {
                 public void onEvent(final Event event) {
                     if (event instanceof CheckEvent) {
                         CheckEvent checkEvent = (CheckEvent) event;
-                        prop.setValue(new Boolean(checkEvent.isChecked()));
+                        prop.setValue(Boolean.valueOf(checkEvent.isChecked()));
                     }
                 }
             });
@@ -193,10 +213,14 @@ public class PluginPropertiesHelper {
             fileButton.addEventListener("onUpload", new EventListener() {
 
                 @Override
-                public void onEvent(final Event event) throws Exception {
+                public void onEvent(final Event event) {
                     if (event instanceof UploadEvent) {
                         UploadEvent uploadEvent = (UploadEvent) event;
-                        prop.setValue(new DataHandler(new ByteArrayDataSource(uploadEvent.getMedia().getStreamData(), "application/octet-stream")));
+                        try {
+                            prop.setValue(new DataHandler(new ByteArrayDataSource(uploadEvent.getMedia().getStreamData(), "application/octet-stream")));
+                        } catch (IOException e) {
+                            LOGGER.error("Failure setting property!", e);
+                        }
                     }
                 }
             });
@@ -207,11 +231,34 @@ public class PluginPropertiesHelper {
         }
     }
 
-    public Set<RequestParameterType<?>> readPluginProperties() {
-        Set<RequestParameterType<?>> mandatoryProperties = PluginHelper.convertToRequestProperties(this.currentPluginInfo.getMandatoryParameters());
-        Set<RequestParameterType<?>> optionalProperties = PluginHelper.convertToRequestProperties(this.currentPluginInfo.getOptionalParameters());
-        Set<RequestParameterType<?>> requestProperties = new HashSet<>(mandatoryProperties);
-        requestProperties.addAll(optionalProperties);
+    /**
+     * Return the user selection as parameter for inclusing into a request to the back-end.
+     *
+     * @param parameterCategory filter the parameter for just this category
+     * @return Set of RequestParameterType
+     */
+    public Set<RequestParameterType<?>> readPluginProperties(final String parameterCategory) {
+        PluginParameters mandatoryParameters = this.currentPluginInfo.getMandatoryParameters();
+        PluginParameters optionalParameters = this.currentPluginInfo.getOptionalParameters();
+        Set<RequestParameterType<?>> requestProperties = new HashSet<RequestParameterType<?>>();
+
+        for (PluginParameter prop: mandatoryParameters.getParameter()) {
+            if (prop.getCategory().equals(parameterCategory) || parameterCategory == null) {
+                RequestParameterType<?> requestProp = PluginHelper.convertToRequestProperty(prop);
+                if (requestProp != null) {
+                    requestProperties.add(requestProp);
+                }
+            }
+        }
+
+        for (PluginParameter prop: optionalParameters.getParameter()) {
+            if (prop.getCategory().equals(parameterCategory) || parameterCategory == null) {
+                RequestParameterType<?> requestProp = PluginHelper.convertToRequestProperty(prop);
+                if (requestProp != null) {
+                    requestProperties.add(requestProp);
+                }
+            }
+        }
         return requestProperties;
     }
 

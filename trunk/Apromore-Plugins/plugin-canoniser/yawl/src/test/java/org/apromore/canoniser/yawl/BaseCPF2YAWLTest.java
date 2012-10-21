@@ -1,6 +1,8 @@
 package org.apromore.canoniser.yawl;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 import java.io.BufferedInputStream;
@@ -32,11 +34,13 @@ import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
+import org.yawlfoundation.yawlschema.ControlTypeCodeType;
 import org.yawlfoundation.yawlschema.DecompositionFactsType;
 import org.yawlfoundation.yawlschema.DecompositionType;
 import org.yawlfoundation.yawlschema.ExternalConditionFactsType;
 import org.yawlfoundation.yawlschema.ExternalNetElementFactsType;
 import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
+import org.yawlfoundation.yawlschema.FlowsIntoType;
 import org.yawlfoundation.yawlschema.InputParameterFactsType;
 import org.yawlfoundation.yawlschema.NetFactsType;
 import org.yawlfoundation.yawlschema.OutputParameterFactsType;
@@ -327,4 +331,39 @@ public abstract class BaseCPF2YAWLTest {
         return null;
     }
 
+    protected ExternalTaskFactsType checkTask(final NetFactsType net, final String name, final ControlTypeCodeType join, final ControlTypeCodeType split, final int outgoingEdges) {
+        ExternalTaskFactsType task = findTaskByName("make decision", net);
+        assertEquals("Join type of Task "+name+" is wrong! Should be "+join+" but is "+task.getJoin().getCode(),task.getJoin().getCode(), join);
+        assertEquals("Split type of Task "+name+" is wrong! Should be "+split+" but is "+task.getSplit().getCode(),task.getSplit().getCode(), split);
+        assertEquals(outgoingEdges, task.getFlowsInto().size());
+        return task;
+    }
+
+    protected void checkAtLeastOneDefaultFlow(final ExternalTaskFactsType task) {
+        int defaultCount = 0;
+        for (FlowsIntoType flow: task.getFlowsInto()) {
+            if (flow.getIsDefaultFlow() != null) {
+                defaultCount ++;
+            }
+        }
+        assertTrue("Missing default flow in Task "+task.getId(),defaultCount > 0);
+    }
+
+    protected void checkOnlyOneDefaultFlow(final ExternalTaskFactsType task) {
+        int defaultCount = 0;
+        for (FlowsIntoType flow: task.getFlowsInto()) {
+            if (flow.getIsDefaultFlow() != null) {
+                defaultCount ++;
+            }
+        }
+        assertTrue("Missing default flow in Task "+task.getId(),defaultCount == 1);
+    }
+
+    protected void checkNoMissingPredicate(final ExternalTaskFactsType task) {
+        for (FlowsIntoType flow: task.getFlowsInto()) {
+            if (flow.getPredicate() == null && flow.getIsDefaultFlow() == null) {
+                fail("Missing default flow in Task "+task.getId());
+            }
+        }
+    }
 }

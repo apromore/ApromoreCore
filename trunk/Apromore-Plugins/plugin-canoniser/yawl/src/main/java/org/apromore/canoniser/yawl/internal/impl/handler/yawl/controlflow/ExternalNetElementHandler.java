@@ -28,9 +28,12 @@ import org.apromore.anf.LineType;
 import org.apromore.anf.PositionType;
 import org.apromore.anf.SizeType;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.yawl.internal.impl.context.PredecessorAdapater;
 import org.apromore.canoniser.yawl.internal.impl.handler.yawl.YAWLConversionHandler;
 import org.apromore.canoniser.yawl.internal.utils.ConversionUtils;
 import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
+import org.apromore.cpf.CPFSchema;
+import org.apromore.cpf.ConditionExpressionType;
 import org.apromore.cpf.DirectionEnum;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
@@ -82,7 +85,6 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
         edge.setId(generateEdgeId(sourceNode, targetNode));
         edge.setSourceId(sourceNode.getId());
         edge.setTargetId(targetNode.getId());
-        edge.setDefault(true);
         getConvertedParent().getEdge().add(edge);
         if (sourceNode.getOriginalID() != null && targetNode.getOriginalID() != null) {
             createGraphicsForFlow(sourceNode.getOriginalID(), targetNode.getOriginalID());
@@ -112,6 +114,19 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
 
     protected String generateEdgeId(final String sourceId, final String targetId) {
         return generateUUID(CONTROLFLOW_ID_PREFIX, getContext().buildEdgeId(sourceId, targetId));
+    }
+
+
+    private void convertEdge(final FlowsIntoType flowsInto, final EdgeType edge) {
+        if (flowsInto.getIsDefaultFlow() != null) {
+            edge.setDefault(true);
+        }
+        if (flowsInto.getPredicate() != null) {
+            ConditionExpressionType expressionType = CPF_FACTORY.createConditionExpressionType();
+            expressionType.setLanguage(CPFSchema.EXPRESSION_LANGUAGE_XPATH);
+            expressionType.setExpression(flowsInto.getPredicate().getValue());
+            edge.setConditionExpr(expressionType);
+        }
     }
 
     /**
@@ -172,10 +187,11 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
             // Check if the next element has already been converted (in case of cycles) and get its introduced predecessor node.
             final NodeType introducedNode = getContext().getIntroducedPredecessor(flowsInto.getNextElementRef());
             if (introducedNode != null) {
-                createSimpleEdge(node, introducedNode);
+                EdgeType edge = createSimpleEdge(node, introducedNode);
+                convertEdge(flowsInto, edge);
             } else {
                 // Add ourself to the waiting queue for the next element
-                getContext().getIncomingQueue(flowsInto.getNextElementRef()).add(node);
+                getContext().getIncomingQueue(flowsInto.getNextElementRef()).add(new PredecessorAdapater(node, flowsInto));
             }
         }
     }
@@ -186,9 +202,12 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
         // Connect all items of our incoming queue with our "new" predecessor.
         // Please note in cyclic nets there could be some elements that are not yet in our incoming queue.
         // These elements will take care of adding themselves!
-        final Iterator<NodeType> incomingIterator = getContext().getIncomingQueue(netElement).iterator();
+        final Iterator<PredecessorAdapater> incomingIterator = getContext().getIncomingQueue(netElement).iterator();
         while (incomingIterator.hasNext()) {
-            createSimpleEdge(incomingIterator.next(), node);
+            PredecessorAdapater nextItem = incomingIterator.next();
+            EdgeType edge = createSimpleEdge(nextItem.getNode(), node);
+            convertEdge(nextItem.getFlowsInto(), edge);
+            // We are joining so no need for predicates
             incomingIterator.remove();
         }
     }

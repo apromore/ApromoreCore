@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="263132116397509.yawl" version="0.1" name="263132116397509" author="yawl model generator" rootIds="N-YAWL263132116606463">
+    <Net id="N-YAWL263132116606463" originalID="YAWL263132116606463">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132116643000" originalID="263132116643000">
+            <name>Start</name>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132116661884" originalID="263132116661884">
+            <name>Ok4</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132117059677" originalID="263132117059677"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132117068298" originalID="263132117068298">
+            <name>vQ</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132117150813" originalID="263132117150813"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132117161076" originalID="263132117161076">
+            <name>S</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="C-263132116721819" originalID="263132116721819"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132116881922" originalID="263132116881922">
+            <name>B</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="c109d87f-1044-498b-a941-f021581d7e7a"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132116786271" originalID="263132116786271">
+            <name>SSQ</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132117344988" originalID="263132117344988">
+            <name>r6N</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132116730440" originalID="263132116730440">
+            <name>QG</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132117228401" originalID="263132117228401"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132117460344" originalID="263132117460344"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132117566669" originalID="263132117566669"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132117416829" originalID="263132117416829"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132117576521" originalID="263132117576521">
+            <name>T</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132117237022" originalID="263132117237022">
+            <name>5ME</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="id9d651813-0298-4233-a5d2-71af9ce510ca"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132117468965" originalID="263132117468965">
+            <name>e</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132117001383" originalID="263132117001383"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132117302705" originalID="263132117302705"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132117274379" originalID="263132117274379">
+            <name>7nP</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132117010825" originalID="263132117010825">
+            <name>Nr</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132116847849" originalID="263132116847849"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132116818292" originalID="263132116818292">
+            <name>eY</name>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
+                <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <attribute name="http://www.yawlfoundation.org/yawlschema/start">
+                <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
+            </attribute>
+            <teamWork>false</teamWork>
+        </Node>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132116653673" originalID="263132116653673">
+            <name>End</name>
+        </Node>
+        <Edge id="C-263132116643000-263132116661884" sourceId="C-263132116643000" targetId="C-263132116661884"/>
+        <Edge id="C-263132116661884-263132117059677" sourceId="C-263132116661884" targetId="C-263132117059677"/>
+        <Edge id="C-263132117059677-263132117068298" sourceId="C-263132117059677" targetId="C-263132117068298"/>
+        <Edge id="C-263132117068298-263132117150813" sourceId="C-263132117068298" targetId="C-263132117150813"/>
+        <Edge id="C-263132117150813-263132117161076" sourceId="C-263132117150813" targetId="C-263132117161076"/>
+        <Edge id="C-263132117161076-263132116721819" sourceId="C-263132117161076" targetId="C-263132116721819"/>
+        <Edge id="C-263132116721819-263132116881922" sourceId="C-263132116721819" targetId="C-263132116881922"/>
+        <Edge id="idc1a8577c-7bc2-4637-81b8-5a78da96222b" sourceId="C-263132116881922" targetId="c109d87f-1044-498b-a941-f021581d7e7a"/>
+        <Edge id="C-263132116721819-263132116786271" sourceId="C-263132116721819" targetId="C-263132116786271"/>
+        <Edge id="C-263132116721819-263132117344988" sourceId="C-263132116721819" targetId="C-263132117344988"/>
+        <Edge id="C-263132117344988-263132116721819" sourceId="C-263132117344988" targetId="C-263132116721819"/>
+        <Edge id="C-263132116721819-263132116730440" sourceId="C-263132116721819" targetId="C-263132116730440"/>
+        <Edge id="id22ce3efc-ae31-4c94-abd0-0a3bfa09c474" sourceId="c109d87f-1044-498b-a941-f021581d7e7a" targetId="C-263132117228401"/>
+        <Edge id="C-263132116786271-263132117460344" sourceId="C-263132116786271" targetId="C-263132117460344"/>
+        <Edge id="C-263132116730440-263132117566669" sourceId="C-263132116730440" targetId="C-263132117566669"/>
+        <Edge id="id563d4945-a4e2-4153-988d-fd49d296b043" sourceId="c109d87f-1044-498b-a941-f021581d7e7a" targetId="C-263132117416829"/>
+        <Edge id="C-263132117566669-263132117576521" sourceId="C-263132117566669" targetId="C-263132117576521"/>
+        <Edge id="idb5d432a4-f1b9-42b4-8bda-e01ed138a8fa" sourceId="id9d651813-0298-4233-a5d2-71af9ce510ca" targetId="C-263132117237022"/>
+        <Edge id="id531d0bf0-5761-41c8-b48e-c02478546061" sourceId="C-263132117228401" targetId="id9d651813-0298-4233-a5d2-71af9ce510ca"/>
+        <Edge id="id25e6fa62-ca44-4115-9e25-3bea3d69eca9" sourceId="C-263132117416829" targetId="id9d651813-0298-4233-a5d2-71af9ce510ca"/>
+        <Edge id="C-263132117460344-263132117468965" sourceId="C-263132117460344" targetId="C-263132117468965"/>
+        <Edge id="C-263132117468965-263132117001383" sourceId="C-263132117468965" targetId="C-263132117001383"/>
+        <Edge id="C-263132117237022-263132117302705" sourceId="C-263132117237022" targetId="C-263132117302705"/>
+        <Edge id="C-263132117302705-263132117274379" sourceId="C-263132117302705" targetId="C-263132117274379"/>
+        <Edge id="C-263132117274379-263132116721819" sourceId="C-263132117274379" targetId="C-263132116721819"/>
+        <Edge id="C-263132117001383-263132117010825" sourceId="C-263132117001383" targetId="C-263132117010825"/>
+        <Edge id="C-263132117010825-263132116847849" sourceId="C-263132117010825" targetId="C-263132116847849"/>
+        <Edge id="C-263132116847849-263132116818292" sourceId="C-263132116847849" targetId="C-263132116818292"/>
+        <Edge id="C-263132116818292-263132116721819" sourceId="C-263132116818292" targetId="C-263132116721819"/>
+        <Edge id="C-263132117576521-263132116653673" sourceId="C-263132117576521" targetId="C-263132116653673"/>
+    </Net>
+    <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
+</ns2:CanonicalProcess>

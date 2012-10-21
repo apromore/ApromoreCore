@@ -3,6 +3,7 @@ package org.apromore.manager.client.helper;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
@@ -67,6 +68,24 @@ public class PluginHelperTest {
         }
         fail("Property not found "+id);
         return null;
+    }
+
+    @Test
+    public void testConvertToRequestProperty() {
+        PluginParameter xmlProp = new PluginParameter();
+        assertNull(PluginHelper.convertToRequestProperty(xmlProp));
+        xmlProp.setClazz(String.class.getCanonicalName());
+        assertNull(PluginHelper.convertToRequestProperty(xmlProp));
+
+        PluginParameter xmlProp2 = new PluginParameter();
+        xmlProp2.setId("test");
+        assertNull(PluginHelper.convertToRequestProperty(xmlProp2));
+
+        PluginParameter xmlProp3 = new PluginParameter();
+        xmlProp3.setId("test");
+        xmlProp3.setClazz(String.class.getCanonicalName());
+        xmlProp3.setValue("test");
+        assertNotNull(PluginHelper.convertToRequestProperty(xmlProp3));
     }
 
     @Test
