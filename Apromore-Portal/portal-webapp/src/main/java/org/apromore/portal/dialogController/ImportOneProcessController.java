@@ -316,7 +316,7 @@ public class ImportOneProcessController extends BaseController {
         try {
             ImportProcessResultType importResult = getService().importProcess(owner, this.nativeType, this.processNameTb.getValue(),
                     this.versionNameTb.getValue(), getNativeProcess(), domain, this.documentationTb.getValue(),
-                    this.creationDateTb.getValue().toString(), this.lastUpdateTb.getValue().toString(), pluginPropertiesHelper.readPluginProperties());
+                    this.creationDateTb.getValue().toString(), this.lastUpdateTb.getValue().toString(), pluginPropertiesHelper.readPluginProperties(Canoniser.CANONISE_PARAMETER));
             // process successfully imported
             this.mainC.showPluginMessages(importResult.getMessage());
             this.importProcessesC.getImportedList().add(this);

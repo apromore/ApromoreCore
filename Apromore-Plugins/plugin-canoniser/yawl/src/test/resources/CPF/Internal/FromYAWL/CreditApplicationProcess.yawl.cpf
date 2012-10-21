@@ -18,7 +18,7 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <objectRef id="id82d32a38-7a88-44a1-9b43-406c4563acb2" objectId="D-N-CreditApplication-loanAmt" type="output" optional="false" consumed="true"/>
+            <objectRef id="idcd477ee7-ec2e-41ce-89d0-f1338fa2e9ef" objectId="D-N-CreditApplication-loanAmt" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>loanAmt = {/receive_application/loanAmt/text()}</expression>
@@ -44,15 +44,15 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <objectRef id="idb4757201-9c6a-4aac-ad12-053adcee7181" objectId="D-N-CreditApplication-completeApp" type="output" optional="false" consumed="true"/>
+            <objectRef id="b9562328-d011-4cd8-b963-04528d12b83c" objectId="D-N-CreditApplication-completeApp" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>completeApp = {/check_for_completeness/completeApp/text()}</expression>
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="idab13c0ee-9d5c-47ca-a289-6d03fc33e3e4"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="a16a76b1-db18-43b2-a214-923b05347e2e"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id1eb13aa8-f076-41b9-80ec-0de756270951"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id248c9208-7a58-4bab-b87f-cdf59278cbde"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-c4-16" originalID="c4_16">
             <name>c4</name>
         </Node>
@@ -69,7 +69,7 @@
             </attribute>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id5622681d-8405-4fa0-b3d8-f7506b51c4a2"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id2a87c487-81cd-4925-8d38-9c28a2fa55a4"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-get-more-info-5" originalID="get_more_info_5">
             <name>get more info</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
@@ -131,15 +131,15 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <objectRef id="e6533f33-194f-4c32-8a49-619f13968037" objectId="D-N-CreditApplication-decideApp" type="output" optional="false" consumed="true"/>
+            <objectRef id="id5ce8e92a-f4ca-4269-a092-fff6efccaca5" objectId="D-N-CreditApplication-decideApp" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>decideApp = {/make_decision/decideApp/text()}</expression>
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="ide46b6971-0e88-47ef-872d-c8e7a9b28da4"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id90844988-0a5f-4825-9d16-a76bc98a3042"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id7040f13f-a900-4d59-b030-8ceffd460381"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="id730926d8-a908-48cf-b528-dce3f95d2bd7"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-c9-18" originalID="c9_18">
             <name>c9</name>
         </Node>
@@ -156,7 +156,7 @@
             </attribute>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="id3e2dcb29-cbe4-4b3b-aa87-048933ff27de"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="id9b4fda5f-1aa2-40af-8b0a-18abe868c7eb"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-notify-rejection-12" originalID="notify_rejection_12">
             <name>notify rejection</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
@@ -209,48 +209,63 @@
             </attribute>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDJoinType" id="ffe93d87-ed05-445e-b1a1-9e38adf3e36e"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDJoinType" id="id21f76536-ceac-4d9a-ae8f-3a47b7b52253"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="id389aaf62-8bf7-42da-8e73-de2c409d5e40"/>
-        <Edge id="C-InputCondition-1-receive-application-3" default="true" sourceId="C-InputCondition-1" targetId="C-receive-application-3"/>
-        <Edge id="C-receive-application-3-c1-13" default="true" sourceId="C-receive-application-3" targetId="C-c1-13"/>
-        <Edge id="id3cc1c329-eba0-4023-8050-9b3077bb9864" default="true" sourceId="idab13c0ee-9d5c-47ca-a289-6d03fc33e3e4" targetId="C-check-for-completeness-4"/>
-        <Edge id="id4a435500-ffe2-4ec7-bd46-6966b1990e93" default="true" sourceId="C-c1-13" targetId="idab13c0ee-9d5c-47ca-a289-6d03fc33e3e4"/>
-        <Edge id="id2713ac03-cd6e-4ca3-8cb3-fda6e2636b52" default="true" sourceId="C-check-for-completeness-4" targetId="a16a76b1-db18-43b2-a214-923b05347e2e"/>
-        <Edge id="idee550dd2-ba14-4422-940d-09823a51a967" default="true" sourceId="a16a76b1-db18-43b2-a214-923b05347e2e" targetId="C-c4-16"/>
-        <Edge id="id410b3037-5121-4577-9b5b-a5abe08dd462" default="true" sourceId="a16a76b1-db18-43b2-a214-923b05347e2e" targetId="C-c2-15"/>
-        <Edge id="C-c4-16-check-loan-amount-6" default="true" sourceId="C-c4-16" targetId="C-check-loan-amount-6"/>
-        <Edge id="idc0c25a16-7c4b-42c6-8683-b34f9fece23c" default="true" sourceId="C-check-loan-amount-6" targetId="id5622681d-8405-4fa0-b3d8-f7506b51c4a2"/>
-        <Edge id="C-c2-15-get-more-info-5" default="true" sourceId="C-c2-15" targetId="C-get-more-info-5"/>
-        <Edge id="id049d488f-a410-495e-80b4-4931f430c582" default="true" sourceId="id5622681d-8405-4fa0-b3d8-f7506b51c4a2" targetId="C-c5-27"/>
-        <Edge id="id399c77ce-d50b-4606-b854-aefc44b3fb17" default="true" sourceId="id5622681d-8405-4fa0-b3d8-f7506b51c4a2" targetId="C-c7-28"/>
-        <Edge id="C-get-more-info-5-c3-14" default="true" sourceId="C-get-more-info-5" targetId="C-c3-14"/>
-        <Edge id="id08b8ed23-cb8d-4535-9c9f-7f9a408b19b5" default="true" sourceId="C-c3-14" targetId="idab13c0ee-9d5c-47ca-a289-6d03fc33e3e4"/>
-        <Edge id="id4cf9aec8-b422-46bc-beb4-5ac1a2a1ea17" default="true" sourceId="C-c7-28" targetId="C-perform-checks-for-small-amount-8"/>
-        <Edge id="idc9150a2b-7ca7-4969-b5b7-1f9909bba2c2" default="true" sourceId="C-c5-27" targetId="C-perform-checks-for-large-amount-7"/>
-        <Edge id="id9f16a0ce-f497-47ec-97bb-5bb2a077802b" default="true" sourceId="C-perform-checks-for-small-amount-8" targetId="C-c8-29"/>
-        <Edge id="id4b801ac6-e5a9-4fe4-b022-1427c9efb388" default="true" sourceId="C-perform-checks-for-large-amount-7" targetId="C-c6-17"/>
-        <Edge id="id4b46d25c-2741-4e7b-a87e-78dbdbf63934" default="true" sourceId="ide46b6971-0e88-47ef-872d-c8e7a9b28da4" targetId="C-make-decision-9"/>
-        <Edge id="id3d93cbbb-b852-42d8-935e-6b54f879bcec" default="true" sourceId="C-c8-29" targetId="ide46b6971-0e88-47ef-872d-c8e7a9b28da4"/>
-        <Edge id="ide80d6057-a172-40b8-8b61-705770a19e2c" default="true" sourceId="C-c6-17" targetId="ide46b6971-0e88-47ef-872d-c8e7a9b28da4"/>
-        <Edge id="id86b5d238-56cd-45ab-8889-936450573e86" default="true" sourceId="C-make-decision-9" targetId="id90844988-0a5f-4825-9d16-a76bc98a3042"/>
-        <Edge id="idfd4b3a17-d528-4d1d-9e51-630d995aefff" default="true" sourceId="id90844988-0a5f-4825-9d16-a76bc98a3042" targetId="C-c9-18"/>
-        <Edge id="id6d64c686-7920-49fe-b7d0-ec31f26558ed" default="true" sourceId="id90844988-0a5f-4825-9d16-a76bc98a3042" targetId="C-c10-20"/>
-        <Edge id="C-c9-18-start-approval-23" default="true" sourceId="C-c9-18" targetId="C-start-approval-23"/>
-        <Edge id="id8d22f4fd-7303-4a55-98c8-8778b209ad83" default="true" sourceId="C-start-approval-23" targetId="id3e2dcb29-cbe4-4b3b-aa87-048933ff27de"/>
-        <Edge id="C-c10-20-notify-rejection-12" default="true" sourceId="C-c10-20" targetId="C-notify-rejection-12"/>
-        <Edge id="id9911907a-8d55-4239-8f34-bd9bd67f0885" default="true" sourceId="id3e2dcb29-cbe4-4b3b-aa87-048933ff27de" targetId="C-c11-25"/>
-        <Edge id="id4a34ca5d-3764-4f9d-ba68-d0b5eccfd3a2" default="true" sourceId="id3e2dcb29-cbe4-4b3b-aa87-048933ff27de" targetId="C-c12-26"/>
-        <Edge id="C-c12-26-deliver-credit-card-11" default="true" sourceId="C-c12-26" targetId="C-deliver-credit-card-11"/>
-        <Edge id="C-c11-25-notify-acceptance-10" default="true" sourceId="C-c11-25" targetId="C-notify-acceptance-10"/>
-        <Edge id="C-deliver-credit-card-11-c14-31" default="true" sourceId="C-deliver-credit-card-11" targetId="C-c14-31"/>
-        <Edge id="C-notify-acceptance-10-c13-19" default="true" sourceId="C-notify-acceptance-10" targetId="C-c13-19"/>
-        <Edge id="id7ea1a7f3-5722-4309-8663-03cc5042c497" default="true" sourceId="ffe93d87-ed05-445e-b1a1-9e38adf3e36e" targetId="C-complete-approval-21"/>
-        <Edge id="id49dcf9fd-5180-4f5c-b5f9-cbaa129edf09" default="true" sourceId="C-c14-31" targetId="ffe93d87-ed05-445e-b1a1-9e38adf3e36e"/>
-        <Edge id="id892fec17-2be4-413e-8c3f-fe4d6856d9b9" default="true" sourceId="C-c13-19" targetId="ffe93d87-ed05-445e-b1a1-9e38adf3e36e"/>
-        <Edge id="ida961ac09-b4b4-4adf-abe0-ecb662445ab5" default="true" sourceId="id389aaf62-8bf7-42da-8e73-de2c409d5e40" targetId="C-OutputCondition-2"/>
-        <Edge id="id4a5dbeb5-a131-41e2-a28b-8ed36068107e" default="true" sourceId="C-notify-rejection-12" targetId="id389aaf62-8bf7-42da-8e73-de2c409d5e40"/>
-        <Edge id="idfb4c48fa-67c5-4fb8-95be-cde064274d7c" default="true" sourceId="C-complete-approval-21" targetId="id389aaf62-8bf7-42da-8e73-de2c409d5e40"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="idfff392bb-5ffb-41f0-940a-dffa3deab2fe"/>
+        <Edge id="C-InputCondition-1-receive-application-3" sourceId="C-InputCondition-1" targetId="C-receive-application-3"/>
+        <Edge id="C-receive-application-3-c1-13" sourceId="C-receive-application-3" targetId="C-c1-13"/>
+        <Edge id="id81854ef5-9923-49be-9c41-2e7ae3a6f9d9" sourceId="id1eb13aa8-f076-41b9-80ec-0de756270951" targetId="C-check-for-completeness-4"/>
+        <Edge id="id4d01fc6a-343d-440f-a223-0fc91d9a55bb" sourceId="C-c1-13" targetId="id1eb13aa8-f076-41b9-80ec-0de756270951"/>
+        <Edge id="id98186367-d8c8-4964-9eaf-24f6b0533939" sourceId="C-check-for-completeness-4" targetId="id248c9208-7a58-4bab-b87f-cdf59278cbde"/>
+        <Edge id="id953449b4-54aa-4fbe-9ac9-93bce60837bc" sourceId="id248c9208-7a58-4bab-b87f-cdf59278cbde" targetId="C-c4-16">
+            <conditionExpr>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>/CreditApplication/completeApp/text() = 'true'</expression>
+            </conditionExpr>
+        </Edge>
+        <Edge id="idad6b1fe6-e97e-41a8-99d4-e35e2843bc9d" default="true" sourceId="id248c9208-7a58-4bab-b87f-cdf59278cbde" targetId="C-c2-15"/>
+        <Edge id="C-c4-16-check-loan-amount-6" sourceId="C-c4-16" targetId="C-check-loan-amount-6"/>
+        <Edge id="id7aebc224-e664-4e9e-97ad-e9c9d0a5c8c2" sourceId="C-check-loan-amount-6" targetId="id2a87c487-81cd-4925-8d38-9c28a2fa55a4"/>
+        <Edge id="C-c2-15-get-more-info-5" sourceId="C-c2-15" targetId="C-get-more-info-5"/>
+        <Edge id="id15f43b6c-e0b9-41ed-b03b-99859810c84d" sourceId="id2a87c487-81cd-4925-8d38-9c28a2fa55a4" targetId="C-c5-27">
+            <conditionExpr>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>number(/CreditApplication/loanAmt/text()) &gt; 500</expression>
+            </conditionExpr>
+        </Edge>
+        <Edge id="id8eda66fa-63be-46b8-a63e-4ccf3869682b" default="true" sourceId="id2a87c487-81cd-4925-8d38-9c28a2fa55a4" targetId="C-c7-28"/>
+        <Edge id="C-get-more-info-5-c3-14" sourceId="C-get-more-info-5" targetId="C-c3-14"/>
+        <Edge id="id8de9fb7f-3a96-46d2-b51c-33582f54a474" sourceId="C-c3-14" targetId="id1eb13aa8-f076-41b9-80ec-0de756270951"/>
+        <Edge id="id5b190e42-89ff-4286-87c3-b485e1f2d574" sourceId="C-c7-28" targetId="C-perform-checks-for-small-amount-8"/>
+        <Edge id="id605f6116-180a-4054-bfce-3a28587248cb" sourceId="C-c5-27" targetId="C-perform-checks-for-large-amount-7"/>
+        <Edge id="id52550da4-db22-48a5-a16b-60e49b1ceb00" sourceId="C-perform-checks-for-small-amount-8" targetId="C-c8-29"/>
+        <Edge id="ide4e2cca0-ffcb-46ab-87fc-dfe2ed903ede" sourceId="C-perform-checks-for-large-amount-7" targetId="C-c6-17"/>
+        <Edge id="idceaba5f6-5cb5-4665-bf48-1a3700ae8a66" sourceId="id7040f13f-a900-4d59-b030-8ceffd460381" targetId="C-make-decision-9"/>
+        <Edge id="idc65d94d7-9fd0-4a28-8848-1438555ddcc4" sourceId="C-c8-29" targetId="id7040f13f-a900-4d59-b030-8ceffd460381"/>
+        <Edge id="id775e261b-402c-4178-9c79-39a6c36976ae" sourceId="C-c6-17" targetId="id7040f13f-a900-4d59-b030-8ceffd460381"/>
+        <Edge id="id7e300372-d136-47f6-a05f-25bf0c37fae6" sourceId="C-make-decision-9" targetId="id730926d8-a908-48cf-b528-dce3f95d2bd7"/>
+        <Edge id="idf9588a68-2719-4214-8ac5-1f6ada22e397" sourceId="id730926d8-a908-48cf-b528-dce3f95d2bd7" targetId="C-c9-18">
+            <conditionExpr>
+                <language>http://www.w3.org/1999/xpath/</language>
+                <expression>/CreditApplication/decideApp/text() = 'true'</expression>
+            </conditionExpr>
+        </Edge>
+        <Edge id="id3824dacb-a33f-45ff-a6aa-a7b9f5583040" default="true" sourceId="id730926d8-a908-48cf-b528-dce3f95d2bd7" targetId="C-c10-20"/>
+        <Edge id="C-c9-18-start-approval-23" sourceId="C-c9-18" targetId="C-start-approval-23"/>
+        <Edge id="id0f4f5b9f-c4da-41bc-b79c-6c1749408b6f" sourceId="C-start-approval-23" targetId="id9b4fda5f-1aa2-40af-8b0a-18abe868c7eb"/>
+        <Edge id="C-c10-20-notify-rejection-12" sourceId="C-c10-20" targetId="C-notify-rejection-12"/>
+        <Edge id="idf6ac73d8-362f-4364-a1d5-3c969118804f" sourceId="id9b4fda5f-1aa2-40af-8b0a-18abe868c7eb" targetId="C-c11-25"/>
+        <Edge id="idc8328bd8-faa4-4813-aefd-2a32451fd471" sourceId="id9b4fda5f-1aa2-40af-8b0a-18abe868c7eb" targetId="C-c12-26"/>
+        <Edge id="C-c12-26-deliver-credit-card-11" sourceId="C-c12-26" targetId="C-deliver-credit-card-11"/>
+        <Edge id="C-c11-25-notify-acceptance-10" sourceId="C-c11-25" targetId="C-notify-acceptance-10"/>
+        <Edge id="C-deliver-credit-card-11-c14-31" sourceId="C-deliver-credit-card-11" targetId="C-c14-31"/>
+        <Edge id="C-notify-acceptance-10-c13-19" sourceId="C-notify-acceptance-10" targetId="C-c13-19"/>
+        <Edge id="id067b45bd-8635-4c8f-a56a-73764da346ce" sourceId="id21f76536-ceac-4d9a-ae8f-3a47b7b52253" targetId="C-complete-approval-21"/>
+        <Edge id="id08e5cfe4-4fc0-467b-b42e-3c5668808051" sourceId="C-c14-31" targetId="id21f76536-ceac-4d9a-ae8f-3a47b7b52253"/>
+        <Edge id="idf9f36afb-2df2-4b09-9731-f50b7825f5e1" sourceId="C-c13-19" targetId="id21f76536-ceac-4d9a-ae8f-3a47b7b52253"/>
+        <Edge id="id70a11b3d-de9e-4139-8853-6c5e4df9eb7d" sourceId="idfff392bb-5ffb-41f0-940a-dffa3deab2fe" targetId="C-OutputCondition-2"/>
+        <Edge id="idb15a90b5-3409-45f0-b71f-77ca197ab276" sourceId="C-notify-rejection-12" targetId="idfff392bb-5ffb-41f0-940a-dffa3deab2fe"/>
+        <Edge id="id011e2988-bfb4-417a-a3a1-941657d9f7ae" sourceId="C-complete-approval-21" targetId="idfff392bb-5ffb-41f0-940a-dffa3deab2fe"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-CreditApplication-completeApp" originalID="N-CreditApplication_completeApp">
             <name>completeApp</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">

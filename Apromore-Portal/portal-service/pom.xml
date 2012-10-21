@@ -107,18 +107,6 @@
             <version>1.0</version>
         </dependency>
 
-        <!-- Generated Schemas -->
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>epml-schema</artifactId>
-            <version>1.0</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apromore</groupId>
-            <artifactId>xpdl-schema</artifactId>
-            <version>1.0</version>
-        </dependency>
-
         <!-- Logging -->
         <dependency>
             <groupId>org.slf4j</groupId>

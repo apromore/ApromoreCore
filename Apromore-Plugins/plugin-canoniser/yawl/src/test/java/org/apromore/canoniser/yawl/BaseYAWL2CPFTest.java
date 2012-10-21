@@ -253,7 +253,7 @@ public abstract class BaseYAWL2CPFTest {
     protected <T> T checkNode(final NetType net, final NodeType node, final Class<? extends NodeType> classz, final int inEdges, final int outEdges) {
         assertNotNull("Node is NULL", node);
         final String nullSafeName = node.getName() != null ? node.getName() : "null";
-        assertTrue("Node " + nullSafeName + " is not of class " + classz.getSimpleName(), classz.isInstance(node));
+        assertTrue("Node " + nullSafeName + " is not of class " + classz.getSimpleName()+ ", but "+ node.getClass().getSimpleName(), classz.isInstance(node));
         assertEquals("Wrong count of outgoing edges at " + nullSafeName, outEdges, countOutgoingEdges(net, node.getId()));
         assertEquals("Wrong count of incoming edges at " + nullSafeName, inEdges, countIncomingEdges(net, node.getId()));
         return (T) node;
@@ -325,5 +325,16 @@ public abstract class BaseYAWL2CPFTest {
         }
         fail("Resource " + roleX.getName() + " is missing Attribute " + name + " with Value " + value);
         return null;
+    }
+
+
+    protected void checkOnlyOneDefaultEdge(final List<EdgeType> edges) {
+       int defaultEdgeCounter = 0;
+       for (EdgeType e: edges) {
+           if (e.getConditionExpr() == null) {
+               defaultEdgeCounter ++;
+           }
+       }
+       assertTrue(defaultEdgeCounter == 1);
     }
 }

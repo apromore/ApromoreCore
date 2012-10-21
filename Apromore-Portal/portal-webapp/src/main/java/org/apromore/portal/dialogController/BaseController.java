@@ -1,7 +1,6 @@
 package org.apromore.portal.dialogController;
 
 import org.apromore.manager.client.ManagerService;
-import org.omg.CORBA.PUBLIC_MEMBER;
 import org.zkoss.spring.SpringUtil;
 import org.zkoss.zul.Window;
 
@@ -27,7 +26,7 @@ public class BaseController extends Window {
 		return managerService;
 	}
 
-    public void setManagerService(ManagerService managerService) {
+    private void setManagerService(final ManagerService managerService) {
         this.managerService = managerService;
     }
 

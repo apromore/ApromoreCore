@@ -75,8 +75,10 @@ public class DeploymentServiceImpl implements DeploymentService {
             return deployProcess(cpf, null, deploymentProperties, deploymentPlugin);
         } catch (PluginNotFoundException e) {
             throw new DeploymentException("Deployment Plugin not found", e);
+        } catch (DeploymentException e) {
+            throw new DeploymentException("Error deploying process", e);
         } catch (PluginException e) {
-            throw new DeploymentException("Error applying properties for Deployment Plugin", e);
+            throw new DeploymentException("Unkown error.", e);
         }
     }
 

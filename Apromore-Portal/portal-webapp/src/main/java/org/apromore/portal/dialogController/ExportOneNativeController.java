@@ -276,7 +276,7 @@ public class ExportOneNativeController extends BaseController {
                     withAnnotation = false;
                 }
                 ExportFormatResultType exportResult = getService().exportFormat(this.processId, processname, this.versionName, format, annotation, withAnnotation,
-                        this.mainC.getCurrentUser().getUsername(), pluginPropertiesHelper.readPluginProperties());
+                        this.mainC.getCurrentUser().getUsername(), pluginPropertiesHelper.readPluginProperties(Canoniser.DECANONISE_PARAMETER));
                 try (InputStream native_is = exportResult.getNative().getInputStream()) {
                     this.mainC.showPluginMessages(exportResult.getMessage());
                     Filedownload.save(native_is, "text/xml", filename);

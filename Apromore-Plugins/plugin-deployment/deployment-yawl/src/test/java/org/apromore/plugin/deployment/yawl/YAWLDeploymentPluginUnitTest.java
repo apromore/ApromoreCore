@@ -136,8 +136,9 @@ public class YAWLDeploymentPluginUnitTest {
             request.addRequestProperty(new RequestParameterType<String>("yawlEnginePassword", "YAWL"));
             request.addRequestProperty(new RequestParameterType<Boolean>("doAutoLaunch", false));
             PluginResult result = deploymentPlugin.deployProcess(cpf, request);
-            assertEquals(1, result.getPluginMessage().size());
-            assertEquals("Error: There is a specification with an identical id to [UID: WP1Sequence- Version: 0.1] already loaded into the engine.", result.getPluginMessage().get(0).getMessage());
+            assertEquals(2, result.getPluginMessage().size());
+            assertEquals("Failure deploying process Simple Make Trip Process", result.getPluginMessage().get(0).getMessage());
+            assertEquals("Error: There is a specification with an identical id to [UID: WP1Sequence- Version: 0.1] already loaded into the engine.", result.getPluginMessage().get(1).getMessage());
         }
     }
 

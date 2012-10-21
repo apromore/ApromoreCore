@@ -134,10 +134,10 @@ public final class YAWLConversionContext extends ConversionContext {
     /**
      * Map with yet to be added predecessors per YAWL element
      */
-    private Map<ElementAdapter, Collection<NodeType>> incomingQueueMap;
+    private Map<ElementAdapter, Collection<PredecessorAdapater>> incomingQueueMap;
 
     /**
-     * Map containing proceeding nodes of the elementz, that are introduced during the conversion process
+     * Map containing proceeding nodes of the elements, that are introduced during the conversion process
      */
     private Map<ElementAdapter, NodeType> introducedPredecessorMap;
 
@@ -452,17 +452,17 @@ public final class YAWLConversionContext extends ConversionContext {
         return sourceId + "-" + targetId;
     }
 
-    public Collection<NodeType> getIncomingQueue(final ExternalNetElementType element) {
+    public Collection<PredecessorAdapater> getIncomingQueue(final ExternalNetElementType element) {
         return initIncomingQueue(new ElementAdapter(element));
     }
 
-    private Collection<NodeType> initIncomingQueue(final ElementAdapter elementAdapter) {
+    private Collection<PredecessorAdapater> initIncomingQueue(final ElementAdapter elementAdapter) {
         if (this.incomingQueueMap == null) {
-            this.incomingQueueMap = new HashMap<ElementAdapter, Collection<NodeType>>();
+            this.incomingQueueMap = new HashMap<ElementAdapter, Collection<PredecessorAdapater>>();
         }
-        Collection<NodeType> incomingQueue = this.incomingQueueMap.get(elementAdapter);
+        Collection<PredecessorAdapater> incomingQueue = this.incomingQueueMap.get(elementAdapter);
         if (incomingQueue == null) {
-            incomingQueue = new ArrayList<NodeType>(2);
+            incomingQueue = new ArrayList<PredecessorAdapater>(2);
             this.incomingQueueMap.put(elementAdapter, incomingQueue);
         }
         return incomingQueue;
