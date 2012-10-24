@@ -1,7 +1,10 @@
 package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
+import java.math.BigInteger;
+import java.util.List;
 import java.util.Map;
+import javax.xml.bind.JAXBElement;
 
 // Local packages
 import org.apromore.canoniser.bpmn.BpmnDefinitions;
@@ -12,10 +15,7 @@ import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.WorkType;
-import org.omg.spec.bpmn._20100524.model.TBaseElement;
-import org.omg.spec.bpmn._20100524.model.TFlowElement;
-import org.omg.spec.bpmn._20100524.model.TFlowNode;
-import org.omg.spec.bpmn._20100524.model.TLane;
+import org.omg.spec.bpmn._20100524.model.*;
 
 /**
  * This class is a clunky way of doing the work that <code>super</code> calls normally would in the constructors of the CPF elements.
@@ -75,6 +75,21 @@ public class Initializer {
     }
 
     // Work supertype handler
+
+    void populateActivity(final WorkType work, final TActivity activity) {
+        populateFlowElement(work, activity);
+
+        BigInteger completionQuantity = activity.getCompletionQuantity();
+        List<TDataInputAssociation> dias = activity.getDataInputAssociation();
+        List<TDataOutputAssociation> doas = activity.getDataOutputAssociation();
+        Object defaultRef = activity.getDefault();
+        TInputOutputSpecification ioSpec = activity.getIoSpecification();
+        JAXBElement<? extends TLoopCharacteristics> loopChars = activity.getLoopCharacteristics();
+        List<TProperty> props = activity.getProperty();
+        List<JAXBElement<? extends TResourceRole>> resRoles = activity.getResourceRole();
+        BigInteger startQuantity = activity.getStartQuantity();
+        Boolean isForCompensation = activity.isIsForCompensation();
+    }
 
     void populateFlowNode(final WorkType work, final TFlowNode flowNode) {
         populateFlowElement(work, flowNode);

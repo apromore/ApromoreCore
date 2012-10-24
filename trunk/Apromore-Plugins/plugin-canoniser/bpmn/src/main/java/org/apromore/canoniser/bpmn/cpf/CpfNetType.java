@@ -246,6 +246,24 @@ public class CpfNetType extends NetType {
         }
 
         unwindLaneMap(initializer);
+
+        // TODO - probably need to move BPMN artifacts to ANF
+        for (JAXBElement<? extends TArtifact> artifact : process.getArtifact()) {
+            artifact.getValue().accept(new BaseVisitor() {
+
+                @Override public void visit(final TAssociation association) {
+                    // TODO
+                }
+
+                @Override public void visit(final TGroup group) {
+                    // TODO
+                }
+
+                @Override public void visit(final TTextAnnotation textAnnotation) {
+                    // TODO
+                }
+            });
+        }
     }
 
     /**
