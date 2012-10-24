@@ -3,7 +3,7 @@ package org.apromore.canoniser.bpmn;
 // Java 2 Standard packages
 import java.util.Map;
 import java.util.logging.Logger;
-import javax.xml.bind.annotation.XmlRegistry;
+import javax.xml.bind.annotation.XmlRootElement;
 import javax.xml.namespace.QName;
 
 // Local packages
@@ -27,7 +27,7 @@ import org.omg.spec.dd._20100524.dc.Point;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-@XmlRegistry
+@XmlRootElement(namespace = "http://www.omg.org/spec/BPMN/20100524/DI", name = "BPMNDiagram")
 public class BpmndiDiagram extends BPMNDiagram {
 
     /** Logger.  Named after the class. */

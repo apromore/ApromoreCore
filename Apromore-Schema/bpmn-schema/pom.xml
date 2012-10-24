@@ -94,6 +94,11 @@
 
     <dependencies>
         <dependency>
+            <groupId>com.sun.xml.bind</groupId>
+            <artifactId>jaxb-xjc</artifactId>
+            <version>2.1.6</version>
+        </dependency>
+        <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
         </dependency>
@@ -122,6 +127,7 @@
                     <bindingDirectory>${basedir}/src/main/resources/xsd</bindingDirectory>
                     <generateDirectory>${basedir}/target/generated-sources/src</generateDirectory>
                     <args>
+                        <arg>-Xlocator</arg>
                         <arg>-Xvisitor</arg>
                         <arg>-Xvisitor-package:org.omg.spec.bpmn._20100524.model</arg>
                     </args>

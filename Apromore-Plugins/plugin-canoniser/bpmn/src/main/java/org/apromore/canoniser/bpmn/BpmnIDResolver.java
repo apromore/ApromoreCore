@@ -11,6 +11,7 @@ import javax.xml.namespace.QName;
 
 // Third party packages
 import com.sun.xml.bind.IDResolver;
+import org.omg.spec.bpmn._20100524.model.TDataOutputAssociation;
 import org.omg.spec.bpmn._20100524.model.TGateway;
 import static org.omg.spec.bpmn._20100524.model.TGatewayDirection.CONVERGING;
 import static org.omg.spec.bpmn._20100524.model.TGatewayDirection.DIVERGING;
@@ -70,13 +71,16 @@ public class BpmnIDResolver extends IDResolver {
 
     /** {@inheritDoc} */
     public final void bind(final String id, final Object ref) {
+        assert !idMap.containsKey(id);
         idMap.put(id, ref);
     }
 
     /** {@inheritDoc} */
     public final Callable resolve(final String id, final Class c) {
         return new Callable() {
-            public Object call() { return idMap.get(id); }
+            public Object call() {
+               return idMap.get(id);
+            }
         };
     }
 
@@ -93,6 +97,18 @@ public class BpmnIDResolver extends IDResolver {
 
         // FlowNodes know about their incoming and outgoing edges
         for (Object ref : idMap.values()) {
+            if (ref instanceof TDataOutputAssociation) {
+                TDataOutputAssociation dataOutputAssociation = (TDataOutputAssociation) ref;
+
+                if (dataOutputAssociation.getSourceRef() == null) {
+                    logger.info("DOA " + dataOutputAssociation.getId() + " lacks a sourceRef");
+                }
+
+                if (dataOutputAssociation.getTargetRef() == null) {
+                    logger.info("DOA " + dataOutputAssociation.getId() + " lacks an targetRef");
+                }
+            }
+
             if (ref instanceof TSequenceFlow) {
                 TSequenceFlow sequenceFlow = (TSequenceFlow) ref;
 

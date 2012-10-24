@@ -158,7 +158,7 @@ public class BPMN20CanoniserTest {
      * Test canonisation of <code>Test1.bpmn20.xml</code>.
      */
     @Test
-    public final void test1() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    public final void test1() throws Exception {
 
         // Obtain the test instance
         BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Test1.bpmn20.xml")), false);
@@ -199,11 +199,9 @@ public class BPMN20CanoniserTest {
      *
      * @param filename  the unique part of the source filename
      * @return a test instance whose ANF and CPF representations have been XML schema validated
-     * @throws FileNotFoundException if <var>filename</var> doesn't reference an existing file
-     * @throws JAXBException
-     * @throws SAXException
+     * @throws Exception if anything goes amiss setting up the test
      */
-    private CanoniserResult testCanonise(String filename) throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    private CanoniserResult testCanonise(String filename) throws Exception {
 
         // Obtain the test instance
         BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, filename + ".bpmn20.xml")),
@@ -287,7 +285,7 @@ public class BPMN20CanoniserTest {
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 2.bpmn20.svg"/></div>
      */
     @Test
-    public void testCanonise2() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    public void testCanonise2() throws Exception {
         NetType net = testCanonise("Case 2").getCpf(0).getNet().get(0);
 
         // Expect 4 nodes
@@ -349,7 +347,7 @@ public class BPMN20CanoniserTest {
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 5.bpmn20.svg"/></div>
      */
     @Test
-    public void testCanonise5() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    public void testCanonise5() throws Exception {
         NetType net = testCanonise("Case 5").getCpf(0).getNet().get(0);
 
         // Expect 4 nodes
@@ -403,7 +401,7 @@ public class BPMN20CanoniserTest {
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 8.bpmn20.svg"/></div>
      */
     @Test
-    public void testCanonise8() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    public void testCanonise8() throws Exception {
         CanonicalProcessType cpf = testCanonise("Case 8").getCpf(0);
 
         // Expect 1 graph, 2 resource types
@@ -471,7 +469,7 @@ public class BPMN20CanoniserTest {
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 9.bpmn20.svg"/></div>
      */
     @Test
-    public void testCanonise9() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    public void testCanonise9() throws Exception {
         CanonicalProcessType cpf = testCanonise("Case 9").getCpf(0);
 
         // Expect 1 graph, 3 resource types
@@ -545,7 +543,7 @@ public class BPMN20CanoniserTest {
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 10.bpmn20.svg"/></div>
      */
     @Test
-    public void testCanonise10() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    public void testCanonise10() throws Exception {
         testCanonise("Case 10");
 
         // not yet implemented
@@ -557,7 +555,7 @@ public class BPMN20CanoniserTest {
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 11.bpmn20.svg"/></div>
      */
     @Test
-    public void testCanonise11() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    public void testCanonise11() throws Exception {
         testCanonise("Case 11");
 
         // not yet implemented
@@ -569,7 +567,7 @@ public class BPMN20CanoniserTest {
      * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 12.bpmn20.svg"/></div>
      */
     @Test
-    public void testCanonise12() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    public void testCanonise12() throws Exception {
         //BpmnDefinitions definitions = testCanonise("Case 12");
 
         // not yet implemented
