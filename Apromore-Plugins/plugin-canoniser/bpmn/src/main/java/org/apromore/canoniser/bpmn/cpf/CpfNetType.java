@@ -9,8 +9,6 @@ import javax.xml.bind.JAXBElement;
 
 // Local packages
 import static org.apromore.canoniser.bpmn.BPMN20Canoniser.requiredName;
-import org.apromore.canoniser.bpmn.BpmnDefinitions;
-import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.bpmn.ProcessWrapper;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.*;
@@ -32,10 +30,9 @@ public class CpfNetType extends NetType {
     /**
      * Add a net to the CPF document, corresponding to a given BPMN process.
      *
-     * @param cpf  the CPF document to populate
      * @param process  the BPMN process to translate into a net
      * @param parent  if this is a subnet, the parent net; if this is a root net, <code>null</code>
-     * @param definitions  the BPMN document
+     * @param initializer  BPMN document construction state
      * @throws CanoniserException  if the net (and its subnets) can't be created and added
      */
     public CpfNetType(final ProcessWrapper process,
@@ -239,7 +236,7 @@ public class CpfNetType extends NetType {
 
                 // Internal methods
 
-                private void unimplemented(Object o) {
+                private void unimplemented(final Object o) {
                     throw new RuntimeException(new CanoniserException("Unimplemented BPMN element: " + o));
                 }
             });
