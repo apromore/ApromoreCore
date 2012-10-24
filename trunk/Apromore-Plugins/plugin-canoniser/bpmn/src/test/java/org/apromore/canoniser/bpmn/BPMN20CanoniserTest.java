@@ -134,8 +134,7 @@ public class BPMN20CanoniserTest {
         out.close();
 
         // Validate the empty BPMN model
-        TDefinitions definitions = BpmnDefinitions.newInstance(new ByteArrayInputStream(initialBPMN.toByteArray()),
-                                                               System.getProperty("bpmnvalidation") != null);
+        TDefinitions definitions = BpmnDefinitions.newInstance(new ByteArrayInputStream(initialBPMN.toByteArray()), true);
     }
 
     /**
@@ -204,8 +203,7 @@ public class BPMN20CanoniserTest {
     private CanoniserResult testCanonise(String filename) throws Exception {
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, filename + ".bpmn20.xml")),
-                                                                  System.getProperty("bpmnvalidation") != null);
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, filename + ".bpmn20.xml")), true);
 
         // Validate and serialize the canonised documents to be inspected offline
         CanoniserResult result = BPMN20Canoniser.canonise(definitions);

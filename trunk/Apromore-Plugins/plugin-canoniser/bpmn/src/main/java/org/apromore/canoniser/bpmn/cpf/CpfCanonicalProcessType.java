@@ -3,8 +3,6 @@ package org.apromore.canoniser.bpmn.cpf;
 // Java 2 Standard packages
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.HashMap;
-import java.util.Map;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -21,15 +19,11 @@ import org.xml.sax.SAXException;
 import static org.apromore.canoniser.bpmn.BPMN20Canoniser.CPF_VERSION;
 import static org.apromore.canoniser.bpmn.BPMN20Canoniser.requiredName;
 import org.apromore.canoniser.bpmn.BpmnDefinitions;
-import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.bpmn.ProcessWrapper;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.NetType;
-import org.apromore.cpf.NodeType;
-import org.omg.spec.bpmn._20100524.model.TFlowNode;
-import org.omg.spec.bpmn._20100524.model.TLane;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TRootElement;
 
@@ -79,16 +73,7 @@ public class CpfCanonicalProcessType extends CanonicalProcessType {
     public CpfCanonicalProcessType(final BpmnDefinitions definitions) throws CanoniserException {
         super();
 
-        // Generate identifiers scoped to this single CPF document
-        final IdFactory cpfIdFactory = new IdFactory();
-
-        // Map BPMN flow nodes to the CPF lanes containing them
-        final Map<TFlowNode, TLane> laneMap = new HashMap<TFlowNode, TLane>();
-
-        // Map BPMN flow nodes to CPF nodes
-        final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap = new HashMap<TFlowNode, NodeType>();
-
-        final Initializer initializer = new Initializer(this, cpfIdFactory, definitions, laneMap, bpmnFlowNodeToCpfNodeMap);
+        final Initializer initializer = new Initializer(this, definitions);
 
         // Populate attributes
         setName(requiredName(definitions.getName()));

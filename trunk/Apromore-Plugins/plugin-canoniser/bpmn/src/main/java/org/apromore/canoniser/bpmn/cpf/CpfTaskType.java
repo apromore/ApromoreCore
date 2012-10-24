@@ -3,24 +3,17 @@ package org.apromore.canoniser.bpmn.cpf;
 // Java 2 Standard packages
 import java.util.HashSet;
 import java.util.Iterator;
-import java.util.Map;
 import java.util.Set;
 import javax.xml.namespace.QName;
 
 // Local packages
-import org.apromore.canoniser.bpmn.BpmnDefinitions;
-import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.bpmn.ProcessWrapper;
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
-import org.apromore.cpf.NodeType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TypeAttribute;
 import org.omg.spec.bpmn._20100524.model.TCallActivity;
-import org.omg.spec.bpmn._20100524.model.TFlowNode;
-import org.omg.spec.bpmn._20100524.model.TLane;
 import org.omg.spec.bpmn._20100524.model.TSubProcess;
 import org.omg.spec.bpmn._20100524.model.TTask;
 
