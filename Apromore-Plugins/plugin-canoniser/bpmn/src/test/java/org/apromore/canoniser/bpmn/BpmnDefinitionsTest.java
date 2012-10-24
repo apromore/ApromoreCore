@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.logging.Logger;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -48,6 +49,7 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.XORJoinType;
 import org.apromore.cpf.XORSplitType;
+import org.omg.spec.bpmn._20100524.model.TDataOutputAssociation;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
 import org.omg.spec.bpmn._20100524.model.TProcess;
@@ -146,7 +148,6 @@ public class BpmnDefinitionsTest {
                                                  System.getProperty("bpmnvalidation") != null);
     }
 
-    @Ignore
     @Test
     public final void testNewInstance3() throws Exception {
 
@@ -155,13 +156,16 @@ public class BpmnDefinitionsTest {
                                                                   System.getProperty("bpmnvalidation") != null);
 
         // TODO - Inspect the test instance
+        TDataOutputAssociation doa = (TDataOutputAssociation) definitions.findElementById("sid-9413B494-364E-4F60-9C85-F313479C96F0");
+        assertNotNull(doa);
+        assertNotNull(doa.getSourceRef());
+        //assertNotNull(doa.getTargetRef());
 
         // Serialize the test instance
         definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "ch9_loan5.bpmn")),
                                                  System.getProperty("bpmnvalidation") != null);
     }
 
-    @Ignore
     @Test
     public final void testNewInstance4() throws Exception {
 

@@ -646,12 +646,16 @@
          </extensionElements>
          <conditionExpression id="sid-ce2ccfd0-baef-45eb-8339-4f0177d57de6" xsi:type="tFormalExpression">applicant agrees</conditionExpression>
       </sequenceFlow>
+      <!-- TODO: figure out the right sourceRef
       <association associationDirection="One" id="sid-72A43F3B-0FFA-41A2-A454-A683F9B5FFF5" targetRef="sid-8F7848DD-06A4-4BC6-B3B1-1C1316FAE29C"/>
-      <association associationDirection="None" id="sid-151042D7-EF24-44E2-95A9-847C983D5C95" name="" sourceRef="sid-2AFDCEDB-1922-4BC2-B267-BC20E7F05999" targetRef="sid-F7D1F4EC-CA22-489C-BF39-8907EDC40574"/>
+      -->
+      <association associationDirection="None" id="sid-151042D7-EF24-44E2-95A9-847C983D5C95" sourceRef="sid-2AFDCEDB-1922-4BC2-B267-BC20E7F05999" targetRef="sid-F7D1F4EC-CA22-489C-BF39-8907EDC40574"/>
       <association associationDirection="None" id="sid-81CD6BCE-9875-4025-95AD-2626A74CF652" sourceRef="sid-9090D408-895D-4B46-8C41-9AFDAC7249A6" targetRef="sid-BD35AF85-6607-4DD6-9423-1A027044A662"/>
       <association associationDirection="One" id="sid-E65565C8-7D7C-4A92-B600-36E7985E3FA6" sourceRef="sid-5B223415-80B9-41F6-BECB-D8D724DDB9F5" targetRef="sid-EB3E88E1-6692-4BA0-B3CC-8AC934050475"/>
+      <!-- TODO: figure out the right targetRefs
       <association associationDirection="One" id="sid-EB7C36EC-5433-427E-99B2-F4E240F710FF" sourceRef="sid-EB3E88E1-6692-4BA0-B3CC-8AC934050475"/>
       <association associationDirection="One" id="sid-875157C9-0881-41FD-BF01-D27A9193F6EC" sourceRef="sid-D8F3D30E-596F-4E36-B56B-D833E1454805"/>
+      -->
    </process>
    <bpmndi:BPMNDiagram id="sid-041a1200-62d7-4bba-a96c-e7e009dafdea">
       <bpmndi:BPMNPlane bpmnElement="sid-02774385-7b11-4f20-818d-3d446f182da2" id="sid-389bb826-08f9-4f85-8b68-d1dca10a0424">

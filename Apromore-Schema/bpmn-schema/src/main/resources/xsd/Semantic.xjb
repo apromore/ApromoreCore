@@ -31,11 +31,11 @@
         </bindings>
 
         <bindings node="xsd:complexType[@name='tDataAssociation']//xsd:element[@name='sourceRef']">
-            <property><baseType name="TFlowNode"/></property>
+            <property><baseType name="TBaseElement"/></property>
         </bindings>
 
         <bindings node="xsd:complexType[@name='tDataAssociation']//xsd:element[@name='targetRef']">
-            <property><baseType name="TFlowNode"/></property>
+            <property><baseType name="TBaseElement"/></property>
         </bindings>
 
         <bindings node="xsd:complexType[@name='tLane']//xsd:element[@name='flowNodeRef']">

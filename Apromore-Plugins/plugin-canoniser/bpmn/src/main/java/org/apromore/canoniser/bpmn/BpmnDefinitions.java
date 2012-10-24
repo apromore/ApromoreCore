@@ -4,6 +4,8 @@ package org.apromore.canoniser.bpmn;
 import java.io.File;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.logging.Logger;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.bind.JAXBContext;
@@ -28,6 +30,7 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
 
@@ -53,6 +56,10 @@ public class BpmnDefinitions extends TDefinitions {
     /** Logger.  Named after the class. */
     @XmlTransient
     private final Logger logger = Logger.getLogger(BpmnDefinitions.class.getCanonicalName());
+
+    /** Mapping from IDs to {@link TBaseElement}s within this document. */
+    @XmlTransient
+    private final Map<String, TBaseElement> idMap = new HashMap<String, TBaseElement>();  // TODO - use diamond operator
 
     /** Apromore URI. */
     public static final String APROMORE_URI = "http://apromore.org";
@@ -203,19 +210,32 @@ public class BpmnDefinitions extends TDefinitions {
      */
     public static BpmnDefinitions newInstance(final InputStream in, final Boolean validate) throws JAXBException {
         Unmarshaller unmarshaller = JAXBContext.newInstance(BpmnObjectFactory.class,
-                                                            org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
-                                                            org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
+                                                            BpmndiObjectFactory.class,
+                                                            org.omg.spec.bpmn._20100524.di.ObjectFactory.class,  // TODO - replace with BpmndiObjectFactory
                                                             org.omg.spec.dd._20100524.dc.ObjectFactory.class,
                                                             org.omg.spec.dd._20100524.di.ObjectFactory.class)
                                                .createUnmarshaller();
         BpmnIDResolver resolver = new BpmnIDResolver();
-        unmarshaller.setListener(new BpmnUnmarshallerListener(resolver));
+        BpmnUnmarshallerListener listener = new BpmnUnmarshallerListener(resolver);
+        unmarshaller.setListener(listener);
         unmarshaller.setProperty(ID_RESOLVER, resolver);
         if (validate) {
             unmarshaller.setSchema(BPMN_SCHEMA);
         }
-        return unmarshaller.unmarshal(new StreamSource(in), BpmnDefinitions.class)
+        BpmnDefinitions result = unmarshaller.unmarshal(new StreamSource(in), BpmnDefinitions.class)
                            .getValue();  // discard the JAXBElement wrapper
+        result.idMap.putAll(listener.getIdMap());
+        return result;
+    }
+
+    /**
+     * Look up a {@link TBaseElement} by ID.
+     *
+     * @param id  the ID of the element
+     * @return the unique element identified by <code>id</code>, or <code>null</code> if the document contains no such element
+     */
+    public TBaseElement findElementById(final String id) {
+        return idMap.get(id);
     }
 
     /**
@@ -229,8 +249,8 @@ public class BpmnDefinitions extends TDefinitions {
      */
     public void marshal(final OutputStream out, final Boolean validate) throws JAXBException {
         Marshaller marshaller = JAXBContext.newInstance(BpmnObjectFactory.class,
-                                                        org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
-                                                        org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
+                                                        BpmndiObjectFactory.class,
+                                                        org.omg.spec.bpmn._20100524.di.ObjectFactory.class,  // TODO - replace with BpmndiObjectFactory
                                                         org.omg.spec.dd._20100524.dc.ObjectFactory.class,
                                                         org.omg.spec.dd._20100524.di.ObjectFactory.class)
                                            .createMarshaller();
