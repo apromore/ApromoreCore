@@ -20,7 +20,7 @@ public class CpfResourceTypeRefType extends ResourceTypeRefType {
      * Construct a CPF Resource reference corresponding to a BPMN Lane.
      *
      * @param lane  the BPMN Lane
-     * @param initializer  CPF document construction state 
+     * @param initializer  CPF document construction state
      */
     public CpfResourceTypeRefType(final TLane lane, final Initializer initializer) {
         setId(initializer.cpfIdFactory.newId(null));

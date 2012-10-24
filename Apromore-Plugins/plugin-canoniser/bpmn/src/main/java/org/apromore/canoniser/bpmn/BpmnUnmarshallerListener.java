@@ -9,7 +9,6 @@ import javax.xml.bind.Unmarshaller;
 // Local classes
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
-import org.omg.spec.bpmn._20100524.model.TDataOutputAssociation;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TGateway;
 
@@ -71,6 +70,6 @@ public class BpmnUnmarshallerListener extends Unmarshaller.Listener {
         } else if (target instanceof TDefinitions) {
             TDefinitions definitions = (TDefinitions) target;
             bpmnIdResolver.setTargetNamespace(definitions.getTargetNamespace());
-        } 
+        }
     }
 }

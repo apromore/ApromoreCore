@@ -109,7 +109,7 @@ public class BpmnDefinitionsTest {
         definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".bpmn20.xml")), false);
 
         // Validate the test instance
-        definitions.marshal(new NullOutputStream(), System.getProperty("bpmnvalidation") != null);
+        definitions.marshal(new NullOutputStream(), true);
 
         return definitions;
     }
@@ -124,36 +124,31 @@ public class BpmnDefinitionsTest {
     public final void testNewInstance() throws Exception {
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Case 2.bpmn20.xml")),
-                                                                  System.getProperty("bpmnvalidation") != null);
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Case 2.bpmn20.xml")), true);
 
         // TODO - Inspect the test instance
 
         // Serialize the test instance
-        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "Case 2.bpmn20.xml")),
-                            System.getProperty("bpmnvalidation") != null);
+        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "Case 2.bpmn20.xml")), true);
     }
 
     @Test
     public final void testNewInstance2() throws Exception {
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Request_For_Advance_Payment.bpmn20.xml")),
-                                                                  System.getProperty("bpmnvalidation") != null);
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Request_For_Advance_Payment.bpmn20.xml")), true);
 
         // TODO - Inspect the test instance
 
         // Serialize the test instance
-        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "Request_For_Advance_Payment.bpmn20.xml")),
-                                                 System.getProperty("bpmnvalidation") != null);
+        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "Request_For_Advance_Payment.bpmn20.xml")), true);
     }
 
     @Test
     public final void testNewInstance3() throws Exception {
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "ch9_loan5.bpmn")),
-                                                                  System.getProperty("bpmnvalidation") != null);
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "ch9_loan5.bpmn")), true);
 
         // TODO - Inspect the test instance
         TDataOutputAssociation doa = (TDataOutputAssociation) definitions.findElementById("sid-9413B494-364E-4F60-9C85-F313479C96F0");
@@ -162,22 +157,19 @@ public class BpmnDefinitionsTest {
         //assertNotNull(doa.getTargetRef());
 
         // Serialize the test instance
-        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "ch9_loan5.bpmn")),
-                                                 System.getProperty("bpmnvalidation") != null);
+        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "ch9_loan5.bpmn")), true);
     }
 
     @Test
     public final void testNewInstance4() throws Exception {
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "ch9_PurchaseOrder4Complete.bpmn")),
-                                                                  System.getProperty("bpmnvalidation") != null);
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "ch9_PurchaseOrder4Complete.bpmn")), true);
 
         // TODO - Inspect the test instance
 
         // Serialize the test instance
-        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "ch9_PurchaseOrder4Complete.bpmn")),
-                                                 System.getProperty("bpmnvalidation") != null);
+        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "ch9_PurchaseOrder4Complete.bpmn")), true);
     }
 
     /**

@@ -2,6 +2,7 @@ package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
 import java.math.BigInteger;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.bind.JAXBElement;
@@ -13,7 +14,6 @@ import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeType;
-import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.WorkType;
 import org.omg.spec.bpmn._20100524.model.*;
 
@@ -27,28 +27,20 @@ import org.omg.spec.bpmn._20100524.model.*;
 public class Initializer {
 
     final CpfCanonicalProcessType  cpf;
-    final IdFactory                cpfIdFactory;
+    final IdFactory                cpfIdFactory             = new IdFactory();;
     final BpmnDefinitions          definitions;
-    final Map<TFlowNode, TLane>    laneMap;
-    final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap;
+    final Map<TFlowNode, TLane>    laneMap                  = new HashMap<TFlowNode, TLane>();
+    final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap = new HashMap<TFlowNode, NodeType>();
 
     /**
      * Sole constructor.
      *
-     * @param newCpfIdFactory  generator for CPF identifier
-     * @param newBpmnFlowNodeToCpfNodeMap  mapping from BPMN to CPF graph vertices
+     * @param newCpf  the instance being constructed
+     * @param newDefinitions  the BPMN instance that <code>newCpf</code> will correspond to
      */
-    public Initializer(final CpfCanonicalProcessType  newCpf,
-                       final IdFactory                newCpfIdFactory,
-                       final BpmnDefinitions          newDefinitions,
-                       final Map<TFlowNode, TLane>    newLaneMap,
-                       final Map<TFlowNode, NodeType> newBpmnFlowNodeToCpfNodeMap) {
-
+    public Initializer(final CpfCanonicalProcessType newCpf, final BpmnDefinitions newDefinitions) {
         cpf                      = newCpf;
-        cpfIdFactory             = newCpfIdFactory;
         definitions              = newDefinitions;
-        laneMap                  = newLaneMap;
-        bpmnFlowNodeToCpfNodeMap = newBpmnFlowNodeToCpfNodeMap;
     }
 
     // Edge supertype handlers
