@@ -52,6 +52,7 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
      *
      * @param callActivity  a BPMN Call Activity
      * @param initializer  global construction state
+     * @throws CanoniserException if the task can't be constructed
      */
     public CpfTaskType(final TCallActivity callActivity, final Initializer initializer) throws CanoniserException {
         initializer.populateFlowNode(this, callActivity);
@@ -92,6 +93,7 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
      *
      * @param task  a BPMN Task
      * @param initializer  global construction state
+     * @throws CanoniserException if the task can't be constructed
      */
     public CpfTaskType(final TTask task, final Initializer initializer) throws CanoniserException {
         initializer.populateFlowNode(this, task);

@@ -43,9 +43,13 @@ public class CpfObjectType extends ObjectType {
      * Construct a CPF Object corresponding to a BPMN Data Object.
      *
      * @param dataObject  a BPMN Data Object
+     * @param parent  the CPF Net this Object will belong to
      * @param initializer  global construction state
+     * @throws CanoniserException if construction fails
      */
-    public CpfObjectType(final TDataObject dataObject, final CpfNetType parent, final Initializer initializer) throws CanoniserException {
+    public CpfObjectType(final TDataObject dataObject,
+                         final CpfNetType  parent,
+                         final Initializer initializer) throws CanoniserException {
 
         setConfigurable(false);  // BPMN doesn't have an obvious equivalent
         setIsCollection(dataObject.isIsCollection());
@@ -55,12 +59,16 @@ public class CpfObjectType extends ObjectType {
     }
 
     /**
-     * Construct a CPF Object corresponding to a BPMN Data Store Reference
+     * Construct a CPF Object corresponding to a BPMN Data Store Reference.
      *
      * @param dataStoreReference a BPMN Data Store Reference
+     * @param parent  the CPF Net this Object will belong to
      * @param initializer  global construction state
+     * @throws CanoniserException if construction fails
      */
-    public CpfObjectType(final TDataStoreReference dataStoreReference, final CpfNetType parent, final Initializer initializer) throws CanoniserException {
+    public CpfObjectType(final TDataStoreReference dataStoreReference,
+                         final CpfNetType          parent,
+                         final Initializer         initializer) throws CanoniserException {
 
         TDataState dataState = dataStoreReference.getDataState();
         QName dataStoreRef = dataStoreReference.getDataStoreRef();
@@ -121,7 +129,7 @@ public class CpfObjectType extends ObjectType {
         return net;
     }
 
-    /** @param the CPF Net this instance belongs to */
+    /** @param newNet  the CPF Net this instance belongs to */
     public void setNet(final CpfNetType newNet) {
         net = newNet;
     }

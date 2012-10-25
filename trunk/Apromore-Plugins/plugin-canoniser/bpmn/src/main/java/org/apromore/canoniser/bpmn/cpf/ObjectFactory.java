@@ -3,16 +3,6 @@ package org.apromore.canoniser.bpmn.cpf;
 // Java 2 Standard packages
 import javax.xml.bind.annotation.XmlRegistry;
 
-// Local packages
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.EdgeType;
-import org.apromore.cpf.EventType;
-import org.apromore.cpf.NetType;
-import org.apromore.cpf.ObjectType;
-import org.apromore.cpf.ResourceTypeType;
-import org.apromore.cpf.TaskType;
-import org.apromore.cpf.XORSplitType;
-
 /**
  * Element factory for a CPF 1.0 object model with convenience methods.
  *

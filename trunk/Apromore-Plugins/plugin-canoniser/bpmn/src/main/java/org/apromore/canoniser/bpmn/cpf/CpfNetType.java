@@ -24,7 +24,7 @@ import org.omg.spec.bpmn._20100524.model.BaseVisitor;
 public class CpfNetType extends NetType {
 
     /** In CPF, no two Objects within the same Net may have the same name, so we have to keep track of the names that have occurred. */
-    final Set<String> objectNameSet = new HashSet<String>();  // TODO - use diamond operator
+    private final Set<String> objectNameSet = new HashSet<String>();  // TODO - use diamond operator
 
     /** No-arg constructor. */
     public CpfNetType() {
