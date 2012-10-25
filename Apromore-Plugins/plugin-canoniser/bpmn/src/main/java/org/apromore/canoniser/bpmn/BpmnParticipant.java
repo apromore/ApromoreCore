@@ -28,7 +28,7 @@ public class BpmnParticipant extends TParticipant {
     public BpmnParticipant(final TProcess process,
                            final Initializer initializer) {
 
-        setId(initializer.bpmnIdFactory.newId(process.getId() + "_pool"));
+        setId(initializer.newId(process.getId() + "_pool"));
         setName(process.getName());  // TODO - use an extension element for pool name if it exists
         setProcessRef(new QName(initializer.getTargetNamespace(), process.getId()));
     }

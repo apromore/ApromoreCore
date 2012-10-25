@@ -3,7 +3,6 @@ package org.apromore.canoniser.bpmn.cpf;
 // Java 2 Standard packages
 import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
 import java.util.Set;
 import java.util.logging.Logger;
 import javax.xml.bind.JAXBElement;
@@ -47,14 +46,14 @@ public class CpfNetType extends NetType {
 
         final CpfNetType net = this;  // needed so that the inner classes can reference this instance
 
-        net.setId(initializer.cpfIdFactory.newId(process.getId()));
+        net.setId(initializer.newId(process.getId()));
         if (parent == null) {
-            initializer.cpf.getRootIds().add(net.getId());
+            initializer.addRootId(net.getId());
         }
-        initializer.cpf.getNet().add(net);
+        initializer.addNet(net);
 
         // Generate resource types for each pool and lane
-        for (JAXBElement<? extends TRootElement> rootElement2 : initializer.definitions.getRootElement()) {
+        for (JAXBElement<? extends TRootElement> rootElement2 : initializer.getBpmnRootElements()) {
             if (rootElement2.getValue() instanceof TCollaboration) {
                 for (TParticipant participant : ((TCollaboration) rootElement2.getValue()).getParticipant()) {
                     if (participant.getProcessRef() != null && process.getId().equals(participant.getProcessRef().getLocalPart())) {
@@ -353,9 +352,9 @@ public class CpfNetType extends NetType {
 
             // Create a pool
             ResourceTypeType poolResourceType = new ResourceTypeType();
-            poolResourceType.setId(initializer.cpfIdFactory.newId(participant.getId()));
+            poolResourceType.setId(initializer.newId(participant.getId()));
             poolResourceType.setName(requiredName(participant.getName()));
-            initializer.cpf.getResourceType().add(poolResourceType);
+            initializer.addResourceType(poolResourceType);
 
             // Create the lanes within the pool
             poolResourceType.getSpecializationIds().addAll(addLanes(laneSet, initializer));
@@ -381,10 +380,10 @@ public class CpfNetType extends NetType {
             ResourceTypeType laneResourceType = new ResourceTypeType();
 
             // Add the resource type to the CPF model
-            laneResourceType.setId(initializer.cpfIdFactory.newId(lane.getId()));
+            laneResourceType.setId(initializer.newId(lane.getId()));
             laneResourceType.setName(requiredName(lane.getName()));
             specializationIds.add(laneResourceType.getId());
-            initializer.cpf.getResourceType().add(laneResourceType);
+            initializer.addResourceType(laneResourceType);
 
             // Populate laneMap so we'll know later on which lane each element belongs to
             List list = lane.getFlowNodeRef();
@@ -393,7 +392,7 @@ public class CpfNetType extends NetType {
                 Object value = je.getValue();
                 if (value instanceof TFlowNode) {
                     TFlowNode flowNode = (TFlowNode) value;
-                    initializer.laneMap.put(flowNode, lane);
+                    initializer.recordLaneNode(flowNode, lane);
                 } else {
                     String s = value instanceof TBaseElement ? ((TBaseElement) value).getId() : value.toString();
                     Logger.getAnonymousLogger().warning("Lane " + lane.getId() + " contains " + s + ", which is not a flow node");
@@ -407,25 +406,5 @@ public class CpfNetType extends NetType {
         }
 
         return specializationIds;
-    }
-
-    /**
-     * Take the {@link #laneMap} populated by {@link #addLaneSet} and use it to populate the CPF nodes' {@link NodeType#resourceTypeRef}s.
-     *
-     * @param cpfIdFactory  generator for {@link ResourceTypeRefType#id}s
-     * @throws CanoniserException  if the {@link #laneMap} contains a lane mapping to a node that doesn't exist
-     */
-    static void unwindLaneMap(final Initializer initializer) throws CanoniserException {
-
-        for (Map.Entry<TFlowNode, TLane> entry : initializer.laneMap.entrySet()) {
-            if (!initializer.bpmnFlowNodeToCpfNodeMap.containsKey(entry.getKey())) {
-                throw new CanoniserException("Lane " + entry.getValue().getId() + " contains " +
-                                             entry.getKey().getId() + " which is not present");
-            }
-            NodeType node = initializer.bpmnFlowNodeToCpfNodeMap.get(entry.getKey());  // get the CPF node corresponding to the BPMN flow node
-            if (node instanceof WorkType) {
-                ((WorkType) node).getResourceTypeRef().add(new CpfResourceTypeRefType(entry.getValue(), initializer));
-            }
-        }
     }
 }

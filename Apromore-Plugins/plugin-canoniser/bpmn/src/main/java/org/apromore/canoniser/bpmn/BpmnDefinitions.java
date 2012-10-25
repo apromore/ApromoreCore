@@ -149,18 +149,18 @@ public class BpmnDefinitions extends TDefinitions {
         */
 
         // Assume there will be pools, all of which belong to a single collaboration
-        TCollaboration collaboration = initializer.factory.createTCollaboration();
-        JAXBElement<TCollaboration> wrapperCollaboration = initializer.factory.createCollaboration(collaboration);
+        TCollaboration collaboration = initializer.getFactory().createTCollaboration();
+        JAXBElement<TCollaboration> wrapperCollaboration = initializer.getFactory().createCollaboration(collaboration);
 
         // Translate CPF Nets as BPMN Processes
-        for (final NetType net : initializer.cpf.getNet()) {
+        for (final NetType net : cpf.getNet()) {
 
             // Only root elements are decanonised here; subnets are dealt with by recursion
             if (!cpf.getRootIds().contains(net.getId())) {
                 continue;
             }
 
-            getRootElement().add(initializer.factory.createProcess(new BpmnProcess(net, initializer, collaboration)));
+            getRootElement().add(initializer.getFactory().createProcess(new BpmnProcess(net, initializer, collaboration)));
 
             /*
             // If we haven't added the collaboration yet and this process is a pool, add the collaboration

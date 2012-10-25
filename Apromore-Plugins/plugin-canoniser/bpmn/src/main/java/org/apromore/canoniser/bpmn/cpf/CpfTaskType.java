@@ -78,7 +78,7 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
                        final NetType     net) throws CanoniserException {
 
         // Add the CPF child net
-        NetType subnet = new CpfNetType(new ProcessWrapper(subProcess, initializer.cpfIdFactory.newId("subprocess")),
+        NetType subnet = new CpfNetType(new ProcessWrapper(subProcess, initializer.newId("subprocess")),
                                         net,
                                         initializer);
         assert subnet != null;

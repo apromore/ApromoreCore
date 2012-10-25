@@ -50,12 +50,12 @@ public class BpmndiDiagram extends BPMNDiagram {
 
         // Create BPMNDiagram
         final BPMNDiagram bpmnDiagram = this;
-        bpmnDiagram.setId(initializer.bpmnIdFactory.newId("diagram"));
+        bpmnDiagram.setId(initializer.newId("diagram"));
         bpmnDiagram.setName(anf.getName());
 
         // Create BPMNPlane
         final BPMNPlane bpmnPlane = new BPMNPlane();
-        bpmnPlane.setId(initializer.bpmnIdFactory.newId("plane"));
+        bpmnPlane.setId(initializer.newId("plane"));
         assert bpmnDiagram.getBPMNPlane() == null;
         bpmnDiagram.setBPMNPlane(bpmnPlane);
 
@@ -118,10 +118,10 @@ public class BpmndiDiagram extends BPMNDiagram {
                     };
                     */
 
-                    if (initializer.idMap.containsKey(annotation.getCpfId())) {
+                    if (initializer.containsElement(annotation.getCpfId())) {
                         BPMNShape shape = new BPMNShape();
-                        shape.setId(initializer.bpmnIdFactory.newId(annotation.getId()));
-                        shape.setBpmnElement(initializer.idMap.get(annotation.getCpfId()).getId());
+                        shape.setId(initializer.newId(annotation.getId()));
+                        shape.setBpmnElement(initializer.getElement(annotation.getCpfId()).getId());
 
                         // a shape requires a bounding box, defined by a top-left position and a size (width and height)
                         if (graphics.getPosition().size() != 1) {
@@ -147,10 +147,10 @@ public class BpmndiDiagram extends BPMNDiagram {
 
                         bpmnPlane.getDiagramElement().add(bpmndiObjectFactory.createBPMNShape(shape));
 
-                    } else if (initializer.edgeMap.containsKey(annotation.getCpfId())) {
+                    } else if (initializer.getEdge(annotation.getCpfId()) != null) {
                         BPMNEdge edge = new BPMNEdge();
-                        edge.setId(initializer.bpmnIdFactory.newId(annotation.getId()));
-                        edge.setBpmnElement(initializer.edgeMap.get(annotation.getCpfId()).getId());
+                        edge.setId(initializer.newId(annotation.getId()));
+                        edge.setBpmnElement(initializer.getEdge(annotation.getCpfId()).getId());
 
                         // an edge requires two or more waypoints
                         if (graphics.getPosition().size() < 2) {

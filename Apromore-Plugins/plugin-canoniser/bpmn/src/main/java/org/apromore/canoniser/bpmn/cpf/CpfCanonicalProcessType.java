@@ -23,7 +23,6 @@ import org.apromore.canoniser.bpmn.ProcessWrapper;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.CPFSchema;
-import org.apromore.cpf.NetType;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TRootElement;
 
@@ -88,7 +87,7 @@ public class CpfCanonicalProcessType extends CanonicalProcessType {
         }
 
         // Populate resourceTypeRefs
-        CpfNetType.unwindLaneMap(initializer);
+        initializer.close();
     }
 
     /**
@@ -109,25 +108,6 @@ public class CpfCanonicalProcessType extends CanonicalProcessType {
             unmarshaller.setSchema(CPF_SCHEMA);
         }
         return ((JAXBElement<CpfCanonicalProcessType>) unmarshaller.unmarshal(new StreamSource(in))).getValue();
-    }
-
-    /**
-     * Find a {@link NetType} given its identifier.
-     *
-     * @param id  the identifier attribute of the sought net
-     * @return the net in <code>cpf</code> with the identifier <code>id</code>
-     * @throws CanoniserException if <code>id</code> doesn't identify a net in <code>cpf</code>
-     */
-    public NetType findNet(final String id) throws CanoniserException {
-
-        for (final NetType net : getNet()) {
-            if (id.equals(net.getId())) {
-                return net;
-            }
-        }
-
-        // Failed to find the desired name
-        throw new CanoniserException("CPF model has no net with id " + id);
     }
 
     /**
