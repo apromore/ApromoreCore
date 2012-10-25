@@ -124,6 +124,53 @@ public final class ExtensionUtils {
     }
 
     /**
+     * 'Marshal' a JAXB object of some native schema to DOM Node that can be added to 'xs:any'
+     *
+     * @param elementName
+     *            to use as local part
+     * @param object
+     *            to be marshaled
+     * @param expectedClass
+     *            class of the object
+     * @param nativeName
+     *            presentation name of the origin format, e.g. "FooML"
+     * @param nativeNS
+     *            Namespace URL for the origin format
+     * @param nativeContext
+     *            context for marshalling the origin format
+     * @return XML Element containing the markup fragment
+     * @throws CanoniserException
+     */
+    public static <T> Element marshalFragment(final String      elementName,
+                                              final T           object,
+                                              final Class<T>    expectedClass,
+                                              final String      nativeName,
+                                              final String      nativeNS,
+                                              final JAXBContext nativeContext) throws CanoniserException {
+        try {
+            if (nativeContext != null) {
+                final Marshaller m = nativeContext.createMarshaller();
+                m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
+                final JAXBElement<T> element = new JAXBElement<T>(new QName(nativeNS, elementName), expectedClass, object);
+                final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
+                dbf.setNamespaceAware(false);
+                Document doc;
+                try {
+                    doc = dbf.newDocumentBuilder().newDocument();
+                } catch (final ParserConfigurationException e) {
+                    throw new CanoniserException("Could not build document while marshalling " + nativeName + " fragment. This should never happen!", e);
+                }
+                m.marshal(element, doc);
+                return doc.getDocumentElement();
+            } else {
+                throw new CanoniserException("Missing JAXBContext for " + nativeName + "!");
+            }
+        } catch (final JAXBException e) {
+            throw new CanoniserException("Failed to add " + nativeName + " extension with name " + elementName, e);
+        }
+    }
+
+    /**
      * 'Marshal' a JAXB object of the YAWL schema to DOM Node that can be added to 'xs:any'
      *
      * @param elementName
@@ -136,27 +183,7 @@ public final class ExtensionUtils {
      * @throws CanoniserException
      */
     public static <T> Element marshalYAWLFragment(final String elementName, final T object, final Class<T> expectedClass) throws CanoniserException {
-        try {
-            if (YAWL_CONTEXT != null) {
-                final Marshaller m = YAWL_CONTEXT.createMarshaller();
-                m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-                final JAXBElement<T> element = new JAXBElement<T>(new QName(YAWLSCHEMA_URL, elementName), expectedClass, object);
-                final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                dbf.setNamespaceAware(false);
-                Document doc;
-                try {
-                    doc = dbf.newDocumentBuilder().newDocument();
-                } catch (final ParserConfigurationException e) {
-                    throw new CanoniserException("Could not build document while marshalling YAWL fragment. This should never happen!", e);
-                }
-                m.marshal(element, doc);
-                return doc.getDocumentElement();
-            } else {
-                throw new CanoniserException("Missing JAXBContext for YAWL!");
-            }
-        } catch (final JAXBException e) {
-            throw new CanoniserException("Failed to add YAWL extension with name " + elementName, e);
-        }
+        return marshalFragment(elementName, object, expectedClass, "YAWL", YAWLSCHEMA_URL, YAWL_CONTEXT);
     }
 
     /**

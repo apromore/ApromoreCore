@@ -5,6 +5,7 @@ import java.util.Iterator;
 import javax.xml.namespace.QName;
 
 // Local packages
+import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.TypeAttribute;
 import org.omg.spec.bpmn._20100524.model.TDataObject;
@@ -44,7 +45,7 @@ public class CpfObjectType extends ObjectType {
      * @param dataObject  a BPMN Data Object
      * @param initializer  global construction state
      */
-    public CpfObjectType(final TDataObject dataObject, final CpfNetType parent, final Initializer initializer) {
+    public CpfObjectType(final TDataObject dataObject, final CpfNetType parent, final Initializer initializer) throws CanoniserException {
 
         setConfigurable(false);  // BPMN doesn't have an obvious equivalent
         setIsCollection(dataObject.isIsCollection());
@@ -59,7 +60,7 @@ public class CpfObjectType extends ObjectType {
      * @param dataStoreReference a BPMN Data Store Reference
      * @param initializer  global construction state
      */
-    public CpfObjectType(final TDataStoreReference dataStoreReference, final CpfNetType parent, final Initializer initializer) {
+    public CpfObjectType(final TDataStoreReference dataStoreReference, final CpfNetType parent, final Initializer initializer) throws CanoniserException {
 
         TDataState dataState = dataStoreReference.getDataState();
         QName dataStoreRef = dataStoreReference.getDataStoreRef();
