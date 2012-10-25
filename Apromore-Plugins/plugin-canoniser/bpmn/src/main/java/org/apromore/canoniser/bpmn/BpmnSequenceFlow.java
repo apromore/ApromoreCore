@@ -26,7 +26,9 @@ public class BpmnSequenceFlow extends TSequenceFlow {
      */
     public BpmnSequenceFlow(final EdgeType edge, final Initializer initializer) {
 
-        setId(initializer.bpmnIdFactory.newId(edge.getId()));
+        initializer.putEdge(edge.getId(), this);
+
+        setId(initializer.newId(edge.getId()));
 
         // Deal with @conditionExpression
         if (edge.getConditionExpr() != null) {
@@ -36,19 +38,17 @@ public class BpmnSequenceFlow extends TSequenceFlow {
         }
 
         // Deal with @sourceId
-        if (initializer.idMap.containsKey(edge.getSourceId())) {
-            setSourceRef((TFlowNode) initializer.idMap.get(edge.getSourceId()));
+        if (initializer.containsElement(edge.getSourceId())) {
+            setSourceRef((TFlowNode) initializer.getElement(edge.getSourceId()));
         } else {
-            assert !initializer.flowWithoutSourceRefMap.containsKey(this);
-            initializer.flowWithoutSourceRefMap.put(edge.getSourceId(), this);
+            initializer.recordFlowWithoutSourceRef(edge.getSourceId(), this);
         }
 
         // Deal with @targetId
-        if (initializer.idMap.containsKey(edge.getTargetId())) {
-            setTargetRef((TFlowNode) initializer.idMap.get(edge.getTargetId()));
+        if (initializer.containsElement(edge.getTargetId())) {
+            setTargetRef((TFlowNode) initializer.getElement(edge.getTargetId()));
         } else {
-            assert !initializer.flowWithoutTargetRefMap.containsKey(this);
-            initializer.flowWithoutTargetRefMap.put(edge.getTargetId(), this);
+            initializer.recordFlowWithoutTargetRef(edge.getTargetId(), this);
         }
     }
 }

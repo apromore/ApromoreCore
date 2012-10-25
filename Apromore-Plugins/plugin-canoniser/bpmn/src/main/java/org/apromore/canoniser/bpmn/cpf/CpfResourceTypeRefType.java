@@ -23,7 +23,7 @@ public class CpfResourceTypeRefType extends ResourceTypeRefType {
      * @param initializer  CPF document construction state
      */
     public CpfResourceTypeRefType(final TLane lane, final Initializer initializer) {
-        setId(initializer.cpfIdFactory.newId(null));
+        setId(initializer.newId(null));
         //setOptional(false);  // redundant, since false is the default
         setQualifier(null);
         setResourceTypeId(lane.getId());
