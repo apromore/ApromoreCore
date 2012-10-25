@@ -53,7 +53,7 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
      * @param callActivity  a BPMN Call Activity
      * @param initializer  global construction state
      */
-    public CpfTaskType(final TCallActivity callActivity, final Initializer initializer) {
+    public CpfTaskType(final TCallActivity callActivity, final Initializer initializer) throws CanoniserException {
         initializer.populateFlowNode(this, callActivity);
         if (false) {
             // The called element is a process or global task within this same BPMN document
@@ -93,7 +93,7 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
      * @param task  a BPMN Task
      * @param initializer  global construction state
      */
-    public CpfTaskType(final TTask task, final Initializer initializer) {
+    public CpfTaskType(final TTask task, final Initializer initializer) throws CanoniserException {
         initializer.populateFlowNode(this, task);
     }
 
