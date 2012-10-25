@@ -53,12 +53,17 @@ public class Initializer {
 
     // Edge supertype handlers
 
-    void populateBaseElement(final EdgeType edge, final TBaseElement baseElement) {
+    void populateBaseElement(final EdgeType edge, final TBaseElement baseElement) throws CanoniserException {
         edge.setId(cpfIdFactory.newId(baseElement.getId()));
         edge.setOriginalID(baseElement.getId());
+
+        // Handle BPMN extension elements
+        if (baseElement.getExtensionElements() != null) {
+            ExtensionUtils.addToExtensions(extensionElements(baseElement), edge);
+        }
     }
 
-    void populateFlowElement(final EdgeType edge, final TFlowElement flowElement) {
+    void populateFlowElement(final EdgeType edge, final TFlowElement flowElement) throws CanoniserException {
         populateBaseElement(edge, flowElement);
     }
 
@@ -70,13 +75,7 @@ public class Initializer {
 
         // Handle BPMN extension elements
         if (baseElement.getExtensionElements() != null) {
-            Element e = ExtensionUtils.marshalFragment(EXTENSION_ELEMENTS,
-                                                       baseElement.getExtensionElements(),
-                                                       TExtensionElements.class,
-                                                       "BPMN 2.0",
-                                                       BpmnDefinitions.BPMN_NS,
-                                                       BpmnDefinitions.BPMN_CONTEXT);
-            ExtensionUtils.addToExtensions(e, node);
+            ExtensionUtils.addToExtensions(extensionElements(baseElement), node);
         }
     }
 
@@ -116,11 +115,16 @@ public class Initializer {
 
     // Object supertype handlers
 
-    void populateBaseElement(final ObjectType object, final TBaseElement baseElement) {
+    void populateBaseElement(final ObjectType object, final TBaseElement baseElement) throws CanoniserException {
         object.setId(cpfIdFactory.newId(baseElement.getId()));
+
+        // Handle BPMN extension elements
+        if (baseElement.getExtensionElements() != null) {
+            ExtensionUtils.addToExtensions(extensionElements(baseElement), object);
+        }
     }
 
-    void populateFlowElement(final ObjectType object, final TFlowElement flowElement) {
+    void populateFlowElement(final ObjectType object, final TFlowElement flowElement) throws CanoniserException {
         populateBaseElement(object, flowElement);
 
         // An oddity of CPF is that no two Objects belonging to the same Net may have the same name
@@ -139,8 +143,29 @@ public class Initializer {
 
     // ResourceType supertype handlers
 
-    void populateBaseElement(final ResourceTypeType resourceType, final TBaseElement baseElement) {
+    void populateBaseElement(final ResourceTypeType resourceType, final TBaseElement baseElement) throws CanoniserException {
         resourceType.setId(cpfIdFactory.newId(baseElement.getId()));
         resourceType.setOriginalID(baseElement.getId());
+
+        // Handle BPMN extension elements
+        if (baseElement.getExtensionElements() != null) {
+            ExtensionUtils.addToExtensions(extensionElements(baseElement), resourceType);
+        }
+    }
+
+    // Internal methods
+
+    /**
+     * @param baseElement  a BPMN element with a <code>extensionElements</code> subelement
+     * @return the <code>extensionElements</code> of the BPMN element
+     * @throws CanoniserException  if the conversion cannot be performed
+     */
+    private Element extensionElements(final TBaseElement baseElement) throws CanoniserException {
+        return ExtensionUtils.marshalFragment(EXTENSION_ELEMENTS,
+                                              baseElement.getExtensionElements(),
+                                              TExtensionElements.class,
+                                              "BPMN 2.0",
+                                              BpmnDefinitions.BPMN_NS,
+                                              BpmnDefinitions.BPMN_CONTEXT);
     }
 }
