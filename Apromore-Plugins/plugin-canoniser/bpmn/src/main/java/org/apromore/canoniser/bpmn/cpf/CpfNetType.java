@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.logging.Logger;
 import javax.xml.bind.JAXBElement;
 
 // Local packages
@@ -21,6 +22,9 @@ import org.omg.spec.bpmn._20100524.model.BaseVisitor;
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
 public class CpfNetType extends NetType {
+
+    /** In CPF, no two Objects within the same Net may have the same name, so we have to keep track of the names that have occurred. */
+    final Set<String> objectNameSet = new HashSet<String>();  // TODO - use diamond operator
 
     /** No-arg constructor. */
     public CpfNetType() {
@@ -41,7 +45,7 @@ public class CpfNetType extends NetType {
 
         super();
 
-        final NetType net = this;  // needed so that the inner classes can reference this instance
+        final CpfNetType net = this;  // needed so that the inner classes can reference this instance
 
         net.setId(initializer.cpfIdFactory.newId(process.getId()));
         if (parent == null) {
@@ -96,7 +100,7 @@ public class CpfNetType extends NetType {
                 }
 
                 @Override public void visit(final TDataObject dataObject) {
-                    net.getObject().add(new CpfObjectType(dataObject, initializer));
+                    net.getObject().add(new CpfObjectType(dataObject, net, initializer));
                 }
 
                 @Override public void visit(final TDataObjectReference dataObjectReference) {
@@ -104,7 +108,7 @@ public class CpfNetType extends NetType {
                 }
 
                 @Override public void visit(final TDataStoreReference dataStoreReference) {
-                    unimplemented(dataStoreReference);
+                    net.getObject().add(new CpfObjectType(dataStoreReference, net, initializer));
                 }
 
                 @Override public void visit(final TEndEvent endEvent) {
@@ -129,7 +133,7 @@ public class CpfNetType extends NetType {
                     }
                     assert routing != null;
 
-                    initializer.populateFlowElement(routing, exclusiveGateway);
+                    initializer.populateFlowNode(routing, exclusiveGateway);
 
                     net.getNode().add(routing);
                 }
@@ -152,7 +156,7 @@ public class CpfNetType extends NetType {
                     }
                     assert routing != null;
 
-                    initializer.populateFlowElement(routing, inclusiveGateway);
+                    initializer.populateFlowNode(routing, inclusiveGateway);
 
                     net.getNode().add(routing);
                 }
@@ -183,7 +187,7 @@ public class CpfNetType extends NetType {
                     }
                     assert routing != null;
 
-                    initializer.populateFlowElement(routing, parallelGateway);
+                    initializer.populateFlowNode(routing, parallelGateway);
 
                     net.getNode().add(routing);
                 }
@@ -242,8 +246,6 @@ public class CpfNetType extends NetType {
             });
         }
 
-        unwindLaneMap(initializer);
-
         // TODO - probably need to move BPMN artifacts to ANF
         for (JAXBElement<? extends TArtifact> artifact : process.getArtifact()) {
             artifact.getValue().accept(new BaseVisitor() {
@@ -261,6 +263,11 @@ public class CpfNetType extends NetType {
                 }
             });
         }
+    }
+
+    /** @return the names of all {@link ObjectType} nodes belonging to this instance */
+    Set<String> getObjectNames() {
+        return objectNameSet;
     }
 
     /**
@@ -317,8 +324,13 @@ public class CpfNetType extends NetType {
             for (Object object : list) {
                 JAXBElement je = (JAXBElement) object;
                 Object value = je.getValue();
-                TFlowNode flowNode = (TFlowNode) value;
-                initializer.laneMap.put(flowNode, lane);
+                if (value instanceof TFlowNode) {
+                    TFlowNode flowNode = (TFlowNode) value;
+                    initializer.laneMap.put(flowNode, lane);
+                } else {
+                    String s = value instanceof TBaseElement ? ((TBaseElement) value).getId() : value.toString();
+                    Logger.getAnonymousLogger().warning("Lane " + lane.getId() + " contains " + s + ", which is not a flow node");
+                }
             }
 
             // recurse on any child lane sets
@@ -336,7 +348,7 @@ public class CpfNetType extends NetType {
      * @param cpfIdFactory  generator for {@link ResourceTypeRefType#id}s
      * @throws CanoniserException  if the {@link #laneMap} contains a lane mapping to a node that doesn't exist
      */
-    private static void unwindLaneMap(final Initializer initializer) throws CanoniserException {
+    static void unwindLaneMap(final Initializer initializer) throws CanoniserException {
 
         for (Map.Entry<TFlowNode, TLane> entry : initializer.laneMap.entrySet()) {
             if (!initializer.bpmnFlowNodeToCpfNodeMap.containsKey(entry.getKey())) {

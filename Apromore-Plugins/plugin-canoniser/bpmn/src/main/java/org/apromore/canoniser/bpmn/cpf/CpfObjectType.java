@@ -2,11 +2,14 @@ package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
 import java.util.Iterator;
+import javax.xml.namespace.QName;
 
 // Local packages
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.TypeAttribute;
 import org.omg.spec.bpmn._20100524.model.TDataObject;
+import org.omg.spec.bpmn._20100524.model.TDataState;
+import org.omg.spec.bpmn._20100524.model.TDataStoreReference;
 
 /**
  * CPF 1.0 object with convenience methods.
@@ -20,6 +23,14 @@ public class CpfObjectType extends ObjectType {
     /** {@link TypeAttribute#name} indicating BPMN DataObject is a collection. */
     public static final String IS_COLLECTION = "isCollection";
 
+    /** {@link TypeAttribute#name} indicating BPMN DataObject is a collection. */
+    public static final String ORIGINAL_NAME = "originalName";
+
+    // Convenience properties
+
+    /** The parent Net this instance belongs to. */
+    private CpfNetType net;
+
     // Constructors
 
     /** No-arg constructor. */
@@ -28,17 +39,37 @@ public class CpfObjectType extends ObjectType {
     }
 
     /**
-     * Construct a CPF Task corresponding to a BPMN Call Activity.
+     * Construct a CPF Object corresponding to a BPMN Data Object.
      *
      * @param dataObject  a BPMN Data Object
      * @param initializer  global construction state
      */
-    public CpfObjectType(final TDataObject dataObject, final Initializer initializer) {
+    public CpfObjectType(final TDataObject dataObject, final CpfNetType parent, final Initializer initializer) {
 
         setConfigurable(false);  // BPMN doesn't have an obvious equivalent
         setIsCollection(dataObject.isIsCollection());
 
+        setNet(parent);
         initializer.populateFlowElement(this, dataObject);
+    }
+
+    /**
+     * Construct a CPF Object corresponding to a BPMN Data Store Reference
+     *
+     * @param dataStoreReference a BPMN Data Store Reference
+     * @param initializer  global construction state
+     */
+    public CpfObjectType(final TDataStoreReference dataStoreReference, final CpfNetType parent, final Initializer initializer) {
+
+        TDataState dataState = dataStoreReference.getDataState();
+        QName dataStoreRef = dataStoreReference.getDataStoreRef();
+        QName itemSubjectRef = dataStoreReference.getItemSubjectRef();
+
+        setConfigurable(false);  // BPMN doesn't have an obvious equivalent
+        setIsCollection(false);
+
+        setNet(parent);
+        initializer.populateFlowElement(this, dataStoreReference);
     }
 
     // Accessors for CPF extension attributes
@@ -81,6 +112,63 @@ public class CpfObjectType extends ObjectType {
             }
 
             assert !isIsCollection();
+        }
+    }
+
+    /** @return the CPF Net this instance belongs to */
+    public CpfNetType getNet() {
+        return net;
+    }
+
+    /** @param the CPF Net this instance belongs to */
+    public void setNet(final CpfNetType newNet) {
+        net = newNet;
+    }
+
+    /**
+     * Usually this is the same as the CPF name, but it can sometimes differ if the canoniser had to rename this Object to avoid
+     * having the same name as other Objects in the same Net.
+     *
+     * @return the name of the corresponding flow element from the original BPMN document
+     */
+    public String getOriginalName() {
+
+        // Check for an existing attribute with the right name
+        for (TypeAttribute attribute : getAttribute()) {
+            if (ORIGINAL_NAME.equals(attribute.getName())) {
+                return attribute.getValue();
+            }
+        }
+
+        // Didn't find an original name
+        return null;
+    }
+
+    /**
+     * Record the name of the corresponding element from the BPMN, if the CPF name needed to be renamed to guarantee uniqueness within the CPF Net.
+     *
+     * @param value  the name of the corresponding flow element from the original BPMN document
+     */
+    public void setOriginalName(final String value) {
+
+        // Remove any existing attribute
+        Iterator<TypeAttribute> i = getAttribute().iterator();
+        while (i.hasNext()) {
+            if (ORIGINAL_NAME.equals(i.next().getName())) {
+                i.remove();
+            }
+        }
+
+        if (value != null) {
+            // Create a new attribute for the original name
+            TypeAttribute attribute = new ObjectFactory().createTypeAttribute();
+            attribute.setName(ORIGINAL_NAME);
+            attribute.setValue(value);
+            getAttribute().add(attribute);
+
+            assert value.equals(getOriginalName());
+        } else {
+            assert getOriginalName() == null;
         }
     }
 }

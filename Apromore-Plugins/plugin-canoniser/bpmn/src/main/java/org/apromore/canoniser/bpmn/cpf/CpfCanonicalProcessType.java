@@ -86,6 +86,9 @@ public class CpfCanonicalProcessType extends CanonicalProcessType {
                 new CpfNetType(new ProcessWrapper(process), null, initializer);
             }
         }
+
+        // Populate resourceTypeRefs
+        CpfNetType.unwindLaneMap(initializer);
     }
 
     /**
@@ -96,7 +99,7 @@ public class CpfCanonicalProcessType extends CanonicalProcessType {
      * @return JAXB object model of the parsed stream
      * @throws JAXBException if the stream can't be unmarshalled as CPF
      */
-    public static CanonicalProcessType newInstance(final InputStream in, final Boolean validate) throws JAXBException {
+    public static CpfCanonicalProcessType newInstance(final InputStream in, final Boolean validate) throws JAXBException {
         Unmarshaller unmarshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT)
                                                .createUnmarshaller();
         unmarshaller.setListener(new CpfUnmarshallerListener());
@@ -105,8 +108,7 @@ public class CpfCanonicalProcessType extends CanonicalProcessType {
         if (validate) {
             unmarshaller.setSchema(CPF_SCHEMA);
         }
-        return unmarshaller.unmarshal(new StreamSource(in), CanonicalProcessType.class)
-                           .getValue();
+        return ((JAXBElement<CpfCanonicalProcessType>) unmarshaller.unmarshal(new StreamSource(in))).getValue();
     }
 
     /**
