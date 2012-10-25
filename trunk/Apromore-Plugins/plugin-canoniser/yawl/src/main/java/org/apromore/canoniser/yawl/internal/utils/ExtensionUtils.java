@@ -15,6 +15,7 @@ import javax.xml.parsers.ParserConfigurationException;
 import org.apromore.anf.AnnotationType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectFactory;
@@ -124,7 +125,7 @@ public final class ExtensionUtils {
     }
 
     /**
-     * 'Marshal' a JAXB object of some native schema to DOM Node that can be added to 'xs:any'
+     * 'Marshal' a JAXB object of some native schema to a DOM Node that can be added to 'xs:any'
      *
      * @param elementName
      *            to use as local part
@@ -206,6 +207,17 @@ public final class ExtensionUtils {
     public static void addToExtensions(final Element extensionElement, final CanonicalProcessType cpt) {
         LOGGER.debug("Added YAWL extension {} to CPF", extensionElement.getNodeName());
         cpt.getAttribute().add(createExtension(extensionElement));
+    }
+
+    /**
+     * Add the extension Element (XML) to the CPF attributes
+     *
+     * @param extensionElement any XML Element
+     * @param edge CPF Edge
+     */
+    public static void addToExtensions(final Element extensionElement, final EdgeType edge) {
+        LOGGER.debug("Added YAWL extension {} to CPF", extensionElement.getNodeName());
+        edge.getAttribute().add(createExtension(extensionElement));
     }
 
     /**
