@@ -25,6 +25,7 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 // Local packages
+import org.apromore.canoniser.bpmn.TestConstants;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
@@ -47,10 +48,7 @@ import org.apromore.cpf.XORSplitType;
  * @see <a href="http://apromore.org/wp-content/uploads/2010/12/AProMoReCanonization_v1.0.pdf">Canonization
  *     Service for AProMoRe</a>, page 24-25
  */
-public class ObjectFactoryTest {
-
-    /** Source for ANF and CPF test data. */
-    final static File TESTCASES_DIR = new File("src/test/resources/BPMN_testcases/");
+public class ObjectFactoryTest implements TestConstants {
 
     /** XML schema for CPF 0.5. */
     private Schema CPF_SCHEMA;
@@ -77,20 +75,9 @@ public class ObjectFactoryTest {
      * Test CPF convenience methods.
      */
     @Test
-    public void testParseCpf() throws CanoniserException, FileNotFoundException, JAXBException, SAXException {
+    public void testParseCpf() throws Exception {
 
-        final String filename ="Basic";
-
-        // Read the CPF source file
-        Unmarshaller cpfUnmarshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT).createUnmarshaller();
-        cpfUnmarshaller.setListener(new CpfUnmarshallerListener());
-        cpfUnmarshaller.setProperty(ID_RESOLVER, new CpfIDResolver());
-        cpfUnmarshaller.setProperty(OBJECT_FACTORY, new ObjectFactory());
-        cpfUnmarshaller.setSchema(CPF_SCHEMA);
-        CanonicalProcessType cpf = cpfUnmarshaller.unmarshal(
-            new StreamSource(new FileInputStream(new File(TESTCASES_DIR, filename + ".cpf"))),
-            CanonicalProcessType.class
-        ).getValue();
+        CpfCanonicalProcessType cpf = CpfCanonicalProcessType.newInstance(new FileInputStream(new File(TESTCASES_DIR, "Basic.cpf")), true);
 
         NetType net = cpf.getNet().get(0);
 

@@ -23,42 +23,42 @@ import org.apromore.cpf.XORSplitType;
 public class ObjectFactory extends org.apromore.cpf.ObjectFactory {
 
     @Override
-    public CanonicalProcessType createCanonicalProcessType() {
+    public CpfCanonicalProcessType createCanonicalProcessType() {
         return new CpfCanonicalProcessType();
     }
 
     @Override
-    public EdgeType createEdgeType() {
+    public CpfEdgeType createEdgeType() {
         return new CpfEdgeType();
     }
 
     @Override
-    public EventType createEventType() {
+    public CpfEventType createEventType() {
         return new CpfEventType();
     }
 
     @Override
-    public NetType createNetType() {
+    public CpfNetType createNetType() {
         return new CpfNetType();
     }
 
     @Override
-    public ObjectType createObjectType() {
+    public CpfObjectType createObjectType() {
         return new CpfObjectType();
     }
 
     @Override
-    public ResourceTypeType createResourceTypeType() {
+    public CpfResourceTypeType createResourceTypeType() {
         return new CpfResourceTypeType();
     }
 
     @Override
-    public TaskType createTaskType() {
+    public CpfTaskType createTaskType() {
         return new CpfTaskType();
     }
 
     @Override
-    public XORSplitType createXORSplitType() {
+    public CpfXORSplitType createXORSplitType() {
         return new CpfXORSplitType();
     }
 }

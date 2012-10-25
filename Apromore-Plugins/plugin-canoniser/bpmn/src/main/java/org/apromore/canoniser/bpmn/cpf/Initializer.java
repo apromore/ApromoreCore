@@ -14,6 +14,7 @@ import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeType;
+import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.WorkType;
 import org.omg.spec.bpmn._20100524.model.*;
 
@@ -66,6 +67,13 @@ public class Initializer {
         node.setName(flowElement.getName());
     }
 
+    // Routing supertype handler
+
+    void populateFlowNode(final RoutingType routing, final TFlowNode flowNode) {
+        populateFlowElement(routing, flowNode);
+        bpmnFlowNodeToCpfNodeMap.put(flowNode, routing);
+    }
+
     // Work supertype handler
 
     void populateActivity(final WorkType work, final TActivity activity) {
@@ -96,7 +104,19 @@ public class Initializer {
 
     void populateFlowElement(final ObjectType object, final TFlowElement flowElement) {
         populateBaseElement(object, flowElement);
-        object.setName(flowElement.getName());
+
+        // An oddity of CPF is that no two Objects belonging to the same Net may have the same name
+        String name = flowElement.getName();
+        while (((CpfObjectType) object).getNet().getObjectNames().contains(name)) {
+            name = name + "'";
+        }
+        object.setName(name);
+        ((CpfObjectType) object).getNet().getObjectNames().add(name);
+
+        // For the sake of round-tripping, if we've changed the name to avoid clashes, record the original name as an extension attribute
+        if (!name.equals(flowElement.getName())) {
+            ((CpfObjectType) object).setOriginalName(flowElement.getName());
+        }
     }
 
     // ResourceType supertype handlers
