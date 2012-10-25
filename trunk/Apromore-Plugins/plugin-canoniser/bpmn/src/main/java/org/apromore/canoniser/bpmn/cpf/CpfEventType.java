@@ -5,6 +5,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 // Local packages
+import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.EventType;
 import org.omg.spec.bpmn._20100524.model.TEndEvent;
@@ -36,7 +37,7 @@ public class CpfEventType extends EventType implements CpfNodeType {
      * @param endEvent  a BPMN End Event
      * @param initializer  global construction state
      */
-    public CpfEventType(final TEndEvent endEvent, final Initializer initializer) {
+    public CpfEventType(final TEndEvent endEvent, final Initializer initializer) throws CanoniserException {
         super();
         initializer.populateFlowNode(this, endEvent);
     }
@@ -47,7 +48,7 @@ public class CpfEventType extends EventType implements CpfNodeType {
      * @param startEvent  a BPMN Start Event
      * @param initializer  global construction state
      */
-    public CpfEventType(final TStartEvent startEvent, final Initializer initializer) {
+    public CpfEventType(final TStartEvent startEvent, final Initializer initializer) throws CanoniserException {
         super();
         initializer.populateFlowNode(this, startEvent);
     }

@@ -95,6 +95,14 @@
 			<scope>compile</scope>
 		</dependency>
 
+        <!-- Need utility classes from the YAWL canoniser -->
+        <dependency>
+            <groupId>org.apromore.plugin</groupId>
+            <artifactId>canoniser-yawl</artifactId>
+            <version>1.0</version>
+            <scope>compile</scope>
+        </dependency>
+
 	<!-- Needed for BOMInputStream, NullOutputStream -->
         <dependency>
             <groupId>commons-io</groupId>

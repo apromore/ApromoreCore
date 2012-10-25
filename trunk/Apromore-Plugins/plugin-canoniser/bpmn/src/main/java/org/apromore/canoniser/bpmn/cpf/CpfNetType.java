@@ -80,11 +80,19 @@ public class CpfNetType extends NetType {
                 }
 
                 @Override public void visit(final TBusinessRuleTask businessRuleTask) {
-                    net.getNode().add(new CpfTaskType(businessRuleTask, initializer));
+                    try {
+                        net.getNode().add(new CpfTaskType(businessRuleTask, initializer));
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TCallActivity callActivity) {
-                    net.getNode().add(new CpfTaskType(callActivity, initializer));
+                    try {
+                        net.getNode().add(new CpfTaskType(callActivity, initializer));
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TCallChoreography that) {
@@ -100,7 +108,11 @@ public class CpfNetType extends NetType {
                 }
 
                 @Override public void visit(final TDataObject dataObject) {
-                    net.getObject().add(new CpfObjectType(dataObject, net, initializer));
+                    try {
+                        net.getObject().add(new CpfObjectType(dataObject, net, initializer));
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TDataObjectReference dataObjectReference) {
@@ -108,11 +120,19 @@ public class CpfNetType extends NetType {
                 }
 
                 @Override public void visit(final TDataStoreReference dataStoreReference) {
-                    net.getObject().add(new CpfObjectType(dataStoreReference, net, initializer));
+                    try {
+                        net.getObject().add(new CpfObjectType(dataStoreReference, net, initializer));
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TEndEvent endEvent) {
-                    net.getNode().add(new CpfEventType(endEvent, initializer));
+                    try {
+                        net.getNode().add(new CpfEventType(endEvent, initializer));
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TEventBasedGateway that) {
@@ -120,22 +140,27 @@ public class CpfNetType extends NetType {
                 }
 
                 @Override public void visit(final TExclusiveGateway exclusiveGateway) {
-                    RoutingType routing;
+                    try {
+                        RoutingType routing;
 
-                    switch (exclusiveGateway.getGatewayDirection()) {
-                        case CONVERGING: routing = new XORJoinType(); break;
-                        case DIVERGING:  routing = new XORSplitType();  break;
-                        default:
-                            throw new RuntimeException(
-                                new CanoniserException("Gateway " + exclusiveGateway.getId() +
-                                                       " unimplemented gateway direction " + exclusiveGateway.getGatewayDirection())
-                            );  // TODO - remove wrapper hack
+                        switch (exclusiveGateway.getGatewayDirection()) {
+                            case CONVERGING: routing = new XORJoinType(); break;
+                            case DIVERGING:  routing = new XORSplitType();  break;
+                            default:
+                                throw new RuntimeException(
+                                    new CanoniserException("Gateway " + exclusiveGateway.getId() +
+                                                           " unimplemented gateway direction " + exclusiveGateway.getGatewayDirection())
+                                );  // TODO - remove wrapper hack
+                        }
+                        assert routing != null;
+
+                        initializer.populateFlowNode(routing, exclusiveGateway);
+
+                        net.getNode().add(routing);
+
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }
-                    assert routing != null;
-
-                    initializer.populateFlowNode(routing, exclusiveGateway);
-
-                    net.getNode().add(routing);
                 }
 
                 @Override public void visit(final TImplicitThrowEvent that) {
@@ -143,22 +168,27 @@ public class CpfNetType extends NetType {
                 }
 
                 @Override public void visit(final TInclusiveGateway inclusiveGateway) {
-                    RoutingType routing;
+                    try {
+                        RoutingType routing;
 
-                    switch (inclusiveGateway.getGatewayDirection()) {
-                        case CONVERGING: routing = new ORJoinType(); break;
-                        case DIVERGING:  routing = new ORSplitType();  break;
-                        default:
-                            throw new RuntimeException(
-                                new CanoniserException("Gateway " + inclusiveGateway.getId() +
-                                                       " unimplemented gateway direction " + inclusiveGateway.getGatewayDirection())
-                            );  // TODO - remove wrapper hack
+                        switch (inclusiveGateway.getGatewayDirection()) {
+                            case CONVERGING: routing = new ORJoinType(); break;
+                            case DIVERGING:  routing = new ORSplitType();  break;
+                            default:
+                                throw new RuntimeException(
+                                    new CanoniserException("Gateway " + inclusiveGateway.getId() +
+                                                           " unimplemented gateway direction " + inclusiveGateway.getGatewayDirection())
+                                );  // TODO - remove wrapper hack
+                        }
+                        assert routing != null;
+
+                        initializer.populateFlowNode(routing, inclusiveGateway);
+
+                        net.getNode().add(routing);
+
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }
-                    assert routing != null;
-
-                    initializer.populateFlowNode(routing, inclusiveGateway);
-
-                    net.getNode().add(routing);
                 }
 
                 @Override public void visit(final TIntermediateCatchEvent that) {
@@ -170,38 +200,59 @@ public class CpfNetType extends NetType {
                 }
 
                 @Override public void visit(final TManualTask manualTask) {
-                    net.getNode().add(new CpfTaskType(manualTask, initializer));
+                    try {
+                        net.getNode().add(new CpfTaskType(manualTask, initializer));
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TParallelGateway parallelGateway) {
-                    RoutingType routing;
+                    try {
+                       RoutingType routing;
 
-                    switch (parallelGateway.getGatewayDirection()) {
-                        case CONVERGING: routing = new ANDJoinType(); break;
-                        case DIVERGING:  routing = new ANDSplitType();  break;
-                        default:
-                            throw new RuntimeException(
-                                new CanoniserException("Gateway " + parallelGateway.getId() +
-                                                       " unimplemented gateway direction " + parallelGateway.getGatewayDirection())
-                            );  // TODO - remove wrapper hack
+                        switch (parallelGateway.getGatewayDirection()) {
+                           case CONVERGING: routing = new ANDJoinType(); break;
+                            case DIVERGING:  routing = new ANDSplitType();  break;
+                            default:
+                                throw new RuntimeException(
+                                    new CanoniserException("Gateway " + parallelGateway.getId() +
+                                                           " unimplemented gateway direction " + parallelGateway.getGatewayDirection())
+                                );  // TODO - remove wrapper hack
+                        }
+                        assert routing != null;
+
+                        initializer.populateFlowNode(routing, parallelGateway);
+
+                        net.getNode().add(routing);
+
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }
-                    assert routing != null;
-
-                    initializer.populateFlowNode(routing, parallelGateway);
-
-                    net.getNode().add(routing);
                 }
 
                 @Override public void visit(final TReceiveTask receiveTask) {
-                    net.getNode().add(new CpfTaskType(receiveTask, initializer));
+                    try {
+                        net.getNode().add(new CpfTaskType(receiveTask, initializer));
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TScriptTask scriptTask) {
-                    net.getNode().add(new CpfTaskType(scriptTask, initializer));
+                    try {
+                        net.getNode().add(new CpfTaskType(scriptTask, initializer));
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TSendTask sendTask) {
-                    net.getNode().add(new CpfTaskType(sendTask, initializer));
+                    try {
+                        net.getNode().add(new CpfTaskType(sendTask, initializer));
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TSequenceFlow sequenceFlow) {
@@ -213,11 +264,19 @@ public class CpfNetType extends NetType {
                 }
 
                 @Override public void visit(final TServiceTask serviceTask) {
-                    net.getNode().add(new CpfTaskType(serviceTask, initializer));
+                    try {
+                        net.getNode().add(new CpfTaskType(serviceTask, initializer));
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TStartEvent startEvent) {
-                    net.getNode().add(new CpfEventType(startEvent, initializer));
+                    try {
+                        net.getNode().add(new CpfEventType(startEvent, initializer));
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TSubChoreography that) { unimplemented(that); }
@@ -231,11 +290,19 @@ public class CpfNetType extends NetType {
                 }
 
                 @Override public void visit(final TTask task) {
-                    net.getNode().add(new CpfTaskType(task, initializer));
+                    try {
+                        net.getNode().add(new CpfTaskType(task, initializer));
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TUserTask userTask) {
-                    net.getNode().add(new CpfTaskType(userTask, initializer));
+                    try {
+                        net.getNode().add(new CpfTaskType(userTask, initializer));
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 // Internal methods

@@ -6,15 +6,19 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.bind.JAXBElement;
+import org.w3c.dom.Element;
 
 // Local packages
 import org.apromore.canoniser.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.IdFactory;
+import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
+import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.omg.spec.bpmn._20100524.model.*;
 
@@ -26,6 +30,9 @@ import org.omg.spec.bpmn._20100524.model.*;
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
 public class Initializer {
+
+    /** Extension name for {@link TypeAttribute}s with <code>bpmn:extensionElements</code> content. */
+    private static final String EXTENSION_ELEMENTS = "extensions";
 
     final CpfCanonicalProcessType  cpf;
     final IdFactory                cpfIdFactory             = new IdFactory();;
@@ -57,26 +64,37 @@ public class Initializer {
 
     // Node supertype handlers
 
-    void populateBaseElement(final NodeType node, final TBaseElement baseElement) {
+    void populateBaseElement(final NodeType node, final TBaseElement baseElement) throws CanoniserException {
         node.setId(cpfIdFactory.newId(baseElement.getId()));
         node.setOriginalID(baseElement.getId());
+
+        // Handle BPMN extension elements
+        if (baseElement.getExtensionElements() != null) {
+            Element e = ExtensionUtils.marshalFragment(EXTENSION_ELEMENTS,
+                                                       baseElement.getExtensionElements(),
+                                                       TExtensionElements.class,
+                                                       "BPMN 2.0",
+                                                       BpmnDefinitions.BPMN_NS,
+                                                       BpmnDefinitions.BPMN_CONTEXT);
+            ExtensionUtils.addToExtensions(e, node);
+        }
     }
 
-    void populateFlowElement(final NodeType node, final TFlowElement flowElement) {
+    void populateFlowElement(final NodeType node, final TFlowElement flowElement) throws CanoniserException {
         populateBaseElement(node, flowElement);
         node.setName(flowElement.getName());
     }
 
     // Routing supertype handler
 
-    void populateFlowNode(final RoutingType routing, final TFlowNode flowNode) {
+    void populateFlowNode(final RoutingType routing, final TFlowNode flowNode) throws CanoniserException {
         populateFlowElement(routing, flowNode);
         bpmnFlowNodeToCpfNodeMap.put(flowNode, routing);
     }
 
     // Work supertype handler
 
-    void populateActivity(final WorkType work, final TActivity activity) {
+    void populateActivity(final WorkType work, final TActivity activity) throws CanoniserException {
         populateFlowElement(work, activity);
 
         BigInteger completionQuantity = activity.getCompletionQuantity();
@@ -91,7 +109,7 @@ public class Initializer {
         Boolean isForCompensation = activity.isIsForCompensation();
     }
 
-    void populateFlowNode(final WorkType work, final TFlowNode flowNode) {
+    void populateFlowNode(final WorkType work, final TFlowNode flowNode) throws CanoniserException {
         populateFlowElement(work, flowNode);
         bpmnFlowNodeToCpfNodeMap.put(flowNode, work);
     }

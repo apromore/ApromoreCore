@@ -79,6 +79,9 @@ public class BpmnDefinitions extends TDefinitions {
      */
     public static final String TARGET_NS = "http://www.signavio.com/bpmn20";
 
+    /** JAXB context for BPMN. */
+    public static final JAXBContext BPMN_CONTEXT = newContext();
+
     /** BPMN 2.0 namespace. */
     public static final String BPMN_NS = "http://www.omg.org/spec/BPMN/20100524/MODEL";
 
@@ -185,7 +188,7 @@ public class BpmnDefinitions extends TDefinitions {
      * @return the parsed instance
      */
     public static BpmnDefinitions newInstance(final InputStream in, final Boolean validate) throws JAXBException {
-        Unmarshaller unmarshaller = newContext().createUnmarshaller();
+        Unmarshaller unmarshaller = BPMN_CONTEXT.createUnmarshaller();
         BpmnIDResolver resolver = new BpmnIDResolver();
         BpmnUnmarshallerListener listener = new BpmnUnmarshallerListener(resolver);
         unmarshaller.setListener(listener);
@@ -201,13 +204,16 @@ public class BpmnDefinitions extends TDefinitions {
 
     /**
      * @return a context containing the various XML namespaces comprising BPMN 2.0.
-     * @throws JAXBException if the context cannot be created
      */
-    private static JAXBContext newContext() throws JAXBException {
-        return JAXBContext.newInstance(org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
-                                       org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
-                                       org.omg.spec.dd._20100524.dc.ObjectFactory.class,
-                                       org.omg.spec.dd._20100524.di.ObjectFactory.class);
+    static JAXBContext newContext() {
+        try {
+            return JAXBContext.newInstance(org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
+                                           org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
+                                           org.omg.spec.dd._20100524.dc.ObjectFactory.class,
+                                           org.omg.spec.dd._20100524.di.ObjectFactory.class);
+        } catch (JAXBException e) {
+            throw new RuntimeException("Unable to create JAXB context for BPMN", e);
+        }
     }
 
     /**
@@ -230,7 +236,7 @@ public class BpmnDefinitions extends TDefinitions {
      * @throws JAXBException if the steam can't be written to
      */
     public void marshal(final OutputStream out, final Boolean validate) throws JAXBException {
-        Marshaller marshaller = newContext().createMarshaller();
+        Marshaller marshaller = BPMN_CONTEXT.createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         if (validate) {
             marshaller.setSchema(BPMN_SCHEMA);
