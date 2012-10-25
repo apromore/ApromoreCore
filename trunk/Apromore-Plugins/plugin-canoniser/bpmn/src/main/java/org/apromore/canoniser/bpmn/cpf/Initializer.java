@@ -14,6 +14,7 @@ import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
 import org.apromore.cpf.EdgeType;
+import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeType;
@@ -33,11 +34,11 @@ public class Initializer {
     /** Extension name for {@link TypeAttribute}s with <code>bpmn:extensionElements</code> content. */
     private static final String EXTENSION_ELEMENTS = "extensions";
 
-    final CpfCanonicalProcessType  cpf;
-    final IdFactory                cpfIdFactory             = new IdFactory();;
-    final BpmnDefinitions          definitions;
-    final Map<TFlowNode, TLane>    laneMap                  = new HashMap<TFlowNode, TLane>();
-    final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap = new HashMap<TFlowNode, NodeType>();
+    private final CpfCanonicalProcessType  cpf;
+    private final IdFactory                cpfIdFactory             = new IdFactory();
+    private final BpmnDefinitions          definitions;
+    private final Map<TFlowNode, TLane>    laneMap                  = new HashMap<TFlowNode, TLane>();
+    private final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap = new HashMap<TFlowNode, NodeType>();
 
     /**
      * Sole constructor.
@@ -46,8 +47,69 @@ public class Initializer {
      * @param newDefinitions  the BPMN instance that <code>newCpf</code> will correspond to
      */
     public Initializer(final CpfCanonicalProcessType newCpf, final BpmnDefinitions newDefinitions) {
-        cpf                      = newCpf;
-        definitions              = newDefinitions;
+        cpf         = newCpf;
+        definitions = newDefinitions;
+    }
+
+    /**
+     * Called once the BPMN document has been traversed, to fill in assorted deferred initializations.
+     * <ul>
+     * <li>Take the {@link #laneMap} populated by {@link #addLaneSet} and use it to populate the CPF nodes' {@link NodeType#resourceTypeRef}s.</li>
+     * </ul>
+     *
+     * @throws CanoniserException  if any member of a BPMN lane lacks a CPF counterpart
+     */
+    void close() throws CanoniserException {
+
+        // For each BPMN Lane flowNodeRef, add a CPF ResourceTypeRef to the corresponding CPD element
+        for (Map.Entry<TFlowNode, TLane> entry : laneMap.entrySet()) {
+            if (!bpmnFlowNodeToCpfNodeMap.containsKey(entry.getKey())) {
+                throw new CanoniserException("Lane " + entry.getValue().getId() + " contains " +
+                                             entry.getKey().getId() + " which is not present");
+            }
+            NodeType node = bpmnFlowNodeToCpfNodeMap.get(entry.getKey());  // get the CPF node corresponding to the BPMN flow node
+            if (node instanceof WorkType) {
+                ((WorkType) node).getResourceTypeRef().add(new CpfResourceTypeRefType(entry.getValue(), this));
+            }
+        }
+    }
+
+    /** @param net  new Net to be added to the top level of the CPF document */
+    void addNet(final NetType net) {
+        cpf.getNet().add(net);
+    }
+
+    /** @param resourceType  new ResourceType to be added to the top level of the CPF document */
+    void addResourceType(final ResourceTypeType resourceType) {
+        cpf.getResourceType().add(resourceType);
+    }
+
+    /** @param rootId  new element for the CPF document's rootIds list */
+    void addRootId(final String rootId) {
+        cpf.getRootIds().add(rootId);
+    }
+
+    /** @return the root elements of the BPMN document */
+    List<JAXBElement<? extends TRootElement>> getBpmnRootElements() {
+        return definitions.getRootElement();
+    }
+
+    /**
+     * @param id  a requested identifier (typically the ID of the corresponding BPMN element); may be <code>null</code>
+     * @return an identifier unique within the CPF document
+     */
+    String newId(final String id) {
+        return cpfIdFactory.newId(id);
+    }
+
+    /**
+     * Record a flowNodeRef in a BPMN Lane.
+     *
+     * @param flowNode  the referenced node
+     * @param lane  the containing lane
+     */
+    void recordLaneNode(final TFlowNode flowNode, final TLane lane) {
+        laneMap.put(flowNode, lane);
     }
 
     // Edge supertype handlers

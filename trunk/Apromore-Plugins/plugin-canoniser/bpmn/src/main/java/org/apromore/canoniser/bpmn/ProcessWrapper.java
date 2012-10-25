@@ -73,7 +73,7 @@ public class ProcessWrapper {
     private static void addChildLanes(final TLane parentLane, final Initializer initializer) {
 
         TLaneSet laneSet = new TLaneSet();
-        for (ResourceTypeType resourceType : initializer.cpf.getResourceType()) {
+        for (ResourceTypeType resourceType : initializer.getResourceTypes()) {
             CpfResourceTypeType cpfResourceType = (CpfResourceTypeType) resourceType;
             if (cpfResourceType.getGeneralizationRefs().contains(parentLane.getId())) {
                 TLane childLane = new TLane();
@@ -104,16 +104,16 @@ public class ProcessWrapper {
                 // Assuming a StartEvent here, but could be TBoundaryEvent too
                 TStartEvent event = new TStartEvent();
                 initializer.populateBaseElement(event, node);
-                return initializer.factory.createStartEvent(event);
+                return initializer.getFactory().createStartEvent(event);
             } else if (cpfNode.getIncomingEdges().size() > 0 && cpfNode.getOutgoingEdges().size() == 0) {
                 TEndEvent event = new TEndEvent();
                 initializer.populateBaseElement(event, node);
-                return initializer.factory.createEndEvent(event);
+                return initializer.getFactory().createEndEvent(event);
             } else if (cpfNode.getIncomingEdges().size() > 0 && cpfNode.getOutgoingEdges().size() > 0) {
                 // Assuming all intermediate events are ThrowEvents
                 TIntermediateThrowEvent event = new TIntermediateThrowEvent();
                 initializer.populateBaseElement(event, node);
-                return initializer.factory.createIntermediateThrowEvent(event);
+                return initializer.getFactory().createIntermediateThrowEvent(event);
             } else {
                 throw new CanoniserException("Event \"" + node.getId() + "\" has no edges");
             }
@@ -121,11 +121,11 @@ public class ProcessWrapper {
             CpfTaskType that = (CpfTaskType) node;
 
             if (that.getCalledElement() != null) {  // This CPF Task is a BPMN CallActivity
-                return initializer.factory.createCallActivity(new BpmnCallActivity(that, initializer));
+                return initializer.getFactory().createCallActivity(new BpmnCallActivity(that, initializer));
             } else if (that.getSubnetId() != null) {  // This CPF Task is a BPMN SubProcess
-                return initializer.factory.createSubProcess(new BpmnSubProcess(that, initializer));
+                return initializer.getFactory().createSubProcess(new BpmnSubProcess(that, initializer));
             } else {  // This CPF Task is a BPMN Task
-                return initializer.factory.createTask(new BpmnTask(that, initializer));
+                return initializer.getFactory().createTask(new BpmnTask(that, initializer));
             }
         } else {
             throw new CanoniserException("Node " + node.getId() + " type not supported: " + node.getClass().getCanonicalName());
@@ -148,7 +148,7 @@ public class ProcessWrapper {
 
         // Add the CPF ResourceType lattice as a BPMN Lane hierarchy
         TLaneSet laneSet = new TLaneSet();
-        for (ResourceTypeType resourceType : initializer.cpf.getResourceType()) {
+        for (ResourceTypeType resourceType : initializer.getResourceTypes()) {
             CpfResourceTypeType cpfResourceType = (CpfResourceTypeType) resourceType;
             if (cpfResourceType.getGeneralizationRefs().isEmpty()) {
                  TLane lane = new TLane();
@@ -164,8 +164,7 @@ public class ProcessWrapper {
         // Add the CPF Edges as BPMN SequenceFlows
         for (EdgeType edge : net.getEdge()) {
             TSequenceFlow sequenceFlow = new BpmnSequenceFlow(edge, initializer);
-            initializer.edgeMap.put(edge.getId(), sequenceFlow);
-            process.getFlowElement().add(initializer.factory.createSequenceFlow(sequenceFlow));
+            process.getFlowElement().add(initializer.getFactory().createSequenceFlow(sequenceFlow));
         }
 
         // Add the CPF Nodes as BPMN FlowNodes
@@ -174,19 +173,12 @@ public class ProcessWrapper {
             process.getFlowElement().add(flowNode);
 
             // Fill any BPMN @sourceRef or @targetRef attributes referencing this node
-            if (initializer.flowWithoutSourceRefMap.containsKey(node.getId())) {
-                initializer.flowWithoutSourceRefMap.get(node.getId()).setSourceRef((TFlowNode) initializer.idMap.get(node.getId()));
-                initializer.flowWithoutSourceRefMap.remove(node.getId());
-           }
-            if (initializer.flowWithoutTargetRefMap.containsKey(node.getId())) {
-                initializer.flowWithoutTargetRefMap.get(node.getId()).setTargetRef((TFlowNode) initializer.idMap.get(node.getId()));
-                initializer.flowWithoutTargetRefMap.remove(node.getId());
-            }
+            initializer.connectNode(node);
 
             // Populate the lane flowNodeRefs
             if (node instanceof WorkType) {
                 for (ResourceTypeRefType resourceTypeRef : ((WorkType) node).getResourceTypeRef()) {
-                    TLane lane = (TLane) initializer.idMap.get(resourceTypeRef.getResourceTypeId());
+                    TLane lane = (TLane) initializer.getElement(resourceTypeRef.getResourceTypeId());
                     JAXBElement<Object> jeo = (JAXBElement) flowNode;
                     lane.getFlowNodeRef().add((JAXBElement) flowNode);
                 }
