@@ -36,6 +36,7 @@ public class CpfEventType extends EventType implements CpfNodeType {
      *
      * @param endEvent  a BPMN End Event
      * @param initializer  global construction state
+     * @throws CanoniserException if construction fails
      */
     public CpfEventType(final TEndEvent endEvent, final Initializer initializer) throws CanoniserException {
         super();
@@ -47,6 +48,7 @@ public class CpfEventType extends EventType implements CpfNodeType {
      *
      * @param startEvent  a BPMN Start Event
      * @param initializer  global construction state
+     * @throws CanoniserException if construction fails
      */
     public CpfEventType(final TStartEvent startEvent, final Initializer initializer) throws CanoniserException {
         super();
