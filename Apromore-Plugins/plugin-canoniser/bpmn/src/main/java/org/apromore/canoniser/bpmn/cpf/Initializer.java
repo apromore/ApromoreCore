@@ -18,7 +18,6 @@ import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
-import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
 import org.omg.spec.bpmn._20100524.model.*;
 
