@@ -328,8 +328,8 @@
             </inputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="iddedabf9c-bcfd-4d22-ae6c-5db313856322"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="idfd58d4d5-dbe4-4d65-9d93-a687295c5ac9"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="ideb97f44b-dbfe-41e6-8495-1f494ffdb207"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="f2ad5e12-0e87-4b9b-8fc5-65141bd6ed14"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132052314160" originalID="263132052314160"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132052546514" originalID="263132052546514"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132052288298" originalID="263132052288298">
@@ -432,32 +432,32 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132051938124" originalID="263132051938124">
             <name>End</name>
         </Node>
-        <Edge id="C-263132051927451-263132051946745" sourceId="C-263132051927451" targetId="C-263132051946745"/>
-        <Edge id="C-263132051946745-263132052198394" sourceId="C-263132051946745" targetId="C-263132052198394"/>
-        <Edge id="C-263132052198394-263132052207425" sourceId="C-263132052198394" targetId="C-263132052207425"/>
-        <Edge id="C-263132052198394-263132052261203" sourceId="C-263132052198394" targetId="C-263132052261203"/>
-        <Edge id="C-263132052261203-263132052198394" sourceId="C-263132052261203" targetId="C-263132052198394"/>
-        <Edge id="C-263132052207425-263132052054301" sourceId="C-263132052207425" targetId="C-263132052054301"/>
-        <Edge id="C-263132052054301-263132052018997" sourceId="C-263132052054301" targetId="C-263132052018997"/>
-        <Edge id="C-263132052054301-263132052142974" sourceId="C-263132052054301" targetId="C-263132052142974"/>
-        <Edge id="C-263132052018997-263132052457021" sourceId="C-263132052018997" targetId="C-263132052457021"/>
-        <Edge id="C-263132052142974-263132052618766" sourceId="C-263132052142974" targetId="C-263132052618766"/>
-        <Edge id="C-263132052457021-263132052465232" sourceId="C-263132052457021" targetId="C-263132052465232"/>
-        <Edge id="C-263132052618766-263132052591672" sourceId="C-263132052618766" targetId="C-263132052591672"/>
-        <Edge id="C-263132052591672-263132052198394" sourceId="C-263132052591672" targetId="C-263132052198394"/>
-        <Edge id="C-263132052465232-263132052102743" sourceId="C-263132052465232" targetId="C-263132052102743"/>
-        <Edge id="C-263132052102743-263132052074827" sourceId="C-263132052102743" targetId="C-263132052074827"/>
-        <Edge id="C-263132052074827-263132052406117" sourceId="C-263132052074827" targetId="C-263132052406117"/>
-        <Edge id="id5949f8e3-3fe6-40e7-949b-6d2e77d253e2" sourceId="iddedabf9c-bcfd-4d22-ae6c-5db313856322" targetId="C-263132052415148"/>
-        <Edge id="idb09a7519-2d60-41fb-8e4e-c0951001500a" sourceId="C-263132052406117" targetId="iddedabf9c-bcfd-4d22-ae6c-5db313856322"/>
-        <Edge id="id185be666-b4a0-42a3-a0b7-66e4021891ce" sourceId="C-263132052415148" targetId="idfd58d4d5-dbe4-4d65-9d93-a687295c5ac9"/>
-        <Edge id="id75983019-efe8-4b60-afdd-d50d6177a57f" sourceId="idfd58d4d5-dbe4-4d65-9d93-a687295c5ac9" targetId="C-263132052314160"/>
-        <Edge id="id8738b68a-4471-422e-af77-8f3467f24ca5" sourceId="idfd58d4d5-dbe4-4d65-9d93-a687295c5ac9" targetId="C-263132052546514"/>
-        <Edge id="C-263132052314160-263132052288298" sourceId="C-263132052314160" targetId="C-263132052288298"/>
-        <Edge id="C-263132052546514-263132052555135" sourceId="C-263132052546514" targetId="C-263132052555135"/>
-        <Edge id="C-263132052555135-263132052498073" sourceId="C-263132052555135" targetId="C-263132052498073"/>
-        <Edge id="id951228df-6e4c-47fd-9984-4db05f7320df" sourceId="C-263132052498073" targetId="iddedabf9c-bcfd-4d22-ae6c-5db313856322"/>
-        <Edge id="C-263132052288298-263132051938124" sourceId="C-263132052288298" targetId="C-263132051938124"/>
+        <Edge id="C-263132051927451-263132051946745" default="false" sourceId="C-263132051927451" targetId="C-263132051946745"/>
+        <Edge id="C-263132051946745-263132052198394" default="false" sourceId="C-263132051946745" targetId="C-263132052198394"/>
+        <Edge id="C-263132052198394-263132052207425" default="false" sourceId="C-263132052198394" targetId="C-263132052207425"/>
+        <Edge id="C-263132052198394-263132052261203" default="false" sourceId="C-263132052198394" targetId="C-263132052261203"/>
+        <Edge id="C-263132052261203-263132052198394" default="false" sourceId="C-263132052261203" targetId="C-263132052198394"/>
+        <Edge id="C-263132052207425-263132052054301" default="false" sourceId="C-263132052207425" targetId="C-263132052054301"/>
+        <Edge id="C-263132052054301-263132052018997" default="false" sourceId="C-263132052054301" targetId="C-263132052018997"/>
+        <Edge id="C-263132052054301-263132052142974" default="false" sourceId="C-263132052054301" targetId="C-263132052142974"/>
+        <Edge id="C-263132052018997-263132052457021" default="false" sourceId="C-263132052018997" targetId="C-263132052457021"/>
+        <Edge id="C-263132052142974-263132052618766" default="false" sourceId="C-263132052142974" targetId="C-263132052618766"/>
+        <Edge id="C-263132052457021-263132052465232" default="false" sourceId="C-263132052457021" targetId="C-263132052465232"/>
+        <Edge id="C-263132052618766-263132052591672" default="false" sourceId="C-263132052618766" targetId="C-263132052591672"/>
+        <Edge id="C-263132052591672-263132052198394" default="false" sourceId="C-263132052591672" targetId="C-263132052198394"/>
+        <Edge id="C-263132052465232-263132052102743" default="false" sourceId="C-263132052465232" targetId="C-263132052102743"/>
+        <Edge id="C-263132052102743-263132052074827" default="false" sourceId="C-263132052102743" targetId="C-263132052074827"/>
+        <Edge id="C-263132052074827-263132052406117" default="false" sourceId="C-263132052074827" targetId="C-263132052406117"/>
+        <Edge id="idb33513d9-ef37-4b45-b166-b5a8b9ff69a5" sourceId="ideb97f44b-dbfe-41e6-8495-1f494ffdb207" targetId="C-263132052415148"/>
+        <Edge id="idbcf43e22-9a4a-4c5d-9c4a-a576758f84c8" default="false" sourceId="C-263132052406117" targetId="ideb97f44b-dbfe-41e6-8495-1f494ffdb207"/>
+        <Edge id="id964d6c75-0ba3-4a99-add5-4e13d7ce29a2" sourceId="C-263132052415148" targetId="f2ad5e12-0e87-4b9b-8fc5-65141bd6ed14"/>
+        <Edge id="id0a3a9dd4-4344-4978-81f6-a2c83f04e3b0" default="false" sourceId="f2ad5e12-0e87-4b9b-8fc5-65141bd6ed14" targetId="C-263132052314160"/>
+        <Edge id="id3e8f7369-f4bf-466f-88eb-1be17cbc7c22" default="false" sourceId="f2ad5e12-0e87-4b9b-8fc5-65141bd6ed14" targetId="C-263132052546514"/>
+        <Edge id="C-263132052314160-263132052288298" default="false" sourceId="C-263132052314160" targetId="C-263132052288298"/>
+        <Edge id="C-263132052546514-263132052555135" default="false" sourceId="C-263132052546514" targetId="C-263132052555135"/>
+        <Edge id="C-263132052555135-263132052498073" default="false" sourceId="C-263132052555135" targetId="C-263132052498073"/>
+        <Edge id="id5c91d892-dcdd-4fd6-8cd7-4956aa73ba17" default="false" sourceId="C-263132052498073" targetId="ideb97f44b-dbfe-41e6-8495-1f494ffdb207"/>
+        <Edge id="C-263132052288298-263132051938124" default="false" sourceId="C-263132052288298" targetId="C-263132051938124"/>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </ns2:CanonicalProcess>

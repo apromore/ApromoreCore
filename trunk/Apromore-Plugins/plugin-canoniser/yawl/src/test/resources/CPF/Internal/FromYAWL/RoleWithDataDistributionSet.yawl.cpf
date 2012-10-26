@@ -14,9 +14,9 @@
             </attribute>
             <teamWork>false</teamWork>
             <filterByDataExpr>
-                <description>Of type PARTICIPANT choose by value of Object resource</description>
+                <description>of type PARTICIPANT choose by value of Object resource</description>
                 <language>http://www.w3.org/1999/xpath/</language>
-                <expression>//ResourceType[type/text()='Participant' and name/text()='cpf:getObjectValue(resource)']</expression>
+                <expression>//ResourceType[type/text()='Participant' AND name/text()='cpf:getObjectValue(resource)']</expression>
             </filterByDataExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-B" originalID="B">
@@ -29,17 +29,17 @@
             </attribute>
             <teamWork>false</teamWork>
             <filterByDataExpr>
-                <description>Of type ROLE choose by value of Object resource</description>
+                <description>of type ROLE choose by value of Object resource</description>
                 <language>http://www.w3.org/1999/xpath/</language>
-                <expression>//ResourceType[type/text()='Role' and name/text()='cpf:getObjectValue(resource)']</expression>
+                <expression>//ResourceType[type/text()='Role' AND name/text()='cpf:getObjectValue(resource)']</expression>
             </filterByDataExpr>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="C-InputCondition-A" default="true" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="C-A-B" default="true" sourceId="C-A" targetId="C-B"/>
-        <Edge id="C-B-OutputCondition" default="true" sourceId="C-B" targetId="C-OutputCondition"/>
+        <Edge id="C-InputCondition-A" default="false" sourceId="C-InputCondition" targetId="C-A"/>
+        <Edge id="C-A-B" default="false" sourceId="C-A" targetId="C-B"/>
+        <Edge id="C-B-OutputCondition" default="false" sourceId="C-B" targetId="C-OutputCondition"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-resource" originalID="N-Net_resource">
             <name>resource</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputVariable">
@@ -54,4 +54,5 @@
             <type>string</type>
         </Object>
     </Net>
+    <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </ns2:CanonicalProcess>

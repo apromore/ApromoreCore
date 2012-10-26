@@ -238,7 +238,7 @@
             </attribute>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="idca462942-0090-48c9-8bde-e1bfb1e37636"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="id6b69b78b-924b-4a7e-817a-1c3cc719e042"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132614173108" originalID="263132614173108">
             <name>e</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
@@ -249,7 +249,7 @@
             </attribute>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="ad91ada8-594d-4990-a4cc-32a7e687d3a0"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="f9cae4ed-4d22-4721-9f92-6f1914bad533"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="C-263132613909144" originalID="263132613909144"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="C-263132614260959" originalID="263132614260959"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132613894365" originalID="263132613894365">
@@ -262,7 +262,7 @@
             </attribute>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="id042f6c41-bd18-4d7e-920e-c297ab3ad5b6"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="id18a316d4-73b9-451a-b7a2-c7c106b40262"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132614288875" originalID="263132614288875"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-263132614293391" originalID="263132614293391">
             <name>9S3</name>
@@ -288,44 +288,44 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132612956739" originalID="263132612956739">
             <name>End</name>
         </Node>
-        <Edge id="C-263132612949349-263132612960844" sourceId="C-263132612949349" targetId="C-263132612960844"/>
-        <Edge id="C-263132612960844-263132613870145" sourceId="C-263132612960844" targetId="C-263132613870145"/>
-        <Edge id="C-263132613870145-263132613875071" sourceId="C-263132613870145" targetId="C-263132613875071"/>
-        <Edge id="C-263132613875071-263132613948965" sourceId="C-263132613875071" targetId="C-263132613948965"/>
-        <Edge id="C-263132613948965-263132613953070" sourceId="C-263132613948965" targetId="C-263132613953070"/>
-        <Edge id="C-263132613953070-263132614019984" sourceId="C-263132613953070" targetId="C-263132614019984"/>
-        <Edge id="C-263132614019984-263132614024090" sourceId="C-263132614019984" targetId="C-263132614024090"/>
-        <Edge id="C-263132614024090-263132613932954" sourceId="C-263132614024090" targetId="C-263132613932954"/>
-        <Edge id="C-263132613932954-263132613917765" sourceId="C-263132613932954" targetId="C-263132613917765"/>
-        <Edge id="C-263132613932954-263132614109478" sourceId="C-263132613932954" targetId="C-263132614109478"/>
-        <Edge id="C-263132614109478-263132613932954" sourceId="C-263132614109478" targetId="C-263132613932954"/>
-        <Edge id="C-263132613917765-263132613984680" sourceId="C-263132613917765" targetId="C-263132613984680"/>
-        <Edge id="C-263132613984680-263132613970312" sourceId="C-263132613984680" targetId="C-263132613970312"/>
-        <Edge id="C-263132613970312-263132614222371" sourceId="C-263132613970312" targetId="C-263132614222371"/>
-        <Edge id="C-263132614222371-263132614205950" sourceId="C-263132614222371" targetId="C-263132614205950"/>
-        <Edge id="C-263132614205950-263132614154224" sourceId="C-263132614205950" targetId="C-263132614154224"/>
-        <Edge id="C-263132614154224-263132614133288" sourceId="C-263132614154224" targetId="C-263132614133288"/>
-        <Edge id="C-263132614133288-263132613806925" sourceId="C-263132614133288" targetId="C-263132613806925"/>
-        <Edge id="C-263132613806925-263132613820882" sourceId="C-263132613806925" targetId="C-263132613820882"/>
-        <Edge id="C-263132613820882-263132614060215" sourceId="C-263132613820882" targetId="C-263132614060215"/>
-        <Edge id="C-263132614060215-263132614065142" sourceId="C-263132614060215" targetId="C-263132614065142"/>
-        <Edge id="C-263132614065142-263132614006848" sourceId="C-263132614065142" targetId="C-263132614006848"/>
-        <Edge id="C-263132614006848-263132613992890" sourceId="C-263132614006848" targetId="C-263132613992890"/>
-        <Edge id="idd16e6e34-c64d-400a-a3d0-277221bcdbed" sourceId="C-263132613992890" targetId="idca462942-0090-48c9-8bde-e1bfb1e37636"/>
-        <Edge id="C-263132614006848-263132614173108" sourceId="C-263132614006848" targetId="C-263132614173108"/>
-        <Edge id="ide4eb646f-f2b6-4fa1-8e94-648f0bca420c" sourceId="C-263132614173108" targetId="ad91ada8-594d-4990-a4cc-32a7e687d3a0"/>
-        <Edge id="ida63e4aa2-e560-48ee-a5cb-7d17d0ca62e3" sourceId="idca462942-0090-48c9-8bde-e1bfb1e37636" targetId="C-263132613909144"/>
-        <Edge id="ide54bc167-5102-43ab-9068-26aff4520e0d" sourceId="ad91ada8-594d-4990-a4cc-32a7e687d3a0" targetId="C-263132613909144"/>
-        <Edge id="id006a0645-7542-4b52-8a93-aa6127cad5e4" sourceId="idca462942-0090-48c9-8bde-e1bfb1e37636" targetId="C-263132614260959"/>
-        <Edge id="idf217711e-eebb-43ae-a3c7-bba052dfba26" sourceId="ad91ada8-594d-4990-a4cc-32a7e687d3a0" targetId="C-263132614260959"/>
-        <Edge id="id70c4e4c9-bc9d-4262-8cd3-ca415a5660bf" sourceId="id042f6c41-bd18-4d7e-920e-c297ab3ad5b6" targetId="C-263132613894365"/>
-        <Edge id="id09edaa9e-24b8-4dfe-8610-021bbfb89724" sourceId="C-263132613909144" targetId="id042f6c41-bd18-4d7e-920e-c297ab3ad5b6"/>
-        <Edge id="id14f44344-631b-4b09-9bc4-210a7e690312" sourceId="C-263132614260959" targetId="id042f6c41-bd18-4d7e-920e-c297ab3ad5b6"/>
-        <Edge id="C-263132613894365-263132614288875" sourceId="C-263132613894365" targetId="C-263132614288875"/>
-        <Edge id="C-263132614288875-263132614293391" sourceId="C-263132614288875" targetId="C-263132614293391"/>
-        <Edge id="C-263132614293391-263132613001896" sourceId="C-263132614293391" targetId="C-263132613001896"/>
-        <Edge id="C-263132613001896-263132613007643" sourceId="C-263132613001896" targetId="C-263132613007643"/>
-        <Edge id="C-263132613007643-263132612956739" sourceId="C-263132613007643" targetId="C-263132612956739"/>
+        <Edge id="C-263132612949349-263132612960844" default="false" sourceId="C-263132612949349" targetId="C-263132612960844"/>
+        <Edge id="C-263132612960844-263132613870145" default="false" sourceId="C-263132612960844" targetId="C-263132613870145"/>
+        <Edge id="C-263132613870145-263132613875071" default="false" sourceId="C-263132613870145" targetId="C-263132613875071"/>
+        <Edge id="C-263132613875071-263132613948965" default="false" sourceId="C-263132613875071" targetId="C-263132613948965"/>
+        <Edge id="C-263132613948965-263132613953070" default="false" sourceId="C-263132613948965" targetId="C-263132613953070"/>
+        <Edge id="C-263132613953070-263132614019984" default="false" sourceId="C-263132613953070" targetId="C-263132614019984"/>
+        <Edge id="C-263132614019984-263132614024090" default="false" sourceId="C-263132614019984" targetId="C-263132614024090"/>
+        <Edge id="C-263132614024090-263132613932954" default="false" sourceId="C-263132614024090" targetId="C-263132613932954"/>
+        <Edge id="C-263132613932954-263132613917765" default="false" sourceId="C-263132613932954" targetId="C-263132613917765"/>
+        <Edge id="C-263132613932954-263132614109478" default="false" sourceId="C-263132613932954" targetId="C-263132614109478"/>
+        <Edge id="C-263132614109478-263132613932954" default="false" sourceId="C-263132614109478" targetId="C-263132613932954"/>
+        <Edge id="C-263132613917765-263132613984680" default="false" sourceId="C-263132613917765" targetId="C-263132613984680"/>
+        <Edge id="C-263132613984680-263132613970312" default="false" sourceId="C-263132613984680" targetId="C-263132613970312"/>
+        <Edge id="C-263132613970312-263132614222371" default="false" sourceId="C-263132613970312" targetId="C-263132614222371"/>
+        <Edge id="C-263132614222371-263132614205950" default="false" sourceId="C-263132614222371" targetId="C-263132614205950"/>
+        <Edge id="C-263132614205950-263132614154224" default="false" sourceId="C-263132614205950" targetId="C-263132614154224"/>
+        <Edge id="C-263132614154224-263132614133288" default="false" sourceId="C-263132614154224" targetId="C-263132614133288"/>
+        <Edge id="C-263132614133288-263132613806925" default="false" sourceId="C-263132614133288" targetId="C-263132613806925"/>
+        <Edge id="C-263132613806925-263132613820882" default="false" sourceId="C-263132613806925" targetId="C-263132613820882"/>
+        <Edge id="C-263132613820882-263132614060215" default="false" sourceId="C-263132613820882" targetId="C-263132614060215"/>
+        <Edge id="C-263132614060215-263132614065142" default="false" sourceId="C-263132614060215" targetId="C-263132614065142"/>
+        <Edge id="C-263132614065142-263132614006848" default="false" sourceId="C-263132614065142" targetId="C-263132614006848"/>
+        <Edge id="C-263132614006848-263132613992890" default="false" sourceId="C-263132614006848" targetId="C-263132613992890"/>
+        <Edge id="id57683b7a-d31e-43f4-bf2e-c8a4089f6a87" sourceId="C-263132613992890" targetId="id6b69b78b-924b-4a7e-817a-1c3cc719e042"/>
+        <Edge id="C-263132614006848-263132614173108" default="false" sourceId="C-263132614006848" targetId="C-263132614173108"/>
+        <Edge id="idc48e0d43-ae7b-4177-85a0-5d53acbc9de3" sourceId="C-263132614173108" targetId="f9cae4ed-4d22-4721-9f92-6f1914bad533"/>
+        <Edge id="id68f8f2ad-0d0a-4057-b3b5-52a68d124177" default="false" sourceId="id6b69b78b-924b-4a7e-817a-1c3cc719e042" targetId="C-263132613909144"/>
+        <Edge id="idd3616065-0829-4e01-88b7-4b9c60b8e9e5" default="false" sourceId="f9cae4ed-4d22-4721-9f92-6f1914bad533" targetId="C-263132613909144"/>
+        <Edge id="id2e39323b-f7e5-4a46-a354-55cb847d7158" default="false" sourceId="id6b69b78b-924b-4a7e-817a-1c3cc719e042" targetId="C-263132614260959"/>
+        <Edge id="id6b86d994-9a6f-49e2-8584-253ec0669a25" default="false" sourceId="f9cae4ed-4d22-4721-9f92-6f1914bad533" targetId="C-263132614260959"/>
+        <Edge id="id943b7740-12dc-4ce9-8c0b-0f17f309bd87" sourceId="id18a316d4-73b9-451a-b7a2-c7c106b40262" targetId="C-263132613894365"/>
+        <Edge id="id4d60af19-7106-473e-9455-835cc497fca8" default="false" sourceId="C-263132613909144" targetId="id18a316d4-73b9-451a-b7a2-c7c106b40262"/>
+        <Edge id="id62a655a9-6373-419d-8eb3-52ddaa96e381" default="false" sourceId="C-263132614260959" targetId="id18a316d4-73b9-451a-b7a2-c7c106b40262"/>
+        <Edge id="C-263132613894365-263132614288875" default="false" sourceId="C-263132613894365" targetId="C-263132614288875"/>
+        <Edge id="C-263132614288875-263132614293391" default="false" sourceId="C-263132614288875" targetId="C-263132614293391"/>
+        <Edge id="C-263132614293391-263132613001896" default="false" sourceId="C-263132614293391" targetId="C-263132613001896"/>
+        <Edge id="C-263132613001896-263132613007643" default="false" sourceId="C-263132613001896" targetId="C-263132613007643"/>
+        <Edge id="C-263132613007643-263132612956739" default="false" sourceId="C-263132613007643" targetId="C-263132612956739"/>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </ns2:CanonicalProcess>

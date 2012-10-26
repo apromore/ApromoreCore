@@ -9,6 +9,7 @@ import org.apromore.canoniser.yawl.BaseCPF2YAWLTest;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.junit.Test;
 import org.yawlfoundation.yawlschema.ControlTypeCodeType;
+import org.yawlfoundation.yawlschema.ExternalNetElementType;
 import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
 import org.yawlfoundation.yawlschema.NetFactsType;
 
@@ -45,10 +46,22 @@ public class CreditApplicationProcessTest extends BaseCPF2YAWLTest {
     public void testStructure() {
         NetFactsType rootNet = findRootNet();
         assertNotNull(rootNet);
-        assertNotNull(findTaskByName("receive application", rootNet));
+
+        ExternalTaskFactsType receiveApplication = findTaskByName("receive application", rootNet);
+        assertNotNull(receiveApplication);
         assertNotNull(findTaskByName("get more info", rootNet));
         assertNotNull(findTaskByName("check for completeness", rootNet));
+
+        ExternalTaskFactsType completeApproval = checkTask(rootNet, "complete approval", ControlTypeCodeType.AND, ControlTypeCodeType.AND, 1);
+        ExternalTaskFactsType notifyRejection = checkTask(rootNet, "notify rejection", ControlTypeCodeType.XOR, ControlTypeCodeType.AND, 1);
+
+        ExternalNetElementType outputCondition = completeApproval.getFlowsInto().get(0).getNextElementRef();
+        ExternalNetElementType outputCondition2 = notifyRejection.getFlowsInto().get(0).getNextElementRef();
+        assertEquals("completeApproval and notifyRejection should flow both into the same condition", outputCondition.getId(), outputCondition2.getId());
+
+        checkIsOutputCondition(rootNet, outputCondition.getId());
     }
+
 
     @Test
     public void testRoutingConditions() {
@@ -57,10 +70,15 @@ public class CreditApplicationProcessTest extends BaseCPF2YAWLTest {
         checkAtLeastOneDefaultFlow(makeDecision);
         checkOnlyOneDefaultFlow(makeDecision);
         checkNoMissingPredicate(makeDecision);
+
         ExternalTaskFactsType checkLoanAmount = checkTask(net, "check loan amount", ControlTypeCodeType.XOR, ControlTypeCodeType.XOR, 2);
         checkAtLeastOneDefaultFlow(checkLoanAmount);
         checkOnlyOneDefaultFlow(checkLoanAmount);
         checkNoMissingPredicate(checkLoanAmount);
+
+        ExternalTaskFactsType startApproval = checkTask(net, "start approval", ControlTypeCodeType.XOR, ControlTypeCodeType.AND, 2);
+        //No default flow for AND splits
+        checkNoDefaultFlow(startApproval);
     }
 
 }

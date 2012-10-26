@@ -46,12 +46,12 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132045341074" originalID="263132045341074">
             <name>End</name>
         </Node>
-        <Edge id="C-263132045329579-263132045349695" sourceId="C-263132045329579" targetId="C-263132045349695"/>
-        <Edge id="C-263132045349695-263132045439598" sourceId="C-263132045349695" targetId="C-263132045439598"/>
-        <Edge id="C-263132045439598-263132045405115" sourceId="C-263132045439598" targetId="C-263132045405115"/>
-        <Edge id="C-263132045439598-263132045465461" sourceId="C-263132045439598" targetId="C-263132045465461"/>
-        <Edge id="C-263132045465461-263132045439598" sourceId="C-263132045465461" targetId="C-263132045439598"/>
-        <Edge id="C-263132045405115-263132045341074" sourceId="C-263132045405115" targetId="C-263132045341074"/>
+        <Edge id="C-263132045329579-263132045349695" default="false" sourceId="C-263132045329579" targetId="C-263132045349695"/>
+        <Edge id="C-263132045349695-263132045439598" default="false" sourceId="C-263132045349695" targetId="C-263132045439598"/>
+        <Edge id="C-263132045439598-263132045405115" default="false" sourceId="C-263132045439598" targetId="C-263132045405115"/>
+        <Edge id="C-263132045439598-263132045465461" default="false" sourceId="C-263132045439598" targetId="C-263132045465461"/>
+        <Edge id="C-263132045465461-263132045439598" default="false" sourceId="C-263132045465461" targetId="C-263132045439598"/>
+        <Edge id="C-263132045405115-263132045341074" default="false" sourceId="C-263132045405115" targetId="C-263132045341074"/>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </ns2:CanonicalProcess>
