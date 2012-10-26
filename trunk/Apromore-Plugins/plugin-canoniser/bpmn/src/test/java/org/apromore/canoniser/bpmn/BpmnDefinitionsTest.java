@@ -179,7 +179,7 @@ public class BpmnDefinitionsTest implements TestConstants {
         assertEquals(1, definitions.getRootElement().size());
 
         // Process c6
-        assertEquals(TProcess.class, definitions.getRootElement().get(0).getValue().getClass());
+        assertEquals(BpmnProcess.class, definitions.getRootElement().get(0).getValue().getClass());
         TProcess c6 = (TProcess) definitions.getRootElement().get(0).getValue();
         assertEquals("c6", c6.getId());
 
@@ -261,7 +261,7 @@ public class BpmnDefinitionsTest implements TestConstants {
         BpmnDefinitions definitions = testDecanonise("Subprocess");
 
         // Process c6
-        assertEquals(TProcess.class, definitions.getRootElement().get(0).getValue().getClass());
+        assertEquals(BpmnProcess.class, definitions.getRootElement().get(0).getValue().getClass());
         TProcess c6 = (TProcess) definitions.getRootElement().get(0).getValue();
         assertEquals("c6", c6.getId());
 
