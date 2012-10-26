@@ -4,7 +4,6 @@ package org.apromore.canoniser.bpmn;
 import javax.xml.bind.annotation.XmlRegistry;
 
 // Local packages
-import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.ObjectFactory;
 
 /**
@@ -16,7 +15,7 @@ import org.omg.spec.bpmn._20100524.di.ObjectFactory;
 public class BpmndiObjectFactory extends ObjectFactory {
 
     @Override
-    public BPMNDiagram createBPMNDiagram() {
+    public BpmndiDiagram createBPMNDiagram() {
         return new BpmndiDiagram();
     }
 }

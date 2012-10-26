@@ -43,6 +43,11 @@ public class ObjectFactory extends org.apromore.cpf.ObjectFactory {
     }
 
     @Override
+    public CpfResourceTypeRefType createResourceTypeRefType() {
+        return new CpfResourceTypeRefType();
+    }
+
+    @Override
     public CpfTaskType createTaskType() {
         return new CpfTaskType();
     }

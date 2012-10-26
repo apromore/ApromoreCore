@@ -66,28 +66,6 @@ public class ProcessWrapper {
     // Constructor methods used by subclasses
 
     /**
-     * Recursively populate a BPMN {@link TLane}'s child lanes.
-     *
-     * TODO - circular resource type chains cause non-termination!  Need to check for and prevent this.
-     */
-    private static void addChildLanes(final TLane parentLane, final Initializer initializer) {
-
-        TLaneSet laneSet = new TLaneSet();
-        for (ResourceTypeType resourceType : initializer.getResourceTypes()) {
-            CpfResourceTypeType cpfResourceType = (CpfResourceTypeType) resourceType;
-            if (cpfResourceType.getGeneralizationRefs().contains(parentLane.getId())) {
-                TLane childLane = new TLane();
-                initializer.populateBaseElement(childLane, cpfResourceType);
-                addChildLanes(childLane, initializer);
-                laneSet.getLane().add(childLane);
-            }
-        }
-        if (!laneSet.getLane().isEmpty()) {
-            parentLane.setChildLaneSet(laneSet);
-        }
-    }
-
-    /**
      * Translate a CPF {@link NodeType} into a BPMN {@link TFlowNode}.
      *
      * @param node  a CPF node
@@ -151,10 +129,7 @@ public class ProcessWrapper {
         for (ResourceTypeType resourceType : initializer.getResourceTypes()) {
             CpfResourceTypeType cpfResourceType = (CpfResourceTypeType) resourceType;
             if (cpfResourceType.getGeneralizationRefs().isEmpty()) {
-                 TLane lane = new TLane();
-                 initializer.populateBaseElement(lane, cpfResourceType);
-                 addChildLanes(lane, initializer);
-                 laneSet.getLane().add(lane);
+                 laneSet.getLane().add(new BpmnLane(cpfResourceType, initializer));
             }
         }
         if (!laneSet.getLane().isEmpty()) {
