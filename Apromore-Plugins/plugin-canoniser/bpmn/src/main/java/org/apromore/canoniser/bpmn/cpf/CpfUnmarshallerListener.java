@@ -8,7 +8,6 @@ import javax.xml.bind.Unmarshaller;
 
 // Local classes
 import org.apromore.cpf.EdgeType;
-import org.apromore.cpf.EventType;
 import org.apromore.cpf.NodeType;
 
 /**
@@ -46,21 +45,7 @@ public class CpfUnmarshallerListener extends Unmarshaller.Listener {
 
         } else if (target instanceof NodeType) {
             NodeType node = (NodeType) target;
-
             nodeMap.put(node.getId(), node);
-
-            if (target instanceof EventType) {
-                CpfEventType event = (CpfEventType) target;
-                //logger.info("Unmarshal event " + event.getId());
-            } else if (target instanceof CpfTaskType) {
-                CpfTaskType task = (CpfTaskType) target;
-                //logger.info("Unmarshal task " + task.getId());
-            } else if (target instanceof CpfXORSplitType) {
-                CpfXORSplitType xorSplit = (CpfXORSplitType) target;
-                //logger.info("Unmarshal XOR split " + xorSplit.getId());
-            } else {
-                throw new Error(getClass() + " does not handle the NodeType " + target.getClass());
-            }
         }
     }
 }

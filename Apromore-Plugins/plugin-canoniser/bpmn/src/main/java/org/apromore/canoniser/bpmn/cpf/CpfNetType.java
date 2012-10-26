@@ -143,8 +143,8 @@ public class CpfNetType extends NetType {
                         RoutingType routing;
 
                         switch (exclusiveGateway.getGatewayDirection()) {
-                            case CONVERGING: routing = new XORJoinType(); break;
-                            case DIVERGING:  routing = new XORSplitType();  break;
+                            case CONVERGING: routing = new CpfXORJoinType(); break;
+                            case DIVERGING:  routing = new CpfXORSplitType();  break;
                             default:
                                 throw new RuntimeException(
                                     new CanoniserException("Gateway " + exclusiveGateway.getId() +
@@ -171,8 +171,8 @@ public class CpfNetType extends NetType {
                         RoutingType routing;
 
                         switch (inclusiveGateway.getGatewayDirection()) {
-                            case CONVERGING: routing = new ORJoinType(); break;
-                            case DIVERGING:  routing = new ORSplitType();  break;
+                            case CONVERGING: routing = new CpfORJoinType(); break;
+                            case DIVERGING:  routing = new CpfORSplitType();  break;
                             default:
                                 throw new RuntimeException(
                                     new CanoniserException("Gateway " + inclusiveGateway.getId() +
@@ -211,8 +211,8 @@ public class CpfNetType extends NetType {
                        RoutingType routing;
 
                         switch (parallelGateway.getGatewayDirection()) {
-                           case CONVERGING: routing = new ANDJoinType(); break;
-                            case DIVERGING:  routing = new ANDSplitType();  break;
+                            case CONVERGING: routing = new CpfANDJoinType(); break;
+                            case DIVERGING:  routing = new CpfANDSplitType();  break;
                             default:
                                 throw new RuntimeException(
                                     new CanoniserException("Gateway " + parallelGateway.getId() +
@@ -351,7 +351,7 @@ public class CpfNetType extends NetType {
         for (TLaneSet laneSet : laneSets) {
 
             // Create a pool
-            ResourceTypeType poolResourceType = new ResourceTypeType();
+            ResourceTypeType poolResourceType = new CpfResourceTypeType();
             poolResourceType.setId(initializer.newId(participant.getId()));
             poolResourceType.setName(requiredName(participant.getName()));
             initializer.addResourceType(poolResourceType);
@@ -377,7 +377,7 @@ public class CpfNetType extends NetType {
         Set<String> specializationIds = new HashSet<String>();  // TODO - diamond operator
 
         for (TLane lane : laneSet.getLane()) {
-            ResourceTypeType laneResourceType = new ResourceTypeType();
+            ResourceTypeType laneResourceType = new CpfResourceTypeType();
 
             // Add the resource type to the CPF model
             laneResourceType.setId(initializer.newId(lane.getId()));
@@ -395,7 +395,7 @@ public class CpfNetType extends NetType {
                     initializer.recordLaneNode(flowNode, lane);
                 } else {
                     String s = value instanceof TBaseElement ? ((TBaseElement) value).getId() : value.toString();
-                    Logger.getAnonymousLogger().warning("Lane " + lane.getId() + " contains " + s + ", which is not a flow node");
+                    Logger.getAnonymousLogger().fine("Lane " + lane.getId() + " contains " + s + ", which is not a flow node");
                 }
             }
 

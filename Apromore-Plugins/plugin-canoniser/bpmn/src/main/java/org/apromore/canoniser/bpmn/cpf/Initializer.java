@@ -39,16 +39,21 @@ public class Initializer {
     private final BpmnDefinitions          definitions;
     private final Map<TFlowNode, TLane>    laneMap                  = new HashMap<TFlowNode, TLane>();
     private final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap = new HashMap<TFlowNode, NodeType>();
+    private final Map<String, Object>      elementMap;
 
     /**
      * Sole constructor.
      *
      * @param newCpf  the instance being constructed
      * @param newDefinitions  the BPMN instance that <code>newCpf</code> will correspond to
+     * @param newElementMap  the constructing instance's <code>elementMap</code> field
      */
-    public Initializer(final CpfCanonicalProcessType newCpf, final BpmnDefinitions newDefinitions) {
+    public Initializer(final CpfCanonicalProcessType newCpf,
+                       final BpmnDefinitions         newDefinitions,
+                       final Map<String, Object>     newElementMap) {
         cpf         = newCpf;
         definitions = newDefinitions;
+        elementMap  = newElementMap;
     }
 
     /**
@@ -95,6 +100,14 @@ public class Initializer {
     }
 
     /**
+     * @param id  a CPF identifier
+     * @return the CPF element bearing the given identifier
+     */
+    Object getElement(final String id) {
+        return elementMap.get(id);
+    }
+
+    /**
      * @param id  a requested identifier (typically the ID of the corresponding BPMN element); may be <code>null</code>
      * @return an identifier unique within the CPF document
      */
@@ -117,6 +130,7 @@ public class Initializer {
     void populateBaseElement(final EdgeType edge, final TBaseElement baseElement) throws CanoniserException {
         edge.setId(cpfIdFactory.newId(baseElement.getId()));
         edge.setOriginalID(baseElement.getId());
+        elementMap.put(edge.getId(), edge);
 
         // Handle BPMN extension elements
         if (baseElement.getExtensionElements() != null) {
@@ -128,11 +142,26 @@ public class Initializer {
         populateBaseElement(edge, flowElement);
     }
 
+    void populateSequenceFlow(final EdgeType edge, final TSequenceFlow sequenceFlow) throws CanoniserException {
+        populateFlowElement(edge, sequenceFlow);
+
+        // handle source
+        NodeType source = bpmnFlowNodeToCpfNodeMap.get(sequenceFlow.getSourceRef());
+        edge.setSourceId(source.getId());
+        ((CpfNodeType) source).getOutgoingEdges().add(edge);
+
+        // handle target
+        NodeType target = bpmnFlowNodeToCpfNodeMap.get(sequenceFlow.getTargetRef());
+        edge.setTargetId(target.getId());
+        ((CpfNodeType) target).getIncomingEdges().add(edge);
+    }
+
     // Node supertype handlers
 
     void populateBaseElement(final NodeType node, final TBaseElement baseElement) throws CanoniserException {
         node.setId(cpfIdFactory.newId(baseElement.getId()));
         node.setOriginalID(baseElement.getId());
+        elementMap.put(node.getId(), node);
 
         // Handle BPMN extension elements
         if (baseElement.getExtensionElements() != null) {
@@ -178,6 +207,7 @@ public class Initializer {
 
     void populateBaseElement(final ObjectType object, final TBaseElement baseElement) throws CanoniserException {
         object.setId(cpfIdFactory.newId(baseElement.getId()));
+        elementMap.put(object.getId(), object);
 
         // Handle BPMN extension elements
         if (baseElement.getExtensionElements() != null) {

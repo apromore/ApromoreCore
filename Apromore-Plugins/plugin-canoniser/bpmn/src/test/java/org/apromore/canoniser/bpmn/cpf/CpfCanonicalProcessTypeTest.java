@@ -1,30 +1,9 @@
 package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
-import java.io.FileNotFoundException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
-import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
-import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import javax.xml.transform.TransformerException;
-import javax.xml.transform.stream.StreamSource;
-import javax.xml.validation.Schema;
-import javax.xml.validation.SchemaFactory;
-import org.xml.sax.SAXException;
 
 // Third party packages
 import org.apache.commons.io.output.NullOutputStream;
@@ -37,38 +16,11 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 // Local packages
-import org.apromore.anf.ANFSchema;
-import org.apromore.anf.AnnotationsType;
-import org.apromore.canoniser.bpmn.BPMN20Canoniser;
 import org.apromore.canoniser.bpmn.BpmnDefinitions;
-import org.apromore.canoniser.bpmn.CanoniserResult;
+import org.apromore.canoniser.bpmn.BpmnObjectFactory;
 import org.apromore.canoniser.bpmn.TestConstants;
-import org.apromore.canoniser.bpmn.anf.AnfAnnotationsType;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
 import org.apromore.canoniser.bpmn.cpf.CpfEventType;
-import org.apromore.canoniser.bpmn.cpf.CpfIDResolver;
-import org.apromore.canoniser.bpmn.cpf.CpfTaskType;
-import org.apromore.canoniser.bpmn.cpf.CpfUnmarshallerListener;
-import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.CPFSchema;
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.cpf.EdgeType;
-import org.apromore.cpf.EventType;
-import org.apromore.cpf.NetType;
-import org.apromore.cpf.NodeType;
-import org.apromore.cpf.ResourceTypeType;
-import org.apromore.cpf.TaskType;
-import org.apromore.cpf.XORJoinType;
-import org.apromore.cpf.XORSplitType;
-import org.apromore.plugin.PluginRequest;
-import org.apromore.plugin.PluginResult;
-import org.omg.spec.bpmn._20100524.model.TDefinitions;
-import org.omg.spec.bpmn._20100524.model.TEndEvent;
-import org.omg.spec.bpmn._20100524.model.TProcess;
-import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
-import org.omg.spec.bpmn._20100524.model.TStartEvent;
-import org.omg.spec.bpmn._20100524.model.TTask;
-import org.omg.spec.dd._20100524.di.Plane;
 
 /**
  * Test suite for {@link CpfCanonicalProcessType}.
@@ -103,12 +55,11 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         // Validate the CPF
         cpf.marshal(new NullOutputStream(), true);
 
-        /*
         // Round-trip the CPF back into BPMN
         BpmnDefinitions definitions2 = new BpmnDefinitions(cpf, null);
+        definitions2 = BpmnDefinitions.correctFlowNodeRefs(definitions2, new BpmnObjectFactory());
         definitions2.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".cpf.bpmn")), false);
         definitions2.marshal(new NullOutputStream(), true);
-        */
 
         return cpf;
     }
@@ -118,6 +69,18 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
      */
     @Test
     public void testCh9Loan5() throws Exception {
-        CanonicalProcessType cpf = testCanonise("ch9_loan5.bpmn");
+        CpfCanonicalProcessType cpf = testCanonise("ch9_loan5.bpmn");
+
+        // Inspect the CPF
+        CpfEdgeType edge = (CpfEdgeType) cpf.getElement("sid-5C7AEE8B-C506-49B1-B8B1-A36DAC925D7B");
+        assertNotNull(edge);
+        assertEquals("sid-5CEDFABE-7E6F-450C-B84E-11C9917AB563", edge.getSourceId());
+        assertEquals("sid-F48A9B5E-671A-42C9-82FB-7A3F231E7876", edge.getTargetId());
+
+        CpfEventType event = (CpfEventType) cpf.getElement("sid-F48A9B5E-671A-42C9-82FB-7A3F231E7876");
+        assertNotNull(event);
+        assertEquals(0, event.getOutgoingEdges().size());
+        assertEquals(1, event.getIncomingEdges().size());
+
     }
 }

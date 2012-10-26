@@ -43,8 +43,11 @@ import org.apromore.canoniser.bpmn.anf.AnfAnnotationsType;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
 import org.apromore.canoniser.bpmn.cpf.CpfEventType;
 import org.apromore.canoniser.bpmn.cpf.CpfIDResolver;
+import org.apromore.canoniser.bpmn.cpf.CpfResourceTypeType;
 import org.apromore.canoniser.bpmn.cpf.CpfTaskType;
 import org.apromore.canoniser.bpmn.cpf.CpfUnmarshallerListener;
+import org.apromore.canoniser.bpmn.cpf.CpfXORJoinType;
+import org.apromore.canoniser.bpmn.cpf.CpfXORSplitType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
@@ -54,8 +57,6 @@ import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
-import org.apromore.cpf.XORJoinType;
-import org.apromore.cpf.XORSplitType;
 import org.apromore.plugin.PluginRequest;
 import org.apromore.plugin.PluginResult;
 import org.omg.spec.bpmn._20100524.model.TDefinitions;
@@ -288,7 +289,7 @@ public class BPMN20CanoniserTest implements TestConstants {
         // XOR Split
         NodeType xor = net.getNode().get(1);
         assertNull(xor.getName());
-        assertEquals(XORSplitType.class, xor.getClass());
+        assertEquals(CpfXORSplitType.class, xor.getClass());
 
         // Task "B"
         NodeType b = net.getNode().get(2);
@@ -350,7 +351,7 @@ public class BPMN20CanoniserTest implements TestConstants {
         // XOR Join
         NodeType xor = net.getNode().get(1);
         assertNull(xor.getName());
-        assertEquals(XORJoinType.class, xor.getClass());
+        assertEquals(CpfXORJoinType.class, xor.getClass());
 
         // Task "B"
         NodeType b = net.getNode().get(2);
@@ -400,12 +401,12 @@ public class BPMN20CanoniserTest implements TestConstants {
         // Pool "P"
         ResourceTypeType p = cpf.getResourceType().get(0);
         assertEquals("P", p.getName());
-        assertEquals(ResourceTypeType.class, p.getClass());
+        assertEquals(CpfResourceTypeType.class, p.getClass());
 
         // Implicit lane within "P"
         ResourceTypeType p_lane = cpf.getResourceType().get(1);
         assertEquals("", p_lane.getName());
-        assertEquals(ResourceTypeType.class, p_lane.getClass());
+        assertEquals(CpfResourceTypeType.class, p_lane.getClass());
 
         // Resource type specialization hierarchy: p_lane in p
         assertEquals(Collections.emptyList(), p_lane.getSpecializationIds());
@@ -468,17 +469,17 @@ public class BPMN20CanoniserTest implements TestConstants {
         // Pool "P"
         ResourceTypeType p = cpf.getResourceType().get(0);
         assertEquals("P", p.getName());
-        assertEquals(ResourceTypeType.class, p.getClass());
+        assertEquals(CpfResourceTypeType.class, p.getClass());
 
         // Anonymous lane inside pool "P"
         ResourceTypeType p_lane = cpf.getResourceType().get(1);
         assertEquals("", p_lane.getName());
-        assertEquals(ResourceTypeType.class, p_lane.getClass());
+        assertEquals(CpfResourceTypeType.class, p_lane.getClass());
 
         // Lane "L"
         ResourceTypeType l = cpf.getResourceType().get(2);
         assertEquals("L", l.getName());
-        assertEquals(ResourceTypeType.class, l.getClass());
+        assertEquals(CpfResourceTypeType.class, l.getClass());
 
         // Resource type specialization hierarchy: l in p_lane in p
         assertEquals(Collections.emptyList(), l.getSpecializationIds());

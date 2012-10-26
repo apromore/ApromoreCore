@@ -95,6 +95,18 @@ public class ProcessWrapper {
             } else {
                 throw new CanoniserException("Event \"" + node.getId() + "\" has no edges");
             }
+        } else if (node instanceof ANDJoinType || node instanceof ANDSplitType) {
+            TParallelGateway gateway = new TParallelGateway();
+            initializer.populateBaseElement(gateway, node);
+            return initializer.getFactory().createParallelGateway(gateway);
+        } else if (node instanceof ORJoinType || node instanceof ORSplitType) {
+            TInclusiveGateway gateway = new TInclusiveGateway();
+            initializer.populateBaseElement(gateway, node);
+            return initializer.getFactory().createInclusiveGateway(gateway);
+        } else if (node instanceof XORJoinType || node instanceof XORSplitType) {
+            TExclusiveGateway gateway = new TExclusiveGateway();
+            initializer.populateBaseElement(gateway, node);
+            return initializer.getFactory().createExclusiveGateway(gateway);
         } else if (node instanceof TaskType) {
             CpfTaskType that = (CpfTaskType) node;
 

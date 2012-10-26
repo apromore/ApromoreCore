@@ -1,9 +1,15 @@
 package org.apromore.canoniser.bpmn;
 
 // Java 2 Standard packages
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+// Third party packages
+import org.apache.commons.collections.MultiHashMap;
+import org.apache.commons.collections.MultiMap;
 
 // Local classes
 import static org.apromore.canoniser.bpmn.BpmnDefinitions.BPMN_NS;
@@ -40,11 +46,13 @@ class Initializer {
     // Map from CPF @cpfId edge identifiers to BPMN ids
     private final Map<String, BpmnSequenceFlow> edgeMap = new HashMap<String, BpmnSequenceFlow>();
 
-    // Records the CPF cpfIds of BPMN sequence flows which need their @sourceRef populated
-    private final Map<String, TSequenceFlow> flowWithoutSourceRefMap = new HashMap<String, TSequenceFlow>();
+    // Maps from CPF Node cpfIds to the set of BPMN sequence flows which need their @sourceRef populated with the equivalent BPMN id
+    private final MultiMap flowsWithoutSourceRefMultiMap = new MultiHashMap();
+    //private final MultiMap<String, TSequenceFlow> flowsWithoutSourceRefMultiMap = new MultiHashMap<String, TSequenceFlow>();
 
-    // Records the CPF cpfIds of BPMN sequence flows which need their @targetRef populated
-    private final Map<String, TSequenceFlow> flowWithoutTargetRefMap = new HashMap<String, TSequenceFlow>();
+    // Maps from CPF Node cpfIds to the set of BPMN sequence flows which need their @targetRef populated with the equivalent BPMN id
+    private final MultiMap flowsWithoutTargetRefMultiMap = new MultiHashMap();
+    //private final MultiMap<String, TSequenceFlow> flowsWithoutTargetRefMultiMap = new MultiHashMap<String, TSequenceFlow>();
 
     /**
      * Sole constructor.
@@ -63,11 +71,11 @@ class Initializer {
      */
     void close() throws CanoniserException {
         // Make sure all the deferred fields did eventually get filled in
-        if (!flowWithoutSourceRefMap.isEmpty()) {
-            throw new CanoniserException("Missing source references: " + flowWithoutSourceRefMap.keySet());
+        if (!flowsWithoutSourceRefMultiMap.isEmpty()) {
+            throw new CanoniserException("Missing source references: " + flowsWithoutSourceRefMultiMap.keySet());
         }
-        if (!flowWithoutTargetRefMap.isEmpty()) {
-            throw new CanoniserException("Missing target references: " + flowWithoutTargetRefMap.keySet());
+        if (!flowsWithoutTargetRefMultiMap.isEmpty()) {
+            throw new CanoniserException("Missing target references: " + flowsWithoutTargetRefMultiMap.keySet());
         }
     }
 
@@ -78,16 +86,20 @@ class Initializer {
      */
     void connectNode(final NodeType node) {
 
-        // Fill in missing @sourceRef
-        if (flowWithoutSourceRefMap.containsKey(node.getId())) {
-            flowWithoutSourceRefMap.get(node.getId()).setSourceRef((TFlowNode) idMap.get(node.getId()));
-            flowWithoutSourceRefMap.remove(node.getId());
+        // Fill in missing @sourceRefs
+        if (flowsWithoutSourceRefMultiMap.containsKey(node.getId())) {
+            for (Object o : new ArrayList((Collection) flowsWithoutSourceRefMultiMap.get(node.getId()))) {
+               ((TSequenceFlow) o).setSourceRef((TFlowNode) idMap.get(node.getId()));
+               flowsWithoutSourceRefMultiMap.remove(node.getId(), o);
+            }
         }
 
-        // Fill in missing @targetRef
-        if (flowWithoutTargetRefMap.containsKey(node.getId())) {
-            flowWithoutTargetRefMap.get(node.getId()).setTargetRef((TFlowNode) idMap.get(node.getId()));
-            flowWithoutTargetRefMap.remove(node.getId());
+        // Fill in missing @targetRefs
+        if (flowsWithoutTargetRefMultiMap.containsKey(node.getId())) {
+            for (Object o : new ArrayList((Collection) flowsWithoutTargetRefMultiMap.get(node.getId()))) {
+               ((TSequenceFlow) o).setTargetRef((TFlowNode) idMap.get(node.getId()));
+               flowsWithoutTargetRefMultiMap.remove(node.getId(), o);
+            }
         }
     }
 
@@ -168,23 +180,21 @@ class Initializer {
     }
 
     /**
-     * @param edgeId  CPF Edge
-     * @param flow  BPMN SequenceFlow
+     * @param flow  a BPMN SequenceFlow without its sourceRef set
+     * @param sourceCpfId  CPF identifier of the source of the corresponding CPF Edge
      */
-    void recordFlowWithoutSourceRef(final String edgeId, final TSequenceFlow flow) {
-        assert !flowWithoutSourceRefMap.containsKey(edgeId);
-        assert !flowWithoutSourceRefMap.containsValue(flow);
-        flowWithoutSourceRefMap.put(edgeId, flow);
+    void recordFlowWithoutSourceRef(final TSequenceFlow flow, final String sourceCpfId) {
+        assert !flowsWithoutSourceRefMultiMap.values().contains(flow);
+        flowsWithoutSourceRefMultiMap.put(sourceCpfId, flow);
     }
 
     /**
-     * @param edgeId  CPF Edge
-     * @param flow  BPMN SequenceFlow
+     * @param flow  a BPMN SequenceFlow without its targetRef set
+     * @param targetCpfId  CPF identifier of the target of the corresponding CPF Edge
      */
-    void recordFlowWithoutTargetRef(final String edgeId, final TSequenceFlow flow) {
-        assert !flowWithoutTargetRefMap.containsKey(edgeId);
-        assert !flowWithoutTargetRefMap.containsValue(flow);
-        flowWithoutTargetRefMap.put(edgeId, flow);
+    void recordFlowWithoutTargetRef(final TSequenceFlow flow, final String targetCpfId) {
+        assert !flowsWithoutTargetRefMultiMap.values().contains(flow);
+        flowsWithoutTargetRefMultiMap.put(targetCpfId, flow);
     }
 
     // Pseudo-superclass initialization methods
