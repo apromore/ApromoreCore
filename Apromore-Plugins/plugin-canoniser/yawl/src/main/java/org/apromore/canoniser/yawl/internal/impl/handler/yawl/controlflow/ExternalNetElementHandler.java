@@ -120,6 +120,8 @@ public abstract class ExternalNetElementHandler<T> extends YAWLConversionHandler
     private void convertEdge(final FlowsIntoType flowsInto, final EdgeType edge) {
         if (flowsInto.getIsDefaultFlow() != null) {
             edge.setDefault(true);
+        } else {
+            edge.setDefault(false);
         }
         if (flowsInto.getPredicate() != null) {
             ConditionExpressionType expressionType = CPF_FACTORY.createConditionExpressionType();

@@ -22,8 +22,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id5e870380-eb9e-4387-82d8-5be30404b86e" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="idfa80e89d-2c39-458b-8126-f11699328f01" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="aa1c1d8d-823b-4891-beba-f132e9117ddd" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="c894465d-14e8-4ff2-9ca3-d739542d414d" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = {cpf:getObjectValue('var')/text()}</expression>
@@ -52,8 +52,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="ida29abfeb-3add-4f3b-bf08-90c009f643ff" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="id50eb3510-a607-434c-b5ed-0332f4a4aaec" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="id1465ed33-4136-427b-8710-3b217b1066ef" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="a4c08907-2a04-4a4c-8aa3-460343e6d78a" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = {cpf:getObjectValue('var')/text()}</expression>
@@ -67,9 +67,9 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="C-InputCondition-A" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="C-A-B" sourceId="C-A" targetId="C-B"/>
-        <Edge id="C-B-OutputCondition" sourceId="C-B" targetId="C-OutputCondition"/>
+        <Edge id="C-InputCondition-A" default="false" sourceId="C-InputCondition" targetId="C-A"/>
+        <Edge id="C-A-B" default="false" sourceId="C-A" targetId="C-B"/>
+        <Edge id="C-B-OutputCondition" default="false" sourceId="C-B" targetId="C-OutputCondition"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-var" originalID="N-Net_var">
             <name>var</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">

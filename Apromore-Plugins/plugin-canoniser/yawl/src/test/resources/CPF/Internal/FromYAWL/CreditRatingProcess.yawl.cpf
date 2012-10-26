@@ -17,14 +17,14 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <objectRef id="ida87badbd-78d5-456a-b71c-eec615e341f2" objectId="D-N-Credit-Rating-Process-ssn" type="output" optional="false" consumed="true"/>
+            <objectRef id="idc135345a-702e-458a-93a8-b3b8cceab364" objectId="D-N-Credit-Rating-Process-ssn" type="output" optional="false" consumed="true"/>
             <outputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>ssn = {/ReceiveSSN/ssn/text()}</expression>
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="ad19e13c-47a4-43ad-ae47-1471f3ba1a33"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORSplitType" id="idb5aa0604-3e18-4080-9b36-99442973251f"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-ReportFault-4" originalID="ReportFault_4">
             <name>ReportFault</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -34,7 +34,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <objectRef id="d58fb692-0b8c-49f0-9c04-c78ba245f10b" objectId="D-N-Credit-Rating-Process-fault" type="input" optional="false" consumed="true"/>
+            <objectRef id="id05b033ef-9818-4cfa-9023-6702e974c998" objectId="D-N-Credit-Rating-Process-fault" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>fault = {cpf:getObjectValue('fault')/text()}</expression>
@@ -50,7 +50,7 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <objectRef id="f2e0b941-826b-4496-a3fb-c4aa294416ca" objectId="D-N-Credit-Rating-Process-rating" type="input" optional="false" consumed="true"/>
+            <objectRef id="id2b43352e-5ac0-4ac0-b78d-74c5d970e34b" objectId="D-N-Credit-Rating-Process-rating" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>rating = {cpf:getObjectValue('rating')/text()}</expression>
@@ -58,21 +58,21 @@
             <teamWork>false</teamWork>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-null-5" originalID="null_5"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id6dd9fc69-4066-498b-8a36-29dc66e84e50"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id87b21af9-09a3-4213-84eb-9c063253b468"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2"/>
-        <Edge id="C-InputCondition-1-ReceiveSSN-3" sourceId="C-InputCondition-1" targetId="C-ReceiveSSN-3"/>
-        <Edge id="idb5b4ff29-174f-4393-a74b-6ffa2b9b2592" sourceId="C-ReceiveSSN-3" targetId="ad19e13c-47a4-43ad-ae47-1471f3ba1a33"/>
-        <Edge id="id5c2af194-8495-4c73-a50f-b03866cf9cf0" sourceId="ad19e13c-47a4-43ad-ae47-1471f3ba1a33" targetId="C-ReportFault-4">
+        <Edge id="C-InputCondition-1-ReceiveSSN-3" default="false" sourceId="C-InputCondition-1" targetId="C-ReceiveSSN-3"/>
+        <Edge id="idbffcffdc-1715-4c48-98e9-2094deaa15c2" sourceId="C-ReceiveSSN-3" targetId="idb5aa0604-3e18-4080-9b36-99442973251f"/>
+        <Edge id="id6de48a9d-5a23-4302-a8d5-6b2cc27319a5" default="false" sourceId="idb5aa0604-3e18-4080-9b36-99442973251f" targetId="C-ReportFault-4">
             <conditionExpr>
                 <language>http://www.w3.org/1999/xpath/</language>
                 <expression>starts-with(/Credit_Rating_Process/ssn/text(),'0')</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="id650b83ac-6b95-405f-9be3-dc82fe17b6c2" default="true" sourceId="ad19e13c-47a4-43ad-ae47-1471f3ba1a33" targetId="C-DecideRating-6"/>
-        <Edge id="id3d146bb2-f42b-4213-aced-0801f407bb25" sourceId="id6dd9fc69-4066-498b-8a36-29dc66e84e50" targetId="C-null-5"/>
-        <Edge id="id60110d97-c0d1-4d7f-bc9f-10f74e335f35" sourceId="C-ReportFault-4" targetId="id6dd9fc69-4066-498b-8a36-29dc66e84e50"/>
-        <Edge id="id0f5c730c-c3c7-4d90-8645-1860fb3efdc6" sourceId="C-DecideRating-6" targetId="id6dd9fc69-4066-498b-8a36-29dc66e84e50"/>
-        <Edge id="C-null-5-OutputCondition-2" sourceId="C-null-5" targetId="C-OutputCondition-2"/>
+        <Edge id="id7cc91023-8080-4614-8c00-c5c82efd3878" default="true" sourceId="idb5aa0604-3e18-4080-9b36-99442973251f" targetId="C-DecideRating-6"/>
+        <Edge id="idfe856593-6c5b-46ce-851d-7bc454cff362" sourceId="id87b21af9-09a3-4213-84eb-9c063253b468" targetId="C-null-5"/>
+        <Edge id="iddf424d49-b65c-4038-9022-c2a90b8541e4" default="false" sourceId="C-ReportFault-4" targetId="id87b21af9-09a3-4213-84eb-9c063253b468"/>
+        <Edge id="id81963f1d-9b28-47ed-8c13-ed02ca3f21a3" default="false" sourceId="C-DecideRating-6" targetId="id87b21af9-09a3-4213-84eb-9c063253b468"/>
+        <Edge id="C-null-5-OutputCondition-2" default="false" sourceId="C-null-5" targetId="C-OutputCondition-2"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Credit-Rating-Process-fault" originalID="N-Credit-Rating-Process_fault">
             <name>fault</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">

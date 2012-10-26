@@ -9,6 +9,7 @@ import javax.xml.bind.JAXBElement;
 import org.apromore.canoniser.yawl.BaseCPF2YAWLTest;
 import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.junit.Test;
+import org.yawlfoundation.yawlschema.ControlTypeCodeType;
 import org.yawlfoundation.yawlschema.ExternalNetElementFactsType;
 import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
 import org.yawlfoundation.yawlschema.FlowsIntoType;
@@ -77,6 +78,17 @@ public class SimpleMakeTripTest extends BaseCPF2YAWLTest {
             }
         }
         return false;
+    }
+
+    @Test
+    public void testRoutingConditions() {
+        NetFactsType net = findRootNet();
+        ExternalTaskFactsType register = checkTask(net, "register", ControlTypeCodeType.XOR, ControlTypeCodeType.OR, 3);
+        checkAtLeastOneDefaultFlow(register);
+        checkOnlyOneDefaultFlow(register);
+        checkNoMissingPredicate(register);
+
+        checkTask(net, "pay", ControlTypeCodeType.OR, ControlTypeCodeType.AND, 1);
     }
 
 }

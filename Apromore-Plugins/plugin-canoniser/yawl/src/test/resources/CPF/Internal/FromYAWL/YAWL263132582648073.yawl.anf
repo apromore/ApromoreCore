@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
 <ns2:Annotations xmlns:ns2="http://www.apromore.org/ANF" uri="263132582485918.yawl" name="263132582485918">
-    <Annotation id="id31f34599-8868-49b9-afa6-25172356dc48">
+    <Annotation id="d087afa4-229c-4d4d-a34f-9a571edd1b8e">
         <locale:locale xmlns:locale="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" country="AU" language="en"/>
         <metadata:metadata xmlns:metadata="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <title>263132582485918</title>
@@ -13,9 +13,9 @@
             <identifier>263132582485918</identifier>
         </metadata:metadata>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="idee386c1e-4163-4e3d-b68e-a2b0b9eb120b" cpfId="C-263132582674346"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id09e0e72b-3d30-45a9-bb31-ab8e221c634e" cpfId="C-263132582674346-263132582686251"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id0bc1594b-f695-42e8-9566-2f3c943d2700" cpfId="C-263132582686251"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="idb0926e60-e651-48fd-a2f1-dd400a9b8d4b" cpfId="C-263132582686251-263132582681736"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="id00c6115f-d5be-446a-8790-da049ff59c71" cpfId="C-263132582681736"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="idf324333c-6728-44f7-96b4-d1bca6bd8219" cpfId="C-263132582674346"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="a6976334-0a9c-433f-a645-7e6fd9e1e295" cpfId="C-263132582674346-263132582686251"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="a2ac6c6b-6855-44e3-9124-dc0ca362541d" cpfId="C-263132582686251"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="ffd5fe3d-fdca-4fcf-bb47-9329f76e13f7" cpfId="C-263132582686251-263132582681736"/>
+    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="b0e6e206-6f22-47fc-b5ff-bfeda7bfc7e6" cpfId="C-263132582681736"/>
 </ns2:Annotations>

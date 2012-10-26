@@ -4,30 +4,30 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="idbacd58f7-a660-49c3-bc5f-baccb4a8cd5e"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TimerType" timeDuration="P30M" id="id15fa951b-eef4-4296-8ef1-034e8637ab75">
-            <cancelNodeId refId="idcfc1cfe6-d74a-48f4-896b-753469a303e6"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="f5d66ad9-5e18-4441-ab02-72fe79bdd981"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TimerType" timeDuration="P30M" id="e4ad8831-9a5d-49bf-8b5f-3f06ea9a9836">
+            <cancelNodeId refId="idef0503af-d350-4fc0-b8dd-4220b1da0027"/>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="idcfc1cfe6-d74a-48f4-896b-753469a303e6">
-            <cancelNodeId refId="id15fa951b-eef4-4296-8ef1-034e8637ab75"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:MessageType" id="idef0503af-d350-4fc0-b8dd-4220b1da0027">
+            <cancelNodeId refId="e4ad8831-9a5d-49bf-8b5f-3f06ea9a9836"/>
             <direction>incoming</direction>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id04512661-ec75-4d69-8671-fa6a1db4b5e8"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id3d0cecd6-9791-4958-be6f-338f8934f2d1"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
             <name>A</name>
             <teamWork>false</teamWork>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="C-unnamed" originalID="unnamed"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="id4169b95b-0745-4b2a-96da-4291379f52c1"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TimerType" timeDuration="P3M" id="idabed4177-970e-4263-9906-878f8a050cba">
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="id6f390f2b-e9ed-421a-8e0b-a747e7fec74b"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TimerType" timeDuration="P3M" id="idf6d23839-b4d9-4ad9-9f6d-5337599280c6">
             <cancelNodeId refId="C-B"/>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-B" originalID="B">
             <name>B</name>
-            <cancelNodeId refId="idabed4177-970e-4263-9906-878f8a050cba"/>
+            <cancelNodeId refId="idf6d23839-b4d9-4ad9-9f6d-5337599280c6"/>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id9dbfbd3d-1ed4-465e-bc1c-b376f10a5192"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="id7ad6c56f-11ad-49f6-8649-c7092f1755b7"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-C" originalID="C">
             <name>C</name>
             <teamWork>false</teamWork>
@@ -35,23 +35,23 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="a550be7e-114b-42e2-82d7-549641c081ae"/>
-        <Edge id="id15bb812f-c09b-41c8-9bb5-80eea85f8b9b" sourceId="idbacd58f7-a660-49c3-bc5f-baccb4a8cd5e" targetId="id15fa951b-eef4-4296-8ef1-034e8637ab75"/>
-        <Edge id="ida575bc8b-2b21-4270-b762-ba96bede043d" sourceId="idbacd58f7-a660-49c3-bc5f-baccb4a8cd5e" targetId="idcfc1cfe6-d74a-48f4-896b-753469a303e6"/>
-        <Edge id="id4d3d82b0-a7d8-4ebe-bce8-b3efed680d18" sourceId="id15fa951b-eef4-4296-8ef1-034e8637ab75" targetId="id04512661-ec75-4d69-8671-fa6a1db4b5e8"/>
-        <Edge id="id3bba6d0f-8b7b-47fb-ad14-cdd2be4fd097" sourceId="idcfc1cfe6-d74a-48f4-896b-753469a303e6" targetId="id04512661-ec75-4d69-8671-fa6a1db4b5e8"/>
-        <Edge id="id20a52b24-12eb-4dcf-9e2d-e7a8a0160e21" sourceId="id04512661-ec75-4d69-8671-fa6a1db4b5e8" targetId="C-A"/>
-        <Edge id="id259fa78a-2697-4bf1-bb90-15e56fff7e7f" sourceId="C-InputCondition" targetId="idbacd58f7-a660-49c3-bc5f-baccb4a8cd5e"/>
-        <Edge id="C-A-unnamed" sourceId="C-A" targetId="C-unnamed"/>
-        <Edge id="id5d414d35-72da-4f69-9d4f-7b79bd2f7851" sourceId="id4169b95b-0745-4b2a-96da-4291379f52c1" targetId="idabed4177-970e-4263-9906-878f8a050cba"/>
-        <Edge id="id439f077b-cea0-48e4-a461-2be884added4" sourceId="id4169b95b-0745-4b2a-96da-4291379f52c1" targetId="C-B"/>
-        <Edge id="ide70af40a-b9e6-46cf-a8b7-37e525f4d3ab" sourceId="idabed4177-970e-4263-9906-878f8a050cba" targetId="id9dbfbd3d-1ed4-465e-bc1c-b376f10a5192"/>
-        <Edge id="id95e96651-e412-4b76-a318-9fffc1c87565" sourceId="C-B" targetId="id9dbfbd3d-1ed4-465e-bc1c-b376f10a5192"/>
-        <Edge id="idf83c6d2c-17a1-43b3-aab9-a71138785aee" sourceId="C-unnamed" targetId="id4169b95b-0745-4b2a-96da-4291379f52c1"/>
-        <Edge id="C-unnamed-C" sourceId="C-unnamed" targetId="C-C"/>
-        <Edge id="id455216d9-ff51-4d3c-90c7-176553351268" sourceId="a550be7e-114b-42e2-82d7-549641c081ae" targetId="C-OutputCondition"/>
-        <Edge id="idd91d0589-336d-4527-b366-81d0f8904613" sourceId="id9dbfbd3d-1ed4-465e-bc1c-b376f10a5192" targetId="a550be7e-114b-42e2-82d7-549641c081ae"/>
-        <Edge id="id5219b325-3fdc-46f5-bb4c-8d926feb9d94" sourceId="C-C" targetId="a550be7e-114b-42e2-82d7-549641c081ae"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="id9add4f7d-4bda-4874-9433-47ca02a0ece6"/>
+        <Edge id="id8e90aeda-9285-45b2-9311-168932724df9" sourceId="f5d66ad9-5e18-4441-ab02-72fe79bdd981" targetId="e4ad8831-9a5d-49bf-8b5f-3f06ea9a9836"/>
+        <Edge id="idf86fb1b8-73e6-43e8-8b45-f5e1bda99f81" sourceId="f5d66ad9-5e18-4441-ab02-72fe79bdd981" targetId="idef0503af-d350-4fc0-b8dd-4220b1da0027"/>
+        <Edge id="id02dc3b10-9c2d-4204-bdab-3a3edbb12b1c" sourceId="e4ad8831-9a5d-49bf-8b5f-3f06ea9a9836" targetId="id3d0cecd6-9791-4958-be6f-338f8934f2d1"/>
+        <Edge id="idf216a1f9-9157-48ae-84cb-ff8c83a5db27" sourceId="idef0503af-d350-4fc0-b8dd-4220b1da0027" targetId="id3d0cecd6-9791-4958-be6f-338f8934f2d1"/>
+        <Edge id="id7902ae72-778f-47a5-a10d-f4fe165a5737" sourceId="id3d0cecd6-9791-4958-be6f-338f8934f2d1" targetId="C-A"/>
+        <Edge id="id125e4e1c-12fb-470b-9a12-c3bcef32758f" default="false" sourceId="C-InputCondition" targetId="f5d66ad9-5e18-4441-ab02-72fe79bdd981"/>
+        <Edge id="C-A-unnamed" default="false" sourceId="C-A" targetId="C-unnamed"/>
+        <Edge id="idd16cc20f-eca8-4f81-addc-6ecdc76b8d2a" sourceId="id6f390f2b-e9ed-421a-8e0b-a747e7fec74b" targetId="idf6d23839-b4d9-4ad9-9f6d-5337599280c6"/>
+        <Edge id="id9d7eca97-ce84-4d19-9bcf-8dfb5b6f4346" sourceId="id6f390f2b-e9ed-421a-8e0b-a747e7fec74b" targetId="C-B"/>
+        <Edge id="idcdff3960-9fb1-4a38-8546-6848044b7d3c" sourceId="idf6d23839-b4d9-4ad9-9f6d-5337599280c6" targetId="id7ad6c56f-11ad-49f6-8649-c7092f1755b7"/>
+        <Edge id="idc0a23c3a-21f6-4f44-b56c-dc2106efc7bf" sourceId="C-B" targetId="id7ad6c56f-11ad-49f6-8649-c7092f1755b7"/>
+        <Edge id="id5b0a0ff9-87cb-4fe7-85db-7ee51bded23e" default="false" sourceId="C-unnamed" targetId="id6f390f2b-e9ed-421a-8e0b-a747e7fec74b"/>
+        <Edge id="C-unnamed-C" default="false" sourceId="C-unnamed" targetId="C-C"/>
+        <Edge id="id2eb7c1ca-6f6f-4b64-a435-2d3f6e488f06" sourceId="id9add4f7d-4bda-4874-9433-47ca02a0ece6" targetId="C-OutputCondition"/>
+        <Edge id="id6c2bd1de-0ea4-4a47-a352-a879475cb0fc" default="false" sourceId="id7ad6c56f-11ad-49f6-8649-c7092f1755b7" targetId="id9add4f7d-4bda-4874-9433-47ca02a0ece6"/>
+        <Edge id="idf273d8cc-3be9-431c-a232-719d821ed206" default="false" sourceId="C-C" targetId="id9add4f7d-4bda-4874-9433-47ca02a0ece6"/>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </ns2:CanonicalProcess>
