@@ -12,7 +12,7 @@ import org.w3c.dom.Element;
 import org.apromore.canoniser.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.canoniser.yawl.internal.utils.ExtensionUtils;
+import org.apromore.canoniser.utils.ExtensionUtils;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
@@ -225,7 +225,6 @@ public class Initializer {
         return ExtensionUtils.marshalFragment(EXTENSION_ELEMENTS,
                                               baseElement.getExtensionElements(),
                                               TExtensionElements.class,
-                                              "BPMN 2.0",
                                               BpmnDefinitions.BPMN_NS,
                                               BpmnDefinitions.BPMN_CONTEXT);
     }
