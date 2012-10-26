@@ -103,6 +103,13 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         // Validate the CPF
         cpf.marshal(new NullOutputStream(), true);
 
+        /*
+        // Round-trip the CPF back into BPMN
+        BpmnDefinitions definitions2 = new BpmnDefinitions(cpf, null);
+        definitions2.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".cpf.bpmn")), false);
+        definitions2.marshal(new NullOutputStream(), true);
+        */
+
         return cpf;
     }
 
