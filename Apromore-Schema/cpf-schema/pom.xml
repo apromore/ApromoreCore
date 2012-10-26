@@ -111,6 +111,7 @@
                     <schemaDirectory>${basedir}/src/main/resources/xsd</schemaDirectory>
                     <generateDirectory>${basedir}/target/generated-sources/src</generateDirectory>                    
                     <args>
+                        <arg>-npa</arg>
                         <arg>-Xvisitor</arg>
                     </args>
                     <plugins>
