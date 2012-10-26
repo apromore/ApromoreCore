@@ -41,14 +41,14 @@ public class BpmnSequenceFlow extends TSequenceFlow {
         if (initializer.containsElement(edge.getSourceId())) {
             setSourceRef((TFlowNode) initializer.getElement(edge.getSourceId()));
         } else {
-            initializer.recordFlowWithoutSourceRef(edge.getSourceId(), this);
+            initializer.recordFlowWithoutSourceRef(this, edge.getSourceId());
         }
 
         // Deal with @targetId
         if (initializer.containsElement(edge.getTargetId())) {
             setTargetRef((TFlowNode) initializer.getElement(edge.getTargetId()));
         } else {
-            initializer.recordFlowWithoutTargetRef(edge.getTargetId(), this);
+            initializer.recordFlowWithoutTargetRef(this, edge.getTargetId());
         }
     }
 }

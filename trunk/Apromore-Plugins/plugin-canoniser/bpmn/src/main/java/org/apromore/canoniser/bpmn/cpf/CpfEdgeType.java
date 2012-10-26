@@ -5,7 +5,6 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.ConditionExpressionType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NodeType;
-import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 
 /**
@@ -37,8 +36,7 @@ public class CpfEdgeType extends EdgeType {
      * @throws CanoniserException if the <code>sequenceFlow</code> has more than one condition expression
      */
     public CpfEdgeType(final TSequenceFlow sequenceFlow, final Initializer initializer) throws CanoniserException {
-        EdgeType edge = this;
-        initializer.populateFlowElement(edge, sequenceFlow);
+        initializer.populateSequenceFlow(this, sequenceFlow);
 
         if (sequenceFlow.getConditionExpression() != null) {
 
@@ -51,10 +49,8 @@ public class CpfEdgeType extends EdgeType {
 
             ConditionExpressionType conditionExpr = new ConditionExpressionType();
             conditionExpr.setExpression(sequenceFlow.getConditionExpression().getContent().get(0).toString());
-            edge.setConditionExpr(conditionExpr);
+            setConditionExpr(conditionExpr);
         }
-        edge.setSourceId(((TFlowNode) sequenceFlow.getSourceRef()).getId());  // TODO - process through cpfIdFactory
-        edge.setTargetId(((TFlowNode) sequenceFlow.getTargetRef()).getId());  // TODO - process through cpfIdFactory
     }
 
     // Accessors
