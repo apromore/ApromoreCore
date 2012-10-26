@@ -3,6 +3,8 @@ package org.apromore.canoniser.bpmn.cpf;
 // Java 2 Standard packages
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.HashMap;
+import java.util.Map;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -56,6 +58,9 @@ public class CpfCanonicalProcessType extends CanonicalProcessType {
         }
     }
 
+    /** Lookup contained CPF elements by indentifier. */
+    private final Map<String, Object> elementMap = new HashMap<String, Object>();  // TODO - use diamond operator
+
     /** No-arg constructor. */
     public CpfCanonicalProcessType() {
         super();
@@ -72,7 +77,7 @@ public class CpfCanonicalProcessType extends CanonicalProcessType {
     public CpfCanonicalProcessType(final BpmnDefinitions definitions) throws CanoniserException {
         super();
 
-        final Initializer initializer = new Initializer(this, definitions);
+        final Initializer initializer = new Initializer(this, definitions, elementMap);
 
         // Populate attributes
         setName(requiredName(definitions.getName()));
@@ -111,6 +116,14 @@ public class CpfCanonicalProcessType extends CanonicalProcessType {
     }
 
     /**
+     * @param id  identifier of a CPF Node contained within this document
+     * @return the identified CPF Node
+     */
+    public Object getElement(final String id) {
+        return elementMap.get(id);
+    }
+
+    /**
      * Write this instance to a stream.
      *
      * @param out  the destination stream
@@ -123,6 +136,6 @@ public class CpfCanonicalProcessType extends CanonicalProcessType {
         if (validate) {
             marshaller.setSchema(CPF_SCHEMA);
         }
-        marshaller.marshal(new JAXBElement<CanonicalProcessType>(CPF_ROOT, CanonicalProcessType.class, this), out);
+        marshaller.marshal(new ObjectFactory().createCanonicalProcess(this), out);
     }
 }

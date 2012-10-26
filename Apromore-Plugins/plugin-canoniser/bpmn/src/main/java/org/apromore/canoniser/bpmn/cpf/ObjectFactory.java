@@ -13,6 +13,16 @@ import javax.xml.bind.annotation.XmlRegistry;
 public class ObjectFactory extends org.apromore.cpf.ObjectFactory {
 
     @Override
+    public CpfANDJoinType createANDJoinType() {
+        return new CpfANDJoinType();
+    }
+
+    @Override
+    public CpfANDSplitType createANDSplitType() {
+        return new CpfANDSplitType();
+    }
+
+    @Override
     public CpfCanonicalProcessType createCanonicalProcessType() {
         return new CpfCanonicalProcessType();
     }
@@ -37,6 +47,16 @@ public class ObjectFactory extends org.apromore.cpf.ObjectFactory {
         return new CpfObjectType();
     }
 
+
+    @Override
+    public CpfORJoinType createORJoinType() {
+        return new CpfORJoinType();
+    }
+
+    @Override
+    public CpfORSplitType createORSplitType() {
+        return new CpfORSplitType();
+    }
     @Override
     public CpfResourceTypeType createResourceTypeType() {
         return new CpfResourceTypeType();
@@ -50,6 +70,11 @@ public class ObjectFactory extends org.apromore.cpf.ObjectFactory {
     @Override
     public CpfTaskType createTaskType() {
         return new CpfTaskType();
+    }
+
+    @Override
+    public CpfXORJoinType createXORJoinType() {
+        return new CpfXORJoinType();
     }
 
     @Override

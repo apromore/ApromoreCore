@@ -22,12 +22,11 @@ public class BpmnLane extends TLane {
     /**
      * Construct a BPMN Lane corresponding to a CPF Resource.
      *
-     * @param task  a CPF ResourceType
+     * @param resourceType  a CPF ResourceType
      * @param initializer  BPMN document construction state
      * @throws CanoniserException  if the lane can't be constructed
      */
-    public BpmnLane(final CpfResourceTypeType resourceType,
-                    final Initializer initializer) throws CanoniserException {
+    public BpmnLane(final CpfResourceTypeType resourceType, final Initializer initializer) throws CanoniserException {
 
         initializer.populateBaseElement(this, resourceType);
         addChildLanes(this, initializer);
