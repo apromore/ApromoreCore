@@ -96,7 +96,7 @@ public final class ExtensionUtils {
     }
 
     public static boolean isValidFragment(final Object obj, final String namespace, final String localPart) {
-        return ((Node) obj).getNamespaceURI().equals(namespace) && ((Node) obj).getLocalName().equals(localPart);
+        return org.apromore.canoniser.utils.ExtensionUtils.isValidFragment(obj, namespace, localPart);
     }
 
     /**
@@ -111,64 +111,7 @@ public final class ExtensionUtils {
      * @throws CanoniserException
      */
     public static <T> T unmarshalYAWLFragment(final Object object, final Class<T> expectedClass) throws CanoniserException {
-        try {
-            if (YAWL_CONTEXT != null) {
-                final Unmarshaller u = YAWL_CONTEXT.createUnmarshaller();
-                final JAXBElement<T> jaxbElement = u.unmarshal((Node) object, expectedClass);
-                return jaxbElement.getValue();
-            } else {
-                throw new CanoniserException("Missing JAXBContext for YAWL!");
-            }
-        } catch (final JAXBException e) {
-            throw new CanoniserException("Failed to parse YAWL extension with expected class " + expectedClass.getName(), e);
-        }
-    }
-
-    /**
-     * 'Marshal' a JAXB object of some native schema to a DOM Node that can be added to 'xs:any'
-     *
-     * @param elementName
-     *            to use as local part
-     * @param object
-     *            to be marshaled
-     * @param expectedClass
-     *            class of the object
-     * @param nativeName
-     *            presentation name of the origin format, e.g. "FooML"
-     * @param nativeNS
-     *            Namespace URL for the origin format
-     * @param nativeContext
-     *            context for marshalling the origin format
-     * @return XML Element containing the markup fragment
-     * @throws CanoniserException
-     */
-    public static <T> Element marshalFragment(final String      elementName,
-                                              final T           object,
-                                              final Class<T>    expectedClass,
-                                              final String      nativeName,
-                                              final String      nativeNS,
-                                              final JAXBContext nativeContext) throws CanoniserException {
-        try {
-            if (nativeContext != null) {
-                final Marshaller m = nativeContext.createMarshaller();
-                m.setProperty(Marshaller.JAXB_FRAGMENT, Boolean.TRUE);
-                final JAXBElement<T> element = new JAXBElement<T>(new QName(nativeNS, elementName), expectedClass, object);
-                final DocumentBuilderFactory dbf = DocumentBuilderFactory.newInstance();
-                dbf.setNamespaceAware(false);
-                Document doc;
-                try {
-                    doc = dbf.newDocumentBuilder().newDocument();
-                } catch (final ParserConfigurationException e) {
-                    throw new CanoniserException("Could not build document while marshalling " + nativeName + " fragment. This should never happen!", e);
-                }
-                m.marshal(element, doc);
-                return doc.getDocumentElement();
-            } else {
-                throw new CanoniserException("Missing JAXBContext for " + nativeName + "!");
-            }
-        } catch (final JAXBException e) {
-            throw new CanoniserException("Failed to add " + nativeName + " extension with name " + elementName, e);
-        }
+        return org.apromore.canoniser.utils.ExtensionUtils.unmarshalFragment(object, expectedClass, YAWL_CONTEXT);
     }
 
     /**
@@ -184,7 +127,7 @@ public final class ExtensionUtils {
      * @throws CanoniserException
      */
     public static <T> Element marshalYAWLFragment(final String elementName, final T object, final Class<T> expectedClass) throws CanoniserException {
-        return marshalFragment(elementName, object, expectedClass, "YAWL", YAWLSCHEMA_URL, YAWL_CONTEXT);
+        return org.apromore.canoniser.utils.ExtensionUtils.marshalFragment(elementName, object, expectedClass, YAWLSCHEMA_URL, YAWL_CONTEXT);
     }
 
     /**
@@ -195,7 +138,7 @@ public final class ExtensionUtils {
      */
     public static void addToExtensions(final Element extensionElement, final NodeType node) {
         LOGGER.debug("Added YAWL extension {} to Node {}", extensionElement.getNodeName(), node.getId());
-        node.getAttribute().add(createExtension(extensionElement));
+        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, node);
     }
 
     /**
@@ -206,18 +149,18 @@ public final class ExtensionUtils {
      */
     public static void addToExtensions(final Element extensionElement, final CanonicalProcessType cpt) {
         LOGGER.debug("Added YAWL extension {} to CPF", extensionElement.getNodeName());
-        cpt.getAttribute().add(createExtension(extensionElement));
+        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, cpt);
     }
 
     /**
-     * Add the extension Element (XML) to the CPF attributes
+     * Add the extension Element (XML) to the CPF Edge attributes
      *
      * @param extensionElement any XML Element
      * @param edge CPF Edge
      */
     public static void addToExtensions(final Element extensionElement, final EdgeType edge) {
-        LOGGER.debug("Added YAWL extension {} to CPF", extensionElement.getNodeName());
-        edge.getAttribute().add(createExtension(extensionElement));
+        LOGGER.debug("Added YAWL extension {} to Edge {}", extensionElement.getNodeName(), edge.getId());
+        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, edge);
     }
 
     /**
@@ -228,7 +171,7 @@ public final class ExtensionUtils {
      */
     public static void addToExtensions(final Element extensionElement, final NetType net) {
         LOGGER.debug("Added YAWL extension {} to Net {}", extensionElement.getNodeName(), net.getId());
-        net.getAttribute().add(createExtension(extensionElement));
+        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, net);
     }
 
     /**
@@ -239,7 +182,7 @@ public final class ExtensionUtils {
      */
     public static void addToExtensions(final Element extensionElement, final ObjectType object) {
         LOGGER.debug("Added YAWL extension {} to Object {}", extensionElement.getNodeName(), object.getId());
-        object.getAttribute().add(createExtension(extensionElement));
+        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, object);
     }
 
     /**
@@ -250,18 +193,7 @@ public final class ExtensionUtils {
      */
     public static void addToExtensions(final Element extensionElement, final ResourceTypeType resourceType) {
         LOGGER.debug("Added YAWL extension {} to Resource {}", extensionElement.getNodeName(), resourceType.getId());
-        resourceType.getAttribute().add(createExtension(extensionElement));
-    }
-
-    private static TypeAttribute createExtension(final Element extensionElement) {
-        final TypeAttribute attr = new ObjectFactory().createTypeAttribute();
-        if (extensionElement.getNamespaceURI() != null) {
-            attr.setName(extensionElement.getNamespaceURI() + "/" + extensionElement.getLocalName());
-        } else {
-            attr.setName(extensionElement.getLocalName());
-        }
-        attr.setAny(extensionElement);
-        return attr;
+        org.apromore.canoniser.utils.ExtensionUtils.addToExtensions(extensionElement, resourceType);
     }
 
     /**
@@ -274,7 +206,7 @@ public final class ExtensionUtils {
      * @return just the first TypeAttribute
      */
     public static TypeAttribute getExtensionAttribute(final NodeType node, final String name) {
-        return getExtensionFromAttributes(node.getAttribute(), name);
+        return org.apromore.canoniser.utils.ExtensionUtils.getExtensionAttribute(node, name);
     }
 
     /**
@@ -287,13 +219,7 @@ public final class ExtensionUtils {
      * @return List of TypeAttribute
      */
     public static List<TypeAttribute> getExtensionAttributes(final TaskType node, final String name) {
-        List<TypeAttribute> attrList = new ArrayList<TypeAttribute>();
-        for (TypeAttribute attr :node.getAttribute()) {
-            if (name.equals(attr.getName()) || (YAWLSCHEMA_URL+"/"+name).equals(attr.getName())) {
-                attrList.add(attr);
-            }
-        }
-        return attrList;
+        return org.apromore.canoniser.utils.ExtensionUtils.getExtensionAttributes(node, name);
     }
 
 
@@ -305,16 +231,7 @@ public final class ExtensionUtils {
      * @return true if found, false otherwise
      */
     public static boolean hasExtension(final List<TypeAttribute> attributes, final String name) {
-        return getExtensionFromAttributes(attributes, name) != null;
-    }
-
-    private static TypeAttribute getExtensionFromAttributes(final List<TypeAttribute> attributeList, final String name) {
-        for (TypeAttribute attr :attributeList) {
-            if (name.equals(attr.getName()) || (YAWLSCHEMA_URL+"/"+name).equals(attr.getName())) {
-                return attr;
-            }
-        }
-        return null;
+        return org.apromore.canoniser.utils.ExtensionUtils.hasExtension(attributes, name);
     }
 
     /**
@@ -326,8 +243,10 @@ public final class ExtensionUtils {
      * @param defaultValue if not found
      * @return Object of excpectedClass
      */
-    public static <T> T getFromNodeExtension(final NodeType node, final String elementName, final Class<T> excpectedClass, final T defaultValue) {
-        return getFromExtension(node.getAttribute(), elementName, excpectedClass, defaultValue);
+    public static <T> T getFromNodeExtension(final NodeType node, final String elementName, final Class<T> expectedClass,
+            final T defaultValue) {
+        return org.apromore.canoniser.utils.ExtensionUtils.getFromExtension(node.getAttribute(), elementName, expectedClass, defaultValue,
+                                                                            YAWL_CONTEXT);
     }
 
     /**
@@ -339,17 +258,9 @@ public final class ExtensionUtils {
      * @param defaultValue if not found
      * @return Object of excpectedClass
      */
-    public static <T> T getFromExtension(final List<TypeAttribute> attributes, final String elementName, final Class<T> excpectedClass, final T defaultValue) {
-        TypeAttribute attr = getExtensionFromAttributes(attributes, elementName);
-        if (attr != null && attr.getAny() != null) {
-            try {
-                return ExtensionUtils.unmarshalYAWLFragment(attr.getAny(), excpectedClass);
-            } catch (CanoniserException e) {
-                LOGGER.warn("Could unmarshal fragment from extension!", e);
-                return defaultValue;
-            }
-        }
-        return defaultValue;
+    public static <T> T getFromExtension(final List<TypeAttribute> attributes, final String elementName, final Class<T> expectedClass,
+            final T defaultValue) {
+        return org.apromore.canoniser.utils.ExtensionUtils.getFromExtension(attributes, elementName, expectedClass, defaultValue, YAWL_CONTEXT);
     }
 
     /**
@@ -363,16 +274,8 @@ public final class ExtensionUtils {
      */
     public static <T> T getFromAnnotationsExtension(final AnnotationType annotation, final String elementName, final Class<T> expectedClass,
             final T defaultValue) {
-        for (final Object extObj : annotation.getAny()) {
-            try {
-                if (ExtensionUtils.isValidFragment(extObj, ExtensionUtils.YAWLSCHEMA_URL, elementName)) {
-                    return ExtensionUtils.unmarshalYAWLFragment(extObj, expectedClass);
-                }
-            } catch (final CanoniserException e) {
-                LOGGER.warn("Could not convert YAWL extension {} with type {}", new String[] { elementName, expectedClass.getSimpleName() }, e);
-            }
-        }
-        return defaultValue;
+        return org.apromore.canoniser.utils.ExtensionUtils.getFromAnnotationsExtension(annotation, elementName, expectedClass, defaultValue,
+                                                                                       YAWL_CONTEXT);
     }
 
 
