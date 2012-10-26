@@ -92,11 +92,16 @@ public class EdgeHandler extends CanonicalElementHandler<EdgeType, NetFactsType>
             final PredicateType predicate = YAWL_FACTORY.createPredicateType();
             predicate.setValue(convertCanonicalExpression(getObject().getConditionExpr()));
             final List<NodeType> postSet = getContext().getPostSet(getObject().getSourceId());
-            if (postSet.size() > 1) {
-                BigInteger targetIndex = determineTargetIndex(postSet);
-                predicate.setOrdering(targetIndex);
-            } else {
-                predicate.setOrdering(BigInteger.valueOf(1));
+            if (isXorSplit(sourceElement)) {
+                if (postSet.size() > 1) {
+                    BigInteger targetIndex = determineTargetIndex(postSet);
+                    predicate.setOrdering(targetIndex);
+                } else {
+                    predicate.setOrdering(BigInteger.valueOf(1));
+                }
+            }
+            if (getObject().isDefault()) {
+                flowsIntoType.setIsDefaultFlow("");
             }
             flowsIntoType.setPredicate(predicate);
             LOGGER.debug("Adding Flow from {} to {} with condition {}",
@@ -124,10 +129,30 @@ public class EdgeHandler extends CanonicalElementHandler<EdgeType, NetFactsType>
         }
     }
 
-    private boolean isAndSplit(final ExternalNetElementFactsType sourceElement) {
-        if (sourceElement instanceof ExternalTaskFactsType) {
-            ExternalTaskFactsType task = (ExternalTaskFactsType) sourceElement;
-            return task.getSplit().equals(ControlTypeCodeType.AND);
+    /**
+     * Returns true if the element has an AND split attached to it.
+     *
+     * @param element
+     * @return
+     */
+    private boolean isAndSplit(final ExternalNetElementFactsType element) {
+        if (element instanceof ExternalTaskFactsType) {
+            ExternalTaskFactsType task = (ExternalTaskFactsType) element;
+            return task.getSplit().getCode().equals(ControlTypeCodeType.AND);
+        }
+        return false;
+    }
+
+    /**
+     * Returns true if the element has an XOR split attached to it.
+     *
+     * @param element
+     * @return
+     */
+    private boolean isXorSplit(final ExternalNetElementFactsType element) {
+        if (element instanceof ExternalTaskFactsType) {
+            ExternalTaskFactsType task = (ExternalTaskFactsType) element;
+            return task.getSplit().getCode().equals(ControlTypeCodeType.XOR);
         }
         return false;
     }

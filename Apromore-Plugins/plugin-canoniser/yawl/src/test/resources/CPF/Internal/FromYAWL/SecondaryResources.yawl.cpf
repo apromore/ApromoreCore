@@ -12,48 +12,48 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <resourceTypeRef id="f95f3db5-caaf-470d-8450-b39400d1e339" resourceTypeId="idb281bbb0-fad8-4bb3-901b-d05646cb4950" qualifier="Primary"/>
-            <resourceTypeRef id="id91339b5f-f08e-4e15-94d0-23f851f3b739" resourceTypeId="idc2848539-237d-4427-995d-a99d89661e54" qualifier="Primary"/>
-            <resourceTypeRef id="d07b314c-7589-417e-9fa3-6ae8526ebd51" resourceTypeId="id8e160134-fbcc-4ab7-b5fa-92742dab7684" qualifier="Secondary"/>
-            <resourceTypeRef id="id6574e0c0-fce8-4bf7-a2f6-883ef35ec33f" resourceTypeId="id5e6424f6-d306-40e9-bdd2-091e961b099e" qualifier="Secondary"/>
-            <resourceTypeRef id="cffb7a2c-17ae-41b5-a355-8136d40b87ad" resourceTypeId="idf0b4b5ee-08a4-44f7-8f09-ed04c0472c6d" qualifier="Secondary"/>
+            <resourceTypeRef id="b37a9265-03d4-427d-9c3e-11ec69dbf2a6" resourceTypeId="iddd9502e2-6acc-4f1b-98c5-39b6311cdc6c" qualifier="Primary"/>
+            <resourceTypeRef id="id86476ed8-8fb4-4b5a-9da1-b48c5f90ca45" resourceTypeId="id676075dd-3464-44d3-9500-01661776087a" qualifier="Primary"/>
+            <resourceTypeRef id="b93e85b9-4cc2-4abb-9706-7a5e62ff9b5a" resourceTypeId="idd99a18df-bc6b-46fc-be63-1517531b1419" qualifier="Secondary"/>
+            <resourceTypeRef id="f5b6e3d9-899b-40b0-bf63-4363450f8e52" resourceTypeId="id018db022-82dd-49b3-9fbb-115f1df92a14" qualifier="Secondary"/>
+            <resourceTypeRef id="f1bc50eb-9fc7-4d88-9d60-db79fba6d1d1" resourceTypeId="id123b623a-afe6-498b-a1bb-2cd2dad75bcc" qualifier="Secondary"/>
             <teamWork>false</teamWork>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="C-InputCondition-A" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="C-A-OutputCondition" sourceId="C-A" targetId="C-OutputCondition"/>
+        <Edge id="C-InputCondition-A" default="false" sourceId="C-InputCondition" targetId="C-A"/>
+        <Edge id="C-A-OutputCondition" default="false" sourceId="C-A" targetId="C-OutputCondition"/>
     </Net>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="idb281bbb0-fad8-4bb3-901b-d05646cb4950" specializationIds="id132d465f-a286-4c55-a022-14a840bf7f48 id167ce46e-7956-4ffc-a37c-fa22d25657d2 idc2848539-237d-4427-995d-a99d89661e54" originalID="RO-176b14db-d9d7-4de0-8a5f-657a1103a814">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="iddd9502e2-6acc-4f1b-98c5-39b6311cdc6c" specializationIds="ida28be802-cb14-421d-b720-91dd55bcdfb9 id9c33514c-5d07-4200-8c18-236b7dcfcf26 id676075dd-3464-44d3-9500-01661776087a" originalID="RO-176b14db-d9d7-4de0-8a5f-657a1103a814">
         <name>RoleY</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id8e160134-fbcc-4ab7-b5fa-92742dab7684" specializationIds="id132d465f-a286-4c55-a022-14a840bf7f48 idb281bbb0-fad8-4bb3-901b-d05646cb4950" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="idd99a18df-bc6b-46fc-be63-1517531b1419" specializationIds="ida28be802-cb14-421d-b720-91dd55bcdfb9 iddd9502e2-6acc-4f1b-98c5-39b6311cdc6c" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
         <name>RoleX</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id132d465f-a286-4c55-a022-14a840bf7f48" originalID="PA-c5795783-3695-48ec-b798-aea7890b0988">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="ida28be802-cb14-421d-b720-91dd55bcdfb9" originalID="PA-c5795783-3695-48ec-b798-aea7890b0988">
         <name>TestX TestX</name>
         <attribute name="Capability" value="CapabilityX"/>
         <attribute name="Position" value="PositionX"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id167ce46e-7956-4ffc-a37c-fa22d25657d2" originalID="PA-09ef66e3-4f91-4a10-82de-19294ba87cd3">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id9c33514c-5d07-4200-8c18-236b7dcfcf26" originalID="PA-09ef66e3-4f91-4a10-82de-19294ba87cd3">
         <name>TestY TestY</name>
         <attribute name="Capability" value="CapabilityY"/>
         <attribute name="Capability" value="CapabilityX"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="idc2848539-237d-4427-995d-a99d89661e54" specializationIds="id167ce46e-7956-4ffc-a37c-fa22d25657d2" originalID="RO-c4671de9-56cc-4eb3-b625-00406479ed3d">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id676075dd-3464-44d3-9500-01661776087a" specializationIds="id9c33514c-5d07-4200-8c18-236b7dcfcf26" originalID="RO-c4671de9-56cc-4eb3-b625-00406479ed3d">
         <name>RoleZ</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:NonhumanType" id="id5e6424f6-d306-40e9-bdd2-091e961b099e" originalID="NH-bc2f1def-2ac9-4b4e-b29f-f2e5262d38f6">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:NonhumanType" id="id018db022-82dd-49b3-9fbb-115f1df92a14" originalID="NH-bc2f1def-2ac9-4b4e-b29f-f2e5262d38f6">
         <name>ResourceA</name>
         <type>Equipment</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:NonhumanType" id="idf0b4b5ee-08a4-44f7-8f09-ed04c0472c6d" originalID="NH-35b8e495-2ef7-485e-a019-120c8a37ad05">
+    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:NonhumanType" id="id123b623a-afe6-498b-a1bb-2cd2dad75bcc" originalID="NH-35b8e495-2ef7-485e-a019-120c8a37ad05">
         <name>ResourceB</name>
         <type>Equipment</type>
     </ResourceType>

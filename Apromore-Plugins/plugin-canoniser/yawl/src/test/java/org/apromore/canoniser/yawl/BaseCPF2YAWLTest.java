@@ -43,6 +43,7 @@ import org.yawlfoundation.yawlschema.ExternalTaskFactsType;
 import org.yawlfoundation.yawlschema.FlowsIntoType;
 import org.yawlfoundation.yawlschema.InputParameterFactsType;
 import org.yawlfoundation.yawlschema.NetFactsType;
+import org.yawlfoundation.yawlschema.OutputConditionFactsType;
 import org.yawlfoundation.yawlschema.OutputParameterFactsType;
 import org.yawlfoundation.yawlschema.VarMappingFactsType;
 import org.yawlfoundation.yawlschema.VariableFactsType;
@@ -332,11 +333,23 @@ public abstract class BaseCPF2YAWLTest {
     }
 
     protected ExternalTaskFactsType checkTask(final NetFactsType net, final String name, final ControlTypeCodeType join, final ControlTypeCodeType split, final int outgoingEdges) {
-        ExternalTaskFactsType task = findTaskByName("make decision", net);
+        ExternalTaskFactsType task = findTaskByName(name, net);
         assertEquals("Join type of Task "+name+" is wrong! Should be "+join+" but is "+task.getJoin().getCode(),task.getJoin().getCode(), join);
         assertEquals("Split type of Task "+name+" is wrong! Should be "+split+" but is "+task.getSplit().getCode(),task.getSplit().getCode(), split);
         assertEquals(outgoingEdges, task.getFlowsInto().size());
         return task;
+    }
+
+    protected void checkIsOutputCondition(final NetFactsType net, final String id) {
+        OutputConditionFactsType outputCondition = net.getProcessControlElements().getOutputCondition();
+        assertNotNull(outputCondition);
+        assertEquals("Node "+id+" is not the OutputCondition ", outputCondition.getId(), id);
+    }
+
+    protected void checkIsInputCondition(final NetFactsType net, final String id) {
+        ExternalConditionFactsType inputCondition = net.getProcessControlElements().getInputCondition();
+        assertNotNull(inputCondition);
+        assertEquals("Node "+id+" is not the InputCondition ", inputCondition.getId(), id);
     }
 
     protected void checkAtLeastOneDefaultFlow(final ExternalTaskFactsType task) {
@@ -358,6 +371,17 @@ public abstract class BaseCPF2YAWLTest {
         }
         assertTrue("Missing default flow in Task "+task.getId(),defaultCount == 1);
     }
+
+    protected void checkNoDefaultFlow(final ExternalTaskFactsType task) {
+        int defaultCount = 0;
+        for (FlowsIntoType flow: task.getFlowsInto()) {
+            if (flow.getIsDefaultFlow() != null) {
+                defaultCount ++;
+            }
+        }
+        assertTrue("Task "+task.getId()+" should not have any default flow",defaultCount == 0);
+    }
+
 
     protected void checkNoMissingPredicate(final ExternalTaskFactsType task) {
         for (FlowsIntoType flow: task.getFlowsInto()) {

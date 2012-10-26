@@ -2,6 +2,7 @@ package org.apromore.plugin.deployment.yawl;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 import java.io.BufferedInputStream;
 import java.io.FileInputStream;
@@ -14,7 +15,9 @@ import org.apache.http.client.fluent.Request;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.plugin.PluginResult;
+import org.apromore.plugin.deployment.exception.DeploymentException;
 import org.apromore.plugin.exception.PluginException;
+import org.apromore.plugin.exception.PluginPropertyNotFoundException;
 import org.apromore.plugin.impl.PluginRequestImpl;
 import org.apromore.plugin.property.RequestParameterType;
 import org.junit.Before;
@@ -37,25 +40,79 @@ public class YAWLDeploymentPluginIntgTest {
     }
 
     @Test
-    public void testDeployProcessCanonicalProcessType() throws IOException, JAXBException, SAXException, PluginException {
+    public void testDeploySequence() throws IOException, JAXBException, SAXException, PluginException {
         if (checkYAWLServerAvailable()) {
             try (BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/WPC1Sequence.yawl.cpf"))) {
-                CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(cpfInputStream, true).getValue();
-                PluginRequestImpl request = new PluginRequestImpl();
-                request.addRequestProperty(new RequestParameterType<String>("yawlEngineUrl", "http://localhost:8080/yawl/ia"));
-                request.addRequestProperty(new RequestParameterType<String>("yawlEngineUsername", "admin"));
-                request.addRequestProperty(new RequestParameterType<String>("yawlEnginePassword", "YAWL"));
-                PluginResult result = deploymentPlugin.deployProcess(cpf, request);
-                assertTrue(result.getPluginMessage().size() == 1 || result.getPluginMessage().size() == 2);
-                if (result.getPluginMessage().size() == 2) {
-                    assertEquals("Failure deploying process WP1Sequence", result.getPluginMessage().get(0).getMessage());
-                    assertEquals("Error: There is a specification with an identical id to [UID: WP1Sequence- Version: 0.1] already loaded into the engine.", result.getPluginMessage().get(1).getMessage());
-                } else {
-                    assertTrue("Process Simple Make Trip Process successfully deployed.".equals(result.getPluginMessage().get(0).getMessage())
-                            || "Error: There is a specification with an identical id to [UID: WP1Sequence- Version: 0.1] already loaded into the engine.".equals(result.getPluginMessage().get(0).getMessage()));
-                }
+                PluginResult result = doDeployProcess(cpfInputStream);
+                checkResult(result, "WP1Sequence", "WP1Sequence", "0.1");
             }
         }
+    }
+
+
+    @Test
+    public void testDeploySimpleMakeTrip() throws IOException, JAXBException, SAXException, PluginException {
+        if (checkYAWLServerAvailable()) {
+            try (BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/SimpleMakeTripProcess.yawl.cpf"))) {
+                PluginResult result = doDeployProcess(cpfInputStream);
+                checkResult(result, "Simple Make Trip Process", "Simple Make Trip Process", "0.1");
+            }
+        }
+    }
+
+    @Test
+    public void testDeployFilmProduction() throws IOException, JAXBException, SAXException, PluginException {
+        if (checkYAWLServerAvailable()) {
+            try (BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/filmproduction.yawl.cpf"))) {
+                PluginResult result = doDeployProcess(cpfInputStream);
+                checkResult(result, "Credit Rating Process", "CreditRatingProcess.ywl", "1.0");
+            }
+        }
+    }
+
+    @Test
+    public void testDeployCreditRatingProcess() throws IOException, JAXBException, SAXException, PluginException {
+        if (checkYAWLServerAvailable()) {
+            try (BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/CreditRatingProcess.yawl.cpf"))) {
+                PluginResult result = doDeployProcess(cpfInputStream);
+                checkResult(result, "Credit Rating Process", "CreditRatingProcess.ywl", "1.0");
+            }
+        }
+    }
+
+    @Test
+    public void testDeployCreditApplicationProcess() throws IOException, JAXBException, SAXException, PluginException {
+        if (checkYAWLServerAvailable()) {
+            try (BufferedInputStream cpfInputStream = new BufferedInputStream(new FileInputStream("src/test/resources/CreditApplicationProcess.yawl.cpf"))) {
+                PluginResult result = doDeployProcess(cpfInputStream);
+                checkResult(result, "Credit application process", "CreditApplication", "0.1");
+            }
+        }
+    }
+
+    private void checkResult(final PluginResult result, final String processName, final String processId, final String processVersion) {
+        assertTrue(result.getPluginMessage().size() >= 1);
+        if (result.getPluginMessage().size() == 2) {
+            assertEquals("Failure deploying process "+processName, result.getPluginMessage().get(0).getMessage());
+            assertEquals("Error: There is a specification with an identical id to [UID: "+processId+"- Version: "+processVersion+"] already loaded into the engine.", result.getPluginMessage().get(1).getMessage());
+            fail("Please unload specifiction '"+processName+"' before integration testing!");
+        } else {
+            if (!result.getPluginMessage().get(0).getMessage().equals("Process "+processName+" successfully deployed.")) {
+                assertEquals("Error: There is a specification with an identical id to [UID: "+processName+"- Version: "+processVersion+"] already loaded into the engine.", result.getPluginMessage().get(0).getMessage());
+                fail("Please unload specifiction '"+processName+"' before integration testing!");
+            }
+        }
+    }
+
+    private PluginResult doDeployProcess(final BufferedInputStream cpfInputStream) throws JAXBException, SAXException, DeploymentException,
+            PluginPropertyNotFoundException {
+        CanonicalProcessType cpf = CPFSchema.unmarshalCanonicalFormat(cpfInputStream, true).getValue();
+        PluginRequestImpl request = new PluginRequestImpl();
+        request.addRequestProperty(new RequestParameterType<String>("yawlEngineUrl", "http://localhost:8080/yawl/ia"));
+        request.addRequestProperty(new RequestParameterType<String>("yawlEngineUsername", "admin"));
+        request.addRequestProperty(new RequestParameterType<String>("yawlEnginePassword", "YAWL"));
+        PluginResult result = deploymentPlugin.deployProcess(cpf, request);
+        return result;
     }
 
     private boolean checkYAWLServerAvailable() {

@@ -32,10 +32,10 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="idf6cdf0a8-e07d-451e-b43e-e399b1ae1526" objectId="D-N-make-trip-payAccNumber" type="output" optional="false" consumed="true"/>
-            <objectRef id="id58a0a20a-8ec8-4129-876e-0a4e21285213" objectId="D-N-make-trip-customer" type="output" optional="false" consumed="true"/>
-            <objectRef id="idc323dc25-f8bc-4caf-8742-a742fb52a0a1" objectId="D-N-make-trip-legs" type="output" optional="false" consumed="true"/>
-            <objectRef id="id6627e4c6-a929-4c7d-8d9e-8344d2620cee" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="c7a4b78e-bf0e-4195-a508-648b6d3f0885" objectId="D-N-make-trip-payAccNumber" type="output" optional="false" consumed="true"/>
+            <objectRef id="id6460bab4-d68d-4b82-a01a-d3ebf0ae6b5e" objectId="D-N-make-trip-customer" type="output" optional="false" consumed="true"/>
+            <objectRef id="id1e8746cc-f934-4585-83fd-efb805bba483" objectId="D-N-make-trip-legs" type="output" optional="false" consumed="true"/>
+            <objectRef id="c138c22e-b2af-4331-b039-147782ac7f76" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>customer = {cpf:getObjectValue('customer')/text()}</expression>
@@ -56,11 +56,11 @@
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" subnetId="N-do-itinerary-segment" id="C-do-itinerary-segment-5" originalID="do_itinerary_segment_5">
             <name>do itinerary segment</name>
-            <objectRef id="ida485f69d-a913-4896-adf4-2b8313e0abf9" objectId="D-N-make-trip-subTotal" type="input" optional="false" consumed="true"/>
-            <objectRef id="bc681071-c380-4850-9710-7d42c63db764" objectId="D-N-make-trip-hotelDetails" type="input" optional="false" consumed="true"/>
-            <objectRef id="idf5a33b03-3d75-44b5-8518-9dfb6e9f94ea" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
-            <objectRef id="e4738eb5-7481-4a01-b45e-f17a24883cc3" objectId="D-N-make-trip-carDetails" type="input" optional="false" consumed="true"/>
-            <objectRef id="bbe0dc7b-7b72-4745-aaef-10ac3e509317" objectId="D-N-make-trip-flightDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="id3e9eb59a-d59c-4603-bfe8-203475d88e12" objectId="D-N-make-trip-subTotal" type="input" optional="false" consumed="true"/>
+            <objectRef id="e94f97ef-0b40-4630-8d56-b4ada63daa6e" objectId="D-N-make-trip-hotelDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="id91a83fb6-9234-451b-8571-8f192c798c19" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="cd91dfa0-6a7c-4c87-a4b4-25f6572aad21" objectId="D-N-make-trip-carDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="a931bea2-fefd-45cc-a5cf-ee5a6861c97f" objectId="D-N-make-trip-flightDetails" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>subTotal = {number(cpf:getObjectValue('subTotal')/text())}</expression>
@@ -112,10 +112,10 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </inputParam:inputParam>
             </attribute>
-            <objectRef id="id6f692cfc-d8ed-4588-94b7-29b929c5ed43" objectId="D-N-make-trip-itinerary" type="input" optional="false" consumed="true"/>
-            <objectRef id="cf2c85e9-422d-4eac-afe9-480987edc1aa" objectId="D-N-make-trip-itinerary" type="input" optional="false" consumed="true"/>
-            <objectRef id="idb5fdbe21-0905-49de-a4c3-d509d98f3d2b" objectId="D-N-make-trip-payAccNumber" type="input" optional="false" consumed="true"/>
-            <objectRef id="id364ed99c-05f0-4dae-a954-fed49fec58e4" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="f5ec8a72-7b3f-4308-abb2-8860bfcb0ccd" objectId="D-N-make-trip-itinerary" type="input" optional="false" consumed="true"/>
+            <objectRef id="id283a0f4f-a987-490b-afb7-2c7395819be7" objectId="D-N-make-trip-itinerary" type="input" optional="false" consumed="true"/>
+            <objectRef id="e0fc8664-fca8-4422-b2e3-f003d076ab0c" objectId="D-N-make-trip-payAccNumber" type="input" optional="false" consumed="true"/>
+            <objectRef id="a36b43b6-271e-4084-b80c-f7db1c233b1f" objectId="D-N-make-trip-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>total = {sum(cpf:getObjectValue('itinerary')/itinerarySegment/subTotal)}</expression>
@@ -135,10 +135,10 @@
             <teamWork>false</teamWork>
         </Node>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-2" originalID="OutputCondition_2"/>
-        <Edge id="C-InputCondition-1-register-83" sourceId="C-InputCondition-1" targetId="C-register-83"/>
-        <Edge id="C-register-83-do-itinerary-segment-5" sourceId="C-register-83" targetId="C-do-itinerary-segment-5"/>
-        <Edge id="C-do-itinerary-segment-5-pay-4" sourceId="C-do-itinerary-segment-5" targetId="C-pay-4"/>
-        <Edge id="C-pay-4-OutputCondition-2" sourceId="C-pay-4" targetId="C-OutputCondition-2"/>
+        <Edge id="C-InputCondition-1-register-83" default="false" sourceId="C-InputCondition-1" targetId="C-register-83"/>
+        <Edge id="C-register-83-do-itinerary-segment-5" default="false" sourceId="C-register-83" targetId="C-do-itinerary-segment-5"/>
+        <Edge id="C-do-itinerary-segment-5-pay-4" default="false" sourceId="C-do-itinerary-segment-5" targetId="C-pay-4"/>
+        <Edge id="C-pay-4-OutputCondition-2" default="false" sourceId="C-pay-4" targetId="C-OutputCondition-2"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-make-trip-carDetails" originalID="N-make-trip_carDetails">
             <name>carDetails</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">
@@ -335,11 +335,11 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="ef7525e2-9f18-4cd6-b2a1-a60fae44592c" objectId="D-N-do-itinerary-segment-startDate" type="output" optional="false" consumed="true"/>
-            <objectRef id="ide647ad0e-73b8-4311-bab2-57cc6c9b746d" objectId="D-N-do-itinerary-segment-serviceRequired" type="output" optional="false" consumed="true"/>
-            <objectRef id="idaac14f81-4728-4d8c-ba2c-529c2083ca26" objectId="D-N-do-itinerary-segment-endDate" type="output" optional="false" consumed="true"/>
-            <objectRef id="idc916bc9a-eda7-43ff-b69c-328c66c828f6" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
-            <objectRef id="id4bae7eca-34ab-459d-8924-99f6efcc679e" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="idc940349f-68ef-43ea-b508-8c1a6b71a12d" objectId="D-N-do-itinerary-segment-startDate" type="output" optional="false" consumed="true"/>
+            <objectRef id="a0cfa2ef-55d0-46e0-8542-46754e7e1a66" objectId="D-N-do-itinerary-segment-serviceRequired" type="output" optional="false" consumed="true"/>
+            <objectRef id="idc1055260-ec72-413d-9198-58ef0e4f8107" objectId="D-N-do-itinerary-segment-endDate" type="output" optional="false" consumed="true"/>
+            <objectRef id="id4cb01f7f-6889-4b80-886e-9782bb969a7c" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
+            <objectRef id="a6f01cf6-cf43-4895-afef-31fc8e44be3a" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>leg = {cpf:getObjectValue('leg')/*}</expression>
@@ -362,7 +362,7 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="f1eb297a-52be-4e2d-acae-0a22243572a0"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORSplitType" id="id394a7f1c-4438-4896-ae16-dc07c1fcd79a"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-book-car-29" originalID="book_car_29">
             <name>book car</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/inputParam">
@@ -400,11 +400,11 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="idc0ee0fed-86ae-448e-bc18-9fca8109454d" objectId="D-N-do-itinerary-segment-carDetails" type="output" optional="false" consumed="true"/>
-            <objectRef id="b6a3518c-45cd-4ce4-bfdb-0716ca90f82b" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
-            <objectRef id="idf846ca92-17b1-47a8-b32a-3403a2eb4a73" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="id8ebf2571-e918-4844-a029-6f63c57f6edc" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="ecb53aae-bb4e-44a0-bea5-6183cd525050" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="id8442e9ab-81c9-4897-b388-70ac78224266" objectId="D-N-do-itinerary-segment-carDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="idf138b9bf-1081-40fa-b749-632f3ce5c4a1" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
+            <objectRef id="id84bde69f-08b7-40a7-8185-a45f77e6ffd3" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="idedc999d6-78b5-4699-9320-60470aa642e0" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="id6a94e08b-e779-43ba-b7a8-29044a490759" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>leg = {cpf:getObjectValue('leg')/*}</expression>
@@ -464,11 +464,11 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id8080ad43-1c74-45c1-befe-30358de21d46" objectId="D-N-do-itinerary-segment-flightDetails" type="output" optional="false" consumed="true"/>
-            <objectRef id="ide69fa106-6092-4663-b975-15a228a58779" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
-            <objectRef id="id2b8e6f34-e08e-470f-a4e9-0cbadebfabfe" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="a0d0e8bf-9392-4676-9326-fc5229768aeb" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="b53fa61e-c3c3-4aa5-b9f4-741cc5af4156" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="e0b2323a-5bf5-4685-a3b2-47a2d18ab9fd" objectId="D-N-do-itinerary-segment-flightDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="id972905a6-b6e6-4b40-97ed-53142a7ab6cc" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
+            <objectRef id="idce37a9ed-ad61-4987-8691-4468ce0c90d6" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="id4d36eca8-f08b-4767-b9d0-140f98f6fd2e" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="id25a89023-b791-46bb-8ec9-dc75637df25d" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>leg = {cpf:getObjectValue('leg')/*}</expression>
@@ -528,11 +528,11 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id5c2328d3-d68b-4b69-ac1d-59a2b3630d9f" objectId="D-N-do-itinerary-segment-hotelDetails" type="output" optional="false" consumed="true"/>
-            <objectRef id="id96ab327d-895a-4d32-a962-ed257d7d8b37" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
-            <objectRef id="d7e01ed6-689c-4b6f-b2f6-837f2f6a477a" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="be7ff439-9d86-4433-8272-432a08bfedcc" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
-            <objectRef id="ida9649aca-7333-406c-b944-baab8b98287c" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="f1c403e6-e865-4db9-bbf4-1796d4393a06" objectId="D-N-do-itinerary-segment-hotelDetails" type="output" optional="false" consumed="true"/>
+            <objectRef id="ida511097f-9116-41d6-8a5a-22fb283fe0ed" objectId="D-N-do-itinerary-segment-leg" type="input" optional="false" consumed="true"/>
+            <objectRef id="id2021bfb4-43ea-47cd-ad64-b90bc135613a" objectId="D-N-do-itinerary-segment-startDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="idf04ba1e5-fb9f-46bf-aac8-6c33f4b9a5eb" objectId="D-N-do-itinerary-segment-endDate" type="input" optional="false" consumed="true"/>
+            <objectRef id="cbb56a9c-adcb-4e77-9876-90e6c1cc7037" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>leg = {cpf:getObjectValue('leg')/*}</expression>
@@ -592,11 +592,11 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="idc79479d7-1759-457e-94b7-13544c08053f" objectId="D-N-do-itinerary-segment-subTotal" type="output" optional="false" consumed="true"/>
-            <objectRef id="a9b61743-78fe-4c19-be42-455f73b14b1f" objectId="D-N-do-itinerary-segment-hotelDetails" type="input" optional="false" consumed="true"/>
-            <objectRef id="a5a6768f-6d1b-4923-be63-d377d4fe8c05" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
-            <objectRef id="id061e6bbf-dac9-4d95-9fbb-7f91e4e021ba" objectId="D-N-do-itinerary-segment-carDetails" type="input" optional="false" consumed="true"/>
-            <objectRef id="ide3d59900-473f-4a9e-8c7e-408cf7f73eac" objectId="D-N-do-itinerary-segment-flightDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="id745baa3f-15fc-4dd3-8ed1-ad2f2e7a9653" objectId="D-N-do-itinerary-segment-subTotal" type="output" optional="false" consumed="true"/>
+            <objectRef id="ide41279b0-6303-4cbd-a628-737f5e60acf0" objectId="D-N-do-itinerary-segment-hotelDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="ee181825-3a67-49ea-948e-3da4eca8c7e8" objectId="D-N-do-itinerary-segment-customer" type="input" optional="false" consumed="true"/>
+            <objectRef id="id3ea175cc-7b06-47e6-b8e8-3c217dad6cf4" objectId="D-N-do-itinerary-segment-carDetails" type="input" optional="false" consumed="true"/>
+            <objectRef id="idf94b339d-6ead-4614-9f2e-83a33859ce17" objectId="D-N-do-itinerary-segment-flightDetails" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>hotelDetails = {cpf:getObjectValue('hotelDetails')/text()}</expression>
@@ -619,33 +619,33 @@
             </outputExpr>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="id3f2107af-e7f8-4b78-bdd0-f9a82e9d6a8b"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ORJoinType" id="de5502db-a009-4c9d-b9d3-eafd19d903ba"/>
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition-9" originalID="OutputCondition_9"/>
-        <Edge id="C-InputCondition-8-register-itinerary-26" sourceId="C-InputCondition-8" targetId="C-register-itinerary-26"/>
-        <Edge id="iddd302b1b-7f71-417e-9e41-fd2180670a0a" sourceId="C-register-itinerary-26" targetId="f1eb297a-52be-4e2d-acae-0a22243572a0"/>
-        <Edge id="ide2e25b14-06b2-4c97-9172-16c8723684b5" default="true" sourceId="f1eb297a-52be-4e2d-acae-0a22243572a0" targetId="C-book-car-29">
+        <Edge id="C-InputCondition-8-register-itinerary-26" default="false" sourceId="C-InputCondition-8" targetId="C-register-itinerary-26"/>
+        <Edge id="id4c7a549c-dd23-4fb2-bee9-fd3415ef7b85" sourceId="C-register-itinerary-26" targetId="id394a7f1c-4438-4896-ae16-dc07c1fcd79a"/>
+        <Edge id="id71746c5b-7cad-4195-b112-64d8a1954b9c" default="true" sourceId="id394a7f1c-4438-4896-ae16-dc07c1fcd79a" targetId="C-book-car-29">
             <conditionExpr>
                 <language>http://www.w3.org/1999/xpath/</language>
                 <expression>/do_itinerary_segment/serviceRequired/want_car/text()='true'</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="idd6389ff7-fd28-46e3-8bd2-b05ed3a002f3" sourceId="f1eb297a-52be-4e2d-acae-0a22243572a0" targetId="C-book-flight-27">
+        <Edge id="id942c7f4e-a129-46a4-a591-32dee48f2081" default="false" sourceId="id394a7f1c-4438-4896-ae16-dc07c1fcd79a" targetId="C-book-flight-27">
             <conditionExpr>
                 <language>http://www.w3.org/1999/xpath/</language>
                 <expression>/do_itinerary_segment/serviceRequired/want_flight/text()='true'</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="id0520c34a-263e-4e07-828d-91db62b741ee" sourceId="f1eb297a-52be-4e2d-acae-0a22243572a0" targetId="C-book-hotel-28">
+        <Edge id="id484c7fac-1df8-4ed8-be07-994a5e3ede6b" default="false" sourceId="id394a7f1c-4438-4896-ae16-dc07c1fcd79a" targetId="C-book-hotel-28">
             <conditionExpr>
                 <language>http://www.w3.org/1999/xpath/</language>
                 <expression>/do_itinerary_segment/serviceRequired/want_hotel/text()='true'</expression>
             </conditionExpr>
         </Edge>
-        <Edge id="id8a913a4c-2c6d-470b-820b-a5ef741c416c" sourceId="id3f2107af-e7f8-4b78-bdd0-f9a82e9d6a8b" targetId="C-prepare-pay-30"/>
-        <Edge id="idbe970061-3839-41e0-b136-58f1903cf9f8" sourceId="C-book-car-29" targetId="id3f2107af-e7f8-4b78-bdd0-f9a82e9d6a8b"/>
-        <Edge id="id0ef0e82d-b9fb-4e38-a6b5-58d20ed0a6ec" sourceId="C-book-flight-27" targetId="id3f2107af-e7f8-4b78-bdd0-f9a82e9d6a8b"/>
-        <Edge id="id6ec54896-ba46-4003-ad4e-3091acd72b3e" sourceId="C-book-hotel-28" targetId="id3f2107af-e7f8-4b78-bdd0-f9a82e9d6a8b"/>
-        <Edge id="C-prepare-pay-30-OutputCondition-9" sourceId="C-prepare-pay-30" targetId="C-OutputCondition-9"/>
+        <Edge id="id8f0ecb36-f944-48c9-b4a1-86e30dd439d9" sourceId="de5502db-a009-4c9d-b9d3-eafd19d903ba" targetId="C-prepare-pay-30"/>
+        <Edge id="id2a4a3128-3256-45bf-8ae6-76e070604ae1" default="false" sourceId="C-book-car-29" targetId="de5502db-a009-4c9d-b9d3-eafd19d903ba"/>
+        <Edge id="id9f6a8e68-c9c8-4903-b267-1fab7ed4cbf0" default="false" sourceId="C-book-flight-27" targetId="de5502db-a009-4c9d-b9d3-eafd19d903ba"/>
+        <Edge id="idab19d55d-0700-4979-82b1-caa6f8abe20d" default="false" sourceId="C-book-hotel-28" targetId="de5502db-a009-4c9d-b9d3-eafd19d903ba"/>
+        <Edge id="C-prepare-pay-30-OutputCondition-9" default="false" sourceId="C-prepare-pay-30" targetId="C-OutputCondition-9"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-do-itinerary-segment-endDate" originalID="N-do-itinerary-segment_endDate">
             <name>endDate</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">

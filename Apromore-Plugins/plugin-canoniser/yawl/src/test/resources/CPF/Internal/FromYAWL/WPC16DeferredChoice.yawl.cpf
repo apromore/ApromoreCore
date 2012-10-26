@@ -22,8 +22,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="id341efbe9-0f95-441d-980a-0f76ec8d4f48" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="id3db90c78-f673-494d-8753-c934446b8a6f" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="fe34ac70-c3df-4978-a61f-e5dbd6dbe0cb" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="eb9221c2-5e74-46ec-aa35-6da408d083d1" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = {cpf:getObjectValue('var')/text()}</expression>
@@ -55,8 +55,8 @@
                     <namespace>http://www.w3.org/2001/XMLSchema</namespace>
                 </outputParam:outputParam>
             </attribute>
-            <objectRef id="idcdd2e834-aeb6-4c1d-a971-b82efc702f26" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
-            <objectRef id="a6022830-950c-4524-9feb-5ba46493878f" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
+            <objectRef id="aa5a314d-dc27-4ddd-8cb5-ba4c16cb5758" objectId="D-N-Net-var" type="output" optional="false" consumed="true"/>
+            <objectRef id="idd8a260a1-cc6a-4705-b78f-473314a43451" objectId="D-N-Net-var" type="input" optional="false" consumed="true"/>
             <inputExpr>
                 <language>http://www.w3.org/2005/xpath-functions/</language>
                 <expression>var = {cpf:getObjectValue('var')/text()}</expression>
@@ -73,14 +73,14 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="d60f3c3a-bb64-483d-a13e-0478b94bac2d"/>
-        <Edge id="C-InputCondition-A" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="C-A-B-1" sourceId="C-A" targetId="C-B-1"/>
-        <Edge id="C-B-1-C-1" sourceId="C-B-1" targetId="C-C-1"/>
-        <Edge id="C-B-1-D-1" sourceId="C-B-1" targetId="C-D-1"/>
-        <Edge id="id564c1d37-f476-4835-a066-8ca866eadcfb" sourceId="d60f3c3a-bb64-483d-a13e-0478b94bac2d" targetId="C-OutputCondition"/>
-        <Edge id="id9619a3bf-c966-454c-83cb-57d59cb21c80" sourceId="C-C-1" targetId="d60f3c3a-bb64-483d-a13e-0478b94bac2d"/>
-        <Edge id="id67bf027b-dbbf-43f1-88d2-3956379be05d" sourceId="C-D-1" targetId="d60f3c3a-bb64-483d-a13e-0478b94bac2d"/>
+        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:StateType" id="a2fcbe3f-2ea3-42dd-9951-c5d99e90c56d"/>
+        <Edge id="C-InputCondition-A" default="false" sourceId="C-InputCondition" targetId="C-A"/>
+        <Edge id="C-A-B-1" default="false" sourceId="C-A" targetId="C-B-1"/>
+        <Edge id="C-B-1-C-1" default="false" sourceId="C-B-1" targetId="C-C-1"/>
+        <Edge id="C-B-1-D-1" default="false" sourceId="C-B-1" targetId="C-D-1"/>
+        <Edge id="id277b38d1-9c64-4a12-864d-3dea4b2bb40f" sourceId="a2fcbe3f-2ea3-42dd-9951-c5d99e90c56d" targetId="C-OutputCondition"/>
+        <Edge id="iddbd0cb20-2637-4123-9066-3e4db1aa54a5" default="false" sourceId="C-C-1" targetId="a2fcbe3f-2ea3-42dd-9951-c5d99e90c56d"/>
+        <Edge id="id605a7db7-a84f-4120-b83a-503cc80788fb" default="false" sourceId="C-D-1" targetId="a2fcbe3f-2ea3-42dd-9951-c5d99e90c56d"/>
         <Object xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:SoftType" id="D-N-Net-var" originalID="N-Net_var">
             <name>var</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/localVariable">

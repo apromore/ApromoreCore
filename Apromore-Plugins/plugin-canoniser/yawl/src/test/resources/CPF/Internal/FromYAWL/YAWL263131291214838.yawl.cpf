@@ -187,20 +187,20 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263131291269848" originalID="263131291269848">
             <name>End</name>
         </Node>
-        <Edge id="C-263131291258353-263131291278879" sourceId="C-263131291258353" targetId="C-263131291278879"/>
-        <Edge id="C-263131291278879-263131291432413" sourceId="C-263131291278879" targetId="C-263131291432413"/>
-        <Edge id="C-263131291432413-263131291441445" sourceId="C-263131291432413" targetId="C-263131291441445"/>
-        <Edge id="C-263131291441445-263131291597442" sourceId="C-263131291441445" targetId="C-263131291597442"/>
-        <Edge id="C-263131291597442-263131291565422" sourceId="C-263131291597442" targetId="C-263131291565422"/>
-        <Edge id="C-263131291565422-263131291701714" sourceId="C-263131291565422" targetId="C-263131291701714"/>
-        <Edge id="C-263131291701714-263131291711977" sourceId="C-263131291701714" targetId="C-263131291711977"/>
-        <Edge id="C-263131291711977-263131291631515" sourceId="C-263131291711977" targetId="C-263131291631515"/>
-        <Edge id="C-263131291631515-263131291642189" sourceId="C-263131291631515" targetId="C-263131291642189"/>
-        <Edge id="C-263131291642189-263131291346204" sourceId="C-263131291642189" targetId="C-263131291346204"/>
-        <Edge id="C-263131291346204-263131291355646" sourceId="C-263131291346204" targetId="C-263131291355646"/>
-        <Edge id="C-263131291355646-263131291523959" sourceId="C-263131291355646" targetId="C-263131291523959"/>
-        <Edge id="C-263131291523959-263131291492349" sourceId="C-263131291523959" targetId="C-263131291492349"/>
-        <Edge id="C-263131291492349-263131291269848" sourceId="C-263131291492349" targetId="C-263131291269848"/>
+        <Edge id="C-263131291258353-263131291278879" default="false" sourceId="C-263131291258353" targetId="C-263131291278879"/>
+        <Edge id="C-263131291278879-263131291432413" default="false" sourceId="C-263131291278879" targetId="C-263131291432413"/>
+        <Edge id="C-263131291432413-263131291441445" default="false" sourceId="C-263131291432413" targetId="C-263131291441445"/>
+        <Edge id="C-263131291441445-263131291597442" default="false" sourceId="C-263131291441445" targetId="C-263131291597442"/>
+        <Edge id="C-263131291597442-263131291565422" default="false" sourceId="C-263131291597442" targetId="C-263131291565422"/>
+        <Edge id="C-263131291565422-263131291701714" default="false" sourceId="C-263131291565422" targetId="C-263131291701714"/>
+        <Edge id="C-263131291701714-263131291711977" default="false" sourceId="C-263131291701714" targetId="C-263131291711977"/>
+        <Edge id="C-263131291711977-263131291631515" default="false" sourceId="C-263131291711977" targetId="C-263131291631515"/>
+        <Edge id="C-263131291631515-263131291642189" default="false" sourceId="C-263131291631515" targetId="C-263131291642189"/>
+        <Edge id="C-263131291642189-263131291346204" default="false" sourceId="C-263131291642189" targetId="C-263131291346204"/>
+        <Edge id="C-263131291346204-263131291355646" default="false" sourceId="C-263131291346204" targetId="C-263131291355646"/>
+        <Edge id="C-263131291355646-263131291523959" default="false" sourceId="C-263131291355646" targetId="C-263131291523959"/>
+        <Edge id="C-263131291523959-263131291492349" default="false" sourceId="C-263131291523959" targetId="C-263131291492349"/>
+        <Edge id="C-263131291492349-263131291269848" default="false" sourceId="C-263131291492349" targetId="C-263131291269848"/>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </ns2:CanonicalProcess>

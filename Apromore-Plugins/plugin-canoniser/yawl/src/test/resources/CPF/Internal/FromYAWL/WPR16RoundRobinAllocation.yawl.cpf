@@ -31,10 +31,10 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
-        <Edge id="C-InputCondition-A" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="C-A-B" sourceId="C-A" targetId="C-B"/>
-        <Edge id="C-B-C" sourceId="C-B" targetId="C-C"/>
-        <Edge id="C-C-OutputCondition" sourceId="C-C" targetId="C-OutputCondition"/>
+        <Edge id="C-InputCondition-A" default="false" sourceId="C-InputCondition" targetId="C-A"/>
+        <Edge id="C-A-B" default="false" sourceId="C-A" targetId="C-B"/>
+        <Edge id="C-B-C" default="false" sourceId="C-B" targetId="C-C"/>
+        <Edge id="C-C-OutputCondition" default="false" sourceId="C-C" targetId="C-OutputCondition"/>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </ns2:CanonicalProcess>

@@ -21,9 +21,10 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.CheckValidModelMacro;
-import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.EnsureInputOutputCondition;
+import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.InputConditionMacro;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.MESEToSESEMacro;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.MacroRewriter;
+import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.OutputConditionMacro;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.RewriteMacro;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.RoutingNodeMacro;
 import org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros.SEMEToSESEMacro;
@@ -114,7 +115,8 @@ public class CanonicalProcessHandler extends CanonicalElementHandler<CanonicalPr
         patternRewriter.addMacro(new AutomaticTimerMacro(getContext()));
         patternRewriter.addMacro(new MiscTimerMacro(getContext()));
         patternRewriter.addMacro(new RoutingNodeMacro(getContext()));
-        patternRewriter.addMacro(new EnsureInputOutputCondition(getContext()));
+        patternRewriter.addMacro(new InputConditionMacro(getContext()));
+        patternRewriter.addMacro(new OutputConditionMacro(getContext()));
         return patternRewriter;
     }
 

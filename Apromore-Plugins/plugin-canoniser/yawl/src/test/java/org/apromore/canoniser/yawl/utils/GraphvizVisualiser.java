@@ -141,12 +141,13 @@ public class GraphvizVisualiser {
 
         for (final NodeType node : net.getNode()) {
             final Vertex vertex = new Vertex();
+            String nodeType = node.getClass().getSimpleName().replaceFirst("Type$", "");
             if (node.getName() != null) {
                 // Already present in YAWL
-                vertex.setName(node.getName() + "_{" + node.getClass().getSimpleName() + "}");
+                vertex.setName(node.getName() + "_{" + nodeType + "}");
             } else {
                 // Introduced node in the conversion
-                vertex.setName("N" + (nodeCounter++) + "_{" + node.getClass().getSimpleName() + "}");
+                vertex.setName("N" + (nodeCounter++) + "_{" + nodeType + "}");
             }
             vertex.setTag(node);
             g.addVertex(vertex);

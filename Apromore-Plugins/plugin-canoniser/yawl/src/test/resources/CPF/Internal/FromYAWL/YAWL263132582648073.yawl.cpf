@@ -17,8 +17,8 @@
         <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-263132582681736" originalID="263132582681736">
             <name>End</name>
         </Node>
-        <Edge id="C-263132582674346-263132582686251" sourceId="C-263132582674346" targetId="C-263132582686251"/>
-        <Edge id="C-263132582686251-263132582681736" sourceId="C-263132582686251" targetId="C-263132582681736"/>
+        <Edge id="C-263132582674346-263132582686251" default="false" sourceId="C-263132582674346" targetId="C-263132582686251"/>
+        <Edge id="C-263132582686251-263132582681736" default="false" sourceId="C-263132582686251" targetId="C-263132582681736"/>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
 </ns2:CanonicalProcess>

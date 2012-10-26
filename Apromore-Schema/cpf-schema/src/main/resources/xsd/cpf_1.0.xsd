@@ -194,7 +194,7 @@ if it is an outgoing edge of a split {@link SplitType}. It can also be marked as
         </sequence>
         <attribute name="id" type="string" use="required" />
         <attribute name="default" type="boolean" use="optional"
-            default="true" />
+            default="false" />
         <attribute name="sourceId" type="string" use="required" />
         <attribute name="targetId" type="string" use="required" />
         <attribute name="originalID" type="string" use="optional" />

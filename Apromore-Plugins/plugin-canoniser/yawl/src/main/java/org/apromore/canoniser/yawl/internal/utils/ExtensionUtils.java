@@ -1,16 +1,9 @@
 package org.apromore.canoniser.yawl.internal.utils;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import javax.xml.bind.JAXBContext;
-import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Marshaller;
-import javax.xml.bind.Unmarshaller;
-import javax.xml.namespace.QName;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
 
 import org.apromore.anf.AnnotationType;
 import org.apromore.canoniser.exception.CanoniserException;
@@ -18,17 +11,20 @@ import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
-import org.apromore.cpf.ObjectFactory;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TypeAttribute;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 
+/**
+ * Provides various helper methods to work with the TypeAttribute extension of CPF.
+ *
+ * @author <a href="mailto:felix.mannhardt@smail.wir.h-brs.de">Felix Mannhardt</a>
+ *
+ */
 public final class ExtensionUtils {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ExtensionUtils.class);
@@ -239,7 +235,7 @@ public final class ExtensionUtils {
      *
      * @param node CPF Node
      * @param elementName of Extension
-     * @param excpectedClass from YAWL schema
+     * @param expectedClass from YAWL schema
      * @param defaultValue if not found
      * @return Object of excpectedClass
      */
@@ -254,7 +250,7 @@ public final class ExtensionUtils {
      *
      * @param attributes CPF list of attributes
      * @param elementName of Extension
-     * @param excpectedClass from YAWL schema
+     * @param expectedClass from YAWL schema
      * @param defaultValue if not found
      * @return Object of excpectedClass
      */
