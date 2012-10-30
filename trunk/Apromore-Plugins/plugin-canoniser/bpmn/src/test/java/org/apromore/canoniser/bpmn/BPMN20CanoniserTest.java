@@ -131,11 +131,17 @@ public class BPMN20CanoniserTest implements TestConstants {
 
     /**
      * Test {@link BPMN20Canoniser#deCanonise}.
+     *
+     * The most important thing this test does is pass a {@link CanonicalProcessType} rather than a {@link CpfCanonicalProcessType},
+     * so that the remarshalling of the CPF classes from {@link org.apromore.cpf} into instrumented classes from
+     * {@link org.apromore.canoniser.bpmn.cpf} is exercised.
      */
     @Test
     public final void testDeCanonise() throws Exception {
 
-        CanonicalProcessType cpf = CpfCanonicalProcessType.newInstance(new FileInputStream(new File(TESTCASES_DIR, "Basic.cpf")), true);
+        CanonicalProcessType cpf = ((JAXBElement<CanonicalProcessType>) JAXBContext.newInstance(CPFSchema.CPF_CONTEXT)
+                                                                                   .createUnmarshaller()
+                                                                                   .unmarshal(new File(TESTCASES_DIR, "Basic.cpf"))).getValue();
         AnnotationsType anf = null;
         ByteArrayOutputStream bpmnOutput = new ByteArrayOutputStream();
         PluginRequest request = null;

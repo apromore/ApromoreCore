@@ -93,12 +93,12 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
     /** {@inheritDoc} */
     @Override
     public PluginResult deCanonise(final CanonicalProcessType canonicalFormat,
-                           final AnnotationsType      annotationFormat,
-                           final OutputStream         bpmnOutput,
-                           final PluginRequest request) throws CanoniserException {
+                                   final AnnotationsType      annotationFormat,
+                                   final OutputStream         bpmnOutput,
+                                   final PluginRequest        request) throws CanoniserException {
 
         try {
-            new BpmnDefinitions(canonicalFormat, annotationFormat).marshal(bpmnOutput, false);
+            new BpmnDefinitions(CpfCanonicalProcessType.remarshal(canonicalFormat), annotationFormat).marshal(bpmnOutput, false);
 
             return new PluginResultImpl();
         } catch (Exception e) {
