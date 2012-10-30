@@ -29,6 +29,7 @@ import org.xml.sax.SAXException;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
+import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
 import org.apromore.canoniser.bpmn.cpf.CpfNetType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
@@ -119,7 +120,7 @@ public class BpmnDefinitions extends TDefinitions {
      * @param anf  annotations for the canonical process model
      * @throws CanoniserException if unable to generate BPMN from the given CPF and ANF arguments
      */
-    public BpmnDefinitions(final CanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
+    public BpmnDefinitions(CpfCanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
 
         // We can get by without an ANF parameter, but we definitely need a CPF
         if (cpf == null) {

@@ -1,6 +1,8 @@
 package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
@@ -113,6 +115,26 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
             unmarshaller.setSchema(CPF_SCHEMA);
         }
         return ((JAXBElement<CpfCanonicalProcessType>) unmarshaller.unmarshal(new StreamSource(in))).getValue();
+    }
+
+    /**
+     * Convert a {@link CanonicalProcessType} to a {@link CpfCanonicalProcessType}.
+     *
+     * @param cpf  any CPF document
+     * @return an instrumented version of the given <code>cpf</code>
+     * @throws JAXBException if the remarshalling fails
+     */
+    public static CpfCanonicalProcessType remarshal(final CanonicalProcessType cpf) throws JAXBException {
+        if (cpf instanceof CpfCanonicalProcessType) {
+            return (CpfCanonicalProcessType) cpf;
+        } else {
+            ByteArrayOutputStream out = new ByteArrayOutputStream();
+            Marshaller marshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT).createMarshaller();
+            marshaller.marshal(new ObjectFactory().createCanonicalProcess(cpf), out);
+
+            ByteArrayInputStream in = new ByteArrayInputStream(out.toByteArray());
+            return newInstance(in, false);
+        }
     }
 
     /**

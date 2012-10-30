@@ -87,7 +87,7 @@ public class BpmnDefinitionsTest implements TestConstants {
     private final BpmnDefinitions testDecanonise(final String filename) throws CanoniserException, FileNotFoundException, JAXBException, SAXException, TransformerException {
 
         // Read the CPF source file
-        CanonicalProcessType cpf = CpfCanonicalProcessType.newInstance(new FileInputStream(new File(TESTCASES_DIR, filename + ".cpf")), true);
+        CpfCanonicalProcessType cpf = CpfCanonicalProcessType.newInstance(new FileInputStream(new File(TESTCASES_DIR, filename + ".cpf")), true);
 
         // Read the ANF source file
         AnnotationsType anf = AnfAnnotationsType.newInstance(new FileInputStream(new File(TESTCASES_DIR, filename + ".anf")), true);

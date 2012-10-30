@@ -181,7 +181,7 @@ public class Initializer implements ExtensionConstants {
     // Work supertype handler
 
     void populateActivity(final WorkType work, final TActivity activity) throws CanoniserException {
-        populateFlowElement(work, activity);
+        populateFlowNode(work, activity);
 
         BigInteger completionQuantity = activity.getCompletionQuantity();
         List<TDataInputAssociation> dias = activity.getDataInputAssociation();
