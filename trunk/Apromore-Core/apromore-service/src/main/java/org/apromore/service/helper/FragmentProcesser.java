@@ -4,11 +4,12 @@ import java.util.Collection;
 import java.util.List;
 
 import org.apromore.common.Constants;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.Edge;
+import org.apromore.graph.canonical.INode;
+import org.apromore.graph.canonical.Node;
+import org.apromore.service.model.RFragment2;
 import org.apromore.util.FragmentUtil;
-import org.jbpt.graph.abs.AbstractDirectedEdge;
-import org.jbpt.graph.algo.rpst.RPSTNode;
-import org.jbpt.pm.IFlowNode;
 
 /**
  * @author Chathura Ekanayake
@@ -16,33 +17,33 @@ import org.jbpt.pm.IFlowNode;
 public class FragmentProcesser {
 
     @SuppressWarnings("unchecked")
-    public static IFlowNode[] preprocessFragmentV2(RPSTNode f, RPSTNode parentFragment, CPF g) {
-        IFlowNode[] originalBoundary = new IFlowNode[2];
-        originalBoundary[0] = (IFlowNode) f.getEntry();
-        originalBoundary[1] = (IFlowNode) f.getExit();
+    public static INode[] preprocessFragmentV2(RFragment2 f, RFragment2 parentFragment, Canonical g) {
+        Node[] originalBoundary = new Node[2];
+        originalBoundary[0] = f.getEntry();
+        originalBoundary[1] = f.getExit();
 
-        IFlowNode b1 = (IFlowNode) f.getEntry();
-        IFlowNode b2 = (IFlowNode) f.getExit();
+        Node b1 =  f.getEntry();
+        Node b2 = f.getExit();
 
-        if (Constants.CONNECTOR.equals(g.getVertexProperty(b1.getId(), Constants.TYPE))) {
-            List<IFlowNode> postset = FragmentUtil.getPostset(b1, f.getFragmentEdges());
-            if (postset.size() == 1 && f.getFragment().getDirectPredecessors(b1).size() <= 1) {
-                Collection<AbstractDirectedEdge> postsetEdges = FragmentUtil.getOutgoingEdges(b1, f.getFragmentEdges());
+        if (Constants.CONNECTOR.equals(g.getNodeProperty(b1.getId(), Constants.TYPE))) {
+            List<Node> postset = FragmentUtil.getPostset(b1, f.getEdges());
+            if (postset.size() == 1 && g.getPreset(b1).size() <= 1) {
+                Collection<Edge> postsetEdges = FragmentUtil.getOutgoingEdges(b1, f.getEdges());
                 f.setEntry(postset.get(0));
-                f.getFragment().removeEdges(postsetEdges);
-                parentFragment.getFragment().removeEdges(postsetEdges);
-                f.getFragment().removeVertex(b1);
+                f.removeEdges(postsetEdges);
+                parentFragment.removeEdges(postsetEdges);
+                f.removeNode(b1);
             }
         }
 
-        if (Constants.CONNECTOR.equals(g.getVertexProperty(b2.getId(), Constants.TYPE))) {
-            List<IFlowNode> preset = FragmentUtil.getPreset(b2, f.getFragmentEdges());
-            if (preset.size() == 1 && f.getFragment().getDirectSuccessors(b2).size() <= 1) {
-                Collection<AbstractDirectedEdge> presetEdges = FragmentUtil.getIncomingEdges(b2, f.getFragmentEdges());
+        if (Constants.CONNECTOR.equals(g.getNodeProperty(b2.getId(), Constants.TYPE))) {
+            List<Node> preset = FragmentUtil.getPreset(b2, f.getEdges());
+            if (preset.size() == 1 && g.getPreset(b2).size() <= 1) {
+                Collection<Edge> presetEdges = FragmentUtil.getIncomingEdges(b2, f.getEdges());
                 f.setExit(preset.get(0));
-                f.getFragment().removeEdges(presetEdges);
-                parentFragment.getFragment().removeEdges(presetEdges);
-                f.getFragment().removeVertex(b2);
+                f.removeEdges(presetEdges);
+                parentFragment.removeEdges(presetEdges);
+                f.removeNode(b2);
             }
         }
 

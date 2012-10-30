@@ -12,13 +12,13 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionMergeProcess;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.SerializationException;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.service.CanonicalConverter;
+import org.apromore.graph.canonical.Canonical;
 import org.apromore.model.ParameterType;
 import org.apromore.model.ParametersType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.model.ProcessVersionIdType;
 import org.apromore.model.ProcessVersionIdsType;
-import org.apromore.service.CanoniserService;
 import org.apromore.service.MergeService;
 import org.apromore.service.RepositoryService;
 import org.apromore.service.helper.UIHelper;
@@ -45,9 +45,8 @@ public class MergeServiceImpl implements MergeService {
 
     @Autowired @Qualifier("ProcessModelVersionDao")
     private ProcessModelVersionDao pmvDao;
-
-    @Autowired @Qualifier("CanoniserService")
-    private CanoniserService canSrv;
+    @Autowired @Qualifier("CanonicalConverter")
+    private CanonicalConverter convertor;
     @Autowired @Qualifier("RepositoryService")
     private RepositoryService rSrv;
     @Autowired @Qualifier("UIHelper")
@@ -70,7 +69,7 @@ public class MergeServiceImpl implements MergeService {
         try {
             ToolboxData data = convertModelsToCPT(models);
             data = getParametersForMerge(data, algo, parameters);
-            CPF pg = canSrv.deserializeCPF(performMerge(data));
+            Canonical pg = convertor.convert(performMerge(data));
 
             SimpleDateFormat sf = new SimpleDateFormat(Constants.DATE_FORMAT);
             String created = sf.format(new Date());
@@ -91,7 +90,7 @@ public class MergeServiceImpl implements MergeService {
         ToolboxData data = new ToolboxData();
 
         for (ProcessModelVersion pmv : models) {
-            data.addModel(pmv, canSrv.serializeCPF(rSrv.getCanonicalFormat(pmv)));
+            data.addModel(pmv, convertor.convert(rSrv.getCanonicalFormat(pmv)));
         }
 
         return data;
@@ -140,15 +139,6 @@ public class MergeServiceImpl implements MergeService {
      */
     public void setProcessModelVersionDao(ProcessModelVersionDao pmvDAOJpa) {
         pmvDao = pmvDAOJpa;
-    }
-
-    /**
-     * Set the Canoniser Service for this class. Mainly for spring tests.
-     *
-     * @param newCanSrv the service
-     */
-    public void setCanoniserService(CanoniserService newCanSrv) {
-        this.canSrv = newCanSrv;
     }
 
     /**

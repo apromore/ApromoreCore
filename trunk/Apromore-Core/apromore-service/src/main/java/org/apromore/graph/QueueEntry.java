@@ -1,18 +1,18 @@
 package org.apromore.graph;
 
-import org.jbpt.hypergraph.abs.IVertex;
+import org.apromore.graph.canonical.INode;
 
 public class QueueEntry implements Comparable<QueueEntry> {
 
-    private IVertex vertex;
+    private INode vertex;
     private String label;
 
-    public QueueEntry(IVertex vertex, String label) {
+    public QueueEntry(INode vertex, String label) {
         this.vertex = vertex;
         this.label = label;
     }
 
-    public IVertex getVertex() {
+    public INode getVertex() {
         return vertex;
     }
 

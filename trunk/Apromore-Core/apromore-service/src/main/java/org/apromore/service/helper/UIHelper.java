@@ -12,7 +12,6 @@ import org.apromore.dao.model.Annotation;
 import org.apromore.dao.model.Native;
 import org.apromore.dao.model.Process;
 import org.apromore.dao.model.ProcessBranch;
-import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.model.AnnotationsType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;

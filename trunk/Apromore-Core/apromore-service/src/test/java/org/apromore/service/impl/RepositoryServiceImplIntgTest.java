@@ -5,10 +5,7 @@ import java.io.InputStream;
 import java.util.HashSet;
 
 import org.apromore.TestData;
-import org.apromore.dao.ProcessBranchDao;
-import org.apromore.dao.ProcessDao;
-import org.apromore.dao.ProcessModelVersionDao;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.canonical.Canonical;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
@@ -63,7 +60,7 @@ public class RepositoryServiceImplIntgTest {
         createProcessModel("TEST1", "99.9");
 
         // Now try and retrieve the process using the repo manager
-        CPF graph = rSrv.getProcessModel("TEST1", "MAIN", "MAIN");
+        Canonical graph = rSrv.getProcessModel("TEST1", "MAIN", "MAIN");
 
         // Make sure we have the correct Process.
         assertThat(graph, notNullValue());
@@ -76,7 +73,7 @@ public class RepositoryServiceImplIntgTest {
         createProcessModel("TEST2", "1.0");
 
         // Now try and retrieve the process using the repo manager
-        CPF graph = rSrv.getCurrentProcessModel("TEST2", "MAIN", false);
+        Canonical graph = rSrv.getCurrentProcessModel("TEST2", "MAIN", false);
 
         // Make sure we have the correct Process.
         assertThat(graph, notNullValue());
@@ -89,7 +86,7 @@ public class RepositoryServiceImplIntgTest {
         createProcessModel("TEST3", "1.0");
 
         // Now try and retrieve the process using the repo manager
-        CPF graph = rSrv.getCurrentProcessModel("TEST3", false);
+        Canonical graph = rSrv.getCurrentProcessModel("TEST3", false);
 
         // Make sure we have the correct Process.
         assertThat(graph, notNullValue());

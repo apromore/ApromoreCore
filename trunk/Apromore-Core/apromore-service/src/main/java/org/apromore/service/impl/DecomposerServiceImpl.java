@@ -14,7 +14,9 @@ import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.PocketMappingException;
 import org.apromore.exception.RepositoryException;
 import org.apromore.graph.TreeVisitor;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.Edge;
+import org.apromore.graph.canonical.Node;
 import org.apromore.service.ContentService;
 import org.apromore.service.DecomposerService;
 import org.apromore.service.FragmentService;
@@ -22,15 +24,12 @@ import org.apromore.service.helper.BondContentHandler;
 import org.apromore.service.helper.OperationContext;
 import org.apromore.service.helper.PocketMapper;
 import org.apromore.service.helper.extraction.Extractor;
+import org.apromore.service.model.RFragment2;
+import org.apromore.service.utils.MutableTreeContructor;
 import org.apromore.util.FragmentUtil;
-import org.apromore.util.GraphUtil;
 import org.apromore.util.HashUtil;
-import org.jbpt.graph.abs.AbstractDirectedEdge;
-import org.jbpt.graph.algo.rpst.RPST;
-import org.jbpt.graph.algo.rpst.RPSTNode;
-import org.jbpt.graph.algo.tctree.TCType;
-import org.jbpt.pm.ControlFlow;
-import org.jbpt.pm.FlowNode;
+import org.jbpt.algo.tree.rpst.RPST;
+import org.jbpt.algo.tree.tctree.TCType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -71,16 +70,18 @@ public class DecomposerServiceImpl implements DecomposerService {
      * @throws org.apromore.exception.RepositoryException if something fails while populating the Repository
      */
     @Override
-    public FragmentVersion decompose(final CPF graph, final List<String> fragmentIds) throws RepositoryException {
+    @SuppressWarnings("unchecked")
+    public FragmentVersion decompose(final Canonical graph, final List<String> fragmentIds) throws RepositoryException {
         TreeVisitor visitor = new TreeVisitor();
         OperationContext op = new OperationContext();
         op.setGraph(graph);
         op.setTreeVisitor(visitor);
 
         try {
-            RPST rpst = GraphUtil.normalizeGraph(graph);
-            FragmentVersion rootFV = decompose(rpst, rpst.getRoot(), op, fragmentIds);
-            fragmentIds.add(rootFV.getUri());
+            RPST<Edge, Node> rpst = new RPST(graph);
+            RFragment2 rf = MutableTreeContructor.construct(rpst);
+            FragmentVersion rootFV = decompose(rf, op, fragmentIds);
+            fragmentIds.add(rootFV.getId().toString());
             return rootFV;
         } catch (Exception e) {
             String msg = "Failed to add root fragment version of the process model.";
@@ -92,7 +93,6 @@ public class DecomposerServiceImpl implements DecomposerService {
     /**
      * Decompose the Process Model Graph and save the fragments to the Repository.
      * Why it this here, it should build a list of objects and return to the Repository Service for Persistence?
-     * @param rpst The Refined Process Structure Tree
      * @param f The Refined Process Structure Tree Node
      * @param op Operation Context
      * @param fragmentIds the list of unpopulated Fragment Id's
@@ -100,26 +100,27 @@ public class DecomposerServiceImpl implements DecomposerService {
      * @throws RepositoryException if something fails while populating the Repository
      */
     @SuppressWarnings("unchecked")
-    public FragmentVersion decompose(final RPST rpst, final RPSTNode f, final OperationContext op, final List<String> fragmentIds) throws RepositoryException {
+    public FragmentVersion decompose(RFragment2 f, final OperationContext op, final List<String> fragmentIds)
+            throws RepositoryException {
         String keywords = "";
-        int fragmentSize = f.getFragment().getVertices().size();
+        int fragmentSize = f.getVertices().size();
         String nodeType = FragmentUtil.getFragmentType(f);
 
-        Collection<RPSTNode> cs = rpst.getChildren(f);
+        Collection<RFragment2> cs = f.getChildren();
+        Map<String, String> childMappings = mapPocketChildId(f, op, fragmentIds, cs);
 
-        Map<String, String> childMappings = mapPocketChildId(rpst, f, op, fragmentIds, cs);
-
-        String hash = HashUtil.computeHash(f, op);
-        Content matchingContent = cDao.getContentByCode(hash);
+        String hash = HashUtil.computeHash(f, f.getType(), op);
+        Content matchingContent = null;
         if (matchingContent == null) {
             return addFragmentVersion(f, hash, childMappings, fragmentSize, nodeType, keywords, op);
         }
 
-        Map<String, String> newChildMappings = new HashMap<String, String>();
-        if (f.getType().equals(TCType.B)) {
-            Integer matchingBondFragmentId = bcHandler.matchFragment(f, matchingContent, childMappings, newChildMappings);
+        Map<String, String> newChildMappings;
+        if (f.getType().equals(TCType.BOND)) {
+            newChildMappings = new HashMap<String, String>();
+            String matchingBondFragmentId = bcHandler.matchFragment(f, matchingContent, childMappings, newChildMappings);
             if (matchingBondFragmentId != null) {
-                return fSrv.getFragmentVersion(matchingBondFragmentId);
+                return fSrv.getFragmentVersion(Integer.valueOf(matchingBondFragmentId));
             }
         } else {
             Map<String, String> pocketMappings = pMapper.mapPockets(f, op.getGraph(), matchingContent);
@@ -151,25 +152,25 @@ public class DecomposerServiceImpl implements DecomposerService {
      * @throws org.apromore.exception.RepositoryException
      */
     @Override
-    public String decomposeFragment(final CPF graph, final List<String> fragmentIds) throws RepositoryException {
+    public String decomposeFragment(final Canonical graph, final List<String> fragmentIds) throws RepositoryException {
         TreeVisitor visitor = new TreeVisitor();
         OperationContext op = new OperationContext();
         op.setGraph(graph);
         op.setTreeVisitor(visitor);
 
         try {
-            FlowNode entry = FragmentUtil.getFirstVertex(graph.getSourceVertices());
-            FlowNode exit = FragmentUtil.getFirstVertex(graph.getSinkVertices());
+            Node entry = FragmentUtil.getFirstVertex(graph.getSourceNodes());
+            Node exit = FragmentUtil.getFirstVertex(graph.getSinkNodes());
             if (graph.getVertices().size() > 2) {
-                RPST<ControlFlow<FlowNode>, FlowNode> rpst = new RPST<ControlFlow<FlowNode>, FlowNode>(graph);
-                RPSTNode rootFragment = rpst.getRoot();
-                FragmentVersion rootFV = decompose(rpst, rootFragment, op, fragmentIds);
-                fragmentIds.add(rootFV.getUri());
-                return rootFV.getUri();
+                RPST<Edge, Node> rpst = new RPST<Edge, Node>(graph);
+                RFragment2 rFragment2 = MutableTreeContructor.construct(rpst);
+                FragmentVersion rootFV = decompose(rFragment2, op, fragmentIds);
+                fragmentIds.add(rootFV.getId().toString());
+                return rootFV.getId().toString();
             } else {
                 FragmentVersion rootFV = decomposeSimpleStandaloneFragment(graph, entry, exit, op);
-                fragmentIds.add(rootFV.getUri());
-                return rootFV.getUri();
+                fragmentIds.add(rootFV.getId().toString());
+                return rootFV.getId().toString();
             }
         } catch (Exception e) {
             String msg = "Failed to add root fragment version.";
@@ -189,24 +190,19 @@ public class DecomposerServiceImpl implements DecomposerService {
      * @throws RepositoryException the Repository Exception
      */
     @SuppressWarnings("unchecked")
-    public FragmentVersion decomposeSimpleStandaloneFragment(final CPF g, final FlowNode entry, final FlowNode exit, final OperationContext op) throws ExceptionDao,
-            RepositoryException {
+    public FragmentVersion decomposeSimpleStandaloneFragment(final Canonical g, final Node entry, final Node exit,
+            final OperationContext op) throws ExceptionDao, RepositoryException {
         String keywords = "";
         int fragmentSize = g.getVertices().size();
         String nodeType = "P";
 
-        RPSTNode sNode = new RPSTNode();
-        sNode.getFragment().getVertices().addAll(g.getVertices());
-        sNode.getFragmentEdges().addAll(g.getEdges());
-        sNode.setEntry(entry);
-        sNode.setExit(exit);
-
         Map<String, String> childMappings = new HashMap<String, String>(0);
-        Set<AbstractDirectedEdge> edges = new HashSet<AbstractDirectedEdge>(g.getEdges());
+
+        Set<Edge> edges = new HashSet<Edge>(g.getEdges());
         String hash = op.getTreeVisitor().visitSNode(g, edges, entry);
         Integer matchingContentId = cSrv.getMatchingContentId(hash);
         if (matchingContentId == null) {
-            return addFragmentVersion(sNode, hash, childMappings, fragmentSize, nodeType, keywords, op);
+            return addFragmentVersion(g, hash, childMappings, fragmentSize, nodeType, keywords, op);
         }
 
         FragmentVersion matchingFV = fSrv.getMatchingFragmentVersionId(matchingContentId, childMappings);
@@ -220,17 +216,17 @@ public class DecomposerServiceImpl implements DecomposerService {
 
 
     /* mapping pocketId -> childId */
-    private Map<String, String> mapPocketChildId(final RPST rpst, final RPSTNode f, final OperationContext op, final List<String> fragmentIds,
-            final Collection<RPSTNode> cs) throws RepositoryException {
-        Map<String, String> childMappings = new HashMap<String, String>(0);
-        for (RPSTNode c : cs) {
-            if (TCType.T.equals(c.getType())) {
+    private Map<String, String> mapPocketChildId(RFragment2 f, final OperationContext op,
+            final List<String> fragmentIds, final Collection<RFragment2> cs) throws RepositoryException {
+        Map<String, String> childMappings = new HashMap<String, String>();
+        for (RFragment2 c : cs) {
+            if (TCType.TRIVIAL.equals(c.getType())) {
                 continue;
             }
 
-            FlowNode pocket = Extractor.extractChildFragment(f, c, rpst, op.getGraph());
+            Node pocket = Extractor.extractChildFragment(f, c, op.getGraph());
             FragmentUtil.cleanFragment(f);
-            FragmentVersion child = decompose(rpst, c, op, fragmentIds);
+            FragmentVersion child = decompose(c, op, fragmentIds);
             fragmentIds.add(child.getUri());
             childMappings.put(pocket.getId(), child.getUri());
         }
@@ -238,8 +234,9 @@ public class DecomposerServiceImpl implements DecomposerService {
     }
 
     /* Adds a fragment version */
-    private FragmentVersion addFragmentVersion(final RPSTNode f, final String hash, final Map<String, String> childMappings, final int fragmentSize, final String fragmentType,
-            final String keywords, final OperationContext op) throws RepositoryException {
+    private FragmentVersion addFragmentVersion(final Canonical f, final String hash, final Map<String, String> childMappings,
+            final int fragmentSize, final String fragmentType, final String keywords, final OperationContext op)
+            throws RepositoryException {
         // mappings (UUIDs generated for pocket Ids -> Pocket Ids assigned to pockets when they are persisted in the database)
         Map<String, String> pocketIdMappings = new HashMap<String, String>();
         Content content = cSrv.addContent(f, hash, op.getGraph(), pocketIdMappings);

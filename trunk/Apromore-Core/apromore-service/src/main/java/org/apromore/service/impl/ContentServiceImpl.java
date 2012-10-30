@@ -3,6 +3,7 @@ package org.apromore.service.impl;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import org.apromore.common.Constants;
 import org.apromore.dao.ContentDao;
@@ -11,6 +12,7 @@ import org.apromore.dao.NodeDao;
 import org.apromore.dao.NonPocketNodeDao;
 import org.apromore.dao.model.Content;
 import org.apromore.dao.model.Edge;
+import org.apromore.dao.model.Expression;
 import org.apromore.dao.model.Node;
 import org.apromore.dao.model.NodeAttribute;
 import org.apromore.dao.model.NonPocketNode;
@@ -18,15 +20,12 @@ import org.apromore.dao.model.ObjectRefType;
 import org.apromore.dao.model.ObjectRefTypeAttribute;
 import org.apromore.dao.model.ResourceRefType;
 import org.apromore.dao.model.ResourceRefTypeAttribute;
-import org.apromore.graph.JBPT.CPF;
-import org.apromore.graph.JBPT.CpfNode;
-import org.apromore.graph.JBPT.ICpfAttribute;
-import org.apromore.graph.JBPT.ICpfNode;
-import org.apromore.graph.JBPT.ICpfObject;
-import org.apromore.graph.JBPT.ICpfResource;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.IAttribute;
+import org.apromore.graph.canonical.INode;
+import org.apromore.graph.canonical.IObject;
+import org.apromore.graph.canonical.IResource;
 import org.apromore.service.ContentService;
-import org.jbpt.graph.abs.AbstractDirectedEdge;
-import org.jbpt.graph.algo.rpst.RPSTNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -66,18 +65,18 @@ public class ContentServiceImpl implements ContentService {
 
 
     /**
-     * @see org.apromore.service.ContentService#addContent(org.jbpt.graph.algo.rpst.RPSTNode, String, org.apromore.graph.JBPT.CPF, java.util.Map)
+     * @see org.apromore.service.ContentService#addContent(org.apromore.graph.canonical.Canonical, String, org.apromore.graph.canonical.Canonical, java.util.Map)
      *      {@inheritDoc}
      */
     @Override
     @SuppressWarnings("unchecked")
-    public Content addContent(final RPSTNode c, final String hash, final CPF g, final Map<String, String> pocketIdMappings) {
+    public Content addContent(final Canonical c, final String hash, final Canonical g, final Map<String, String> pocketIdMappings) {
         Content content = new Content();
         content.setCode(hash);
         contentDao.save(content);
 
-        addNodes(content, c.getFragment().getVertices(), g, pocketIdMappings);
-        addEdges(content, c.getFragmentEdges());
+        addNodes(content, c.getNodes(), g, pocketIdMappings);
+        addEdges(content, c.getEdges());
 
         content.setBoundaryS(c.getEntry().getId());
         content.setBoundaryE(c.getExit().getId());
@@ -87,29 +86,30 @@ public class ContentServiceImpl implements ContentService {
     }
 
     /**
-     * @see org.apromore.service.ContentService#addNodes(org.apromore.dao.model.Content, java.util.Collection, org.apromore.graph.JBPT.CPF, java.util.Map)
+     * @see org.apromore.service.ContentService#addNodes(org.apromore.dao.model.Content, java.util.Collection, org.apromore.graph.canonical.Canonical, java.util.Map)
      * {@inheritDoc}
      */
     @Override
-    public void addNodes(final Content content, final Collection<CpfNode> vertices, final CPF g, final Map<String, String> pocketIdMappings) {
-        for (ICpfNode v : vertices) {
+    public void addNodes(final Content content, final Collection<org.apromore.graph.canonical.Node> vertices, final Canonical g,
+            final Map<String, String> pocketIdMappings) {
+        for (org.apromore.graph.canonical.Node v : vertices) {
             String oldVId = v.getId();
-            String type = g.getVertexProperty(v.getId(), Constants.TYPE);
+            String type = g.getNodeProperty(v.getId(), Constants.TYPE);
             Node n = addNode(content, v, type);
             if (!"Pocket".equals(type)) {
                 addNonPocketNode(n);
             } else {
-                pocketIdMappings.put(oldVId, String.valueOf(n.getId()));
+                pocketIdMappings.put(oldVId, n.getUri());
             }
         }
     }
 
     /**
-     * @see org.apromore.service.ContentService#addNode
+     * @see org.apromore.service.ContentService#addNode(org.apromore.dao.model.Content, org.apromore.graph.canonical.Node, String)
      *      {@inheritDoc}
      */
     @Override
-    public Node addNode(final Content content, final ICpfNode v, final String vtype) {
+    public Node addNode(final Content content, final org.apromore.graph.canonical.Node v, final String vtype) {
         Node node = new Node();
         node.setContent(content);
         node.setName(v.getLabel() != null ? v.getLabel() : v.getName());
@@ -142,12 +142,12 @@ public class ContentServiceImpl implements ContentService {
     }
 
     /**
-     * @see org.apromore.service.ContentService#addEdges(Content, java.util.Collection)
+     * @see org.apromore.service.ContentService#addEdges(org.apromore.dao.model.Content, java.util.Set)
      *      {@inheritDoc}
      */
     @Override
-    public void addEdges(final Content content, final Collection<AbstractDirectedEdge> edges) {
-        for (AbstractDirectedEdge e : edges) {
+    public void addEdges(final Content content, final Set<org.apromore.graph.canonical.Edge> edges) {
+        for (org.apromore.graph.canonical.Edge e : edges) {
             Node source = nDao.findNodeByUri(e.getSource().getId());
             Node target = nDao.findNodeByUri(e.getTarget().getId());
             addEdge(content, e, source, target);
@@ -155,22 +155,35 @@ public class ContentServiceImpl implements ContentService {
     }
 
     /**
-     * @see org.apromore.service.ContentService#addEdge(org.apromore.dao.model.Content, org.jbpt.graph.abs.AbstractDirectedEdge, org.apromore.dao.model.Node, org.apromore.dao.model.Node)
+     * @see org.apromore.service.ContentService#addEdge(org.apromore.dao.model.Content, org.apromore.graph.canonical.Edge, org.apromore.dao.model.Node, org.apromore.dao.model.Node)
      *      {@inheritDoc}
      */
     @Override
-    public void addEdge(final Content content, final AbstractDirectedEdge e, final Node source, final Node target) {
+    public void addEdge(final Content content, final org.apromore.graph.canonical.Edge e, final Node source, final Node target) {
         Edge edge = new Edge();
 
         edge.setContent(content);
         edge.setVerticesBySourceVid(source);
         edge.setVerticesByTargetVid(target);
         edge.setOriginalId(e.getId());
-        edge.setCond("");
-        edge.setDef(false);
         edge.setUri(e.getId());
 
+        if (e.getConditionExpr() != null) {
+            edge.setExpression(addExpression(e.getConditionExpr()));
+        }
+
         edgeDao.save(edge);
+    }
+
+    private Expression addExpression(org.apromore.graph.canonical.Expression expression) {
+        Expression expr = new Expression();
+
+        expr.setDescription(expression.getDescription());
+        expr.setExpression(expression.getExpression());
+        expr.setLanguage(expression.getLanguage());
+        expr.setReturnType(expression.getReturnType());
+        //exprDao.save(expr);
+        return expr;
     }
 
     /**
@@ -208,9 +221,9 @@ public class ContentServiceImpl implements ContentService {
     }
 
 
-    private void addObjects(final Node node, final ICpfNode v) {
+    private void addObjects(final Node node, final INode v) {
         ObjectRefType obj;
-        for (ICpfObject cObj : v.getObjects()) {
+        for (IObject cObj : v.getObjects()) {
             obj = new ObjectRefType();
             if (cObj.getId() != null) {
                 //TODO store in another field
@@ -225,9 +238,9 @@ public class ContentServiceImpl implements ContentService {
         }
     }
 
-    private void addObjectAttributes(final ObjectRefType obj, final ICpfObject cObj) {
+    private void addObjectAttributes(final ObjectRefType obj, final IObject cObj) {
         ObjectRefTypeAttribute oAtt;
-        for (Entry<String, ICpfAttribute> e : cObj.getAttributes().entrySet()) {
+        for (Entry<String, IAttribute> e : cObj.getAttributes().entrySet()) {
             oAtt = new ObjectRefTypeAttribute();
             oAtt.setName(e.getKey());
             oAtt.setValue(e.getValue().getValue());
@@ -237,9 +250,9 @@ public class ContentServiceImpl implements ContentService {
     }
 
 
-    private void addResources(final Node node, final ICpfNode v) {
+    private void addResources(final Node node, final INode v) {
         ResourceRefType resource;
-        for (ICpfResource cRes : v.getResource()) {
+        for (IResource cRes : v.getResource()) {
             resource = new ResourceRefType();
             if (cRes.getId() != null) {
                 //TODO store in another field
@@ -253,9 +266,9 @@ public class ContentServiceImpl implements ContentService {
         }
     }
 
-    private void addResourceAttributes(final ResourceRefType obj, final ICpfResource cObj) {
+    private void addResourceAttributes(final ResourceRefType obj, final IResource cObj) {
         ResourceRefTypeAttribute rAtt;
-        for (Entry<String, ICpfAttribute> e : cObj.getAttributes().entrySet()) {
+        for (Entry<String, IAttribute> e : cObj.getAttributes().entrySet()) {
             rAtt = new ResourceRefTypeAttribute();
             rAtt.setName(e.getKey());
             rAtt.setValue(e.getValue().getValue());
@@ -265,9 +278,9 @@ public class ContentServiceImpl implements ContentService {
     }
 
 
-    private void addNodeAttributes(final Node node, final ICpfNode v) {
+    private void addNodeAttributes(final Node node, final INode v) {
         NodeAttribute nAtt;
-        for (Entry<String, ICpfAttribute> e : v.getAttributes().entrySet()) {
+        for (Entry<String, IAttribute> e : v.getAttributes().entrySet()) {
             nAtt = new NodeAttribute();
             nAtt.setName(e.getKey());
             nAtt.setValue(e.getValue().getValue());

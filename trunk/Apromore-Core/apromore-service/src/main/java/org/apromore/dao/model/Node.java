@@ -1,9 +1,21 @@
 package org.apromore.dao.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.Temporal;
+import javax.persistence.TemporalType;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -37,14 +49,19 @@ public class Node implements Serializable {
     private String ctype;
     private String originalId;
     private Boolean configuration = false;
+    private String teamWork;
+    private String allocation;
+    private Date timeDate;
+    private String timeDuration;
 
     private Content content;
-    private ProcessModelVersion subVersion;
+    private ProcessModelVersion subProcess;
+    private Expression expressionByResourceDataExpressionId;
+    private Expression expressionByResourceRunExpressionId;
 
     private Set<NonPocketNode> nonPocketNodes = new HashSet<NonPocketNode>(0);
     private Set<Edge> edgesForSourceVid = new HashSet<Edge>(0);
     private Set<Edge> edgesForTargetVid = new HashSet<Edge>(0);
-
     private Set<ObjectRefType> objectRefTypes = new HashSet<ObjectRefType>(0);
     private Set<ResourceRefType> resourceRefTypes = new HashSet<ResourceRefType>(0);
     private Set<NodeAttribute> attributes = new HashSet<NodeAttribute>(0);
@@ -139,6 +156,46 @@ public class Node implements Serializable {
         this.configuration = newConfigurable;
     }
 
+    @Column(name="teamWork", length = 1)
+    public String getTeamWork() {
+        return this.teamWork;
+    }
+
+    public void setTeamWork(String teamWork) {
+        this.teamWork = teamWork;
+    }
+
+
+    @Column(name = "allocation", length = 40)
+    public String getAllocation() {
+        return this.allocation;
+    }
+
+    public void setAllocation(String allocation) {
+        this.allocation = allocation;
+    }
+
+    @Temporal(TemporalType.TIMESTAMP)
+    @Column(name = "timeDate", length = 19)
+    public Date getTimeDate() {
+        return this.timeDate;
+    }
+
+    public void setTimeDate(Date timeDate) {
+        this.timeDate = timeDate;
+    }
+
+    @Column(name = "timeDuration", length = 100)
+    public String getTimeDuration() {
+        return this.timeDuration;
+    }
+
+    public void setTimeDuration(String timeDuration) {
+        this.timeDuration = timeDuration;
+    }
+
+
+
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "contentId")
@@ -152,13 +209,34 @@ public class Node implements Serializable {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subVersionId")
-    public ProcessModelVersion getSubVersion() {
-        return this.subVersion;
+    public ProcessModelVersion getSubProcess() {
+        return this.subProcess;
     }
 
-    public void setSubVersion(final ProcessModelVersion newSubVersion) {
-        this.subVersion = newSubVersion;
+    public void setSubProcess(final ProcessModelVersion newSubProcess) {
+        this.subProcess = newSubProcess;
     }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resourceDataExpressionId")
+    public Expression getExpressionByResourceDataExpressionId() {
+        return this.expressionByResourceDataExpressionId;
+    }
+
+    public void setExpressionByResourceDataExpressionId(final Expression newExpressionByResourceDataExpressionId) {
+        this.expressionByResourceDataExpressionId = newExpressionByResourceDataExpressionId;
+    }
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "resourceRunExpressionId")
+    public Expression getExpressionByResourceRunExpressionId() {
+        return this.expressionByResourceRunExpressionId;
+    }
+
+    public void setExpressionByResourceRunExpressionId(final Expression newExpressionByResourceRunExpressionId) {
+        this.expressionByResourceRunExpressionId = newExpressionByResourceRunExpressionId;
+    }
+
 
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "verticesBySourceVid")

@@ -3,7 +3,7 @@ package org.apromore.service;
 import java.util.List;
 
 import org.apromore.dao.model.Content;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.canonical.Canonical;
 
 /**
  * Interface for the Graphing Service. Defines all the methods that will do the majority of the work for
@@ -34,7 +34,7 @@ public interface GraphService {
      * @param contentID the content id
      * @return the process model graph
      */
-    CPF getGraph(Integer contentID);
+    Canonical getGraph(Integer contentID);
 
     /**
      * Fills the ProcessModelGraphs vertices
@@ -42,7 +42,7 @@ public interface GraphService {
      * @param procModelGraph
      * @param contentID
      */
-    void fillNodes(CPF procModelGraph, Integer contentID);
+    void fillNodes(Canonical procModelGraph, Integer contentID);
 
     /**
      * Fills the ProcessModelGraphs Edges
@@ -50,20 +50,20 @@ public interface GraphService {
      * @param procModelGraph
      * @param contentID
      */
-    void fillEdges(CPF procModelGraph, Integer contentID);
+    void fillEdges(Canonical procModelGraph, Integer contentID);
 
     /**
      * Populate Nodes by it's Fragment Id.
      * @param procModelGraph the process model graph
      * @param fragmentID the fragment Id.
      */
-    void fillNodesByFragmentId(CPF procModelGraph, Integer fragmentID);
+    void fillNodesByFragmentId(Canonical procModelGraph, Integer fragmentID);
 
     /**
      * Populate Nodes by it's Fragment Id.
      * @param procModelGraph process model graph
      * @param fragmentID the fragment id
      */
-    void fillEdgesByFragmentId(CPF procModelGraph, Integer fragmentID);
+    void fillEdgesByFragmentId(Canonical procModelGraph, Integer fragmentID);
 
 }

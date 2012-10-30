@@ -16,17 +16,20 @@ import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.FragmentVersionDag;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.PocketMappingException;
-import org.apromore.graph.JBPT.CPF;
-import org.apromore.graph.JBPT.CpfAndGateway;
-import org.apromore.graph.JBPT.CpfOrGateway;
-import org.apromore.graph.JBPT.CpfXorGateway;
+import org.apromore.graph.canonical.AndJoin;
+import org.apromore.graph.canonical.AndSplit;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.Edge;
+import org.apromore.graph.canonical.Node;
+import org.apromore.graph.canonical.OrJoin;
+import org.apromore.graph.canonical.OrSplit;
+import org.apromore.graph.canonical.XOrJoin;
+import org.apromore.graph.canonical.XOrSplit;
 import org.apromore.service.ComposerService;
 import org.apromore.service.GraphService;
 import org.apromore.service.helper.OperationContext;
 import org.apromore.util.FragmentUtil;
 import org.apromore.util.GraphUtil;
-import org.jbpt.pm.ControlFlow;
-import org.jbpt.pm.FlowNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,9 +66,9 @@ public class ComposerServiceImpl implements ComposerService {
      * @throws ExceptionDao if something fails.
      */
     @Override
-    public CPF compose(final String fragmentVersionUri) throws ExceptionDao {
+    public Canonical compose(final String fragmentVersionUri) throws ExceptionDao {
         OperationContext op = new OperationContext();
-        CPF g = new CPF();
+        Canonical g = new Canonical();
         op.setGraph(g);
         composeFragment(op, fvDao.findFragmentVersionByURI(fragmentVersionUri), null);
         return g;
@@ -83,47 +86,48 @@ public class ComposerServiceImpl implements ComposerService {
         }
     }
 
-    private void composeNewContent(final OperationContext op, final String fragmentVersionUri, final String pocketId, final Content contentDO) throws ExceptionDao {
+    private void composeNewContent(final OperationContext op, final String fragmentVersionUri, final String pocketId, 
+            final Content contentDO) throws ExceptionDao {
         op.incrementContentUsage(contentDO.getId());
 
-        CPF g = op.getGraph();
+        Canonical g = op.getGraph();
         gSrv.fillNodes(g, contentDO.getId());
         gSrv.fillEdges(g, contentDO.getId());
 
-        Collection<FlowNode> nodesToBeRemoved = new HashSet<FlowNode>();
+        Collection<Node> nodesToBeRemoved = new HashSet<Node>();
         if (pocketId != null) {
-            Collection<ControlFlow<FlowNode>> edges = g.getEdges();
-            for (ControlFlow<FlowNode> edge: edges) {
+            Collection<Edge> edges = g.getEdges();
+            for (Edge edge: edges) {
                 if (edge.getTarget() != null && edge.getTarget().getId().equals(pocketId)) {
-                    FlowNode boundaryS = g.getVertex(getNodeIdByUri(contentDO.getBoundaryS()));
-                    FlowNode parentT1 = edge.getSource();
+                    Node boundaryS = g.getNode(getNodeIdByUri(contentDO.getBoundaryS()));
+                    Node parentT1 = edge.getSource();
                     if (canCombineSplit(parentT1, boundaryS)) {
-                        Collection<FlowNode> childTs = g.getDirectSuccessors(boundaryS);
-                        for (FlowNode ct : childTs) {
+                        Collection<Node> childTs = g.getDirectSuccessors(boundaryS);
+                        for (Node ct : childTs) {
                             g.addEdge(parentT1, ct);
                         }
                         nodesToBeRemoved.add(boundaryS);
                     } else {
-                        edge.setTarget(g.getVertex(getNodeIdByUri(contentDO.getBoundaryS())));
+                        edge.setTarget(g.getNode(getNodeIdByUri(contentDO.getBoundaryS())));
                     }
                 }
 
                 if (edge.getSource() != null && edge.getSource().getId().equals(pocketId)) {
-                    FlowNode boundaryE = g.getVertex(getNodeIdByUri(contentDO.getBoundaryE()));
-                    FlowNode parentT2 = edge.getTarget();
+                    Node boundaryE = g.getNode(getNodeIdByUri(contentDO.getBoundaryE()));
+                    Node parentT2 = edge.getTarget();
                     if (canCombineJoin(parentT2, boundaryE)) {
-                        Collection<FlowNode> childTs = g.getDirectPredecessors(boundaryE);
-                        for (FlowNode ct : childTs) {
+                        Collection<Node> childTs = g.getDirectPredecessors(boundaryE);
+                        for (Node ct : childTs) {
                             g.addEdge(ct, parentT2);
                         }
                         nodesToBeRemoved.add(boundaryE);
 
                     } else {
-                        edge.setSource(g.getVertex(getNodeIdByUri(contentDO.getBoundaryE())));
+                        edge.setSource(g.getNode(getNodeIdByUri(contentDO.getBoundaryE())));
                     }
                 }
             }
-            g.removeVertex(g.getVertex(pocketId));
+            g.removeVertex(g.getNode(pocketId));
             g.removeVertices(nodesToBeRemoved);
         }
 
@@ -138,39 +142,39 @@ public class ComposerServiceImpl implements ComposerService {
         return String.valueOf(nDao.findNodeByUri(uri).getId());
     }
 
-    private boolean canCombineSplit(final FlowNode parentT1, final FlowNode boundaryS) {
-        if (parentT1 == null || boundaryS == null) {
+    private boolean canCombineSplit(final Node p1, final Node bS) {
+        if (p1 == null || bS == null) {
             return false;
-        } else if ((parentT1 instanceof CpfXorGateway) && (boundaryS instanceof CpfXorGateway)) {
+        } else if ((p1 instanceof XOrSplit) && (bS instanceof XOrSplit)) {
             return true;
-        } else if ((parentT1 instanceof CpfAndGateway) && (boundaryS instanceof CpfAndGateway)) {
+        } else if ((p1 instanceof AndSplit) && (bS instanceof AndSplit)) {
             return true;
-        } else if ((parentT1 instanceof CpfOrGateway) && (boundaryS instanceof CpfOrGateway)) {
+        } else if ((p1 instanceof OrSplit) && (bS instanceof OrSplit)) {
             return true;
-        } else if (("XOR".equals(parentT1.getName())) && ("XOR".equals(boundaryS.getName()))) {
+        } else if (("XOR".equals(p1.getName())) && ("XOR".equals(bS.getName()))) {
             return true;
-        } else if (("AND".equals(parentT1.getName())) && ("AND".equals(boundaryS.getName()))) {
+        } else if (("AND".equals(p1.getName())) && ("AND".equals(bS.getName()))) {
             return true;
-        } else if (("OR".equals(parentT1.getName())) && ("OR".equals(boundaryS.getName()))) {
+        } else if (("OR".equals(p1.getName())) && ("OR".equals(bS.getName()))) {
             return true;
         }
         return false;
     }
 
-    private boolean canCombineJoin(final FlowNode parentT2, final FlowNode boundaryE) {
-        if (parentT2 == null || boundaryE == null) {
+    private boolean canCombineJoin(final Node p2, final Node bE) {
+        if (p2 == null || bE == null) {
             return false;
-        } else if ((parentT2 instanceof CpfXorGateway) && (boundaryE instanceof CpfXorGateway)) {
+        } else if ((p2 instanceof XOrJoin) && (bE instanceof XOrJoin)) {
             return true;
-        } else if ((parentT2 instanceof CpfAndGateway) && (boundaryE instanceof CpfAndGateway)) {
+        } else if ((p2 instanceof AndJoin) && (bE instanceof AndJoin)) {
             return true;
-        } else if ((parentT2 instanceof CpfOrGateway) && (boundaryE instanceof CpfOrGateway)) {
+        } else if ((p2 instanceof OrJoin) && (bE instanceof OrJoin)) {
             return true;
-        } else if (("XOR".equals(parentT2.getName())) && ("XOR".equals(boundaryE.getName()))) {
+        } else if (("XOR".equals(p2.getName())) && ("XOR".equals(bE.getName()))) {
             return true;
-        } else if (("AND".equals(parentT2.getName())) && ("AND".equals(boundaryE.getName()))) {
+        } else if (("AND".equals(p2.getName())) && ("AND".equals(bE.getName()))) {
             return true;
-        } else if (("OR".equals(parentT2.getName())) && ("OR".equals(boundaryE.getName()))) {
+        } else if (("OR".equals(p2.getName())) && ("OR".equals(bE.getName()))) {
             return true;
         }
         return false;
@@ -180,21 +184,21 @@ public class ComposerServiceImpl implements ComposerService {
             throws ExceptionDao {
         op.incrementContentUsage(contentDO.getId());
 
-        CPF g = op.getGraph();
+        Canonical g = op.getGraph();
         gSrv.fillNodes(g, contentDO.getId());
         gSrv.fillEdges(g, contentDO.getId());
 
         if (pocketId != null) {
-            Collection<ControlFlow<FlowNode>> edges = g.getEdges();
-            for (ControlFlow<FlowNode> edge: edges) {
+            Collection<Edge> edges = g.getEdges();
+            for (Edge edge: edges) {
                 if (edge.getTarget() != null && edge.getTarget().getId().equals(pocketId)) {
-                    edge.setTarget(g.getVertex(contentDO.getBoundaryS()));
+                    edge.setTarget(g.getNode(contentDO.getBoundaryS()));
                 }
                 if (edge.getSource() != null && edge.getSource().getId().equals(pocketId)) {
-                    edge.setSource(g.getVertex(contentDO.getBoundaryE()));
+                    edge.setSource(g.getNode(contentDO.getBoundaryE()));
                 }
             }
-            g.removeVertex(g.getVertex(pocketId));
+            g.removeVertex(g.getNode(pocketId));
         }
 
         List<FragmentVersionDag> childMappings = fvdDao.getChildMappingsByURI(fragmentVersionUri);
@@ -207,52 +211,52 @@ public class ComposerServiceImpl implements ComposerService {
             throws ExceptionDao {
         op.incrementContentUsage(contentDO.getId());
 
-        CPF g = op.getGraph();
-        CPF contentGraph = gSrv.getGraph(contentDO.getId());
-        CPF duplicateGraph = new CPF();
+        Canonical g = op.getGraph();
+        Canonical contentGraph = gSrv.getGraph(contentDO.getId());
+        Canonical duplicateGraph = new Canonical();
         Map<String, String> vMap = GraphUtil.copyContentGraph(contentGraph, duplicateGraph);
         GraphUtil.fillGraph(g, duplicateGraph);
         fillOriginalNodeMappings(vMap, g);
 
-        Collection<FlowNode> nodesToBeRemoved = new HashSet<FlowNode>();
+        Collection<Node> nodesToBeRemoved = new HashSet<Node>();
         if (pocketId != null) {
-            Collection<ControlFlow<FlowNode>> edges = g.getEdges();
-            for (ControlFlow<FlowNode> edge: edges) {
+            Collection<Edge> edges = g.getEdges();
+            for (Edge edge: edges) {
                 if (edge.getTarget() != null && edge.getTarget().getId().equals(pocketId)) {
-                    FlowNode boundaryS = g.getVertex(vMap.get(getNodeIdByUri(contentDO.getBoundaryS())));
-                    FlowNode parentT1 = edge.getSource();
+                    Node boundaryS = g.getNode(vMap.get(getNodeIdByUri(contentDO.getBoundaryS())));
+                    Node parentT1 = edge.getSource();
                     if (canCombineSplit(parentT1, boundaryS)) {
-                        Collection<FlowNode> childTs = g.getDirectSuccessors(boundaryS);
-                        for (FlowNode ct : childTs) {
+                        Collection<Node> childTs = g.getDirectSuccessors(boundaryS);
+                        for (Node ct : childTs) {
                             g.addEdge(parentT1, ct);
                         }
                         nodesToBeRemoved.add(boundaryS);
 
                     } else {
-                        edge.setTarget(g.getVertex(vMap.get(getNodeIdByUri(contentDO.getBoundaryS()))));
+                        edge.setTarget(g.getNode(vMap.get(getNodeIdByUri(contentDO.getBoundaryS()))));
                     }
                 }
                 if (edge.getSource().getId().equals(pocketId)) {
-                    FlowNode boundaryE = g.getVertex(vMap.get(getNodeIdByUri(contentDO.getBoundaryE())));
-                    FlowNode parentT2 = edge.getTarget();
+                    Node boundaryE = g.getNode(vMap.get(getNodeIdByUri(contentDO.getBoundaryE())));
+                    Node parentT2 = edge.getTarget();
                     if (canCombineJoin(parentT2, boundaryE)) {
-                        Collection<FlowNode> childTs = g.getDirectPredecessors(boundaryE);
-                        for (FlowNode ct : childTs) {
+                        Collection<Node> childTs = g.getDirectPredecessors(boundaryE);
+                        for (Node ct : childTs) {
                             g.addEdge(ct, parentT2);
                         }
                         nodesToBeRemoved.add(boundaryE);
 
                     } else {
-                        edge.setSource(g.getVertex(vMap.get(getNodeIdByUri(contentDO.getBoundaryE()))));
+                        edge.setSource(g.getNode(vMap.get(getNodeIdByUri(contentDO.getBoundaryE()))));
                     }
                 }
             }
-            g.removeVertex(g.getVertex(pocketId));
+            g.removeVertex(g.getNode(pocketId));
             g.removeVertices(nodesToBeRemoved);
         }
 
         List<FragmentVersionDag> childMappings = fvdDao.getChildMappingsByURI(fragmentVersionUri);
-        Map<String, FragmentVersion> newChildMapping = null;
+        Map<String, String> newChildMapping = null;
         try {
             newChildMapping = FragmentUtil.remapChildren(childMappings, vMap);
         } catch (PocketMappingException e) {
@@ -261,15 +265,15 @@ public class ComposerServiceImpl implements ComposerService {
         }
         Set<String> pids = newChildMapping.keySet();
         for (String pid: pids) {
-            FragmentVersion childId = newChildMapping.get(pid);
+            FragmentVersion childId = fvDao.findFragmentVersionByURI(newChildMapping.get(pid));
             composeFragment(op, childId, pid);
         }
     }
 
-    private void fillOriginalNodeMappings(final Map<String, String> vMap, final CPF g) {
+    private void fillOriginalNodeMappings(final Map<String, String> vMap, final Canonical g) {
         for (String originalNode : vMap.keySet()) {
             String duplicateNode = vMap.get(originalNode);
-            if (!g.getVertexProperty(duplicateNode, Constants.TYPE).equals(Constants.POCKET)) {
+            if (!g.getNodeProperty(duplicateNode, Constants.TYPE).equals(Constants.POCKET)) {
                 g.addOriginalNodeMapping(duplicateNode, originalNode);
             }
         }

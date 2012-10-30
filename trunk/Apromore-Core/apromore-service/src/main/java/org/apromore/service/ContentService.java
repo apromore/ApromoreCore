@@ -2,14 +2,13 @@ package org.apromore.service;
 
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import org.apromore.dao.model.Content;
+import org.apromore.dao.model.Edge;
 import org.apromore.dao.model.Node;
-import org.apromore.graph.JBPT.CPF;
-import org.apromore.graph.JBPT.CpfNode;
-import org.apromore.graph.JBPT.ICpfNode;
-import org.jbpt.graph.abs.AbstractDirectedEdge;
-import org.jbpt.graph.algo.rpst.RPSTNode;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.INode;
 
 /**
  * Interface for the Content Service. Defines all the methods that will do the majority of the work for
@@ -35,7 +34,7 @@ public interface ContentService {
      * @param g    the Process Model Graph
      * @param pocketIdMappings the pocket mappings
      */
-    Content addContent(RPSTNode c, String hash, CPF g, Map<String, String> pocketIdMappings);
+    Content addContent(Canonical c, String hash, Canonical g, Map<String, String> pocketIdMappings);
 
     /**
      * Add Nodes to the repository.
@@ -44,7 +43,7 @@ public interface ContentService {
      * @param g        the Process Model Graph
      * @param pocketIdMappings the pocket mappings
      */
-    void addNodes(Content content, Collection<CpfNode> vertices, CPF g, Map<String, String> pocketIdMappings);
+    void addNodes(Content content, Collection<org.apromore.graph.canonical.Node> vertices, Canonical g, Map<String, String> pocketIdMappings);
 
     /**
      * Add a Node to the repository.
@@ -52,7 +51,7 @@ public interface ContentService {
      * @param v       the vertex
      * @param vtype   the vertex type
      */
-    Node addNode(Content content, ICpfNode v, String vtype);
+    Node addNode(Content content, org.apromore.graph.canonical.Node v, String vtype);
 
     /**
      * Add non pocket vertices to the repository.
@@ -65,7 +64,7 @@ public interface ContentService {
      * @param content the contentId
      * @param edges   the list of edges to add.
      */
-    void addEdges(Content content, Collection<AbstractDirectedEdge> edges);
+    void addEdges(Content content, Set<org.apromore.graph.canonical.Edge> edges);
 
     /**
      * Add a single edge to the Repository.
@@ -74,7 +73,7 @@ public interface ContentService {
      * @param source  the Node
      * @param target  the Node
      */
-    void addEdge(Content content, AbstractDirectedEdge e, Node source, Node target);
+    void addEdge(Content content, org.apromore.graph.canonical.Edge e, Node source, Node target);
 
 
     /**

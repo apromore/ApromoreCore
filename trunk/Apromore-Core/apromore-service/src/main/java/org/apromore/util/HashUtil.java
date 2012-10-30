@@ -4,15 +4,14 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import org.apromore.graph.JBPT.CPF;
 import org.apromore.graph.TreeVisitor;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.Edge;
+import org.apromore.graph.canonical.INode;
+import org.apromore.graph.canonical.Node;
 import org.apromore.service.helper.OperationContext;
-import org.jbpt.graph.abs.AbstractDirectedEdge;
-import org.jbpt.graph.algo.rpst.RPSTNode;
-import org.jbpt.graph.algo.tctree.TCType;
-import org.jbpt.hypergraph.abs.IVertex;
-import org.jbpt.pm.FlowNode;
-import org.jbpt.pm.IFlowNode;
+import org.apromore.service.model.RFragment2;
+import org.jbpt.algo.tree.tctree.TCType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,36 +22,35 @@ public class HashUtil {
 
     private static Logger log = LoggerFactory.getLogger(HashUtil.class);
 
-    public static String computeHash(RPSTNode fragment, OperationContext op) {
-        CPF graph = op.getGraph();
+    public static String computeHash(RFragment2 fragment, TCType nodeType, OperationContext op) {
+        Canonical graph = op.getGraph();
         TreeVisitor visitor = op.getTreeVisitor();
-        int fragmentSize = fragment.getFragment().getVertices().size();
+        int fragmentSize = fragment.getVertices().size();
 
         log.debug("Computing hash of a fragment with " + fragmentSize + " vertices...");
 
-        Collection<AbstractDirectedEdge> fEdges = fragment.getFragmentEdges();
-        Collection<FlowNode> fVertices = fragment.getFragment().getVertices();
-        Set<FlowNode> vertices = new HashSet<FlowNode>(fVertices);
-        Set<AbstractDirectedEdge> edges = new HashSet<AbstractDirectedEdge>(fEdges);
+        Collection<Edge> fEdges = fragment.getEdges();
+        Collection<Node> fVertices = fragment.getVertices();
+        Set<Node> vertices = new HashSet<Node>(fVertices);
+        Set<Edge> edges = new HashSet<Edge>(fEdges);
 
         String hash = null;
         String type = "None";
 
         try {
-            TCType nodeType = fragment.getType();
-            if (nodeType == TCType.P) {
+            if (nodeType == TCType.POLYGON) {
                 type = "P";
                 log.debug("Fragment type: " + type + " | Fragment size: " + fragmentSize);
-                hash = visitor.visitSNode(graph, edges, (IFlowNode) fragment.getEntry());
-            } else if (nodeType == TCType.B) {
+                hash = visitor.visitSNode(graph, edges, fragment.getEntry());
+            } else if (nodeType == TCType.BOND) {
                 type = "B";
                 log.debug("Fragment type: " + type + " | Fragment size: " + fragmentSize);
                 hash = computeBondHash(fragment, op);
-            } else if (nodeType == TCType.R) {
+            } else if (nodeType == TCType.RIGID) {
                 type = "R";
                 log.debug("Fragment type: " + type + " | Fragment size: " + fragmentSize);
                 if (fragmentSize <= 10) {
-                    hash = visitor.visitRNode(graph, edges, vertices, (IFlowNode) fragment.getEntry(), (IFlowNode) fragment.getExit());
+                    hash = visitor.visitRNode(graph, edges, vertices, fragment.getEntry(), fragment.getExit());
                 } else {
                     hash = null;
                     log.debug("Large fragment. Skipped the hash computation.");
@@ -60,7 +58,11 @@ public class HashUtil {
             }
         } catch (StringIndexOutOfBoundsException se) {
             String msg = "Unable to compute hash. " + se.getMessage();
-            log.error(msg);
+            log.error(msg, se);
+            hash = null;
+        } catch (Exception e) {
+            String msg = "Fragment code computation error. " + e.getMessage();
+            log.error(msg, e);
             hash = null;
         }
 
@@ -69,16 +71,17 @@ public class HashUtil {
         return hash;
     }
 
-    private static String computeBondHash(RPSTNode fragment, OperationContext op) {
+    private static String computeBondHash(Canonical fragment, OperationContext op) {
         int oPockets = 0;
         int iPockets = 0;
         int oDirectConnections = 0;
         int iDirectConnections = 0;
 
-        IVertex entry = fragment.getEntry();
-        IVertex exit = fragment.getExit();
-        Collection<IVertex> successors = fragment.getFragment().getDirectSuccessors(entry);
-        for (IVertex successor : successors) {
+        Node entry = fragment.getEntry();
+        Node exit = fragment.getExit();
+        Collection<Node> successors = FragmentUtil.getPostset(entry, fragment.getEdges());
+
+        for (Node successor : successors) {
             if (exit.equals(successor)) {
                 oDirectConnections++;
             } else {
@@ -87,8 +90,8 @@ public class HashUtil {
         }
 
         // this is required if the fragment contains loops
-        Collection<IVertex> predecessors = fragment.getFragment().getDirectPredecessors(entry);
-        for (IVertex predecessor : predecessors) {
+        Collection<Node> predecessors = FragmentUtil.getPreset(entry, fragment.getEdges());
+        for (Node predecessor : predecessors) {
             if (exit.equals(predecessor)) {
                 iDirectConnections++;
             } else {

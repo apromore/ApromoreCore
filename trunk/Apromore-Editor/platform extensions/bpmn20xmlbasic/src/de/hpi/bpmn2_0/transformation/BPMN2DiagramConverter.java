@@ -23,7 +23,7 @@
 
 package de.hpi.bpmn2_0.transformation;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -37,9 +37,11 @@ import javax.xml.bind.Unmarshaller;
 import javax.xml.transform.stream.StreamSource;
 
 import com.sun.xml.bind.IDResolver;
+import org.apromore.common.converters.epml.context.EPMLConversionContext;
 import org.json.JSONArray;
 import org.json.JSONException;
 
+import org.json.JSONObject;
 import org.oryxeditor.server.diagram.Bounds;
 import org.oryxeditor.server.diagram.Point;
 import org.oryxeditor.server.diagram.StencilSetReference;
@@ -64,6 +66,7 @@ import de.hpi.bpmn2_0.model.extension.synergia.Configurable;
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationAssociation;
 import de.hpi.bpmn2_0.model.extension.synergia.ConfigurationAnnotationShape;
 import de.hpi.bpmn2_0.model.extension.synergia.Variants;
+import org.oryxeditor.server.diagram.generic.GenericJSONBuilder;
 
 /**
  * Converter that transforms BPMN {@link Definitions} to a native {@link BasicDiagram}
@@ -284,6 +287,46 @@ public class BPMN2DiagramConverter {
 
 		return diagrams;
 	}
+    
+    public void getBPMN(String bpmnString, String encoding, OutputStream jsonStream) {
+
+        // Parse BPMN from XML to JAXB
+        Unmarshaller unmarshaller = null;
+        try {
+            unmarshaller = JAXBContext.newInstance(Definitions.class,
+                    ConfigurationAnnotationAssociation.class,
+                    ConfigurationAnnotationShape.class)
+                    .createUnmarshaller();
+            unmarshaller.setProperty(IDResolver.class.getName(), new DefinitionsIDResolver());
+            Definitions definitions = unmarshaller.unmarshal(new StreamSource(bpmnString), Definitions.class)
+                    .getValue();
+            
+            //return definitions;
+
+
+
+        logger.fine("Parsed BPMN");
+
+        // Convert BPMN to JSON
+        BPMN2DiagramConverter converter = new BPMN2DiagramConverter("/signaviocore/editor/");
+        List<BasicDiagram> diagrams = converter.getDiagramFromBpmn20(definitions);
+
+        logger.fine("Diagrams=" + diagrams);
+        String data = "";
+        for(BasicDiagram diagram : diagrams) {
+                data = diagram.getString();
+                writeJson(data, jsonStream);
+                break;
+            }
+            }catch (JSONException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            } catch (IOException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }  catch (JAXBException e) {
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            }
+        
+    }
 
 	/**
          * Take a BPMN XML file as input and generate an equivalent Signavio JSON file as output.
@@ -316,4 +359,12 @@ public class BPMN2DiagramConverter {
 
                 logger.info("Completed test for " + args[0]);
         }
+
+    private void writeJson(String json, OutputStream jsonStream) throws JSONException, IOException {
+        //BasicDiagram diagram = context.getDiagram(0);
+        //JSONObject jsonDiagram = GenericJSONBuilder.parseModel(diagram);
+        OutputStreamWriter outWriter = new OutputStreamWriter(jsonStream, "UTF-8");
+        outWriter.write(json);
+        outWriter.flush();
+    }
 }

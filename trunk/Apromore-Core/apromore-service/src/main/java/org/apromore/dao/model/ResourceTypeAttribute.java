@@ -1,5 +1,6 @@
 package org.apromore.dao.model;
 
+import java.io.Serializable;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -22,7 +23,7 @@ import static javax.persistence.GenerationType.IDENTITY;
 @Table(name = "resource_type_attribute")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Configurable("resourceTypeAttribute")
-public class ResourceTypeAttribute implements java.io.Serializable {
+public class ResourceTypeAttribute implements Serializable {
 
     private Integer id;
     private String name;

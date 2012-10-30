@@ -3,13 +3,26 @@
  */
 package org.apromore.dao.jpa;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import javax.persistence.EntityManager;
+import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
+
 import org.apache.commons.collections.MapIterator;
 import org.apache.commons.collections.keyvalue.MultiKey;
 import org.apache.commons.collections.map.MultiKeyMap;
 import org.apromore.dao.ClusteringDao;
 import org.apromore.dao.FragmentVersionDao;
 import org.apromore.dao.NamedQueries;
-import org.apromore.dao.model.*;
+import org.apromore.dao.model.Cluster;
+import org.apromore.dao.model.ClusterAssignment;
+import org.apromore.dao.model.ClusteringSummary;
+import org.apromore.dao.model.FragmentDistance;
+import org.apromore.dao.model.FragmentVersion;
 import org.apromore.service.model.ClusterFilter;
 import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentDataObject;
 import org.apromore.toolbox.clustering.algorithms.dbscan.FragmentPair;
@@ -19,11 +32,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.persistence.EntityManager;
-import javax.persistence.PersistenceContext;
-import javax.persistence.Query;
-import java.util.*;
 
 /**
  * Hibernate implementation of the org.apromore.dao.ClusteringDao interface.
@@ -152,8 +160,8 @@ public class ClusteringDaoJpa implements ClusteringDao {
     public void insertDistances(MultiKeyMap dissimmap) {
         MapIterator mi = dissimmap.mapIterator();
         while (mi.hasNext()) {
-            Object k = mi.next();
-            Object v = mi.getValue();
+            java.lang.Object k = mi.next();
+            java.lang.Object v = mi.getValue();
 
             MultiKey fids = (MultiKey) k;
             Integer fid1 = (Integer) fids.getKey(0);

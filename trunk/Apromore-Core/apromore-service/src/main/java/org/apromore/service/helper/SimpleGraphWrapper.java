@@ -11,8 +11,8 @@ import java.util.Set;
 import nl.tue.tm.is.graph.SimpleGraph;
 import nl.tue.tm.is.graph.TwoVertices;
 import org.apromore.common.Constants;
-import org.apromore.graph.JBPT.CPF;
-import org.jbpt.pm.FlowNode;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.Node;
 
 /**
  * A Wrapper for to build a SimpleGraph from a Full Canonical Graph.
@@ -25,7 +25,7 @@ public class SimpleGraphWrapper extends SimpleGraph {
      * Constructor for the Simple Graph Wrapper.
      * @param pg the canonical Graph.
      */
-    public SimpleGraphWrapper(CPF pg) {
+    public SimpleGraphWrapper(Canonical pg) {
         super();
 
         Map<String, Integer> nodeId2vertex = new HashMap<String, Integer>(0);
@@ -44,36 +44,36 @@ public class SimpleGraphWrapper extends SimpleGraph {
         edges = new HashSet<TwoVertices>(0);
 
         int vertexId = 0;
-        for (FlowNode n : pg.getVertices()) {
+        for (Node n : pg.getVertices()) {
             vertices.add(vertexId);
             labels.put(vertexId, n.getName().replace('\n', ' ').replace("\\n", " "));
 
             nodeId2vertex.put(n.getId(), vertexId);
             vertex2nodeId.put(vertexId, n.getId());
 
-            if (Constants.FUNCTION.equals(pg.getVertexProperty(n.getId(), Constants.TYPE)) && n.getName() != null) {
+            if (Constants.FUNCTION.equals(pg.getNodeProperty(n.getId(), Constants.TYPE)) && n.getName() != null) {
                 functionLabels.add(n.getName().replace('\n', ' '));
                 functions.add(vertexId);
-            } else if (Constants.EVENT.equals(pg.getVertexProperty(n.getId(), Constants.TYPE)) && n.getName() != null) {
+            } else if (Constants.EVENT.equals(pg.getNodeProperty(n.getId(), Constants.TYPE)) && n.getName() != null) {
                 eventLabels.add(n.getName().replace('\n', ' '));
                 events.add(vertexId);
-            } else if (Constants.CONNECTOR.equals(pg.getVertexProperty(n.getId(), Constants.TYPE))) {
+            } else if (Constants.CONNECTOR.equals(pg.getNodeProperty(n.getId(), Constants.TYPE))) {
                 connectors.add(vertexId);
             }
             vertexId++;
         }
 
         for (Integer v = 0; v < vertexId; v++) {
-            FlowNode pgv = pg.getVertex(vertex2nodeId.get(v));
+            Node pgv = pg.getNode(vertex2nodeId.get(v));
 
             Set<Integer> incomingCurrent = new HashSet<Integer>(0);
-            for (FlowNode preV : pg.getAllPredecessors(pgv)) {
+            for (Node preV : pg.getAllPredecessors(pgv)) {
                 incomingCurrent.add(nodeId2vertex.get(preV.getId()));
             }
             incomingEdges.put(v, incomingCurrent);
 
             Set<Integer> outgoingCurrent = new HashSet<Integer>(0);
-            for (FlowNode postV : pg.getAllSuccessors(pgv)) {
+            for (Node postV : pg.getAllSuccessors(pgv)) {
                 outgoingCurrent.add(nodeId2vertex.get(postV.getId()));
                 TwoVertices edge = new TwoVertices(v, nodeId2vertex.get(postV.getId()));
                 edges.add(edge);

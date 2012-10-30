@@ -43,8 +43,7 @@ public class SignavioController extends BaseController {
         }
 
     }
-
-
+    
     private String getURL(final String nativeType) {
         String url = "";
         switch (nativeType) {
@@ -89,4 +88,5 @@ public class SignavioController extends BaseController {
         }
         return importPath;
     }
+
 }

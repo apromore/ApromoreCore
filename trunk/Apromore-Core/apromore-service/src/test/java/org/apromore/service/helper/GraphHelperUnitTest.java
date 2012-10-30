@@ -1,12 +1,7 @@
 package org.apromore.service.helper;
 
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.equalTo;
-import static org.hamcrest.Matchers.notNullValue;
-
 import java.io.ByteArrayInputStream;
 import java.io.InputStream;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.Unmarshaller;
@@ -21,14 +16,20 @@ import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TypeAttribute;
-import org.apromore.graph.JBPT.CPF;
-import org.apromore.graph.JBPT.CpfTask;
-import org.jbpt.pm.ControlFlow;
-import org.jbpt.pm.FlowNode;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.Edge;
+import org.apromore.graph.canonical.Task;
+import org.apromore.service.CanonicalConverter;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.equalTo;
+import static org.hamcrest.Matchers.notNullValue;
 
 /**
  * Unit Test for the GraphToCPFHelper.
@@ -42,6 +43,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 })
 public class GraphHelperUnitTest {
 
+    @Autowired @Qualifier("CanonicalConverter")
+    private CanonicalConverter convertor;
+
     @Test
     public void testCreatingAGraphFromCPT() {
         CanonicalProcessType cpt = new CanonicalProcessType();
@@ -49,13 +53,13 @@ public class GraphHelperUnitTest {
         //cpt.getObject().add(createObject("123", "name"));
         cpt.getNet().add(createNet("321"));
 
-        CPF graph = CPFtoGraphHelper.createGraph(cpt);
+        Canonical graph = convertor.convert(cpt);
 
         assertThat(graph.getEdges().size(), equalTo(1));
-        assertThat(graph.getFlowNodes().size(), equalTo(2));
+        assertThat(graph.getNodes().size(), equalTo(2));
         assertThat(graph.getProperties().size(), equalTo(1));
-        assertThat(((CpfTask) graph.getFlowNodes().iterator().next()).getAttribute("testNodeB").getValue(), equalTo("NodeValuetestNodeB"));
-        for (ControlFlow<FlowNode> fn : graph.getEdges()) {
+        assertThat(((Task) graph.getNodes().iterator().next()).getAttribute("testNodeB").getValue(), equalTo("NodeValuetestNodeB"));
+        for (Edge fn : graph.getEdges()) {
             assertThat(fn.getSource().getName(), equalTo("testNodeA"));
             assertThat(fn.getTarget().getName(), equalTo("testNodeB"));
         }
@@ -71,7 +75,7 @@ public class GraphHelperUnitTest {
         JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u.unmarshal(data);
         CanonicalProcessType canType = rootElement.getValue();
 
-        CPF graph = CPFtoGraphHelper.createGraph(canType);
+        Canonical graph = convertor.convert(canType);
 
         assertThat(graph, notNullValue());
 
@@ -89,10 +93,10 @@ public class GraphHelperUnitTest {
         JAXBElement<CanonicalProcessType> rootElement = (JAXBElement<CanonicalProcessType>) u.unmarshal(data);
         CanonicalProcessType canType = rootElement.getValue();
 
-        CPF graph = CPFtoGraphHelper.createGraph(canType);
+        Canonical graph = convertor.convert(canType);
         assertThat(graph, notNullValue());
 
-        CanonicalProcessType returnType = GraphToCPFHelper.createCanonicalProcess(graph);
+        CanonicalProcessType returnType = convertor.convert(graph);
         assertThat(returnType, notNullValue());
 
         assertThat(returnType.getAttribute().size(), equalTo(canType.getAttribute().size()));

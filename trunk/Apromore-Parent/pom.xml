@@ -825,7 +825,7 @@
         <cglib.version>2.2.2</cglib.version>
         <ehcache.version>2.4.7</ehcache.version>
         <c3p0.version>0.9.1.2</c3p0.version>
-        <jbpt.version>0.2.197</jbpt.version>
+        <jbpt.version>0.2.314</jbpt.version>
         <bpstruct.version>0.1.117</bpstruct.version>
         <rpsdag.version>0.1</rpsdag.version>
         <taskmapping.version>0.1</taskmapping.version>

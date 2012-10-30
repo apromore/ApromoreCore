@@ -4,7 +4,7 @@
 package org.apromore.service;
 
 import org.apromore.exception.ExceptionDao;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.canonical.Canonical;
 
 /**
  * Composes from the DB representation into a RPST Directed Graph.
@@ -18,5 +18,5 @@ public interface ComposerService {
      * @return the Directed Graph
      * @throws ExceptionDao if there is a DB Exception
      */
-    public CPF compose(String fragmentVersionUri) throws ExceptionDao;
+    public Canonical compose(String fragmentVersionUri) throws ExceptionDao;
 }

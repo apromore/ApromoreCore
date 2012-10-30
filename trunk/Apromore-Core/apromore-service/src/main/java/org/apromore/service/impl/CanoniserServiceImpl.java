@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
-
 import javax.xml.bind.JAXBException;
 
 import org.apromore.anf.ANFSchema;
@@ -16,17 +15,12 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.provider.CanoniserProvider;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.exception.SerializationException;
-import org.apromore.graph.JBPT.CPF;
 import org.apromore.plugin.PluginResult;
 import org.apromore.plugin.exception.PluginException;
 import org.apromore.plugin.exception.PluginNotFoundException;
 import org.apromore.plugin.impl.PluginRequestImpl;
-import org.apromore.plugin.property.ParameterType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
-import org.apromore.service.helper.CPFtoGraphHelper;
-import org.apromore.service.helper.GraphToCPFHelper;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.DecanonisedProcess;
 import org.apromore.util.StreamUtil;
@@ -181,24 +175,6 @@ public class CanoniserServiceImpl implements CanoniserService {
             throw new JAXBException(e);
         }
         return StreamUtil.convertStreamToString(new ByteArrayInputStream(xml.toByteArray()));
-    }
-
-    /**
-     * @see org.apromore.service.CanoniserService#serializeCPF(org.apromore.graph.JBPT.CPF) {@inheritDoc}
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public CanonicalProcessType serializeCPF(final CPF graph) throws SerializationException {
-        return GraphToCPFHelper.createCanonicalProcess(graph);
-    }
-
-    /**
-     * @see org.apromore.service.CanoniserService#deserializeCPF(org.apromore.cpf.CanonicalProcessType) {@inheritDoc}
-     */
-    @Override
-    @Transactional(readOnly = true)
-    public CPF deserializeCPF(final CanonicalProcessType cpf) throws SerializationException {
-        return CPFtoGraphHelper.createGraph(cpf);
     }
 
     /**
