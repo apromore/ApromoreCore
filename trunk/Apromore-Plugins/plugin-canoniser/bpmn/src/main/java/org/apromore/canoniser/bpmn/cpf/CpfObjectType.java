@@ -17,7 +17,7 @@ import org.omg.spec.bpmn._20100524.model.TDataStoreReference;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class CpfObjectType extends ObjectType {
+public class CpfObjectType extends ObjectType implements Attributed {
 
     // Extension attribute names
 
@@ -51,7 +51,7 @@ public class CpfObjectType extends ObjectType {
                          final CpfNetType  parent,
                          final Initializer initializer) throws CanoniserException {
 
-        setConfigurable(false);  // BPMN doesn't have an obvious equivalent
+        //setConfigurable(false);  // Ignore configurability until we implement Configurable BPMN
         setIsCollection(dataObject.isIsCollection());
 
         setNet(parent);
@@ -74,7 +74,7 @@ public class CpfObjectType extends ObjectType {
         QName dataStoreRef = dataStoreReference.getDataStoreRef();
         QName itemSubjectRef = dataStoreReference.getItemSubjectRef();
 
-        setConfigurable(false);  // BPMN doesn't have an obvious equivalent
+        //setConfigurable(false);  // Ignore until Configurable BPMN gets implemented
         setIsCollection(false);
 
         setNet(parent);

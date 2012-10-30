@@ -9,7 +9,7 @@ import org.omg.spec.bpmn._20100524.model.TLane;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class CpfResourceTypeRefType extends ResourceTypeRefType {
+public class CpfResourceTypeRefType extends ResourceTypeRefType implements Attributed {
 
     /** No-arg constructor. */
     public CpfResourceTypeRefType() {

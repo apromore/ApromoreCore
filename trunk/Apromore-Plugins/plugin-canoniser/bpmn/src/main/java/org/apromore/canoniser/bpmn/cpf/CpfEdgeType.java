@@ -13,7 +13,7 @@ import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  * @since 0.4
  */
-public class CpfEdgeType extends EdgeType {
+public class CpfEdgeType extends EdgeType implements Attributed {
 
     /** This edge's source node. */
     protected NodeType source;
