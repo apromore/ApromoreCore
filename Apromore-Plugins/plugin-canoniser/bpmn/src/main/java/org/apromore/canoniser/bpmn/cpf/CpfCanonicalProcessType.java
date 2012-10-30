@@ -33,7 +33,7 @@ import org.omg.spec.bpmn._20100524.model.TRootElement;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class CpfCanonicalProcessType extends CanonicalProcessType {
+public class CpfCanonicalProcessType extends CanonicalProcessType implements Attributed {
 
     /** Qualified name of the root element <code>cpf:CanonicalProcess</code>. */
     private static final QName CPF_ROOT = new QName("http://www.apromore.org/CPF", "CanonicalProcess");

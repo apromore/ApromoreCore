@@ -13,7 +13,7 @@ import org.apromore.cpf.ResourceTypeType;
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  * @since 0.4
  */
-public class CpfResourceTypeType extends ResourceTypeType {
+public class CpfResourceTypeType extends ResourceTypeType implements Attributed {
 
     /**
      * @return every other resource type which has this one as a specialization

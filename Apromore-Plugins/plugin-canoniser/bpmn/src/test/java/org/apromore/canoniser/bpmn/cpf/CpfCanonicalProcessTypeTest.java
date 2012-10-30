@@ -81,6 +81,5 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         assertNotNull(event);
         assertEquals(0, event.getOutgoingEdges().size());
         assertEquals(1, event.getIncomingEdges().size());
-
     }
 }

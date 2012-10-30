@@ -6,6 +6,9 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import javax.xml.namespace.QName;
+import org.w3c.dom.Element;
+import org.w3c.dom.NodeList;
 
 // Third party packages
 import org.apache.commons.collections.MultiHashMap;
@@ -13,14 +16,25 @@ import org.apache.commons.collections.MultiMap;
 
 // Local classes
 import static org.apromore.canoniser.bpmn.BpmnDefinitions.BPMN_NS;
+import org.apromore.canoniser.bpmn.cpf.Attributed;
+import org.apromore.canoniser.bpmn.cpf.CpfEdgeType;
 import org.apromore.canoniser.bpmn.cpf.CpfNetType;
+import org.apromore.canoniser.bpmn.cpf.CpfNodeType;
+import org.apromore.canoniser.bpmn.cpf.CpfObjectType;
+import org.apromore.canoniser.bpmn.cpf.CpfResourceTypeType;
+import org.apromore.canoniser.bpmn.cpf.ExtensionConstants;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ResourceTypeType;
+import org.apromore.cpf.TypeAttribute;
+import org.omg.spec.bpmn._20100524.model.TAuditing;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
+import org.omg.spec.bpmn._20100524.model.TExtensionElements;
+import org.omg.spec.bpmn._20100524.model.TFlowElement;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
+import org.omg.spec.bpmn._20100524.model.TMonitoring;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 
@@ -29,7 +43,7 @@ import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-class Initializer {
+class Initializer implements ExtensionConstants {
 
     // CPF document root
     private final CanonicalProcessType cpf;
@@ -40,11 +54,8 @@ class Initializer {
     // Used to wrap BPMN elements in JAXBElements
     private final BpmnObjectFactory factory = new BpmnObjectFactory();
 
-    // Map from CPF @cpfId node identifiers to BPMN ids
+    // Map from CPF @cpfId node identifiers to BPMN elements
     private final Map<String, TBaseElement> idMap = new HashMap<String, TBaseElement>();
-
-    // Map from CPF @cpfId edge identifiers to BPMN ids
-    private final Map<String, BpmnSequenceFlow> edgeMap = new HashMap<String, BpmnSequenceFlow>();
 
     // Maps from CPF Node cpfIds to the set of BPMN sequence flows which need their @sourceRef populated with the equivalent BPMN id
     private final MultiMap flowsWithoutSourceRefMultiMap = new MultiHashMap();
@@ -54,14 +65,17 @@ class Initializer {
     private final MultiMap flowsWithoutTargetRefMultiMap = new MultiHashMap();
     //private final MultiMap<String, TSequenceFlow> flowsWithoutTargetRefMultiMap = new MultiHashMap<String, TSequenceFlow>();
 
+    private final String targetNamespace;
+
     /**
      * Sole constructor.
      *
      * @param newBpmnIdFactory;
      * @param newIdMap;
      */
-    Initializer(final CanonicalProcessType newCpf) {
-        cpf = newCpf;
+    Initializer(final CanonicalProcessType newCpf, final String newTargetNamespace) {
+        cpf             = newCpf;
+        targetNamespace = newTargetNamespace;
     }
 
     /**
@@ -110,7 +124,7 @@ class Initializer {
      * @return the net in <code>cpf</code> with the identifier <code>id</code>
      * @throws CanoniserException if <code>id</code> doesn't identify a net in <code>cpf</code>
      */
-    public NetType findNet(final String id) throws CanoniserException {
+    public CpfNetType findNet(final String id) throws CanoniserException {
 
         for (final NetType net : cpf.getNet()) {
             if (id.equals(net.getId())) {
@@ -123,27 +137,19 @@ class Initializer {
     }
 
     /**
-     * @param id  an identifier
-     * @return whether a BPMN element with the given identifier exists
+     * @param id  a CPF identifier
+     * @return whether a BPMN element corresponding to the given CPF identifier exists
      */
     public boolean containsElement(final String id) {
         return idMap.containsKey(id);
     }
 
     /**
-     * @param id  a BPMN element identifier
-     * @return the BPMN element with the given identifier
+     * @param id  a CPF identifier
+     * @return the BPMN element corresponding to the identified CPF element
      */
     public TBaseElement getElement(final String id) {
         return idMap.get(id);
-    }
-
-    /**
-     * @param id  a CPF Edge identifier
-     * @return the corresponding BPMN SequenceFlow
-     */
-    public BpmnSequenceFlow getEdge(final String id) {
-        return edgeMap.get(id);
     }
 
     /** @return shared {@link BpmnObjectFactory} instance */
@@ -160,7 +166,7 @@ class Initializer {
      * @return the target namespace of the BPMN document under construction
      */
     String getTargetNamespace() {
-        return BPMN_NS;  // TODO - change this from a fixed value to a specified one
+        return targetNamespace;
     }
 
     /**
@@ -169,14 +175,6 @@ class Initializer {
      */
     String newId(final String id) {
         return bpmnIdFactory.newId(id);
-    }
-
-    /**
-     * @param edgeId  a CPF Edge identifier
-     * @param flow  the corresponding BPMN SequenceFlow
-     */
-    void putEdge(final String edgeId, final BpmnSequenceFlow flow) {
-        edgeMap.put(edgeId, flow);
     }
 
     /**
@@ -197,7 +195,35 @@ class Initializer {
         flowsWithoutTargetRefMultiMap.put(targetCpfId, flow);
     }
 
+    //
     // Pseudo-superclass initialization methods
+    //
+
+    // ...for CpfEdgeType
+
+    void populateBaseElement(final TBaseElement baseElement, final CpfEdgeType cpfEdge) {
+
+        // Handle @id attribute
+        baseElement.setId(newId(cpfEdge.getId()));
+        idMap.put(cpfEdge.getId(), baseElement);
+
+        // Handle extensionElements subelement
+        populateBaseElementExtensionElements(baseElement, cpfEdge);
+    }
+
+    void populateFlowElement(final TFlowElement flowElement, final CpfEdgeType cpfEdge) {
+        populateBaseElement(flowElement, cpfEdge);
+
+        // TODO - handle @name attribute as an extension
+        String name = flowElement.getName();
+
+        // TODO - handle the following attributes, which are in the standard but not used in practice
+        TAuditing auditing = flowElement.getAuditing();
+        List<QName> categoryValueRef = flowElement.getCategoryValueRef();
+        TMonitoring monitoring = flowElement.getMonitoring();
+    }
+
+    // ...for CpfNetType
 
     /**
      * Initialize a BPMN element, based on the CPF net it corresponds to.
@@ -206,37 +232,14 @@ class Initializer {
      * @param baseElement  the BPMN element to set
      * @param cpfNode  the CPF element which <code>baseElement</code> corresponds to
      */
-    void populateBaseElement(final TProcess baseElement, final NetType cpfNet) {
+    void populateBaseElement(final TProcess baseElement, final CpfNetType cpfNet) {
 
         // Handle @id attribute
         baseElement.setId(bpmnIdFactory.newId(cpfNet.getId()));
         idMap.put(cpfNet.getId(), baseElement);
-    };
 
-    /**
-     * Initialize a BPMN element, based on the CPF node it corresponds to.
-     *
-     * @param baseElement  the BPMN element to set
-     * @param cpfNode  the CPF element which <code>baseElement</code> corresponds to
-     */
-    void populateBaseElement(final TBaseElement baseElement, final NodeType cpfNode) {
-
-        // Handle @id attribute
-        baseElement.setId(bpmnIdFactory.newId(cpfNode.getId()));
-        idMap.put(cpfNode.getId(), baseElement);
-    };
-
-    /**
-     * Initialize a BPMN element, based on the CPF resource it corresponds to.
-     *
-     * @param baseElement  the BPMN element to set
-     * @param cpfResourceType  the CPF element which <code>baseElement</code> corresponds to
-     */
-    void populateBaseElement(final TBaseElement baseElement, final ResourceTypeType cpfResourceType) {
-
-        // Handle @id attribute
-        baseElement.setId(bpmnIdFactory.newId(cpfResourceType.getId()));
-        idMap.put(cpfResourceType.getId(), baseElement);
+        // Handle extensionElements subelement
+        populateBaseElementExtensionElements(baseElement, cpfNet);
     };
 
     /**
@@ -246,7 +249,117 @@ class Initializer {
      * @param net  the CPF net which the <code>process</code> corresponds to
      * @throws CanoniserException if anything goes wrong
      */
-    void populateProcess(final ProcessWrapper process, final NetType net) throws CanoniserException {
+    void populateProcess(final ProcessWrapper process, final CpfNetType net) throws CanoniserException {
         ProcessWrapper.populateProcess(process, net, this);
+    }
+
+    // ...for CpfNodeType
+
+    /**
+     * Initialize a BPMN element, based on the CPF node it corresponds to.
+     *
+     * @param baseElement  the BPMN element to set
+     * @param cpfNode  the CPF element which <code>baseElement</code> corresponds to
+     */
+    void populateBaseElement(final TBaseElement baseElement, final CpfNodeType cpfNode) {
+
+        // Handle @id attribute
+        baseElement.setId(bpmnIdFactory.newId(cpfNode.getId()));
+        idMap.put(cpfNode.getId(), baseElement);
+
+        // Handle extensionElements subelement
+        populateBaseElementExtensionElements(baseElement, cpfNode);
+    };
+
+    // ...for CpfObjectType
+
+    /**
+     * Initialize a BPMN element, based on the CPF object it corresponds to.
+     *
+     * @param baseElement  the BPMN element to set
+     * @param cpfNode  the CPF element which <code>baseElement</code> corresponds to
+     */
+    void populateBaseElement(final TBaseElement baseElement, final CpfObjectType cpfObject) {
+
+        // Handle @id attribute
+        baseElement.setId(bpmnIdFactory.newId(cpfObject.getId()));
+        idMap.put(cpfObject.getId(), baseElement);
+
+        // Handle extensionElements subelement
+        populateBaseElementExtensionElements(baseElement, cpfObject);
+    };
+
+    /**
+     * Initialize a BPMN flow element, based on the CPF object it corresponds to.
+     *
+     * @param flowElement  the BPMN flow element to set
+     * @param cpfNode  the CPF object which <code>flowElement</code> corresponds to
+     */
+    void populateFlowElement(final TFlowElement flowElement, final CpfObjectType cpfObject) {
+        populateBaseElement(flowElement, cpfObject);
+
+        // Handle @name attribute
+        cpfObject.setName(flowElement.getName());
+
+        // TODO - handle the following attributes, which are in the standard but not used in practice
+        TAuditing auditing = flowElement.getAuditing();
+        List<QName> categoryValueRef = flowElement.getCategoryValueRef();
+        TMonitoring monitoring = flowElement.getMonitoring();
+    };
+
+    // ...for CpfResourceTypeType
+
+    /**
+     * Initialize a BPMN element, based on the CPF resource it corresponds to.
+     *
+     * @param baseElement  the BPMN element to set
+     * @param cpfResourceType  the CPF element which <code>baseElement</code> corresponds to
+     */
+    void populateBaseElement(final TBaseElement baseElement, final CpfResourceTypeType cpfResourceType) {
+
+        // Handle @id attribute
+        baseElement.setId(bpmnIdFactory.newId(cpfResourceType.getId()));
+        idMap.put(cpfResourceType.getId(), baseElement);
+
+        // Handle extensionElements subelement
+        populateBaseElementExtensionElements(baseElement, cpfResourceType);
+    };
+
+    // Internal methods
+
+    /**
+     * Translate a CPF attribute list to the BPMN BaseElement's extensionElements.
+     *
+     * @param attributes  the attribute list of the source CPF element
+     * @param baseElement  the destination BPMN element
+     */
+    private void populateBaseElementExtensionElements(final TBaseElement baseElement, final Attributed cpfElement) {
+
+        final String NAME = BPMN_CPF_NS + "/" + EXTENSION_ELEMENTS;
+
+        List<TypeAttribute> attributes = new ArrayList<TypeAttribute>();
+        for (TypeAttribute attr : cpfElement.getAttribute()) {
+            if (NAME.equals(attr.getName())) {
+                attributes.add(attr);
+            }
+        }
+
+        if (attributes.size() > 0) {
+            TExtensionElements extensionElements = baseElement.getExtensionElements();
+            if (extensionElements == null) {
+                extensionElements = factory.createTExtensionElements();
+            }
+            assert extensionElements != null;
+
+            for (TypeAttribute attribute : attributes) {
+                Element element = (Element) attribute.getAny();
+                NodeList nodes = element.getChildNodes();
+                for (int i = 0; i < nodes.getLength(); i++) {
+                    extensionElements.getAny().add(nodes.item(i));
+                }
+            }
+
+            baseElement.setExtensionElements(extensionElements);
+        }
     }
 }

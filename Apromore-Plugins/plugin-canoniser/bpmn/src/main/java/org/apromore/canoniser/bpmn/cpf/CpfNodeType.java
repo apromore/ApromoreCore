@@ -12,7 +12,12 @@ import org.apromore.cpf.EdgeType;
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  * @since 0.4
  */
-public interface CpfNodeType {
+public interface CpfNodeType extends Attributed {
+
+    /**
+     * @return the identifier for this element, unique within the CPF document
+     */
+    String getId();
 
     /**
      * @return every edge which has this node as its target

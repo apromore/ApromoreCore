@@ -1,6 +1,7 @@
 package org.apromore.canoniser.bpmn;
 
 // Local packages
+import org.apromore.canoniser.bpmn.cpf.CpfNetType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.NetType;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
@@ -28,7 +29,7 @@ public class BpmnProcess extends TProcess {
      * @param collaboration  element accumulating pool participants
      * @throws CanoniserException  if the process can't be constructed
      */
-    public BpmnProcess(final NetType        net,
+    public BpmnProcess(final CpfNetType     net,
                        final Initializer    initializer,
                        final TCollaboration collaboration) throws CanoniserException {
 

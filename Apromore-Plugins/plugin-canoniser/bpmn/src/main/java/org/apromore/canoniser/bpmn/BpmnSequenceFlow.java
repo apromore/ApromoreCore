@@ -1,7 +1,7 @@
 package org.apromore.canoniser.bpmn;
 
 // Local packages
-import org.apromore.cpf.EdgeType;
+import org.apromore.canoniser.bpmn.cpf.CpfEdgeType;
 import org.omg.spec.bpmn._20100524.model.TExpression;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
@@ -24,11 +24,9 @@ public class BpmnSequenceFlow extends TSequenceFlow {
      * @param edge  a CPF edge
      * @param initializer  BPMN document construction state
      */
-    public BpmnSequenceFlow(final EdgeType edge, final Initializer initializer) {
+    public BpmnSequenceFlow(final CpfEdgeType edge, final Initializer initializer) {
 
-        initializer.putEdge(edge.getId(), this);
-
-        setId(initializer.newId(edge.getId()));
+        initializer.populateFlowElement(this, edge);
 
         // Deal with @conditionExpression
         if (edge.getConditionExpr() != null) {

@@ -8,6 +8,7 @@ import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Collections;
+import java.util.List;
 import java.util.logging.Logger;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.bind.JAXBContext;
@@ -20,6 +21,7 @@ import javax.xml.transform.TransformerException;
 import javax.xml.transform.stream.StreamSource;
 import javax.xml.validation.Schema;
 import javax.xml.validation.SchemaFactory;
+import org.w3c.dom.Element;
 import org.xml.sax.SAXException;
 
 // Third party packages
@@ -197,6 +199,62 @@ public class BpmnDefinitionsTest implements TestConstants {
         // End event c1
         TEndEvent c3 = (TEndEvent) c6.getFlowElement().get(4).getValue();
         assertEquals("c3", c3.getId());
+
+        // Sequence flow c4
+        TSequenceFlow c4 = (TSequenceFlow) c6.getFlowElement().get(0).getValue();
+        assertEquals("c4", c4.getId());
+        assertEquals(c1, c4.getSourceRef());
+        assertEquals(c2, c4.getTargetRef());
+
+        // Sequence flow c5
+        TSequenceFlow c5 = (TSequenceFlow) c6.getFlowElement().get(1).getValue();
+        assertEquals("c5", c5.getId());
+        assertEquals(c2, c5.getSourceRef());
+        assertEquals(c3, c5.getTargetRef());
+    }
+
+    /**
+     * Test decanonisation of <code>Extension.cpf</code> and <code>Extension.anf</code>.
+     */
+    @Test
+    public final void testDecanoniseExtension() throws Exception {
+
+        // Obtain the test instance
+        BpmnDefinitions definitions = testDecanonise("Extension");
+
+        // Inspect the test instance
+        assertNotNull(definitions);
+
+        assertNotNull(definitions.getRootElement());
+        assertEquals(1, definitions.getRootElement().size());
+
+        // Process c6
+        assertEquals(BpmnProcess.class, definitions.getRootElement().get(0).getValue().getClass());
+        TProcess c6 = (TProcess) definitions.getRootElement().get(0).getValue();
+        assertEquals("c6", c6.getId());
+
+        // Expect 5 flow elements
+        assertEquals(5, c6.getFlowElement().size());
+
+        // Start event c1
+        TStartEvent c1 = (TStartEvent) c6.getFlowElement().get(2).getValue();
+        assertEquals("c1", c1.getId());
+        assertNull(c1.getExtensionElements());
+
+        // Task c2
+        TTask c2 = (TTask) c6.getFlowElement().get(3).getValue();
+        assertEquals("c2", c2.getId());
+        /*
+        assertNotNull(c2.getExtensionElements());
+        List anys = (List) c2.getExtensionElements().getAny();
+        assertEquals(1, anys.size());
+        Element element = (Element) anys.get(0);
+        */
+
+        // End event c1
+        TEndEvent c3 = (TEndEvent) c6.getFlowElement().get(4).getValue();
+        assertEquals("c3", c3.getId());
+        assertNull(c3.getExtensionElements());
 
         // Sequence flow c4
         TSequenceFlow c4 = (TSequenceFlow) c6.getFlowElement().get(0).getValue();

@@ -222,7 +222,7 @@ public final class ExtensionUtils {
      *            name of the extension
      * @return List of TypeAttribute
      */
-    public static List<TypeAttribute> getExtensionAttributes(final TaskType node, final String name) {
+    public static List<TypeAttribute> getExtensionAttributes(final NodeType node, final String name) {
         List<TypeAttribute> attrList = new ArrayList<TypeAttribute>();
         for (TypeAttribute attr :node.getAttribute()) {
             if (name.equals(attr.getName()) || (YAWLSCHEMA_URL + "/" + name).equals(attr.getName())) {
@@ -231,7 +231,6 @@ public final class ExtensionUtils {
         }
         return attrList;
     }
-
 
     /**
      * Returns if the extension attribute is present in the list of attributes.

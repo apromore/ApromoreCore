@@ -34,7 +34,6 @@ public class BpmnSubProcess extends TSubProcess {
 
         initializer.populateBaseElement(this, task);
         setTriggeredByEvent(task.isTriggeredByEvent());
-        initializer.populateProcess(new ProcessWrapper(this, "subprocess"),
-                                    initializer.findNet(task.getSubnetId()));
+        initializer.populateProcess(new ProcessWrapper(this, "subprocess"), initializer.findNet(task.getSubnetId()));
     }
 }
