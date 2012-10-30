@@ -3,42 +3,42 @@ package org.apromore.service.helper;
 import java.util.ArrayList;
 import java.util.Collection;
 
-import org.apromore.graph.JBPT.ICpfNode;
-import org.jbpt.graph.abs.AbstractDirectedEdge;
-import org.jbpt.graph.algo.rpst.RPSTNode;
-import org.jbpt.hypergraph.abs.IVertex;
+import org.apromore.graph.canonical.Edge;
+import org.apromore.graph.canonical.INode;
+import org.apromore.graph.canonical.Node;
+import org.jbpt.algo.tree.rpst.RPSTNode;
 
 public class RPSTNodeCopy {
 
-    private IVertex entry;
-    private IVertex exit;
-    private Collection<ICpfNode> vertices;
-    private Collection<AbstractDirectedEdge> edges;
+    private Node entry;
+    private Node exit;
+    private Collection<Node> nodes;
+    private Collection<Edge> edges;
     private String readableNodeType;
 
-    public RPSTNodeCopy(RPSTNode fragment) {
-        this.entry = fragment.getEntry();
-        this.exit = fragment.getExit();
+    public RPSTNodeCopy(RPSTNode<Edge, Node> f) {
+        this.entry = f.getEntry();
+        this.exit = f.getExit();
 
-        vertices = new ArrayList<ICpfNode>();
-        Collection<ICpfNode> originalVertices = fragment.getFragment().getVertices();
-        for (ICpfNode v : originalVertices) {
-            vertices.add(v);
+        nodes = new ArrayList<Node>();
+        Collection<Node> originalVertices = f.getFragment().getGraph().getVertices();
+        for (Node v : originalVertices) {
+            nodes.add(v);
         }
 
-        edges = new ArrayList<AbstractDirectedEdge>();
-        Collection<AbstractDirectedEdge> originalEdges = fragment.getFragment().getEdges();
-        for (AbstractDirectedEdge e : originalEdges) {
+        edges = new ArrayList<Edge>();
+        Collection<Edge> originalEdges = f.getFragment();
+        for (Edge e : originalEdges) {
             edges.add(e);
         }
     }
 
     public int getSize() {
-        return vertices.size() + edges.size();
+        return nodes.size() + edges.size();
     }
 
     public int getNumVertices() {
-        return vertices.size();
+        return nodes.size();
     }
 
     public String getReadableNodeType() {
@@ -49,35 +49,35 @@ public class RPSTNodeCopy {
         this.readableNodeType = readableNodeType;
     }
 
-    public IVertex getEntry() {
+    public INode getEntry() {
         return entry;
     }
 
-    public void setEntry(IVertex entry) {
+    public void setEntry(Node entry) {
         this.entry = entry;
     }
 
-    public IVertex getExit() {
+    public Node getExit() {
         return exit;
     }
 
-    public void setExit(IVertex exit) {
+    public void setExit(Node exit) {
         this.exit = exit;
     }
 
-    public Collection<ICpfNode> getVertices() {
-        return vertices;
+    public Collection<Node> getNodes() {
+        return nodes;
     }
 
-    public void setVertices(Collection<ICpfNode> vertices) {
-        this.vertices = vertices;
+    public void setNodes(Collection<Node> vertices) {
+        this.nodes = vertices;
     }
 
-    public Collection<AbstractDirectedEdge> getEdges() {
+    public Collection<Edge> getEdges() {
         return edges;
     }
 
-    public void setEdges(Collection<AbstractDirectedEdge> edges) {
+    public void setEdges(Collection<Edge> edges) {
         this.edges = edges;
     }
 }

@@ -15,7 +15,6 @@ public class ProcessAssociation {
     private String processName;
 
 
-
     public Integer getProcessId() {
         return processId;
     }

@@ -31,14 +31,11 @@ import org.springframework.transaction.annotation.Transactional;
 @Transactional(propagation = Propagation.REQUIRED)
 public class FormatServiceImpl implements FormatService {
 
-    @Autowired
-    @Qualifier("AnnotationDao")
+    @Autowired @Qualifier("AnnotationDao")
     private AnnotationDao annDao;
-    @Autowired
-    @Qualifier("NativeDao")
+    @Autowired @Qualifier("NativeDao")
     private NativeDao natDao;
-    @Autowired
-    @Qualifier("NativeTypeDao")
+    @Autowired @Qualifier("NativeTypeDao")
     private NativeTypeDao natTypeDao;
 
 

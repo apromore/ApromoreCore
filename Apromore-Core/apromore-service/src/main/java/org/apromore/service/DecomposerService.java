@@ -7,7 +7,7 @@ import java.util.List;
 
 import org.apromore.dao.model.FragmentVersion;
 import org.apromore.exception.RepositoryException;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.canonical.Canonical;
 
 /**
  * Decomposes from the graph RPST to apromore CPF.
@@ -22,7 +22,7 @@ public interface DecomposerService {
      * @return the fragment version of the apromore system.
      * @throws RepositoryException if saving the conversion fails.
      */
-    public FragmentVersion decompose(CPF graph, List<String> fragmentIds) throws RepositoryException;
+    public FragmentVersion decompose(Canonical graph, List<String> fragmentIds) throws RepositoryException;
 
     /**
      * Decompose a fragment into a String.....not quite sure.
@@ -31,5 +31,5 @@ public interface DecomposerService {
      * @return the string?
      * @throws RepositoryException if saving the conversion fails.
      */
-    public String decomposeFragment(CPF graph, List<String> fragmentIds) throws RepositoryException;
+    public String decomposeFragment(Canonical graph, List<String> fragmentIds) throws RepositoryException;
 }

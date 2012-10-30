@@ -2,17 +2,13 @@ package org.apromore.service;
 
 import java.io.InputStream;
 import java.util.Set;
-
 import javax.xml.bind.JAXBException;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.Canoniser;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.exception.SerializationException;
-import org.apromore.graph.JBPT.CPF;
 import org.apromore.plugin.exception.PluginNotFoundException;
-import org.apromore.plugin.property.ParameterType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.model.CanonisedProcess;
 import org.apromore.service.model.DecanonisedProcess;
@@ -23,7 +19,7 @@ import org.apromore.service.model.DecanonisedProcess;
  * @author <a href="mailto:cam.james@gmail.com">Cameron James</a>
  */
 public interface CanoniserService {
-    
+
     /**
      * Lists all installed Canonisers for given native process format.
      *
@@ -57,14 +53,11 @@ public interface CanoniserService {
      * Canonise a process. Generate CPF and ANF from native XML which is specified in language nativeType. If cpfUri is equal to 0, take it from
      * nativeXml
      *
-     * @param nativeType
-     *            the native type
-     * @param processXml
-     *            the processXML to canonise
+     * @param nativeType          the native type
+     * @param nativeXml           the processXML to canonise
      * @param canoniserProperties
      * @return CanonisedProcess populated with the CPF and ANF and messages from the Canoniser
-     * @throws CanoniserException
-     *             something failed
+     * @throws CanoniserException something failed
      */
     CanonisedProcess canonise(String nativeType, InputStream nativeXml, Set<RequestParameterType<?>> canoniserProperties)
             throws CanoniserException;
@@ -72,54 +65,24 @@ public interface CanoniserService {
     /**
      * DeCanonise a process.
      *
-     * @param processId
-     *            the processId of the Canonical format.
-     * @param version
-     *            the version of the canonical format
-     * @param nativeType
-     *            the processes original format
-     * @param canonicalFormat
-     *            the Canonical format
-     * @param annotationFormat
-     *            the annotation format data source
+     * @param processId           the processId of the Canonical format.
+     * @param version             the version of the canonical format
+     * @param nativeType          the processes original format
+     * @param canonicalFormat     the Canonical format
+     * @param annotationFormat    the annotation format data source
      * @param canoniserProperties
      * @return DecanonisedProcess containing the native format and messages from the Canoniser
-     * @throws CanoniserException
-     *             something failed
+     * @throws CanoniserException something failed
      */
     DecanonisedProcess deCanonise(final Integer processId, final String version, final String nativeType, final CanonicalProcessType canonicalFormat,
-            final AnnotationsType annotationFormat, Set<RequestParameterType<?>> canoniserProperties) throws CanoniserException;
+                                  final AnnotationsType annotationFormat, Set<RequestParameterType<?>> canoniserProperties) throws CanoniserException;
 
     /**
      * Convert the CPF Graph to XML.
      *
-     * @param cpt
-     *            the CPT
+     * @param cpt the CPT
      * @return the CPF as a String
      */
     String CPFtoString(CanonicalProcessType cpt) throws JAXBException;
-
-    /**
-     * Serializes a Graph to a cpf.
-     *
-     * @param graph
-     *            The process Model Graph.
-     * @return the the CPF format of the process Model Graph.
-     * @throws SerializationException
-     *             if the conversion from a CPF to graph fails.
-     */
-    CanonicalProcessType serializeCPF(CPF graph) throws SerializationException;
-
-    /**
-     * De-serializes a CPF to a Process Model Graph.
-     *
-     * @param cpf
-     *            the CPF Process Model to convert.
-     * @return the process Model Graph of the conversion
-     * @throws SerializationException
-     *             if the conversion from a CPF to graph fails.
-     */
-    CPF deserializeCPF(CanonicalProcessType cpf) throws SerializationException;
-
 
 }

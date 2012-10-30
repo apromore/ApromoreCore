@@ -12,21 +12,22 @@ import org.apromore.dao.model.Node;
 import org.apromore.dao.model.NodeAttribute;
 import org.apromore.dao.model.ObjectRefType;
 import org.apromore.dao.model.ResourceRefType;
-import org.apromore.graph.JBPT.CPF;
-import org.apromore.graph.JBPT.CpfAndGateway;
-import org.apromore.graph.JBPT.CpfEvent;
-import org.apromore.graph.JBPT.CpfMessage;
-import org.apromore.graph.JBPT.CpfNode;
-import org.apromore.graph.JBPT.CpfObject;
-import org.apromore.graph.JBPT.CpfOrGateway;
-import org.apromore.graph.JBPT.CpfResource;
-import org.apromore.graph.JBPT.CpfTask;
-import org.apromore.graph.JBPT.CpfTimer;
-import org.apromore.graph.JBPT.CpfXorGateway;
-import org.apromore.graph.JBPT.ICpfObject;
-import org.apromore.graph.JBPT.ICpfResource;
+import org.apromore.graph.canonical.AndJoin;
+import org.apromore.graph.canonical.AndSplit;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.CanonicalObject;
+import org.apromore.graph.canonical.Event;
+import org.apromore.graph.canonical.IObject;
+import org.apromore.graph.canonical.IResource;
+import org.apromore.graph.canonical.Message;
+import org.apromore.graph.canonical.OrJoin;
+import org.apromore.graph.canonical.OrSplit;
+import org.apromore.graph.canonical.Resource;
+import org.apromore.graph.canonical.Task;
+import org.apromore.graph.canonical.Timer;
+import org.apromore.graph.canonical.XOrJoin;
+import org.apromore.graph.canonical.XOrSplit;
 import org.apromore.service.GraphService;
-import org.jbpt.pm.FlowNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,41 +81,41 @@ public class GraphServiceImpl implements GraphService {
      */
     @Override
     @Transactional(readOnly = true)
-    public CPF getGraph(final Integer contentID) {
-        CPF g = new CPF();
+    public Canonical getGraph(final Integer contentID) {
+        Canonical g = new Canonical();
         fillNodes(g, contentID);
         fillEdges(g, contentID);
         return g;
     }
 
     /**
-     * @see org.apromore.service.GraphService#fillNodes(org.apromore.graph.JBPT.CPF, Integer)
+     * @see org.apromore.service.GraphService#fillNodes(org.apromore.graph.canonical.Canonical, Integer)
      *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public void fillNodes(final CPF procModelGraph, final Integer contentID) {
-        FlowNode v;
+    public void fillNodes(final Canonical procModelGraph, final Integer contentID) {
+        org.apromore.graph.canonical.Node v;
         List<Node> nodes = nDao.getVertexByContent(contentID);
         for (Node node : nodes) {
             v = buildNodeByType(node);
             procModelGraph.addVertex(v);
-            procModelGraph.setVertexProperty(String.valueOf(node.getId()), Constants.TYPE, Constants.FUNCTION);
+            procModelGraph.setNodeProperty(String.valueOf(node.getId()), Constants.TYPE, Constants.FUNCTION);
         }
     }
 
 
     /**
-     * @see org.apromore.service.GraphService#fillEdges(org.apromore.graph.JBPT.CPF, Integer)
+     * @see org.apromore.service.GraphService#fillEdges(org.apromore.graph.canonical.Canonical, Integer)
      *      {@inheritDoc}
      */
     @Override
     @Transactional(readOnly = true)
-    public void fillEdges(final CPF procModelGraph, final Integer contentID) {
+    public void fillEdges(final Canonical procModelGraph, final Integer contentID) {
         List<Edge> edges = edgeDao.getEdgesByContent(contentID);
         for (Edge edge : edges) {
-            FlowNode v1 = procModelGraph.getVertex(String.valueOf(edge.getVerticesBySourceVid().getId()));
-            FlowNode v2 = procModelGraph.getVertex(String.valueOf(edge.getVerticesByTargetVid().getId()));
+            org.apromore.graph.canonical.Node v1 = procModelGraph.getNode(String.valueOf(edge.getVerticesBySourceVid().getId()));
+            org.apromore.graph.canonical.Node v2 = procModelGraph.getNode(String.valueOf(edge.getVerticesByTargetVid().getId()));
             if (v1 != null && v2 != null) {
                 procModelGraph.addEdge(v1, v2);
             } else {
@@ -132,30 +133,30 @@ public class GraphServiceImpl implements GraphService {
     }
 
     /**
-     * @see org.apromore.service.GraphService#fillNodesByFragmentId(org.apromore.graph.JBPT.CPF, Integer)
+     * @see org.apromore.service.GraphService#fillNodesByFragmentId(org.apromore.graph.canonical.Canonical, Integer)
      * {@inheritDoc}
      */
     @Override
-    public void fillNodesByFragmentId(final CPF procModelGraph, final Integer fragmentID) {
-        FlowNode v;
+    public void fillNodesByFragmentId(final Canonical procModelGraph, final Integer fragmentID) {
+        org.apromore.graph.canonical.Node v;
         List<Node> nodes = nDao.getVertexByFragment(fragmentID);
         for (Node node : nodes) {
             v = buildNodeByType(node);
             procModelGraph.addVertex(v);
-            procModelGraph.setVertexProperty(String.valueOf(node.getId()), Constants.TYPE, node.getType());
+            procModelGraph.setNodeProperty(String.valueOf(node.getId()), Constants.TYPE, node.getType());
         }
     }
 
     /**
-     * @see org.apromore.service.GraphService#fillEdgesByFragmentId(org.apromore.graph.JBPT.CPF, Integer)
+     * @see org.apromore.service.GraphService#fillEdgesByFragmentId(org.apromore.graph.canonical.Canonical, Integer)
      * {@inheritDoc}
      */
     @Override
-    public void fillEdgesByFragmentId(final CPF procModelGraph, final Integer fragmentID) {
+    public void fillEdgesByFragmentId(final Canonical procModelGraph, final Integer fragmentID) {
         List<Edge> edges = edgeDao.getEdgesByFragment(fragmentID);
         for (Edge edge : edges) {
-            FlowNode v1 = procModelGraph.getVertex(String.valueOf(edge.getVerticesBySourceVid().getId()));
-            FlowNode v2 = procModelGraph.getVertex(String.valueOf(edge.getVerticesByTargetVid().getId()));
+            org.apromore.graph.canonical.Node v1 = procModelGraph.getNode(String.valueOf(edge.getVerticesBySourceVid().getId()));
+            org.apromore.graph.canonical.Node v2 = procModelGraph.getNode(String.valueOf(edge.getVerticesByTargetVid().getId()));
             if (v1 != null && v2 != null) {
                 procModelGraph.addEdge(v1, v2);
             } else {
@@ -175,62 +176,34 @@ public class GraphServiceImpl implements GraphService {
 
 
     /* Build the correct type of Node so we don't loss Information */
-    private FlowNode buildNodeByType(final Node node) {
-        FlowNode result = null;
-        if (node.getCtype().equals(CpfNode.class.getName())) {
-            result = new CpfNode(node.getName());
+    private org.apromore.graph.canonical.Node buildNodeByType(final Node node) {
+        org.apromore.graph.canonical.Node result = null;
+        if (node.getCtype().equals(org.apromore.graph.canonical.Node.class.getName())) {
+            result = new org.apromore.graph.canonical.Node(node.getName());
             result.setId(String.valueOf(node.getId()));
-        } else if (node.getCtype().equals(CpfMessage.class.getName())) {
-            result = new CpfMessage(node.getName());
-            result.setId(String.valueOf(node.getId()));
-            addResources((CpfNode) result, node);
-            addObjects((CpfNode) result, node);
-            addNodeAttributes((CpfNode) result, node);
-        } else if (node.getCtype().equals(CpfTimer.class.getName())) {
-            result = new CpfTimer(node.getName());
-            result.setId(String.valueOf(node.getId()));
-            addResources((CpfNode) result, node);
-            addObjects((CpfNode) result, node);
-            addNodeAttributes((CpfNode) result, node);
-        } else if (node.getCtype().equals(CpfTask.class.getName())) {
-            result = new CpfTask(node.getName());
-            result.setId(String.valueOf(node.getId()));
-            addResources((CpfNode) result, node);
-            addObjects((CpfNode) result, node);
-            addNodeAttributes((CpfNode) result, node);
-        } else if (node.getCtype().equals(CpfEvent.class.getName())) {
-            result = new CpfEvent(node.getName());
-            result.setId(String.valueOf(node.getId()));
-            addResources((CpfNode) result, node);
-            addObjects((CpfNode) result, node);
-            addNodeAttributes((CpfNode) result, node);
-        } else if (node.getCtype().equals(CpfOrGateway.class.getName())) {
-            result = new CpfOrGateway(node.getName());
-            result.setId(String.valueOf(node.getId()));
-            addResources((CpfNode) result, node);
-            addObjects((CpfNode) result, node);
-            addNodeAttributes((CpfNode) result, node);
-        } else if (node.getCtype().equals(CpfXorGateway.class.getName())) {
-            result = new CpfXorGateway(node.getName());
-            result.setId(String.valueOf(node.getId()));
-            addResources((CpfNode) result, node);
-            addObjects((CpfNode) result, node);
-            addNodeAttributes((CpfNode) result, node);
-        } else if (node.getCtype().equals(CpfAndGateway.class.getName())) {
-            result = new CpfAndGateway(node.getName());
-            result.setId(String.valueOf(node.getId()));
-            addResources((CpfNode) result, node);
-            addObjects((CpfNode) result, node);
-            addNodeAttributes((CpfNode) result, node);
+        } else if (node.getCtype().equals(Message.class.getName())) {
+            result = constructMessageNode(node);
+        } else if (node.getCtype().equals(Timer.class.getName())) {
+            result = constructTimerNode(node);
+        } else if (node.getCtype().equals(Task.class.getName())) {
+            result = constructTaskNode(node);
+        } else if (node.getCtype().equals(Event.class.getName())) {
+            result = constructEventNode(node);
+        } else if (node.getCtype().equals(OrSplit.class.getName()) || node.getCtype().equals(OrJoin.class.getName())) {
+            result = constructOrNode(node);
+        } else if (node.getCtype().equals(XOrSplit.class.getName()) || node.getCtype().equals(XOrJoin.class.getName())) {
+            result = constructXOrNode(node);
+        } else if (node.getCtype().equals(AndSplit.class.getName()) || node.getCtype().equals(AndJoin.class.getName())) {
+            result = constructAndNode(node);
         }
         return result;
     }
 
 
-    private void addObjects(final CpfNode result, final Node node) {
-        ICpfObject object;
+    private void addObjects(final org.apromore.graph.canonical.Node result, final Node node) {
+        IObject object;
         for (ObjectRefType obj : node.getObjectRefTypes()) {
-            object = new CpfObject();
+            object = new CanonicalObject();
             object.setId(String.valueOf(obj.getId()));
             object.setOptional(Boolean.valueOf(obj.getOptional()));
             object.setConsumed(Boolean.valueOf(obj.getConsumed()));
@@ -240,10 +213,10 @@ public class GraphServiceImpl implements GraphService {
         }
     }
 
-    private void addResources(final CpfNode result, final Node node) {
-        ICpfResource resource;
+    private void addResources(final org.apromore.graph.canonical.Node result, final Node node) {
+        IResource resource;
         for (ResourceRefType res : node.getResourceRefTypes()) {
-            resource = new CpfResource();
+            resource = new Resource();
             resource.setId(String.valueOf(res.getId()));
             resource.setOptional(Boolean.valueOf(res.getOptional()));
             resource.setQualifier(res.getQualifier());
@@ -253,23 +226,107 @@ public class GraphServiceImpl implements GraphService {
     }
 
 
-    private void addNodeAttributes(final CpfNode result, final Node node) {
+    private void addNodeAttributes(final org.apromore.graph.canonical.Node result, final Node node) {
         for (NodeAttribute n : node.getAttributes()) {
             result.addAttribute(n.getName(), n.getValue());
         }
     }
 
-//    private void addObjectAttributes(CpfNode result, ObjectRefType node) {
+//    private void addObjectAttributes(CanonicalNode result, ObjectRefType node) {
 //        for (ObjAttribute n : node.getAttributes()) {
 //            result.addAttribute(n.getName(), n.getValue());
 //        }
 //    }
 
-//    private void addResourceAttributes(CpfNode result, Resource node) {
+//    private void addResourceAttributes(CanonicalNode result, Resource node) {
 //        for (ResourceAttribute n : node.getAttributes()) {
 //            result.addAttribute(n.getName(), n.getValue());
 //        }
 //    }
+
+    private org.apromore.graph.canonical.Node constructAndNode(Node node) {
+        org.apromore.graph.canonical.Node result;
+        if (node.getCtype().equals(AndSplit.class.getName())) {
+            result = new AndSplit(node.getName());
+        } else {
+            result = new AndJoin(node.getName());
+        }
+        result.setId(String.valueOf(node.getId()));
+        addResources(result, node);
+        addObjects(result, node);
+        addNodeAttributes(result, node);
+        return result;
+    }
+
+    private org.apromore.graph.canonical.Node constructXOrNode(Node node) {
+        org.apromore.graph.canonical.Node result;
+        if (node.getCtype().equals(AndSplit.class.getName())) {
+            result = new XOrSplit(node.getName());
+        } else {
+            result = new XOrJoin(node.getName());
+        }
+        result.setId(String.valueOf(node.getId()));
+        addResources(result, node);
+        addObjects(result, node);
+        addNodeAttributes(result, node);
+        return result;
+    }
+
+    private org.apromore.graph.canonical.Node constructOrNode(Node node) {
+        org.apromore.graph.canonical.Node result;
+        if (node.getCtype().equals(AndSplit.class.getName())) {
+            result = new OrSplit(node.getName());
+        } else {
+            result = new OrJoin(node.getName());
+        }
+        result.setId(String.valueOf(node.getId()));
+        addResources(result, node);
+        addObjects(result, node);
+        addNodeAttributes(result, node);
+        return result;
+    }
+
+    private org.apromore.graph.canonical.Node constructEventNode(Node node) {
+        org.apromore.graph.canonical.Node result;
+        result = new Event(node.getName());
+        result.setId(String.valueOf(node.getId()));
+        addResources(result, node);
+        addObjects(result, node);
+        addNodeAttributes(result, node);
+        return result;
+    }
+
+    private org.apromore.graph.canonical.Node constructTaskNode(Node node) {
+        org.apromore.graph.canonical.Node result;
+        result = new Task(node.getName());
+        result.setId(String.valueOf(node.getId()));
+        addResources(result, node);
+        addObjects(result, node);
+        addNodeAttributes(result, node);
+        return result;
+    }
+
+    private org.apromore.graph.canonical.Node constructTimerNode(Node node) {
+        org.apromore.graph.canonical.Node result;
+        result = new Timer(node.getName());
+        result.setId(String.valueOf(node.getId()));
+        addResources(result, node);
+        addObjects(result, node);
+        addNodeAttributes(result, node);
+        return result;
+    }
+
+    private org.apromore.graph.canonical.Node constructMessageNode(Node node) {
+        org.apromore.graph.canonical.Node result;
+        result = new Message(node.getName());
+        result.setId(String.valueOf(node.getId()));
+        addResources(result, node);
+        addObjects(result, node);
+        addNodeAttributes(result, node);
+        return result;
+    }
+
+
 
 
     /**

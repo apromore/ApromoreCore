@@ -8,12 +8,12 @@ import org.apromore.dao.ProcessModelVersionDao;
 import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionSearchForSimilar;
 import org.apromore.exception.SerializationException;
+import org.apromore.service.CanonicalConverter;
 import org.apromore.model.ParameterType;
 import org.apromore.model.ParametersType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessVersionType;
 import org.apromore.model.ProcessVersionsType;
-import org.apromore.service.CanoniserService;
 import org.apromore.service.RepositoryService;
 import org.apromore.service.SimilarityService;
 import org.apromore.service.helper.UIHelper;
@@ -42,8 +42,8 @@ public class SimilarityServiceImpl implements SimilarityService {
     @Autowired @Qualifier("ProcessModelVersionDao")
     private ProcessModelVersionDao pmvDao;
 
-    @Autowired @Qualifier("CanoniserService")
-    private CanoniserService canSrv;
+    @Autowired @Qualifier("CanonicalConverter")
+    private CanonicalConverter convertor;
     @Autowired @Qualifier("RepositoryService")
     private RepositoryService rSrv;
     @Autowired @Qualifier("UIHelper")
@@ -81,9 +81,9 @@ public class SimilarityServiceImpl implements SimilarityService {
     private ToolboxData convertModelsToCPT(List<ProcessModelVersion> models, ProcessModelVersion query) throws SerializationException {
         ToolboxData data = new ToolboxData();
 
-        data.setOrigin(canSrv.serializeCPF(rSrv.getCanonicalFormat(query)));
+        data.setOrigin(convertor.convert(rSrv.getCanonicalFormat(query)));
         for (ProcessModelVersion pmv : models) {
-            data.addModel(pmv, canSrv.serializeCPF(rSrv.getCanonicalFormat(pmv)));
+            data.addModel(pmv, convertor.convert(rSrv.getCanonicalFormat(pmv)));
         }
 
         return data;
@@ -141,15 +141,6 @@ public class SimilarityServiceImpl implements SimilarityService {
      */
     public void setProcessModelVersionDao(ProcessModelVersionDao pmvDAOJpa) {
         pmvDao = pmvDAOJpa;
-    }
-
-    /**
-     * Set the Canoniser Service for this class. Mainly for spring tests.
-     *
-     * @param newCanSrv the service
-     */
-    public void setCanoniserService(CanoniserService newCanSrv) {
-        this.canSrv = newCanSrv;
     }
 
     /**

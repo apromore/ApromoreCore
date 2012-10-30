@@ -3,13 +3,11 @@ package org.apromore.service.helper.extraction;
 import java.util.Collection;
 
 import org.apromore.common.Constants;
-import org.apromore.graph.JBPT.CPF;
-import org.apromore.graph.JBPT.CpfNode;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.Edge;
+import org.apromore.graph.canonical.Node;
+import org.apromore.service.model.RFragment2;
 import org.apromore.util.FragmentUtil;
-import org.jbpt.graph.abs.AbstractDirectedEdge;
-import org.jbpt.graph.algo.rpst.RPSTNode;
-import org.jbpt.pm.FlowNode;
-import org.jbpt.pm.IFlowNode;
 
 /**
  * Processors take a fragment and its child fragment and takes care of
@@ -21,31 +19,32 @@ import org.jbpt.pm.IFlowNode;
 public class FSCNSExtractor {
 
     @SuppressWarnings("unchecked")
-    public static FlowNode extract(RPSTNode f, RPSTNode cf, CPF g) {
-        FragmentUtil.removeEdges(f, cf);
+    public static Node extract(RFragment2 f, RFragment2 cf, Canonical g) {
+        FragmentUtil.removeEdges(f, cf.getEdges());
 
-        IFlowNode childB1 = (IFlowNode) cf.getEntry();
-        Collection<AbstractDirectedEdge> fragmentLink1 = FragmentUtil.getIncomingEdges(childB1, f.getFragmentEdges());
-        fragmentLink1.removeAll(cf.getFragmentEdges());
-        f.getFragment().removeEdges(fragmentLink1);
+        Node childB1 = cf.getEntry();
+        Collection<Edge> fragmentLink1 = FragmentUtil.getIncomingEdges(childB1, f.getEdges());
+        FragmentUtil.removeEdges(fragmentLink1, cf.getEdges());
+        FragmentUtil.removeEdges(f, fragmentLink1);
 
-        IFlowNode childB2 = (IFlowNode) cf.getExit();
-        Collection<AbstractDirectedEdge> fragmentLink2 = FragmentUtil.getOutgoingEdges(childB2, f.getFragmentEdges());
-        fragmentLink2.removeAll(cf.getFragmentEdges()); // remove internal edges to prevent the effect of loops
-        f.getFragment().removeEdges(fragmentLink2);
-        f.getFragment().removeVertices(cf.getFragment().getVertices());
+        Node childB2 = cf.getExit();
+        Collection<Edge> fragmentLink2 = FragmentUtil.getOutgoingEdges(childB2, f.getEdges());
+        FragmentUtil.removeEdges(fragmentLink2, cf.getEdges());
+        FragmentUtil.removeEdges(f, fragmentLink2);
 
-        FlowNode pocket = new CpfNode("Pocket");
-        g.setVertexProperty(pocket.getId(), Constants.TYPE, Constants.POCKET);
-        f.getFragment().addVertex(pocket);
+        FragmentUtil.removeNodes(f, cf);
+
+        Node pocket = new Node("Pocket");
+        g.setNodeProperty(pocket.getId(), Constants.TYPE, Constants.POCKET);
+        f.addNode(pocket);
         if (!fragmentLink1.isEmpty()) {
-            f.getFragment().addEdge(FragmentUtil.getFirstEdge(fragmentLink1).getSource(), pocket);
+            f.addEdge(FragmentUtil.getFirstEdge(fragmentLink1).getSource(), pocket);
         } else {
             f.setEntry(pocket);
         }
 
         if (!fragmentLink2.isEmpty()) {
-            f.getFragment().addEdge(pocket, FragmentUtil.getFirstEdge(fragmentLink2).getTarget());
+            f.addEdge(pocket, FragmentUtil.getFirstEdge(fragmentLink2).getTarget());
         } else {
             f.setExit(pocket);
         }

@@ -16,6 +16,7 @@
         <!-- Version control tables -->
         <class>org.apromore.dao.model.Content</class>
         <class>org.apromore.dao.model.Edge</class>
+        <class>org.apromore.dao.model.Expression</class>
         <class>org.apromore.dao.model.FragmentVersion</class>
         <class>org.apromore.dao.model.FragmentVersionDag</class>
         <class>org.apromore.dao.model.NonPocketNode</class>

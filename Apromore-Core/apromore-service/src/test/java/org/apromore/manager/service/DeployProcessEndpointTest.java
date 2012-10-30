@@ -1,33 +1,25 @@
 package org.apromore.manager.service;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.eq;
-import static org.easymock.EasyMock.expect;
-import static org.easymock.EasyMock.isNull;
-import static org.junit.Assert.assertNotNull;
-import static org.powermock.api.easymock.PowerMock.createMock;
-import static org.powermock.api.easymock.PowerMock.replayAll;
-import static org.powermock.api.easymock.PowerMock.verifyAll;
-
 import java.util.ArrayList;
 import java.util.HashSet;
-
 import javax.xml.bind.JAXBElement;
 
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.exception.LockFailedException;
 import org.apromore.exception.SerializationException;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.canonical.Canonical;
 import org.apromore.model.DeployProcessInputMsgType;
 import org.apromore.model.DeployProcessOutputMsgType;
 import org.apromore.model.ObjectFactory;
 import org.apromore.model.PluginParameters;
 import org.apromore.plugin.deployment.exception.DeploymentException;
 import org.apromore.plugin.message.PluginMessage;
+import org.apromore.service.CanonicalConverter;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.DeploymentService;
 import org.apromore.service.RepositoryService;
+import org.apromore.service.impl.CanonicalConverterAdapter;
 import org.apromore.service.impl.CanoniserServiceImpl;
 import org.apromore.service.impl.DeploymentServiceImpl;
 import org.apromore.service.impl.RepositoryServiceImpl;
@@ -37,6 +29,15 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.eq;
+import static org.easymock.EasyMock.expect;
+import static org.easymock.EasyMock.isNull;
+import static org.junit.Assert.assertNotNull;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replayAll;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(locations = {
@@ -51,16 +52,19 @@ public class DeployProcessEndpointTest {
     private RepositoryService repositoryService;
     private DeploymentService deploymentService;
     private CanoniserService canoniserService;
+    private CanonicalConverter convertorService;
 
     @Before
     public void setUp() throws Exception {
         repositoryService = createMock(RepositoryServiceImpl.class);
         deploymentService = createMock(DeploymentServiceImpl.class);
         canoniserService = createMock(CanoniserServiceImpl.class);
+        convertorService = createMock(CanonicalConverterAdapter.class);
         endpoint = new ManagerPortalEndpoint();
         endpoint.setRepSrv(repositoryService);
         endpoint.setDeploymentService(deploymentService);
         endpoint.setCanoniserService(canoniserService);
+        endpoint.setConvertorAdpater(convertorService);
     }
 
     @Test
@@ -80,9 +84,9 @@ public class DeployProcessEndpointTest {
         PluginParameters pluginProperties = new PluginParameters();
         request.getValue().setDeploymentParameters(pluginProperties);
 
-        CPF cpf = new CPF();
+        Canonical cpf = new Canonical();
         expect(repositoryService.getCurrentProcessModel(processName, branchName, false)).andReturn(cpf);
-        expect(canoniserService.serializeCPF(cpf)).andReturn(new CanonicalProcessType());
+        expect(convertorService.convert(cpf)).andReturn(new CanonicalProcessType());
         expect(deploymentService.deployProcess(eq(nativeType), anyObject(CanonicalProcessType.class), isNull(AnnotationsType.class), anyObject(HashSet.class))).andReturn(new ArrayList<PluginMessage>());
 
         replayAll();

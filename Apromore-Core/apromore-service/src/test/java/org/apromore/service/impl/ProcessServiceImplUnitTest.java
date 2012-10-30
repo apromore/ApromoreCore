@@ -1,14 +1,7 @@
 package org.apromore.service.impl;
 
-import static org.easymock.EasyMock.anyObject;
-import static org.easymock.EasyMock.expect;
-import static org.powermock.api.easymock.PowerMock.createMock;
-import static org.powermock.api.easymock.PowerMock.replayAll;
-import static org.powermock.api.easymock.PowerMock.verifyAll;
-
 import java.util.HashSet;
 import java.util.Set;
-
 import javax.activation.DataSource;
 import javax.mail.util.ByteArrayDataSource;
 
@@ -20,9 +13,10 @@ import org.apromore.dao.jpa.AnnotationDaoJpa;
 import org.apromore.dao.jpa.NativeDaoJpa;
 import org.apromore.dao.jpa.ProcessDaoJpa;
 import org.apromore.dao.model.Native;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.canonical.Canonical;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.service.CanonicalConverter;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.FormatService;
 import org.apromore.service.RepositoryService;
@@ -40,6 +34,12 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
+
+import static org.easymock.EasyMock.anyObject;
+import static org.easymock.EasyMock.expect;
+import static org.powermock.api.easymock.PowerMock.createMock;
+import static org.powermock.api.easymock.PowerMock.replayAll;
+import static org.powermock.api.easymock.PowerMock.verifyAll;
 
 /**
  * Unit test the UserService Implementation.
@@ -64,7 +64,6 @@ public class ProcessServiceImplUnitTest {
     private NativeDao natDao;
     @Autowired
     private AnnotationDao annDao;
-
     @Autowired
     private UserService usrSrv;
     @Autowired
@@ -73,6 +72,8 @@ public class ProcessServiceImplUnitTest {
     private FormatService fmtSrv;
     @Autowired
     private RepositoryService rSrv;
+    @Autowired
+    private CanonicalConverter convertor;
 
     private ProcessServiceImpl service;
 
@@ -85,12 +86,14 @@ public class ProcessServiceImplUnitTest {
         fmtSrv = createMock(FormatService.class);
         rSrv = createMock(RepositoryService.class);
         canSrv = createMock(CanoniserService.class);
+        convertor = createMock(CanonicalConverter.class);
         service.setNativeDao(natDao);
         service.setAnnotationDao(annDao);
         service.setUserService(usrSrv);
         service.setFormatService(fmtSrv);
         service.setCanoniserService(canSrv);
         service.setRepositoryService(rSrv);
+        service.setConverterAdpater(convertor);
     }
 
 
@@ -105,10 +108,10 @@ public class ProcessServiceImplUnitTest {
         DecanonisedProcess dp = new DecanonisedProcess();
         dp.setNativeFormat(result.getInputStream());
         CanonicalProcessType cpt = new CanonicalProcessType();
-        CPF cpf = new CPF();
+        Canonical cpf = new Canonical();
 
         expect(rSrv.getCurrentProcessModel(name, version, false)).andReturn(cpf);
-        expect(canSrv.serializeCPF(cpf)).andReturn(cpt);
+        expect(convertor.convert(cpf)).andReturn(cpt);
         expect(canSrv.deCanonise(anyObject(Integer.class), anyObject(String.class), anyObject(String.class), anyObject(CanonicalProcessType.class), anyObject(AnnotationsType.class), anyObject(Set.class))).andReturn(dp);
 
         replayAll();
@@ -128,7 +131,7 @@ public class ProcessServiceImplUnitTest {
         String format = "Annotations-BPMN";
         String subStr = "MN";
 
-        CPF cpf = new CPF();
+        Canonical cpf = new Canonical();
 
         Native nat = new Native();
         nat.setContent("<xml/>");

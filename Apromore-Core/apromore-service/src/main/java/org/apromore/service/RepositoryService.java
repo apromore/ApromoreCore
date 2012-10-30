@@ -7,7 +7,7 @@ import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.LockFailedException;
 import org.apromore.exception.NonEditableVersionException;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.canonical.Canonical;
 import org.apromore.service.model.NameValuePair;
 
 /**
@@ -21,7 +21,7 @@ public interface RepositoryService {
      * @param processName the name of the process.
      * @param versionName the version name of the process
      * @param username the user who imported the model
-     * @param cpfURI the uri of the CPF model
+     * @param CanonicalURI the uri of the Canonical model
      * @param nativeType the native format of the model
      * @param domain the domain for this model
      * @param documentation any documentation for this model
@@ -31,15 +31,15 @@ public interface RepositoryService {
      * @return the new Id of the model
      * @throws ImportException if the import failed ???
      */
-    ProcessModelVersion addProcessModel(String processName, String versionName, String username, String cpfURI, String nativeType,
-            String domain, String documentation, String created, String lastUpdated, CPF pg) //ProcessModelGraph processModelGraph)
+    ProcessModelVersion addProcessModel(String processName, String versionName, String username, String CanonicalURI, String nativeType,
+            String domain, String documentation, String created, String lastUpdated, Canonical pg) //ProcessModelGraph processModelGraph)
             throws ImportException;
 
     /**
      * Update a process Model in the database.
      * @param g the process model graph
      */
-    void updateProcessModel(CPF g);
+    void updateProcessModel(Canonical g);
 
     /**
      * Update a process Model in the database.
@@ -47,27 +47,27 @@ public interface RepositoryService {
      * @param branchId the branch id of the model
      * @param g the process model graph
      */
-    void updateProcessModel(String versionId, String branchId, CPF g);
+    void updateProcessModel(String versionId, String branchId, Canonical g);
 
 
     /**
-     * Using the Process Model Verison passed in we can get the CPF format.
+     * Using the Process Model Verison passed in we can get the Canonical format.
      * Used by a lot of methods in repoService and external.
-     * @param pmv the process model version we want the CPF for.
-     * @return the built CPF
+     * @param pmv the process model version we want the Canonical for.
+     * @return the built Canonical
      */
-    CPF getCanonicalFormat(ProcessModelVersion pmv);
+    Canonical getCanonicalFormat(ProcessModelVersion pmv);
 
     /**
-     * Using the Process Model Version passed in we can get the CPF format.
+     * Using the Process Model Version passed in we can get the Canonical format.
      * Used by a lot of methods in repoService and external.
-     * @param pmv the process model version we want the CPF for.
+     * @param pmv the process model version we want the Canonical for.
      * @param processName
      * @param branchName
      * @param lock
-     * @return the built CPF
+     * @return the built Canonical
      */
-    CPF getCanonicalFormat(ProcessModelVersion pmv, String processName, String branchName, boolean lock);
+    Canonical getCanonicalFormat(ProcessModelVersion pmv, String processName, String branchName, boolean lock);
 
     /**
      * Gets the Current Process Model. assuming the branchName is the Trunk.
@@ -76,7 +76,7 @@ public interface RepositoryService {
      * @return the found process model graph.
      * @throws LockFailedException if the lock failed.
      */
-    CPF getCurrentProcessModel(String processName, boolean lock) throws LockFailedException;
+    Canonical getCurrentProcessModel(String processName, boolean lock) throws LockFailedException;
 
     /**
      * Gets the Current Process Model. this on can have any branch name.
@@ -86,7 +86,7 @@ public interface RepositoryService {
      * @return the found process model graph.
      * @throws LockFailedException if the lock failed.
      */
-    CPF getCurrentProcessModel(String processName, String branchName, boolean lock) throws LockFailedException;
+    Canonical getCurrentProcessModel(String processName, String branchName, boolean lock) throws LockFailedException;
 
     /**
      * Gets the process model and returns the process model graph for that model.
@@ -95,7 +95,7 @@ public interface RepositoryService {
      * @param versionName the version name.
      * @return the process model graph.
      */
-    CPF getProcessModel(String processName, String branchName, String versionName);
+    Canonical getProcessModel(String processName, String branchName, String versionName);
 
     /**
      * Gets a fragment of a process model.
@@ -106,7 +106,7 @@ public interface RepositoryService {
      * @throws LockFailedException if the lockking fails
      * @throws NonEditableVersionException if we are unable to edit the fragment version.
      */
-    CPF getFragment(CPF g, List<String> nodes, boolean lock) throws LockFailedException, NonEditableVersionException;
+    Canonical getFragment(Canonical g, List<String> nodes, boolean lock) throws LockFailedException, NonEditableVersionException;
 
     /**
      * Get a Fragment.
@@ -115,7 +115,7 @@ public interface RepositoryService {
      * @return the process Model Graph
      * @throws LockFailedException if the lock failed.
      */
-    CPF getFragment(String fragmentUri, boolean lock) throws LockFailedException;
+    Canonical getFragment(String fragmentUri, boolean lock) throws LockFailedException;
 
     /**
      * Updates the fragment if it doesn't conflict with concurrent modifications
@@ -124,7 +124,7 @@ public interface RepositoryService {
      * @param fg the process Model Graph to Update
      * @return the updated Fragment Id
      */
-    String updateFragment(CPF fg);
+    String updateFragment(Canonical fg);
 
     /**
      * Removes a process from the repository.

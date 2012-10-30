@@ -21,29 +21,27 @@ DROP TABLE IF EXISTS `user`;
 DROP TABLE IF EXISTS `process`;
 DROP TABLE IF EXISTS `process_branch`;
 DROP TABLE IF EXISTS `process_model_version`;
-
 DROP TABLE IF EXISTS `cluster`;
 DROP TABLE IF EXISTS `cluster_assignment`;
 DROP TABLE IF EXISTS `fragment_distance`;
-
 DROP TABLE IF EXISTS `process_model_attribute`;
-DROP TABLE IF EXISTS `resource_type_attribute`;
-DROP TABLE IF EXISTS `object_type_attribute`;
 DROP TABLE IF EXISTS `node_attribute`;
 DROP TABLE IF EXISTS `edge_attribute`;
+DROP TABLE IF EXISTS `expression`;
+DROP TABLE IF EXISTS `resource_type`;
+DROP TABLE IF EXISTS `resource_type_attribute`;
 DROP TABLE IF EXISTS `resource_ref_type`;
 DROP TABLE IF EXISTS `resource_ref_type_attribute`;
+DROP TABLE IF EXISTS `object_type`;
+DROP TABLE IF EXISTS `object_type_attribute`;
 DROP TABLE IF EXISTS `object_ref_type`;
 DROP TABLE IF EXISTS `object_ref_type_attribute`;
-DROP TABLE IF EXISTS `resource_type`;
-DROP TABLE IF EXISTS `object_type`;
-
 
 
 CREATE TABLE `native_type` (
-  `id`         int(11) NOT NULL AUTO_INCREMENT,
-  `nat_type`   varchar(20) NOT NULL DEFAULT '',
-  `extension`  varchar(10) DEFAULT NULL,
+  `id`              int(11) NOT NULL AUTO_INCREMENT,
+  `nat_type`        varchar(20) NOT NULL DEFAULT '',
+  `extension`       varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
@@ -159,7 +157,7 @@ CREATE TABLE `process_model_version` (
     CONSTRAINT `pk_process_model_version` primary key (`id`),
     CONSTRAINT `fk_process_branch_model_version` FOREIGN KEY (`branchId`) REFERENCES `process_branch` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_process_branch_model_version1` FOREIGN KEY (`rootFragmentVersionId`) REFERENCES `fragment_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-)  engine=InnoDB DEFAULT CHARSET=utf8;
+) engine=InnoDB DEFAULT CHARSET=utf8;
 
 
 ALTER TABLE `process_branch` ADD CONSTRAINT `fk_source_version` FOREIGN KEY (`sourceProcessModelVersion`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
@@ -185,7 +183,7 @@ CREATE TABLE `content` (
     `boundary_e`          varchar(40),
     `code`                longtext,
     PRIMARY KEY (`id`)
-)  engine=InnoDB DEFAULT CHARSET=utf8;
+) engine=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `fragment_version` (
@@ -202,7 +200,7 @@ CREATE TABLE `fragment_version` (
     `newest_neighbor`             varchar(40),
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_contents_version` FOREIGN KEY (`contentId`) REFERENCES `content` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-)  engine=InnoDB DEFAULT CHARSET=utf8;
+) engine=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `process_fragment_map` (
     `id`                         int(11) NOT NULL AUTO_INCREMENT,
@@ -211,7 +209,7 @@ CREATE TABLE `process_fragment_map` (
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_process_model_versions_map` FOREIGN KEY (`processModelVersionId`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_fragment_versions_map` FOREIGN KEY (`fragmentVersionId`) REFERENCES `fragment_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-)  engine=InnoDB DEFAULT CHARSET=utf8;
+) engine=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `fragment_version_dag` (
@@ -223,7 +221,7 @@ CREATE TABLE `fragment_version_dag` (
     UNIQUE KEY `un_fragment_version_dag` (`fragmentVersionId`, `childFragmentVersionId`, `pocketId`),
     CONSTRAINT `fk_fragment_version_dag` FOREIGN KEY (`fragmentVersionId`) REFERENCES `fragment_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_child_fragment_version_dag` FOREIGN KEY (`childFragmentVersionId`) REFERENCES `fragment_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-)  engine=InnoDB DEFAULT CHARSET=utf8;
+) engine=InnoDB DEFAULT CHARSET=utf8;
 
 
 CREATE TABLE `node` (
@@ -231,26 +229,21 @@ CREATE TABLE `node` (
     `uri`                       varchar(40),
     `contentId`                 int(11),
     `subVersionId`              int(11),
-    `name`                      varchar(2000),
+    `name`                      varchar(500),
     `type`                      varchar(100),
     `ctype`                     varchar(40),
-    `configuration`             varchar(1) DEFAULT '0',
-    `original_Id`               varchar(40),
-    `locator_preset`            varchar(2000),
-    `locator_postset`           varchar(2000),
+    `configuration`             varchar(1) NULL DEFAULT '0',
+    `original_Id`               varchar(40) NULL,
+    `teamWork`                  varchar(1) NULL DEFAULT '0',
+    `allocation`                varchar(40) NULL,
+    `resourceDataExpressionId`  int(11) NULL,
+    `resourceRunExpressionId`   int(11) NULL, 
+    `timeDate`                  datetime DEFAULT NULL,
+    `timeDuration`              varchar(100) NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_node_content` FOREIGN KEY (`contentId`) REFERENCES `content` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_node_subversion` FOREIGN KEY (`subVersionId`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-)  engine=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE `non_pocket_node` (
-    `id`         int(11) NOT NULL AUTO_INCREMENT,
-    `nodeId`     int(11) NOT NULL,
-    PRIMARY KEY (`id`),
-    CONSTRAINT `fk_non_pocket_node` FOREIGN KEY (`nodeId`) REFERENCES `node` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-)  engine=InnoDB DEFAULT CHARSET=utf8;
-
+) engine=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `edge` (
     `id`                        int(11) NOT NULL AUTO_INCREMENT,
@@ -258,14 +251,39 @@ CREATE TABLE `edge` (
     `contentId`                 int(11) NOT NULL,
     `sourceNodeId`              int(11) NOT NULL,
     `targetNodeId`              int(11) NOT NULL,
-    `originalId`                varchar(40),
-    `cond`                      varchar(2000) NULL,
+    `originalId`                varchar(40) NULL,
+    `conditionExpressionId`     int(11) NULL, 
     `def`                       varchar(1) DEFAULT '0',
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_content_edge` FOREIGN KEY (`contentId`) REFERENCES `content` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_source_node` FOREIGN KEY (`sourceNodeId`) REFERENCES `node` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
     CONSTRAINT `fk_target_node` FOREIGN KEY (`targetNodeId`) REFERENCES `node` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-)  engine=InnoDB DEFAULT CHARSET=utf8;
+) engine=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `non_pocket_node` (
+    `id`         int(11) NOT NULL AUTO_INCREMENT,
+    `nodeId`     int(11) NOT NULL,
+    PRIMARY KEY (`id`)
+) engine=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `expression` (
+    `id`                        int(11) NOT NULL AUTO_INCREMENT,
+    `nodeId`                    int(11) NULL,
+    `description`               varchar(255),
+	`language`                  varchar(255),
+	`expression`                varchar(500),
+    `returnType`                varchar(255),
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_node_expr` FOREIGN KEY (`nodeId`) REFERENCES `node` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) engine=InnoDB DEFAULT CHARSET=utf8;
+
+
+ALTER TABLE `node` ADD CONSTRAINT `fk_node_data_expr` FOREIGN KEY (`resourceDataExpressionId`) REFERENCES `expression` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `node` ADD CONSTRAINT `fk_node_run_expr` FOREIGN KEY (`resourceRunExpressionId`) REFERENCES `expression` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `edge` ADD CONSTRAINT `fk_cond_expr` FOREIGN KEY (`conditionExpressionId`) REFERENCES `expression` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `expression` ADD CONSTRAINT `fk_non_pocket_node` FOREIGN KEY (`nodeId`) REFERENCES `node` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+
 
 
 
@@ -274,17 +292,40 @@ CREATE TABLE `object_type` (
     `processModelVersionId`    int(11) NOT NULL,
     `name`                     varchar(255),
     `configurable`             varchar(1) default '0',
+    `type`                     varchar(255),
     PRIMARY KEY (`id`),
-    CONSTRAINT `fk_objtyp_pmv` FOREIGN KEY (`processModelVersionId`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `fk_obj_pmv` FOREIGN KEY (`processModelVersionId`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `object_type_attribute` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
     `objectTypeId`             int(11) NOT NULL,
     `name`                     varchar(255),
-    `value`                    varchar(255),
+    `value`                    longtext,
     PRIMARY KEY (`id`),
-    CONSTRAINT `fk_obj_type_att_obj` FOREIGN KEY (`objectTypeId`) REFERENCES `object_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `fk_obj_att_obj` FOREIGN KEY (`objectTypeId`) REFERENCES `object_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `object_ref_type` (
+    `id`                       int(11) NOT NULL AUTO_INCREMENT,
+    `objectTypeId`                 int(11) NOT NULL,
+    `nodeId`                   int(11) NOT NULL,
+    `type`                     varchar(255),
+    `optional`                 varchar(1) default '0',
+    `consumed`                 varchar(1) default '0',
+    `originalId`               varchar(40),
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_objrefobj_pmv` FOREIGN KEY (`objectTypeId`) REFERENCES `object_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_objref_node` FOREIGN KEY (`nodeId`) REFERENCES `node` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+CREATE TABLE `object_ref_type_attribute` (
+    `id`                       int(11) NOT NULL AUTO_INCREMENT,
+    `objectRefTypeId`              int(11) NOT NULL,
+    `name`                     varchar(255),
+    `value`                    longtext,
+    PRIMARY KEY (`id`),
+    CONSTRAINT `fk_objref_att` FOREIGN KEY (`objectRefTypeId`) REFERENCES `object_ref_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 
@@ -294,42 +335,20 @@ CREATE TABLE `resource_type` (
     `originalId`               varchar(40),
     `name`                     varchar(255),
     `configurable`             varchar(1) default '0',
+    `humanType`                varchar(255) NULL,
+    `nonHumanType`             varchar(255) NULL,
     PRIMARY KEY (`id`),
-    CONSTRAINT `fk_restyp_pmv` FOREIGN KEY (`processModelVersionId`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `fk_res_pmv` FOREIGN KEY (`processModelVersionId`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `resource_type_attribute` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
     `resourceTypeId`           int(11) NOT NULL,
     `name`                     varchar(255),
-    `value`                    varchar(255),
+    `value`                    longtext,
     PRIMARY KEY (`id`),
-    CONSTRAINT `fk_res_type_att_res` FOREIGN KEY (`resourceTypeId`) REFERENCES `resource_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `fk_res_att_res` FOREIGN KEY (`resourceTypeId`) REFERENCES `resource_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-
-CREATE TABLE `object_ref_type` (
-    `id`                       int(11) NOT NULL AUTO_INCREMENT,
-    `objectTypeId`             int(11) NOT NULL,
-    `nodeId`                   int(11) NOT NULL,
-    `type`                     varchar(255),
-    `optional`                 varchar(1) default '0',
-    `consumed`                 varchar(1) default '0',
-    `originalId`               varchar(40),
-    PRIMARY KEY (`id`),
-    CONSTRAINT `fk_objreftypobj_pmv` FOREIGN KEY (`objectTypeId`) REFERENCES `object_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `fk_objreftyp_node` FOREIGN KEY (`nodeId`) REFERENCES `node` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
-CREATE TABLE `object_ref_type_attribute` (
-    `id`                       int(11) NOT NULL AUTO_INCREMENT,
-    `objectRefTypeId`          int(11) NOT NULL,
-    `name`                     varchar(255),
-    `value`                    varchar(255),
-    PRIMARY KEY (`id`),
-    CONSTRAINT `fk_objreftyp_att` FOREIGN KEY (`objectRefTypeId`) REFERENCES `object_ref_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-
 
 CREATE TABLE `resource_ref_type` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
@@ -338,18 +357,19 @@ CREATE TABLE `resource_ref_type` (
     `optional`                 varchar(1) default '0',
     `qualifier`                varchar(255),
     PRIMARY KEY (`id`),
-    CONSTRAINT `fk_resreftyp_pmv` FOREIGN KEY (`resourceTypeId`) REFERENCES `resource_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-    CONSTRAINT `fk_resreftyp_node` FOREIGN KEY (`nodeId`) REFERENCES `node` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `fk_resref_pmv` FOREIGN KEY (`resourceTypeId`) REFERENCES `resource_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+    CONSTRAINT `fk_resref_node` FOREIGN KEY (`nodeId`) REFERENCES `node` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 CREATE TABLE `resource_ref_type_attribute` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
     `resourceRefTypeId`        int(11) NOT NULL,
     `name`                     varchar(255),
-    `value`                    varchar(255),
+    `value`                    longtext,
     PRIMARY KEY (`id`),
-    CONSTRAINT `fk_resreftype_att` FOREIGN KEY (`resourceRefTypeId`) REFERENCES `resource_ref_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+    CONSTRAINT `fk_resref_att` FOREIGN KEY (`resourceRefTypeId`) REFERENCES `resource_ref_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 
 
 
@@ -357,7 +377,8 @@ CREATE TABLE `node_attribute` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
     `nodeId`                   int(11) NOT NULL,
     `name`                     varchar(255),
-    `value`                    varchar(255),
+    `value`                    longtext,
+    `any`                      longtext NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_node_attributes` FOREIGN KEY (`nodeId`) REFERENCES `node` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -366,7 +387,8 @@ CREATE TABLE `edge_attribute` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
     `edgeId`                   int(11) NOT NULL,
     `name`                     varchar(255),
-    `value`                    varchar(255),
+    `value`                    longtext,
+    `any`                      longtext NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_edge_attributes` FOREIGN KEY (`edgeId`) REFERENCES `edge` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -375,10 +397,14 @@ CREATE TABLE `process_model_attribute` (
     `id`                       int(11) NOT NULL AUTO_INCREMENT,
     `processModelVersionId`    int(11) NOT NULL,
     `name`                     varchar(255),
-    `value`                    varchar(255),
+    `value`                    longtext,
+    `any`                      longtext NULL,
     PRIMARY KEY (`id`),
     CONSTRAINT `fk_pmv_att_pmv` FOREIGN KEY (`processModelVersionId`) REFERENCES `process_model_version` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+
+
 
 
 CREATE TABLE `cluster` (

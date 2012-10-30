@@ -39,6 +39,42 @@
                     // This function is called upon load of all Oryx dependencies
                     window.onOryxResourcesLoaded = function() {
 
+                        ORYX.Plugins.ApromoreSave.apromoreSaveAs = function(json, svg) {
+                            console.log("Save As");
+                            new Ajax.Request('${arg.exportPath}', {
+                                    parameters: {
+                                        'data': json},
+                                    method: 'POST',
+                                    onSuccess: function(transport) {
+                                        var nativeFormat = transport.responseText;
+                                        console.log("Save As"+nativeFormat);
+                                        zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSaveAs', [nativeFormat, svg]));
+                                    }.bind(this),
+                                    onFailure: function(transport) {
+                                        alert("Failed to save process as "+nativeFormat);
+                                    }.bind(this)
+                                }
+                            );
+                        };
+
+                        ORYX.Plugins.ApromoreSave.apromoreSave = function(json, svg) {
+                            console.log("Save");
+                            new Ajax.Request('${arg.exportPath}', {
+                                    parameters: {
+                                        'data': json},
+                                    method: 'POST',
+                                    onSuccess: function(transport) {
+                                        var nativeFormat = transport.responseText;
+                                        console.log("Save "+nativeFormat);
+                                        zAu.send(new zk.Event(zk.Widget.$(jq("$win")), 'onSave', [nativeFormat, svg]));
+                                    }.bind(this),
+                                    onFailure: function(transport) {
+                                        alert("Failed to save process!");
+                                    }.bind(this)
+                                }
+                            );
+                        };
+
                         var urlData = '${arg.url}'
                         var oryxEditor = new ORYX.Editor({
                             model : {

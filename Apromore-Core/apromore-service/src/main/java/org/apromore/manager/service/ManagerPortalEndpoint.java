@@ -12,7 +12,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import javax.activation.DataHandler;
 import javax.mail.util.ByteArrayDataSource;
 import javax.xml.bind.JAXBElement;
@@ -27,7 +26,8 @@ import org.apromore.exception.ExceptionCanoniseVersion;
 import org.apromore.exception.ExceptionVersion;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.RepositoryException;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.service.CanonicalConverter;
+import org.apromore.graph.canonical.Canonical;
 import org.apromore.manager.canoniser.ManagerCanoniserClient;
 import org.apromore.manager.client.helper.CanoniserHelper;
 import org.apromore.manager.client.helper.PluginHelper;
@@ -169,45 +169,34 @@ public class ManagerPortalEndpoint {
 
     private static final String NAMESPACE = "urn:qut-edu-au:schema:apromore:manager";
 
-    @Autowired
-    @Qualifier("DeploymentService")
+    @Autowired @Qualifier("DeploymentService")
     private DeploymentService deploymentService;
-    @Autowired
-    @Qualifier("PluginService")
+    @Autowired @Qualifier("PluginService")
     private PluginService pluginService;
-    @Autowired
-    @Qualifier("FragmentService")
+    @Autowired @Qualifier("FragmentService")
     private FragmentService fragmentSrv;
-    @Autowired
-    @Qualifier("CanoniserService")
+    @Autowired @Qualifier("CanoniserService")
     private CanoniserService canoniserService;
-    @Autowired
-    @Qualifier("ProcessService")
+    @Autowired @Qualifier("ProcessService")
     private ProcessService procSrv;
-    @Autowired
-    @Qualifier("RepositoryService")
+    @Autowired @Qualifier("RepositoryService")
     private RepositoryService repSrv;
-    @Autowired
-    @Qualifier("ClusterService")
+    @Autowired @Qualifier("ClusterService")
     private ClusterService clusterService;
-    @Autowired
-    @Qualifier("FormatService")
+    @Autowired @Qualifier("FormatService")
     private FormatService frmSrv;
-    @Autowired
-    @Qualifier("DomainService")
+    @Autowired @Qualifier("DomainService")
     private DomainService domSrv;
-    @Autowired
-    @Qualifier("UserService")
+    @Autowired @Qualifier("UserService")
     private UserService userSrv;
-    @Autowired
-    @Qualifier("SimilarityService")
+    @Autowired @Qualifier("SimilarityService")
     private SimilarityService simSrv;
-    @Autowired
-    @Qualifier("MergeService")
+    @Autowired @Qualifier("MergeService")
     private MergeService merSrv;
-    @Autowired
-    @Qualifier("SessionService")
+    @Autowired @Qualifier("SessionService")
     private SessionService sesSrv;
+    @Autowired @Qualifier("CanonicalConverter")
+    private CanonicalConverter convertor;
 
     @Autowired
     private ManagerCanoniserClient caClient;
@@ -1079,8 +1068,8 @@ public class ManagerPortalEndpoint {
             String deploymentPluginName = req.getValue().getDeploymentPluginName();
             String deploymentPluginVersion = req.getValue().getDeploymentPluginVersion();
 
-            CPF cpf = repSrv.getCurrentProcessModel(processName, branchName, false);
-            CanonicalProcessType canonialProcess = canoniserService.serializeCPF(cpf);
+            Canonical cpf = repSrv.getCurrentProcessModel(processName, branchName, false);
+            CanonicalProcessType canonialProcess = convertor.convert(cpf);
 
             List<PluginMessage> deployProcess;
             // TODO Add ANF
@@ -1175,5 +1164,9 @@ public class ManagerPortalEndpoint {
 
     public void setRepSrv(final RepositoryService repositoryService) {
         this.repSrv = repositoryService;
+    }
+
+    public void setConvertorAdpater(CanonicalConverter convertorService) {
+        this.convertor = convertorService;
     }
 }

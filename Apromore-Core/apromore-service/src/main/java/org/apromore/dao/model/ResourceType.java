@@ -31,6 +31,8 @@ public class ResourceType implements java.io.Serializable {
     private String originalId;
     private String name;
     private String configurable;
+    private String humanType;
+    private String nonHumanType;
 
     private ProcessModelVersion processModelVersion;
     private Set<ResourceTypeAttribute> resourceTypeAttributes = new HashSet<ResourceTypeAttribute>(0);
@@ -91,6 +93,25 @@ public class ResourceType implements java.io.Serializable {
     public void setConfigurable(String configurable) {
         this.configurable = configurable;
     }
+
+    @Column(name = "humanType")
+    public String getHumanType() {
+        return this.humanType;
+    }
+
+    public void setHumanType(String humanType) {
+        this.humanType = humanType;
+    }
+
+    @Column(name = "nonHumanType")
+    public String getNonHumanType() {
+        return this.nonHumanType;
+    }
+
+    public void setNonHumanType(String nonHumanType) {
+        this.nonHumanType = nonHumanType;
+    }
+
 
 
     @ManyToOne(fetch = FetchType.LAZY)

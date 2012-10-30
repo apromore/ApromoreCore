@@ -13,11 +13,13 @@ public class NameValuePair {
     /**
      * Default Constructor.
      */
-    public NameValuePair() { }
+    public NameValuePair() {
+    }
 
     /**
      * Public Constructor.
-     * @param name the name
+     *
+     * @param name  the name
      * @param value the value
      */
     public NameValuePair(final String name, final String value) {
@@ -27,6 +29,7 @@ public class NameValuePair {
 
     /**
      * return the name.
+     *
      * @return the name
      */
     public String getName() {
@@ -35,6 +38,7 @@ public class NameValuePair {
 
     /**
      * set the name.
+     *
      * @param newName the name
      */
     public void setName(final String newName) {
@@ -43,6 +47,7 @@ public class NameValuePair {
 
     /**
      * return the value.
+     *
      * @return the value
      */
     public String getValue() {
@@ -51,6 +56,7 @@ public class NameValuePair {
 
     /**
      * set the value.
+     *
      * @param newValue the value
      */
     public void setValue(final String newValue) {

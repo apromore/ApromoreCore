@@ -72,7 +72,7 @@ public class XMLUtils {
     /**
      * Converts an Element into its XML String representation.
      *
-     * @param any extensions element that should contain valid XML with unkown schema
+     * @param anyElement extensions element that should contain valid XML with unkown schema
      * @return String representation of XML
      */
     public static String anyElementToString(final Element anyElement) {

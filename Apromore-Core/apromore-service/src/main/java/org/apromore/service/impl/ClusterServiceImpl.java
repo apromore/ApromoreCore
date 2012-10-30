@@ -1,5 +1,11 @@
 package org.apromore.service.impl;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import nl.tue.tm.is.graph.SimpleGraph;
 import org.apromore.clustering.dissimilarity.measure.GEDDissimCalc;
 import org.apromore.dao.ClusteringDao;
@@ -10,7 +16,7 @@ import org.apromore.dao.model.FragmentVersion;
 import org.apromore.dao.model.ProcessFragmentMap;
 import org.apromore.exception.LockFailedException;
 import org.apromore.exception.RepositoryException;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.canonical.Canonical;
 import org.apromore.service.ClusterService;
 import org.apromore.service.FragmentService;
 import org.apromore.service.helper.SimpleGraphWrapper;
@@ -25,8 +31,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
 
 /**
  * Implementation of the ClusterService Contract.
@@ -211,8 +215,8 @@ public class ClusterServiceImpl implements ClusterService {
                 if (distance < 0) {
 
                     try {
-                        CPF g1 = fragmentService.getFragment(fid1, false);
-                        CPF g2 = fragmentService.getFragment(fid2, false);
+                        Canonical g1 = fragmentService.getFragment(fid1, false);
+                        Canonical g2 = fragmentService.getFragment(fid2, false);
 
                         SimpleGraph sg1 = new SimpleGraphWrapper(g1);
                         SimpleGraph sg2 = new SimpleGraphWrapper(g2);

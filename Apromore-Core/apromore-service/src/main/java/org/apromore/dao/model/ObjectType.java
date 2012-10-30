@@ -31,6 +31,7 @@ public class ObjectType implements java.io.Serializable {
 
     private Integer id;
     private String name;
+    private String type;
     private String configurable;
 
     private ProcessModelVersion processModelVersion;
@@ -68,18 +69,26 @@ public class ObjectType implements java.io.Serializable {
         return this.name;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setName(final String newName) {
+        this.name = newName;
     }
 
+    @Column(name = "type", length = 50)
+    public String getType() {
+        return this.type;
+    }
+
+    public void setType(final String newType) {
+        this.type = newType;
+    }
 
     @Column(name = "configurable", length = 1)
     public String getConfigurable() {
         return this.configurable;
     }
 
-    public void setConfigurable(String configurable) {
-        this.configurable = configurable;
+    public void setConfigurable(final String newConfigurable) {
+        this.configurable = newConfigurable;
     }
 
 
@@ -89,8 +98,8 @@ public class ObjectType implements java.io.Serializable {
         return this.processModelVersion;
     }
 
-    public void setProcessModelVersion(ProcessModelVersion processModelVersion) {
-        this.processModelVersion = processModelVersion;
+    public void setProcessModelVersion(final ProcessModelVersion newProcessModelVersion) {
+        this.processModelVersion = newProcessModelVersion;
     }
 
 

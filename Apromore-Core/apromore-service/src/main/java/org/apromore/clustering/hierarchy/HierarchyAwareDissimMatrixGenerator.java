@@ -1,5 +1,11 @@
 package org.apromore.clustering.hierarchy;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+
 import nl.tue.tm.is.graph.SimpleGraph;
 import nl.tue.tm.is.led.StringEditDistance;
 import org.apache.commons.collections.map.MultiKeyMap;
@@ -10,7 +16,7 @@ import org.apromore.clustering.dissimilarity.measure.GEDDissimCalc;
 import org.apromore.dao.ClusteringDao;
 import org.apromore.dao.FragmentVersionDao;
 import org.apromore.dao.model.FragmentVersion;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.canonical.Canonical;
 import org.apromore.service.ComposerService;
 import org.apromore.service.helper.SimpleGraphWrapper;
 import org.slf4j.Logger;
@@ -20,8 +26,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import java.util.*;
 
 @Service("DissimilarityMatrix")
 @Transactional(propagation = Propagation.REQUIRED)
@@ -191,7 +195,7 @@ public class HierarchyAwareDissimMatrixGenerator implements DissimilarityMatrix 
         if (graph == null) {
             try {
                 FragmentVersion fv = fvDao.findFragmentVersion(fragId);
-                CPF cpfGraph = composer.compose(fv.getUri());
+                Canonical cpfGraph = composer.compose(fv.getUri());
                 graph = new SimpleGraphWrapper(cpfGraph);
 
                 // NOTE: this was commented out in the svn version

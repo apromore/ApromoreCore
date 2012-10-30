@@ -1,12 +1,10 @@
 package org.apromore.service.helper.extraction;
 
 import org.apromore.common.Constants;
-import org.apromore.graph.JBPT.CPF;
-import org.apromore.graph.JBPT.CpfNode;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.Node;
+import org.apromore.service.model.RFragment2;
 import org.apromore.util.FragmentUtil;
-import org.jbpt.graph.algo.rpst.RPST;
-import org.jbpt.graph.algo.rpst.RPSTNode;
-import org.jbpt.pm.FlowNode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -18,36 +16,36 @@ public class FNSCNSExtractor {
     private static final Logger log = LoggerFactory.getLogger(FNSCNSExtractor.class);
 
     @SuppressWarnings("unchecked")
-    public static FlowNode extract(RPSTNode f, RPSTNode cf, RPST rpst, CPF g) {
-        FlowNode childB1 = (FlowNode) cf.getEntry();
-        FlowNode newChildB1 = FragmentUtil.duplicateVertex(childB1, g);
-        FragmentUtil.reconnectBoundary1(cf, childB1, newChildB1, rpst);
+    public static Node extract(RFragment2 f, RFragment2 cf, Canonical g) {
+        Node childB1 = cf.getEntry();
+        Node newChildB1 = FragmentUtil.duplicateVertex(childB1, g);
+        FragmentUtil.reconnectBoundary1(cf, childB1, newChildB1);
 
-        FlowNode childB2 = (FlowNode) cf.getExit();
-        FlowNode newChildB2 = FragmentUtil.duplicateVertex(childB2, g);
-        FragmentUtil.reconnectBoundary2(cf, childB2, newChildB2, rpst);
+        Node childB2 = cf.getExit();
+        Node newChildB2 = FragmentUtil.duplicateVertex(childB2, g);
+        FragmentUtil.reconnectBoundary2(cf, childB2, newChildB2);
 
-        f.getFragment().removeVertices(cf.getFragment().getVertices());
+        f.removeNodes(cf.getNodes());
 
-        FlowNode fragmentB1 = (FlowNode) f.getEntry();
-        FlowNode fragmentB2 = (FlowNode) f.getExit();
+        Node fragmentB1 = f.getEntry();
+        Node fragmentB2 = f.getExit();
 
-        FlowNode pocket = new CpfNode("Pocket");
-        g.addVertex(pocket);
-        g.setVertexProperty(pocket.getId(), Constants.TYPE, Constants.POCKET);
-        f.getFragment().addVertex(pocket);
+        Node pocket = new Node("Pocket");
+        g.addNode(pocket);
+        g.setNodeProperty(pocket.getId(), Constants.TYPE, Constants.POCKET);
+        f.addNode(pocket);
 
-        if (f.getFragment().getVertices().contains(childB1))
-            f.getFragment().addEdge(childB1, pocket);
+        if (f.getNodes().contains(childB1))
+            f.addEdge(childB1, pocket);
         else {
-            f.getFragment().addEdge(fragmentB1, pocket);
+            f.addEdge(fragmentB1, pocket);
             log.error("CHILD B1 IS NOT IN FRAGMENT! Fragment: " + FragmentUtil.getFragmentType(f) + " Child fragment: " + FragmentUtil.getFragmentType(cf));
         }
 
-        if (f.getFragment().getVertices().contains(childB2))
-            f.getFragment().addEdge(pocket, childB2);
+        if (f.getNodes().contains(childB2))
+            f.addEdge(pocket, childB2);
         else {
-            f.getFragment().addEdge(pocket, fragmentB2);
+            f.addEdge(pocket, fragmentB2);
             log.error("CHILD B2 IS NOT IN FRAGMENT! Fragment: " + FragmentUtil.getFragmentType(f) + " Child fragment: " + FragmentUtil.getFragmentType(cf));
         }
 
