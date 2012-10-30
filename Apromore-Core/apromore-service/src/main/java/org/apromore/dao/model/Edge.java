@@ -3,7 +3,16 @@ package org.apromore.dao.model;
 import java.io.Serializable;
 import java.util.HashSet;
 import java.util.Set;
-import javax.persistence.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -32,13 +41,14 @@ public class Edge implements Serializable {
 
     private Integer id;
     private String uri;
-    private String cond;
     private String originalId;
     private Boolean def = false;
 
     private Content content;
+    private Expression expression;
     private Node verticesBySourceVid;
     private Node verticesByTargetVid;
+
     private Set<EdgeAttribute> attributes = new HashSet<EdgeAttribute>(0);
 
     /**
@@ -84,14 +94,6 @@ public class Edge implements Serializable {
         this.uri = newUri;
     }
 
-    @Column(name = "cond", length = 2000)
-    public String getCond() {
-        return this.cond;
-    }
-
-    public void setCond(final String newCond) {
-        this.cond = newCond;
-    }
 
     @Column(name = "originalId", length = 40)
     public String getOriginalId() {
@@ -122,6 +124,15 @@ public class Edge implements Serializable {
         this.content = newContent;
     }
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "conditionExpressionId")
+    public Expression getExpression() {
+        return this.expression;
+    }
+
+    public void setExpression(final Expression newExpression) {
+        this.expression = newExpression;
+    }
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "sourceNodeId")

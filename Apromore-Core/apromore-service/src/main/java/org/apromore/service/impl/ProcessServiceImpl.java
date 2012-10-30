@@ -28,12 +28,13 @@ import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.ExportFormatException;
 import org.apromore.exception.ImportException;
 import org.apromore.exception.UpdateProcessException;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.canonical.Canonical;
 import org.apromore.manager.client.helper.PluginHelper;
 import org.apromore.model.ExportFormatResultType;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
 import org.apromore.plugin.property.RequestParameterType;
+import org.apromore.service.CanonicalConverter;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.FormatService;
 import org.apromore.service.ProcessService;
@@ -77,6 +78,8 @@ public class ProcessServiceImpl implements ProcessService {
     @Autowired @Qualifier("ProcessBranchDao")
     private ProcessBranchDao pbDao;
 
+    @Autowired @Qualifier("CanonicalConverter")
+    private CanonicalConverter converter;
     @Autowired @Qualifier("CanoniserService")
     private CanoniserService canSrv;
     @Autowired @Qualifier("UserService")
@@ -127,7 +130,7 @@ public class ProcessServiceImpl implements ProcessService {
         try {
             User user = usrSrv.findUserByLogin(username);
             NativeType nativeType = fmtSrv.findNativeType(natType);
-            CPF pg = canSrv.deserializeCPF(cpf.getCpt());
+            Canonical pg = converter.convert(cpf.getCpt());
 
             ProcessModelVersion pmv = rSrv.addProcessModel(processName, version, user.getUsername(), cpf.getCpt().getUri(),
                     nativeType.getNatType(), domain, documentation, created, lastUpdate, pg);
@@ -153,7 +156,7 @@ public class ProcessServiceImpl implements ProcessService {
     public ExportFormatResultType exportProcess(final String name, final Integer processId, final String version, final String format,
             final String annName, final boolean withAnn, Set<RequestParameterType<?>> canoniserProperties) throws ExportFormatException {        
         try {
-            CPF cpf = rSrv.getCurrentProcessModel(name, version, false);
+            Canonical cpf = rSrv.getCurrentProcessModel(name, version, false);
             
             //TODO XML model of web service should not already be used here, but in ManagerEndpoint
             ExportFormatResultType exportResult = new ExportFormatResultType();
@@ -163,15 +166,15 @@ public class ProcessServiceImpl implements ProcessService {
                 exportResult.setNative(new DataHandler(new ByteArrayDataSource(natDao.getNative(processId, version, format).getContent(), "text/xml")));
             } else if (format.equals(Constants.CANONICAL)) {
                 // Export the Canonical Format only
-                exportResult.setNative(new DataHandler(new ByteArrayDataSource(canSrv.CPFtoString(canSrv.serializeCPF(cpf)), "text/xml")));
+                exportResult.setNative(new DataHandler(new ByteArrayDataSource(canSrv.CPFtoString(converter.convert(cpf)), "text/xml")));
             } else {
-                DecanonisedProcess dp = new DecanonisedProcess();
+                DecanonisedProcess dp;
                 if (withAnn) {
                     String annotation = annDao.getAnnotation(processId, version, annName).getContent();
                     AnnotationsType anf = ANFSchema.unmarshalAnnotationFormat(new ByteArrayDataSource(annotation, "text/xml").getInputStream(), false).getValue();
-                    dp = canSrv.deCanonise(processId, version, format, canSrv.serializeCPF(cpf), anf, canoniserProperties);
+                    dp = canSrv.deCanonise(processId, version, format, converter.convert(cpf), anf, canoniserProperties);
                 } else {
-                    dp = canSrv.deCanonise(processId, version, format, canSrv.serializeCPF(cpf), null, canoniserProperties);
+                    dp = canSrv.deCanonise(processId, version, format, converter.convert(cpf), null, canoniserProperties);
                 }
                 exportResult.setMessage(PluginHelper.convertFromPluginMessages(dp.getMessages()));
                 exportResult.setNative(new DataHandler(new ByteArrayDataSource(dp.getNativeFormat(),"text/xml")));
@@ -348,5 +351,9 @@ public class ProcessServiceImpl implements ProcessService {
      */
     public void setUIHelperService(final UIHelper newUISrv) {
         this.uiSrv = newUISrv;
+    }
+
+    public void setConverterAdpater(final CanonicalConverter newConverter) {
+        this.converter = newConverter;
     }
 }

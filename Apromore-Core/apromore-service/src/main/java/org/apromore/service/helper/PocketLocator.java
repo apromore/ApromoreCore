@@ -1,14 +1,14 @@
 package org.apromore.service.helper;
 
-import org.jbpt.hypergraph.abs.IVertex;
+import org.apromore.graph.canonical.INode;
 
 /**
  * @author Chathura Ekanayake
  */
 public class PocketLocator {
 
-    private IVertex preset;
-    private IVertex postset;
+    private INode preset;
+    private INode postset;
     private String presetLabel;
     private String postsetLabel;
 
@@ -45,19 +45,19 @@ public class PocketLocator {
         }
     }
 
-    public IVertex getPreset() {
+    public INode getPreset() {
         return preset;
     }
 
-    public void setPreset(IVertex preset) {
+    public void setPreset(INode preset) {
         this.preset = preset;
     }
 
-    public IVertex getPostset() {
+    public INode getPostset() {
         return postset;
     }
 
-    public void setPostset(IVertex postset) {
+    public void setPostset(INode postset) {
         this.postset = postset;
     }
 

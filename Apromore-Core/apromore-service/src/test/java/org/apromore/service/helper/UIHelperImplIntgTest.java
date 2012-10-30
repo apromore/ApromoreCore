@@ -1,37 +1,16 @@
 package org.apromore.service.helper;
 
 import java.io.ByteArrayInputStream;
-import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Set;
-import javax.activation.DataSource;
-import javax.mail.util.ByteArrayDataSource;
-import javax.xml.bind.JAXBException;
 
 import org.apromore.TestData;
-import org.apromore.anf.ANFSchema;
-import org.apromore.anf.AnnotationsType;
-import org.apromore.canoniser.Canoniser;
-import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.CPFSchema;
-import org.apromore.cpf.CanonicalProcessType;
-import org.apromore.exception.ImportException;
 import org.apromore.model.ProcessSummariesType;
 import org.apromore.model.ProcessSummaryType;
-import org.apromore.plugin.exception.PluginNotFoundException;
-import org.apromore.plugin.property.ParameterType;
 import org.apromore.plugin.property.RequestParameterType;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ProcessService;
-import org.apromore.service.RepositoryService;
-import org.apromore.service.impl.models.CanonicalNoAnnotationModel;
-import org.apromore.service.impl.models.CanonicalWithAnnotationModel;
 import org.apromore.service.model.CanonisedProcess;
-import org.apromore.service.model.DecanonisedProcess;
-import org.hamcrest.MatcherAssert;
-import org.hamcrest.Matchers;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -41,15 +20,11 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.transaction.TransactionConfiguration;
 import org.springframework.transaction.annotation.Transactional;
-import org.xml.sax.SAXException;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.greaterThan;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
 
 /**

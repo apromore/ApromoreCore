@@ -21,7 +21,8 @@ public class MemberFragment {
     /**
      * Default Constructor.
      */
-    public MemberFragment() { }
+    public MemberFragment() {
+    }
 
 
     public MemberFragment(Integer fragmentId) {

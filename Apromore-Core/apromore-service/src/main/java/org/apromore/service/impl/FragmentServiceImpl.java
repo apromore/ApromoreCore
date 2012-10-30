@@ -1,14 +1,33 @@
 package org.apromore.service.impl;
 
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.UUID;
+import javax.xml.bind.JAXBException;
+
 import org.apromore.common.Constants;
-import org.apromore.dao.*;
-import org.apromore.dao.model.*;
+import org.apromore.dao.ContentDao;
+import org.apromore.dao.FragmentVersionDagDao;
+import org.apromore.dao.FragmentVersionDao;
+import org.apromore.dao.NodeDao;
+import org.apromore.dao.ProcessDao;
+import org.apromore.dao.ProcessModelVersionDao;
+import org.apromore.dao.model.Content;
+import org.apromore.dao.model.FragmentVersion;
+import org.apromore.dao.model.FragmentVersionDag;
+import org.apromore.dao.model.Node;
+import org.apromore.dao.model.ProcessFragmentMap;
+import org.apromore.dao.model.ProcessModelVersion;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.LockFailedException;
 import org.apromore.exception.RepositoryException;
-import org.apromore.exception.SerializationException;
-import org.apromore.graph.JBPT.CPF;
-import org.apromore.graph.JBPT.ICpfNode;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.Edge;
+import org.apromore.service.CanonicalConverter;
 import org.apromore.service.CanoniserService;
 import org.apromore.service.ContentService;
 import org.apromore.service.FragmentService;
@@ -17,7 +36,6 @@ import org.apromore.service.helper.RPSTNodeCopy;
 import org.apromore.service.model.FDNode;
 import org.apromore.service.model.FragmentDAG;
 import org.apromore.util.FragmentUtil;
-import org.jbpt.graph.abs.AbstractDirectedEdge;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +43,6 @@ import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-
-import javax.xml.bind.JAXBException;
-import java.util.*;
 
 /**
  * Implementation of the FragmentService Contract.
@@ -53,6 +68,8 @@ public class FragmentServiceImpl implements FragmentService {
     @Autowired @Qualifier("NodeDao")
     private NodeDao nDao;
 
+    @Autowired @Qualifier("CanonicalConverter")
+    private CanonicalConverter convertor;
     @Autowired @Qualifier("ContentService")
     private ContentService csrv;
     @Autowired @Qualifier("CanoniserService")
@@ -78,11 +95,11 @@ public class FragmentServiceImpl implements FragmentService {
 
 
     /**
-     * @see FragmentService#getFragmentUri(Integer, org.apromore.graph.JBPT.CPF, java.util.List)
+     * @see FragmentService#getFragmentUri(Integer, org.apromore.graph.canonical.Canonical, java.util.List)
      * {@inheritDoc}
      */
     @Override
-    public String getFragmentUri(Integer pmvid, CPF g, List<String> nodes) {
+    public String getFragmentUri(Integer pmvid, Canonical g, List<String> nodes) {
         FragmentDAG fdag = constructFragmentDAG(pmvid);
         List<String> originalNodes = getOriginalNodes(nodes, g);
         List<String> containingFragments = getContainingFragments(originalNodes, fdag);
@@ -99,11 +116,9 @@ public class FragmentServiceImpl implements FragmentService {
     public String getFragmentAsEPML(Integer fragmentId) throws RepositoryException {
         String xml;
         try {
-            CPF g = getFragment(fragmentId, false);
-            xml = cSrv.CPFtoString(cSrv.serializeCPF(g));
+            Canonical g = getFragment(fragmentId, false);
+            xml = cSrv.CPFtoString(convertor.convert(g));
         } catch (LockFailedException e) {
-            throw new RepositoryException(e);
-        } catch (SerializationException e) {
             throw new RepositoryException(e);
         } catch (JAXBException e) {
             throw new RepositoryException(e);
@@ -116,8 +131,8 @@ public class FragmentServiceImpl implements FragmentService {
      * {@inheritDoc}
      */
     @Override
-    public CPF getFragment(Integer fragmentId, boolean lock) throws LockFailedException {
-        CPF processModelGraph = null;
+    public Canonical getFragment(Integer fragmentId, boolean lock) throws LockFailedException {
+        Canonical processModelGraph = null;
         try {
             if (lock) {
                 LOGGER.debug("Obtaining a lock for the fragment " + fragmentId + "...");
@@ -186,24 +201,23 @@ public class FragmentServiceImpl implements FragmentService {
     @Override
     public void addChildMappings(FragmentVersion fragVer, Map<String, String> childMappings) {
         Set<String> pocketIds = childMappings.keySet();
-        for (String pid : pocketIds) {
-            String cid = childMappings.get(pid);
-            if (fragVer == null || cid == null || pid == null) {
-                String msg = "Invalid child mapping parameters. child Id: " + cid + ", Pocket Id: " + pid;
-                LOGGER.error(msg);
+        for (String pocketId : pocketIds) {
+            String childId = childMappings.get(pocketId);
+            if (fragVer == null || childId == null || pocketId == null) {
+                LOGGER.error("Invalid child mapping parameters. child Id: " + childId + ", Pocket Id: " + pocketId);
             }
 
             FragmentVersionDag fvd = new FragmentVersionDag();
-            fvd.setChildFragmentVersionId(fvDao.findFragmentVersionByURI(cid));
+            fvd.setChildFragmentVersionId(fvDao.findFragmentVersionByURI(childId));
             fvd.setFragmentVersionId(fragVer);
-            fvd.setPocketId(pid);
+            fvd.setPocketId(pocketId);
 
             fvdDao.save(fvd);
         }
     }
 
     @Override
-    public FragmentVersion storeFragment(String fragmentCode, RPSTNodeCopy fCopy, CPF g) {
+    public FragmentVersion storeFragment(String fragmentCode, RPSTNodeCopy fCopy, Canonical g) {
         Content c = new Content();
         c.setBoundaryS(fCopy.getEntry().getId());
         c.setBoundaryE(fCopy.getExit().getId());
@@ -218,7 +232,7 @@ public class FragmentServiceImpl implements FragmentService {
         f.setFragmentSize(fCopy.getSize());
         fvDao.save(f);
 
-        for (ICpfNode v : fCopy.getVertices()) {
+        for (org.apromore.graph.canonical.Node v : fCopy.getNodes()) {
             String vtype = FragmentUtil.getType(v);
 
             Node node = new Node();
@@ -232,7 +246,7 @@ public class FragmentServiceImpl implements FragmentService {
             v.setId(String.valueOf(node.getId()));
         }
 
-        for (AbstractDirectedEdge e : fCopy.getEdges()) {
+        for (Edge e : fCopy.getEdges()) {
             Node source = nDao.findNode(Integer.valueOf(e.getSource().getId()));
             Node target = nDao.findNode(Integer.valueOf(e.getTarget().getId()));
             csrv.addEdge(c, e, source, target);
@@ -310,7 +324,7 @@ public class FragmentServiceImpl implements FragmentService {
         return id;
     }
 
-    private List<String> getOriginalNodes(List<String> nodes, CPF g) {
+    private List<String> getOriginalNodes(List<String> nodes, Canonical g) {
         List<String> originalNodes = new ArrayList<String>();
         for (String node : nodes) {
             if (g.isDuplicateNode(node)) {

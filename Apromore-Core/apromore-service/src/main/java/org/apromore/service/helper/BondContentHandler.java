@@ -12,13 +12,10 @@ import org.apromore.dao.jpa.FragmentVersionDagDaoJpa;
 import org.apromore.dao.jpa.FragmentVersionDaoJpa;
 import org.apromore.dao.model.Content;
 import org.apromore.dao.model.FragmentVersionDag;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.Edge;
 import org.apromore.service.GraphService;
 import org.apromore.service.impl.GraphServiceImpl;
-import org.jbpt.graph.abs.AbstractDirectedEdge;
-import org.jbpt.graph.algo.rpst.RPSTNode;
-import org.jbpt.pm.ControlFlow;
-import org.jbpt.pm.FlowNode;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
@@ -54,15 +51,15 @@ public class BondContentHandler {
      *                         fragment. i.e. return value is null.
      * @return Matching fragment id. Null if there is no matching fragment.
      */
-    public Integer matchFragment(RPSTNode f, Content matchingContent, Map<String, String> childMappings,
+    public String matchFragment(Canonical f, Content matchingContent, Map<String, String> childMappings,
             Map<String, String> newChildMappings) {
         // find forward and reverse pocket ids of the given fragment
         String fragmentEntryId = f.getEntry().getId();
         String fragmentExitId = f.getExit().getId();
         List<String> forwardFragmentPocketIds = new ArrayList<String>();
         List<String> reverseFragmentPocketIds = new ArrayList<String>();
-        Collection<AbstractDirectedEdge> fragmentEdges = f.getFragmentEdges();
-        for (AbstractDirectedEdge fragmentEdge : fragmentEdges) {
+        Collection<Edge> fragmentEdges = f.getEdges();
+        for (Edge fragmentEdge : fragmentEdges) {
             if (fragmentEdge.getSource().getId().equals(fragmentEntryId)) {
                 String forwardNodeId = fragmentEdge.getTarget().getId();
                 if (!forwardNodeId.equals(fragmentExitId)) {
@@ -95,11 +92,11 @@ public class BondContentHandler {
         // find forward and reverse pocket Ids of the matching content
         List<String> forwardContentPocketIds = new ArrayList<String>();
         List<String> reverseContentPocketIds = new ArrayList<String>();
-        CPF content = gSrv.getGraph(matchingContent.getId());
-        String contentEntryId = content.getSourceVertices().get(0).getId();
-        String contentExitId = content.getSinkVertices().get(0).getId();
-        Collection<ControlFlow<FlowNode>> contentEdges = content.getEdges();
-        for (ControlFlow<FlowNode> contentEdge : contentEdges) {
+        Canonical content = gSrv.getGraph(matchingContent.getId());
+        String contentEntryId = content.getSourceNodes().iterator().next().getId();
+        String contentExitId = content.getSinkNodes().iterator().next().getId();
+        Collection<Edge> contentEdges = content.getEdges();
+        for (Edge contentEdge : contentEdges) {
             if (contentEdge.getSource().getId().equals(contentEntryId)) {
                 String forwardNodeId = contentEdge.getTarget().getId();
                 if (!forwardNodeId.equals(contentExitId)) {
@@ -114,24 +111,25 @@ public class BondContentHandler {
             }
         }
 
-        Integer matchingFragmentId = null;
+        String matchingFragmentId = null;
         List<FragmentChildMapping> candidateChildMappings = getCandidateChildMappings(matchingContent.getId());
         for (FragmentChildMapping fragmentChildMapping : candidateChildMappings) {
             List<FragmentVersionDag> candidateMapping = fragmentChildMapping.getChildMapping();
 
             List<String> forwardCandidateChildIds = new ArrayList<String>();
             List<String> reverseCandidateChildIds = new ArrayList<String>();
+
             for (FragmentVersionDag candidatePocket : candidateMapping) {
                 if (forwardContentPocketIds.contains(candidatePocket.getPocketId())) {
-                    forwardCandidateChildIds.add(candidatePocket.getChildFragmentVersionId().getUri());
+                    forwardCandidateChildIds.add(candidatePocket.getChildFragmentVersionId().getId().toString());
                 }
                 if (reverseContentPocketIds.contains(candidatePocket.getPocketId())) {
-                    reverseCandidateChildIds.add(candidatePocket.getChildFragmentVersionId().getUri());
+                    reverseCandidateChildIds.add(candidatePocket.getChildFragmentVersionId().getId().toString());
                 }
             }
             if (forwardFragmentChildIds.containsAll(forwardCandidateChildIds) &&
                     reverseFragmentChildIds.containsAll(reverseCandidateChildIds)) {
-                matchingFragmentId = fragmentChildMapping.getFragmentId();
+                matchingFragmentId = fragmentChildMapping.getFragmentId().toString();
                 break;
             }
         }

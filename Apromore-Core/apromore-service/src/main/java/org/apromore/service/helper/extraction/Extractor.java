@@ -1,10 +1,9 @@
 package org.apromore.service.helper.extraction;
 
-import org.apromore.graph.JBPT.CPF;
-import org.jbpt.graph.algo.rpst.RPST;
-import org.jbpt.graph.algo.rpst.RPSTNode;
-import org.jbpt.graph.algo.tctree.TCType;
-import org.jbpt.pm.FlowNode;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.Node;
+import org.apromore.service.model.RFragment2;
+import org.jbpt.algo.tree.tctree.TCType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,22 +24,22 @@ public class Extractor {
      * @param c Child f
      * @return ID of the pocket inserted by replacing the child f
      */
-    public static FlowNode extractChildFragment(RPSTNode f, RPSTNode c, RPST rpst, CPF g) {
-        FlowNode pocket = null;
-        if (f.getType().equals(TCType.P)) {
-            if (c.getType() != TCType.P) {
+    public static Node extractChildFragment(RFragment2 f, RFragment2 c, Canonical g) {
+        Node pocket = null;
+        if (f.getType().equals(TCType.POLYGON)) {
+            if (c.getType() != TCType.POLYGON) {
                 LOGGER.debug("Processing FS CNS");
                 pocket = FSCNSExtractor.extract(f, c, g);
                 LOGGER.debug("Pocket Id: " + pocket.getId());
             }
         } else {
-            if (c.getType().equals(TCType.P)) {
+            if (c.getType().equals(TCType.POLYGON)) {
                 LOGGER.debug("Processing FNS CS");
-                pocket = FNSCSExtractor.extract(f, c, rpst, g);
+                pocket = FNSCSExtractor.extract(f, c, g);
                 LOGGER.debug("Pocket Id: " + pocket.getId());
             } else {
                 LOGGER.debug("Processing FNS CNS");
-                pocket = FNSCNSExtractor.extract(f, c, rpst, g);
+                pocket = FNSCNSExtractor.extract(f, c, g);
                 LOGGER.debug("Pocket Id: " + pocket.getId());
             }
         }

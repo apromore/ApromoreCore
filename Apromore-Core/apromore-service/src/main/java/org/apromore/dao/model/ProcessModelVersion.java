@@ -165,13 +165,14 @@ public class ProcessModelVersion implements Serializable {
     }
 
 
+
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "processModelVersion")
     public Set<Annotation> getAnnotations() {
         return this.annotations;
     }
 
-    public void setAnnotations(Set<Annotation> annotations) {
-        this.annotations = annotations;
+    public void setAnnotations(final Set<Annotation> newAnnotations) {
+        this.annotations = newAnnotations;
     }
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "processModelVersion")
@@ -179,8 +180,8 @@ public class ProcessModelVersion implements Serializable {
         return this.natives;
     }
 
-    public void setNatives(Set<Native> natives) {
-        this.natives = natives;
+    public void setNatives(final Set<Native> newNatives) {
+        this.natives = newNatives;
     }
 
     @OneToMany(fetch=FetchType.LAZY, mappedBy="processModelVersion")
@@ -188,11 +189,11 @@ public class ProcessModelVersion implements Serializable {
         return this.editSessions;
     }
 
-    public void setEditSessions(Set<EditSession> editSessions) {
+    public void setEditSessions(final Set<EditSession> editSessions) {
         this.editSessions = editSessions;
     }
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "subVersion")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "subProcess")
     public Set<Node> getParentProcesses() {
         return this.parentProcesses;
     }

@@ -31,6 +31,7 @@ public abstract class ClusterSettings {
     private boolean ignoreClustersWithExactClones = true;
     private boolean enableClusterWideNearestRelativeFiltering = false;
     private boolean dbscanClustering = true;
+
     public abstract String getAlgorithm();
 
     /**
@@ -46,7 +47,8 @@ public abstract class ClusterSettings {
     /**
      * Default Constructor.
      */
-    public ClusterSettings() { }
+    public ClusterSettings() {
+    }
 
 
     public boolean isIgnoreClustersWithExactClones() {

@@ -1,15 +1,22 @@
 package org.apromore.graph;
 
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.PriorityQueue;
+import java.util.Set;
+import java.util.regex.Pattern;
+
 import org.apromore.common.Constants;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.canonical.Canonical;
+import org.apromore.graph.canonical.Edge;
+import org.apromore.graph.canonical.INode;
+import org.apromore.graph.canonical.Node;
 import org.apromore.graph.util.SortedListPermutationGenerator;
 import org.apromore.util.FragmentUtil;
 import org.jbpt.graph.abs.AbstractDirectedEdge;
-import org.jbpt.pm.FlowNode;
-import org.jbpt.pm.IFlowNode;
-
-import java.util.*;
-import java.util.regex.Pattern;
 
 public class TreeVisitor {
 
@@ -19,8 +26,8 @@ public class TreeVisitor {
     public TreeVisitor() { }
 
 
-    private String getBestLabelHash(CPF graph, Set<AbstractDirectedEdge> edges, Set<FlowNode> vertices,
-            IFlowNode entry, IFlowNode exit, LinkedList<QueueEntry> sortedEntries) {
+    private String getBestLabelHash(Canonical graph, Set<Edge> edges, Set<Node> vertices,
+            INode entry, INode exit, LinkedList<QueueEntry> sortedEntries) {
         String lexSmallest = null;
         SortedListPermutationGenerator gen = new SortedListPermutationGenerator(sortedEntries);
 
@@ -28,9 +35,9 @@ public class TreeVisitor {
             LinkedList<QueueEntry> perm = gen.getNextCombination();
 
             StringBuffer buffer = new StringBuffer(0);
-            Map<IFlowNode, Integer> idmap = new HashMap<IFlowNode, Integer>(0);
+            Map<INode, Integer> idmap = new HashMap<INode, Integer>(0);
             for (QueueEntry ent : perm) {
-                idmap.put((IFlowNode) ent.getVertex(), idmap.size());
+                idmap.put((INode) ent.getVertex(), idmap.size());
                 buffer.append(ent.getLabel());
             }
 
@@ -81,10 +88,10 @@ public class TreeVisitor {
      * -- Requires the generation of permutations a their corresponding
      * -- adjacency matrices.
      */
-    public String visitRNode(CPF graph, Set<AbstractDirectedEdge> edges, Set<FlowNode> vertices, IFlowNode entry, IFlowNode exit) {
+    public String visitRNode(Canonical graph, Set<Edge> edges, Set<Node> vertices, INode entry, INode exit) {
         // Grab children labels. Skip gateway/connector.
         PriorityQueue<QueueEntry> entries = new PriorityQueue<QueueEntry>();
-        for (IFlowNode v : vertices) {
+        for (Node v : vertices) {
             entries.add(new QueueEntry(v, v.getName().replaceAll("\\s+", "")));
         }
 
@@ -96,17 +103,17 @@ public class TreeVisitor {
         return getBestLabelHash(graph, edges, vertices, entry, exit, sortedLabels);
     }
 
-    public String visitSNode(CPF graph, Collection<AbstractDirectedEdge> edges, IFlowNode entry) {
-        StringBuffer buffer = new StringBuffer(0);
-        IFlowNode v = entry;
+    public String visitSNode(Canonical graph, Collection<Edge> edges, Node entry) {
+        StringBuilder buffer = new StringBuilder(0);
+        Node v = entry;
         do {
-            if (!Constants.CONNECTOR.equals(graph.getVertexProperty(v.getId(), Constants.TYPE))) {
+            if (!Constants.CONNECTOR.equals(graph.getNodeProperty(v.getId(), Constants.TYPE))) {
                 if (v.getName() != null) {
                     buffer.append(v.getName().replaceAll("\\s+", ""));
                 }
             }
 
-            List<IFlowNode> postset = FragmentUtil.getPostset(v, edges);
+            List<Node> postset = FragmentUtil.getPostset(v, edges);
             if (postset.size() > 0) {
                 v = postset.get(0);
             } else {

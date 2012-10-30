@@ -8,7 +8,7 @@ import org.apromore.dao.model.FragmentVersion;
 import org.apromore.exception.ExceptionDao;
 import org.apromore.exception.LockFailedException;
 import org.apromore.exception.RepositoryException;
-import org.apromore.graph.JBPT.CPF;
+import org.apromore.graph.canonical.Canonical;
 import org.apromore.service.helper.RPSTNodeCopy;
 
 /**
@@ -33,7 +33,7 @@ public interface FragmentService {
      * @param nodes the list of nodes
      * @return the fragment Id
      */
-    String getFragmentUri(Integer pmvid, CPF g, List<String> nodes);
+    String getFragmentUri(Integer pmvid, Canonical g, List<String> nodes);
 
     /**
      * Gets the Fragment as Epml.
@@ -50,7 +50,7 @@ public interface FragmentService {
      * @return the found processModel.
      * @throws LockFailedException if we failed to obtain a lock on the table
      */
-    CPF getFragment(Integer fragmentId, boolean lock) throws LockFailedException;
+    Canonical getFragment(Integer fragmentId, boolean lock) throws LockFailedException;
 
     /**
      * Get a particular Fragment version based on fragmentVersionId.
@@ -61,7 +61,6 @@ public interface FragmentService {
 
     /**
      * Used to save a new Fragment to the DB.
-     * @param uri
      * @param cid the content Id
      * @param childMappings the child mappings
      * @param derivedFrom what model was this derived from
@@ -85,10 +84,10 @@ public interface FragmentService {
      * Stores a fragment in the DB.
      * @param fragmentCode the fragment code
      * @param fCopy the RPSTNode
-     * @param g the CPF graph
+     * @param g the Canonical graph
      * @return the new fragment version
      */
-    FragmentVersion storeFragment(String fragmentCode, RPSTNodeCopy fCopy, CPF g);
+    FragmentVersion storeFragment(String fragmentCode, RPSTNodeCopy fCopy, Canonical g);
 
     /**
      * Gets the Matching Fragment Versions.

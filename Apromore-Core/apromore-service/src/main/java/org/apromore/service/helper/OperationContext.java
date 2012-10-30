@@ -3,15 +3,15 @@ package org.apromore.service.helper;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.apromore.graph.JBPT.CPF;
 import org.apromore.graph.TreeVisitor;
+import org.apromore.graph.canonical.Canonical;
 
 /**
  * @author Chathura Ekanayake
  */
 public class OperationContext {
 
-    private CPF graph;
+    private Canonical graph;
     private TreeVisitor treeVisitor;
     private Map<Integer, Integer> contentUsage;
     private Map<String, Integer> processedFragmentTypes;
@@ -24,11 +24,11 @@ public class OperationContext {
         processedFragmentTypes.put("R", 0);
     }
 
-    public CPF getGraph() {
+    public Canonical getGraph() {
         return graph;
     }
 
-    public void setGraph(CPF graph) {
+    public void setGraph(Canonical graph) {
         this.graph = graph;
     }
 

@@ -84,10 +84,9 @@
     <bean id="PluginService" class="org.apromore.service.impl.PluginServiceImpl" />
 
     <bean id="ComposerService" class="org.apromore.service.impl.ComposerServiceImpl" />
-    <bean id="SimpleComposerService" class="org.apromore.service.impl.SimpleComposerImpl" />
     <bean id="DecomposerService" class="org.apromore.service.impl.DecomposerServiceImpl" />
-    <bean id="SimpleDecomposerService" class="org.apromore.service.impl.SimpleDecomposerImpl" />
 
+    <bean id="CanonicalConverter" class="org.apromore.service.impl.CanonicalConverterAdapter" />
     <bean id="UIHelper" class="org.apromore.service.helper.UIHelper" />
     <bean id="BondContentHandler" class="org.apromore.service.helper.BondContentHandler" />
     <bean id="ChangePropagator" class="org.apromore.service.helper.ChangePropagator" />
