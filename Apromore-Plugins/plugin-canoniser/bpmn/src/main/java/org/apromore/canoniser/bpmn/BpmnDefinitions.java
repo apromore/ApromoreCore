@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 import java.util.logging.Logger;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.bind.JAXBContext;
@@ -28,6 +29,7 @@ import org.xml.sax.SAXException;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
+import org.apromore.canoniser.bpmn.cpf.CpfNetType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
@@ -71,13 +73,6 @@ public class BpmnDefinitions extends TDefinitions {
 
     /** Property name for use with {@link Unmarshaller#setProperty} to configure an alternate JAXB ObjectFactory. */
     private static final String OBJECT_FACTORY = "com.sun.xml.bind.ObjectFactory";
-
-    /**
-     * Namespace of the document root element.
-     *
-     * Chosen arbitrarily to match Signavio.
-     */
-    public static final String TARGET_NS = "http://www.signavio.com/bpmn20";
 
     /** JAXB context for BPMN. */
     public static final JAXBContext BPMN_CONTEXT = newContext();
@@ -126,12 +121,12 @@ public class BpmnDefinitions extends TDefinitions {
      */
     public BpmnDefinitions(final CanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
 
-        Initializer initializer = new Initializer(cpf);
-
         // We can get by without an ANF parameter, but we definitely need a CPF
         if (cpf == null) {
             throw new CanoniserException("Cannot create BPMN from null CPF");
         }
+
+        Initializer initializer = new Initializer(cpf, "http://www.apromore.org/bpmn/" + UUID.randomUUID() + "#");
 
         // Set attributes of the document root
         setExporter(APROMORE_URI);
@@ -139,7 +134,7 @@ public class BpmnDefinitions extends TDefinitions {
         setExpressionLanguage(XPATH_URI);
         setId(null);
         setName(cpf.getName());
-        setTargetNamespace(TARGET_NS);
+        setTargetNamespace(initializer.getTargetNamespace());
         setTypeLanguage(XSD_URI);
 
         /* TODO - add as extension attributes
@@ -160,7 +155,7 @@ public class BpmnDefinitions extends TDefinitions {
                 continue;
             }
 
-            getRootElement().add(initializer.getFactory().createProcess(new BpmnProcess(net, initializer, collaboration)));
+            getRootElement().add(initializer.getFactory().createProcess(new BpmnProcess((CpfNetType) net, initializer, collaboration)));
 
             /*
             // If we haven't added the collaboration yet and this process is a pool, add the collaboration

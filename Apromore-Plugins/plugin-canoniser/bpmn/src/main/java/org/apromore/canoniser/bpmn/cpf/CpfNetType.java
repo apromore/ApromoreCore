@@ -20,7 +20,7 @@ import org.omg.spec.bpmn._20100524.model.BaseVisitor;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class CpfNetType extends NetType {
+public class CpfNetType extends NetType implements Attributed {
 
     /** In CPF, no two Objects within the same Net may have the same name, so we have to keep track of the names that have occurred. */
     private final Set<String> objectNameSet = new HashSet<String>();  // TODO - use diamond operator

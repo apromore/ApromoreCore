@@ -29,10 +29,7 @@ import org.omg.spec.bpmn._20100524.model.*;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class Initializer {
-
-    /** Extension name for {@link TypeAttribute}s with <code>bpmn:extensionElements</code> content. */
-    private static final String EXTENSION_ELEMENTS = "extensions";
+public class Initializer implements ExtensionConstants {
 
     private final CpfCanonicalProcessType  cpf;
     private final IdFactory                cpfIdFactory             = new IdFactory();
@@ -255,7 +252,7 @@ public class Initializer {
         return ExtensionUtils.marshalFragment(EXTENSION_ELEMENTS,
                                               baseElement.getExtensionElements(),
                                               TExtensionElements.class,
-                                              BpmnDefinitions.BPMN_NS,
+                                              BPMN_CPF_NS,
                                               BpmnDefinitions.BPMN_CONTEXT);
     }
 }

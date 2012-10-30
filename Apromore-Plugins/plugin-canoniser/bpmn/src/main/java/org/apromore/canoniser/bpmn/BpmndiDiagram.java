@@ -19,6 +19,8 @@ import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
 import org.omg.spec.bpmn._20100524.di.BPMNShape;
+import org.omg.spec.bpmn._20100524.model.TFlowNode;
+import org.omg.spec.bpmn._20100524.model.TLane;
 import org.omg.spec.dd._20100524.dc.Bounds;
 import org.omg.spec.dd._20100524.dc.Point;
 
@@ -118,7 +120,8 @@ public class BpmndiDiagram extends BPMNDiagram {
                     };
                     */
 
-                    if (initializer.containsElement(annotation.getCpfId())) {
+                    if (initializer.getElement(annotation.getCpfId()) instanceof TFlowNode ||
+                        initializer.getElement(annotation.getCpfId()) instanceof TLane) {
                         BPMNShape shape = new BPMNShape();
                         shape.setId(initializer.newId(annotation.getId()));
                         shape.setBpmnElement(initializer.getElement(annotation.getCpfId()).getId());
@@ -147,10 +150,10 @@ public class BpmndiDiagram extends BPMNDiagram {
 
                         bpmnPlane.getDiagramElement().add(bpmndiObjectFactory.createBPMNShape(shape));
 
-                    } else if (initializer.getEdge(annotation.getCpfId()) != null) {
+                    } else if (initializer.getElement(annotation.getCpfId()) instanceof BpmnSequenceFlow) {
                         BPMNEdge edge = new BPMNEdge();
                         edge.setId(initializer.newId(annotation.getId()));
-                        edge.setBpmnElement(initializer.getEdge(annotation.getCpfId()).getId());
+                        edge.setBpmnElement(initializer.getElement(annotation.getCpfId()).getId());
 
                         // an edge requires two or more waypoints
                         if (graphics.getPosition().size() < 2) {

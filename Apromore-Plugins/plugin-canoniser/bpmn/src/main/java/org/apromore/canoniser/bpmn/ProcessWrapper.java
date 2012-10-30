@@ -73,7 +73,7 @@ public class ProcessWrapper {
      * @return a {@link TFlowElement} instance, wrapped in a {@link JAXBElement}
      * @throws CanoniserException if <var>node</var> isn't an event or a task
      */
-    private static JAXBElement<? extends TFlowNode> createFlowNode(final NodeType node, final Initializer initializer) throws CanoniserException {
+    private static JAXBElement<? extends TFlowNode> createFlowNode(final CpfNodeType node, final Initializer initializer) throws CanoniserException {
 
         if (node instanceof EventType) {
             // Count the incoming and outgoing edges to determine whether this is a start, end, or intermediate event
@@ -95,18 +95,22 @@ public class ProcessWrapper {
             } else {
                 throw new CanoniserException("Event \"" + node.getId() + "\" has no edges");
             }
-        } else if (node instanceof ANDJoinType || node instanceof ANDSplitType) {
-            TParallelGateway gateway = new TParallelGateway();
-            initializer.populateBaseElement(gateway, node);
-            return initializer.getFactory().createParallelGateway(gateway);
-        } else if (node instanceof ORJoinType || node instanceof ORSplitType) {
-            TInclusiveGateway gateway = new TInclusiveGateway();
-            initializer.populateBaseElement(gateway, node);
-            return initializer.getFactory().createInclusiveGateway(gateway);
-        } else if (node instanceof XORJoinType || node instanceof XORSplitType) {
-            TExclusiveGateway gateway = new TExclusiveGateway();
-            initializer.populateBaseElement(gateway, node);
-            return initializer.getFactory().createExclusiveGateway(gateway);
+        } else if (node instanceof RoutingType) {
+            if (node instanceof ANDJoinType || node instanceof ANDSplitType) {
+                TParallelGateway gateway = new TParallelGateway();
+                initializer.populateBaseElement(gateway, node);
+                return initializer.getFactory().createParallelGateway(gateway);
+            } else if (node instanceof ORJoinType || node instanceof ORSplitType) {
+                TInclusiveGateway gateway = new TInclusiveGateway();
+                initializer.populateBaseElement(gateway, node);
+                return initializer.getFactory().createInclusiveGateway(gateway);
+            } else if (node instanceof XORJoinType || node instanceof XORSplitType) {
+                TExclusiveGateway gateway = new TExclusiveGateway();
+                initializer.populateBaseElement(gateway, node);
+                return initializer.getFactory().createExclusiveGateway(gateway);
+            } else {
+                throw new CanoniserException("Routing \"" + node.getId() + " is not a supported type");
+            }
         } else if (node instanceof TaskType) {
             CpfTaskType that = (CpfTaskType) node;
 
@@ -150,13 +154,13 @@ public class ProcessWrapper {
 
         // Add the CPF Edges as BPMN SequenceFlows
         for (EdgeType edge : net.getEdge()) {
-            TSequenceFlow sequenceFlow = new BpmnSequenceFlow(edge, initializer);
+            TSequenceFlow sequenceFlow = new BpmnSequenceFlow((CpfEdgeType) edge, initializer);
             process.getFlowElement().add(initializer.getFactory().createSequenceFlow(sequenceFlow));
         }
 
         // Add the CPF Nodes as BPMN FlowNodes
         for (NodeType node : net.getNode()) {
-            JAXBElement<? extends TFlowNode> flowNode = createFlowNode(node, initializer);
+            JAXBElement<? extends TFlowNode> flowNode = createFlowNode((CpfNodeType) node, initializer);
             process.getFlowElement().add(flowNode);
 
             // Fill any BPMN @sourceRef or @targetRef attributes referencing this node
@@ -170,6 +174,12 @@ public class ProcessWrapper {
                     lane.getFlowNodeRef().add((JAXBElement) flowNode);
                 }
             }
+        }
+
+        // Add the CPF Objects as BPMN DataObjects
+        for (ObjectType object : net.getObject()) {
+            TDataObject dataObject = new BpmnDataObject((CpfObjectType) object, initializer);
+            process.getFlowElement().add(initializer.getFactory().createDataObject(dataObject));
         }
     }
 }
