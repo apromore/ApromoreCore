@@ -14,12 +14,24 @@
             <property><baseType name="TInterface"/></property>
         </bindings>
 
+        <bindings node="xsd:complexType[@name='tComplexGateway']//xsd:attribute[@name='default']">
+            <property><baseType name="TSequenceFlow"/></property>
+        </bindings>
+
         <bindings node="xsd:complexType[@name='tDataAssociation']//xsd:element[@name='sourceRef']">
             <property><baseType name="TBaseElement"/></property>
         </bindings>
 
         <bindings node="xsd:complexType[@name='tDataAssociation']//xsd:element[@name='targetRef']">
             <property><baseType name="TBaseElement"/></property>
+        </bindings>
+
+        <bindings node="xsd:complexType[@name='tExclusiveGateway']//xsd:attribute[@name='default']">
+            <property><baseType name="TSequenceFlow"/></property>
+        </bindings>
+
+        <bindings node="xsd:complexType[@name='tInclusiveGateway']//xsd:attribute[@name='default']">
+            <property><baseType name="TSequenceFlow"/></property>
         </bindings>
 
         <bindings node="xsd:complexType[@name='tSequenceFlow']//xsd:attribute[@name='sourceRef']">

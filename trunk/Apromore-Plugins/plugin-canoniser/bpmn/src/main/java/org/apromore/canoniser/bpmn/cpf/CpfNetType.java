@@ -153,7 +153,7 @@ public class CpfNetType extends NetType implements Attributed {
                         }
                         assert routing != null;
 
-                        initializer.populateFlowNode(routing, exclusiveGateway);
+                        initializer.populateDefaultingGateway(routing, exclusiveGateway, exclusiveGateway.getDefault());
 
                         net.getNode().add(routing);
 
@@ -181,7 +181,7 @@ public class CpfNetType extends NetType implements Attributed {
                         }
                         assert routing != null;
 
-                        initializer.populateFlowNode(routing, inclusiveGateway);
+                        initializer.populateDefaultingGateway(routing, inclusiveGateway, inclusiveGateway.getDefault());
 
                         net.getNode().add(routing);
 

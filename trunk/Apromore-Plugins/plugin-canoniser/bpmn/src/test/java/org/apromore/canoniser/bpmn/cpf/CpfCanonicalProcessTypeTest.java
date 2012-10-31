@@ -82,4 +82,24 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         assertEquals(0, event.getOutgoingEdges().size());
         assertEquals(1, event.getIncomingEdges().size());
     }
+
+    /**
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Defaulting.bpmn20.xml">a model with default flows</a>.
+     *
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Defaulting.bpmn20.svg"/></div>
+     */
+    @Test
+    public void testDefaulting() throws Exception {
+        CpfCanonicalProcessType cpf = testCanonise("Defaulting.bpmn20.xml");
+
+        // Inspect the CPF
+        CpfEdgeType edge0 = (CpfEdgeType) cpf.getElement("sid-4FB4D23F-C9EA-4AEE-B2A9-535D2D2F0C94");
+        assert !edge0.isDefault() : "Edge of start Event can't be default";
+
+        CpfEdgeType edge1 = (CpfEdgeType) cpf.getElement("sid-596877C3-00D7-425E-97E3-398F3FD8ADB0");
+        assert edge1.isDefault() : "Default edge of XORSplit not found";
+
+        CpfEdgeType edge2 = (CpfEdgeType) cpf.getElement("sid-C2248280-A6CE-4167-B485-7C985973698A");
+        assert edge2.isDefault() : "Default edge of Task not found";
+    }
 }
