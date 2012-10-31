@@ -19,6 +19,7 @@ import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
+import org.apromore.cpf.TaskType;
 import org.apromore.cpf.WorkType;
 import org.omg.spec.bpmn._20100524.model.*;
 
@@ -49,7 +50,12 @@ public class Initializer implements ExtensionConstants {
     /** Map from CPF identifiers to CPF elements.  Note that CPF lacks a root class, hence the use of {@link Object}. */
     private final Map<String, Object> elementMap;
 
-    /** Map from BPMN sequence flows to the CPF identifier of the WorkType for which the corresponding Edge should be default. */
+    /**
+     * Map from BPMN sequence flows to the CPF identifier of the element for which the corresponding Edge should be default.
+     *
+     * In BPMN 2.0 the element types with a "default" attribute comprise {@link TActivity}, {@link TComplexGateway},
+     * {@link TExclusiveGateway} and {@link TInclusiveGateway}.
+     */
     private final Map<TSequenceFlow, String> defaultSequenceFlowMap = new HashMap<TSequenceFlow, String>();
 
     /**
@@ -170,6 +176,24 @@ public class Initializer implements ExtensionConstants {
         NodeType target = bpmnFlowNodeToCpfNodeMap.get(sequenceFlow.getTargetRef());
         edge.setTargetId(target.getId());
         ((CpfNodeType) target).getIncomingEdges().add(edge);
+
+        // handle default
+        if (defaultSequenceFlowMap.containsKey(sequenceFlow)) {
+            // Sanity checks that the source actually is the kind of element that has defaults
+            String cpfId = defaultSequenceFlowMap.get(sequenceFlow);
+            Object cpfElement = getElement(cpfId);
+            assert sequenceFlow.getSourceRef() instanceof TActivity         ||
+                   sequenceFlow.getSourceRef() instanceof TComplexGateway   ||
+                   sequenceFlow.getSourceRef() instanceof TExclusiveGateway ||
+                   sequenceFlow.getSourceRef() instanceof TInclusiveGateway :
+                "Source of default BPMN flow " + sequenceFlow.getId() + " is " + sequenceFlow.getSourceRef().getId() + " which is not a defaulting type";
+            assert cpfElement instanceof RoutingType || cpfElement instanceof TaskType :
+                "Source of default CPF edge " + edge.getId() + " is " + cpfElement + " which is not a defaulting type";
+
+            // Mark that this is a default flow, and remove it from the "to do" map
+            edge.setDefault(true);
+            defaultSequenceFlowMap.remove(sequenceFlow);
+        }
     }
 
     // Node supertype handlers
@@ -197,6 +221,26 @@ public class Initializer implements ExtensionConstants {
         bpmnFlowNodeToCpfNodeMap.put(flowNode, routing);
     }
 
+    /**
+     * Pretend there's a superclass for the 3 kinds of BPMN gateway with default flows, and that this is its constructor code.
+     *
+     * @param routing  the CPF Routing under construction
+     * @param gateway  a BPMN {@link TComplexGateway}, {@link TExclusiveGateway}, or {@link TInclusiveGateway}
+     * @param bpmnDefault  the default attribute of <code>gateway</code>
+     */
+    void populateDefaultingGateway(final RoutingType routing, final TGateway gateway, final TSequenceFlow bpmnDefault) throws CanoniserException {
+        assert gateway instanceof TComplexGateway   ||
+               gateway instanceof TExclusiveGateway ||
+               gateway instanceof TInclusiveGateway : "Gateway " + gateway.getId() + " can't have a default flow";
+
+        populateFlowNode(routing, gateway);
+
+        // If the gateway has a default flow, record that fact
+        if (bpmnDefault != null) {
+            defaultSequenceFlowMap.put(bpmnDefault, routing.getId());
+        }
+    }
+
     // Work supertype handler
 
     void populateActivity(final WorkType work, final TActivity activity) throws CanoniserException {
@@ -211,6 +255,7 @@ public class Initializer implements ExtensionConstants {
 
         TInputOutputSpecification ioSpec = activity.getIoSpecification();
 
+        /*
         if (activity.getCompletionQuantity() != null) {
             throw new CanoniserException("BPMN completion quantity on " + activity.getId() + " not supported");
         }
@@ -234,6 +279,7 @@ public class Initializer implements ExtensionConstants {
         if (activity.isIsForCompensation()) {
             throw new CanoniserException("BPMN compensation on " + activity.getId() + " not supported");
         }
+        */
     }
 
     void populateFlowNode(final WorkType work, final TFlowNode flowNode) throws CanoniserException {

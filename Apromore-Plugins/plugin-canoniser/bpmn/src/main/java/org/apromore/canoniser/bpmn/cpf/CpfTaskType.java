@@ -55,7 +55,7 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
      * @throws CanoniserException if the task can't be constructed
      */
     public CpfTaskType(final TCallActivity callActivity, final Initializer initializer) throws CanoniserException {
-        initializer.populateFlowNode(this, callActivity);
+        initializer.populateActivity(this, callActivity);
         if (false) {
             // The called element is a process or global task within this same BPMN document
             setSubnetId(callActivity.getId());  // TODO - process through CpfIdFactory
@@ -84,7 +84,7 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
         assert subnet != null;
 
         // Add the CPF Task to the parent Net
-        initializer.populateFlowNode(this, subProcess);
+        initializer.populateActivity(this, subProcess);
         setSubnetId(subnet.getId());
     }
 
@@ -96,7 +96,7 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
      * @throws CanoniserException if the task can't be constructed
      */
     public CpfTaskType(final TTask task, final Initializer initializer) throws CanoniserException {
-        initializer.populateFlowNode(this, task);
+        initializer.populateActivity(this, task);
     }
 
     // Accessor methods
