@@ -124,7 +124,8 @@ public class BpmndiDiagram extends BPMNDiagram {
                         initializer.getElement(annotation.getCpfId()) instanceof TLane) {
                         BPMNShape shape = new BPMNShape();
                         shape.setId(initializer.newId(annotation.getId()));
-                        shape.setBpmnElement(initializer.getElement(annotation.getCpfId()).getId());
+                        shape.setBpmnElement(new QName(initializer.getTargetNamespace(),
+                                                       initializer.getElement(annotation.getCpfId()).getId()));
 
                         // a shape requires a bounding box, defined by a top-left position and a size (width and height)
                         if (graphics.getPosition().size() != 1) {
@@ -153,7 +154,8 @@ public class BpmndiDiagram extends BPMNDiagram {
                     } else if (initializer.getElement(annotation.getCpfId()) instanceof BpmnSequenceFlow) {
                         BPMNEdge edge = new BPMNEdge();
                         edge.setId(initializer.newId(annotation.getId()));
-                        edge.setBpmnElement(initializer.getElement(annotation.getCpfId()).getId());
+                        edge.setBpmnElement(new QName(initializer.getTargetNamespace(),
+                                                      initializer.getElement(annotation.getCpfId()).getId()));
 
                         // an edge requires two or more waypoints
                         if (graphics.getPosition().size() < 2) {
