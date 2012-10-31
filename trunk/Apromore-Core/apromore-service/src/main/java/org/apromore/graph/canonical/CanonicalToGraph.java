@@ -398,7 +398,9 @@ public class CanonicalToGraph {
         typ.setId(node.getId());
         typ.setLabel(node.getName());
         typ.setOriginalId(node.getOriginalID());
-        typ.setConfigurable(node.isConfigurable());
+        if (node.isConfigurable() != null) {
+            typ.setConfigurable(node.isConfigurable());
+        }
         typ.setDirection(IMessage.DirectionEnum.valueOf(node.getDirection().value()));
 
         addAttributes(typ, node);
