@@ -31,12 +31,26 @@ import org.omg.spec.bpmn._20100524.model.*;
  */
 public class Initializer implements ExtensionConstants {
 
+    /** The instance executing the {@link CpfCanonicalProcessType#(BpmnDefinitions)} constructor with this {@link Initializer}. */
     private final CpfCanonicalProcessType  cpf;
-    private final IdFactory                cpfIdFactory             = new IdFactory();
-    private final BpmnDefinitions          definitions;
-    private final Map<TFlowNode, TLane>    laneMap                  = new HashMap<TFlowNode, TLane>();
+
+    /** Generator of unique CPF identifiers for this document. */
+    private final IdFactory cpfIdFactory = new IdFactory();
+
+    /** The BPMN document which the constructed CPF document corresponds to. */
+    private final BpmnDefinitions definitions;
+
+    /** Which lane each BPMN flow node is assigned to. */
+    private final Map<TFlowNode, TLane> laneMap = new HashMap<TFlowNode, TLane>();
+
+    /** Which CPF node each BPMN node corresponds to. */
     private final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap = new HashMap<TFlowNode, NodeType>();
-    private final Map<String, Object>      elementMap;
+
+    /** Map from CPF identifiers to CPF elements.  Note that CPF lacks a root class, hence the use of {@link Object}. */
+    private final Map<String, Object> elementMap;
+
+    /** Map from BPMN sequence flows to the CPF identifier of the WorkType for which the corresponding Edge should be default. */
+    private final Map<TSequenceFlow, String> defaultSequenceFlowMap = new HashMap<TSequenceFlow, String>();
 
     /**
      * Sole constructor.
@@ -73,6 +87,11 @@ public class Initializer implements ExtensionConstants {
             if (node instanceof WorkType) {
                 ((WorkType) node).getResourceTypeRef().add(new CpfResourceTypeRefType(entry.getValue(), this));
             }
+        }
+
+        // Verify that all default edges have been dealt with
+        if (!defaultSequenceFlowMap.isEmpty()) {
+            throw new CanoniserException("Not all default edges were marked: " + defaultSequenceFlowMap);
         }
     }
 
@@ -183,16 +202,38 @@ public class Initializer implements ExtensionConstants {
     void populateActivity(final WorkType work, final TActivity activity) throws CanoniserException {
         populateFlowNode(work, activity);
 
-        BigInteger completionQuantity = activity.getCompletionQuantity();
         List<TDataInputAssociation> dias = activity.getDataInputAssociation();
         List<TDataOutputAssociation> doas = activity.getDataOutputAssociation();
-        Object defaultRef = activity.getDefault();
+
+        if (activity.getDefault() != null) {
+            defaultSequenceFlowMap.put(activity.getDefault(), work.getId());
+        }
+
         TInputOutputSpecification ioSpec = activity.getIoSpecification();
-        JAXBElement<? extends TLoopCharacteristics> loopChars = activity.getLoopCharacteristics();
-        List<TProperty> props = activity.getProperty();
-        List<JAXBElement<? extends TResourceRole>> resRoles = activity.getResourceRole();
-        BigInteger startQuantity = activity.getStartQuantity();
-        Boolean isForCompensation = activity.isIsForCompensation();
+
+        if (activity.getCompletionQuantity() != null) {
+            throw new CanoniserException("BPMN completion quantity on " + activity.getId() + " not supported");
+        }
+
+        if (activity.getLoopCharacteristics() != null) {
+            throw new CanoniserException("BPMN loop characteristics on " + activity.getId() + " not supported");
+        }
+
+        if (!activity.getProperty().isEmpty()) {
+            throw new CanoniserException("BPMN properties on " + activity.getId() + " not supported");
+        }
+
+        if (!activity.getResourceRole().isEmpty()) {
+            throw new CanoniserException("BPMN resource roles on " + activity.getId() + " not supported");
+        }
+
+        if (activity.getStartQuantity() != null) {
+            throw new CanoniserException("BPMN start quantity on " + activity.getId() + " not supported");
+        }
+
+        if (activity.isIsForCompensation()) {
+            throw new CanoniserException("BPMN compensation on " + activity.getId() + " not supported");
+        }
     }
 
     void populateFlowNode(final WorkType work, final TFlowNode flowNode) throws CanoniserException {
