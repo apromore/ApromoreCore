@@ -15,6 +15,11 @@ import org.omg.spec.bpmn._20100524.model.ObjectFactory;
 public class BpmnObjectFactory extends ObjectFactory {
 
     @Override
+    public BpmnAssociation createTAssociation() {
+        return new BpmnAssociation();
+    }
+
+    @Override
     public BpmnCallActivity createTCallActivity() {
         return new BpmnCallActivity();
     }

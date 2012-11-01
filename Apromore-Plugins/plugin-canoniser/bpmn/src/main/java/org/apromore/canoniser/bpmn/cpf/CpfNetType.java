@@ -317,7 +317,30 @@ public class CpfNetType extends NetType implements Attributed {
             artifact.getValue().accept(new BaseVisitor() {
 
                 @Override public void visit(final TAssociation association) {
-                    // TODO
+                    try {
+                        TBaseElement source = initializer.findBpmnElement(association.getSourceRef());
+                        TBaseElement target = initializer.findBpmnElement(association.getTargetRef());
+
+                        if (association.getAssociationDirection().equals(TAssociationDirection.ONE) &&
+                            source instanceof TStartEvent &&
+                            target instanceof TDataObject) {
+
+                            // TODO - create an ObjectRef on the connected WorkType
+                            java.util.logging.Logger.getAnonymousLogger().info("TRACER");
+                            WorkType   work   = (WorkType)   initializer.findElement(source);
+                            ObjectType object = (ObjectType) initializer.findElement(target);
+
+                            CpfObjectRefType objectRef = new CpfObjectRefType(association, initializer);
+
+                            // TODO - move this additional initialization into the CpfObjectRefType constructor
+                            objectRef.setObjectId(object.getId());
+                            objectRef.setType(InputOutputType.INPUT);
+
+                            work.getObjectRef().add(objectRef);
+                        }
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TGroup group) {

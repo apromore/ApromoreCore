@@ -32,7 +32,7 @@ public class BpmnSubProcess extends TSubProcess {
             throw new CanoniserException("Can't create a BPMN SubProcess from the CPF Task " + task.getId() + " which has no subnet");
         }
 
-        initializer.populateBaseElement(this, task);
+        initializer.populateActivity(this, task);
         setTriggeredByEvent(task.isTriggeredByEvent());
         initializer.populateProcess(new ProcessWrapper(this, "subprocess"), initializer.findNet(task.getSubnetId()));
     }

@@ -27,6 +27,6 @@ public class BpmnTask extends TTask {
     public BpmnTask(final CpfTaskType task,
                     final Initializer initializer) throws CanoniserException {
 
-        initializer.populateBaseElement(this, task);
+        initializer.populateActivity(this, task);
     }
 }

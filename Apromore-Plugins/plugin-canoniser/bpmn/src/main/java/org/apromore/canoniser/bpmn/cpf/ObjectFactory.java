@@ -12,73 +12,19 @@ import javax.xml.bind.annotation.XmlRegistry;
 @XmlRegistry
 public class ObjectFactory extends org.apromore.cpf.ObjectFactory {
 
-    @Override
-    public CpfANDJoinType createANDJoinType() {
-        return new CpfANDJoinType();
-    }
-
-    @Override
-    public CpfANDSplitType createANDSplitType() {
-        return new CpfANDSplitType();
-    }
-
-    @Override
-    public CpfCanonicalProcessType createCanonicalProcessType() {
-        return new CpfCanonicalProcessType();
-    }
-
-    @Override
-    public CpfEdgeType createEdgeType() {
-        return new CpfEdgeType();
-    }
-
-    @Override
-    public CpfEventType createEventType() {
-        return new CpfEventType();
-    }
-
-    @Override
-    public CpfNetType createNetType() {
-        return new CpfNetType();
-    }
-
-    @Override
-    public CpfObjectType createObjectType() {
-        return new CpfObjectType();
-    }
-
-
-    @Override
-    public CpfORJoinType createORJoinType() {
-        return new CpfORJoinType();
-    }
-
-    @Override
-    public CpfORSplitType createORSplitType() {
-        return new CpfORSplitType();
-    }
-    @Override
-    public CpfResourceTypeType createResourceTypeType() {
-        return new CpfResourceTypeType();
-    }
-
-    @Override
-    public CpfResourceTypeRefType createResourceTypeRefType() {
-        return new CpfResourceTypeRefType();
-    }
-
-    @Override
-    public CpfTaskType createTaskType() {
-        return new CpfTaskType();
-    }
-
-    @Override
-    public CpfXORJoinType createXORJoinType() {
-        return new CpfXORJoinType();
-    }
-
-    @Override
-    public CpfXORSplitType createXORSplitType() {
-        return new CpfXORSplitType();
-    }
+    @Override public CpfANDJoinType          createANDJoinType()          { return new CpfANDJoinType(); }
+    @Override public CpfANDSplitType         createANDSplitType()         { return new CpfANDSplitType(); }
+    @Override public CpfCanonicalProcessType createCanonicalProcessType() { return new CpfCanonicalProcessType(); }
+    @Override public CpfEdgeType             createEdgeType()             { return new CpfEdgeType(); }
+    @Override public CpfEventType            createEventType()            { return new CpfEventType(); }
+    @Override public CpfNetType              createNetType()              { return new CpfNetType(); }
+    @Override public CpfObjectType           createObjectType()           { return new CpfObjectType(); }
+    @Override public CpfObjectRefType        createObjectRefType()        { return new CpfObjectRefType(); }
+    @Override public CpfORJoinType           createORJoinType()           { return new CpfORJoinType(); }
+    @Override public CpfORSplitType          createORSplitType()          { return new CpfORSplitType(); }
+    @Override public CpfResourceTypeType     createResourceTypeType()     { return new CpfResourceTypeType(); }
+    @Override public CpfResourceTypeRefType  createResourceTypeRefType()  { return new CpfResourceTypeRefType(); }
+    @Override public CpfTaskType             createTaskType()             { return new CpfTaskType(); }
+    @Override public CpfXORJoinType          createXORJoinType()          { return new CpfXORJoinType(); }
+    @Override public CpfXORSplitType         createXORSplitType()         { return new CpfXORSplitType(); }
 }
