@@ -468,12 +468,15 @@ public class RepositoryServiceImpl implements RepositoryService {
 
     /* inserts a new process model into the repository */
     private ProcessModelVersion insertProcessModelVersion(final Canonical proModGrap, final ProcessBranch branch,
-                                                          final Integer rootFragmentVersionId, final int numVertices, final int numEdges, final String versionNumber) {
+            final Integer rootFragmentVersionId, final int numVertices, final int numEdges, final String versionNumber) {
         ProcessModelVersion process = new ProcessModelVersion();
-        //ProcessModelVersion pmv = pmvDao.getMaxVersionProcessModel(branch);
 
         process.setVersionName(branch.getBranchName());
-        process.setVersionNumber(Double.valueOf(versionNumber));
+        if(!"".equals(versionNumber)) {
+            process.setVersionNumber(Double.valueOf(versionNumber));
+        } else {
+            process.setVersionNumber(Double.valueOf(1.0));
+        }
         process.setProcessBranch(branch);
         process.setRootFragmentVersion(fvDao.findFragmentVersion(rootFragmentVersionId));
         process.setNumEdges(numEdges);
