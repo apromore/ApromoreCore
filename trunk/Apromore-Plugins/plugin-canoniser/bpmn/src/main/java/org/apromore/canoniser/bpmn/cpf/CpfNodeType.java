@@ -14,10 +14,18 @@ import org.apromore.cpf.EdgeType;
  */
 public interface CpfNodeType extends Attributed {
 
+    // Methods already present in CPF NodeType
     /**
      * @return the identifier for this element, unique within the CPF document
      */
     String getId();
+
+    /**
+     * @return the presentation name of this element
+     */
+    String getName();
+
+    // Added convenient methods
 
     /**
      * @return every edge which has this node as its target
