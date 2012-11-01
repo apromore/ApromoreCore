@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import javax.xml.bind.JAXBElement;
+import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
 // Local packages
@@ -17,6 +18,7 @@ import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectType;
+import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TaskType;
@@ -44,8 +46,8 @@ public class Initializer implements ExtensionConstants {
     /** Which lane each BPMN flow node is assigned to. */
     private final Map<TFlowNode, TLane> laneMap = new HashMap<TFlowNode, TLane>();
 
-    /** Which CPF node each BPMN node corresponds to. */
-    private final Map<TFlowNode, NodeType> bpmnFlowNodeToCpfNodeMap = new HashMap<TFlowNode, NodeType>();
+    /** Which CPF element each BPMN element corresponds to. */
+    private final Map<TBaseElement, Object> bpmnElementToCpfElementMap = new HashMap<TBaseElement, Object>();
 
     /** Map from CPF identifiers to CPF elements.  Note that CPF lacks a root class, hence the use of {@link Object}. */
     private final Map<String, Object> elementMap;
@@ -85,11 +87,11 @@ public class Initializer implements ExtensionConstants {
 
         // For each BPMN Lane flowNodeRef, add a CPF ResourceTypeRef to the corresponding CPD element
         for (Map.Entry<TFlowNode, TLane> entry : laneMap.entrySet()) {
-            if (!bpmnFlowNodeToCpfNodeMap.containsKey(entry.getKey())) {
+            if (!bpmnElementToCpfElementMap.containsKey(entry.getKey())) {
                 throw new CanoniserException("Lane " + entry.getValue().getId() + " contains " +
                                              entry.getKey().getId() + " which is not present");
             }
-            NodeType node = bpmnFlowNodeToCpfNodeMap.get(entry.getKey());  // get the CPF node corresponding to the BPMN flow node
+            NodeType node = (NodeType) bpmnElementToCpfElementMap.get(entry.getKey());  // get the CPF node corresponding to the BPMN flow node
             if (node instanceof WorkType) {
                 ((WorkType) node).getResourceTypeRef().add(new CpfResourceTypeRefType(entry.getValue(), this));
             }
@@ -122,11 +124,53 @@ public class Initializer implements ExtensionConstants {
     }
 
     /**
+     * @param id  a BPMN identifier, which will be forced into the BPMN document's target namespace if it has no prefix
+     * @return the BPMN element with the given <code>id</code>, or <code>null</code> if no such element exists
+     * @throws CanoniserException if the <code>id</code> isn't local to this document
+     */
+    TBaseElement findBpmnElement(final QName id) throws CanoniserException {
+
+        // Make sure the id is valid for dereferencing within the local namespace
+        if (!"".equals(id.getPrefix()) && !definitions.getTargetNamespace().equals(id.getNamespaceURI())) {
+            throw new CanoniserException(id + " with prefix \"" + id.getPrefix() + "\" is not in local namespace " + definitions.getTargetNamespace());
+        }
+
+        return findBpmnElement(id.getLocalPart());
+    }
+
+    /**
+     * @param id  a BPMN identifier
+     * @return the BPMN element with the given <code>id</code>, or <code>null</code> if no such element exists
+     *
+     * @see {@link #getElement} for CPF elements
+     */
+    TBaseElement findBpmnElement(final String id) {
+        return definitions.findElementById(id);
+    }
+
+    /** @return the target namespace of the BPMN document */
+    /*
+    String getBpmnTargetNamespace() {
+        return definitions.getTargetNamespace();
+    }
+    */
+
+    /**
      * @param id  a CPF identifier
      * @return the CPF element bearing the given identifier
+     *
+     * @see {@link #getElement} for BPMN elements
      */
-    Object getElement(final String id) {
+    Object findElement(final String id) {
         return elementMap.get(id);
+    }
+
+    /**
+     * @param bpmnElement  a BPMN element
+     * @return the corresponding CPF element
+     */
+    Object findElement(final TBaseElement bpmnElement) {
+        return bpmnElementToCpfElementMap.get(bpmnElement);
     }
 
     /**
@@ -150,6 +194,9 @@ public class Initializer implements ExtensionConstants {
     // Edge supertype handlers
 
     void populateBaseElement(final EdgeType edge, final TBaseElement baseElement) throws CanoniserException {
+        bpmnElementToCpfElementMap.put(baseElement, edge);
+
+        // Handle @id
         edge.setId(cpfIdFactory.newId(baseElement.getId()));
         edge.setOriginalID(baseElement.getId());
         elementMap.put(edge.getId(), edge);
@@ -168,12 +215,12 @@ public class Initializer implements ExtensionConstants {
         populateFlowElement(edge, sequenceFlow);
 
         // handle source
-        NodeType source = bpmnFlowNodeToCpfNodeMap.get(sequenceFlow.getSourceRef());
+        NodeType source = (NodeType) bpmnElementToCpfElementMap.get(sequenceFlow.getSourceRef());
         edge.setSourceId(source.getId());
         ((CpfNodeType) source).getOutgoingEdges().add(edge);
 
         // handle target
-        NodeType target = bpmnFlowNodeToCpfNodeMap.get(sequenceFlow.getTargetRef());
+        NodeType target = (NodeType) bpmnElementToCpfElementMap.get(sequenceFlow.getTargetRef());
         edge.setTargetId(target.getId());
         ((CpfNodeType) target).getIncomingEdges().add(edge);
 
@@ -181,7 +228,7 @@ public class Initializer implements ExtensionConstants {
         if (defaultSequenceFlowMap.containsKey(sequenceFlow)) {
             // Sanity checks that the source actually is the kind of element that has defaults
             String cpfId = defaultSequenceFlowMap.get(sequenceFlow);
-            Object cpfElement = getElement(cpfId);
+            Object cpfElement = findElement(cpfId);
             assert sequenceFlow.getSourceRef() instanceof TActivity         ||
                    sequenceFlow.getSourceRef() instanceof TComplexGateway   ||
                    sequenceFlow.getSourceRef() instanceof TExclusiveGateway ||
@@ -199,6 +246,9 @@ public class Initializer implements ExtensionConstants {
     // Node supertype handlers
 
     void populateBaseElement(final NodeType node, final TBaseElement baseElement) throws CanoniserException {
+        bpmnElementToCpfElementMap.put(baseElement, node);
+
+        // Handle @id
         node.setId(cpfIdFactory.newId(baseElement.getId()));
         node.setOriginalID(baseElement.getId());
         elementMap.put(node.getId(), node);
@@ -218,7 +268,6 @@ public class Initializer implements ExtensionConstants {
 
     void populateFlowNode(final RoutingType routing, final TFlowNode flowNode) throws CanoniserException {
         populateFlowElement(routing, flowNode);
-        bpmnFlowNodeToCpfNodeMap.put(flowNode, routing);
     }
 
     /**
@@ -246,9 +295,15 @@ public class Initializer implements ExtensionConstants {
     void populateActivity(final WorkType work, final TActivity activity) throws CanoniserException {
         populateFlowNode(work, activity);
 
-        List<TDataInputAssociation> dias = activity.getDataInputAssociation();
-        List<TDataOutputAssociation> doas = activity.getDataOutputAssociation();
+        // Handle dataInputAssociation
+        for (TDataInputAssociation dia : activity.getDataInputAssociation()) {
+        }
 
+        // Handle dataOutputAssociation
+        for (TDataOutputAssociation doa : activity.getDataOutputAssociation()) {
+        }
+
+        // Handle default
         if (activity.getDefault() != null) {
             defaultSequenceFlowMap.put(activity.getDefault(), work.getId());
         }
@@ -284,12 +339,14 @@ public class Initializer implements ExtensionConstants {
 
     void populateFlowNode(final WorkType work, final TFlowNode flowNode) throws CanoniserException {
         populateFlowElement(work, flowNode);
-        bpmnFlowNodeToCpfNodeMap.put(flowNode, work);
     }
 
     // Object supertype handlers
 
     void populateBaseElement(final ObjectType object, final TBaseElement baseElement) throws CanoniserException {
+        bpmnElementToCpfElementMap.put(baseElement, object);
+
+        // Handle @id
         object.setId(cpfIdFactory.newId(baseElement.getId()));
         elementMap.put(object.getId(), object);
 
@@ -316,9 +373,27 @@ public class Initializer implements ExtensionConstants {
         }
     }
 
+    // ObjectRef supertype handlers
+
+    void populateBaseElement(final ObjectRefType objectRef, final TBaseElement baseElement) throws CanoniserException {
+        bpmnElementToCpfElementMap.put(baseElement, objectRef);
+
+        // Handle @id
+        objectRef.setId(cpfIdFactory.newId(baseElement.getId()));
+        elementMap.put(objectRef.getId(), objectRef);
+
+        // Handle BPMN extension elements
+        if (baseElement.getExtensionElements() != null) {
+            ExtensionUtils.addToExtensions(extensionElements(baseElement), objectRef);
+        }
+    }
+
     // ResourceType supertype handlers
 
     void populateBaseElement(final ResourceTypeType resourceType, final TBaseElement baseElement) throws CanoniserException {
+        bpmnElementToCpfElementMap.put(baseElement, resourceType);
+
+        // Handle @id
         resourceType.setId(cpfIdFactory.newId(baseElement.getId()));
         resourceType.setOriginalID(baseElement.getId());
 

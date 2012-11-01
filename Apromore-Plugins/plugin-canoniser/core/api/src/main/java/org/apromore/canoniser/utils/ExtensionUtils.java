@@ -20,6 +20,7 @@ import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectFactory;
 import org.apromore.cpf.ObjectType;
+import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TypeAttribute;
@@ -177,6 +178,16 @@ public final class ExtensionUtils {
      */
     public static void addToExtensions(final Element extensionElement, final ObjectType object) {
         object.getAttribute().add(createExtension(extensionElement));
+    }
+
+    /**
+     * Add the extension Element (XML) to the CPF ObjectRef attributes.
+     *
+     * @param extensionElement any XML Element
+     * @param objectRef CPF ObjectRef
+     */
+    public static void addToExtensions(final Element extensionElement, final ObjectRefType objectRef) {
+        objectRef.getAttribute().add(createExtension(extensionElement));
     }
 
     /**

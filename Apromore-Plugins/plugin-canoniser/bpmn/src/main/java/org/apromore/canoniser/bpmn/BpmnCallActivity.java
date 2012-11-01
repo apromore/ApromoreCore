@@ -32,7 +32,7 @@ public class BpmnCallActivity extends TCallActivity {
             throw new CanoniserException("CPF task " + task.getId() + " has no called element");
         }
 
-        initializer.populateBaseElement(this, task);
+        initializer.populateActivity(this, task);
         setCalledElement(task.getCalledElement());
     }
 }

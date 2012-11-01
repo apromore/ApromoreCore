@@ -98,15 +98,15 @@ public class ProcessWrapper {
         } else if (node instanceof RoutingType) {
             if (node instanceof ANDJoinType || node instanceof ANDSplitType) {
                 TParallelGateway gateway = new TParallelGateway();
-                initializer.populateBaseElement(gateway, node);
+                initializer.populateGateway(gateway, node);
                 return initializer.getFactory().createParallelGateway(gateway);
             } else if (node instanceof ORJoinType || node instanceof ORSplitType) {
                 TInclusiveGateway gateway = new TInclusiveGateway();
-                initializer.populateBaseElement(gateway, node);
+                initializer.populateGateway(gateway, node);
                 return initializer.getFactory().createInclusiveGateway(gateway);
             } else if (node instanceof XORJoinType || node instanceof XORSplitType) {
                 TExclusiveGateway gateway = new TExclusiveGateway();
-                initializer.populateBaseElement(gateway, node);
+                initializer.populateGateway(gateway, node);
                 return initializer.getFactory().createExclusiveGateway(gateway);
             } else {
                 throw new CanoniserException("Routing \"" + node.getId() + " is not a supported type");
@@ -158,6 +158,12 @@ public class ProcessWrapper {
             process.getFlowElement().add(initializer.getFactory().createSequenceFlow(sequenceFlow));
         }
 
+        // Add the CPF Objects as BPMN DataObjects
+        for (ObjectType object : net.getObject()) {
+            TDataObject dataObject = new BpmnDataObject((CpfObjectType) object, initializer);
+            process.getFlowElement().add(initializer.getFactory().createDataObject(dataObject));
+        }
+
         // Add the CPF Nodes as BPMN FlowNodes
         for (NodeType node : net.getNode()) {
             JAXBElement<? extends TFlowNode> flowNode = createFlowNode((CpfNodeType) node, initializer);
@@ -166,20 +172,15 @@ public class ProcessWrapper {
             // Fill any BPMN @sourceRef or @targetRef attributes referencing this node
             initializer.connectNode(node);
 
-            // Populate the lane flowNodeRefs
             if (node instanceof WorkType) {
+
+                // Populate the lane flowNodeRefs
                 for (ResourceTypeRefType resourceTypeRef : ((WorkType) node).getResourceTypeRef()) {
                     TLane lane = (TLane) initializer.getElement(resourceTypeRef.getResourceTypeId());
                     JAXBElement<Object> jeo = (JAXBElement) flowNode;
                     lane.getFlowNodeRef().add((JAXBElement) flowNode);
                 }
             }
-        }
-
-        // Add the CPF Objects as BPMN DataObjects
-        for (ObjectType object : net.getObject()) {
-            TDataObject dataObject = new BpmnDataObject((CpfObjectType) object, initializer);
-            process.getFlowElement().add(initializer.getFactory().createDataObject(dataObject));
         }
     }
 }

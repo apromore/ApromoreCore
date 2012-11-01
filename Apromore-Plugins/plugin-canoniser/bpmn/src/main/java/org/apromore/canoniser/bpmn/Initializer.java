@@ -4,8 +4,10 @@ package org.apromore.canoniser.bpmn;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
@@ -21,19 +23,30 @@ import org.apromore.canoniser.bpmn.cpf.CpfEdgeType;
 import org.apromore.canoniser.bpmn.cpf.CpfNetType;
 import org.apromore.canoniser.bpmn.cpf.CpfNodeType;
 import org.apromore.canoniser.bpmn.cpf.CpfObjectType;
+import org.apromore.canoniser.bpmn.cpf.CpfObjectRefType;
 import org.apromore.canoniser.bpmn.cpf.CpfResourceTypeType;
 import org.apromore.canoniser.bpmn.cpf.ExtensionConstants;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
+import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
+import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ResourceTypeType;
+import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TypeAttribute;
+import org.apromore.cpf.WorkType;
+import org.omg.spec.bpmn._20100524.model.TActivity;
 import org.omg.spec.bpmn._20100524.model.TAuditing;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
+import org.omg.spec.bpmn._20100524.model.TComplexGateway;
+import org.omg.spec.bpmn._20100524.model.TExclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TExtensionElements;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
+import org.omg.spec.bpmn._20100524.model.TGateway;
+import org.omg.spec.bpmn._20100524.model.TGatewayDirection;
+import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TMonitoring;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
@@ -65,6 +78,9 @@ class Initializer implements ExtensionConstants {
     private final MultiMap flowsWithoutTargetRefMultiMap = new MultiHashMap();
     //private final MultiMap<String, TSequenceFlow> flowsWithoutTargetRefMultiMap = new MultiHashMap<String, TSequenceFlow>();
 
+    // The set of default CPF Edges
+    private final Set<EdgeType> defaultEdgeSet = new HashSet<EdgeType>();
+
     private final String targetNamespace;
 
     /**
@@ -90,6 +106,30 @@ class Initializer implements ExtensionConstants {
         }
         if (!flowsWithoutTargetRefMultiMap.isEmpty()) {
             throw new CanoniserException("Missing target references: " + flowsWithoutTargetRefMultiMap.keySet());
+        }
+
+        // Set default sequence flows on elements which have them
+        for (EdgeType defaultEdge : defaultEdgeSet) {
+            assert defaultEdge.isDefault();
+            assert defaultEdge.getSourceId() != null;
+
+            TBaseElement  defaultingElement = idMap.get(defaultEdge.getSourceId());
+            TSequenceFlow defaultFlow       = (TSequenceFlow) idMap.get(defaultEdge.getId());
+
+            assert defaultingElement != null : "Could not find BPMN element corresponding to source of default CPF edge " + defaultEdge.getId();
+            assert defaultFlow       != null : "Could not find BPMN flow corresponding to default CPF edge " + defaultEdge.getId();
+
+            if (defaultingElement instanceof TActivity) {
+                ((TActivity) defaultingElement).setDefault(defaultFlow);
+            } else if (defaultingElement instanceof TComplexGateway) {
+                ((TComplexGateway) defaultingElement).setDefault(defaultFlow);
+            } else if (defaultingElement instanceof TExclusiveGateway) {
+                ((TExclusiveGateway) defaultingElement).setDefault(defaultFlow);
+            } else if (defaultingElement instanceof TInclusiveGateway) {
+                ((TInclusiveGateway) defaultingElement).setDefault(defaultFlow);
+            } else {
+                throw new CanoniserException("Could not set default sequence flow for " + defaultingElement.getId());
+            }
         }
     }
 
@@ -271,6 +311,60 @@ class Initializer implements ExtensionConstants {
         populateBaseElementExtensionElements(baseElement, cpfNode);
     };
 
+    void populateFlowElement(final TFlowElement flowElement, final CpfNodeType cpfNode) {
+        populateBaseElement(flowElement, cpfNode);
+
+        // Handle @name
+        flowElement.setName(cpfNode.getName());
+    }
+
+    void populateFlowNode(final TFlowNode flowNode, final CpfNodeType cpfNode) throws CanoniserException {
+        populateFlowElement(flowNode, cpfNode);
+
+        // TODO - handle incoming and outgoing
+
+        // Some flow nodes may have a default sequence flow
+        int defaultEdgeCount = 0;
+        for (EdgeType edge : cpfNode.getOutgoingEdges()) {
+            if (edge.isDefault()) {
+                defaultEdgeSet.add(edge);
+                defaultEdgeCount++;
+            }
+        }
+        if (defaultEdgeCount > 1) {
+            throw new CanoniserException("CPF node " + cpfNode.getId() + " has " + defaultEdgeCount + " default edges");
+        }
+    }
+
+    void populateActivity(final TActivity activity, final CpfNodeType cpfNode) throws CanoniserException {
+        populateFlowNode(activity, cpfNode);
+
+        // Create data associations
+        assert cpfNode instanceof WorkType;  // TODO - add a CpfWorkType interface matching WorkType
+        for (ObjectRefType objectRef : ((WorkType) cpfNode).getObjectRef()) {
+            CpfObjectRefType cpfObjectRef = (CpfObjectRefType) objectRef;
+
+            switch (cpfObjectRef.getType()) {
+            case INPUT:  activity.getDataInputAssociation().add(new BpmnDataInputAssociation(cpfObjectRef, this));   break;
+            case OUTPUT: activity.getDataOutputAssociation().add(new BpmnDataOutputAssociation(cpfObjectRef, this)); break;
+            default:     assert false: "CPF ObjectRef " + cpfObjectRef.getId() + " has unsupported type " + cpfObjectRef.getType();
+            }
+        }
+    }
+
+    void populateGateway(final TGateway gateway, final CpfNodeType cpfNode) throws CanoniserException {
+        assert cpfNode instanceof RoutingType : "Tried to populate " + cpfNode.getId() + " as if it was a gateway";
+        populateFlowNode(gateway, cpfNode);
+
+        // Handle gatewayDirection
+        int ins  = cpfNode.getIncomingEdges().size();
+        int outs = cpfNode.getOutgoingEdges().size();
+        if (ins > 1 && outs <= 1)      { gateway.setGatewayDirection(TGatewayDirection.CONVERGING);  }
+        else if (ins <= 1 && outs > 1) { gateway.setGatewayDirection(TGatewayDirection.DIVERGING);   }
+        else if (ins > 1 && outs > 1)  { gateway.setGatewayDirection(TGatewayDirection.MIXED);       }
+        else                           { gateway.setGatewayDirection(TGatewayDirection.UNSPECIFIED); }
+    }
+
     // ...for CpfObjectType
 
     /**
@@ -305,6 +399,24 @@ class Initializer implements ExtensionConstants {
         TAuditing auditing = flowElement.getAuditing();
         List<QName> categoryValueRef = flowElement.getCategoryValueRef();
         TMonitoring monitoring = flowElement.getMonitoring();
+    };
+
+    // ...for ObjectRefType
+
+    /**
+     * Initialize a BPMN element, based on the CPF ObjectRef it corresponds to.
+     *
+     * @param baseElement  the BPMN element to set
+     * @param objectRef  the CPF ObjectRef which <code>baseElement</code> corresponds to
+     */
+    void populateBaseElement(final TBaseElement baseElement, final CpfObjectRefType cpfObjectRef) {
+
+        // Handle @id attribute
+        baseElement.setId(bpmnIdFactory.newId(cpfObjectRef.getId()));
+        idMap.put(cpfObjectRef.getId(), baseElement);
+
+        // Handle extensionElements subelement
+        populateBaseElementExtensionElements(baseElement, cpfObjectRef);
     };
 
     // ...for CpfResourceTypeType
