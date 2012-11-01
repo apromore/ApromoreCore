@@ -475,7 +475,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         if(!"".equals(versionNumber)) {
             process.setVersionNumber(Double.valueOf(versionNumber));
         } else {
-            process.setVersionNumber(Double.valueOf(1.0));
+            process.setVersionNumber(1.0);
         }
         process.setProcessBranch(branch);
         process.setRootFragmentVersion(fvDao.findFragmentVersion(rootFragmentVersionId));
