@@ -401,7 +401,9 @@ public class CanonicalToGraph {
         if (node.isConfigurable() != null) {
             typ.setConfigurable(node.isConfigurable());
         }
-        typ.setDirection(IMessage.DirectionEnum.valueOf(node.getDirection().value()));
+        if (node.getDirection() != null) {
+            typ.setDirection(IMessage.DirectionEnum.valueOf(node.getDirection().value()));
+        }
 
         addAttributes(typ, node);
         addObjects(typ, node, obj);
