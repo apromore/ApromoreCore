@@ -355,21 +355,19 @@ public class CpfNetType extends NetType implements Attributed {
      * Each lane set in a process corresponds to a pool; for each such pool, create a CPF resource type.
      *
      * @param participant  the BPMN participant corresponding to the pool
-     * @param laneSet      the BPMN lanet set of the process referenced by the <var>participant</var>
+     * @param laneSet      the BPMN lane set of the process referenced by the <var>participant</var>
      * @param cpf  the CPF document to populate
      * @param cpfIdFactory  generator of identifiers for pools and lanes
+     * @param CanoniserException
      */
-    private static void addPools(final TParticipant          participant,
-                                 final List<TLaneSet>        laneSets,
-                                 final Initializer           initializer) {
+    private static void addPools(final TParticipant   participant,
+                                 final List<TLaneSet> laneSets,
+                                 final Initializer    initializer) throws CanoniserException {
 
         for (TLaneSet laneSet : laneSets) {
 
             // Create a pool
-            ResourceTypeType poolResourceType = new CpfResourceTypeType();
-            poolResourceType.setId(initializer.newId(participant.getId()));
-            poolResourceType.setName(requiredName(participant.getName()));
-            initializer.addResourceType(poolResourceType);
+            ResourceTypeType poolResourceType = new CpfResourceTypeType(participant, initializer);
 
             // Create the lanes within the pool
             poolResourceType.getSpecializationIds().addAll(addLanes(laneSet, initializer));

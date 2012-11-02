@@ -319,12 +319,12 @@ class Initializer extends AbstractInitializer implements ExtensionConstants {
         populateBaseElement(flowElement, cpfObject);
 
         // Handle @name attribute
-        cpfObject.setName(flowElement.getName());
+        flowElement.setName(cpfObject.getName());
 
         // TODO - handle the following attributes, which are in the standard but not used in practice
-        TAuditing auditing = flowElement.getAuditing();
-        List<QName> categoryValueRef = flowElement.getCategoryValueRef();
-        TMonitoring monitoring = flowElement.getMonitoring();
+        flowElement.setAuditing(null);
+        flowElement.getCategoryValueRef();  // .add((QName) ...);
+        flowElement.setMonitoring(null);
     };
 
     // ...for ObjectRefType
