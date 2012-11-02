@@ -390,7 +390,7 @@ public class CpfNetType extends NetType implements Attributed {
 
         Set<String> specializationIds = new HashSet<String>();  // TODO - diamond operator
 
-        for (TLane lane : laneSet.getLane()) {
+        for (final TLane lane : laneSet.getLane()) {
             ResourceTypeType laneResourceType = new CpfResourceTypeType();
 
             // Add the resource type to the CPF model
@@ -405,8 +405,16 @@ public class CpfNetType extends NetType implements Attributed {
                 JAXBElement je = (JAXBElement) object;
                 Object value = je.getValue();
                 if (value instanceof TFlowNode) {
-                    TFlowNode flowNode = (TFlowNode) value;
-                    initializer.recordLaneNode(flowNode, lane);
+                    final TFlowNode flowNode = (TFlowNode) value;
+
+                    initializer.defer(new Initialization() {
+                        public void initialize() throws CanoniserException {
+                            CpfNodeType cpfNode = (CpfNodeType) initializer.findElement(flowNode);
+                            if (cpfNode instanceof WorkType) {
+                                ((WorkType) cpfNode).getResourceTypeRef().add(new CpfResourceTypeRefType(lane, initializer));
+                            }
+                        }
+                    });
                 } else {
                     String s = value instanceof TBaseElement ? ((TBaseElement) value).getId() : value.toString();
                     Logger.getAnonymousLogger().fine("Lane " + lane.getId() + " contains " + s + ", which is not a flow node");

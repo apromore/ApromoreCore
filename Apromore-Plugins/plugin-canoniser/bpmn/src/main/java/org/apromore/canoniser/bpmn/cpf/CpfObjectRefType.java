@@ -45,7 +45,7 @@ public class CpfObjectRefType extends ObjectRefType implements Attributed {
 
         initializer.defer(new Initialization() {
             @Override
-            public void initialize(final Initializer initializer) throws CanoniserException {
+            public void initialize() throws CanoniserException {
 
                 // A single source is the only thing that makes sense, surely?
                 if (association.getSourceRef().size() != 1) {
@@ -77,7 +77,7 @@ public class CpfObjectRefType extends ObjectRefType implements Attributed {
 
         initializer.defer(new Initialization() {
             @Override
-            public void initialize(final Initializer initializer) {
+            public void initialize() {
 
                 // Handle objectId
                 CpfObjectType object = (CpfObjectType) initializer.findElement(association.getTargetRef());
