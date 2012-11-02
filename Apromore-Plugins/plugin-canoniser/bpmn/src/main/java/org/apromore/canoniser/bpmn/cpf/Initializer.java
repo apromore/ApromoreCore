@@ -45,9 +45,6 @@ public class Initializer implements ExtensionConstants {
     /** The BPMN document which the constructed CPF document corresponds to. */
     private final BpmnDefinitions definitions;
 
-    /** Which lane each BPMN flow node is assigned to. */
-    private final Map<TFlowNode, TLane> laneMap = new HashMap<TFlowNode, TLane>();
-
     /** Which CPF element each BPMN element corresponds to. */
     private final Map<TBaseElement, Object> bpmnElementToCpfElementMap = new HashMap<TBaseElement, Object>();
 
@@ -56,14 +53,6 @@ public class Initializer implements ExtensionConstants {
 
     /** Deferred initialization commands. */
     private final List<Initialization> deferredInitializationList = new ArrayList<Initialization>();
-
-    /**
-     * Map from BPMN sequence flows to the CPF identifier of the element for which the corresponding Edge should be default.
-     *
-     * In BPMN 2.0 the element types with a "default" attribute comprise {@link TActivity}, {@link TComplexGateway},
-     * {@link TExclusiveGateway} and {@link TInclusiveGateway}.
-     */
-    private final Map<TSequenceFlow, String> defaultSequenceFlowMap = new HashMap<TSequenceFlow, String>();
 
     /**
      * Sole constructor.
@@ -75,41 +64,22 @@ public class Initializer implements ExtensionConstants {
     public Initializer(final CpfCanonicalProcessType newCpf,
                        final BpmnDefinitions         newDefinitions,
                        final Map<String, Object>     newElementMap) {
+
         cpf         = newCpf;
         definitions = newDefinitions;
         elementMap  = newElementMap;
     }
 
     /**
-     * Called once the BPMN document has been traversed, to fill in assorted deferred initializations.
-     * <ul>
-     * <li>Take the {@link #laneMap} populated by {@link #addLaneSet} and use it to populate the CPF nodes' {@link NodeType#resourceTypeRef}s.</li>
-     * </ul>
+     * Called once the BPMN document has been traversed to perform {@link #defer}red {@link Initialization}s.
      *
-     * @throws CanoniserException  if any member of a BPMN lane lacks a CPF counterpart
+     * @throws CanoniserException  if any of the deferred initializations fail
      */
     void close() throws CanoniserException {
 
         // Execute deferred initialization
         for (Initialization initialization : deferredInitializationList) {
-            initialization.initialize(this);
-        }
-
-        // For each BPMN Lane flowNodeRef, add a CPF ResourceTypeRef to the corresponding CPD element
-        for (Map.Entry<TFlowNode, TLane> entry : laneMap.entrySet()) {
-            if (!bpmnElementToCpfElementMap.containsKey(entry.getKey())) {
-                throw new CanoniserException("Lane " + entry.getValue().getId() + " contains " +
-                                             entry.getKey().getId() + " which is not present");
-            }
-            NodeType node = (NodeType) bpmnElementToCpfElementMap.get(entry.getKey());  // get the CPF node corresponding to the BPMN flow node
-            if (node instanceof WorkType) {
-                ((WorkType) node).getResourceTypeRef().add(new CpfResourceTypeRefType(entry.getValue(), this));
-            }
-        }
-
-        // Verify that all default edges have been dealt with
-        if (!defaultSequenceFlowMap.isEmpty()) {
-            throw new CanoniserException("Not all default edges were marked: " + defaultSequenceFlowMap);
+            initialization.initialize();
         }
     }
 
@@ -195,16 +165,6 @@ public class Initializer implements ExtensionConstants {
         return cpfIdFactory.newId(id);
     }
 
-    /**
-     * Record a flowNodeRef in a BPMN Lane.
-     *
-     * @param flowNode  the referenced node
-     * @param lane  the containing lane
-     */
-    void recordLaneNode(final TFlowNode flowNode, final TLane lane) {
-        laneMap.put(flowNode, lane);
-    }
-
     // Edge supertype handlers
 
     void populateBaseElement(final EdgeType edge, final TBaseElement baseElement) throws CanoniserException {
@@ -237,24 +197,6 @@ public class Initializer implements ExtensionConstants {
         NodeType target = (NodeType) bpmnElementToCpfElementMap.get(sequenceFlow.getTargetRef());
         edge.setTargetId(target.getId());
         ((CpfNodeType) target).getIncomingEdges().add(edge);
-
-        // handle default
-        if (defaultSequenceFlowMap.containsKey(sequenceFlow)) {
-            // Sanity checks that the source actually is the kind of element that has defaults
-            String cpfId = defaultSequenceFlowMap.get(sequenceFlow);
-            Object cpfElement = findElement(cpfId);
-            assert sequenceFlow.getSourceRef() instanceof TActivity         ||
-                   sequenceFlow.getSourceRef() instanceof TComplexGateway   ||
-                   sequenceFlow.getSourceRef() instanceof TExclusiveGateway ||
-                   sequenceFlow.getSourceRef() instanceof TInclusiveGateway :
-                "Source of default BPMN flow " + sequenceFlow.getId() + " is " + sequenceFlow.getSourceRef().getId() + " which is not a defaulting type";
-            assert cpfElement instanceof RoutingType || cpfElement instanceof TaskType :
-                "Source of default CPF edge " + edge.getId() + " is " + cpfElement + " which is not a defaulting type";
-
-            // Mark that this is a default flow, and remove it from the "to do" map
-            edge.setDefault(true);
-            defaultSequenceFlowMap.remove(sequenceFlow);
-        }
     }
 
     // Node supertype handlers
@@ -299,9 +241,7 @@ public class Initializer implements ExtensionConstants {
         populateFlowNode(routing, gateway);
 
         // If the gateway has a default flow, record that fact
-        if (bpmnDefault != null) {
-            defaultSequenceFlowMap.put(bpmnDefault, routing.getId());
-        }
+        deferDefault(bpmnDefault);
     }
 
     // Work supertype handler
@@ -320,9 +260,7 @@ public class Initializer implements ExtensionConstants {
         }
 
         // Handle default
-        if (activity.getDefault() != null) {
-            defaultSequenceFlowMap.put(activity.getDefault(), work.getId());
-        }
+        deferDefault(activity.getDefault());
 
         TInputOutputSpecification ioSpec = activity.getIoSpecification();
 
@@ -420,6 +358,18 @@ public class Initializer implements ExtensionConstants {
     }
 
     // Internal methods
+
+    /** @param a BPMN sequence flow whose corresponding edge needs to be marked as a default flow */
+    private void deferDefault(final TSequenceFlow defaultFlow) {
+        if (defaultFlow != null) {
+            defer(new Initialization() {
+                public void initialize() {
+                    CpfEdgeType edge = (CpfEdgeType) findElement(defaultFlow);
+                    edge.setDefault(true);
+                }
+            });   
+        }
+    }
 
     /**
      * @param baseElement  a BPMN element with a <code>extensionElements</code> subelement
