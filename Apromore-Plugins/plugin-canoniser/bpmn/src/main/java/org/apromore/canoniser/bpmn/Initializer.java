@@ -345,8 +345,8 @@ class Initializer implements ExtensionConstants {
             CpfObjectRefType cpfObjectRef = (CpfObjectRefType) objectRef;
 
             switch (cpfObjectRef.getType()) {
-            case INPUT:  activity.getDataInputAssociation().add(new BpmnDataInputAssociation(cpfObjectRef, this));   break;
-            case OUTPUT: activity.getDataOutputAssociation().add(new BpmnDataOutputAssociation(cpfObjectRef, this)); break;
+            case INPUT:  activity.getDataInputAssociation().add(new BpmnDataInputAssociation(cpfObjectRef, activity, this));   break;
+            case OUTPUT: activity.getDataOutputAssociation().add(new BpmnDataOutputAssociation(cpfObjectRef, activity, this)); break;
             default:     assert false: "CPF ObjectRef " + cpfObjectRef.getId() + " has unsupported type " + cpfObjectRef.getType();
             }
         }

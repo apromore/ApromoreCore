@@ -1,9 +1,18 @@
 package org.apromore.canoniser.bpmn.cpf;
 
+// Java 2 Standard packages
+import java.util.List;
+
 // Local packages
 import org.apromore.canoniser.exception.CanoniserException;
+import static org.apromore.cpf.InputOutputType.INPUT;
+import static org.apromore.cpf.InputOutputType.OUTPUT;
 import org.apromore.cpf.ObjectRefType;
-import org.omg.spec.bpmn._20100524.model.TAssociation;
+import org.omg.spec.bpmn._20100524.model.TActivity;
+import org.omg.spec.bpmn._20100524.model.TBaseElement;
+import org.omg.spec.bpmn._20100524.model.TDataInputAssociation;
+import org.omg.spec.bpmn._20100524.model.TDataOutputAssociation;
+import org.omg.spec.bpmn._20100524.model.TFlowElement;
 
 /**
  * CPF 1.0 object reference with convenience methods.
@@ -20,15 +29,61 @@ public class CpfObjectRefType extends ObjectRefType implements Attributed {
     }
 
     /**
-     * Construct a CPF ObjectRef corresponding to a BPMN Association.
+     * Construct a CPF ObjectRef corresponding to a BPMN DataInputAssociation.
      *
-     * @param association  a BPMN Association
+     * @param association  a BPMN DataInputAssociation
      * @param initializer  global construction state
      * @throws CanoniserException if construction fails
      */
-    public CpfObjectRefType(final TAssociation association,
-                            final Initializer  initializer) throws CanoniserException {
+    public CpfObjectRefType(final TDataInputAssociation association,
+                            final TActivity              parent,
+                            final Initializer           initializer) throws CanoniserException {
 
         initializer.populateBaseElement(this, association);
+
+        setType(INPUT);
+
+        initializer.defer(new Initialization() {
+            @Override
+            public void initialize(final Initializer initializer) throws CanoniserException {
+
+                // A single source is the only thing that makes sense, surely?
+                if (association.getSourceRef().size() != 1) {
+                    throw new CanoniserException("BPMN data input association " + association.getId() + " has " +
+                                                 association.getSourceRef().size() + " sources");
+                }
+
+                // Handle objectId
+                CpfObjectType object = (CpfObjectType) initializer.findElement((TFlowElement) association.getSourceRef().get(0).getValue());
+                CpfObjectRefType.this.setObjectId(object.getId());
+            }
+        });
+    }
+
+    /**
+     * Construct a CPF ObjectRef corresponding to a BPMN DataOutputAssociation.
+     *
+     * @param association  a BPMN DataOutputAssociation
+     * @param initializer  global construction state
+     * @throws CanoniserException if construction fails
+     */
+    public CpfObjectRefType(final TDataOutputAssociation association,
+                            final TActivity              parent,
+                            final Initializer            initializer) throws CanoniserException {
+
+        initializer.populateBaseElement(this, association);
+
+        setType(OUTPUT);
+
+        initializer.defer(new Initialization() {
+            @Override
+            public void initialize(final Initializer initializer) {
+
+                // Handle objectId
+                CpfObjectType object = (CpfObjectType) initializer.findElement(association.getTargetRef());
+                CpfObjectRefType.this.setObjectId(object.getId());
+            }
+        });
     }
 }
+
