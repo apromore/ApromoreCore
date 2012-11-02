@@ -4,6 +4,7 @@ package org.apromore.canoniser.bpmn.cpf;
 import java.util.List;
 
 // Local packages
+import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.exception.CanoniserException;
 import static org.apromore.cpf.InputOutputType.INPUT;
 import static org.apromore.cpf.InputOutputType.OUTPUT;

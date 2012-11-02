@@ -9,6 +9,7 @@ import javax.xml.bind.JAXBElement;
 
 // Local packages
 import static org.apromore.canoniser.bpmn.BPMN20Canoniser.requiredName;
+import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.bpmn.ProcessWrapper;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.*;

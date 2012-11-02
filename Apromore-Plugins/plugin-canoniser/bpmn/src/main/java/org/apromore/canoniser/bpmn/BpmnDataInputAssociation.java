@@ -38,7 +38,7 @@ public class BpmnDataInputAssociation extends TDataInputAssociation {
 
         // There's a bug in JAXB that makes it impossible to directly add elements to collections of IDREFs, like sourceRef
         // As a workaround, I put the id of the sourceRef into an attribute and fix it later using XSLT
-        getOtherAttributes().put(new QName("workaround"), initializer.getElement(objectRef.getObjectId()).getId());
+        getOtherAttributes().put(new QName("workaround"), initializer.findElement(objectRef.getObjectId()).getId());
 
         setTargetRef(parent);
     }

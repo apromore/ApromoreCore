@@ -11,8 +11,10 @@ import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
 // Local packages
+import org.apromore.canoniser.bpmn.AbstractInitializer;;
 import org.apromore.canoniser.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.IdFactory;
+import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.utils.ExtensionUtils;
 import org.apromore.cpf.CanonicalProcessType;
@@ -34,7 +36,7 @@ import org.omg.spec.bpmn._20100524.model.*;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class Initializer implements ExtensionConstants {
+public class Initializer extends AbstractInitializer implements ExtensionConstants {
 
     /** The instance executing the {@link CpfCanonicalProcessType#(BpmnDefinitions)} constructor with this {@link Initializer}. */
     private final CpfCanonicalProcessType  cpf;
@@ -51,9 +53,6 @@ public class Initializer implements ExtensionConstants {
     /** Map from CPF identifiers to CPF elements.  Note that CPF lacks a root class, hence the use of {@link Object}. */
     private final Map<String, Object> elementMap;
 
-    /** Deferred initialization commands. */
-    private final List<Initialization> deferredInitializationList = new ArrayList<Initialization>();
-
     /**
      * Sole constructor.
      *
@@ -68,23 +67,6 @@ public class Initializer implements ExtensionConstants {
         cpf         = newCpf;
         definitions = newDefinitions;
         elementMap  = newElementMap;
-    }
-
-    /**
-     * Called once the BPMN document has been traversed to perform {@link #defer}red {@link Initialization}s.
-     *
-     * @throws CanoniserException  if any of the deferred initializations fail
-     */
-    void close() throws CanoniserException {
-
-        // Execute deferred initialization
-        for (Initialization initialization : deferredInitializationList) {
-            initialization.initialize();
-        }
-    }
-
-    void defer(final Initialization initialization) {
-        deferredInitializationList.add(initialization);
     }
 
     /** @param net  new Net to be added to the top level of the CPF document */

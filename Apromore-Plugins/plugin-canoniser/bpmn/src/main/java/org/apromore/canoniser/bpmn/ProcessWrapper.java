@@ -169,14 +169,11 @@ public class ProcessWrapper {
             JAXBElement<? extends TFlowNode> flowNode = createFlowNode((CpfNodeType) node, initializer);
             process.getFlowElement().add(flowNode);
 
-            // Fill any BPMN @sourceRef or @targetRef attributes referencing this node
-            initializer.connectNode(node);
-
             if (node instanceof WorkType) {
 
                 // Populate the lane flowNodeRefs
                 for (ResourceTypeRefType resourceTypeRef : ((WorkType) node).getResourceTypeRef()) {
-                    TLane lane = (TLane) initializer.getElement(resourceTypeRef.getResourceTypeId());
+                    TLane lane = (TLane) initializer.findElement(resourceTypeRef.getResourceTypeId());
                     JAXBElement<Object> jeo = (JAXBElement) flowNode;
                     lane.getFlowNodeRef().add((JAXBElement) flowNode);
                 }
