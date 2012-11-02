@@ -2,6 +2,7 @@ package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
 import java.math.BigInteger;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,6 +15,7 @@ import org.apromore.canoniser.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.utils.ExtensionUtils;
+import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
@@ -52,6 +54,9 @@ public class Initializer implements ExtensionConstants {
     /** Map from CPF identifiers to CPF elements.  Note that CPF lacks a root class, hence the use of {@link Object}. */
     private final Map<String, Object> elementMap;
 
+    /** Deferred initialization commands. */
+    private final List<Initialization> deferredInitializationList = new ArrayList<Initialization>();
+
     /**
      * Map from BPMN sequence flows to the CPF identifier of the element for which the corresponding Edge should be default.
      *
@@ -85,6 +90,11 @@ public class Initializer implements ExtensionConstants {
      */
     void close() throws CanoniserException {
 
+        // Execute deferred initialization
+        for (Initialization initialization : deferredInitializationList) {
+            initialization.initialize(this);
+        }
+
         // For each BPMN Lane flowNodeRef, add a CPF ResourceTypeRef to the corresponding CPD element
         for (Map.Entry<TFlowNode, TLane> entry : laneMap.entrySet()) {
             if (!bpmnElementToCpfElementMap.containsKey(entry.getKey())) {
@@ -101,6 +111,10 @@ public class Initializer implements ExtensionConstants {
         if (!defaultSequenceFlowMap.isEmpty()) {
             throw new CanoniserException("Not all default edges were marked: " + defaultSequenceFlowMap);
         }
+    }
+
+    void defer(final Initialization initialization) {
+        deferredInitializationList.add(initialization);
     }
 
     /** @param net  new Net to be added to the top level of the CPF document */
@@ -296,11 +310,13 @@ public class Initializer implements ExtensionConstants {
         populateFlowNode(work, activity);
 
         // Handle dataInputAssociation
-        for (TDataInputAssociation dia : activity.getDataInputAssociation()) {
+        for (TDataInputAssociation dataInputAssociation : activity.getDataInputAssociation()) {
+            work.getObjectRef().add(new CpfObjectRefType(dataInputAssociation, activity, this));
         }
 
         // Handle dataOutputAssociation
-        for (TDataOutputAssociation doa : activity.getDataOutputAssociation()) {
+        for (TDataOutputAssociation dataOutputAssociation : activity.getDataOutputAssociation()) {
+            work.getObjectRef().add(new CpfObjectRefType(dataOutputAssociation, activity, this));
         }
 
         // Handle default
