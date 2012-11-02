@@ -22,6 +22,9 @@ public class CpfObjectType extends ObjectType implements Attributed {
     // Extension attribute names
 
     /** {@link TypeAttribute#name} indicating BPMN DataObject is a collection. */
+    public static final String DATA_STORE = "dataStore";
+
+    /** {@link TypeAttribute#name} indicating BPMN DataObject is a collection. */
     public static final String IS_COLLECTION = "isCollection";
 
     /** {@link TypeAttribute#name} indicating BPMN DataObject is a collection. */
@@ -75,6 +78,7 @@ public class CpfObjectType extends ObjectType implements Attributed {
         QName itemSubjectRef = dataStoreReference.getItemSubjectRef();
 
         //setConfigurable(false);  // Ignore until Configurable BPMN gets implemented
+        setDataStore(dataStoreReference.getDataStoreRef());
         setIsCollection(false);
 
         setNet(parent);
@@ -82,6 +86,38 @@ public class CpfObjectType extends ObjectType implements Attributed {
     }
 
     // Accessors for CPF extension attributes
+
+    public QName getDataStore() {
+        for (TypeAttribute attribute : getAttribute()) {
+            if (DATA_STORE.equals(attribute.getName())) {
+                return QName.valueOf(attribute.getValue());
+            }
+        }
+        return null;
+    }
+
+    public void setDataStore(final QName value) {
+
+        // Remove any existing attribute
+        Iterator<TypeAttribute> i = getAttribute().iterator();
+        while (i.hasNext()) {
+            if (DATA_STORE.equals(i.next().getName())) {
+                i.remove();
+            }
+        }
+
+        if (value != null) {
+            // Create a new attribute for the original name
+            TypeAttribute attribute = new ObjectFactory().createTypeAttribute();
+            attribute.setName(DATA_STORE);
+            attribute.setValue(value.toString());
+            getAttribute().add(attribute);
+
+            assert value.equals(getDataStore());
+        } else {
+            assert getDataStore() == null;
+        }
+    }
 
     /** @return whether this task has any attribute named {@link #IS_COLLECTION}. */
     public boolean isIsCollection() {

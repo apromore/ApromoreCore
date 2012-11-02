@@ -80,18 +80,12 @@ public class ProcessWrapper {
             CpfNodeType cpfNode = (CpfNodeType) node;
             if (cpfNode.getIncomingEdges().size() == 0 && cpfNode.getOutgoingEdges().size() > 0) {
                 // Assuming a StartEvent here, but could be TBoundaryEvent too
-                TStartEvent event = new TStartEvent();
-                initializer.populateBaseElement(event, node);
-                return initializer.getFactory().createStartEvent(event);
+                return initializer.getFactory().createStartEvent(new BpmnStartEvent((CpfEventType) node, initializer));
             } else if (cpfNode.getIncomingEdges().size() > 0 && cpfNode.getOutgoingEdges().size() == 0) {
-                TEndEvent event = new TEndEvent();
-                initializer.populateBaseElement(event, node);
-                return initializer.getFactory().createEndEvent(event);
+                return initializer.getFactory().createEndEvent(new BpmnEndEvent((CpfEventType) node, initializer));
             } else if (cpfNode.getIncomingEdges().size() > 0 && cpfNode.getOutgoingEdges().size() > 0) {
                 // Assuming all intermediate events are ThrowEvents
-                TIntermediateThrowEvent event = new TIntermediateThrowEvent();
-                initializer.populateBaseElement(event, node);
-                return initializer.getFactory().createIntermediateThrowEvent(event);
+                return initializer.getFactory().createIntermediateThrowEvent(new BpmnIntermediateThrowEvent((CpfEventType) node, initializer));
             } else {
                 throw new CanoniserException("Event \"" + node.getId() + "\" has no edges");
             }
@@ -160,8 +154,13 @@ public class ProcessWrapper {
 
         // Add the CPF Objects as BPMN DataObjects
         for (ObjectType object : net.getObject()) {
-            TDataObject dataObject = new BpmnDataObject((CpfObjectType) object, initializer);
-            process.getFlowElement().add(initializer.getFactory().createDataObject(dataObject));
+            CpfObjectType cpfObject = (CpfObjectType) object;
+
+            if (cpfObject.getDataStore() != null) {
+                process.getFlowElement().add(initializer.getFactory().createDataStoreReference(new BpmnDataStoreReference(cpfObject, initializer)));
+            } else { 
+                process.getFlowElement().add(initializer.getFactory().createDataObject(new BpmnDataObject(cpfObject, initializer)));
+            }
         }
 
         // Add the CPF Nodes as BPMN FlowNodes
