@@ -18,10 +18,6 @@
             <property><baseType name="TSequenceFlow"/></property>
         </bindings>
 
-        <bindings node="xsd:complexType[@name='tDataAssociation']//xsd:element[@name='sourceRef']">
-            <property><baseType name="TBaseElement"/></property>
-        </bindings>
-
         <bindings node="xsd:complexType[@name='tDataAssociation']//xsd:element[@name='targetRef']">
             <property><baseType name="TBaseElement"/></property>
         </bindings>

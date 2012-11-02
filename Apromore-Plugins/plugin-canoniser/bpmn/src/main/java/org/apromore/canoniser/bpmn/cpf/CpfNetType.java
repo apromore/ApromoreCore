@@ -325,18 +325,9 @@ public class CpfNetType extends NetType implements Attributed {
                             source instanceof TStartEvent &&
                             target instanceof TDataObject) {
 
-                            // TODO - create an ObjectRef on the connected WorkType
-                            java.util.logging.Logger.getAnonymousLogger().info("TRACER");
+                            java.util.logging.Logger.getAnonymousLogger().info("Detected a spurious Association from ch9_loan");
                             WorkType   work   = (WorkType)   initializer.findElement(source);
                             ObjectType object = (ObjectType) initializer.findElement(target);
-
-                            CpfObjectRefType objectRef = new CpfObjectRefType(association, initializer);
-
-                            // TODO - move this additional initialization into the CpfObjectRefType constructor
-                            objectRef.setObjectId(object.getId());
-                            objectRef.setType(InputOutputType.INPUT);
-
-                            work.getObjectRef().add(objectRef);
                         }
                     } catch (CanoniserException e) {
                         throw new RuntimeException(e);  // TODO - remove wrapper hack
