@@ -36,6 +36,7 @@ import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
+import org.omg.spec.bpmn._20100524.model.BaseVisitor;
 import org.omg.spec.bpmn._20100524.model.TActivity;
 import org.omg.spec.bpmn._20100524.model.TAuditing;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
@@ -56,7 +57,7 @@ import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-class Initializer implements ExtensionConstants {
+class Initializer extends AbstractInitializer implements ExtensionConstants {
 
     // CPF document root
     private final CanonicalProcessType cpf;
@@ -70,17 +71,6 @@ class Initializer implements ExtensionConstants {
     // Map from CPF @cpfId node identifiers to BPMN elements
     private final Map<String, TBaseElement> idMap = new HashMap<String, TBaseElement>();
 
-    // Maps from CPF Node cpfIds to the set of BPMN sequence flows which need their @sourceRef populated with the equivalent BPMN id
-    private final MultiMap flowsWithoutSourceRefMultiMap = new MultiHashMap();
-    //private final MultiMap<String, TSequenceFlow> flowsWithoutSourceRefMultiMap = new MultiHashMap<String, TSequenceFlow>();
-
-    // Maps from CPF Node cpfIds to the set of BPMN sequence flows which need their @targetRef populated with the equivalent BPMN id
-    private final MultiMap flowsWithoutTargetRefMultiMap = new MultiHashMap();
-    //private final MultiMap<String, TSequenceFlow> flowsWithoutTargetRefMultiMap = new MultiHashMap<String, TSequenceFlow>();
-
-    // The set of default CPF Edges
-    private final Set<EdgeType> defaultEdgeSet = new HashSet<EdgeType>();
-
     private final String targetNamespace;
 
     /**
@@ -92,69 +82,6 @@ class Initializer implements ExtensionConstants {
     Initializer(final CanonicalProcessType newCpf, final String newTargetNamespace) {
         cpf             = newCpf;
         targetNamespace = newTargetNamespace;
-    }
-
-    /**
-     * Called at the end of {@link BpmnDefinitions#(CanonicalProcessType, AnotationsType)}.
-     *
-     * @throws CanoniserException if any undone tasks still remain for the BPMN document construction
-     */
-    void close() throws CanoniserException {
-        // Make sure all the deferred fields did eventually get filled in
-        if (!flowsWithoutSourceRefMultiMap.isEmpty()) {
-            throw new CanoniserException("Missing source references: " + flowsWithoutSourceRefMultiMap.keySet());
-        }
-        if (!flowsWithoutTargetRefMultiMap.isEmpty()) {
-            throw new CanoniserException("Missing target references: " + flowsWithoutTargetRefMultiMap.keySet());
-        }
-
-        // Set default sequence flows on elements which have them
-        for (EdgeType defaultEdge : defaultEdgeSet) {
-            assert defaultEdge.isDefault();
-            assert defaultEdge.getSourceId() != null;
-
-            TBaseElement  defaultingElement = idMap.get(defaultEdge.getSourceId());
-            TSequenceFlow defaultFlow       = (TSequenceFlow) idMap.get(defaultEdge.getId());
-
-            assert defaultingElement != null : "Could not find BPMN element corresponding to source of default CPF edge " + defaultEdge.getId();
-            assert defaultFlow       != null : "Could not find BPMN flow corresponding to default CPF edge " + defaultEdge.getId();
-
-            if (defaultingElement instanceof TActivity) {
-                ((TActivity) defaultingElement).setDefault(defaultFlow);
-            } else if (defaultingElement instanceof TComplexGateway) {
-                ((TComplexGateway) defaultingElement).setDefault(defaultFlow);
-            } else if (defaultingElement instanceof TExclusiveGateway) {
-                ((TExclusiveGateway) defaultingElement).setDefault(defaultFlow);
-            } else if (defaultingElement instanceof TInclusiveGateway) {
-                ((TInclusiveGateway) defaultingElement).setDefault(defaultFlow);
-            } else {
-                throw new CanoniserException("Could not set default sequence flow for " + defaultingElement.getId());
-            }
-        }
-    }
-
-    /**
-     * Populate any BPMN sourceRef or targetRef attributes referencing this node.
-     *
-     * @param node
-     */
-    void connectNode(final NodeType node) {
-
-        // Fill in missing @sourceRefs
-        if (flowsWithoutSourceRefMultiMap.containsKey(node.getId())) {
-            for (Object o : new ArrayList((Collection) flowsWithoutSourceRefMultiMap.get(node.getId()))) {
-               ((TSequenceFlow) o).setSourceRef((TFlowNode) idMap.get(node.getId()));
-               flowsWithoutSourceRefMultiMap.remove(node.getId(), o);
-            }
-        }
-
-        // Fill in missing @targetRefs
-        if (flowsWithoutTargetRefMultiMap.containsKey(node.getId())) {
-            for (Object o : new ArrayList((Collection) flowsWithoutTargetRefMultiMap.get(node.getId()))) {
-               ((TSequenceFlow) o).setTargetRef((TFlowNode) idMap.get(node.getId()));
-               flowsWithoutTargetRefMultiMap.remove(node.getId(), o);
-            }
-        }
     }
 
     /**
@@ -177,19 +104,11 @@ class Initializer implements ExtensionConstants {
     }
 
     /**
-     * @param id  a CPF identifier
-     * @return whether a BPMN element corresponding to the given CPF identifier exists
-     */
-    public boolean containsElement(final String id) {
-        return idMap.containsKey(id);
-    }
-
-    /**
-     * @param id  a CPF identifier
+     * @param cpfId  a CPF identifier
      * @return the BPMN element corresponding to the identified CPF element
      */
-    public TBaseElement getElement(final String id) {
-        return idMap.get(id);
+    public TBaseElement findElement(final String cpfId) {
+        return idMap.get(cpfId);
     }
 
     /** @return shared {@link BpmnObjectFactory} instance */
@@ -215,24 +134,6 @@ class Initializer implements ExtensionConstants {
      */
     String newId(final String id) {
         return bpmnIdFactory.newId(id);
-    }
-
-    /**
-     * @param flow  a BPMN SequenceFlow without its sourceRef set
-     * @param sourceCpfId  CPF identifier of the source of the corresponding CPF Edge
-     */
-    void recordFlowWithoutSourceRef(final TSequenceFlow flow, final String sourceCpfId) {
-        assert !flowsWithoutSourceRefMultiMap.values().contains(flow);
-        flowsWithoutSourceRefMultiMap.put(sourceCpfId, flow);
-    }
-
-    /**
-     * @param flow  a BPMN SequenceFlow without its targetRef set
-     * @param targetCpfId  CPF identifier of the target of the corresponding CPF Edge
-     */
-    void recordFlowWithoutTargetRef(final TSequenceFlow flow, final String targetCpfId) {
-        assert !flowsWithoutTargetRefMultiMap.values().contains(flow);
-        flowsWithoutTargetRefMultiMap.put(targetCpfId, flow);
     }
 
     //
@@ -325,14 +226,39 @@ class Initializer implements ExtensionConstants {
 
         // Some flow nodes may have a default sequence flow
         int defaultEdgeCount = 0;
-        for (EdgeType edge : cpfNode.getOutgoingEdges()) {
+        for (final EdgeType edge : cpfNode.getOutgoingEdges()) {
             if (edge.isDefault()) {
-                defaultEdgeSet.add(edge);
-                defaultEdgeCount++;
+
+               // No element should have more than one default edge
+               if (++defaultEdgeCount > 1) {
+                   throw new CanoniserException("CPF node " + cpfNode.getId() + " has " + defaultEdgeCount + " default edges");
+                }
+
+                // The edge will be flagged as default after all elements have been created (it might not exist yet)
+                defer(new Initialization() {
+                    public void initialize() throws CanoniserException {
+                        assert edge.getSourceId() != null;
+
+                        TBaseElement  defaultingElement = idMap.get(edge.getSourceId());
+                        TSequenceFlow defaultFlow       = (TSequenceFlow) idMap.get(edge.getId());
+
+                        assert defaultingElement != null : "Could not find BPMN element corresponding to source of default CPF edge " + edge.getId();
+                        assert defaultFlow       != null : "Could not find BPMN flow corresponding to default CPF edge " + edge.getId();
+
+                        if (defaultingElement instanceof TActivity) {
+                            ((TActivity) defaultingElement).setDefault(defaultFlow);
+                        } else if (defaultingElement instanceof TComplexGateway) {
+                            ((TComplexGateway) defaultingElement).setDefault(defaultFlow);
+                        } else if (defaultingElement instanceof TExclusiveGateway) {
+                            ((TExclusiveGateway) defaultingElement).setDefault(defaultFlow);
+                        } else if (defaultingElement instanceof TInclusiveGateway) {
+                            ((TInclusiveGateway) defaultingElement).setDefault(defaultFlow);
+                        } else {
+                            throw new CanoniserException("Could not set default sequence flow for " + defaultingElement.getId());
+                        }
+                    }
+                });
             }
-        }
-        if (defaultEdgeCount > 1) {
-            throw new CanoniserException("CPF node " + cpfNode.getId() + " has " + defaultEdgeCount + " default edges");
         }
     }
 

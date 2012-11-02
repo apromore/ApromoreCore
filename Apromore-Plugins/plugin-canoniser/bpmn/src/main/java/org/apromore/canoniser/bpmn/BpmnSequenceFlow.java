@@ -35,18 +35,12 @@ public class BpmnSequenceFlow extends TSequenceFlow {
             setConditionExpression(expression);
         }
 
-        // Deal with @sourceId
-        if (initializer.containsElement(edge.getSourceId())) {
-            setSourceRef((TFlowNode) initializer.getElement(edge.getSourceId()));
-        } else {
-            initializer.recordFlowWithoutSourceRef(this, edge.getSourceId());
-        }
-
-        // Deal with @targetId
-        if (initializer.containsElement(edge.getTargetId())) {
-            setTargetRef((TFlowNode) initializer.getElement(edge.getTargetId()));
-        } else {
-            initializer.recordFlowWithoutTargetRef(this, edge.getTargetId());
-        }
+        // Defer dealing with @sourceRef and @targetRef until all elements have been created
+        initializer.defer(new Initialization() {
+            public void initialize() {
+                setSourceRef((TFlowNode) initializer.findElement(edge.getSourceId()));
+                setTargetRef((TFlowNode) initializer.findElement(edge.getTargetId()));
+            }
+        });
     }
 }

@@ -41,7 +41,7 @@ public class BpmnDataOutputAssociation extends TDataOutputAssociation {
         // As a workaround, I put the id of the sourceRef into an attribute and fix it later using XSLT
         getOtherAttributes().put(new QName("workaround"), parent.getId());
 
-        assert initializer.getElement(objectRef.getObjectId()) != null;
-        setTargetRef(initializer.getElement(objectRef.getObjectId()));
+        assert initializer.findElement(objectRef.getObjectId()) != null;
+        setTargetRef(initializer.findElement(objectRef.getObjectId()));
     }
 }

@@ -1,4 +1,4 @@
-package org.apromore.canoniser.bpmn.cpf;
+package org.apromore.canoniser.bpmn;
 
 // Local classes
 import org.apromore.canoniser.exception.CanoniserException;
@@ -8,6 +8,6 @@ import org.apromore.canoniser.exception.CanoniserException;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-interface Initialization {
-    void initialize() throws CanoniserException;
+public interface Initialization {
+    public void initialize() throws CanoniserException;
 }
