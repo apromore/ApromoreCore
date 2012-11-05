@@ -67,13 +67,13 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     }
 
     /**
-     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 1.bpmn20.xml">case #1</a>.
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 1.bpmn">case #1</a>.
      *
-     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 1.bpmn20.svg"/></div>
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 1.svg"/></div>
      */
     @Test
     public void testCase1() throws Exception {
-        CpfCanonicalProcessType cpf = testCanonise("Case 1.bpmn20.xml");
+        CpfCanonicalProcessType cpf = testCanonise("Case 1.bpmn");
 
         // Expect 3 nodes
         NetType net = cpf.getNet().get(0);
@@ -111,13 +111,13 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     }
 
     /**
-     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 2.bpmn20.xml">case #2</a>.
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 2.bpmn">case #2</a>.
      *
-     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 2.bpmn20.svg"/></div>
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 2.svg"/></div>
      */
     @Test
     public void testCanonise2() throws Exception {
-        NetType net = testCanonise("Case 2.bpmn20.xml").getNet().get(0);
+        NetType net = testCanonise("Case 2.bpmn").getNet().get(0);
 
         // Expect 4 nodes
         assertEquals(4, net.getNode().size());
@@ -173,13 +173,13 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     }
 
     /**
-     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 5.bpmn20.xml">case #5</a>.
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 5.bpmn">case #5</a>.
      *
-     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 5.bpmn20.svg"/></div>
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 5.svg"/></div>
      */
     @Test
     public void testCanonise5() throws Exception {
-        NetType net = testCanonise("Case 5.bpmn20.xml").getNet().get(0);
+        NetType net = testCanonise("Case 5.bpmn").getNet().get(0);
 
         // Expect 4 nodes
         assertEquals(4, net.getNode().size());
@@ -227,13 +227,13 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     }
 
     /**
-     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 8.bpmn20.xml">case #8</a>.
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 8.bpmn">case #8</a>.
      *
-     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 8.bpmn20.svg"/></div>
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 8.svg"/></div>
      */
     @Test
     public void testCanonise8() throws Exception {
-        CanonicalProcessType cpf = testCanonise("Case 8.bpmn20.xml");
+        CanonicalProcessType cpf = testCanonise("Case 8.bpmn");
 
         // Expect 1 graph, 2 resource types
         assertEquals(1, cpf.getNet().size());
@@ -295,13 +295,13 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     }
 
     /**
-     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 9.bpmn20.xml">case #9</a>.
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 9.bpmn">case #9</a>.
      *
-     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 9.bpmn20.svg"/></div>
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 9.svg"/></div>
      */
     @Test
     public void testCanonise9() throws Exception {
-        CanonicalProcessType cpf = testCanonise("Case 9.bpmn20.xml");
+        CanonicalProcessType cpf = testCanonise("Case 9.bpmn");
 
         // Expect 1 graph, 3 resource types
         assertEquals(1, cpf.getNet().size());
@@ -369,49 +369,49 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     }
 
     /**
-     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 10.bpmn20.xml">case #10</a>.
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 10.bpmn">case #10</a>.
      *
-     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 10.bpmn20.svg"/></div>
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 10.svg"/></div>
      */
     @Test
     public void testCanonise10() throws Exception {
-        testCanonise("Case 10.bpmn20.xml");
+        testCanonise("Case 10.bpmn");
 
         // not yet implemented
     }
 
     /**
-     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 11.bpmn20.xml">case #11</a>.
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 11.bpmn">case #11</a>.
      *
-     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 11.bpmn20.svg"/></div>
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 11.svg"/></div>
      */
     @Test
     public void testCanonise11() throws Exception {
-        testCanonise("Case 11.bpmn20.xml");
+        testCanonise("Case 11.bpmn");
 
         // not yet implemented
     }
 
     /**
-     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 12.bpmn20.xml">case #12</a>.
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Case 12.bpmn">case #12</a>.
      *
-     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 12.bpmn20.svg"/></div>
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Case 12.svg"/></div>
      */
     @Test
     public void testCanonise12() throws Exception {
-        //BpmnDefinitions definitions = testCanonise("Case 12.bpmn20.xml");
+        //BpmnDefinitions definitions = testCanonise("Case 12.bpmn");
 
         // not yet implemented
     }
 
     /**
-     * Test canonization of a <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Subprocess.bpmn20.xml">subprocess</a>.
+     * Test canonization of a <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Subprocess.bpmn">subprocess</a>.
      *
-     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Subprocess.bpmn20.svg"/></div>
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Subprocess.svg"/></div>
      */
     @Test
     public void testCanoniseSubprocess() throws Exception {
-        CanonicalProcessType cpf = testCanonise("Subprocess.bpmn20.xml");
+        CanonicalProcessType cpf = testCanonise("Subprocess.bpmn");
         assertEquals(2, cpf.getNet().size());  // Expecting 2 nets, the root and the BPMN SubProcess
 
         // Root net
@@ -438,21 +438,21 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     }
 
     /**
-     * Test canonization of a <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Call Activity.bpmn20.xml">call activity</a>.
+     * Test canonization of a <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Call Activity.bpmn">call activity</a>.
      *
-     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Call Activity.bpmn20.svg"/></div>
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Call Activity.svg"/></div>
      */
     @Test
     public void testCanoniseCallActivity() throws Exception {
-        CanonicalProcessType cpf = testCanonise("Call Activity.bpmn20.xml");
+        CanonicalProcessType cpf = testCanonise("Call Activity.bpmn");
     }
 
     /**
-     * Test canonization of a <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Request_For_Advance_Payment.bpmn20.xml">request for advance payment</a>.
+     * Test canonization of a <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Request_For_Advance_Payment.bpmn">request for advance payment</a>.
      */
     @Test
     public void testCanoniseRequestForAdvancePayment() throws Exception {
-        CanonicalProcessType cpf = testCanonise("Request_For_Advance_Payment.bpmn20.xml");
+        CanonicalProcessType cpf = testCanonise("Request_For_Advance_Payment.bpmn");
     }
 
     /**
@@ -475,13 +475,13 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     }
 
     /**
-     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Defaulting.bpmn20.xml">a model with default flows</a>.
+     * Test canonization of <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Defaulting.bpmn">a model with default flows</a>.
      *
-     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Defaulting.bpmn20.svg"/></div>
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Defaulting.svg"/></div>
      */
     @Test
     public void testDefaulting() throws Exception {
-        CpfCanonicalProcessType cpf = testCanonise("Defaulting.bpmn20.xml");
+        CpfCanonicalProcessType cpf = testCanonise("Defaulting.bpmn");
 
         // Inspect the CPF
         CpfEdgeType edge0 = (CpfEdgeType) cpf.getElement("sid-4FB4D23F-C9EA-4AEE-B2A9-535D2D2F0C94");
