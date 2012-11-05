@@ -25,6 +25,7 @@ import org.apromore.cpf.OutputExpressionType;
 import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.SoftType;
+import org.apromore.cpf.StateType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TimerType;
 import org.apromore.cpf.TypeAttribute;
@@ -138,6 +139,8 @@ public class CanonicalToGraph {
                 output = constructEvent(res, obj, flow, (EventType) node);
             } else if (node instanceof TaskType) {
                 output = constructTask(res, obj, flow, (TaskType) node);
+            } else if (node instanceof StateType) {
+                output = constructState(res, obj, flow, (StateType) node);
             } else if (node instanceof ORSplitType || node instanceof ORJoinType) {
                 constructOrNode(flow, node);
             } else if (node instanceof XORSplitType || node instanceof XORJoinType) {
@@ -184,6 +187,8 @@ public class CanonicalToGraph {
                     graph.setNodeProperty(source.getId(), Constants.TYPE, FragmentUtil.getType(source));
                     graph.setNodeProperty(target.getId(), Constants.TYPE, FragmentUtil.getType(target));
                 }
+            } else {
+                System.out.println("One with either or both source and target is null");
             }
         }
     }
@@ -323,6 +328,21 @@ public class CanonicalToGraph {
         addCancelEdges(work, node);
     }
 
+
+    private static State constructState(List<IResource> res, List<IObject> obj, Map<String, Node> flow, StateType node) {
+        State state = new State(node.getName());
+        state.setId(node.getId());
+        state.setLabel(node.getName());
+        state.setOriginalId(node.getOriginalID());
+        if (node.isConfigurable() != null) {
+            state.setConfigurable(node.isConfigurable());
+        }
+
+        addAttributes(state, node);
+        flow.put(node.getId(), state);
+
+        return state;
+    }
 
     private static Task constructTask(List<IResource> res, List<IObject> obj, Map<String, Node> flow, TaskType node) {
         Task typ = new Task(node.getName());
