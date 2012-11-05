@@ -6,7 +6,6 @@ import java.io.OutputStream;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.logging.Logger;
 import static javax.xml.XMLConstants.W3C_XML_SCHEMA_NS_URI;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
@@ -27,6 +26,7 @@ import org.xml.sax.SAXException;
 
 // Local packages
 import org.apromore.anf.AnnotationsType;
+import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.NetType;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
 import org.apromore.canoniser.bpmn.cpf.CpfNetType;
@@ -46,49 +46,19 @@ import org.omg.spec.bpmn._20100524.model.TDefinitions;
  * multiple top-level processes.
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
- * @version 0.4
- * @since 0.3
  */
 @XmlRootElement(namespace = "http://www.omg.org/spec/BPMN/20100524/MODEL", name = "definitions")
-public class BpmnDefinitions extends TDefinitions {
-
-    /** Logger.  Named after the class. */
-    @XmlTransient
-    private final Logger logger = Logger.getLogger(BpmnDefinitions.class.getCanonicalName());
+public class BpmnDefinitions extends TDefinitions implements Constants, JAXBConstants {
 
     /** Mapping from IDs to {@link TBaseElement}s within this document. */
     @XmlTransient
     private final Map<String, TBaseElement> idMap = new HashMap<String, TBaseElement>();  // TODO - use diamond operator
 
-    /** Apromore URI. */
-    public static final String APROMORE_URI = "http://apromore.org";
-
-    /** Apromore version. */
-    public static final String APROMORE_VERSION = "0.4";
-
-    /** Property name for use with {@link Unmarshaller#setProperty} to configure a {@link com.sun.xml.bind.IDResolver}. */
-    private static final String ID_RESOLVER = "com.sun.xml.bind.IDResolver";
-
-    /** Property name for use with {@link Unmarshaller#setProperty} to configure an alternate JAXB ObjectFactory. */
-    private static final String OBJECT_FACTORY = "com.sun.xml.bind.ObjectFactory";
-
     /** JAXB context for BPMN. */
-    public static final JAXBContext BPMN_CONTEXT = newContext();
-
-    /** BPMN 2.0 namespace. */
-    public static final String BPMN_NS = "http://www.omg.org/spec/BPMN/20100524/MODEL";
+    //public static final JAXBContext BPMN_CONTEXT = newContext();
 
     /** XML schema for BPMN 2.0. */
-    private static final Schema BPMN_SCHEMA = getBpmnSchema();
-
-    /** CPF schema version. */
-    public static final String CPF_VERSION = "1.0";
-
-    /** XPath expression language URI. */
-    public static final String XPATH_URI = "http://www.w3.org/1999/XPath";
-
-    /** XML Schema datatype language URI. */
-    public static final String XSD_URI = "http://www.w3.org/2001/XMLSchema";
+    //private static final Schema BPMN_SCHEMA = getBpmnSchema();
 
     /** @return BPMN 2.0 XML schema */
     private static Schema getBpmnSchema() {
@@ -96,7 +66,7 @@ public class BpmnDefinitions extends TDefinitions {
             final ClassLoader loader = BpmnDefinitions.class.getClassLoader();
             SchemaFactory schemaFactory = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI);
             schemaFactory.setResourceResolver(new JarLSResourceResolver());
-            return schemaFactory.newSchema(new StreamSource(loader.getResourceAsStream("xsd/BPMN20.xsd")));
+            return schemaFactory.newSchema(new StreamSource(loader.getResourceAsStream(BPMN_XSD)));
         } catch (SAXException e) {
             throw new RuntimeException("Couldn't parse BPMN XML schema", e);
         }
@@ -129,11 +99,11 @@ public class BpmnDefinitions extends TDefinitions {
         // Set attributes of the document root
         setExporter(APROMORE_URI);
         setExporterVersion(APROMORE_VERSION);
-        setExpressionLanguage(XPATH_URI);
+        setExpressionLanguage(CPFSchema.EXPRESSION_LANGUAGE_XPATH);  // This is the default, so specifying it is redundant
         setId(null);
         setName(cpf.getName());
         setTargetNamespace(initializer.getTargetNamespace());
-        setTypeLanguage(XSD_URI);
+        setTypeLanguage(CPFSchema.TYPE_LANGUAGE_XSD);  // This is the default, so specifying it is redundant
 
         /* TODO - add as extension attributes
         String author = cpf.getAuthor();
@@ -181,14 +151,14 @@ public class BpmnDefinitions extends TDefinitions {
      * @return the parsed instance
      */
     public static BpmnDefinitions newInstance(final InputStream in, final Boolean validate) throws JAXBException {
-        Unmarshaller unmarshaller = BPMN_CONTEXT.createUnmarshaller();
+        Unmarshaller unmarshaller = /*BPMN_CONTEXT*/ newContext().createUnmarshaller();
         BpmnIDResolver resolver = new BpmnIDResolver();
         BpmnUnmarshallerListener listener = new BpmnUnmarshallerListener(resolver);
         unmarshaller.setListener(listener);
         unmarshaller.setProperty(ID_RESOLVER, resolver);
         unmarshaller.setProperty(OBJECT_FACTORY, new Object[]{new BpmnObjectFactory(), new BpmndiObjectFactory()});
         if (validate) {
-            unmarshaller.setSchema(BPMN_SCHEMA);
+            unmarshaller.setSchema(getBpmnSchema() /*BPMN_SCHEMA*/);
         }
         BpmnDefinitions result = ((JAXBElement<BpmnDefinitions>) unmarshaller.unmarshal(new StreamSource(in))).getValue();
         result.idMap.putAll(listener.getIdMap());
@@ -198,7 +168,7 @@ public class BpmnDefinitions extends TDefinitions {
     /**
      * @return a context containing the various XML namespaces comprising BPMN 2.0.
      */
-    static JAXBContext newContext() {
+    public static JAXBContext newContext() {
         try {
             return JAXBContext.newInstance(org.omg.spec.bpmn._20100524.model.ObjectFactory.class,
                                            org.omg.spec.bpmn._20100524.di.ObjectFactory.class,
@@ -229,10 +199,10 @@ public class BpmnDefinitions extends TDefinitions {
      * @throws JAXBException if the steam can't be written to
      */
     public void marshal(final OutputStream out, final Boolean validate) throws JAXBException {
-        Marshaller marshaller = BPMN_CONTEXT.createMarshaller();
+        Marshaller marshaller = /*BPMN_CONTEXT*/ newContext().createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         if (validate) {
-            marshaller.setSchema(BPMN_SCHEMA);
+            marshaller.setSchema(getBpmnSchema() /*BPMN_SCHEMA*/);
         }
         marshaller.marshal(new BpmnObjectFactory().createDefinitions(this), out);
     }

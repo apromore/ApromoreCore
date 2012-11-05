@@ -111,13 +111,6 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
         return definitions.findElementById(id);
     }
 
-    /** @return the target namespace of the BPMN document */
-    /*
-    String getBpmnTargetNamespace() {
-        return definitions.getTargetNamespace();
-    }
-    */
-
     /**
      * @param id  a CPF identifier
      * @return the CPF element bearing the given identifier
@@ -360,6 +353,6 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
                                               baseElement.getExtensionElements(),
                                               TExtensionElements.class,
                                               BPMN_CPF_NS,
-                                              BpmnDefinitions.BPMN_CONTEXT);
+                                              BpmnDefinitions.newContext()/*BPMN_CONTEXT*/);
     }
 }
