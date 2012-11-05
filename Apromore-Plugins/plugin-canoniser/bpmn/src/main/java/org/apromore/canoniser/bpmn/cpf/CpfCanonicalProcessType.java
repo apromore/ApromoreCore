@@ -20,9 +20,9 @@ import javax.xml.validation.SchemaFactory;
 import org.xml.sax.SAXException;
 
 // Local packages
-import static org.apromore.canoniser.bpmn.BPMN20Canoniser.CPF_VERSION;
 import static org.apromore.canoniser.bpmn.BPMN20Canoniser.requiredName;
 import org.apromore.canoniser.bpmn.BpmnDefinitions;
+import org.apromore.canoniser.bpmn.JAXBConstants;
 import org.apromore.canoniser.bpmn.ProcessWrapper;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
@@ -35,38 +35,29 @@ import org.omg.spec.bpmn._20100524.model.TRootElement;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class CpfCanonicalProcessType extends CanonicalProcessType implements Attributed {
-
-    /** Qualified name of the root element <code>cpf:CanonicalProcess</code>. */
-    private static final QName CPF_ROOT = new QName("http://www.apromore.org/CPF", "CanonicalProcess");
+public class CpfCanonicalProcessType extends CanonicalProcessType implements Attributed, JAXBConstants {
 
     /** XML schema for CPF 1.0. */
+    /*
     private static final Schema CPF_SCHEMA;
-
-    /** Property name for use with {@link Unmarshaller#setProperty} to configure a {@link com.sun.xml.bind.IDResolver}. */
-    private static final String ID_RESOLVER = "com.sun.xml.bind.IDResolver";
-
-    /** Property name for use with {@link Unmarshaller#setProperty} to configure an alternate JAXB ObjectFactory. */
-    private static final String OBJECT_FACTORY = "com.sun.xml.bind.ObjectFactory";
 
     static {
         ClassLoader loader = CpfCanonicalProcessType.class.getClassLoader();
         try {
             CPF_SCHEMA  = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(
-                new StreamSource(loader.getResourceAsStream("xsd/cpf_1.0.xsd"))
+                new StreamSource(loader.getResourceAsStream(CPFSchema.CPF_SCHEMA_LOCATION))
             );
         } catch (SAXException e) {
             throw new RuntimeException("Unable to parse CPF schema", e);
         }
     }
+    */
 
     /** Lookup contained CPF elements by indentifier. */
     private final Map<String, Object> elementMap = new HashMap<String, Object>();  // TODO - use diamond operator
 
     /** No-arg constructor. */
-    public CpfCanonicalProcessType() {
-        super();
-    }
+    public CpfCanonicalProcessType() { }
 
     /**
      * Construct a CPF document corresponding to a BPMN document.
@@ -83,7 +74,7 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
 
         // Populate attributes
         setName(requiredName(definitions.getName()));
-        setVersion(CPF_VERSION);
+        setVersion(CPFSchema.CPF_VERSION);
 
         // Each top-level BPMN Process becomes a CPF Net in the rootIDs list
         for (JAXBElement<? extends TRootElement> rootElement : definitions.getRootElement()) {
@@ -104,15 +95,16 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
      * @param validate  whether to perform schema validation while parsing
      * @return JAXB object model of the parsed stream
      * @throws JAXBException if the stream can't be unmarshalled as CPF
+     * @throws SAXException if the CPF schema can't be parsed
      */
-    public static CpfCanonicalProcessType newInstance(final InputStream in, final Boolean validate) throws JAXBException {
+    public static CpfCanonicalProcessType newInstance(final InputStream in, final Boolean validate) throws JAXBException, SAXException {
         Unmarshaller unmarshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT)
                                                .createUnmarshaller();
         unmarshaller.setListener(new CpfUnmarshallerListener());
         unmarshaller.setProperty(ID_RESOLVER, new CpfIDResolver());
         unmarshaller.setProperty(OBJECT_FACTORY, new ObjectFactory());
         if (validate) {
-            unmarshaller.setSchema(CPF_SCHEMA);
+            unmarshaller.setSchema(CPFSchema.getCPFSchema());
         }
         return ((JAXBElement<CpfCanonicalProcessType>) unmarshaller.unmarshal(new StreamSource(in))).getValue();
     }
@@ -123,8 +115,9 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
      * @param cpf  any CPF document
      * @return an instrumented version of the given <code>cpf</code>
      * @throws JAXBException if the remarshalling fails
+     * @throws SAXException if the CPF schema can't be parsed
      */
-    public static CpfCanonicalProcessType remarshal(final CanonicalProcessType cpf) throws JAXBException {
+    public static CpfCanonicalProcessType remarshal(final CanonicalProcessType cpf) throws JAXBException, SAXException {
         if (cpf instanceof CpfCanonicalProcessType) {
             return (CpfCanonicalProcessType) cpf;
         } else {
@@ -151,12 +144,13 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
      * @param out  the destination stream
      * @param validate  whether to perform schema validation during serialization
      * @throws JAXBException if serialization fails
+     * @throws SAXException if the CPF schema can't be parsed
      */
-    public void marshal(final OutputStream out, final Boolean validate) throws JAXBException {
+    public void marshal(final OutputStream out, final Boolean validate) throws JAXBException, SAXException {
         Marshaller marshaller = JAXBContext.newInstance(CPFSchema.CPF_CONTEXT).createMarshaller();
         marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, true);
         if (validate) {
-            marshaller.setSchema(CPF_SCHEMA);
+            marshaller.setSchema(CPFSchema.getCPFSchema());
         }
         marshaller.marshal(new ObjectFactory().createCanonicalProcess(this), out);
     }

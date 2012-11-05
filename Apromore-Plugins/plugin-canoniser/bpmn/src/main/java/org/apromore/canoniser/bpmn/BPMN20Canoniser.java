@@ -31,9 +31,6 @@ import org.springframework.stereotype.Component;
 @Component("bpmnCanoniser")
 public class BPMN20Canoniser extends DefaultAbstractCanoniser {
 
-    /** CPF schema version. */
-    public static final String CPF_VERSION = "1.0";
-
     /** Generator of identifiers for @uri scoped across all generated CPF and ANF documents. */
     private final IdFactory linkUriFactory = new IdFactory();
 
