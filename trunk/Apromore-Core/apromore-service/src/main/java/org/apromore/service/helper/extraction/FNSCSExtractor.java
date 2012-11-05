@@ -34,7 +34,7 @@ public class FNSCSExtractor {
             FragmentUtil.reconnectBoundary2(cf, childB2, newChildB2);
         }
 
-        f.removeNodes(cf.getVertices());
+        f.removeNodes(cf.getNodes());
 
         Node fragmentB1 = f.getEntry();
         Node fragmentB2 = f.getExit();

@@ -161,26 +161,29 @@ public class CanonicalToGraph {
         Node target;
         Edge newEdge;
 
+        int i = 0;
         for (EdgeType edge : edgeTypes) {
             source = nodes.get(edge.getSourceId());
             target = nodes.get(edge.getTargetId());
             if (source != null && target != null) {
                 newEdge = graph.addEdge(source, target);
-                newEdge.setId(edge.getId());
-                newEdge.setOriginalId(edge.getOriginalID());
-                newEdge.setDefault(edge.isDefault());
+                if (newEdge != null) {
+                    newEdge.setId(edge.getId());
+                    newEdge.setOriginalId(edge.getOriginalID());
+                    newEdge.setDefault(edge.isDefault());
 
-                if (edge.getConditionExpr() != null) {
-                    Expression expr = new Expression();
-                    expr.setDescription(edge.getConditionExpr().getDescription());
-                    expr.setExpression(edge.getConditionExpr().getExpression());
-                    expr.setLanguage(edge.getConditionExpr().getLanguage());
-                    expr.setReturnType(edge.getConditionExpr().getReturnType());
-                    newEdge.setConditionExpr(expr);
+                    if (edge.getConditionExpr() != null) {
+                        Expression expr = new Expression();
+                        expr.setDescription(edge.getConditionExpr().getDescription());
+                        expr.setExpression(edge.getConditionExpr().getExpression());
+                        expr.setLanguage(edge.getConditionExpr().getLanguage());
+                        expr.setReturnType(edge.getConditionExpr().getReturnType());
+                        newEdge.setConditionExpr(expr);
+                    }
+
+                    graph.setNodeProperty(source.getId(), Constants.TYPE, FragmentUtil.getType(source));
+                    graph.setNodeProperty(target.getId(), Constants.TYPE, FragmentUtil.getType(target));
                 }
-
-                graph.setNodeProperty(source.getId(), Constants.TYPE, FragmentUtil.getType(source));
-                graph.setNodeProperty(target.getId(), Constants.TYPE, FragmentUtil.getType(target));
             }
         }
     }

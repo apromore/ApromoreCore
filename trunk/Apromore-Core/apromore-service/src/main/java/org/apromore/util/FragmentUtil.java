@@ -93,9 +93,11 @@ public class FragmentUtil {
 
     public static List<Node> getPreset(Node v, Collection<Edge> es) {
         List<Node> preset = new ArrayList<Node>(0);
-        for (Edge e: es) {
-            if (e.getTarget().getId().equals(v.getId())) {
-                preset.add(e.getSource());
+        if (v != null) {
+            for (Edge e: es) {
+                if (e.getTarget().getId().equals(v.getId())) {
+                    preset.add(e.getSource());
+                }
             }
         }
         return preset;
@@ -103,9 +105,11 @@ public class FragmentUtil {
 
     public static List<Node> getPostset(Node v, Collection<Edge> es) {
         List<Node> postset = new ArrayList<Node>(0);
-        for (Edge e: es) {
-            if (e.getSource().getId().equals(v.getId())) {
-                postset.add(e.getTarget());
+        if (v != null) {
+            for (Edge e: es) {
+                if (e.getSource().getId().equals(v.getId())) {
+                    postset.add(e.getTarget());
+                }
             }
         }
         return postset;
