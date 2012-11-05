@@ -125,8 +125,39 @@ public class BpmnDefinitionsTest implements TestConstants {
         definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "Case 2.bpmn20.xml")), true);
     }
 
+    /**
+     * Test parsing of <code>Test1.bpmn20.xml</code>.
+     */
     @Test
     public final void testNewInstance2() throws Exception {
+
+        // Obtain the test instance
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Test1.bpmn20.xml")), false);
+
+        // Inspect the test instance
+        assertNotNull(definitions);
+
+        assertNotNull(definitions.getRootElement());
+        assertEquals(1, definitions.getRootElement().size());
+        assertTrue(definitions.getRootElement().get(0).getValue() instanceof TProcess);
+        assertEquals(10, ((TProcess) definitions.getRootElement().get(0).getValue()).getFlowElement().size());
+
+        assertNotNull(definitions.getBPMNDiagram());
+        assertEquals(1, definitions.getBPMNDiagram().size());
+        assertEquals("sid-db4fcdfb-67a0-4ef0-9a45-3167bfd77e4f", definitions.getBPMNDiagram().get(0).getId());
+        assertNotNull(definitions.getBPMNDiagram().get(0).getBPMNPlane());
+        assertEquals("sid-69a9f6ba-9421-44ee-a6fb-f50fc5e881e4", definitions.getBPMNDiagram().get(0).getBPMNPlane().getId());
+        assertEquals(new QName("http://www.omg.org/spec/BPMN/20100524/MODEL", "sid-68aefed9-f32a-4503-895c-b26b0ee8dded"),
+                     definitions.getBPMNDiagram().get(0).getBPMNPlane().getBpmnElement());
+        assertNotNull(definitions.getBPMNDiagram().get(0).getBPMNPlane().getDiagramElement());
+        assertEquals(10, definitions.getBPMNDiagram().get(0).getBPMNPlane().getDiagramElement().size());
+    }
+
+    /**
+     * Test parsing of <code>Request_For_Advance_Payment.bpmn20.xml</code>.
+     */
+    @Test
+    public final void testNewInstance3() throws Exception {
 
         // Obtain the test instance
         BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Request_For_Advance_Payment.bpmn20.xml")), true);
@@ -138,7 +169,7 @@ public class BpmnDefinitionsTest implements TestConstants {
     }
 
     @Test
-    public final void testNewInstance3() throws Exception {
+    public final void testNewInstance4() throws Exception {
 
         // Obtain the test instance
         BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "ch9_loan5.bpmn")), true);
@@ -154,7 +185,7 @@ public class BpmnDefinitionsTest implements TestConstants {
     }
 
     @Test
-    public final void testNewInstance4() throws Exception {
+    public final void testNewInstance5() throws Exception {
 
         // Obtain the test instance
         BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "ch9_PurchaseOrder4Complete.bpmn")), true);

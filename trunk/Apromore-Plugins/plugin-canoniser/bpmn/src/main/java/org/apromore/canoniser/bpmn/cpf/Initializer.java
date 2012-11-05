@@ -1,8 +1,6 @@
 package org.apromore.canoniser.bpmn.cpf;
 
 // Java 2 Standard packages
-import java.math.BigInteger;
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -11,13 +9,12 @@ import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 
 // Local packages
-import org.apromore.canoniser.bpmn.AbstractInitializer;;
+import org.apromore.canoniser.bpmn.AbstractInitializer;
 import org.apromore.canoniser.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.utils.ExtensionUtils;
-import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
@@ -25,7 +22,6 @@ import org.apromore.cpf.ObjectType;
 import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
-import org.apromore.cpf.TaskType;
 import org.apromore.cpf.WorkType;
 import org.omg.spec.bpmn._20100524.model.*;
 
@@ -98,7 +94,8 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
 
         // Make sure the id is valid for dereferencing within the local namespace
         if (!"".equals(id.getPrefix()) && !definitions.getTargetNamespace().equals(id.getNamespaceURI())) {
-            throw new CanoniserException(id + " with prefix \"" + id.getPrefix() + "\" is not in local namespace " + definitions.getTargetNamespace());
+            throw new CanoniserException(id + " with prefix \"" + id.getPrefix() + "\" is not in local namespace " +
+                                         definitions.getTargetNamespace());
         }
 
         return findBpmnElement(id.getLocalPart());
@@ -349,7 +346,7 @@ public class Initializer extends AbstractInitializer implements ExtensionConstan
                     CpfEdgeType edge = (CpfEdgeType) findElement(defaultFlow);
                     edge.setDefault(true);
                 }
-            });   
+            });
         }
     }
 

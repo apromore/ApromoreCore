@@ -2,22 +2,14 @@ package org.apromore.canoniser.bpmn;
 
 // Java 2 Standard packages
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 import javax.xml.namespace.QName;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
-// Third party packages
-import org.apache.commons.collections.MultiHashMap;
-import org.apache.commons.collections.MultiMap;
-
 // Local classes
-import static org.apromore.canoniser.bpmn.BpmnDefinitions.BPMN_NS;
 import org.apromore.canoniser.bpmn.cpf.Attributed;
 import org.apromore.canoniser.bpmn.cpf.CpfEdgeType;
 import org.apromore.canoniser.bpmn.cpf.CpfNetType;
@@ -30,13 +22,11 @@ import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
-import org.apromore.cpf.NodeType;
 import org.apromore.cpf.ObjectRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.TypeAttribute;
 import org.apromore.cpf.WorkType;
-import org.omg.spec.bpmn._20100524.model.BaseVisitor;
 import org.omg.spec.bpmn._20100524.model.TActivity;
 import org.omg.spec.bpmn._20100524.model.TAuditing;
 import org.omg.spec.bpmn._20100524.model.TBaseElement;
@@ -273,7 +263,7 @@ class Initializer extends AbstractInitializer implements ExtensionConstants {
             switch (cpfObjectRef.getType()) {
             case INPUT:  activity.getDataInputAssociation().add(new BpmnDataInputAssociation(cpfObjectRef, activity, this));   break;
             case OUTPUT: activity.getDataOutputAssociation().add(new BpmnDataOutputAssociation(cpfObjectRef, activity, this)); break;
-            default:     assert false: "CPF ObjectRef " + cpfObjectRef.getId() + " has unsupported type " + cpfObjectRef.getType();
+            default:     assert false : "CPF ObjectRef " + cpfObjectRef.getId() + " has unsupported type " + cpfObjectRef.getType();
             }
         }
     }
@@ -285,10 +275,15 @@ class Initializer extends AbstractInitializer implements ExtensionConstants {
         // Handle gatewayDirection
         int ins  = cpfNode.getIncomingEdges().size();
         int outs = cpfNode.getOutgoingEdges().size();
-        if (ins > 1 && outs <= 1)      { gateway.setGatewayDirection(TGatewayDirection.CONVERGING);  }
-        else if (ins <= 1 && outs > 1) { gateway.setGatewayDirection(TGatewayDirection.DIVERGING);   }
-        else if (ins > 1 && outs > 1)  { gateway.setGatewayDirection(TGatewayDirection.MIXED);       }
-        else                           { gateway.setGatewayDirection(TGatewayDirection.UNSPECIFIED); }
+        if (ins > 1 && outs <= 1) {
+            gateway.setGatewayDirection(TGatewayDirection.CONVERGING);
+        } else if (ins <= 1 && outs > 1) {
+            gateway.setGatewayDirection(TGatewayDirection.DIVERGING);
+        } else if (ins > 1 && outs > 1) {
+            gateway.setGatewayDirection(TGatewayDirection.MIXED);
+        } else {
+            gateway.setGatewayDirection(TGatewayDirection.UNSPECIFIED);
+        }
     }
 
     // ...for CpfObjectType
@@ -373,11 +368,11 @@ class Initializer extends AbstractInitializer implements ExtensionConstants {
      */
     private void populateBaseElementExtensionElements(final TBaseElement baseElement, final Attributed cpfElement) {
 
-        final String NAME = BPMN_CPF_NS + "/" + EXTENSION_ELEMENTS;
+        final String name = BPMN_CPF_NS + "/" + EXTENSION_ELEMENTS;
 
         List<TypeAttribute> attributes = new ArrayList<TypeAttribute>();
         for (TypeAttribute attr : cpfElement.getAttribute()) {
-            if (NAME.equals(attr.getName())) {
+            if (name.equals(attr.getName())) {
                 attributes.add(attr);
             }
         }

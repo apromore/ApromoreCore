@@ -8,8 +8,8 @@ package org.apromore.canoniser.bpmn.cpf;
 public interface ExtensionConstants {
 
     /** Prefix for all {@link TypeAttribute} names from this canoniser. */
-    public static final String BPMN_CPF_NS = "bpmn_cpf";
+    String BPMN_CPF_NS = "bpmn_cpf";
 
     /** Extension name for <code>bpmn:extensionElements</code> content. */
-    public static final String EXTENSION_ELEMENTS = "extensions";
+    String EXTENSION_ELEMENTS = "extensions";
 }

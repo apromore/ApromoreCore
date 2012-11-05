@@ -1,7 +1,6 @@
 package org.apromore.canoniser.bpmn;
 
 // Java 2 Standard packages
-import javax.xml.bind.JAXBElement;
 import javax.xml.namespace.QName;
 
 // Local packages
