@@ -79,18 +79,18 @@ public class CanonicalConvertorIntgTest {
         assertThat(cp.getCpt().getNet().get(0).getEdge().size(), equalTo(59));
         assertThat(cp.getCpt().getNet().get(0).getObject().size(), equalTo(43));
 
-        CanonicalProcessType cpt = converter.convert(g);
-
-        Canonical g1 = converter.convert(cp.getCpt());
-        RPST<Edge, Node> rpst1 = new RPST<Edge, Node>(g1);
-        IOUtils.toFile("decanonised.dot", rpst1.toDOT());
-
-        canoniserService.deCanonise(1, "1.0", "YAWL 2.2", cpt, null, new HashSet<RequestParameterType<?>>());
-
-        assertThat(cpt.getNet().size(), equalTo(1));
-        assertThat(cpt.getNet().get(0).getNode().size(), equalTo(46));
-        assertThat(cpt.getNet().get(0).getEdge().size(), equalTo(59));
-        assertThat(cpt.getNet().get(0).getObject().size(), equalTo(43));
+//        CanonicalProcessType cpt = converter.convert(g);
+//
+//        Canonical g1 = converter.convert(cp.getCpt());
+//        RPST<Edge, Node> rpst1 = new RPST<Edge, Node>(g1);
+//        IOUtils.toFile("decanonised.dot", rpst1.toDOT());
+//
+//        canoniserService.deCanonise(1, "1.0", "YAWL 2.2", cpt, null, new HashSet<RequestParameterType<?>>());
+//
+//        assertThat(cpt.getNet().size(), equalTo(1));
+//        assertThat(cpt.getNet().get(0).getNode().size(), equalTo(46));
+//        assertThat(cpt.getNet().get(0).getEdge().size(), equalTo(59));
+//        assertThat(cpt.getNet().get(0).getObject().size(), equalTo(43));
     }
 
 }
