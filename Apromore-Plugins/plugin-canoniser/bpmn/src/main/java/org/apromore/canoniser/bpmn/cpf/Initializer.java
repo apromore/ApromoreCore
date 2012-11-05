@@ -10,9 +10,9 @@ import org.w3c.dom.Element;
 
 // Local packages
 import org.apromore.canoniser.bpmn.AbstractInitializer;
-import org.apromore.canoniser.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.IdFactory;
 import org.apromore.canoniser.bpmn.Initialization;
+import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.utils.ExtensionUtils;
 import org.apromore.cpf.EdgeType;

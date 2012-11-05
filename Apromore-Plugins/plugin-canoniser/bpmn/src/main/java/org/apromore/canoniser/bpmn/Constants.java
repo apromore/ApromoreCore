@@ -5,7 +5,7 @@ package org.apromore.canoniser.bpmn;
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-interface Constants {
+public interface Constants {
 
     /**
      * Apromore URI.

@@ -1,9 +1,9 @@
-package org.apromore.canoniser.bpmn;
+package org.apromore.canoniser.bpmn.bpmn;
 
 // Java 2 Standard packages
 import javax.xml.bind.annotation.XmlRegistry;
 
-// Local packages
+// Local classes
 import org.omg.spec.bpmn._20100524.model.ObjectFactory;
 
 /**

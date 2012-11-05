@@ -1,6 +1,7 @@
-package org.apromore.canoniser.bpmn;
+package org.apromore.canoniser.bpmn.bpmn;
 
 // Local packages
+import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.bpmn.cpf.CpfEdgeType;
 import org.omg.spec.bpmn._20100524.model.TExpression;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
