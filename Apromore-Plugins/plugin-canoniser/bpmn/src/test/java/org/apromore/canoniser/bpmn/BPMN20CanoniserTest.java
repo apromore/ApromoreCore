@@ -90,7 +90,7 @@ public class BPMN20CanoniserTest implements TestConstants {
         // Construct test instance
         BPMN20Canoniser canoniser = new BPMN20Canoniser();
         PluginRequest request = null;
-        InputStream bpmnInput = new FileInputStream(new File(MODELS_DIR, "Case 1.bpmn20.xml"));
+        InputStream bpmnInput = new FileInputStream(new File(MODELS_DIR, "Case 1.bpmn"));
         List<AnnotationsType> anfs = new ArrayList<AnnotationsType>();
         List<CanonicalProcessType> cpfs = new ArrayList<CanonicalProcessType>();
         PluginResult result = canoniser.canonise(bpmnInput, anfs, cpfs, request);
@@ -155,7 +155,7 @@ public class BPMN20CanoniserTest implements TestConstants {
         initialBPMN.close();
 
         // Serialize out the empty BPMN model for offline inspection
-        OutputStream out = new FileOutputStream(new File(OUTPUT_DIR, "initial.bpmn20.xml"));
+        OutputStream out = new FileOutputStream(new File(OUTPUT_DIR, "initial.bpmn"));
         out.write(initialBPMN.toByteArray());
         out.close();
 

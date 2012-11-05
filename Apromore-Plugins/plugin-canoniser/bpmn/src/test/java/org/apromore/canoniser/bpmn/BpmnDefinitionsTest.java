@@ -99,7 +99,7 @@ public class BpmnDefinitionsTest implements TestConstants {
         BpmnDefinitions definitions = BpmnDefinitions.correctFlowNodeRefs(new BpmnDefinitions(cpf, anf), new BpmnObjectFactory());
 
         // Serialize the test instance for offline inspection
-        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".bpmn20.xml")), false);
+        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".bpmn")), false);
 
         // Validate the test instance
         definitions.marshal(new NullOutputStream(), true);
@@ -108,7 +108,7 @@ public class BpmnDefinitionsTest implements TestConstants {
     }
 
     /**
-     * Test parsing of <code>Case 2.bpmn20.xml</code> via {@link BpmnDefinitions#newInstance}.
+     * Test parsing of <code>Case 2.bpmn</code> via {@link BpmnDefinitions#newInstance}.
      *
      * Looking primarily to see that the lists of incoming and outgoing sequence flows on the flow nodes are correct, as
      * as the gateway direction on the XOR gateway.
@@ -117,22 +117,22 @@ public class BpmnDefinitionsTest implements TestConstants {
     public final void testNewInstance() throws Exception {
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Case 2.bpmn20.xml")), true);
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Case 2.bpmn")), true);
 
         // TODO - Inspect the test instance
 
         // Serialize the test instance
-        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "Case 2.bpmn20.xml")), true);
+        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "Case 2.bpmn")), true);
     }
 
     /**
-     * Test parsing of <code>Test1.bpmn20.xml</code>.
+     * Test parsing of <code>Test1.bpmn</code>.
      */
     @Test
     public final void testNewInstance2() throws Exception {
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Test1.bpmn20.xml")), false);
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Test1.bpmn")), false);
 
         // Inspect the test instance
         assertNotNull(definitions);
@@ -154,18 +154,18 @@ public class BpmnDefinitionsTest implements TestConstants {
     }
 
     /**
-     * Test parsing of <code>Request_For_Advance_Payment.bpmn20.xml</code>.
+     * Test parsing of <code>Request_For_Advance_Payment.bpmn</code>.
      */
     @Test
     public final void testNewInstance3() throws Exception {
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Request_For_Advance_Payment.bpmn20.xml")), true);
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, "Request_For_Advance_Payment.bpmn")), true);
 
         // TODO - Inspect the test instance
 
         // Serialize the test instance
-        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "Request_For_Advance_Payment.bpmn20.xml")), true);
+        definitions.marshal(new FileOutputStream(new File(OUTPUT_DIR, "Request_For_Advance_Payment.bpmn")), true);
     }
 
     @Test
@@ -301,9 +301,9 @@ public class BpmnDefinitionsTest implements TestConstants {
     }
 
     /**
-     * Test decanonization to <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Expected 1.bpmn20.xml">expectation #1</a>.
+     * Test decanonization to <a href="{@docRoot}/../../../src/test/resources/BPMN_models/Expected 1.bpmn">expectation #1</a>.
      *
-     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Expected 1.bpmn20.svg"/></div>
+     * <div><img src="{@docRoot}/../../../src/test/resources/BPMN_models/Expected 1.svg"/></div>
      */
     @Test
     public final void testDecanonise1() {
