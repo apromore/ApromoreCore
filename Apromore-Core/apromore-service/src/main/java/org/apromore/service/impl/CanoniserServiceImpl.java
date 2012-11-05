@@ -135,8 +135,8 @@ public class CanoniserServiceImpl implements CanoniserService {
     @Override
     @Transactional(readOnly = true)
     public DecanonisedProcess deCanonise(final Integer processId, final String version, final String nativeType,
-            final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final Set<RequestParameterType<?>> canoniserProperties)
-            throws CanoniserException {
+            final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat,
+            final Set<RequestParameterType<?>> canoniserProperties) throws CanoniserException {
 
         LOGGER.info("DeCanonising process with native type {}", nativeType);
 

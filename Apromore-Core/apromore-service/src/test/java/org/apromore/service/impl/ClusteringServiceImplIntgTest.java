@@ -64,21 +64,21 @@ public class ClusteringServiceImplIntgTest {
         for (org.apromore.service.model.Cluster c : cs) {
             List<MemberFragment> fs = c.getFragments();
             for (MemberFragment f : fs) {
-                System.out.println(f.getFragmentId());
+//                System.out.println(f.getFragmentId());
                 List<ProcessAssociation> pas = f.getProcessAssociations();
                 for (ProcessAssociation pa : pas) {
-                    System.out.println("\t" + pa.getProcessName() + " - " + pa.getProcessBranchName() + " - " + pa.getProcessVersionNumber());
+//                    System.out.println("\t" + pa.getProcessName() + " - " + pa.getProcessBranchName() + " - " + pa.getProcessVersionNumber());
                 }
             }
         }
 
         List<Cluster> cis = cSrv.getClusterSummaries(filter);
-        System.out.println("got the cinfos");
+//        System.out.println("got the cinfos");
 
         try {
             cSrv.getClusteringSummary();
         } catch (Exception e) {
-            System.out.println("error in getting summary - " + e.getMessage());
+//            System.out.println("error in getting summary - " + e.getMessage());
         }
     }
 

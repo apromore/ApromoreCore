@@ -71,7 +71,7 @@ public class ContainmentRelationImpl implements ContainmentRelation {
      */
     public void initHierarchies() throws Exception {
         List<Integer> rootIds = queryRoots();
-        System.out.println("Total roots: " + rootIds.size());
+        //System.out.println("Total roots: " + rootIds.size());
 
         for (Integer rootId : rootIds) {
             List<Integer> hierarchy = new ArrayList<Integer>();
