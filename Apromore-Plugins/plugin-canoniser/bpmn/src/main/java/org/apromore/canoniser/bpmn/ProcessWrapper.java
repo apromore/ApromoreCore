@@ -158,7 +158,7 @@ public class ProcessWrapper {
 
             if (cpfObject.getDataStore() != null) {
                 process.getFlowElement().add(initializer.getFactory().createDataStoreReference(new BpmnDataStoreReference(cpfObject, initializer)));
-            } else { 
+            } else {
                 process.getFlowElement().add(initializer.getFactory().createDataObject(new BpmnDataObject(cpfObject, initializer)));
             }
         }

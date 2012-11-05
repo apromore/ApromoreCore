@@ -1,7 +1,6 @@
 package org.apromore.canoniser.bpmn;
 
 // Local packages
-import org.apromore.canoniser.exception.CanoniserException;
 import org.omg.spec.bpmn._20100524.model.TAssociation;
 
 /**

@@ -21,6 +21,13 @@ public class CpfResourceTypeType extends ResourceTypeType implements Attributed 
     /** No-arg constructor. */
     public CpfResourceTypeType() { }
 
+    /**
+     * Construct a CPF ResourceType corresponding to a BPMN Participant.
+     *
+     * @param participant  a BPMN Participant
+     * @param initializer  global document construction state
+     * @throws CanoniserException if the resource type can't be constructed
+     */
     public CpfResourceTypeType(final TParticipant participant, final Initializer initializer) throws CanoniserException {
         //initializer.populateBaseElement(this, participant);
         setId(initializer.newId(participant.getId()));

@@ -71,12 +71,12 @@ public class AnfAnnotationsType extends AnnotationsType {
             element.getValue().accept(new BaseVisitor() {
                 @Override
                 public void visit(final BPMNEdge edge) {
-                    getAnnotation().add(new AnfAnnotationType(edge, anfIdFactory));
+                    getAnnotation().add(new AnfGraphicsType(edge, anfIdFactory));
                 }
 
                 @Override
                 public void visit(final BPMNShape shape) {
-                    getAnnotation().add(new AnfAnnotationType(shape, anfIdFactory));
+                    getAnnotation().add(new AnfGraphicsType(shape, anfIdFactory));
                 }
             });
         }

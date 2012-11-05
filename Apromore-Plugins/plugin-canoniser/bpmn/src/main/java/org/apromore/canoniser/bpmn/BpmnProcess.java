@@ -3,7 +3,6 @@ package org.apromore.canoniser.bpmn;
 // Local packages
 import org.apromore.canoniser.bpmn.cpf.CpfNetType;
 import org.apromore.canoniser.exception.CanoniserException;
-import org.apromore.cpf.NetType;
 import org.omg.spec.bpmn._20100524.model.TCollaboration;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 

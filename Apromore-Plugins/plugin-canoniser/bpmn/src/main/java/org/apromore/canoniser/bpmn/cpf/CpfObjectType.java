@@ -87,6 +87,7 @@ public class CpfObjectType extends ObjectType implements Attributed {
 
     // Accessors for CPF extension attributes
 
+    /** @return current value of the <code>dataStore</code> property */
     public QName getDataStore() {
         for (TypeAttribute attribute : getAttribute()) {
             if (DATA_STORE.equals(attribute.getName())) {
@@ -96,6 +97,7 @@ public class CpfObjectType extends ObjectType implements Attributed {
         return null;
     }
 
+    /** @param value  new value for the dataStore property */
     public void setDataStore(final QName value) {
 
         // Remove any existing attribute

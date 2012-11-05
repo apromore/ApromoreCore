@@ -14,5 +14,5 @@ import org.apromore.cpf.TypeAttribute;
 public interface Attributed {
 
     /** @return the list of extension attributes */
-    public List<TypeAttribute> getAttribute();
+    List<TypeAttribute> getAttribute();
 }
