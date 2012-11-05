@@ -25,7 +25,7 @@ import org.apromore.service.helper.OperationContext;
 import org.apromore.service.helper.PocketMapper;
 import org.apromore.service.helper.extraction.Extractor;
 import org.apromore.service.model.RFragment2;
-import org.apromore.service.utils.MutableTreeContructor;
+import org.apromore.service.utils.MutableTreeConstructor;
 import org.apromore.util.FragmentUtil;
 import org.apromore.util.HashUtil;
 import org.jbpt.algo.tree.rpst.RPST;
@@ -47,27 +47,34 @@ public class DecomposerServiceImpl implements DecomposerService {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DecomposerServiceImpl.class);
 
-    @Autowired @Qualifier("ContentDao")
+    @Autowired
+    @Qualifier("ContentDao")
     private ContentDao cDao;
 
-    @Autowired @Qualifier("ContentService")
+    @Autowired
+    @Qualifier("ContentService")
     private ContentService cSrv;
-    @Autowired @Qualifier("FragmentService")
+    @Autowired
+    @Qualifier("FragmentService")
     private FragmentService fSrv;
 
-    @Autowired @Qualifier("BondContentHandler")
+    @Autowired
+    @Qualifier("BondContentHandler")
     private BondContentHandler bcHandler;
-    @Autowired @Qualifier("PocketMapper")
+    @Autowired
+    @Qualifier("PocketMapper")
     private PocketMapper pMapper;
 
 
     /**
      * Decompose the Process Model Graph and save the fragments to the Repository.
      * Why it this here, it should build a list of objects and return to the Repository Service for Persistence?
-     * @param graph the process model graph
+     *
+     * @param graph       the process model graph
      * @param fragmentIds empty list ready to be populated? why?
      * @return the Root Id.
-     * @throws org.apromore.exception.RepositoryException if something fails while populating the Repository
+     * @throws org.apromore.exception.RepositoryException
+     *          if something fails while populating the Repository
      */
     @Override
     @SuppressWarnings("unchecked")
@@ -79,7 +86,7 @@ public class DecomposerServiceImpl implements DecomposerService {
 
         try {
             RPST<Edge, Node> rpst = new RPST(graph);
-            RFragment2 rf = MutableTreeContructor.construct(rpst);
+            RFragment2 rf = MutableTreeConstructor.construct(rpst);
             FragmentVersion rootFV = decompose(rf, op, fragmentIds);
             fragmentIds.add(rootFV.getId().toString());
             return rootFV;
@@ -93,8 +100,8 @@ public class DecomposerServiceImpl implements DecomposerService {
     /**
      * Decompose the Process Model Graph and save the fragments to the Repository.
      * Why it this here, it should build a list of objects and return to the Repository Service for Persistence?
-     * @param f The Refined Process Structure Tree Node
-     * @param op Operation Context
+     * @param f           The Refined Process Structure Tree Node
+     * @param op          Operation Context
      * @param fragmentIds the list of unpopulated Fragment Id's
      * @return the root fragment Id
      * @throws RepositoryException if something fails while populating the Repository
@@ -103,13 +110,13 @@ public class DecomposerServiceImpl implements DecomposerService {
     public FragmentVersion decompose(RFragment2 f, final OperationContext op, final List<String> fragmentIds)
             throws RepositoryException {
         String keywords = "";
-        int fragmentSize = f.getVertices().size();
+         int fragmentSize = f.getVertices().size();
         String nodeType = FragmentUtil.getFragmentType(f);
 
         Collection<RFragment2> cs = f.getChildren();
         Map<String, String> childMappings = mapPocketChildId(f, op, fragmentIds, cs);
 
-        String hash = HashUtil.computeHash(f, f.getType(), op);
+        String hash = HashUtil.computeHash(f, f.getType(), op); //"";
         Content matchingContent = null;
         if (matchingContent == null) {
             return addFragmentVersion(f, hash, childMappings, fragmentSize, nodeType, keywords, op);
@@ -146,10 +153,12 @@ public class DecomposerServiceImpl implements DecomposerService {
 
     /**
      * Deconstructs a Fragment.
-     * @param graph the process model graph
+     *
+     * @param graph       the process model graph
      * @param fragmentIds the fragment Ids
      * @return the root fragment version id
      * @throws org.apromore.exception.RepositoryException
+     *
      */
     @Override
     public String decomposeFragment(final Canonical graph, final List<String> fragmentIds) throws RepositoryException {
@@ -163,7 +172,7 @@ public class DecomposerServiceImpl implements DecomposerService {
             Node exit = FragmentUtil.getFirstVertex(graph.getSinkNodes());
             if (graph.getVertices().size() > 2) {
                 RPST<Edge, Node> rpst = new RPST<Edge, Node>(graph);
-                RFragment2 rFragment2 = MutableTreeContructor.construct(rpst);
+                RFragment2 rFragment2 = MutableTreeConstructor.construct(rpst);
                 FragmentVersion rootFV = decompose(rFragment2, op, fragmentIds);
                 fragmentIds.add(rootFV.getId().toString());
                 return rootFV.getId().toString();
@@ -181,17 +190,18 @@ public class DecomposerServiceImpl implements DecomposerService {
 
     /**
      * Decomposing a single Standalone Fragment
-     * @param g the RPST graph
+     *
+     * @param g     the RPST graph
      * @param entry the entry node
-     * @param exit the exit node
-     * @param op the OperationConext
+     * @param exit  the exit node
+     * @param op    the OperationConext
      * @return the new fragment
-     * @throws ExceptionDao the DAO Exception
+     * @throws ExceptionDao        the DAO Exception
      * @throws RepositoryException the Repository Exception
      */
     @SuppressWarnings("unchecked")
     public FragmentVersion decomposeSimpleStandaloneFragment(final Canonical g, final Node entry, final Node exit,
-            final OperationContext op) throws ExceptionDao, RepositoryException {
+                                                             final OperationContext op) throws ExceptionDao, RepositoryException {
         String keywords = "";
         int fragmentSize = g.getVertices().size();
         String nodeType = "P";
@@ -217,7 +227,7 @@ public class DecomposerServiceImpl implements DecomposerService {
 
     /* mapping pocketId -> childId */
     private Map<String, String> mapPocketChildId(RFragment2 f, final OperationContext op,
-            final List<String> fragmentIds, final Collection<RFragment2> cs) throws RepositoryException {
+                                                 final List<String> fragmentIds, final Collection<RFragment2> cs) throws RepositoryException {
         Map<String, String> childMappings = new HashMap<String, String>();
         for (RFragment2 c : cs) {
             if (TCType.TRIVIAL.equals(c.getType())) {
@@ -235,7 +245,7 @@ public class DecomposerServiceImpl implements DecomposerService {
 
     /* Adds a fragment version */
     private FragmentVersion addFragmentVersion(final Canonical f, final String hash, final Map<String, String> childMappings,
-            final int fragmentSize, final String fragmentType, final String keywords, final OperationContext op)
+                                               final int fragmentSize, final String fragmentType, final String keywords, final OperationContext op)
             throws RepositoryException {
         // mappings (UUIDs generated for pocket Ids -> Pocket Ids assigned to pockets when they are persisted in the database)
         Map<String, String> pocketIdMappings = new HashMap<String, String>();
@@ -254,17 +264,16 @@ public class DecomposerServiceImpl implements DecomposerService {
 
     /* Adds a fragment version */
     private FragmentVersion addFragmentVersion(final Content cid, final Map<String, String> childMappings, final String derivedFrom,
-            final int lockStatus, final int lockCount, final int originalSize, final String fragmentType, final String keywords, final OperationContext op)
+                                               final int lockStatus, final int lockCount, final int originalSize, final String fragmentType, final String keywords, final OperationContext op)
             throws RepositoryException {
         op.addProcessedFragmentType(fragmentType);
         return fSrv.addFragmentVersion(cid, childMappings, derivedFrom, lockStatus, lockCount, originalSize, fragmentType);
     }
 
 
-
-
     /**
      * Set the Content DAO object for this class. Mainly for spring tests.
+     *
      * @param cntDAOJpa the content Dao.
      */
     public void setContentDao(final ContentDao cntDAOJpa) {
@@ -273,6 +282,7 @@ public class DecomposerServiceImpl implements DecomposerService {
 
     /**
      * Set the Content Service object for this class. Mainly for spring tests.
+     *
      * @param cService the Content Service.
      */
     public void setContentService(final ContentService cService) {
@@ -281,6 +291,7 @@ public class DecomposerServiceImpl implements DecomposerService {
 
     /**
      * Set the Fragment Service object for this class. Mainly for spring tests.
+     *
      * @param fService the Fragment Service.
      */
     public void setFragmentService(final FragmentService fService) {

@@ -8,6 +8,7 @@ import java.util.Map;
 import java.util.Set;
 
 import org.jbpt.algo.graph.DirectedGraphAlgorithms;
+import org.jbpt.algo.graph.GraphAlgorithms;
 
 /**
  * An implementation of ICanonical interface.
@@ -17,6 +18,7 @@ import org.jbpt.algo.graph.DirectedGraphAlgorithms;
  */
 public class Canonical extends AbstractCanonical<Edge, Node, Event, Task, Message, Timer, State, Split, Join> {
 
+    public static GraphAlgorithms<Edge, Node> GRAPH_ALGORITHMS = new GraphAlgorithms<Edge, Node>();
     public static DirectedGraphAlgorithms<Edge, Node> DIRECTED_GRAPH_ALGORITHMS = new DirectedGraphAlgorithms<Edge, Node>();
 
     private Map<String, IAttribute> properties = new HashMap<String, IAttribute>(0);

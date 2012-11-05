@@ -141,9 +141,9 @@ public class ProcessDaoJpa implements ProcessDao {
      */
     @Override
     @Transactional(readOnly = true)
-    public String getRootFragmentVersionURI(final Integer processModelVersionId) {
-        Query query = em.createNamedQuery(NamedQueries.GET_ROOT_FRAGMENT_PROCESS_MODEL);
-        query.setParameter("id", processModelVersionId);
+    public String getRootFragmentVersionURI(final Integer processModelVersionUri) {
+        Query query = em.createNamedQuery(NamedQueries.GET_ROOT_FRAGMENT_PROCESS_MODEL_URI);
+        query.setParameter("uri", processModelVersionUri);
         return (String) query.getSingleResult();
     }
 

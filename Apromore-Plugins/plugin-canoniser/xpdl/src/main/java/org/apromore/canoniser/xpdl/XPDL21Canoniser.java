@@ -5,7 +5,6 @@ import java.io.OutputStream;
 import java.text.DateFormat;
 import java.util.Date;
 import java.util.List;
-
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBElement;
 import javax.xml.bind.JAXBException;
@@ -36,86 +35,77 @@ import org.wfmc._2008.xpdl2.Version;
  * XPDL 2.1 Canoniser Plugin
  *
  * @author Felix Mannhardt (University oaS Bonn-Rhein-Sieg)
- *
  */
 @Component("xpdlCanoniser")
 public class XPDL21Canoniser extends DefaultAbstractCanoniser {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(XPDL21Canoniser.class);
 
-	public static final String XPDL2_CONTEXT = "org.wfmc._2008.xpdl2";
+    public static final String XPDL2_CONTEXT = "org.wfmc._2008.xpdl2";
 
-	/* (non-Javadoc)
-	 * @see org.apromore.canoniser.Canoniser#canonise(java.io.InputStream, java.util.List, java.util.List)
-	 */
-	@Override
-	public PluginResult canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat, final List<CanonicalProcessType> canonicalFormat, final PluginRequest request) throws CanoniserException {
-		try {
-			JAXBElement<PackageType> nativeElement = unmarshalNativeFormat(nativeInput);
-			XPDL2Canonical epml2canonical = new XPDL2Canonical(nativeElement.getValue());
+    /* (non-Javadoc)
+      * @see org.apromore.canoniser.Canoniser#canonise(java.io.InputStream, java.util.List, java.util.List)
+      */
+    @Override
+    public PluginResult canonise(final InputStream nativeInput, final List<AnnotationsType> annotationFormat,
+            final List<CanonicalProcessType> canonicalFormat, final PluginRequest request) throws CanoniserException {
+        try {
+            JAXBElement<PackageType> nativeElement = unmarshalNativeFormat(nativeInput);
+            XPDL2Canonical epml2canonical = new XPDL2Canonical(nativeElement.getValue());
 
-			annotationFormat.add(epml2canonical.getAnf());
-			canonicalFormat.add(epml2canonical.getCpf());
+            annotationFormat.add(epml2canonical.getAnf());
+            canonicalFormat.add(epml2canonical.getCpf());
 
-			return newPluginResult();
-
-		} catch (JAXBException e) {
-			throw new CanoniserException(e);
-		}
-
-	}
+            return newPluginResult();
+        } catch (JAXBException e) {
+            throw new CanoniserException(e);
+        }
+    }
 
 
-	/* (non-Javadoc)
-	 * @see org.apromore.canoniser.Canoniser#deCanonise(org.apromore.cpf.CanonicalProcessType, org.apromore.anf.AnnotationsType, java.io.OutputStream)
-	 */
-	@Override
-	public PluginResult deCanonise(final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat, final OutputStream nativeFormat, final PluginRequest request) throws CanoniserException {
+    /* (non-Javadoc)
+      * @see org.apromore.canoniser.Canoniser#deCanonise(org.apromore.cpf.CanonicalProcessType, org.apromore.anf.AnnotationsType, java.io.OutputStream)
+      */
+    @Override
+    public PluginResult deCanonise(final CanonicalProcessType canonicalFormat, final AnnotationsType annotationFormat,
+            final OutputStream nativeFormat, final PluginRequest request) throws CanoniserException {
+        try {
+            Canonical2XPDL canonical2epml;
 
-		try {
-			Canonical2XPDL canonical2epml;
+            if (annotationFormat != null) {
+                canonical2epml = new Canonical2XPDL(canonicalFormat, annotationFormat);
+            } else {
+                canonical2epml = new Canonical2XPDL(canonicalFormat);
+            }
+            marshalXPDLFormat(canonical2epml.getXpdl(), nativeFormat);
 
-			if (annotationFormat != null) {
-				canonical2epml = new Canonical2XPDL(
-				        canonicalFormat,
-				        annotationFormat);
-			} else {
-				canonical2epml = new Canonical2XPDL(canonicalFormat);
-			}
+            return newPluginResult();
+        } catch (JAXBException e) {
+            throw new CanoniserException(e);
+        }
+    }
 
-			marshalXPDLFormat(canonical2epml.getXpdl(), nativeFormat);
-			return newPluginResult();
+    @SuppressWarnings("unchecked")
+    private JAXBElement<PackageType> unmarshalNativeFormat(final InputStream nativeFormat) throws JAXBException {
+        JAXBContext jc1 = JAXBContext.newInstance(XPDL2_CONTEXT);
+        Unmarshaller u = jc1.createUnmarshaller();
+        return (JAXBElement<PackageType>) u.unmarshal(nativeFormat);
+    }
 
-		} catch (JAXBException e) {
-			throw new CanoniserException(e);
-		}
-
-	}
-
-	@SuppressWarnings("unchecked")
-	private JAXBElement<PackageType> unmarshalNativeFormat(final InputStream nativeFormat)
-			throws JAXBException {
-		JAXBContext jc1 = JAXBContext.newInstance(XPDL2_CONTEXT);
-		Unmarshaller u = jc1.createUnmarshaller();
-		return (JAXBElement<PackageType>) u.unmarshal(nativeFormat);
-	}
-
-	private void marshalXPDLFormat(final PackageType xpdl, final OutputStream nativeFormat)
-			throws JAXBException {
-		JAXBContext jc = JAXBContext.newInstance(XPDL2_CONTEXT);
-		Marshaller m = jc.createMarshaller();
-		m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-		JAXBElement<PackageType> rootepml = new org.wfmc._2008.xpdl2.ObjectFactory()
-				.createPackage(xpdl);
-		m.marshal(rootepml, nativeFormat);
-	}
+    private void marshalXPDLFormat(final PackageType xpdl, final OutputStream nativeFormat) throws JAXBException {
+        JAXBContext jc = JAXBContext.newInstance(XPDL2_CONTEXT);
+        Marshaller m = jc.createMarshaller();
+        m.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
+        JAXBElement<PackageType> rootepml = new org.wfmc._2008.xpdl2.ObjectFactory().createPackage(xpdl);
+        m.marshal(rootepml, nativeFormat);
+    }
 
     /* (non-Javadoc)
      * @see org.apromore.canoniser.Canoniser#createInitialNativeFormat(java.io.OutputStream, java.lang.String, java.lang.String, java.lang.String, java.util.Date, org.apromore.plugin.PluginRequest)
      */
     @Override
-    public PluginResult createInitialNativeFormat(final OutputStream nativeOutput, final String processName, final String processVersion, final String processAuthor,
-            final Date processCreated, final PluginRequest request) {
+    public PluginResult createInitialNativeFormat(final OutputStream nativeOutput, final String processName, final String processVersion,
+            final String processAuthor, final Date processCreated, final PluginRequest request) {
         PackageType pkg = new PackageType();
         pkg.setName(processName);
         PackageHeader hder = new PackageHeader();

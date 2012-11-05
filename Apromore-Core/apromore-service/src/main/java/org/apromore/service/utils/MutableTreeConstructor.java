@@ -8,7 +8,7 @@ import org.apromore.service.model.RFragment2;
 import org.jbpt.algo.tree.rpst.IRPSTNode;
 import org.jbpt.algo.tree.rpst.RPST;
 
-public class MutableTreeContructor {
+public class MutableTreeConstructor {
 
     public static RFragment2 construct(RPST<Edge, Node> rpst) {
         IRPSTNode<Edge, Node> root = rpst.getRoot();
@@ -40,4 +40,5 @@ public class MutableTreeContructor {
 
         return rf;
     }
+
 }
