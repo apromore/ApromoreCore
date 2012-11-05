@@ -1,4 +1,4 @@
-package org.apromore.canoniser.bpmn;
+package org.apromore.canoniser.bpmn.bpmn;
 
 // Java 2 Standard packages
 import java.util.HashMap;

@@ -1,28 +1,28 @@
-package org.apromore.canoniser.bpmn;
+package org.apromore.canoniser.bpmn.bpmn;
 
 // Local packages
 import org.apromore.canoniser.bpmn.cpf.CpfEventType;
 import org.apromore.canoniser.exception.CanoniserException;
-import org.omg.spec.bpmn._20100524.model.TStartEvent;
+import org.omg.spec.bpmn._20100524.model.TIntermediateThrowEvent;
 
 /**
- * BPMN Start Event with canonisation methods.
+ * BPMN Intermediate Throw Event with canonisation methods.
  *
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
-public class BpmnStartEvent extends TStartEvent {
+public class BpmnIntermediateThrowEvent extends TIntermediateThrowEvent {
 
     /** No-arg constructor. */
-    public BpmnStartEvent() { }
+    public BpmnIntermediateThrowEvent() { }
 
     /**
-     * Construct a BPMN Start Event corresponding to a CPF Event.
+     * Construct a BPMN Intermediate Throw Event corresponding to a CPF Event.
      *
      * @param cpfEvent  a CPF event
      * @param initializer  BPMN document construction state
      * @throws CanoniserException  if the data object can't be constructed
      */
-    public BpmnStartEvent(final CpfEventType cpfEvent, final Initializer initializer) throws CanoniserException {
+    public BpmnIntermediateThrowEvent(final CpfEventType cpfEvent, final Initializer initializer) throws CanoniserException {
 
         initializer.populateFlowNode(this, cpfEvent);
     }

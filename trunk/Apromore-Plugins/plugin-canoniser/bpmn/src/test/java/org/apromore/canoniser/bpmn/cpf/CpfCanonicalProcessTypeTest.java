@@ -17,9 +17,9 @@ import org.junit.Ignore;
 import org.junit.Test;
 
 // Local packages
-import org.apromore.canoniser.bpmn.BpmnDefinitions;
-import org.apromore.canoniser.bpmn.BpmnObjectFactory;
 import org.apromore.canoniser.bpmn.TestConstants;
+import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
+import org.apromore.canoniser.bpmn.bpmn.BpmnObjectFactory;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
 import org.apromore.canoniser.bpmn.cpf.CpfEventType;
 import org.apromore.cpf.*;

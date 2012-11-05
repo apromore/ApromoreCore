@@ -40,6 +40,7 @@ import org.junit.Test;
 import org.apromore.anf.ANFSchema;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.bpmn.anf.AnfAnnotationsType;
+import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
 import org.apromore.canoniser.bpmn.cpf.CpfEventType;
 import org.apromore.canoniser.bpmn.cpf.CpfIDResolver;

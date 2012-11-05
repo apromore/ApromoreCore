@@ -1,4 +1,4 @@
-package org.apromore.canoniser.bpmn;
+package org.apromore.canoniser.bpmn.bpmn;
 
 // Java 2 Standard packges
 import java.io.InputStream;
@@ -28,6 +28,8 @@ import org.xml.sax.SAXException;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.cpf.CPFSchema;
 import org.apromore.cpf.NetType;
+import org.apromore.canoniser.bpmn.Constants;
+import org.apromore.canoniser.bpmn.JAXBConstants;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
 import org.apromore.canoniser.bpmn.cpf.CpfNetType;
 import org.apromore.canoniser.exception.CanoniserException;

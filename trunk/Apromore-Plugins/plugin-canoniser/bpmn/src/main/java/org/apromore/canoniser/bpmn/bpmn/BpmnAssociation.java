@@ -1,4 +1,4 @@
-package org.apromore.canoniser.bpmn;
+package org.apromore.canoniser.bpmn.bpmn;
 
 // Local packages
 import org.omg.spec.bpmn._20100524.model.TAssociation;

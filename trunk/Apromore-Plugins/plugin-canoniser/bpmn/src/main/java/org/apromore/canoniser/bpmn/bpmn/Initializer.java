@@ -1,4 +1,4 @@
-package org.apromore.canoniser.bpmn;
+package org.apromore.canoniser.bpmn.bpmn;
 
 // Java 2 Standard packages
 import java.util.ArrayList;
@@ -10,6 +10,9 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 
 // Local classes
+import org.apromore.canoniser.bpmn.AbstractInitializer;
+import org.apromore.canoniser.bpmn.IdFactory;
+import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.bpmn.cpf.Attributed;
 import org.apromore.canoniser.bpmn.cpf.CpfEdgeType;
 import org.apromore.canoniser.bpmn.cpf.CpfNetType;

@@ -11,6 +11,7 @@ import java.util.UUID;
 import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.DefaultAbstractCanoniser;
 import org.apromore.canoniser.bpmn.anf.AnfAnnotationsType;
+import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.canoniser.result.CanoniserMetadataResult;

@@ -21,9 +21,9 @@ import org.xml.sax.SAXException;
 
 // Local packages
 import static org.apromore.canoniser.bpmn.BPMN20Canoniser.requiredName;
-import org.apromore.canoniser.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.JAXBConstants;
-import org.apromore.canoniser.bpmn.ProcessWrapper;
+import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
+import org.apromore.canoniser.bpmn.bpmn.ProcessWrapper;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.CPFSchema;
