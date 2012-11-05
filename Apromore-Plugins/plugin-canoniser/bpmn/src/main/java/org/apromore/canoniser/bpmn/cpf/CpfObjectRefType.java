@@ -1,8 +1,5 @@
 package org.apromore.canoniser.bpmn.cpf;
 
-// Java 2 Standard packages
-import java.util.List;
-
 // Local packages
 import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.exception.CanoniserException;
@@ -10,7 +7,6 @@ import static org.apromore.cpf.InputOutputType.INPUT;
 import static org.apromore.cpf.InputOutputType.OUTPUT;
 import org.apromore.cpf.ObjectRefType;
 import org.omg.spec.bpmn._20100524.model.TActivity;
-import org.omg.spec.bpmn._20100524.model.TBaseElement;
 import org.omg.spec.bpmn._20100524.model.TDataInputAssociation;
 import org.omg.spec.bpmn._20100524.model.TDataOutputAssociation;
 import org.omg.spec.bpmn._20100524.model.TFlowElement;
@@ -33,6 +29,7 @@ public class CpfObjectRefType extends ObjectRefType implements Attributed {
      * Construct a CPF ObjectRef corresponding to a BPMN DataInputAssociation.
      *
      * @param association  a BPMN DataInputAssociation
+     * @param parent  the BPMN Activity containing the <code>association</code>
      * @param initializer  global construction state
      * @throws CanoniserException if construction fails
      */
@@ -65,6 +62,7 @@ public class CpfObjectRefType extends ObjectRefType implements Attributed {
      * Construct a CPF ObjectRef corresponding to a BPMN DataOutputAssociation.
      *
      * @param association  a BPMN DataOutputAssociation
+     * @param parent  the BPMN Activity containing the <code>association</code>
      * @param initializer  global construction state
      * @throws CanoniserException if construction fails
      */

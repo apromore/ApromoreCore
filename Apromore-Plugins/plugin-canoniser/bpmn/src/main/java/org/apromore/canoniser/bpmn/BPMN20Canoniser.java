@@ -34,6 +34,9 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
     /** CPF schema version. */
     public static final String CPF_VERSION = "1.0";
 
+    /** Generator of identifiers for @uri scoped across all generated CPF and ANF documents. */
+    private final IdFactory linkUriFactory = new IdFactory();
+
     // Methods implementing Canoniser interface
 
     /** {@inheritDoc} */
@@ -45,12 +48,24 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
 
         try {
             BpmnDefinitions definitions = BpmnDefinitions.newInstance(bpmnInput, false);
-            CanoniserResult result = canonise(definitions);
-            for (int i = 0; i < result.size(); i++) {
-                annotationFormat.add(result.getAnf(i));
-                canonicalFormat.add(result.getCpf(i));
+
+            // Create the CPF
+            CanonicalProcessType cpf = new CpfCanonicalProcessType(definitions);
+            cpf.setUri(linkUriFactory.newId(null));
+            canonicalFormat.add(cpf);
+
+            // Create the ANF
+            for (BPMNDiagram diagram : definitions.getBPMNDiagram()) {
+                final AnnotationsType anf = new AnfAnnotationsType(diagram);
+                anf.setUri(cpf.getUri());
+                annotationFormat.add(anf);
             }
-            return new PluginResultImpl();
+
+            // Return a result
+            PluginResultImpl result = new PluginResultImpl();
+            result.addPluginMessage("BPMN 2.0 canonised OK");
+            return result;
+
         } catch (Exception e) {
             throw new CanoniserException("Could not canonise to BPMN stream", e);
         }
@@ -100,7 +115,11 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
         try {
             new BpmnDefinitions(CpfCanonicalProcessType.remarshal(canonicalFormat), annotationFormat).marshal(bpmnOutput, false);
 
-            return new PluginResultImpl();
+            // Return a result
+            PluginResultImpl result = new PluginResultImpl();
+            result.addPluginMessage("BPMN 2.0 de-canonised OK");
+            return result;
+
         } catch (Exception e) {
             throw new CanoniserException("Could not decanonise from BPMN stream", e);
         }
@@ -125,37 +144,7 @@ public class BPMN20Canoniser extends DefaultAbstractCanoniser {
         }
     }
 
-    // Implementation of canonisation
-
-    /**
-     * Convert this BPMN document into an equivalent collection of CPF and ANF documents.
-     *
-     * @param definitions  the BPMN document to translate
-     * @throws CanoniserException  if the translation can't be performed
-     * @return a result containing CPF and ANF documents equivalent to this BPMN
-     */
-    static CanoniserResult canonise(final BpmnDefinitions definitions) throws CanoniserException {
-
-        // Generate identifiers for @uri scoped across all generated CPF and ANF documents
-        final IdFactory linkUriFactory = new IdFactory();
-
-        // This instance will be populated and returned at the end of this method
-        final CanoniserResult result = new CanoniserResult();
-
-        // Create the CPF
-        CanonicalProcessType cpf = new CpfCanonicalProcessType(definitions);
-        cpf.setUri(linkUriFactory.newId(null));
-
-        // Create the ANF
-        for (BPMNDiagram diagram : definitions.getBPMNDiagram()) {
-            final AnnotationsType anf = new AnfAnnotationsType(diagram);
-            anf.setUri(cpf.getUri());
-            result.put(cpf, anf);
-        }
-
-        // Dummy return value
-        return result;
-    }
+    // Miscellaneous method - TODO - find a better home for it
 
     /**
      * This method centralizes the policy of filling in absent names with a zero-length

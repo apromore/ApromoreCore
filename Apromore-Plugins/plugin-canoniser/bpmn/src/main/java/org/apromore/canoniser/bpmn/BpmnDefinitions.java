@@ -27,7 +27,6 @@ import org.xml.sax.SAXException;
 
 // Local packages
 import org.apromore.anf.AnnotationsType;
-import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.NetType;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
 import org.apromore.canoniser.bpmn.cpf.CpfNetType;
@@ -39,10 +38,8 @@ import org.omg.spec.bpmn._20100524.model.TDefinitions;
 /**
  * BPMN 2.0 object model with canonisation methods.
  * <p>
- * To canonise a BPMN document, unmarshal the XML into an object of this class, and invoke the {@link #canonise} method.
- * The resulting {@link CanoniserResult} represents a list of CPF/ANF pairs.
- * Because a BPMN document may describe a collection of processes (for example, in a collaboration) the resulting
- * {@link CanoniserResult} may contain several {@link CanonicalProcessType} instances.
+ * To canonise a BPMN document, unmarshal the XML into an object of this class, and pass it to the constructor of
+ * {@link CpfCanonicalProcessType}.
  * <p>
  * To decanonise a canonical model into BPMN, invoke the constructor {@link #BpmnDefinitions(CanonicalProcessType, AnnotationsType)}.
  * Only individual canonical models may be decanonised; there is no facility for generating a BPMN document containing
@@ -120,7 +117,7 @@ public class BpmnDefinitions extends TDefinitions {
      * @param anf  annotations for the canonical process model
      * @throws CanoniserException if unable to generate BPMN from the given CPF and ANF arguments
      */
-    public BpmnDefinitions(CpfCanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
+    public BpmnDefinitions(final CpfCanonicalProcessType cpf, final AnnotationsType anf) throws CanoniserException {
 
         // We can get by without an ANF parameter, but we definitely need a CPF
         if (cpf == null) {
