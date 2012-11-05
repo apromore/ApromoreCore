@@ -15,9 +15,7 @@ import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
 public class BpmnSequenceFlow extends TSequenceFlow {
 
     /** No-arg constructor. */
-    public BpmnSequenceFlow() {
-        super();
-    }
+    public BpmnSequenceFlow() { }
 
     /**
      * Construct a BPMN Sequence Flow corresponding to a CPF Edge.

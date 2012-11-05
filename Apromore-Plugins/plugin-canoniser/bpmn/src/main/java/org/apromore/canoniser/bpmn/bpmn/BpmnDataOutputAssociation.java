@@ -18,9 +18,7 @@ import org.omg.spec.bpmn._20100524.model.TDataOutputAssociation;
 public class BpmnDataOutputAssociation extends TDataOutputAssociation {
 
     /** No-arg constructor. */
-    public BpmnDataOutputAssociation() {
-        super();
-    }
+    public BpmnDataOutputAssociation() { }
 
     /**
      * Construct a BPMN Data Output Association corresponding to a CPF ObjectRef.

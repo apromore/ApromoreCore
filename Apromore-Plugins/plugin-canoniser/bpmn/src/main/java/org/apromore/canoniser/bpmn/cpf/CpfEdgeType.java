@@ -24,9 +24,7 @@ public class CpfEdgeType extends EdgeType implements Attributed {
     // Constructors
 
     /** No-arg constructor. */
-    public CpfEdgeType() {
-        super();
-    }
+    public CpfEdgeType() { }
 
     /**
      * Construct a CPF Edge from a BPMN Sequence Flow.

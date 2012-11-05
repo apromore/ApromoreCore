@@ -43,9 +43,7 @@ public class CpfTaskType extends TaskType implements CpfNodeType {
     // Constructors
 
     /** No-arg constructor. */
-    public CpfTaskType() {
-        super();
-    }
+    public CpfTaskType() { }
 
     /**
      * Construct a CPF Task corresponding to a BPMN Call Activity.

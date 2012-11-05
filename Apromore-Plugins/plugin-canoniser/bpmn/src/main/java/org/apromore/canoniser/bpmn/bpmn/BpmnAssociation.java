@@ -11,7 +11,5 @@ import org.omg.spec.bpmn._20100524.model.TAssociation;
 public class BpmnAssociation extends TAssociation {
 
     /** No-arg constructor. */
-    public BpmnAssociation() {
-        super();
-    }
+    public BpmnAssociation() { }
 }

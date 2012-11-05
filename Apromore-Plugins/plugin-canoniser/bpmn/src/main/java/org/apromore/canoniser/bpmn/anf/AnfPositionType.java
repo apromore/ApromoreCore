@@ -16,9 +16,7 @@ import org.omg.spec.dd._20100524.dc.Point;
 public class AnfPositionType extends PositionType {
 
     /** No-arg constructor. */
-    public AnfPositionType() {
-        super();
-    }
+    public AnfPositionType() { }
 
     /**
      * Construct a position corresponding to the upper left corner of an OMG DC Bounds.

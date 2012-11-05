@@ -15,9 +15,7 @@ import org.omg.spec.dd._20100524.dc.Bounds;
 public class AnfSizeType extends SizeType {
 
     /** No-arg constructor. */
-    public AnfSizeType() {
-        super();
-    }
+    public AnfSizeType() { }
 
     /**
      * Construct a size corresponding to an OMG DC Bounds.

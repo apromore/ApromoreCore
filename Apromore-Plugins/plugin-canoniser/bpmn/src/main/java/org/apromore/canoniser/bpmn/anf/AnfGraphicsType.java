@@ -15,9 +15,7 @@ import org.omg.spec.dd._20100524.dc.Point;
 public class AnfGraphicsType extends GraphicsType {
 
     /** No-arg constructor. */
-    public AnfGraphicsType() {
-        super();
-    }
+    public AnfGraphicsType() { }
 
     /**
      * Construct a graphics annotation for a BPMNDI Edge.

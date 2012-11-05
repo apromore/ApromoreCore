@@ -12,9 +12,7 @@ import org.omg.spec.bpmn._20100524.model.TLane;
 public class CpfResourceTypeRefType extends ResourceTypeRefType implements Attributed {
 
     /** No-arg constructor. */
-    public CpfResourceTypeRefType() {
-        super();
-    }
+    public CpfResourceTypeRefType() { }
 
     /**
      * Construct a CPF Resource reference corresponding to a BPMN Lane.

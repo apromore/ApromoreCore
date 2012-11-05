@@ -18,9 +18,7 @@ import org.omg.spec.bpmn._20100524.model.TDataInputAssociation;
 public class BpmnDataInputAssociation extends TDataInputAssociation {
 
     /** No-arg constructor. */
-    public BpmnDataInputAssociation() {
-        super();
-    }
+    public BpmnDataInputAssociation() { }
 
     /**
      * Construct a BPMN Data Input Association corresponding to a CPF ObjectRef.
