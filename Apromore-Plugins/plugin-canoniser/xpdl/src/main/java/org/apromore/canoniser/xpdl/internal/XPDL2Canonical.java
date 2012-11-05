@@ -80,8 +80,8 @@ public class XPDL2Canonical {
     Map<NodeType, NodeType> implicitJoin = new HashMap<NodeType, NodeType>();
     Map<NodeType, List<EdgeType>> outgoings = new HashMap<NodeType, List<EdgeType>>();
     Set<NodeType> linked = new HashSet<NodeType>();
-    List<BigInteger> unrequired_event_list = new LinkedList<BigInteger>();
-    List<NodeType> node_remove_list = new LinkedList<NodeType>();
+//    List<BigInteger> unrequired_event_list = new LinkedList<BigInteger>();
+//    List<NodeType> node_remove_list = new LinkedList<NodeType>();
     Map<String, ResourceTypeType> pool_resource_map = new HashMap<String, ResourceTypeType>();
     Map<String, ObjectType> object_map = new HashMap<String, ObjectType>();
 
@@ -181,7 +181,7 @@ public class XPDL2Canonical {
                     ref = null;
                 }
                 translateProcess(net, bpmnproc, ref);
-                process_unrequired_events(net);
+                //process_unrequired_events(net);
                 recordAnnotations(bpmnproc, this.anf);
 
                 /* Temp solution to turn around multiple lanes problem*/
@@ -233,44 +233,44 @@ public class XPDL2Canonical {
         }
     }
 
-    private void process_unrequired_events(final NetType net) throws CanoniserException {
-        List<EdgeType> edge_remove_list = new LinkedList<EdgeType>();
-        String source_id;
-        try {
-            for (BigInteger id : unrequired_event_list) {
-                source_id = null;
-                for (EdgeType edge : net.getEdge()) {
-                    if (edge.getTargetId().equals(id)) {
-                        source_id = edge.getSourceId();
-                        edge_remove_list.add(edge);
-                        break;
-                    }
-                }
-                for (EdgeType edge : net.getEdge()) {
-                    if (edge.getSourceId().equals(id)) {
-                        if (source_id == null) {
-                            edge_remove_list.add(edge);
-                        } else {
-                            edge.setSourceId(source_id);
-                        }
-                    }
-                }
-            }
-
-            for (EdgeType edge : edge_remove_list) {
-                net.getEdge().remove(edge);
-            }
-            edge_remove_list.clear();
-            for (NodeType node : node_remove_list) {
-                net.getNode().remove(node);
-            }
-            node_remove_list.clear();
-
-        } catch (Exception e) {
-            String msg = "Failed to get some attributes when removing the unrequired events.";
-            throw new CanoniserException(msg, e);
-        }
-    }
+//    private void process_unrequired_events(final NetType net) throws CanoniserException {
+//        List<EdgeType> edge_remove_list = new LinkedList<EdgeType>();
+//        String source_id;
+//        try {
+//            for (BigInteger id : unrequired_event_list) {
+//                source_id = null;
+//                for (EdgeType edge : net.getEdge()) {
+//                    if (edge.getTargetId().equals(id.toString())) {
+//                        source_id = edge.getSourceId();
+//                        edge_remove_list.add(edge);
+//                        break;
+//                    }
+//                }
+//                for (EdgeType edge : net.getEdge()) {
+//                    if (edge.getSourceId().equals(id.toString())) {
+//                        if (source_id == null) {
+//                            edge_remove_list.add(edge);
+//                        } else {
+//                            edge.setSourceId(source_id);
+//                        }
+//                    }
+//                }
+//            }
+//
+//            for (EdgeType edge : edge_remove_list) {
+//                net.getEdge().remove(edge);
+//            }
+//            edge_remove_list.clear();
+//            for (NodeType node : node_remove_list) {
+//                net.getNode().remove(node);
+//            }
+//            node_remove_list.clear();
+//
+//        } catch (Exception e) {
+//            String msg = "Failed to get some attributes when removing the unrequired events.";
+//            throw new CanoniserException(msg, e);
+//        }
+//    }
 
     private void recordAnnotations(final ProcessType bpmnproc, final AnnotationsType annotations) {
         for (Activity act : activities) {
@@ -297,7 +297,7 @@ public class XPDL2Canonical {
                         }
 
                         SizeType size = new SizeType();
-                        if (xGraphInfo != null && xGraphInfo.getHeight() != null && xGraphInfo.getWidth() != null) {
+                        if (xGraphInfo.getHeight() != null && xGraphInfo.getWidth() != null) {
                             size.setHeight(BigDecimal.valueOf(xGraphInfo.getHeight()));
                             size.setWidth(BigDecimal.valueOf(xGraphInfo.getWidth()));
                         }
@@ -354,13 +354,11 @@ public class XPDL2Canonical {
                     }
 
                     SizeType size = new SizeType();
-                    if (xGraphInfo != null) {
-                        if (xGraphInfo.getHeight() != null) {
-                            size.setHeight(BigDecimal.valueOf(xGraphInfo.getHeight()));
-                        }
-                        if (xGraphInfo.getWidth() != null) {
-                            size.setWidth(BigDecimal.valueOf(xGraphInfo.getWidth()));
-                        }
+                    if (xGraphInfo.getHeight() != null) {
+                        size.setHeight(BigDecimal.valueOf(xGraphInfo.getHeight()));
+                    }
+                    if (xGraphInfo.getWidth() != null) {
+                        size.setWidth(BigDecimal.valueOf(xGraphInfo.getWidth()));
                     }
 
                     cGraphInfo.setSize(size);
@@ -392,13 +390,11 @@ public class XPDL2Canonical {
                     }
 
                     SizeType size = new SizeType();
-                    if (xGraphInfo != null) {
-                        if (xGraphInfo.getHeight() != null) {
-                            size.setHeight(BigDecimal.valueOf(xGraphInfo.getHeight()));
-                        }
-                        if (xGraphInfo.getWidth() != null) {
-                            size.setWidth(BigDecimal.valueOf(xGraphInfo.getWidth()));
-                        }
+                    if (xGraphInfo.getHeight() != null) {
+                        size.setHeight(BigDecimal.valueOf(xGraphInfo.getHeight()));
+                    }
+                    if (xGraphInfo.getWidth() != null) {
+                        size.setWidth(BigDecimal.valueOf(xGraphInfo.getWidth()));
                     }
 
                     cGraphInfo.setSize(size);
@@ -465,7 +461,6 @@ public class XPDL2Canonical {
                 edge.setTargetId(orSplit.getId());
                 net.getNode().remove(andSplit);
             }
-
         }
     }
 
@@ -610,7 +605,6 @@ public class XPDL2Canonical {
             split.setId(String.valueOf(cpfId++));
             net.getNode().add(split);
         }
-
         if (isJoin) {
             NodeType join = new XORJoinType();
             join.setId(String.valueOf(cpfId++));
@@ -656,8 +650,8 @@ public class XPDL2Canonical {
                 node = new TimerType();
             } else if (interEvent.getTrigger().equals("Link") || interEvent.getTrigger().equals("Rule")) {
                 node = new EventType();
-                unrequired_event_list.add(BigInteger.valueOf(cpfId));
-                node_remove_list.add(node);
+//                unrequired_event_list.add(BigInteger.valueOf(cpfId));
+//                node_remove_list.add(node);
                 //TODO : Inform the user that the element has been removed during the process
             } else {
                 throw new CanoniserException("XPDL2Canonical: event type not supported: (Intermediate event)" + interEvent.getTrigger());
@@ -682,7 +676,7 @@ public class XPDL2Canonical {
             }
         }
 
-        NodeType node;
+        NodeType node = null;
         if (route.getGatewayType().equals("Parallel") || route.getGatewayType().equals("AND")) {
             if (isSplit) {
                 node = new ANDSplitType();
@@ -710,6 +704,7 @@ public class XPDL2Canonical {
         } else {
             throw new CanoniserException("XPDL2Canonical: gateway type not supported:[DEPRECATED] " + route.getGatewayType());
         }
+        node.setName(act.getName());
 
         return node;
     }

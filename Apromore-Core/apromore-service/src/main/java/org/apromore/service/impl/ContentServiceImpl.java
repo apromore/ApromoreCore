@@ -78,8 +78,12 @@ public class ContentServiceImpl implements ContentService {
         addNodes(content, c.getNodes(), g, pocketIdMappings);
         addEdges(content, c.getEdges());
 
-        content.setBoundaryS(c.getEntry().getId());
-        content.setBoundaryE(c.getExit().getId());
+        if (c.getEntry() != null) {
+            content.setBoundaryS(c.getEntry().getId());
+        }
+        if (c.getExit() != null) {
+            content.setBoundaryE(c.getExit().getId());
+        }
         contentDao.update(content);
 
         return content;
