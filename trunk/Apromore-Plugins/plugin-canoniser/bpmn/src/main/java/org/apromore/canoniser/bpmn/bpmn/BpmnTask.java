@@ -13,9 +13,7 @@ import org.omg.spec.bpmn._20100524.model.TTask;
 public class BpmnTask extends TTask {
 
     /** No-arg constructor. */
-    public BpmnTask() {
-        super();
-    }
+    public BpmnTask() { }
 
     /**
      * Construct a BPMN Task corresponding to a CPF Task.

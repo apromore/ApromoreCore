@@ -50,9 +50,7 @@ public class AnfAnnotationsType extends AnnotationsType {
     }
 
     /** No-arg constructor. */
-    public AnfAnnotationsType() {
-        super();
-    }
+    public AnfAnnotationsType() { }
 
     /**
      * Construct an ANF document corresponding to a BPMNDI Diagram element.

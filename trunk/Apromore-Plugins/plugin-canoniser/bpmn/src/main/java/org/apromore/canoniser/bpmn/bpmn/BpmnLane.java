@@ -15,9 +15,7 @@ import org.omg.spec.bpmn._20100524.model.TLaneSet;
 public class BpmnLane extends TLane {
 
     /** No-arg constructor. */
-    public BpmnLane() {
-        super();
-    }
+    public BpmnLane() { }
 
     /**
      * Construct a BPMN Lane corresponding to a CPF Resource.

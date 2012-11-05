@@ -3,10 +3,6 @@ package org.apromore.canoniser.bpmn.anf;
 // Java 2 Standard packages
 import javax.xml.bind.annotation.XmlRegistry;
 
-// Local packages
-import org.apromore.anf.AnnotationType;
-import org.apromore.anf.AnnotationsType;
-
 /**
  * Element factory for an ANF 0.3 object model with convenience methods.
  *
@@ -16,12 +12,27 @@ import org.apromore.anf.AnnotationsType;
 public class ObjectFactory extends org.apromore.anf.ObjectFactory {
 
     @Override
-    public AnnotationsType createAnnotationsType() {
+    public AnfAnnotationsType createAnnotationsType() {
         return new AnfAnnotationsType();
     }
 
     @Override
-    public AnnotationType createAnnotationType() {
-        return new AnfAnnotationType();
+    public AnfDocumentationType createDocumentationType() {
+        return new AnfDocumentationType();
+    }
+
+    @Override
+    public AnfGraphicsType createGraphicsType() {
+        return new AnfGraphicsType();
+    }
+
+    @Override
+    public AnfPositionType createPositionType() {
+        return new AnfPositionType();
+    }
+
+    @Override
+    public AnfSizeType createSizeType() {
+        return new AnfSizeType();
     }
 }

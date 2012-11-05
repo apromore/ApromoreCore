@@ -27,9 +27,7 @@ public class CpfNetType extends NetType implements Attributed {
     private final Set<String> objectNameSet = new HashSet<String>();  // TODO - use diamond operator
 
     /** No-arg constructor. */
-    public CpfNetType() {
-        super();
-    }
+    public CpfNetType() { }
 
     /**
      * Add a net to the CPF document, corresponding to a given BPMN process.
@@ -42,8 +40,6 @@ public class CpfNetType extends NetType implements Attributed {
     public CpfNetType(final ProcessWrapper process,
                       final NetType parent,
                       final Initializer initializer) throws CanoniserException {
-
-        super();
 
         final CpfNetType net = this;  // needed so that the inner classes can reference this instance
 
