@@ -345,7 +345,6 @@ public class ManagerPortalEndpoint {
         LOGGER.info("Retrieving all clusters in the repository ...");
         String payload = message.getValue();
         String res = "received: " + payload;
-        System.out.println(res);
     }
 
     @PayloadRoot(namespace = NAMESPACE, localPart = "ReadAllUsersRequest")

@@ -75,7 +75,7 @@ public interface CanoniserService {
      * @throws CanoniserException something failed
      */
     DecanonisedProcess deCanonise(final Integer processId, final String version, final String nativeType, final CanonicalProcessType canonicalFormat,
-                                  final AnnotationsType annotationFormat, Set<RequestParameterType<?>> canoniserProperties) throws CanoniserException;
+        final AnnotationsType annotationFormat, Set<RequestParameterType<?>> canoniserProperties) throws CanoniserException;
 
     /**
      * Convert the CPF Graph to XML.

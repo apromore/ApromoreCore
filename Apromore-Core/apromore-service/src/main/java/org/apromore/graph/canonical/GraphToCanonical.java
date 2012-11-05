@@ -2,6 +2,7 @@ package org.apromore.graph.canonical;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -29,6 +30,7 @@ import org.apromore.cpf.ResourceTypeRefType;
 import org.apromore.cpf.ResourceTypeType;
 import org.apromore.cpf.RoutingType;
 import org.apromore.cpf.SoftType;
+import org.apromore.cpf.StateType;
 import org.apromore.cpf.TaskType;
 import org.apromore.cpf.TimerExpressionType;
 import org.apromore.cpf.TimerType;
@@ -98,6 +100,8 @@ public class GraphToCanonical {
             constructEvent((Event) n, net);
         } else if (n instanceof Task) {
             constructTask((Task) n, net);
+        } else if (n instanceof State) {
+            constructState((State) n, net);
         } else if (n instanceof OrJoin || n instanceof OrSplit) {
             constructOrNode(n, net);
         } else if (n instanceof XOrJoin || n instanceof XOrSplit) {
@@ -113,7 +117,6 @@ public class GraphToCanonical {
     }
 
 
-
     private static List<IResource> findResourceList(final Canonical graph) {
         List<IResource> resources = new ArrayList<IResource>(0);
         Collection<Node> nodes = graph.getNodes();
@@ -123,13 +126,17 @@ public class GraphToCanonical {
         return resources;
     }
 
-    private static List<IObject> findObjectList(final Canonical graph) {
-        List<IObject> resources = new ArrayList<IObject>(0);
+    private static Collection<IObject> findObjectList(final Canonical graph) {
+        Map<String, IObject> resources = new HashMap<String, IObject>(0);
         Collection<Node> nodes = graph.getNodes();
         for (Node node : nodes) {
-            resources.addAll((node).getObjects());
+            for (IObject obj : node.getObjects()) {
+                if (!resources.containsKey(obj.getObjectId())) {
+                    resources.put(obj.getObjectId(), obj);
+                }
+            }
         }
-        return resources;
+        return resources.values();
     }
 
     private static Collection<? extends TypeAttribute> addAttributes(final Node n) {
@@ -185,17 +192,22 @@ public class GraphToCanonical {
     }
 
     /* Add objects for the Canonical Format */
-    private static void addObjectsForCpf(final List<IObject> cpfObject, final NetType net) {
+    private static void addObjectsForCpf(final Collection<IObject> cpfObject, final NetType net) {
         ObjectType typ;
         for (IObject obj : cpfObject) {
-            if (obj.getObjectType().equals(IObject.ObjectTypeEnum.HARD)) {
-                typ = new HardType();
+            if (obj.getObjectType() != null) {
+                if (obj.getObjectType().equals(IObject.ObjectTypeEnum.HARD)) {
+                    typ = new HardType();
+                } else {
+                    typ = new SoftType();
+                }
             } else {
-                typ = new SoftType();
+                typ = new ObjectType();
             }
             typ.setId(obj.getId());
             typ.setName(obj.getName());
             typ.getAttribute().addAll(buildAttributeList(obj.getAttributes()));
+
             net.getObject().add(typ);
         }
     }
@@ -246,6 +258,14 @@ public class GraphToCanonical {
     }
 
 
+    private static void constructState(State n, NetType net) {
+        StateType state = new StateType();
+        state.setName(n.getName());
+        state.setId(n.getId());
+        state.setOriginalID(n.getOriginalId());
+        state.setConfigurable(n.isConfigurable());
+        net.getNode().add(state);
+    }
 
     private static void constructTask(Task n, NetType net) {
         TaskType typ = new TaskType();
@@ -317,7 +337,9 @@ public class GraphToCanonical {
         typ.setId(n.getId());
         typ.setOriginalID(n.getOriginalId());
         typ.setConfigurable(n.isConfigurable());
-        typ.setDirection(DirectionEnum.valueOf(n.getDirection().name()));
+        if (n.getDirection() != null) {
+            typ.setDirection(DirectionEnum.valueOf(n.getDirection().name()));
+        }
 
         typ.getAttribute().addAll(addAttributes(n));
         typ.getObjectRef().addAll(addObjectRef(n));
