@@ -7,7 +7,7 @@ import java.util.Set;
 import javax.xml.namespace.QName;
 
 // Local packages
-import org.apromore.canoniser.bpmn.ProcessWrapper;
+import org.apromore.canoniser.bpmn.bpmn.ProcessWrapper;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;

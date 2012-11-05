@@ -1,4 +1,4 @@
-package org.apromore.canoniser.bpmn;
+package org.apromore.canoniser.bpmn.bpmn;
 
 // Java 2 Standard packages
 import java.io.File;
@@ -36,6 +36,7 @@ import org.junit.Test;
 
 // Local packages
 import org.apromore.anf.AnnotationsType;
+import org.apromore.canoniser.bpmn.TestConstants;
 import org.apromore.canoniser.bpmn.anf.AnfAnnotationsType;
 import org.apromore.canoniser.bpmn.cpf.CpfIDResolver;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
