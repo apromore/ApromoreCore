@@ -23,12 +23,27 @@ import org.xml.sax.SAXException;
  */
 public class CPFSchema {
 
+    /**
+     * CPF version number.
+     */
+    public static final String CPF_VERSION = "1.0";
+
+    /**
+     * {@link JAXBContext} for these CPF classes.
+     */
     public static final String CPF_CONTEXT = "org.apromore.cpf";
 
     /**
-     * URI used for XPath
+     * Classpath location of the CPF XML Schema document.
      */
-    public static final String EXPRESSION_LANGUAGE_XPATH = "http://www.w3.org/1999/xpath/";
+    private static final String CPF_SCHEMA_LOCATION = "/xsd/cpf_1.0.xsd";
+
+    /**
+     * URI used for XPath.
+     *
+     * @see <a href="http://www.omg.org/spec/BPMN/2.0/PDF">BPMN 2.0</a>, page 53
+     */
+    public static final String EXPRESSION_LANGUAGE_XPATH = "http://www.w3.org/1999/XPath";
 
     /**
      * URI used for XQuery
@@ -45,9 +60,12 @@ public class CPFSchema {
      */
     public static final String EXPRESSION_LANGUAGE_APROMORE_RESOURCE_RUNTIME = "http://www.apromore.org/expressions/resources/runtime";
 
-
-    private static final String CPF_SCHEMA_LOCATION = "/xsd/cpf_1.0.xsd";
-
+    /**
+     * URI used for XML Schema datatypes.
+     *
+     * @see <a href="http://www.omg.org/spec/BPMN/2.0/PDF">BPMN 2.0</a>, page 53
+     */
+    public static final String TYPE_LANGUAGE_XSD = "http://www.w3.org/2001/XMLSchema";
 
     /**
      * Schema of CPF
