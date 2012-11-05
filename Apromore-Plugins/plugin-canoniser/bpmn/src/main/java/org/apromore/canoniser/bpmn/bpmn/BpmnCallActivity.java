@@ -13,9 +13,7 @@ import org.omg.spec.bpmn._20100524.model.TCallActivity;
 public class BpmnCallActivity extends TCallActivity {
 
     /** No-arg constructor. */
-    public BpmnCallActivity() {
-        super();
-    }
+    public BpmnCallActivity() { }
 
     /**
      * Construct a BPMN SubProcess corresponding to a CPF Task.

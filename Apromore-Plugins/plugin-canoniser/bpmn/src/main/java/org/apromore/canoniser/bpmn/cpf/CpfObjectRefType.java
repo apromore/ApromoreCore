@@ -21,9 +21,7 @@ public class CpfObjectRefType extends ObjectRefType implements Attributed {
     // Constructors
 
     /** No-arg constructor. */
-    public CpfObjectRefType() {
-        super();
-    }
+    public CpfObjectRefType() { }
 
     /**
      * Construct a CPF ObjectRef corresponding to a BPMN DataInputAssociation.

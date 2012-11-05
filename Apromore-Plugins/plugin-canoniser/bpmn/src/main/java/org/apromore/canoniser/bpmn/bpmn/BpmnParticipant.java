@@ -15,9 +15,7 @@ import org.omg.spec.bpmn._20100524.model.TProcess;
 public class BpmnParticipant extends TParticipant {
 
     /** No-arg constructor. */
-    public BpmnParticipant() {
-        super();
-    }
+    public BpmnParticipant() { }
 
     /**
      * Construct a BPMN Participant corresponding to (and referencing) a BPMN Process.

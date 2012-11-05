@@ -13,9 +13,7 @@ import org.omg.spec.bpmn._20100524.model.TSubProcess;
 public class BpmnSubProcess extends TSubProcess {
 
     /** No-arg constructor. */
-    public BpmnSubProcess() {
-        super();
-    }
+    public BpmnSubProcess() { }
 
     /**
      * Construct a BPMN SubProcess corresponding to a CPF Task.

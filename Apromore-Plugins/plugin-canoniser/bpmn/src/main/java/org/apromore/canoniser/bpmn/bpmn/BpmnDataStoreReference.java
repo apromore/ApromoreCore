@@ -16,9 +16,7 @@ import org.omg.spec.bpmn._20100524.model.TDataStoreReference;
 public class BpmnDataStoreReference extends TDataStoreReference {
 
     /** No-arg constructor. */
-    public BpmnDataStoreReference() {
-        super();
-    }
+    public BpmnDataStoreReference() { }
 
     /**
      * Construct a BPMN Data StoreReference corresponding to a CPF Object.

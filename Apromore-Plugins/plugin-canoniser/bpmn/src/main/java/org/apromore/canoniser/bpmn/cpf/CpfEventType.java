@@ -27,9 +27,7 @@ public class CpfEventType extends EventType implements CpfNodeType {
     // Constructors
 
     /** No-arg constructor. */
-    public CpfEventType() {
-        super();
-    }
+    public CpfEventType() { }
 
     /**
      * Construct a CPF Task corresponding to a BPMN End Event.
@@ -39,7 +37,6 @@ public class CpfEventType extends EventType implements CpfNodeType {
      * @throws CanoniserException if construction fails
      */
     public CpfEventType(final TEndEvent endEvent, final Initializer initializer) throws CanoniserException {
-        super();
         initializer.populateFlowNode(this, endEvent);
     }
 
@@ -51,7 +48,6 @@ public class CpfEventType extends EventType implements CpfNodeType {
      * @throws CanoniserException if construction fails
      */
     public CpfEventType(final TStartEvent startEvent, final Initializer initializer) throws CanoniserException {
-        super();
         initializer.populateFlowNode(this, startEvent);
     }
 

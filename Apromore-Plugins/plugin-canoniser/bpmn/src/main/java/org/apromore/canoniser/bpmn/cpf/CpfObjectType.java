@@ -38,9 +38,7 @@ public class CpfObjectType extends ObjectType implements Attributed {
     // Constructors
 
     /** No-arg constructor. */
-    public CpfObjectType() {
-        super();
-    }
+    public CpfObjectType() { }
 
     /**
      * Construct a CPF Object corresponding to a BPMN Data Object.

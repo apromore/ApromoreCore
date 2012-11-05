@@ -68,7 +68,6 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
      * @throws CanoniserException  if the CPF document can't be constructed
      */
     public CpfCanonicalProcessType(final BpmnDefinitions definitions) throws CanoniserException {
-        super();
 
         final Initializer initializer = new Initializer(this, definitions, elementMap);
 

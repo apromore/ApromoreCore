@@ -14,9 +14,7 @@ import org.omg.spec.bpmn._20100524.model.TProcess;
 public class BpmnProcess extends TProcess {
 
     /** No-arg constructor. */
-    public BpmnProcess() {
-        super();
-    }
+    public BpmnProcess() { }
 
     /**
      * Construct a BPMN Process corresponding to a CPF Net.

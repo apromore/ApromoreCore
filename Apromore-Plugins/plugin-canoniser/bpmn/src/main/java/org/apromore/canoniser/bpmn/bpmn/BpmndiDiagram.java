@@ -36,9 +36,7 @@ public class BpmndiDiagram extends BPMNDiagram {
     private final Logger logger = Logger.getLogger(BpmndiDiagram.class.getCanonicalName());
 
     /** No-arg constructor. */
-    public BpmndiDiagram() {
-        super();
-    }
+    public BpmndiDiagram() { }
 
     /**
      * Construct a BPMNDI Diagram corresponding to an ANF AnnotationsType.

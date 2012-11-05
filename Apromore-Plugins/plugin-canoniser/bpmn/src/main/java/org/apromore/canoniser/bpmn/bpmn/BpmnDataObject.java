@@ -13,9 +13,7 @@ import org.omg.spec.bpmn._20100524.model.TDataObject;
 public class BpmnDataObject extends TDataObject {
 
     /** No-arg constructor. */
-    public BpmnDataObject() {
-        super();
-    }
+    public BpmnDataObject() { }
 
     /**
      * Construct a BPMN Data Object corresponding to a CPF Object.
