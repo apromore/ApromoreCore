@@ -21,8 +21,6 @@ import org.apromore.canoniser.bpmn.TestConstants;
 import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.bpmn.BpmnObjectFactory;
 import org.apromore.canoniser.bpmn.anf.AnfAnnotationsType;
-import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
-import org.apromore.canoniser.bpmn.cpf.CpfEventType;
 import org.apromore.cpf.*;
 
 /**
@@ -90,7 +88,7 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         // Start event "E1"
         NodeType e1 = net.getNode().get(0);
         assertEquals("E1", e1.getName());
-        assertEquals(CpfEventType.class, e1.getClass());
+        assertEquals(CpfEventTypeImpl.class, e1.getClass());
         
         // Task "A"
         NodeType a = net.getNode().get(1);
@@ -100,7 +98,7 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         // End event "E2"
         NodeType e2 = net.getNode().get(2);
         assertEquals("E2", e2.getName());
-        assertEquals(CpfEventType.class, e2.getClass());
+        assertEquals(CpfEventTypeImpl.class, e2.getClass());
 
         // Expect 2 edges
         assertEquals(2, net.getEdge().size());
@@ -251,13 +249,13 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         ResourceTypeType p = (ResourceTypeType) cpf.getResourceType().get(1);//getElement("sid-C08F4656-30B9-4D6D-9086-20469AB54D8B");
         assertNotNull(p);
         assertEquals("P", p.getName());
-        assertEquals(CpfResourceTypeType.class, p.getClass());
+        assertEquals(CpfResourceTypeTypeImpl.class, p.getClass());
 
         // Implicit lane within "P"
         ResourceTypeType p_lane = (ResourceTypeType) cpf.getResourceType().get(0);//getElement("sid-C599C65B-4C1E-44B8-9653-E6E849AE31D5");
         assertNotNull(p_lane);
         assertEquals("", p_lane.getName());
-        assertEquals(CpfResourceTypeType.class, p_lane.getClass());
+        assertEquals(CpfResourceTypeTypeImpl.class, p_lane.getClass());
 
         // Resource type specialization hierarchy: p_lane in p
         assertEquals(Collections.emptyList(), p_lane.getSpecializationIds());
@@ -270,7 +268,7 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         // Start event "E1"
         NodeType e1 = net.getNode().get(0);
         assertEquals("E1", e1.getName());
-        assertEquals(CpfEventType.class, e1.getClass());
+        assertEquals(CpfEventTypeImpl.class, e1.getClass());
         assertEquals(1, ((EventType) e1).getResourceTypeRef().size()); 
         assertEquals(p_lane.getId(), ((EventType) e1).getResourceTypeRef().get(0).getResourceTypeId()); 
 
@@ -284,7 +282,7 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         // End event "E2"
         NodeType e2 = net.getNode().get(2);
         assertEquals("E2", e2.getName());
-        assertEquals(CpfEventType.class, e2.getClass());
+        assertEquals(CpfEventTypeImpl.class, e2.getClass());
         assertEquals(1, ((EventType) e2).getResourceTypeRef().size()); 
         assertEquals(p_lane.getId(), ((EventType) e2).getResourceTypeRef().get(0).getResourceTypeId()); 
 
@@ -320,17 +318,17 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         // Pool "P"
         ResourceTypeType p = cpf.getResourceType().get(2);
         assertEquals("P", p.getName());
-        assertEquals(CpfResourceTypeType.class, p.getClass());
+        assertEquals(CpfResourceTypeTypeImpl.class, p.getClass());
 
         // Anonymous lane inside pool "P"
         ResourceTypeType p_lane = cpf.getResourceType().get(0);
         assertEquals("", p_lane.getName());
-        assertEquals(CpfResourceTypeType.class, p_lane.getClass());
+        assertEquals(CpfResourceTypeTypeImpl.class, p_lane.getClass());
 
         // Lane "L"
         ResourceTypeType l = cpf.getResourceType().get(1);
         assertEquals("L", l.getName());
-        assertEquals(CpfResourceTypeType.class, l.getClass());
+        assertEquals(CpfResourceTypeTypeImpl.class, l.getClass());
 
         // Resource type specialization hierarchy: l in p_lane in p
         assertEquals(Collections.emptyList(), l.getSpecializationIds());
@@ -344,7 +342,7 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         // Start event "E1"
         NodeType e1 = net.getNode().get(0);
         assertEquals("E1", e1.getName());
-        assertEquals(CpfEventType.class, e1.getClass());
+        assertEquals(CpfEventTypeImpl.class, e1.getClass());
         assertEquals(1, ((EventType) e1).getResourceTypeRef().size()); 
         assertEquals(l.getId(), ((EventType) e1).getResourceTypeRef().get(0).getResourceTypeId()); 
 
@@ -358,7 +356,7 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         // End event "E2"
         NodeType e2 = net.getNode().get(2);
         assertEquals("E2", e2.getName());
-        assertEquals(CpfEventType.class, e2.getClass());
+        assertEquals(CpfEventTypeImpl.class, e2.getClass());
         assertEquals(1, ((EventType) e2).getResourceTypeRef().size()); 
         assertEquals(l.getId(), ((EventType) e2).getResourceTypeRef().get(0).getResourceTypeId()); 
 

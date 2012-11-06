@@ -42,7 +42,7 @@ import org.apromore.anf.AnnotationsType;
 import org.apromore.canoniser.bpmn.anf.AnfAnnotationsType;
 import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
-import org.apromore.canoniser.bpmn.cpf.CpfEventType;
+import org.apromore.canoniser.bpmn.cpf.CpfEventTypeImpl;
 import org.apromore.canoniser.bpmn.cpf.CpfIDResolver;
 import org.apromore.canoniser.bpmn.cpf.CpfResourceTypeType;
 import org.apromore.canoniser.bpmn.cpf.CpfTaskType;
@@ -108,7 +108,7 @@ public class BPMN20CanoniserTest implements TestConstants {
         // Start event "E1"
         NodeType e1 = net.getNode().get(0);
         assertEquals("E1", e1.getName());
-        assertEquals(CpfEventType.class, e1.getClass());
+        assertEquals(CpfEventTypeImpl.class, e1.getClass());
 
         // Task "A"
         NodeType a = net.getNode().get(1);
@@ -118,7 +118,7 @@ public class BPMN20CanoniserTest implements TestConstants {
         // End event "E2"
         NodeType e2 = net.getNode().get(2);
         assertEquals("E2", e2.getName());
-        assertEquals(CpfEventType.class, e2.getClass());
+        assertEquals(CpfEventTypeImpl.class, e2.getClass());
 
         // Expect 2 edges
         assertEquals(2, net.getEdge().size());

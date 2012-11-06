@@ -91,13 +91,13 @@ public class BpmnDefinitionsTest implements TestConstants {
         CpfCanonicalProcessType cpf =
             CpfCanonicalProcessType.newInstance(new FileInputStream(new File(CANONICAL_MODELS_DIR, filename + ".cpf")), true);
 
-        // Read the ANF source file
-        AnnotationsType anf =
-            AnfAnnotationsType.newInstance(new FileInputStream(new File(CANONICAL_MODELS_DIR, filename + ".anf")), true);
+        AnnotationsType anf = null;
+        File anfFile = new File(CANONICAL_MODELS_DIR, filename + ".anf");
+        if (anfFile.exists()) {
+            // Read the ANF source file
+            anf = AnfAnnotationsType.newInstance(new FileInputStream(new File(CANONICAL_MODELS_DIR, filename + ".anf")), true);
+        }
 
-        // Confirm constraints that can't be expressed in the CPF or ANF schemas
-        assertEquals(cpf.getUri(), anf.getUri());
-        
         // Obtain the test instance
         BpmnDefinitions definitions = BpmnDefinitions.correctFlowNodeRefs(new BpmnDefinitions(cpf, anf), new BpmnObjectFactory());
 
@@ -113,12 +113,17 @@ public class BpmnDefinitionsTest implements TestConstants {
         cpf2.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".cpf+anf.bpmn.cpf")), false);
         cpf2.marshal(new NullOutputStream(), true);
 
-        assertEquals(1, definitions.getBPMNDiagram().size());
+        if (anfFile.exists()) {
+            assertEquals(1, definitions.getBPMNDiagram().size());
 
-        AnfAnnotationsType anf2 = new AnfAnnotationsType(definitions, definitions.getBPMNDiagram().get(0));
-        anf2.setUri("dummy");
-        anf2.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".cpf+anf.bpmn.anf")), false);
-        anf2.marshal(new NullOutputStream(), true);
+            // Confirm constraints that can't be expressed in the CPF or ANF schemas
+            assertEquals(cpf.getUri(), anf.getUri());
+
+            AnfAnnotationsType anf2 = new AnfAnnotationsType(definitions, definitions.getBPMNDiagram().get(0));
+            anf2.setUri("dummy");
+            anf2.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".cpf+anf.bpmn.anf")), false);
+            anf2.marshal(new NullOutputStream(), true);
+        }
 
         return definitions;
     }
@@ -388,7 +393,6 @@ public class BpmnDefinitionsTest implements TestConstants {
     /**
      * Test decanonisation of <code>OrderFulfillment.cpf</code>.
      */
-    @Ignore
     @Test
     public final void testDecanoniseOrderFulfillment() throws Exception {
 

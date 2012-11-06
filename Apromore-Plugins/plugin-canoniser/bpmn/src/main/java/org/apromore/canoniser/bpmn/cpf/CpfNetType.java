@@ -99,13 +99,22 @@ public class CpfNetType extends NetType implements Attributed {
                     unimplemented(that);
                 }
 
-                @Override public void visit(final TComplexGateway that) {
-                    unimplemented(that);
+                @Override public void visit(final TComplexGateway complexGateway) {
+                    try {
+                        RoutingType routing = new CpfStateType();
+
+                        initializer.populateDefaultingGateway(routing, complexGateway, complexGateway.getDefault());
+
+                        net.getNode().add(routing);
+
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TDataObject dataObject) {
                     try {
-                        net.getObject().add(new CpfObjectType(dataObject, net, initializer));
+                        net.getObject().add(new CpfObjectTypeImpl(dataObject, net, initializer));
                     } catch (CanoniserException e) {
                         throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }
@@ -117,7 +126,7 @@ public class CpfNetType extends NetType implements Attributed {
 
                 @Override public void visit(final TDataStoreReference dataStoreReference) {
                     try {
-                        net.getObject().add(new CpfObjectType(dataStoreReference, net, initializer));
+                        net.getObject().add(new CpfObjectTypeImpl(dataStoreReference, net, initializer));
                     } catch (CanoniserException e) {
                         throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }
@@ -125,7 +134,7 @@ public class CpfNetType extends NetType implements Attributed {
 
                 @Override public void visit(final TEndEvent endEvent) {
                     try {
-                        net.getNode().add(new CpfEventType(endEvent, initializer));
+                        net.getNode().add(new CpfEventTypeImpl(endEvent, initializer));
                     } catch (CanoniserException e) {
                         throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }
@@ -191,8 +200,12 @@ public class CpfNetType extends NetType implements Attributed {
                     unimplemented(that);
                 }
 
-                @Override public void visit(final TIntermediateThrowEvent that) {
-                    unimplemented(that);
+                @Override public void visit(final TIntermediateThrowEvent intermediateThrowEvent) {
+                    try {
+                        net.getNode().add(new CpfEventTypeImpl(intermediateThrowEvent, initializer));
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
+                    }
                 }
 
                 @Override public void visit(final TManualTask manualTask) {
@@ -269,7 +282,7 @@ public class CpfNetType extends NetType implements Attributed {
 
                 @Override public void visit(final TStartEvent startEvent) {
                     try {
-                        net.getNode().add(new CpfEventType(startEvent, initializer));
+                        net.getNode().add(new CpfEventTypeImpl(startEvent, initializer));
                     } catch (CanoniserException e) {
                         throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }
@@ -363,7 +376,7 @@ public class CpfNetType extends NetType implements Attributed {
         for (TLaneSet laneSet : laneSets) {
 
             // Create a pool
-            ResourceTypeType poolResourceType = new CpfResourceTypeType(participant, initializer);
+            ResourceTypeType poolResourceType = new CpfResourceTypeTypeImpl(participant, initializer);
 
             // Create the lanes within the pool
             poolResourceType.getSpecializationIds().addAll(addLanes(laneSet, initializer));
@@ -388,7 +401,7 @@ public class CpfNetType extends NetType implements Attributed {
         Set<String> specializationIds = new HashSet<String>();  // TODO - diamond operator
 
         for (final TLane lane : laneSet.getLane()) {
-            ResourceTypeType laneResourceType = new CpfResourceTypeType();
+            ResourceTypeType laneResourceType = new CpfResourceTypeTypeImpl();
 
             // Add the resource type to the CPF model
             laneResourceType.setId(initializer.newId(lane.getId()));
