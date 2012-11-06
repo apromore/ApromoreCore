@@ -45,7 +45,7 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
     private CpfCanonicalProcessType testCanonise(String filename) throws Exception {
 
         // Obtain the test instance
-        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(MODELS_DIR, filename)), true);
+        BpmnDefinitions definitions = BpmnDefinitions.newInstance(new FileInputStream(new File(BPMN_MODELS_DIR, filename)), true);
 
         // Validate and serialize the canonised documents to be inspected offline
         CpfCanonicalProcessType cpf = new CpfCanonicalProcessType(definitions);

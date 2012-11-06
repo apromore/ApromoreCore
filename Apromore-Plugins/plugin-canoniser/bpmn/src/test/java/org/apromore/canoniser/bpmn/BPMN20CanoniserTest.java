@@ -91,7 +91,7 @@ public class BPMN20CanoniserTest implements TestConstants {
         // Construct test instance
         BPMN20Canoniser canoniser = new BPMN20Canoniser();
         PluginRequest request = null;
-        InputStream bpmnInput = new FileInputStream(new File(MODELS_DIR, "Case 1.bpmn"));
+        InputStream bpmnInput = new FileInputStream(new File(BPMN_MODELS_DIR, "Case 1.bpmn"));
         List<AnnotationsType> anfs = new ArrayList<AnnotationsType>();
         List<CanonicalProcessType> cpfs = new ArrayList<CanonicalProcessType>();
         PluginResult result = canoniser.canonise(bpmnInput, anfs, cpfs, request);
@@ -176,7 +176,7 @@ public class BPMN20CanoniserTest implements TestConstants {
 
         CanonicalProcessType cpf = ((JAXBElement<CanonicalProcessType>) JAXBContext.newInstance(CPFSchema.CPF_CONTEXT)
                                                                                    .createUnmarshaller()
-                                                                                   .unmarshal(new File(TESTCASES_DIR, "Basic.cpf"))).getValue();
+                                                                                   .unmarshal(new File(CANONICAL_MODELS_DIR, "Basic.cpf"))).getValue();
         AnnotationsType anf = null;
         ByteArrayOutputStream bpmnOutput = new ByteArrayOutputStream();
         PluginRequest request = null;
