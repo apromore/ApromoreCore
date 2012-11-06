@@ -22,6 +22,7 @@ import org.apromore.canoniser.bpmn.cpf.CpfObjectRefType;
 import org.apromore.canoniser.bpmn.cpf.CpfResourceTypeType;
 import org.apromore.canoniser.bpmn.cpf.ExtensionConstants;
 import org.apromore.canoniser.exception.CanoniserException;
+import org.apromore.anf.AnnotationType;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.EdgeType;
 import org.apromore.cpf.NetType;
@@ -44,6 +45,7 @@ import org.omg.spec.bpmn._20100524.model.TInclusiveGateway;
 import org.omg.spec.bpmn._20100524.model.TMonitoring;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TSequenceFlow;
+import org.omg.spec.dd._20100524.di.DiagramElement;
 
 /**
  * Global state of BPMn document construction used within {@link #BpmnDefinition(CanonicalProcessType)}.
@@ -360,6 +362,17 @@ class Initializer extends AbstractInitializer implements ExtensionConstants {
         // Handle extensionElements subelement
         populateBaseElementExtensionElements(baseElement, cpfResourceType);
     };
+
+    // ...for ANF AnnotationType
+
+    /**
+     * @param graphics  the ANF annotation
+     */
+    void populateDiagramElement(final DiagramElement diagramElement, final AnnotationType annotation) {
+
+        // Handle @id attribute
+        diagramElement.setId(newId(annotation.getId()));
+    }
 
     // Internal methods
 

@@ -367,6 +367,8 @@ public class CpfNetType extends NetType implements Attributed {
 
             // Create the lanes within the pool
             poolResourceType.getSpecializationIds().addAll(addLanes(laneSet, initializer));
+
+            initializer.addResourceType(poolResourceType);
         }
     }
 
