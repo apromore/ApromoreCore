@@ -86,7 +86,7 @@ public class ComposerServiceImpl implements ComposerService {
         }
     }
 
-    private void composeNewContent(final OperationContext op, final String fragmentVersionUri, final String pocketId, 
+    private void composeNewContent(final OperationContext op, final String fragmentVersionUri, final String pocketId,
             final Content contentDO) throws ExceptionDao {
         op.incrementContentUsage(contentDO.getId());
 
@@ -98,7 +98,7 @@ public class ComposerServiceImpl implements ComposerService {
         if (pocketId != null) {
             Collection<Edge> edges = g.getEdges();
             for (Edge edge: edges) {
-                if (edge.getTarget() != null && edge.getTarget().getId().equals(pocketId)) {
+                if (edge.getTarget() != null && edge.getTarget().getId().equals(getNodeIdByUri(pocketId))) {
                     Node boundaryS = g.getNode(getNodeIdByUri(contentDO.getBoundaryS()));
                     Node parentT1 = edge.getSource();
                     if (canCombineSplit(parentT1, boundaryS)) {
@@ -112,7 +112,7 @@ public class ComposerServiceImpl implements ComposerService {
                     }
                 }
 
-                if (edge.getSource() != null && edge.getSource().getId().equals(pocketId)) {
+                if (edge.getSource() != null && edge.getSource().getId().equals(getNodeIdByUri(pocketId))) {
                     Node boundaryE = g.getNode(getNodeIdByUri(contentDO.getBoundaryE()));
                     Node parentT2 = edge.getTarget();
                     if (canCombineJoin(parentT2, boundaryE)) {
@@ -127,7 +127,7 @@ public class ComposerServiceImpl implements ComposerService {
                     }
                 }
             }
-            g.removeVertex(g.getNode(pocketId));
+            g.removeVertex(g.getNode(getNodeIdByUri(pocketId)));
             g.removeVertices(nodesToBeRemoved);
         }
 
@@ -222,7 +222,7 @@ public class ComposerServiceImpl implements ComposerService {
         if (pocketId != null) {
             Collection<Edge> edges = g.getEdges();
             for (Edge edge: edges) {
-                if (edge.getTarget() != null && edge.getTarget().getId().equals(pocketId)) {
+                if (edge.getTarget() != null && edge.getTarget().getId().equals(getNodeIdByUri(pocketId))) {
                     Node boundaryS = g.getNode(vMap.get(getNodeIdByUri(contentDO.getBoundaryS())));
                     Node parentT1 = edge.getSource();
                     if (canCombineSplit(parentT1, boundaryS)) {
@@ -236,7 +236,7 @@ public class ComposerServiceImpl implements ComposerService {
                         edge.setTarget(g.getNode(vMap.get(getNodeIdByUri(contentDO.getBoundaryS()))));
                     }
                 }
-                if (edge.getSource().getId().equals(pocketId)) {
+                if (edge.getSource() !=null && edge.getSource().getId().equals(getNodeIdByUri(pocketId))) {
                     Node boundaryE = g.getNode(vMap.get(getNodeIdByUri(contentDO.getBoundaryE())));
                     Node parentT2 = edge.getTarget();
                     if (canCombineJoin(parentT2, boundaryE)) {
@@ -251,7 +251,7 @@ public class ComposerServiceImpl implements ComposerService {
                     }
                 }
             }
-            g.removeVertex(g.getNode(pocketId));
+            g.removeVertex(g.getNode(getNodeIdByUri(pocketId)));
             g.removeVertices(nodesToBeRemoved);
         }
 

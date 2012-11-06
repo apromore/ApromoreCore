@@ -11,6 +11,7 @@
  */
 package org.apromore.canoniser.yawl.internal.impl.handler.canonical.macros;
 
+import java.text.MessageFormat;
 import java.util.List;
 
 import org.apromore.canoniser.exception.CanoniserException;
@@ -85,7 +86,8 @@ public class RoutingNodeMacro extends ContextAwareRewriteMacro {
     private void handleSplitNode(final SplitType splitNode, final NetType net) throws CanoniserException {
         final List<NodeType> preSet = getContext().getPreSet(splitNode.getId());
         if (preSet.size() != 1) {
-            throw new CanoniserException("Split " + splitNode.getId() + " has more than 1 predecessors!");
+            throw new CanoniserException((MessageFormat.format("Invalid CPF: {0}:{1} has {2}  predecessors! Split nodes MUST have 1 predecessor in CPF! ", splitNode.getClass().getSimpleName(), splitNode.getId(),
+                    preSet.size())));
         } else {
             final NodeType prevNode = preSet.get(0);
             if (prevNode instanceof TaskType) {
@@ -137,13 +139,14 @@ public class RoutingNodeMacro extends ContextAwareRewriteMacro {
                 return edge;
             }
         }
-        throw new IllegalArgumentException("No edge between source and target node. Invalid use of 'findEdgeBetween'!");
+        throw new IllegalArgumentException("No edge between source and target node. Invalid use of 'findEdgeBetween'! This is probably a programming error!");
     }
 
     private void handleJoinNode(final JoinType joinNode, final NetType net) throws CanoniserException {
         final List<NodeType> postSet = getContext().getPostSet(joinNode.getId());
         if (postSet.size() != 1) {
-            throw new CanoniserException("Join " + joinNode.getId() + " has more than 1 successors!");
+            throw new CanoniserException(MessageFormat.format("Invalid CPF: {0}:{1} has {2}  successors! Join nodes MUST have 1 successor in CPF! ", joinNode.getClass().getSimpleName(), joinNode.getId(),
+                    postSet.size()));
         } else {
             final NodeType nextNode = postSet.get(0);
             if (nextNode instanceof TaskType) {

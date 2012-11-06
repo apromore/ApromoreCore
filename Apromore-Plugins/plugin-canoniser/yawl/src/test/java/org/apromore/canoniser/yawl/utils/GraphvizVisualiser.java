@@ -123,6 +123,7 @@ public class GraphvizVisualiser {
 
     private DirectedGraph createGraph(final NetType net, final boolean withLabels) {
         final Map<String, Vertex> nodeMap = new HashMap<String, Vertex>();
+        final Map<String, Vertex> nodeNameMap = new HashMap<String, Vertex>();
         final DirectedGraph g = new DirectedGraph();
 
         int edgeCounter = 0;
@@ -142,14 +143,24 @@ public class GraphvizVisualiser {
                 }
             }
             if (node.getName() != null) {
-                //TODO prevent duplicate names
-                vertex.setId(node.getName());
+                if (withLabels) {
+                    vertex.setId(node.getId());
+                } else {
+                    if (nodeNameMap.get(node.getName()) == null) {
+                        // Use Name as ID if unique
+                        vertex.setId(node.getName());
+                    } else {
+                        // Otherwise use ID
+                        vertex.setId(node.getId());
+                    }
+                }
             } else {
                 vertex.setId("N" + (nodeIdCounter++));
             }
             vertex.setTag(node);
             g.addVertex(vertex);
             nodeMap.put(node.getId(), vertex);
+            nodeNameMap.put(node.getName(), vertex);
         }
 
         for (final EdgeType edgeType : net.getEdge()) {
