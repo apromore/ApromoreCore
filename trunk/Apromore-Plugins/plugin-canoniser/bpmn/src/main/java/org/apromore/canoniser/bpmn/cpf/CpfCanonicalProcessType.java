@@ -21,12 +21,18 @@ import org.xml.sax.SAXException;
 
 // Local packages
 import static org.apromore.canoniser.bpmn.BPMN20Canoniser.requiredName;
+import org.apromore.canoniser.bpmn.Initialization;
 import org.apromore.canoniser.bpmn.JAXBConstants;
 import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.bpmn.ProcessWrapper;
 import org.apromore.canoniser.exception.CanoniserException;
 import org.apromore.cpf.CanonicalProcessType;
 import org.apromore.cpf.CPFSchema;
+import org.omg.spec.bpmn._20100524.model.TBaseElement;
+import org.omg.spec.bpmn._20100524.model.TCollaboration;
+import org.omg.spec.bpmn._20100524.model.TMessage;
+import org.omg.spec.bpmn._20100524.model.TMessageFlow;
+import org.omg.spec.bpmn._20100524.model.TParticipant;
 import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.bpmn._20100524.model.TRootElement;
 
@@ -36,22 +42,6 @@ import org.omg.spec.bpmn._20100524.model.TRootElement;
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
 public class CpfCanonicalProcessType extends CanonicalProcessType implements Attributed, JAXBConstants {
-
-    /** XML schema for CPF 1.0. */
-    /*
-    private static final Schema CPF_SCHEMA;
-
-    static {
-        ClassLoader loader = CpfCanonicalProcessType.class.getClassLoader();
-        try {
-            CPF_SCHEMA  = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(
-                new StreamSource(loader.getResourceAsStream(CPFSchema.CPF_SCHEMA_LOCATION))
-            );
-        } catch (SAXException e) {
-            throw new RuntimeException("Unable to parse CPF schema", e);
-        }
-    }
-    */
 
     /** Lookup contained CPF elements by indentifier. */
     private final Map<String, Object> elementMap = new HashMap<String, Object>();  // TODO - use diamond operator
@@ -75,11 +65,54 @@ public class CpfCanonicalProcessType extends CanonicalProcessType implements Att
         setName(requiredName(definitions.getName()));
         setVersion(CPFSchema.CPF_VERSION);
 
-        // Each top-level BPMN Process becomes a CPF Net in the rootIDs list
-        for (JAXBElement<? extends TRootElement> rootElement : definitions.getRootElement()) {
-            if (rootElement.getValue() instanceof TProcess) {
-                TProcess process = (TProcess) rootElement.getValue();
-                new CpfNetType(new ProcessWrapper(process), null, initializer);
+        for (JAXBElement<? extends TRootElement> jere : definitions.getRootElement()) {
+            TRootElement rootElement = jere.getValue();
+            if (rootElement instanceof TCollaboration) {
+                TCollaboration collaboration = (TCollaboration) rootElement;
+
+                // Participants
+                for (final TParticipant participant : collaboration.getParticipant()) {
+                    if (participant.getProcessRef() == null) {  // black box pool
+                        getResourceType().add(new CpfResourceTypeType(participant, initializer));
+                    } else {
+                        TProcess process = (TProcess) initializer.findBpmnElement(participant.getProcessRef());
+                        if (process == null) {
+                            throw new CanoniserException("Participant " + participant.getId() + " missing process " + participant.getProcessRef());
+                        }
+                        initializer.warn("Canonisation ignores pool " + participant.getId() + " for process " + participant.getProcessRef());
+                    }
+                }
+
+                // Message flows
+                for (final TMessageFlow messageFlow : collaboration.getMessageFlow()) {
+                    messageFlow.getName();
+                    initializer.defer(new Initialization() {
+                        public void initialize() throws CanoniserException {
+                            TBaseElement source = initializer.findBpmnElement(messageFlow.getSourceRef());
+                            if (source == null) {
+                                throw new CanoniserException("Message flow " + messageFlow.getId() + " missing source " + messageFlow.getSourceRef());
+                            }
+
+                            TBaseElement target = initializer.findBpmnElement(messageFlow.getTargetRef());
+                            if (target == null) {
+                                throw new CanoniserException("Message flow " + messageFlow.getId() + " missing target " + messageFlow.getTargetRef());
+                            }
+
+                            if (messageFlow.getMessageRef() != null) {
+                                TMessage message = (TMessage) initializer.findBpmnElement(messageFlow.getMessageRef());
+                                if (message == null) {
+                                    throw new CanoniserException("Message flow " + messageFlow.getId() + " missing message ref " +
+                                                                 messageFlow.getMessageRef());
+                                }
+                            }
+                        }
+                    });
+                }
+
+            } else if (rootElement instanceof TProcess) {  // Each top-level BPMN Process becomes a CPF Net in the rootIDs list
+                new CpfNetType(new ProcessWrapper((TProcess) rootElement), null, initializer);
+            } else {
+                initializer.warn("Canonisation ignores " + rootElement.getId() + " of type " + rootElement.getClass().getCanonicalName());
             }
         }
 

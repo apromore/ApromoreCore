@@ -20,6 +20,7 @@ import org.junit.Test;
 import org.apromore.canoniser.bpmn.TestConstants;
 import org.apromore.canoniser.bpmn.bpmn.BpmnDefinitions;
 import org.apromore.canoniser.bpmn.bpmn.BpmnObjectFactory;
+import org.apromore.canoniser.bpmn.anf.AnfAnnotationsType;
 import org.apromore.canoniser.bpmn.cpf.CpfCanonicalProcessType;
 import org.apromore.canoniser.bpmn.cpf.CpfEventType;
 import org.apromore.cpf.*;
@@ -51,16 +52,23 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         CpfCanonicalProcessType cpf = new CpfCanonicalProcessType(definitions);
         cpf.setUri("dummy");
 
+        assertEquals(1, definitions.getBPMNDiagram().size());
+
+        AnfAnnotationsType anf = new AnfAnnotationsType(definitions, definitions.getBPMNDiagram().get(0));
+        anf.setUri("dummy");
+
         // Output the CPF
         cpf.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".cpf")), false);
+        anf.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".anf")), false);
 
         // Validate the CPF
         cpf.marshal(new NullOutputStream(), true);
+        anf.marshal(new NullOutputStream(), true);
 
         // Round-trip the CPF back into BPMN
-        BpmnDefinitions definitions2 = new BpmnDefinitions(cpf, null);
+        BpmnDefinitions definitions2 = new BpmnDefinitions(cpf, anf);
         definitions2 = BpmnDefinitions.correctFlowNodeRefs(definitions2, new BpmnObjectFactory());
-        definitions2.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".cpf.bpmn")), false);
+        definitions2.marshal(new FileOutputStream(new File(OUTPUT_DIR, filename + ".cpf+anf.bpmn")), false);
         definitions2.marshal(new NullOutputStream(), true);
 
         return cpf;
@@ -233,19 +241,21 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
      */
     @Test
     public void testCanonise8() throws Exception {
-        CanonicalProcessType cpf = testCanonise("Case 8.bpmn");
+        CpfCanonicalProcessType cpf = testCanonise("Case 8.bpmn");
 
         // Expect 1 graph, 2 resource types
         assertEquals(1, cpf.getNet().size());
         assertEquals(2, cpf.getResourceType().size());
 
         // Pool "P"
-        ResourceTypeType p = cpf.getResourceType().get(0);
+        ResourceTypeType p = (ResourceTypeType) cpf.getResourceType().get(1);//getElement("sid-C08F4656-30B9-4D6D-9086-20469AB54D8B");
+        assertNotNull(p);
         assertEquals("P", p.getName());
         assertEquals(CpfResourceTypeType.class, p.getClass());
 
         // Implicit lane within "P"
-        ResourceTypeType p_lane = cpf.getResourceType().get(1);
+        ResourceTypeType p_lane = (ResourceTypeType) cpf.getResourceType().get(0);//getElement("sid-C599C65B-4C1E-44B8-9653-E6E849AE31D5");
+        assertNotNull(p_lane);
         assertEquals("", p_lane.getName());
         assertEquals(CpfResourceTypeType.class, p_lane.getClass());
 
@@ -308,17 +318,17 @@ public class CpfCanonicalProcessTypeTest implements TestConstants {
         assertEquals(3, cpf.getResourceType().size());
 
         // Pool "P"
-        ResourceTypeType p = cpf.getResourceType().get(0);
+        ResourceTypeType p = cpf.getResourceType().get(2);
         assertEquals("P", p.getName());
         assertEquals(CpfResourceTypeType.class, p.getClass());
 
         // Anonymous lane inside pool "P"
-        ResourceTypeType p_lane = cpf.getResourceType().get(1);
+        ResourceTypeType p_lane = cpf.getResourceType().get(0);
         assertEquals("", p_lane.getName());
         assertEquals(CpfResourceTypeType.class, p_lane.getClass());
 
         // Lane "L"
-        ResourceTypeType l = cpf.getResourceType().get(2);
+        ResourceTypeType l = cpf.getResourceType().get(1);
         assertEquals("L", l.getName());
         assertEquals(CpfResourceTypeType.class, l.getClass());
 

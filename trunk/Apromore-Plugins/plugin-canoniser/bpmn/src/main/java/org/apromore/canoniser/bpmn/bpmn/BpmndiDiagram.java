@@ -19,8 +19,16 @@ import org.omg.spec.bpmn._20100524.di.BPMNDiagram;
 import org.omg.spec.bpmn._20100524.di.BPMNEdge;
 import org.omg.spec.bpmn._20100524.di.BPMNPlane;
 import org.omg.spec.bpmn._20100524.di.BPMNShape;
+import org.omg.spec.bpmn._20100524.model.TBaseElement;
+import org.omg.spec.bpmn._20100524.model.TDataAssociation;
+import org.omg.spec.bpmn._20100524.model.TDataObject;
+import org.omg.spec.bpmn._20100524.model.TDataObjectReference;
+import org.omg.spec.bpmn._20100524.model.TDataStoreReference;
 import org.omg.spec.bpmn._20100524.model.TFlowNode;
 import org.omg.spec.bpmn._20100524.model.TLane;
+import org.omg.spec.bpmn._20100524.model.TMessageFlow;
+import org.omg.spec.bpmn._20100524.model.TParticipant;
+import org.omg.spec.bpmn._20100524.model.TProcess;
 import org.omg.spec.dd._20100524.dc.Bounds;
 import org.omg.spec.dd._20100524.dc.Point;
 
@@ -67,115 +75,34 @@ public class BpmndiDiagram extends BPMNDiagram {
                     logger.info("  Documentation");
                 }
 
-                @Override public void visit(final GraphicsType that) {
-                    GraphicsType graphics = (GraphicsType) annotation;
-                    /*
-                    logger.info("  Graphics");
+                @Override public void visit(final GraphicsType graphics) {
+                    try {
+                        TBaseElement bpmnElement = initializer.findElement(graphics.getCpfId());
 
-                    FillType fill = graphics.getFill();
-                    if (fill != null) {
-                        logger.info("  Fill color=" + fill.getColor() +
-                                    " gradientColor=" + fill.getGradientColor() +
-                                    " gradientRotation=" + fill.getGradientRotation() +
-                                    " image=" + fill.getImage() +
-                                    " transparency=" + fill.getTransparency());
-                    };
+                        if (bpmnElement instanceof TDataObject          ||
+                            bpmnElement instanceof TDataObjectReference ||
+                            bpmnElement instanceof TDataStoreReference  ||
+                            bpmnElement instanceof TFlowNode            ||
+                            bpmnElement instanceof TLane                ||
+                            bpmnElement instanceof TParticipant         ||
+                            bpmnElement instanceof TProcess) {
 
-                    FontType font = graphics.getFont();
-                    if (font != null) {
-                        logger.info("  Font color=" + font.getColor() +
-                                    " decoration=" + font.getDecoration() +
-                                    " family=" + font.getFamily() +
-                                    " horizontalAlign=" + font.getHorizontalAlign() +
-                                    " rotation=" + font.getRotation() +
-                                    " size=" + font.getSize() +
-                                    " style=" + font.getStyle() +
-                                    " transparency=" + font.getTransparency() +
-                                    " verticalAlign= " + font.getVerticalAlign() +
-                                    " weight=" + font.getWeight() +
-                                    " xPosition=" + font.getXPosition() +
-                                    " yPosition=" + font.getYPosition());
-                    };
+                            bpmnPlane.getDiagramElement().add(bpmndiObjectFactory.createBPMNShape(new BpmndiShape(graphics, initializer)));
 
-                    LineType line = graphics.getLine();
-                    if (line != null) {
-                        logger.info("  Line color=" + line.getColor() +
-                                    " gradientColor=" + line.getGradientColor() +
-                                    " gradientRotation=" + line.getGradientRotation() +
-                                    " shape=" + line.getShape() +
-                                    " style=" + line.getStyle() +
-                                    " transparency=" + line.getTransparency() +
-                                    " width=" + line.getWidth());
-                    };
+                        } else if (bpmnElement instanceof TDataAssociation ||
+                                   bpmnElement instanceof TMessageFlow     ||
+                                   bpmnElement instanceof BpmnSequenceFlow) {
 
-                    for (PositionType position : graphics.getPosition()) {
-                        logger.info("  Position (" + position.getX() + ", " + position.getY() + ")");
-                    }
+                            bpmnPlane.getDiagramElement().add(bpmndiObjectFactory.createBPMNEdge(new BpmndiEdge(graphics, initializer)));
 
-                    SizeType size = graphics.getSize();
-                    if (size != null) {
-                        logger.info("  Size " + size.getWidth() + " x " + size.getHeight());
-                    };
-                    */
-
-                    if (initializer.findElement(annotation.getCpfId()) instanceof TFlowNode ||
-                        initializer.findElement(annotation.getCpfId()) instanceof TLane) {
-                        BPMNShape shape = new BPMNShape();
-                        shape.setId(initializer.newId(annotation.getId()));
-                        shape.setBpmnElement(new QName(initializer.getTargetNamespace(),
-                                                       initializer.findElement(annotation.getCpfId()).getId()));
-
-                        // a shape requires a bounding box, defined by a top-left position and a size (width and height)
-                        if (graphics.getPosition().size() != 1) {
-                            throw new RuntimeException(
-                                new CanoniserException("Annotation " + annotation.getId() + " for shape " +
-                                    annotation.getCpfId() + " should have just one origin position")
-                            );  // TODO - remove this wrapper hack
+                        } else if (bpmnElement == null) {
+                            //throw new CanoniserException("CpfId \"" + annotation.getCpfId() + "\" in ANF document not found in CPF document");
+                            initializer.warn("CpfId \"" + annotation.getCpfId() + "\" in ANF document not found in CPF document");
+                        } else {
+                            throw new CanoniserException("CpfId \"" + annotation.getCpfId() + " has bpmnElement " + bpmnElement);
                         }
-                        if (graphics.getSize() == null) {
-                            throw new RuntimeException(
-                                new CanoniserException("Annotation " + annotation.getId() + " for shape " +
-                                    annotation.getCpfId() + " should specify a size")
-                            );  // TODO - remove this wrapper hack
-                        }
-
-                        // add the ANF position and size as a BPMNDI bounds
-                        Bounds bounds = new Bounds();
-                        bounds.setHeight(graphics.getSize().getHeight().doubleValue());
-                        bounds.setWidth(graphics.getSize().getWidth().doubleValue());
-                        bounds.setX(graphics.getPosition().get(0).getX().doubleValue());
-                        bounds.setY(graphics.getPosition().get(0).getY().doubleValue());
-                        shape.setBounds(bounds);
-
-                        bpmnPlane.getDiagramElement().add(bpmndiObjectFactory.createBPMNShape(shape));
-
-                    } else if (initializer.findElement(annotation.getCpfId()) instanceof BpmnSequenceFlow) {
-                        BPMNEdge edge = new BPMNEdge();
-                        edge.setId(initializer.newId(annotation.getId()));
-                        edge.setBpmnElement(new QName(initializer.getTargetNamespace(),
-                                                      initializer.findElement(annotation.getCpfId()).getId()));
-
-                        // an edge requires two or more waypoints
-                        if (graphics.getPosition().size() < 2) {
-                            throw new RuntimeException(
-                                new CanoniserException("Annotation " + annotation.getId() + " for edge " +
-                                    annotation.getCpfId() + " should have at least two positions")
-                            );  // TODO - remove this wrapper hack
-                        }
-
-                        // add each ANF position as a BPMNDI waypoint
-                        for (PositionType position : graphics.getPosition()) {
-                            Point point = new Point();
-                            point.setX(position.getX().doubleValue());
-                            point.setY(position.getY().doubleValue());
-                            edge.getWaypoint().add(point);
-                        }
-
-                        bpmnPlane.getDiagramElement().add(bpmndiObjectFactory.createBPMNEdge(edge));
-                    } else {
-                        throw new RuntimeException(
-                            new CanoniserException("CpfId \"" + annotation.getCpfId() + "\" in ANF document not found in CPF document")
-                        );  // TODO - remove this wrapper hack
+                    } catch (CanoniserException e) {
+                        throw new RuntimeException(e);  // TODO - remove wrapper hack
                     }
                 }
 

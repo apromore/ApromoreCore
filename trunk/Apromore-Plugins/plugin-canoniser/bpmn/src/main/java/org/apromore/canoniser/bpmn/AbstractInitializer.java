@@ -3,6 +3,7 @@ package org.apromore.canoniser.bpmn;
 // Java 2 Standard packages
 import java.util.ArrayList;
 import java.util.List;
+import java.util.logging.Logger;
 
 // Local classes
 import org.apromore.canoniser.exception.CanoniserException;
@@ -16,6 +17,9 @@ import org.apromore.canoniser.exception.CanoniserException;
  * @author <a href="mailto:simon.raboczi@uqconnect.edu.au">Simon Raboczi</a>
  */
 public class AbstractInitializer {
+
+    /** Logger. */
+    private final Logger logger = Logger.getAnonymousLogger();
 
     /** Deferred initialization commands. */
     private final List<Initialization> deferredInitializationList = new ArrayList<Initialization>();
@@ -36,5 +40,12 @@ public class AbstractInitializer {
         for (Initialization initialization : deferredInitializationList) {
             initialization.initialize();
         }
+    }
+
+    /**
+     * @param message  human-legible text message about the canonisation or de-canonisation
+     */
+    public void warn(final String message) {
+        logger.warning(message);
     }
 }

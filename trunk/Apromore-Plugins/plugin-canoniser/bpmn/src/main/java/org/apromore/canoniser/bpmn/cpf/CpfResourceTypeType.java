@@ -34,7 +34,8 @@ public class CpfResourceTypeType extends ResourceTypeType implements Attributed 
 
         // Handle @name
         setName(requiredName(participant.getName()));
-        initializer.addResourceType(this);
+
+        //initializer.addResourceType(this);
     }
 
     /**
