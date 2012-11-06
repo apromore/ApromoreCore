@@ -359,7 +359,7 @@ public class BpmnDefinitionsTest implements TestConstants {
     }
 
     /**
-     * Test decanonisaztion of <code>Subprocess.cpf</code> and <code>Subprocess.and</code>.
+     * Test decanonisation of <code>Subprocess.cpf</code> and <code>Subprocess.and</code>.
      */
     @Test
     public final void testDecanoniseSubprocess() throws Exception {
@@ -383,5 +383,16 @@ public class BpmnDefinitionsTest implements TestConstants {
         TSubProcess c2 = (TSubProcess) c6.getFlowElement().get(3).getValue();
         assertEquals("c2", c2.getId());
         assertEquals(5, c2.getFlowElement().size());
+    }
+
+    /**
+     * Test decanonisation of <code>OrderFulfillment.cpf</code>.
+     */
+    @Ignore
+    @Test
+    public final void testDecanoniseOrderFulfillment() throws Exception {
+
+        // Obtain the test instance
+        BpmnDefinitions definitions = testDecanonise("OrderFulfillment");
     }
 }
