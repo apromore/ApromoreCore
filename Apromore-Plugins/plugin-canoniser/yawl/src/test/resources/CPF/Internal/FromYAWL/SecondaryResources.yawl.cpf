@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="SecondaryResources" version="0.1" name="SecondaryResources" author="Felix" rootIds="N-Net">
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="SecondaryResources" version="0.1" name="SecondaryResources" author="Felix" rootIds="N-Net">
     <Net id="N-Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition">
+        <Node xsi:type="cpf:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
+        <Node xsi:type="cpf:TaskType" id="C-A" originalID="A">
             <name>A</name>
             <attribute name="http://www.yawlfoundation.org/yawlschema/allocate">
                 <allocate:allocate xmlns:allocate="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
@@ -12,50 +12,50 @@
             <attribute name="http://www.yawlfoundation.org/yawlschema/start">
                 <start:start xmlns:start="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" initiator="user"/>
             </attribute>
-            <resourceTypeRef id="b37a9265-03d4-427d-9c3e-11ec69dbf2a6" resourceTypeId="iddd9502e2-6acc-4f1b-98c5-39b6311cdc6c" qualifier="Primary"/>
-            <resourceTypeRef id="id86476ed8-8fb4-4b5a-9da1-b48c5f90ca45" resourceTypeId="id676075dd-3464-44d3-9500-01661776087a" qualifier="Primary"/>
-            <resourceTypeRef id="b93e85b9-4cc2-4abb-9706-7a5e62ff9b5a" resourceTypeId="idd99a18df-bc6b-46fc-be63-1517531b1419" qualifier="Secondary"/>
-            <resourceTypeRef id="f5b6e3d9-899b-40b0-bf63-4363450f8e52" resourceTypeId="id018db022-82dd-49b3-9fbb-115f1df92a14" qualifier="Secondary"/>
-            <resourceTypeRef id="f1bc50eb-9fc7-4d88-9d60-db79fba6d1d1" resourceTypeId="id123b623a-afe6-498b-a1bb-2cd2dad75bcc" qualifier="Secondary"/>
+            <resourceTypeRef id="bb7057d1-31b0-480e-9483-c43a0c4d9962" resourceTypeId="id893bf215-988a-44aa-b9e7-765244fb88f5" qualifier="Primary"/>
+            <resourceTypeRef id="e942bae3-b38f-4546-9931-081cec939d59" resourceTypeId="ide7b7c59b-bacc-4996-b46b-7db6d3a38ca0" qualifier="Primary"/>
+            <resourceTypeRef id="ad77578a-e1fb-423d-a99d-1cf80fc50560" resourceTypeId="idda0b2821-d6ad-44e4-9d8c-09065cef9f4a" qualifier="Secondary"/>
+            <resourceTypeRef id="idb8575600-2053-4941-8d7c-39dca1448e8e" resourceTypeId="idec57e8c5-eea4-4974-a9a6-2b96e2fb511f" qualifier="Secondary"/>
+            <resourceTypeRef id="d065ea96-9af5-4dfb-a9a5-c0bea8a61644" resourceTypeId="iddd4edaad-0c7b-4678-9339-420d15580835" qualifier="Secondary"/>
             <teamWork>false</teamWork>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
         <Edge id="C-InputCondition-A" default="false" sourceId="C-InputCondition" targetId="C-A"/>
         <Edge id="C-A-OutputCondition" default="false" sourceId="C-A" targetId="C-OutputCondition"/>
     </Net>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="iddd9502e2-6acc-4f1b-98c5-39b6311cdc6c" specializationIds="ida28be802-cb14-421d-b720-91dd55bcdfb9 id9c33514c-5d07-4200-8c18-236b7dcfcf26 id676075dd-3464-44d3-9500-01661776087a" originalID="RO-176b14db-d9d7-4de0-8a5f-657a1103a814">
+    <ResourceType xsi:type="cpf:HumanType" id="id893bf215-988a-44aa-b9e7-765244fb88f5" specializationIds="idbc860bc5-9da8-4900-b9bd-217f2efe884b idfc3d040f-7c83-4cce-bffc-ce4d8399bcbe ide7b7c59b-bacc-4996-b46b-7db6d3a38ca0" originalID="RO-176b14db-d9d7-4de0-8a5f-657a1103a814">
         <name>RoleY</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="idd99a18df-bc6b-46fc-be63-1517531b1419" specializationIds="ida28be802-cb14-421d-b720-91dd55bcdfb9 iddd9502e2-6acc-4f1b-98c5-39b6311cdc6c" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
+    <ResourceType xsi:type="cpf:HumanType" id="idda0b2821-d6ad-44e4-9d8c-09065cef9f4a" specializationIds="idbc860bc5-9da8-4900-b9bd-217f2efe884b id893bf215-988a-44aa-b9e7-765244fb88f5" originalID="RO-2e5d9358-f443-4b24-9a5c-c46a8ef139b7">
         <name>RoleX</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="ida28be802-cb14-421d-b720-91dd55bcdfb9" originalID="PA-c5795783-3695-48ec-b798-aea7890b0988">
+    <ResourceType xsi:type="cpf:HumanType" id="idbc860bc5-9da8-4900-b9bd-217f2efe884b" originalID="PA-c5795783-3695-48ec-b798-aea7890b0988">
         <name>TestX TestX</name>
         <attribute name="Capability" value="CapabilityX"/>
         <attribute name="Position" value="PositionX"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id9c33514c-5d07-4200-8c18-236b7dcfcf26" originalID="PA-09ef66e3-4f91-4a10-82de-19294ba87cd3">
+    <ResourceType xsi:type="cpf:HumanType" id="idfc3d040f-7c83-4cce-bffc-ce4d8399bcbe" originalID="PA-09ef66e3-4f91-4a10-82de-19294ba87cd3">
         <name>TestY TestY</name>
         <attribute name="Capability" value="CapabilityY"/>
         <attribute name="Capability" value="CapabilityX"/>
         <type>Participant</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:HumanType" id="id676075dd-3464-44d3-9500-01661776087a" specializationIds="id9c33514c-5d07-4200-8c18-236b7dcfcf26" originalID="RO-c4671de9-56cc-4eb3-b625-00406479ed3d">
+    <ResourceType xsi:type="cpf:HumanType" id="ide7b7c59b-bacc-4996-b46b-7db6d3a38ca0" specializationIds="idfc3d040f-7c83-4cce-bffc-ce4d8399bcbe" originalID="RO-c4671de9-56cc-4eb3-b625-00406479ed3d">
         <name>RoleZ</name>
         <type>Role</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:NonhumanType" id="id018db022-82dd-49b3-9fbb-115f1df92a14" originalID="NH-bc2f1def-2ac9-4b4e-b29f-f2e5262d38f6">
+    <ResourceType xsi:type="cpf:NonhumanType" id="idec57e8c5-eea4-4974-a9a6-2b96e2fb511f" originalID="NH-bc2f1def-2ac9-4b4e-b29f-f2e5262d38f6">
         <name>ResourceA</name>
         <type>Equipment</type>
     </ResourceType>
-    <ResourceType xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:NonhumanType" id="id123b623a-afe6-498b-a1bb-2cd2dad75bcc" originalID="NH-35b8e495-2ef7-485e-a019-120c8a37ad05">
+    <ResourceType xsi:type="cpf:NonhumanType" id="iddd4edaad-0c7b-4678-9339-420d15580835" originalID="NH-35b8e495-2ef7-485e-a019-120c8a37ad05">
         <name>ResourceB</name>
         <type>Equipment</type>
     </ResourceType>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
-</ns2:CanonicalProcess>
+</cpf:CanonicalProcess>

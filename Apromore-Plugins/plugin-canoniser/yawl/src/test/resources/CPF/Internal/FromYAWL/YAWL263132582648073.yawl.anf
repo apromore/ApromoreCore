@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:Annotations xmlns:ns2="http://www.apromore.org/ANF" uri="263132582485918.yawl" name="263132582485918">
-    <Annotation id="d087afa4-229c-4d4d-a34f-9a571edd1b8e">
+<anf:Annotations xmlns:anf="http://www.apromore.org/ANF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="263132582485918.yawl" name="263132582485918">
+    <Annotation id="idcad5de1c-7da5-4372-b672-f7f24c5e838e">
         <locale:locale xmlns:locale="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema" country="AU" language="en"/>
         <metadata:metadata xmlns:metadata="http://www.yawlfoundation.org/yawlschema" xmlns="http://www.yawlfoundation.org/yawlschema">
             <title>263132582485918</title>
@@ -13,9 +13,9 @@
             <identifier>263132582485918</identifier>
         </metadata:metadata>
     </Annotation>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="idf324333c-6728-44f7-96b4-d1bca6bd8219" cpfId="C-263132582674346"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="a6976334-0a9c-433f-a645-7e6fd9e1e295" cpfId="C-263132582674346-263132582686251"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="a2ac6c6b-6855-44e3-9124-dc0ca362541d" cpfId="C-263132582686251"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="ffd5fe3d-fdca-4fcf-bb47-9329f76e13f7" cpfId="C-263132582686251-263132582681736"/>
-    <Annotation xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:GraphicsType" id="b0e6e206-6f22-47fc-b5ff-bfeda7bfc7e6" cpfId="C-263132582681736"/>
-</ns2:Annotations>
+    <Annotation xsi:type="anf:GraphicsType" id="id564fc484-96ae-433c-b827-bd98672d5c94" cpfId="C-263132582674346"/>
+    <Annotation xsi:type="anf:GraphicsType" id="idf53ea21e-6367-4fb5-9e3f-07c4e6309185" cpfId="C-263132582674346-263132582686251"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id42c367c4-2b06-4fdd-acb9-b11358a68094" cpfId="C-263132582686251"/>
+    <Annotation xsi:type="anf:GraphicsType" id="ff45051b-b08a-4355-9571-572bee69b575" cpfId="C-263132582686251-263132582681736"/>
+    <Annotation xsi:type="anf:GraphicsType" id="id9e11ba02-ba01-40f2-b846-845e7df57592" cpfId="C-263132582681736"/>
+</anf:Annotations>

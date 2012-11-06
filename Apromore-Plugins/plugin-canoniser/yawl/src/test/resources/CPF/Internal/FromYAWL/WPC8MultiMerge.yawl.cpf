@@ -1,39 +1,39 @@
 <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
-<ns2:CanonicalProcess xmlns:ns2="http://www.apromore.org/CPF" uri="WPC8MultiMerge" version="0.1" name="WPC8MultiMerge" author="Felix" rootIds="N-Net">
+<cpf:CanonicalProcess xmlns:cpf="http://www.apromore.org/CPF" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" uri="WPC8MultiMerge" version="0.1" name="WPC8MultiMerge" author="Felix" rootIds="N-Net">
     <Net id="N-Net" originalID="Net">
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-InputCondition" originalID="InputCondition">
+        <Node xsi:type="cpf:EventType" id="C-InputCondition" originalID="InputCondition">
             <name>IN</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-A" originalID="A">
+        <Node xsi:type="cpf:TaskType" id="C-A" originalID="A">
             <name>A</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:ANDSplitType" id="idd2c5c2fe-0cf7-49af-95e5-56b516992212"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-C" originalID="C">
+        <Node xsi:type="cpf:ANDSplitType" id="a3ac362d-9d85-4f12-a59e-bec573f1ca34"/>
+        <Node xsi:type="cpf:TaskType" id="C-C" originalID="C">
             <name>C</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-B" originalID="B">
+        <Node xsi:type="cpf:TaskType" id="C-B" originalID="B">
             <name>B</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-D" originalID="D">
+        <Node xsi:type="cpf:TaskType" id="C-D" originalID="D">
             <name>D</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:TaskType" id="C-E" originalID="E">
+        <Node xsi:type="cpf:TaskType" id="C-E" originalID="E">
             <name>E</name>
         </Node>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:XORJoinType" id="a836b3f8-6b3e-46c6-a170-1c78c276d8ba"/>
-        <Node xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:type="ns2:EventType" id="C-OutputCondition" originalID="OutputCondition">
+        <Node xsi:type="cpf:XORJoinType" id="ea6fba30-b8aa-444b-9ac2-88ab9cca9ce5"/>
+        <Node xsi:type="cpf:EventType" id="C-OutputCondition" originalID="OutputCondition">
             <name>OUT</name>
         </Node>
         <Edge id="C-InputCondition-A" default="false" sourceId="C-InputCondition" targetId="C-A"/>
-        <Edge id="id25739c77-4955-4c99-b63a-abf9542e6057" sourceId="C-A" targetId="idd2c5c2fe-0cf7-49af-95e5-56b516992212"/>
-        <Edge id="id8cbb8032-02cb-440d-9132-b0fa316bc09e" default="false" sourceId="idd2c5c2fe-0cf7-49af-95e5-56b516992212" targetId="C-C"/>
-        <Edge id="id4fddb6ef-5091-4f8d-91bd-dac79e221012" default="false" sourceId="idd2c5c2fe-0cf7-49af-95e5-56b516992212" targetId="C-B"/>
-        <Edge id="ida180143f-77c2-4a1b-ba67-48b76cef19e1" default="false" sourceId="idd2c5c2fe-0cf7-49af-95e5-56b516992212" targetId="C-D"/>
-        <Edge id="idb7ba1775-b569-46c0-b513-05efa77a3a81" sourceId="a836b3f8-6b3e-46c6-a170-1c78c276d8ba" targetId="C-E"/>
-        <Edge id="idb72a2a1d-3df5-49c5-bbf4-b87bd7ab24c4" default="false" sourceId="C-C" targetId="a836b3f8-6b3e-46c6-a170-1c78c276d8ba"/>
-        <Edge id="ida0561a34-a456-4cbd-b2a1-c914609424f1" default="false" sourceId="C-B" targetId="a836b3f8-6b3e-46c6-a170-1c78c276d8ba"/>
-        <Edge id="idd17a4679-eaad-4cf7-9bbb-02ae7a7bcd3c" default="false" sourceId="C-D" targetId="a836b3f8-6b3e-46c6-a170-1c78c276d8ba"/>
+        <Edge id="idb3ce8ac6-7a25-47c3-9d2a-2eb2e2b580ae" sourceId="C-A" targetId="a3ac362d-9d85-4f12-a59e-bec573f1ca34"/>
+        <Edge id="id057dfa47-f8ea-45e3-b11e-896a5c2ca348" default="false" sourceId="a3ac362d-9d85-4f12-a59e-bec573f1ca34" targetId="C-C"/>
+        <Edge id="idc44cd539-e520-4257-a1a3-cbba0e19cadf" default="false" sourceId="a3ac362d-9d85-4f12-a59e-bec573f1ca34" targetId="C-B"/>
+        <Edge id="id07601245-cf9e-4d18-9e5e-06fb823dba5a" default="false" sourceId="a3ac362d-9d85-4f12-a59e-bec573f1ca34" targetId="C-D"/>
+        <Edge id="id6b9ed911-cc64-4cbf-85dd-d0938b3c3cb4" sourceId="ea6fba30-b8aa-444b-9ac2-88ab9cca9ce5" targetId="C-E"/>
+        <Edge id="id425f18c5-0b0a-480d-b419-dd3fc89ad1d4" default="false" sourceId="C-C" targetId="ea6fba30-b8aa-444b-9ac2-88ab9cca9ce5"/>
+        <Edge id="idb002fde7-fdf1-4458-9969-9353f84aa7b3" default="false" sourceId="C-B" targetId="ea6fba30-b8aa-444b-9ac2-88ab9cca9ce5"/>
+        <Edge id="id84102066-b0a1-4e3d-a45d-25b6cee7b4b4" default="false" sourceId="C-D" targetId="ea6fba30-b8aa-444b-9ac2-88ab9cca9ce5"/>
         <Edge id="C-E-OutputCondition" default="false" sourceId="C-E" targetId="C-OutputCondition"/>
     </Net>
     <dataTypes>&lt;xs:schema xmlns:xs=&quot;http://www.w3.org/2001/XMLSchema&quot; xmlns=&quot;http://www.yawlfoundation.org/yawlschema&quot; xmlns:xsi=&quot;http://www.w3.org/2001/XMLSchema-instance&quot;/&gt;</dataTypes>
-</ns2:CanonicalProcess>
+</cpf:CanonicalProcess>

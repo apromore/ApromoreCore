@@ -13,7 +13,6 @@ import org.apromore.canoniser.yawl.utils.TestUtils;
 import org.apromore.canoniser.yawl.yawl2cpf.patterns.BasePatternTest;
 import org.apromore.cpf.ANDSplitType;
 import org.apromore.cpf.EdgeType;
-import org.apromore.cpf.MessageType;
 import org.apromore.cpf.NetType;
 import org.apromore.cpf.NodeType;
 import org.apromore.cpf.StateType;
@@ -34,23 +33,23 @@ public class TimerTest extends BasePatternTest {
     public void testTimerOnStart() {
         final NetType rootNet = yawl2Canonical.getCpf().getNet().get(0);
 
-        assertEquals(14, rootNet.getNode().size());
+        assertEquals(15, rootNet.getNode().size());
 
         // Timer onStart
-        final TaskType taskA = (TaskType) checkNode(rootNet, "A", TaskType.class, 1, 1);
-        final NodeType xorJoin = getFirstPredecessor(rootNet, taskA);
-        checkNode(rootNet, xorJoin, XORJoinType.class, 2, 1);
-        final List<EdgeType> incomingXorJoin = getIncomingEdges(rootNet, xorJoin.getId());
-        final NodeType nodeA = getNodeById(rootNet, incomingXorJoin.get(0).getSourceId());
-        final NodeType nodeB = getNodeById(rootNet, incomingXorJoin.get(1).getSourceId());
-        if ((nodeA instanceof TimerType && nodeB instanceof MessageType) || (nodeB instanceof TimerType && nodeA instanceof MessageType)) {
+        final TaskType taskB = (TaskType) checkNode(rootNet, "B", TaskType.class, 1, 1);
+        final NodeType andSplit = getFirstPredecessor(rootNet, taskB);
+        checkNode(rootNet, andSplit, ANDSplitType.class, 1, 2);
+        final List<EdgeType> outgoingAndSplit = getOutgoingEdges(rootNet, andSplit.getId());
+        final NodeType nodeA = getNodeById(rootNet, outgoingAndSplit.get(0).getTargetId());
+        final NodeType nodeB = getNodeById(rootNet, outgoingAndSplit.get(1).getTargetId());
+        if ((nodeA instanceof TimerType && nodeB instanceof TaskType) || (nodeB instanceof TimerType && nodeA instanceof TaskType)) {
             checkMutuallyCancelingEachOther(nodeA, nodeB);
         } else {
             fail("Timer onStart converted in a wrong way");
         }
-        assertEquals(getFirstPredecessor(rootNet, nodeA), getFirstPredecessor(rootNet, nodeB));
-        assertNotNull(checkNode(rootNet, getFirstPredecessor(rootNet, nodeA), ANDSplitType.class, 1, 2));
-        checkNode(rootNet, getFirstSuccessor(rootNet, taskA), StateType.class, 1, 2);
+        assertEquals(getFirstSuccessor(rootNet, nodeA), getFirstSuccessor(rootNet, nodeB));
+        assertNotNull(checkNode(rootNet, getFirstSuccessor(rootNet, nodeA), XORJoinType.class, 2, 1));
+        checkNode(rootNet, getFirstSuccessor(rootNet, getFirstSuccessor(rootNet, nodeA)), StateType.class, 2, 1);
         // C should be left untouched
         checkNode(rootNet, "C", TaskType.class, 1, 1);
     }
@@ -59,10 +58,10 @@ public class TimerTest extends BasePatternTest {
     public void testTimerOnEnablement() {
         final NetType rootNet = yawl2Canonical.getCpf().getNet().get(0);
 
-        assertEquals(14, rootNet.getNode().size());
+        assertEquals(15, rootNet.getNode().size());
 
         // Timer onStart
-        final TaskType taskB = (TaskType) checkNode(rootNet, "B", TaskType.class, 1, 1);
+        final TaskType taskB = (TaskType) checkNode(rootNet, "A", TaskType.class, 1, 1);
         checkNode(rootNet, getFirstPredecessor(rootNet, taskB), ANDSplitType.class, 1, 2);
         final XORJoinType xorJoin = checkNode(rootNet, getFirstSuccessor(rootNet, taskB), XORJoinType.class, 2, 1);
 
