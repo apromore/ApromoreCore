@@ -6,6 +6,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import org.apromore.dao.ContentDao;
 import org.apromore.dao.model.Content;
@@ -27,7 +28,6 @@ import org.apromore.service.helper.extraction.Extractor;
 import org.apromore.service.model.RFragment2;
 import org.apromore.service.utils.MutableTreeConstructor;
 import org.apromore.util.FragmentUtil;
-import org.apromore.util.HashUtil;
 import org.jbpt.algo.tree.rpst.RPST;
 import org.jbpt.algo.tree.tctree.TCType;
 import org.slf4j.Logger;
@@ -107,7 +107,7 @@ public class DecomposerServiceImpl implements DecomposerService {
      * @throws RepositoryException if something fails while populating the Repository
      */
     @SuppressWarnings("unchecked")
-    public FragmentVersion decompose(RFragment2 f, final OperationContext op, final List<String> fragmentIds)
+    public FragmentVersion decompose(final RFragment2 f, final OperationContext op, final List<String> fragmentIds)
             throws RepositoryException {
         String keywords = "";
          int fragmentSize = f.getVertices().size();
@@ -116,7 +116,7 @@ public class DecomposerServiceImpl implements DecomposerService {
         Collection<RFragment2> cs = f.getChildren();
         Map<String, String> childMappings = mapPocketChildId(f, op, fragmentIds, cs);
 
-        String hash = HashUtil.computeHash(f, f.getType(), op); //"";
+        String hash =  UUID.randomUUID().toString();// HashUtil.computeHash(f, f.getType(), op); //"";
         Content matchingContent = null;
         if (matchingContent == null) {
             return addFragmentVersion(f, hash, childMappings, fragmentSize, nodeType, keywords, op);
@@ -226,7 +226,7 @@ public class DecomposerServiceImpl implements DecomposerService {
 
 
     /* mapping pocketId -> childId */
-    private Map<String, String> mapPocketChildId(RFragment2 f, final OperationContext op,
+    private Map<String, String> mapPocketChildId(final RFragment2 f, final OperationContext op,
                                                  final List<String> fragmentIds, final Collection<RFragment2> cs) throws RepositoryException {
         Map<String, String> childMappings = new HashMap<String, String>();
         for (RFragment2 c : cs) {
