@@ -50,34 +50,13 @@ import org.apromore.cpf.XORSplitType;
  */
 public class ObjectFactoryTest implements TestConstants {
 
-    /** XML schema for CPF 0.5. */
-    private Schema CPF_SCHEMA;
-
-    /** Property name for use with {@link Unmarshaller#setProperty} to configure a {@link com.sun.xml.bind.IDResolver}. */
-    final static String ID_RESOLVER = "com.sun.xml.bind.IDResolver";
-
-    /** Property name for use with {@link Unmarshaller#setProperty} to override the JAXB ObjectFactory. */
-    final static String OBJECT_FACTORY = "com.sun.xml.bind.ObjectFactory";
-
-    /**
-     * Initialize {@link #CPF_SCHEMA}.
-     */
-    @Before
-    public void initializeDefinitionsSchema() throws SAXException {
-        ClassLoader loader = getClass().getClassLoader();
-
-        CPF_SCHEMA  = SchemaFactory.newInstance(W3C_XML_SCHEMA_NS_URI).newSchema(
-            new StreamSource(loader.getResourceAsStream("xsd/cpf_1.0.xsd"))
-        );
-    }
-
     /**
      * Test CPF convenience methods.
      */
     @Test
     public void testParseCpf() throws Exception {
 
-        CpfCanonicalProcessType cpf = CpfCanonicalProcessType.newInstance(new FileInputStream(new File(TESTCASES_DIR, "Basic.cpf")), true);
+        CpfCanonicalProcessType cpf = CpfCanonicalProcessType.newInstance(new FileInputStream(new File(CANONICAL_MODELS_DIR, "Basic.cpf")), true);
 
         NetType net = cpf.getNet().get(0);
 
